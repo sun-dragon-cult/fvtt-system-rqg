@@ -1,0 +1,9 @@
+.idea/
+
+# Project exclude paths
+/dist/
+/node_modules/
+/package/
+
+package-lock.json
+yarn-error.log
