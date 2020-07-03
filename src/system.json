@@ -1,5 +1,5 @@
 {
-  "name": "foundry-vtt-runequest-glorantha",
+  "name": "rqg",
   "title": "Runequest Glorantha",
   "description": "",
   "version": "0.1.0",
@@ -13,10 +13,10 @@
   ],
   "scripts": [],
   "esmodules": [
-    "foundry-vtt-runequest-glorantha.js"
+    "rqg.js"
   ],
   "styles": [
-    "foundry-vtt-runequest-glorantha.css"
+    "styles/rqg.css"
   ],
   "packs": [],
   "languages": [],
@@ -24,7 +24,7 @@
   "gridUnits": "",
   "minimumCoreVersion": "0.5.0",
   "compatibleCoreVersion": "0.5.0",
-  "url": "https://github.com/wake42/foundry-vtt-runequest-glorantha",
+  "url": "https://github.com/wake42/foundry-vtt-rqg",
   "manifest": "",
   "download": "",
   "license": "",
