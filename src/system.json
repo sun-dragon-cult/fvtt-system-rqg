@@ -26,7 +26,7 @@
   "compatibleCoreVersion": "0.5.0",
   "url": "https://github.com/wake42/foundry-vtt-rqg",
   "manifest": "https://raw.githubusercontent.com/wake42/foundry-vtt-rqg/master/src/system.json",
-  "download": "https://raw.githubusercontent.com/wake42/foundry-vtt-rqg/master/src/release/rqg-v0.1.0.zip",
+  "download": "https://raw.githubusercontent.com/wake42/foundry-vtt-rqg/master/src/releases/rqg-v0.1.0.zip",
   "license": "",
   "readme": "",
   "bugs": "",
