@@ -303,30 +303,30 @@ async function linkUserData() {
 }
 
 /*********************/
-/*		PACKAGE		 */
+/*		RELEASE 	 */
 /*********************/
 
 /**
- * Package build
+ * Release build
  */
-async function packageBuild() {
+async function releaseBuild() {
 	const manifest = getManifest();
 
 	return new Promise((resolve, reject) => {
 		try {
-			// Remove the package dir without doing anything else
+			// Remove the releases dir without doing anything else
 			if (argv.clean || argv.c) {
-				console.log(chalk.yellow('Removing all packaged files'));
-				fs.removeSync('package');
+				console.log(chalk.yellow('Removing all released files'));
+				fs.removeSync('releases');
 				return;
 			}
 
-			// Ensure there is a directory to hold all the packaged versions
-			fs.ensureDirSync('package');
+			// Ensure there is a directory to hold all the release versions
+			fs.ensureDirSync('releases');
 
 			// Initialize the zip file
 			const zipName = `${manifest.file.name}-v${manifest.file.version}.zip`;
-			const zipFile = fs.createWriteStream(path.join('package', zipName));
+			const zipFile = fs.createWriteStream(path.join('releases', zipName));
 			const zip = archiver('zip', { zlib: { level: 9 } });
 
 			zipFile.on('close', () => {
@@ -354,7 +354,7 @@ async function packageBuild() {
 }
 
 /*********************/
-/*		PACKAGE		 */
+/*		RELEASE 	 */
 /*********************/
 
 /**
@@ -437,7 +437,7 @@ function updateManifest(cb) {
 
 		/* Update URLs */
 
-		const result = `${rawURL}/v${manifest.file.version}/package/${manifest.file.name}-v${manifest.file.version}.zip`;
+		const result = `${rawURL}/v${manifest.file.version}/releases/${manifest.file.name}-v${manifest.file.version}.zip`;
 
 		manifest.file.url = repoURL;
 		manifest.file.manifest = `${rawURL}/master/${manifestRoot}/${manifest.name}`;
@@ -493,12 +493,12 @@ exports.build = gulp.series(clean, execBuild);
 exports.watch = buildWatch;
 exports.clean = clean;
 exports.link = linkUserData;
-exports.package = packageBuild;
+exports.release = releaseBuild;
 exports.update = updateManifest;
 exports.publish = gulp.series(
 	clean,
 	updateManifest,
 	execBuild,
-	packageBuild,
+	releaseBuild,
 	execGit
 );
