@@ -1,0 +1,9 @@
+{
+  "characteristic.str": "STR",
+  "characteristic.con": "CON",
+  "characteristic.siz": "SIZ",
+  "characteristic.dex": "DEX",
+  "characteristic.int": "INT",
+  "characteristic.pow": "POW",
+  "characteristic.cha": "CHA"
+}

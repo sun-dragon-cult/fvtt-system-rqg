@@ -36,11 +36,14 @@ Hooks.once('init', async function() {
 
 	// Define custom Entity classes
 	CONFIG.Actor.entityClass = ActorRqg;
-	
+
 	// Register custom system settings
 	registerSettings();
-	
-	// Preload Handlebars templates
+
+  // Add Handlebar concat util
+  Handlebars.registerHelper("concat", (...strs) => strs.filter(s => typeof s !== 'object').join(''));
+
+  // Preload Handlebars templates
 	await preloadTemplates();
 
 	// Register custom sheets (if any)

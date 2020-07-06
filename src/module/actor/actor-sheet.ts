@@ -103,39 +103,39 @@ export class ActorSheetRqgCharacter extends ActorSheet {
 
   // FIXME Next Roadmap task !!!!
   /** @override */
-  _updateObject(event: Event, formData: any): Promise<any> { // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
-    console.log('*** Event + formData', event.target, formData);
-    debugger;
-
-    // // Handle the free-form attributes list
-    // // @ts-ignore
-    // const formChars = expandObject(formData).data.characteristics || {};
-    // const attributes = Object.values(formChars).reduce((obj, v) => {
-    //   let k = v["key"].trim();
-    //   if (/[\s\.]/.test(k)) {
-    //     return ui.notifications.error("Attribute keys may not contain spaces or periods");
-    //   }
-    //   delete v["key"];
-    //   obj[k] = v;
-    //   return obj;
-    // }, {});
-
-    // // Remove attributes which are no longer used
-    // for (let k of Object.keys(this.object.data.data.attributes)) {
-    //   if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
-    // }
-
-    // Re-combine formData
-    // formData = Object.entries(formData)
-    //   .map(e => {
-    //     if (e[0].startsWith("data.characteristics")) {
-    //       return [e[0], 42]; // TODO last entered ???
-    //     } else {
-    //       return e;  // TODO {_id: this.object._id, "data.attributes": attributes})
-    //     }
-    // }), {_id: this.object._id, "data.characteristics": formData.data.characteristics || {}};
-
-    // Update the Actor
-    return this.object.update(formData);
-  }
+  // _updateObject(event: Event, formData: any): Promise<any> { // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
+  //   console.log('*** Event + formData', event.target, formData);
+  //   debugger;
+  //
+  //   // // Handle the free-form attributes list
+  //   // // @ts-ignore
+  //   // const formChars = expandObject(formData).data.characteristics || {};
+  //   // const attributes = Object.values(formChars).reduce((obj, v) => {
+  //   //   let k = v["key"].trim();
+  //   //   if (/[\s\.]/.test(k)) {
+  //   //     return ui.notifications.error("Attribute keys may not contain spaces or periods");
+  //   //   }
+  //   //   delete v["key"];
+  //   //   obj[k] = v;
+  //   //   return obj;
+  //   // }, {});
+  //
+  //   // // Remove attributes which are no longer used
+  //   // for (let k of Object.keys(this.object.data.data.attributes)) {
+  //   //   if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
+  //   // }
+  //
+  //   // Re-combine formData
+  //   // formData = Object.entries(formData)
+  //   //   .map(e => {
+  //   //     if (e[0].startsWith("data.characteristics")) {
+  //   //       return [e[0], 42]; // TODO last entered ???
+  //   //     } else {
+  //   //       return e;  // TODO {_id: this.object._id, "data.attributes": attributes})
+  //   //     }
+  //   // }), {_id: this.object._id, "data.characteristics": formData.data.characteristics || {}};
+  //
+  //   // Update the Actor
+  //   return this.object.update(formData);
+  // }
 }

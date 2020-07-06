@@ -1,5 +1,4 @@
 export const preloadTemplates = async function() {
-	console.log('*** PreloadTemplates js *** DEBUG');
 
 	const templatePaths = [
 

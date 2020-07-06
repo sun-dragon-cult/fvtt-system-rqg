@@ -19,7 +19,13 @@
     "styles/rqg.css"
   ],
   "packs": [],
-  "languages": [],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "i18n/en.json"
+    }
+  ],
   "gridDistance": 1,
   "gridUnits": "m",
   "minimumCoreVersion": "0.6.4",

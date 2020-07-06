@@ -1,13 +1,19 @@
 {
   "Actor": {
     "types": [
-      "character"
+      "character",
+      "npc"
     ],
     "character": {
       "templates": [
         "common"
       ],
       "biography": ""
+    },
+    "npc": {
+      "templates": [
+        "common"
+      ]
     },
     "templates": {
       "common": {
