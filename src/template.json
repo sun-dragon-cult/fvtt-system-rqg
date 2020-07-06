@@ -1,134 +1,53 @@
 {
   "Actor": {
-    "types": ["character"],
-    "templates": {
-      "characteristics": {
-        "str": {
-          "value": 10,
-          "min": 0,
-          "max": 21
-        },
-        "con": {
-          "value": 10,
-          "min": 0,
-          "max": 21
-        },
-        "siz": {
-          "value": 10,
-          "min": 0,
-          "max": 21
-        },
-        "dex": {
-          "value": 10,
-          "min": 0,
-          "max": 21
-        },
-        "int": {
-          "value": 10,
-          "min": 0,
-          "max": 21
-        },
-        "pow": {
-          "value": 10,
-          "min": 0,
-          "max": 21
-        },
-        "cha": {
-          "value": 10,
-          "min": 0,
-          "max": 21
-        }
-      },
-      "total-hitpoints": {
-        "value": 10,
-        "max": 10
-      },
-      "magicpoints": {
-        "value": 10,
-        "max": 10
-      },
-      "hitlocations": {
-        "head": {
-          "ap": 0,
-          "hp": 4,
-          "max-hp": 4,
-          "die-from": 19,
-          "die-to": 20
-        },
-        "l-arm": {
-          "ap": 0,
-          "hp": 4,
-          "max-hp": 4,
-          "die-from": 16,
-          "die-to": 18
-        },
-        "r-arm": {
-          "ap": 0,
-          "hp": 4,
-          "max-hp": 4,
-          "die-from": 13,
-          "die-to": 15
-        },
-        "chest": {
-          "ap": 0,
-          "hp": 4,
-          "max-hp": 4,
-          "die-from": 12,
-          "die-to": 12
-        },
-        "abdomen": {
-          "ap": 0,
-          "hp": 4,
-          "max-hp": 4,
-          "die-from": 9,
-          "die-to": 11
-        },
-        "l-leg": {
-          "ap": 0,
-          "hp": 4,
-          "max-hp": 4,
-          "die-from": 5,
-          "die-to": 8
-        },
-        "r-leg": {
-          "ap": 0,
-          "hp": 4,
-          "max-hp": 4,
-          "die-from": 1,
-          "die-to": 4
-        }
-      }
+    "types": [
+      "character"
+    ],
+    "character": {
+      "templates": [
+        "common"
+      ],
+      "biography": ""
     },
-    "skill-category": {
-      "agility": {
-        "modifier": 0,
-        "skills": [
-          {
-            "skill": "boat",
-            "value": 5,
-            "gainroll": false
+    "templates": {
+      "common": {
+        "characteristics": {
+          "str": {
+            "value": 10,
+            "min": 0,
+            "max": 21
           },
-          {
-            "skill": "climb",
-            "value": 40,
-            "gainroll": false
-          }
-        ]
-      },
-      "communication": {
-        "modifier": 0,
-        "skills": [
-          {
-            "skill": "act",
-            "value": 5,
-            "gainroll": false
+          "con": {
+            "value": 10,
+            "min": 0,
+            "max": 21
           },
-          {
-            "skill": "art",
-            "value": 5,
-            "gainroll": false
+          "siz": {
+            "value": 10,
+            "min": 0,
+            "max": 21
+          },
+          "dex": {
+            "value": 10,
+            "min": 0,
+            "max": 21
+          },
+          "int": {
+            "value": 10,
+            "min": 0,
+            "max": 21
+          },
+          "pow": {
+            "value": 10,
+            "min": 0,
+            "max": 21
+          },
+          "cha": {
+            "value": 10,
+            "min": 0,
+            "max": 21
           }
-        ]
+        }
       }
     }
   },

@@ -1,6 +1,10 @@
 export const preloadTemplates = async function() {
+	console.log('*** PreloadTemplates js *** DEBUG');
+
 	const templatePaths = [
-		// Add paths to "systems/foundry-vtt-runequest-glorantha/templates"
+
+		"systems/rqg/templates/actor-sheet.html",
+		"systems/rqg/templates/item-sheet.html",
 	];
 
 	return loadTemplates(templatePaths);

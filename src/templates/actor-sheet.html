@@ -6,16 +6,20 @@
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
             <div class="resource">
-                <input type="text" name="data.health.value" value="{{data.health.value}}" data-dtype="Number"/>
+                <input type="text" name="data.characteristics.str.value" value="{{data.characteristics.str.value}}" data-dtype="Number"/>
                 <span> / </span>
-                <input type="text" name="data.health.max" value="{{data.health.max}}" data-dtype="Number"/>
+                <input type="text" name="data.characteristics.str.max" value="{{data.characteristics.str.max}}" data-dtype="Number"/>
             </div>
             <div class="resource">
-                <input type="text" name="data.power.value" value="{{data.power.value}}" data-dtype="Number"/>
+                <input type="text" name="data.characteristics.pow.value" value="{{data.characteristics.pow.value}}" data-dtype="Number"/>
                 <span> / </span>
-                <input type="text" name="data.power.max" value="{{data.power.max}}" data-dtype="Number"/>
+                <input type="text" name="data.characteristics.pow.max" value="{{data.characteristics.pow.max}}" data-dtype="Number"/>
             </div>
         </div>
+        <label for="str">STR</label>
+        <input type="number" id="str" name="data.characteristics.str.value" value="{{data.characteristics.str.value}}"/>
+        <label for="pow">POW</label>
+        <input type="number" id="pow" name="data.characteristics.pow.value" value="{{data.characteristics.pow.value}}"/>
     </header>
 
     {{!-- Sheet Tab Navigation --}}
@@ -61,23 +65,23 @@
 
             <ol class="attributes-list">
             {{#each data.attributes as |attr key|}}
-                <li class="attribute flexrow" data-attribute="{{key}}">
-                    <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}"/>
-                    {{#if attr.isCheckbox}}
-                    <label class="attribute-value checkbox"><input type="checkbox" name="data.attributes.{{key}}.value" {{checked attr.value}}/></label>
-                    {{else}}
-                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}"/>
-                    {{/if}}
-                    <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/>
-                    <select class="attribute-dtype" name="data.attributes.{{key}}.dtype">
-                        {{#select attr.dtype}}
-                        {{#each ../dtypes as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
-                    <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
-                </li>
+<!--                <li class="attribute flexrow" data-attribute="{{key}}">-->
+<!--                    <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}"/>-->
+<!--                    {{#if attr.isCheckbox}}-->
+<!--                    <label class="attribute-value checkbox"><input type="checkbox" name="data.attributes.{{key}}.value" {{checked attr.value}}/></label>-->
+<!--                    {{else}}-->
+<!--                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}"/>-->
+<!--                    {{/if}}-->
+<!--                    <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/>-->
+<!--                    <select class="attribute-dtype" name="data.attributes.{{key}}.dtype">-->
+<!--                        {{#select attr.dtype}}-->
+<!--                        {{#each ../dtypes as |t|}}-->
+<!--                        <option value="{{t}}">{{t}}</option>-->
+<!--                        {{/each}}-->
+<!--                        {{/select}}-->
+<!--                    </select>-->
+<!--                    <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>-->
+<!--                </li>-->
             {{/each}}
             </ol>
         </div>

@@ -18,23 +18,23 @@ export class SimpleItemSheet extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
-    const data = super.getData();
-    data.dtypes = ["String", "Number", "Boolean"];
-    for ( let attr of Object.values(data.data.attributes) ) {
-      attr.isCheckbox = attr.dtype === "Boolean";
-    }
-    return data;
-  }
+  // getData() {
+  //   const data = super.getData();
+  //   data.dtypes = ["String", "Number", "Boolean"];
+  //   for ( let attr of Object.values(data.data.attributes) ) {
+  //     attr.isCheckbox = attr.dtype === "Boolean";
+  //   }
+  //   return data;
+  // }
 
   /* -------------------------------------------- */
 
   /** @override */
   setPosition(options={}) {
     const position = super.setPosition(options);
-    const sheetBody = this.element.find(".sheet-body");
+    const sheetBody = (this.element as HTMLElement).querySelector(".sheet-body");
     const bodyHeight = position.height - 192;
-    sheetBody.css("height", bodyHeight);
+    sheetBody.setAttribute("style", `"height: ${bodyHeight};"`);
     return position;
   }
 
@@ -68,7 +68,7 @@ export class SimpleItemSheet extends ItemSheet {
     // Add new attribute
     if ( action === "create" ) {
       const nk = Object.keys(attrs).length + 1;
-      let newKey = document.createElement("div");
+      let newKey: Element = document.createElement("div");
       newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}"/>`;
       newKey = newKey.children[0];
       form.appendChild(newKey);
@@ -89,7 +89,7 @@ export class SimpleItemSheet extends ItemSheet {
   _updateObject(event, formData) {
 
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData).data.attributes || {};
+    const formAttrs = (expandObject(formData) as BaseEntityData).data.attributes || {}; // TODO BaseEntityData eller vad?
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
       if ( /[\s\.]/.test(k) )  return ui.notifications.error("Attribute keys may not contain spaces or periods");

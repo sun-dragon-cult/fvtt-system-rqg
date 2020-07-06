@@ -14,9 +14,9 @@
 import { registerSettings } from './module/settings.js';
 import { preloadTemplates } from './module/preloadTemplates.js';
 
-import { SimpleItemSheet } from "./module/item-sheet.js";
-import { SimpleActorSheet } from "./module/actor-sheet.js";
-import { ActorRqg } from "./module/actor-rqg";
+// import { SimpleItemSheet } from "./module/item/item-sheet.ts";
+import { ActorSheetRqgCharacter } from "./module/actor/actor-sheet.js";
+import { ActorRqg } from "./module/actor/actor-rqg.js";
 
 /* ------------------------------------ */
 /* Initialize system					*/
@@ -29,10 +29,10 @@ Hooks.once('init', async function() {
 	 * Set an initiative formula for the system
 	 * @type {String}
 	 */
-	CONFIG.Combat.initiative = { // TODO Calculate initiative (SR) instead
-		formula: "1d20",
-		decimals: 2
-	};
+	// CONFIG.Combat.initiative = { // TODO Calculate initiative (SR) instead
+	// 	formula: "1d20",
+	// 	decimals: 2
+	// };
 
 	// Define custom Entity classes
 	CONFIG.Actor.entityClass = ActorRqg;
@@ -45,16 +45,17 @@ Hooks.once('init', async function() {
 
 	// Register custom sheets (if any)
 	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("rqg", SimpleActorSheet, { makeDefault: true });
+	Actors.registerSheet("rqg", ActorSheetRqgCharacter, { makeDefault: true });
 
-	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("rqg", SimpleItemSheet, {makeDefault: true});
+	// Items.unregisterSheet("core", ItemSheet);
+	// Items.registerSheet("rqg", SimpleItemSheet, {makeDefault: true});
 });
 
 /* ------------------------------------ */
 /* Setup system							*/
 /* ------------------------------------ */
 Hooks.once('setup', function() {
+	console.log('*** System is setup hook *** DEBUG');
 	// Do anything after initialization but before
 	// ready
 });
@@ -63,6 +64,7 @@ Hooks.once('setup', function() {
 /* When ready							*/
 /* ------------------------------------ */
 Hooks.once('ready', function() {
+	console.log('*** System is ready hook *** DEBUG');
 	// Do anything once the system is ready
 });
 
