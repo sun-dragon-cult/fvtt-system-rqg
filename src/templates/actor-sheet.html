@@ -3,24 +3,67 @@
   {{!-- Sheet Header --}}
   <header class="sheet-header">
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
-    <div class="header-fields">
-      <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder=""/></h1><br>
-
-      {{#each data.characteristics as | characteristic key |}}
-      <div class="ability flexrow flex-group-center">
+    <div>
+      <div class="topheaderline">
+        <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder=""/></h1><br>
+        <label>Hit Points<br>
+          <input type="text"
+                 name="{{data.common.hp.value}}"
+                 value="{{data.common.hp.value}}"
+                 data-dtype="Number"
+                 size="2"> / {{data.characteristics.con.value}}
+        </label>
+        <!-- TODO needs modifier-->
+        <label>Magic Points<br>
+          <input type="text"
+                 name="{{data.common.mp.value}}"
+                 value="{{data.common.mp.value}}"
+                 data-dtype="Number"
+                 size="2"> / {{data.characteristics.pow.value}}
+        </label>
+      </div>
+      <div class="characteristics">
+        {{#each data.characteristics as | characteristic key |}}
         <label class="resource-label">{{localize (concat 'characteristic.' key)}}<br>
-          <input type="number"
+          <input type="text"
                  max="{{characteristic.max}}"
                  min="{{characteristic.min}}"
                  name="data.characteristics.{{key}}.value"
                  value="{{characteristic.value}}"
-                 data-dtype="Number">
+                 data-dtype="Number"
+                 size="2">
         </label>
         <!--        <span class="ability-mod rollable" data-roll="d20+@abilities.{{key}}.mod" data-label="{{key}}">{{numberFormat ability.mod decimals=0 sign=true}}</span>-->
+        {{/each}}
       </div>
     </div>
-    {{/each}}
   </header>
+  <div class="runeline">
+    <img src="systems/rqg/icons/runes/mastery.svg">
+    <img src="systems/rqg/icons/runes/magic.svg">
+    <img src="systems/rqg/icons/runes/disorder.svg">
+    <img src="systems/rqg/icons/runes/movement_change.svg">
+    <img src="systems/rqg/icons/runes/moon_full.svg">
+    <img src="systems/rqg/icons/runes/spirit.svg">
+    <img src="systems/rqg/icons/runes/death.svg">
+    <img src="systems/rqg/icons/runes/illusion.svg">
+    <img src="systems/rqg/icons/runes/dragonnewt.svg">
+    <img src="systems/rqg/icons/runes/darkness.svg">
+    <img src="systems/rqg/icons/runes/truth.svg">
+    <img src="systems/rqg/icons/runes/stasis.svg">
+    <img src="systems/rqg/icons/runes/luck.svg">
+    <img src="systems/rqg/icons/runes/plant.svg">
+    <img src="systems/rqg/icons/runes/water.svg">
+    <img src="systems/rqg/icons/runes/beast.svg">
+    <img src="systems/rqg/icons/runes/air.svg">
+    <img src="systems/rqg/icons/runes/man.svg">
+    <img src="systems/rqg/icons/runes/earth.svg">
+    <img src="systems/rqg/icons/runes/harmony.svg">
+    <img src="systems/rqg/icons/runes/fertility.svg">
+    <img src="systems/rqg/icons/runes/fate.svg">
+    <img src="systems/rqg/icons/runes/chaos.svg">
+  </div>
+
 
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">

@@ -1,4 +1,39 @@
 .rqg {
+
+  .runeline {
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    display: flex;
+    justify-content: space-between;
+
+    img {
+      height: 12px;
+      border: none;
+      margin: 2px 0;
+    }
+  }
+
+  .topheaderline {
+    display: flex;
+    justify-content: space-between;
+
+    input {
+      width: 25px;
+    }
+  }
+  .characteristics {
+    display: flex;
+    justify-content: space-between;
+    input {
+      border: none;
+      background-color: transparent;
+
+      &:focus {
+        border: 1px solid grey;
+        background-color: #f1f1f1;
+      }
+    }
+  }
   .window-content {
     height: 100%;
     padding: 5px;

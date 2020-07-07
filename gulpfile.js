@@ -7,13 +7,12 @@ const stringify = require('json-stringify-pretty-compact');
 const typescript = require('typescript');
 
 const ts = require('gulp-typescript');
-const less = require('gulp-less');
 const sass = require('gulp-sass');
 const git = require('gulp-git');
 
 const argv = require('yargs').argv;
 
-sass.compiler = require('sass');
+sass.compiler = require('node-sass');
 
 function getConfig() {
 	const configPath = path.resolve(process.cwd(), 'foundryconfig.json');
@@ -136,14 +135,10 @@ const tsConfig = ts.createProject('tsconfig.json', {
  * Build TypeScript
  */
 function buildTS() {
-	return gulp.src('src/**/*.ts').pipe(tsConfig()).pipe(gulp.dest('dist'));
-}
-
-/**
- * Build Less
- */
-function buildLess() {
-	return gulp.src('src/*.less').pipe(less()).pipe(gulp.dest('dist'));
+	return gulp
+    .src('src/**/*.ts')
+    .pipe(tsConfig())
+    .pipe(gulp.dest('dist'));
 }
 
 /**
@@ -151,7 +146,7 @@ function buildLess() {
  */
 function buildSASS() {
 	return gulp
-		.src('src/*.scss')
+		.src('src/**/*.scss')
 		.pipe(sass().on('error', sass.logError))
 		.pipe(gulp.dest('dist'));
 }
@@ -163,7 +158,7 @@ async function copyFiles() {
 	const statics = [
 		'i18n',
 		'fonts',
-		'assets',
+		'icons',
 		'templates',
 		'module',
 		'module.json',
@@ -187,10 +182,9 @@ async function copyFiles() {
  */
 function buildWatch() {
 	gulp.watch('src/**/*.ts', { ignoreInitial: false }, buildTS);
-	gulp.watch('src/**/*.less', { ignoreInitial: false }, buildLess);
 	gulp.watch('src/**/*.scss', { ignoreInitial: false }, buildSASS);
 	gulp.watch(
-		['src/fonts', 'src/lang', 'src/templates', 'src/*.json'],
+		['src/fonts', 'src/i18n', 'src/templates', 'src/*.json'],
 		{ ignoreInitial: false },
 		copyFiles
 	);
@@ -208,27 +202,18 @@ async function clean() {
 	const name = path.basename(path.resolve('.'));
 	const files = [];
 
-	// If the project uses TypeScript
-	if (fs.existsSync(path.join('src', `${name}.ts`))) {
-		files.push(
-			'i18n',
-			'templates',
-			'assets',
-			'module',
-			`${name}.js`,
-			'module.json',
-			'system.json',
-			'template.json'
-		);
-	}
+  files.push(
+    'i18n',
+    'templates',
+    'icons',
+    'module',
+    `${name}.js`,
+    'module.json',
+    'system.json',
+    'template.json'
+  );
 
-	// If the project uses Less or SASS
-	if (
-		fs.existsSync(path.join('src', `${name}.less`)) ||
-		fs.existsSync(path.join('src', `${name}.scss`))
-	) {
-		files.push('fonts', `${name}.css`);
-	}
+	files.push('fonts', `${name}.css`);
 
 	console.log(' ', chalk.yellow('Files to clean:'));
 	console.log('   ', chalk.blueBright(files.join('\n    ')));
@@ -488,7 +473,7 @@ function gitTag() {
 
 const execGit = gulp.series(gitAdd, gitCommit, gitTag);
 
-const execBuild = gulp.parallel(buildTS, buildLess, buildSASS, copyFiles);
+const execBuild = gulp.parallel(buildTS, buildSASS, copyFiles);
 
 exports.build = gulp.series(clean, execBuild);
 exports.watch = buildWatch;
