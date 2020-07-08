@@ -8,7 +8,7 @@ export class SimpleItemSheet extends ItemSheet {
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
 			classes: ["rqg", "sheet", "item"],
-			template: "systems/rqg/templates/item-sheet.html",
+			template: "systems/rqg/module/item/item-sheet.html",
 			width: 520,
 			height: 480,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}]
@@ -97,7 +97,7 @@ export class SimpleItemSheet extends ItemSheet {
       obj[k] = v;
       return obj;
     }, {});
-    
+
     // Remove attributes which are no longer used
     for ( let k of Object.keys(this.object.data.data.attributes) ) {
       if ( !attributes.hasOwnProperty(k) ) attributes[`-=${k}`] = null;
