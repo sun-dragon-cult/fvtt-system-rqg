@@ -7,7 +7,7 @@
 * [x] Update character data from character sheet
 * [x] Handle translation
 * [x] Move template/*.html next to relevant ts?
-* [ ] Optimise svg's
+
 * [ ] Flesh out template.json with variables
     * [ ] Races / NPC ?? Split hitlocations etc into race specific
 * [x] Get styling to work (gulp error) - TODO Modularize? css classes can be added by actor-sheet.ts !
@@ -24,6 +24,7 @@
 * [ ] Combat
 * [ ] Spirit Magic
 * [ ] Rune Magic
+* [ ] Optimise svg's - Have to open and resave them :-(
 * [ ] Calendar ?!?
 ---
 * [ ] Figure out how releases work (why they didn't work... gulp?)

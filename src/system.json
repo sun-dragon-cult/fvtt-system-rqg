@@ -16,7 +16,7 @@
     "rqg.js"
   ],
   "styles": [
-    "styles/rqg.css"
+    "rqg.css"
   ],
   "packs": [],
   "languages": [
