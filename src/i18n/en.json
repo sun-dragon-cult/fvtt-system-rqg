@@ -1,9 +1,9 @@
 {
-  "characteristic.str": "STR",
-  "characteristic.con": "CON",
-  "characteristic.siz": "SIZ",
-  "characteristic.dex": "DEX",
-  "characteristic.int": "INT",
-  "characteristic.pow": "POW",
-  "characteristic.cha": "CHA"
+  "characteristic.strength": "STR",
+  "characteristic.constitution": "CON",
+  "characteristic.size": "SIZ",
+  "characteristic.dexterity": "DEX",
+  "characteristic.intelligence": "INT",
+  "characteristic.power": "POW",
+  "characteristic.charisma": "CHA"
 }

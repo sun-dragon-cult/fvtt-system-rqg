@@ -1,7 +1,6 @@
-/**
- * Extend the basic ActorSheet with some very simple modifications
- * @extends {ActorSheet}
- */
+import {ActorDataRqg} from "../data-model/Actor/actor-data-rqg";
+import {Modifiers} from "../modifiers";
+
 export class ActorSheetRqgCharacter extends ActorSheet {
 
   /** @override */
@@ -19,14 +18,45 @@ export class ActorSheetRqgCharacter extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  // getData(): ActorSheetData {
-  //   const data: ActorSheetData = super.getData();
-  //   data.dtypes = ["String", "Number", "Boolean"];
-  //   for ( let attr of Object.values(data.data.attributes) ) {
-  //     attr.isCheckbox = attr.dtype === "Boolean";
-  //   }
-  //   return data;
-  // }
+  getData(): ActorSheetData {
+    // TODO move to Actor prepareData instead?
+    const data: any = super.getData(); // TODO define an ActorSheetData that extends the normal?
+    const actorDataRqg: ActorDataRqg = data.data;
+    actorDataRqg.attributes.dexStrikeRank = Modifiers.dexSR(actorDataRqg.characteristics.dexterity.value);
+    actorDataRqg.attributes.hitPoints.max = Modifiers.hitPoints(
+      actorDataRqg.characteristics.constitution.value,
+      actorDataRqg.characteristics.size.value,
+      actorDataRqg.characteristics.power.value
+    );
+
+    // Convenience lookup for rune icons
+    data.data.runeIcons = {
+      // Elemental Runes
+      "fire": 'systems/rqg/icons/runes/fire_sky.svg',
+      "darkness":'systems/rqg/icons/runes/darkness.svg',
+      "water": 'systems/rqg/icons/runes/water.svg',
+      "earth": 'systems/rqg/icons/runes/earth.svg',
+      "air": 'systems/rqg/icons/runes/air.svg',
+      "moon": 'systems/rqg/icons/runes/moon_full.svg',
+
+      // Power Runes
+      "man": 'systems/rqg/icons/runes/man.svg',
+      "beast": 'systems/rqg/icons/runes/beast.svg',
+      "fertility": 'systems/rqg/icons/runes/fertility.svg',
+      "death": 'systems/rqg/icons/runes/death.svg',
+      "harmony": 'systems/rqg/icons/runes/harmony.svg',
+      "disorder": 'systems/rqg/icons/runes/disorder.svg',
+      "truth": 'systems/rqg/icons/runes/truth.svg',
+      "illusion": 'systems/rqg/icons/runes/illusion.svg',
+      "stasis": 'systems/rqg/icons/runes/stasis.svg',
+      "movement": 'systems/rqg/icons/runes/movement_change.svg'
+    }
+    // data.dtypes = ["String", "Number", "Boolean"];
+    // for ( let attr of Object.values(data.data.attributes) ) {
+    //   attr.isCheckbox = attr.dtype === "Boolean";
+    // }
+    return data;
+  }
 
   /* -------------------------------------------- */
 
@@ -103,8 +133,8 @@ export class ActorSheetRqgCharacter extends ActorSheet {
 
   // FIXME Next Roadmap task !!!!
   /** @override */
-  // _updateObject(event: Event, formData: any): Promise<any> { // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
-  //   console.log('*** Event + formData', event.target, formData);
+  _updateObject(event: Event, formData: any): Promise<any> { // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
+    console.log('*** Event + formData', event.target, formData);
   //   debugger;
   //
   //   // // Handle the free-form attributes list
@@ -135,7 +165,7 @@ export class ActorSheetRqgCharacter extends ActorSheet {
   //   //     }
   //   // }), {_id: this.object._id, "data.characteristics": formData.data.characteristics || {}};
   //
-  //   // Update the Actor
-  //   return this.object.update(formData);
-  // }
+    // Update the Actor
+    return this.object.update(formData);
+  }
 }

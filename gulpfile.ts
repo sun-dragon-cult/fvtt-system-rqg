@@ -1,14 +1,30 @@
-const gulp = require('gulp');
-const fs = require('fs-extra');
-const path = require('path');
-const chalk = require('chalk');
-const archiver = require('archiver');
-const stringify = require('json-stringify-pretty-compact');
-const typescript = require('typescript');
+import * as gulp from "gulp";
+import * as fs from "fs-extra";
+import * as path from "path";
+import * as chalk from "chalk";
+import * as archiver from "archiver";
+import * as stringify from "json-stringify-pretty-compact";
+import {
+  Node,
+  LiteralExpression,
+  TransformerFactory,
+  isImportDeclaration,
+  isExportDeclaration,
+  isStringLiteral,
+  createLiteral,
+  updateImportDeclaration,
+  updateExportDeclaration,
+  visitEachChild,
+  visitNode,
+  TransformationContext,
+  Transformer as TSTransformer,
+} from "typescript";
+import * as Vinyl from "vinyl";
+import { Readable } from "stream";
 
-const ts = require('gulp-typescript');
-const sass = require('gulp-sass');
-const git = require('gulp-git');
+import * as ts from "gulp-typescript";
+import * as sass from "gulp-sass";
+import * as git from "gulp-git";
 
 const argv = require('yargs').argv;
 
@@ -27,7 +43,7 @@ function getConfig() {
 }
 
 function getManifest() {
-	const json = {};
+	const json: any = {};
 
 	if (fs.existsSync('src')) {
 		json.root = 'src';
@@ -55,24 +71,16 @@ function getManifest() {
  * TypeScript transformers
  * @returns {typescript.TransformerFactory<typescript.SourceFile>}
  */
-function createTransformer() {
+function createTransformer(): TransformerFactory<any> {
 	/**
 	 * @param {typescript.Node} node
 	 */
-	function shouldMutateModuleSpecifier(node) {
-		if (
-			!typescript.isImportDeclaration(node) &&
-			!typescript.isExportDeclaration(node)
-		)
-			return false;
-		if (node.moduleSpecifier === undefined) return false;
-		if (!typescript.isStringLiteral(node.moduleSpecifier)) return false;
-		if (
-			!node.moduleSpecifier.text.startsWith('./') &&
-			!node.moduleSpecifier.text.startsWith('../')
-		)
-			return false;
-		if (path.extname(node.moduleSpecifier.text) !== '') return false;
+	function shouldMutateModuleSpecifier(node: Node) {
+		if (!isImportDeclaration(node) && !isExportDeclaration(node)) { return false; }
+		if (node.moduleSpecifier === undefined) { return false; }
+		if (!isStringLiteral(node.moduleSpecifier)) { return false; }
+		if (!node.moduleSpecifier.text.startsWith('./') &&!node.moduleSpecifier.text.startsWith('../')) { return false; }
+		if (path.extname(node.moduleSpecifier.text) !== '') { return false; }
 		return true;
 	}
 
@@ -80,44 +88,40 @@ function createTransformer() {
 	 * Transforms import/export declarations to append `.js` extension
 	 * @param {typescript.TransformationContext} context
 	 */
-	function importTransformer(context) {
-		return (node) => {
-			/**
-			 * @param {typescript.Node} node
-			 */
-			function visitor(node) {
+	function importTransformer(context: TransformationContext): TSTransformer<any> {
+		return (node: Node) => {
+			function visitor(node: Node) {
 				if (shouldMutateModuleSpecifier(node)) {
-					if (typescript.isImportDeclaration(node)) {
-						const newModuleSpecifier = typescript.createLiteral(
-							`${node.moduleSpecifier.text}.js`
+					if (isImportDeclaration(node)) {
+						const newModuleSpecifier = createLiteral(
+							`${(node.moduleSpecifier as LiteralExpression).text}.js`
 						);
-						return typescript.updateImportDeclaration(
+						return updateImportDeclaration(
 							node,
 							node.decorators,
 							node.modifiers,
 							node.importClause,
 							newModuleSpecifier
 						);
-					} else if (typescript.isExportDeclaration(node)) {
-						const newModuleSpecifier = typescript.createLiteral(
-							`${node.moduleSpecifier.text}.js`
+					} else if (isExportDeclaration(node)) {
+						const newModuleSpecifier = createLiteral(
+							`${(node.moduleSpecifier as LiteralExpression).text}.js`
 						);
-						return typescript.updateExportDeclaration(
+						return updateExportDeclaration(
 							node,
 							node.decorators,
 							node.modifiers,
 							node.exportClause,
-							newModuleSpecifier
+							newModuleSpecifier,
+              false
 						);
 					}
 				}
-				return typescript.visitEachChild(node, visitor, context);
+				return visitEachChild(node, visitor, context);
 			}
-
-			return typescript.visitNode(node, visitor);
+			return visitNode(node, visitor);
 		};
 	}
-
 	return importTransformer;
 }
 
@@ -127,6 +131,28 @@ const tsConfig = ts.createProject('tsconfig.json', {
 	}),
 });
 
+
+/**
+ * Build template.json
+ */
+
+function string_src(filename, contents) {
+  let src = new Readable({ objectMode: true });
+  src._read = function () {
+    this.push(
+      new Vinyl({
+        cwd: "",
+        base: "./",
+        path: filename,
+        contents: Buffer.from(contents),
+      })
+    );
+    this.push(null);
+  };
+  return src;
+}
+
+const json_src = (filename, contents) => string_src(filename, JSON.stringify(contents));
 /********************/
 /*		BUILD		*/
 /********************/
@@ -152,6 +178,26 @@ function buildSASS() {
 }
 
 /**
+ * Build Template.json
+ */
+import { Actors, Items } from "./src/template";
+import {ActorDataRqg} from "./src/module/data-model/Actor/actor-data-rqg";
+
+async function buildTemplates() {
+  const template = {
+    Actor: {
+      types: Object.keys(Actors),
+      ...Actors
+    },
+    Item: {
+      types: Object.keys(Items),
+      ...Items
+    },
+  };
+  return json_src("template.json", template).pipe(gulp.dest("dist"));
+}
+
+/**
  * Copy static files
  */
 async function copyFiles() {
@@ -162,7 +208,7 @@ async function copyFiles() {
 		'module',
 		'module.json',
 		'system.json',
-		'template.json',
+		// 'template.BAKjson',
 	];
 	try {
 		for (const file of statics) {
@@ -208,7 +254,7 @@ async function clean() {
     `${name}.js`,
     'module.json',
     'system.json',
-    'template.json'
+    'template.BAKjson'
   );
 
 	files.push('fonts', `${name}.css`);
@@ -354,14 +400,7 @@ function updateManifest(cb) {
 
 	if (!config) cb(Error(chalk.red('foundryconfig.json not found')));
 	if (!manifest) cb(Error(chalk.red('Manifest JSON not found')));
-	if (!rawURL || !repoURL)
-		cb(
-			Error(
-				chalk.red(
-					'Repository URLs not configured in foundryconfig.json'
-				)
-			)
-		);
+	if (!rawURL || !repoURL) cb(Error(chalk.red('Repository URLs not configured in foundryconfig.json')));
 
 	try {
 		const version = argv.update || argv.u;
@@ -372,9 +411,7 @@ function updateManifest(cb) {
 		const currentVersion = manifest.file.version;
 		let targetVersion = '';
 
-		if (!version) {
-			cb(Error('Missing version number'));
-		}
+		if (!version) { cb(Error('Missing version number')); }
 
 		if (versionMatch.test(version)) {
 			targetVersion = version;
@@ -382,12 +419,7 @@ function updateManifest(cb) {
 			targetVersion = currentVersion.replace(
 				versionMatch,
 				(substring, major, minor, patch) => {
-					console.log(
-						substring,
-						Number(major) + 1,
-						Number(minor) + 1,
-						Number(patch) + 1
-					);
+					console.log(substring, Number(major) + 1, Number(minor) + 1, Number(patch) + 1);
 					if (version === 'major') {
 						return `${Number(major) + 1}.0.0`;
 					} else if (version === 'minor') {
@@ -406,13 +438,7 @@ function updateManifest(cb) {
 		}
 
 		if (targetVersion === currentVersion) {
-			return cb(
-				Error(
-					chalk.red(
-						'Error: Target version is identical to current version.'
-					)
-				)
-			);
+			return cb(Error(chalk.red('Error: Target version is identical to current version.')));
 		}
 		console.log(`Updating version number to '${targetVersion}'`);
 
@@ -433,11 +459,7 @@ function updateManifest(cb) {
 		});
 
 		fs.writeJSONSync('package.json', packageJson, { spaces: '\t' });
-		fs.writeFileSync(
-			path.join(manifest.root, manifest.name),
-			prettyProjectJson,
-			'utf8'
-		);
+		fs.writeFileSync(path.join(manifest.root, manifest.name),	prettyProjectJson, 'utf8');
 
 		return cb();
 	} catch (err) {
@@ -460,18 +482,14 @@ function gitCommit() {
 
 function gitTag() {
 	const manifest = getManifest();
-	return git.tag(
-		`v${manifest.file.version}`,
-		`Updated to ${manifest.file.version}`,
-		(err) => {
-			if (err) throw err;
-		}
-	);
+	return git.tag(`v${manifest.file.version}`, `Updated to ${manifest.file.version}`, (err) => {
+    if (err) throw err;
+	});
 }
 
 const execGit = gulp.series(gitAdd, gitCommit, gitTag);
 
-const execBuild = gulp.parallel(buildTS, buildSASS, copyFiles);
+const execBuild = gulp.parallel(buildTS, buildSASS, copyFiles, buildTemplates);
 
 exports.build = gulp.series(clean, execBuild);
 exports.watch = buildWatch;
@@ -479,10 +497,4 @@ exports.clean = clean;
 exports.link = linkUserData;
 exports.release = releaseBuild;
 exports.update = updateManifest;
-exports.publish = gulp.series(
-	clean,
-	updateManifest,
-	execBuild,
-	releaseBuild,
-	execGit
-);
+exports.publish = gulp.series(clean, updateManifest, execBuild,	releaseBuild, execGit);

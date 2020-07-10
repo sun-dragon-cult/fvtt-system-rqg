@@ -40,8 +40,9 @@ Hooks.once('init', async function() {
 	// Register custom system settings
 	registerSettings();
 
-  // Add Handlebar concat util
+  // Add Handlebar utils
   Handlebars.registerHelper("concat", (...strs) => strs.filter(s => typeof s !== 'object').join(''));
+  Handlebars.registerHelper('json', (context) => JSON.stringify(context));
 
   // Preload Handlebars templates
 	await preloadTemplates();

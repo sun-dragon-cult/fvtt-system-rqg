@@ -5,29 +5,27 @@
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
     <div>
       <div class="topheaderline">
-        <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder=""/></h1><br>
+        <h1 class="charname norse"><input name="name" type="text" value="{{actor.name}}" placeholder=""/></h1><br>
         <label class="norse">Hit Points<br>
           <input type="text"
-                 name="{{data.common.hp.value}}"
-                 value="{{data.common.hp.value}}"
+                 name="data.attributes.hitPoints.value"
+                 value="{{data.attributes.hitPoints.value}}"
                  data-dtype="Number"
-                 size="2"> / {{data.characteristics.con.value}}
+                 size="2"> / {{data.attributes.hitPoints.max}}
         </label>
         <!-- TODO needs modifier-->
-        <label>Magic Points<br>
+        <label  class="norse">Magic Points<br>
           <input type="text"
-                 name="{{data.common.mp.value}}"
-                 value="{{data.common.mp.value}}"
+                 name="data.attributes.magicPoints.value"
+                 value="{{data.attributes.magicPoints.value}}"
                  data-dtype="Number"
-                 size="2"> / {{data.characteristics.pow.value}}
+                 size="2"> / {{data.attributes.magicPoints.max}}
         </label>
       </div>
       <div class="characteristics">
         {{#each data.characteristics as | characteristic key |}}
-          <label class="resource-label">{{localize (concat 'characteristic.' key)}}<br>
+          <label class="resource-label norse">{{localize (concat 'characteristic.' key)}}<br>
             <input type="text"
-                   max="{{characteristic.max}}"
-                   min="{{characteristic.min}}"
                    name="data.characteristics.{{key}}.value"
                    value="{{characteristic.value}}"
                    data-dtype="Number"
@@ -39,7 +37,6 @@
       </div>
     </div>
   </header>
-  <div>{{data.dexSr}}</div>
   <div class="runeline">
     <img src="systems/rqg/icons/runes/mastery.svg">
     <img src="systems/rqg/icons/runes/magic.svg">
@@ -107,3 +104,4 @@
   </section>
 </form>
 
+<div>***DEBUG sheet data***{{json data}}***DEBUG***</div>
