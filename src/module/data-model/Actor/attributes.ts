@@ -5,8 +5,8 @@ export class Attributes {
     public magicPoints: Tracked,
     public hitPoints: Tracked,
     public healingRate?: number,
-    public damageBonus?: number,
-    public spiritCombatDamage?: number,
+    public damageBonus?: string, // For example "1D4"
+    public spiritCombatDamage?: string,
     public maximumEncumbrance?: number,
     public sizStrikeRank?: number,
     public dexStrikeRank?: number

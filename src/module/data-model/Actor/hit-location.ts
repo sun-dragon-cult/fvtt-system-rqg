@@ -1,5 +1,15 @@
 import {Tracked} from "../shared/tracked";
 
+export enum HitLocationsEnum {
+  head = "head",
+  leftArm = "left-arm",
+  rightArm = "right-arm",
+  chest = "chest",
+  abdomen = "abdomen",
+  leftLeg = "left-leg",
+  rightLeg = "right-leg"
+}
+
 export class HitLocation {
   constructor(
     public name: string,
@@ -23,11 +33,11 @@ export class HitLocation {
 
 const emptyTracked = new Tracked();
 export const emptyHumanoidHitLocations = [
-  new HitLocation('head', 19, 20, emptyTracked),
-  new HitLocation('left-arm', 16, 18, emptyTracked),
-  new HitLocation('right-arm', 13, 15, emptyTracked),
-  new HitLocation('chest', 12, 12, emptyTracked),
-  new HitLocation('abdomen', 9, 11, emptyTracked),
-  new HitLocation('left-leg', 5, 8, emptyTracked),
-  new HitLocation('right-leg', 1, 4, emptyTracked)
+  new HitLocation(HitLocationsEnum.head, 19, 20, emptyTracked),
+  new HitLocation(HitLocationsEnum.leftArm, 16, 18, emptyTracked),
+  new HitLocation(HitLocationsEnum.rightArm, 13, 15, emptyTracked),
+  new HitLocation(HitLocationsEnum.chest, 12, 12, emptyTracked),
+  new HitLocation(HitLocationsEnum.abdomen, 9, 11, emptyTracked),
+  new HitLocation(HitLocationsEnum.leftLeg, 5, 8, emptyTracked),
+  new HitLocation(HitLocationsEnum.rightLeg, 1, 4, emptyTracked)
 ];

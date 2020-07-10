@@ -16,17 +16,26 @@ export class ActorRqg extends Actor {
 
     const actorData: ActorData = this.data;
     const data: ActorDataRqg = actorData.data;
-    // data.mergeObject(ActorRqg.create())
     const flags = actorData.flags;
 
-    // Setup calculated stats
+    // *** Setup calculated stats ***
+    data.attributes.magicPoints.max = data.characteristics.power.value;
     data.attributes.dexStrikeRank = Modifiers.dexSR(data.characteristics.dexterity.value);
+    data.attributes.sizStrikeRank = Modifiers.sizSR(data.characteristics.size.value);
     data.attributes.hitPoints.max = Modifiers.hitPoints(
       data.characteristics.constitution.value,
       data.characteristics.size.value,
       data.characteristics.power.value
     );
 
+    Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(tuple => {
+      data.hitLocations.find(l => l.name === tuple[0]).hp.max = tuple[1];
+    });
+
+    data.attributes.damageBonus = Modifiers.damageBonus(data.characteristics.strength.value, data.characteristics.size.value);
+    data.attributes.healingRate = Modifiers.healingRate(data.characteristics.constitution.value);
+    data.attributes.spiritCombatDamage = Modifiers.spiritCombatDamage(data.characteristics.power.value, data.characteristics.charisma.value);
+    data.attributes.maximumEncumbrance = (data.characteristics.strength.value + data.characteristics.constitution.value) / 2;
 
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
