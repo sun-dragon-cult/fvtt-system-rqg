@@ -4,6 +4,7 @@ import {basicElementalRunes, ElementalRunes} from "./elemental-runes";
 import {basicPowerRunes, PowerRunes} from "./power-runes";
 import {RaceEnum} from "./race";
 import {emptyHumanoidHitLocations, HitLocation} from "./hit-location";
+import {Background, emptyBackground} from "./background";
 
 export class ActorDataRqg {
   constructor(
@@ -12,6 +13,7 @@ export class ActorDataRqg {
     public attributes: Attributes,
     public elements: ElementalRunes,
     public powers: PowerRunes,
+    public background: Background,
     public race: RaceEnum = RaceEnum.Humanoid
   ) {
   };
@@ -22,5 +24,6 @@ export const emptyActorDataRqg: ActorDataRqg = new ActorDataRqg(
   emptyHumanoidHitLocations,
   emptyAttributes,
   basicElementalRunes,
-  basicPowerRunes
+  basicPowerRunes,
+  emptyBackground
 );

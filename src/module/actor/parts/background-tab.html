@@ -1,0 +1,70 @@
+Background
+<span>TODO occupation?: OccupationEnum, homeland?: HomeLandEnum</span>
+
+{{json data.background}}<br>
+
+<label class="mp norse">Birth Year<br>
+  <input type="text"
+         name="data.background.birthyear"
+         value="{{data.background.birthyear}}"
+         data-dtype="Number"
+         size="10">
+</label>
+<label class="mp norse">Age<br>
+  <input type="text"
+         name="data.background.age"
+         value="{{data.background.age}}"
+         data-dtype="Number"
+         size="10">
+</label>
+<label class="mp norse">Gender<br>
+  <input type="text"
+         name="data.background.gender"
+         value="{{data.background.gender}}"
+         data-dtype="Text"
+         size="10">
+</label>
+<label class="mp norse">Tribe<br>
+  <input type="text"
+         name="data.background.tribe"
+         value="{{data.background.tribe}}"
+         data-dtype="Text"
+         size="10">
+</label>
+<label class="mp norse">Clan<br>
+  <input type="text"
+         name="data.background.clan"
+         value="{{data.background.clan}}"
+         data-dtype="Text"
+         size="10">
+</label>
+<label class="mp norse">Reputation<br>
+  <input type="text"
+         name="data.background.reputation"
+         value="{{data.background.reputation}}"
+         data-dtype="Number"
+         size="10">
+</label>
+<label class="mp norse">Standard Of Living<br>
+  <input type="text"
+         name="data.background.standardOfLiving"
+         value="{{data.background.standardOfLiving}}"
+         data-dtype="Text"
+         size="10">
+</label>
+<label class="mp norse">Ransom<br>
+  <input type="text"
+         name="data.background.ransom"
+         value="{{data.background.ransom}}"
+         data-dtype="Number"
+         size="10">
+</label>
+<label class="mp norse">Base Income<br>
+  <input type="text"
+         name="data.background.baseIncome"
+         value="{{data.background.baseIncome}}"
+         data-dtype="Number"
+         size="10">
+</label>
+
+{{editor content=data.background.biography target="data.background.biography" button=true owner=owner editable=editable}}

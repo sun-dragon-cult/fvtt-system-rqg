@@ -15,7 +15,7 @@
     * [x] Investigate tables (for modifiers)
 * [ ] Design Character html 
     * [ ] Show all data
-    * [ ] Implement tabs for **Main** - **Skills** - **Inventory** - **Biography** - ...
+    * [ ] Implement tabs for **Main** - **Skills** - **Inventory** - **Background** - ...
 * [ ] Figure out how to handle variable data (skills with basic keys + extra)
 * [ ] Implement Items
     * [ ] template.json
