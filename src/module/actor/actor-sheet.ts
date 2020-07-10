@@ -21,13 +21,6 @@ export class ActorSheetRqgCharacter extends ActorSheet {
   getData(): ActorSheetData {
     // TODO move to Actor prepareData instead?
     const data: any = super.getData(); // TODO define an ActorSheetData that extends the normal?
-    const actorDataRqg: ActorDataRqg = data.data;
-    actorDataRqg.attributes.dexStrikeRank = Modifiers.dexSR(actorDataRqg.characteristics.dexterity.value);
-    actorDataRqg.attributes.hitPoints.max = Modifiers.hitPoints(
-      actorDataRqg.characteristics.constitution.value,
-      actorDataRqg.characteristics.size.value,
-      actorDataRqg.characteristics.power.value
-    );
 
     // Convenience lookup for rune icons
     data.data.runeIcons = {

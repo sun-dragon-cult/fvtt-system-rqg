@@ -3,6 +3,7 @@
  * @extends {Actor}
  */
 import {ActorDataRqg} from "../data-model/Actor/actor-data-rqg";
+import {Modifiers} from "../modifiers";
 
 export class ActorRqg extends Actor {
 
@@ -10,18 +11,27 @@ export class ActorRqg extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
   /** @override */
-  // prepareData() {
-  //   super.prepareData();
-  //
-  //   const actorData: ActorData = this.data;
-  //   const data: ActorDataRqg = actorData.data;
-  //   // data.mergeObject(ActorRqg.create())
-  //   const flags = actorData.flags;
-  //
-  //   // Make separate methods for each Actor type (character, npc, etc.) to keep
-  //   // things organized.
-  //   if (actorData.type === 'character') this._prepareCharacterData(actorData);
-  // }
+  prepareData() {
+    super.prepareData();
+
+    const actorData: ActorData = this.data;
+    const data: ActorDataRqg = actorData.data;
+    // data.mergeObject(ActorRqg.create())
+    const flags = actorData.flags;
+
+    // Setup calculated stats
+    data.attributes.dexStrikeRank = Modifiers.dexSR(data.characteristics.dexterity.value);
+    data.attributes.hitPoints.max = Modifiers.hitPoints(
+      data.characteristics.constitution.value,
+      data.characteristics.size.value,
+      data.characteristics.power.value
+    );
+
+
+    // Make separate methods for each Actor type (character, npc, etc.) to keep
+    // things organized.
+    // if (actorData.type === 'character') this._prepareCharacterData(actorData);
+  }
 
   /**
    * Prepare Character type specific data
