@@ -7,6 +7,10 @@ export const preloadTemplates = async function() {
 		"systems/rqg/module/actor/parts/inventory-tab.html",
 		"systems/rqg/module/actor/parts/background-tab.html",
 
+		"systems/rqg/module/actor/parts/armor.html",
+		"systems/rqg/module/actor/parts/elemental.html",
+		"systems/rqg/module/actor/parts/power.html",
+
 		"systems/rqg/module/item/item-sheet.html",
 	];
 

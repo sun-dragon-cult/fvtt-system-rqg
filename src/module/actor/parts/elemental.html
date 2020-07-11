@@ -1,0 +1,13 @@
+<div class="elemental norse">
+  <h2>Elemental</h2>
+  {{#each data.elements}}
+    <span class="norse">
+      <label>
+        {{@key}}
+        <img src="{{lookup @root.data.runeIcons @key}}">
+        <input type="text" name="data.elements.{{@key}}.value" value="{{this.value}}" data-dtype="Number">
+        <input type="checkbox" name="data.elements.{{@key}}.experience" {{checked this.experience}}/>
+      </label>
+    </span>
+  {{/each}}
+</div>

@@ -79,6 +79,79 @@
 }
 
 
+
+.elemental, .power, .armor{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+
+  img {
+    height: 20px;
+    border: none;
+  }
+  input {
+    width: 20px;
+  }
+}
+
+.armor {
+  .acolumns {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .alocation, .ahp, .aap {
+    label, div {
+      display: block;
+      height: 30px;
+    }
+  }
+
+  .alocation {
+    position: relative;
+    top: 5px;
+  }
+
+}
+
+.elemental, .power {
+  img {
+    position: relative;
+    top: 5px;
+  }
+}
+
+.elemental {
+  span {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.power {
+  align-items: center;
+
+  span {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  > * {
+    width: 100%;
+  }
+
+  span.single {
+    justify-content: center;
+  }
+}
+
+.sheet-tabs {
+  margin: 10px 0;
+  height: 20px;
+  background-color: bisque;
+  align-content: flex-end;
+}
+
 .editor-content {
   min-height: 200px;
 }

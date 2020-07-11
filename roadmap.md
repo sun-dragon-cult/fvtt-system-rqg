@@ -13,9 +13,10 @@
 * [x] Get styling to work (gulp error) - TODO Modularize? css classes can be added by actor-sheet.ts !
 * [x] Use Actor prepareData() to add modifyers/bonuses to skills (for lookup)
     * [x] Investigate tables (for modifiers)
-* [ ] Design Character html 
-    * [ ] Show all data
-    * [ ] Implement tabs for **Main** - **Skills** - **Inventory** - **Background** - ...
+* [x] Design Character html 
+    * [x] Show all data
+    * [x] Implement tabs for **Main** - **Skills** - **Inventory** - **Background** - ...
+* [ ] Show occupation dropdown on background tab
 * [ ] Figure out how to handle variable data (skills with basic keys + extra)
 * [ ] Implement Items
     * [ ] template.json

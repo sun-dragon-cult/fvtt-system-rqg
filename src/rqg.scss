@@ -21,6 +21,23 @@
 }
 
 .rqg {
+
+  .flex {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  input[type="checkbox"] {
+    flex: 0 0 12px;
+    width: 12px;
+    height: 12px;
+    margin: 3px 3px;
+  }
+
+  .ml-5 {
+    margin-left: 5px;
+  }
+
   //.window-content {
   //  height: 100%;
   //  padding: 5px;
