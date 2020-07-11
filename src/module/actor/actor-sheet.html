@@ -71,6 +71,20 @@
     <img src="systems/rqg/icons/runes/chaos.svg">
   </div>
 
+  {{!-- Armour | Elemental | Power --}}
+  <div class="xwrapper">
+    <div class="hitlocations">
+    {{#each data.hitLocations as | hitLocation key |}}
+      <span class="norse">{{key}} <label class="hp">HP<input type="text" style="width:20px"
+                 name="data.hitLocations.{{key}}.hp.value"
+                 value="{{hitLocation.hp.value}}"
+                 data-dtype="Number"
+                 size="2"> / {{hitLocation.hp.max}}</label> ap: {{hitLocation.ap}}</span><br>
+    {{/each}}
+    </div>
+  </div>
+
+<div>***{{json data.hitLocations}}***</div>
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item norse" data-tab="main">Main</a>
@@ -103,5 +117,3 @@
     </div>
   </section>
 </form>
-
-<div>***DEBUG sheet data***{{json data}}***DEBUG***</div>

@@ -19,6 +19,8 @@ export class Modifiers {
     return constitution + this.lookup<number>(size, hpSizTable) + this.lookup<number>(power, hpPowTable);
   }
 
+  // TODO Humanoid centered as of yet
+  // Returns a tuple with hit location name and hit point value
   public static hitPointsPerLocation(totalHitPoints: number): Array<[string, number]> {
     const mostLocations = this.lookup<number>(totalHitPoints, hpMostLocationsTable);
     const chest = this.lookup<number>(totalHitPoints, hpChestTable);
@@ -71,7 +73,7 @@ const sizSrTable: Array<LookupTableEntry<number>> = [
   {from: 22, to: Infinity, result: 0},
 ];
 
-// Total hit points modifier. Lookup with size
+// Total hit points modifier. Lookup with size TODO redo as a method
 const hpSizTable: Array<LookupTableEntry<number>> = [
   {from: -Infinity, to: 4, result: -2},
   {from: 5, to: 8, result: -1},
@@ -85,10 +87,10 @@ const hpSizTable: Array<LookupTableEntry<number>> = [
   {from: 37, to: 40, result: 7},
   {from: 41, to: 44, result: 8},
   {from: 45, to: 48, result: 9},
-  {from: 49, to: Infinity, result: 10}  // TODO Device some smart way of describing "+1 for every 4 steps"
+  {from: 49, to: Infinity, result: 10}
 ];
 
-// Total hit points modifier. Lookup with power
+// Total hit points modifier. Lookup with power TODO redo as a method
 const hpPowTable: Array<LookupTableEntry<number>> = [
   {from: -Infinity, to: 4, result: -1},
   {from: 5, to: 16, result: 0},
@@ -103,7 +105,7 @@ const hpPowTable: Array<LookupTableEntry<number>> = [
   {from: 49, to: Infinity, result: 9}
 ]
 
-// Hitpoints for Each leg & Abdomen & Head. Lookup with total hit points
+// Hitpoints for Each leg & Abdomen & Head. Lookup with total hit points TODO redo as a method
 const hpMostLocationsTable: Array<LookupTableEntry<number>> = [
   {from: -Infinity, to: 6, result: 2},
   {from: 7, to: 9, result: 3},
@@ -117,7 +119,7 @@ const hpMostLocationsTable: Array<LookupTableEntry<number>> = [
   {from: 31, to: Infinity, result: 11},
 ];
 
-// Hitpoints for Chest. Lookup with total hit points
+// Hitpoints for Chest. Lookup with total hit points TODO redo as a method
 const hpChestTable: Array<LookupTableEntry<number>> = [
   {from: -Infinity, to: 6, result: 3},
   {from: 7, to: 9, result: 4},
@@ -131,7 +133,7 @@ const hpChestTable: Array<LookupTableEntry<number>> = [
   {from: 31, to: Infinity, result: 12},
 ];
 
-// Hitpoints for each arm. Lookup with total hit points
+// Hitpoints for each arm. Lookup with total hit points TODO redo as a method
 const hpArmTable: Array<LookupTableEntry<number>> = [
   {from: -Infinity, to: 6, result: 1},
   {from: 7, to: 9, result: 2},
@@ -145,7 +147,7 @@ const hpArmTable: Array<LookupTableEntry<number>> = [
   {from: 31, to: Infinity, result: 10},
 ];
 
-// Damage Bonus. Lookup with STR + SIZ
+// Damage Bonus. Lookup with STR + SIZ TODO redo as a partial method?
 const damageBonusTable: Array<LookupTableEntry<string>> = [
   {from: -Infinity, to: 12, result: "-1D4"},
   {from: 13, to: 24, result: "0"},
@@ -157,7 +159,7 @@ const damageBonusTable: Array<LookupTableEntry<string>> = [
   {from: 90, to: Infinity, result: "5D6"}
 ];
 
-// Healing rate. Lookup with CON
+// Healing rate. Lookup with CON TODO redo as a method
 const healingRateTable: Array<LookupTableEntry<number>> = [
   {from: -Infinity, to: 6, result: 1},
   {from: 7, to: 12, result: 2},

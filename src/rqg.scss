@@ -1,12 +1,18 @@
+//@font-face {
+//  font-family: Norse;
+//  src: url("fonts/Norse-KaWl.otf") format("opentype");
+//}
+//@font-face {
+//  font-family: Norse;
+//  font-weight: bold;
+//  src: url("fonts/NorseBold-2Kge.otf") format("opentype");
+//}
+// TODO Testing it out with only the bold version
 @font-face {
   font-family: Norse;
-  src: url("fonts/Norse-KaWl.otf") format("opentype");
-}
-@font-face {
-  font-family: Norse;
-  font-weight: bold;
   src: url("fonts/NorseBold-2Kge.otf") format("opentype");
 }
+
 .norse {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
 }

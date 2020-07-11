@@ -4,6 +4,7 @@
  */
 import {ActorDataRqg} from "../data-model/Actor/actor-data-rqg";
 import {Modifiers} from "../modifiers";
+import {HitLocation} from "../data-model/Actor/hit-location";
 
 export class ActorRqg extends Actor {
 
@@ -28,9 +29,22 @@ export class ActorRqg extends Actor {
       data.characteristics.power.value
     );
 
+    console.log('**** Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max)', Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max));
+
+  console.log(Array.isArray(data.hitLocations));
+
     Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(tuple => {
-      data.hitLocations.find(l => l.name === tuple[0]).hp.max = tuple[1];
+      const location = data.hitLocations[tuple[0]];
+      if (location) { // TODO Check if this location exists (for this race) - needs work...
+        data.hitLocations[tuple[0]].hp.max = tuple[1];
+      }
     });
+
+  Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(tuple => {
+    const hitLocations:[string, HitLocation][] = Object.entries(data.hitLocations);
+    hitLocations.find(l => l[0] === tuple[0])[1].hp.max = tuple[1];
+  });
+
 
     data.attributes.damageBonus = Modifiers.damageBonus(data.characteristics.strength.value, data.characteristics.size.value);
     data.attributes.healingRate = Modifiers.healingRate(data.characteristics.constitution.value);
