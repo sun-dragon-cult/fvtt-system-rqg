@@ -208,7 +208,6 @@ async function copyFiles() {
 		'module',
 		'module.json',
 		'system.json',
-		// 'template.BAKjson',
 	];
 	try {
 		for (const file of statics) {
@@ -253,8 +252,7 @@ async function clean() {
     'module',
     `${name}.js`,
     'module.json',
-    'system.json',
-    'template.BAKjson'
+    'system.json'
   );
 
 	files.push('fonts', `${name}.css`);
