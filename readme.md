@@ -57,6 +57,6 @@ Still work in progress.
 * [ ] Use Compendium for other races than humanoid? -- probably not
 
 ## Credits
-Based on [Create Foundry Project](https://www.npmjs.com/package/create-foundry-project). Inspiration to use a typed "template.ts" is from [Blue Rose](https://foundry-vtt-community.github.io/wiki/Community-Game-Systems/#adventure-game-engine-age) by studio315b, additional ideas from D&D5E System by Atropos among others.	
+Based on [Create Foundry Project](https://www.npmjs.com/package/create-foundry-project). Inspiration to use a typed "template.ts" is from [Blue Rose](https://gitlab.com/studio315b/blue-rose) by studio315b, additional ideas from D&D5E System by Atropos among others.	
 
 This FoundryVTT System uses trademarks and/or copyrights owned by Chaosium Inc/Moon Design Publications LLC, which are used under Chaosium Inc’s Fan Material Policy. We are expressly prohibited from charging you to use or access this content. This [website, character sheet, or whatever it is] is not published, endorsed, or specifically approved by Chaosium Inc. For more information about Chaosium Inc’s products, please visit www.chaosium.com.	
