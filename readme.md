@@ -2,7 +2,7 @@
 
 ## Usage
 
-Because Runequest Gloranta (Unofficial) doesn't have an SRD or anything other than the quick start the system lacks compendiums. GMs will need to create all of the advantages, backgrounds and other items they want to use for character creation.
+Because Runequest Gloranta (Unofficial) doesn't have an SRD or anything other than the quick start the system lacks compendiums. GMs will need to create all of the skills, spells and other items they want to use for character creation.
 
 ## Item Creation
 
