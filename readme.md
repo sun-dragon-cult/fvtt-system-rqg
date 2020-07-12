@@ -1,6 +1,25 @@
-# Roadmap 
-#### Runequest Gloranta system for Foundry Virtual Table Top
+# Runequest Gloranta (Unofficial) system for Foundry Virtual Table Top
 
+## Usage
+
+Because Runequest Gloranta (Unofficial) doesn't have an SRD or anything other than the quick start the system lacks compendiums. GMs will need to create all of the advantages, backgrounds and other items they want to use for character creation.
+
+## Item Creation
+
+Lorem Ipsum.
+
+## Character Creation
+
+Lorem Ipsum.
+
+## Starting a game
+
+Lorem Ipsum.
+
+## Project Status
+Still work in progress.
+
+## Roadmap / TODO / Ideas etc
 * [x] Setup Dev environment
 * [x] Setup basic template.json
 * [x] Display data (template.json) value on character sheet
@@ -30,8 +49,14 @@
 * [ ] When clicking characteristics show a "roll against" dialog (and make it harder to change them)
 * [ ] Display POW experience checkbox in some way
 * [ ] Show occupation dropdown on background tab
+* [ ] Good defaults: Link token for characters, value=max for "Tracked" data, ...
 * [ ] Calendar ?!?
 ---
 * [ ] Figure out how releases work (why they didn't work... gulp?)
 * [ ] Character creation (far future)
 * [ ] Use Compendium for other races than humanoid? -- probably not
+
+## Credits
+Based on [Create Foundry Project](https://www.npmjs.com/package/create-foundry-project). Inspiration to use a typed "template.ts" is from [Blue Rose](https://foundry-vtt-community.github.io/wiki/Community-Game-Systems/#adventure-game-engine-age) by studio315b, additional ideas from D&D5E System by Atropos among others.	
+
+This FoundryVTT System uses trademarks and/or copyrights owned by Chaosium Inc/Moon Design Publications LLC, which are used under Chaosium Inc’s Fan Material Policy. We are expressly prohibited from charging you to use or access this content. This [website, character sheet, or whatever it is] is not published, endorsed, or specifically approved by Chaosium Inc. For more information about Chaosium Inc’s products, please visit www.chaosium.com.	
