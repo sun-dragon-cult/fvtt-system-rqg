@@ -1,4 +1,4 @@
-import {Tracked} from "../shared/tracked";
+import {emptyTracked, Tracked} from "../shared/tracked";
 
 export enum HitLocationsEnum {
   head = "head",
@@ -59,7 +59,6 @@ export class HitLocation {
 //   }
 // }
 
-const emptyTracked = new Tracked();
 export const emptyHumanoidHitLocations = new HitLocations(
   new HitLocation(19, 20, emptyTracked),
   new HitLocation(16, 18, emptyTracked),

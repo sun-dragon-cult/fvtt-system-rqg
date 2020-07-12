@@ -1,4 +1,4 @@
-import {Tracked} from "../shared/tracked";
+import {emptyTracked, Tracked} from "../shared/tracked";
 
 export class Attributes {
   constructor(
@@ -14,5 +14,4 @@ export class Attributes {
   };
 }
 
-const emptyTracked = new Tracked();
 export const emptyAttributes = new Attributes(emptyTracked, emptyTracked);

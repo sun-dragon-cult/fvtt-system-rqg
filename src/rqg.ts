@@ -14,7 +14,7 @@
 import { registerSettings } from './module/settings.js';
 import { preloadTemplates } from './module/preloadTemplates.js';
 
-// import { SimpleItemSheet } from "./module/item/item-sheet.ts";
+import { SimpleItemSheet } from "./module/item/item-sheet.js";
 import { ActorSheetRqgCharacter } from "./module/actor/actor-sheet.js";
 import { ActorRqg } from "./module/actor/actor-rqg.js";
 
@@ -51,8 +51,8 @@ Hooks.once('init', async function() {
 	Actors.unregisterSheet("core", ActorSheet);
 	Actors.registerSheet("rqg", ActorSheetRqgCharacter, { makeDefault: true });
 
-	// Items.unregisterSheet("core", ItemSheet);
-	// Items.registerSheet("rqg", SimpleItemSheet, {makeDefault: true});
+	Items.unregisterSheet("core", ItemSheet);
+	Items.registerSheet("rqg", SimpleItemSheet, {makeDefault: true});
 });
 
 /* ------------------------------------ */
