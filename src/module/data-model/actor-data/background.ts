@@ -32,11 +32,11 @@ export enum HomeLandEnum {
 
 export class Background {
   constructor(
+    public occupation: OccupationEnum,
+    public homeland: HomeLandEnum,
     public birthYear?: number,
     public age?: number,
     public gender?: string,
-    public occupation?: OccupationEnum,
-    public homeland?: HomeLandEnum,
     public tribe?: string,
     public clan?: string,
     public reputation?: number,
@@ -49,4 +49,4 @@ export class Background {
 }
 
 
-export const emptyBackground = new Background();
+export const emptyBackground = new Background(OccupationEnum.farmer, HomeLandEnum.sartar);

@@ -1,7 +1,4 @@
-Background
-<span>TODO occupation?: OccupationEnum, homeland?: HomeLandEnum</span>
-
-{{json data.background}}<br>
+<h2 class="norse">Background</h2>
 
 <label class="mp norse">Birth Year<br>
   <input type="text"
@@ -23,7 +20,27 @@ Background
          value="{{data.background.gender}}"
          data-dtype="Text"
          size="10">
-</label>
+</label><br>
+
+<label class="mp norse"> Occupation<br>
+<select name="data.background.occupation" data-dtype="String">
+  {{#select data.background.occupation}}
+    {{#each data.occupations}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  {{/select}}
+</select></label><br>
+
+<label class="mp norse"> Homeland<br>
+<select name="data.background.homeland" data-dtype="String">
+  {{#select data.background.homeland}}
+    {{#each data.homelands}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  {{/select}}
+</select></label><br>
+
+
 <label class="mp norse">Tribe<br>
   <input type="text"
          name="data.background.tribe"

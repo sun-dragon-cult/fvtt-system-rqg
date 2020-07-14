@@ -1,5 +1,6 @@
 import {passionType, skillType} from "../data-model/item-data/item-types";
 import {SkillCategoryEnum} from "../data-model/item-data/skill";
+import {HomeLandEnum, OccupationEnum} from "../data-model/actor-data/background";
 
 export class ActorSheetRqgCharacter extends ActorSheet {
 
@@ -44,6 +45,12 @@ export class ActorSheetRqgCharacter extends ActorSheet {
       "stasis": 'systems/rqg/icons/runes/stasis.svg',
       "movement": 'systems/rqg/icons/runes/movement_change.svg'
     }
+
+    // Occupations
+    sheetData.data.occupations = Object.keys(OccupationEnum);
+
+    // Homelands
+    sheetData.data.homelands = Object.keys(HomeLandEnum);
 
     // Separate different item types into separate arrays
     const passions = sheetData.items.filter((i: Item) => i.type === passionType);

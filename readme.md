@@ -37,9 +37,10 @@ Still work in progress.
     * [x] Implement tabs for **Main** - **Skills** - **Inventory** - **Background**
 * [x] Figure out how to handle variable data (skills with basic keys + extra)
 * [x] Implement typed Item system
-* [ ] Show occupation dropdown on background tab
+* [x] Use github release! inspired by https://github.com/anvil-vtt/FATEx  
+* [x] Show occupation dropdown on background tab
 * [ ] Create Items / Item sheets / Corresponding Actor-sheet list
-    * [ ] Skills
+    * [ ] Skills - some depends on DEX, create formulas like (@DEX * 2)
     * [ ] Passions
     * [ ] Weapons
     * [ ] Gear (items, possessions, belongings, ...?) 
@@ -59,7 +60,6 @@ Still work in progress.
 * [ ] NPC sheets
 * [ ] Calendar - see about-time module https://gitlab.com/tposney/about-time
 ---
-* [ ] Figure out how releases work (why they didn't work... gulp?) ... Or scrap that and use github release instead! see https://github.com/anvil-vtt/FATEx  
 * [ ] Character creation? (far future)
 * [ ] Go through all texts and include in translation system
 
