@@ -4,9 +4,11 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
+      - name: Checkout repo
       - uses: actions/checkout@v2
+
+      - name: Build dist
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
@@ -14,12 +16,11 @@ jobs:
       - run: npm install
       - run: npm run release
 
-      - uses: actions/checkout@v2
       - name: Get Version
         shell: bash
         id: get-version
         run: echo "::set-output name=version::$(node ./.github/workflows/get-version.js)"
-      - run: cd dist && zip -r ../rqg.zip *
+
       - name: Create Release
         id: create_versioned_release
         uses: ncipollo/release-action@v1
@@ -31,3 +32,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './dist/system.json,./releases/rqg.zip'
           tag: ${{ steps.get-version.outputs.version }}
+
+      - name: Zip dist
+        run: cd dist && zip -r ../rqg.zip *
