@@ -59,7 +59,7 @@ Still work in progress.
 * [ ] NPC sheets
 * [ ] Calendar - see about-time module https://gitlab.com/tposney/about-time
 ---
-* [ ] Figure out how releases work (why they didn't work... gulp?)
+* [ ] Figure out how releases work (why they didn't work... gulp?) ... Or scrap that and use github release instead! see https://github.com/anvil-vtt/FATEx  
 * [ ] Character creation? (far future)
 * [ ] Go through all texts and include in translation system
 
