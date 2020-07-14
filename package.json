@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "release": "gulp release",
+    "release": "gulp build && gulp release",
     "build": "gulp build && gulp link",
     "build:watch": "gulp watch",
     "clean": "gulp clean && gulp link --clean",

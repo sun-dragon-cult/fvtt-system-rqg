@@ -1,16 +1,24 @@
-name: RQG CI
+name: RQG do Release
 on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn release
+
       - uses: actions/checkout@v2
       - name: Get Version
         shell: bash
         id: get-version
         run: echo "::set-output name=version::$(node ./.github/workflows/get-version.js)"
-      - run: cd system && zip -r ../rqg.zip *
+      - run: cd dist && zip -r ../rqg.zip *
       - name: Create Release
         id: create_versioned_release
         uses: ncipollo/release-action@v1
@@ -20,5 +28,5 @@ jobs:
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: './system/system.json,./rqg.zip'
+          artifacts: './dist/system.json,./rqg.zip'
           tag: ${{ steps.get-version.outputs.version }}
