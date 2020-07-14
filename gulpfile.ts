@@ -352,7 +352,7 @@ async function releaseBuild() {
 			fs.ensureDirSync('releases');
 
 			// Initialize the zip file
-			const zipName = `${manifest.file.name}-v${manifest.file.version}.zip`;
+			const zipName = `${manifest.file.name}.zip`;
 			const zipFile = fs.createWriteStream(path.join('releases', zipName));
 			const zip = archiver('zip', { zlib: { level: 9 } });
 
