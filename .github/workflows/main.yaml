@@ -1,4 +1,4 @@
-name: RQG do Release
+name:Auto Release
 on: [push]
 
 jobs:
@@ -6,12 +6,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Build dist
-      - uses: actions/setup-node@v1
+        uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '12'
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
       - run: npm run release
