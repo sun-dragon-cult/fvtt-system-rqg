@@ -29,5 +29,5 @@ jobs:
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: './dist/system.json,./rqg.zip'
+          artifacts: './dist/system.json,./releases/rqg.zip'
           tag: ${{ steps.get-version.outputs.version }}
