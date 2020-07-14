@@ -1,22 +1,12 @@
-/**
- * This is your TypeScript entry file for Foundry VTT.
- * Register custom settings, sheets, and constants using the Foundry API.
- * Change this heading to be more descriptive to your system, or remove it.
- * Author: [Wake]
- * Content License: [copyright and-or license] If using an existing system
- * 					you may want to put a (link to a) license or copyright
- * 					notice here (e.g. the OGL).
- * Software License: [your license] Put your desired license here, which
- * 					 determines how others may use and modify your system
- */
-
-// Import TypeScript modules
 import { registerSettings } from './module/settings.js';
 import { preloadTemplates } from './module/preloadTemplates.js';
 
-import { SimpleItemSheet } from "./module/item/item-sheet.js";
 import { ActorSheetRqgCharacter } from "./module/actor/actor-sheet.js";
 import { ActorRqg } from "./module/actor/actor-rqg.js";
+
+import {passionType, skillType} from "./module/data-model/item-data/item-types";
+import {PassionSheet} from "./module/item/passion-sheet";
+import {SkillSheet} from "./module/item/skill-sheet";
 
 /* ------------------------------------ */
 /* Initialize system					*/
@@ -44,6 +34,7 @@ Hooks.once('init', async function() {
   Handlebars.registerHelper("concat", (...strs) => strs.filter(s => typeof s !== 'object').join(''));
   Handlebars.registerHelper('json', (context) => JSON.stringify(context));
 
+
   // Preload Handlebars templates
 	await preloadTemplates();
 
@@ -52,11 +43,12 @@ Hooks.once('init', async function() {
 	Actors.registerSheet("rqg", ActorSheetRqgCharacter, { makeDefault: true });
 
 	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("rqg", SimpleItemSheet, {makeDefault: true});
+	Items.registerSheet("rqg", PassionSheet, {types: [passionType], makeDefault: true});
+	Items.registerSheet("rqg", SkillSheet, {types: [skillType], makeDefault: true});
 });
 
 /* ------------------------------------ */
-/* Setup system							*/
+/* Setup system						            	*/
 /* ------------------------------------ */
 Hooks.once('setup', function() {
 	console.log('*** System is setup hook *** DEBUG');
@@ -65,11 +57,32 @@ Hooks.once('setup', function() {
 });
 
 /* ------------------------------------ */
-/* When ready							*/
+/* When ready					              		*/
 /* ------------------------------------ */
 Hooks.once('ready', function() {
 	console.log('*** System is ready hook *** DEBUG');
 	// Do anything once the system is ready
 });
 
-// Add any additional hooks if necessary
+/* ------------------------------------ */
+/* When creating new Actor (see Swade system)							*/
+/* ------------------------------------ */
+// Hooks.on(
+//   'createActor',
+//   async (actor: ActorRqg, options: any, userId: String) => {
+//     if (actor.data.type === 'character' && options.renderSheet) {
+//       const skillsToFind = [
+//         'Boat',
+//         'Swim'
+//         // ...
+//       ];
+//       const skillIndex = (await game.packs
+//         .get('rqg.skills')
+//         .getContent()) as SwadeItem[];
+//       actor.createEmbeddedEntity(
+//         'OwnedItem',
+//         skillIndex.filter((i) => skillsToFind.includes(i.data.name)),
+//       );
+//     }
+//   },
+// );

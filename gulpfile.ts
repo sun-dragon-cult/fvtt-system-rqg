@@ -181,7 +181,6 @@ function buildSASS() {
  * Build Template.json
  */
 import { Actors, Items } from "./src/template";
-import {ActorDataRqg} from "./src/module/data-model/Actor/actor-data-rqg";
 
 async function buildTemplates() {
   const template = {

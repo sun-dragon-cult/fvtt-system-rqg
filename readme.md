@@ -27,34 +27,40 @@ Still work in progress.
 * [x] Handle translation
 * [x] Move template/*.html next to relevant ts?
 * [x] Flesh out template.json with variables
-* [x] Scrap template.json and build models instead that are initialized in the prepareData() method in Actor
-      (Build template.json setup as objects (with typescript types) and build/export the template.json to dist)
-* [x] Get styling to work (gulp error) - TODO Modularize? css classes can be added by actor-sheet.ts !
+* [x] Scrap template.json and build data-models (with typescript types) instead that are initialized in the gulp build to generate a template.json in the dist folder
+* [x] Get styling to work (gulp error) -
+* [x] Modularize scss.
 * [x] Use Actor prepareData() to add modifyers/bonuses to skills (for lookup)
     * [x] Investigate tables (for modifiers)
 * [x] Design Character html sheet
     * [x] Show all data
-    * [x] Implement tabs for **Main** - **Skills** - **Inventory** - **Background** - ...
-* [ ] Figure out how to handle variable data (skills with basic keys + extra)
-* [ ] Implement Items
-    * [ ] template.json
-    * [ ] item-sheet
-    * [ ] Look over **Items** tab
-* [ ] Create Item sheet (skills, items etc...)
+    * [x] Implement tabs for **Main** - **Skills** - **Inventory** - **Background**
+* [x] Figure out how to handle variable data (skills with basic keys + extra)
+* [x] Implement typed Item system
+* [ ] Show occupation dropdown on background tab
+* [ ] Create Items / Item sheets
+    * [ ] Skills
+    * [ ] Passions
+    * [ ] Weapons
+    * [ ] Gear (items)
+    * [ ] Armour
+    * [ ] Spirit Magic
+    * [ ] Rune Magic
+    * [ ] Sorcerous Magic
+* [ ] Auto import default Items (skills etc) on Actor creation 
 * [ ] Combat
 * [ ] Spirit Magic
 * [ ] Rune Magic
 * [ ] Races / NPC ?? Split hitlocations etc into race specific -> filter displayed locations on race (and add them all to character)
 * [ ] Optimise svg's - Have to open and resave them :-(
-* [ ] When clicking characteristics show a "roll against" dialog (and make it harder to change them)
+* [ ] When clicking characteristics show a "roll against" dialog (and make it harder to change the value)
 * [ ] Display POW experience checkbox in some way
-* [ ] Show occupation dropdown on background tab
 * [ ] Good defaults: Link token for characters, value=max for "Tracked" data, ...
-* [ ] Calendar ?!?
+* [ ] Calendar - see about-time module https://gitlab.com/tposney/about-time
 ---
 * [ ] Figure out how releases work (why they didn't work... gulp?)
 * [ ] Character creation (far future)
-* [ ] Use Compendium for other races than humanoid? -- probably not
+* [ ] Go through all texts and include in translation system
 
 ## Credits
 Based on [Create Foundry Project](https://www.npmjs.com/package/create-foundry-project). Inspiration to use a typed "template.ts" is from [Blue Rose](https://gitlab.com/studio315b/blue-rose) by studio315b, additional ideas from D&D5E System by Atropos among others.	

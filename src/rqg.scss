@@ -27,6 +27,11 @@
     justify-content: space-around;
   }
 
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+  }
+
   input[type="checkbox"] {
     flex: 0 0 12px;
     width: 12px;

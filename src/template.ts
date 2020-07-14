@@ -1,8 +1,8 @@
-import {emptyActorDataRqg} from "./module/data-model/Actor/actor-data-rqg";
-import {emptySkill} from "./module/data-model/Item/skill";
-import {passionType, skillType, weaponType} from "./module/data-model/Item/item-types";
-import {emptyPassion} from "./module/data-model/Item/passion";
-import {emptyWeapon} from "./module/data-model/Item/weapon";
+import {emptyActorDataRqg} from "./module/data-model/actor-data/actor-data-rqg";
+import {emptySkill} from "./module/data-model/item-data/skill";
+import {passionType, skillType, weaponType} from "./module/data-model/item-data/item-types";
+import {emptyPassion} from "./module/data-model/item-data/passion";
+import {emptyWeapon} from "./module/data-model/item-data/weapon";
 
 // Instantiated Actor types
 export const Actors = {
@@ -14,8 +14,8 @@ export const Items = {
   [passionType]: emptyPassion,
   [weaponType]: emptyWeapon
 
-  // [item]: emptyItem;
-  // [armour]: emptyArmour;
+  // [item]: emptyItem; quantity ENC
+  // [armour]: emptyArmour; AP ENC "Hit location cover"
   // [spiritMagic]: emptySpiritMagic;
   // [runeMagic]: emptyRuneMagic;
   // [sorcerousMagic]: emptysorcerousMagic;
