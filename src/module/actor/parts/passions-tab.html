@@ -1,0 +1,16 @@
+<h2>Passions</h2>
+<ol class="item-list">
+  {{#each data.itemGroups.passions}}
+  <li class="flexrow" data-item-id="{{this._id}}">
+    <h4 class="item-name">{{this.name}}</h4>
+    <p>{{this.data.passion}}</p>
+    <p title="Roll" data-item-roll>{{this.data.value}}%<img src="/icons/svg/d20-black.svg"></p>
+    <p>{{this.data.experience}}</p>
+    <p>{{this.data.description}}</p>
+    <div class="item-controls">
+      <span title="Edit Item" data-item-edit><i class="fas fa-edit"></i></span>
+      <span title="Delete Item" data-item-delete><i class="fas fa-trash"></i></span>
+    </div>
+  </li>
+  {{/each}}
+</ol>

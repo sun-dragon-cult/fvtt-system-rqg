@@ -83,8 +83,24 @@ export class ActorSheetRqgCharacter extends ActorSheet {
   activateListeners(html): void {
     super.activateListeners(html);
 
-    // Use attributes data-item-edit & data-item-delete to specify what should be clicked to perform the action
+    // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
+
+    // Roll against value
+    this.form.querySelectorAll("[data-item-roll]").forEach((el) => {
+      const itemId = el.closest("[data-item-id]").getAttribute("data-item-id");
+      const item: Item = this.actor.items.get(itemId);
+      el.addEventListener("click", () => {
+        const r = new Roll("d100");
+        r.roll();
+        const result: string =
+          r.total <= item.data.data.value ? "Succeded" : "Failed";
+        r.toMessage({
+          speaker: ChatMessage.getSpeaker(),
+          flavor: `${item.name} ${result}`,
+        });
+      });
+    });
 
     // Edit (open the item sheet)
     this.form.querySelectorAll("[data-item-edit]").forEach((el) => {

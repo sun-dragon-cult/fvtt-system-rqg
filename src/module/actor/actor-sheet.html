@@ -121,6 +121,7 @@
     <a class="item norse" data-tab="main">Main</a>
     <a class="item norse" data-tab="skills">Skills</a>
     <a class="item norse" data-tab="inventory">Inventory</a>
+    <a class="item norse" data-tab="passions">Passions</a>
     <a class="item norse" data-tab="background">Background</a>
   </nav>
 
@@ -139,6 +140,11 @@
     {{!-- Owned Items Tab --}}
     <div class="tab inventory" data-group="primary" data-tab="inventory">
       {{> "systems/rqg/module/actor/parts/inventory-tab.html" }}
+    </div>
+
+    {{!-- Passions Tab --}}
+    <div class="tab passions" data-group="primary" data-tab="passions">
+      {{> "systems/rqg/module/actor/parts/passions-tab.html" }}
     </div>
 
     {{!-- Background Tab --}}
