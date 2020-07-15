@@ -39,8 +39,9 @@ Still work in progress.
 * [x] Implement typed Item system
 * [x] Use github release! inspired by https://github.com/anvil-vtt/FATEx  
 * [x] Show occupation dropdown on background tab
+* [ ] Make Skill name editable on skill-sheet!
 * [ ] Create Items / Item sheets / Corresponding Actor-sheet list
-    * [ ] Skills - some depends on DEX, create formulas like (@DEX * 2)
+    * [ ] Skills - some depends on DEX, create formulas like (@DEX * 2) roll formula! new Roll("2*@DEX", {DEX: 13})
     * [ ] Passions
     * [ ] Weapons
     * [ ] Gear (items, possessions, belongings, ...?) 
@@ -48,6 +49,7 @@ Still work in progress.
     * [ ] Spirit Magic
     * [ ] Rune Magic
     * [ ] Sorcerous Magic
+    * [ ] Languages + "Chat in language"-support  Already in some module?
 * [ ] Auto import default Items (skills etc) on Actor creation. Store as external Compendium(s).
 * [ ] Combat
 * [ ] Spirit Magic
@@ -59,9 +61,13 @@ Still work in progress.
 * [ ] Good defaults: Link token for characters, value=max for "Tracked" data, ...
 * [ ] NPC sheets
 * [ ] Calendar - see about-time module https://gitlab.com/tposney/about-time
+* [ ] Go through all texts and include in translation system
+* [ ] Try out Prettier
+* [ ] Restyle the "base" styling
 ---
 * [ ] Character creation? (far future)
-* [ ] Go through all texts and include in translation system
+* [ ] Scrap Gulp and use only npm scripts
+
 
 ## Credits
 Based on [Create Foundry Project](https://www.npmjs.com/package/create-foundry-project). Inspiration to use a typed "template.ts" is from [Blue Rose](https://gitlab.com/studio315b/blue-rose) by studio315b, additional ideas from D&D5E System by Atropos among others.	
