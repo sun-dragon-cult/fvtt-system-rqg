@@ -1,4 +1,4 @@
-import { passionType } from "../data-model/item-data/item-types";
+import { passionType } from "../data-model/item-data/itemTypes";
 import { PassionsEnum } from "../data-model/item-data/passion";
 
 export class PassionSheet extends ItemSheet {

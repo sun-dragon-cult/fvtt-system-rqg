@@ -1,4 +1,4 @@
-import { skillType } from "../data-model/item-data/item-types";
+import { skillType } from "../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../data-model/item-data/skill";
 
 export class SkillSheet extends ItemSheet {

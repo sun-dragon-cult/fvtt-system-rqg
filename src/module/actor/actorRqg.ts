@@ -2,9 +2,9 @@
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
  */
-import { ActorDataRqg } from "../data-model/actor-data/actor-data-rqg";
+import { ActorDataRqg } from "../data-model/actor-data/actorDataRqg";
 import { Modifiers } from "../modifiers";
-import { HitLocation } from "../data-model/actor-data/hit-location";
+import { HitLocation } from "../data-model/actor-data/hitLocation";
 
 export class ActorRqg extends Actor {
   /**

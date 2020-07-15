@@ -1,4 +1,4 @@
-import { passionType, skillType } from "../data-model/item-data/item-types";
+import { passionType, skillType } from "../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../data-model/item-data/skill";
 import {
   HomeLandEnum,

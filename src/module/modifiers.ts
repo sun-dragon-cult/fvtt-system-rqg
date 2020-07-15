@@ -1,4 +1,4 @@
-import { HitLocationsEnum } from "./data-model/actor-data/hit-location";
+import { HitLocationsEnum } from "./data-model/actor-data/hitLocation";
 
 type LookupTableEntry<T> = {
   from: number;

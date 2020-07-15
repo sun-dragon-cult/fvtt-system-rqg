@@ -1,10 +1,10 @@
-import { emptyActorDataRqg } from "./module/data-model/actor-data/actor-data-rqg";
+import { emptyActorDataRqg } from "./module/data-model/actor-data/actorDataRqg";
 import { emptySkill } from "./module/data-model/item-data/skill";
 import {
   passionType,
   skillType,
   weaponType,
-} from "./module/data-model/item-data/item-types";
+} from "./module/data-model/item-data/itemTypes";
 import { emptyPassion } from "./module/data-model/item-data/passion";
 import { emptyWeapon } from "./module/data-model/item-data/weapon";
 

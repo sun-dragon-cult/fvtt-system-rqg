@@ -3,10 +3,10 @@ import {
   Characteristics,
   emptyHumanoidCharacteristics,
 } from "./characteristics";
-import { basicElementalRunes, ElementalRunes } from "./elemental-runes";
-import { basicPowerRunes, PowerRunes } from "./power-runes";
+import { basicElementalRunes, ElementalRunes } from "./elementalRunes";
+import { basicPowerRunes, PowerRunes } from "./powerRunes";
 import { RaceEnum } from "./race";
-import { emptyHumanoidHitLocations, HitLocations } from "./hit-location";
+import { emptyHumanoidHitLocations, HitLocations } from "./hitLocation";
 import { Background, emptyBackground } from "./background";
 
 export class ActorDataRqg {

@@ -1,15 +1,15 @@
 import { registerSettings } from "./module/settings.js";
 import { preloadTemplates } from "./module/preloadTemplates.js";
 
-import { ActorSheetRqgCharacter } from "./module/actor/actor-sheet.js";
-import { ActorRqg } from "./module/actor/actor-rqg.js";
+import { ActorSheetRqgCharacter } from "./module/actor/actorSheetRqgCharacter.js";
+import { ActorRqg } from "./module/actor/actorRqg.js";
 
 import {
   passionType,
   skillType,
-} from "./module/data-model/item-data/item-types";
-import { PassionSheet } from "./module/item/passion-sheet";
-import { SkillSheet } from "./module/item/skill-sheet";
+} from "./module/data-model/item-data/itemTypes";
+import { PassionSheet } from "./module/item/passionSheet";
+import { SkillSheet } from "./module/item/skillSheet";
 
 /* ------------------------------------ */
 /* Initialize system					*/
