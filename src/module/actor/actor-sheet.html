@@ -1,85 +1,122 @@
 <form class="{{cssClass}}" autocomplete="off">
-
   {{!-- Sheet Header --}}
   <header class="sheet-header">
-    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+    <img
+      class="profile-img"
+      src="{{actor.img}}"
+      data-edit="img"
+      title="{{actor.name}}"
+    />
     <div>
       <div class="topheaderline">
-        <h1 class="charname norse"><input name="name" type="text" value="{{actor.name}}" placeholder=""/></h1><br>
-        <label class="hp norse">Hit Points<br>
-          <input type="text"
-                 name="data.attributes.hitPoints.value"
-                 value="{{data.attributes.hitPoints.value}}"
-                 data-dtype="Number"
-                 size="2"> / {{data.attributes.hitPoints.max}}
+        <h1 class="charname norse">
+          <input
+            name="name"
+            type="text"
+            value="{{actor.name}}"
+            placeholder=""
+          />
+        </h1>
+        <br />
+        <label class="hp norse"
+          >Hit Points<br />
+          <input
+            type="text"
+            name="data.attributes.hitPoints.value"
+            value="{{data.attributes.hitPoints.value}}"
+            data-dtype="Number"
+            size="2"
+          />
+          / {{data.attributes.hitPoints.max}}
         </label>
-        <label class="mp norse">Magic Points<br>
-          <input type="text"
-                 name="data.attributes.magicPoints.value"
-                 value="{{data.attributes.magicPoints.value}}"
-                 data-dtype="Number"
-                 size="2"> / {{data.attributes.magicPoints.max}}
+        <label class="mp norse"
+          >Magic Points<br />
+          <input
+            type="text"
+            name="data.attributes.magicPoints.value"
+            value="{{data.attributes.magicPoints.value}}"
+            data-dtype="Number"
+            size="2"
+          />
+          / {{data.attributes.magicPoints.max}}
         </label>
       </div>
       <div class="characteristics">
         {{#each data.characteristics as | characteristic key |}}
-          <div>
-            <label class="resource-label norse">{{localize (concat 'characteristic.' key)}}</label><br>
-            <input type="text"
-                   name="data.characteristics.{{key}}.value"
-                   value="{{characteristic.value}}"
-                   data-dtype="Number"
-                   size="2">
+        <div>
+          <label class="resource-label norse"
+            >{{localize (concat 'characteristic.' key)}}</label
+          ><br />
+          <input
+            type="text"
+            name="data.characteristics.{{key}}.value"
+            value="{{characteristic.value}}"
+            data-dtype="Number"
+            size="2"
+          />
 
-            <!--        <span class="ability-mod rollable" data-roll="d20+@abilities.{{key}}.mod" data-label="{{key}}">{{numberFormat
+          <!--        <span class="ability-mod rollable" data-roll="d20+@abilities.{{key}}.mod" data-label="{{key}}">{{numberFormat
                     ability.mod decimals=0 sign=true}}</span>-->
-          </div>
+        </div>
         {{/each}}
       </div>
       <div class="thirdline">
-        <div><span class="norse">Damage Bonus</span> {{data.attributes.damageBonus}}</div>
-        <div><span class="norse">SIZ SR</span> {{data.attributes.sizStrikeRank}}</div>
-        <div><span class="norse">DEX SR</span> {{data.attributes.dexStrikeRank}}</div>
-        <div><span class="norse">Healing Rate</span> {{data.attributes.healingRate}}/week</div>
-        <div><span class="norse">Max ENC</span> {{data.attributes.maximumEncumbrance}}</div>
+        <div>
+          <span class="norse">Damage Bonus</span>
+          {{data.attributes.damageBonus}}
+        </div>
+        <div>
+          <span class="norse">SIZ SR</span> {{data.attributes.sizStrikeRank}}
+        </div>
+        <div>
+          <span class="norse">DEX SR</span> {{data.attributes.dexStrikeRank}}
+        </div>
+        <div>
+          <span class="norse">Healing Rate</span>
+          {{data.attributes.healingRate}}/week
+        </div>
+        <div>
+          <span class="norse">Max ENC</span>
+          {{data.attributes.maximumEncumbrance}}
+        </div>
       </div>
     </div>
   </header>
   <div class="runeline">
-    <img src="systems/rqg/icons/runes/mastery.svg">
-    <img src="systems/rqg/icons/runes/magic.svg">
-    <img src="systems/rqg/icons/runes/disorder.svg">
-    <img src="systems/rqg/icons/runes/movement_change.svg">
-    <img src="systems/rqg/icons/runes/moon_full.svg">
-    <img src="systems/rqg/icons/runes/spirit.svg">
-    <img src="systems/rqg/icons/runes/death.svg">
-    <img src="systems/rqg/icons/runes/illusion.svg">
-    <img src="systems/rqg/icons/runes/dragonnewt.svg">
-    <img src="systems/rqg/icons/runes/darkness.svg">
-    <img src="systems/rqg/icons/runes/truth.svg">
-    <img src="systems/rqg/icons/runes/stasis.svg">
-    <img src="systems/rqg/icons/runes/luck.svg">
-    <img src="systems/rqg/icons/runes/plant.svg">
-    <img src="systems/rqg/icons/runes/water.svg">
-    <img src="systems/rqg/icons/runes/beast.svg">
-    <img src="systems/rqg/icons/runes/air.svg">
-    <img src="systems/rqg/icons/runes/man.svg">
-    <img src="systems/rqg/icons/runes/earth.svg">
-    <img src="systems/rqg/icons/runes/harmony.svg">
-    <img src="systems/rqg/icons/runes/fertility.svg">
-    <img src="systems/rqg/icons/runes/fate.svg">
-    <img src="systems/rqg/icons/runes/chaos.svg">
+    <img src="systems/rqg/icons/runes/mastery.svg" />
+    <img src="systems/rqg/icons/runes/magic.svg" />
+    <img src="systems/rqg/icons/runes/disorder.svg" />
+    <img src="systems/rqg/icons/runes/movement_change.svg" />
+    <img src="systems/rqg/icons/runes/moon_full.svg" />
+    <img src="systems/rqg/icons/runes/spirit.svg" />
+    <img src="systems/rqg/icons/runes/death.svg" />
+    <img src="systems/rqg/icons/runes/illusion.svg" />
+    <img src="systems/rqg/icons/runes/dragonnewt.svg" />
+    <img src="systems/rqg/icons/runes/darkness.svg" />
+    <img src="systems/rqg/icons/runes/truth.svg" />
+    <img src="systems/rqg/icons/runes/stasis.svg" />
+    <img src="systems/rqg/icons/runes/luck.svg" />
+    <img src="systems/rqg/icons/runes/plant.svg" />
+    <img src="systems/rqg/icons/runes/water.svg" />
+    <img src="systems/rqg/icons/runes/beast.svg" />
+    <img src="systems/rqg/icons/runes/air.svg" />
+    <img src="systems/rqg/icons/runes/man.svg" />
+    <img src="systems/rqg/icons/runes/earth.svg" />
+    <img src="systems/rqg/icons/runes/harmony.svg" />
+    <img src="systems/rqg/icons/runes/fertility.svg" />
+    <img src="systems/rqg/icons/runes/fate.svg" />
+    <img src="systems/rqg/icons/runes/chaos.svg" />
   </div>
 
   <div class="flex">
-    {{> "systems/rqg/module/actor/parts/armor.html" }}
-    {{> "systems/rqg/module/actor/parts/elemental.html" }}
-    {{> "systems/rqg/module/actor/parts/power.html" }}
+    {{> "systems/rqg/module/actor/parts/armor.html" }} {{>
+    "systems/rqg/module/actor/parts/elemental.html" }} {{>
+    "systems/rqg/module/actor/parts/power.html" }}
   </div>
 
-{{!-- <div>***{{json items}}***</div> --}}
-
-  {{!-- Sheet Tab Navigation --}}
+  {{!--
+  <div>***{{json items}}***</div>
+  --}} {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item norse" data-tab="main">Main</a>
     <a class="item norse" data-tab="skills">Skills</a>
@@ -89,7 +126,6 @@
 
   {{!-- Sheet Body --}}
   <section class="sheet-body">
-
     {{!-- Main Tab --}}
     <div class="tab main" data-group="primary" data-tab="main">
       {{> "systems/rqg/module/actor/parts/main-tab.html" }}
@@ -111,4 +147,3 @@
     </div>
   </section>
 </form>
-

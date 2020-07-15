@@ -44,9 +44,10 @@ export class Background {
     public ransom?: number,
     public baseIncome?: number,
     public biography?: string
-  ) {
-  };
+  ) {}
 }
 
-
-export const emptyBackground = new Background(OccupationEnum.farmer, HomeLandEnum.sartar);
+export const emptyBackground = new Background(
+  OccupationEnum.farmer,
+  HomeLandEnum.sartar
+);

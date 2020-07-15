@@ -11,8 +11,8 @@ jobs:
       - name: Build dist
         uses: actions/setup-node@v1
         with:
-          node-version: '12'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "12"
+          registry-url: "https://registry.npmjs.org"
       - run: npm install
       - run: npm run release
 
@@ -30,7 +30,7 @@ jobs:
           draft: false
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: './dist/system.json,./releases/rqg.zip'
+          artifacts: "./dist/system.json,./releases/rqg.zip"
           tag: ${{ steps.get-version.outputs.version }}
 
       - name: Zip dist

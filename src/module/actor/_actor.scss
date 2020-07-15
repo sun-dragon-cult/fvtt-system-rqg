@@ -10,7 +10,8 @@
     margin: 0;
   }
 
-  .hp, .mp {
+  .hp,
+  .mp {
     font-weight: bold;
     input {
       width: 25px;
@@ -28,7 +29,6 @@
     font-size: 35px;
     font-weight: bold;
   }
-
 }
 
 .characteristics {
@@ -78,9 +78,9 @@
   }
 }
 
-
-
-.elemental, .power, .armor{
+.elemental,
+.power,
+.armor {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -100,8 +100,11 @@
     justify-content: space-between;
   }
 
-  .alocation, .ahp, .aap {
-    label, div {
+  .alocation,
+  .ahp,
+  .aap {
+    label,
+    div {
       display: block;
       height: 30px;
     }
@@ -111,10 +114,10 @@
     position: relative;
     top: 5px;
   }
-
 }
 
-.elemental, .power {
+.elemental,
+.power {
   img {
     position: relative;
     top: 5px;

@@ -8,5 +8,5 @@ export enum RaceEnum {
   Dragon = "dragon",
   DragonSnailOneHeaded = "dragon-snail-one-headed",
   DragonSnailTwoHeaded = "dragon-snail-two-headed",
-  Beetle = "beetle"
+  Beetle = "beetle",
 }

@@ -1,4 +1,4 @@
-import {Ability} from "../shared/ability";
+import { Ability } from "../shared/ability";
 
 export class ElementalRunes {
   constructor(
@@ -7,9 +7,16 @@ export class ElementalRunes {
     public water: Ability,
     public earth: Ability,
     public air: Ability,
-    public moon: Ability) {
-  };
+    public moon: Ability
+  ) {}
 }
 
 const emptyAbility = new Ability();
-export const basicElementalRunes = new ElementalRunes(emptyAbility, emptyAbility, emptyAbility, emptyAbility, emptyAbility, emptyAbility);
+export const basicElementalRunes = new ElementalRunes(
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility
+);

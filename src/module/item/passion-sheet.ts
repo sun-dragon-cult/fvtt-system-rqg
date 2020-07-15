@@ -1,6 +1,5 @@
-import {passionType} from "../data-model/item-data/item-types";
-import {PassionsEnum} from "../data-model/item-data/passion";
-
+import { passionType } from "../data-model/item-data/item-types";
+import { PassionsEnum } from "../data-model/item-data/passion";
 
 export class PassionSheet extends ItemSheet {
   static get defaultOptions() {
@@ -12,14 +11,13 @@ export class PassionSheet extends ItemSheet {
     });
   }
 
-
   getData(): ItemSheetData {
     const data = super.getData();
     data.data.passionTypes = Object.keys(PassionsEnum);
     return data;
   }
 
-// /** @override */
+  // /** @override */
   // setPosition(options = {}) {
   //   const position = super.setPosition(options);
   //   const sheetBody = this.element.find(".sheet-body");

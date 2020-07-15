@@ -12,12 +12,8 @@
     }
   ],
   "scripts": [],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "packs": [],
   "languages": [
     {

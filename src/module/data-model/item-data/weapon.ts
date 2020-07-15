@@ -1,11 +1,11 @@
-import {IPhysicalItem} from "./IPhysicalItem";
-import {emptyTracked, Tracked} from "../shared/tracked";
+import { IPhysicalItem } from "./IPhysicalItem";
+import { emptyTracked, Tracked } from "../shared/tracked";
 
 export type WeaponData = IPhysicalItem & {
   description: string;
-  damage: string,
+  damage: string;
   hitPoints: Tracked;
-  strikeRank: number
+  strikeRank: number;
 };
 
 export const emptyWeapon: WeaponData = {
@@ -14,6 +14,6 @@ export const emptyWeapon: WeaponData = {
   strikeRank: 0,
   quantity: 1,
   encumbrance: 1,
-  hitPoints: emptyTracked
+  hitPoints: emptyTracked,
   // TODO Required skill (to calculate % and total SR)
 };

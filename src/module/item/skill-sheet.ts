@@ -1,5 +1,5 @@
-import {skillType} from "../data-model/item-data/item-types";
-import {SkillCategoryEnum} from "../data-model/item-data/skill";
+import { skillType } from "../data-model/item-data/item-types";
+import { SkillCategoryEnum } from "../data-model/item-data/skill";
 
 export class SkillSheet extends ItemSheet {
   static get defaultOptions() {
@@ -11,7 +11,6 @@ export class SkillSheet extends ItemSheet {
     });
   }
 
-
   getData(): ItemSheetData {
     const data = super.getData();
     data.data.skillCategories = Object.keys(SkillCategoryEnum);
@@ -19,7 +18,7 @@ export class SkillSheet extends ItemSheet {
     return data;
   }
 
-// /** @override */
+  // /** @override */
   // setPosition(options = {}) {
   //   const position = super.setPosition(options);
   //   const sheetBody = this.element.find(".sheet-body");

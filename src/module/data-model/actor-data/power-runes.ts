@@ -1,4 +1,4 @@
-import {Ability} from "../shared/ability";
+import { Ability } from "../shared/ability";
 
 export class PowerRunes {
   constructor(
@@ -11,9 +11,20 @@ export class PowerRunes {
     public truth: Ability,
     public illusion: Ability,
     public stasis: Ability,
-    public movement: Ability) {
-  };
+    public movement: Ability
+  ) {}
 }
 
 const emptyAbility = new Ability();
-export const basicPowerRunes = new PowerRunes(emptyAbility, emptyAbility, emptyAbility, emptyAbility, emptyAbility, emptyAbility, emptyAbility, emptyAbility, emptyAbility, emptyAbility);
+export const basicPowerRunes = new PowerRunes(
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility,
+  emptyAbility
+);

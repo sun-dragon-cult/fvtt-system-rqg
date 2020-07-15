@@ -1,4 +1,4 @@
-import {IAbility} from "../shared/ability";
+import { IAbility } from "../shared/ability";
 
 export enum PassionsEnum {
   Devotion = "devotion",

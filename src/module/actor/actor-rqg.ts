@@ -2,12 +2,11 @@
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
  */
-import {ActorDataRqg} from "../data-model/actor-data/actor-data-rqg";
-import {Modifiers} from "../modifiers";
-import {HitLocation} from "../data-model/actor-data/hit-location";
+import { ActorDataRqg } from "../data-model/actor-data/actor-data-rqg";
+import { Modifiers } from "../modifiers";
+import { HitLocation } from "../data-model/actor-data/hit-location";
 
 export class ActorRqg extends Actor {
-
   /**
    * Augment the basic actor data with additional dynamic data.
    */
@@ -21,35 +20,59 @@ export class ActorRqg extends Actor {
 
     // *** Setup calculated stats ***
     data.attributes.magicPoints.max = data.characteristics.power.value;
-    data.attributes.dexStrikeRank = Modifiers.dexSR(data.characteristics.dexterity.value);
-    data.attributes.sizStrikeRank = Modifiers.sizSR(data.characteristics.size.value);
+    data.attributes.dexStrikeRank = Modifiers.dexSR(
+      data.characteristics.dexterity.value
+    );
+    data.attributes.sizStrikeRank = Modifiers.sizSR(
+      data.characteristics.size.value
+    );
     data.attributes.hitPoints.max = Modifiers.hitPoints(
       data.characteristics.constitution.value,
       data.characteristics.size.value,
       data.characteristics.power.value
     );
 
-    console.log('**** Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max)', Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max));
+    console.log(
+      "**** Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max)",
+      Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max)
+    );
 
-  console.log(Array.isArray(data.hitLocations));
+    console.log(Array.isArray(data.hitLocations));
 
-    Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(tuple => {
-      const location = data.hitLocations[tuple[0]];
-      if (location) { // TODO Check if this location exists (for this race) - needs work...
-        data.hitLocations[tuple[0]].hp.max = tuple[1];
+    Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
+      (tuple) => {
+        const location = data.hitLocations[tuple[0]];
+        if (location) {
+          // TODO Check if this location exists (for this race) - needs work...
+          data.hitLocations[tuple[0]].hp.max = tuple[1];
+        }
       }
-    });
+    );
 
-  Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(tuple => {
-    const hitLocations:[string, HitLocation][] = Object.entries(data.hitLocations);
-    hitLocations.find(l => l[0] === tuple[0])[1].hp.max = tuple[1];
-  });
+    Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
+      (tuple) => {
+        const hitLocations: [string, HitLocation][] = Object.entries(
+          data.hitLocations
+        );
+        hitLocations.find((l) => l[0] === tuple[0])[1].hp.max = tuple[1];
+      }
+    );
 
-
-    data.attributes.damageBonus = Modifiers.damageBonus(data.characteristics.strength.value, data.characteristics.size.value);
-    data.attributes.healingRate = Modifiers.healingRate(data.characteristics.constitution.value);
-    data.attributes.spiritCombatDamage = Modifiers.spiritCombatDamage(data.characteristics.power.value, data.characteristics.charisma.value);
-    data.attributes.maximumEncumbrance = (data.characteristics.strength.value + data.characteristics.constitution.value) / 2;
+    data.attributes.damageBonus = Modifiers.damageBonus(
+      data.characteristics.strength.value,
+      data.characteristics.size.value
+    );
+    data.attributes.healingRate = Modifiers.healingRate(
+      data.characteristics.constitution.value
+    );
+    data.attributes.spiritCombatDamage = Modifiers.spiritCombatDamage(
+      data.characteristics.power.value,
+      data.characteristics.charisma.value
+    );
+    data.attributes.maximumEncumbrance =
+      (data.characteristics.strength.value +
+        data.characteristics.constitution.value) /
+      2;
 
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
@@ -65,12 +88,9 @@ export class ActorRqg extends Actor {
     // Make modifications to data here.
 
     // TODO  modifying the base value
-//   private static calcHitPoints(data: ActorDataRqg): number {
-//     return data.characteristics.constitution.value;
-//   }
-
-
-
+    //   private static calcHitPoints(data: ActorDataRqg): number {
+    //     return data.characteristics.constitution.value;
+    //   }
 
     // Loop through ability scores, and add their modifiers to our sheet output.
     // for (let [key, ability] of Object.entries(data.abilities)) {
@@ -91,7 +111,6 @@ export class ActorRqg extends Actor {
     //     }
     //     delete data.attributes;
     // }
-
     // Map all items data using their slugified names
     // data.items = this.data.items.reduce((obj, i) => {
     //     let key = i.name.slugify({strict: true});

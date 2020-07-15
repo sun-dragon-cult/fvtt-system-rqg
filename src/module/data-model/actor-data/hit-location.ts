@@ -1,4 +1,4 @@
-import {emptyTracked, Tracked} from "../shared/tracked";
+import { emptyTracked, Tracked } from "../shared/tracked";
 
 export enum HitLocationsEnum {
   head = "head",
@@ -21,11 +21,12 @@ export enum HitLocationsEnum {
   shell = "shell",
   forebody = "forebody",
   leftHead = "leftHead",
-  rightHead = "rightHead"
+  rightHead = "rightHead",
 }
 
 export class HitLocations {
-  constructor( // TODO Look through the order so that they become intuitive for all races!
+  constructor(
+    // TODO Look through the order so that they become intuitive for all races!
     public head: HitLocation,
     public leftArm: HitLocation,
     public rightArm: HitLocation,
@@ -34,8 +35,8 @@ export class HitLocations {
     public leftLeg: HitLocation,
     public rightLeg: HitLocation,
     public leftWing: HitLocation,
-    public rightWing: HitLocation) {
-  };
+    public rightWing: HitLocation
+  ) {}
 }
 
 export class HitLocation {
@@ -45,8 +46,7 @@ export class HitLocation {
     public hp: Tracked,
     public wounds: Array<number> = [],
     public ap: number = 0
-  ) {
-  };
+  ) {}
 }
 
 // TODO Make a map of hit locations per race! Are there more differences than hitlocations?
@@ -67,7 +67,8 @@ export const emptyHumanoidHitLocations = new HitLocations(
   new HitLocation(9, 11, emptyTracked),
   new HitLocation(5, 8, emptyTracked),
   new HitLocation(1, 4, emptyTracked),
-  undefined, undefined
+  undefined,
+  undefined
 );
 
 // TODO Just getting a feel for creating other creatures...
@@ -80,5 +81,5 @@ export const emptyHumanoidWingedHitLocations = new HitLocations(
   new HitLocation(4, 6, emptyTracked),
   new HitLocation(1, 3, emptyTracked),
   new HitLocation(13, 14, emptyTracked),
-  new HitLocation(11, 12, emptyTracked),
+  new HitLocation(11, 12, emptyTracked)
 );

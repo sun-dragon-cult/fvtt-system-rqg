@@ -1,4 +1,4 @@
 export interface IPhysicalItem {
-  quantity: number,
-  encumbrance: number
+  quantity: number;
+  encumbrance: number;
 }

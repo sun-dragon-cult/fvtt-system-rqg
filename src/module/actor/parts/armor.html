@@ -2,24 +2,39 @@
   <h2>Armor</h2>
   <div class="acolumns">
     <div class="alocation">
-    {{#each data.hitLocations}}
+      {{#each data.hitLocations}}
       <div>{{@key}}</div>
-    {{/each}}
+      {{/each}}
     </div>
 
     <div class="ahp ml-5">
       {{#each data.hitLocations}}
-        <label>HP
-        <input type="text" style="width:20px" name="data.hitLocations.{{@key}}.hp.value" value="{{this.hp.value}}" data-dtype="Number">
-        / {{this.hp.max}}</label>
+      <label
+        >HP
+        <input
+          type="text"
+          style="width: 20px;"
+          name="data.hitLocations.{{@key}}.hp.value"
+          value="{{this.hp.value}}"
+          data-dtype="Number"
+        />
+        / {{this.hp.max}}</label
+      >
       {{/each}}
     </div>
 
     <div class="aap ml-5">
       {{#each data.hitLocations}}
-        <label class="ml-5">AP
-          <input type="text" style="width:20px" name="data.hitLocations.{{@key}}.ap" value="{{this.ap}}" data-dtype="Number">
-        </label>
+      <label class="ml-5"
+        >AP
+        <input
+          type="text"
+          style="width: 20px;"
+          name="data.hitLocations.{{@key}}.ap"
+          value="{{this.ap}}"
+          data-dtype="Number"
+        />
+      </label>
       {{/each}}
     </div>
   </div>

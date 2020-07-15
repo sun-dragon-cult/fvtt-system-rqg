@@ -7,6 +7,3 @@ export type ItemType = SkillType | PassionType | WeaponType;
 export const skillType: SkillType = "skill";
 export const passionType: PassionType = "passion";
 export const weaponType = "weapon";
-
-
-
