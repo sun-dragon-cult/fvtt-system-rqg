@@ -1,10 +1,11 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-    <h1 class="name prop">{{item.name}}</h1>
     {{#if data.isGM}}
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <input type="text" name="name" value="{{item.name}}" />
+
       <div class="flex-column">
-        <select name="data.category" data-dtype="String">
+        <select name="data.category" >
           {{#select data.category}}
             {{#each data.skillCategories}}
               <option value="{{this}}">{{this}}</option>
@@ -13,16 +14,16 @@
         </select><br>
         <label>Base Chance <input type="text" name="data.baseChance" value="{{item.data.baseChance}}"
                                   data-dtype="Number"></label><br>
-        <label>Chance <input type="text" name="data.value" value="{{item.data.value}}" data-dtype="Number"></label><br>
-        <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}}
-                                 data-dtype="Boolean"></label>
+        <label>Chance <input type="text" name="data.value" value="{{item.data.value}}" /></label><br>
+        <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label>
       </div>
     {{else}}
+      <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+      {{item.name}}
       <div class="flex"></div>
       {{data.category}} ({{item.data.baseChance}})
-      <label>Chance <input type="text" name="data.value" value="{{item.data.value}}" data-dtype="Number"></label><br>
-      <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}}
-                               data-dtype="Boolean"></label>
+      <label>Chance <input type="text" name="data.value" value="{{item.data.value}}" /></label><br>
+      <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label>
     {{/if}}
   </header>
 </form>

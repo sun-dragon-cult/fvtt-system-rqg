@@ -15,7 +15,7 @@
       placeholder="Name"
     />--> --}}
     <!--      <input type="text" name="data.passion" value="{{item.data.passion}}" />-->
-    <select name="data.passion" data-dtype="text">
+    <select name="data.passion">
       {{#select data.passion}} {{#each data.passionTypes}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}

@@ -26,14 +26,13 @@
     type="text"
     name="data.background.gender"
     value="{{data.background.gender}}"
-    data-dtype="Text"
     size="10"
   /> </label
 ><br />
 
 <label class="mp norse">
   Occupation<br />
-  <select name="data.background.occupation" data-dtype="String">
+  <select name="data.background.occupation">
     {{#select data.background.occupation}} {{#each data.occupations}}
     <option value="{{this}}">{{this}}</option>
     {{/each}} {{/select}}
@@ -42,7 +41,7 @@
 
 <label class="mp norse">
   Homeland<br />
-  <select name="data.background.homeland" data-dtype="String">
+  <select name="data.background.homeland">
     {{#select data.background.homeland}} {{#each data.homelands}}
     <option value="{{this}}">{{this}}</option>
     {{/each}} {{/select}}
@@ -55,7 +54,6 @@
     type="text"
     name="data.background.tribe"
     value="{{data.background.tribe}}"
-    data-dtype="Text"
     size="10"
   />
 </label>
@@ -65,7 +63,6 @@
     type="text"
     name="data.background.clan"
     value="{{data.background.clan}}"
-    data-dtype="Text"
     size="10"
   />
 </label>
@@ -85,7 +82,6 @@
     type="text"
     name="data.background.standardOfLiving"
     value="{{data.background.standardOfLiving}}"
-    data-dtype="Text"
     size="10"
   />
 </label>
