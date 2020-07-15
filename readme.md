@@ -1,73 +1,12 @@
 # RuneQuest Glorantha (Unofficial) system for Foundry Virtual Table Top
 
 ## Usage
-
 Because RuneQuest Glorantha (Unofficial) doesn't have an SRD or anything other than the quick start the system lacks compendiums. GMs will need to create all of the skills, spells and other items they want to use for character creation.
 
-## Item Creation
-
-Lorem Ipsum.
-
-## Character Creation
-
-Lorem Ipsum.
-
-## Starting a game
-
-Lorem Ipsum.
+Link to install the system in Foundry VTT: https://github.com/wake42/foundry-vtt-rqg/releases/latest/download/system.json
 
 ## Project Status
-Still work in progress.
-
-## Roadmap / TODO / Ideas etc
-* [x] Setup Dev environment
-* [x] Setup basic template.json
-* [x] Display data (template.json) value on character sheet
-* [x] Update character data from character sheet
-* [x] Handle translation
-* [x] Move template/*.html next to relevant ts
-* [x] Flesh out template.json with variables
-* [x] Scrap template.json and build data-models (with typescript types) instead that are initialized in the gulp build to generate a template.json in the dist folder
-* [x] Get styling to work (gulp error) -
-* [x] Modularize scss.
-* [x] Use Actor prepareData() to add modifyers/bonuses to skills (for lookup)
-    * [x] Investigate tables (for modifiers)
-* [x] Design Character html sheet
-    * [x] Show all data
-    * [x] Implement tabs for **Main** - **Skills** - **Inventory** - **Background**
-* [x] Figure out how to handle variable data (skills with basic keys + extra)
-* [x] Implement typed Item system
-* [x] Use github release! inspired by https://github.com/anvil-vtt/FATEx  
-* [x] Show occupation dropdown on background tab
-* [ ] Make Skill name editable on skill-sheet!
-* [ ] Create Items / Item sheets / Corresponding Actor-sheet list
-    * [ ] Skills - some depends on DEX, create formulas like (@DEX * 2) roll formula! new Roll("2*@DEX", {DEX: 13})
-    * [ ] Passions
-    * [ ] Weapons
-    * [ ] Gear (items, possessions, belongings, ...?) 
-    * [ ] Armour
-    * [ ] Spirit Magic
-    * [ ] Rune Magic
-    * [ ] Sorcerous Magic
-    * [ ] Languages + "Chat in language"-support  Already in some module?
-* [ ] Auto import default Items (skills etc) on Actor creation. Store as external Compendium(s).
-* [ ] Combat
-* [ ] Spirit Magic
-* [ ] Rune Magic
-* [ ] Races: Filter displayed locations on race (and add them all to character)
-* [ ] Optimise svg's - Have to open and resave them :-(
-* [ ] When clicking characteristics show a "roll against" dialog (and make it harder to change the value)
-* [ ] Display POW experience checkbox in some way
-* [ ] Good defaults: Link token for characters, value=max for "Tracked" data, ...
-* [ ] NPC sheets
-* [ ] Calendar - see about-time module https://gitlab.com/tposney/about-time
-* [ ] Go through all texts and include in translation system
-* [ ] Try out Prettier
-* [ ] Restyle the "base" styling
----
-* [ ] Character creation? (far future)
-* [ ] Scrap Gulp and use only npm scripts
-
+Still very much work in progress. 🚧 
 
 ## Credits
 Based on [Create Foundry Project](https://www.npmjs.com/package/create-foundry-project). Inspiration to use a typed "template.ts" is from [Blue Rose](https://gitlab.com/studio315b/blue-rose) by studio315b, additional ideas from D&D5E System by Atropos among others.	
