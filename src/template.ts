@@ -3,7 +3,7 @@ import { emptySkill } from "./module/data-model/item-data/skill";
 import {
   passionType,
   skillType,
-  weaponType,
+  meleeWeaponType,
 } from "./module/data-model/item-data/itemTypes";
 import { emptyPassion } from "./module/data-model/item-data/passion";
 import { emptyWeapon } from "./module/data-model/item-data/weapon";
@@ -16,20 +16,11 @@ export const Actors = {
 export const Items = {
   [skillType]: emptySkill,
   [passionType]: emptyPassion,
-  [weaponType]: emptyWeapon,
-
-  // [item]: emptyItem; quantity ENC
-  // [armour]: emptyArmour; AP ENC "Hit location cover"
-  // [spiritMagic]: emptySpiritMagic;
-  // [runeMagic]: emptyRuneMagic;
-  // [sorcerousMagic]: emptysorcerousMagic;
-
-  // TODO Copied from blue-rose - modify for rqg!
-  // [physicalItemType]: emptyPhysicalItem,
-  // [weaponType]: emptyWeapon,
-  // [shieldType]: emptyShield,
-  // [armorType]: emptyArmor,
-  // [focusType]: emptyFocus,
-  // [arcanaType]: emptyArcana,
-  // [talentType]: emptyTalent,
+  [meleeWeaponType]: emptyWeapon,
+  // [missileWeaponType]: emptyWeapon,
+  // [gearType]: emptyGear; quantity ENC
+  // [armourType]: emptyArmour; AP ENC "Hit location cover"
+  // [spiritMagicType]: emptySpiritMagic;
+  // [runeMagicType]: emptyRuneMagic;
+  // [sorcerousMagicType]: emptysorcerousMagic;
 };

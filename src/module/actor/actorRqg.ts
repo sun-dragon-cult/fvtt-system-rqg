@@ -32,13 +32,6 @@ export class ActorRqg extends Actor {
       data.characteristics.power.value
     );
 
-    console.log(
-      "**** Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max)",
-      Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max)
-    );
-
-    console.log(Array.isArray(data.hitLocations));
-
     Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
       (tuple) => {
         const location = data.hitLocations[tuple[0]];

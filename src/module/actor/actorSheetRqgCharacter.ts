@@ -5,6 +5,7 @@ import {
   OccupationEnum,
 } from "../data-model/actor-data/background";
 import { Ability, ResultEnum } from "../data-model/shared/ability";
+import { ActorDataRqg } from "../data-model/actor-data/actorDataRqg";
 
 export class ActorSheetRqgCharacter extends ActorSheet {
   /** @override */
@@ -30,10 +31,11 @@ export class ActorSheetRqgCharacter extends ActorSheet {
   /** @override */
   getData(): ActorSheetData {
     // TODO move to Actor prepareData instead?
-    const sheetData: any = super.getData(); // TODO define an ActorSheetData that extends the normal?
+    const sheetData: any = super.getData();
 
+    const data: ActorDataRqg = sheetData.data;
     // Convenience lookup for rune icons
-    sheetData.data.runeIcons = {
+    data.runeIcons = {
       // Elemental Runes
       fire: "systems/rqg/icons/runes/fire_sky.svg",
       darkness: "systems/rqg/icons/runes/darkness.svg",
@@ -56,10 +58,10 @@ export class ActorSheetRqgCharacter extends ActorSheet {
     };
 
     // Occupations
-    sheetData.data.occupations = Object.keys(OccupationEnum);
+    data.occupations = Object.keys(OccupationEnum);
 
     // Homelands
-    sheetData.data.homelands = Object.keys(HomeLandEnum);
+    data.homelands = Object.keys(HomeLandEnum);
 
     // Separate different item types into separate arrays
     const passions = sheetData.items.filter(
@@ -71,12 +73,10 @@ export class ActorSheetRqgCharacter extends ActorSheet {
       skills[cat] = allSkills.filter((s) => cat === s.data.category);
     });
 
-    sheetData.data.itemGroups = {
+    data.itemGroups = {
       skills,
       passions,
     };
-
-    console.log("******* SHEETDATA ", sheetData, skills, passions);
     return sheetData;
   }
 

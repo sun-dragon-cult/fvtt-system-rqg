@@ -43,7 +43,7 @@ export class HitLocation {
   constructor(
     public dieFrom: number,
     public dieTo: number,
-    public hp: Tracked,
+    public hp: Tracked, // Max added by ActorSheet.prepareData
     public wounds: Array<number> = [],
     public ap: number = 0
   ) {}

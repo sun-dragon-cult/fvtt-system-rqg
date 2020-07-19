@@ -8,6 +8,7 @@ import { basicPowerRunes, PowerRunes } from "./powerRunes";
 import { RaceEnum } from "./race";
 import { emptyHumanoidHitLocations, HitLocations } from "./hitLocation";
 import { Background, emptyBackground } from "./background";
+import { Modifier } from "./modifier";
 
 export class ActorDataRqg {
   constructor(
@@ -17,7 +18,12 @@ export class ActorDataRqg {
     public elements: ElementalRunes,
     public powers: PowerRunes,
     public background: Background,
-    public race: RaceEnum = RaceEnum.Humanoid
+    public skillCategoryModifiers?: Modifier[], // TODO Add values
+    public race: RaceEnum = RaceEnum.Humanoid,
+    public runeIcons?: any, // Convenience added by ActorSheet.prepareData
+    public occupations?: any, // Convenience added by ActorSheet.prepareData
+    public homelands?: any, // Convenience added by ActorSheet.prepareData
+    public itemGroups?: any // Convenience added by ActorSheet.prepareData
   ) {}
 }
 
