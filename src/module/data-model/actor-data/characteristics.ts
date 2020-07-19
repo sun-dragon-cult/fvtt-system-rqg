@@ -1,20 +1,22 @@
-import { Ability } from "../shared/ability";
+export class Characteristic {
+  constructor(public value: number = 0, public experience?: boolean) {}
+}
 
 export class Characteristics {
   constructor(
-    public strength: Ability,
-    public constitution: Ability,
-    public size: Ability,
-    public dexterity: Ability,
-    public intelligence: Ability,
-    public power: Ability,
-    public charisma: Ability
+    public strength: Characteristic,
+    public constitution: Characteristic,
+    public size: Characteristic,
+    public dexterity: Characteristic,
+    public intelligence: Characteristic,
+    public power: Characteristic,
+    public charisma: Characteristic
   ) {}
 }
 
 // Check if experience exists to see if the Characteristic can be raised with experience (show checkbox)
-const emptyExp = new Ability(0, false);
-const emptyNoExp = new Ability();
+const emptyExp = new Characteristic(0, false);
+const emptyNoExp = new Characteristic();
 export const emptyHumanoidCharacteristics = new Characteristics(
   emptyNoExp,
   emptyNoExp,

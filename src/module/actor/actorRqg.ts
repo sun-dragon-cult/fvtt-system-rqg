@@ -19,17 +19,17 @@ export class ActorRqg extends Actor {
     const flags = actorData.flags;
 
     // *** Setup calculated stats ***
-    data.attributes.magicPoints.max = data.characteristics.power.chance;
+    data.attributes.magicPoints.max = data.characteristics.power.value;
     data.attributes.dexStrikeRank = Modifiers.dexSR(
-      data.characteristics.dexterity.chance
+      data.characteristics.dexterity.value
     );
     data.attributes.sizStrikeRank = Modifiers.sizSR(
-      data.characteristics.size.chance
+      data.characteristics.size.value
     );
     data.attributes.hitPoints.max = Modifiers.hitPoints(
-      data.characteristics.constitution.chance,
-      data.characteristics.size.chance,
-      data.characteristics.power.chance
+      data.characteristics.constitution.value,
+      data.characteristics.size.value,
+      data.characteristics.power.value
     );
 
     console.log(
@@ -59,19 +59,19 @@ export class ActorRqg extends Actor {
     );
 
     data.attributes.damageBonus = Modifiers.damageBonus(
-      data.characteristics.strength.chance,
-      data.characteristics.size.chance
+      data.characteristics.strength.value,
+      data.characteristics.size.value
     );
     data.attributes.healingRate = Modifiers.healingRate(
-      data.characteristics.constitution.chance
+      data.characteristics.constitution.value
     );
     data.attributes.spiritCombatDamage = Modifiers.spiritCombatDamage(
-      data.characteristics.power.chance,
-      data.characteristics.charisma.chance
+      data.characteristics.power.value,
+      data.characteristics.charisma.value
     );
     data.attributes.maximumEncumbrance =
-      (data.characteristics.strength.chance +
-        data.characteristics.constitution.chance) /
+      (data.characteristics.strength.value +
+        data.characteristics.constitution.value) /
       2;
 
     // Make separate methods for each Actor type (character, npc, etc.) to keep
@@ -89,7 +89,7 @@ export class ActorRqg extends Actor {
 
     // TODO  modifying the base chance
     //   private static calcHitPoints(data: ActorDataRqg): number {
-    //     return data.characteristics.constitution.chance;
+    //     return data.characteristics.constitution.value;
     //   }
 
     // Loop through ability scores, and add their modifiers to our sheet output.
