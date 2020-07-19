@@ -15,5 +15,5 @@ export const emptyWeapon: WeaponData = {
   quantity: 1,
   encumbrance: 1,
   hitPoints: emptyTracked,
-  // TODO Required skill (to calculate % and total SR)
+  // TODO "Required skill" (to calculate % and total SR)
 };

@@ -14,7 +14,7 @@
         </select><br>
         <label>Base Chance <input type="text" name="data.baseChance" value="{{item.data.baseChance}}"
                                   data-dtype="Number"></label><br>
-        <label>Chance <input type="text" name="data.value" value="{{item.data.value}}" /></label><br>
+        <label>Chance <input type="text" name="data.chance" value="{{item.data.chance}}" /></label><br>
         <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label>
       </div>
     {{else}}
@@ -22,7 +22,7 @@
       {{item.name}}
       <div class="flex"></div>
       {{data.category}} ({{item.data.baseChance}})
-      <label>Chance <input type="text" name="data.value" value="{{item.data.value}}" /></label><br>
+      <label>Chance <input type="text" name="data.chance" value="{{item.data.chance}}" /></label><br>
       <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label>
     {{/if}}
   </header>

@@ -21,7 +21,7 @@
       {{/each}} {{/select}}
     </select>
     {{item.name}}
-    <input type="text" name="data.value" value="{{item.data.value}}" />
+    <input type="text" name="data.chance" value="{{item.data.chance}}" data-dtype="Number"/>
     <input
       type="checkbox"
       name="data.experience"
@@ -30,7 +30,7 @@
     /><br />
 
     <div class="sub-header">
-      passion {{data.passion}} ({{item.name}}) {{item.data.value}}% Experience
+      passion {{data.passion}} ({{item.name}}) {{item.data.chance}}% Experience
       {{data.experience}} Description {{data.description}}
     </div>
   </header>

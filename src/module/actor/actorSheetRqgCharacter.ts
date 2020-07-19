@@ -4,6 +4,7 @@ import {
   HomeLandEnum,
   OccupationEnum,
 } from "../data-model/actor-data/background";
+import { Ability, ResultEnum } from "../data-model/shared/ability";
 
 export class ActorSheetRqgCharacter extends ActorSheet {
   /** @override */
@@ -86,19 +87,23 @@ export class ActorSheetRqgCharacter extends ActorSheet {
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
 
-    // Roll against value
+    // Roll against Ability chance
     this.form.querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = el.closest("[data-item-id]").getAttribute("data-item-id");
       const item: Item = this.actor.items.get(itemId);
       el.addEventListener("click", () => {
-        const r = new Roll("d100");
-        r.roll();
-        const result: string =
-          r.total <= item.data.data.value ? "Succeded" : "Failed";
-        r.toMessage({
-          speaker: ChatMessage.getSpeaker(),
-          flavor: `${item.name} ${result}`,
-        });
+        const result = Ability.rollAgainst(
+          item.data.data.chance,
+          0,
+          item.name,
+          this.actor.isPC
+        );
+        if (result <= ResultEnum.Success) {
+          // TODO Chain rolls depending on outcome. Just playing around for now...
+          ChatMessage.create({
+            content: "Roll damage [[/r d8 + 1]] and hit location [[/r d20]]",
+          });
+        }
       });
     });
 

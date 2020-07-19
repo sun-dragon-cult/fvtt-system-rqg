@@ -5,5 +5,10 @@
   "characteristic.dexterity": "DEX",
   "characteristic.intelligence": "INT",
   "characteristic.power": "POW",
-  "characteristic.charisma": "CHA"
+  "characteristic.charisma": "CHA",
+  "ResultEnum.0": "Critical",
+  "ResultEnum.1": "Special",
+  "ResultEnum.2": "Success",
+  "ResultEnum.3": "Failure",
+  "ResultEnum.4": "Fumble"
 }

@@ -17,6 +17,6 @@ export type PassionData = IAbility & {
 export const emptyPassion: PassionData = {
   passion: PassionsEnum.Love,
   description: "",
-  value: 0,
+  chance: 0,
   experience: false,
 };
