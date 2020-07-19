@@ -94,9 +94,8 @@ export class ActorSheetRqgCharacter extends ActorSheet {
       el.addEventListener("click", () => {
         const result = Ability.rollAgainst(
           item.data.data.chance,
-          0,
-          item.name,
-          this.actor.isPC
+          200,
+          item.name
         );
         if (result <= ResultEnum.Success) {
           // TODO Chain rolls depending on outcome. Just playing around for now...

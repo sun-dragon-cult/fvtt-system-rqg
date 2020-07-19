@@ -6,9 +6,11 @@
   "characteristic.intelligence": "INT",
   "characteristic.power": "POW",
   "characteristic.charisma": "CHA",
-  "ResultEnum.0": "Critical",
-  "ResultEnum.1": "Special",
-  "ResultEnum.2": "Success",
-  "ResultEnum.3": "Failure",
-  "ResultEnum.4": "Fumble"
+  "ResultEnum.0": "Hyper Critical",
+  "ResultEnum.1": "Special Critical",
+  "ResultEnum.2": "Critical",
+  "ResultEnum.3": "Special",
+  "ResultEnum.4": "Success",
+  "ResultEnum.5": "Failure",
+  "ResultEnum.6": "Fumble"
 }

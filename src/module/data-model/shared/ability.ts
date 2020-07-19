@@ -5,6 +5,8 @@ export interface IAbility {
 // mod?: string; // Modification, roll modifier formula compatible 0.7.x feature? Let it be a separate interface
 
 export enum ResultEnum {
+  HyperCritical,
+  SpecialCritical,
   Critical,
   Special,
   Success,
@@ -22,13 +24,12 @@ export class Ability implements IAbility {
   public static rollAgainst(
     chance: number,
     chanceMod: number,
-    flavor: string,
-    pc: boolean
+    flavor: string
   ): ResultEnum {
     const r = new Roll("d100");
     r.roll();
     const modifiedChance: number = chance + chanceMod;
-    const result = Ability.evaluateResult(modifiedChance, r.total, pc);
+    const result = Ability.evaluateResult(modifiedChance, r.total);
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = game.i18n.localize(`ResultEnum.${result}`);
@@ -39,25 +40,33 @@ export class Ability implements IAbility {
     return result;
   }
 
-  private static evaluateResult(
-    chance: number,
-    roll: number,
-    pc: boolean
-  ): ResultEnum {
+  private static evaluateResult(chance: number, roll: number): ResultEnum {
+    const specialCritSetting = game.settings.get("rqg", "specialCrit");
+
+    const rawHyperCritical = chance / 500;
+    const hyperCritical =
+      specialCritSetting && chance >= 100 ? Math.ceil(rawHyperCritical) : 0;
+    const rawSpecialCritical = chance / 100;
+    const specialCritical =
+      specialCritSetting && chance >= 100 ? Math.ceil(rawSpecialCritical) : 0;
+
     const rawCrit = Math.max(1, chance / 20);
-    const critical = pc ? Math.ceil(rawCrit) : Math.floor(rawCrit);
+    const critical = Math.ceil(rawCrit);
     const rawSpecial = chance / 5;
-    const special = pc ? Math.ceil(rawSpecial) : Math.floor(rawSpecial);
+    const special = Math.ceil(rawSpecial);
     const rawFumble = Math.min(100, 100 - (100 - chance) / 20);
-    const fumble = pc ? Math.ceil(rawFumble) : Math.floor(rawFumble);
-    const lookup = [
+    const fumble = Math.ceil(rawFumble);
+    const limitedChance = Math.min(95, chance);
+    const fail = Math.min(96, fumble - 1);
+    let lookup = [
+      { limit: hyperCritical, result: ResultEnum.HyperCritical },
+      { limit: specialCritical, result: ResultEnum.SpecialCritical },
       { limit: critical, result: ResultEnum.Critical },
       { limit: special, result: ResultEnum.Special },
-      { limit: chance, result: ResultEnum.Success },
-      { limit: fumble - 1, result: ResultEnum.Failure },
+      { limit: limitedChance, result: ResultEnum.Success },
+      { limit: fail, result: ResultEnum.Failure },
       { limit: Infinity, result: ResultEnum.Fumble },
     ];
-
     return lookup.filter((v) => roll <= v.limit)[0].result;
   }
 }
