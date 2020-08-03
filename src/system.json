@@ -22,7 +22,7 @@
       "path": "i18n/en.json"
     }
   ],
-  "gridDistance": 1,
+  "gridDistance": 3,
   "gridUnits": "m",
   "minimumCoreVersion": "0.6.5",
   "compatibleCoreVersion": "0.6.5",
