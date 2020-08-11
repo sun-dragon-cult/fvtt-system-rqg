@@ -9,7 +9,8 @@ export class Attributes {
     public spiritCombatDamage?: string, // Added by ActorSheet.prepareData
     public maximumEncumbrance?: number, // Added by ActorSheet.prepareData
     public sizStrikeRank?: number, // Added by ActorSheet.prepareData
-    public dexStrikeRank?: number // Added by ActorSheet.prepareData
+    public dexStrikeRank?: number, // Added by ActorSheet.prepareData
+    public movementRate?: number // Added by ActorSheet.prepareData
   ) {}
 }
 

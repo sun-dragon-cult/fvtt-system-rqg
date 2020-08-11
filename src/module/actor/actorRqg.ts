@@ -69,10 +69,13 @@ export class ActorRqg extends Actor {
       data.characteristics.power.value,
       data.characteristics.charisma.value
     );
-    data.attributes.maximumEncumbrance =
+    data.attributes.maximumEncumbrance = Math.min(
+      data.characteristics.strength.value,
       (data.characteristics.strength.value +
         data.characteristics.constitution.value) /
-      2;
+        2
+    );
+    data.attributes.movementRate = 8; // TODO Humans only for now
 
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
