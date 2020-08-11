@@ -38,6 +38,13 @@ export class ActorRqg extends Actor {
         if (location) {
           // TODO Check if this location exists (for this race) - needs work...
           data.hitLocations[tuple[0]].hp.max = tuple[1];
+          const damage = data.hitLocations[tuple[0]].hp.wounds
+            ? data.hitLocations[tuple[0]].hp.wounds.reduce(
+                (acc, wound) => acc - wound
+              )
+            : 0;
+          data.hitLocations[tuple[0]].hp.value =
+            data.hitLocations[tuple[0]].hp.max - damage;
         }
       }
     );
