@@ -4,7 +4,7 @@ import {
   OccupationEnum,
 } from "../data-model/actor-data/background";
 import { Ability, ResultEnum } from "../data-model/shared/ability";
-import { ActorDataRqg } from "../data-model/actor-data/actorDataRqg";
+import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class RqgActorSheet extends ActorSheet {
@@ -33,7 +33,7 @@ export class RqgActorSheet extends ActorSheet {
     // TODO move to Actor prepareData instead?
     const sheetData: any = super.getData();
 
-    const data: ActorDataRqg = sheetData.data;
+    const data: RqgActorData = sheetData.data;
     // Convenience lookup for rune icons
     data.runeIcons = {
       // Elemental Runes

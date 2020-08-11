@@ -6,7 +6,7 @@ type LookupTableEntry<T> = {
   result: T;
 };
 
-export class Modifiers {
+export class RqgCalculations {
   public static dexSR(dex: number): number {
     return this.lookup<number>(dex, dexSrTable);
   }
@@ -16,7 +16,9 @@ export class Modifiers {
   }
 
   public static hitPoints(con: number, siz: number, pow: number): number {
-    return con + Modifiers.linearMod(siz) + Modifiers.flattenedMod(pow);
+    return (
+      con + RqgCalculations.linearMod(siz) + RqgCalculations.flattenedMod(pow)
+    );
   }
 
   // TODO Humanoid centered as of yet

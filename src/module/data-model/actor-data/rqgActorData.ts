@@ -10,7 +10,7 @@ import { emptyHumanoidHitLocations, HitLocations } from "./hitLocation";
 import { Background, emptyBackground } from "./background";
 import { Modifier } from "./modifier";
 
-export class ActorDataRqg {
+export class RqgActorData {
   constructor(
     public characteristics: Characteristics,
     public hitLocations: HitLocations, // Different races can have different hit locations
@@ -27,7 +27,7 @@ export class ActorDataRqg {
   ) {}
 }
 
-export const emptyActorDataRqg: ActorDataRqg = new ActorDataRqg(
+export const emptyActorDataRqg: RqgActorData = new RqgActorData(
   emptyHumanoidCharacteristics,
   emptyHumanoidHitLocations,
   emptyAttributes,

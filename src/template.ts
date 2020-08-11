@@ -1,4 +1,4 @@
-import { emptyActorDataRqg } from "./module/data-model/actor-data/actorDataRqg";
+import { emptyActorDataRqg } from "./module/data-model/actor-data/rqgActorData";
 import { emptySkill } from "./module/data-model/item-data/skill";
 import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
 import { emptyPassion } from "./module/data-model/item-data/passion";

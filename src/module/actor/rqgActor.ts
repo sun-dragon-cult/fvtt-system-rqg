@@ -2,8 +2,8 @@
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
  */
-import { ActorDataRqg } from "../data-model/actor-data/actorDataRqg";
-import { Modifiers } from "../modifiers";
+import { RqgActorData } from "../data-model/actor-data/rqgActorData";
+import { RqgCalculations } from "../rqgCalculations";
 import { HitLocation } from "../data-model/actor-data/hitLocation";
 
 export class RqgActor extends Actor {
@@ -15,24 +15,24 @@ export class RqgActor extends Actor {
     super.prepareData();
 
     const actorData: ActorData = this.data;
-    const data: ActorDataRqg = actorData.data;
+    const data: RqgActorData = actorData.data;
     const flags = actorData.flags;
 
     // *** Setup calculated stats ***
     data.attributes.magicPoints.max = data.characteristics.power.value;
-    data.attributes.dexStrikeRank = Modifiers.dexSR(
+    data.attributes.dexStrikeRank = RqgCalculations.dexSR(
       data.characteristics.dexterity.value
     );
-    data.attributes.sizStrikeRank = Modifiers.sizSR(
+    data.attributes.sizStrikeRank = RqgCalculations.sizSR(
       data.characteristics.size.value
     );
-    data.attributes.hitPoints.max = Modifiers.hitPoints(
+    data.attributes.hitPoints.max = RqgCalculations.hitPoints(
       data.characteristics.constitution.value,
       data.characteristics.size.value,
       data.characteristics.power.value
     );
 
-    Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
+    RqgCalculations.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
       (tuple) => {
         const location = data.hitLocations[tuple[0]];
         if (location) {
@@ -49,7 +49,7 @@ export class RqgActor extends Actor {
       }
     );
 
-    Modifiers.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
+    RqgCalculations.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
       (tuple) => {
         const hitLocations: [string, HitLocation][] = Object.entries(
           data.hitLocations
@@ -58,14 +58,14 @@ export class RqgActor extends Actor {
       }
     );
 
-    data.attributes.damageBonus = Modifiers.damageBonus(
+    data.attributes.damageBonus = RqgCalculations.damageBonus(
       data.characteristics.strength.value,
       data.characteristics.size.value
     );
-    data.attributes.healingRate = Modifiers.healingRate(
+    data.attributes.healingRate = RqgCalculations.healingRate(
       data.characteristics.constitution.value
     );
-    data.attributes.spiritCombatDamage = Modifiers.spiritCombatDamage(
+    data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(
       data.characteristics.power.value,
       data.characteristics.charisma.value
     );
@@ -86,12 +86,12 @@ export class RqgActor extends Actor {
    * Prepare Character type specific data
    */
   _prepareCharacterData(actorData) {
-    const data: ActorDataRqg = actorData.data;
+    const data: RqgActorData = actorData.data;
 
     // Make modifications to data here.
 
     // TODO  modifying the base chance
-    //   private static calcHitPoints(data: ActorDataRqg): number {
+    //   private static calcHitPoints(data: RqgActorData): number {
     //     return data.characteristics.constitution.value;
     //   }
 
