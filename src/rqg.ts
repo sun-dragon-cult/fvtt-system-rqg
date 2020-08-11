@@ -1,8 +1,8 @@
 import { registerSettings } from "./module/settings.js";
 import { preloadTemplates } from "./module/preloadTemplates.js";
 
-import { ActorSheetRqgCharacter } from "./module/actor/actorSheetRqgCharacter.js";
-import { ActorRqg } from "./module/actor/actorRqg.js";
+import { RqgActorSheet } from "./module/actor/rqgActorSheet.js";
+import { RqgActor } from "./module/actor/rqgActor.js";
 
 import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
 import { PassionSheet } from "./module/item/passionSheet";
@@ -25,7 +25,7 @@ Hooks.once("init", async function () {
   // };
 
   // Define custom Entity classes
-  CONFIG.Actor.entityClass = ActorRqg;
+  CONFIG.Actor.entityClass = RqgActor;
 
   // Register custom system settings
   registerSettings();
@@ -49,7 +49,7 @@ Hooks.once("init", async function () {
 
   // Register custom sheets (if any)
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("rqg", ActorSheetRqgCharacter, { makeDefault: true });
+  Actors.registerSheet("rqg", RqgActorSheet, { makeDefault: true });
 
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("rqg", PassionSheet, {
@@ -163,7 +163,7 @@ Hooks.once("ready", function () {
 /* ------------------------------------ */
 // Hooks.on(
 //   'createActor',
-//   async (actor: ActorRqg, options: any, userId: String) => {
+//   async (actor: RqgActor, options: any, userId: String) => {
 //     if (actor.data.type === 'character' && options.renderSheet) {
 //       const skillsToFind = [
 //         'Boat',

@@ -7,12 +7,12 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { ActorDataRqg } from "../data-model/actor-data/actorDataRqg";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
-export class ActorSheetRqgCharacter extends ActorSheet {
+export class RqgActorSheet extends ActorSheet {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", "actor"],
-      template: "systems/rqg/module/actor/actor-sheet.html",
+      template: "systems/rqg/module/actor/rqgActorSheet.html",
       width: 600,
       height: 600,
       tabs: [

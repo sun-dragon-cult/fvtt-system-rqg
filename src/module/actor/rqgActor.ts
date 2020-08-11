@@ -6,7 +6,7 @@ import { ActorDataRqg } from "../data-model/actor-data/actorDataRqg";
 import { Modifiers } from "../modifiers";
 import { HitLocation } from "../data-model/actor-data/hitLocation";
 
-export class ActorRqg extends Actor {
+export class RqgActor extends Actor {
   /**
    * Augment the basic actor data with additional dynamic data.
    */

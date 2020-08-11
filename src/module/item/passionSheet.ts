@@ -5,7 +5,7 @@ export class PassionSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", passionType],
-      template: "systems/rqg/module/item/passion-sheet.html",
+      template: "systems/rqg/module/item/passionSheet.html",
       width: 520,
       height: 250,
     });

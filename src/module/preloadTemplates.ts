@@ -1,6 +1,6 @@
 export const preloadTemplates = async function () {
   const templatePaths = [
-    "systems/rqg/module/actor/actor-sheet.html",
+    "systems/rqg/module/actor/rqgActorSheet.html",
     "systems/rqg/module/actor/parts/main-tab.html",
     "systems/rqg/module/actor/parts/skills-tab.html",
     "systems/rqg/module/actor/parts/inventory-tab.html",
@@ -11,8 +11,8 @@ export const preloadTemplates = async function () {
     "systems/rqg/module/actor/parts/elemental.html",
     "systems/rqg/module/actor/parts/power.html",
 
-    "systems/rqg/module/item/passion-sheet.html",
-    "systems/rqg/module/item/skill-sheet.html",
+    "systems/rqg/module/item/passionSheet.html",
+    "systems/rqg/module/item/skillSheet.html",
   ];
 
   return loadTemplates(templatePaths);
