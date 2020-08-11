@@ -4,10 +4,7 @@ import { preloadTemplates } from "./module/preloadTemplates.js";
 import { ActorSheetRqgCharacter } from "./module/actor/actorSheetRqgCharacter.js";
 import { ActorRqg } from "./module/actor/actorRqg.js";
 
-import {
-  passionType,
-  skillType,
-} from "./module/data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
 import { PassionSheet } from "./module/item/passionSheet";
 import { SkillSheet } from "./module/item/skillSheet";
 
@@ -56,11 +53,11 @@ Hooks.once("init", async function () {
 
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("rqg", PassionSheet, {
-    types: [passionType],
+    types: [ItemTypeEnum.Passion],
     makeDefault: true,
   });
   Items.registerSheet("rqg", SkillSheet, {
-    types: [skillType],
+    types: [ItemTypeEnum.Skill],
     makeDefault: true,
   });
 

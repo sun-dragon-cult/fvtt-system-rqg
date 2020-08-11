@@ -1,10 +1,10 @@
-import { skillType } from "../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../data-model/item-data/skill";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class SkillSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", skillType],
+      classes: ["rqg", "sheet", ItemTypeEnum.Skill.toString()],
       template: "systems/rqg/module/item/skill-sheet.html",
       width: 520,
       height: 250,

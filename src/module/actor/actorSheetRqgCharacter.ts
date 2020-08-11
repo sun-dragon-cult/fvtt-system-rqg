@@ -1,4 +1,3 @@
-import { passionType, skillType } from "../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../data-model/item-data/skill";
 import {
   HomeLandEnum,
@@ -6,6 +5,7 @@ import {
 } from "../data-model/actor-data/background";
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { ActorDataRqg } from "../data-model/actor-data/actorDataRqg";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class ActorSheetRqgCharacter extends ActorSheet {
   /** @override */
@@ -65,9 +65,11 @@ export class ActorSheetRqgCharacter extends ActorSheet {
 
     // Separate different item types into separate arrays
     const passions = sheetData.items.filter(
-      (i: Item) => i.type === passionType
+      (i: Item) => i.type === ItemTypeEnum.Passion.toString()
     );
-    const allSkills = sheetData.items.filter((i: Item) => i.type === skillType);
+    const allSkills = sheetData.items.filter(
+      (i: Item) => i.type === ItemTypeEnum.Skill.toString()
+    );
     const skills = {};
     Object.keys(SkillCategoryEnum).forEach((cat: string) => {
       skills[cat] = allSkills.filter((s) => cat === s.data.category);

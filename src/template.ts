@@ -1,10 +1,6 @@
 import { emptyActorDataRqg } from "./module/data-model/actor-data/actorDataRqg";
 import { emptySkill } from "./module/data-model/item-data/skill";
-import {
-  passionType,
-  skillType,
-  meleeWeaponType,
-} from "./module/data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
 import { emptyPassion } from "./module/data-model/item-data/passion";
 import { emptyMeleeWeapon } from "./module/data-model/item-data/weapon";
 
@@ -14,9 +10,9 @@ export const Actors = {
 };
 
 export const Items = {
-  [skillType]: emptySkill,
-  [passionType]: emptyPassion,
-  [meleeWeaponType]: emptyMeleeWeapon,
+  [ItemTypeEnum.Skill]: emptySkill,
+  [ItemTypeEnum.Passion]: emptyPassion,
+  [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
   // [missileWeaponType]: emptyWeapon,
   // [gearType]: emptyGear; quantity ENC
   // [armourType]: emptyArmour; AP ENC "Hit location cover"
