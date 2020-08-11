@@ -1,20 +1,22 @@
 import { IPhysicalItem } from "./IPhysicalItem";
 import { emptyTracked, Tracked } from "../shared/tracked";
 
-export type WeaponData = IPhysicalItem & {
+export type MeleeWeaponData = IPhysicalItem & {
   description: string;
-  damage: string;
+  damage: Tracked;
+  strikeRank: Tracked;
   hitPoints: Tracked;
-  strikeRank: number;
+  quantity: number;
+  encumbrance: number;
 };
 
-export const emptyWeapon: WeaponData = {
+export const emptyMeleeWeapon: MeleeWeaponData = {
+  damage: emptyTracked,
   description: "",
-  damage: "",
-  strikeRank: 0,
+  strikeRank: emptyTracked,
+  hitPoints: emptyTracked,
   quantity: 1,
   encumbrance: 1,
-  hitPoints: emptyTracked,
-  equipped: false, 
+  equipped: false,
   // TODO "Required skill" (to calculate % and total SR)
 };

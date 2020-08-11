@@ -24,6 +24,8 @@
   ],
   "gridDistance": 3,
   "gridUnits": "m",
+  "primaryTokenAttribute": "attributes.hitPoints",
+  "secondaryTokenAttribute": "attributes.magicPoints",
   "minimumCoreVersion": "0.6.5",
   "compatibleCoreVersion": "0.6.5",
   "url": "https://github.com/wake42/foundry-vtt-rqg",

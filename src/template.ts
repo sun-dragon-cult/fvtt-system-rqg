@@ -6,7 +6,7 @@ import {
   meleeWeaponType,
 } from "./module/data-model/item-data/itemTypes";
 import { emptyPassion } from "./module/data-model/item-data/passion";
-import { emptyWeapon } from "./module/data-model/item-data/weapon";
+import { emptyMeleeWeapon } from "./module/data-model/item-data/weapon";
 
 // Instantiated Actor types
 export const Actors = {
@@ -16,7 +16,7 @@ export const Actors = {
 export const Items = {
   [skillType]: emptySkill,
   [passionType]: emptyPassion,
-  [meleeWeaponType]: emptyWeapon,
+  [meleeWeaponType]: emptyMeleeWeapon,
   // [missileWeaponType]: emptyWeapon,
   // [gearType]: emptyGear; quantity ENC
   // [armourType]: emptyArmour; AP ENC "Hit location cover"

@@ -20,15 +20,17 @@ export class Ability implements IAbility {
   // Do a roll against this ability and factor in all modifiers.
   // stat - an object that implements IAbility
   // chanceMod - a +/- value that changes the chance
-  // player character? see rule page 7 - round in favor of player
   public static rollAgainst(
     chance: number,
-    chanceMod: number,
-    flavor: string
+    chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
+    flavor: string // TODO Rename to ability?
   ): ResultEnum {
+    console.warn("rollAgainst chance ", chance, " chanceMod", chanceMod);
+
     const r = new Roll("d100");
     r.roll();
-    const modifiedChance: number = chance + chanceMod;
+    // @ts-ignore
+    const modifiedChance: number = parseInt(chance) + parseInt(chanceMod);
     const result = Ability.evaluateResult(modifiedChance, r.total);
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
@@ -67,6 +69,8 @@ export class Ability implements IAbility {
       { limit: fail, result: ResultEnum.Failure },
       { limit: Infinity, result: ResultEnum.Fumble },
     ];
+
+    console.warn("lookup ", lookup, " chance:", chance, " roll", roll);
     return lookup.filter((v) => roll <= v.limit)[0].result;
   }
 }

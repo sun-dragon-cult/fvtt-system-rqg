@@ -87,7 +87,7 @@ export class ActorSheetRqgCharacter extends ActorSheet {
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
 
-    // Roll against Ability chance
+    // Roll against Item Ability Chance
     this.form.querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = el.closest("[data-item-id]").getAttribute("data-item-id");
       const item: Item = this.actor.items.get(itemId);
@@ -106,7 +106,7 @@ export class ActorSheetRqgCharacter extends ActorSheet {
       });
     });
 
-    // Edit (open the item sheet)
+    // Edit Item (open the item sheet)
     this.form.querySelectorAll("[data-item-edit]").forEach((el) => {
       const itemId = el.closest("[data-item-id]").getAttribute("data-item-id");
       el.addEventListener("click", () =>
@@ -114,7 +114,7 @@ export class ActorSheetRqgCharacter extends ActorSheet {
       );
     });
 
-    // Delete (remove item from actor)
+    // Delete Item (remove item from actor)
     this.form.querySelectorAll("[data-item-delete]").forEach((el) => {
       const itemId = el.closest("[data-item-id]").getAttribute("data-item-id");
       el.addEventListener("click", () => this.actor.deleteOwnedItem(itemId));
