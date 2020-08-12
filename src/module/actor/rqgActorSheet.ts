@@ -94,11 +94,7 @@ export class RqgActorSheet extends ActorSheet {
       const itemId = el.closest("[data-item-id]").getAttribute("data-item-id");
       const item: Item = this.actor.items.get(itemId);
       el.addEventListener("click", () => {
-        const result = Ability.rollAgainst(
-          item.data.data.chance,
-          200,
-          item.name
-        );
+        const result = Ability.rollAgainst(item.data.data.chance, 0, item.name);
         if (result <= ResultEnum.Success) {
           // TODO Chain rolls depending on outcome. Just playing around for now...
           ChatMessage.create({

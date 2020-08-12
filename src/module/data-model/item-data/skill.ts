@@ -1,28 +1,29 @@
 import { IAbility } from "../shared/ability";
 
 export enum SkillCategoryEnum {
-  Agility = "Agility",
-  Communication = "Communication",
-  Knowledge = "Knowledge",
-  Magic = "Magic",
-  Manipulation = "Manipulation",
-  Perception = "Perception",
-  Stealth = "Stealth",
-  MeleeWeapons = "MeleeWeapons",
-  MissileWeapons = "MissileWeapons",
-  Shields = "Shields",
-  NaturalWeapons = "NaturalWeapons",
-  OtherSkills = "OtherSkills",
+  Agility = "agility",
+  Communication = "communication",
+  Knowledge = "knowledge",
+  Magic = "magic",
+  Manipulation = "manipulation",
+  Perception = "perception",
+  Stealth = "stealth",
+  MeleeWeapons = "meleeWeapons",
+  MissileWeapons = "missileWeapons",
+  Shields = "shields",
+  NaturalWeapons = "naturalWeapons",
+  OtherSkills = "otherSkills",
 }
 
 export type SkillData = IAbility & {
   category: SkillCategoryEnum;
   baseChance: number;
+  learnedChance: number;
 };
 
 export const emptySkill: SkillData = {
   category: SkillCategoryEnum.Agility,
   baseChance: 0,
-  chance: 0,
+  learnedChance: 0,
   experience: false,
 };

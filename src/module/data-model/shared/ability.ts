@@ -1,5 +1,5 @@
 export interface IAbility {
-  chance: number;
+  chance?: number;
   experience?: boolean;
 }
 // mod?: string; // Modification, roll modifier formula compatible 0.7.x feature? Let it be a separate interface

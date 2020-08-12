@@ -12,18 +12,20 @@
             {{/each}}
           {{/select}}
         </select><br>
-        <label>Base Chance <input type="text" name="data.baseChance" value="{{item.data.baseChance}}"
-                                  data-dtype="Number"></label><br>
-        <label>Chance <input type="text" name="data.chance" value="{{item.data.chance}}" /></label><br>
-        <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label>
+        <label>Category Modifier {{item.data.categoryMod}}</label>
+        <label>Base Chance <input type="number" data-dtype="Number" name="data.baseChance" value="{{item.data.baseChance}}"></label><br>
+        <label>Learned Chance <input type="number" data-dtype="Number" name="data.learnedChance" value="{{item.data.learnedChance}}" /></label><br>
+        <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label><br>
+        <label>Chance {{item.data.chance}}</label>
       </div>
     {{else}}
       <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
       {{item.name}}
       <div class="flex"></div>
       {{data.category}} ({{item.data.baseChance}})
-      <label>Chance <input type="text" name="data.chance" value="{{item.data.chance}}" /></label><br>
-      <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label>
+      <label>Learned Chance <input type="number" data-dtype="Number" name="data.learnedChance" value="{{item.data.learnedChance}}" /></label><br>
+      <label>Experience <input type="checkbox" data-dtype="Number" name="data.experience" {{checked data.experience}} /></label><br>
+      <label>Chance {{item.data.chance}}</label>
     {{/if}}
   </header>
 </form>
