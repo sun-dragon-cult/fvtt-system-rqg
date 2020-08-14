@@ -112,22 +112,24 @@ export class RqgActor extends Actor {
     console.log("THIS items", this);
   }
 
-  prepareEmbeddedEntities(): void {
-    super.prepareEmbeddedEntities();
-
-    // Calculate total skill chance
-    const skillCatMod = this.data.data.skillCategoryModifiers;
-
-    this.items
-      .filter((i) => i.data.type === ItemTypeEnum.Skill)
-      .forEach((s) => {
-        // Unless you've learned a base 0 skill you can't use your category modifier.
-        s.data.data.chance =
-          s.data.data.baseChance > 0 || s.data.data.learnedChance > 0
-            ? s.data.data.learnedChance + skillCatMod[s.data.data.category]
-            : 0;
-      });
-  }
+  // prepareEmbeddedEntities(): void {
+  //   super.prepareEmbeddedEntities();
+  //
+  //   // Add the calculated skill chance including skill category modifiers
+  //   const skillCatMod = this.data.data.skillCategoryModifiers;
+  //
+  //   console.log("*** RqgActor.prepareEmbeddedEntities items", this.items);
+  //
+  //   this.items
+  //     .filter((i) => i.data.type === ItemTypeEnum.Skill)
+  //     .forEach((s) => {
+  //       // Unless you've learned a base 0 skill you can't use your category modifier.
+  //       s.data.data.chance =
+  //         s.data.data.baseChance > 0 || s.data.data.learnedChance > 0
+  //           ? s.data.data.learnedChance + skillCatMod[s.data.data.category]
+  //           : 0;
+  //     });
+  // }
 
   /**
    * Prepare Character type specific data

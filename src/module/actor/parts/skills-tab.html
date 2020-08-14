@@ -2,7 +2,6 @@
   {{#each data.itemGroups.skills}}
     <h2>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
     {{#each this}}
-      {{json this}}
       <li class="flexrow" data-item-id="{{this._id}}">
         <h4 class="item-name">{{this.name}}</h4>
         <p title="Roll" data-item-roll>{{this.data.chance}}%<img src="/icons/svg/d20-black.svg"></p>
@@ -12,9 +11,8 @@
           <span title="Delete Item" data-item-delete
             ><i class="fas fa-trash"></i
           ></span>
-        </div>
+ <br>{{json this}}       </div>
       </li>
     {{/each}}
   {{/each}}
 </ol>
-{{json data}}

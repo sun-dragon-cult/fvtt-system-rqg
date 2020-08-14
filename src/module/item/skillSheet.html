@@ -18,6 +18,7 @@
         <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label><br>
         <label>Chance {{item.data.chance}}</label>
       </div>
+      <br>{{json data}}
     {{else}}
       <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
       {{item.name}}

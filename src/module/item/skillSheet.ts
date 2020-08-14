@@ -12,23 +12,32 @@ export class SkillSheet extends ItemSheet {
   }
 
   getData() {
-    const data = super.getData();
+    const data: ItemSheetData = super.getData();
     data.data.skillCategories = Object.keys(SkillCategoryEnum);
     data.data.isGM = this.actor ? !this.actor.isPC : true;
-    // TODO Handle token / actor
-    const mod = this.actor?.data.data.skillCategoryModifiers[
-      data.data.category
-    ];
-    const categoryMod = mod ? mod : 0;
 
-    // TODO How to handle skill category modifiers - used both in item and in actor?
-    // Unless you've learned a base 0 skill you can't use your category modifier.
-    if (data.data.baseChance > 0 || data.data.learnedChance > 0) {
-      data.data.chance = data.data.learnedChance + categoryMod;
-    } else {
-      data.data.chance = 0;
-    }
-
+    this.calculateChance(data); // TODO Not waiting for the promise - possible race condition?
     return data;
+  }
+
+  async calculateChance(data: ItemSheetData) {
+    if (this.actor && data.item.type === ItemTypeEnum.Skill) {
+      // Add the category modifier to be displayed by the Skill sheet
+      data.data.categoryMod = this.actor.data.data.skillCategoryModifiers[
+        data.data.category
+      ];
+
+      // Learned chance can't be lower than base chance
+      if (data.data.baseChance > data.data.learnedChance) {
+        await this.item.update({ "data.learnedChance": data.data.baseChance });
+      }
+
+      // Update the skill chance including skill category modifiers
+      data.data.chance =
+        data.data.baseChance > 0 || data.data.learnedChance > 0
+          ? data.data.learnedChance + data.data.categoryMod
+          : 0;
+      await this.item.update({ "data.chance": data.data.chance });
+    }
   }
 }
