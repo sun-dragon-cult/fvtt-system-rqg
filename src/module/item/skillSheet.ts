@@ -20,12 +20,21 @@ export class SkillSheet extends ItemSheet {
     return data;
   }
 
-  async calculateChance(data: ItemSheetData) {
-    if (this.actor && data.item.type === ItemTypeEnum.Skill) {
+  async calculateChance(data) {
+    if (this.actor) {
       // Add the category modifier to be displayed by the Skill sheet
       data.data.categoryMod = this.actor.data.data.skillCategoryModifiers[
         data.data.category
       ];
+
+      // Special case for Dodge & Jump
+      const dex = this.actor.data.data.characteristics.dexterity.value;
+      if ("Dodge" === data.item.name) {
+        await this.updateBaseChance(data, dex * 2);
+      }
+      if ("Jump" === data.item.name) {
+        await this.updateBaseChance(data, dex * 3);
+      }
 
       // Learned chance can't be lower than base chance
       if (data.data.baseChance > data.data.learnedChance) {
@@ -38,6 +47,19 @@ export class SkillSheet extends ItemSheet {
           ? data.data.learnedChance + data.data.categoryMod
           : 0;
       await this.item.update({ "data.chance": data.data.chance });
+    }
+  }
+
+  private async updateBaseChance(data, newBaseChance: number) {
+    if (data.data.baseChance !== newBaseChance) {
+      if (data.data.learnedChance === data.data.baseChance) {
+        data.data.learnedChance = newBaseChance;
+        await this.item.update({
+          "data.learnedChance": data.data.learnedChance,
+        });
+      }
+      data.data.baseChance = newBaseChance;
+      await this.item.update({ "data.baseChance": data.data.baseChance });
     }
   }
 }
