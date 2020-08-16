@@ -1,8 +1,8 @@
 import { emptyActorDataRqg } from "./module/data-model/actor-data/rqgActorData";
-import { emptySkill } from "./module/data-model/item-data/skill";
+import { emptySkill } from "./module/data-model/item-data/skillData";
 import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
-import { emptyPassion } from "./module/data-model/item-data/passion";
-import { emptyMeleeWeapon } from "./module/data-model/item-data/weapon";
+import { emptyPassion } from "./module/data-model/item-data/passionData";
+import { emptyMeleeWeapon } from "./module/data-model/item-data/meleeWeaponData";
 
 // Instantiated Actor types
 export const Actors = {
@@ -13,10 +13,12 @@ export const Items = {
   [ItemTypeEnum.Skill]: emptySkill,
   [ItemTypeEnum.Passion]: emptyPassion,
   [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
-  // [missileWeaponType]: emptyWeapon,
-  // [gearType]: emptyGear; quantity ENC
-  // [armourType]: emptyArmour; AP ENC "Hit location cover"
-  // [spiritMagicType]: emptySpiritMagic;
-  // [runeMagicType]: emptyRuneMagic;
-  // [sorcerousMagicType]: emptysorcerousMagic;
+  // [ItemTypeEnum.ElementalRunes]: emptyElementalRunes,
+  // [ItemTypeEnum.PowerRunes]: emptyPowerRunes,
+  // [ItemTypeEnum.MissileWeapon]: emptyMissileWeapon,
+  // [ItemTypeEnum.Gear]: emptyGear; quantity ENC
+  // [ItemTypeEnum.Armor]: emptyArmour; AP ENC "Hit location cover"
+  // [ItemTypeEnum.SpiritMagic]: emptySpiritMagic;
+  // [ItemTypeEnum.RuneMagic]: emptyRuneMagic;
+  // [ItemTypeEnum.SorcerousMagic]: emptySorcerousMagic;
 };

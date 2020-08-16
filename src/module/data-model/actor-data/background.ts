@@ -1,33 +1,33 @@
 export enum OccupationEnum {
-  assistantShaman = "assistantShaman",
-  bandit = "bandit",
-  chariotDriver = "chariotDriver",
-  crafter = "crafter",
-  entertainer = "entertainer",
-  farmer = "farmer",
-  fisher = "fisher",
-  healer = "healer",
-  herder = "herder",
-  hunter = "hunter",
-  merchant = "merchant",
-  noble = "noble",
-  philosopher = "philosopher",
-  priest = "priest",
-  scribe = "scribe",
-  thief = "thief",
-  warriorHeavyInfantry = "warriorHeavyInfantry",
-  warriorLightInfantry = "warriorLightInfantry",
-  warriorHeavyCavalry = "warriorHeavyCavalry",
-  warriorLightCavalry = "warriorLightCavalry",
+  AssistantShaman = "assistantShaman",
+  Bandit = "bandit",
+  ChariotDriver = "chariotDriver",
+  Crafter = "crafter",
+  Entertainer = "entertainer",
+  Farmer = "farmer",
+  Fisher = "fisher",
+  Healer = "healer",
+  Herder = "herder",
+  Hunter = "hunter",
+  Merchant = "merchant",
+  Noble = "noble",
+  Philosopher = "philosopher",
+  Priest = "priest",
+  Scribe = "scribe",
+  Thief = "thief",
+  WarriorHeavyInfantry = "warriorHeavyInfantry",
+  WarriorLightInfantry = "warriorLightInfantry",
+  WarriorHeavyCavalry = "warriorHeavyCavalry",
+  WarriorLightCavalry = "warriorLightCavalry",
 }
 
 export enum HomeLandEnum {
-  sartar = "sartar",
-  esrolia = "esrolia",
-  grazelands = "grazelands",
-  praxianTribes = "praxianTribes",
-  lunarTarsh = "lunarTarsh",
-  oldTarsh = "oldTarsh",
+  Sartar = "sartar",
+  Esrolia = "esrolia",
+  Grazelands = "grazelands",
+  PraxianTribes = "praxianTribes",
+  LunarTarsh = "lunarTarsh",
+  OldTarsh = "oldTarsh",
 }
 
 export class Background {
@@ -48,6 +48,6 @@ export class Background {
 }
 
 export const emptyBackground = new Background(
-  OccupationEnum.farmer,
-  HomeLandEnum.sartar
+  OccupationEnum.Farmer,
+  HomeLandEnum.Sartar
 );

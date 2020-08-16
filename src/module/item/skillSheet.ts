@@ -1,4 +1,7 @@
-import { SkillCategoryEnum, SkillData } from "../data-model/item-data/skill";
+import {
+  SkillCategoryEnum,
+  SkillData,
+} from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class SkillSheet extends ItemSheet {
@@ -13,7 +16,7 @@ export class SkillSheet extends ItemSheet {
 
   getData() {
     const data: ItemSheetData<SkillData> = super.getData();
-    data.data.skillCategories = Object.keys(SkillCategoryEnum);
+    data.data.skillCategories = Object.values(SkillCategoryEnum);
     data.data.isGM = this.actor ? !this.actor.isPC : true;
     console.log("*** Calling from skillSheet getData with item", this.item);
     return data;

@@ -1,9 +1,9 @@
-import { emptyTracked, Tracked } from "../shared/tracked";
+import { emptyResource, Resource } from "../shared/resource";
 
 export class Attributes {
   constructor(
-    public magicPoints: Tracked, // Max added by ActorSheet.prepareData
-    public hitPoints: Tracked, // Max added by ActorSheet.prepareData
+    public magicPoints: Resource, // Max added by ActorSheet.prepareData
+    public hitPoints: Resource, // Max added by ActorSheet.prepareData
     public healingRate?: number, // Added by ActorSheet.prepareData
     public damageBonus?: string, // For example "1D4" Added by ActorSheet.prepareData
     public spiritCombatDamage?: string, // Added by ActorSheet.prepareData
@@ -14,4 +14,4 @@ export class Attributes {
   ) {}
 }
 
-export const emptyAttributes = new Attributes(emptyTracked, emptyTracked);
+export const emptyAttributes = new Attributes(emptyResource, emptyResource);

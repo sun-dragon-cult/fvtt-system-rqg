@@ -1,27 +1,27 @@
-import { emptyTracked, Tracked } from "../shared/tracked";
+import { emptyResource, Resource } from "../shared/resource";
 
 export enum HitLocationsEnum {
-  head = "head",
-  leftArm = "leftArm",
-  rightArm = "rightArm",
-  chest = "chest",
-  abdomen = "abdomen",
-  leftLeg = "leftLeg",
-  rightLeg = "rightLeg",
-  leftWing = "leftWing",
-  rightWing = "rightWing",
-  tail = "tail",
-  leftHindLeg = "leftHindLeg",
-  rightHindLeg = "rightHindLeg",
-  forequarter = "forequarter",
-  hindquarter = "hindquarter",
-  thorax = "thorax",
-  leftForeLeg = "leftForeLeg",
-  rightForeLeg = "rightForeLeg",
-  shell = "shell",
-  forebody = "forebody",
-  leftHead = "leftHead",
-  rightHead = "rightHead",
+  Head = "head",
+  LeftArm = "leftArm",
+  RightArm = "rightArm",
+  Chest = "chest",
+  Abdomen = "abdomen",
+  LeftLeg = "leftLeg",
+  RightLeg = "rightLeg",
+  LeftWing = "leftWing",
+  RightWing = "rightWing",
+  Tail = "tail",
+  LeftHindLeg = "leftHindLeg",
+  RightHindLeg = "rightHindLeg",
+  Forequarter = "forequarter",
+  Hindquarter = "hindquarter",
+  Thorax = "thorax",
+  LeftForeLeg = "leftForeLeg",
+  RightForeLeg = "rightForeLeg",
+  Shell = "shell",
+  Forebody = "forebody",
+  LeftHead = "leftHead",
+  RightHead = "rightHead",
 }
 
 export class HitLocations {
@@ -43,8 +43,8 @@ export class HitLocation {
   constructor(
     public dieFrom: number,
     public dieTo: number,
-    public hp: Tracked, // Max and value added by ActorSheet.prepareData
-    public ap: Tracked, // Modifiable values
+    public hp: Resource, // Max and value added by ActorSheet.prepareData
+    public ap: Resource, // Modifiable values
     public wounds: Array<number> = []
   ) {}
 }
@@ -60,26 +60,26 @@ export class HitLocation {
 // }
 
 export const emptyHumanoidHitLocations = new HitLocations(
-  new HitLocation(19, 20, emptyTracked, emptyTracked),
-  new HitLocation(16, 18, emptyTracked, emptyTracked),
-  new HitLocation(13, 15, emptyTracked, emptyTracked),
-  new HitLocation(12, 12, emptyTracked, emptyTracked),
-  new HitLocation(9, 11, emptyTracked, emptyTracked),
-  new HitLocation(5, 8, emptyTracked, emptyTracked),
-  new HitLocation(1, 4, emptyTracked, emptyTracked),
+  new HitLocation(19, 20, emptyResource, emptyResource),
+  new HitLocation(16, 18, emptyResource, emptyResource),
+  new HitLocation(13, 15, emptyResource, emptyResource),
+  new HitLocation(12, 12, emptyResource, emptyResource),
+  new HitLocation(9, 11, emptyResource, emptyResource),
+  new HitLocation(5, 8, emptyResource, emptyResource),
+  new HitLocation(1, 4, emptyResource, emptyResource),
   undefined,
   undefined
 );
 
 // TODO Just getting a feel for creating other creatures...
 export const emptyHumanoidWingedHitLocations = new HitLocations(
-  new HitLocation(19, 20, emptyTracked, emptyTracked),
-  new HitLocation(17, 18, emptyTracked, emptyTracked),
-  new HitLocation(15, 16, emptyTracked, emptyTracked),
-  new HitLocation(10, 10, emptyTracked, emptyTracked),
-  new HitLocation(7, 9, emptyTracked, emptyTracked),
-  new HitLocation(4, 6, emptyTracked, emptyTracked),
-  new HitLocation(1, 3, emptyTracked, emptyTracked),
-  new HitLocation(13, 14, emptyTracked, emptyTracked),
-  new HitLocation(11, 12, emptyTracked, emptyTracked)
+  new HitLocation(19, 20, emptyResource, emptyResource),
+  new HitLocation(17, 18, emptyResource, emptyResource),
+  new HitLocation(15, 16, emptyResource, emptyResource),
+  new HitLocation(10, 10, emptyResource, emptyResource),
+  new HitLocation(7, 9, emptyResource, emptyResource),
+  new HitLocation(4, 6, emptyResource, emptyResource),
+  new HitLocation(1, 3, emptyResource, emptyResource),
+  new HitLocation(13, 14, emptyResource, emptyResource),
+  new HitLocation(11, 12, emptyResource, emptyResource)
 );

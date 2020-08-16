@@ -1,20 +1,20 @@
 import { IPhysicalItem } from "./IPhysicalItem";
-import { emptyTracked, Tracked } from "../shared/tracked";
+import { emptyResource, Resource } from "../shared/resource";
 
 export type MeleeWeaponData = IPhysicalItem & {
   description: string;
-  damage: Tracked;
-  strikeRank: Tracked;
-  hitPoints: Tracked;
+  damage: Resource;
+  strikeRank: Resource;
+  hitPoints: Resource;
   quantity: number;
   encumbrance: number;
 };
 
 export const emptyMeleeWeapon: MeleeWeaponData = {
-  damage: emptyTracked,
+  damage: emptyResource,
   description: "",
-  strikeRank: emptyTracked,
-  hitPoints: emptyTracked,
+  strikeRank: emptyResource,
+  hitPoints: emptyResource,
   quantity: 1,
   encumbrance: 1,
   equipped: false,

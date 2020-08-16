@@ -1,9 +1,10 @@
-import { SkillData } from "../data-model/item-data/skill";
+import { SkillData } from "../data-model/item-data/skillData";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { BaseItem } from "./baseItem";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class Skill extends BaseItem {
-  entityName = "skill";
+  entityName: string = ItemTypeEnum.Skill;
 
   public static async prepareItemForActorSheet(
     item: Item<SkillData>,

@@ -1,17 +1,17 @@
 export class SkillCategories {
   constructor(
-    public Agility: number = 0,
-    public Communication: number = 0,
-    public Knowledge: number = 0,
-    public Magic: number = 0,
-    public Manipulation: number = 0,
-    public Perception: number = 0,
-    public Stealth: number = 0,
-    public MeleeWeapons: number = 0,
-    public MissileWeapons: number = 0,
-    public Shields: number = 0,
-    public NaturalWeapons: number = 0,
-    public OtherSkills: number = 0
+    public agility: number = 0,
+    public communication: number = 0,
+    public knowledge: number = 0,
+    public magic: number = 0,
+    public manipulation: number = 0,
+    public perception: number = 0,
+    public stealth: number = 0,
+    public meleeWeapons: number = 0,
+    public missileWeapons: number = 0,
+    public shields: number = 0,
+    public naturalWeapons: number = 0,
+    public otherSkills: number = 0
   ) {}
 }
 

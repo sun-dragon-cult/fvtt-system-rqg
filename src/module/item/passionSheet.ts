@@ -1,10 +1,10 @@
-import { passionType } from "../data-model/item-data/itemTypes";
-import { PassionsEnum } from "../data-model/item-data/passion";
+import { PassionsEnum } from "../data-model/item-data/passionData";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class PassionSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", passionType],
+      classes: ["rqg", "sheet", ItemTypeEnum.Passion],
       template: "systems/rqg/module/item/passionSheet.html",
       width: 520,
       height: 250,
@@ -13,7 +13,7 @@ export class PassionSheet extends ItemSheet {
 
   getData(): ItemSheetData {
     const data = super.getData();
-    data.data.passionTypes = Object.keys(PassionsEnum);
+    data.data.passionTypes = Object.values(PassionsEnum);
     return data;
   }
 }

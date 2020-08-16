@@ -30,13 +30,13 @@ export class RqgCalculations {
     const chest = baseHp + 1;
     const arms = baseHp - 1;
     return [
-      [HitLocationsEnum.head, baseHp],
-      [HitLocationsEnum.leftArm, arms],
-      [HitLocationsEnum.rightArm, arms],
-      [HitLocationsEnum.chest, chest],
-      [HitLocationsEnum.abdomen, baseHp],
-      [HitLocationsEnum.leftLeg, baseHp],
-      [HitLocationsEnum.rightLeg, baseHp],
+      [HitLocationsEnum.Head, baseHp],
+      [HitLocationsEnum.LeftArm, arms],
+      [HitLocationsEnum.RightArm, arms],
+      [HitLocationsEnum.Chest, chest],
+      [HitLocationsEnum.Abdomen, baseHp],
+      [HitLocationsEnum.LeftLeg, baseHp],
+      [HitLocationsEnum.RightLeg, baseHp],
     ];
   }
 

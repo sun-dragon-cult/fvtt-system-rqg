@@ -1,16 +1,11 @@
-/**
- * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
- * @extends {Actor}
- */
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { RqgCalculations } from "../rqgCalculations";
 import { HitLocation } from "../data-model/actor-data/hitLocation";
 
 export class RqgActor extends Actor {
   /**
-   * Augment the basic actor data with additional dynamic data.
+   * Augment the basic actor data with additional derived data.
    */
-  /** @override */
   prepareData() {
     super.prepareData();
 
@@ -18,7 +13,7 @@ export class RqgActor extends Actor {
     const data: RqgActorData = actorData.data;
     const flags = actorData.flags;
 
-    // Shorthand access to charactertistics
+    // Shorthand access to characteristics
     const str = data.characteristics.strength.value;
     const con = data.characteristics.constitution.value;
     const siz = data.characteristics.size.value;
@@ -68,10 +63,6 @@ export class RqgActor extends Actor {
     data.attributes.maximumEncumbrance = Math.min(str, (str + con) / 2);
     data.attributes.movementRate = 8; // TODO Humans only for now
 
-    // Make separate methods for each Actor type (character, npc, etc.) to keep
-    // things organized.
-    // if (actorData.type === 'character') this._prepareCharacterData(actorData);
-
     const agilityMod =
       RqgCalculations.flattenedMod(str) -
       RqgCalculations.flattenedMod(siz) +
@@ -99,18 +90,18 @@ export class RqgActor extends Actor {
       RqgCalculations.flattenedMod(pow);
 
     data.skillCategoryModifiers = {
-      Agility: agilityMod,
-      Communication: communicationMod,
-      Knowledge: knowledgeMod,
-      Magic: magicMod,
-      Manipulation: manipulationMod,
-      Perception: perceptionMod,
-      Stealth: stealthMod,
-      MeleeWeapons: manipulationMod,
-      MissileWeapons: manipulationMod,
-      NaturalWeapons: manipulationMod,
-      Shields: manipulationMod,
-      OtherSkills: 0,
+      agility: agilityMod,
+      communication: communicationMod,
+      knowledge: knowledgeMod,
+      magic: magicMod,
+      manipulation: manipulationMod,
+      perception: perceptionMod,
+      stealth: stealthMod,
+      meleeWeapons: manipulationMod,
+      missileWeapons: manipulationMod,
+      naturalWeapons: manipulationMod,
+      shields: manipulationMod,
+      otherSkills: 0,
     };
   }
 

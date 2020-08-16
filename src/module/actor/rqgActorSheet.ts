@@ -1,4 +1,4 @@
-import { SkillCategoryEnum } from "../data-model/item-data/skill";
+import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import {
   HomeLandEnum,
   OccupationEnum,
@@ -8,7 +8,6 @@ import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class RqgActorSheet extends ActorSheet {
-  /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", "actor"],
@@ -28,7 +27,6 @@ export class RqgActorSheet extends ActorSheet {
 
   /* -------------------------------------------- */
 
-  /** @override */
   getData(): ActorSheetData {
     // TODO move to Actor prepareData instead?
     const sheetData: any = super.getData();
@@ -57,21 +55,18 @@ export class RqgActorSheet extends ActorSheet {
       movement: "systems/rqg/icons/runes/movement_change.svg",
     };
 
-    // Occupations
-    data.occupations = Object.keys(OccupationEnum);
-
-    // Homelands
-    data.homelands = Object.keys(HomeLandEnum);
+    data.occupations = Object.values(OccupationEnum);
+    data.homelands = Object.values(HomeLandEnum);
 
     // Separate different item types into separate arrays
     const passions = sheetData.items.filter(
-      (i: Item) => i.type === ItemTypeEnum.Passion.toString()
+      (i: Item) => i.type === ItemTypeEnum.Passion
     );
     const allSkills = sheetData.items.filter(
-      (i: Item) => i.type === ItemTypeEnum.Skill.toString()
+      (i: Item) => i.type === ItemTypeEnum.Skill
     );
     const skills = {};
-    Object.keys(SkillCategoryEnum).forEach((cat: string) => {
+    Object.values(SkillCategoryEnum).forEach((cat: string) => {
       skills[cat] = allSkills.filter((s) => cat === s.data.category);
     });
 
@@ -82,7 +77,6 @@ export class RqgActorSheet extends ActorSheet {
     return sheetData;
   }
 
-  /** @override */
   activateListeners(html): void {
     super.activateListeners(html);
 
@@ -122,53 +116,6 @@ export class RqgActorSheet extends ActorSheet {
     });
   }
 
-  /* -------------------------------------------- */
-
-  /** @override */
-  // setPosition(options={}) {
-  //   const position = super.setPosition(options);
-  //   console.log('*** *** this.element', this.element);
-  //   const sheetBody = (this.element as Element).querySelector(".sheet-body");
-  //   const bodyHeight = position.height - 192;
-  //   sheetBody.setAttribute("style", `"height: ${bodyHeight};"`);
-  //   return position;
-  // }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Listen for click events on an attribute control to modify the composition of attributes in the sheet
-   * @param {MouseEvent} event    The originating left click event
-   * @private
-   */
-  // async _onClickAttributeControl(event) {
-  //   event.preventDefault();
-  //   const a = event.currentTarget;
-  //   const action = a.dataset.action;
-  //   const attrs = this.object.data.data.attributes;
-  //   const form = this.form;
-  //
-  //   // Add new attribute
-  //   if ( action === "create" ) {
-  //     const nk = Object.keys(attrs).length + 1;
-  //     let newKey: Element = document.createElement("div");
-  //     newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}"/>`;
-  //     newKey = newKey.children[0];
-  //     form.appendChild(newKey);
-  //     await this._onSubmit(event);
-  //   }
-  //
-  //   // Remove existing attribute
-  //   else if ( action === "delete" ) {
-  //     const li = a.closest(".attribute");
-  //     li.parentElement.removeChild(li);
-  //     await this._onSubmit(event);
-  //   }
-  // }
-
-  /* -------------------------------------------- */
-
-  /** @override */
   _updateObject(event: Event, formData: any): Promise<any> {
     // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
     console.log("*** Event + formData", event.target, formData);
