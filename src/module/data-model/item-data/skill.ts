@@ -27,6 +27,5 @@ export const emptySkill: SkillData = {
   category: SkillCategoryEnum.Agility,
   baseChance: 0,
   learnedChance: 0,
-  chance: 0,
   experience: false,
 };
