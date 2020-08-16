@@ -1,8 +1,8 @@
 export enum ItemTypeEnum {
   Skill = "skill",
   Passion = "passion",
-  ElementalRunes = "elementalRunes",
-  PowerRunes = "elementalRunes",
+  ElementalRune = "elementalRune",
+  PowerRune = "powerRune",
   MeleeWeapon = "meleeWeapon",
   MissileWeapon = "missileWeapon",
   Shield = "shield",

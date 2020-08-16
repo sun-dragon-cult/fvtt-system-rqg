@@ -8,6 +8,7 @@ import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
 import { PassionSheet } from "./module/item/passionSheet";
 import { SkillSheet } from "./module/item/skillSheet";
 import { RqgItem } from "./module/item/rqgItem";
+import { ElementalRuneSheet } from "./module/item/elementalRuneSheet";
 
 /* ------------------------------------ */
 /* Initialize system					*/
@@ -56,6 +57,10 @@ Hooks.once("init", async () => {
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("rqg", PassionSheet, {
     types: [ItemTypeEnum.Passion],
+    makeDefault: true,
+  });
+  Items.registerSheet("rqg", ElementalRuneSheet, {
+    types: [ItemTypeEnum.ElementalRune],
     makeDefault: true,
   });
   Items.registerSheet("rqg", SkillSheet, {

@@ -1,23 +1,11 @@
 <div class="elemental norse">
   <h2>Elemental</h2>
-  {{#each data.elements}}
-  <span class="norse">
-    <label>
-      {{@key}}
-      <img src="{{lookup @root.data.runeIcons @key}}" />
-      <input
-        type="text"
-        name="data.elements.{{@key}}.chance"
-        value="{{this.chance}}"
-        data-dtype="Number"
-      />
-      <input
-        type="checkbox"
-        name="data.elements.{{@key}}.experience"
-        {{checked
-        this.experience}}
-      />
-    </label>
-  </span>
+  {{#each data.itemGroups.elementalRunes}}
+    <span data-item-id="{{this._id}}">
+      <span data-item-roll>{{this.name}}</span>
+      <span data-item-roll><img src="{{this.img}}"/></span>
+      <span data-item-roll>{{this.data.chance}}</span>
+      <span data-item-edit>{{this.data.experience}}</span>
+    </span>
   {{/each}}
 </div>

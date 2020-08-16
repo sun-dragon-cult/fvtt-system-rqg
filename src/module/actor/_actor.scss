@@ -116,7 +116,6 @@
   }
 }
 
-.elemental,
 .power {
   img {
     position: relative;
@@ -128,6 +127,11 @@
   span {
     display: flex;
     justify-content: flex-end;
+    margin-left: 4px;
+  }
+  img {
+    position: relative;
+    top: -5px;
   }
 }
 

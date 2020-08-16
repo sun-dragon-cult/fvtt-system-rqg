@@ -13,6 +13,7 @@ export const preloadTemplates = async function () {
 
     "systems/rqg/module/item/passionSheet.html",
     "systems/rqg/module/item/skillSheet.html",
+    "systems/rqg/module/item/elementalRuneSheet.html",
   ];
 
   return loadTemplates(templatePaths);
