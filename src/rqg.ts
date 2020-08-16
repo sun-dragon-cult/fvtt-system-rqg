@@ -7,11 +7,12 @@ import { RqgActor } from "./module/actor/rqgActor.js";
 import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
 import { PassionSheet } from "./module/item/passionSheet";
 import { SkillSheet } from "./module/item/skillSheet";
+import { RqgItem } from "./module/item/rqgItem";
 
 /* ------------------------------------ */
 /* Initialize system					*/
 /* ------------------------------------ */
-Hooks.once("init", async function () {
+Hooks.once("init", async () => {
   console.log("RQG | Initializing the Runequest Glorantha Game System");
 
   // Assign custom classes and constants here
@@ -26,6 +27,7 @@ Hooks.once("init", async function () {
 
   // Define custom Entity classes
   CONFIG.Actor.entityClass = RqgActor;
+  CONFIG.Item.entityClass = RqgItem;
 
   // Register custom system settings
   registerSettings();
@@ -144,7 +146,7 @@ Hooks.once("init", async function () {
 /* ------------------------------------ */
 /* Setup system						            	*/
 /* ------------------------------------ */
-Hooks.once("setup", function () {
+Hooks.once("setup", () => {
   console.log("*** System is setup hook *** DEBUG");
   // Do anything after initialization but before
   // ready
@@ -153,10 +155,25 @@ Hooks.once("setup", function () {
 /* ------------------------------------ */
 /* When ready					              		*/
 /* ------------------------------------ */
-Hooks.once("ready", function () {
+Hooks.once("ready", () => {
   console.log("*** System is ready hook *** DEBUG");
   // Do anything once the system is ready
 });
+
+// Hooks.on(
+//   "renderActorSheet",
+//   (actorSheet: RqgActorSheet, htmlElement: HTMLElement, actorObject) => {
+//     const actorData: ActorData<RqgActorData> = actorObject.actor;
+//     const embeddedItems: Items = actorObject.items;
+//     console.log("**** hook actorObject", actorObject);
+//     embeddedItems
+//       .filter((i: Item) => i.type === ItemTypeEnum.Skill.toString())
+//       .forEach((s: Item<SkillData>) => {
+//         console.log("*** Calling from rqg.ts with item", s);
+//         SkillSheet.calculateSkillChance(s);
+//       });
+//   }
+// );
 
 /* ------------------------------------ */
 /* When creating new Actor (see Swade system)							*/

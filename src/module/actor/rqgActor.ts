@@ -5,7 +5,6 @@
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { RqgCalculations } from "../rqgCalculations";
 import { HitLocation } from "../data-model/actor-data/hitLocation";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class RqgActor extends Actor {
   /**
@@ -107,49 +106,24 @@ export class RqgActor extends Actor {
       Manipulation: manipulationMod,
       Perception: perceptionMod,
       Stealth: stealthMod,
+      MeleeWeapons: manipulationMod,
+      MissileWeapons: manipulationMod,
+      NaturalWeapons: manipulationMod,
+      Shields: manipulationMod,
+      OtherSkills: 0,
     };
-
-    console.log("THIS items", this);
   }
 
   // prepareEmbeddedEntities(): void {
   //   super.prepareEmbeddedEntities();
-  //
-  //   // Add the calculated skill chance including skill category modifiers
-  //   const skillCatMod = this.data.data.skillCategoryModifiers;
-  //
-  //   console.log("*** RqgActor.prepareEmbeddedEntities items", this.items);
-  //
+  //   console.log("THIS prepareEmbeddedEntities", this);
   //   this.items
-  //     .filter((i) => i.data.type === ItemTypeEnum.Skill)
-  //     .forEach((s) => {
-  //       // Unless you've learned a base 0 skill you can't use your category modifier.
-  //       s.data.data.chance =
-  //         s.data.data.baseChance > 0 || s.data.data.learnedChance > 0
-  //           ? s.data.data.learnedChance + skillCatMod[s.data.data.category]
-  //           : 0;
+  //     .filter((i: Item) => i.data.type === ItemTypeEnum.Skill.toString())
+  //     .forEach((skill) => {
+  //       console.log("*** RqgActor.prepareEmbeddedEntities skill", skill);
+  //       SkillSheet.calculateSkillChance(skill);
   //     });
   // }
-
-  /**
-   * Prepare Character type specific data
-   */
-  _prepareCharacterData(actorData) {
-    const data: RqgActorData = actorData.data;
-
-    // Make modifications to data here.
-
-    // TODO  modifying the base chance
-    //   private static calcHitPoints(data: RqgActorData): number {
-    //     return data.characteristics.constitution.value;
-    //   }
-
-    // Loop through ability scores, and add their modifiers to our sheet output.
-    // for (let [key, ability] of Object.entries(data.abilities)) {
-    //   // Calculate the modifier using d20 rules.
-    //   ability.mod = Math.floor((ability.value - 10) / 2);
-    // }
-  }
 
   RollData() {
     // const data = super.getRollData();

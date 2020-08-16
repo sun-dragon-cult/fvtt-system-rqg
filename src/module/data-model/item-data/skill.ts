@@ -19,11 +19,14 @@ export type SkillData = IAbility & {
   category: SkillCategoryEnum;
   baseChance: number;
   learnedChance: number;
+  chance?: number;
+  categoryMod?: number;
 };
 
 export const emptySkill: SkillData = {
   category: SkillCategoryEnum.Agility,
   baseChance: 0,
   learnedChance: 0,
+  chance: 0,
   experience: false,
 };

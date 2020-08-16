@@ -6,7 +6,12 @@ export class SkillCategories {
     public Magic: number = 0,
     public Manipulation: number = 0,
     public Perception: number = 0,
-    public Stealth: number = 0
+    public Stealth: number = 0,
+    public MeleeWeapons: number = 0,
+    public MissileWeapons: number = 0,
+    public Shields: number = 0,
+    public NaturalWeapons: number = 0,
+    public OtherSkills: number = 0
   ) {}
 }
 
