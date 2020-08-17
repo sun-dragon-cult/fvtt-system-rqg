@@ -11,9 +11,9 @@ export const preloadTemplates = async function () {
     "systems/rqg/module/actor/parts/elemental.html",
     "systems/rqg/module/actor/parts/power.html",
 
-    "systems/rqg/module/item/passionSheet.html",
-    "systems/rqg/module/item/skillSheet.html",
-    "systems/rqg/module/item/elementalRuneSheet.html",
+    "systems/rqg/module/item/passion-item/passionSheet.html",
+    "systems/rqg/module/item/skill-item/skillSheet.html",
+    "systems/rqg/module/item/elemental-rune-item/elementalRuneSheet.html",
   ];
 
   return loadTemplates(templatePaths);

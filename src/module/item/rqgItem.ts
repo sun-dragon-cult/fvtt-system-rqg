@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { Skill } from "./skill";
+import { Skill } from "./skill-item/skill";
 import { BaseItem } from "./baseItem";
 
 export class RqgItem extends Item {

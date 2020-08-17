@@ -1,14 +1,14 @@
 import {
   SkillCategoryEnum,
   SkillData,
-} from "../data-model/item-data/skillData";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+} from "../../data-model/item-data/skillData";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export class SkillSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
-      template: "systems/rqg/module/item/skillSheet.html",
+      template: "systems/rqg/module/item/skill-item/skillSheet.html",
       width: 520,
       height: 250,
     });

@@ -1,7 +1,7 @@
-import { SkillData } from "../data-model/item-data/skillData";
-import { RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { BaseItem } from "./baseItem";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { SkillData } from "../../data-model/item-data/skillData";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
+import { BaseItem } from "../baseItem";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export class Skill extends BaseItem {
   entityName: string = ItemTypeEnum.Skill;

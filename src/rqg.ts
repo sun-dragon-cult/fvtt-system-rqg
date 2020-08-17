@@ -5,10 +5,10 @@ import { RqgActorSheet } from "./module/actor/rqgActorSheet.js";
 import { RqgActor } from "./module/actor/rqgActor.js";
 
 import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
-import { PassionSheet } from "./module/item/passionSheet";
-import { SkillSheet } from "./module/item/skillSheet";
+import { PassionSheet } from "./module/item/passion-item/passionSheet";
+import { SkillSheet } from "./module/item/skill-item/skillSheet";
 import { RqgItem } from "./module/item/rqgItem";
-import { ElementalRuneSheet } from "./module/item/elementalRuneSheet";
+import { ElementalRuneSheet } from "./module/item/elemental-rune-item/elementalRuneSheet";
 
 import elementalRunes from "./default-items/elementalRunes";
 
@@ -31,6 +31,8 @@ Hooks.once("init", async () => {
   // Define custom Entity classes
   CONFIG.Actor.entityClass = RqgActor;
   CONFIG.Item.entityClass = RqgItem;
+
+  CONFIG.debug.hooks = true; // console log when hooks fire
 
   // Register custom system settings
   registerSettings();
@@ -153,16 +155,12 @@ Hooks.once("init", async () => {
 /* ------------------------------------ */
 /* Setup system						            	*/
 /* ------------------------------------ */
-Hooks.once("setup", async () => {
-  console.log("*** System is setup hook *** DEBUG");
-});
+Hooks.once("setup", async () => {});
 
 /* ------------------------------------ */
 /* When ready					              		*/
 /* ------------------------------------ */
-Hooks.once("ready", async () => {
-  console.log("*** System is ready hook *** DEBUG");
-});
+Hooks.once("ready", async () => {});
 
 // Hooks.on(
 //   "renderActorSheet",
@@ -196,3 +194,7 @@ Hooks.on(
     }
   }
 );
+
+Hooks.on("updateActor", async (actor: Actor, data, options, someId) => {
+  // TODO if options.diff === true Update actor skillItems using data.characteristics.dexterity.value
+});
