@@ -14,7 +14,9 @@
   "scripts": [],
   "esmodules": ["rqg.js"],
   "styles": ["rqg.css"],
-  "packs": [],
+  "packs": [
+
+  ],
   "languages": [
     {
       "lang": "en",

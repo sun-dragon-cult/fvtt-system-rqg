@@ -216,6 +216,7 @@ async function copyFiles() {
     "i18n",
     "fonts",
     "icons",
+    "default-items",
     "module",
     "module.json",
     "system.json",
@@ -239,7 +240,13 @@ function buildWatch() {
   gulp.watch("src/**/*.ts", { ignoreInitial: false }, buildTS);
   gulp.watch("src/**/*.scss", { ignoreInitial: false }, buildSASS);
   gulp.watch(
-    ["src/fonts", "src/i18n", "src/**/*.html", "src/*.json"],
+    [
+      "src/fonts",
+      "src/i18n",
+      "src/default-items",
+      "src/**/*.html",
+      "src/*.json",
+    ],
     { ignoreInitial: false },
     copyFiles
   );
@@ -260,6 +267,7 @@ async function clean() {
   files.push(
     "i18n",
     "icons",
+    "default-items",
     "module",
     `${name}.js`,
     "module.json",

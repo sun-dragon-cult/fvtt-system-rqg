@@ -10,6 +10,8 @@ import { SkillSheet } from "./module/item/skillSheet";
 import { RqgItem } from "./module/item/rqgItem";
 import { ElementalRuneSheet } from "./module/item/elementalRuneSheet";
 
+import elementalRunes from "./default-items/elementalRunes";
+
 /* ------------------------------------ */
 /* Initialize system					*/
 /* ------------------------------------ */
@@ -151,18 +153,15 @@ Hooks.once("init", async () => {
 /* ------------------------------------ */
 /* Setup system						            	*/
 /* ------------------------------------ */
-Hooks.once("setup", () => {
+Hooks.once("setup", async () => {
   console.log("*** System is setup hook *** DEBUG");
-  // Do anything after initialization but before
-  // ready
 });
 
 /* ------------------------------------ */
 /* When ready					              		*/
 /* ------------------------------------ */
-Hooks.once("ready", () => {
+Hooks.once("ready", async () => {
   console.log("*** System is ready hook *** DEBUG");
-  // Do anything once the system is ready
 });
 
 // Hooks.on(
@@ -182,23 +181,18 @@ Hooks.once("ready", () => {
 
 /* ------------------------------------ */
 /* When creating new Actor (see Swade system)							*/
-/* ------------------------------------ */
-// Hooks.on(
-//   'createActor',
-//   async (actor: RqgActor, options: any, userId: String) => {
-//     if (actor.data.type === 'character' && options.renderSheet) {
-//       const skillsToFind = [
-//         'Boat',
-//         'Swim'
-//         // ...
-//       ];
-//       const skillIndex = (await game.packs
-//         .get('rqg.skills')
-//         .getContent()) as SwadeItem[];
-//       actor.createEmbeddedEntity(
-//         'OwnedItem',
-//         skillIndex.filter((i) => skillsToFind.includes(i.data.name)),
-//       );
-//     }
-//   },
-// );
+
+Hooks.on(
+  "createActor",
+  async (actor: RqgActor, options: any, userId: String) => {
+    if (actor.data.type === "character" && options.renderSheet) {
+      // const elementalRunes = (await game.packs
+      //   .get("world.elementalrunes")
+      //   .getContent()) as ElementalRuneData[];
+      //
+      // await actor.createEmbeddedEntity("OwnedItem", elementalRunes);
+
+      await actor.createEmbeddedEntity("OwnedItem", elementalRunes);
+    }
+  }
+);
