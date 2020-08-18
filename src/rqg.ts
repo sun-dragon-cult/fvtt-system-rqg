@@ -10,6 +10,9 @@ import { ElementalRuneSheet } from "./module/item/elemental-rune-item/elementalR
 import elementalRunes from "./default-items/elementalRunes";
 import { PowerRuneSheet } from "./module/item/power-rune-item/powerRuneSheet";
 import powerRunes from "./default-items/powerRunes";
+import { HitLocationSheet } from "./module/item/hit-location-item/hitLocationSheet";
+import hitLocations from "./default-items/hitLocations";
+import { humanoid } from "./module/rqgCalculations";
 
 /* ------------------------------------ */
 /* Initialize system					*/
@@ -72,6 +75,10 @@ Hooks.once("init", async () => {
   });
   Items.registerSheet("rqg", SkillSheet, {
     types: [ItemTypeEnum.Skill],
+    makeDefault: true,
+  });
+  Items.registerSheet("rqg", HitLocationSheet, {
+    types: [ItemTypeEnum.HitLocation],
     makeDefault: true,
   });
 
@@ -189,6 +196,12 @@ Hooks.on(
     if (actor.data.type === "character" && options.renderSheet) {
       await actor.createEmbeddedEntity("OwnedItem", elementalRunes);
       await actor.createEmbeddedEntity("OwnedItem", powerRunes);
+      // TODO Add support for other races than humanoid - is race even set here?
+      await actor.createEmbeddedEntity(
+        "OwnedItem",
+        hitLocations.filter((h) => humanoid.includes(h.name))
+      );
+      // );
     }
   }
 );

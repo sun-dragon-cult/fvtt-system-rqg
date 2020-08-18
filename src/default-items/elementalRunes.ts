@@ -1,90 +1,76 @@
-import { ElementalRuneData } from "../module/data-model/item-data/elementalRuneData";
+import {
+  ElementalRuneData,
+  ElementalRuneEnum,
+} from "../module/data-model/item-data/elementalRuneData";
+import { ItemTypeEnum } from "../module/data-model/item-data/itemTypes";
 
-const elementalRunes: ElementalRuneData[] = JSON.parse(`[
+const elementalRunes: ItemData<ElementalRuneData>[] = [
   {
-    "name": "fire",
-    "permission": {
-      "default": 0
+    name: ElementalRuneEnum.Fire,
+    type: ItemTypeEnum.ElementalRune,
+    data: {
+      description: "Se RQG p.xx",
+      chance: 0,
+      experience: false,
     },
-    "type": "elementalRune",
-    "data": {
-      "description": "Se RQG p.xx",
-      "chance": 0,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/fire_sky.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/fire_sky.svg",
   },
   {
-    "name": "darkness",
-    "permission": {
-      "default": 0
+    name: ElementalRuneEnum.Darkness,
+    type: ItemTypeEnum.ElementalRune,
+    data: {
+      description: "Se RQG p.xx",
+      chance: 0,
+      experience: false,
     },
-    "type": "elementalRune",
-    "data": {
-      "description": "",
-      "chance": 0,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/darkness.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/darkness.svg",
   },
   {
-    "name": "water",
-    "permission": {
-      "default": 0
+    name: ElementalRuneEnum.Water,
+    type: ItemTypeEnum.ElementalRune,
+    data: {
+      description: "Se RQG p.xx",
+      chance: 0,
+      experience: false,
     },
-    "type": "elementalRune",
-    "data": {
-      "description": "",
-      "chance": 0,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/water.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/water.svg",
   },
   {
-    "name": "earth",
-    "permission": {
-      "default": 0
+    name: ElementalRuneEnum.Earth,
+    type: ItemTypeEnum.ElementalRune,
+    data: {
+      description: "Se RQG p.xx",
+      chance: 0,
+      experience: false,
     },
-    "type": "elementalRune",
-    "data": {
-      "description": "",
-      "chance": 0,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/earth.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/earth.svg",
   },
   {
-    "name": "air",
-    "permission": {
-      "default": 0
+    name: ElementalRuneEnum.Air,
+    type: ItemTypeEnum.ElementalRune,
+    data: {
+      description: "Se RQG p.xx",
+      chance: 0,
+      experience: false,
     },
-    "type": "elementalRune",
-    "data": {
-      "description": "",
-      "chance": 0,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/air.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/air.svg",
   },
   {
-    "name": "moon",
-    "permission": {
-      "default": 0
+    name: ElementalRuneEnum.Moon,
+    type: ItemTypeEnum.ElementalRune,
+    data: {
+      description: "Se RQG p.xx",
+      chance: 0,
+      experience: false,
     },
-    "type": "elementalRune",
-    "data": {
-      "description": "",
-      "chance": 0,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/moon_full.svg"
-  }
-]`);
+    flags: {},
+    img: "systems/rqg/icons/runes/moon_full.svg",
+  },
+];
 
 export default elementalRunes;

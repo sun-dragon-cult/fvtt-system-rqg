@@ -1,156 +1,130 @@
-import { PowerRuneData } from "../module/data-model/item-data/powerRuneData";
+import {
+  PowerRuneData,
+  PowerRuneEnum,
+} from "../module/data-model/item-data/powerRuneData";
+import { ItemTypeEnum } from "../module/data-model/item-data/itemTypes";
 
-const powerRunes: PowerRuneData[] = JSON.parse(`[
+const powerRunes: ItemData<PowerRuneData>[] = [
   {
-    "name": "man",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Man,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Beast,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "beast",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/man.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/man.svg",
   },
   {
-    "name": "beast",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Beast,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Man,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "man",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/beast.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/beast.svg",
   },
   {
-    "name": "fertility",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Fertility,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Death,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "death",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/fertility.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/fertility.svg",
   },
   {
-    "name": "death",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Death,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Fertility,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "fertility",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/death.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/death.svg",
   },
   {
-    "name": "harmony",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Harmony,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Disorder,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "disorder",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/harmony.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/harmony.svg",
   },
   {
-    "name": "disorder",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Disorder,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Harmony,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "harmony",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/disorder.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/disorder.svg",
   },
   {
-    "name": "truth",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Truth,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Illusion,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "illusion",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/truth.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/truth.svg",
   },
   {
-    "name": "illusion",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Illusion,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Truth,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "truth",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/illusion.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/illusion.svg",
   },
   {
-    "name": "stasis",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Stasis,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Movement,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "movement",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/stasis.svg"
+    flags: {},
+    img: "systems/rqg/icons/runes/stasis.svg",
   },
   {
-    "name": "movement",
-    "permission": {
-      "default": 0
+    name: PowerRuneEnum.Movement,
+    type: ItemTypeEnum.PowerRune,
+    data: {
+      opposingRune: PowerRuneEnum.Stasis,
+      description: "Se RQG p.xx",
+      chance: 50,
+      experience: false,
     },
-    "type": "powerRune",
-    "data": {
-      "opposingRune": "stasis",
-      "description": "Se RQG p.xx",
-      "chance": 50,
-      "experience": false
-    },
-    "flags": {},
-    "img": "systems/rqg/icons/runes/movement_change.svg"
-  }
-]`);
+    flags: {},
+    img: "systems/rqg/icons/runes/movement_change.svg",
+  },
+];
 
 export default powerRunes;

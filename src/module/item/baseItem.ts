@@ -1,4 +1,5 @@
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
+import { RqgItem } from "./rqgItem";
 
 export class BaseItem {
   private static entityName: string;
@@ -9,9 +10,9 @@ export class BaseItem {
    * This can be used to add additional information right before rendering.
    */
   static async prepareItemForActorSheet(
-    item: Item,
+    item: RqgItem,
     actor: Actor<RqgActorData>
-  ): Promise<Item> {
+  ): Promise<RqgItem> {
     return item;
   }
 

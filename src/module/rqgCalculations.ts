@@ -1,10 +1,20 @@
-import { HitLocationsEnum } from "./data-model/actor-data/hitLocation";
+import { HitLocationsEnum } from "./data-model/item-data/hitLocationData";
 
 type LookupTableEntry<T> = {
   from: number;
   to: number;
   result: T;
 };
+
+export const humanoid: Array<string> = [
+  HitLocationsEnum.Head,
+  HitLocationsEnum.LeftArm,
+  HitLocationsEnum.RightArm,
+  HitLocationsEnum.Chest,
+  HitLocationsEnum.Abdomen,
+  HitLocationsEnum.LeftLeg,
+  HitLocationsEnum.RightLeg,
+];
 
 export class RqgCalculations {
   public static dexSR(dex: number): number {
@@ -19,25 +29,6 @@ export class RqgCalculations {
     return (
       con + RqgCalculations.linearMod(siz) + RqgCalculations.flattenedMod(pow)
     );
-  }
-
-  // TODO Humanoid centered as of yet
-  // Returns a tuple with hit location name and hit point value
-  public static hitPointsPerLocation(
-    totalHitPoints: number
-  ): Array<[string, number]> {
-    const baseHp = Math.max(2, Math.ceil(totalHitPoints / 3));
-    const chest = baseHp + 1;
-    const arms = baseHp - 1;
-    return [
-      [HitLocationsEnum.Head, baseHp],
-      [HitLocationsEnum.LeftArm, arms],
-      [HitLocationsEnum.RightArm, arms],
-      [HitLocationsEnum.Chest, chest],
-      [HitLocationsEnum.Abdomen, baseHp],
-      [HitLocationsEnum.LeftLeg, baseHp],
-      [HitLocationsEnum.RightLeg, baseHp],
-    ];
   }
 
   public static damageBonus(str: number, siz: number): string {

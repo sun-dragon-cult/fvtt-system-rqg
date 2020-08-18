@@ -1,6 +1,5 @@
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { RqgCalculations } from "../rqgCalculations";
-import { HitLocation } from "../data-model/actor-data/hitLocation";
 
 export class RqgActor extends Actor {
   /**
@@ -27,33 +26,6 @@ export class RqgActor extends Actor {
     data.attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
     data.attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
     data.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
-
-    RqgCalculations.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
-      (tuple) => {
-        const location = data.hitLocations[tuple[0]];
-        if (location) {
-          // TODO Check if this location exists (for this race) - needs work...
-          data.hitLocations[tuple[0]].hp.max = tuple[1];
-          const damage = data.hitLocations[tuple[0]].hp.wounds
-            ? data.hitLocations[tuple[0]].hp.wounds.reduce(
-                (acc, wound) => acc - wound
-              )
-            : 0;
-          data.hitLocations[tuple[0]].hp.value =
-            data.hitLocations[tuple[0]].hp.max - damage;
-        }
-      }
-    );
-
-    RqgCalculations.hitPointsPerLocation(data.attributes.hitPoints.max).forEach(
-      (tuple) => {
-        const hitLocations: [string, HitLocation][] = Object.entries(
-          data.hitLocations
-        );
-        hitLocations.find((l) => l[0] === tuple[0])[1].hp.max = tuple[1];
-      }
-    );
-
     data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
     data.attributes.healingRate = RqgCalculations.healingRate(con);
     data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(

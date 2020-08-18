@@ -17,7 +17,7 @@ export class Characteristics {
 // Check if experience exists to see if the Characteristic can be raised with experience (show checkbox)
 const emptyExp = new Characteristic(0, false);
 const emptyNoExp = new Characteristic();
-export const emptyHumanoidCharacteristics = new Characteristics(
+export const emptyCharacteristics = new Characteristics(
   emptyNoExp,
   emptyNoExp,
   emptyNoExp,

@@ -2,9 +2,9 @@ import { emptyActorDataRqg } from "./module/data-model/actor-data/rqgActorData";
 import { emptySkill } from "./module/data-model/item-data/skillData";
 import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
 import { emptyPassion } from "./module/data-model/item-data/passionData";
-import { emptyMeleeWeapon } from "./module/data-model/item-data/meleeWeaponData";
 import { emptyElementalRune } from "./module/data-model/item-data/elementalRuneData";
 import { emptyPowerRune } from "./module/data-model/item-data/powerRuneData";
+import { emptyHitLocation } from "./module/data-model/item-data/hitLocationData";
 
 // Instantiated Actor types
 export const Actors = {
@@ -14,9 +14,10 @@ export const Actors = {
 export const Items = {
   [ItemTypeEnum.Skill]: emptySkill,
   [ItemTypeEnum.Passion]: emptyPassion,
-  [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
   [ItemTypeEnum.ElementalRune]: emptyElementalRune,
   [ItemTypeEnum.PowerRune]: emptyPowerRune,
+  [ItemTypeEnum.HitLocation]: emptyHitLocation,
+  // [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
   // [ItemTypeEnum.MissileWeapon]: emptyMissileWeapon,
   // [ItemTypeEnum.Gear]: emptyGear; quantity ENC
   // [ItemTypeEnum.Armor]: emptyArmour; AP ENC "Hit location cover"

@@ -6,6 +6,7 @@ import {
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { HitLocationData } from "../data-model/item-data/hitLocationData";
 
 export class RqgActorSheet extends ActorSheet {
   static get defaultOptions() {
@@ -54,12 +55,17 @@ export class RqgActorSheet extends ActorSheet {
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
       skills[cat] = allSkills.filter((s) => cat === s.data.category);
     });
+    const hitLocations: Item<HitLocationData> = sheetData.items.filter(
+      (i: Item) => i.type === ItemTypeEnum.HitLocation
+    );
+    // TODO Sort on dieFrom
 
     data.itemGroups = {
       skills,
       elementalRunes,
       powerRunes,
       passions,
+      hitLocations,
     };
     return sheetData;
   }

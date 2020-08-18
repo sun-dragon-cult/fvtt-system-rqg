@@ -1,0 +1,20 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img
+      class="profile-img"
+      src="{{item.img}}"
+      data-edit="img"
+      title="{{item.name}}"
+    />
+    <select name="name">
+      {{#select item.name}} {{#each data.hitLocationTypes}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select>
+    <label>Die from <input type="text" name="data.dieFrom" value="{{item.data.dieFrom}}" data-dtype="Number"/><br /></label>
+    <label>Die to <input type="text" name="data.dieTo" value="{{item.data.dieTo}}" data-dtype="Number"/><br /></label>
+    <label>AP <input type="text" name="data.ap" value="{{item.data.ap}}" data-dtype="Number"/><br /></label>
+    <span>Wounds {{json wounds}}</span>
+  </header>
+  {{json item}}
+</form>

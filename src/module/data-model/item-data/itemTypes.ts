@@ -3,6 +3,7 @@ export enum ItemTypeEnum {
   Passion = "passion",
   ElementalRune = "elementalRune",
   PowerRune = "powerRune",
+  HitLocation = "hitLocation",
   MeleeWeapon = "meleeWeapon",
   MissileWeapon = "missileWeapon",
   Shield = "shield",

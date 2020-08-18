@@ -1,17 +1,12 @@
 import { Attributes, emptyAttributes } from "./attributes";
-import {
-  Characteristics,
-  emptyHumanoidCharacteristics,
-} from "./characteristics";
+import { Characteristics, emptyCharacteristics } from "./characteristics";
 import { RaceEnum } from "./race";
-import { emptyHumanoidHitLocations, HitLocations } from "./hitLocation";
 import { Background, emptyBackground } from "./background";
 import { emptySkillCategories, SkillCategories } from "./skillCategories";
 
 export class RqgActorData {
   constructor(
     public characteristics: Characteristics,
-    public hitLocations: HitLocations, // Different races can have different hit locations
     public attributes: Attributes,
     public background: Background,
     public skillCategoryModifiers?: SkillCategories,
@@ -23,8 +18,7 @@ export class RqgActorData {
 }
 
 export const emptyActorDataRqg: RqgActorData = new RqgActorData(
-  emptyHumanoidCharacteristics,
-  emptyHumanoidHitLocations,
+  emptyCharacteristics,
   emptyAttributes,
   emptyBackground,
   emptySkillCategories
