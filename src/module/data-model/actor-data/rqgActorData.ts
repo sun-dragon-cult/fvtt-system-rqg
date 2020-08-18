@@ -16,7 +16,6 @@ export class RqgActorData {
     public background: Background,
     public skillCategoryModifiers?: SkillCategories,
     public race: RaceEnum = RaceEnum.Humanoid,
-    public runeIcons?: any, // Convenience added by ActorSheet.prepareData
     public occupations?: any, // Convenience added by ActorSheet.prepareData
     public homelands?: any, // Convenience added by ActorSheet.prepareData
     public itemGroups?: any // Convenience added by ActorSheet.prepareData
