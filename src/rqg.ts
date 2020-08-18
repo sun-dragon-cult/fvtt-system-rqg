@@ -1,16 +1,15 @@
 import { registerSettings } from "./module/settings.js";
 import { preloadTemplates } from "./module/preloadTemplates.js";
-
 import { RqgActorSheet } from "./module/actor/rqgActorSheet.js";
 import { RqgActor } from "./module/actor/rqgActor.js";
-
 import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
 import { PassionSheet } from "./module/item/passion-item/passionSheet";
 import { SkillSheet } from "./module/item/skill-item/skillSheet";
 import { RqgItem } from "./module/item/rqgItem";
 import { ElementalRuneSheet } from "./module/item/elemental-rune-item/elementalRuneSheet";
-
 import elementalRunes from "./default-items/elementalRunes";
+import { PowerRuneSheet } from "./module/item/power-rune-item/powerRuneSheet";
+import powerRunes from "./default-items/powerRunes";
 
 /* ------------------------------------ */
 /* Initialize system					*/
@@ -65,6 +64,10 @@ Hooks.once("init", async () => {
   });
   Items.registerSheet("rqg", ElementalRuneSheet, {
     types: [ItemTypeEnum.ElementalRune],
+    makeDefault: true,
+  });
+  Items.registerSheet("rqg", PowerRuneSheet, {
+    types: [ItemTypeEnum.PowerRune],
     makeDefault: true,
   });
   Items.registerSheet("rqg", SkillSheet, {
@@ -184,13 +187,8 @@ Hooks.on(
   "createActor",
   async (actor: RqgActor, options: any, userId: String) => {
     if (actor.data.type === "character" && options.renderSheet) {
-      // const elementalRunes = (await game.packs
-      //   .get("world.elementalrunes")
-      //   .getContent()) as ElementalRuneData[];
-      //
-      // await actor.createEmbeddedEntity("OwnedItem", elementalRunes);
-
       await actor.createEmbeddedEntity("OwnedItem", elementalRunes);
+      await actor.createEmbeddedEntity("OwnedItem", powerRunes);
     }
   }
 );

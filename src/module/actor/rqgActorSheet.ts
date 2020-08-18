@@ -29,31 +29,21 @@ export class RqgActorSheet extends ActorSheet {
 
   getData(): ActorSheetData {
     const sheetData: any = super.getData();
-
     const data: RqgActorData = sheetData.data;
-    // Convenience lookup for rune icons
-    data.runeIcons = {
-      // Power Runes
-      man: "systems/rqg/icons/runes/man.svg",
-      beast: "systems/rqg/icons/runes/beast.svg",
-      fertility: "systems/rqg/icons/runes/fertility.svg",
-      death: "systems/rqg/icons/runes/death.svg",
-      harmony: "systems/rqg/icons/runes/harmony.svg",
-      disorder: "systems/rqg/icons/runes/disorder.svg",
-      truth: "systems/rqg/icons/runes/truth.svg",
-      illusion: "systems/rqg/icons/runes/illusion.svg",
-      stasis: "systems/rqg/icons/runes/stasis.svg",
-      movement: "systems/rqg/icons/runes/movement_change.svg",
-    };
 
     data.occupations = Object.values(OccupationEnum);
     data.homelands = Object.values(HomeLandEnum);
 
     // Separate different item types for easy access
-
     const elementalRunes = sheetData.items.filter(
       (i: Item) => i.type === ItemTypeEnum.ElementalRune
     );
+    const powerRunes = sheetData.items
+      .filter((i: Item) => i.type === ItemTypeEnum.PowerRune)
+      .reduce((acc, item) => {
+        acc[item.name] = item;
+        return acc;
+      }, {});
     const passions = sheetData.items.filter(
       (i: Item) => i.type === ItemTypeEnum.Passion
     );
@@ -68,6 +58,7 @@ export class RqgActorSheet extends ActorSheet {
     data.itemGroups = {
       skills,
       elementalRunes,
+      powerRunes,
       passions,
     };
     return sheetData;

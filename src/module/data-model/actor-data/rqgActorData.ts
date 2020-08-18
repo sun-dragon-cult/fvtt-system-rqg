@@ -3,7 +3,6 @@ import {
   Characteristics,
   emptyHumanoidCharacteristics,
 } from "./characteristics";
-import { basicPowerRunes, PowerRunes } from "./powerRunes";
 import { RaceEnum } from "./race";
 import { emptyHumanoidHitLocations, HitLocations } from "./hitLocation";
 import { Background, emptyBackground } from "./background";
@@ -14,7 +13,6 @@ export class RqgActorData {
     public characteristics: Characteristics,
     public hitLocations: HitLocations, // Different races can have different hit locations
     public attributes: Attributes,
-    public powers: PowerRunes,
     public background: Background,
     public skillCategoryModifiers?: SkillCategories,
     public race: RaceEnum = RaceEnum.Humanoid,
@@ -29,7 +27,6 @@ export const emptyActorDataRqg: RqgActorData = new RqgActorData(
   emptyHumanoidCharacteristics,
   emptyHumanoidHitLocations,
   emptyAttributes,
-  basicPowerRunes,
   emptyBackground,
   emptySkillCategories
 );

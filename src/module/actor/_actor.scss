@@ -1,3 +1,7 @@
+[data-item-roll]:hover {
+  outline: 2px solid crimson; // TODO just temporary
+}
+
 .profile-img {
   height: 117px;
 }
@@ -117,9 +121,12 @@
 }
 
 .power {
+  .powerline, .powerline * {
+    margin: 0 4px;
+}
   img {
     position: relative;
-    top: 5px;
+    top: -5px;
   }
 }
 

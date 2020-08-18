@@ -1,197 +1,80 @@
 <div class="power norse">
   <h2>Power</h2>
-  <span class="single">
-    <label>
-      Man
-      <img src="{{data.runeIcons.man}}" />
-      <input
-        type="text"
-        name="data.powers.man.chance"
-        value="{{data.powers.man.chance}}"
-        data-dtype="Number"
-      />
-      <input
-        type="checkbox"
-        name="data.powers.man.experience"
-        {{checked
-        data.powers.man.experience}}
-      />
-    </label>
-  </span>
+  {{#with data.itemGroups.powerRunes.man}}
+    <span data-item-id="{{_id}}" class="single">
+      <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
+      <span data-item-edit> {{data.experience}} </span>
+    </span>
+  {{/with}}
+
   <span>
-    <span>
-      <input
-        type="checkbox"
-        name="data.powers.fertility.experience"
-        {{checked
-        data.powers.fertility.experience}}
-      />
-      <label>
-        <input
-          type="text"
-          name="data.powers.fertility.chance"
-          value="{{data.powers.fertility.chance}}"
-          data-dtype="Number"
-        />
-        <img src="{{data.runeIcons.fertility}}" />
-        Fertility
-      </label>
-    </span>
-    _
-    <span>
-      <label>
-        Death
-        <img src="{{data.runeIcons.death}}" />
-        <input
-          type="text"
-          name="data.powers.death.chance"
-          value="{{data.powers.death.chance}}"
-          data-dtype="Number"
-        />
-      </label>
-      <input
-        type="checkbox"
-        name="data.powers.death.experience"
-        {{checked
-        data.powers.death.experience}}
-      />
-    </span>
+    {{#with data.itemGroups.powerRunes.fertility}}
+      <span data-item-id="{{_id}}">
+        <span data-item-edit>{{data.experience}}</span>
+        <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+      </span>
+    {{/with}}
+    –
+    {{#with data.itemGroups.powerRunes.death}}
+      <span data-item-id="{{_id}}">
+        <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
+        <span data-item-edit>{{data.experience}}</span>
+      </span>
+    {{/with}}
   </span>
+
   <span>
-    <span>
-      <input
-        type="checkbox"
-        name="data.powers.harmony.experience"
-        {{checked
-        data.powers.harmony.experience}}
-      />
-      <label>
-        <input
-          type="text"
-          name="data.powers.harmony.chance"
-          value="{{data.powers.harmony.chance}}"
-          data-dtype="Number"
-        />
-        <img src="{{data.runeIcons.harmony}}" />
-        Harmony
-      </label>
-    </span>
-    _
-    <span>
-      <label>
-        Disorder
-        <img src="{{data.runeIcons.disorder}}" />
-        <input
-          type="text"
-          name="data.powers.disorder.chance"
-          value="{{data.powers.disorder.chance}}"
-          data-dtype="Number"
-        />
-      </label>
-      <input
-        type="checkbox"
-        name="data.powers.disorder.experience"
-        {{checked
-        data.powers.disorder.experience}}
-      />
-    </span>
+    {{#with data.itemGroups.powerRunes.harmony}}
+      <span data-item-id="{{_id}}">
+        <span data-item-edit>{{data.experience}}</span>
+        <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+      </span>
+    {{/with}}
+    –
+    {{#with data.itemGroups.powerRunes.disorder}}
+      <span data-item-id="{{_id}}">
+        <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
+        <span data-item-edit>{{data.experience}}</span>
+      </span>
+    {{/with}}
   </span>
+
   <span>
-    <span>
-      <input
-        type="checkbox"
-        name="data.powers.truth.experience"
-        {{checked
-        data.powers.truth.experience}}
-      />
-      <label>
-        <input
-          type="text"
-          name="data.powers.truth.chance"
-          value="{{data.powers.truth.chance}}"
-          data-dtype="Number"
-        />
-        <img src="{{data.runeIcons.truth}}" />
-        Truth
-      </label>
-    </span>
-    _
-    <span>
-      <label>
-        Illusion
-        <img src="{{data.runeIcons.illusion}}" />
-        <input
-          type="text"
-          name="data.powers.illusion.chance"
-          value="{{data.powers.illusion.chance}}"
-          data-dtype="Number"
-        />
-      </label>
-      <input
-        type="checkbox"
-        name="data.powers.illusion.experience"
-        {{checked
-        data.powers.illusion.experience}}
-      />
-    </span>
+    {{#with data.itemGroups.powerRunes.truth}}
+      <span data-item-id="{{_id}}">
+        <span data-item-edit>{{data.experience}}</span>
+        <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+      </span>
+    {{/with}}
+    –
+    {{#with data.itemGroups.powerRunes.illusion}}
+      <span data-item-id="{{_id}}">
+        <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
+        <span data-item-edit>{{data.experience}}</span>
+      </span>
+    {{/with}}
   </span>
+
   <span>
-    <span>
-      <input
-        type="checkbox"
-        name="data.powers.stasis.experience"
-        {{checked
-        data.powers.stasis.experience}}
-      />
-      <label>
-        <input
-          type="text"
-          name="data.powers.stasis.chance"
-          value="{{data.powers.stasis.chance}}"
-          data-dtype="Number"
-        />
-        <img src="{{data.runeIcons.stasis}}" />
-        Stasis
-      </label>
-    </span>
-    _
-    <span>
-      <label>
-        Movement
-        <img src="{{data.runeIcons.movement}}" />
-        <input
-          type="text"
-          name="data.powers.movement.chance"
-          value="{{data.powers.movement.chance}}"
-          data-dtype="Number"
-        />
-      </label>
-      <input
-        type="checkbox"
-        name="data.powers.movement.experience"
-        {{checked
-        data.powers.movement.experience}}
-      />
-    </span>
+    {{#with data.itemGroups.powerRunes.stasis}}
+      <span data-item-id="{{_id}}">
+        <span data-item-edit>{{data.experience}}</span>
+        <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+      </span>
+    {{/with}}
+    –
+    {{#with data.itemGroups.powerRunes.movement}}
+      <span data-item-id="{{_id}}">
+        <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
+        <span data-item-edit>{{data.experience}}</span>
+      </span>
+    {{/with}}
   </span>
-  <span class="single">
-    <span>
-      <input
-        type="checkbox"
-        name="data.powers.beast.experience"
-        {{checked
-        data.powers.beast.experience}}
-      />
-      <label>
-        <input
-          type="text"
-          name="data.powers.beast.chance"
-          value="{{data.powers.beast.chance}}"
-          data-dtype="Number"
-        />
-        <img src="{{data.runeIcons.beast}}" />
-        Beast
-      </label>
+
+  {{#with data.itemGroups.powerRunes.beast}}
+    <span data-item-id="{{_id}}" class="single">
+      <span data-item-edit> {{data.experience}} </span>
+      <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
     </span>
-  </span>
+  {{/with}}
 </div>
