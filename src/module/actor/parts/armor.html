@@ -2,19 +2,19 @@
   <h2>Armor</h2>
   <div class="acolumns">
     <div class="armorline">
-      {{#each data.itemGroups.hitLocations}}
+      {{#each data.ownedItems.hitLocations}}
       <div data-item-id="{{this._id}}" data-item-edit>{{this.name}}</div>
       {{/each}}
     </div>
 
     <div class="armorline ml-5">
-      {{#each data.itemGroups.hitLocations}}
+      {{#each data.ownedItems.hitLocations}}
       <div data-item-id="{{this._id}}" data-item-edit>HP {{this.data.hp.value}} / {{this.data.hp.max}}</div>
       {{/each}}
     </div>
 
     <div class="armorline ml-5">
-      {{#each data.itemGroups.hitLocations}}
+      {{#each data.ownedItems.hitLocations}}
       <div class="ml-5" data-item-id="{{this._id}}" data-item-edit>AP {{this.data.ap}}</div>
       {{/each}}
     </div>

@@ -60,7 +60,7 @@ export class RqgActorSheet extends ActorSheet {
     );
     // TODO Sort on dieFrom
 
-    data.itemGroups = {
+    data.ownedItems = {
       skills,
       elementalRunes,
       powerRunes,

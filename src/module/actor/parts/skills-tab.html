@@ -1,5 +1,5 @@
 <ol class="item-list">
-  {{#each data.itemGroups.skills}}
+  {{#each data.ownedItems.skills}}
     <h2>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
     {{#each this}}
       <li class="flexrow" data-item-id="{{this._id}}">

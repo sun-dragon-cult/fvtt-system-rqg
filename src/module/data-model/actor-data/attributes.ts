@@ -1,16 +1,17 @@
 import { emptyResource, Resource } from "../shared/resource";
 
+// Values calculated in RqgActor.prepareData with help from RqgCalculations
 export class Attributes {
   constructor(
-    public magicPoints: Resource, // Max added by ActorSheet.prepareData
-    public hitPoints: Resource, // Max added by ActorSheet.prepareData
-    public healingRate?: number, // Added by ActorSheet.prepareData
-    public damageBonus?: string, // For example "1D4" Added by ActorSheet.prepareData
-    public spiritCombatDamage?: string, // Added by ActorSheet.prepareData
-    public maximumEncumbrance?: number, // Added by ActorSheet.prepareData
-    public sizStrikeRank?: number, // Added by ActorSheet.prepareData
-    public dexStrikeRank?: number, // Added by ActorSheet.prepareData
-    public movementRate?: number // Added by ActorSheet.prepareData
+    public magicPoints: Resource,
+    public hitPoints: Resource,
+    public healingRate?: number,
+    public damageBonus?: string, // For example "1D4"
+    public spiritCombatDamage?: string, // For example "1D4"
+    public maximumEncumbrance?: number,
+    public sizStrikeRank?: number,
+    public dexStrikeRank?: number,
+    public movementRate?: number
   ) {}
 }
 

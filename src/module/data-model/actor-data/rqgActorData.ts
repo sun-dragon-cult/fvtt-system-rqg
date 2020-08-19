@@ -7,19 +7,20 @@ import { emptySkillCategories, SkillCategories } from "./skillCategories";
 export class RqgActorData {
   constructor(
     public characteristics: Characteristics,
-    public attributes: Attributes,
     public background: Background,
+    //--- All data below this is derived ---
+    public attributes: Attributes,
     public skillCategoryModifiers?: SkillCategories,
     public race: RaceEnum = RaceEnum.Humanoid,
-    public occupations?: any, // Convenience added by ActorSheet.prepareData
-    public homelands?: any, // Convenience added by ActorSheet.prepareData
-    public itemGroups?: any // Convenience added by ActorSheet.prepareData
+    public occupations?: any, // For occupation dropdown
+    public homelands?: any, // For homeland dropdown
+    public ownedItems?: any // All owned items divided into type
   ) {}
 }
 
 export const emptyActorDataRqg: RqgActorData = new RqgActorData(
   emptyCharacteristics,
-  emptyAttributes,
   emptyBackground,
+  emptyAttributes,
   emptySkillCategories
 );

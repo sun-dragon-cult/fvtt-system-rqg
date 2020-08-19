@@ -1,6 +1,6 @@
 <div class="power norse">
   <h2>Power</h2>
-  {{#with data.itemGroups.powerRunes.man}}
+  {{#with data.ownedItems.powerRunes.man}}
     <span data-item-id="{{_id}}" class="single">
       <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
       <span data-item-edit> {{data.experience}} </span>
@@ -8,14 +8,14 @@
   {{/with}}
 
   <span>
-    {{#with data.itemGroups.powerRunes.fertility}}
+    {{#with data.ownedItems.powerRunes.fertility}}
       <span data-item-id="{{_id}}">
         <span data-item-edit>{{data.experience}}</span>
         <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
       </span>
     {{/with}}
     –
-    {{#with data.itemGroups.powerRunes.death}}
+    {{#with data.ownedItems.powerRunes.death}}
       <span data-item-id="{{_id}}">
         <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
         <span data-item-edit>{{data.experience}}</span>
@@ -24,14 +24,14 @@
   </span>
 
   <span>
-    {{#with data.itemGroups.powerRunes.harmony}}
+    {{#with data.ownedItems.powerRunes.harmony}}
       <span data-item-id="{{_id}}">
         <span data-item-edit>{{data.experience}}</span>
         <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
       </span>
     {{/with}}
     –
-    {{#with data.itemGroups.powerRunes.disorder}}
+    {{#with data.ownedItems.powerRunes.disorder}}
       <span data-item-id="{{_id}}">
         <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
         <span data-item-edit>{{data.experience}}</span>
@@ -40,14 +40,14 @@
   </span>
 
   <span>
-    {{#with data.itemGroups.powerRunes.truth}}
+    {{#with data.ownedItems.powerRunes.truth}}
       <span data-item-id="{{_id}}">
         <span data-item-edit>{{data.experience}}</span>
         <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
       </span>
     {{/with}}
     –
-    {{#with data.itemGroups.powerRunes.illusion}}
+    {{#with data.ownedItems.powerRunes.illusion}}
       <span data-item-id="{{_id}}">
         <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
         <span data-item-edit>{{data.experience}}</span>
@@ -56,14 +56,14 @@
   </span>
 
   <span>
-    {{#with data.itemGroups.powerRunes.stasis}}
+    {{#with data.ownedItems.powerRunes.stasis}}
       <span data-item-id="{{_id}}">
         <span data-item-edit>{{data.experience}}</span>
         <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
       </span>
     {{/with}}
     –
-    {{#with data.itemGroups.powerRunes.movement}}
+    {{#with data.ownedItems.powerRunes.movement}}
       <span data-item-id="{{_id}}">
         <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
         <span data-item-edit>{{data.experience}}</span>
@@ -71,7 +71,7 @@
     {{/with}}
   </span>
 
-  {{#with data.itemGroups.powerRunes.beast}}
+  {{#with data.ownedItems.powerRunes.beast}}
     <span data-item-id="{{_id}}" class="single">
       <span data-item-edit> {{data.experience}} </span>
       <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
