@@ -1,15 +1,15 @@
-import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { RqgCalculations } from "../rqgCalculations";
+import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 
-export class RqgActor extends Actor {
+export class RqgActor extends Actor<RqgActorData> {
   /**
    * Augment the basic actor data with additional derived data.
    */
-  prepareData() {
+  prepareData(): void {
     super.prepareData();
 
-    const actorData: ActorData = this.data;
-    const data: RqgActorData = actorData.data;
+    const actorData = this.data;
+    const data = actorData.data;
     const flags = actorData.flags;
 
     // Shorthand access to characteristics

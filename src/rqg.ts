@@ -31,6 +31,7 @@ Hooks.once("init", async () => {
   // };
 
   // Define custom Entity classes
+  // @ts-ignore --- Wrong typing???
   CONFIG.Actor.entityClass = RqgActor;
   CONFIG.Item.entityClass = RqgItem;
 

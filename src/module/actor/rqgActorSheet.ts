@@ -1,4 +1,7 @@
-import { SkillCategoryEnum } from "../data-model/item-data/skillData";
+import {
+  SkillCategoryEnum,
+  SkillData,
+} from "../data-model/item-data/skillData";
 import {
   HomeLandEnum,
   OccupationEnum,
@@ -7,8 +10,12 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationData } from "../data-model/item-data/hitLocationData";
+import { RqgItem } from "../item/rqgItem";
+import { PowerRuneData } from "../data-model/item-data/powerRuneData";
+import { PassionData } from "../data-model/item-data/passionData";
+import { ElementalRuneData } from "../data-model/item-data/elementalRuneData";
 
-export class RqgActorSheet extends ActorSheet {
+export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", "actor"],
@@ -28,34 +35,35 @@ export class RqgActorSheet extends ActorSheet {
 
   /* -------------------------------------------- */
 
-  getData(): ActorSheetData {
-    const sheetData: any = super.getData();
+  getData(): any {
+    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
+    const items: Collection<Item<RqgItem>> = sheetData.items;
     const data: RqgActorData = sheetData.data;
 
     data.occupations = Object.values(OccupationEnum);
     data.homelands = Object.values(HomeLandEnum);
 
     // Separate different item types for easy access
-    const elementalRunes = sheetData.items.filter(
+    const elementalRunes: ItemData<ElementalRuneData>[] = items.filter(
       (i: Item) => i.type === ItemTypeEnum.ElementalRune
     );
-    const powerRunes = sheetData.items
+    const powerRunes: ItemData<PowerRuneData>[] = items
       .filter((i: Item) => i.type === ItemTypeEnum.PowerRune)
-      .reduce((acc, item) => {
+      .reduce((acc, item: Item<RqgItem>) => {
         acc[item.name] = item;
         return acc;
       }, {});
-    const passions = sheetData.items.filter(
+    const passions: ItemData<PassionData>[] = items.filter(
       (i: Item) => i.type === ItemTypeEnum.Passion
     );
-    const allSkills = sheetData.items.filter(
+    const allSkills: ItemData<SkillData>[] = items.filter(
       (i: Item) => i.type === ItemTypeEnum.Skill
     );
     const skills = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
       skills[cat] = allSkills.filter((s) => cat === s.data.category);
     });
-    const hitLocations: Item<HitLocationData> = sheetData.items.filter(
+    const hitLocations: Item<HitLocationData>[] = items.filter(
       (i: Item) => i.type === ItemTypeEnum.HitLocation
     );
     // TODO Sort on dieFrom

@@ -1,7 +1,12 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { HitLocationsEnum } from "../../data-model/item-data/hitLocationData";
+import {
+  HitLocationData,
+  HitLocationsEnum,
+} from "../../data-model/item-data/hitLocationData";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
+import { RqgItem } from "../rqgItem";
 
-export class HitLocationSheet extends ItemSheet {
+export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
@@ -12,8 +17,9 @@ export class HitLocationSheet extends ItemSheet {
     });
   }
 
+  // Wrong type definition super.getData returns ItemData<DataType> ??? I think
   getData(): ItemSheetData {
-    const data = super.getData();
+    const data: ItemData<HitLocationData> = super.getData() as ItemData;
     data.data.hitLocationTypes = Object.values(HitLocationsEnum);
     return data;
   }

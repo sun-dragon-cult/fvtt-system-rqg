@@ -30,6 +30,8 @@ export type HitLocationData = {
   hp: Resource; // Max and value added by ActorSheet.prepareData
   ap: number; // Modifiable values
   wounds: Array<number>;
+  // --- Derived / Convenience Data Below ---
+  hitLocationTypes?: HitLocationsEnum[];
 };
 
 export const emptyHitLocation: HitLocationData = {
