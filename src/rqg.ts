@@ -83,83 +83,9 @@ Hooks.once("init", async () => {
     makeDefault: true,
   });
 
-  const GloranthanCalendar = {
-    // month lengths in days - first number is non-leap year, second is leapy year
-    month_len: {
-      "Sea season - Disorder week": { days: [7, 7] },
-      "Sea season - Harmony week": { days: [7, 7] },
-      "Sea season - Death week": { days: [7, 7] },
-      "Sea season - Fertility week": { days: [7, 7] },
-      "Sea season - Stasis week": { days: [7, 7] },
-      "Sea season - Movement week": { days: [7, 7] },
-      "Sea season - Illusion week": { days: [7, 7] },
-      "Sea season - Truth week": { days: [7, 7] },
-
-      "Fire season - Disorder week": { days: [7, 7] },
-      "Fire season - Harmony week": { days: [7, 7] },
-      "Fire season - Death week": { days: [7, 7] },
-      "Fire season - Fertility week": { days: [7, 7] },
-      "Fire season - Stasis week": { days: [7, 7] },
-      "Fire season - Movement week": { days: [7, 7] },
-      "Fire season - Illusion week": { days: [7, 7] },
-      "Fire season - Truth week": { days: [7, 7] },
-
-      "Earth season - Disorder week": { days: [7, 7] },
-      "Earth season - Harmony week": { days: [7, 7] },
-      "Earth season - Death week": { days: [7, 7] },
-      "Earth season - Fertility week": { days: [7, 7] },
-      "Earth season - Stasis week": { days: [7, 7] },
-      "Earth season - Movement week": { days: [7, 7] },
-      "Earth season - Illusion week": { days: [7, 7] },
-      "Earth season - Truth week": { days: [7, 7] },
-
-      "Dark season - Disorder week": { days: [7, 7] },
-      "Dark season - Harmony week": { days: [7, 7] },
-      "Dark season - Death week": { days: [7, 7] },
-      "Dark season - Fertility week": { days: [7, 7] },
-      "Dark season - Stasis week": { days: [7, 7] },
-      "Dark season - Movement week": { days: [7, 7] },
-      "Dark season - Illusion week": { days: [7, 7] },
-      "Dark season - Truth week": { days: [7, 7] },
-
-      "Storm season - Disorder week": { days: [7, 7] },
-      "Storm season - Harmony week": { days: [7, 7] },
-      "Storm season - Death week": { days: [7, 7] },
-      "Storm season - Fertility week": { days: [7, 7] },
-      "Storm season - Stasis week": { days: [7, 7] },
-      "Storm season - Movement week": { days: [7, 7] },
-      "Storm season - Illusion week": { days: [7, 7] },
-      "Storm season - Truth week": { days: [7, 7] },
-
-      "Sacred Time - First week": { days: [7, 7] },
-      "Sacred Time - Second week": { days: [7, 7] },
-    },
-    // a function to return the number of leap years from 0 to the specified year.
-    leap_year_rule: (year) => 0,
-    // names of the days of the w. It is assumed weeklengths don't change
-    weekdays: [
-      "Freezeday",
-      "Waterday",
-      "Clayday",
-      "Windsday",
-      "Fireday",
-      "Wildday",
-      "Godsday",
-    ],
-    // year when the clock starts and time is recorded as seconds from this 1/1/clock_start_year 00:00:00. If is set to 1970 as a unix joke. you can set it to 0.
-    clock_start_year: 0,
-    // day of the w of 0/0/0 00:00:00
-    first_day: 0,
-    notes: {},
-    hours_per_day: 24,
-    seconds_per_minute: 60,
-    minutes_per_hour: 60,
-    // Is there a year
-    has_year_0: false,
-  };
   if (game.modules.get("about-time")?.active) {
-    game.Gametime.DTC.createFromData(GloranthanCalendar);
-    game.Gametime.DTC.saveUserCalendar(GloranthanCalendar);
+    game.Gametime.DTC.createFromData(game.Gametime.calendars.Glorantha);
+    game.Gametime.DTC.saveUserCalendar(game.Gametime.calendars.Glorantha);
   }
 });
 
