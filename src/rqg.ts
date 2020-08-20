@@ -15,12 +15,12 @@ import hitLocations from "./default-items/hitLocations";
 import { humanoid } from "./module/rqgCalculations";
 
 /* ------------------------------------ */
-/* Initialize system					*/
+/* Initialize system			          		*/
 /* ------------------------------------ */
 Hooks.once("init", async () => {
-  console.log("RQG | Initializing the Runequest Glorantha Game System");
-
-  // Assign custom classes and constants here
+  console.log(
+    "RQG | Initializing the Runequest Glorantha (Unofficial) Game System"
+  );
   /**
    * Set an initiative formula for the system
    * @type {String}
@@ -37,7 +37,7 @@ Hooks.once("init", async () => {
 
   CONFIG.debug.hooks = true; // console log when hooks fire
 
-  // Register custom system settings
+  // Register custom game system settings
   registerSettings();
 
   // Add Handlebar utils
@@ -47,7 +47,6 @@ Hooks.once("init", async () => {
   Handlebars.registerHelper("json", (context) => JSON.stringify(context));
 
   Handlebars.registerHelper("itemname", (itemId, actorId) => {
-    console.log("***********", itemId, actorId);
     // TODO itemId is not a global, it's in the Actor.items...
     const actor = game.actors.find((a) => a._id === actorId);
     const item = actor.items.find((i) => i.key === itemId);
@@ -57,7 +56,7 @@ Hooks.once("init", async () => {
   // Preload Handlebars templates
   await preloadTemplates();
 
-  // Register custom sheets (if any)
+  // Register custom sheets
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("rqg", RqgActorSheet, { makeDefault: true });
 
@@ -99,33 +98,17 @@ Hooks.once("setup", async () => {});
 /* ------------------------------------ */
 Hooks.once("ready", async () => {});
 
-// Hooks.on(
-//   "renderActorSheet",
-//   (actorSheet: RqgActorSheet, htmlElement: HTMLElement, actorObject) => {
-//     const actorData: ActorData<RqgActorData> = actorObject.actor;
-//     const embeddedItems: Items = actorObject.items;
-//     console.log("**** hook actorObject", actorObject);
-//     embeddedItems
-//       .filter((i: Item) => i.type === ItemTypeEnum.Skill.toString())
-//       .forEach((s: Item<SkillData>) => {
-//         console.log("*** Calling from rqg.ts with item", s);
-//         SkillSheet.calculateSkillChance(s);
-//       });
-//   }
-// );
-
 /* ------------------------------------ */
-/* When creating new Actor (see Swade system)							*/
-
+/* When creating new Actor					    */
+/* ------------------------------------ */
 Hooks.on(
   "createActor",
   async (actor: RqgActor, options: any, userId: String) => {
     if (actor.data.type === "character" && options.renderSheet) {
-      await actor.createEmbeddedEntity("OwnedItem", elementalRunes);
-      await actor.createEmbeddedEntity("OwnedItem", powerRunes);
-      // TODO Add support for other races than humanoid - is race even set here?
-      await actor.createEmbeddedEntity(
-        "OwnedItem",
+      await actor.createOwnedItem(elementalRunes);
+      await actor.createOwnedItem(powerRunes);
+      // TODO Add support for other races than humanoid - is race even set at this point?
+      await actor.createOwnedItem(
         hitLocations.filter((h) => humanoid.includes(h.name))
       );
       // );
@@ -133,6 +116,9 @@ Hooks.on(
   }
 );
 
+/* ------------------------------------ */
+/* When Actor data is updated				    */
+/* ------------------------------------ */
 Hooks.on("updateActor", async (actor: Actor, data, options, someId) => {
   // TODO if options.diff === true Update actor skillItems using data.characteristics.dexterity.value
 });
