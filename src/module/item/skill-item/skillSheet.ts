@@ -14,11 +14,11 @@ export class SkillSheet extends ItemSheet {
     });
   }
 
-  getData() {
-    const data: ItemSheetData<SkillData> = super.getData();
-    data.data.skillCategories = Object.values(SkillCategoryEnum);
-    data.data.isGM = this.actor ? !this.actor.isPC : true;
-    console.log("*** Calling from skillSheet getData with item", this.item);
-    return data;
+  getData(): any {
+    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
+    const data: SkillData = sheetData.item.data;
+    data.skillCategories = Object.values(SkillCategoryEnum);
+    data.isGM = this.actor ? !this.actor.isPC : true;
+    return sheetData;
   }
 }

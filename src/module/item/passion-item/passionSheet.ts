@@ -1,4 +1,7 @@
-import { PassionsEnum } from "../../data-model/item-data/passionData";
+import {
+  PassionData,
+  PassionsEnum,
+} from "../../data-model/item-data/passionData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export class PassionSheet extends ItemSheet {
@@ -11,9 +14,10 @@ export class PassionSheet extends ItemSheet {
     });
   }
 
-  getData(): ItemSheetData {
-    const data = super.getData();
-    data.data.passionTypes = Object.values(PassionsEnum);
-    return data;
+  getData(): any {
+    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
+    const data: PassionData = sheetData.item.data;
+    data.passionTypes = Object.values(PassionsEnum);
+    return sheetData;
   }
 }

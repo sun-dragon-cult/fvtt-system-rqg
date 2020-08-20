@@ -1,5 +1,8 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { PowerRuneEnum } from "../../data-model/item-data/powerRuneData";
+import {
+  PowerRuneData,
+  PowerRuneEnum,
+} from "../../data-model/item-data/powerRuneData";
 
 export class PowerRuneSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
@@ -11,9 +14,10 @@ export class PowerRuneSheet extends ItemSheet {
     });
   }
 
-  getData(): ItemSheetData {
-    const data = super.getData();
-    data.data.powerRuneTypes = Object.values(PowerRuneEnum);
-    return data;
+  getData(): any {
+    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
+    const data: PowerRuneData = sheetData.item.data;
+    data.powerRuneTypes = Object.values(PowerRuneEnum);
+    return sheetData;
   }
 }

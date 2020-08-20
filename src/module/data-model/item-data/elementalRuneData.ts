@@ -11,6 +11,8 @@ export enum ElementalRuneEnum {
 
 export type ElementalRuneData = IAbility & {
   description: string;
+  // --- Derived / Convenience Data Below ---
+  elementalRuneTypes?: ElementalRuneEnum[];
 };
 
 export const emptyElementalRune: ElementalRuneData = {

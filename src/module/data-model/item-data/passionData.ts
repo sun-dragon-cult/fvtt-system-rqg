@@ -12,6 +12,8 @@ export enum PassionsEnum {
 export type PassionData = IAbility & {
   passion: PassionsEnum;
   description: string;
+  // --- Derived / Convenience Data Below ---
+  passionTypes?: PassionsEnum[];
 };
 
 export const emptyPassion: PassionData = {

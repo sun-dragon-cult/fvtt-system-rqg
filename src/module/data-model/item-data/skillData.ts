@@ -19,8 +19,11 @@ export type SkillData = IAbility & {
   category: SkillCategoryEnum;
   baseChance: number;
   learnedChance: number;
+  // --- Derived / Convenience Data Below ---
   chance?: number;
   categoryMod?: number;
+  skillCategories?: SkillCategoryEnum[];
+  isGM?: boolean;
 };
 
 export const emptySkill: SkillData = {

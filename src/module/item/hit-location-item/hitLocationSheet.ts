@@ -18,9 +18,10 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
   }
 
   // Wrong type definition super.getData returns ItemData<DataType> ??? I think
-  getData(): ItemSheetData {
-    const data: ItemData<HitLocationData> = super.getData() as ItemData;
-    data.data.hitLocationTypes = Object.values(HitLocationsEnum);
-    return data;
+  getData(): any {
+    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
+    const data: HitLocationData = sheetData.item.data;
+    data.hitLocationTypes = Object.values(HitLocationsEnum);
+    return sheetData;
   }
 }

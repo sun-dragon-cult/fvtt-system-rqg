@@ -1,5 +1,8 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ElementalRuneEnum } from "../../data-model/item-data/elementalRuneData";
+import {
+  ElementalRuneData,
+  ElementalRuneEnum,
+} from "../../data-model/item-data/elementalRuneData";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
 
@@ -14,9 +17,10 @@ export class ElementalRuneSheet extends ItemSheet<RqgActorData, RqgItem> {
     });
   }
 
-  getData(): ItemSheetData {
-    const data = super.getData();
-    data.data.elementalRuneTypes = Object.values(ElementalRuneEnum);
-    return data;
+  getData(): any {
+    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
+    const data: ElementalRuneData = sheetData.item.data;
+    data.elementalRuneTypes = Object.values(ElementalRuneEnum);
+    return sheetData;
   }
 }

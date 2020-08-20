@@ -16,6 +16,8 @@ export enum PowerRuneEnum {
 export type PowerRuneData = IAbility & {
   description: string;
   opposingRune: PowerRuneEnum;
+  // --- Derived / Convenience Data Below ---
+  powerRuneTypes?: PowerRuneEnum[];
 };
 
 export const emptyPowerRune: PowerRuneData = {
