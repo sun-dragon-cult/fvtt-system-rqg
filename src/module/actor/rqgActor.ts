@@ -80,18 +80,21 @@ export class RqgActor extends Actor<RqgActorData> {
   // Defaults when creating a new Actor
   static async create(data: any, options?: object): Promise<Entity> {
     data.token = data.token || {};
-    if ( data.type === "character" ) {
-      mergeObject(data.token, {
-        vision: true,
-        dimSight: 30,
-        brightSight: 0,
-        actorLink: true,
-        disposition: 1
-      }, {overwrite: false});
+    if (data.type === "character") {
+      mergeObject(
+        data.token,
+        {
+          vision: true,
+          dimSight: 30,
+          brightSight: 0,
+          actorLink: true,
+          disposition: 1,
+        },
+        { overwrite: false }
+      );
     }
     return super.create(data, options);
   }
-
 
   // prepareEmbeddedEntities(): void {
   //   super.prepareEmbeddedEntities();

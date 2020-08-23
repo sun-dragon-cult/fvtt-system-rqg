@@ -113,7 +113,9 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     this.form.querySelectorAll("[data-item-delete]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
         .itemId;
-      el.addEventListener("click", () => this.actor.deleteOwnedItem(itemId));
+      el.addEventListener("click", () =>
+        RqgActorSheet.confirmItemDelete(this.actor, itemId)
+      );
     });
   }
 
@@ -121,5 +123,33 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
     console.log("*** Event + formData", event.target, formData);
     return this.object.update(formData);
+  }
+
+  static confirmItemDelete(actor, itemId) {
+    const item = actor.getOwnedItem(itemId);
+    new Dialog(
+      {
+        title: `Delete ${item.name}`,
+        content: "Do you want to delete this item",
+        default: "submit",
+        buttons: {
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancel",
+            callback: () => null,
+          },
+          submit: {
+            icon: '<i class="fas fa-check"></i>',
+            label: "Confirm",
+            callback: () => {
+              actor.deleteOwnedItem(itemId);
+            },
+          },
+        },
+      },
+      {
+        classes: ["rqg", "dialog"],
+      }
+    ).render(true);
   }
 }

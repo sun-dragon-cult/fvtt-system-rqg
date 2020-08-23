@@ -156,7 +156,7 @@ export class BaseItem {
         },
       },
       {
-        classes: ["fatex", "fatex__dialog"],
+        classes: ["rqg", "rqg__dialog"],
       }
     ).render(true);
   }
