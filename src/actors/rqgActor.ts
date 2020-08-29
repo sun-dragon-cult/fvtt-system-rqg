@@ -1,4 +1,4 @@
-import { RqgCalculations } from "../rqgCalculations";
+import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 
 export class RqgActor extends Actor<RqgActorData> {

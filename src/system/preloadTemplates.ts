@@ -1,0 +1,22 @@
+export const preloadTemplates = async function () {
+  const templatePaths = [
+    "systems/rqg/actors/rqgActorSheet.html",
+    "systems/rqg/actors/parts/main-tab.html",
+    "systems/rqg/actors/parts/skills-tab.html",
+    "systems/rqg/actors/parts/inventory-tab.html",
+    "systems/rqg/actors/parts/background-tab.html",
+    "systems/rqg/actors/parts/passions-tab.html",
+
+    "systems/rqg/actors/parts/armor.html",
+    "systems/rqg/actors/parts/elemental.html",
+    "systems/rqg/actors/parts/power.html",
+
+    "systems/rqg/items/passion-item/passionSheet.html",
+    "systems/rqg/items/skill-item/skillSheet.html",
+    "systems/rqg/items/elemental-rune-item/elementalRuneSheet.html",
+    "systems/rqg/items/power-rune-item/powerRuneSheet.html",
+    "systems/rqg/items/hit-location-item/hitLocationSheet.html",
+  ];
+
+  return loadTemplates(templatePaths);
+};

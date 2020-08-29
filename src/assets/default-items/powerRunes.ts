@@ -1,8 +1,8 @@
 import {
   PowerRuneData,
   PowerRuneEnum,
-} from "../module/data-model/item-data/powerRuneData";
-import { ItemTypeEnum } from "../module/data-model/item-data/itemTypes";
+} from "../../data-model/item-data/powerRuneData";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 const powerRunes: ItemData<PowerRuneData>[] = [
   {
@@ -15,7 +15,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/man.svg",
+    img: "systems/rqg/assets/icons/runes/man.svg",
   },
   {
     name: PowerRuneEnum.Beast,
@@ -27,7 +27,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/beast.svg",
+    img: "systems/rqg/assets/icons/runes/beast.svg",
   },
   {
     name: PowerRuneEnum.Fertility,
@@ -39,7 +39,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/fertility.svg",
+    img: "systems/rqg/assets/icons/runes/fertility.svg",
   },
   {
     name: PowerRuneEnum.Death,
@@ -51,7 +51,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/death.svg",
+    img: "systems/rqg/assets/icons/runes/death.svg",
   },
   {
     name: PowerRuneEnum.Harmony,
@@ -63,7 +63,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/harmony.svg",
+    img: "systems/rqg/assets/icons/runes/harmony.svg",
   },
   {
     name: PowerRuneEnum.Disorder,
@@ -75,7 +75,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/disorder.svg",
+    img: "systems/rqg/assets/icons/runes/disorder.svg",
   },
   {
     name: PowerRuneEnum.Truth,
@@ -87,7 +87,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/truth.svg",
+    img: "systems/rqg/assets/icons/runes/truth.svg",
   },
   {
     name: PowerRuneEnum.Illusion,
@@ -99,7 +99,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/illusion.svg",
+    img: "systems/rqg/assets/icons/runes/illusion.svg",
   },
   {
     name: PowerRuneEnum.Stasis,
@@ -111,7 +111,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/stasis.svg",
+    img: "systems/rqg/assets/icons/runes/stasis.svg",
   },
   {
     name: PowerRuneEnum.Movement,
@@ -123,7 +123,7 @@ const powerRunes: ItemData<PowerRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/movement_change.svg",
+    img: "systems/rqg/assets/icons/runes/movement_change.svg",
   },
 ];
 

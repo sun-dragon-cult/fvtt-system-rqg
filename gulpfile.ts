@@ -51,13 +51,9 @@ function getManifest() {
     json.root = "dist";
   }
 
-  const modulePath = path.join(json.root, "module.json");
   const systemPath = path.join(json.root, "system.json");
 
-  if (fs.existsSync(modulePath)) {
-    json.file = fs.readJSONSync(modulePath);
-    json.name = "module.json";
-  } else if (fs.existsSync(systemPath)) {
+ if (fs.existsSync(systemPath)) {
     json.file = fs.readJSONSync(systemPath);
     json.name = "system.json";
   } else {
@@ -186,7 +182,7 @@ function buildSASS() {
   return gulp
     .src("src/**/*.scss")
     .pipe(sass().on("error", sass.logError))
-    .pipe(gulp.dest("dist"));
+    .pipe(gulp.dest("dist/"));
 }
 
 /**
@@ -214,11 +210,10 @@ async function buildTemplates() {
 async function copyFiles() {
   const statics = [
     "i18n",
-    "fonts",
-    "icons",
-    "default-items",
-    "module",
-    "module.json",
+    "assets",
+    "actors",
+    "items",
+    "system",
     "system.json",
   ];
   try {
@@ -241,9 +236,9 @@ function buildWatch() {
   gulp.watch("src/**/*.scss", { ignoreInitial: false }, buildSASS);
   gulp.watch(
     [
-      "src/fonts",
+      "src/assets/fonts",
       "src/i18n",
-      "src/default-items",
+      "src/assets/default-items",
       "src/**/*.html",
       "src/*.json",
     ],
@@ -266,15 +261,17 @@ async function clean() {
 
   files.push(
     "i18n",
-    "icons",
-    "default-items",
-    "module",
+    "assets",
+    "actors",
+    "items",
+    "system",
     `${name}.js`,
     "module.json",
-    "system.json"
+    "system.json",
+    `${name}.css`
   );
 
-  files.push("fonts", `${name}.css`);
+  // files.push(`${name}.css`);
 
   console.log(" ", chalk.yellow("Files to clean:"));
   console.log("   ", chalk.blueBright(files.join("\n    ")));

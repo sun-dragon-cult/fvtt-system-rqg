@@ -10,14 +10,14 @@
 // TODO Testing it out with only the bold version
 @font-face {
   font-family: Norse;
-  src: url("fonts/NorseBold-2Kge.otf") format("opentype");
+  src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
 
 .norse {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
 }
 .rqg.actor {
-  @import "module/actor/actor";
+  @import "src/actors/actor";
 }
 
 .rqg {

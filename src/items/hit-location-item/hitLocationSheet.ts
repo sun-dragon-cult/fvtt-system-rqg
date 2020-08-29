@@ -1,26 +1,27 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  ElementalRuneData,
-  ElementalRuneEnum,
-} from "../../data-model/item-data/elementalRuneData";
+  HitLocationData,
+  HitLocationsEnum,
+} from "../../data-model/item-data/hitLocationData";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
 
-export class ElementalRuneSheet extends ItemSheet<RqgActorData, RqgItem> {
+export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.ElementalRune],
+      classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
       template:
-        "systems/rqg/module/item/elemental-rune-item/elementalRuneSheet.html",
+        "systems/rqg/items/hit-location-item/hitLocationSheet.html",
       width: 520,
       height: 250,
     });
   }
 
+  // Wrong type definition super.getData returns ItemData<DataType> ??? I think
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: ElementalRuneData = sheetData.item.data;
-    data.elementalRuneTypes = Object.values(ElementalRuneEnum);
+    const data: HitLocationData = sheetData.item.data;
+    data.hitLocationTypes = Object.values(HitLocationsEnum);
     return sheetData;
   }
 }

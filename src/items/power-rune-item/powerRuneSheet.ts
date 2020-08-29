@@ -8,7 +8,7 @@ export class PowerRuneSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.PowerRune],
-      template: "systems/rqg/module/item/power-rune-item/powerRuneSheet.html",
+      template: "systems/rqg/items/power-rune-item/powerRuneSheet.html",
       width: 520,
       height: 250,
     });

@@ -1,8 +1,8 @@
 import {
   HitLocationData,
   HitLocationsEnum,
-} from "../module/data-model/item-data/hitLocationData";
-import { ItemTypeEnum } from "../module/data-model/item-data/itemTypes";
+} from "../../data-model/item-data/hitLocationData";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 const hitLocations: ItemData<HitLocationData>[] = [
   {

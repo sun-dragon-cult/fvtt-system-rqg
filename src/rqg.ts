@@ -1,18 +1,18 @@
-import { registerSettings } from "./module/settings.js";
-import { preloadTemplates } from "./module/preloadTemplates.js";
-import { RqgActorSheet } from "./module/actor/rqgActorSheet.js";
-import { RqgActor } from "./module/actor/rqgActor.js";
-import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
-import { PassionSheet } from "./module/item/passion-item/passionSheet";
-import { SkillSheet } from "./module/item/skill-item/skillSheet";
-import { RqgItem } from "./module/item/rqgItem";
-import { ElementalRuneSheet } from "./module/item/elemental-rune-item/elementalRuneSheet";
-import elementalRunes from "./default-items/elementalRunes";
-import { PowerRuneSheet } from "./module/item/power-rune-item/powerRuneSheet";
-import powerRunes from "./default-items/powerRunes";
-import { HitLocationSheet } from "./module/item/hit-location-item/hitLocationSheet";
-import hitLocations from "./default-items/hitLocations";
-import { humanoid } from "./module/rqgCalculations";
+import { registerSettings } from "./system/settings.js";
+import { preloadTemplates } from "./system/preloadTemplates.js";
+import { RqgActorSheet } from "./actors/rqgActorSheet.js";
+import { RqgActor } from "./actors/rqgActor.js";
+import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
+import { PassionSheet } from "./items/passion-item/passionSheet";
+import { SkillSheet } from "./items/skill-item/skillSheet";
+import { RqgItem } from "./items/rqgItem";
+import { ElementalRuneSheet } from "./items/elemental-rune-item/elementalRuneSheet";
+import elementalRunes from "./assets/default-items/elementalRunes";
+import { PowerRuneSheet } from "./items/power-rune-item/powerRuneSheet";
+import powerRunes from "./assets/default-items/powerRunes";
+import { HitLocationSheet } from "./items/hit-location-item/hitLocationSheet";
+import hitLocations from "./assets/default-items/hitLocations";
+import { humanoid } from "./system/rqgCalculations";
 
 /* ------------------------------------ */
 /* Initialize system			          		*/

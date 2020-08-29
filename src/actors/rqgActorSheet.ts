@@ -10,7 +10,7 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationData } from "../data-model/item-data/hitLocationData";
-import { RqgItem } from "../item/rqgItem";
+import { RqgItem } from "../items/rqgItem";
 import { PowerRuneData } from "../data-model/item-data/powerRuneData";
 import { PassionData } from "../data-model/item-data/passionData";
 import { ElementalRuneData } from "../data-model/item-data/elementalRuneData";
@@ -19,7 +19,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", "actor"],
-      template: "systems/rqg/module/actor/rqgActorSheet.html",
+      template: "systems/rqg/actors/rqgActorSheet.html",
       width: 600,
       height: 600,
       tabs: [

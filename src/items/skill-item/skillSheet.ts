@@ -8,7 +8,7 @@ export class SkillSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
-      template: "systems/rqg/module/item/skill-item/skillSheet.html",
+      template: "systems/rqg/items/skill-item/skillSheet.html",
       width: 520,
       height: 250,
     });

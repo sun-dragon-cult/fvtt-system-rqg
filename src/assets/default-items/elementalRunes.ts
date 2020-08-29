@@ -1,8 +1,8 @@
 import {
   ElementalRuneData,
   ElementalRuneEnum,
-} from "../module/data-model/item-data/elementalRuneData";
-import { ItemTypeEnum } from "../module/data-model/item-data/itemTypes";
+} from "../../data-model/item-data/elementalRuneData";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 const elementalRunes: ItemData<ElementalRuneData>[] = [
   {
@@ -14,7 +14,7 @@ const elementalRunes: ItemData<ElementalRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/fire_sky.svg",
+    img: "systems/rqg/assets/icons/runes/fire_sky.svg",
   },
   {
     name: ElementalRuneEnum.Darkness,
@@ -25,7 +25,7 @@ const elementalRunes: ItemData<ElementalRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/darkness.svg",
+    img: "systems/rqg/assets/icons/runes/darkness.svg",
   },
   {
     name: ElementalRuneEnum.Water,
@@ -36,7 +36,7 @@ const elementalRunes: ItemData<ElementalRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/water.svg",
+    img: "systems/rqg/assets/icons/runes/water.svg",
   },
   {
     name: ElementalRuneEnum.Earth,
@@ -47,7 +47,7 @@ const elementalRunes: ItemData<ElementalRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/earth.svg",
+    img: "systems/rqg/assets/icons/runes/earth.svg",
   },
   {
     name: ElementalRuneEnum.Air,
@@ -58,7 +58,7 @@ const elementalRunes: ItemData<ElementalRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/air.svg",
+    img: "systems/rqg/assets/icons/runes/air.svg",
   },
   {
     name: ElementalRuneEnum.Moon,
@@ -69,7 +69,7 @@ const elementalRunes: ItemData<ElementalRuneData>[] = [
       experience: false,
     },
     flags: {},
-    img: "systems/rqg/icons/runes/moon_full.svg",
+    img: "systems/rqg/assets/icons/runes/moon_full.svg",
   },
 ];
 

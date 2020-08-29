@@ -1,10 +1,10 @@
-import { emptyActorDataRqg } from "./module/data-model/actor-data/rqgActorData";
-import { emptySkill } from "./module/data-model/item-data/skillData";
-import { ItemTypeEnum } from "./module/data-model/item-data/itemTypes";
-import { emptyPassion } from "./module/data-model/item-data/passionData";
-import { emptyElementalRune } from "./module/data-model/item-data/elementalRuneData";
-import { emptyPowerRune } from "./module/data-model/item-data/powerRuneData";
-import { emptyHitLocation } from "./module/data-model/item-data/hitLocationData";
+import { emptyActorDataRqg } from "./data-model/actor-data/rqgActorData";
+import { emptySkill } from "./data-model/item-data/skillData";
+import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
+import { emptyPassion } from "./data-model/item-data/passionData";
+import { emptyElementalRune } from "./data-model/item-data/elementalRuneData";
+import { emptyPowerRune } from "./data-model/item-data/powerRuneData";
+import { emptyHitLocation } from "./data-model/item-data/hitLocationData";
 
 // Instantiated Actor types
 export const Actors = {
