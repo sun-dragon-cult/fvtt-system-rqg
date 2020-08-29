@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Zip dist
-        run: cd module && zip -r ../reverse-initiative-order.zip *
+        run: cd module && zip -r ../rqg.zip *
 
       - name: Create Release
         id: create_versioned_release
@@ -20,5 +20,5 @@ jobs:
           draft: true
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "./module/module.json,./reverse-initiative-order.zip"
+          artifacts: "./dist/system.json,./rqg.zip"
           tag: ${{ github.ref }}
