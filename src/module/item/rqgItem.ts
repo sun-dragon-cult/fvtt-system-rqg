@@ -10,7 +10,6 @@ export class RqgItem<DataType = any> extends Item<DataType> {
     super.prepareData();
     const itemData: ItemData<DataType> = this.data;
     const actor: Actor = this.actor;
-    console.log("*** *** RqgItem ", this);
 
     // TODO Beautify !! // CONFIG.FATEx.itemTypes[item.type].prepareItemForActorSheet(item);
     switch (itemData.type) {

@@ -35,7 +35,7 @@ Hooks.once("init", async () => {
   CONFIG.Actor.entityClass = RqgActor;
   CONFIG.Item.entityClass = RqgItem;
 
-  CONFIG.debug.hooks = true; // console log when hooks fire
+  // CONFIG.debug.hooks = true; // console log when hooks fire
 
   // Register custom game system settings
   registerSettings();

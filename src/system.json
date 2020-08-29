@@ -29,12 +29,12 @@
   "primaryTokenAttribute": "attributes.hitPoints",
   "secondaryTokenAttribute": "attributes.magicPoints",
   "minimumCoreVersion": "0.6.5",
-  "compatibleCoreVersion": "0.6.5",
-  "url": "https://github.com/wake42/foundry-vtt-rqg",
-  "manifest": "https://github.com/wake42/foundry-vtt-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/wake42/foundry-vtt-rqg/releases/latest/download/rqg.zip",
+  "compatibleCoreVersion": "0.6.6",
+  "url": "https://github.com/wakeand/foundry-vtt-rqg",
+  "manifest": "https://github.com/wakeand/foundry-vtt-rqg/releases/download/0.1.0/system.json",
+  "download": "https://github.com/wakeand/foundry-vtt-rqg/releases/download/0.1.0/rqg.zip",
+  "readme": "https://github.com/wakeand/foundry-vtt-rqg/releases/download/0.1.0/readme.md",
   "license": "",
-  "readme": "",
-  "bugs": "",
+  "bugs": "https://github.com/wakeand/foundry-vtt-rqg/issues",
   "changelog": ""
 }

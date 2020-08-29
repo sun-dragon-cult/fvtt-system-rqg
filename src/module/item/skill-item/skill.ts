@@ -10,12 +10,6 @@ export class Skill extends BaseItem {
     item: Item<SkillData>,
     actor: Actor<RqgActorData>
   ) {
-    console.log(
-      "*** Skill prepareItemForActorSheet data",
-      item,
-      " actor",
-      actor
-    );
     if (actor) {
       // Add the category modifier to be displayed by the Skill sheet
       item.data.data.categoryMod =

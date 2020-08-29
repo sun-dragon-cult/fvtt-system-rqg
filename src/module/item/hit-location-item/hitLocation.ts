@@ -13,12 +13,6 @@ export class HitLocation extends BaseItem {
     item: Item<HitLocationData>,
     actor: Actor<RqgActorData>
   ) {
-    console.log(
-      "*** Skill prepareItemForActorSheet data",
-      item,
-      " actor",
-      actor
-    );
     if (actor) {
       const totalHp = actor.data.data.attributes.hitPoints.max;
       item.data.data.hp.max = this.hitPointsPerLocation(
