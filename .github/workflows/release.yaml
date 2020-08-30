@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    branches: ["master", "githubActions"]
+    branches: ["master"]
 env:
   SYSTEM_NAME: rqg
 
@@ -11,6 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repo
+        id: checkout
         uses: actions/checkout@v2
         with:
           # Fetch all versions for tag/changelog generation
@@ -31,9 +32,12 @@ jobs:
         run: |
           echo "${NEW_VERSION}"
           echo "${NEW_TAG}"
-          cd src
-          jq '. + {"version": env.NEW_VERSION, "download": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/releases/download/" + env.NEW_TAG + "/" + env.SYSTEM_NAME + "-" + env.NEW_TAG + ".zip")}' system.json > _system.json
-          mv _system.json system.json
+          jq '. + {"version": env.NEW_VERSION, "manifest": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/releases/download/" + env.NEW_TAG + "/" + "system.json")}' src/system.json > src/_system.json
+          mv src/_system.json src/system.json
+          jq '. + {"version": env.NEW_VERSION, "download": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/releases/download/" + env.NEW_TAG + "/" + env.SYSTEM_NAME + "-" + ".zip")}' src/system.json > src/_system.json
+          mv src/_system.json src/system.json
+          jq '. + {"version": env.NEW_VERSION, "download": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/blob/" + env.NEW_TAG + "/" + "readme.md")}' src/system.json > src/_system.json
+          mv src/_system.json src/system.json
 
       - name: Update Changelog
         id: update_changelog
@@ -51,7 +55,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          add: system.json CHANGELOG.md
+          add: src/system.json CHANGELOG.md
           message: |
             chore(build): Releasing ${{ steps.calculate_version.outputs.new_tag }}
 
@@ -81,7 +85,7 @@ jobs:
             Changes in this release:
             ${{ steps.calculate_version.outputs.changelog }}
           draft: false
-          prerelease: true
+          prerelease: false
 
       - name: Build Zip
         id: build_zip
@@ -91,12 +95,23 @@ jobs:
           zip -r /tmp/system.zip dist/*
 
       - name: Upload Release Asset zipfile
-        id: upload_release_asset
+        id: upload_release_asset_zip
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: /tmp/system.zip
-          asset_name: ${{ env.SYSTEM_NAME }}-${{ steps.calculate_version.outputs.new_tag }}.zip
+          asset_name: ${{ env.SYSTEM_NAME }}.zip
           asset_content_type: application/zip
+
+      - name: Upload Release Asset system manifest
+        id: upload_release_asset_manifest
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: src/system.json
+          asset_name: system.json
+          asset_content_type: application/json
