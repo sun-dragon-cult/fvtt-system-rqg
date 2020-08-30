@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        id checkout
+        id: checkout
         uses: actions/checkout@v2
         with:
           # Fetch all versions for tag/changelog generation
