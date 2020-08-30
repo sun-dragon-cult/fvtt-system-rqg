@@ -266,7 +266,6 @@ async function clean() {
     "items",
     "system",
     `${name}.js`,
-    "module.json",
     "system.json",
     `${name}.css`
   );
@@ -301,20 +300,13 @@ async function linkUserData() {
   let destDir;
   try {
     if (
-      fs.existsSync(path.resolve(".", "dist", "module.json")) ||
-      fs.existsSync(path.resolve(".", "src", "module.json"))
-    ) {
-      destDir = "modules";
-    } else if (
       fs.existsSync(path.resolve(".", "dist", "system.json")) ||
       fs.existsSync(path.resolve(".", "src", "system.json"))
     ) {
       destDir = "systems";
     } else {
       throw Error(
-        `Could not find ${chalk.blueBright(
-          "module.json"
-        )} or ${chalk.blueBright("system.json")}`
+        `Could not find ${chalk.blueBright("system.json")}`
       );
     }
 

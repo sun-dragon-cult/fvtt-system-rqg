@@ -1,24 +1,93 @@
-name: Package Release
-on: [create]
+name: Release
+on:
+  push:
+    branches: ["master"]
+env:
+  SYSTEM_NAME: rqg
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          # Fetch all versions for tag/changelog generation
+          fetch-depth: 0
 
-      - name: Zip dist
-        run: cd dist && zip -r ../rqg.zip *
+      - name: Calculate Version
+        id: calculate_version
+        uses: mathieudutour/github-tag-action@v4.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dry_run: true
+
+      - name: Update System Manifest
+        id: update_system
+        env:
+          NEW_VERSION: ${{ steps.calculate_version.outputs.new_version }}
+          NEW_TAG: ${{ steps.calculate_version.outputs.new_tag }}
+        run: |
+          echo "${NEW_VERSION}"
+          echo "${NEW_TAG}"
+          jq '. + {"version": env.NEW_VERSION, "download": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/releases/download/" + env.NEW_TAG + "/" + env.SYSTEM_NAME + "-" + env.NEW_TAG + ".zip")}' system.json > _system.json
+          mv _system.json system.json
+
+      - name: Update Changelog
+        id: update_changelog
+        env:
+          CHANGELOG: ${{ steps.calculate_version.outputs.changelog }}
+        run: |
+          mv CHANGELOG.md _CHANGELOG.md || touch _CHANGELOG.md
+          echo "${CHANGELOG}" > CHANGELOG.md
+          cat _CHANGELOG.md >> CHANGELOG.md
+          rm -f _CHANGELOG.md
+
+      - name: Commit Changes
+        id: commit_changes
+        uses: EndBug/add-and-commit@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          add: system.json CHANGELOG.md
+          message: |
+            chore(build): Releasing ${{ steps.calculate_version.outputs.new_tag }}
+
+      - name: Commit Tag
+        id: commit_tag
+        uses: mathieudutour/github-tag-action@v4.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
-        id: create_versioned_release
-        uses: ncipollo/release-action@v1
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          allowUpdates: true
-          name: ${{ github.ref }}
+          tag_name: ${{ steps.calculate_version.outputs.new_tag }}
+          release_name: Release ${{ steps.calculate_version.outputs.new_tag }}
+          body: |
+            Changes in this release:
+            ${{ steps.calculate_version.outputs.changelog }}
           draft: true
           prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "./dist/system.json,./rqg.zip"
-          tag: ${{ github.ref }}
+
+      - name: Build Zip
+        id: build_zip
+        env:
+          NEW_TAG: ${{ steps.calculate_version.outputs.new_tag }}
+        run: |
+          cd dist && zip -r ../system.zip *
+
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /dist/system.zip
+          asset_name: ${{ env.SYSTEM_NAME }}-${{ steps.calculate_version.outputs.new_tag }}.zip
+          asset_content_type: application/zip
