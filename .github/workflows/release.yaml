@@ -95,7 +95,8 @@ jobs:
           NEW_TAG: ${{ steps.calculate_version.outputs.new_tag }}
         run: |
           mv dist /tmp/${{ env.SYSTEM_NAME }}
-          zip -r /tmp/system.zip ${{ env.SYSTEM_NAME }}/*
+          cd /tmp/${{ env.SYSTEM_NAME }}
+          zip -r ../system.zip *
 
       - name: Upload Release Asset zipfile
         id: upload_release_asset_zip
