@@ -88,7 +88,7 @@ jobs:
         env:
           NEW_TAG: ${{ steps.calculate_version.outputs.new_tag }}
         run: |
-          cd dist && zip -r ../system.zip *
+          cd dist && zip -r ./system.zip *
 
       - name: Upload Release Asset
         id: upload_release_asset
