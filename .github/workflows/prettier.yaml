@@ -4,8 +4,6 @@ name: CI Prettier
 on:
   pull_request:
   push:
-    branches:
-      - master
 
 jobs:
   prettier:

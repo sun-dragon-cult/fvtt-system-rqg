@@ -80,8 +80,8 @@ jobs:
           body: |
             Changes in this release:
             ${{ steps.calculate_version.outputs.changelog }}
-          draft: true
-          prerelease: false
+          draft: false
+          prerelease: true
 
       - name: Build Zip
         id: build_zip
