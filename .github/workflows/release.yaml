@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    branches: ["master", "MoreReleaseFixes"]
+    branches: ["master"]
 env:
   SYSTEM_NAME: rqg
 
@@ -85,7 +85,7 @@ jobs:
             Changes in this release:
             ${{ steps.calculate_version.outputs.changelog }}
           draft: false
-          prerelease: true
+          prerelease: false
 
       - name: Build Zip
         id: build_zip
