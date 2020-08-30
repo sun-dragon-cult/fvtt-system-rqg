@@ -3,7 +3,7 @@
   "type": "system",
   "title": "RuneQuest Glorantha (Unofficial)",
   "description": "A RuneQuest Glorantha (Unofficial) system for FoundryVTT!",
-  "version": "0.1.2-b7ae149",
+  "version": "0.1.2-36f6638",
   "author": "Wake",
   "authors": [
     {
@@ -34,8 +34,8 @@
   "minimumCoreVersion": "0.6.5",
   "compatibleCoreVersion": "0.6.6",
   "url": "https://github.com/wakeand/foundry-vtt-rqg",
-  "manifest": "https://github.com/wakeand/fvtt-system-rqg/releases/download/v0.1.2-b7ae149/system.json",
-  "download": "https://github.com/wakeand/fvtt-system-rqg/blob/v0.1.2-b7ae149/readme.md",
+  "manifest": "https://github.com/wakeand/fvtt-system-rqg/releases/download/v0.1.2-36f6638/system.json",
+  "download": "https://github.com/wakeand/fvtt-system-rqg/blob/v0.1.2-36f6638/readme.md",
   "readme": "https://github.com/wakeand/foundry-vtt-rqg/blob/0.1.0/readme.md",
   "license": "",
   "bugs": "https://github.com/wakeand/foundry-vtt-rqg/issues",
