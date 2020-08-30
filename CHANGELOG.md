@@ -1,3 +1,4 @@
+
 ## [0.1.5](https://github.com/wakeand/fvtt-system-rqg/compare/v0.1.4...v0.1.5) (2020-08-30)
 
 
