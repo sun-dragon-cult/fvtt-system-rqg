@@ -66,8 +66,8 @@ jobs:
         with:
           node-version: '12'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install
-      - run: npm run release
+      - run: yarn install
+      - run: yarn build
 
       - name: Create Release
         id: create_release
@@ -90,7 +90,7 @@ jobs:
         run: |
           zip -r /tmp/system.zip dist/*
 
-      - name: Upload Release Asset
+      - name: Upload Release Asset zipfile
         id: upload_release_asset
         uses: actions/upload-release-asset@v1
         env:
