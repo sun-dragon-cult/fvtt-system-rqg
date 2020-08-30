@@ -32,7 +32,11 @@ jobs:
         run: |
           echo "${NEW_VERSION}"
           echo "${NEW_TAG}"
+          jq '. + {"version": env.NEW_VERSION, "manifest": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/releases/download/" + env.NEW_TAG + "/" + "system.json")}' src/system.json > src/_system.json
+          mv src/_system.json src/system.json
           jq '. + {"version": env.NEW_VERSION, "download": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/releases/download/" + env.NEW_TAG + "/" + env.SYSTEM_NAME + "-" + ".zip")}' src/system.json > src/_system.json
+          mv src/_system.json src/system.json
+          jq '. + {"version": env.NEW_VERSION, "download": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/blob/" + env.NEW_TAG + "/" + "readme.md")}' src/system.json > src/_system.json
           mv src/_system.json src/system.json
 
       - name: Update Changelog
