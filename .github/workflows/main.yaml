@@ -31,6 +31,7 @@ jobs:
         run: |
           echo "${NEW_VERSION}"
           echo "${NEW_TAG}"
+          cd src
           jq '. + {"version": env.NEW_VERSION, "download": (env.GITHUB_SERVER_URL + "/" + env.GITHUB_REPOSITORY + "/releases/download/" + env.NEW_TAG + "/" + env.SYSTEM_NAME + "-" + env.NEW_TAG + ".zip")}' system.json > _system.json
           mv _system.json system.json
 
