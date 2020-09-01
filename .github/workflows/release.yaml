@@ -60,12 +60,7 @@ jobs:
           add: src/system.json CHANGELOG.md
           message: |
             chore(build): Releasing ${{ steps.calculate_version.outputs.new_tag }}
-
-      - name: Commit Tag
-        id: commit_tag
-        uses: mathieudutour/github-tag-action@v4.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.calculate_version.outputs.new_tag }}
 
       - name: Build dist
         uses: actions/setup-node@v1
