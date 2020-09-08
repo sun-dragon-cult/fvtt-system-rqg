@@ -1,4 +1,3 @@
-import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { BaseItem } from "../baseItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
@@ -9,13 +8,19 @@ import {
 export class HitLocation extends BaseItem {
   entityName: string = ItemTypeEnum.Skill;
 
-  public static async prepareItemForActorSheet(
-    item: Item<HitLocationData>,
-    actor: Actor<RqgActorData>
-  ) {
-    if (actor) {
-      const totalHp = actor.data.data.attributes.hitPoints.max;
-      item.data.data.hp.max = this.hitPointsPerLocation(
+  public static async prepareItemForActorSheet(item: Item<HitLocationData>) {
+    console.log("*** HitLocation prepareItemForActorSheet", item);
+    if (item.actor) {
+      // Remove any healed wounds
+      item.data.data.wounds = item.data.data.wounds.filter((w) => w > 0);
+
+      // TODO *** Does this not persist the wounds? ***
+      await item.update(item.data, {
+        "data.wounds": item.data.data.wounds,
+      });
+
+      const totalHp = item.actor.data.data.attributes.hitPoints.max;
+      item.data.data.hp.max = HitLocation.hitPointsPerLocation(
         totalHp,
         item.data.name
       );

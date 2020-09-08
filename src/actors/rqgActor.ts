@@ -1,5 +1,7 @@
 import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { Skill } from "../items/skill-item/skill";
 
 export class RqgActor extends Actor<RqgActorData> {
   /**
@@ -11,6 +13,7 @@ export class RqgActor extends Actor<RqgActorData> {
     const actorData = this.data;
     const data = actorData.data;
     const flags = actorData.flags;
+    console.log("*** RqgActor prepareData  actorData", actorData);
 
     // Shorthand access to characteristics
     const str = data.characteristics.strength.value;
@@ -96,16 +99,39 @@ export class RqgActor extends Actor<RqgActorData> {
     return super.create(data, options);
   }
 
-  // prepareEmbeddedEntities(): void {
-  //   super.prepareEmbeddedEntities();
-  //   console.log("THIS prepareEmbeddedEntities", this);
-  //   this.items
-  //     .filter((i: Item) => i.data.type === ItemTypeEnum.Skill.toString())
-  //     .forEach((skill) => {
-  //       console.log("*** RqgActor.prepareEmbeddedEntities skill", skill);
-  //       SkillSheet.calculateSkillChance(skill);
-  //     });
-  // }
+  prepareEmbeddedEntities(): void {
+    super.prepareEmbeddedEntities();
+    // TODO refactor this !!!!!
+    console.log("THIS prepareEmbeddedEntities", this);
+    this.items
+      .filter((i: Item) => i.data.type === ItemTypeEnum.Skill.toString())
+      .forEach(async (skill) => {
+        console.log("*** RqgActor.prepareEmbeddedEntities skill", skill);
+        await Skill.prepareItemForActorSheet(skill);
+      });
+
+    this.items
+      .filter((i: Item) => i.data.type === ItemTypeEnum.HitLocation)
+      .forEach(async (hitLocation) => {
+        console.log(
+          "*** RqgActor.prepareEmbeddedEntities hitLocation",
+          hitLocation
+        );
+        await Skill.prepareItemForActorSheet(hitLocation);
+      });
+  }
+
+  protected _onUpdate(
+    data: object,
+    options: object,
+    userId: string,
+    context: object
+  ) {
+    console.log("*** RqgActor _onUpdate", data, options, userId, context);
+
+    this.prepareEmbeddedEntities(); // Make sure all embedded items get a chance to recalculate from new actor characteristics.
+    super._onUpdate(data, options, userId, context);
+  }
 
   RollData() {
     // const data = super.getRollData();

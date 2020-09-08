@@ -115,10 +115,3 @@ Hooks.on(
     }
   }
 );
-
-/* ------------------------------------ */
-/* When Actor data is updated				    */
-/* ------------------------------------ */
-Hooks.on("updateActor", async (actor: Actor, data, options, someId) => {
-  // TODO if options.diff === true Update actor skillItems using data.characteristics.dexterity.value
-});
