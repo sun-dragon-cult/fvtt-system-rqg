@@ -1,4 +1,3 @@
-import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { RqgItem } from "./rqgItem";
 
 export class BaseItem {
@@ -9,10 +8,8 @@ export class BaseItem {
    * Allows each item to prepare its data before its rendered.
    * This can be used to add additional information right before rendering.
    */
-  static async prepareItemForActorSheet(
-    item: RqgItem,
-    actor: Actor<RqgActorData>
-  ): Promise<RqgItem> {
+  static async prepareItemForActorSheet(item: RqgItem): Promise<RqgItem> {
+    console.log("*** BaseItem prepareItemForActorSheet item", item);
     return item;
   }
 

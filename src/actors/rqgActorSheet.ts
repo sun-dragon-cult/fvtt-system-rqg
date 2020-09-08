@@ -14,6 +14,7 @@ import { RqgItem } from "../items/rqgItem";
 import { PowerRuneData } from "../data-model/item-data/powerRuneData";
 import { PassionData } from "../data-model/item-data/passionData";
 import { ElementalRuneData } from "../data-model/item-data/elementalRuneData";
+import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -117,13 +118,31 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         RqgActorSheet.confirmItemDelete(this.actor, itemId)
       );
     });
+
+    // Add wound to hit location TODO move listener to hitlocation
+    this.form.querySelectorAll("[data-item-add-wound]").forEach((el) => {
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .itemId;
+      el.addEventListener("click", () =>
+        HitLocationSheet.addWound(this.actor, itemId)
+      );
+    });
+
+    // Edit wounds to hit location TODO move listener to hitlocation
+    this.form.querySelectorAll("[data-item-edit-wounds]").forEach((el) => {
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .itemId;
+      el.addEventListener("click", () =>
+        HitLocationSheet.editWounds(this.actor, itemId)
+      );
+    });
   }
 
-  _updateObject(event: Event, formData: any): Promise<any> {
-    // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
-    console.log("*** Event + formData", event.target, formData);
-    return this.object.update(formData);
-  }
+  // _updateObject(event: Event, formData: any): Promise<any> {
+  //   // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
+  //   console.log("*** Event + formData", event.target, formData);
+  //   return this.object.update(formData);
+  // }
 
   static confirmItemDelete(actor, itemId) {
     const item = actor.getOwnedItem(itemId);

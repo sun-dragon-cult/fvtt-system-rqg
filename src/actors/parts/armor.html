@@ -18,5 +18,19 @@
       <div class="ml-5" data-item-id="{{this._id}}" data-item-edit>AP {{this.data.ap}}</div>
       {{/each}}
     </div>
+
+    <div class="armorline ml-5">
+      {{#each data.ownedItems.hitLocations}}
+      <div data-item-id="{{this._id}}">
+        <a data-item-edit-wounds>
+          {{#each this.data.wounds}}
+            [ {{this}} ]
+          {{/each}}
+        </a>
+        <a class="ml-5" data-item-add-wound>Add wound</a>
+      </div>
+      {{/each}}
+    </div>
   </div>
 </div>
+{{json data.ownedItems.hitlocations}}

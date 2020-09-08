@@ -1,27 +1,23 @@
 import { SkillData } from "../../data-model/item-data/skillData";
-import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { BaseItem } from "../baseItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export class Skill extends BaseItem {
   entityName: string = ItemTypeEnum.Skill;
 
-  public static async prepareItemForActorSheet(
-    item: Item<SkillData>,
-    actor: Actor<RqgActorData>
-  ) {
-    if (actor) {
+  public static async prepareItemForActorSheet(item: Item<SkillData>) {
+    if (item.actor) {
       // Add the category modifier to be displayed by the Skill sheet
       item.data.data.categoryMod =
-        actor.data.data.skillCategoryModifiers[item.data.data.category];
+        item.actor.data.data.skillCategoryModifiers[item.data.data.category];
 
       // Special case for Dodge & Jump
-      const dex = actor.data.data.characteristics.dexterity.value;
+      const dex = item.actor.data.data.characteristics.dexterity.value;
       if ("Dodge" === item.name) {
-        await this.updateBaseChance(item.data, dex * 2);
+        await Skill.updateBaseChance(item.data, dex * 2);
       }
       if ("Jump" === item.name) {
-        await this.updateBaseChance(item.data, dex * 3);
+        await Skill.updateBaseChance(item.data, dex * 3);
       }
 
       // Learned chance can't be lower than base chance
@@ -42,6 +38,7 @@ export class Skill extends BaseItem {
       // await this.update(data, {
       //   "data.chance": data.data.chance,
       // });
+      await item.update(item.data.data, {});
     }
     return item;
   }

@@ -14,6 +14,8 @@
     <label>Die from <input type="text" name="data.dieFrom" value="{{item.data.dieFrom}}" data-dtype="Number"/><br /></label>
     <label>Die to <input type="text" name="data.dieTo" value="{{item.data.dieTo}}" data-dtype="Number"/><br /></label>
     <label>AP <input type="text" name="data.ap" value="{{item.data.ap}}" data-dtype="Number"/><br /></label>
-    <span>Wounds {{json wounds}}</span>
+    <label>Wounds {{#each data.wounds}}
+      [&nbsp;{{this}}&nbsp;]
+    {{/each}}</label>
   </header>
 </form>

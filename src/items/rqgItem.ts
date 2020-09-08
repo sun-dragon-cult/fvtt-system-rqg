@@ -8,23 +8,32 @@ import { HitLocationData } from "../data-model/item-data/hitLocationData";
 export class RqgItem<DataType = any> extends Item<DataType> {
   prepareData() {
     super.prepareData();
+    console.log("*** RqgItem prepareData");
     const itemData: ItemData<DataType> = this.data;
-    const actor: Actor = this.actor;
 
     // TODO Beautify !! // CONFIG.FATEx.itemTypes[item.type].prepareItemForActorSheet(item);
     switch (itemData.type) {
       case ItemTypeEnum.Skill:
         const skillItem = (this as unknown) as RqgItem<SkillData>;
-        Skill.prepareItemForActorSheet(skillItem, actor);
+        Skill.prepareItemForActorSheet(skillItem).then((_) => {
+          console.log("%%% after prepareItemForActorSheet Skill");
+          return this;
+        });
         break;
 
       case ItemTypeEnum.HitLocation:
         const hitLocationItem = (this as unknown) as RqgItem<HitLocationData>;
-        HitLocation.prepareItemForActorSheet(hitLocationItem, actor);
+        HitLocation.prepareItemForActorSheet(hitLocationItem).then((_) => {
+          console.log("%%% after prepareItemForActorSheet HitLocation");
+          return this;
+        });
         break;
 
       default:
-        BaseItem.prepareItemForActorSheet(this, actor);
+        BaseItem.prepareItemForActorSheet(this).then((_) => {
+          console.log("%%% after prepareItemForActorSheet BaseItem");
+          return this;
+        });
         break;
     }
   }
