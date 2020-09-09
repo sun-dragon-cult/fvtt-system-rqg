@@ -27,7 +27,7 @@ export class Ability implements IAbility {
   ): ResultEnum {
     console.warn("rollAgainst chance ", chance, " chanceMod", chanceMod);
 
-    const r = new Roll("d100");
+    const r = new Roll("1d100");
     r.roll();
     // @ts-ignore
     const modifiedChance: number = parseInt(chance) + parseInt(chanceMod);

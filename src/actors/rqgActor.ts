@@ -5,15 +5,16 @@ import { Skill } from "../items/skill-item/skill";
 
 export class RqgActor extends Actor<RqgActorData> {
   /**
-   * Augment the basic actor data with additional derived data.
+   * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
-  prepareData(): void {
-    super.prepareData();
+  prepareBaseData() {
+    // @ts-ignore (until foundry-pc-types are updated for 0.7)
+    super.prepareBaseData();
 
     const actorData = this.data;
     const data = actorData.data;
-    const flags = actorData.flags;
-    console.log("*** RqgActor prepareData  actorData", actorData);
+    // const flags = actorData.flags;
+    console.debug("*** RqgActor prepareBaseData  actorData", actorData);
 
     // Shorthand access to characteristics
     const str = data.characteristics.strength.value;
@@ -80,25 +81,6 @@ export class RqgActor extends Actor<RqgActorData> {
     };
   }
 
-  // Defaults when creating a new Actor
-  static async create(data: any, options?: object): Promise<Entity> {
-    data.token = data.token || {};
-    if (data.type === "character") {
-      mergeObject(
-        data.token,
-        {
-          vision: true,
-          dimSight: 30,
-          brightSight: 0,
-          actorLink: true,
-          disposition: 1,
-        },
-        { overwrite: false }
-      );
-    }
-    return super.create(data, options);
-  }
-
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
     // TODO refactor this !!!!!
@@ -119,6 +101,43 @@ export class RqgActor extends Actor<RqgActorData> {
         );
         await Skill.prepareItemForActorSheet(hitLocation);
       });
+  }
+
+  /**
+   * Apply any transformations to the Actor data which are caused by ActiveEffects.
+   */
+  applyActiveEffects() {
+    // @ts-ignore
+
+    console.debug("!! ***applyActiveEffects");
+  }
+
+  /**
+   * Apply final transformations to the Actor data after all effects have been applied
+   */
+  prepareDerivedData() {
+    // @ts-ignore
+    super.prepareBaseData();
+    console.debug("!! ***prepareDerivedData");
+  }
+
+  // Defaults when creating a new Actor
+  static async create(data: any, options?: object): Promise<Entity> {
+    data.token = data.token || {};
+    if (data.type === "character") {
+      mergeObject(
+        data.token,
+        {
+          vision: true,
+          dimSight: 30,
+          brightSight: 0,
+          actorLink: true,
+          disposition: 1,
+        },
+        { overwrite: false }
+      );
+    }
+    return super.create(data, options);
   }
 
   protected _onUpdate(
