@@ -1,12 +1,17 @@
 import { SkillData } from "../../data-model/item-data/skillData";
 import { BaseItem } from "../baseItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export class Skill extends BaseItem {
-  entityName: string = ItemTypeEnum.Skill;
+  // public static init() {
+  //   Items.registerSheet("rqg", SkillSheet, {
+  //     types: [ItemTypeEnum.Skill],
+  //     makeDefault: true,
+  //   });
+  // }
 
   public static async prepareItemForActorSheet(item: Item<SkillData>) {
     if (item.actor) {
+      const newData = duplicate(item.data.data);
       // Add the category modifier to be displayed by the Skill sheet
       item.data.data.categoryMod =
         item.actor.data.data.skillCategoryModifiers[item.data.data.category];
@@ -14,18 +19,15 @@ export class Skill extends BaseItem {
       // Special case for Dodge & Jump
       const dex = item.actor.data.data.characteristics.dexterity.value;
       if ("Dodge" === item.name) {
-        await Skill.updateBaseChance(item.data, dex * 2);
+        Skill.updateBaseChance(newData, dex * 2);
       }
       if ("Jump" === item.name) {
-        await Skill.updateBaseChance(item.data, dex * 3);
+        Skill.updateBaseChance(newData, dex * 3);
       }
 
       // Learned chance can't be lower than base chance
-      if (item.data.data.baseChance > item.data.data.learnedChance) {
-        item.data.data.learnedChance = item.data.data.baseChance;
-        // await this.update(data, {
-        //   "data.learnedChance": data.data.learnedChance,
-        // });
+      if (newData.baseChance > newData.learnedChance) {
+        newData.learnedChance = newData.baseChance;
       }
 
       // Update the skill chance including skill category modifiers.
@@ -35,29 +37,19 @@ export class Skill extends BaseItem {
           ? item.data.data.learnedChance + item.data.data.categoryMod
           : 0;
 
-      // await this.update(data, {
-      //   "data.chance": data.data.chance,
-      // });
-      await item.update(item.data.data, {});
+      // Persist if changed - TODO Look over derived vs persisted data!
+      if (JSON.stringify(newData) !== JSON.stringify(item.data.data)) {
+        item = await item.update({ data: newData }, {});
+      }
     }
     return item;
   }
 
-  private static async updateBaseChance(
-    data: ItemSheetData<SkillData>,
-    newBaseChance: number
-  ) {
-    if (data.data.baseChance !== newBaseChance) {
-      if (data.data.learnedChance === data.data.baseChance) {
-        data.data.learnedChance = newBaseChance;
-        // await this.update(data, {
-        //   "data.learnedChance": data.data.learnedChance,
-        // });
+  private static updateBaseChance(skillData: SkillData, newBaseChance: number) {
+    if (skillData.baseChance !== newBaseChance) {
+      if (skillData.learnedChance === skillData.baseChance) {
+        skillData.learnedChance = newBaseChance;
       }
-      data.data.baseChance = newBaseChance;
-      // await this.update(data, {
-      //   "data.baseChance": data.data.baseChance,
-      // });
     }
   }
 }

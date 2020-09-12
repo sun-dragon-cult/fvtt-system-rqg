@@ -2,37 +2,24 @@ import { registerSettings } from "./system/settings.js";
 import { preloadTemplates } from "./system/preloadTemplates.js";
 import { RqgActorSheet } from "./actors/rqgActorSheet.js";
 import { RqgActor } from "./actors/rqgActor.js";
-import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
-import { PassionSheet } from "./items/passion-item/passionSheet";
-import { SkillSheet } from "./items/skill-item/skillSheet";
 import { RqgItem } from "./items/rqgItem";
-import { ElementalRuneSheet } from "./items/elemental-rune-item/elementalRuneSheet";
 import elementalRunes from "./assets/default-items/elementalRunes";
-import { PowerRuneSheet } from "./items/power-rune-item/powerRuneSheet";
 import powerRunes from "./assets/default-items/powerRunes";
-import { HitLocationSheet } from "./items/hit-location-item/hitLocationSheet";
 import hitLocations from "./assets/default-items/hitLocations";
 import { humanoid } from "./system/rqgCalculations";
+import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
+import { PassionSheet } from "./items/passion-item/passionSheet";
+import { ElementalRuneSheet } from "./items/elemental-rune-item/elementalRuneSheet";
+import { PowerRuneSheet } from "./items/power-rune-item/powerRuneSheet";
+import { SkillSheet } from "./items/skill-item/skillSheet";
+import { HitLocationSheet } from "./items/hit-location-item/hitLocationSheet";
 
-/* ------------------------------------ */
-/* Initialize system			          		*/
-/* ------------------------------------ */
 Hooks.once("init", async () => {
   console.log(
     "RQG | Initializing the Runequest Glorantha (Unofficial) Game System"
   );
-  /**
-   * Set an initiative formula for the system
-   * @type {String}
-   */
-  // CONFIG.Combat.initiative = { // TODO Calculate initiative (SR) instead
-  // 	formula: "1d20",
-  // 	decimals: 2
-  // };
 
-  // Define custom Entity classes
-  // @ts-ignore --- Wrong typing???
-  CONFIG.Actor.entityClass = RqgActor;
+  CONFIG.Actor.entityClass = RqgActor as typeof Actor;
   CONFIG.Item.entityClass = RqgItem;
 
   // CONFIG.debug.hooks = true; // console log when hooks fire
@@ -60,6 +47,7 @@ Hooks.once("init", async () => {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("rqg", RqgActorSheet, { makeDefault: true });
 
+  // RqgItem.init();
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("rqg", PassionSheet, {
     types: [ItemTypeEnum.Passion],
@@ -87,16 +75,6 @@ Hooks.once("init", async () => {
     game.Gametime.DTC.saveUserCalendar(game.Gametime.calendars.Glorantha);
   }
 });
-
-/* ------------------------------------ */
-/* Setup system						            	*/
-/* ------------------------------------ */
-Hooks.once("setup", async () => {});
-
-/* ------------------------------------ */
-/* When ready					              		*/
-/* ------------------------------------ */
-Hooks.once("ready", async () => {});
 
 /* ------------------------------------ */
 /* When creating new Actor					    */

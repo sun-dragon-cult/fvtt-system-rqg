@@ -1,9 +1,21 @@
 import { RqgItem } from "./rqgItem";
 
 export class BaseItem {
-  private static entityName: string;
-  private static defaultName: string;
-
+  // // TODO will be called multiple times?
+  // public static init() {
+  //   Items.registerSheet("rqg", PassionSheet, {
+  //     types: [ItemTypeEnum.Passion],
+  //     makeDefault: true,
+  //   });
+  //   Items.registerSheet("rqg", ElementalRuneSheet, {
+  //     types: [ItemTypeEnum.ElementalRune],
+  //     makeDefault: true,
+  //   });
+  //   Items.registerSheet("rqg", PowerRuneSheet, {
+  //     types: [ItemTypeEnum.PowerRune],
+  //     makeDefault: true,
+  //   });
+  // }
   /**
    * Allows each item to prepare its data before its rendered.
    * This can be used to add additional information right before rendering.
@@ -82,87 +94,87 @@ export class BaseItem {
     });
   }
 
-  /*************************
-   * EVENT HANDLER
-   *************************/
-
-  /**
-   * Itemtype agnostic handler for creating new items via event.
-   */
-  static _onItemAdd(e, sheet) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!this.entityName) {
-      throw new Error(
-        "A subclass of the BaseItem must provide an entityName field or implement their own _onItemAdd() method."
-      );
-    }
-
-    const itemData = {
-      name: this.defaultName ?? this.getDefaultName(),
-      type: this.entityName,
-    };
-
-    this._createNewItem(itemData, sheet);
-  }
-
-  /**
-   * Itemtype agnostic handler for opening an items sheet via event.
-   */
-  static _onItemSettings(e, sheet) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const data = e.currentTarget.dataset;
-    const item = sheet.actor.getOwnedItem(data.itemId);
-
-    if (item) {
-      item.sheet.render(true);
-    }
-  }
-
-  /**
-   * Itemtype agnostic handler for deleting an item via event.
-   */
-  static _onItemDelete(e, sheet) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const data = e.currentTarget.dataset;
-    const item = sheet.actor.getOwnedItem(data.item);
-
-    new Dialog(
-      {
-        title: `Delete ${item.name}`,
-        content: "Delete?", // game.i18n.format('FAx.Dialog.EntityDelete'),
-        default: "submit",
-        buttons: {
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize("FAx.Dialog.Cancel"),
-            callback: () => null,
-          },
-          submit: {
-            icon: '<i class="fas fa-check"></i>',
-            label: game.i18n.localize("FAx.Dialog.Confirm"),
-            callback: () => {
-              sheet.actor.deleteOwnedItem(data.item);
-            },
-          },
-        },
-      },
-      {
-        classes: ["rqg", "rqg__dialog"],
-      }
-    ).render(true);
-  }
-
-  /**
-   * Helper function to determine a new items name.
-   * Defaults to the entityName with the first letter capitalized.
-   */
-  static getDefaultName() {
-    return this.entityName.charAt(0).toUpperCase() + this.entityName.slice(1);
-  }
+  // /*************************
+  //  * EVENT HANDLER
+  //  *************************/
+  //
+  // /**
+  //  * Itemtype agnostic handler for creating new items via event.
+  //  */
+  // static _onItemAdd(e, sheet) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //
+  //   if (!this.entityName) {
+  //     throw new Error(
+  //       "A subclass of the BaseItem must provide an entityName field or implement their own _onItemAdd() method."
+  //     );
+  //   }
+  //
+  //   const itemData = {
+  //     name: this.defaultName ?? this.getDefaultName(),
+  //     type: this.entityName,
+  //   };
+  //
+  //   this._createNewItem(itemData, sheet);
+  // }
+  //
+  // /**
+  //  * Itemtype agnostic handler for opening an items sheet via event.
+  //  */
+  // static _onItemSettings(e, sheet) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //
+  //   const data = e.currentTarget.dataset;
+  //   const item = sheet.actor.getOwnedItem(data.itemId);
+  //
+  //   if (item) {
+  //     item.sheet.render(true);
+  //   }
+  // }
+  //
+  // /**
+  //  * Itemtype agnostic handler for deleting an item via event.
+  //  */
+  // static _onItemDelete(e, sheet) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //
+  //   const data = e.currentTarget.dataset;
+  //   const item = sheet.actor.getOwnedItem(data.item);
+  //
+  //   new Dialog(
+  //     {
+  //       title: `Delete ${item.name}`,
+  //       content: "Delete?", // game.i18n.format('FAx.Dialog.EntityDelete'),
+  //       default: "submit",
+  //       buttons: {
+  //         cancel: {
+  //           icon: '<i class="fas fa-times"></i>',
+  //           label: game.i18n.localize("FAx.Dialog.Cancel"),
+  //           callback: () => null,
+  //         },
+  //         submit: {
+  //           icon: '<i class="fas fa-check"></i>',
+  //           label: game.i18n.localize("FAx.Dialog.Confirm"),
+  //           callback: () => {
+  //             sheet.actor.deleteOwnedItem(data.item);
+  //           },
+  //         },
+  //       },
+  //     },
+  //     {
+  //       classes: ["rqg", "rqg__dialog"],
+  //     }
+  //   ).render(true);
+  // }
+  //
+  // /**
+  //  * Helper function to determine a new items name.
+  //  * Defaults to the entityName with the first letter capitalized.
+  //  */
+  // static getDefaultName() {
+  //   return this.entityName.charAt(0).toUpperCase() + this.entityName.slice(1);
+  // }
 }

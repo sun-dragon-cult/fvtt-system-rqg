@@ -1,7 +1,6 @@
 import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { Skill } from "../items/skill-item/skill";
+import { Item2TypeClass } from "../data-model/item-data/itemTypes";
 
 export class RqgActor extends Actor<RqgActorData> {
   /**
@@ -83,24 +82,10 @@ export class RqgActor extends Actor<RqgActorData> {
 
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
-    // TODO refactor this !!!!!
-    console.log("THIS prepareEmbeddedEntities", this);
-    this.items
-      .filter((i: Item) => i.data.type === ItemTypeEnum.Skill.toString())
-      .forEach(async (skill) => {
-        console.log("*** RqgActor.prepareEmbeddedEntities skill", skill);
-        await Skill.prepareItemForActorSheet(skill);
-      });
-
-    this.items
-      .filter((i: Item) => i.data.type === ItemTypeEnum.HitLocation)
-      .forEach(async (hitLocation) => {
-        console.log(
-          "*** RqgActor.prepareEmbeddedEntities hitLocation",
-          hitLocation
-        );
-        await Skill.prepareItemForActorSheet(hitLocation);
-      });
+    this.items.forEach(
+      async (item: Item) =>
+        await Item2TypeClass.get(item.type).prepareItemForActorSheet(item)
+    );
   }
 
   /**
@@ -116,7 +101,7 @@ export class RqgActor extends Actor<RqgActorData> {
    * Apply final transformations to the Actor data after all effects have been applied
    */
   prepareDerivedData() {
-    // @ts-ignore
+    // @ts-ignore (until foundry-pc-types are updated for 0.7)
     super.prepareBaseData();
     console.debug("!! ***prepareDerivedData");
   }
@@ -138,44 +123,5 @@ export class RqgActor extends Actor<RqgActorData> {
       );
     }
     return super.create(data, options);
-  }
-
-  protected _onUpdate(
-    data: object,
-    options: object,
-    userId: string,
-    context: object
-  ) {
-    console.log("*** RqgActor _onUpdate", data, options, userId, context);
-
-    this.prepareEmbeddedEntities(); // Make sure all embedded items get a chance to recalculate from new actor characteristics.
-    super._onUpdate(data, options, userId, context);
-  }
-
-  RollData() {
-    // const data = super.getRollData();
-    // const shorthand = game.settings.get("rqg", "macroShorthand");
-    //
-    // // Re-map all attributes onto the base roll data
-    // if (!!shorthand) {
-    //     for (let [k, v] of Object.entries(data.attributes)) {
-    //         if (!(k in data)) data[k] = v.value;
-    //     }
-    //     delete data.attributes;
-    // }
-    // Map all items data using their slugified names
-    // data.items = this.data.items.reduce((obj, i) => {
-    //     let key = i.name.slugify({strict: true});
-    //     let itemData = duplicate(i.data);
-    //     if (!!shorthand) {
-    //         for (let [k, v] of Object.entries(itemData.attributes)) {
-    //             if (!(k in itemData)) itemData[k] = v.value;
-    //         }
-    //         delete itemData["attributes"];
-    //     }
-    //     obj[key] = itemData;
-    //     return obj;
-    // }, {});
-    // return data;
   }
 }
