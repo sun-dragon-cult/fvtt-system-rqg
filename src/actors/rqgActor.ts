@@ -1,8 +1,34 @@
-import { RqgCalculations } from "../system/rqgCalculations";
+import { humanoid, RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { Item2TypeClass } from "../data-model/item-data/itemTypes";
+import elementalRunes from "../assets/default-items/elementalRunes";
+import powerRunes from "../assets/default-items/powerRunes";
+import hitLocations from "../assets/default-items/hitLocations";
+import { RqgActorSheet } from "./rqgActorSheet";
 
 export class RqgActor extends Actor<RqgActorData> {
+  static init() {
+    CONFIG.Actor.entityClass = RqgActor as typeof Actor;
+
+    Actors.unregisterSheet("core", ActorSheet);
+    Actors.registerSheet("rqg", RqgActorSheet, { makeDefault: true });
+
+    Hooks.on(
+      "createActor",
+      async (actor: RqgActor, options: any, userId: String) => {
+        if (actor.data.type === "character" && options.renderSheet) {
+          await actor.createOwnedItem(elementalRunes);
+          await actor.createOwnedItem(powerRunes);
+          // TODO Add support for other races than humanoid - is race even set at this point?
+          await actor.createOwnedItem(
+            hitLocations.filter((h) => humanoid.includes(h.name))
+          );
+          // );
+        }
+      }
+    );
+  }
+
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
