@@ -95,7 +95,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         if (result <= ResultEnum.Success) {
           // TODO Chain rolls depending on outcome. Just playing around for now...
           ChatMessage.create({
-            content: "Roll damage [[/r d8 + 1]] and hit location [[/r d20]]",
+            content: "Roll damage [[/r 1d8 + 1]] and hit location [[/r 1d20]]",
           });
         }
       });

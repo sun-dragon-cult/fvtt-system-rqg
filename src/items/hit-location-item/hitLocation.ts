@@ -1,33 +1,39 @@
 import { BaseItem } from "../baseItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
   HitLocationData,
   HitLocationsEnum,
 } from "../../data-model/item-data/hitLocationData";
 
 export class HitLocation extends BaseItem {
-  entityName: string = ItemTypeEnum.Skill;
+  // public static init() {
+  //   Items.registerSheet("rqg", HitLocationSheet, {
+  //     types: [ItemTypeEnum.HitLocation],
+  //     makeDefault: true,
+  //   });
+  // }
 
   public static async prepareItemForActorSheet(item: Item<HitLocationData>) {
     console.log("*** HitLocation prepareItemForActorSheet", item);
     if (item.actor) {
-      // Remove any healed wounds
-      item.data.data.wounds = item.data.data.wounds.filter((w) => w > 0);
+      const newData = duplicate(item.data.data);
 
-      // TODO *** Does this not persist the wounds? ***
-      await item.update(item.data, {
-        "data.wounds": item.data.data.wounds,
-      });
+      // Remove any healed wounds
+      newData.wounds = newData.wounds.filter((w) => w > 0);
 
       const totalHp = item.actor.data.data.attributes.hitPoints.max;
-      item.data.data.hp.max = HitLocation.hitPointsPerLocation(
+      newData.hp.max = HitLocation.hitPointsPerLocation(
         totalHp,
         item.data.name
       );
-      item.data.data.hp.value = item.data.data.wounds.reduce(
+      newData.hp.value = newData.wounds.reduce(
         (acc: number, w: number) => acc - w,
-        item.data.data.hp.max
+        newData.hp.max
       );
+
+      // Persist if changed
+      if (JSON.stringify(newData) !== JSON.stringify(item.data.data)) {
+        await item.update({ data: newData }, {});
+      }
     }
     return item;
   }

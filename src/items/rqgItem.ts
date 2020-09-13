@@ -1,40 +1,44 @@
+import { PassionSheet } from "./passion-item/passionSheet";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { Skill } from "./skill-item/skill";
-import { BaseItem } from "./baseItem";
-import { SkillData } from "../data-model/item-data/skillData";
-import { HitLocation } from "./hit-location-item/hitLocation";
-import { HitLocationData } from "../data-model/item-data/hitLocationData";
+import { ElementalRuneSheet } from "./elemental-rune-item/elementalRuneSheet";
+import { PowerRuneSheet } from "./power-rune-item/powerRuneSheet";
+import { SkillSheet } from "./skill-item/skillSheet";
+import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 
 export class RqgItem<DataType = any> extends Item<DataType> {
-  prepareData() {
-    super.prepareData();
-    console.log("*** RqgItem prepareData");
-    const itemData: ItemData<DataType> = this.data;
+  public static init() {
+    CONFIG.Item.entityClass = RqgItem;
 
-    // TODO Beautify !! // CONFIG.FATEx.itemTypes[item.type].prepareItemForActorSheet(item);
-    switch (itemData.type) {
-      case ItemTypeEnum.Skill:
-        const skillItem = (this as unknown) as RqgItem<SkillData>;
-        Skill.prepareItemForActorSheet(skillItem).then((_) => {
-          console.log("%%% after prepareItemForActorSheet Skill");
-          return this;
-        });
-        break;
+    Items.unregisterSheet("core", ItemSheet);
 
-      case ItemTypeEnum.HitLocation:
-        const hitLocationItem = (this as unknown) as RqgItem<HitLocationData>;
-        HitLocation.prepareItemForActorSheet(hitLocationItem).then((_) => {
-          console.log("%%% after prepareItemForActorSheet HitLocation");
-          return this;
-        });
-        break;
+    Items.registerSheet("rqg", PassionSheet, {
+      types: [ItemTypeEnum.Passion],
+      makeDefault: true,
+    });
+    Items.registerSheet("rqg", ElementalRuneSheet, {
+      types: [ItemTypeEnum.ElementalRune],
+      makeDefault: true,
+    });
+    Items.registerSheet("rqg", PowerRuneSheet, {
+      types: [ItemTypeEnum.PowerRune],
+      makeDefault: true,
+    });
+    Items.registerSheet("rqg", SkillSheet, {
+      types: [ItemTypeEnum.Skill],
+      makeDefault: true,
+    });
+    Items.registerSheet("rqg", HitLocationSheet, {
+      types: [ItemTypeEnum.HitLocation],
+      makeDefault: true,
+    });
 
-      default:
-        BaseItem.prepareItemForActorSheet(this).then((_) => {
-          console.log("%%% after prepareItemForActorSheet BaseItem");
-          return this;
-        });
-        break;
-    }
+    // TODO this doesn't compile!? Sheet registration would be better in Item init
+    // Item2TypeClass.forEach((itemClass) => itemClass.init());
   }
+
+  // prepareData() {
+  //   super.prepareData();
+  //   console.log("*** RqgItem prepareData");
+  //   const itemData: ItemData<DataType> = this.data;
+  // }
 }

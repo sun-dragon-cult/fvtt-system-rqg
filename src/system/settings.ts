@@ -1,4 +1,4 @@
-export const registerSettings = function () {
+export const registerRqgSystemSettings = function () {
   game.settings.register("rqg", "specialCrit", {
     name: "Special & Hyper Critical results",
     hint:

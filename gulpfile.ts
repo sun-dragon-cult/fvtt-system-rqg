@@ -2,8 +2,6 @@ import * as gulp from "gulp";
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as chalk from "chalk";
-import * as archiver from "archiver";
-import * as stringify from "json-stringify-pretty-compact";
 import {
   Node,
   LiteralExpression,
@@ -24,48 +22,11 @@ import { Readable } from "stream";
 
 import * as ts from "gulp-typescript";
 import * as sass from "gulp-sass";
-import * as git from "gulp-git";
-
-const argv = require("yargs").argv;
 
 sass.compiler = require("node-sass");
 
-function getConfig() {
-  const configPath = path.resolve(process.cwd(), "foundryconfig.json");
-  let config;
-
-  if (fs.existsSync(configPath)) {
-    config = fs.readJSONSync(configPath);
-    return config;
-  } else {
-    return;
-  }
-}
-
-function getManifest() {
-  const json: any = {};
-
-  if (fs.existsSync("src")) {
-    json.root = "src";
-  } else {
-    json.root = "dist";
-  }
-
-  const systemPath = path.join(json.root, "system.json");
-
- if (fs.existsSync(systemPath)) {
-    json.file = fs.readJSONSync(systemPath);
-    json.name = "system.json";
-  } else {
-    return;
-  }
-
-  return json;
-}
-
 /**
  * TypeScript transformers
- * @returns {typescript.TransformerFactory<typescript.SourceFile>}
  */
 function createTransformer(): TransformerFactory<any> {
   /**
@@ -87,15 +48,11 @@ function createTransformer(): TransformerFactory<any> {
     ) {
       return false;
     }
-    if (path.extname(node.moduleSpecifier.text) !== "") {
-      return false;
-    }
-    return true;
+    return path.extname(node.moduleSpecifier.text) === "";
   }
 
   /**
    * Transforms import/export declarations to append `.js` extension
-   * @param {typescript.TransformationContext} context
    */
   function importTransformer(
     context: TransformationContext
@@ -286,245 +243,7 @@ async function clean() {
   }
 }
 
-/********************/
-/*		LINK		*/
-/********************/
-
-/**
- * Link build to User Data folder
- */
-async function linkUserData() {
-  const name = path.basename(path.resolve("."));
-  const config = fs.readJSONSync("foundryconfig.json");
-
-  let destDir;
-  try {
-    if (
-      fs.existsSync(path.resolve(".", "dist", "system.json")) ||
-      fs.existsSync(path.resolve(".", "src", "system.json"))
-    ) {
-      destDir = "systems";
-    } else {
-      throw Error(
-        `Could not find ${chalk.blueBright("system.json")}`
-      );
-    }
-
-    let linkDir;
-    if (config.dataPath) {
-      if (!fs.existsSync(path.join(config.dataPath, "Data")))
-        throw Error("User Data path invalid, no Data directory found");
-
-      linkDir = path.join(config.dataPath, "Data", destDir, name);
-    } else {
-      throw Error("No User Data path defined in foundryconfig.json");
-    }
-
-    if (argv.clean || argv.c) {
-      console.log(
-        chalk.yellow(`Removing build in ${chalk.blueBright(linkDir)}`)
-      );
-
-      await fs.remove(linkDir);
-    } else if (!fs.existsSync(linkDir)) {
-      console.log(chalk.green(`Copying build to ${chalk.blueBright(linkDir)}`));
-      await fs.symlink(path.resolve("./dist"), linkDir);
-    }
-    return Promise.resolve();
-  } catch (err) {
-    Promise.reject(err);
-  }
-}
-
-/*********************/
-/*		RELEASE 	 */
-/*********************/
-
-/**
- * Release build
- */
-async function releaseBuild() {
-  const manifest = getManifest();
-
-  return new Promise((resolve, reject) => {
-    try {
-      // Remove the releases dir without doing anything else
-      if (argv.clean || argv.c) {
-        console.log(chalk.yellow("Removing all released files"));
-        fs.removeSync("releases");
-        return;
-      }
-
-      // Ensure there is a directory to hold all the release versions
-      fs.ensureDirSync("releases");
-
-      // Initialize the zip file
-      const zipName = `${manifest.file.name}.zip`;
-      const zipFile = fs.createWriteStream(path.join("releases", zipName));
-      const zip = archiver("zip", { zlib: { level: 9 } });
-
-      zipFile.on("close", () => {
-        console.log(chalk.green(zip.pointer() + " total bytes"));
-        console.log(chalk.green(`Zip file ${zipName} has been written`));
-        return resolve();
-      });
-
-      zip.on("error", (err) => {
-        throw err;
-      });
-
-      zip.pipe(zipFile);
-
-      // Add the directory with the final code
-      zip.directory("dist/", manifest.file.name);
-
-      zip.finalize();
-    } catch (err) {
-      return reject(err);
-    }
-  });
-}
-
-/*********************/
-/*		RELEASE 	 */
-/*********************/
-
-/**
- * Update version and URLs in the manifest JSON
- */
-function updateManifest(cb) {
-  const packageJson = fs.readJSONSync("package.json");
-  const config = getConfig(),
-    manifest = getManifest(),
-    rawURL = config.rawURL,
-    repoURL = config.repository,
-    manifestRoot = manifest.root;
-
-  if (!config) cb(Error(chalk.red("foundryconfig.json not found")));
-  if (!manifest) cb(Error(chalk.red("Manifest JSON not found")));
-  if (!rawURL || !repoURL)
-    cb(
-      Error(chalk.red("Repository URLs not configured in foundryconfig.json"))
-    );
-
-  try {
-    const version = argv.update || argv.u;
-
-    /* Update version */
-
-    const versionMatch = /^(\d{1,}).(\d{1,}).(\d{1,})$/;
-    const currentVersion = manifest.file.version;
-    let targetVersion = "";
-
-    if (!version) {
-      cb(Error("Missing version number"));
-    }
-
-    if (versionMatch.test(version)) {
-      targetVersion = version;
-    } else {
-      targetVersion = currentVersion.replace(
-        versionMatch,
-        (substring, major, minor, patch) => {
-          console.log(
-            substring,
-            Number(major) + 1,
-            Number(minor) + 1,
-            Number(patch) + 1
-          );
-          if (version === "major") {
-            return `${Number(major) + 1}.0.0`;
-          } else if (version === "minor") {
-            return `${major}.${Number(minor) + 1}.0`;
-          } else if (version === "patch") {
-            return `${major}.${minor}.${Number(patch) + 1}`;
-          } else {
-            return "";
-          }
-        }
-      );
-    }
-
-    if (targetVersion === "") {
-      return cb(Error(chalk.red("Error: Incorrect version arguments.")));
-    }
-
-    if (targetVersion === currentVersion) {
-      return cb(
-        Error(
-          chalk.red("Error: Target version is identical to current version.")
-        )
-      );
-    }
-    console.log(`Updating version number to '${targetVersion}'`);
-
-    packageJson.version = targetVersion;
-    manifest.file.version = targetVersion;
-
-    /* Update URLs */
-
-    const result = `${rawURL}/v${manifest.file.version}/releases/${manifest.file.name}-v${manifest.file.version}.zip`;
-
-    manifest.file.url = repoURL;
-    manifest.file.manifest = `${rawURL}/master/${manifestRoot}/${manifest.name}`;
-    manifest.file.download = result;
-
-    const prettyProjectJson = stringify(manifest.file, {
-      maxLength: 35,
-      indent: "\t",
-    });
-
-    fs.writeJSONSync("package.json", packageJson, { spaces: "\t" });
-    fs.writeFileSync(
-      path.join(manifest.root, manifest.name),
-      prettyProjectJson,
-      "utf8"
-    );
-
-    return cb();
-  } catch (err) {
-    cb(err);
-  }
-}
-
-function gitAdd() {
-  return gulp.src("package").pipe(git.add({ args: "--no-all" }));
-}
-
-function gitCommit() {
-  return gulp.src("./*").pipe(
-    git.commit(`v${getManifest().file.version}`, {
-      args: "-a",
-      disableAppendPaths: true,
-    })
-  );
-}
-
-function gitTag() {
-  const manifest = getManifest();
-  return git.tag(
-    `v${manifest.file.version}`,
-    `Updated to ${manifest.file.version}`,
-    (err) => {
-      if (err) throw err;
-    }
-  );
-}
-
-const execGit = gulp.series(gitAdd, gitCommit, gitTag);
-
 const execBuild = gulp.parallel(buildTS, buildSASS, copyFiles, buildTemplates);
 
 exports.build = gulp.series(clean, execBuild);
 exports.watch = buildWatch;
-exports.clean = clean;
-exports.link = linkUserData;
-exports.release = releaseBuild;
-exports.update = updateManifest;
-exports.publish = gulp.series(
-  clean,
-  updateManifest,
-  execBuild,
-  releaseBuild,
-  execGit
-);
