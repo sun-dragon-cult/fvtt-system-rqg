@@ -3,7 +3,7 @@ export const preloadTemplates = async function () {
     "systems/rqg/actors/rqgActorSheet.html",
     "systems/rqg/actors/parts/main-tab.html",
     "systems/rqg/actors/parts/skills-tab.html",
-    "systems/rqg/actors/parts/inventory-tab.html",
+    "systems/rqg/actors/parts/gear-tab.html",
     "systems/rqg/actors/parts/background-tab.html",
     "systems/rqg/actors/parts/passions-tab.html",
 
@@ -16,6 +16,7 @@ export const preloadTemplates = async function () {
     "systems/rqg/items/elemental-rune-item/elementalRuneSheet.html",
     "systems/rqg/items/power-rune-item/powerRuneSheet.html",
     "systems/rqg/items/hit-location-item/hitLocationSheet.html",
+    "systems/rqg/items/gear-item/gearSheet.html",
   ];
 
   return loadTemplates(templatePaths);

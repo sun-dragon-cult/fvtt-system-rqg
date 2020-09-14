@@ -1,0 +1,14 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <input type="text" name="name" value="{{item.name}}" />
+      <label>Quantity <input type="text" data-dtype="Number" name="data.quantity" value="{{item.data.quantity}}"></label>
+      <label>Enc <input type="text" data-dtype="Number" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
+      <label>Equipped <input type="checkbox" name="data.equipped" {{checked data.equipped}} /></label><br>
+      <label>Description {{editor content=data.description target="data.description"
+        button=true owner=owner editable=editable}}
+      </label>
+    </div>
+    <br>{{json data}}
+  </header>
+</form>
