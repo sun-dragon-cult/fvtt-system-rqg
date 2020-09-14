@@ -14,3 +14,34 @@
   </li>
   {{/each}}
 </ol>
+<h2>Armor</h2>
+<ol class="item-list">
+  <li class="flexrow">
+    <p>Name</p>
+    <p>Qty</p>
+    <p>ENC</p>
+    <p>Equipped</p>
+    <p>Hitlocations</p>
+    <p>Material</p>
+    <p>Absorbs</p>
+    <p>moveQuietly</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+  </li>
+  {{#each data.ownedItems.armor}}
+  <li class="flexrow" data-item-id="{{this._id}}">
+    <h4 class="item-name">{{this.name}}</h4>
+    <p>{{this.data.quantity}}</p>
+    <p>{{this.data.encumbrance}}</p>
+    <p>{{this.data.equipped}}</p>
+    <p>[{{#each this.data.hitlocations}}this,{{/each}}]</p>
+    <p>{{this.data.material}}</p>
+    <p>{{this.data.absorbs}}</p>
+    <p>{{this.data.moveQuietlyPenalty}}</p>
+    <div class="item-controls">
+      <span title="Edit Item" data-item-edit><i class="fas fa-edit"></i></span>
+      <span title="Delete Item" data-item-delete><i class="fas fa-trash"></i></span>
+    </div>
+  </li>
+  {{/each}}
+</ol>

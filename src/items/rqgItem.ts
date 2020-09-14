@@ -5,6 +5,7 @@ import { PowerRuneSheet } from "./power-rune-item/powerRuneSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 import { GearSheet } from "./gear-item/gearSheet";
+import { ArmorSheet } from "./armor-item/armorSheet";
 
 export class RqgItem<DataType = any> extends Item<DataType> {
   public static init() {
@@ -36,7 +37,10 @@ export class RqgItem<DataType = any> extends Item<DataType> {
       types: [ItemTypeEnum.Gear],
       makeDefault: true,
     });
-
+    Items.registerSheet("rqg", ArmorSheet, {
+      types: [ItemTypeEnum.Armor],
+      makeDefault: true,
+    });
     // TODO this doesn't compile!? Sheet registration would be better in Item init
     // Item2TypeClass.forEach((itemClass) => itemClass.init());
   }
