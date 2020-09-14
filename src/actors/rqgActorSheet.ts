@@ -15,6 +15,7 @@ import { PowerRuneData } from "../data-model/item-data/powerRuneData";
 import { PassionData } from "../data-model/item-data/passionData";
 import { ElementalRuneData } from "../data-model/item-data/elementalRuneData";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
+import { GearData } from "../data-model/item-data/gearData";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -66,8 +67,11 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     });
     const hitLocations: Item<HitLocationData>[] = items.filter(
       (i: Item) => i.type === ItemTypeEnum.HitLocation
+      // TODO Sort on dieFrom
     );
-    // TODO Sort on dieFrom
+    const gear: ItemData<GearData>[] = items.filter(
+      (i: Item) => i.type === ItemTypeEnum.Gear
+    );
 
     data.ownedItems = {
       skills,
@@ -75,6 +79,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       powerRunes,
       passions,
       hitLocations,
+      gear,
     };
     return sheetData;
   }

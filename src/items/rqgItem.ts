@@ -4,6 +4,7 @@ import { ElementalRuneSheet } from "./elemental-rune-item/elementalRuneSheet";
 import { PowerRuneSheet } from "./power-rune-item/powerRuneSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
+import { GearSheet } from "./gear-item/gearSheet";
 
 export class RqgItem<DataType = any> extends Item<DataType> {
   public static init() {
@@ -29,6 +30,10 @@ export class RqgItem<DataType = any> extends Item<DataType> {
     });
     Items.registerSheet("rqg", HitLocationSheet, {
       types: [ItemTypeEnum.HitLocation],
+      makeDefault: true,
+    });
+    Items.registerSheet("rqg", GearSheet, {
+      types: [ItemTypeEnum.Gear],
       makeDefault: true,
     });
 
