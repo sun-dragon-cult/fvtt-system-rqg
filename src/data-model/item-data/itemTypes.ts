@@ -2,6 +2,7 @@ import { Skill } from "../../items/skill-item/skill";
 import { BaseItem } from "../../items/baseItem";
 import { HitLocation } from "../../items/hit-location-item/hitLocation";
 import { Gear } from "../../items/gear-item/gear";
+import { Armor } from "../../items/armor-item/armor";
 
 export enum ItemTypeEnum {
   Skill = "skill",
@@ -10,11 +11,11 @@ export enum ItemTypeEnum {
   PowerRune = "powerRune",
   HitLocation = "hitLocation",
   Gear = "gear",
+  Armor = "armor",
   MeleeWeapon = "meleeWeapon",
   MissileWeapon = "missileWeapon",
   Shield = "shield",
   NaturalWeapon = "naturalWeapon",
-  Armor = "armor",
   SpiritMagic = "spiritMagic",
   RuneMagic = "runeMagic",
   SorcerousMagic = "sorcerousMagic",
@@ -27,4 +28,5 @@ export const Item2TypeClass: Map<string, typeof BaseItem> = new Map([
   [ItemTypeEnum.PowerRune, BaseItem],
   [ItemTypeEnum.HitLocation, HitLocation],
   [ItemTypeEnum.Gear, Gear],
+  [ItemTypeEnum.Armor, Armor],
 ]);

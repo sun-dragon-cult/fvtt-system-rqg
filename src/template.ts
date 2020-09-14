@@ -6,6 +6,7 @@ import { emptyElementalRune } from "./data-model/item-data/elementalRuneData";
 import { emptyPowerRune } from "./data-model/item-data/powerRuneData";
 import { emptyHitLocation } from "./data-model/item-data/hitLocationData";
 import { emptyGear } from "./data-model/item-data/gearData";
+import { emptyArmor } from "./data-model/item-data/armorData";
 
 // Instantiated Actor types
 export const Actors = {
@@ -19,10 +20,10 @@ export const Items = {
   [ItemTypeEnum.PowerRune]: emptyPowerRune,
   [ItemTypeEnum.HitLocation]: emptyHitLocation,
   [ItemTypeEnum.Gear]: emptyGear,
+  [ItemTypeEnum.Armor]: emptyArmor,
 
   // [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
   // [ItemTypeEnum.MissileWeapon]: emptyMissileWeapon,
-  // [ItemTypeEnum.Armor]: emptyArmour; AP ENC "Hit location cover"
   // [ItemTypeEnum.SpiritMagic]: emptySpiritMagic;
   // [ItemTypeEnum.RuneMagic]: emptyRuneMagic;
   // [ItemTypeEnum.SorcerousMagic]: emptySorcerousMagic;
