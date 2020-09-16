@@ -1,3 +1,15 @@
+# [0.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.1.11...v0.2.0) (2020-09-16)
+
+
+### Features
+
+* Add Armor Item. ([#28](https://github.com/wakeand/fvtt-system-rqg/issues/28)) ([6b845b2](https://github.com/wakeand/fvtt-system-rqg/commit/6b845b2))
+* Add Gear Item. ([#26](https://github.com/wakeand/fvtt-system-rqg/issues/26)) ([e49141a](https://github.com/wakeand/fvtt-system-rqg/commit/e49141a))
+* Calculate embedded item data from actor. Added default skills & a skill compendium. Add owned item listener (passions example) ([19ec695](https://github.com/wakeand/fvtt-system-rqg/commit/19ec695))
+
+
+
+
 ## [0.1.11](https://github.com/wakeand/fvtt-system-rqg/compare/v0.1.10...v0.1.11) (2020-09-01)
 
 
