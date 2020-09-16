@@ -4,7 +4,9 @@ import { Item2TypeClass } from "../data-model/item-data/itemTypes";
 import elementalRunes from "../assets/default-items/elementalRunes";
 import powerRunes from "../assets/default-items/powerRunes";
 import hitLocations from "../assets/default-items/hitLocations";
+import characterSkills from "../assets/default-items/characterSkills";
 import { RqgActorSheet } from "./rqgActorSheet";
+import { RqgItem } from "../items/rqgItem";
 
 export class RqgActor extends Actor<RqgActorData> {
   static init() {
@@ -23,7 +25,7 @@ export class RqgActor extends Actor<RqgActorData> {
           await actor.createOwnedItem(
             hitLocations.filter((h) => humanoid.includes(h.name))
           );
-          // );
+          await actor.createOwnedItem(characterSkills);
         }
       }
     );
@@ -108,10 +110,12 @@ export class RqgActor extends Actor<RqgActorData> {
 
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
-    this.items.forEach(
-      async (item: Item) =>
-        await Item2TypeClass.get(item.type).prepareItemForActorSheet(item)
-    );
+
+    const itemChanges: Array<RqgItem> = this.items.map((item: Item) => {
+      const i = Item2TypeClass.get(item.type).prepareAsEmbeddedItem(item);
+      return { _id: i._id, data: i.data.data, diff: true };
+    });
+    this.updateOwnedItem(itemChanges);
   }
 
   /**

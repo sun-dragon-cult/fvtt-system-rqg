@@ -19,7 +19,13 @@
   "styles": [
     "rqg.css"
   ],
-  "packs": [],
+  "packs": [{
+    "name": "skills",
+    "label": "Rqg Skills",
+    "system": "rqg",
+    "path": "./assets/packs/skills.db",
+    "entity": "Item"
+  }],
   "languages": [
     {
       "lang": "en",

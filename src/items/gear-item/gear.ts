@@ -1,5 +1,6 @@
 import { BaseItem } from "../baseItem";
 import { GearData } from "../../data-model/item-data/gearData";
+import { RqgItem } from "../rqgItem";
 
 export class Gear extends BaseItem {
   // public static init() {
@@ -9,7 +10,9 @@ export class Gear extends BaseItem {
   //   });
   // }
 
-  public static async prepareItemForActorSheet(item: Item<GearData>) {
+  public static prepareAsEmbeddedItem(item: RqgItem<GearData>): RqgItem {
     return item;
   }
+
+  static activateActorSheetListeners(html, sheet) {}
 }

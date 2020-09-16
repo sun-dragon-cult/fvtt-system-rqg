@@ -5,7 +5,6 @@ import {
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
-import { HitLocation } from "./hitLocation";
 
 export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -44,11 +43,20 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: "Confirm",
-            callback: async (html) => {
+            callback: (html) => {
               const damage = (html as JQuery).find("input")[0].value;
               item.data.data.wounds.push(damage);
-              await HitLocation.prepareItemForActorSheet(item);
-              actor.sheet.render();
+              actor.prepareEmbeddedEntities(); // TODO Just update what's needed
+              // TODO reduce actor.data.data.attributes.hitPoints.value
+              // actor.updateOwnedItem({
+              //   _id: item._id,
+              //   data: {
+              //     data: { wounds: item.data.data.wounds.slice() },
+              //     diff: false,
+              //   },
+              // });
+              // await HitLocation.prepareAsEmbeddedItem(item);
+              // actor.sheet.render();
             },
           },
         },
@@ -61,7 +69,7 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
 
   static async editWounds(actor, itemId) {
     const item = actor.getOwnedItem(itemId);
-    console.log("*** editWounds item", item.data.data.wounds);
+    console.debug("*** editWounds item", item.data.data.wounds);
     // const dialogContent ='<input type="number" name="damage" value=item./>';
     let dialogContent = "";
 
@@ -84,13 +92,21 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: "Confirm",
-            callback: async (html) => {
+            callback: (html) => {
               item.data.data.wounds = (html as JQuery)
                 .find("input")
                 .toArray()
                 .map((w) => parseInt(w.value));
-              await HitLocation.prepareItemForActorSheet(item);
-              actor.sheet.render();
+              actor.prepareEmbeddedEntities(); // TODO Just update what's needed
+              // actor.updateOwnedItem({
+              //   _id: item._id,
+              //   data: {
+              //     data: { wounds: item.data.data.wounds.slice() },
+              //     diff: false,
+              //   },
+              // });
+              // await HitLocation.prepareAsEmbeddedItem(item);
+              // actor.sheet.render();
             },
           },
         },

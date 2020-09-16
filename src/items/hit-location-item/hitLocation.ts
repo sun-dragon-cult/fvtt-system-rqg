@@ -3,6 +3,7 @@ import {
   HitLocationData,
   HitLocationsEnum,
 } from "../../data-model/item-data/hitLocationData";
+import { RqgItem } from "../rqgItem";
 
 export class HitLocation extends BaseItem {
   // public static init() {
@@ -12,29 +13,20 @@ export class HitLocation extends BaseItem {
   //   });
   // }
 
-  public static async prepareItemForActorSheet(item: Item<HitLocationData>) {
-    console.log("*** HitLocation prepareItemForActorSheet", item);
-    if (item.actor) {
-      const newData = duplicate(item.data.data);
+  public static prepareAsEmbeddedItem(item: RqgItem<HitLocationData>): RqgItem {
+    console.debug("*** HitLocation prepareAsEmbeddedItem", item);
+    // Remove any healed wounds
+    item.data.data.wounds = item.data.data.wounds.filter((w) => w > 0);
 
-      // Remove any healed wounds
-      newData.wounds = newData.wounds.filter((w) => w > 0);
-
-      const totalHp = item.actor.data.data.attributes.hitPoints.max;
-      newData.hp.max = HitLocation.hitPointsPerLocation(
-        totalHp,
-        item.data.name
-      );
-      newData.hp.value = newData.wounds.reduce(
-        (acc: number, w: number) => acc - w,
-        newData.hp.max
-      );
-
-      // Persist if changed
-      if (JSON.stringify(newData) !== JSON.stringify(item.data.data)) {
-        await item.update({ data: newData }, {});
-      }
-    }
+    const totalHp = item.actor.data.data.attributes.hitPoints.max;
+    item.data.data.hp.max = HitLocation.hitPointsPerLocation(
+      totalHp,
+      item.data.name
+    );
+    item.data.data.hp.value = item.data.data.wounds.reduce(
+      (acc: number, w: number) => acc - w,
+      item.data.data.hp.max
+    );
     return item;
   }
 

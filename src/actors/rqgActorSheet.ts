@@ -129,6 +129,22 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       );
     });
 
+    // Add Item (create owned item)
+    this.form.querySelectorAll("[data-item-add]").forEach((el) => {
+      const itemType = (el.closest("[data-item-type]") as HTMLElement).dataset
+        .itemType;
+      el.addEventListener("click", () => {
+        // Create item and render sheet afterwards
+        this.actor
+          .createOwnedItem({ name: "Newone", type: itemType })
+          .then((item) => {
+            // We have to reload the item for it to have a sheet
+            const createdItem = this.actor.getOwnedItem(item._id);
+            createdItem.sheet.render(true);
+          });
+      });
+    });
+
     // Add wound to hit location TODO move listener to hitlocation
     this.form.querySelectorAll("[data-item-add-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
@@ -147,12 +163,6 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       );
     });
   }
-
-  // _updateObject(event: Event, formData: any): Promise<any> {
-  //   // TODO  | JQuery.Event - hur funkar eg det där? Hur vet man vad man får?
-  //   console.log("*** Event + formData", event.target, formData);
-  //   return this.object.update(formData);
-  // }
 
   static confirmItemDelete(actor, itemId) {
     const item = actor.getOwnedItem(itemId);
