@@ -1,5 +1,7 @@
 import { IPhysicalItem } from "./IPhysicalItem";
 
+// TODO Armor shouldn't have quantity (part of IPhysicalItem)
+
 export type ArmorData = IPhysicalItem & {
   description: string;
   encumbrance: number;

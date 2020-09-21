@@ -1,7 +1,3 @@
-[data-item-roll]:hover {
-  outline: 2px solid crimson; // TODO just temporary
-}
-
 .profile-img {
   height: 117px;
 }
@@ -33,6 +29,10 @@
     font-size: 35px;
     font-weight: bold;
   }
+}
+
+.skill-category {
+  width: 15rem;
 }
 
 .characteristics {
@@ -156,13 +156,10 @@
     border: none;
     height: 16px;
   }
-}
 
-.sheet-tabs {
-  margin: 10px 0;
-  height: 20px;
-  background-color: bisque;
-  align-content: flex-end;
+  tbody:hover tr {
+    background-color: #ccc8c6;
+  }
 }
 
 .editor-content {

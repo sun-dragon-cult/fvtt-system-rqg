@@ -1,47 +1,54 @@
-<h2>Gear</h2>
-<ol class="item-list">
+<h2 class="flex-row">
+  <span>Gear</span>
+  <a title="Add Item" data-item-add data-item-type="gear"><i class="fas fa-plus"></i></a>
+</h2>
+<table>
+    <tr>
+      <th class="text-left">Name</th>
+      <th class="text-right">Qty</th>
+      <th class="text-right">ENC</th>
+      <th class="text-left">Equipped</th>
+
+    </tr>
   {{#each data.ownedItems.gear}}
-  <li class="flexrow" data-item-id="{{this._id}}">
-    <h4 class="item-name">{{this.name}}</h4>
-    <p>{{this.data.quantity}}</p>
-    <p>{{this.data.encumbrance}}</p>
-    <p>{{this.data.equipped}}</p>
-    <p>{{this.data.description}}</p>
-    <div class="item-controls">
-      <span title="Edit Item" data-item-edit><i class="fas fa-edit"></i></span>
-      <span title="Delete Item" data-item-delete><i class="fas fa-trash"></i></span>
-    </div>
-  </li>
+  <tr data-item-id="{{this._id}}">
+    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
+    <td class="text-right">{{this.data.quantity}}</td>
+    <td class="text-right">{{this.data.encumbrance}}</td>
+    <td>{{this.data.equipped}}</td>
+    <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
+  </tr>
   {{/each}}
-</ol>
-<h2>Armor</h2>
-<ol class="item-list">
-  <li class="flexrow">
-    <p>Name</p>
-    <p>Qty</p>
-    <p>ENC</p>
-    <p>Equipped</p>
-    <p>Hitlocations</p>
-    <p>Material</p>
-    <p>Absorbs</p>
-    <p>moveQuietly</p>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-  </li>
+</table>
+
+<h2 class="flex-row">
+  <span>Armor</span>
+  <a title="Add Item" data-item-add data-item-type="armor"><i class="fas fa-plus"></i></a>
+</h2>
+<table>
+  <tr>
+    <th class="text-left">Name</th>
+    <th class="text-right">ENC</th>
+    <th class="text-left">Equipped</th>
+    <th class="text-left">Hitlocations</th>
+    <th class="text-left">Material</th>
+    <th class="text-right">Absorbs</th>
+    <th class="text-right">moveQuietly</th>
+  </tr>
   {{#each data.ownedItems.armor}}
-  <li class="flexrow" data-item-id="{{this._id}}">
-    <h4 class="item-name">{{this.name}}</h4>
-    <p>{{this.data.quantity}}</p>
-    <p>{{this.data.encumbrance}}</p>
-    <p>{{this.data.equipped}}</p>
-    <p>[{{#each this.data.hitlocations}}this,{{/each}}]</p>
-    <p>{{this.data.material}}</p>
-    <p>{{this.data.absorbs}}</p>
-    <p>{{this.data.moveQuietlyPenalty}}</p>
-    <div class="item-controls">
-      <span title="Edit Item" data-item-edit><i class="fas fa-edit"></i></span>
-      <span title="Delete Item" data-item-delete><i class="fas fa-trash"></i></span>
-    </div>
-  </li>
+  <tr data-item-id="{{this._id}}">
+    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
+    <td class="text-right">{{this.data.encumbrance}}</td>
+    <td>{{this.data.equipped}}</td>
+    <td>[
+      {{#each this.data.hitLocations}}
+        {{this}},
+      {{/each}}
+      ]</td>
+    <td>{{this.data.material}}</td>
+    <td class="text-right">{{this.data.absorbs}}</td>
+    <td class="text-right">{{this.data.moveQuietlyPenalty}}</td>
+    <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
+  </tr>
   {{/each}}
-</ol>
+</table>

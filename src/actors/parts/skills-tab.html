@@ -1,18 +1,26 @@
-<ol class="item-list">
+<div class="masonry">
   {{#each data.ownedItems.skills}}
-    <h2>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
-    {{#each this}}
-      <li class="flexrow" data-item-id="{{this._id}}">
-        <h4 class="item-name">{{this.name}}</h4>
-        <p title="Roll" data-item-roll>{{this.data.chance}}%<img style="border: none" height="14px" src="/icons/svg/d20-black.svg"></p>
-        <p>{{this.data.experience}}</p>
-        <div class="item-controls">
-          <span title="Edit Item" data-item-edit><i class="fas fa-edit"></i></span>
-          <span title="Delete Item" data-item-delete
-            ><i class="fas fa-trash"></i
-          ></span>
-        </div>
-      </li>
-    {{/each}}
+  <div class="masonry-item">
+    <h2 class="flex-row">
+      <span>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</span>
+      <a title="Add Item" data-item-add data-item-type="skill"><i class="fas fa-plus"></i></a>
+    </h2>
+    <table class="fixed">
+      <tr>
+        <th class="text-left" style="width: 100%">Name</th>
+        <th class="text-right" style="width: 70px">Chance</th>
+        <th class="text-left" style="width: 40px">Exp</th>
+        <th style="width: 15px"></th>
+      </tr>
+      {{#each this}}
+      <tr data-item-id="{{this._id}}">
+        <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a>&nbsp;{{this.name}}</td>
+        <td class="text-right nowrap"><a title="Roll" data-item-roll>{{this.data.chance}}%<img style="border: none" height="14px" src="/icons/svg/d20-black.svg"></a></td>
+        <td>{{this.data.experience}}</td>
+        <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
+      </tr>
+      {{/each}}
+    </table>
+  </div>
   {{/each}}
-</ol>
+</div>

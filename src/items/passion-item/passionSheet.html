@@ -1,12 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img
-      class="profile-img"
-      src="{{item.img}}"
-      data-edit="img"
-      title="{{item.name}}"
-    />
-    <h1 class="name prop"></h1>
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
     {{!--
     <input
       name="name"
@@ -20,7 +14,7 @@
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
-    {{item.name}}
+    <input type="text" name="name" value="{{item.name}}" />
     <input type="text" name="data.chance" value="{{item.data.chance}}" data-dtype="Number"/>
     <input
       type="checkbox"
@@ -28,18 +22,10 @@
       {{checked
       data.experience}}
     /><br />
-
-    <div class="sub-header">
-      passion {{data.passion}} ({{item.name}}) {{item.data.chance}}% Experience
-      {{data.experience}} Description {{data.description}}
-    </div>
   </header>
   <section class="sheet-body">
     <div class="wide-section">
-      <label
-        >Backstory {{editor content=data.description target="data.description"
-        button=true owner=owner editable=editable}}
-      </label>
+      Backstory {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
     </div>
   </section>
 </form>
