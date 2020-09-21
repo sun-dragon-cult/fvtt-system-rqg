@@ -45,27 +45,22 @@ export class Ability implements IAbility {
   private static evaluateResult(chance: number, roll: number): ResultEnum {
     const specialCritSetting = game.settings.get("rqg", "specialCrit");
 
-    const rawHyperCritical = chance / 500;
     const hyperCritical =
-      specialCritSetting && chance >= 100 ? Math.ceil(rawHyperCritical) : 0;
-    const rawSpecialCritical = chance / 100;
+      specialCritSetting && chance >= 100 ? Math.ceil(chance / 500) : 0;
     const specialCritical =
-      specialCritSetting && chance >= 100 ? Math.ceil(rawSpecialCritical) : 0;
+      specialCritSetting && chance >= 100 ? Math.ceil(chance / 100) : 0;
 
-    const rawCrit = Math.max(1, chance / 20);
-    const critical = Math.ceil(rawCrit);
-    const rawSpecial = chance / 5;
-    const special = Math.ceil(rawSpecial);
-    const rawFumble = Math.min(100, 100 - (100 - chance) / 20);
-    const fumble = Math.ceil(rawFumble);
-    const limitedChance = Math.min(95, chance);
+    const critical = Math.ceil(Math.max(1, chance / 20));
+    const special = Math.ceil(chance / 5);
+    const fumble = Math.ceil(Math.min(100, 100 - (100 - chance) / 20));
+    const success = Math.min(95, Math.max(chance, 5));
     const fail = Math.min(96, fumble - 1);
     let lookup = [
       { limit: hyperCritical, result: ResultEnum.HyperCritical },
       { limit: specialCritical, result: ResultEnum.SpecialCritical },
       { limit: critical, result: ResultEnum.Critical },
       { limit: special, result: ResultEnum.Special },
-      { limit: limitedChance, result: ResultEnum.Success },
+      { limit: success, result: ResultEnum.Success },
       { limit: fail, result: ResultEnum.Failure },
       { limit: Infinity, result: ResultEnum.Fumble },
     ];
