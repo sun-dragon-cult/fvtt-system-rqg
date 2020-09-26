@@ -4,11 +4,12 @@
     <input type="text" name="name" value="{{item.name}}" />
     <label>Enc <input type="text" data-dtype="Number" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
     <label>Equipped <input type="checkbox" name="data.equipped" {{checked data.equipped}} /></label><br>
-    <label>hitLocation <input type="text" name="data.hitLocationsCSV" value="{{item.data.hitLocationsCSV}}"/></label><br>
+    <label>hitLocations <input type="text" name="data.hitLocationsCSV" value="{{item.data.hitLocationsCSV}}"/></label><br>
     <label>Material <input type="text" name="data.material" value="{{item.data.material}}"></label><br>
     <label>Absorbs <input type="text" data-dtype="Number" name="data.absorbs" value="{{item.data.absorbs}}"></label><br>
     <label>Move Quietly Penalty <input type="text" data-dtype="Number" name="data.moveQuietlyPenalty"
                                        value="{{item.data.moveQuietlyPenalty}}"></label><br>
+    <label>Size <input type="text" data-dtype="Number" name="data.size" value="{{item.data.size}}"></label><br>
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>

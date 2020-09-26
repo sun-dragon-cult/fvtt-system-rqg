@@ -2,23 +2,23 @@
   <h2>Power</h2>
   {{#with data.ownedItems.powerRunes.man}}
     <span data-item-id="{{_id}}" class="single">
-      <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
-      <span data-item-edit> {{data.experience}} </span>
+      <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</a>
+      <a data-item-edit> {{data.experience}} </a>
     </span>
   {{/with}}
 
   <span>
     {{#with data.ownedItems.powerRunes.fertility}}
       <span data-item-id="{{_id}}">
-        <span data-item-edit>{{data.experience}}</span>
-        <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+        <a data-item-edit>{{data.experience}}</a>
+        <a data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</a>
       </span>
     {{/with}}
     –
     {{#with data.ownedItems.powerRunes.death}}
       <span data-item-id="{{_id}}">
-        <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
-        <span data-item-edit>{{data.experience}}</span>
+        <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</a>
+        <a data-item-edit>{{data.experience}}</a>
       </span>
     {{/with}}
   </span>
@@ -26,15 +26,15 @@
   <span>
     {{#with data.ownedItems.powerRunes.harmony}}
       <span data-item-id="{{_id}}">
-        <span data-item-edit>{{data.experience}}</span>
-        <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+        <a data-item-edit>{{data.experience}}</a>
+        <a data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</a>
       </span>
     {{/with}}
     –
     {{#with data.ownedItems.powerRunes.disorder}}
       <span data-item-id="{{_id}}">
-        <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
-        <span data-item-edit>{{data.experience}}</span>
+        <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</a>
+        <a data-item-edit>{{data.experience}}</a>
       </span>
     {{/with}}
   </span>
@@ -42,15 +42,15 @@
   <span>
     {{#with data.ownedItems.powerRunes.truth}}
       <span data-item-id="{{_id}}">
-        <span data-item-edit>{{data.experience}}</span>
-        <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+        <a data-item-edit>{{data.experience}}</a>
+        <a data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</a>
       </span>
     {{/with}}
     –
     {{#with data.ownedItems.powerRunes.illusion}}
       <span data-item-id="{{_id}}">
-        <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
-        <span data-item-edit>{{data.experience}}</span>
+        <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</a>
+        <a data-item-edit>{{data.experience}}</a>
       </span>
     {{/with}}
   </span>
@@ -58,23 +58,23 @@
   <span>
     {{#with data.ownedItems.powerRunes.stasis}}
       <span data-item-id="{{_id}}">
-        <span data-item-edit>{{data.experience}}</span>
-        <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+        <a data-item-edit>{{data.experience}}</a>
+        <a data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</a>
       </span>
     {{/with}}
     –
     {{#with data.ownedItems.powerRunes.movement}}
       <span data-item-id="{{_id}}">
-        <span data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</span>
-        <span data-item-edit>{{data.experience}}</span>
+        <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.chance}}%</a>
+        <a data-item-edit>{{data.experience}}</a>
       </span>
     {{/with}}
   </span>
 
   {{#with data.ownedItems.powerRunes.beast}}
     <span data-item-id="{{_id}}" class="single">
-      <span data-item-edit> {{data.experience}} </span>
-      <span data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</span>
+      <a data-item-edit> {{data.experience}} </a>
+      <a data-item-roll class="powerline">{{data.chance}}% <img src="{{img}}"/> {{name}}</a>
     </span>
   {{/with}}
 </div>

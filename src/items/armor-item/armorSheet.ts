@@ -24,9 +24,7 @@ export class ArmorSheet extends ItemSheet {
     formData: any
   ): Promise<any> {
     // Split the hitlocationsCSV into an array
-    formData["data.hitLocations"] = formData["data.hitLocationsCSV"]
-      .split(",")
-      .map((l) => parseInt(l));
+    formData["data.hitLocations"] = formData["data.hitLocationsCSV"].split(",");
     delete formData["data.hitLocationsCSV"];
     return super._updateObject(event, formData);
   }

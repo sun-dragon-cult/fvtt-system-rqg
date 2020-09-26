@@ -4,8 +4,10 @@ import { IPhysicalItem } from "./IPhysicalItem";
 
 export type ArmorData = IPhysicalItem & {
   description: string;
+  size: number; // Must match character size
+  // race: RaceEnum; // Must match character race TODO necessary?
   encumbrance: number;
-  hitLocations: Array<number>;
+  hitLocations: Array<string>; // Array of hitLocation names
   material: string;
   absorbs: number;
   moveQuietlyPenalty: number;
@@ -15,9 +17,10 @@ export type ArmorData = IPhysicalItem & {
 
 export const emptyArmor: ArmorData = {
   description: "",
+  size: 0,
   encumbrance: 1,
   equipped: false,
-  hitLocations: [1],
+  hitLocations: ["head"],
   material: "",
   absorbs: 0,
   moveQuietlyPenalty: 0,

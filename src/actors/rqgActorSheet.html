@@ -109,14 +109,17 @@
   </div>
 
   <div class="flex-row flex-wrap">
-    {{> "systems/rqg/actors/parts/armor.html" }} {{>
-    "systems/rqg/actors/parts/elemental.html" }} {{>
-    "systems/rqg/actors/parts/power.html" }}
+    {{> "systems/rqg/actors/parts/armor.html" }}
+    <pre>
+      *** TODO ***
+      Show spells &
+      equipped weapons
+    </pre>
   </div>
 
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item norse" data-tab="main">Main</a>
+    <a class="item norse" data-tab="runes">Runes</a>
     <a class="item norse" data-tab="skills">Skills</a>
     <a class="item norse" data-tab="gear">Gear</a>
     <a class="item norse" data-tab="passions">Passions</a>
@@ -125,9 +128,9 @@
 
   {{!-- Sheet Body --}}
   <section class="sheet-body">
-    {{!-- Main Tab --}}
-    <div class="tab main" data-group="primary" data-tab="main">
-      {{> "systems/rqg/actors/parts/main-tab.html" }}
+    {{!-- Runes Tab --}}
+    <div class="tab main" data-group="primary" data-tab="runes">
+      {{> "systems/rqg/actors/parts/runes-tab.html" }}
     </div>
 
     {{!-- Skills Tab --}}

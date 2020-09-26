@@ -1,7 +1,7 @@
 export const preloadTemplates = async function () {
   const templatePaths = [
     "systems/rqg/actors/rqgActorSheet.html",
-    "systems/rqg/actors/parts/main-tab.html",
+    "systems/rqg/actors/parts/runes-tab.html",
     "systems/rqg/actors/parts/skills-tab.html",
     "systems/rqg/actors/parts/gear-tab.html",
     "systems/rqg/actors/parts/background-tab.html",

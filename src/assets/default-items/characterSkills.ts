@@ -4,6 +4,8 @@ import {
 } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
+// All default skills that are have a base chance > 0.
+// Base Chance 0 skills (skills you have to learn to use) go into a compendium (packs/skills.db).
 const characterSkills: ItemData<SkillData>[] = [
   // *** Agility ***
   {

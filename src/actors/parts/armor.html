@@ -1,36 +1,30 @@
-<div class="armor norse">
-  <h2>Armor</h2>
-  <div class="acolumns">
-    <div class="armorline">
-      {{#each data.ownedItems.hitLocations}}
-      <div data-item-id="{{this._id}}" data-item-edit>{{this.name}}</div>
-      {{/each}}
-    </div>
-
-    <div class="armorline ml-5">
-      {{#each data.ownedItems.hitLocations}}
-      <div data-item-id="{{this._id}}" data-item-edit>HP {{this.data.hp.value}} / {{this.data.hp.max}}</div>
-      {{/each}}
-    </div>
-
-    <div class="armorline ml-5">
-      {{#each data.ownedItems.hitLocations}}
-      <div class="ml-5" data-item-id="{{this._id}}" data-item-edit>AP {{this.data.ap}}</div>
-      {{/each}}
-    </div>
-
-    <div class="armorline ml-5">
-      {{#each data.ownedItems.hitLocations}}
-      <div data-item-id="{{this._id}}">
-        <a data-item-edit-wounds>
+<div class="armor">
+  <h2 class="flex-col norse">Armor</h2>
+  <table class="armor">
+    <thead>
+    <tr>
+      <th class="text-left">Location</th>
+      <th class="text-right">HP</th>
+      <th class="text-right">AP</th>
+      <th class="text-left">Wounds</th>
+    </tr>
+    </thead>
+    {{#each data.ownedItems.hitLocations}}
+    <tbody>
+    <tr data-item-id="{{this._id}}">
+      <td><a data-item-edit>{{this.name}}</a></td>
+      <td class="text-right nowrap">{{this.data.hp.value}} / {{this.data.hp.max}}</td>
+      <td class="text-right">{{this.data.ap}}</td>
+      <td class="text-right">
+        <a data-item-edit-wounds title="Edit wounds">
           {{#each this.data.wounds}}
-            [ {{this}} ]
+          <i class="fas fa-notes-medical"></i> {{this}}
           {{/each}}
         </a>
-        <a class="ml-5" data-item-add-wound>Add wound</a>
-      </div>
-      {{/each}}
-    </div>
-  </div>
+        <a class="ml-5" title="Add wound" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></a>
+      </td>
+    </tr>
+    </tbody>
+    {{/each}}
+  </table>
 </div>
-{{json data.ownedItems.hitlocations}}
