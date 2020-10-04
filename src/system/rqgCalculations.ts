@@ -55,6 +55,56 @@ export class RqgCalculations {
     return Math.ceil(con / 6);
   }
 
+  public static skillCategoryModifiers(
+    str: number,
+    siz: number,
+    dex: number,
+    int: number,
+    pow: number,
+    cha: number
+  ) {
+    const agilityMod =
+      RqgCalculations.flattenedMod(str) -
+      RqgCalculations.flattenedMod(siz) +
+      RqgCalculations.linearMod(dex) +
+      RqgCalculations.flattenedMod(pow);
+
+    const communicationMod = RqgCalculations.flattenedMod(
+      int + RqgCalculations.flattenedMod(pow) + RqgCalculations.linearMod(cha)
+    );
+    const knowledgeMod =
+      RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
+    const magicMod =
+      RqgCalculations.linearMod(pow) + RqgCalculations.flattenedMod(cha);
+    const manipulationMod =
+      RqgCalculations.flattenedMod(str) +
+      RqgCalculations.linearMod(dex) +
+      RqgCalculations.linearMod(int) +
+      RqgCalculations.flattenedMod(pow);
+    const perceptionMod =
+      RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
+    const stealthMod =
+      RqgCalculations.linearMod(dex) -
+      RqgCalculations.linearMod(siz) +
+      RqgCalculations.linearMod(int) -
+      RqgCalculations.flattenedMod(pow);
+
+    return {
+      agility: agilityMod,
+      communication: communicationMod,
+      knowledge: knowledgeMod,
+      magic: magicMod,
+      manipulation: manipulationMod,
+      perception: perceptionMod,
+      stealth: stealthMod,
+      meleeWeapons: manipulationMod,
+      missileWeapons: manipulationMod,
+      naturalWeapons: manipulationMod,
+      shields: manipulationMod,
+      otherSkills: 0,
+    };
+  }
+
   public static linearMod(value: number): number {
     return (Math.ceil(value / 4) - 3) * 5;
   }

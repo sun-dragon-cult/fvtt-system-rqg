@@ -1,6 +1,6 @@
 import { humanoid, RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { Item2TypeClass } from "../data-model/item-data/itemTypes";
+import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import elementalRunes from "../assets/default-items/elementalRunes";
 import powerRunes from "../assets/default-items/powerRunes";
 import hitLocations from "../assets/default-items/hitLocations";
@@ -42,6 +42,12 @@ export class RqgActor extends Actor<RqgActorData> {
     const data = actorData.data;
     // const flags = actorData.flags;
     console.debug("*** RqgActor prepareBaseData  actorData", actorData);
+  }
+
+  prepareEmbeddedEntities(): void {
+    super.prepareEmbeddedEntities();
+    const actorData = this.data;
+    const data = actorData.data;
 
     // Shorthand access to characteristics
     const str = data.characteristics.strength.value;
@@ -52,79 +58,33 @@ export class RqgActor extends Actor<RqgActorData> {
     const pow = data.characteristics.power.value;
     const cha = data.characteristics.charisma.value;
 
-    // *** Setup calculated stats ***
-    data.attributes.magicPoints.max = pow;
-    data.attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
-    data.attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
     data.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
-    data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
-    data.attributes.healingRate = RqgCalculations.healingRate(con);
-    data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(
+
+    data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
+      str,
+      siz,
+      dex,
+      int,
       pow,
       cha
     );
-    data.attributes.maximumEncumbrance = Math.min(str, (str + con) / 2);
-    data.attributes.movementRate = 8; // TODO Humans only for now
 
-    const agilityMod =
-      RqgCalculations.flattenedMod(str) -
-      RqgCalculations.flattenedMod(siz) +
-      RqgCalculations.linearMod(dex) +
-      RqgCalculations.flattenedMod(pow);
-
-    const communicationMod = RqgCalculations.flattenedMod(
-      int + RqgCalculations.flattenedMod(pow) + RqgCalculations.linearMod(cha)
-    );
-    const knowledgeMod =
-      RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
-    const magicMod =
-      RqgCalculations.linearMod(pow) + RqgCalculations.flattenedMod(cha);
-    const manipulationMod =
-      RqgCalculations.flattenedMod(str) +
-      RqgCalculations.linearMod(dex) +
-      RqgCalculations.linearMod(int) +
-      RqgCalculations.flattenedMod(pow);
-    const perceptionMod =
-      RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
-    const stealthMod =
-      RqgCalculations.linearMod(dex) -
-      RqgCalculations.linearMod(siz) +
-      RqgCalculations.linearMod(int) -
-      RqgCalculations.flattenedMod(pow);
-
-    data.skillCategoryModifiers = {
-      agility: agilityMod,
-      communication: communicationMod,
-      knowledge: knowledgeMod,
-      magic: magicMod,
-      manipulation: manipulationMod,
-      perception: perceptionMod,
-      stealth: stealthMod,
-      meleeWeapons: manipulationMod,
-      missileWeapons: manipulationMod,
-      naturalWeapons: manipulationMod,
-      shields: manipulationMod,
-      otherSkills: 0,
-    };
-  }
-
-  prepareEmbeddedEntities(): void {
-    super.prepareEmbeddedEntities();
-
-    const itemChanges: Array<RqgItem> = this.items.map((item: Item) => {
-      const i = Item2TypeClass.get(item.type).prepareAsEmbeddedItem(item);
+    const itemChanges: Array<RqgItem> = this.items.map((item: RqgItem) => {
+      const i = ResponsibleItemClass.get(item.type).prepareAsEmbeddedItem(item);
+      // TODO return what is needed for ENC calculations instead
       return { _id: i._id, data: i.data.data, diff: true };
     });
-    this.updateOwnedItem(itemChanges);
+    // await this.updateOwnedItem(itemChanges);
   }
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
    */
   applyActiveEffects() {
-    // @ts-ignore
-
-    console.debug("!! ***applyActiveEffects");
+    // @ts-ignore (until foundry-pc-types are updated for 0.7)
+    super.applyActiveEffects();
+    // @ts-ignore (until foundry-pc-types are updated for 0.7)
+    console.debug("!! ***applyActiveEffects", this.effects);
   }
 
   /**
@@ -134,6 +94,30 @@ export class RqgActor extends Actor<RqgActorData> {
     // @ts-ignore (until foundry-pc-types are updated for 0.7)
     super.prepareBaseData();
     console.debug("!! ***prepareDerivedData");
+
+    const actorData = this.data;
+    const data = actorData.data;
+
+    // Shorthand access to characteristics
+    const str = data.characteristics.strength.value;
+    const con = data.characteristics.constitution.value;
+    const siz = data.characteristics.size.value;
+    const dex = data.characteristics.dexterity.value;
+    const pow = data.characteristics.power.value;
+    const cha = data.characteristics.charisma.value;
+
+    // *** Setup calculated stats ***
+    data.attributes.magicPoints.max = pow;
+    data.attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
+    data.attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
+    data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
+    data.attributes.healingRate = RqgCalculations.healingRate(con);
+    data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(
+      pow,
+      cha
+    );
+    data.attributes.maximumEncumbrance = Math.min(str, (str + con) / 2);
+    data.attributes.movementRate = 8; // TODO Humans only for now
   }
 
   // Defaults when creating a new Actor

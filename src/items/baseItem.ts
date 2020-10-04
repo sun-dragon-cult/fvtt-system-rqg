@@ -23,4 +23,9 @@ export class BaseItem {
     console.debug("*** BaseItem prepareAsEmbeddedItem item", item);
     return item;
   }
+
+  // TODO return type should be "active effect data"
+  public static activeEffectChanges(item: RqgItem): any {
+    return;
+  }
 }
