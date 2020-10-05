@@ -15,7 +15,10 @@ export class RqgActiveEffect extends ActiveEffect {
       (i: Item) => i.data.type === affectedItem && i.data.name === itemName
     );
     if (items.length > 1) {
-      console.error("Rqg apply active effect targets more than one item", path);
+      console.error(
+        "Rqg apply active effect targets more than one item (item name not unique)",
+        path
+      );
       return null;
     } else if (items.length === 0) {
       console.warn(
@@ -25,12 +28,6 @@ export class RqgActiveEffect extends ActiveEffect {
       );
       return null;
     } else {
-      console.log(
-        "****E*#*#*##*#*# owned item and not yet transfered",
-        // @ts-ignore 0.7
-        items[0].isOwned
-      );
-
       const current = getProperty(items[0].data, path);
       console.log(
         "RqgActiveEffect._applyCustom: putting",
@@ -40,13 +37,12 @@ export class RqgActiveEffect extends ActiveEffect {
         " on",
         items[0]
       );
-      console.log(
-        "*** current -> change -> total",
-        current,
-        change.value,
-        change.value + current
+      const originItem = actor.getOwnedItem(
+        change.effect.data.origin.split(".")[3]
       );
-      setProperty(items[0].data, path, change.value + current);
+      if (originItem?.data.data.equipped) {
+        setProperty(items[0].data, path, change.value + current);
+      }
       return change.value;
     }
   }

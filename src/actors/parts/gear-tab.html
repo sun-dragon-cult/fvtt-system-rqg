@@ -15,7 +15,7 @@
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td class="text-right">{{this.data.quantity}}</td>
     <td class="text-right">{{this.data.encumbrance}}</td>
-    <td>{{this.data.equipped}}</td>
+    <td><a data-item-equip>{{this.data.equipped}}</a></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/each}}
@@ -39,7 +39,7 @@
   <tr data-item-id="{{this._id}}">
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td class="text-right">{{this.data.encumbrance}}</td>
-    <td>{{this.data.equipped}}</td>
+    <td><a data-item-equip>{{this.data.equipped}}</a></td>
     <td>[
       {{#each this.data.hitLocations}}
         {{this}},
