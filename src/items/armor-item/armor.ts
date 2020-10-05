@@ -11,16 +11,23 @@ export class Armor extends BaseItem {
   // }
 
   // TODO return type should be "active effect data"
-  public static activeEffectChanges(item: RqgItem): any {
+  public static generateActiveEffect(item: RqgItem<ArmorData>): any {
     const armorData: ArmorData = item?.data?.data || emptyArmor;
-    console.log("armorItem#activeEffectChanges", item);
-    return armorData.hitLocations.map((hitLocationName) => {
+    const changes = armorData.hitLocations.map((hitLocationName) => {
       return {
-        key: `hitLocation:${hitLocationName}:data.ap`,
+        key: `hitLocation:${hitLocationName}:data.data.ap`,
         value: armorData.absorbs,
         mode: 0, // TODO ACTIVE_EFFECT_MODES.CUSTOM
       };
     });
+
+    return {
+      label: "Armor",
+      icon: "icons/svg/ice-shield.svg",
+      changes: changes,
+      transfer: true,
+      disabled: false,
+    };
   }
 
   static activateActorSheetListeners(html, sheet) {}

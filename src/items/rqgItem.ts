@@ -9,7 +9,6 @@ import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 import { GearSheet } from "./gear-item/gearSheet";
 import { ArmorSheet } from "./armor-item/armorSheet";
-import { ArmorData } from "../data-model/item-data/armorData";
 import { Armor } from "./armor-item/armor";
 
 export class RqgItem<DataType = any> extends Item<DataType> {
@@ -51,20 +50,11 @@ export class RqgItem<DataType = any> extends Item<DataType> {
 
     // TODO Not the correct place - will not be called on this.actor.createOwnedItem !!!
     Hooks.on("createItem", async (item: RqgItem) => {
-      console.log('*** HOOK "createItem"', item);
       if (item.data.type === ItemTypeEnum.Armor) {
-        const armorItem: RqgItem<ArmorData> = (this as unknown) as RqgItem<
-          ArmorData
-        >;
-        const ARMOR_AE = {
-          label: "Armor",
-          icon: "icons/svg/fear.svg",
-          changes: Armor.activeEffectChanges(armorItem),
-          transfer: true,
-          disabled: false,
-        };
-
-        await item.createEmbeddedEntity("ActiveEffect", ARMOR_AE);
+        await item.createEmbeddedEntity(
+          "ActiveEffect",
+          Armor.generateActiveEffect(item)
+        );
       }
     });
   }
@@ -92,7 +82,7 @@ export class RqgItem<DataType = any> extends Item<DataType> {
       (e) =>
         (e.changes = ResponsibleItemClass.get(
           this.data.type
-        ).activeEffectChanges(this))
+        ).generateActiveEffect(this).changes)
     );
 
     super.prepareEmbeddedEntities();

@@ -3,7 +3,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 export class GearSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Skill],
+      classes: ["rqg", "sheet", ItemTypeEnum.Gear],
       template: "systems/rqg/items/gear-item/gearSheet.html",
       width: 520,
       height: 250,

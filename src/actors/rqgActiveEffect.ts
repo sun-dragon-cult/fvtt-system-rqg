@@ -28,9 +28,9 @@ export class RqgActiveEffect extends ActiveEffect {
       );
       return null;
     } else {
-      const current = getProperty(items[0].data, path);
+      const currentValue = getProperty(items[0], path);
       console.log(
-        "RqgActiveEffect._applyCustom: putting",
+        "RqgActiveEffect._applyCustom: adding",
         change.value,
         " on",
         path,
@@ -41,7 +41,7 @@ export class RqgActiveEffect extends ActiveEffect {
         change.effect.data.origin.split(".")[3]
       );
       if (originItem?.data.data.equipped) {
-        setProperty(items[0].data, path, change.value + current);
+        setProperty(items[0], path, change.value + currentValue);
       }
       return change.value;
     }

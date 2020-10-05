@@ -25,7 +25,7 @@ export class BaseItem {
   }
 
   // TODO return type should be "active effect data"
-  public static activeEffectChanges(item: RqgItem): any {
+  public static generateActiveEffect(item: RqgItem): any {
     return;
   }
 }

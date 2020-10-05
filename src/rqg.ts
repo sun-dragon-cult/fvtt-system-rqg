@@ -21,7 +21,7 @@ Hooks.once("init", async () => {
   RqgItem.init();
   registerRqgSystemSettings();
   handlebarSettings();
-  preloadTemplates();
+  await preloadTemplates();
 
   if (game.modules.get("about-time")?.active) {
     game.Gametime.DTC.createFromData(game.Gametime.calendars.Glorantha);
