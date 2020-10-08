@@ -9,7 +9,7 @@ import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 import { GearSheet } from "./gear-item/gearSheet";
 import { ArmorSheet } from "./armor-item/armorSheet";
-import { Armor } from "./armor-item/armor";
+import { RqgActor } from "../actors/rqgActor";
 
 export class RqgItem<DataType = any> extends Item<DataType> {
   public static init() {
@@ -48,58 +48,39 @@ export class RqgItem<DataType = any> extends Item<DataType> {
     // TODO this doesn't compile!? Sheet registration would be better in Item init
     // ResponsibleItemClass.forEach((itemClass) => itemClass.init());
 
-    // TODO Not the correct place - will not be called on this.actor.createOwnedItem !!!
-    Hooks.on("createItem", async (item: RqgItem) => {
-      if (item.data.type === ItemTypeEnum.Armor) {
-        await item.createEmbeddedEntity(
-          "ActiveEffect",
-          Armor.generateActiveEffect(item)
-        );
+    // Row 26505
+    Hooks.on("preCreateOwnedItem", (parent, r) => {
+      if (
+        parent instanceof RqgActor &&
+        Object.values(ItemTypeEnum).includes(r.type)
+      ) {
+        const itemData = r as RqgItem;
+        // @ts-ignore 0.7
+        itemData.effects = itemData.effects || [];
+        const activeEffect = ResponsibleItemClass.get(
+          itemData.type
+        ).generateActiveEffect(itemData);
+        if (activeEffect) {
+          activeEffect.origin = `Actor.${parent.id}.OwnedItem.${itemData._id}`;
+          // @ts-ignore 0.7
+          itemData.effects.push(activeEffect);
+          // await item.createEmbeddedEntity("ActiveEffect", activeEffect);
+        }
       }
+      return true;
     });
   }
 
   prepareEmbeddedEntities() {
+    // TODO Move to ActiveEffect class prepareData()?
     // @ts-ignore 0.7
     const effects = this.data.effects || [];
-    console.debug(
-      "RqgItem.prepareEmbeddedEntities _prepareActiveEffects",
-      effects
-    );
-    // if (effects.length === 0) {
-    //   // TODO Add effect?
-    //   console.warn(`No effect on a ${this.data.type} item`, this.data.name);
-    // } else if (effects.length === 1) {
-    //   console.log(`One effect on a ${this.data.type} item`, this.data.name);
-    // } else {
-    //   console.log(
-    //     `More than one effect on a ${this.data.type} item`,
-    //     this.data.name
-    //   );
-    // }
-
     effects.forEach(
       (e) =>
         (e.changes = ResponsibleItemClass.get(
           this.data.type
         ).generateActiveEffect(this).changes)
     );
-
     super.prepareEmbeddedEntities();
   }
-
-  protected _onUpdate(
-    data: object,
-    options: object,
-    userId: string,
-    context: object
-  ) {
-    super._onUpdate(data, options, userId, context);
-  }
-
-  // prepareData() {
-  //   super.prepareData();
-  //   console.log("*** RqgItem prepareData");
-  //   const itemData: ItemData<DataType> = this.data;
-  // }
 }
