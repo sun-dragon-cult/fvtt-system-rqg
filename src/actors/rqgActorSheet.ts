@@ -146,6 +146,16 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       });
     });
 
+    // Equip a physical Item
+    this.form.querySelectorAll("[data-item-equip]").forEach((el) => {
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .itemId;
+      el.addEventListener("click", () => {
+        const item = this.actor.getOwnedItem(itemId);
+        item.update({ "data.equipped": !item.data.data.equipped });
+      });
+    });
+
     // Add wound to hit location TODO move listener to hitlocation
     this.form.querySelectorAll("[data-item-add-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset

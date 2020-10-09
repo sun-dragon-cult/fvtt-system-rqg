@@ -1227,7 +1227,7 @@ form-data@~2.3.2:
 
 "foundry-pc-types@https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git":
   version "0.1.0"
-  resolved "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git#5c7f8af606ee075228608bd4791f3cfdad7f8c10"
+  resolved "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git#0d0911ea0c5d299173ef4e7e2bc31d664891f431"
   dependencies:
     "@types/jquery" "^3.5.1"
     "@types/socket.io-client" "^1.4.33"

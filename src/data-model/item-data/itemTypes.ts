@@ -21,7 +21,10 @@ export enum ItemTypeEnum {
   SorcerousMagic = "sorcerousMagic",
 }
 
-export const Item2TypeClass: Map<string, typeof BaseItem> = new Map([
+/**
+ * Map from ItemTypeEnum to responsible BaseItem class.
+ */
+export const ResponsibleItemClass: Map<string, typeof BaseItem> = new Map([
   [ItemTypeEnum.Skill, Skill],
   [ItemTypeEnum.Passion, BaseItem],
   [ItemTypeEnum.ElementalRune, BaseItem],

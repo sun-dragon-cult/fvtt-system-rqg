@@ -1,11 +1,15 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import {
+  ResponsibleItemClass,
+  ItemTypeEnum,
+} from "../data-model/item-data/itemTypes";
 import { ElementalRuneSheet } from "./elemental-rune-item/elementalRuneSheet";
 import { PowerRuneSheet } from "./power-rune-item/powerRuneSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 import { GearSheet } from "./gear-item/gearSheet";
 import { ArmorSheet } from "./armor-item/armorSheet";
+import { RqgActor } from "../actors/rqgActor";
 
 export class RqgItem<DataType = any> extends Item<DataType> {
   public static init() {
@@ -42,12 +46,28 @@ export class RqgItem<DataType = any> extends Item<DataType> {
       makeDefault: true,
     });
     // TODO this doesn't compile!? Sheet registration would be better in Item init
-    // Item2TypeClass.forEach((itemClass) => itemClass.init());
-  }
+    // ResponsibleItemClass.forEach((itemClass) => itemClass.init());
 
-  // prepareData() {
-  //   super.prepareData();
-  //   console.log("*** RqgItem prepareData");
-  //   const itemData: ItemData<DataType> = this.data;
-  // }
+    // Row 26505
+    Hooks.on("preCreateOwnedItem", (parent, r) => {
+      if (
+        parent instanceof RqgActor &&
+        Object.values(ItemTypeEnum).includes(r.type)
+      ) {
+        const itemData = r as RqgItem;
+        // @ts-ignore 0.7
+        itemData.effects = itemData.effects || [];
+        const activeEffect = ResponsibleItemClass.get(
+          itemData.type
+        ).generateActiveEffect(itemData);
+        if (activeEffect) {
+          activeEffect.origin = `Actor.${parent.id}.OwnedItem.${itemData._id}`;
+          // @ts-ignore 0.7
+          itemData.effects.push(activeEffect);
+          // await item.createEmbeddedEntity("ActiveEffect", activeEffect);
+        }
+      }
+      return true;
+    });
+  }
 }

@@ -23,7 +23,7 @@ export class ArmorSheet extends ItemSheet {
     event: Event | JQuery.Event,
     formData: any
   ): Promise<any> {
-    // Split the hitlocationsCSV into an array
+    // Split the hitLocationsCSV into an array
     formData["data.hitLocations"] = formData["data.hitLocationsCSV"].split(",");
     delete formData["data.hitLocationsCSV"];
     return super._updateObject(event, formData);

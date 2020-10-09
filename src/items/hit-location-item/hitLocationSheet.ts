@@ -5,6 +5,7 @@ import {
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
+import { RqgActor } from "../../actors/rqgActor";
 
 export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -25,11 +26,11 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
     return sheetData;
   }
 
-  static async addWound(actor, itemId) {
-    const item = actor.getOwnedItem(itemId);
+  static addWound(actor: RqgActor, itemId: string) {
+    const item: Item<HitLocationData> = actor.getOwnedItem(itemId);
     const dialogContent = '<input type="number" name="damage" value="0"/>';
 
-    await new Dialog(
+    new Dialog(
       {
         title: `Add damage to ${item.name}`,
         content: dialogContent,
@@ -43,20 +44,13 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: "Confirm",
-            callback: (html) => {
-              const damage = (html as JQuery).find("input")[0].value;
+            callback: async (html) => {
+              const damage = parseInt((html as JQuery).find("input")[0].value);
               item.data.data.wounds.push(damage);
-              actor.prepareEmbeddedEntities(); // TODO Just update what's needed
-              // TODO reduce actor.data.data.attributes.hitPoints.value
-              // actor.updateOwnedItem({
-              //   _id: item._id,
-              //   data: {
-              //     data: { wounds: item.data.data.wounds.slice() },
-              //     diff: false,
-              //   },
-              // });
-              // await HitLocation.prepareAsEmbeddedItem(item);
-              // actor.sheet.render();
+              await actor.updateOwnedItem({
+                _id: item._id,
+                data: { wounds: item.data.data.wounds.slice() },
+              });
             },
           },
         },
@@ -67,10 +61,9 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
     ).render(true);
   }
 
-  static async editWounds(actor, itemId) {
-    const item = actor.getOwnedItem(itemId);
+  static editWounds(actor: RqgActor, itemId: string) {
+    const item: Item<HitLocationData> = actor.getOwnedItem(itemId);
     console.debug("*** editWounds item", item.data.data.wounds);
-    // const dialogContent ='<input type="number" name="damage" value=item./>';
     let dialogContent = "";
 
     item.data.data.wounds.forEach(
@@ -78,7 +71,7 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
         (dialogContent += `<input type="number" name="damage${i}" value="${wound}"/>`)
     );
 
-    await new Dialog(
+    new Dialog(
       {
         title: `Modify wound in ${item.name}`,
         content: dialogContent,
@@ -92,21 +85,15 @@ export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: "Confirm",
-            callback: (html) => {
+            callback: async (html) => {
               item.data.data.wounds = (html as JQuery)
                 .find("input")
                 .toArray()
                 .map((w) => parseInt(w.value));
-              actor.prepareEmbeddedEntities(); // TODO Just update what's needed
-              // actor.updateOwnedItem({
-              //   _id: item._id,
-              //   data: {
-              //     data: { wounds: item.data.data.wounds.slice() },
-              //     diff: false,
-              //   },
-              // });
-              // await HitLocation.prepareAsEmbeddedItem(item);
-              // actor.sheet.render();
+              await actor.updateOwnedItem({
+                _id: item._id,
+                data: { wounds: item.data.data.wounds.slice() },
+              });
             },
           },
         },
