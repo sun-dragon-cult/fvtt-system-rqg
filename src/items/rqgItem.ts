@@ -70,17 +70,4 @@ export class RqgItem<DataType = any> extends Item<DataType> {
       return true;
     });
   }
-
-  prepareEmbeddedEntities() {
-    // TODO Move to ActiveEffect class prepareData()?
-    // @ts-ignore 0.7
-    const effects = this.data.effects || [];
-    effects.forEach(
-      (e) =>
-        (e.changes = ResponsibleItemClass.get(
-          this.data.type
-        ).generateActiveEffect(this).changes)
-    );
-    super.prepareEmbeddedEntities();
-  }
 }

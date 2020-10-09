@@ -32,7 +32,7 @@ export class RqgActiveEffect extends ActiveEffect {
       return null;
     } else {
       const currentValue = getProperty(items[0], path);
-      console.log(
+      console.debug(
         "RqgActiveEffect._applyCustom: adding",
         change.value,
         " on",
@@ -40,50 +40,43 @@ export class RqgActiveEffect extends ActiveEffect {
         " on",
         items[0]
       );
-      const originItem = actor.getOwnedItem(
-        change.effect.data.origin.split(".")[3]
-      );
-      if (originItem?.data.data.equipped) {
-        setProperty(items[0], path, change.value + currentValue);
-      }
+      setProperty(items[0], path, change.value + currentValue);
       return change.value;
     }
   }
 
   prepareData() {
     if (this.data.origin) {
-      const [
-        entityName,
-        entityId,
-        embeddedName,
-        embeddedId,
-      ] = this.data.origin.split(".");
       // *** Entity is Actor & embedded is OwnedItem (or undefined)
       // this.parent = RqgItem or RqgActor
       // embedded is the armor._id the effect comes from
       // TODO Om embeddedId == undefined så kolla om det ska läggas på?
-      console.log(
-        "^^^ RqgActiveEffect originItem",
-        entityName,
-        entityId,
-        embeddedName,
-        embeddedId,
-        this.parent.type
-      );
       if (this.parent instanceof RqgItem) {
-        console.log("€€€ AE on Item", this.data.changes);
+        // Generate active effect from Item data
+        console.debug("€€€ RqgActiveEffect.prepareData on Item", this);
+        const effects = this.data.effects || [];
+        effects.forEach((e) =>
+          mergeObject(
+            e,
+            ResponsibleItemClass.get(this.data.type).generateActiveEffect(this)
+          )
+        );
       } else if (this.parent instanceof RqgActor) {
-        // Update the AE on actor
-        // TODO Merge full effect - not just changes? *************
-        // TODO Check transfer flags / etc
-        console.log("€€€ AE on Actor", this);
+        // Update the active effect on actor from Item data
+        console.log("€€€ RqgActiveEffect.prepareData on Actor", this);
+        const [
+          entityName,
+          entityId,
+          embeddedName,
+          embeddedId,
+        ] = this.data.origin.split(".");
         const item = this.parent.items.get(embeddedId);
-        const newEffect = ResponsibleItemClass.get(
-          item.data.type
-        ).generateActiveEffect(item);
-        this.data.changes = newEffect.changes;
+        const updatedEffect = item
+          ? ResponsibleItemClass.get(item.data.type).generateActiveEffect(item)
+          : {};
+        mergeObject(this.data, updatedEffect);
       } else {
-        console.log("€€€ AE on Something else", this);
+        console.log("€€€ RqgActiveEffect.prepareData on Something else", this);
       }
     }
   }

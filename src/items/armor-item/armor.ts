@@ -28,7 +28,7 @@ export class Armor extends BaseItem {
       icon: "icons/svg/ice-shield.svg",
       changes: changes,
       transfer: true,
-      disabled: false,
+      disabled: !armorData.equipped,
     };
   }
 
