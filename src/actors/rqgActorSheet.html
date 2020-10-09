@@ -21,7 +21,9 @@
         <label class="hp norse"
           >Hit Points<br />
           <input
-            type="text"
+            type="number"
+            min="1"
+            max="99"
             name="data.attributes.hitPoints.value"
             value="{{data.attributes.hitPoints.value}}"
             data-dtype="Number"
@@ -32,7 +34,9 @@
         <label class="mp norse"
           >Magic Points<br />
           <input
-            type="text"
+            type="number"
+            min="0"
+            max="99"
             name="data.attributes.magicPoints.value"
             value="{{data.attributes.magicPoints.value}}"
             data-dtype="Number"
@@ -48,7 +52,9 @@
             >{{localize (concat 'characteristic.' key)}}</label
           ><br />
           <input
-            type="text"
+            type="number"
+            min="0"
+            max="99"
             name="data.characteristics.{{key}}.value"
             value="{{characteristic.value}}"
             data-dtype="Number"

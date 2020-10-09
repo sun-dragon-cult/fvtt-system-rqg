@@ -11,9 +11,9 @@
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
-    <label>Die from <input type="text" name="data.dieFrom" value="{{item.data.dieFrom}}" data-dtype="Number"/><br /></label>
-    <label>Die to <input type="text" name="data.dieTo" value="{{item.data.dieTo}}" data-dtype="Number"/><br /></label>
-    <label>AP <input type="text" name="data.ap" value="{{item.data.ap}}" data-dtype="Number"/><br /></label>
+    <label>Die from <input type="number" min="1" max="20" name="data.dieFrom" value="{{item.data.dieFrom}}" data-dtype="Number"/><br /></label>
+    <label>Die to <input type="number" min="1" max="20" name="data.dieTo" value="{{item.data.dieTo}}" data-dtype="Number"/><br /></label>
+    <label>AP <input type="number" min="0" max="99" name="data.ap" value="{{item.data.ap}}" data-dtype="Number"/><br /></label>
     <label>Wounds {{#each data.wounds}}
       [&nbsp;{{this}}&nbsp;]
     {{/each}}</label>

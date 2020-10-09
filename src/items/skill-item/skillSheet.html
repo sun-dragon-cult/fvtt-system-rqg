@@ -13,7 +13,7 @@
           {{/select}}
         </select><br>
         <label>Category Modifier {{item.data.categoryMod}}</label>
-        <label>Base Chance <input type="text" data-dtype="Number" name="data.baseChance" value="{{item.data.baseChance}}"></label><br>
+        <label>Base Chance <input type="number" min="0" max="999" data-dtype="Number" name="data.baseChance" value="{{item.data.baseChance}}"></label><br>
         <label>Learned Chance <input type="text" data-dtype="Number" name="data.learnedChance" value="{{item.data.learnedChance}}" /></label><br>
         <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label><br>
         <label>Chance {{item.data.chance}}</label>
