@@ -10,7 +10,7 @@ export class RqgActorData {
     public background: Background,
     public race: RaceEnum,
     // --- Derived / Convenience Data Below ---
-    public attributes?: Attributes,
+    public attributes: Attributes, // Most are derived
     public skillCategoryModifiers?: SkillCategories,
     public occupations?: any, // For occupation dropdown
     public homelands?: any, // For homeland dropdown
