@@ -69,12 +69,9 @@ export class RqgActor extends Actor<RqgActorData> {
       cha
     );
 
-    const itemChanges: Array<RqgItem> = this.items.map((item: RqgItem) => {
-      const i = ResponsibleItemClass.get(item.type).prepareAsEmbeddedItem(item);
-      // TODO return what is needed for ENC calculations instead
-      return { _id: i._id, data: i.data.data, diff: true };
-    });
-    // await this.updateOwnedItem(itemChanges);
+    this.items.forEach((item: RqgItem) =>
+      ResponsibleItemClass.get(item.type).prepareAsEmbeddedItem(item)
+    );
   }
 
   /**
@@ -118,6 +115,19 @@ export class RqgActor extends Actor<RqgActorData> {
     );
     data.attributes.maximumEncumbrance = Math.min(str, (str + con) / 2);
     data.attributes.movementRate = 8; // TODO Humans only for now
+
+    data.attributes.equippedEncumbrance = this.items.reduce((sum, i) => {
+      const enc = i.data.data.equipped
+        ? (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0)
+        : 0;
+      return sum + enc;
+    }, 0);
+
+    data.attributes.travelEncumbrance = this.items.reduce(
+      (sum, i) =>
+        sum + (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0),
+      0
+    );
   }
 
   // Defaults when creating a new Actor

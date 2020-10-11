@@ -9,6 +9,8 @@ export class Attributes {
     public damageBonus?: string, // For example "1D4"
     public spiritCombatDamage?: string, // For example "1D4"
     public maximumEncumbrance?: number,
+    public equippedEncumbrance?: number,
+    public travelEncumbrance?: number,
     public sizStrikeRank?: number,
     public dexStrikeRank?: number,
     public movementRate?: number
