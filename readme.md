@@ -2,17 +2,14 @@
 
 ## Usage
 
-Because RuneQuest Glorantha (Unofficial) doesn't have an SRD or anything other than the quick start the system lacks compendiums. GMs will need to create all of the skills, spells and other items they want to use for character creation.
-
-Link to install the system in Foundry VTT: https://github.com/wake42/foundry-vtt-rqg/releases/latest/download/system.json
+Purely private use...
 
 ## Development
 
-Edit the foundryconfig.json file to make dataPath point to where your foundrydata folder is located.
-After a `npm install` to get the dependencies, do `npm run build` that will build the system into a `dist` folder and file system softlink from `foundrydata/Data/systems/rqg` to that `dist` folder.
-If you want to have hotload on save you can do `npm run build:watch`. 
+After a `yarn install` to get the dependencies, do `yarn build` that will build the system into a `dist` folder. For easy development make a softlink from `foundrydata/Data/systems/rqg` to that `dist` folder.
+If you want to have hotload on save you can do `yarn build:watch`. 
 
-If you like to remove the system from foundry you can `npm run clean` to remove the file system softlink (or just do it manually).
+If you like to remove the system from foundry then remove the file system softlink.
 
 ## Project Status
 
