@@ -124,11 +124,31 @@
 
   <div class="flex-row flex-wrap">
     {{> "systems/rqg/actors/parts/armor.html" }}
-    <pre>
-      *** TODO ***
-      Show spells &
-      equipped weapons
-    </pre>
+    <div>
+      <h2>Ready Weapons</h2>
+      <table>
+      {{#each data.ownedItems.meleeWeapons}}
+        {{#if this.data.equipped}}
+        <tr>
+          <td>{{this.name}}</td>
+          <td>
+            {{#if this.data.presentationAttackTypes.crush}}
+            <a >Do a crush attack</a>
+            {{/if}}
+            {{#if this.data.presentationAttackTypes.slash}}
+            <a >Do a slash attack</a>
+            {{/if}}
+            {{#if this.data.presentationAttackTypes.impale}}
+            <a >Do a impale attack</a>
+            {{/if}}
+          </td>
+          <td><a>Parry</a></td>
+        </tr>
+        {{/if}}
+      {{/each}}
+      </table>
+    </div>
+<!-- TODO Show spells for easy access -->
   </div>
 
   {{!-- Sheet Tab Navigation --}}

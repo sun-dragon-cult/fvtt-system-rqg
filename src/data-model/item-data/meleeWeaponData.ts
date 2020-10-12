@@ -1,22 +1,40 @@
 import { IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
 
+export enum AttackType {
+  Crush = "crush",
+  Slash = "slash",
+  Impale = "impale",
+}
+
 export type MeleeWeaponData = IPhysicalItem & {
-  description: string;
-  damage: Resource;
-  strikeRank: Resource;
+  category: string; // Required skill - link to name or id?
+  damage: string; // Formula
+  attackTypes: Array<AttackType>;
+  minStrength: number;
+  minDexterity: number;
+  strikeRank: number;
   hitPoints: Resource;
-  quantity: number;
   encumbrance: number;
+  equipped: boolean;
+  description: string;
+  // --- Derived / Convenience Data Below ---
+  presentationAttackTypes?: {
+    crush?: boolean;
+    slash?: boolean;
+    impale?: boolean;
+  };
 };
 
 export const emptyMeleeWeapon: MeleeWeaponData = {
-  damage: emptyResource,
   description: "",
-  strikeRank: emptyResource,
+  category: "",
+  damage: "1d3",
+  attackTypes: [],
+  minStrength: 0,
+  minDexterity: 0,
+  strikeRank: 0,
   hitPoints: emptyResource,
-  quantity: 1,
-  encumbrance: 1,
+  encumbrance: 0,
   equipped: false,
-  // TODO "Required skill" (to calculate % and total SR)
 };

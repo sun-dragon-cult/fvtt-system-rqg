@@ -77,6 +77,9 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     const armor: ItemData<ArmorData>[] = items.filter(
       (i) => i.type === ItemTypeEnum.Armor
     );
+    const meleeWeapons: ItemData<ArmorData>[] = items.filter(
+      (i) => i.type === ItemTypeEnum.MeleeWeapon
+    );
 
     data.ownedItems = {
       skills,
@@ -86,6 +89,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       hitLocations,
       gear,
       armor,
+      meleeWeapons,
     };
     return sheetData;
   }

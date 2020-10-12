@@ -7,6 +7,7 @@ import { emptyPowerRune } from "./data-model/item-data/powerRuneData";
 import { emptyHitLocation } from "./data-model/item-data/hitLocationData";
 import { emptyGear } from "./data-model/item-data/gearData";
 import { emptyArmor } from "./data-model/item-data/armorData";
+import { emptyMeleeWeapon } from "./data-model/item-data/meleeWeaponData";
 
 // Instantiated Actor types
 export const Actors = {
@@ -21,8 +22,7 @@ export const Items = {
   [ItemTypeEnum.HitLocation]: emptyHitLocation,
   [ItemTypeEnum.Gear]: emptyGear,
   [ItemTypeEnum.Armor]: emptyArmor,
-
-  // [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
+  [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
   // [ItemTypeEnum.MissileWeapon]: emptyMissileWeapon,
   // [ItemTypeEnum.SpiritMagic]: emptySpiritMagic;
   // [ItemTypeEnum.RuneMagic]: emptyRuneMagic;

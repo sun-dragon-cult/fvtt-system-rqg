@@ -22,6 +22,38 @@
 </table>
 
 <h2 class="flex-row">
+  <span>Melee Weapons</span>
+  <a title="Add Item" data-item-add data-item-type="meleeWeapon"><i class="fas fa-plus"></i></a>
+</h2>
+<table>
+  <tr>
+    <th class="text-left">Name</th>
+    <th class="text-left">Category</th>
+    <th class="text-left">Damage</th>
+    <th class="text-right">STR</th>
+    <th class="text-right">DEX</th>
+    <th class="text-right">HP</th>
+    <th class="text-right">ENC</th>
+    <th class="text-left">Equipped</th>
+
+  </tr>
+  {{#each data.ownedItems.meleeWeapons}}
+  <tr data-item-id="{{this._id}}">
+    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
+    <td>{{this.data.category}}</td>
+    <td>{{this.data.damage}}</td>
+    <td class="text-right">{{this.data.minStrength}}</td>
+    <td class="text-right">{{this.data.minDexterity}}</td>
+    <td class="text-right">{{this.data.hitPoints.value}}</td>
+    <td class="text-right">{{this.data.encumbrance}}</td>
+    <td><a data-item-equip>{{this.data.equipped}}</a></td>
+    <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
+  </tr>
+  {{/each}}
+</table>
+
+
+<h2 class="flex-row">
   <span>Armor</span>
   <a title="Add Item" data-item-add data-item-type="armor"><i class="fas fa-plus"></i></a>
 </h2>

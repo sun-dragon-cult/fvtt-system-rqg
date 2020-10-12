@@ -3,6 +3,7 @@ import { BaseItem } from "../../items/baseItem";
 import { HitLocation } from "../../items/hit-location-item/hitLocation";
 import { Gear } from "../../items/gear-item/gear";
 import { Armor } from "../../items/armor-item/armor";
+import { MeleeWeapon } from "../../items/melee-weapon-item/meleeWeapon";
 
 export enum ItemTypeEnum {
   Skill = "skill",
@@ -32,4 +33,5 @@ export const ResponsibleItemClass: Map<string, typeof BaseItem> = new Map([
   [ItemTypeEnum.HitLocation, HitLocation],
   [ItemTypeEnum.Gear, Gear],
   [ItemTypeEnum.Armor, Armor],
+  [ItemTypeEnum.MeleeWeapon, MeleeWeapon],
 ]);
