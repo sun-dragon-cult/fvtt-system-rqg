@@ -11,16 +11,16 @@
       <th style="width: 15px"></th>
     </tr>
   </thead>
-  {{#each data.ownedItems.passions}}
+  {{#each data.ownedItems.passion}}
   <tbody>
     <tr data-item-id="{{this._id}}">
-      <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.data.passion}} {{this.name}}</td>
-      <td class="text-right nowrap"><a title="Roll" data-item-roll>{{this.data.chance}}%<img style="border: none" height="14px" src="/icons/svg/d20-black.svg"></a></td>
-      <td>{{this.data.experience}}</td>
+      <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.data.data.passion}} {{this.name}}</td>
+      <td class="text-right nowrap"><a title="Roll" data-item-roll>{{this.data.data.chance}}%<img style="border: none" height="14px" src="/icons/svg/d20-black.svg"></a></td>
+      <td>{{this.data.data.experience}}</td>
       <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
     </tr>
     <tr>
-      <td colspan="4">{{{this.data.description}}}</td>
+      <td colspan="4">{{{this.data.data.description}}}</td>
     </tr>
   </tbody>
   {{/each}}

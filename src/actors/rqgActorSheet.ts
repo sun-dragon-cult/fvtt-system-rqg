@@ -10,12 +10,8 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationData } from "../data-model/item-data/hitLocationData";
-import { PowerRuneData } from "../data-model/item-data/powerRuneData";
-import { PassionData } from "../data-model/item-data/passionData";
-import { ElementalRuneData } from "../data-model/item-data/elementalRuneData";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
-import { GearData } from "../data-model/item-data/gearData";
-import { ArmorData } from "../data-model/item-data/armorData";
+import { RqgItem } from "../items/rqgItem";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -39,58 +35,38 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const items: Array<ItemData> = sheetData.items; // Not correctly typed in foundry-pc-types ?
     const data: RqgActorData = sheetData.data;
 
     data.occupations = Object.values(OccupationEnum);
     data.homelands = Object.values(HomeLandEnum);
 
     // Separate different item types for easy access
-    const elementalRunes: ItemData<ElementalRuneData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.ElementalRune
-    );
-    const powerRunes: ItemData<PowerRuneData>[] = items
-      .filter((i) => i.type === ItemTypeEnum.PowerRune)
-      .reduce((acc, item) => {
-        acc[item.name] = item;
-        return acc;
-      }, []);
-    const passions: ItemData<PassionData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.Passion
-    );
-    const allSkills: ItemData<SkillData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.Skill
-    );
+
+    // ownedItems looks like {armor: [RqgItem], elementalRune: [RqgItem], ... }
+    data.ownedItems = this.actor.itemTypes;
+
+    // Organise powerRunes as { beast: RqgItem, death: RqgItem, ... }
+    data.ownedItems[ItemTypeEnum.PowerRune] = data.ownedItems[
+      ItemTypeEnum.PowerRune
+    ].reduce((acc, item: RqgItem) => {
+      acc[item.name] = item;
+      return acc;
+    }, []);
+
+    // Separate skills into skill categories {agility: [RqgItem], communication: [RqgItem], ... }
     const skills = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
-      skills[cat] = allSkills.filter((s) => cat === s.data.category);
-    });
-    const hitLocations: ItemData<HitLocationData>[] = items
-      .filter((i) => i.type === ItemTypeEnum.HitLocation)
-      .sort(
-        (a: ItemData<HitLocationData>, b: ItemData<HitLocationData>) =>
-          b.data.dieFrom - a.data.dieFrom
+      skills[cat] = data.ownedItems[ItemTypeEnum.Skill].filter(
+        (s: RqgItem<SkillData>) => cat === s.data.data.category
       );
-    const gear: ItemData<GearData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.Gear
-    );
-    const armor: ItemData<ArmorData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.Armor
-    );
-    const meleeWeapons: ItemData<ArmorData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.MeleeWeapon
-    );
+    });
+    data.ownedItems[ItemTypeEnum.Skill] = skills;
 
-    data.ownedItems = {
-      skills,
-      elementalRunes,
-      powerRunes,
-      passions,
-      hitLocations,
-      gear,
-      armor,
-      meleeWeapons,
-    };
+    // Sort the hit locations
+    data.ownedItems[ItemTypeEnum.HitLocation].sort(
+      (a: ItemData<HitLocationData>, b: ItemData<HitLocationData>) =>
+        b.data.dieFrom - a.data.dieFrom
+    );
     return sheetData;
   }
 

@@ -127,18 +127,18 @@
     <div>
       <h2>Ready Weapons</h2>
       <table>
-      {{#each data.ownedItems.meleeWeapons}}
-        {{#if this.data.equipped}}
+      {{#each data.ownedItems.meleeWeapon}}
+        {{#if this.data.data.equipped}}
         <tr>
           <td>{{this.name}}</td>
           <td>
-            {{#if this.data.presentationAttackTypes.crush}}
+            {{#if this.data.data.presentationAttackTypes.crush}}
             <a >Do a crush attack</a>
             {{/if}}
-            {{#if this.data.presentationAttackTypes.slash}}
+            {{#if this.data.data.presentationAttackTypes.slash}}
             <a >Do a slash attack</a>
             {{/if}}
-            {{#if this.data.presentationAttackTypes.impale}}
+            {{#if this.data.data.presentationAttackTypes.impale}}
             <a >Do a impale attack</a>
             {{/if}}
           </td>
