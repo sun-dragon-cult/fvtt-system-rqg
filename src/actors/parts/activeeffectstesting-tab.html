@@ -1,0 +1,31 @@
+<h2>🐛Active Effects🧪</h2>
+<table>
+  <thead>
+  <tr>
+    <th class="text-left">Label</th>
+    <th class="text-left">Disabled</th>
+    <th class="text-left">Start Time</th>
+    <th class="text-left">Key</th>
+    <th class="text-left">Value</th>
+    <th class="text-right">Mode</th>
+  </tr>
+  </thead>
+  {{#each data.effects}}
+  <tbody data-effect-id="{{this._id}}">
+  <tr>
+    <td data-effect-edit><a>{{this.label}}</a></td>
+    <td>{{this.disabled}}</td>
+    <td>{{this.duration.startTime}}</td>
+  </tr>
+  {{#each this.changes}}
+  <tr>
+    <td></td><td></td><td></td>
+    <td>{{this.key}}</td>
+    <td>{{this.value}}</td>
+    <td>{{this.mode}}</td>
+  </tr>
+  {{/each}}
+  </tbody>
+  {{/each}}
+
+</table>

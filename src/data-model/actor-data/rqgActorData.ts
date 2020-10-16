@@ -14,7 +14,8 @@ export class RqgActorData {
     public skillCategoryModifiers?: SkillCategories,
     public occupations?: any, // For occupation dropdown
     public homelands?: any, // For homeland dropdown
-    public ownedItems?: any // All owned items divided into type
+    public ownedItems?: any, // All owned items divided into type
+    public effects?: any // TODO fooling around
   ) {}
 }
 
