@@ -153,6 +153,16 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         HitLocationSheet.editWounds(this.actor, itemId)
       );
     });
+
+    // Edit Active Effect
+    this.form.querySelectorAll("[data-effect-edit]").forEach((el) => {
+      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset
+        .effectId;
+      el.addEventListener("click", () =>
+        // @ts-ignore 0.7
+        new ActiveEffectConfig(this.actor.effects.get(effectId)).render(true)
+      );
+    });
   }
 
   static confirmItemDelete(actor, itemId) {

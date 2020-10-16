@@ -148,6 +148,8 @@
       {{/each}}
       </table>
     </div>
+
+
 <!-- TODO Show spells for easy access -->
   </div>
 
@@ -158,6 +160,7 @@
     <a class="item norse" data-tab="gear">Gear</a>
     <a class="item norse" data-tab="passions">Passions</a>
     <a class="item norse" data-tab="background">Background</a>
+    <a class="item norse" data-tab="activeeffectstesting">🐛Active Effects🧪</a>
   </nav>
 
   {{!-- Sheet Body --}}
@@ -185,6 +188,11 @@
     {{!-- Background Tab --}}
     <div class="tab background" data-group="primary" data-tab="background">
       {{> "systems/rqg/actors/parts/background-tab.html" }}
+    </div>
+
+    {{!-- Active Effects Testing Tab --}}
+    <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
+      {{> "systems/rqg/actors/parts/activeeffectstesting-tab.html" }}
     </div>
   </section>
 </form>
