@@ -10,12 +10,9 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationData } from "../data-model/item-data/hitLocationData";
-import { PowerRuneData } from "../data-model/item-data/powerRuneData";
-import { PassionData } from "../data-model/item-data/passionData";
-import { ElementalRuneData } from "../data-model/item-data/elementalRuneData";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
-import { GearData } from "../data-model/item-data/gearData";
-import { ArmorData } from "../data-model/item-data/armorData";
+import { RqgItem } from "../items/rqgItem";
+import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -39,54 +36,38 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const items: Array<ItemData> = sheetData.items; // Not correctly typed in foundry-pc-types ?
     const data: RqgActorData = sheetData.data;
 
     data.occupations = Object.values(OccupationEnum);
     data.homelands = Object.values(HomeLandEnum);
 
     // Separate different item types for easy access
-    const elementalRunes: ItemData<ElementalRuneData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.ElementalRune
-    );
-    const powerRunes: ItemData<PowerRuneData>[] = items
-      .filter((i) => i.type === ItemTypeEnum.PowerRune)
-      .reduce((acc, item) => {
-        acc[item.name] = item;
-        return acc;
-      }, []);
-    const passions: ItemData<PassionData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.Passion
-    );
-    const allSkills: ItemData<SkillData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.Skill
-    );
+
+    // ownedItems looks like {armor: [RqgItem], elementalRune: [RqgItem], ... }
+    data.ownedItems = this.actor.itemTypes;
+
+    // Organise powerRunes as { beast: RqgItem, death: RqgItem, ... }
+    data.ownedItems[ItemTypeEnum.PowerRune] = data.ownedItems[
+      ItemTypeEnum.PowerRune
+    ].reduce((acc, item: RqgItem) => {
+      acc[item.name] = item;
+      return acc;
+    }, []);
+
+    // Separate skills into skill categories {agility: [RqgItem], communication: [RqgItem], ... }
     const skills = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
-      skills[cat] = allSkills.filter((s) => cat === s.data.category);
-    });
-    const hitLocations: ItemData<HitLocationData>[] = items
-      .filter((i) => i.type === ItemTypeEnum.HitLocation)
-      .sort(
-        (a: ItemData<HitLocationData>, b: ItemData<HitLocationData>) =>
-          b.data.dieFrom - a.data.dieFrom
+      skills[cat] = data.ownedItems[ItemTypeEnum.Skill].filter(
+        (s: RqgItem<SkillData>) => cat === s.data.data.category
       );
-    const gear: ItemData<GearData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.Gear
-    );
-    const armor: ItemData<ArmorData>[] = items.filter(
-      (i) => i.type === ItemTypeEnum.Armor
-    );
+    });
+    data.ownedItems[ItemTypeEnum.Skill] = skills;
 
-    data.ownedItems = {
-      skills,
-      elementalRunes,
-      powerRunes,
-      passions,
-      hitLocations,
-      gear,
-      armor,
-    };
+    // Sort the hit locations
+    data.ownedItems[ItemTypeEnum.HitLocation].sort(
+      (a: ItemData<HitLocationData>, b: ItemData<HitLocationData>) =>
+        b.data.dieFrom - a.data.dieFrom
+    );
     return sheetData;
   }
 
@@ -103,10 +84,31 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       const item: Item = this.actor.items.get(itemId);
       el.addEventListener("click", () => {
         const result = Ability.rollAgainst(item.data.data.chance, 0, item.name);
+      });
+    });
+
+    // Weapon roll
+    this.form.querySelectorAll("[data-weapon-roll]").forEach((el) => {
+      const attackType = (el as HTMLElement).dataset.weaponRoll;
+      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .itemId;
+      const weaponItem: Item<MeleeWeaponData> = this.actor.items.get(
+        weaponItemId
+      );
+      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .skillId;
+      const skillItem: Item<SkillData> = this.actor.items.get(skillId);
+      el.addEventListener("click", () => {
+        const result = Ability.rollAgainst(
+          skillItem.data.data.chance,
+          0,
+          `${weaponItem.name} ${attackType} (${skillItem.name})`
+        );
         if (result <= ResultEnum.Success) {
-          // TODO Chain rolls depending on outcome. Just playing around for now...
+          // TODO Make damage vary depending on success
           ChatMessage.create({
-            content: "Roll damage [[/r 1d8 + 1]] and hit location [[/r 1d20]]",
+            content: `Roll damage [[/r ${weaponItem.data.data.damage} + ${this.actor.data.data.attributes.damageBonus} #Damage]]<br><br>
+                      and hit location [[/r 1d20 #Hit Location]]`,
           });
         }
       });
@@ -171,6 +173,16 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         .itemId;
       el.addEventListener("click", () =>
         HitLocationSheet.editWounds(this.actor, itemId)
+      );
+    });
+
+    // Edit Active Effect
+    this.form.querySelectorAll("[data-effect-edit]").forEach((el) => {
+      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset
+        .effectId;
+      el.addEventListener("click", () =>
+        // @ts-ignore 0.7
+        new ActiveEffectConfig(this.actor.effects.get(effectId)).render(true)
       );
     });
   }

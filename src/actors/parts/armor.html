@@ -9,15 +9,15 @@
       <th class="text-left">Wounds</th>
     </tr>
     </thead>
-    {{#each data.ownedItems.hitLocations}}
+    {{#each data.ownedItems.hitLocation}}
     <tbody>
     <tr data-item-id="{{this._id}}">
       <td><a data-item-edit>{{this.name}}</a></td>
-      <td class="text-right nowrap">{{this.data.hp.value}} / {{this.data.hp.max}}</td>
-      <td class="text-right">{{this.data.ap}}</td>
+      <td class="text-right nowrap">{{this.data.data.hp.value}} / {{this.data.data.hp.max}}</td>
+      <td class="text-right">{{this.data.data.ap}}</td>
       <td class="text-right">
         <a data-item-edit-wounds title="Edit wounds">
-          {{#each this.data.wounds}}
+          {{#each this.data.data.wounds}}
           <i class="fas fa-notes-medical"></i> {{this}}
           {{/each}}
         </a>

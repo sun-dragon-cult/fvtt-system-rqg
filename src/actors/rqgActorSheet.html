@@ -124,11 +124,35 @@
 
   <div class="flex-row flex-wrap">
     {{> "systems/rqg/actors/parts/armor.html" }}
-    <pre>
-      *** TODO ***
-      Show spells &
-      equipped weapons
-    </pre>
+    <div>
+      <h2>Ready Weapons</h2>
+      <table>
+      {{#each data.ownedItems.meleeWeapon}}
+        {{#if this.data.data.equipped}}
+        <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
+          <td>{{this.name}}</td>
+          <td>{{skillchance this.data.data.skillId this.actor._id}}%</td>
+          <td></td>
+          <td>
+            {{#if this.data.data.presentationAttackTypes.crush}}
+            <a data-weapon-roll="crush">Crush</a>
+            {{/if}}
+            {{#if this.data.data.presentationAttackTypes.slash}}
+            <a data-weapon-roll="slash">Slash</a>
+            {{/if}}
+            {{#if this.data.data.presentationAttackTypes.impale}}
+            <a data-weapon-roll="impale">Impale</a>
+            {{/if}}
+          </td>
+          <td><a data-weapon-roll="parry">Parry</a></td>
+        </tr>
+        {{/if}}
+      {{/each}}
+      </table>
+    </div>
+
+<!-- TODO Show Dodge skill & maybe knockback? -->
+<!-- TODO Show spells for easy access -->
   </div>
 
   {{!-- Sheet Tab Navigation --}}
@@ -138,6 +162,7 @@
     <a class="item norse" data-tab="gear">Gear</a>
     <a class="item norse" data-tab="passions">Passions</a>
     <a class="item norse" data-tab="background">Background</a>
+    <a class="item norse" data-tab="activeeffectstesting">🐛Active Effects🧪</a>
   </nav>
 
   {{!-- Sheet Body --}}
@@ -165,6 +190,11 @@
     {{!-- Background Tab --}}
     <div class="tab background" data-group="primary" data-tab="background">
       {{> "systems/rqg/actors/parts/background-tab.html" }}
+    </div>
+
+    {{!-- Active Effects Testing Tab --}}
+    <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
+      {{> "systems/rqg/actors/parts/activeeffectstesting-tab.html" }}
     </div>
   </section>
 </form>

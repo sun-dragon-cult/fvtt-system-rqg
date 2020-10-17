@@ -1,10 +1,10 @@
 <div class="elemental norse">
   <h2>Elemental</h2>
-  {{#each data.ownedItems.elementalRunes}}
+  {{#each data.ownedItems.elementalRune}}
   <span class="grid-row nowrap" data-item-id="{{this._id}}">
       <a data-item-roll><img src="{{this.img}}" /> {{this.name}}</a>
-      <a data-item-roll>{{this.data.chance}}%</a>
-      <a data-item-edit style="align-self: flex-end"> {{this.data.experience}} </a>
+      <a data-item-roll>{{this.data.data.chance}}%</a>
+      <a data-item-edit style="align-self: flex-end"> {{this.data.data.experience}} </a>
     </span>
   {{/each}}
 </div>

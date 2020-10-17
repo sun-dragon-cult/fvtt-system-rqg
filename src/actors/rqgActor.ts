@@ -128,6 +128,9 @@ export class RqgActor extends Actor<RqgActorData> {
         sum + (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0),
       0
     );
+
+    // @ts-ignore 0.7
+    data.effects = [...this.effects].map((effect) => effect.data);
   }
 
   // Defaults when creating a new Actor
