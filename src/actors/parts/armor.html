@@ -1,9 +1,19 @@
 <div class="armor">
-  <h2 class="flex-col norse">Armor</h2>
+  <h2 class="flex-col norse">Health & Armor</h2>
+  <label class="hp norse">Total Hit Points <input
+      type="number"
+      min="1"
+      max="99"
+      name="data.attributes.hitPoints.value"
+      value="{{data.attributes.hitPoints.value}}"
+      data-dtype="Number"
+      size="2"
+    /> / {{data.attributes.hitPoints.max}}
+  </label>
   <table class="armor">
     <thead>
     <tr>
-      <th class="text-left">Location</th>
+      <th class="text-left" colspan="4">Hit Location</th>
       <th class="text-right">HP</th>
       <th class="text-right">AP</th>
       <th class="text-left">Wounds</th>
@@ -12,6 +22,9 @@
     {{#each data.ownedItems.hitLocation}}
     <tbody>
     <tr data-item-id="{{this._id}}">
+      <td class="text-right">{{this.data.data.dieFrom}}</td>
+      <td>-</td>
+      <td class="text-right">{{this.data.data.dieTo}}</td>
       <td><a data-item-edit>{{this.name}}</a></td>
       <td class="text-right nowrap">{{this.data.data.hp.value}} / {{this.data.data.hp.max}}</td>
       <td class="text-right">{{this.data.data.ap}}</td>

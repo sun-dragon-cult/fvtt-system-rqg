@@ -10,7 +10,6 @@
     margin: 0;
   }
 
-  .hp,
   .mp {
     font-weight: bold;
     input {
@@ -80,6 +79,10 @@
     border: none;
     margin: 2px 0;
   }
+}
+
+input {
+  width: 25px;
 }
 
 table.armor {

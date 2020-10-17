@@ -18,19 +18,6 @@
           />
         </h1>
         <br />
-        <label class="hp norse"
-          >Hit Points<br />
-          <input
-            type="number"
-            min="1"
-            max="99"
-            name="data.attributes.hitPoints.value"
-            value="{{data.attributes.hitPoints.value}}"
-            data-dtype="Number"
-            size="2"
-          />
-          / {{data.attributes.hitPoints.max}}
-        </label>
         <label class="mp norse"
           >Magic Points<br />
           <input
@@ -125,29 +112,40 @@
   <div class="flex-row flex-wrap">
     {{> "systems/rqg/actors/parts/armor.html" }}
     <div>
-      <h2>Ready Weapons</h2>
+      <h2 class="norse">Ready Weapons</h2>
       <table>
-      {{#each data.ownedItems.meleeWeapon}}
-        {{#if this.data.data.equipped}}
-        <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
-          <td>{{this.name}}</td>
-          <td>{{skillchance this.data.data.skillId this.actor._id}}%</td>
-          <td></td>
-          <td>
-            {{#if this.data.data.presentationAttackTypes.crush}}
-            <a data-weapon-roll="crush">Crush</a>
-            {{/if}}
-            {{#if this.data.data.presentationAttackTypes.slash}}
-            <a data-weapon-roll="slash">Slash</a>
-            {{/if}}
-            {{#if this.data.data.presentationAttackTypes.impale}}
-            <a data-weapon-roll="impale">Impale</a>
-            {{/if}}
-          </td>
-          <td><a data-weapon-roll="parry">Parry</a></td>
-        </tr>
-        {{/if}}
-      {{/each}}
+        <thead>
+          <tr>
+            <th class="text-left">Weapon</th>
+            <th class="text-right">Chance</th>
+            <th class="text-left" colspan="2">HP</th>
+            <th class="text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{#each data.ownedItems.meleeWeapon}}
+          {{#if this.data.data.equipped}}
+          <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
+            <td>{{this.name}}</td>
+            <td class="text-right">{{skillchance this.data.data.skillId this.actor._id}}%</td>
+            <td class="text-right"><input type="number" data-dtype="Number" data-item-edit-value="data.hitPoints.value" value="{{this.data.data.hitPoints.value}}"> /</td>
+            <td class="text-right">{{this.data.data.hitPoints.max}}</td>
+            <td class="text-left">
+              {{#if this.data.data.presentationAttackTypes.crush}}
+              <a data-weapon-roll="crush">Crush</a>
+              {{/if}}
+              {{#if this.data.data.presentationAttackTypes.slash}}
+              <a data-weapon-roll="slash">Slash</a>
+              {{/if}}
+              {{#if this.data.data.presentationAttackTypes.impale}}
+              <a data-weapon-roll="impale">Impale</a>
+              {{/if}}
+            </td>
+            <td><a data-weapon-roll="parry">Parry</a></td>
+          </tr>
+          {{/if}}
+        {{/each}}
+        </tbody>
       </table>
     </div>
 
