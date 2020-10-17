@@ -3,6 +3,10 @@ import {
   AttackType,
   MeleeWeaponData,
 } from "../../data-model/item-data/meleeWeaponData";
+import {
+  SkillCategoryEnum,
+  SkillData,
+} from "../../data-model/item-data/skillData";
 
 export class MeleeWeaponSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
@@ -27,6 +31,14 @@ export class MeleeWeaponSheet extends ItemSheet {
     data.presentationAttackTypes.impale = data.attackTypes.includes(
       AttackType.Impale
     );
+
+    data.meleeWeaponSkills = this.actor
+      .getEmbeddedCollection("OwnedItem")
+      .filter(
+        (i: ItemData<SkillData>) =>
+          i.type === ItemTypeEnum.Skill &&
+          i.data.category === SkillCategoryEnum.MeleeWeapons
+      );
 
     return sheetData;
   }

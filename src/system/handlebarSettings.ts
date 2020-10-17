@@ -6,7 +6,13 @@ export const handlebarSettings = function () {
 
   Handlebars.registerHelper("itemname", (itemId, actorId) => {
     const actor = game.actors.find((a) => a._id === actorId);
-    const item = actor.items.find((i) => i.key === itemId);
+    const item = actor.items.get(itemId);
     return item ? item.data.name : "---";
+  });
+
+  Handlebars.registerHelper("skillchance", (itemId, actorId) => {
+    const actor = game.actors.find((a) => a._id === actorId);
+    const item = actor.items.get(itemId);
+    return item ? item.data.data.chance : "---";
   });
 };

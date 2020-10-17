@@ -129,27 +129,29 @@
       <table>
       {{#each data.ownedItems.meleeWeapon}}
         {{#if this.data.data.equipped}}
-        <tr>
+        <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
           <td>{{this.name}}</td>
+          <td>{{skillchance this.data.data.skillId this.actor._id}}%</td>
+          <td></td>
           <td>
             {{#if this.data.data.presentationAttackTypes.crush}}
-            <a >Do a crush attack</a>
+            <a data-weapon-roll="crush">Crush</a>
             {{/if}}
             {{#if this.data.data.presentationAttackTypes.slash}}
-            <a >Do a slash attack</a>
+            <a data-weapon-roll="slash">Slash</a>
             {{/if}}
             {{#if this.data.data.presentationAttackTypes.impale}}
-            <a >Do a impale attack</a>
+            <a data-weapon-roll="impale">Impale</a>
             {{/if}}
           </td>
-          <td><a>Parry</a></td>
+          <td><a data-weapon-roll="parry">Parry</a></td>
         </tr>
         {{/if}}
       {{/each}}
       </table>
     </div>
 
-
+<!-- TODO Show Dodge skill & maybe knockback? -->
 <!-- TODO Show spells for easy access -->
   </div>
 

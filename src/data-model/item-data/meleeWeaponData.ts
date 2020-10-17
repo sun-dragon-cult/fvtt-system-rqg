@@ -1,5 +1,7 @@
 import { IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
+import { RqgItem } from "../../items/rqgItem";
+import { SkillData } from "./skillData";
 
 export enum AttackType {
   Crush = "crush",
@@ -8,7 +10,7 @@ export enum AttackType {
 }
 
 export type MeleeWeaponData = IPhysicalItem & {
-  category: string; // Required skill - link to name or id?
+  skillId: string; // id of skillItem
   damage: string; // Formula
   attackTypes: Array<AttackType>;
   minStrength: number;
@@ -24,11 +26,12 @@ export type MeleeWeaponData = IPhysicalItem & {
     slash?: boolean;
     impale?: boolean;
   };
+  meleeWeaponSkills?: Array<RqgItem<SkillData>>;
 };
 
 export const emptyMeleeWeapon: MeleeWeaponData = {
   description: "",
-  category: "",
+  skillId: "",
   damage: "1d3",
   attackTypes: [],
   minStrength: 0,

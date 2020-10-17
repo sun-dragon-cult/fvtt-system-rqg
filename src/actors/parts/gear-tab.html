@@ -28,7 +28,7 @@
 <table>
   <tr>
     <th class="text-left">Name</th>
-    <th class="text-left">Category</th>
+    <th class="text-left">Skill</th>
     <th class="text-left">Damage</th>
     <th class="text-right">STR</th>
     <th class="text-right">DEX</th>
@@ -40,7 +40,7 @@
   {{#each data.ownedItems.meleeWeapon}}
   <tr data-item-id="{{this._id}}">
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
-    <td>{{this.data.data.category}}</td>
+    <td>{{itemname this.data.data.skillId this.actor._id}}</td>
     <td>{{this.data.data.damage}}</td>
     <td class="text-right">{{this.data.data.minStrength}}</td>
     <td class="text-right">{{this.data.data.minDexterity}}</td>

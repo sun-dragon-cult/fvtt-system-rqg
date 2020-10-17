@@ -12,6 +12,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationData } from "../data-model/item-data/hitLocationData";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { RqgItem } from "../items/rqgItem";
+import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -83,10 +84,31 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       const item: Item = this.actor.items.get(itemId);
       el.addEventListener("click", () => {
         const result = Ability.rollAgainst(item.data.data.chance, 0, item.name);
+      });
+    });
+
+    // Weapon roll
+    this.form.querySelectorAll("[data-weapon-roll]").forEach((el) => {
+      const attackType = (el as HTMLElement).dataset.weaponRoll;
+      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .itemId;
+      const weaponItem: Item<MeleeWeaponData> = this.actor.items.get(
+        weaponItemId
+      );
+      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .skillId;
+      const skillItem: Item<SkillData> = this.actor.items.get(skillId);
+      el.addEventListener("click", () => {
+        const result = Ability.rollAgainst(
+          skillItem.data.data.chance,
+          0,
+          `${weaponItem.name} ${attackType} (${skillItem.name})`
+        );
         if (result <= ResultEnum.Success) {
-          // TODO Chain rolls depending on outcome. Just playing around for now...
+          // TODO Make damage vary depending on success
           ChatMessage.create({
-            content: "Roll damage [[/r 1d8 + 1]] and hit location [[/r 1d20]]",
+            content: `Roll damage [[/r ${weaponItem.data.data.damage} + ${this.actor.data.data.attributes.damageBonus} #Damage]]<br><br>
+                      and hit location [[/r 1d20 #Hit Location]]`,
           });
         }
       });
