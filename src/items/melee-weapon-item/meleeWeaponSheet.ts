@@ -37,7 +37,8 @@ export class MeleeWeaponSheet extends ItemSheet {
       .filter(
         (i: ItemData<SkillData>) =>
           i.type === ItemTypeEnum.Skill &&
-          i.data.category === SkillCategoryEnum.MeleeWeapons
+          (i.data.category === SkillCategoryEnum.MeleeWeapons ||
+            i.data.category === SkillCategoryEnum.Shields)
       );
 
     return sheetData;

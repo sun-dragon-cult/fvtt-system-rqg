@@ -131,15 +131,9 @@
             <td class="text-right"><input type="number" data-dtype="Number" data-item-edit-value="data.hitPoints.value" value="{{this.data.data.hitPoints.value}}"> /</td>
             <td class="text-right">{{this.data.data.hitPoints.max}}</td>
             <td class="text-left">
-              {{#if this.data.data.presentationAttackTypes.crush}}
-              <a data-weapon-roll="crush">Crush</a>
-              {{/if}}
-              {{#if this.data.data.presentationAttackTypes.slash}}
-              <a data-weapon-roll="slash">Slash</a>
-              {{/if}}
-              {{#if this.data.data.presentationAttackTypes.impale}}
-              <a data-weapon-roll="impale">Impale</a>
-              {{/if}}
+              {{#each this.data.data.attackTypes}}
+              <a data-weapon-roll="{{this}}">{{this}}</a>
+              {{/each}}
             </td>
             <td><a data-weapon-roll="parry">Parry</a></td>
           </tr>
