@@ -4,6 +4,7 @@ import { RqgActor } from "./actors/rqgActor.js";
 import { RqgItem } from "./items/rqgItem";
 import { handlebarSettings } from "./system/handlebarSettings";
 import { RqgActiveEffect } from "./actors/rqgActiveEffect";
+import { RqgCombat } from "./system/rqgCombat";
 
 Hooks.once("init", async () => {
   console.log(
@@ -17,6 +18,8 @@ Hooks.once("init", async () => {
     turnTime: 0, // Don't advance time per combatant
     roundTime: 12, // Melee round
   };
+
+  RqgCombat.init();
   RqgActor.init();
   RqgItem.init();
   registerRqgSystemSettings();
