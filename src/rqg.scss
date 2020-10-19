@@ -40,6 +40,10 @@
     flex-wrap: wrap;
   }
 
+  .flex-align-center {
+    align-items: center;
+  }
+
   .masonry {
     column-count: 3;
     column-gap: 1em;

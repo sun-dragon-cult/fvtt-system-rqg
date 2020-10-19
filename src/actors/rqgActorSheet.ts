@@ -68,6 +68,14 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       (a: ItemData<HitLocationData>, b: ItemData<HitLocationData>) =>
         b.data.dieFrom - a.data.dieFrom
     );
+
+    data.spiritCombatSkill = data.ownedItems[ItemTypeEnum.Skill][
+      SkillCategoryEnum.Magic
+    ].find((s) => s.data.name === "Spirit Combat");
+    data.dodgeSkill = data.ownedItems[ItemTypeEnum.Skill][
+      SkillCategoryEnum.Agility
+    ].find((s) => s.data.name === "Dodge");
+
     return sheetData;
   }
 
@@ -165,9 +173,6 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         .itemId;
       el.addEventListener("change", (event) => {
         const item = this.actor.getOwnedItem(itemId);
-        console.log("QQQQ", {
-          [path]: (event.target as HTMLInputElement).value,
-        });
         item.update({ [path]: (event.target as HTMLInputElement).value }, {});
       });
     });

@@ -3,6 +3,8 @@ import { Characteristics, emptyCharacteristics } from "./characteristics";
 import { RaceEnum } from "./race";
 import { Background, emptyBackground } from "./background";
 import { emptySkillCategories, SkillCategories } from "./skillCategories";
+import { RqgItem } from "../../items/rqgItem";
+import { SkillData } from "../item-data/skillData";
 
 export class RqgActorData {
   constructor(
@@ -15,6 +17,8 @@ export class RqgActorData {
     public occupations?: any, // For occupation dropdown
     public homelands?: any, // For homeland dropdown
     public ownedItems?: any, // All owned items divided into type
+    public dodgeSkill?: RqgItem<SkillData>, // For access on combat part of sheet
+    public spiritCombatSkill?: RqgItem<SkillData>, // For access on spirit combat part of sheet
     public effects?: any // TODO fooling around
   ) {}
 }

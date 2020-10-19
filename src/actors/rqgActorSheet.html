@@ -55,18 +55,10 @@
       </div>
       <div class="thirdline">
         <div>
-          <span class="norse">Damage Bonus</span>
-          {{data.attributes.damageBonus}}
-        </div>
-        <div>
           <span class="norse">SIZ SR</span> {{data.attributes.sizStrikeRank}}
         </div>
         <div>
           <span class="norse">DEX SR</span> {{data.attributes.dexStrikeRank}}
-        </div>
-        <div>
-          <span class="norse">Healing Rate</span>
-          {{data.attributes.healingRate}}/week
         </div>
         <div>
           <span class="norse">Max ENC</span>
@@ -112,7 +104,11 @@
   <div class="flex-row flex-wrap">
     {{> "systems/rqg/actors/parts/armor.html" }}
     <div>
-      <h2 class="norse">Ready Weapons</h2>
+      <h2 class="norse">Combat</h2>
+      <div class="flexrow flex-align-center">
+        <label class="norse">Damage Bonus {{data.attributes.damageBonus}}</label>
+        <a class="text-right norse" data-item-id="{{this.data.dodgeSkill._id}}" data-item-roll>Dodge {{skillchance this.data.dodgeSkill._id this.actor._id}}%</a>
+      </div>
       <table>
         <thead>
           <tr>
@@ -141,10 +137,19 @@
         {{/each}}
         </tbody>
       </table>
+      <!-- TODO Show Dodge skill & maybe knockback? -->
+      <!-- TODO Show spells for easy access? -->
+      <div>
+        <h2 class="norse">Spirit Combat</h2>
+        <label class="norse">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
+        <table>
+          <tr data-item-id="{{this.data.spiritCombatSkill._id}}">
+            <td>Spirit Combat</td>
+            <td class="text-right" data-item-roll><a>{{skillchance this.data.spiritCombatSkill._id this.actor._id}}%</a></td>
+          </tr>
+        </table>
+      </div>
     </div>
-
-<!-- TODO Show Dodge skill & maybe knockback? -->
-<!-- TODO Show spells for easy access -->
   </div>
 
   {{!-- Sheet Tab Navigation --}}
