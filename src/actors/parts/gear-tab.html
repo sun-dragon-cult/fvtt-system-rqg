@@ -38,6 +38,7 @@
 
   </tr>
   {{#each data.ownedItems.meleeWeapon}}
+  {{#unless this.data.data.natural}}
   <tr data-item-id="{{this._id}}">
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td>{{itemname this.data.data.skillId this.actor._id}}</td>
@@ -49,6 +50,7 @@
     <td><a data-item-equip>{{this.data.data.equipped}}</a></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
+  {{/unless}}
   {{/each}}
 </table>
 
