@@ -15,11 +15,10 @@ export enum ItemTypeEnum {
   Armor = "armor",
   MeleeWeapon = "meleeWeapon",
   MissileWeapon = "missileWeapon",
-  Shield = "shield",
-  NaturalWeapon = "naturalWeapon",
   SpiritMagic = "spiritMagic",
   RuneMagic = "runeMagic",
   SorcerousMagic = "sorcerousMagic",
+  Cult = "cult",
 }
 
 /**

@@ -116,7 +116,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
           // TODO Make damage vary depending on success
           ChatMessage.create({
             content: `Roll damage [[/r ${weaponItem.data.data.damage} + ${this.actor.data.data.attributes.damageBonus} #Damage]]<br><br>
-                      and hit location [[/r 1d20 #Hit Location]]`,
+                      and hit location [[/r 1D20 #Hit Location]]`,
           });
         }
       });

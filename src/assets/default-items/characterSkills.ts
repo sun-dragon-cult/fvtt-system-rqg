@@ -883,44 +883,6 @@ const characterSkills: ItemData<SkillData>[] = [
       experience: false,
     },
   },
-
-  // *** Shields ***
-  {
-    name: "Fist",
-    type: ItemTypeEnum.Skill,
-    img: "icons/svg/mystery-man.svg",
-    flags: {},
-    data: {
-      category: SkillCategoryEnum.NaturalWeapons,
-      baseChance: 25,
-      learnedChance: 0,
-      experience: false,
-    },
-  },
-  {
-    name: "Grapple",
-    type: ItemTypeEnum.Skill,
-    img: "icons/svg/mystery-man.svg",
-    flags: {},
-    data: {
-      category: SkillCategoryEnum.NaturalWeapons,
-      baseChance: 25,
-      learnedChance: 0,
-      experience: false,
-    },
-  },
-  {
-    name: "Kick",
-    type: ItemTypeEnum.Skill,
-    img: "icons/svg/mystery-man.svg",
-    flags: {},
-    data: {
-      category: SkillCategoryEnum.NaturalWeapons,
-      baseChance: 15,
-      learnedChance: 0,
-      experience: false,
-    },
-  },
 ];
 
 export default characterSkills;

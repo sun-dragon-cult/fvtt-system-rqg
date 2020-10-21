@@ -1,4 +1,7 @@
 import { HitLocationsEnum } from "../data-model/item-data/hitLocationData";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { CombatManeuver } from "../data-model/item-data/meleeWeaponData";
+import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 
 type LookupTableEntry<T> = {
   from: number;
@@ -6,15 +9,129 @@ type LookupTableEntry<T> = {
   result: T;
 };
 
-export const humanoid: Array<string> = [
-  HitLocationsEnum.Head,
-  HitLocationsEnum.LeftArm,
-  HitLocationsEnum.RightArm,
-  HitLocationsEnum.Chest,
-  HitLocationsEnum.Abdomen,
-  HitLocationsEnum.LeftLeg,
-  HitLocationsEnum.RightLeg,
-];
+export const humanoid = {
+  hitLocations: [
+    // TODO needs Natural AP (for other races) and dieFrom/dieTo
+    HitLocationsEnum.Head,
+    HitLocationsEnum.LeftArm,
+    HitLocationsEnum.RightArm,
+    HitLocationsEnum.Chest,
+    HitLocationsEnum.Abdomen,
+    HitLocationsEnum.LeftLeg,
+    HitLocationsEnum.RightLeg,
+  ],
+  naturalWeapons: {
+    skills: [
+      {
+        name: "Fist",
+        type: ItemTypeEnum.Skill,
+        img: "icons/svg/mystery-man.svg",
+        flags: {},
+        data: {
+          category: SkillCategoryEnum.NaturalWeapons,
+          baseChance: 25,
+          learnedChance: 0,
+          experience: false,
+        },
+      },
+      {
+        name: "Grapple",
+        type: ItemTypeEnum.Skill,
+        img: "icons/svg/mystery-man.svg",
+        flags: {},
+        data: {
+          category: SkillCategoryEnum.NaturalWeapons,
+          baseChance: 25,
+          learnedChance: 0,
+          experience: false,
+        },
+      },
+      {
+        name: "Kick",
+        type: ItemTypeEnum.Skill,
+        img: "icons/svg/mystery-man.svg",
+        flags: {},
+        data: {
+          category: SkillCategoryEnum.NaturalWeapons,
+          baseChance: 15,
+          learnedChance: 0,
+          experience: false,
+        },
+      },
+    ],
+    meleeWeapons: [
+      {
+        name: "Fist",
+        type: ItemTypeEnum.MeleeWeapon,
+        data: {
+          skillId: "",
+          damage: "1D3",
+          combatManeuvers: [
+            CombatManeuver.Crush,
+            CombatManeuver.Knockback,
+            CombatManeuver.Parry,
+          ],
+          minStrength: 0,
+          minDexterity: 0,
+          strikeRank: 4,
+          equipped: true,
+          natural: true,
+          hitPoints: {},
+        },
+        flags: {},
+        img: "",
+      },
+      {
+        name: "Grapple",
+        type: ItemTypeEnum.MeleeWeapon,
+        data: {
+          skillId: "",
+          damage: "",
+          combatManeuvers: [CombatManeuver.Special],
+          minStrength: 0,
+          minDexterity: 0,
+          strikeRank: 4,
+          equipped: true,
+          natural: true,
+          hitPoints: {},
+        },
+        flags: {},
+        img: "",
+      },
+      {
+        name: "Kick",
+        type: ItemTypeEnum.MeleeWeapon,
+        data: {
+          skillId: "",
+          damage: "1D6",
+          combatManeuvers: [
+            CombatManeuver.Crush,
+            CombatManeuver.Knockback,
+            CombatManeuver.Parry,
+          ],
+          minStrength: 0,
+          minDexterity: 0,
+          strikeRank: 4,
+          equipped: true,
+          natural: true,
+          hitPoints: {},
+        },
+        flags: {},
+        img: "",
+      },
+    ],
+  },
+  characteristics: {
+    // TODO Not used yet
+    strength: "3D6",
+    constitution: "3D6",
+    size: "2D6+6",
+    dexterity: "3D6",
+    intelligence: "2D6+6",
+    power: "3D6",
+    charisma: "3D6",
+  },
+};
 
 export class RqgCalculations {
   public static dexSR(dex: number): number {

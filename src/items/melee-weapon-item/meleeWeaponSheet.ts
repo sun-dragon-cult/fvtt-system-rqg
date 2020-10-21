@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  AttackType,
+  CombatManeuver,
   MeleeWeaponData,
 } from "../../data-model/item-data/meleeWeaponData";
 import {
@@ -21,16 +21,11 @@ export class MeleeWeaponSheet extends ItemSheet {
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: MeleeWeaponData = sheetData.item.data;
-    data.presentationAttackTypes = {};
-    data.presentationAttackTypes.crush = data.attackTypes.includes(
-      AttackType.Crush
-    );
-    data.presentationAttackTypes.slash = data.attackTypes.includes(
-      AttackType.Slash
-    );
-    data.presentationAttackTypes.impale = data.attackTypes.includes(
-      AttackType.Impale
-    );
+    data.allCombatManeuvers = Object.values(CombatManeuver).reduce((acc, m) => {
+      const v = data.combatManeuvers.includes(m);
+      acc[m] = { name: m, value: v };
+      return acc;
+    }, {});
 
     data.meleeWeaponSkills = this.actor
       .getEmbeddedCollection("OwnedItem")
@@ -38,7 +33,8 @@ export class MeleeWeaponSheet extends ItemSheet {
         (i: ItemData<SkillData>) =>
           i.type === ItemTypeEnum.Skill &&
           (i.data.category === SkillCategoryEnum.MeleeWeapons ||
-            i.data.category === SkillCategoryEnum.Shields)
+            i.data.category === SkillCategoryEnum.Shields ||
+            i.data.category === SkillCategoryEnum.NaturalWeapons)
       );
 
     return sheetData;
@@ -48,18 +44,17 @@ export class MeleeWeaponSheet extends ItemSheet {
     event: Event | JQuery.Event,
     formData: any
   ): Promise<any> {
-    const attackTypes = [];
-    if (formData["data.presentationAttackTypes.crush"]) {
-      attackTypes.push(AttackType.Crush);
-    }
-    if (formData["data.presentationAttackTypes.slash"]) {
-      attackTypes.push(AttackType.Slash);
-    }
-    if (formData["data.presentationAttackTypes.impale"]) {
-      attackTypes.push(AttackType.Impale);
-    }
-    formData["data.attackTypes"] = attackTypes;
-    delete formData["data.presentationAttackTypes"];
+    const combatManeuvers = [];
+    Object.values(CombatManeuver).forEach((m) => {
+      if (formData[`data.allCombatManeuvers.${m}.value`]) {
+        combatManeuvers.push(m);
+      }
+    });
+
+    formData["data.combatManeuvers"] = combatManeuvers;
+    Object.values(CombatManeuver).forEach(
+      (cm) => delete formData[`data.allCombatManeuvers.${cm}.value`]
+    );
     return super._updateObject(event, formData);
   }
 }

@@ -15,20 +15,32 @@ export class RqgActor extends Actor<RqgActorData> {
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("rqg", RqgActorSheet, { makeDefault: true });
 
-    Hooks.on(
-      "createActor",
-      async (actor: RqgActor, options: any, userId: String) => {
-        if (actor.data.type === "character" && options.renderSheet) {
-          await actor.createOwnedItem(elementalRunes);
-          await actor.createOwnedItem(powerRunes);
-          // TODO Add support for other races than humanoid - is race even set at this point?
-          await actor.createOwnedItem(
-            hitLocations.filter((h) => humanoid.includes(h.name))
-          );
-          await actor.createOwnedItem(characterSkills);
-        }
+    Hooks.on("createActor", async (actor: RqgActor, options: any) => {
+      if (actor.data.type === "character" && options.renderSheet) {
+        // TODO Add support for other races than humanoid - is race even set at this point?
+        const humanoidHitLocations = hitLocations.filter((h) =>
+          humanoid.hitLocations.toString().includes(h.name)
+        );
+        const actorItemsData = (elementalRunes as ItemData[]).concat(
+          powerRunes,
+          humanoidHitLocations,
+          characterSkills,
+          humanoid.naturalWeapons.skills
+        );
+
+        // createOwnedItem is mistyped - can return array as well
+        const actorItems = ((await actor.createOwnedItem(
+          actorItemsData
+        )) as unknown) as Item[];
+
+        // Connect natural meleeWeapon with corresponding skill
+        const naturalWeapons = humanoid.naturalWeapons.meleeWeapons.map((w) => {
+          w.data.skillId = actorItems.find((s) => s.name === w.name)._id;
+          return w;
+        });
+        await actor.createOwnedItem(naturalWeapons);
       }
-    );
+    });
   }
 
   /**
