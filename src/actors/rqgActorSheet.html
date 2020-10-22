@@ -128,7 +128,7 @@
             <td class="text-right">{{skillchance this.data.data.skillId this.actor._id}}%</td>
             <td data-item-id="{{data.data.skillId}}"><input type="checkbox" data-item-experience {{checkedexperience this.data.data.skillId this.actor._id}}></td>
             <td class="text-right"><input type="number" data-dtype="Number" data-item-edit-value="data.hitPoints.value" value="{{this.data.data.hitPoints.value}}"> /</td>
-            <td class="text-right">{{json this.data.data.hitPoints}}</td>
+            <td class="text-right">{{this.data.data.hitPoints.max}}</td>
             <td class="text-left">
               {{#each this.data.data.combatManeuvers}}
               <a data-weapon-roll="{{this}}">{{this}}</a>
