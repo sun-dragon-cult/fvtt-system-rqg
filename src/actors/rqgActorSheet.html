@@ -114,6 +114,7 @@
           <tr>
             <th class="text-left">Weapon</th>
             <th class="text-right">Chance</th>
+            <th class="text-left">Exp</th>
             <th class="text-left" colspan="2">HP</th>
             <th class="text-left">Combat Maneuvers</th>
           </tr>
@@ -125,8 +126,9 @@
           <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
             <td>{{this.name}}</td>
             <td class="text-right">{{skillchance this.data.data.skillId this.actor._id}}%</td>
+            <td data-item-id="{{data.data.skillId}}"><input type="checkbox" data-item-experience {{checkedexperience this.data.data.skillId this.actor._id}}></td>
             <td class="text-right"><input type="number" data-dtype="Number" data-item-edit-value="data.hitPoints.value" value="{{this.data.data.hitPoints.value}}"> /</td>
-            <td class="text-right">{{this.data.data.hitPoints.max}}</td>
+            <td class="text-right">{{json this.data.data.hitPoints}}</td>
             <td class="text-left">
               {{#each this.data.data.combatManeuvers}}
               <a data-weapon-roll="{{this}}">{{this}}</a>
@@ -142,6 +144,7 @@
           <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
             <td>{{this.name}}</td>
             <td class="text-right">{{skillchance this.data.data.skillId this.actor._id}}%</td>
+            <td data-item-id="{{data.data.skillId}}"><input type="checkbox" data-item-experience {{checkedexperience this.data.data.skillId this.actor._id}}></td>
             <td></td>
             <td></td>
             <td class="text-left">
@@ -169,44 +172,52 @@
     </div>
   </div>
 
-  {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item norse" data-tab="runes">Runes</a>
+    <a class="item norse" data-tab="spiritmagic">Spirit Magic</a>
+    <a class="item norse" data-tab="runemagic">Rune Magic</a>
+    <a class="item norse" data-tab="sorcery">Sorcery</a>
     <a class="item norse" data-tab="skills">Skills</a>
     <a class="item norse" data-tab="gear">Gear</a>
     <a class="item norse" data-tab="passions">Passions</a>
     <a class="item norse" data-tab="background">Background</a>
-    <a class="item norse" data-tab="activeeffectstesting">🐛Active Effects🧪</a>
+    <a class="item norse" data-tab="activeeffectstesting">🧪Active Effects</a>
   </nav>
 
-  {{!-- Sheet Body --}}
   <section class="sheet-body">
-    {{!-- Runes Tab --}}
     <div class="tab runes" data-group="primary" data-tab="runes">
       {{> "systems/rqg/actors/parts/runes-tab.html" }}
     </div>
 
-    {{!-- Skills Tab --}}
+    <div class="tab spiritmagic" data-group="primary" data-tab="spiritmagic">
+      <pre>TODO - Spirit Magic</pre>
+    </div>
+
+    <div class="tab runemagic" data-group="primary" data-tab="runemagic">
+      <pre>TODO - Rune Magic (and Cult Items including rune points?)</pre>
+    </div>
+
+    <div class="tab sorcery" data-group="primary" data-tab="sorcery">
+      <pre>TODO - Sorcerous Runes and Techniques</pre>
+    </div>
+
     <div class="tab skills" data-group="primary" data-tab="skills">
       {{> "systems/rqg/actors/parts/skills-tab.html" }}
     </div>
 
-    {{!-- Owned Items Tab --}}
     <div class="tab gear" data-group="primary" data-tab="gear">
       {{> "systems/rqg/actors/parts/gear-tab.html" }}
     </div>
 
-    {{!-- Passions Tab --}}
     <div class="tab passions" data-group="primary" data-tab="passions">
       {{> "systems/rqg/actors/parts/passions-tab.html" }}
     </div>
 
-    {{!-- Background Tab --}}
     <div class="tab background" data-group="primary" data-tab="background">
       {{> "systems/rqg/actors/parts/background-tab.html" }}
     </div>
 
-    {{!-- Active Effects Testing Tab --}}
+    {{!-- TEMPORARY Active Effects Testing Tab --}}
     <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
       {{> "systems/rqg/actors/parts/activeeffectstesting-tab.html" }}
     </div>
