@@ -2,23 +2,23 @@
   <h2>Power</h2>
   {{#with data.ownedItems.powerRune.man}}
     <span data-item-id="{{_id}}" class="single">
-      <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.data.chance}}%</a>
-      <a data-item-edit> {{data.data.experience}} </a>
+      <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+      <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
     </span>
   {{/with}}
 
   <span>
     {{#with data.ownedItems.powerRune.fertility}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit>{{data.data.experience}}</a>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/> {{name}}</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
       </span>
     {{/with}}
     –
     {{#with data.ownedItems.powerRune.death}}
       <span data-item-id="{{_id}}">
-        <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.data.chance}}%</a>
-        <a data-item-edit>{{data.data.experience}}</a>
+        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
@@ -26,15 +26,15 @@
   <span>
     {{#with data.ownedItems.powerRune.harmony}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit>{{data.data.experience}}</a>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/> {{name}}</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
       </span>
     {{/with}}
     –
     {{#with data.ownedItems.powerRune.disorder}}
       <span data-item-id="{{_id}}">
-        <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.data.chance}}%</a>
-        <a data-item-edit>{{data.data.experience}}</a>
+        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
@@ -42,15 +42,15 @@
   <span>
     {{#with data.ownedItems.powerRune.truth}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit>{{data.data.experience}}</a>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/> {{name}}</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+        <a data-item-edit class="powerline">{{data.data.chance}}%</a> <a data-item-roll><img src="{{img}}"/> {{name}}</a>
       </span>
     {{/with}}
     –
     {{#with data.ownedItems.powerRune.illusion}}
       <span data-item-id="{{_id}}">
-        <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.data.chance}}%</a>
-        <a data-item-edit>{{data.data.experience}}</a>
+        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
@@ -58,23 +58,23 @@
   <span>
     {{#with data.ownedItems.powerRune.stasis}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit>{{data.data.experience}}</a>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/> {{name}}</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
       </span>
     {{/with}}
     –
     {{#with data.ownedItems.powerRune.movement}}
       <span data-item-id="{{_id}}">
-        <a data-item-roll class="powerline">{{name}} <img src="{{img}}"/> {{data.data.chance}}%</a>
-        <a data-item-edit>{{data.data.experience}}</a>
+        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
 
   {{#with data.ownedItems.powerRune.beast}}
     <span data-item-id="{{_id}}" class="single">
-      <a data-item-edit> {{data.data.experience}} </a>
-      <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/> {{name}}</a>
+      <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+      <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
     </span>
   {{/with}}
 </div>

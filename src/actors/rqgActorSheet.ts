@@ -166,6 +166,15 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       });
     });
 
+    this.form.querySelectorAll("[data-item-experience]").forEach((el) => {
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .itemId;
+      el.addEventListener("click", () => {
+        const item = this.actor.getOwnedItem(itemId);
+        item.update({ "data.experience": !item.data.data.experience }, {});
+      });
+    });
+
     // Edit item value
     this.form.querySelectorAll("[data-item-edit-value]").forEach((el) => {
       const path = (el as HTMLElement).dataset.itemEditValue;

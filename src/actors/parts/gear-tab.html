@@ -7,7 +7,7 @@
       <th class="text-left">Name</th>
       <th class="text-right">Qty</th>
       <th class="text-right">ENC</th>
-      <th class="text-left">Equipped</th>
+      <th>Equipped</th>
 
     </tr>
   {{#each data.ownedItems.gear}}
@@ -15,7 +15,7 @@
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td class="text-right">{{this.data.data.quantity}}</td>
     <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td><a data-item-equip>{{this.data.data.equipped}}</a></td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.equipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/each}}
@@ -34,7 +34,7 @@
     <th class="text-right">DEX</th>
     <th class="text-right">HP</th>
     <th class="text-right">ENC</th>
-    <th class="text-left">Equipped</th>
+    <th>Equipped</th>
 
   </tr>
   {{#each data.ownedItems.meleeWeapon}}
@@ -47,7 +47,7 @@
     <td class="text-right">{{this.data.data.minDexterity}}</td>
     <td class="text-right">{{this.data.data.hitPoints.value}}</td>
     <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td><a data-item-equip>{{this.data.data.equipped}}</a></td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.equipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/unless}}
@@ -63,7 +63,7 @@
   <tr>
     <th class="text-left">Name</th>
     <th class="text-right">ENC</th>
-    <th class="text-left">Equipped</th>
+    <th>Equipped</th>
     <th class="text-left">Hitlocations</th>
     <th class="text-left">Material</th>
     <th class="text-right">Absorbs</th>
@@ -73,7 +73,7 @@
   <tr data-item-id="{{this._id}}">
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td><a data-item-equip>{{this.data.data.equipped}}</a></td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.equipped}}></td>
     <td>[
       {{#each this.data.data.hitLocations}}
         {{this}},

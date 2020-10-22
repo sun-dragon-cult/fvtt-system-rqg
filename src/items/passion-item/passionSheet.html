@@ -16,11 +16,7 @@
     </select>
     <input type="text" name="name" value="{{item.name}}" />
     <input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}" data-dtype="Number"/>
-    <input
-      type="checkbox"
-      name="data.experience"
-      {{checked
-      data.experience}}
+    <input type="checkbox" name="data.experience" {{checked data.experience}}
     /><br />
   </header>
   <section class="sheet-body">

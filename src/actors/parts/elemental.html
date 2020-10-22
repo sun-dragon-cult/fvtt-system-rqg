@@ -2,9 +2,9 @@
   <h2>Elemental</h2>
   {{#each data.ownedItems.elementalRune}}
   <span class="grid-row nowrap" data-item-id="{{this._id}}">
-      <a data-item-roll><img src="{{this.img}}" /> {{this.name}}</a>
+      <a data-item-edit><img src="{{this.img}}" /> {{this.name}}</a>
       <a data-item-roll>{{this.data.data.chance}}%</a>
-      <a data-item-edit style="align-self: flex-end"> {{this.data.data.experience}} </a>
+    <div style="align-self: flex-end"><input type="checkbox" data-item-experience {{checked this.data.data.experience}}></div>
     </span>
   {{/each}}
 </div>
