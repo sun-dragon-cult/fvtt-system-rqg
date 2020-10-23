@@ -1,3 +1,30 @@
+# [0.3.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.2.0...v0.3.0) (2020-10-22)
+
+
+### Bug Fixes
+
+* A roll of 01-05 is always a success. ([300dada](https://github.com/wakeand/fvtt-system-rqg/commit/300dada))
+* Changed armor references to hitlocation. Layout fixes, including moving runes to a tab. Type fixes in ActorSheet ([5c79e8f](https://github.com/wakeand/fvtt-system-rqg/commit/5c79e8f))
+* Cleaned up layout of items in actor sheet. ([e20ab89](https://github.com/wakeand/fvtt-system-rqg/commit/e20ab89))
+* Hide "natural" weapons on the gear tab. ([06d053c](https://github.com/wakeand/fvtt-system-rqg/commit/06d053c))
+* Hide "natural" weapons on the gear tab. ([2d35a3f](https://github.com/wakeand/fvtt-system-rqg/commit/2d35a3f))
+* Missed a classname. ([a010aaf](https://github.com/wakeand/fvtt-system-rqg/commit/a010aaf))
+* show AP value. ([3685ebd](https://github.com/wakeand/fvtt-system-rqg/commit/3685ebd))
+
+
+### Features
+
+* Add input field for weapon HP. Also move total actor hitpoints closer to hitlocation/wounds. ([93f2846](https://github.com/wakeand/fvtt-system-rqg/commit/93f2846))
+* Add natural weapons. Also add "combat maneuvers" to melee weapons to specify what you can do with them. ([6d2c9df](https://github.com/wakeand/fvtt-system-rqg/commit/6d2c9df))
+* Add Spirit Combat to the Actor Sheet. Also add Dodge skill roll to Combat section and move Damage Bonus & Healing rate to the their sections. ([6d019c8](https://github.com/wakeand/fvtt-system-rqg/commit/6d019c8))
+* Added Experience checkboxes to Combat (and all other experience). Made Equipped a checkbox. Added some todo-tabs. ([8831604](https://github.com/wakeand/fvtt-system-rqg/commit/8831604))
+* Connect skillItem to meleeWeapon item and make it rollable from actorsheet. ([8b0b462](https://github.com/wakeand/fvtt-system-rqg/commit/8b0b462))
+* Include shields in MeleeWeaponItems. ([ba0ad62](https://github.com/wakeand/fvtt-system-rqg/commit/ba0ad62))
+* Sort combat tracker on increasing initiative (SR) and prefill SIZ + DEX SR. So far weapon SR isn't used. ([c1eba23](https://github.com/wakeand/fvtt-system-rqg/commit/c1eba23))
+
+
+
+
 # [0.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.1.11...v0.2.0) (2020-09-16)
 
 
