@@ -126,7 +126,6 @@ export class RqgActor extends Actor<RqgActorData> {
       cha
     );
     data.attributes.maximumEncumbrance = Math.min(str, (str + con) / 2);
-    data.attributes.movementRate = 8; // TODO Humans only for now
 
     data.attributes.equippedEncumbrance = this.items.reduce((sum, i) => {
       const enc = i.data.data.equipped
@@ -141,6 +140,11 @@ export class RqgActor extends Actor<RqgActorData> {
       0
     );
 
+    const movementPenalty = Math.max(
+      0,
+      data.attributes.equippedEncumbrance - data.attributes.maximumEncumbrance
+    );
+    data.attributes.movementRate = 8 - movementPenalty; // TODO Humanoids only for now
     // @ts-ignore 0.7
     data.effects = [...this.effects].map((effect) => effect.data);
   }
