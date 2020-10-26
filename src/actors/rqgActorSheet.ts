@@ -13,6 +13,7 @@ import { HitLocationData } from "../data-model/item-data/hitLocationData";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { RqgItem } from "../items/rqgItem";
 import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
+import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -42,7 +43,6 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     data.homelands = Object.values(HomeLandEnum);
 
     // Separate different item types for easy access
-
     // ownedItems looks like {armor: [RqgItem], elementalRune: [RqgItem], ... }
     data.ownedItems = this.actor.itemTypes;
 
@@ -95,9 +95,9 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       });
     });
 
-    // Weapon roll
-    this.form.querySelectorAll("[data-weapon-roll]").forEach((el) => {
-      const attackType = (el as HTMLElement).dataset.weaponRoll;
+    // Melee Weapon roll
+    this.form.querySelectorAll("[data-melee-roll]").forEach((el) => {
+      const attackType = (el as HTMLElement).dataset.meleeRoll;
       const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset
         .itemId;
       const weaponItem: Item<MeleeWeaponData> = this.actor.items.get(
@@ -114,10 +114,61 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         );
         if (result <= ResultEnum.Success) {
           // TODO Make damage vary depending on success
+          const damageBonus =
+            this.actor.data.data.attributes.damageBonus !== "0"
+              ? `+ ${this.actor.data.data.attributes.damageBonus}[Damage Bonus]`
+              : "";
           ChatMessage.create({
-            content: `Roll damage [[/r ${weaponItem.data.data.damage} + ${this.actor.data.data.attributes.damageBonus} #Damage]]<br><br>
+            content: `Roll damage [[/r ${weaponItem.data.data.damage} ${damageBonus} #Damage]]<br><br>
                       and hit location [[/r 1D20 #Hit Location]]`,
           });
+        }
+      });
+    });
+
+    // Missile Weapon roll
+    this.form.querySelectorAll("[data-missile-roll]").forEach((el) => {
+      const attackType = (el as HTMLElement).dataset.missileRoll;
+      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .itemId;
+      const weaponItem: Item<MissileWeaponData> = this.actor.items.get(
+        weaponItemId
+      );
+      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset
+        .skillId;
+      const skillItem: Item<SkillData> = this.actor.items.get(skillId);
+      const projectileItem = weaponItem.data.data.isProjectileWeapon
+        ? this.actor.items.get(weaponItem.data.data.projectileId)
+        : weaponItem;
+
+      el.addEventListener("click", async () => {
+        if (projectileItem.data.data.quantity > 0) {
+          // projectileItem.data.data.quantity = projectileItem.data.data
+          //   .quantity--;
+          await this.actor.updateOwnedItem({
+            _id: projectileItem.id,
+            "data.quantity": --projectileItem.data.data.quantity,
+          });
+
+          const result = Ability.rollAgainst(
+            skillItem.data.data.chance,
+            0,
+            `${weaponItem.name} ${attackType} (${skillItem.name})`
+          );
+          if (result <= ResultEnum.Success) {
+            // TODO Make damage vary depending on success
+            const damageBonus: string =
+              weaponItem.data.data.isThrownWeapon &&
+              this.actor.data.data.attributes.damageBonus !== "0"
+                ? ` + ceil(${this.actor.data.data.attributes.damageBonus}[Damage Bonus] / 2)`
+                : "";
+            ChatMessage.create({
+              content: `Roll damage [[/r ${weaponItem.data.data.damage} ${damageBonus} #Damage]]<br><br>
+              and hit location [[/r 1D20 #Hit Location]]`,
+            });
+          }
+        } else {
+          ChatMessage.create({ content: `Out of ammo!` });
         }
       });
     });

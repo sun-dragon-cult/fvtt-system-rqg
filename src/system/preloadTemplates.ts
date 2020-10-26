@@ -20,6 +20,7 @@ export const preloadTemplates = async function () {
     "systems/rqg/items/gear-item/gearSheet.html",
     "systems/rqg/items/armor-item/armorSheet.html",
     "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.html",
+    "systems/rqg/items/missile-weapon-item/missileWeaponSheet.html",
   ];
 
   return loadTemplates(templatePaths);

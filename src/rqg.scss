@@ -168,3 +168,7 @@
 .rqg.actor {
   @import "src/actors/actor";
 }
+
+.rqg.sheet.missileWeapon {
+  @import "src/items/missile-weapon-item/missileWeaponSheet";
+}

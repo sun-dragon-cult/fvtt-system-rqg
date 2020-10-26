@@ -1,41 +1,44 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
-  CombatManeuver,
-  MeleeWeaponData,
-} from "../../data-model/item-data/meleeWeaponData";
+
 import {
   SkillCategoryEnum,
   SkillData,
 } from "../../data-model/item-data/skillData";
+import { MissileWeaponData } from "../../data-model/item-data/missileWeaponData";
+import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
 
-export class MeleeWeaponSheet extends ItemSheet {
+export class MissileWeaponSheet extends ItemSheet {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.MeleeWeapon],
-      template: "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.html",
-      width: 520,
-      height: 250,
+      classes: ["rqg", "sheet", ItemTypeEnum.MissileWeapon],
+      template: "systems/rqg/items/missile-weapon-item/missileWeaponSheet.html",
+      width: 450,
+      height: 600,
     });
   }
 
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: MeleeWeaponData = sheetData.item.data;
+    const data: MissileWeaponData = sheetData.item.data;
     data.allCombatManeuvers = Object.values(CombatManeuver).reduce((acc, m) => {
       const v = data.combatManeuvers.includes(m);
       acc[m] = { name: m, value: v };
       return acc;
     }, {});
-
     if (this.actor) {
-      data.meleeWeaponSkills = this.actor
+      data.missileWeaponSkills = this.actor
         .getEmbeddedCollection("OwnedItem")
         .filter(
           (i: ItemData<SkillData>) =>
             i.type === ItemTypeEnum.Skill &&
-            (i.data.category === SkillCategoryEnum.MeleeWeapons ||
-              i.data.category === SkillCategoryEnum.Shields ||
-              i.data.category === SkillCategoryEnum.NaturalWeapons)
+            i.data.category === SkillCategoryEnum.MissileWeapons
+        );
+
+      data.ownedProjectiles = this.actor
+        .getEmbeddedCollection("OwnedItem")
+        .filter(
+          (i: ItemData<MissileWeaponData>) =>
+            i.type === ItemTypeEnum.MissileWeapon && i.data.isProjectile
         );
     }
     return sheetData;
