@@ -1,4 +1,3 @@
-// @ts-nocheck (until foundry-pc-types are updated for 0.7)
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
 import { RqgActor } from "./rqgActor";
@@ -11,10 +10,10 @@ export class RqgActiveEffect extends ActiveEffect {
    * @return {*}                          The resulting applied value
    * @private
    */
-  _applyCustom(actor: Actor, change: ActiveEffectChange): any {
+  _applyCustom(actor: Actor, change): any {
     console.log("*** _applyCustom", actor, change);
     const [affectedItem, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.ap
-    const items = actor.items.filter(
+    const items: Array<Item> = actor.items.filter(
       (i: Item) => i.data.type === affectedItem && i.data.name === itemName
     );
     if (items.length > 1) {
@@ -58,7 +57,9 @@ export class RqgActiveEffect extends ActiveEffect {
         effects.forEach((e) =>
           mergeObject(
             e,
-            ResponsibleItemClass.get(this.data.type).generateActiveEffect(this)
+            ResponsibleItemClass.get(this.data.type).generateActiveEffect(
+              this.data
+            )
           )
         );
       } else if (this.parent instanceof RqgActor) {
@@ -72,7 +73,9 @@ export class RqgActiveEffect extends ActiveEffect {
         ] = this.data.origin.split(".");
         const item = this.parent.items.get(embeddedId);
         const updatedEffect = item
-          ? ResponsibleItemClass.get(item.data.type).generateActiveEffect(item)
+          ? ResponsibleItemClass.get(item.data.type).generateActiveEffect(
+              item.data
+            )
           : {};
         mergeObject(this.data, updatedEffect);
       } else {

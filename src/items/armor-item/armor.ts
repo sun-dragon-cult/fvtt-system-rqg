@@ -11,13 +11,14 @@ export class Armor extends BaseItem {
   // }
 
   // TODO return type should be "active effect data"
-  public static generateActiveEffect(item: RqgItem<ArmorData>): any {
-    const armorData: ArmorData = item?.data?.data || emptyArmor;
+  public static generateActiveEffect(itemData: ItemData<ArmorData>): any {
+    const armorData: ArmorData = itemData?.data || emptyArmor;
     const changes = armorData.hitLocations.map((hitLocationName) => {
       return {
         key: `hitLocation:${hitLocationName}:data.data.ap`,
         value: armorData.absorbs,
-        mode: 0, // TODO ACTIVE_EFFECT_MODES.CUSTOM
+        // @ts-ignore
+        mode: ACTIVE_EFFECT_MODES.CUSTOM,
       };
     });
 

@@ -29,8 +29,7 @@ export class Ability implements IAbility {
 
     const r = new Roll("1d100");
     r.roll();
-    // @ts-ignore
-    const modifiedChance: number = parseInt(chance) + parseInt(chanceMod);
+    const modifiedChance: number = chance + chanceMod;
     const result = Ability.evaluateResult(modifiedChance, r.total);
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";

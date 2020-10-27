@@ -64,20 +64,25 @@ export class RqgItem<DataType = any> extends Item<DataType> {
         parent instanceof RqgActor &&
         Object.values(ItemTypeEnum).includes(r.type)
       ) {
-        const itemData = r as RqgItem;
+        const rqgItem = r as RqgItem;
         // @ts-ignore 0.7
-        itemData.effects = itemData.effects || [];
+        rqgItem.effects = rqgItem.effects || [];
         const activeEffect = ResponsibleItemClass.get(
-          itemData.type
-        ).generateActiveEffect(itemData);
+          rqgItem.type
+        ).generateActiveEffect(rqgItem.data);
         if (activeEffect) {
-          activeEffect.origin = `Actor.${parent.id}.OwnedItem.${itemData._id}`;
+          activeEffect.origin = `Actor.${parent.id}.OwnedItem.${rqgItem._id}`;
           // @ts-ignore 0.7
-          itemData.effects.push(activeEffect);
-          // await item.createEmbeddedEntity("ActiveEffect", activeEffect);
+          rqgItem.effects.push(activeEffect);
         }
       }
       return true;
     });
+  }
+
+  prepareData() {
+    super.prepareData();
+    // @ts-ignore
+    this.data = duplicate(this._data);
   }
 }

@@ -90,9 +90,8 @@ export class RqgActor extends Actor<RqgActorData> {
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
    */
   applyActiveEffects() {
-    // @ts-ignore (until foundry-pc-types are updated for 0.7)
     super.applyActiveEffects();
-    // @ts-ignore (until foundry-pc-types are updated for 0.7)
+    // @ts-ignore 0.7
     console.debug("!! ***applyActiveEffects", this.effects);
   }
 

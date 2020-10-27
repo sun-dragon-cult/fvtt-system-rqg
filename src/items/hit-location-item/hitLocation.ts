@@ -27,6 +27,8 @@ export class HitLocation extends BaseItem {
       (acc: number, w: number) => acc - w,
       item.data.data.hp.max
     );
+
+    item.data.data.ap = item.data.data.naturalAp; // Init AP with natural AP before active effects
     return item;
   }
 

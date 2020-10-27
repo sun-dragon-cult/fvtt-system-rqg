@@ -260,7 +260,6 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset
         .effectId;
       el.addEventListener("click", () =>
-        // @ts-ignore 0.7
         new ActiveEffectConfig(this.actor.effects.get(effectId)).render(true)
       );
     });

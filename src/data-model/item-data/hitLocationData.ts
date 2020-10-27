@@ -28,9 +28,10 @@ export type HitLocationData = {
   dieFrom: number;
   dieTo: number;
   hp: Resource; // Max and value added by ActorSheet.prepareData
-  ap: number; // Natural armor (modified by armor Active Effect)
+  naturalAp: number; // Natural armor
   wounds: Array<number>;
   // --- Derived / Convenience Data Below ---
+  ap?: number; // Natural armor + modified armor Active Effect
   hitLocationTypes?: HitLocationsEnum[];
 };
 
@@ -38,6 +39,6 @@ export const emptyHitLocation: HitLocationData = {
   dieFrom: 0,
   dieTo: 0,
   hp: emptyResource, // Max and value added by ActorSheet.prepareData
-  ap: 0,
+  naturalAp: 0,
   wounds: [],
 };
