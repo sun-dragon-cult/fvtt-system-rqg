@@ -12,6 +12,7 @@ import { ArmorSheet } from "./armor-item/armorSheet";
 import { RqgActor } from "../actors/rqgActor";
 import { MeleeWeaponSheet } from "./melee-weapon-item/meleeWeaponSheet";
 import { MissileWeaponSheet } from "./missile-weapon-item/missileWeaponSheet";
+import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 
 export class RqgItem<DataType = any> extends Item<DataType> {
   public static init() {
@@ -53,6 +54,10 @@ export class RqgItem<DataType = any> extends Item<DataType> {
     });
     Items.registerSheet("rqg", MissileWeaponSheet, {
       types: [ItemTypeEnum.MissileWeapon],
+      makeDefault: true,
+    });
+    Items.registerSheet("rqg", SpiritMagicSheet, {
+      types: [ItemTypeEnum.SpiritMagic],
       makeDefault: true,
     });
     // TODO this doesn't compile!? Sheet registration would be better in Item init

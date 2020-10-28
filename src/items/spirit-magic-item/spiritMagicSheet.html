@@ -1,0 +1,33 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img
+      class="profile-img"
+      src="{{item.img}}"
+      data-edit="img"
+      title="{{item.name}}"
+    />
+    <input type="text" name="name" value="{{item.name}}"> (<input type="number" data-dtype="Number" name="data.points" value="{{item.data.points}}">)
+    <label><input type="checkbox" name="data.isVariable" {{checked data.isVariable}}>Variable</label>
+  </header>
+  <main>
+    <select name="data.castingRange">
+      {{#select item.data.castingRange}} {{#each data.ranges}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select>
+    <select name="data.duration">
+      {{#select item.data.duration}} {{#each data.durations}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select>
+    <select name="data.spellType">
+      {{#select item.data.spellType}} {{#each data.types}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select>
+  </main>
+  <div>
+    Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+  </div>
+  {{json data}}
+</form>
