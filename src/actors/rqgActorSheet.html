@@ -17,20 +17,6 @@
             placeholder=""
           />
         </h1>
-        <br />
-        <label class="mp norse"
-          >Magic Points<br />
-          <input
-            type="number"
-            min="0"
-            max="99"
-            name="data.attributes.magicPoints.value"
-            value="{{data.attributes.magicPoints.value}}"
-            data-dtype="Number"
-            size="2"
-          />
-          / {{data.attributes.magicPoints.max}}
-        </label>
       </div>
       <div class="characteristics">
         {{#each data.characteristics as | characteristic key |}}
@@ -47,9 +33,6 @@
             data-dtype="Number"
             size="2"
           />
-
-          <!--        <span class="ability-mod rollable" data-roll="d20+@abilities.{{key}}.mod" data-label="{{key}}">{{numberFormat
-                    ability.mod decimals=0 sign=true}}</span>-->
         </div>
         {{/each}}
       </div>
@@ -184,7 +167,19 @@
       <!-- TODO Show spells for easy access? -->
       <div>
         <h2 class="norse">Spirit Combat</h2>
-        <label class="norse">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
+        <div class="flexrow nowrap flex-align-center">
+          <label class="mp norse">Magic Points <input
+              type="number"
+              min="0"
+              max="99"
+              name="data.attributes.magicPoints.value"
+              value="{{data.attributes.magicPoints.value}}"
+              data-dtype="Number"
+              size="2"
+            /> / {{data.attributes.magicPoints.max}}
+          </label>
+          <label class="norse text-right">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
+        </div>
         <table>
           <tr data-item-id="{{this.data.spiritCombatSkill._id}}">
             <td>Spirit Combat</td>
