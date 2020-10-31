@@ -164,6 +164,6 @@ export class RqgActor extends Actor<RqgActorData> {
         { overwrite: false }
       );
     }
-    return super.create(data, options);
+    return await super.create(data, options);
   }
 }

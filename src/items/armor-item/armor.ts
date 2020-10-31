@@ -1,6 +1,5 @@
 import { BaseItem } from "../baseItem";
 import { ArmorData, emptyArmor } from "../../data-model/item-data/armorData";
-import { RqgItem } from "../rqgItem";
 
 export class Armor extends BaseItem {
   // public static init() {

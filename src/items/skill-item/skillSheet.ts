@@ -18,7 +18,7 @@ export class SkillSheet extends ItemSheet {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: SkillData = sheetData.item.data;
     data.skillCategories = Object.values(SkillCategoryEnum);
-    data.isGM = this.actor ? !this.actor.isPC : true;
+    data.isGM = this.actor ? !this.actor.isPC : true; // TODO isPC is deprecated use getOwners (coming in 0.7.6)
     return sheetData;
   }
 }

@@ -106,7 +106,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset
         .skillId;
       const skillItem: Item<SkillData> = this.actor.items.get(skillId);
-      el.addEventListener("click", () => {
+      el.addEventListener("click", async () => {
         const result = Ability.rollAgainst(
           skillItem.data.data.chance,
           0,
@@ -118,7 +118,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
             this.actor.data.data.attributes.damageBonus !== "0"
               ? `+ ${this.actor.data.data.attributes.damageBonus}[Damage Bonus]`
               : "";
-          ChatMessage.create({
+          await ChatMessage.create({
             content: `Roll damage [[/r ${weaponItem.data.data.damage} ${damageBonus} #Damage]]<br><br>
                       and hit location [[/r 1D20 #Hit Location]]`,
           });
@@ -162,13 +162,13 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
               this.actor.data.data.attributes.damageBonus !== "0"
                 ? ` + ceil(${this.actor.data.data.attributes.damageBonus}[Damage Bonus] / 2)`
                 : "";
-            ChatMessage.create({
+            await ChatMessage.create({
               content: `Roll damage [[/r ${weaponItem.data.data.damage} ${damageBonus} #Damage]]<br><br>
               and hit location [[/r 1D20 #Hit Location]]`,
             });
           }
         } else {
-          ChatMessage.create({ content: `Out of ammo!` });
+          await ChatMessage.create({ content: `Out of ammo!` });
         }
       });
     });
@@ -211,18 +211,22 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     this.form.querySelectorAll("[data-item-equip]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
         .itemId;
-      el.addEventListener("click", () => {
+      el.addEventListener("click", async () => {
         const item = this.actor.getOwnedItem(itemId);
-        item.update({ "data.equipped": !item.data.data.equipped }, {});
+        await item.update({ "data.equipped": !item.data.data.equipped }, {});
       });
     });
 
+    // Toggle experience flag
     this.form.querySelectorAll("[data-item-experience]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
         .itemId;
-      el.addEventListener("click", () => {
+      el.addEventListener("click", async () => {
         const item = this.actor.getOwnedItem(itemId);
-        item.update({ "data.experience": !item.data.data.experience }, {});
+        await item.update(
+          { "data.experience": !item.data.data.experience },
+          {}
+        );
       });
     });
 
@@ -231,9 +235,12 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       const path = (el as HTMLElement).dataset.itemEditValue;
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
         .itemId;
-      el.addEventListener("change", (event) => {
+      el.addEventListener("change", async (event) => {
         const item = this.actor.getOwnedItem(itemId);
-        item.update({ [path]: (event.target as HTMLInputElement).value }, {});
+        await item.update(
+          { [path]: (event.target as HTMLInputElement).value },
+          {}
+        );
       });
     });
 

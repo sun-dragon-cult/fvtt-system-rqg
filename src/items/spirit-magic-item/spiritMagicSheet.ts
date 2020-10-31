@@ -25,7 +25,6 @@ export class SpiritMagicSheet extends ItemSheet<RqgActorData, RqgItem> {
     data.ranges = Object.values(SpiritMagicCastingRangeEnum);
     data.durations = Object.values(SpiritMagicDurationEnum);
     data.types = Object.values(SpiritMagicTypeEnum);
-
     return sheetData;
   }
 }

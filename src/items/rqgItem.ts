@@ -84,10 +84,4 @@ export class RqgItem<DataType = any> extends Item<DataType> {
       return true;
     });
   }
-
-  prepareData() {
-    super.prepareData();
-    // @ts-ignore
-    this.data = duplicate(this._data);
-  }
 }

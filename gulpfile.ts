@@ -181,7 +181,7 @@ async function copyFiles() {
     }
     return Promise.resolve();
   } catch (err) {
-    Promise.reject(err);
+    await Promise.reject(err);
   }
 }
 
@@ -239,7 +239,7 @@ async function clean() {
     }
     return Promise.resolve();
   } catch (err) {
-    Promise.reject(err);
+    await Promise.reject(err);
   }
 }
 
