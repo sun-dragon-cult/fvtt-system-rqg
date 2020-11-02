@@ -1,0 +1,19 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <input type="text" name="name" value="{{item.name}}" />
+  </header>
+  <main>
+    <select name="data.rank">
+      {{#select data.rank}} {{#each data.ranksEnum}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select><br>
+    <label>Rune Points <input type="number" min="0" max="99" data-dtype="Number" name="data.runePoints.value" value="{{item.data.runePoints.value}}">/<input type="number" min="0" max="99" data-dtype="Number" name="data.runePoints.max" value="{{item.data.runePoints.max}}"></label><br>
+    <label>Holy Days {{editor content=data.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
+<!-- TODO Sub Cults etc-->
+    <label>Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+    </label>
+    <br>{{json data}}
+  </main>
+</form>

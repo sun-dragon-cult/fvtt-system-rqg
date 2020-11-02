@@ -3,6 +3,7 @@ export const preloadTemplates = async function () {
     "systems/rqg/actors/rqgActorSheet.html",
     "systems/rqg/actors/parts/runes-tab.html",
     "systems/rqg/actors/parts/spirit-magic-tab.html",
+    "systems/rqg/actors/parts/rune-magic-tab.html",
     "systems/rqg/actors/parts/skills-tab.html",
     "systems/rqg/actors/parts/gear-tab.html",
     "systems/rqg/actors/parts/passions-tab.html",
@@ -23,6 +24,7 @@ export const preloadTemplates = async function () {
     "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.html",
     "systems/rqg/items/missile-weapon-item/missileWeaponSheet.html",
     "systems/rqg/items/spirit-magic-item/spiritMagicSheet.html",
+    "systems/rqg/items/cult-item/cultSheet.html",
   ];
 
   return loadTemplates(templatePaths);

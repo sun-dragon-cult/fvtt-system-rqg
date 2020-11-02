@@ -1,0 +1,24 @@
+<h2 class="flex-row">
+  <span>Cults</span>
+  <a title="Add Cult" data-item-add data-item-type="cult"><i class="fas fa-plus"></i></a>
+</h2>
+<table>
+  <tr>
+    <th class="text-left">Name</th>
+    <th class="text-left">Rank</th>
+    <th class="text-left">Rune Points</th>
+    <th class="text-left">Holy Days</th>
+    <th class="text-left">Sub Cults</th>
+  </tr>
+  {{#each data.ownedItems.cult}}
+  <tr data-item-id="{{this._id}}">
+    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
+    <td class="text-left">{{this.data.data.rank}}</td>
+    <td class="text-left">{{this.data.data.runePoints.value}}/{{this.data.data.runePoints.max}}</td>
+    <td>{{{this.data.data.holyDays}}}</td>
+    <td>{{this.data.data.subCults}}</td>
+
+    <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
+  </tr>
+  {{/each}}
+</table>

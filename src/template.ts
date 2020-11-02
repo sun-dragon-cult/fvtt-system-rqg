@@ -10,6 +10,7 @@ import { emptyArmor } from "./data-model/item-data/armorData";
 import { emptyMeleeWeapon } from "./data-model/item-data/meleeWeaponData";
 import { emptyMissileWeapon } from "./data-model/item-data/missileWeaponData";
 import { emptySpiritMagic } from "./data-model/item-data/spiritMagicData";
+import { emptyCult } from "./data-model/item-data/cultData";
 
 // Instantiated Actor types
 export const Actors = {
@@ -27,7 +28,7 @@ export const Items = {
   [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
   [ItemTypeEnum.MissileWeapon]: emptyMissileWeapon,
   [ItemTypeEnum.SpiritMagic]: emptySpiritMagic,
-  // [ItemTypeEnum.Cult]: emptyCult;
+  [ItemTypeEnum.Cult]: emptyCult,
   // [ItemTypeEnum.RuneMagic]: emptyRuneMagic;
   // [ItemTypeEnum.SorcerousMagic]: emptySorcerousMagic;
 };

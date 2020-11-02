@@ -6,6 +6,7 @@ import { Armor } from "../../items/armor-item/armor";
 import { MeleeWeapon } from "../../items/melee-weapon-item/meleeWeapon";
 import { MissileWeapon } from "../../items/missile-weapon-item/missileWeapon";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
+import { Cult } from "../../items/cult-item/cult";
 
 export enum ItemTypeEnum {
   Skill = "skill",
@@ -18,9 +19,9 @@ export enum ItemTypeEnum {
   MeleeWeapon = "meleeWeapon",
   MissileWeapon = "missileWeapon",
   SpiritMagic = "spiritMagic",
+  Cult = "cult",
   RuneMagic = "runeMagic",
   SorcerousMagic = "sorcerousMagic",
-  Cult = "cult",
 }
 
 /**
@@ -37,4 +38,5 @@ export const ResponsibleItemClass: Map<string, typeof BaseItem> = new Map([
   [ItemTypeEnum.MeleeWeapon, MeleeWeapon],
   [ItemTypeEnum.MissileWeapon, MissileWeapon],
   [ItemTypeEnum.SpiritMagic, SpiritMagic],
+  [ItemTypeEnum.Cult, Cult],
 ]);
