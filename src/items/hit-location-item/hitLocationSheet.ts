@@ -6,8 +6,9 @@ import {
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class HitLocationSheet extends ItemSheet<RqgActorData, RqgItem> {
+export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],

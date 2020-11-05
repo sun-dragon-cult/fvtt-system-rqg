@@ -5,9 +5,12 @@
     <label>Quantity <input type="number" min="0" max="9999999" data-dtype="Number" name="data.quantity" value="{{item.data.quantity}}"></label>
     <label>Enc <input type="number" min="0" max="99" data-dtype="Number" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
     <label>Equipped <input type="checkbox" name="data.equipped" {{checked data.equipped}} /></label><br>
+  </header>
+  <main>
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>
     <br>{{json data}}
-  </header>
+    <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
+  </main>
 </form>

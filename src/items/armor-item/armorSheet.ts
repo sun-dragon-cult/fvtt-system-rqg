@@ -1,7 +1,10 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ArmorData } from "../../data-model/item-data/armorData";
+import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
+import { RqgItem } from "../rqgItem";
 
-export class ArmorSheet extends ItemSheet {
+export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Armor],

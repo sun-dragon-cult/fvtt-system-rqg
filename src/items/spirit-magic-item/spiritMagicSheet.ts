@@ -7,8 +7,9 @@ import {
   SpiritMagicDurationEnum,
   SpiritMagicTypeEnum,
 } from "../../data-model/item-data/spiritMagicData";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class SpiritMagicSheet extends ItemSheet<RqgActorData, RqgItem> {
+export class SpiritMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.SpiritMagic],
@@ -25,6 +26,7 @@ export class SpiritMagicSheet extends ItemSheet<RqgActorData, RqgItem> {
     data.ranges = Object.values(SpiritMagicCastingRangeEnum);
     data.durations = Object.values(SpiritMagicDurationEnum);
     data.types = Object.values(SpiritMagicTypeEnum);
+    console.warn("**** spiritmagic sheetData", sheetData);
     return sheetData;
   }
 }

@@ -3,8 +3,11 @@ import {
   SkillData,
 } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
+import { RqgItem } from "../rqgItem";
 
-export class SkillSheet extends ItemSheet {
+export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],

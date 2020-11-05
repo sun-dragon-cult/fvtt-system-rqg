@@ -118,11 +118,12 @@
       .item {
         line-height: 40px;
         font-weight: bold;
-      }
+        white-space: nowrap;
 
-      .item.active {
-        text-decoration: underline;
-        text-shadow: none;
+        &.active {
+          text-decoration: underline;
+          text-shadow: none;
+        }
       }
     }
 

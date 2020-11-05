@@ -5,8 +5,9 @@ import {
 } from "../../data-model/item-data/powerRuneData";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class PowerRuneSheet extends ItemSheet<RqgActorData, RqgItem> {
+export class PowerRuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.PowerRune],

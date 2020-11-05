@@ -7,8 +7,11 @@ import {
   SkillCategoryEnum,
   SkillData,
 } from "../../data-model/item-data/skillData";
+import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
+import { RqgItem } from "../rqgItem";
 
-export class MeleeWeaponSheet extends ItemSheet {
+export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.MeleeWeapon],

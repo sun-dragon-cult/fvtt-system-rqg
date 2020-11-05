@@ -10,6 +10,8 @@ export const preloadTemplates = async function () {
     "systems/rqg/actors/parts/background-tab.html",
     "systems/rqg/actors/parts/activeeffectstesting-tab.html",
 
+    "systems/rqg/items/parts/itemActiveEffects.html",
+
     "systems/rqg/actors/parts/health.html",
     "systems/rqg/actors/parts/elemental.html",
     "systems/rqg/actors/parts/power.html",

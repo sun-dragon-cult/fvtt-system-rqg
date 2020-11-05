@@ -6,8 +6,11 @@ import {
 } from "../../data-model/item-data/skillData";
 import { MissileWeaponData } from "../../data-model/item-data/missileWeaponData";
 import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
+import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
+import { RqgItem } from "../rqgItem";
 
-export class MissileWeaponSheet extends ItemSheet {
+export class MissileWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.MissileWeapon],

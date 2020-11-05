@@ -5,8 +5,9 @@ import {
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class PassionSheet extends ItemSheet<RqgActorData, RqgItem> {
+export class PassionSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Passion],

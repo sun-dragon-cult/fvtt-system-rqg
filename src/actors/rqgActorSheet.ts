@@ -262,8 +262,8 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       );
     });
 
-    // Edit Active Effect
-    this.form.querySelectorAll("[data-effect-edit]").forEach((el) => {
+    // Edit Actor Active Effect
+    this.form.querySelectorAll("[data-actor-effect-edit]").forEach((el) => {
       const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset
         .effectId;
       el.addEventListener("click", () =>
