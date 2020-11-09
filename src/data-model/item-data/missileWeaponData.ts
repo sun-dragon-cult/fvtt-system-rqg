@@ -14,7 +14,7 @@ export type MissileWeaponData = IPhysicalItem & {
   rate: number; // 0 = multiple/mr, 1 = 1/mr, 2 = 1/2mr, 3 = 1/3mr, 5 = 1/5mr
   hitPoints: Resource;
   encumbrance: number;
-  equipped: boolean;
+  isEquipped: boolean;
   isProjectile: boolean;
   isProjectileWeapon: boolean; // No damage bonus & uses projectiles
   isThrownWeapon: boolean; // If true add half DB, if false it's projectile with no db
@@ -37,7 +37,7 @@ export const emptyMissileWeapon: MissileWeaponData = {
   rate: 0,
   hitPoints: emptyResource,
   encumbrance: 0,
-  equipped: false,
+  isEquipped: false,
   isProjectile: false,
   isProjectileWeapon: true,
   isThrownWeapon: false,

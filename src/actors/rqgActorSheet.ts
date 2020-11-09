@@ -213,7 +213,10 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         .itemId;
       el.addEventListener("click", async () => {
         const item = this.actor.getOwnedItem(itemId);
-        await item.update({ "data.equipped": !item.data.data.equipped }, {});
+        await item.update(
+          { "data.isEquipped": !item.data.data.isEquipped },
+          {}
+        );
       });
     });
 

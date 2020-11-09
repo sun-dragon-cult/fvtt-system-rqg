@@ -19,7 +19,7 @@ export const emptyArmor: ArmorData = {
   description: "",
   size: 0,
   encumbrance: 1,
-  equipped: false,
+  isEquipped: false,
   hitLocations: ["head"],
   material: "",
   absorbs: 0,

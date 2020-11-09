@@ -127,7 +127,7 @@ export class RqgActor extends Actor<RqgActorData> {
     data.attributes.maximumEncumbrance = Math.min(str, (str + con) / 2);
 
     data.attributes.equippedEncumbrance = this.items.reduce((sum, i) => {
-      const enc = i.data.data.equipped
+      const enc = i.data.data.isEquipped
         ? (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0)
         : 0;
       return sum + enc;

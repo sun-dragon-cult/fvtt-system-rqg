@@ -15,7 +15,7 @@
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td class="text-right">{{this.data.data.quantity}}</td>
     <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.equipped}}></td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/each}}
@@ -47,7 +47,7 @@
     <td class="text-right">{{this.data.data.minDexterity}}</td>
     <td class="text-right">{{this.data.data.hitPoints.value}}</td>
     <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.equipped}}></td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/unless}}
@@ -80,7 +80,7 @@
       <td class="text-right">{{this.data.data.minDexterity}}</td>
       <td class="text-right">{{this.data.data.hitPoints.value}}</td>
       <td class="text-right">{{this.data.data.encumbrance}}</td>
-      <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.equipped}}></td>
+      <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
       <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
     </tr>
     {{/if}}
@@ -95,7 +95,7 @@
     <td class="text-right">-</td>
     <td class="text-right">-</td>
     <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.equipped}}></td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/if}}
@@ -121,7 +121,7 @@
   <tr data-item-id="{{this._id}}">
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.equipped}}></td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
     <td>[
       {{#each this.data.data.hitLocations}}
         {{this}},

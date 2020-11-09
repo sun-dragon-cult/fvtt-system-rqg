@@ -22,7 +22,7 @@ export type MeleeWeaponData = IPhysicalItem & {
   strikeRank: number;
   hitPoints: Resource;
   encumbrance: number;
-  equipped: boolean;
+  isEquipped: boolean;
   natural: boolean; // E.g. Fist, Grapple, Kick
   description: string;
   // --- Derived / Convenience Data Below ---
@@ -40,6 +40,6 @@ export const emptyMeleeWeapon: MeleeWeaponData = {
   strikeRank: 0,
   hitPoints: emptyResource,
   encumbrance: 0,
-  equipped: false,
+  isEquipped: false,
   natural: false,
 };

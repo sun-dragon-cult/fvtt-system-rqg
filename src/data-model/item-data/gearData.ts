@@ -10,5 +10,5 @@ export const emptyGear: GearData = {
   description: "",
   quantity: 1,
   encumbrance: 1,
-  equipped: false,
+  isEquipped: false,
 };

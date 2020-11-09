@@ -1,7 +1,7 @@
 export interface IPhysicalItem {
   quantity?: number;
   encumbrance: number;
-  equipped?: boolean; // Not every physical Item can be equipped?
+  isEquipped?: boolean; // Not every physical Item can be isEquipped?
   // attuned: boolean; from DnD5e for Active Effects?
   // identified: boolean; from DnD5e for Foriens Unidentified Items?
 }
