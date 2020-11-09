@@ -38,7 +38,7 @@
 
   </tr>
   {{#each data.ownedItems.meleeWeapon}}
-  {{#unless this.data.data.natural}}
+  {{#unless this.data.data.isNatural}}
   <tr data-item-id="{{this._id}}">
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td>{{itemname this.data.data.skillId this.actor._id}}</td>

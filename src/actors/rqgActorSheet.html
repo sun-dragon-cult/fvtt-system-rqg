@@ -109,7 +109,7 @@
         <tbody>
         {{#each data.ownedItems.meleeWeapon}}
           {{#if this.data.data.isEquipped}}
-          {{#unless this.data.data.natural}}
+          {{#unless this.data.data.isNatural}}
           <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
             <td>{{this.name}}</td>
             <td class="text-right">{{skillchance this.data.data.skillId this.actor._id}}%</td>
@@ -127,7 +127,7 @@
         {{/each}}
 
         {{#each data.ownedItems.meleeWeapon}}
-          {{#if this.data.data.natural}}
+          {{#if this.data.data.isNatural}}
           <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
             <td>{{this.name}}</td>
             <td class="text-right">{{skillchance this.data.data.skillId this.actor._id}}%</td>
