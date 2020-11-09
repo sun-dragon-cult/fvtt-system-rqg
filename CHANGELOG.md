@@ -1,3 +1,19 @@
+# [0.4.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.3.0...v0.4.0) (2020-11-09)
+
+
+### Bug Fixes
+
+* Make Armor is only applied once, even when editing hit location item. Updated ts type definition and removed some ts-ignores. ([cbe1fc3](https://github.com/wakeand/fvtt-system-rqg/commit/cbe1fc3))
+
+
+### Features
+
+* Add and edit active effects to select item types via a rough GUI. ([0510b82](https://github.com/wakeand/fvtt-system-rqg/commit/0510b82))
+* Calculate ENC movement penalty and show current MOV on ActorSheet. ([ea30b72](https://github.com/wakeand/fvtt-system-rqg/commit/ea30b72))
+
+
+
+
 # [0.3.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.2.0...v0.3.0) (2020-10-22)
 
 
