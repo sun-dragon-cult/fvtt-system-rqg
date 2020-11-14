@@ -39,7 +39,7 @@
   "primaryTokenAttribute": "attributes.hitPoints",
   "secondaryTokenAttribute": "attributes.magicPoints",
   "minimumCoreVersion": "0.7.5",
-  "compatibleCoreVersion": "0.7.6",
+  "compatibleCoreVersion": "0.7.7",
   "url": "https://github.com/wakeand/foundry-vtt-rqg",
   "manifest": "https://github.com/wakeand/fvtt-system-rqg/releases/download/v0.4.0/system.json",
   "download": "https://github.com/wakeand/fvtt-system-rqg/releases/download/v0.4.0/rqg.zip",

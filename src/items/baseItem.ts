@@ -7,7 +7,7 @@ export class BaseItem {
   //     types: [ItemTypeEnum.Passion],
   //     makeDefault: true,
   //   });
-  //   Items.registerSheet("rqg", ElementalRuneSheet, {
+  //   Items.registerSheet("rqg", RuneSheet, {
   //     types: [ItemTypeEnum.ElementalRune],
   //     makeDefault: true,
   //   });

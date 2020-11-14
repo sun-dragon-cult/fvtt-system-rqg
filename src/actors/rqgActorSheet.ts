@@ -14,6 +14,7 @@ import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { RqgItem } from "../items/rqgItem";
 import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
+import { RuneData, RuneTypeEnum } from "../data-model/item-data/runeData";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -46,14 +47,6 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     // ownedItems looks like {armor: [RqgItem], elementalRune: [RqgItem], ... }
     data.ownedItems = this.actor.itemTypes;
 
-    // Organise powerRunes as { beast: RqgItem, death: RqgItem, ... }
-    data.ownedItems[ItemTypeEnum.PowerRune] = data.ownedItems[
-      ItemTypeEnum.PowerRune
-    ].reduce((acc, item: RqgItem) => {
-      acc[item.name] = item;
-      return acc;
-    }, []);
-
     // Separate skills into skill categories {agility: [RqgItem], communication: [RqgItem], ... }
     const skills = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
@@ -62,6 +55,37 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       );
     });
     data.ownedItems[ItemTypeEnum.Skill] = skills;
+
+    // Separate runes into types (elemental, power, form, technique)
+    const runes = {};
+    Object.values(RuneTypeEnum).forEach((type: string) => {
+      runes[type] = data.ownedItems[ItemTypeEnum.Rune].filter(
+        (r: RqgItem<RuneData>) => type === r.data.data.runeType
+      );
+    });
+    data.ownedItems[ItemTypeEnum.Rune] = runes;
+
+    // Organise powerRunes as { fertility: RqgItem, death: RqgItem, ... }
+    data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power] = {
+      ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce(
+        (acc, item: RqgItem) => {
+          acc[item.name] = item;
+          return acc;
+        },
+        []
+      ),
+    };
+
+    // Organise formRunes as { man: RqgItem, beast: RqgItem, ... }
+    data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form] = {
+      ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce(
+        (acc, item: RqgItem) => {
+          acc[item.name] = item;
+          return acc;
+        },
+        []
+      ),
+    };
 
     // Sort the hit locations
     data.ownedItems[ItemTypeEnum.HitLocation].sort(

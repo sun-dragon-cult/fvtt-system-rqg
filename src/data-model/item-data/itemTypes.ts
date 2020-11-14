@@ -11,8 +11,7 @@ import { Cult } from "../../items/cult-item/cult";
 export enum ItemTypeEnum {
   Skill = "skill",
   Passion = "passion",
-  ElementalRune = "elementalRune",
-  PowerRune = "powerRune",
+  Rune = "rune",
   HitLocation = "hitLocation",
   Gear = "gear",
   Armor = "armor",
@@ -30,8 +29,7 @@ export enum ItemTypeEnum {
 export const ResponsibleItemClass: Map<string, typeof BaseItem> = new Map([
   [ItemTypeEnum.Skill, Skill],
   [ItemTypeEnum.Passion, BaseItem],
-  [ItemTypeEnum.ElementalRune, BaseItem],
-  [ItemTypeEnum.PowerRune, BaseItem],
+  [ItemTypeEnum.Rune, BaseItem],
   [ItemTypeEnum.HitLocation, HitLocation],
   [ItemTypeEnum.Gear, Gear],
   [ItemTypeEnum.Armor, Armor],

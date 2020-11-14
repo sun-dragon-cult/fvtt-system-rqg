@@ -3,8 +3,7 @@ import {
   ResponsibleItemClass,
   ItemTypeEnum,
 } from "../data-model/item-data/itemTypes";
-import { ElementalRuneSheet } from "./elemental-rune-item/elementalRuneSheet";
-import { PowerRuneSheet } from "./power-rune-item/powerRuneSheet";
+import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 import { GearSheet } from "./gear-item/gearSheet";
@@ -25,12 +24,8 @@ export class RqgItem<DataType = any> extends Item<DataType> {
       types: [ItemTypeEnum.Passion],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", ElementalRuneSheet, {
-      types: [ItemTypeEnum.ElementalRune],
-      makeDefault: true,
-    });
-    Items.registerSheet("rqg", PowerRuneSheet, {
-      types: [ItemTypeEnum.PowerRune],
+    Items.registerSheet("rqg", RuneSheet, {
+      types: [ItemTypeEnum.Rune],
       makeDefault: true,
     });
     Items.registerSheet("rqg", SkillSheet, {

@@ -1,6 +1,6 @@
 <div class="elemental norse">
   <h2>Elemental</h2>
-  {{#each data.ownedItems.elementalRune}}
+  {{#each data.ownedItems.rune.element}}
   <span class="grid-row nowrap" data-item-id="{{this._id}}">
       <a data-item-edit><img src="{{this.img}}" /> {{this.name}}</a>
       <a data-item-roll>{{this.data.data.chance}}%</a>

@@ -8,24 +8,25 @@
     />
     <h1 class="name prop"></h1>
 
+    <select name="data.runeType">
+      {{#select item.data.runeType}} {{#each data.runeTypes}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select>
+
     <select name="name">
-      {{#select item.name}} {{#each data.powerRuneTypes}}
+      {{#select item.name}} {{#each data.runes}}
         <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
-    <select name="data.opposingRune">
-      {{#select item.data.opposingRune}} {{#each data.powerRuneTypes}}
-        <option value="{{this}}">{{this}}</option>
-      {{/each}} {{/select}}
-    </select>
-    <input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}" data-dtype="Number"/>
+    <input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}"/>
     <input type="checkbox" name="data.experience" {{checked data.experience}} />
   </header>
   <section class="sheet-body">
     <div class="wide-section">
-      <label
-      >Backstory {{editor content=data.description target="data.description"
-                          button=true owner=owner editable=editable}}
+      <label>Mastered (Sorcery)<input type="checkbox" name="data.isMastered" {{checked data.isMastered}} /></label><br>
+      <label>Description
+        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
       </label>
     </div>
   </section>

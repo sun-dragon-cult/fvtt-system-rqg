@@ -1,0 +1,36 @@
+<div class="power norse">
+  <h2>Techniques</h2>
+  {{#each data.ownedItems.rune.technique}} {{#with this}}
+    <span data-item-id="{{_id}}">
+          {{runeType}} <a data-item-edit class="powerline">{{name}}<img src="{{img}}"/></a>
+      </span>
+  {{/with}} {{/each}}
+
+  <h2>Mastered Runes</h2>
+  <div class="flex-row">
+    {{#each data.ownedItems.rune.element}}
+      {{#if data.data.isMastered}}
+        <span data-item-id="{{_id}}">
+            {{data.data.runeType}} <a data-item-edit class="powerline">{{name}}<img src="{{img}}"/></a>
+        </span>
+      {{/if}}
+    {{/each}}
+
+    {{#each data.ownedItems.rune.power}}
+      {{#if data.data.isMastered}}
+      <span data-item-id="{{_id}}">
+            {{data.data.runeType}} <a data-item-edit class="powerline">{{name}}<img src="{{img}}"/></a>
+        </span>
+      {{/if}}
+    {{/each}}
+
+
+    {{#each data.ownedItems.rune.form}}
+      {{#if data.data.isMastered}}
+      <span data-item-id="{{_id}}">
+            {{data.data.runeType}} <a data-item-edit class="powerline">{{name}}<img src="{{img}}"/></a>
+        </span>
+      {{/if}}
+    {{/each}}
+  </div>
+</div>

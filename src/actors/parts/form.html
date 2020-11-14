@@ -1,0 +1,30 @@
+<div class="power norse">
+  <h2>Form</h2>
+  <span>
+    {{#with data.ownedItems.rune.form.man}}
+      <span data-item-id="{{_id}}">
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
+      </span>
+    {{/with}}
+    –
+    {{#with data.ownedItems.rune.form.beast}}
+      <span data-item-id="{{_id}}">
+        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+      </span>
+    {{/with}}
+  </span>
+  {{#each data.ownedItems.rune.form}}
+  {{#unless (eq @key "man")}}
+  {{#unless (eq @key "beast")}}
+    {{#with this}}
+    <span data-item-id="{{_id}}">
+      <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+      <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+    </span>
+    {{/with}}
+  {{/unless}}
+  {{/unless}}
+  {{/each}}
+</div>

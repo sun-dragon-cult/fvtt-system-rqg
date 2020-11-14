@@ -2,7 +2,7 @@ import { humanoid, RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import elementalRunes from "../assets/default-items/elementalRunes";
-import powerRunes from "../assets/default-items/powerRunes";
+import powerFormRunes from "../assets/default-items/powerFormRunes";
 import hitLocations from "../assets/default-items/hitLocations";
 import characterSkills from "../assets/default-items/characterSkills";
 import { RqgActorSheet } from "./rqgActorSheet";
@@ -22,7 +22,7 @@ export class RqgActor extends Actor<RqgActorData> {
           humanoid.hitLocations.toString().includes(h.name)
         );
         const actorItemsData = (elementalRunes as ItemData[]).concat(
-          powerRunes,
+          powerFormRunes,
           humanoidHitLocations,
           characterSkills,
           humanoid.naturalWeapons.skills

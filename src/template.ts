@@ -2,8 +2,7 @@ import { emptyActorDataRqg } from "./data-model/actor-data/rqgActorData";
 import { emptySkill } from "./data-model/item-data/skillData";
 import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
 import { emptyPassion } from "./data-model/item-data/passionData";
-import { emptyElementalRune } from "./data-model/item-data/elementalRuneData";
-import { emptyPowerRune } from "./data-model/item-data/powerRuneData";
+import { emptyRune } from "./data-model/item-data/runeData";
 import { emptyHitLocation } from "./data-model/item-data/hitLocationData";
 import { emptyGear } from "./data-model/item-data/gearData";
 import { emptyArmor } from "./data-model/item-data/armorData";
@@ -20,8 +19,7 @@ export const Actors = {
 export const Items = {
   [ItemTypeEnum.Skill]: emptySkill,
   [ItemTypeEnum.Passion]: emptyPassion,
-  [ItemTypeEnum.ElementalRune]: emptyElementalRune,
-  [ItemTypeEnum.PowerRune]: emptyPowerRune,
+  [ItemTypeEnum.Rune]: emptyRune,
   [ItemTypeEnum.HitLocation]: emptyHitLocation,
   [ItemTypeEnum.Gear]: emptyGear,
   [ItemTypeEnum.Armor]: emptyArmor,
