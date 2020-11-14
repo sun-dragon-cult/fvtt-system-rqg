@@ -20,7 +20,7 @@ export type CultData = {
   // prohibitedCultSpiritMagic: Array<string>; // TODO Link to system wide id...
   // cultRuneMagic: Array<string>; // TODO Link to system wide id...
   // cultEnchantments: Array<string>; // TODO Link to system wide id...
-  subCults: Array<string>; // TODO How to model?
+  subCults: string;
   description: string; // Runes,
   // --- Derived / Convenience Data Below ---
   ranksEnum?: Array<CultRankEnum>; // For sheet dropdown
@@ -30,6 +30,6 @@ export const emptyCult: CultData = {
   rank: CultRankEnum.LayMember,
   runePoints: emptyResource,
   holyDays: "",
-  subCults: [],
+  subCults: "",
   description: "",
 };

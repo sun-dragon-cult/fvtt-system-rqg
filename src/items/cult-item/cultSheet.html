@@ -11,7 +11,7 @@
     </select><br>
     <label>Rune Points <input type="number" min="0" max="99" data-dtype="Number" name="data.runePoints.value" value="{{item.data.runePoints.value}}">/<input type="number" min="0" max="99" data-dtype="Number" name="data.runePoints.max" value="{{item.data.runePoints.max}}"></label><br>
     <label>Holy Days {{editor content=data.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
-<!-- TODO Sub Cults etc-->
+    <label>Sub Cults {{editor content=data.subCults target="data.subCults" button=true owner=owner editable=editable}}</label><br>
     <label>Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
     </label>
     <br>{{json data}}
