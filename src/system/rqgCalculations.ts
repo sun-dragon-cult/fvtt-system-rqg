@@ -154,7 +154,7 @@ export class RqgCalculations {
       return this.lookup<string>(str + siz, damageBonusTable);
     } else {
       const d = Math.ceil((combined - 40) / 16);
-      return `${d}D6`;
+      return `${d + 1}D6`;
     }
   }
 
@@ -164,7 +164,7 @@ export class RqgCalculations {
       return this.lookup<string>(combined, spiritCombatDamageTable);
     } else {
       const d = Math.ceil((combined - 40) / 16);
-      return `${d + 2}D6+${d + 3}`;
+      return `${d + 1}D6+${d + 2}`;
     }
   }
 
@@ -261,7 +261,7 @@ const damageBonusTable: Array<LookupTableEntry<string>> = [
   { from: -Infinity, to: 12, result: "-1D4" },
   { from: 13, to: 24, result: "0" },
   { from: 25, to: 32, result: "1D4" },
-  { from: 33, to: 40, result: "2D6" },
+  { from: 33, to: 40, result: "1D6" },
 ];
 
 // Spirit Combat Damage <= 40. Lookup with POW + CHA
