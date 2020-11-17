@@ -82,7 +82,7 @@
 }
 
 input {
-  width: 25px;
+  width: initial;
 }
 
 table.health {
@@ -161,4 +161,8 @@ table.health {
   margin-bottom: 1rem;
   background-color: navajowhite;
   padding: 2px 1rem;
+}
+
+.background label {
+  line-height: 2rem;
 }
