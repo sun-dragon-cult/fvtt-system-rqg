@@ -186,9 +186,10 @@ export class RqgCalculations {
       RqgCalculations.linearMod(dex) +
       RqgCalculations.flattenedMod(pow);
 
-    const communicationMod = RqgCalculations.flattenedMod(
-      int + RqgCalculations.flattenedMod(pow) + RqgCalculations.linearMod(cha)
-    );
+    const communicationMod =
+      RqgCalculations.flattenedMod(int) +
+      RqgCalculations.flattenedMod(pow) +
+      RqgCalculations.linearMod(cha);
     const knowledgeMod =
       RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
     const magicMod =
