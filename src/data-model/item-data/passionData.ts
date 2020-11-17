@@ -11,13 +11,15 @@ export enum PassionsEnum {
 
 export type PassionData = IAbility & {
   passion: PassionsEnum;
-  description: string;
+  subject: string; // The subject of Fear etc
+  description: string; // How did the character get this passion
   // --- Derived / Convenience Data Below ---
   passionTypes?: PassionsEnum[];
 };
 
 export const emptyPassion: PassionData = {
   passion: PassionsEnum.Love,
+  subject: "",
   description: "",
   chance: 0,
   experience: false,

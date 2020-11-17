@@ -23,4 +23,15 @@ export class PassionSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     data.passionTypes = Object.values(PassionsEnum);
     return sheetData;
   }
+
+  protected _updateObject(
+    event: Event | JQuery.Event,
+    formData: any
+  ): Promise<any> {
+    const subject = formData["data.subject"]
+      ? ` (${formData["data.subject"]})`
+      : "";
+    formData["name"] = formData["data.passion"] + subject;
+    return super._updateObject(event, formData);
+  }
 }
