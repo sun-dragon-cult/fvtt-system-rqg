@@ -1,3 +1,21 @@
+# [0.5.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.4.0...v0.5.0) (2020-11-17)
+
+
+### Bug Fixes
+
+* Communication Skill bonus was wrong. ([332961e](https://github.com/wakeand/fvtt-system-rqg/commit/332961e))
+* Correct damage bonus & spirir combat damage calculations. ([2218b98](https://github.com/wakeand/fvtt-system-rqg/commit/2218b98))
+
+
+### Features
+
+* Add Rune Magic Item ([b9c7ee7](https://github.com/wakeand/fvtt-system-rqg/commit/b9c7ee7))
+* Cult item v1. ([67f52e2](https://github.com/wakeand/fvtt-system-rqg/commit/67f52e2))
+* Make Passions name reflect the whole passion. Also makes honor work with the passion system. ([a5c3c91](https://github.com/wakeand/fvtt-system-rqg/commit/a5c3c91))
+
+
+
+
 # [0.4.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.3.0...v0.4.0) (2020-11-09)
 
 
