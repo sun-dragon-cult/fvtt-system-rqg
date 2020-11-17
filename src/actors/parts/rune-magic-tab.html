@@ -1,24 +1,41 @@
-<h2 class="flex-row">
-  <span>Cults</span>
-  <a title="Add Cult" data-item-add data-item-type="cult"><i class="fas fa-plus"></i></a>
-</h2>
-<table>
-  <tr>
-    <th class="text-left">Name</th>
-    <th class="text-left">Rank</th>
-    <th class="text-left">Rune Points</th>
-    <th class="text-left">Holy Days</th>
-    <th class="text-left">Sub Cults</th>
-  </tr>
-  {{#each data.ownedItems.cult}}
-  <tr data-item-id="{{this._id}}">
-    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
-    <td class="text-left">{{this.data.data.rank}}</td>
-    <td class="text-left">{{this.data.data.runePoints.value}}/{{this.data.data.runePoints.max}}</td>
-    <td>{{{this.data.data.holyDays}}}</td>
-    <td>{{{this.data.data.subCults}}}</td>
-
-    <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
-  </tr>
-  {{/each}}
-</table>
+<a title="Join Cult" data-item-add data-item-type="cult"><i class="fas fa-plus"></i>Join Cult</a>
+{{#each data.ownedItems.cult}}
+<div data-item-id="{{this._id}}">
+  <h2 class="flex-row">
+    <span>{{name}}</span>
+    <span class="text-right"><a title="Leave Cult" data-item-delete><i class="fas fa-trash"></i></a></span>
+  </h2>
+  <div class="flex-row">
+    <span><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{data.data.rank}}</span>
+    <span><b>Rune Points:</b><br> {{data.data.runePoints.value}}/{{data.data.runePoints.max}}</span>
+    <span><b>Holy Days:</b>{{{data.data.holyDays}}}</span>
+    <span><b>Sub Cults:</b>{{{data.data.subCults}}}</span>
+  </div>
+  <div class="runespells">
+    <table>
+      <tr>
+        <th class="text-left">Rune Spell</th>
+        <th class="text-left">Points</th>
+        <th class="text-left">Stackable</th>
+        <th class="text-left">Range (m)</th>
+        <th class="text-left">Duration (s)</th>
+        <th class="text-right">Chance</th>
+        <th><a title="Add Rune Magic Spell" data-item-add data-item-type="runeMagic"><i class="fas fa-plus"></i></a></th>
+      </tr>
+      {{#each @root.data.ownedItems.runeMagic}}
+      {{#if (eq ../id data.data.cultId)}}
+      <tr data-item-id="{{this._id}}">
+        <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}</td>
+        <td class="text-left">{{data.data.points}}</td>
+        <td>{{{data.data.isStackable}}}</td>
+        <td>{{{data.data.castingRange}}}</td>
+        <td>{{{data.data.duration}}}</td>
+        <td class="text-right"><a data-item-roll>{{data.data.chance}}%</a></td>
+        <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
+      </tr>
+      {{/if}}
+      {{/each}}
+    </table>
+  </div>
+</div>
+{{/each}}

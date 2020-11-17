@@ -37,6 +37,13 @@ export enum RuneEnum {
 
   Dispel = "dispel",
   Summon = "summon",
+
+  // Conditions
+  Magic = "magic",
+  Mastery = "mastery",
+  Infinity = "infinity",
+  Luck = "luck",
+  Fate = "fate",
 }
 
 export enum RuneTypeEnum {

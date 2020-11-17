@@ -1,0 +1,36 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img
+      class="profile-img"
+      src="{{item.img}}"
+      data-edit="img"
+      title="{{item.name}}"
+    />
+    <input type="text" name="name" value="{{item.name}}"> (<input type="number" name="data.points" value="{{item.data.points}}">)
+    <label><input type="checkbox" name="data.isStackable" {{checked data.isStackable}}>Stackable</label>
+  </header>
+  <main>
+    <label>Range (m) <input type="number" name="data.castingRange" value="{{item.data.castingRange}}"></label><br>
+    <label>Duration (s) <input type="number" name="data.duration" value="{{item.data.duration}}"></label><br>
+    <label class="mp norse">Cult<br>
+      <select name="data.cultId">
+        {{#select data.cultId}} {{#each data.cultIds}}
+        <option value="{{this._id}}">{{this.name}}</option>
+        {{/each}} {{/select}}
+      </select>
+    </label><br>
+    {{#each data.runes}}
+      <input name="data.runes" type="text" value="{{this}}">
+    {{/each}}
+    <input name="data.runes" type="text" list="allRunes">
+    <div> Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}</div>
+  </main>
+  {{json data}}
+  <input type="hidden" name="data.chance" value="{{item.data.chance}}" placeholder="Select Rune to add">
+  <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
+  <datalist id="allRunes">
+    {{#each data.allRunes}}
+    <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+</form>

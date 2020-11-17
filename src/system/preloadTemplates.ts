@@ -27,6 +27,7 @@ export const preloadTemplates = async function () {
     "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.html",
     "systems/rqg/items/missile-weapon-item/missileWeaponSheet.html",
     "systems/rqg/items/spirit-magic-item/spiritMagicSheet.html",
+    "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
     "systems/rqg/items/cult-item/cultSheet.html",
   ];
 
