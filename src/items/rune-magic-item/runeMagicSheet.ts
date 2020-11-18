@@ -21,6 +21,8 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: RuneMagicData = sheetData.item.data;
+    data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
+    data.allRunes = Object.values(RuneEnum).concat("" as RuneEnum);
     if (this.actor) {
       data.cultIds = this.actor
         .getEmbeddedCollection("OwnedItem")
@@ -28,22 +30,17 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
       if (data.cultIds.length === 1) {
         data.cultId = data.cultIds[0];
       }
+      const runeChances = this.actor
+        .getEmbeddedCollection("OwnedItem")
+        .filter(
+          (i: ItemData<RuneData>) =>
+            i.type === ItemTypeEnum.Rune &&
+            (data.runes.includes(RuneEnum.Magic) ||
+              data.runes.includes(i.name as RuneEnum))
+        )
+        .map((r: ItemData<RuneData>) => r.data.chance);
+      data.chance = Math.max(...runeChances);
     }
-    data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
-
-    const runeChances = this.actor
-      .getEmbeddedCollection("OwnedItem")
-      .filter(
-        (i: ItemData<RuneData>) =>
-          i.type === ItemTypeEnum.Rune &&
-          (data.runes.includes(RuneEnum.Magic) ||
-            data.runes.includes(i.name as RuneEnum))
-      )
-      .map((r: ItemData<RuneData>) => r.data.chance);
-    data.chance = Math.max(...runeChances);
-
-    data.allRunes = Object.values(RuneEnum).concat("" as RuneEnum);
-
     return sheetData;
   }
 

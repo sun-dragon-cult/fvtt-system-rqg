@@ -1,4 +1,14 @@
 <a title="Join Cult" data-item-add data-item-type="cult"><i class="fas fa-plus"></i>Join Cult</a>
+
+{{#each data.ownedItems.runeMagic}}
+{{#unless data.data.cultId}}
+<div data-item-id="{{this._id}}">
+  <a title="Edit Rune Spell" data-item-edit><i class="fas fa-edit"></i>Choose cult for Rune Spell {{name}}</a>
+  <a title="Delete Rune Spell" data-item-delete><i class="fas fa-trash"></i></a>
+</div>
+{{/unless}}
+{{/each}}
+
 {{#each data.ownedItems.cult}}
 <div data-item-id="{{this._id}}">
   <h2 class="flex-row">
