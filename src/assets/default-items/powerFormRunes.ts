@@ -10,7 +10,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Man,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Form,
@@ -25,7 +25,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Beast,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Form,
@@ -40,7 +40,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Fertility,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Power,
@@ -55,7 +55,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Death,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Power,
@@ -70,7 +70,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Harmony,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Power,
@@ -85,7 +85,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Disorder,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Power,
@@ -100,7 +100,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Truth,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Power,
@@ -115,7 +115,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Illusion,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Power,
@@ -130,7 +130,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Stasis,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Power,
@@ -145,7 +145,7 @@ const powerFormRunes: ItemData<RuneData>[] = [
     name: RuneEnum.Movement,
     type: ItemTypeEnum.Rune,
     data: {
-      chance: 0,
+      chance: 50,
       experience: false,
       description: "Se RQG p.xx",
       runeType: RuneTypeEnum.Power,
