@@ -30,4 +30,8 @@ export const handlebarSettings = function () {
     }
     return item?.data.data.experience ? "checked" : "";
   });
+
+  Handlebars.registerHelper("yes-no", (bool) => {
+    return bool ? "yes" : "no";
+  });
 };

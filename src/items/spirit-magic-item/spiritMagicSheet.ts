@@ -5,7 +5,7 @@ import {
   SpiritMagicCastingRangeEnum,
   SpiritMagicData,
   SpiritMagicDurationEnum,
-  SpiritMagicTypeEnum,
+  SpiritMagicConcentrationEnum,
 } from "../../data-model/item-data/spiritMagicData";
 import { RqgItemSheet } from "../RqgItemSheet";
 
@@ -25,8 +25,7 @@ export class SpiritMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     const data: SpiritMagicData = sheetData.item.data;
     data.ranges = Object.values(SpiritMagicCastingRangeEnum);
     data.durations = Object.values(SpiritMagicDurationEnum);
-    data.types = Object.values(SpiritMagicTypeEnum);
-    console.warn("**** spiritmagic sheetData", sheetData);
+    data.types = Object.values(SpiritMagicConcentrationEnum);
     return sheetData;
   }
 }

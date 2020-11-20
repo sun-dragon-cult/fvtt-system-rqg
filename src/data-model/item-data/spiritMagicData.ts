@@ -7,12 +7,13 @@ export enum SpiritMagicCastingRangeEnum {
 export enum SpiritMagicDurationEnum {
   Instant = "instant",
   Temporal = "temporal", // 2 minutes (10 melee rounds)
+  Focused = "focused", // Active for as long as the caster focuses
   Permanent = "permanent", // Ritual (Enchantment)
 }
 
-export enum SpiritMagicTypeEnum {
+export enum SpiritMagicConcentrationEnum {
   Passive = "passive",
-  Active = "active", // Focussed??? Detect (*)
+  Active = "active",
 }
 
 export type SpiritMagicData = {
@@ -21,8 +22,9 @@ export type SpiritMagicData = {
   isVariable: boolean; // Can the caster decide the number of magic points used
   castingRange: SpiritMagicCastingRangeEnum;
   duration: SpiritMagicDurationEnum;
-  spellType: SpiritMagicTypeEnum;
+  concentration: SpiritMagicConcentrationEnum;
   incompatibleWith: Array<string>; // Can't be cast if one of the listed spells are already active
+  spellFocus: string;
   // --- Derived / Convenience Data Below ---
   strikeRank?: number; // DexSR + points.value - 1
   ranges?: Array<string>; // For select on sheet
@@ -36,6 +38,7 @@ export const emptySpiritMagic: SpiritMagicData = {
   isVariable: false,
   castingRange: SpiritMagicCastingRangeEnum.Ranged,
   duration: SpiritMagicDurationEnum.Instant,
-  spellType: SpiritMagicTypeEnum.Passive,
+  concentration: SpiritMagicConcentrationEnum.Passive,
   incompatibleWith: [],
+  spellFocus: "",
 };

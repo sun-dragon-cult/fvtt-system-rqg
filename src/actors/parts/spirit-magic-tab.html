@@ -9,16 +9,16 @@
     <th>Variable</th>
     <th class="text-left">Range</th>
     <th class="text-left">Duration</th>
-    <th class="text-left">Type</th>
+    <th class="text-left">Concentration</th>
   </tr>
   {{#each data.ownedItems.spiritMagic}}
   <tr data-item-id="{{this._id}}">
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td class="text-right">{{this.data.data.points}}</td>
-    <td class="text-center"><input disabled type="checkbox" {{checked this.data.data.isVariable}}></td>
+    <td class="text-center">{{yes-no this.data.data.isVariable}}</td>
     <td>{{this.data.data.castingRange}}</td>
     <td>{{this.data.data.duration}}</td>
-    <td>{{this.data.data.spellType}}</td>
+    <td>{{this.data.data.concentration}}</td>
 
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>

@@ -25,8 +25,6 @@ export class Ability implements IAbility {
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     flavor: string // TODO Rename to ability?
   ): ResultEnum {
-    console.warn("rollAgainst chance ", chance, " chanceMod", chanceMod);
-
     const r = new Roll("1d100");
     r.roll();
     const modifiedChance: number = chance + chanceMod;
@@ -63,8 +61,6 @@ export class Ability implements IAbility {
       { limit: fail, result: ResultEnum.Failure },
       { limit: Infinity, result: ResultEnum.Fumble },
     ];
-
-    console.warn("lookup ", lookup, " chance:", chance, " roll", roll);
     return lookup.filter((v) => roll <= v.limit)[0].result;
   }
 }

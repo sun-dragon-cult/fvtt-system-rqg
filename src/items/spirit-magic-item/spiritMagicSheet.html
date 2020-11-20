@@ -10,22 +10,43 @@
     <label><input type="checkbox" name="data.isVariable" {{checked data.isVariable}}>Variable</label>
   </header>
   <main>
-    <select name="data.castingRange">
-      {{#select item.data.castingRange}} {{#each data.ranges}}
-      <option value="{{this}}">{{this}}</option>
-      {{/each}} {{/select}}
-    </select>
-    <select name="data.duration">
-      {{#select item.data.duration}} {{#each data.durations}}
-      <option value="{{this}}">{{this}}</option>
-      {{/each}} {{/select}}
-    </select>
-    <select name="data.spellType">
-      {{#select item.data.spellType}} {{#each data.types}}
-      <option value="{{this}}">{{this}}</option>
-      {{/each}} {{/select}}
-    </select>
+    <div class="flex-row-start">
+      <span>Range<br>
+        <select name="data.castingRange">
+          {{#select item.data.castingRange}} {{#each data.ranges}}
+          <option value="{{this}}">{{this}}</option>
+          {{/each}} {{/select}}
+        </select>
+      </span>
+      <span>Duration<br>
+        <select name="data.duration">
+          {{#select item.data.duration}} {{#each data.durations}}
+          <option value="{{this}}">{{this}}</option>
+          {{/each}} {{/select}}
+        </select>
+      </span>
+      {{#if (eq item.data.duration "temporal")}}
+      <span>Concentration<br>
+        <select name="data.concentration">
+          {{#select item.data.concentration}} {{#each data.types}}
+          <option value="{{this}}">{{this}}</option>
+          {{/each}} {{/select}}
+        </select>
+      </span>
+      {{/if}}
+      {{#if (eq item.data.duration "focused")}}
+      <span>Concentration<br>
+        <input type="text" name="data.concentration" value="active" readonly>
+      </span>
+      {{/if}}
+      {{#unless (eq item.data.duration "temporal")}}
+      {{#unless (eq item.data.duration "focused")}}
+        <input type="text" name="data.concentration" value="" hidden>
+      {{/unless}}
+      {{/unless}}
+    </div>
   </main>
+  <label>spellFocus <input type="text" name="data.spellFocus" value="{{item.data.spellFocus}}">Variable</label>
   <div>
     Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
   </div>
