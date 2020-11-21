@@ -178,6 +178,9 @@
               size="2"
             /> / {{data.attributes.magicPoints.max}}
           </label>
+          <i>{{#each data.powCrystals}}
+          {{name}}({{size}}MP)<br>
+            {{/each}}</i>
           <label class="norse text-right">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
         </div>
         <table>

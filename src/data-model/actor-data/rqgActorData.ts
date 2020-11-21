@@ -19,6 +19,7 @@ export class RqgActorData {
     public ownedItems?: any, // All owned items divided into type
     public dodgeSkill?: RqgItem<SkillData>, // For access on combat part of sheet
     public spiritCombatSkill?: RqgItem<SkillData>, // For access on spirit combat part of sheet
+    public powCrystals?: any[], // Stores label & value of AE affecting magicPoints.max
     public effects?: any // TODO fooling around
   ) {}
 }

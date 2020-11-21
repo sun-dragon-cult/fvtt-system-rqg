@@ -14,7 +14,7 @@
   <tr data-item-id="{{this._id}}">
     <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
     <td class="text-right">{{this.data.data.quantity}}</td>
-    <td class="text-right">{{this.data.data.encumbrance}}</td>
+    <td class="text-right">{{multiply this.data.data.quantity this.data.data.encumbrance}}</td>
     <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>

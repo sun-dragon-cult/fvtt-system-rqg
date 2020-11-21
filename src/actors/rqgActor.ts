@@ -52,6 +52,8 @@ export class RqgActor extends Actor<RqgActorData> {
 
     const actorData = this.data;
     const data = actorData.data;
+    // Set this here before Active effects to allow POW crystals to boost it.
+    data.attributes.magicPoints.max = data.characteristics.power.value;
     // const flags = actorData.flags;
     console.debug("*** RqgActor prepareBaseData  actorData", actorData);
   }
@@ -115,7 +117,7 @@ export class RqgActor extends Actor<RqgActorData> {
     const cha = data.characteristics.charisma.value;
 
     // *** Setup calculated stats ***
-    data.attributes.magicPoints.max = pow;
+
     data.attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
     data.attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
     data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
@@ -124,7 +126,9 @@ export class RqgActor extends Actor<RqgActorData> {
       pow,
       cha
     );
-    data.attributes.maximumEncumbrance = Math.min(str, (str + con) / 2);
+    data.attributes.maximumEncumbrance = Math.round(
+      Math.min(str, (str + con) / 2)
+    );
 
     data.attributes.equippedEncumbrance = this.items.reduce((sum, i) => {
       const enc = i.data.data.isEquipped
@@ -132,11 +136,17 @@ export class RqgActor extends Actor<RqgActorData> {
         : 0;
       return sum + enc;
     }, 0);
+    data.attributes.equippedEncumbrance = Math.round(
+      data.attributes.equippedEncumbrance
+    );
 
     data.attributes.travelEncumbrance = this.items.reduce(
       (sum, i) =>
         sum + (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0),
       0
+    );
+    data.attributes.travelEncumbrance = Math.round(
+      data.attributes.travelEncumbrance
     );
 
     const movementPenalty = Math.max(

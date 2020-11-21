@@ -21,7 +21,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", "actor"],
       template: "systems/rqg/actors/rqgActorSheet.html",
-      width: 600,
+      width: 690,
       height: 600,
       tabs: [
         {
@@ -99,6 +99,19 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     data.dodgeSkill = data.ownedItems[ItemTypeEnum.Skill][
       SkillCategoryEnum.Agility
     ].find((s) => s.data.name === "Dodge");
+
+    data.powCrystals = data.effects
+      .filter((e) =>
+        e.changes.find((e) => e.key === "data.attributes.magicPoints.max")
+      )
+      .map((e) => {
+        return {
+          name: e.label,
+          size: e.changes
+            .filter((c) => c.key === "data.attributes.magicPoints.max")
+            .reduce((acc, c) => acc + c.value, 0),
+        };
+      });
 
     return sheetData;
   }

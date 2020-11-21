@@ -34,4 +34,8 @@ export const handlebarSettings = function () {
   Handlebars.registerHelper("yes-no", (bool) => {
     return bool ? "yes" : "no";
   });
+
+  Handlebars.registerHelper("multiply", (v1, v2) => {
+    return Math.round(v1 * v2);
+  });
 };
