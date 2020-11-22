@@ -1,66 +1,67 @@
 <div class="power norse">
   <h2>Power</h2>
   <span>
-    {{#with data.ownedItems.rune.power.fertility}}
+    {{#with data.ownedItems.rune.power.Fertility}}
       <span data-item-id="{{_id}}">
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
       </span>
     {{/with}}
     –
-    {{#with data.ownedItems.rune.power.death}}
+    {{#with data.ownedItems.rune.power.Death}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
 
   <span>
-    {{#with data.ownedItems.rune.power.harmony}}
+    {{#with data.ownedItems.rune.power.Harmony}}
       <span data-item-id="{{_id}}">
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
       </span>
     {{/with}}
     –
-    {{#with data.ownedItems.rune.power.disorder}}
+    {{#with data.ownedItems.rune.power.Disorder}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
 
   <span>
-    {{#with data.ownedItems.rune.power.truth}}
+    {{#with data.ownedItems.rune.power.Truth}}
       <span data-item-id="{{_id}}">
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
       </span>
     {{/with}}
     –
-    {{#with data.ownedItems.rune.power.illusion}}
+    {{#with data.ownedItems.rune.power.Illusion}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
 
   <span>
-    {{#with data.ownedItems.rune.power.stasis}}
+    {{#with data.ownedItems.rune.power.Stasis}}
       <span data-item-id="{{_id}}">
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
       </span>
     {{/with}}
     –
-    {{#with data.ownedItems.rune.power.movement}}
+    {{#with data.ownedItems.rune.power.Movement}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
+  {{log data.ownedItems}}
 </div>

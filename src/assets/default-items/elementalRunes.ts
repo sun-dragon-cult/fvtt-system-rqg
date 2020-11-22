@@ -1,19 +1,16 @@
-import {
-  RuneData,
-  RuneEnum,
-  RuneTypeEnum,
-} from "../../data-model/item-data/runeData";
+import { RuneData, RuneTypeEnum } from "../../data-model/item-data/runeData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 const elementalRunes: ItemData<RuneData>[] = [
   {
-    name: RuneEnum.Fire,
+    name: "Fire (element)",
     type: ItemTypeEnum.Rune,
     data: {
+      rune: "Fire",
+      runeType: RuneTypeEnum.Element,
       chance: 0,
       experience: false,
       description: "Se RQG p.xx",
-      runeType: RuneTypeEnum.Element,
       minorRunes: [],
       isMastered: false,
     },
@@ -21,9 +18,10 @@ const elementalRunes: ItemData<RuneData>[] = [
     img: "systems/rqg/assets/icons/runes/fire_sky.svg",
   },
   {
-    name: RuneEnum.Darkness,
+    name: "Darkness (element)",
     type: ItemTypeEnum.Rune,
     data: {
+      rune: "Darkness",
       chance: 0,
       experience: false,
       description: "Se RQG p.xx",
@@ -35,9 +33,10 @@ const elementalRunes: ItemData<RuneData>[] = [
     img: "systems/rqg/assets/icons/runes/darkness.svg",
   },
   {
-    name: RuneEnum.Water,
+    name: "Water (element)",
     type: ItemTypeEnum.Rune,
     data: {
+      rune: "Water",
       chance: 0,
       experience: false,
       description: "Se RQG p.xx",
@@ -49,9 +48,10 @@ const elementalRunes: ItemData<RuneData>[] = [
     img: "systems/rqg/assets/icons/runes/water.svg",
   },
   {
-    name: RuneEnum.Earth,
+    name: "Earth (element)",
     type: ItemTypeEnum.Rune,
     data: {
+      rune: "Earth",
       chance: 0,
       experience: false,
       description: "Se RQG p.xx",
@@ -63,9 +63,10 @@ const elementalRunes: ItemData<RuneData>[] = [
     img: "systems/rqg/assets/icons/runes/earth.svg",
   },
   {
-    name: RuneEnum.Air,
+    name: "Air (element)",
     type: ItemTypeEnum.Rune,
     data: {
+      rune: "Air",
       chance: 0,
       experience: false,
       description: "Se RQG p.xx",
@@ -77,9 +78,10 @@ const elementalRunes: ItemData<RuneData>[] = [
     img: "systems/rqg/assets/icons/runes/air.svg",
   },
   {
-    name: RuneEnum.Moon,
+    name: "Moon (element)",
     type: ItemTypeEnum.Rune,
     data: {
+      rune: "Moon",
       chance: 0,
       experience: false,
       description: "Se RQG p.xx",

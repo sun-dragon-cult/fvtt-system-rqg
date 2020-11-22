@@ -69,7 +69,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power] = {
       ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce(
         (acc, item: RqgItem) => {
-          acc[item.name] = item;
+          acc[item.data.data.rune] = item;
           return acc;
         },
         []
@@ -80,7 +80,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form] = {
       ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce(
         (acc, item: RqgItem) => {
-          acc[item.name] = item;
+          acc[item.data.data.rune] = item;
           return acc;
         },
         []

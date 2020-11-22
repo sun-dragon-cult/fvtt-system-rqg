@@ -3,11 +3,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import {
-  RuneData,
-  RuneEnum,
-  RuneTypeEnum,
-} from "../../data-model/item-data/runeData";
+import { RuneData, RuneTypeEnum } from "../../data-model/item-data/runeData";
 
 export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -22,8 +18,25 @@ export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: RuneData = sheetData.item.data;
-    data.runes = Object.values(RuneEnum);
+    // TODO load available runes from compendium?
+    data.runes = Object.values([
+      "Man (form)",
+      "Beast (form)",
+      "Magic (condition)",
+      "Combine (technique)",
+      "Moon (element)",
+    ]);
     data.runeTypes = Object.values(RuneTypeEnum);
     return sheetData;
+  }
+
+  protected _updateObject(
+    event: Event | JQuery.Event,
+    formData: any
+  ): Promise<any> {
+    formData[
+      "name"
+    ] = `${formData["data.rune"]} (${formData["data.runeType"]})`;
+    return super._updateObject(event, formData);
   }
 }

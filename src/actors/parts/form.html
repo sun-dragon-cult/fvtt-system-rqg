@@ -1,27 +1,27 @@
 <div class="power norse">
   <h2>Form</h2>
   <span>
-    {{#with data.ownedItems.rune.form.man}}
+    {{#with data.ownedItems.rune.form.Man}}
       <span data-item-id="{{_id}}">
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{name}}</a>
+        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
       </span>
     {{/with}}
     –
-    {{#with data.ownedItems.rune.form.beast}}
+    {{#with data.ownedItems.rune.form.Beast}}
       <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
         <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
       </span>
     {{/with}}
   </span>
   {{#each data.ownedItems.rune.form}}
-  {{#unless (eq @key "man")}}
-  {{#unless (eq @key "beast")}}
+  {{#unless (eq @key "Man")}}
+  {{#unless (eq @key "Beast")}}
     {{#with this}}
     <span data-item-id="{{_id}}">
-      <a data-item-edit class="powerline">{{name}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
-      <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
+      <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
+      <input type="checkbox" data-item-experience {{checked data.data.experience}}>
     </span>
     {{/with}}
   {{/unless}}

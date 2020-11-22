@@ -5,7 +5,7 @@ import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RuneMagicData } from "../../data-model/item-data/runeMagicData";
 import { CultData } from "../../data-model/item-data/cultData";
-import { RuneData, RuneEnum } from "../../data-model/item-data/runeData";
+import { RuneData } from "../../data-model/item-data/runeData";
 
 export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -22,7 +22,14 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: RuneMagicData = sheetData.item.data;
     data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
-    data.allRunes = Object.values(RuneEnum).concat("" as RuneEnum);
+    // TODO Load all runes from a compendium
+    data.allRunes = [
+      "Man (form)",
+      "Beast (form)",
+      "Magic (condition)",
+      "Combine (technique)",
+      "Moon (element)",
+    ].concat("");
     if (this.actor) {
       data.cultIds = this.actor
         .getEmbeddedCollection("OwnedItem")
@@ -35,8 +42,8 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
         .filter(
           (i: ItemData<RuneData>) =>
             i.type === ItemTypeEnum.Rune &&
-            (data.runes.includes(RuneEnum.Magic) ||
-              data.runes.includes(i.name as RuneEnum))
+            (data.runes.includes("Magic (condition)") ||
+              data.runes.includes(i.name))
         )
         .map((r: ItemData<RuneData>) => r.data.chance);
       data.chance = Math.max(...runeChances);

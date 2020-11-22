@@ -1,9 +1,7 @@
-import { RuneEnum } from "./runeData";
-
 export type RuneMagicData = {
   description: string;
   cultId: string; // The cult from where to draw rune points
-  runes: Array<RuneEnum>;
+  runes: Array<string>; // Rune names like "Man (form)"
   points: number; // Learned strength
   isStackable: boolean; // Can the caster decide the number of rune points used
   castingRange: number; // meter - default 160
@@ -11,7 +9,7 @@ export type RuneMagicData = {
   chance: number; // Derived from runes, but has to be persisted?
   // --- Derived / Convenience Data Below ---
   cultIds?: Array<string>; // For select on sheet
-  allRunes?: Array<RuneEnum>; // For select on sheet
+  allRunes?: Array<string>; // For select on sheet
 };
 
 export const emptyRuneMagic: RuneMagicData = {
