@@ -89,11 +89,7 @@ table.health {
   width: auto;
 }
 
-.power {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-
+.power, .elemental, .condition, .form {
   img {
     height: 20px;
     border: none;
@@ -113,20 +109,16 @@ table.health {
     grid-gap: 2rem;
     grid-template-columns: 1fr 1fr 1fr;
   }
-
-  img {
-    height: 20px;
-    border: none;
-    position: relative;
-    top: 5px;
-  }
 }
-.power {
+.power, .form {
   align-items: center;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 
   .powerline, .powerline * {
     margin: 0 4px;
-}
+  }
 
   span {
     display: flex;
