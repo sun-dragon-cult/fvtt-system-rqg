@@ -8,26 +8,33 @@
     />
     <h1 class="name prop"></h1>
 
+    <input type="text" name="data.rune" value="{{item.data.rune}}"/>
     <select name="data.runeType">
       {{#select item.data.runeType}} {{#each data.runeTypes}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
-
-    <select name="name">
-      {{#select item.name}} {{#each data.runes}}
-        <option value="{{this}}">{{this}}</option>
-      {{/each}} {{/select}}
-    </select>
-    <input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}"/>
-    <input type="checkbox" name="data.experience" {{checked data.experience}} />
+    <label><input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}"/>%</label>
+    <label><input type="checkbox" name="data.experience" {{checked data.experience}} />Exp</label>
   </header>
   <section class="sheet-body">
     <div class="wide-section">
-      <label>Mastered (Sorcery)<input type="checkbox" name="data.isMastered" {{checked data.isMastered}} /></label><br>
+      <label>Opposing Rune <input type="text" name="data.opposingRune" value="{{item.data.opposingRune}}" list="allRunes"/></label>
+      <div>Minor Runes<br>
+      {{#each item.data.minorRunes}}
+        <span>{{this}} </span>
+      {{/each}}
+      </div>
+      <label><input type="checkbox" name="data.isMastered" {{checked data.isMastered}}>Mastered (Sorcery)</label><br>
       <label>Description
         {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
       </label>
     </div>
   </section>
+  <datalist id="allRunes">
+    {{#each data.allRunes}}
+    <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+  {{json data}}
 </form>

@@ -1,36 +1,31 @@
-<div class="power norse">
-  <h2>Techniques</h2>
-  {{#each data.ownedItems.rune.technique}} {{#with this}}
-    <span data-item-id="{{_id}}">
-          {{runeType}} <a data-item-edit class="powerline">{{name}}<img src="{{img}}"/></a>
-      </span>
-  {{/with}} {{/each}}
-
-  <h2>Mastered Runes</h2>
-  <div class="flex-row">
-    {{#each data.ownedItems.rune.element}}
-      {{#if data.data.isMastered}}
-        <span data-item-id="{{_id}}">
-            {{data.data.runeType}} <a data-item-edit class="powerline">{{name}}<img src="{{img}}"/></a>
-        </span>
-      {{/if}}
+<div class="power norse flex-row">
+  <div>
+    <h2>Techniques</h2>
+    {{#each data.ownedItems.rune.technique}}
+      <a data-item-id="{{_id}}" data-item-edit class="powerline"><img src="{{img}}"> {{name}}</a>
     {{/each}}
-
-    {{#each data.ownedItems.rune.power}}
+  </div>
+  <div>&nbsp;</div>
+  <div>
+    <h2>Mastered Runes</h2>
+    <div>
+      {{#each data.ownedItems.rune.element}}
       {{#if data.data.isMastered}}
-      <span data-item-id="{{_id}}">
-            {{data.data.runeType}} <a data-item-edit class="powerline">{{name}}<img src="{{img}}"/></a>
-        </span>
+        <a data-item-id="{{_id}}" data-item-edit class="powerline"><img src="{{img}}"> {{name}}</a>
       {{/if}}
-    {{/each}}
+      {{/each}}
 
-
-    {{#each data.ownedItems.rune.form}}
+      {{#each data.ownedItems.rune.power}}
       {{#if data.data.isMastered}}
-      <span data-item-id="{{_id}}">
-            {{data.data.runeType}} <a data-item-edit class="powerline">{{name}}<img src="{{img}}"/></a>
-        </span>
+        <a data-item-id="{{_id}}" data-item-edit class="powerline"><img src="{{img}}"> {{name}}</a>
       {{/if}}
-    {{/each}}
+      {{/each}}
+
+      {{#each data.ownedItems.rune.form}}
+      {{#if data.data.isMastered}}
+        <a data-item-id="{{_id}}" data-item-edit class="powerline"><img src="{{img}}"> {{name}}</a>
+      {{/if}}
+      {{/each}}
+    </div>
   </div>
 </div>

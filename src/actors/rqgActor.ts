@@ -1,8 +1,6 @@
 import { humanoid, RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
-import elementalRunes from "../assets/default-items/elementalRunes";
-import powerFormRunes from "../assets/default-items/powerFormRunes";
 import hitLocations from "../assets/default-items/hitLocations";
 import characterSkills from "../assets/default-items/characterSkills";
 import { RqgActorSheet } from "./rqgActorSheet";
@@ -21,8 +19,36 @@ export class RqgActor extends Actor<RqgActorData> {
         const humanoidHitLocations = hitLocations.filter((h) =>
           humanoid.hitLocations.toString().includes(h.name)
         );
-        const actorItemsData = (elementalRunes as ItemData[]).concat(
-          powerFormRunes,
+        const runeCompendium = game.settings.get("rqg", "runesCompendium");
+        const runesPack = game.packs.get(runeCompendium);
+        const runeIndex = await runesPack.getIndex();
+        // TODO Rethink this...
+        const defaultRuneNames = [
+          "Fire (element)",
+          "Darkness (element)",
+          "Water (element)",
+          "Earth (element)",
+          "Air (element)",
+          "Moon (element)",
+          "Man (form)",
+          "Beast (form)",
+          "Fertility (power)",
+          "Death (power)",
+          "Harmony (power)",
+          "Disorder (power)",
+          "Truth (power)",
+          "Illusion (power)",
+          "Stasis (power)",
+          "Movement (power)",
+        ];
+        const defaultRunes = await Promise.all(
+          defaultRuneNames.map(async (name) => {
+            return await runesPack.getEntity(
+              runeIndex.find((rune) => rune.name === name)._id
+            );
+          })
+        );
+        const actorItemsData = (defaultRunes as ItemData[]).concat(
           humanoidHitLocations,
           characterSkills,
           humanoid.naturalWeapons.skills

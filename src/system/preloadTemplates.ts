@@ -17,6 +17,7 @@ export const preloadTemplates = async function () {
     "systems/rqg/actors/parts/elemental.html",
     "systems/rqg/actors/parts/power.html",
     "systems/rqg/actors/parts/form.html",
+    "systems/rqg/actors/parts/condition.html",
 
     "systems/rqg/items/passion-item/passionSheet.html",
     "systems/rqg/items/skill-item/skillSheet.html",

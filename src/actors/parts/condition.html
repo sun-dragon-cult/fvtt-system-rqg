@@ -1,6 +1,7 @@
-<div class="elemental norse">
-  <h2>Elemental</h2>
-  {{#each data.ownedItems.rune.element}}
+{{#if data.ownedItems.rune.condition}}
+<div class="condition norse">
+  <h2>Condition</h2>
+  {{#each data.ownedItems.rune.condition}}
   <span class="grid-row nowrap" data-item-id="{{this._id}}">
       <a data-item-edit><img src="{{img}}" /> {{data.data.rune}}</a>
       <a data-item-roll>{{this.data.data.chance}}%</a>
@@ -8,3 +9,4 @@
     </span>
   {{/each}}
 </div>
+{{/if}}
