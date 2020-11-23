@@ -22,14 +22,7 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: RuneMagicData = sheetData.item.data;
     data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
-    // TODO Load all runes from a compendium
-    data.allRunes = [
-      "Man (form)",
-      "Beast (form)",
-      "Magic (condition)",
-      "Combine (technique)",
-      "Moon (element)",
-    ].concat("");
+    data.allRunes = game.settings.get("rqg", "runes");
     if (this.actor) {
       data.cultIds = this.actor
         .getEmbeddedCollection("OwnedItem")

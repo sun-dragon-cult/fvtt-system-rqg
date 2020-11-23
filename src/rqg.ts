@@ -25,6 +25,17 @@ Hooks.once("init", async () => {
   registerRqgSystemSettings();
   handlebarSettings();
   await preloadTemplates();
+});
+
+Hooks.once("ready", async function () {
+  const runeCompendium = game.settings.get("rqg", "runesCompendium");
+  // Store runes in settings to avoid await on ItemSheet getData
+  try {
+    const runesIndex = await game.packs.get(runeCompendium).getIndex();
+    await game.settings.set("rqg", "runes", runesIndex);
+  } catch (err) {
+    await game.settings.set("rqg", "runes", []);
+  }
 
   if (game.modules.get("about-time")?.active) {
     game.Gametime.DTC.createFromData(game.Gametime.calendars.Glorantha);

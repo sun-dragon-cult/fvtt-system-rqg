@@ -18,14 +18,9 @@ export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: RuneData = sheetData.item.data;
-    // TODO load available runes from compendium?
-    data.runes = Object.values([
-      "Man (form)",
-      "Beast (form)",
-      "Magic (condition)",
-      "Combine (technique)",
-      "Moon (element)",
-    ]);
+    const allRunesIndex = game.settings.get("rqg", "runes");
+    data.allRunes =
+      allRunesIndex !== {} ? allRunesIndex.map((r) => r.name) : [];
     data.runeTypes = Object.values(RuneTypeEnum);
     return sheetData;
   }

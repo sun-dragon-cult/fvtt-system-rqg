@@ -8,4 +8,20 @@ export const registerRqgSystemSettings = function () {
     type: Boolean,
     default: false,
   });
+
+  game.settings.register("rqg", "runesCompendium", {
+    name: "Name of compendium with rune items",
+    hint: "The runes in the specified compendium will be used in the system.",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "rqg-compendiums.runes",
+  });
+
+  game.settings.register("rqg", "runes", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {},
+  });
 };
