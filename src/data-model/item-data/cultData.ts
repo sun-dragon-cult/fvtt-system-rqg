@@ -13,6 +13,7 @@ export enum CultRankEnum {
 export type CultData = {
   rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
   runePoints: Resource;
+  tagline: string;
   holyDays: string;
   runes: Array<string>;
   // cultSkills: Array<string>; // TODO Link to system wide id...
@@ -31,6 +32,7 @@ export type CultData = {
 export const emptyCult: CultData = {
   rank: CultRankEnum.LayMember,
   runePoints: emptyResource,
+  tagline: "",
   holyDays: "",
   runes: [],
   subCults: "",

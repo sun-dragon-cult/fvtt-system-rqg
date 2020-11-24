@@ -2,16 +2,16 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
     <input type="text" name="name" value="{{item.name}}" />
-    <label>Enc <input type="number" min="0" max="99" data-dtype="Number" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
+    <label>Enc <input type="number" min="0" max="99" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
     <label>Equipped <input type="checkbox" name="data.isEquipped" {{checked data.isEquipped}} /></label><br>
   </header>
   <main>
     <label>HitLocations<br><input type="text" name="data.hitLocationsCSV" value="{{item.data.hitLocationsCSV}}"/></label><br>
-    <label>Absorbs<br><input type="number" min="0" max="99" data-dtype="Number" name="data.absorbs" value="{{item.data.absorbs}}"></label><br>
+    <label>Absorbs<br><input type="number" min="0" max="99" name="data.absorbs" value="{{item.data.absorbs}}"></label><br>
     <label>Material<br><input type="text" name="data.material" value="{{item.data.material}}"></label><br>
-    <label>Move Quietly Penalty<br><input type="number" min="0" max="99" data-dtype="Number" name="data.moveQuietlyPenalty"
+    <label>Move Quietly Penalty<br><input type="number" min="0" max="99" name="data.moveQuietlyPenalty"
                                        value="{{item.data.moveQuietlyPenalty}}"></label><br>
-    <label>Fits size<br><input type="number" min="1" max="99" data-dtype="Number" name="data.size" value="{{item.data.size}}"></label><br>
+    <label>Fits size<br><input type="number" min="1" max="99" name="data.size" value="{{item.data.size}}"></label><br>
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>

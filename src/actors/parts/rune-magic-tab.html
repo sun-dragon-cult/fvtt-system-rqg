@@ -12,18 +12,26 @@
 {{#each data.ownedItems.cult}}
 <div data-item-id="{{this._id}}">
   <h2 class="flex-row">
-    <span>{{name}}
+
+    <a title="Edit Item" data-item-edit>
+      <i class="small-size fas fa-edit"></i>
+      {{name}}
       {{#each data.data.runes}}
         <img class="rune" src="{{runeImg this}}" title="{{this}}">
       {{/each}}
-    </span>
-    <span class="text-right"><a title="Leave Cult" data-item-delete><i class="fas fa-trash"></i></a></span>
+    </a>
+    <span class="small-size">{{data.data.tagline}}</span>
+    <span class="small-size text-right"><a title="Leave Cult" data-item-delete><i class="fas fa-trash"></i></a></span>
   </h2>
   <div class="flex-row">
-    <span><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{data.data.rank}}</span>
-    <span><b>Rune Points:</b><br> {{data.data.runePoints.value}}/{{data.data.runePoints.max}}</span>
-    <span><b>Holy Days:</b>{{{data.data.holyDays}}}</span>
-    <span><b>Sub Cults:</b>{{{data.data.subCults}}}</span>
+    <span>
+      <b>Rank:</b> {{data.data.rank}}<br>
+      <b>Rune Points:</b> {{data.data.runePoints.value}}/{{data.data.runePoints.max}}
+    </span>
+    <span>{{{data.data.holyDays}}}</span>
+    {{#if data.data.subCults}}
+      <span><b>Sub Cults:</b>{{{data.data.subCults}}}</span>
+    {{/if}}
   </div>
   <div class="runespells">
     <table>

@@ -2,8 +2,8 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
     <input type="text" name="name" value="{{item.name}}" />
-    <label>Quantity <input type="number" min="0" max="9999999" data-dtype="Number" name="data.quantity" value="{{item.data.quantity}}"></label>
-    <label>Enc <input type="number" min="0" max="99" data-dtype="Number" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
+    <label>Quantity <input type="number" min="0" max="9999999" name="data.quantity" value="{{item.data.quantity}}"></label>
+    <label>Enc <input type="number" min="0" max="99" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
     <label>Equipped <input type="checkbox" name="data.isEquipped" {{checked data.isEquipped}} /></label><br>
   </header>
   <main>
