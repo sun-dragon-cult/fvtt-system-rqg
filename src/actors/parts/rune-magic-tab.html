@@ -12,7 +12,11 @@
 {{#each data.ownedItems.cult}}
 <div data-item-id="{{this._id}}">
   <h2 class="flex-row">
-    <span>{{name}}</span>
+    <span>{{name}}
+      {{#each data.data.runes}}
+        <img class="rune" src="{{runeImg this}}" title="{{this}}">
+      {{/each}}
+    </span>
     <span class="text-right"><a title="Leave Cult" data-item-delete><i class="fas fa-trash"></i></a></span>
   </h2>
   <div class="flex-row">
@@ -35,7 +39,11 @@
       {{#each @root.data.ownedItems.runeMagic}}
       {{#if (eq ../id data.data.cultId)}}
       <tr data-item-id="{{this._id}}">
-        <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}</td>
+        <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}
+          {{#each data.data.runes}}
+          <img class="rune" src="{{runeImg this}}" title="{{this}}">
+          {{/each}}
+        </td>
         <td class="text-left">{{data.data.points}}</td>
         <td>{{{data.data.isStackable}}}</td>
         <td>{{{data.data.castingRange}}}</td>

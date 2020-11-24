@@ -9,6 +9,10 @@
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select><br>
+    {{#each data.runes}}
+      <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
+    {{/each}}
+    <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
     <label>Rune Points <input type="number" min="0" max="99" data-dtype="Number" name="data.runePoints.value" value="{{item.data.runePoints.value}}">/<input type="number" min="0" max="99" data-dtype="Number" name="data.runePoints.max" value="{{item.data.runePoints.max}}"></label><br>
     <label>Holy Days {{editor content=data.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
     <label>Sub Cults {{editor content=data.subCults target="data.subCults" button=true owner=owner editable=editable}}</label><br>
@@ -16,4 +20,9 @@
     </label>
     <br>{{json data}}
   </main>
+  <datalist id="allRunes">
+    {{#each data.allRunes}}
+    <option value="{{name}}">{{name}}</option>
+    {{/each}}
+  </datalist>
 </form>

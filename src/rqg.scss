@@ -182,3 +182,17 @@
 .rqg.sheet.missileWeapon {
   @import "src/items/missile-weapon-item/missileWeaponSheet";
 }
+
+.rqg.sheet {
+  &.cult, &.runeMagic {
+    input[name="data.runes"] {
+      width: inherit;
+    }
+  }
+}
+.rqg img.rune {
+  height: 12px;
+  border: none;
+  margin: 2px 0;
+}
+

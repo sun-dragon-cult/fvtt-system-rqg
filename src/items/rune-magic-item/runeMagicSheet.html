@@ -20,9 +20,9 @@
       </select>
     </label><br>
     {{#each data.runes}}
-      <input name="data.runes" type="text" value="{{this}}">
+    <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}
-    <input name="data.runes" type="text" list="allRunes">
+    <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune">
     <div> Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}</div>
   </main>
   {{json data}}

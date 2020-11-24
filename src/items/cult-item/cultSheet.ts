@@ -18,7 +18,23 @@ export class CultSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: CultData = sheetData.item.data;
 
+    data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
+    data.allRunes = game.settings.get("rqg", "runes");
+
     data.ranksEnum = Object.values(CultRankEnum);
     return sheetData;
+  }
+
+  protected _updateObject(
+    event: Event | JQuery.Event,
+    formData: any
+  ): Promise<any> {
+    let runes = formData["data.runes"];
+    runes = Array.isArray(runes) ? runes : [runes];
+    runes = runes.filter((r) => r); // Remove empty
+    formData["data.chance"] = parseInt(formData["data.chance"]);
+
+    formData["data.runes"] = duplicate(runes);
+    return super._updateObject(event, formData);
   }
 }

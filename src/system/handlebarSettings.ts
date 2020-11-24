@@ -22,6 +22,11 @@ export const handlebarSettings = function () {
     return item ? item.data.data.quantity : "---";
   });
 
+  Handlebars.registerHelper("runeImg", (runeName) => {
+    const allRunesIndex = game.settings.get("rqg", "runes");
+    return allRunesIndex.find((r) => r.name === runeName)?.img;
+  });
+
   Handlebars.registerHelper("checkedexperience", (itemId, actorId) => {
     const actor = game.actors.find((a) => a._id === actorId);
     const item = actor.items.get(itemId);

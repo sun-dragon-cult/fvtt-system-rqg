@@ -30,13 +30,17 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
       if (data.cultIds.length === 1) {
         data.cultId = data.cultIds[0];
       }
+      const cultRunes = data.cultId
+        ? this.actor.getOwnedItem(data.cultId).data.data.runes
+        : [];
       const runeChances = this.actor
         .getEmbeddedCollection("OwnedItem")
         .filter(
           (i: ItemData<RuneData>) =>
             i.type === ItemTypeEnum.Rune &&
-            (data.runes.includes("Magic (condition)") ||
-              data.runes.includes(i.name))
+            (data.runes.includes(i.name) ||
+              (data.runes.includes("Magic (condition)") &&
+                cultRunes.includes(i.name)))
         )
         .map((r: ItemData<RuneData>) => r.data.chance);
       data.chance = Math.max(...runeChances);

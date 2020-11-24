@@ -14,6 +14,7 @@ export type CultData = {
   rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
   runePoints: Resource;
   holyDays: string;
+  runes: Array<string>;
   // cultSkills: Array<string>; // TODO Link to system wide id...
   // favouredPassions: Array<string>; // TODO Link to system wide id...
   // cultSpiritMagic: Array<string>; // TODO Link to system wide id...
@@ -24,12 +25,14 @@ export type CultData = {
   description: string; // Runes,
   // --- Derived / Convenience Data Below ---
   ranksEnum?: Array<CultRankEnum>; // For sheet dropdown
+  allRunes?: Array<string>; // For sheet dropdown
 };
 
 export const emptyCult: CultData = {
   rank: CultRankEnum.LayMember,
   runePoints: emptyResource,
   holyDays: "",
+  runes: [],
   subCults: "",
   description: "",
 };
