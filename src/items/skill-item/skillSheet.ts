@@ -24,4 +24,15 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     data.isGM = this.actor ? !this.actor.isPC : true; // TODO isPC is deprecated use getOwners (coming in 0.7.6)
     return sheetData;
   }
+
+  protected _updateObject(
+    event: Event | JQuery.Event,
+    formData: any
+  ): Promise<any> {
+    const specialization = formData["data.specialization"]
+      ? ` (${formData["data.specialization"]})`
+      : "";
+    formData["name"] = formData["data.skillName"] + specialization;
+    return super._updateObject(event, formData);
+  }
 }

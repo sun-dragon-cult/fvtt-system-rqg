@@ -17,6 +17,8 @@ export enum SkillCategoryEnum {
 
 export type SkillData = IAbility & {
   category: SkillCategoryEnum;
+  skillName: string;
+  specialization: string;
   baseChance: number;
   learnedChance: number;
   // --- Derived / Convenience Data Below ---
@@ -28,6 +30,8 @@ export type SkillData = IAbility & {
 
 export const emptySkill: SkillData = {
   category: SkillCategoryEnum.Agility,
+  skillName: "",
+  specialization: "",
   baseChance: 0,
   learnedChance: 0,
   experience: false,

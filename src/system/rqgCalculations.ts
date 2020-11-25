@@ -29,6 +29,8 @@ export const humanoid = {
         flags: {},
         data: {
           category: SkillCategoryEnum.NaturalWeapons,
+          skillName: "Fist",
+          specialization: "",
           baseChance: 25,
           learnedChance: 0,
           experience: false,
@@ -41,6 +43,8 @@ export const humanoid = {
         flags: {},
         data: {
           category: SkillCategoryEnum.NaturalWeapons,
+          skillName: "Grapple",
+          specialization: "",
           baseChance: 25,
           learnedChance: 0,
           experience: false,
@@ -53,6 +57,8 @@ export const humanoid = {
         flags: {},
         data: {
           category: SkillCategoryEnum.NaturalWeapons,
+          skillName: "Kick",
+          specialization: "",
           baseChance: 15,
           learnedChance: 0,
           experience: false,
