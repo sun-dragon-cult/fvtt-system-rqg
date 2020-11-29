@@ -24,11 +24,11 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
     data.allRunes = game.settings.get("rqg", "runes");
     if (this.actor) {
-      data.cultIds = this.actor
+      data.actorCults = this.actor
         .getEmbeddedCollection("OwnedItem")
         .filter((i: ItemData<CultData>) => i.type === ItemTypeEnum.Cult);
-      if (data.cultIds.length === 1) {
-        data.cultId = data.cultIds[0];
+      if (data.actorCults.length === 1) {
+        data.cultId = data.actorCults[0]._id;
       }
       const cultRunes = data.cultId
         ? this.actor.getOwnedItem(data.cultId).data.data.runes

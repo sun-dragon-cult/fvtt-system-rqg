@@ -1,11 +1,5 @@
-import {
-  SkillCategoryEnum,
-  SkillData,
-} from "../data-model/item-data/skillData";
-import {
-  HomeLandEnum,
-  OccupationEnum,
-} from "../data-model/actor-data/background";
+import { SkillCategoryEnum, SkillData } from "../data-model/item-data/skillData";
+import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
@@ -67,43 +61,35 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
     // Organise powerRunes as { fertility: RqgItem, death: RqgItem, ... }
     data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power] = {
-      ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce(
-        (acc, item: RqgItem) => {
-          acc[item.data.data.rune] = item;
-          return acc;
-        },
-        []
-      ),
+      ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce((acc, item: RqgItem) => {
+        acc[item.data.data.rune] = item;
+        return acc;
+      }, []),
     };
 
     // Organise formRunes as { man: RqgItem, beast: RqgItem, ... }
     data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form] = {
-      ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce(
-        (acc, item: RqgItem) => {
-          acc[item.data.data.rune] = item;
-          return acc;
-        },
-        []
-      ),
+      ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce((acc, item: RqgItem) => {
+        acc[item.data.data.rune] = item;
+        return acc;
+      }, []),
     };
 
     // Sort the hit locations
     data.ownedItems[ItemTypeEnum.HitLocation].sort(
-      (a: ItemData<HitLocationData>, b: ItemData<HitLocationData>) =>
-        b.data.dieFrom - a.data.dieFrom
+      (a: RqgItem<HitLocationData>, b: RqgItem<HitLocationData>) =>
+        b.data.data.dieFrom - a.data.data.dieFrom
     );
 
-    data.spiritCombatSkill = data.ownedItems[ItemTypeEnum.Skill][
-      SkillCategoryEnum.Magic
-    ].find((s) => s.data.name === "Spirit Combat");
-    data.dodgeSkill = data.ownedItems[ItemTypeEnum.Skill][
-      SkillCategoryEnum.Agility
-    ].find((s) => s.data.name === "Dodge");
+    data.spiritCombatSkill = data.ownedItems[ItemTypeEnum.Skill][SkillCategoryEnum.Magic].find(
+      (s) => s.data.name === "Spirit Combat"
+    );
+    data.dodgeSkill = data.ownedItems[ItemTypeEnum.Skill][SkillCategoryEnum.Agility].find(
+      (s) => s.data.name === "Dodge"
+    );
 
     data.powCrystals = data.effects
-      .filter((e) =>
-        e.changes.find((e) => e.key === "data.attributes.magicPoints.max")
-      )
+      .filter((e) => e.changes.find((e) => e.key === "data.attributes.magicPoints.max"))
       .map((e) => {
         return {
           name: e.label,
@@ -124,8 +110,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
     // Roll against Item Ability Chance
     this.form.querySelectorAll("[data-item-roll]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = this.actor.items.get(itemId);
       el.addEventListener("click", () => {
         const result = Ability.rollAgainst(item.data.data.chance, 0, item.name);
@@ -135,13 +120,9 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     // Melee Weapon roll
     this.form.querySelectorAll("[data-melee-roll]").forEach((el) => {
       const attackType = (el as HTMLElement).dataset.meleeRoll;
-      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
-      const weaponItem: Item<MeleeWeaponData> = this.actor.items.get(
-        weaponItemId
-      );
-      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .skillId;
+      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      const weaponItem: Item<MeleeWeaponData> = this.actor.items.get(weaponItemId);
+      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset.skillId;
       const skillItem: Item<SkillData> = this.actor.items.get(skillId);
       el.addEventListener("click", async () => {
         const result = Ability.rollAgainst(
@@ -166,13 +147,9 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     // Missile Weapon roll
     this.form.querySelectorAll("[data-missile-roll]").forEach((el) => {
       const attackType = (el as HTMLElement).dataset.missileRoll;
-      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
-      const weaponItem: Item<MissileWeaponData> = this.actor.items.get(
-        weaponItemId
-      );
-      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .skillId;
+      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      const weaponItem: Item<MissileWeaponData> = this.actor.items.get(weaponItemId);
+      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset.skillId;
       const skillItem: Item<SkillData> = this.actor.items.get(skillId);
       const projectileItem = weaponItem.data.data.isProjectileWeapon
         ? this.actor.items.get(weaponItem.data.data.projectileId)
@@ -212,100 +189,72 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
     // Edit Item (open the item sheet)
     this.form.querySelectorAll("[data-item-edit]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
-      el.addEventListener("click", () =>
-        this.actor.getOwnedItem(itemId).sheet.render(true)
-      );
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      el.addEventListener("click", () => this.actor.getOwnedItem(itemId).sheet.render(true));
     });
 
     // Delete Item (remove item from actor)
     this.form.querySelectorAll("[data-item-delete]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
-      el.addEventListener("click", () =>
-        RqgActorSheet.confirmItemDelete(this.actor, itemId)
-      );
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
     // Add Item (create owned item)
     this.form.querySelectorAll("[data-item-add]").forEach((el) => {
-      const itemType = (el.closest("[data-item-type]") as HTMLElement).dataset
-        .itemType;
+      const itemType = (el.closest("[data-item-type]") as HTMLElement).dataset.itemType;
       el.addEventListener("click", () => {
         // Create item and render sheet afterwards
-        this.actor
-          .createOwnedItem({ name: "Newone", type: itemType })
-          .then((item) => {
-            // We have to reload the item for it to have a sheet
-            const createdItem = this.actor.getOwnedItem(item._id);
-            createdItem.sheet.render(true);
-          });
+        this.actor.createOwnedItem({ name: "Newone", type: itemType }).then((item) => {
+          // We have to reload the item for it to have a sheet
+          const createdItem = this.actor.getOwnedItem(item._id);
+          createdItem.sheet.render(true);
+        });
       });
     });
 
     // Equip a physical Item
     this.form.querySelectorAll("[data-item-equip]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("click", async () => {
         const item = this.actor.getOwnedItem(itemId);
-        await item.update(
-          { "data.isEquipped": !item.data.data.isEquipped },
-          {}
-        );
+        await item.update({ "data.isEquipped": !item.data.data.isEquipped }, {});
       });
     });
 
     // Toggle experience flag
     this.form.querySelectorAll("[data-item-experience]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("click", async () => {
         const item = this.actor.getOwnedItem(itemId);
-        await item.update(
-          { "data.experience": !item.data.data.experience },
-          {}
-        );
+        await item.update({ "data.experience": !item.data.data.experience }, {});
       });
     });
 
     // Edit item value
     this.form.querySelectorAll("[data-item-edit-value]").forEach((el) => {
       const path = (el as HTMLElement).dataset.itemEditValue;
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("change", async (event) => {
         const item = this.actor.getOwnedItem(itemId);
-        await item.update(
-          { [path]: (event.target as HTMLInputElement).value },
-          {}
-        );
+        await item.update({ [path]: (event.target as HTMLInputElement).value }, {});
       });
     });
 
     // Add wound to hit location TODO move listener to hitlocation
     this.form.querySelectorAll("[data-item-add-wound]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
-      el.addEventListener("click", () =>
-        HitLocationSheet.addWound(this.actor, itemId)
-      );
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      el.addEventListener("click", () => HitLocationSheet.addWound(this.actor, itemId));
     });
 
     // Edit wounds to hit location TODO move listener to hitlocation
     this.form.querySelectorAll("[data-item-edit-wounds]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
-      el.addEventListener("click", () =>
-        HitLocationSheet.editWounds(this.actor, itemId)
-      );
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      el.addEventListener("click", () => HitLocationSheet.editWounds(this.actor, itemId));
     });
 
     // Edit Actor Active Effect
     this.form.querySelectorAll("[data-actor-effect-edit]").forEach((el) => {
-      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset
-        .effectId;
+      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
       el.addEventListener("click", () =>
         new ActiveEffectConfig(this.actor.effects.get(effectId)).render(true)
       );

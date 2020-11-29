@@ -8,7 +8,7 @@ export type RuneMagicData = {
   duration: number; // seconds - default to 15*60 = 900
   chance: number; // Derived from runes, but has to be persisted?
   // --- Derived / Convenience Data Below ---
-  cultIds?: Array<string>; // For select on sheet
+  actorCults?: Array<any>; // For select on sheet
   allRunes?: Array<any>; // For select on sheet {_id: , name:, img: }
 };
 

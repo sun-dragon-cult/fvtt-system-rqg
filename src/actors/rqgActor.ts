@@ -1,72 +1,15 @@
-import { humanoid, RqgCalculations } from "../system/rqgCalculations";
+import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
-import hitLocations from "../assets/default-items/hitLocations";
-import characterSkills from "../assets/default-items/characterSkills";
+import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgItem } from "../items/rqgItem";
 
 export class RqgActor extends Actor<RqgActorData> {
   static init() {
-    CONFIG.Actor.entityClass = RqgActor as typeof Actor;
+    CONFIG.Actor.entityClass = (RqgActor as unknown) as typeof Actor;
 
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("rqg", RqgActorSheet, { makeDefault: true });
-
-    Hooks.on("createActor", async (actor: RqgActor, options: any) => {
-      if (actor.data.type === "character" && options.renderSheet) {
-        // TODO Add support for other races than humanoid - is race even set at this point?
-        const humanoidHitLocations = hitLocations.filter((h) =>
-          humanoid.hitLocations.toString().includes(h.name)
-        );
-        const runeCompendium = game.settings.get("rqg", "runesCompendium");
-        const runesPack = game.packs.get(runeCompendium);
-        const runeIndex = await runesPack.getIndex();
-        // TODO Rethink this...
-        const defaultRuneNames = [
-          "Fire (element)",
-          "Darkness (element)",
-          "Water (element)",
-          "Earth (element)",
-          "Air (element)",
-          "Moon (element)",
-          "Man (form)",
-          "Beast (form)",
-          "Fertility (power)",
-          "Death (power)",
-          "Harmony (power)",
-          "Disorder (power)",
-          "Truth (power)",
-          "Illusion (power)",
-          "Stasis (power)",
-          "Movement (power)",
-        ];
-        const defaultRunes = await Promise.all(
-          defaultRuneNames.map(async (name) => {
-            return await runesPack.getEntity(
-              runeIndex.find((rune) => rune.name === name)._id
-            );
-          })
-        );
-        const actorItemsData = (defaultRunes as ItemData[]).concat(
-          humanoidHitLocations,
-          characterSkills,
-          humanoid.naturalWeapons.skills
-        );
-
-        // createOwnedItem is mistyped - can return array as well
-        const actorItems = ((await actor.createOwnedItem(
-          actorItemsData
-        )) as unknown) as Item[];
-
-        // Connect natural meleeWeapon with corresponding skill
-        const naturalWeapons = humanoid.naturalWeapons.meleeWeapons.map((w) => {
-          w.data.skillId = actorItems.find((s) => s.name === w.name)._id;
-          return w;
-        });
-        await actor.createOwnedItem(naturalWeapons);
-      }
-    });
   }
 
   /**
@@ -148,13 +91,8 @@ export class RqgActor extends Actor<RqgActorData> {
     data.attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
     data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
     data.attributes.healingRate = RqgCalculations.healingRate(con);
-    data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(
-      pow,
-      cha
-    );
-    data.attributes.maximumEncumbrance = Math.round(
-      Math.min(str, (str + con) / 2)
-    );
+    data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
+    data.attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
 
     data.attributes.equippedEncumbrance = this.items.reduce((sum, i) => {
       const enc = i.data.data.isEquipped
@@ -162,18 +100,13 @@ export class RqgActor extends Actor<RqgActorData> {
         : 0;
       return sum + enc;
     }, 0);
-    data.attributes.equippedEncumbrance = Math.round(
-      data.attributes.equippedEncumbrance
-    );
+    data.attributes.equippedEncumbrance = Math.round(data.attributes.equippedEncumbrance);
 
     data.attributes.travelEncumbrance = this.items.reduce(
-      (sum, i) =>
-        sum + (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0),
+      (sum, i) => sum + (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0),
       0
     );
-    data.attributes.travelEncumbrance = Math.round(
-      data.attributes.travelEncumbrance
-    );
+    data.attributes.travelEncumbrance = Math.round(data.attributes.travelEncumbrance);
 
     const movementPenalty = Math.max(
       0,
@@ -201,5 +134,33 @@ export class RqgActor extends Actor<RqgActorData> {
       );
     }
     return await super.create(data, options);
+  }
+  // @ts-ignore
+  async _onCreateEmbeddedEntity(embeddedName, child, options, userId) {
+    if (embeddedName === "OwnedItem") {
+      if (child.type === ItemTypeEnum.MeleeWeapon) {
+        if (!child.data.skillId) {
+          const weaponSkill = this.items.find((i) => i.data.name === child.data.skillName);
+          if (weaponSkill) {
+            child.data.skillId = weaponSkill._id;
+          } else {
+            const weaponSkillsPack = await game.packs.get("rqg-compendiums.weaponSkills"); // TODO  hardcoded
+            const weaponSkillsIndex = await weaponSkillsPack.getIndex();
+            let weaponRef = weaponSkillsIndex.find((e) => e.name === child.data.skillName);
+
+            if (weaponRef) {
+              const weapon = await weaponSkillsPack.getEntry(weaponRef._id);
+              const weaponSkill = await this.createOwnedItem(weapon);
+              child.data.skillId = weaponSkill._id;
+            } else {
+              // If no compendium skill open the item sheet to let the user select skill
+              options.renderSheet = true;
+            }
+          }
+        }
+      }
+    }
+    // @ts-ignore
+    super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
   }
 }

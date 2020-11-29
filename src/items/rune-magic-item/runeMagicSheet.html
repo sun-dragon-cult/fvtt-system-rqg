@@ -14,7 +14,7 @@
     <label>Duration (s) <input type="number" name="data.duration" value="{{item.data.duration}}"></label><br>
     <label class="mp norse">Cult<br>
       <select name="data.cultId">
-        {{#select data.cultId}} {{#each data.cultIds}}
+        {{#select data.cultId}} {{#each data.actorCults}}
         <option value="{{this._id}}">{{this.name}}</option>
         {{/each}} {{/select}}
       </select>

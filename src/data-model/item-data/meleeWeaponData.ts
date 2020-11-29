@@ -14,7 +14,8 @@ export enum CombatManeuver {
 }
 
 export type MeleeWeaponData = IPhysicalItem & {
-  skillId: string; // id of skillItem
+  skillId: string; // id of the corresponding skill
+  skillName: string; // Name of the corresponding skill (for use with unembedded items)
   damage: string; // Formula
   combatManeuvers: Array<CombatManeuver>;
   minStrength: number;
@@ -33,7 +34,8 @@ export type MeleeWeaponData = IPhysicalItem & {
 export const emptyMeleeWeapon: MeleeWeaponData = {
   description: "",
   skillId: "",
-  damage: "1d3",
+  skillName: "",
+  damage: "1D3",
   combatManeuvers: [CombatManeuver.Knockback, CombatManeuver.Parry],
   minStrength: 0,
   minDexterity: 0,

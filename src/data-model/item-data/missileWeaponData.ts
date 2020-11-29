@@ -29,7 +29,7 @@ export type MissileWeaponData = IPhysicalItem & {
 export const emptyMissileWeapon: MissileWeaponData = {
   description: "",
   skillId: "",
-  damage: "1d3",
+  damage: "1D3",
   combatManeuvers: [CombatManeuver.Knockback, CombatManeuver.Parry],
   minStrength: 0,
   minDexterity: 0,

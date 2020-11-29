@@ -25,7 +25,7 @@ export class Ability implements IAbility {
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     flavor: string // TODO Rename to ability?
   ): ResultEnum {
-    const r = new Roll("1d100");
+    const r = new Roll("1D100");
     r.roll();
     const modifiedChance: number = chance + chanceMod;
     const result = Ability.evaluateResult(modifiedChance, r.total);
