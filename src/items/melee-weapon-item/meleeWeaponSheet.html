@@ -7,15 +7,24 @@
   </header>
   <main>
     {{#if data.meleeWeaponSkills}}
-    <label class="mp norse">Skill<br>
-      <select name="data.skillId">
-        {{#select data.skillId}} {{#each data.meleeWeaponSkills}}
-        <option value="{{this._id}}">{{this.name}}</option>
+      <label class="mp norse">Skill<br>
+        <select name="data.skillId">
+          {{#select data.skillId}} {{#each data.meleeWeaponSkills}}
+          <option value="{{this._id}}">{{this.name}}</option>
+          {{/each}} {{/select}}
+        </select>
+      </label>
+    {{else}}
+      <select name="data.skillSourceCompendium">
+        {{#select data.skillSourceCompendium}} {{#each data.allCompendiums}}
+        <option value="{{this}}">{{this}}</option>
         {{/each}} {{/select}}
       </select>
-    </label>
-    {{else}}
-    <label>Skill name <input type="text" name="data.skillName" value="{{item.data.skillName}}"></label><br>
+      <select name="data.selectedCompendiumEntryId">
+        {{#select data.selectedCompendiumEntryId}} {{#each data.compendiumEntries}}
+        <option value="{{_id}}">{{name}}</option>
+        {{/each}} {{/select}}
+      </select>
     {{/if}}
     <label>Damage <input name="data.damage" value="{{item.data.damage}}"></label>
     <label>Min STR <input type="number" min="0" max="99" name="data.minStrength" value="{{item.data.minStrength}}"></label><br>
@@ -31,6 +40,7 @@
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>
+
     <br>{{json data}}
     <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
   </main>

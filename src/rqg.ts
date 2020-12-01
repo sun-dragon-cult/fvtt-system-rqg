@@ -7,9 +7,7 @@ import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./system/rqgCombat";
 
 Hooks.once("init", async () => {
-  console.log(
-    "RQG | Initializing the Runequest Glorantha (Unofficial) Game System"
-  );
+  console.log("RQG | Initializing the Runequest Glorantha (Unofficial) Game System");
   // CONFIG.debug.hooks = true; // console log when hooks fire
   // @ts-ignore 0.7
   // CONFIG.debug.time = true; // console log time
