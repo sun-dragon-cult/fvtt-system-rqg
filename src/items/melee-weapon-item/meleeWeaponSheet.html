@@ -6,36 +6,36 @@
     <label>Equipped <input type="checkbox" name="data.isEquipped" {{checked data.isEquipped}} /></label>
   </header>
   <main>
-    {{#if data.meleeWeaponSkills}}
-      <label class="mp norse">Skill<br>
-        <select name="data.skillId">
-          {{#select data.skillId}} {{#each data.meleeWeaponSkills}}
-          <option value="{{this._id}}">{{this.name}}</option>
-          {{/each}} {{/select}}
-        </select>
-      </label>
-    {{else}}
-      <select name="data.skillSourceCompendium">
-        {{#select data.skillSourceCompendium}} {{#each data.allCompendiums}}
-        <option value="{{this}}">{{this}}</option>
-        {{/each}} {{/select}}
-      </select>
-      <select name="data.selectedCompendiumEntryId">
-        {{#select data.selectedCompendiumEntryId}} {{#each data.compendiumEntries}}
-        <option value="{{_id}}">{{name}}</option>
-        {{/each}} {{/select}}
-      </select>
-    {{/if}}
-    <label>Damage <input name="data.damage" value="{{item.data.damage}}"></label>
-    <label>Min STR <input type="number" min="0" max="99" name="data.minStrength" value="{{item.data.minStrength}}"></label><br>
-    <label>Min DEX <input type="number" min="0" max="99" name="data.minDexterity" value="{{item.data.minDexterity}}"></label><br>
-    <label>SR <input type="number" min="0" max="99" name="data.strikeRank" value="{{item.data.strikeRank}}"></label><br>
-    <label>Current HP <input type="number" min="0" max="99" name="data.hitPoints.value" value="{{item.data.hitPoints.value}}"></label><br>
-    <label>HP <input type="number" min="0" max="99" name="data.hitPoints.max" value="{{item.data.hitPoints.max}}"></label><br>
-
-    {{#each data.allCombatManeuvers}}
-      <label>{{name}} <input type="checkbox" name="data.allCombatManeuvers.{{name}}.value" {{checked value}}/></label><br>
-    {{/each}}
+    <div class="flex-row">
+      <div>
+        <label class="mp norse">Skill</label><br>
+        {{#if data.isOwned}}
+          <select name="data.skillId">
+            {{#select data.skillId}} {{#each data.meleeWeaponSkills}}
+            <option value="{{this._id}}">{{this.name}}</option>
+            {{/each}} {{/select}}
+          </select>
+        {{else}}
+          {{#if data.skillName}}
+        {{data.skillName}} <i>(Drop some other weapon skill on this weapon to change)</i>
+          {{else}}
+            <i>Drop a weapon skill on this weapon!</i>
+          {{/if}}<br>
+        {{/if}}
+        <label>Damage <input name="data.damage" value="{{item.data.damage}}"></label>
+        <label>Min STR <input type="number" min="0" max="99" name="data.minStrength" value="{{item.data.minStrength}}"></label><br>
+        <label>Min DEX <input type="number" min="0" max="99" name="data.minDexterity" value="{{item.data.minDexterity}}"></label><br>
+        <label>SR <input type="number" min="0" max="99" name="data.strikeRank" value="{{item.data.strikeRank}}"></label><br>
+        <label>Current HP <input type="number" min="0" max="99" name="data.hitPoints.value" value="{{item.data.hitPoints.value}}"></label><br>
+        <label>HP <input type="number" min="0" max="99" name="data.hitPoints.max" value="{{item.data.hitPoints.max}}"></label><br>
+      </div>
+      <div>
+        <h3>Combat Manuevers</h3>
+        {{#each data.allCombatManeuvers}}
+          <label>{{name}} <input type="checkbox" name="data.allCombatManeuvers.{{name}}.value" {{checked value}}/></label><br>
+        {{/each}}
+      </div>
+    </div>
 
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}

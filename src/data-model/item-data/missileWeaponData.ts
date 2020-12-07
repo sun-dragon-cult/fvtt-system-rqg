@@ -6,6 +6,7 @@ import { CombatManeuver } from "./meleeWeaponData";
 
 export type MissileWeaponData = IPhysicalItem & {
   skillId: string; // id of skillItem (for weapon)
+  skillOrigin: string; // the uuid of the required skill Item
   damage: string; // Formula (for weapon)
   combatManeuvers: Array<CombatManeuver>; // (for weapon)
   minStrength: number; // (for weapon)
@@ -24,11 +25,14 @@ export type MissileWeaponData = IPhysicalItem & {
   allCombatManeuvers?: any;
   missileWeaponSkills?: Array<RqgItem<SkillData>>;
   ownedProjectiles?: Array<RqgItem<MissileWeaponData>>;
+  skillName?: string; // For showing the name of the linked skill if the item isn't owned
+  isOwned?: boolean;
 };
 
 export const emptyMissileWeapon: MissileWeaponData = {
   description: "",
   skillId: "",
+  skillOrigin: "",
   damage: "1D3",
   combatManeuvers: [CombatManeuver.Knockback, CombatManeuver.Parry],
   minStrength: 0,

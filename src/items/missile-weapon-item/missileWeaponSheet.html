@@ -19,48 +19,46 @@
       ammunition)</label><br>
     <hr>
     <div class="flex-row">
+    {{#if (or data.isThrownWeapon data.isProjectileWeapon)}}
       <div>
-        {{#if (or data.isThrownWeapon data.isProjectileWeapon)}}
-        <label class="mp norse">Skill<br>
+        <label class="mp norse">Skill</label><br>
+        {{#if data.isOwned}}
           <select name="data.skillId">
             {{#select data.skillId}} {{#each data.missileWeaponSkills}}
             <option value="{{this._id}}">{{this.name}}</option>
             {{/each}} {{/select}}
           </select>
-        </label><br>
-        {{#if data.isProjectileWeapon}}
-        <label class="mp norse">Projectile<br>
-          <select name="data.projectileId">
-            {{#select data.projectileId}} {{#each data.ownedProjectiles}}
-            <option value="{{this._id}}">{{this.name}}</option>
-            {{/each}} {{/select}}
-          </select>
-        </label><br>
+          {{#if data.isProjectileWeapon}}
+          <label class="mp norse">Projectile<br>
+            <select name="data.projectileId">
+              {{#select data.projectileId}} {{#each data.ownedProjectiles}}
+              <option value="{{this._id}}">{{this.name}}</option>
+              {{/each}} {{/select}}
+            </select>
+          </label><br>
+          {{/if}}
+        {{else}}
+          {{#if data.skillName}}
+            {{data.skillName}} <i>(Drop some other missile weapon skill on this weapon to change)</i>
+          {{else}}
+           <i>Drop a missile weapon skill on this weapon!</i>
+          {{/if}}<br>
         {{/if}}
-
         <label>Damage <input name="data.damage" value="{{item.data.damage}}"></label><br>
-        <label>Min STR <input type="number" min="0" max="99" name="data.minStrength"
-                              value="{{item.data.minStrength}}"></label><br>
-        <label>Min DEX <input type="number" min="0" max="99" name="data.minDexterity"
-                              value="{{item.data.minDexterity}}"></label><br>
-        <label>Range <input type="number" min="0" max="999" name="data.range"
-                            value="{{item.data.range}}"></label><br>
-        <label>Rate <input type="number" min="0" max="99" name="data.rate"
-                           value="{{item.data.rate}}"></label><br>
-        <label>Current HP <input type="number" min="0" max="99" name="data.hitPoints.value"
-                                 value="{{item.data.hitPoints.value}}"></label><br>
-        <label>HP <input type="number" min="0" max="99" name="data.hitPoints.max"
-                         value="{{item.data.hitPoints.max}}"></label><br>
-
+        <label>Min STR <input type="number" min="0" max="99" name="data.minStrength" value="{{item.data.minStrength}}"></label><br>
+        <label>Min DEX <input type="number" min="0" max="99" name="data.minDexterity" value="{{item.data.minDexterity}}"></label><br>
+        <label>Range <input type="number" min="0" max="999" name="data.range" value="{{item.data.range}}"></label><br>
+        <label>Rate <input type="number" min="0" max="99" name="data.rate" value="{{item.data.rate}}"></label><br>
+        <label>Current HP <input type="number" min="0" max="99" name="data.hitPoints.value" value="{{item.data.hitPoints.value}}"></label><br>
+        <label>HP <input type="number" min="0" max="99" name="data.hitPoints.max" value="{{item.data.hitPoints.max}}"></label><br>
       </div>
       <div>
         <h3>Combat Manuevers</h3>
         {{#each data.allCombatManeuvers}}
-        <label><input type="checkbox" name="data.allCombatManeuvers.{{name}}.value" {{checked
-                      value}}>{{name}}</label><br>
+          <label><input type="checkbox" name="data.allCombatManeuvers.{{name}}.value" {{checked value}}>{{name}}</label><br>
         {{/each}}
-        {{/if}}
       </div>
+    {{/if}}
     </div>
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}

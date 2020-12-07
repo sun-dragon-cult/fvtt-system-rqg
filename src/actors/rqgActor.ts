@@ -137,46 +137,34 @@ export class RqgActor extends Actor<RqgActorData> {
   }
   // @ts-ignore
   async _onCreateEmbeddedEntity(embeddedName, child, options, userId) {
+    let newSkillId;
     if (embeddedName === "OwnedItem") {
       // TODO Break out? into ResponsibleItemClass[child.type].onOwnItem()
       if ([ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon].includes(child.type)) {
-        if (!child.data.skillId) {
-          // Not connected - look for weapon skill on actor
-          const weaponSkill = this.items
-            .filter((i) => i.type === ItemTypeEnum.Skill)
-            .find((i: Item) => i.data.flags?.core?.sourceId || i._id === child.data.skillSourceId);
-          if (weaponSkill) {
-            // Found the skill - populate the id
-            child.data.skillId = weaponSkill._id;
-          } else {
-            // No skill on actor - find the skill using skillSourceCompendium & skillSourceId
-            let weaponSkillRef;
-            if (child.data.skillSourceCompendium) {
-              // Try to find the skill in the compendium
-              const weaponSkillsPack = await game.packs.get(child.data.skillSourceCompendium);
-              const compendiumContent = await weaponSkillsPack.getContent();
-              weaponSkillRef = compendiumContent
-                .filter((i) => i.type === ItemTypeEnum.Skill)
-                .find((w) => w.data.flags?.core?.sourceId || w._id === child.data.skillSourceId);
-            } else {
-              // No compendium - search in game items
-              weaponSkillRef = game.items
-                .filter((i) => i.type === ItemTypeEnum.Skill)
-                .find((w) => w.data.flags?.core?.sourceId || w._id === child.data.skillSourceId);
-            }
-            if (weaponSkillRef) {
-              // Found the skill in a compendium - add as owned items and connect
-              const embeddedWeaponSkill = await this.createOwnedItem(weaponSkillRef);
-              child.data.skillId = embeddedWeaponSkill._id;
-            } else {
-              // Didn't find any compendium skill - open the item sheet to let the user select skill
-              options.renderSheet = true;
-            }
+        if (!child.data.skillId && child.data.skillOrigin) {
+          try {
+            // Add the specified skill if found
+            // @ts-ignore
+            const skill = await fromUuid(child.data.skillOrigin);
+            const embeddedWeaponSkill = await this.createOwnedItem(skill);
+            newSkillId = embeddedWeaponSkill._id;
+          } catch (e) {
+            ui.notifications.warn("Couldn't find the Skill associated with this weapon.");
           }
+        }
+        if (!newSkillId) {
+          // Didn't find any weapon skill - open the item sheet to let the user select one
+          options.renderSheet = true;
         }
       }
     }
     // @ts-ignore
     super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
+    if (newSkillId) {
+      await this.updateOwnedItem({
+        _id: child._id,
+        data: { skillId: newSkillId },
+      });
+    }
   }
 }

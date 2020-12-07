@@ -24,8 +24,8 @@ export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
       acc[m] = { name: m, value: v };
       return acc;
     }, {});
-
-    if (this.actor) {
+    data.isOwned = this.item.isOwned;
+    if (this.item.isOwned) {
       data.meleeWeaponSkills = this.actor
         .getEmbeddedCollection("OwnedItem")
         .filter(
@@ -36,11 +36,10 @@ export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
               i.data.category === SkillCategoryEnum.NaturalWeapons)
         );
     } else {
-      data.allCompendiums = Array.from(game.packs.keys());
-      if (data.skillSourceCompendium) {
-        const pack = game.packs.get(data.skillSourceCompendium);
-        const index = await pack.getIndex();
-        data.compendiumEntries = index;
+      if (data.skillOrigin) {
+        // @ts-ignore
+        const skill = await fromUuid(data.skillOrigin);
+        data.skillName = skill?.name || "";
       }
     }
     return sheetData;
@@ -53,20 +52,45 @@ export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
         combatManeuvers.push(m);
       }
     });
-
     formData["data.combatManeuvers"] = combatManeuvers;
     Object.values(CombatManeuver).forEach(
       (cm) => delete formData[`data.allCombatManeuvers.${cm}.value`]
     );
-    if (formData["data.selectedCompendiumEntryId"]) {
-      const pack = game.packs.get(formData["data.skillSourceCompendium"]);
-      const skill = await pack.getEntity(formData["data.selectedCompendiumEntryId"]);
-
-      const entry = pack.index.find((e) => e._id === skill._id);
-      formData["data.skillSourceId"] = skill.data.flags?.core?.sourceId || skill?._id;
-    }
-
-    delete formData["data.selectedCompendiumEntryId"]; // Don't persist this
     return super._updateObject(event, formData);
+  }
+
+  protected activateListeners(html: JQuery) {
+    super.activateListeners(html);
+    if (!this.item.isOwned) {
+      this.form.addEventListener("drop", this._onDrop.bind(this));
+    }
+  }
+
+  protected async _onDrop(event: DragEvent) {
+    super._onDrop(event);
+    // Try to extract the data
+    let droppedItemData;
+    try {
+      droppedItemData = JSON.parse(event.dataTransfer.getData("text/plain"));
+    } catch (err) {
+      return false;
+    }
+    if (droppedItemData.type === "Item") {
+      // @ts-ignore
+      const item = await Item.fromDropData(droppedItemData);
+      if (
+        (item.type === ItemTypeEnum.Skill &&
+          item.data.data.category === SkillCategoryEnum.MeleeWeapons) ||
+        item.data.data.category === SkillCategoryEnum.NaturalWeapons ||
+        item.data.data.category === SkillCategoryEnum.Shields
+      ) {
+        const skillId = item.uuid || "";
+        await this.item.update({ "data.skillOrigin": skillId }, {});
+      } else {
+        ui.notifications.warn(
+          "The item must be a weapon skill (category melee, shield or natural weapon)"
+        );
+      }
+    }
   }
 }
