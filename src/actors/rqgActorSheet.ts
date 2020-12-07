@@ -108,6 +108,15 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     return sheetData;
   }
 
+  protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
+    if (
+      formData["data.attributes.hitPoints.value"] > this.actor.data.data.attributes.hitPoints.max
+    ) {
+      formData["data.attributes.hitPoints.value"] = this.actor.data.data.attributes.hitPoints.max;
+    }
+    return super._updateObject(event, formData);
+  }
+
   activateListeners(html): void {
     super.activateListeners(html);
 
