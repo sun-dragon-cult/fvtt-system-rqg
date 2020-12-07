@@ -4,6 +4,10 @@ export const handlebarSettings = function () {
   );
   Handlebars.registerHelper("json", (context) => JSON.stringify(context));
 
+  Handlebars.registerHelper("currency", (value, unit) => {
+    return `${new Intl.NumberFormat().format(value)} ${unit}`;
+  });
+
   Handlebars.registerHelper("itemname", (itemId, actorId) => {
     const actor = game.actors.find((a) => a._id === actorId);
     const item = actor.items.get(itemId);

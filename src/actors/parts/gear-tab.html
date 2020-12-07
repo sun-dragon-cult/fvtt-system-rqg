@@ -6,16 +6,18 @@
     <tr>
       <th class="text-left">Name</th>
       <th class="text-right">Qty</th>
+      <th class="text-right">Price</th>
       <th class="text-right">ENC</th>
       <th>Equipped</th>
 
     </tr>
   {{#each data.ownedItems.gear}}
-  <tr data-item-id="{{this._id}}">
-    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
-    <td class="text-right">{{this.data.data.quantity}}</td>
-    <td class="text-right">{{multiply this.data.data.quantity this.data.data.encumbrance}}</td>
-    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
+  <tr data-item-id="{{_id}}">
+    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}</td>
+    <td class="text-right">{{data.data.quantity}}</td>
+    <td class="text-right">{{#if data.data.price}}{{currency data.data.price 'L'}}{{/if}}</td>
+    <td class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/each}}
@@ -38,16 +40,16 @@
 
   </tr>
   {{#each data.ownedItems.meleeWeapon}}
-  {{#unless this.data.data.isNatural}}
-  <tr data-item-id="{{this._id}}">
-    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
-    <td>{{itemname this.data.data.skillId this.actor._id}}</td>
-    <td>{{this.data.data.damage}}</td>
-    <td class="text-right">{{this.data.data.minStrength}}</td>
-    <td class="text-right">{{this.data.data.minDexterity}}</td>
-    <td class="text-right">{{this.data.data.hitPoints.value}}</td>
-    <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
+  {{#unless data.data.isNatural}}
+  <tr data-item-id="{{_id}}">
+    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}</td>
+    <td>{{itemname data.data.skillId actor._id}}</td>
+    <td>{{data.data.damage}}</td>
+    <td class="text-right">{{data.data.minStrength}}</td>
+    <td class="text-right">{{data.data.minDexterity}}</td>
+    <td class="text-right">{{data.data.hitPoints.value}}</td>
+    <td class="text-right">{{data.data.encumbrance}}</td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/unless}}
@@ -71,31 +73,31 @@
 
   </tr>
   {{#each data.ownedItems.missileWeapon}}
-    {{#if (or this.data.data.isProjectileWeapon this.data.data.isThrownWeapon)}}
-    <tr data-item-id="{{this._id}}">
-      <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
-      <td>{{itemname this.data.data.skillId this.actor._id}}</td>
-      <td>{{this.data.data.damage}}</td>
-      <td class="text-right">{{this.data.data.minStrength}}</td>
-      <td class="text-right">{{this.data.data.minDexterity}}</td>
-      <td class="text-right">{{this.data.data.hitPoints.value}}</td>
-      <td class="text-right">{{this.data.data.encumbrance}}</td>
-      <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
+    {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
+    <tr data-item-id="{{_id}}">
+      <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}</td>
+      <td>{{itemname data.data.skillId actor._id}}</td>
+      <td>{{data.data.damage}}</td>
+      <td class="text-right">{{data.data.minStrength}}</td>
+      <td class="text-right">{{data.data.minDexterity}}</td>
+      <td class="text-right">{{data.data.hitPoints.value}}</td>
+      <td class="text-right">{{data.data.encumbrance}}</td>
+      <td class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></td>
       <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
     </tr>
     {{/if}}
   {{/each}}
   {{#each data.ownedItems.missileWeapon}}
-  {{#if this.data.data.isProjectile}}
-  <tr data-item-id="{{this._id}}">
-    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}} ({{this.data.data.quantity}})</td>
+  {{#if data.data.isProjectile}}
+  <tr data-item-id="{{_id}}">
+    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}} ({{data.data.quantity}})</td>
     <td>-</td>
     <td>-</td>
     <td class="text-right">-</td>
     <td class="text-right">-</td>
     <td class="text-right">-</td>
-    <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
+    <td class="text-right">{{data.data.encumbrance}}</td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/if}}
@@ -118,18 +120,18 @@
     <th class="text-right">moveQuietly</th>
   </tr>
   {{#each data.ownedItems.armor}}
-  <tr data-item-id="{{this._id}}">
-    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{this.name}}</td>
-    <td class="text-right">{{this.data.data.encumbrance}}</td>
-    <td class="text-center"><input type="checkbox" data-item-equip {{checked this.data.data.isEquipped}}></td>
+  <tr data-item-id="{{_id}}">
+    <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}</td>
+    <td class="text-right">{{data.data.encumbrance}}</td>
+    <td class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></td>
     <td>[
-      {{#each this.data.data.hitLocations}}
+      {{#each data.data.hitLocations}}
         {{this}},
       {{/each}}
       ]</td>
-    <td>{{this.data.data.material}}</td>
-    <td class="text-right">{{this.data.data.absorbs}}</td>
-    <td class="text-right">{{this.data.data.moveQuietlyPenalty}}</td>
+    <td>{{data.data.material}}</td>
+    <td class="text-right">{{data.data.absorbs}}</td>
+    <td class="text-right">{{data.data.moveQuietlyPenalty}}</td>
     <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
   </tr>
   {{/each}}

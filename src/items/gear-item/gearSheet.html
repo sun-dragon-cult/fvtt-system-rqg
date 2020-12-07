@@ -7,6 +7,7 @@
     <label>Equipped <input type="checkbox" name="data.isEquipped" {{checked data.isEquipped}} /></label><br>
   </header>
   <main>
+    <label>Price <input type="number" min="0" max="99999999" name="data.price" value="{{item.data.price}}">(L)</label><br>
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>

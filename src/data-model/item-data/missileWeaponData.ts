@@ -41,6 +41,7 @@ export const emptyMissileWeapon: MissileWeaponData = {
   rate: 0,
   hitPoints: emptyResource,
   encumbrance: 0,
+  price: 0,
   isEquipped: false,
   isProjectile: false,
   isProjectileWeapon: true,

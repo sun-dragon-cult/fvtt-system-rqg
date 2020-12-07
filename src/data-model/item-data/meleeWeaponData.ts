@@ -44,6 +44,7 @@ export const emptyMeleeWeapon: MeleeWeaponData = {
   strikeRank: 0,
   hitPoints: emptyResource,
   encumbrance: 0,
+  price: 0,
   isEquipped: false,
   isNatural: false,
 };

@@ -18,6 +18,7 @@ export type ArmorData = IPhysicalItem & {
 export const emptyArmor: ArmorData = {
   description: "",
   size: 0,
+  price: 0,
   encumbrance: 1,
   isEquipped: false,
   hitLocations: ["head"],

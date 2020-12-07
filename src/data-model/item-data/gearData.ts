@@ -9,6 +9,7 @@ export type GearData = IPhysicalItem & {
 export const emptyGear: GearData = {
   description: "",
   quantity: 1,
+  price: 0,
   encumbrance: 1,
   isEquipped: false,
 };
