@@ -14,8 +14,8 @@ export enum CombatManeuver {
 }
 
 export type MeleeWeaponData = IPhysicalItem & {
-  skillId: string; // id of the corresponding skill
-  skillName: string; // Name of the corresponding skill (for use with unembedded items)
+  skillId: string; // id of the corresponding skill (when embedded)
+  skillOrigin: string; // the uuid of the required skill Item
   damage: string; // Formula
   combatManeuvers: Array<CombatManeuver>;
   minStrength: number;
@@ -28,13 +28,15 @@ export type MeleeWeaponData = IPhysicalItem & {
   description: string;
   // --- Derived / Convenience Data Below ---
   allCombatManeuvers?: any;
-  meleeWeaponSkills?: Array<RqgItem<SkillData>>;
+  meleeWeaponSkills?: Array<RqgItem<SkillData>>; // All relevant skills of the owning actor
+  skillName?: string; // For showing the name of the linked skill if the item isn't owned
+  isOwned?: boolean;
 };
 
 export const emptyMeleeWeapon: MeleeWeaponData = {
   description: "",
   skillId: "",
-  skillName: "",
+  skillOrigin: "",
   damage: "1D3",
   combatManeuvers: [CombatManeuver.Knockback, CombatManeuver.Parry],
   minStrength: 0,

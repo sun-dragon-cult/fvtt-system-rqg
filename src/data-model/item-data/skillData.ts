@@ -29,7 +29,7 @@ export type SkillData = IAbility & {
 };
 
 export const emptySkill: SkillData = {
-  category: SkillCategoryEnum.Agility,
+  category: SkillCategoryEnum.Magic,
   skillName: "",
   specialization: "",
   baseChance: 0,

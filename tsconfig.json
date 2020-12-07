@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["DOM", "ES6", "ES2017"],
+    "target": "ESNext",
+    "lib": ["DOM", "ES6", "ESNext"],
     "types": ["foundry-pc-types"]
   }
 }

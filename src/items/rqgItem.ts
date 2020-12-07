@@ -1,8 +1,5 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import {
-  ResponsibleItemClass,
-  ItemTypeEnum,
-} from "../data-model/item-data/itemTypes";
+import { ResponsibleItemClass, ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
@@ -70,16 +67,13 @@ export class RqgItem<DataType = any> extends Item<DataType> {
 
     // Row 26505
     Hooks.on("preCreateOwnedItem", (parent, r) => {
-      if (
-        parent instanceof RqgActor &&
-        Object.values(ItemTypeEnum).includes(r.type)
-      ) {
+      if (parent instanceof RqgActor && Object.values(ItemTypeEnum).includes(r.type)) {
         const rqgItem = r as RqgItem;
         // @ts-ignore 0.7
         rqgItem.effects = rqgItem.effects || [];
-        const activeEffect = ResponsibleItemClass.get(
-          rqgItem.type
-        ).generateActiveEffect(rqgItem.data);
+        const activeEffect = ResponsibleItemClass.get(rqgItem.type).generateActiveEffect(
+          rqgItem.data
+        );
         if (activeEffect) {
           activeEffect.origin = `Actor.${parent.id}.OwnedItem.${rqgItem._id}`;
           // @ts-ignore 0.7

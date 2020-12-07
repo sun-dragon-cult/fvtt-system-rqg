@@ -1,142 +1,7 @@
-import { HitLocationsEnum } from "../data-model/item-data/hitLocationData";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { CombatManeuver } from "../data-model/item-data/meleeWeaponData";
-import { SkillCategoryEnum } from "../data-model/item-data/skillData";
-
 type LookupTableEntry<T> = {
   from: number;
   to: number;
   result: T;
-};
-
-export const humanoid = {
-  hitLocations: [
-    // TODO needs Natural AP (for other races) and dieFrom/dieTo
-    HitLocationsEnum.Head,
-    HitLocationsEnum.LeftArm,
-    HitLocationsEnum.RightArm,
-    HitLocationsEnum.Chest,
-    HitLocationsEnum.Abdomen,
-    HitLocationsEnum.LeftLeg,
-    HitLocationsEnum.RightLeg,
-  ],
-  naturalWeapons: {
-    skills: [
-      {
-        name: "Fist",
-        type: ItemTypeEnum.Skill,
-        img: "icons/svg/mystery-man.svg",
-        flags: {},
-        data: {
-          category: SkillCategoryEnum.NaturalWeapons,
-          skillName: "Fist",
-          specialization: "",
-          baseChance: 25,
-          learnedChance: 0,
-          experience: false,
-        },
-      },
-      {
-        name: "Grapple",
-        type: ItemTypeEnum.Skill,
-        img: "icons/svg/mystery-man.svg",
-        flags: {},
-        data: {
-          category: SkillCategoryEnum.NaturalWeapons,
-          skillName: "Grapple",
-          specialization: "",
-          baseChance: 25,
-          learnedChance: 0,
-          experience: false,
-        },
-      },
-      {
-        name: "Kick",
-        type: ItemTypeEnum.Skill,
-        img: "icons/svg/mystery-man.svg",
-        flags: {},
-        data: {
-          category: SkillCategoryEnum.NaturalWeapons,
-          skillName: "Kick",
-          specialization: "",
-          baseChance: 15,
-          learnedChance: 0,
-          experience: false,
-        },
-      },
-    ],
-    meleeWeapons: [
-      {
-        name: "Fist",
-        type: ItemTypeEnum.MeleeWeapon,
-        data: {
-          skillId: "",
-          damage: "1D3",
-          combatManeuvers: [
-            CombatManeuver.Crush,
-            CombatManeuver.Knockback,
-            CombatManeuver.Parry,
-          ],
-          minStrength: 0,
-          minDexterity: 0,
-          strikeRank: 4,
-          isEquipped: true,
-          isNatural: true,
-          hitPoints: {},
-        },
-        flags: {},
-        img: "",
-      },
-      {
-        name: "Grapple",
-        type: ItemTypeEnum.MeleeWeapon,
-        data: {
-          skillId: "",
-          damage: "",
-          combatManeuvers: [CombatManeuver.Special],
-          minStrength: 0,
-          minDexterity: 0,
-          strikeRank: 4,
-          isEquipped: true,
-          isNatural: true,
-          hitPoints: {},
-        },
-        flags: {},
-        img: "",
-      },
-      {
-        name: "Kick",
-        type: ItemTypeEnum.MeleeWeapon,
-        data: {
-          skillId: "",
-          damage: "1D6",
-          combatManeuvers: [
-            CombatManeuver.Crush,
-            CombatManeuver.Knockback,
-            CombatManeuver.Parry,
-          ],
-          minStrength: 0,
-          minDexterity: 0,
-          strikeRank: 4,
-          isEquipped: true,
-          isNatural: true,
-          hitPoints: {},
-        },
-        flags: {},
-        img: "",
-      },
-    ],
-  },
-  characteristics: {
-    // TODO Not used yet
-    strength: "3D6",
-    constitution: "3D6",
-    size: "2D6+6",
-    dexterity: "3D6",
-    intelligence: "2D6+6",
-    power: "3D6",
-    charisma: "3D6",
-  },
 };
 
 export class RqgCalculations {
@@ -149,9 +14,7 @@ export class RqgCalculations {
   }
 
   public static hitPoints(con: number, siz: number, pow: number): number {
-    return (
-      con + RqgCalculations.linearMod(siz) + RqgCalculations.flattenedMod(pow)
-    );
+    return con + RqgCalculations.linearMod(siz) + RqgCalculations.flattenedMod(pow);
   }
 
   public static damageBonus(str: number, siz: number): string {
@@ -196,17 +59,14 @@ export class RqgCalculations {
       RqgCalculations.flattenedMod(int) +
       RqgCalculations.flattenedMod(pow) +
       RqgCalculations.linearMod(cha);
-    const knowledgeMod =
-      RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
-    const magicMod =
-      RqgCalculations.linearMod(pow) + RqgCalculations.flattenedMod(cha);
+    const knowledgeMod = RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
+    const magicMod = RqgCalculations.linearMod(pow) + RqgCalculations.flattenedMod(cha);
     const manipulationMod =
       RqgCalculations.flattenedMod(str) +
       RqgCalculations.linearMod(dex) +
       RqgCalculations.linearMod(int) +
       RqgCalculations.flattenedMod(pow);
-    const perceptionMod =
-      RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
+    const perceptionMod = RqgCalculations.linearMod(int) + RqgCalculations.flattenedMod(pow);
     const stealthMod =
       RqgCalculations.linearMod(dex) -
       RqgCalculations.linearMod(siz) +
@@ -238,9 +98,7 @@ export class RqgCalculations {
   }
 
   private static lookup<T>(v: number, table: Array<LookupTableEntry<T>>): T {
-    const tableEntry: LookupTableEntry<T> = table.find(
-      (te) => v >= te.from && v <= te.to
-    );
+    const tableEntry: LookupTableEntry<T> = table.find((te) => v >= te.from && v <= te.to);
     return tableEntry ? tableEntry.result : null;
   }
 }

@@ -71,7 +71,7 @@ export class RqgActor extends Actor<RqgActorData> {
    */
   prepareDerivedData() {
     // @ts-ignore (until foundry-pc-types are updated for 0.7)
-    super.prepareBaseData();
+    super.prepareDerivedData();
     console.debug("!! ***prepareDerivedData");
 
     const actorData = this.data;
@@ -137,30 +137,34 @@ export class RqgActor extends Actor<RqgActorData> {
   }
   // @ts-ignore
   async _onCreateEmbeddedEntity(embeddedName, child, options, userId) {
+    let newSkillId;
     if (embeddedName === "OwnedItem") {
-      if (child.type === ItemTypeEnum.MeleeWeapon) {
-        if (!child.data.skillId) {
-          const weaponSkill = this.items.find((i) => i.data.name === child.data.skillName);
-          if (weaponSkill) {
-            child.data.skillId = weaponSkill._id;
-          } else {
-            const weaponSkillsPack = await game.packs.get("rqg-compendiums.weaponSkills"); // TODO  hardcoded
-            const weaponSkillsIndex = await weaponSkillsPack.getIndex();
-            let weaponRef = weaponSkillsIndex.find((e) => e.name === child.data.skillName);
-
-            if (weaponRef) {
-              const weapon = await weaponSkillsPack.getEntry(weaponRef._id);
-              const weaponSkill = await this.createOwnedItem(weapon);
-              child.data.skillId = weaponSkill._id;
-            } else {
-              // If no compendium skill open the item sheet to let the user select skill
-              options.renderSheet = true;
-            }
+      // TODO Break out? into ResponsibleItemClass[child.type].onOwnItem()
+      if ([ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon].includes(child.type)) {
+        if (!child.data.skillId && child.data.skillOrigin) {
+          try {
+            // Add the specified skill if found
+            // @ts-ignore
+            const skill = await fromUuid(child.data.skillOrigin);
+            const embeddedWeaponSkill = await this.createOwnedItem(skill);
+            newSkillId = embeddedWeaponSkill._id;
+          } catch (e) {
+            ui.notifications.warn("Couldn't find the Skill associated with this weapon.");
           }
+        }
+        if (!newSkillId) {
+          // Didn't find any weapon skill - open the item sheet to let the user select one
+          options.renderSheet = true;
         }
       }
     }
     // @ts-ignore
     super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
+    if (newSkillId) {
+      await this.updateOwnedItem({
+        _id: child._id,
+        data: { skillId: newSkillId },
+      });
+    }
   }
 }
