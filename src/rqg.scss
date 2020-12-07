@@ -188,7 +188,7 @@
 }
 
 .rqg.sheet {
-  &.cult, &.runeMagic {
+  &.cult, &.runeMagic, &.skill {
     input[name="data.runes"] {
       width: inherit;
     }

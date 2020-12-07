@@ -21,11 +21,13 @@ export type SkillData = IAbility & {
   specialization: string;
   baseChance: number;
   learnedChance: number;
+  runes: Array<string>; // For Sorcery Magic
   // --- Derived / Convenience Data Below ---
   chance?: number;
   categoryMod?: number;
   skillCategories?: SkillCategoryEnum[];
   isGM?: boolean;
+  allRunes?: Array<string>; // For sheet dropdown
 };
 
 export const emptySkill: SkillData = {
@@ -35,4 +37,5 @@ export const emptySkill: SkillData = {
   baseChance: 0,
   learnedChance: 0,
   experience: false,
+  runes: [],
 };

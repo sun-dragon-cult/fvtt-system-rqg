@@ -22,6 +22,8 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     }
     data.skillCategories = Object.values(SkillCategoryEnum);
     data.isGM = this.actor ? !this.actor.isPC : true; // TODO isPC is deprecated use getOwners (coming in 0.7.6)
+    data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
+    data.allRunes = game.settings.get("rqg", "runes");
     return sheetData;
   }
 
@@ -30,6 +32,11 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
       ? ` (${formData["data.specialization"]})`
       : "";
     formData["name"] = formData["data.skillName"] + specialization;
+
+    let runes = formData["data.runes"];
+    runes = Array.isArray(runes) ? runes : [runes];
+    runes = runes.filter((r) => r); // Remove empty
+    formData["data.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
 }

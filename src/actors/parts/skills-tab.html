@@ -13,10 +13,15 @@
         <th style="width: 15px"></th>
       </tr>
       {{#each this}}
-      <tr data-item-id="{{this._id}}">
-        <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a>&nbsp;{{this.name}}</td>
-        <td class="text-right nowrap"><a title="Roll" data-item-roll>{{this.data.data.chance}}%<img style="border: none" height="14px" src="/icons/svg/d20-black.svg"></a></td>
-        <td><input type="checkbox" data-item-experience {{checked this.data.data.experience}}></td>
+      <tr data-item-id="{{_id}}">
+        <td>
+          <a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a>&nbsp;{{name}}
+          {{#each data.data.runes}}
+            <img class="rune" src="{{runeImg this}}" title="{{this}}">
+          {{/each}}
+        </td>
+        <td class="text-right nowrap"><a title="Roll" data-item-roll>{{data.data.chance}}%<img style="border: none" height="14px" src="/icons/svg/d20-black.svg"></a></td>
+        <td><input type="checkbox" data-item-experience {{checked data.data.experience}}></td>
         <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
       </tr>
       {{/each}}
