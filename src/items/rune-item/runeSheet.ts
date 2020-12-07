@@ -18,20 +18,17 @@ export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: RuneData = sheetData.item.data;
+    if (!data.rune) {
+      data.rune = sheetData.item.name;
+    }
     const allRunesIndex = game.settings.get("rqg", "runes");
-    data.allRunes =
-      allRunesIndex !== {} ? allRunesIndex.map((r) => r.name) : [];
+    data.allRunes = allRunesIndex !== {} ? allRunesIndex.map((r) => r.name) : [];
     data.runeTypes = Object.values(RuneTypeEnum);
     return sheetData;
   }
 
-  protected _updateObject(
-    event: Event | JQuery.Event,
-    formData: any
-  ): Promise<any> {
-    formData[
-      "name"
-    ] = `${formData["data.rune"]} (${formData["data.runeType"]})`;
+  protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
+    formData["name"] = `${formData["data.rune"]} (${formData["data.runeType"]})`;
     return super._updateObject(event, formData);
   }
 }
