@@ -48,6 +48,12 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         (s: RqgItem<SkillData>) => cat === s.data.data.category
       );
     });
+    // Sort the skills inside each category
+    Object.values(skills).forEach((skillList) =>
+      (skillList as RqgItem[]).sort((a: RqgItem<SkillData>, b: RqgItem<SkillData>) =>
+        ("" + a.data.name).localeCompare(b.data.name)
+      )
+    );
     data.ownedItems[ItemTypeEnum.Skill] = skills;
 
     // Separate runes into types (elemental, power, form, technique)
