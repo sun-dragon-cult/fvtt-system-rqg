@@ -6,17 +6,27 @@
     <label>Equipped <input type="checkbox" name="data.isEquipped" {{checked data.isEquipped}} /></label><br>
   </header>
   <main>
-    <label>HitLocations<br><input type="text" name="data.hitLocationsCSV" value="{{item.data.hitLocationsCSV}}"/></label><br>
+    <label>Hit Locations</label><br>
+    {{#each data.hitLocations}}
+    <span><input name="data.hitLocations" type="text" value="{{this}}"></span>
+    {{/each}}
+    <input name="data.hitLocations" type="text" list="allHitLocations" placeholder="Add new covered hit location"><br>
+
     <label>Absorbs<br><input type="number" min="0" max="99" name="data.absorbs" value="{{item.data.absorbs}}"></label><br>
     <label>Material<br><input type="text" name="data.material" value="{{item.data.material}}"></label><br>
     <label>Move Quietly Penalty<br><input type="number" min="0" max="99" name="data.moveQuietlyPenalty"
                                        value="{{item.data.moveQuietlyPenalty}}"></label><br>
     <label>Fits size<br><input type="number" min="1" max="99" name="data.size" value="{{item.data.size}}"></label><br>
-    <label>Price <input type="number" min="0" max="99999999" name="data.price" value="{{item.data.price}}">(L)</label><br>
+    <label>Price<br><input type="number" min="0" max="99999999" name="data.price" value="{{item.data.price}}">(L)</label><br>
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>
   </main>
   <br>{{json data}}
   <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
+  <datalist id="allHitLocations">
+    {{#each data.allHitLocations}}
+    <option value="{{name}}">{{name}}</option>
+    {{/each}}
+  </datalist>
 </form>

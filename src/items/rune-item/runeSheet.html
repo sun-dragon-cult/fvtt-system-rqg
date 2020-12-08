@@ -19,7 +19,7 @@
   </header>
   <section class="sheet-body">
     <div class="wide-section">
-      <label>Opposing Rune <input type="text" name="data.opposingRune" value="{{item.data.opposingRune}}" list="allRunes"/></label>
+      <label>Opposing Rune <img class="rune" src="{{runeImg data.opposingRune}}" title="{{data.opposingRune}}"><input type="text" name="data.opposingRune" value="{{item.data.opposingRune}}" list="allRunes"/></label>
       <div>Minor Runes<br>
       {{#each item.data.minorRunes}}
         <span>{{this}} </span>

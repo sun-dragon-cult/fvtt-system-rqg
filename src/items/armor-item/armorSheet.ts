@@ -14,21 +14,25 @@ export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     });
   }
 
-  getData(): any {
+  // @ts-ignore
+  async getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: ArmorData = sheetData.item.data;
-    // Make an editable comma separated text of the hit locations array
-    data.hitLocationsCSV = data.hitLocations.join();
+
+    try {
+      const hitLocationsCompendium = game.settings.get("rqg", "hitLocationsCompendium");
+      data.allHitLocations = await game.packs.get(hitLocationsCompendium).getIndex();
+    } catch (err) {
+      data.allHitLocations = [];
+    }
     return sheetData;
   }
 
-  protected _updateObject(
-    event: Event | JQuery.Event,
-    formData: any
-  ): Promise<any> {
-    // Split the hitLocationsCSV into an array
-    formData["data.hitLocations"] = formData["data.hitLocationsCSV"].split(",");
-    delete formData["data.hitLocationsCSV"];
+  protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
+    let hitLocations = formData["data.hitLocations"];
+    hitLocations = Array.isArray(hitLocations) ? hitLocations : [hitLocations];
+    hitLocations = [...new Set(hitLocations.filter((r) => r))]; // Remove empty & duplicates
+    formData["data.hitLocations"] = duplicate(hitLocations);
     return super._updateObject(event, formData);
   }
 }

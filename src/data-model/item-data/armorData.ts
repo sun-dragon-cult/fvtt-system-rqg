@@ -12,7 +12,7 @@ export type ArmorData = IPhysicalItem & {
   absorbs: number;
   moveQuietlyPenalty: number;
   // --- Derived / Convenience Data Below ---
-  hitLocationsCSV?: string; // Only for easier editing of hit locations in armorSheet
+  allHitLocations?: Array<any>; // Index of the hitlocations compendium
 };
 
 export const emptyArmor: ArmorData = {
@@ -21,7 +21,7 @@ export const emptyArmor: ArmorData = {
   price: 0,
   encumbrance: 1,
   isEquipped: false,
-  hitLocations: ["head"],
+  hitLocations: [],
   material: "",
   absorbs: 0,
   moveQuietlyPenalty: 0,
