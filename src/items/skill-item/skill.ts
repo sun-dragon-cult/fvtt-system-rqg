@@ -9,12 +9,12 @@ export class Skill extends BaseItem {
   //     makeDefault: true,
   //   });
   // }
+  static async onEmbedItem(actor, child, options, userId): Promise<any | undefined> {}
 
   public static prepareAsEmbeddedItem(item: RqgItem<SkillData>): RqgItem {
     const skillData = item.data.data;
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
-    skillData.categoryMod =
-      item.actor.data.data.skillCategoryModifiers[item.data.data.category];
+    skillData.categoryMod = item.actor.data.data.skillCategoryModifiers[item.data.data.category];
 
     // Special case for Dodge & Jump
     const dex = item.actor.data.data.characteristics.dexterity.value;

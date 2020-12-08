@@ -16,6 +16,17 @@ export class BaseItem {
   //     makeDefault: true,
   //   });
   // }
+
+  /**
+   * Will be called when the item is embedded into an actor
+   * @param actor
+   * @param child
+   * @param options
+   * @param userId
+   * @return Data to update other embedded items.
+   */
+  static async onEmbedItem(actor, child, options, userId): Promise<any | undefined> {}
+
   /**
    * Allows each embedded item to prepare its data.
    */

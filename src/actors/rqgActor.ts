@@ -137,34 +137,19 @@ export class RqgActor extends Actor<RqgActorData> {
   }
   // @ts-ignore
   async _onCreateEmbeddedEntity(embeddedName, child, options, userId) {
-    let newSkillId;
+    let updateData;
     if (embeddedName === "OwnedItem") {
-      // TODO Break out? into ResponsibleItemClass[child.type].onOwnItem()
-      if ([ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon].includes(child.type)) {
-        if (!child.data.skillId && child.data.skillOrigin) {
-          try {
-            // Add the specified skill if found
-            // @ts-ignore
-            const skill = await fromUuid(child.data.skillOrigin);
-            const embeddedWeaponSkill = await this.createOwnedItem(skill);
-            newSkillId = embeddedWeaponSkill._id;
-          } catch (e) {
-            ui.notifications.warn("Couldn't find the Skill associated with this weapon.");
-          }
-        }
-        if (!newSkillId) {
-          // Didn't find any weapon skill - open the item sheet to let the user select one
-          options.renderSheet = true;
-        }
-      }
+      updateData = await ResponsibleItemClass.get(child.type).onEmbedItem(
+        this,
+        child,
+        options,
+        userId
+      );
     }
     // @ts-ignore
     super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
-    if (newSkillId) {
-      await this.updateOwnedItem({
-        _id: child._id,
-        data: { skillId: newSkillId },
-      });
+    if (updateData) {
+      await this.updateOwnedItem(updateData);
     }
   }
 }
