@@ -1,36 +1,31 @@
-export class RqgItemSheet<
-  DataType = any,
-  ItemType extends Item<DataType> = any
-> extends ItemSheet<DataType, ItemType> {
+export class RqgItemSheet<DataType = any, ItemType extends Item<DataType> = any> extends ItemSheet<
+  DataType,
+  ItemType
+> {
+  get title() {
+    return this.object.permission ? `${this.object.type}: ${this.object.name}` : "";
+  }
+
   protected activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // Edit Item Active Effect
-    this.form
-      .querySelectorAll("[data-item-effect-edit]")
-      .forEach(async (el) => {
-        const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset
-          .effectId;
-        const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-          .itemId;
-        const item = this.actor
-          ? this.actor.getOwnedItem(itemId)
-          : game.items.get(itemId);
+    this.form.querySelectorAll("[data-item-effect-edit]").forEach(async (el) => {
+      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items.get(itemId);
 
-        el.addEventListener("click", () =>
-          // @ts-ignore
-          new ActiveEffectConfig(item.effects.get(effectId)).render(true)
-        );
-      });
+      el.addEventListener("click", () =>
+        // @ts-ignore
+        new ActiveEffectConfig(item.effects.get(effectId)).render(true)
+      );
+    });
 
     // Add Item Active Effect
     this.form.querySelectorAll("[data-item-effect-add]").forEach(async (el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-        .itemId;
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
 
-      const item = this.actor
-        ? this.actor.getOwnedItem(itemId)
-        : game.items.get(itemId);
+      const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items.get(itemId);
 
       const effect = await ActiveEffect.create(
         {
@@ -51,23 +46,17 @@ export class RqgItemSheet<
     });
 
     // Delete Item Active Effect
-    this.form
-      .querySelectorAll("[data-item-effect-delete]")
-      .forEach(async (el) => {
-        const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset
-          .effectId;
-        const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset
-          .itemId;
+    this.form.querySelectorAll("[data-item-effect-delete]").forEach(async (el) => {
+      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
 
-        const item = this.actor
-          ? this.actor.getOwnedItem(itemId)
-          : game.items.get(itemId);
+      const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items.get(itemId);
 
-        // const actor = await fromUuid(item.getFlag("core", "sourceId"));
-        // const item = actor ? this.actor.getOwnedItem(itemId) : game.items.get(itemId);
+      // const actor = await fromUuid(item.getFlag("core", "sourceId"));
+      // const item = actor ? this.actor.getOwnedItem(itemId) : game.items.get(itemId);
 
-        // @ts-ignore
-        el.addEventListener("click", () => item.effects.get(effectId).delete());
-      });
+      // @ts-ignore
+      el.addEventListener("click", () => item.effects.get(effectId).delete());
+    });
   }
 }
