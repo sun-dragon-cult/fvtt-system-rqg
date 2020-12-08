@@ -280,21 +280,21 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     const item = actor.getOwnedItem(itemId);
     new Dialog(
       {
-        title: `Delete ${item.name}`,
+        title: `Delete ${item.type}: ${item.name}`,
         content: "Do you want to delete this item",
         default: "submit",
         buttons: {
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
-            callback: () => null,
-          },
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: "Confirm",
             callback: () => {
               actor.deleteOwnedItem(itemId);
             },
+          },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancel",
+            callback: () => null,
           },
         },
       },
