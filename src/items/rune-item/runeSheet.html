@@ -21,9 +21,10 @@
     <div class="wide-section">
       <label>Opposing Rune <img class="rune" src="{{runeImg data.opposingRune}}" title="{{data.opposingRune}}"><input type="text" name="data.opposingRune" value="{{item.data.opposingRune}}" list="allRunes"/></label>
       <div>Minor Runes<br>
-      {{#each item.data.minorRunes}}
-        <span>{{this}} </span>
-      {{/each}}
+        {{#each data.minorRunes}}
+        <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.minorRunes" type="text" value="{{this}}"> </span>
+        {{/each}}
+        <input name="data.minorRunes" type="text" list="allRunes" placeholder="Add new minor rune"><br>
       </div>
       <label><input type="checkbox" name="data.isMastered" {{checked data.isMastered}}>Mastered (Sorcery)</label><br>
       <label>Description

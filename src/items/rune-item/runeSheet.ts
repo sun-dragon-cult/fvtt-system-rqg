@@ -29,6 +29,13 @@ export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
 
   protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
     formData["name"] = `${formData["data.rune"]} (${formData["data.runeType"]})`;
+
+    let minorRunes = formData["data.minorRunes"];
+    minorRunes = Array.isArray(minorRunes) ? minorRunes : [minorRunes];
+    minorRunes = [...new Set(minorRunes.filter((r) => r))]; // Remove empty & duplicates
+    formData["data.minorRunes"] = duplicate(minorRunes);
+
+    formData["data.chance"] = parseInt(formData["data.chance"]);
     return super._updateObject(event, formData);
   }
 }
