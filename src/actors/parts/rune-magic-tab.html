@@ -26,7 +26,7 @@
   <div class="flex-row">
     <span>
       <b>Rank:</b> {{data.data.rank}}<br>
-      <b>Rune Points:</b> {{data.data.runePoints.value}}/{{data.data.runePoints.max}}
+      <b>Rune Points:</b> <input type="number" min="0" max="99" data-item-edit-value="data.runePoints.value" value="{{data.data.runePoints.value}}">/{{data.data.runePoints.max}}
     </span>
     <span>{{{data.data.holyDays}}}</span>
     {{#if data.data.subCults}}
