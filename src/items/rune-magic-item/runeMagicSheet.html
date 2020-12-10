@@ -7,11 +7,29 @@
       title="{{item.name}}"
     />
     <input type="text" name="name" value="{{item.name}}"> (<input type="number" name="data.points" value="{{item.data.points}}">)
-    <label><input type="checkbox" name="data.isStackable" {{checked data.isStackable}}>Stackable</label>
   </header>
   <main>
-    <label>Range (m) <input type="number" name="data.castingRange" value="{{item.data.castingRange}}"></label><br>
-    <label>Duration (s) <input type="number" name="data.duration" value="{{item.data.duration}}"></label><br>
+    <div class="flex-row-start">
+      <label class="mp norse">Range<br>
+        <select name="data.castingRange">
+          {{#select data.castingRange}} {{#each data.ranges}}
+          <option value="{{this}}">{{this}}</option>
+          {{/each}} {{/select}}
+        </select>
+      </label>
+      <label class="mp norse">Duration<br>
+        <select name="data.duration">
+          {{#select data.duration}} {{#each data.durations}}
+          <option value="{{this}}">{{this}}</option>
+          {{/each}} {{/select}}
+        </select>
+      </label>
+      <div>
+      <label><input type="checkbox" name="data.isStackable" {{checked data.isStackable}}>Stackable</label><br>
+      <label><input type="checkbox" name="data.isOneUse" {{checked data.isOneUse}}>One Use</label>
+      </div>
+    </div>
+    {{#if data.isOwned}}
     <label class="mp norse">Cult<br>
       <select name="data.cultId">
         {{#select data.cultId}} {{#each data.actorCults}}
@@ -19,6 +37,7 @@
         {{/each}} {{/select}}
       </select>
     </label><br>
+    {{/if}}
     {{#each data.runes}}
     <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}

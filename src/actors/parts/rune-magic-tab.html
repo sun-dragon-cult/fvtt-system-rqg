@@ -38,9 +38,10 @@
       <tr>
         <th class="text-left">Rune Spell</th>
         <th class="text-left">Points</th>
+        <th class="text-left">Range</th>
+        <th class="text-left">Duration</th>
         <th class="text-left">Stackable</th>
-        <th class="text-left">Range (m)</th>
-        <th class="text-left">Duration (s)</th>
+        <th class="text-left">One Use</th>
         <th class="text-right">Chance</th>
         <th><a title="Add Rune Magic Spell" data-item-add data-item-type="runeMagic"><i class="fas fa-plus"></i></a></th>
       </tr>
@@ -53,9 +54,10 @@
           {{/each}}
         </td>
         <td class="text-left">{{data.data.points}}</td>
-        <td>{{{data.data.isStackable}}}</td>
         <td>{{{data.data.castingRange}}}</td>
         <td>{{{data.data.duration}}}</td>
+        <td>{{{yes-no data.data.isStackable}}}</td>
+        <td>{{{yes-no data.data.isOneUse}}}</td>
         <td class="text-right"><a data-item-roll>{{data.data.chance}}%</a></td>
         <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
       </tr>

@@ -8,6 +8,8 @@ import { MissileWeapon } from "../../items/missile-weapon-item/missileWeapon";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
 import { Cult } from "../../items/cult-item/cult";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
+import { Passion } from "../../items/passion-item/passion";
+import { Rune } from "../../items/rune-item/rune";
 
 export enum ItemTypeEnum {
   Skill = "skill",
@@ -21,7 +23,6 @@ export enum ItemTypeEnum {
   SpiritMagic = "spiritMagic",
   Cult = "cult",
   RuneMagic = "runeMagic",
-  SorcerousMagic = "sorcerousMagic",
   ShamanicAbility = "shamanicAbility",
 }
 
@@ -30,8 +31,8 @@ export enum ItemTypeEnum {
  */
 export const ResponsibleItemClass: Map<string, typeof BaseItem> = new Map([
   [ItemTypeEnum.Skill, Skill],
-  [ItemTypeEnum.Passion, BaseItem],
-  [ItemTypeEnum.Rune, BaseItem],
+  [ItemTypeEnum.Passion, Passion],
+  [ItemTypeEnum.Rune, Rune],
   [ItemTypeEnum.HitLocation, HitLocation],
   [ItemTypeEnum.Gear, Gear],
   [ItemTypeEnum.Armor, Armor],

@@ -1,6 +1,6 @@
 import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
+import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgItem } from "../items/rqgItem";
 
@@ -23,8 +23,6 @@ export class RqgActor extends Actor<RqgActorData> {
     const data = actorData.data;
     // Set this here before Active effects to allow POW crystals to boost it.
     data.attributes.magicPoints.max = data.characteristics.power.value;
-    // const flags = actorData.flags;
-    console.debug("*** RqgActor prepareBaseData  actorData", actorData);
   }
 
   prepareEmbeddedEntities(): void {
@@ -136,20 +134,28 @@ export class RqgActor extends Actor<RqgActorData> {
     return await super.create(data, options);
   }
   // @ts-ignore
-  async _onCreateEmbeddedEntity(embeddedName, child, options, userId) {
-    let updateData;
+  protected async _onCreateEmbeddedEntity(embeddedName, child, options, userId) {
     if (embeddedName === "OwnedItem") {
-      updateData = await ResponsibleItemClass.get(child.type).onEmbedItem(
+      const updateData = await ResponsibleItemClass.get(child.type).onEmbedItem(
         this,
         child,
         options,
         userId
       );
+      updateData && (await this.updateOwnedItem(updateData));
     }
-    // @ts-ignore
-    super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
-    if (updateData) {
-      await this.updateOwnedItem(updateData);
+  }
+
+  // @ts-ignore
+  protected async _onDeleteEmbeddedEntity(embeddedName, child, options, userId) {
+    if (embeddedName === "OwnedItem") {
+      const updateData = await ResponsibleItemClass.get(child.type).onDeleteItem(
+        this,
+        child,
+        options,
+        userId
+      );
+      updateData && (await this.updateOwnedItem(updateData));
     }
   }
 }

@@ -9,7 +9,6 @@ export class Skill extends BaseItem {
   //     makeDefault: true,
   //   });
   // }
-  static async onEmbedItem(actor, child, options, userId): Promise<any | undefined> {}
 
   public static prepareAsEmbeddedItem(item: RqgItem<SkillData>): RqgItem {
     const skillData = item.data.data;
