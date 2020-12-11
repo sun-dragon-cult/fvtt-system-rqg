@@ -134,7 +134,12 @@ export class RqgActor extends Actor<RqgActorData> {
     return await super.create(data, options);
   }
   // @ts-ignore
-  protected async _onCreateEmbeddedEntity(embeddedName, child, options, userId) {
+  protected async _onCreateEmbeddedEntity(
+    embeddedName: string,
+    child: ItemData,
+    options,
+    userId: string
+  ) {
     if (embeddedName === "OwnedItem") {
       const updateData = await ResponsibleItemClass.get(child.type).onEmbedItem(
         this,
@@ -147,11 +152,31 @@ export class RqgActor extends Actor<RqgActorData> {
   }
 
   // @ts-ignore
-  protected async _onDeleteEmbeddedEntity(embeddedName, child, options, userId) {
+  protected async _onDeleteEmbeddedEntity(embeddedName, child: ItemData, options, userId: string) {
     if (embeddedName === "OwnedItem") {
       const updateData = await ResponsibleItemClass.get(child.type).onDeleteItem(
         this,
         child,
+        options,
+        userId
+      );
+      updateData && (await this.updateOwnedItem(updateData));
+    }
+  }
+
+  // @ts-ignore
+  protected async _onUpdateEmbeddedEntity(
+    embeddedName: string,
+    child: ItemData,
+    update: any,
+    options: any,
+    userId: string
+  ) {
+    if (embeddedName === "OwnedItem") {
+      const updateData = await ResponsibleItemClass.get(child.type).onUpdateItem(
+        this,
+        child,
+        update,
         options,
         userId
       );

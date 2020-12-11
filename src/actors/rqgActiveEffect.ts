@@ -11,7 +11,6 @@ export class RqgActiveEffect extends ActiveEffect {
    * @private
    */
   _applyCustom(actor: Actor, change): any {
-    console.log("*** _applyCustom", actor, change);
     const [affectedItem, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.ap
     const items: Array<Item> = actor.items.filter(
       (i: Item) => i.data.type === affectedItem && i.data.name === itemName
@@ -23,11 +22,7 @@ export class RqgActiveEffect extends ActiveEffect {
       );
       return null;
     } else if (items.length === 0) {
-      console.warn(
-        "Rqg apply active effect didn't match any item",
-        path,
-        items
-      );
+      console.warn("Rqg apply active effect didn't match any item", path, items);
       return null;
     } else {
       const currentValue = getProperty(items[0], path);
@@ -55,27 +50,14 @@ export class RqgActiveEffect extends ActiveEffect {
         console.debug("€€€ RqgActiveEffect.prepareData on Item", this);
         const effects = this.data.effects || [];
         effects.forEach((e) =>
-          mergeObject(
-            e,
-            ResponsibleItemClass.get(this.data.type).generateActiveEffect(
-              this.data
-            )
-          )
+          mergeObject(e, ResponsibleItemClass.get(this.data.type).generateActiveEffect(this.data))
         );
       } else if (this.parent instanceof RqgActor) {
         // Update the active effect on actor from Item data
-        console.log("€€€ RqgActiveEffect.prepareData on Actor", this);
-        const [
-          entityName,
-          entityId,
-          embeddedName,
-          embeddedId,
-        ] = this.data.origin.split(".");
+        const [entityName, entityId, embeddedName, embeddedId] = this.data.origin.split(".");
         const item = this.parent.items.get(embeddedId);
         const updatedEffect = item
-          ? ResponsibleItemClass.get(item.data.type).generateActiveEffect(
-              item.data
-            )
+          ? ResponsibleItemClass.get(item.data.type).generateActiveEffect(item.data)
           : {};
         mergeObject(this.data, updatedEffect);
       } else {

@@ -16,15 +16,15 @@ export class RuneMagic extends BaseItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    item: ItemData<RuneMagicData>,
+    runeMagicItemData: ItemData<RuneMagicData>,
     options,
     userId: string
   ): Promise<any> {
     let updateData = {};
     const actorCults = actor.items.filter((i) => i.type === ItemTypeEnum.Cult);
     if (actorCults.length === 1) {
-      // @ts-ignore
-      updateData = { _id: item._id, data: { cultId: actorCults[0]._id } };
+      // @ts-ignore _id do exist
+      updateData = { _id: runeMagicItemData._id, data: { cultId: actorCults[0]._id } };
     }
     return updateData;
   }

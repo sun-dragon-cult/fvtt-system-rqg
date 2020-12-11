@@ -21,8 +21,6 @@ export class Armor extends BaseItem {
       };
     });
 
-    console.log("!!!! Armor changes", changes);
-
     return {
       label: "Armor",
       icon: "icons/svg/ice-shield.svg",

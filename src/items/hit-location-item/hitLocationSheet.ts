@@ -1,8 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
-  HitLocationData,
-  HitLocationsEnum,
-} from "../../data-model/item-data/hitLocationData";
+import { HitLocationData, HitLocationsEnum } from "../../data-model/item-data/hitLocationData";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
@@ -41,7 +38,6 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
             icon: '<i class="fas fa-check"></i>',
             label: "Add wound",
             callback: async (html) => {
-              console.log(html);
               const applyDamageToTotalHp: boolean = ((html[0] as HTMLElement).querySelector(
                 "[name=toTotalHp]"
               ) as HTMLInputElement).checked;
@@ -49,9 +45,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
                 "[name=subtractAP]"
               ) as HTMLInputElement).checked;
               let damage = parseInt(
-                ((html[0] as HTMLElement).querySelector(
-                  "[name=damage]"
-                ) as HTMLInputElement).value
+                ((html[0] as HTMLElement).querySelector("[name=damage]") as HTMLInputElement).value
               );
               if (subtractAP) {
                 damage = Math.max(0, damage - item.data.data.ap);
@@ -62,8 +56,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
                 data: { wounds: item.data.data.wounds.slice() },
               });
               if (applyDamageToTotalHp) {
-                const currentTotalHp =
-                  actor.data.data.attributes.hitPoints.value;
+                const currentTotalHp = actor.data.data.attributes.hitPoints.value;
                 await actor.update({
                   "data.attributes.hitPoints.value": currentTotalHp - damage,
                 });
@@ -85,12 +78,10 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
 
   static editWounds(actor: RqgActor, itemId: string) {
     const item: Item<HitLocationData> = actor.getOwnedItem(itemId);
-    console.debug("*** editWounds item", item.data.data.wounds);
     let dialogContent = "";
 
     item.data.data.wounds.forEach(
-      (wound, i) =>
-        (dialogContent += `<input type="number" name="damage${i}" value="${wound}"/>`)
+      (wound, i) => (dialogContent += `<input type="number" name="damage${i}" value="${wound}"/>`)
     );
     dialogContent +=
       '<label><input type="checkbox" name="toTotalHp" checked> Restore from total HP</label>';
@@ -108,10 +99,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
               const applyDamageToTotalHp: boolean = ((html[0] as HTMLElement).querySelector(
                 "[name=toTotalHp]"
               ) as HTMLInputElement).checked;
-              const woundsSumBefore = item.data.data.wounds.reduce(
-                (acc, v) => acc + v,
-                0
-              );
+              const woundsSumBefore = item.data.data.wounds.reduce((acc, v) => acc + v, 0);
               item.data.data.wounds = (html as JQuery)
                 .find("input")
                 .toArray()
@@ -122,12 +110,8 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
                 data: { wounds: item.data.data.wounds.slice() },
               });
               if (applyDamageToTotalHp) {
-                const currentTotalHp =
-                  actor.data.data.attributes.hitPoints.value;
-                const woundsSumAfter = item.data.data.wounds.reduce(
-                  (acc, v) => acc + v,
-                  0
-                );
+                const currentTotalHp = actor.data.data.attributes.hitPoints.value;
+                const woundsSumAfter = item.data.data.wounds.reduce((acc, v) => acc + v, 0);
                 await actor.update({
                   "data.attributes.hitPoints.value":
                     currentTotalHp + woundsSumBefore - woundsSumAfter,

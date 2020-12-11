@@ -29,6 +29,5 @@ export const Items = {
   [ItemTypeEnum.SpiritMagic]: emptySpiritMagic,
   [ItemTypeEnum.Cult]: emptyCult,
   [ItemTypeEnum.RuneMagic]: emptyRuneMagic,
-  // [ItemTypeEnum.SorcerousMagic]: emptySorcerousMagic,
   // [ItemTypeEnum.ShamanicAbility]: emptyShamanicAbility,
 };
