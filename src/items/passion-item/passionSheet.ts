@@ -17,9 +17,6 @@ export class PassionSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   getData(): any {
     const sheetData: any = super.getData(); // Don't use directly - not reliably typed
     const data: PassionData = sheetData.item.data;
-    if (!data.subject) {
-      data.subject = sheetData.item.name;
-    }
     data.passionTypes = Object.values(PassionsEnum);
     return sheetData;
   }
