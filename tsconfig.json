@@ -2,6 +2,6 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "ES6", "ESNext"],
-    "types": ["foundry-pc-types"]
+    "types": ["foundry-pc-types", "node"]
   }
 }
