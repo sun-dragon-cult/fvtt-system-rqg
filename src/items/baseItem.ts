@@ -67,7 +67,7 @@ export abstract class BaseItem {
   }
 
   // TODO return type should be "active effect data"
-  static generateActiveEffect(itemData: ItemData): any {
+  static generateActiveEffect(itemData: any): any {
     return;
   }
 

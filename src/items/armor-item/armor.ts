@@ -1,5 +1,6 @@
 import { BaseItem } from "../baseItem";
 import { ArmorData, emptyArmor } from "../../data-model/item-data/armorData";
+import { RqgActor } from "../../actors/rqgActor";
 
 export class Armor extends BaseItem {
   // public static init() {
@@ -9,9 +10,38 @@ export class Armor extends BaseItem {
   //   });
   // }
 
+  static async onUpdateItem(
+    actor: RqgActor,
+    itemData: ItemData,
+    update: any,
+    options: any,
+    userId: string
+  ): Promise<any> {
+    // Update the active effect on actor from Item data
+    // @ts-ignore
+    const uuid = `Actor.${actor.id}.OwnedItem.${itemData._id}`;
+    // @ts-ignore
+    const existingEffect = actor.effects.find((e) => e.data.origin === uuid);
+    if (existingEffect) {
+      const changes = Armor.generateActiveEffect(itemData.data).changes;
+      await actor.updateEmbeddedEntity(
+        "ActiveEffect",
+        {
+          _id: existingEffect.id,
+          changes: changes,
+          disabled: !itemData.data.isEquipped,
+        },
+        {}
+      );
+    } else {
+      // Just in case - make sure the armor has a corresponding AE
+      await actor.createEmbeddedEntity("ActiveEffect", Armor.generateActiveEffect(itemData.data));
+    }
+  }
+
   // TODO return type should be "active effect data"
-  public static generateActiveEffect(itemData: ItemData<ArmorData>): any {
-    const armorData: ArmorData = itemData?.data || emptyArmor;
+  static generateActiveEffect(itemData: ArmorData): any {
+    const armorData: ArmorData = itemData || emptyArmor;
     const changes = armorData.hitLocations.map((hitLocationName) => {
       return {
         key: `hitLocation:${hitLocationName}:data.data.ap`,
