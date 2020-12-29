@@ -7,6 +7,17 @@ export class RqgCombat {
       formula: null,
       decimals: 0,
     };
+    Hooks.on("updateCombatant", (combat, combatant, diff) => {
+      if (!game.user.isGM) return;
+      if ("defeated" in diff) {
+        let updates = combat.combatants
+          .filter((c) => !!c.tokenId && c.tokenId === combatant.tokenId && c._id !== combatant._id)
+          .map((c) => {
+            return { _id: c._id, defeated: diff.defeated };
+          });
+        combat.updateCombatant(updates);
+      }
+    });
   }
 }
 
@@ -14,9 +25,7 @@ function renderCombatTracker(app, html, data) {
   const currentCombat = data.combats[data.currentIndex - 1];
   html.find(".combatant").each(async (i, el) => {
     const combId = el.dataset.combatantId;
-    const combatant = currentCombat.data.combatants.find(
-      (c) => c._id === combId
-    );
+    const combatant = currentCombat.data.combatants.find((c) => c._id === combId);
     if (!combatant.initiative) {
       const attributes = combatant.actor.data.data.attributes;
       // TODO How to know primary weapon SR?
@@ -30,8 +39,7 @@ function renderCombatTracker(app, html, data) {
 
     initDiv.addEventListener("change", async (e) => {
       const inputElement = e.target;
-      const combatantId = inputElement.closest("[data-combatant-id]").dataset
-        .combatantId;
+      const combatantId = inputElement.closest("[data-combatant-id]").dataset.combatantId;
       await currentCombat.setInitiative(combatantId, inputElement.value);
     });
   });
@@ -56,9 +64,7 @@ function getEntryContextOptions() {
       name: "Duplicate Combatant",
       icon: '<i class="far fa-copy fa-fw"></i>',
       callback: async (li) => {
-        const combatant = await this.combat.getCombatant(
-          li.data("combatant-id")
-        );
+        const combatant = await this.combat.getCombatant(li.data("combatant-id"));
         await this.combat.createCombatant(combatant);
       },
     },

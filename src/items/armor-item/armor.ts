@@ -29,6 +29,4 @@ export class Armor extends BaseItem {
       disabled: !armorData.isEquipped,
     };
   }
-
-  static activateActorSheetListeners(html, sheet) {}
 }

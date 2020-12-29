@@ -25,7 +25,7 @@ export class RqgActiveEffect extends ActiveEffect {
       console.warn("Rqg apply active effect didn't match any item", path, items);
       return null;
     } else {
-      const currentValue = getProperty(items[0], path);
+      const currentValue = getProperty(items[0], path) || 0;
       console.debug(
         "RqgActiveEffect._applyCustom: adding",
         change.value,

@@ -7,6 +7,4 @@ export class Gear extends BaseItem {
   //     makeDefault: true,
   //   });
   // }
-
-  static activateActorSheetListeners(html, sheet) {}
 }

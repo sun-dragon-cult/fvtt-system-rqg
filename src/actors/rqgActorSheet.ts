@@ -94,16 +94,18 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       (s) => s.data.name === "Dodge"
     );
 
-    data.powCrystals = data.effects
-      .filter((e) => e.changes.find((e) => e.key === "data.attributes.magicPoints.max"))
-      .map((e) => {
-        return {
-          name: e.label,
-          size: e.changes
-            .filter((c) => c.key === "data.attributes.magicPoints.max")
-            .reduce((acc, c) => acc + c.value, 0),
-        };
-      });
+    data.powCrystals =
+      data.effects &&
+      data.effects
+        .filter((e) => e.changes.find((e) => e.key === "data.attributes.magicPoints.max"))
+        .map((e) => {
+          return {
+            name: e.label,
+            size: e.changes
+              .filter((c) => c.key === "data.attributes.magicPoints.max")
+              .reduce((acc, c) => acc + c.value, 0),
+          };
+        });
 
     return sheetData;
   }

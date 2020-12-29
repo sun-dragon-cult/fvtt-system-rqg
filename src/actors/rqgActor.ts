@@ -15,31 +15,49 @@ export class RqgActor extends Actor<RqgActorData> {
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
-  prepareBaseData() {
+  prepareBaseData(): void {
     // @ts-ignore (until foundry-pc-types are updated for 0.7)
     super.prepareBaseData();
-
     const actorData = this.data;
     const data = actorData.data;
+
+    console.debug("rqgActor # prepareBaseData", this.name, data);
     // Set this here before Active effects to allow POW crystals to boost it.
     data.attributes.magicPoints.max = data.characteristics.power.value;
   }
 
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
-    const actorData = this.data;
-    const data = actorData.data;
-
-    // Shorthand access to characteristics
-    const str = data.characteristics.strength.value;
-    const con = data.characteristics.constitution.value;
-    const siz = data.characteristics.size.value;
-    const dex = data.characteristics.dexterity.value;
-    const int = data.characteristics.intelligence.value;
-    const pow = data.characteristics.power.value;
-    const cha = data.characteristics.charisma.value;
+    const [data, str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
+    console.debug("rqgActor # prepareEmbeddedEntities", this.name, data);
 
     data.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+
+    this.items.forEach((item: RqgItem) =>
+      ResponsibleItemClass.get(item.type).onActorPrepareEmbeddedEntities(item)
+    );
+  }
+
+  /**
+   * Apply any transformations to the Actor data which are caused by ActiveEffects.
+   */
+  applyActiveEffects(): void {
+    console.debug("rqgActor # applyActiveEffects", this.name);
+
+    super.applyActiveEffects();
+    // @ts-ignore 0.7
+    console.debug("!! ***applyActiveEffects", this.effects);
+  }
+
+  /**
+   * Apply final transformations to the Actor data after all effects have been applied
+   */
+  prepareDerivedData(): void {
+    // @ts-ignore (until foundry-pc-types are updated for 0.7)
+    super.prepareDerivedData();
+
+    const [data, str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
+    console.debug("rqgActor # prepareDerivedData", this.name, data);
 
     data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
       str,
@@ -49,39 +67,24 @@ export class RqgActor extends Actor<RqgActorData> {
       pow,
       cha
     );
+    data.attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
+    const movementEncumbrancePenalty = Math.min(
+      0,
+      data.attributes.maximumEncumbrance - data.attributes.equippedEncumbrance
+    );
+
+    data.attributes.move += movementEncumbrancePenalty;
+    data.skillCategoryModifiers.agility += movementEncumbrancePenalty * 5;
+    data.skillCategoryModifiers.manipulation += movementEncumbrancePenalty * 5;
+    data.skillCategoryModifiers.stealth += movementEncumbrancePenalty * 5;
+    data.skillCategoryModifiers.meleeWeapons += movementEncumbrancePenalty * 5;
+    data.skillCategoryModifiers.missileWeapons += movementEncumbrancePenalty * 5;
+    data.skillCategoryModifiers.naturalWeapons += movementEncumbrancePenalty * 5;
+    data.skillCategoryModifiers.shields += movementEncumbrancePenalty * 5;
 
     this.items.forEach((item: RqgItem) =>
-      ResponsibleItemClass.get(item.type).prepareAsEmbeddedItem(item)
+      ResponsibleItemClass.get(item.type).onActorPrepareDerivedData(item)
     );
-  }
-
-  /**
-   * Apply any transformations to the Actor data which are caused by ActiveEffects.
-   */
-  applyActiveEffects() {
-    super.applyActiveEffects();
-    // @ts-ignore 0.7
-    console.debug("!! ***applyActiveEffects", this.effects);
-  }
-
-  /**
-   * Apply final transformations to the Actor data after all effects have been applied
-   */
-  prepareDerivedData() {
-    // @ts-ignore (until foundry-pc-types are updated for 0.7)
-    super.prepareDerivedData();
-    console.debug("!! ***prepareDerivedData");
-
-    const actorData = this.data;
-    const data = actorData.data;
-
-    // Shorthand access to characteristics
-    const str = data.characteristics.strength.value;
-    const con = data.characteristics.constitution.value;
-    const siz = data.characteristics.size.value;
-    const dex = data.characteristics.dexterity.value;
-    const pow = data.characteristics.power.value;
-    const cha = data.characteristics.charisma.value;
 
     // *** Setup calculated stats ***
 
@@ -90,27 +93,7 @@ export class RqgActor extends Actor<RqgActorData> {
     data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
     data.attributes.healingRate = RqgCalculations.healingRate(con);
     data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
-    data.attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
 
-    data.attributes.equippedEncumbrance = this.items.reduce((sum, i) => {
-      const enc = i.data.data.isEquipped
-        ? (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0)
-        : 0;
-      return sum + enc;
-    }, 0);
-    data.attributes.equippedEncumbrance = Math.round(data.attributes.equippedEncumbrance);
-
-    data.attributes.travelEncumbrance = this.items.reduce(
-      (sum, i) => sum + (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0),
-      0
-    );
-    data.attributes.travelEncumbrance = Math.round(data.attributes.travelEncumbrance);
-
-    const movementPenalty = Math.max(
-      0,
-      data.attributes.equippedEncumbrance - data.attributes.maximumEncumbrance
-    );
-    data.attributes.movementRate = 8 - movementPenalty; // TODO Humanoids only for now
     // @ts-ignore 0.7
     data.effects = [...this.effects].map((effect) => effect.data);
   }
@@ -127,12 +110,16 @@ export class RqgActor extends Actor<RqgActorData> {
           brightSight: 0,
           actorLink: true,
           disposition: 1,
+          bar1: { attribute: "attributes.hitPoints" },
+          bar2: { attribute: "attributes.magicPoints" },
+          displayBars: CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
         },
         { overwrite: false }
       );
     }
     return await super.create(data, options);
   }
+
   // @ts-ignore
   protected async _onCreateEmbeddedEntity(
     embeddedName: string,
@@ -140,6 +127,8 @@ export class RqgActor extends Actor<RqgActorData> {
     options,
     userId: string
   ) {
+    console.debug("rqgActor # _onCreateEmbeddedEntity", child.name, child);
+
     if (embeddedName === "OwnedItem") {
       const updateData = await ResponsibleItemClass.get(child.type).onEmbedItem(
         this,
@@ -153,6 +142,8 @@ export class RqgActor extends Actor<RqgActorData> {
 
   // @ts-ignore
   protected async _onDeleteEmbeddedEntity(embeddedName, child: ItemData, options, userId: string) {
+    console.debug("rqgActor # _onDeleteEmbeddedEntity", child.name, child);
+
     if (embeddedName === "OwnedItem") {
       const updateData = await ResponsibleItemClass.get(child.type).onDeleteItem(
         this,
@@ -172,6 +163,7 @@ export class RqgActor extends Actor<RqgActorData> {
     options: any,
     userId: string
   ) {
+    console.debug("rqgActor # _onUpdateEmbeddedEntity", child.name, child);
     if (embeddedName === "OwnedItem") {
       const updateData = await ResponsibleItemClass.get(child.type).onUpdateItem(
         this,
@@ -182,5 +174,76 @@ export class RqgActor extends Actor<RqgActorData> {
       );
       updateData && (await this.updateOwnedItem(updateData));
     }
+  }
+
+  // @ts-ignore
+  _onModifyEmbeddedEntity(embeddedName, ...args) {
+    // @ts-ignore
+    console.debug("rqgActor # _onModifyEmbeddedEntity", this.name, args);
+    if (embeddedName === "OwnedItem") {
+      // Try doing stuff after this has updated
+      setTimeout(this.updateEncumbrance.bind(this), 0); // TODO Solve without releasing thread?
+    }
+    // @ts-ignore
+    super._onModifyEmbeddedEntity(embeddedName, ...args);
+  }
+
+  private async updateEncumbrance() {
+    const equippedEncumbrance = Math.round(
+      this.items.reduce((sum, i) => {
+        const enc = i.data.data.isEquipped
+          ? (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0)
+          : 0;
+        return sum + enc;
+      }, 0)
+    );
+
+    const travelEncumbrance = Math.round(
+      this.items.reduce(
+        (sum, i) => sum + (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0),
+        0
+      )
+    );
+    if (
+      this.data.data.attributes.equippedEncumbrance !== equippedEncumbrance ||
+      this.data.data.attributes.travelEncumbrance !== travelEncumbrance
+    ) {
+      await this.update(
+        {
+          _id: this._id,
+          data: {
+            attributes: {
+              equippedEncumbrance: equippedEncumbrance,
+              travelEncumbrance: travelEncumbrance,
+            },
+          },
+        },
+        { render: true }
+      );
+    }
+  }
+
+  // Return shorthand access to actor data & characteristics
+  private actorCharacteristics(): [
+    RqgActorData,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ] {
+    const actorData = this.data;
+    const data = actorData.data;
+
+    const str = data.characteristics.strength.value;
+    const con = data.characteristics.constitution.value;
+    const siz = data.characteristics.size.value;
+    const dex = data.characteristics.dexterity.value;
+    const int = data.characteristics.intelligence.value;
+    const pow = data.characteristics.power.value;
+    const cha = data.characteristics.charisma.value;
+    return [data, str, con, siz, dex, int, pow, cha];
   }
 }

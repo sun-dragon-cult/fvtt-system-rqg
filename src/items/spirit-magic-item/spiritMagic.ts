@@ -1,6 +1,4 @@
 import { BaseItem } from "../baseItem";
-import { RqgItem } from "../rqgItem";
-import { SpiritMagicData } from "../../data-model/item-data/spiritMagicData";
 
 export class SpiritMagic extends BaseItem {
   // public static init() {
@@ -9,10 +7,4 @@ export class SpiritMagic extends BaseItem {
   //     makeDefault: true,
   //   });
   // }
-
-  public static prepareAsEmbeddedItem(item: RqgItem<SpiritMagicData>): RqgItem {
-    console.debug("*** SpiritMagic prepareAsEmbeddedItem", item);
-
-    return item;
-  }
 }

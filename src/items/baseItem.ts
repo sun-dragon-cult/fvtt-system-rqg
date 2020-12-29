@@ -55,12 +55,22 @@ export abstract class BaseItem {
   /**
    * Allows each embedded item to prepare its data.
    */
-  static prepareAsEmbeddedItem(item: RqgItem): RqgItem {
+  static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
+    return item;
+  }
+
+  /**
+   * Allow updates to the items after active effects is applied.
+   */
+  static onActorPrepareDerivedData(item: RqgItem): RqgItem {
     return item;
   }
 
   // TODO return type should be "active effect data"
-  public static generateActiveEffect(itemData: ItemData): any {
+  static generateActiveEffect(itemData: ItemData): any {
     return;
   }
+
+  // TODO not used (yet)
+  static activateActorSheetListeners(html, sheet) {}
 }
