@@ -88,7 +88,7 @@
           {{#if data.data.isEquipped}}
           {{#unless data.data.isNatural}}
           <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
-            <td>{{name}}</td>
+            <td><img class="item" src="{{img}}"> {{name}}</td>
             <td class="text-right">{{skillchance data.data.skillId actor._id}}%</td>
             <td data-item-id="{{data.data.skillId}}"><input type="checkbox" data-item-experience {{checkedexperience data.data.skillId actor._id}}></td>
             <td class="text-right"><input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value" value="{{data.data.hitPoints.value}}"> /</td>
@@ -108,7 +108,7 @@
         {{#if data.data.isEquipped}}
         {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
         <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
-          <td>{{name}} ({{quantity data.data.projectileId actor._id}})</td>
+          <td><img class="item" src="{{img}}"> {{name}} ({{quantity data.data.projectileId actor._id}})</td>
           <td class="text-right">{{skillchance data.data.skillId actor._id}}%</td>
           <td data-item-id="{{data.data.skillId}}"><input type="checkbox" data-item-experience {{checkedexperience data.data.skillId actor._id}}></td>
           <td></td>
@@ -127,7 +127,7 @@
         {{#each data.ownedItems.meleeWeapon}}
           {{#if data.data.isNatural}}
           <tr data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}">
-            <td>{{name}}</td>
+            <td><img class="item" src="{{img}}"> {{name}}</td>
             <td class="text-right">{{skillchance data.data.skillId actor._id}}%</td>
             <td data-item-id="{{data.data.skillId}}"><input type="checkbox" data-item-experience {{checkedexperience data.data.skillId actor._id}}></td>
             <td></td>

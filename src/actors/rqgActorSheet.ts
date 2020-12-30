@@ -15,8 +15,8 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", "actor"],
       template: "systems/rqg/actors/rqgActorSheet.html",
-      width: 690,
-      height: 600,
+      width: 720,
+      height: 650,
       tabs: [
         {
           navSelector: ".sheet-tabs",
