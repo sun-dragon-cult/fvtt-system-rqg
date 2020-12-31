@@ -138,6 +138,8 @@ export class RqgActor extends Actor<RqgActorData> {
       );
       updateData && (await this.updateOwnedItem(updateData));
     }
+    // @ts-ignore
+    return super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
   }
 
   // @ts-ignore
@@ -153,6 +155,8 @@ export class RqgActor extends Actor<RqgActorData> {
       );
       updateData && (await this.updateOwnedItem(updateData));
     }
+    // @ts-ignore
+    return super._onDeleteEmbeddedEntity(embeddedName, child, options, userId);
   }
 
   // @ts-ignore
@@ -174,6 +178,8 @@ export class RqgActor extends Actor<RqgActorData> {
       );
       updateData && (await this.updateOwnedItem(updateData));
     }
+    // @ts-ignore
+    return super._onUpdateEmbeddedEntity(embeddedName, child, update, options, userId);
   }
 
   // @ts-ignore

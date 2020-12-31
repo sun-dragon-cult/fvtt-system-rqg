@@ -25,10 +25,12 @@ export class MeleeWeapon extends BaseItem {
         ui.notifications.warn("Couldn't find the Skill associated with this weapon.");
       }
     }
-    if (!embeddedSkillId) {
+    if (embeddedSkillId) {
+      return { _id: child._id, data: { skillId: embeddedSkillId } };
+    } else {
       // Didn't find the weapon skill - open the item sheet to let the user select one
       options.renderSheet = true;
+      return;
     }
-    return embeddedSkillId ? { _id: child._id, data: { skillId: embeddedSkillId } } : {};
   }
 }
