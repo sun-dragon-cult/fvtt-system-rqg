@@ -20,6 +20,8 @@ export class RqgActorData {
     public dodgeSkill?: RqgItem<SkillData>, // For access on combat part of sheet
     public spiritCombatSkill?: RqgItem<SkillData>, // For access on spirit combat part of sheet
     public powCrystals?: any[], // Stores label & value of AE affecting magicPoints.max
+    public spiritMagicPointSum?: number, // Total spirit magic points learnt
+    public freeInt?: number, // For sorcery
     public effects?: any // TODO fooling around
   ) {}
 }

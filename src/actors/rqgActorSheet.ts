@@ -107,6 +107,16 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
           };
         });
 
+    data.spiritMagicPointSum = data.ownedItems[ItemTypeEnum.SpiritMagic].reduce(
+      (acc, m) => acc + m.data.data.points,
+      0
+    );
+
+    data.freeInt =
+      data.characteristics.intelligence.value -
+      data.spiritMagicPointSum -
+      data.ownedItems[ItemTypeEnum.Skill].magic.filter((s) => s.data.data.runes.length).length;
+
     return sheetData;
   }
 
