@@ -1,6 +1,7 @@
 export const preloadTemplates = async function () {
   const templatePaths = [
     "systems/rqg/actors/rqgActorSheet.html",
+    // ActorSheet tabs
     "systems/rqg/actors/parts/runes-tab.html",
     "systems/rqg/actors/parts/spirit-magic-tab.html",
     "systems/rqg/actors/parts/rune-magic-tab.html",
@@ -13,12 +14,15 @@ export const preloadTemplates = async function () {
 
     "systems/rqg/items/parts/itemActiveEffects.html",
 
+    // ActorSheet parts
     "systems/rqg/actors/parts/health.html",
+    "systems/rqg/actors/parts/combat.html",
     "systems/rqg/actors/parts/elemental.html",
     "systems/rqg/actors/parts/power.html",
     "systems/rqg/actors/parts/form.html",
     "systems/rqg/actors/parts/condition.html",
 
+    // Item sheets
     "systems/rqg/items/passion-item/passionSheet.html",
     "systems/rqg/items/skill-item/skillSheet.html",
     "systems/rqg/items/rune-item/runeSheet.html",
