@@ -69,6 +69,11 @@ export class RqgItem<DataType = any> extends Item<DataType> {
     Hooks.on("preCreateOwnedItem", (parent, r) => {
       if (parent instanceof RqgActor && Object.values(ItemTypeEnum).includes(r.type)) {
         const rqgItem = r as RqgItem;
+        // Prevent duplicates
+        if (parent.items.find((i) => i.name === r.name)) {
+          return false;
+        }
+
         // @ts-ignore 0.7
         rqgItem.effects = rqgItem.effects || [];
         const activeEffect = ResponsibleItemClass.get(rqgItem.type).generateActiveEffect(
