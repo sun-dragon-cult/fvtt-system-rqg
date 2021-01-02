@@ -70,7 +70,10 @@ export class RqgItem<DataType = any> extends Item<DataType> {
       if (parent instanceof RqgActor && Object.values(ItemTypeEnum).includes(r.type)) {
         const rqgItem = r as RqgItem;
         // Prevent duplicates
-        if (parent.items.find((i) => i.name === r.name)) {
+        if (parent.items.find((i) => i.name === r.name && i.type === r.type)) {
+          ui.notifications.warn(
+            `${parent.name} already has a ${r.type} '${r.name}' and duplicates are not allowed`
+          );
           return false;
         }
 
