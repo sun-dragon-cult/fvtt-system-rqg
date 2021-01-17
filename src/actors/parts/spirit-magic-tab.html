@@ -1,26 +1,22 @@
-<h2 class="flex-row">
-  <span>Spirit magic <span class="small-size">Learnt {{data.spiritMagicPointSum}}/{{data.characteristics.charisma.value}} points</span></span>
-  <a title="Add Spell" data-item-add data-item-type="spiritMagic"><i class="fas fa-plus"></i></a>
+<h2>
+  Spirit magic
+  <span class="small-size">Learnt {{data.spiritMagicPointSum}}/{{data.characteristics.charisma.value}} points</span>
 </h2>
-<table>
-  <tr>
-    <th class="text-left">Name</th>
-    <th class="text-right">Points</th>
-    <th>Variable</th>
-    <th class="text-left">Range</th>
-    <th class="text-left">Duration</th>
-    <th class="text-left">Concentration</th>
-  </tr>
+<div class="grid spiritmagic">
+  <div class="heading"></div>
+  <div class="heading">Name</div>
+  <div class="heading text-right">Points</div>
+  <div class="heading">Variable</div>
+  <div class="heading text-left">Range</div>
+  <div class="heading text-left">Duration</div>
+  <div class="heading text-left">Concentration</div>
   {{#each data.ownedItems.spiritMagic}}
-  <tr data-item-id="{{this._id}}">
-    <td><img class="item" src="{{img}}"> {{name}} <a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a></td>
-    <td class="text-right">{{data.data.points}}</td>
-    <td class="text-center">{{yes-no this.data.data.isVariable}}</td>
-    <td>{{data.data.castingRange}}</td>
-    <td>{{data.data.duration}}</td>
-    <td>{{data.data.concentration}}</td>
-
-    <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
-  </tr>
+    <div data-item-id="{{_id}}" class="spiritmagic-contextmenu"><img class="item" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{name}}</div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu text-right">{{data.data.points}}</div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu text-center">{{yes-no this.data.data.isVariable}}</div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{data.data.castingRange}}</div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{data.data.duration}}</div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{data.data.concentration}}</div>
   {{/each}}
-</table>
+</div>

@@ -1,31 +1,30 @@
-<div class="power norse flex-row">
+<div class="power flex-row">
   <span class="small-size">Free INT {{data.freeInt}}</span>
-
   <div>
-    <h2>Techniques</h2>
+    <h2 class="norse">Techniques</h2>
     {{#each data.ownedItems.rune.technique}}
-      <a data-item-id="{{_id}}" data-item-edit class="powerline"><img src="{{img}}"> {{name}}</a>
+      <div class="powerline"><img class="rune" src="{{img}}"> {{name}}</div>
     {{/each}}
   </div>
   <div>&nbsp;</div>
   <div>
-    <h2>Mastered Runes</h2>
+    <h2 class="norse">Mastered Runes</h2>
     <div>
       {{#each data.ownedItems.rune.element}}
       {{#if data.data.isMastered}}
-        <a data-item-id="{{_id}}" data-item-edit class="powerline"><img src="{{img}}"> {{name}}</a>
+        <div class="powerline"><img class="rune" src="{{img}}"> {{name}}</div>
       {{/if}}
       {{/each}}
 
       {{#each data.ownedItems.rune.power}}
       {{#if data.data.isMastered}}
-        <a data-item-id="{{_id}}" data-item-edit class="powerline"><img src="{{img}}"> {{name}}</a>
+        <div class="powerline"><img class="rune" src="{{img}}"> {{name}}</div>
       {{/if}}
       {{/each}}
 
       {{#each data.ownedItems.rune.form}}
       {{#if data.data.isMastered}}
-        <a data-item-id="{{_id}}" data-item-edit class="powerline"><img src="{{img}}"> {{name}}</a>
+        <div class="powerline"><img class="rune" src="{{img}}"> {{name}}</div>
       {{/if}}
       {{/each}}
     </div>

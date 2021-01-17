@@ -1,67 +1,51 @@
-<div class="power norse">
-  <h2>Power</h2>
-  <span>
-    {{#with data.ownedItems.rune.power.Fertility}}
-      <span data-item-id="{{_id}}">
-        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
-      </span>
-    {{/with}}
-    –
-    {{#with data.ownedItems.rune.power.Death}}
-      <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
-        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-      </span>
-    {{/with}}
-  </span>
+<div class="grid opposed-rune">
+  <h2 class="norse fullrow">Power</h2>
 
-  <span>
-    {{#with data.ownedItems.rune.power.Harmony}}
-      <span data-item-id="{{_id}}">
-        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
-      </span>
-    {{/with}}
-    –
-    {{#with data.ownedItems.rune.power.Disorder}}
-      <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
-        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-      </span>
-    {{/with}}
-  </span>
+  {{#with data.ownedItems.rune.power.Fertility}}
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+  {{/with}}
+  <i class="fas fa-arrows-alt-h"></i>
+  {{#with data.ownedItems.rune.power.Death}}
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+  {{/with}}
 
-  <span>
-    {{#with data.ownedItems.rune.power.Truth}}
-      <span data-item-id="{{_id}}">
-        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
-      </span>
-    {{/with}}
-    –
-    {{#with data.ownedItems.rune.power.Illusion}}
-      <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
-        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-      </span>
-    {{/with}}
-  </span>
+  {{#with data.ownedItems.rune.power.Harmony}}
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+  {{/with}}
+  <i class="fas fa-arrows-alt-h"></i>
+  {{#with data.ownedItems.rune.power.Disorder}}
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+  {{/with}}
 
-  <span>
-    {{#with data.ownedItems.rune.power.Stasis}}
-      <span data-item-id="{{_id}}">
-        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-        <a data-item-roll class="powerline">{{data.data.chance}}% <img src="{{img}}"/></a> <a data-item-edit>{{data.data.rune}}</a>
-      </span>
-    {{/with}}
-    –
-    {{#with data.ownedItems.rune.power.Movement}}
-      <span data-item-id="{{_id}}">
-        <a data-item-edit class="powerline">{{data.data.rune}}</a> <a data-item-roll><img src="{{img}}"/> {{data.data.chance}}%</a>
-        <input type="checkbox" data-item-experience {{checked this.data.data.experience}}>
-      </span>
-    {{/with}}
-  </span>
-  {{log data.ownedItems}}
+  {{#with data.ownedItems.rune.power.Truth}}
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+  {{/with}}
+  <i class="fas fa-arrows-alt-h"></i>
+  {{#with data.ownedItems.rune.power.Illusion}}
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+  {{/with}}
+
+  {{#with data.ownedItems.rune.power.Stasis}}
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+  {{/with}}
+  <i class="fas fa-arrows-alt-h"></i>
+  {{#with data.ownedItems.rune.power.Movement}}
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+  {{/with}}
 </div>

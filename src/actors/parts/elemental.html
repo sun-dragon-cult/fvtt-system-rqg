@@ -1,10 +1,8 @@
-<div class="elemental norse">
-  <h2>Elemental</h2>
+<div class="grid rune">
+  <h2 class="norse fullrow">Elemental</h2>
   {{#each data.ownedItems.rune.element}}
-  <span class="grid-row nowrap" data-item-id="{{this._id}}">
-      <a data-item-edit><img src="{{img}}" /> {{data.data.rune}}</a>
-      <a data-item-roll>{{this.data.data.chance}}%</a>
-    <div style="align-self: flex-end"><input type="checkbox" data-item-experience {{checked data.data.experience}}></div>
-    </span>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
   {{/each}}
 </div>

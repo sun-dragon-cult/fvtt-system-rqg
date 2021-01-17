@@ -9,6 +9,14 @@ import { RqgItem } from "../items/rqgItem";
 import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { RuneData, RuneTypeEnum } from "../data-model/item-data/runeData";
+import { skillMenuOptions } from "./context-menues/skill-context-menu";
+import { combatMenuOptions } from "./context-menues/combat-context-menu";
+import { hitLocationMenuOptions } from "./context-menues/health-context-menu";
+import { passionMenuOptions } from "./context-menues/passion-context-menu";
+import { gearMenuOptions } from "./context-menues/gear-context-menu";
+import { spiritMagicMenuOptions } from "./context-menues/spirit-magic-context-menu";
+import { cultMenuOptions } from "./context-menues/cult-context-menu";
+import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -117,6 +125,8 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       data.spiritMagicPointSum -
       data.ownedItems[ItemTypeEnum.Skill].magic.filter((s) => s.data.data.runes.length).length;
 
+    data.isGM = game.user.isGM;
+
     return sheetData;
   }
 
@@ -131,6 +141,15 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
   activateListeners(html): void {
     super.activateListeners(html);
+
+    new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(this.actor));
+    new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor));
+    new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));
+    new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(this.actor));
+    new ContextMenu(html, ".gear-contextmenu", gearMenuOptions(this.actor));
+    new ContextMenu(html, ".spirit-magic-contextmenu", spiritMagicMenuOptions(this.actor));
+    new ContextMenu(html, ".cult-contextmenu", cultMenuOptions(this.actor));
+    new ContextMenu(html, ".rune-magic-contextmenu", runeMagicMenuOptions(this.actor));
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.

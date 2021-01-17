@@ -1,5 +1,3 @@
-<a title="Join Cult" data-item-add data-item-type="cult"><i class="fas fa-plus"></i>Join Cult</a>
-
 {{#each data.ownedItems.runeMagic}}
 {{#unless data.data.cultId}}
 <div data-item-id="{{this._id}}">
@@ -10,20 +8,15 @@
 {{/each}}
 
 {{#each data.ownedItems.cult}}
-<div data-item-id="{{this._id}}">
-  <h2 class="flex-row">
-
-    <a title="Edit Item" data-item-edit>
-      <i class="small-size fas fa-edit"></i>
-      {{name}}
-      {{#each data.data.runes}}
-        <img class="rune" src="{{runeImg this}}" title="{{this}}">
-      {{/each}}
-    </a>
+<div style="margin-bottom: 1.5rem" data-item-id="{{this._id}}">
+  <h2 class="cult-contextmenu">
+    {{name}}
+    {{#each data.data.runes}}
+      <img class="rune" src="{{runeImg this}}" title="{{this}}">
+    {{/each}}
     <span class="small-size">{{data.data.tagline}}</span>
-    <span class="small-size text-right"><a title="Leave Cult" data-item-delete><i class="fas fa-trash"></i></a></span>
   </h2>
-  <div class="flex-row">
+  <div class="flex-row cult-contextmenu">
     <span>
       <b>Rank:</b> {{data.data.rank}}<br>
       <b>Rune Points:</b> <input type="number" min="0" max="99" data-item-edit-value="data.runePoints.value" value="{{data.data.runePoints.value}}">/{{data.data.runePoints.max}}
@@ -33,37 +26,31 @@
       <span><b>Sub Cults:</b>{{{data.data.subCults}}}</span>
     {{/if}}
   </div>
-  <div class="runespells">
-    <table>
-      <tr>
-        <th class="text-left">Rune Spell</th>
-        <th class="text-left">Points</th>
-        <th class="text-left">Range</th>
-        <th class="text-left">Duration</th>
-        <th class="text-left">Stackable</th>
-        <th class="text-left">One Use</th>
-        <th class="text-right">Chance</th>
-        <th><a title="Add Rune Magic Spell" data-item-add data-item-type="runeMagic"><i class="fas fa-plus"></i></a></th>
-      </tr>
+    <div class="grid rune-magic">
+      <div class="heading"></div>
+      <div class="heading">Rune Spell</div>
+      <div class="heading">Points</div>
+      <div class="heading">Range</div>
+      <div class="heading">Duration</div>
+      <div class="heading">Stackable</div>
+      <div class="heading">One Use</div>
+      <div class="heading text-right">Chance</div>
       {{#each @root.data.ownedItems.runeMagic}}
       {{#if (eq ../id data.data.cultId)}}
       <tr data-item-id="{{this._id}}">
         <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}
           {{#each data.data.runes}}
-          <img class="rune" src="{{runeImg this}}" title="{{this}}">
+            <img class="rune" src="{{runeImg this}}" title="{{this}}">
           {{/each}}
-        </td>
-        <td class="text-left">{{data.data.points}}</td>
-        <td>{{{data.data.castingRange}}}</td>
-        <td>{{{data.data.duration}}}</td>
-        <td>{{{yes-no data.data.isStackable}}}</td>
-        <td>{{{yes-no data.data.isOneUse}}}</td>
-        <td class="text-right"><a data-item-roll>{{data.data.chance}}%</a></td>
-        <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
-      </tr>
+        </div>
+        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">{{data.data.points}}</div>
+        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">{{{data.data.castingRange}}}</div>
+        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">{{{data.data.duration}}}</div>
+        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">{{{yes-no data.data.isStackable}}}</div>
+        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">{{{yes-no data.data.isOneUse}}}</div>
+        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu text-right">{{data.data.chance}}%</div>
       {{/if}}
       {{/each}}
-    </table>
-  </div>
+    </div>
 </div>
 {{/each}}

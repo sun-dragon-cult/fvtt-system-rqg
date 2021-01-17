@@ -22,6 +22,7 @@ export class RqgActorData {
     public powCrystals?: any[], // Stores label & value of AE affecting magicPoints.max
     public spiritMagicPointSum?: number, // Total spirit magic points learnt
     public freeInt?: number, // For sorcery
+    public isGM?: boolean,
     public effects?: any // TODO fooling around
   ) {}
 }

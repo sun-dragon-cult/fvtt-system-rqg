@@ -3,6 +3,7 @@ export class RqgCombat {
     Combat.prototype._sortCombatants = sortCombatants;
     CombatTracker.prototype._getEntryContextOptions = getEntryContextOptions;
     Hooks.on("renderCombatTracker", renderCombatTracker);
+    // @ts-ignore
     CONFIG.Combat.initiative = {
       formula: null,
       decimals: 0,

@@ -1,3 +1,11 @@
+:root {
+  --main-color: #854906;
+  --main-bg-color: #dd945c;
+  --secondary-color: #5c8322;
+  --table-alternate-background: rgba(0, 0, 0, 0.08);
+}
+
+
 //@font-face {
 //  font-family: Norse;
 //  src: url("fonts/Norse-KaWl.otf") format("opentype");
@@ -37,6 +45,10 @@
   .flex-row {
     display: flex;
     justify-content: space-between;
+
+    > * {
+      height: 100%;
+    }
   }
 
   .flex-row-start {
@@ -58,13 +70,14 @@
   }
 
   .masonry {
-    column-count: 3;
-    column-gap: 1em;
+    display: block;
+    columns: 12rem auto;
+    gap: 1.5rem;
   }
 
   .masonry-item {
-    width:100%;
-    display: inline-block;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   .nowrap {
@@ -86,34 +99,275 @@
     margin-left: 5px;
   }
 
-  table {
-    width: 100%;
+  .grid {
+    display: grid;
+    grid-template-rows: [row-start] min-content [row-end];
+    grid-auto-rows: auto;
+    grid-auto-columns: auto;
+    grid-gap: 0;
+
+    > * {
+      padding: 5px;
+      position: relative;
+    }
+
+    .fullrow {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .heading {
+    background: var(--main-bg-color) !important;
+  }
+
+  .overlay {
+    background-color: red;
+    z-index: 10;
+    grid-column: col;
+    grid-row: row;
+  }
+
+  .grid.one {
+    grid-template-columns: [col-start] 30px auto [col-end];
+
+    // Alternating row background
+    > *:nth-child(2n+1)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.two {
+    grid-template-columns: [col-start] 30px auto [col-end];
+
+    // Alternating row background
+    > *:nth-child(4n+1),
+    > *:nth-child(4n+2)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.three {
+    grid-template-columns: [col-start] 30px auto min-content [col-end];
+
+    // Alternating row background for 3 columns
+    > *:nth-child(6n+1),
+    > *:nth-child(6n+2),
+    > *:nth-child(6n+3)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.four {
+    grid-template-columns: [col-start] 30px auto repeat(2, min-content) [col-end];
+
+    // Alternating row background for 4 columns
+    > *:nth-child(8n+1),
+    > *:nth-child(8n+2),
+    > *:nth-child(8n+3),
+    > *:nth-child(8n+4)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.five {
+    grid-template-columns: [col-start] 30px auto repeat(3, min-content) [col-end];
+
+    // Alternating row background for 5 columns
+    > *:nth-child(10n+1),
+    > *:nth-child(10n+2),
+    > *:nth-child(10n+3),
+    > *:nth-child(10n+4),
+    > *:nth-child(10n+5)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.six {
+    grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
+
+    // Alternating row background for 6 columns
+    > *:nth-child(12n+1),
+    > *:nth-child(12n+2),
+    > *:nth-child(12n+3),
+    > *:nth-child(12n+4),
+    > *:nth-child(12n+5),
+    > *:nth-child(12n+6)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.seven {
+    grid-template-columns: [col-start] 30px repeat(6, min-content) [col-end];
+
+    // Alternating row background for 7 columns
+    > *:nth-child(14n+1),
+    > *:nth-child(14n+2),
+    > *:nth-child(14n+3),
+    > *:nth-child(14n+4),
+    > *:nth-child(14n+5),
+    > *:nth-child(14n+6),
+    > *:nth-child(14n+7)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.spiritmagic {
+    grid-template-columns: [col-start] 30px auto repeat(5, min-content) [col-end];
+
+    // Alternating row background for 7 columns
+    > *:nth-child(14n+1),
+    > *:nth-child(14n+2),
+    > *:nth-child(14n+3),
+    > *:nth-child(14n+4),
+    > *:nth-child(14n+5),
+    > *:nth-child(14n+6),
+    > *:nth-child(14n+7)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.gear {
+    grid-template-columns: [col-start] 30px auto repeat(4, max-content) [col-end];
+
+    > *:nth-child(12n+1),
+    > *:nth-child(12n+2),
+    > *:nth-child(12n+3),
+    > *:nth-child(12n+4),
+    > *:nth-child(12n+5),
+    > *:nth-child(12n+6)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.rune-magic {
+    grid-template-columns: [col-start] 30px auto repeat(6, max-content) [col-end];
+
+    > *:nth-child(16n+1),
+    > *:nth-child(16n+2),
+    > *:nth-child(16n+3),
+    > *:nth-child(16n+4),
+    > *:nth-child(16n+5),
+    > *:nth-child(16n+6),
+    > *:nth-child(16n+7),
+    > *:nth-child(16n+8)
+    {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.hit-location {
+    grid-template-columns: [col-start] auto min-content repeat(5, auto) [col-end];
+
+    > *:nth-child(14n+5),
+    > *:nth-child(14n+6),
+    > *:nth-child(14n+7),
+    > *:nth-child(14n+8),
+    > *:nth-child(14n+9),
+    > *:nth-child(14n+10),
+    > *:nth-child(14n+11) {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.passions {
+    display: grid;
+    grid-template-rows: [row-start] auto [row-end];
+    grid-auto-rows: auto;
+    grid-auto-columns: auto;
+    grid-gap: 0;
+    grid-template-columns: [col-start] auto [col-end];
+
+    // Alternating row background
+    > *:nth-child(2n+1) {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.passion {
+    grid-template-columns: [col-start] 30px auto min-content [col-end];
+    grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+  }
+
+  .grid .description {
+    grid-column: col;
+    grid-row: description;
+  }
+
+  .grid.weapon {
+    grid-template-columns: [col-start] 30px auto auto repeat(6, max-content) [col-end];
+
+    > *:nth-child(18n+1),
+    > *:nth-child(18n+2),
+    > *:nth-child(18n+3),
+    > *:nth-child(18n+4),
+    > *:nth-child(18n+5),
+    > *:nth-child(18n+6),
+    > *:nth-child(18n+7),
+    > *:nth-child(18n+8),
+    > *:nth-child(18n+9) {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.armor {
+    grid-template-columns: [col-start] 30px auto min-content auto auto repeat(3, max-content) [col-end];
+
+    > *:nth-child(16n+1),
+    > *:nth-child(16n+2),
+    > *:nth-child(16n+3),
+    > *:nth-child(16n+4),
+    > *:nth-child(16n+5),
+    > *:nth-child(16n+6),
+    > *:nth-child(16n+7),
+    > *:nth-child(16n+8) {
+      background: var(--table-alternate-background);
+    }
+  }
+
+  .grid.rune {
+    grid-template-columns: [col-start] max-content auto max-content [col-end];
+  }
+
+  .grid.opposed-rune {
+    grid-template-columns: [col-start] max-content auto max-content min-content max-content auto max-content [col-end];
+  }
+
+  .experienced {
+    text-shadow: 0 0 0.5em red, 0 0 1.5em yellow;
+  }
+
+  a.entity-link, a.inline-roll {
+    background: initial;
+    padding: unset;
     border: none;
-    background: inherit;
-
-    &.fixed {
-      table-layout: fixed;
-    }
-
-    thead {
-      background: unset;
-      color: unset;
-      text-shadow: unset;
-      border-bottom: unset;
-    }
+    border-radius: 0;
   }
 
-  tr:hover td {
-    background-color: #ccc8c6;
+  [data-item-roll] {
+    cursor: alias;
   }
 
-  td, th {
-    padding: 0.25rem;
-    &:first-child {
-      padding-left: 0;
-    }
-    &:last-child {
-      padding-right: 0;
+  .entity-link {
+    cursor: help;
+  }
+
+  #context-menu {
+    font-size: 14px;
+    cursor: default;
+    text-align: left;
+    text-shadow: initial;
+
+    li.context-item {
+      white-space: nowrap;
     }
   }
 
@@ -122,7 +376,7 @@
       height: 40px;
       border-top: 1px solid #AAA;
       border-bottom: 1px solid #AAA;
-      background-color: #ffc7a5;
+      background-color: var(--main-bg-color);
 
       .item {
         line-height: 40px;
@@ -137,10 +391,8 @@
     }
 
     .sheet-body {
-      overflow: hidden;
       .tab {
         height: 100%;
-        overflow-y: auto;
       }
     }
 
@@ -157,34 +409,101 @@
       padding: 0;
       overflow-y: auto;
     }
-    //  .item {
-    //    height: 30px;
-    //    line-height: 24px;
-    //    padding: 3px 0;
-    //    border-bottom: 1px solid #BBB;
-    //
-    //    img {
-    //      flex: 0 0 24px;
-    //      margin-right: 5px;
-    //    }
-    //  }
-    //
-    //  .item-name {
-    //    margin: 0;
-    //  }
-    //
-    //  .item-controls {
-    //    flex: 0 0 36px;
-    //  }
-    //}
 }
 
 .rqg.actor {
-  @import "src/actors/actor";
-}
+  .profile-img {
+    height: 117px;
+  }
 
-.rqg.sheet.missileWeapon {
-  @import "src/items/missile-weapon-item/missileWeaponSheet";
+  .topheaderline {
+    display: flex;
+    justify-content: space-between;
+
+    * {
+      margin: 0;
+    }
+
+    .mp {
+      font-weight: bold;
+      input {
+        width: 25px;
+        font-family: "Signika", sans-serif;
+      }
+    }
+
+    .mp {
+      margin-left: 40px;
+    }
+
+    input[name="name"] {
+      background-color: transparent;
+      border: none;
+      font-size: 35px;
+      font-weight: bold;
+    }
+  }
+
+  .skill-category {
+    width: 15rem;
+  }
+
+  .characteristics {
+    display: flex;
+    justify-content: space-between;
+
+    div {
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      font-size: 23px;
+    }
+    input {
+      border: none;
+      background-color: transparent;
+      font-size: 25px;
+      width: 100%;
+
+      &:focus {
+        border: 1px solid grey;
+        background-color: #f1f1f1;
+      }
+    }
+  }
+
+  img {
+    border: none;
+  }
+
+  .thirdline {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    .norse {
+      font-weight: bold;
+    }
+  }
+
+  .runeline {
+    margin: 10px 0;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  input {
+    width: initial;
+  }
+
+  .editor-content {
+    min-height: 200px;
+  }
+
+  .background label {
+    line-height: 2rem;
+  }
 }
 
 .rqg.sheet {
@@ -194,9 +513,9 @@
 }
 
 .rqg img.rune {
-  height: 12px;
+  height: 16px;
   border: none;
-  margin: 2px 0;
+  margin: 0;
 }
 
 .rqg img.item {

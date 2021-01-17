@@ -1,31 +1,21 @@
 <div class="masonry">
   {{#each data.ownedItems.skill}}
   <div class="masonry-item">
-    <h2 class="flex-row">
-      <span>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</span>
-      <a title="Add Item" data-item-add data-item-type="skill"><i class="fas fa-plus"></i></a>
-    </h2>
-    <table class="fixed">
-      <tr>
-        <th class="text-left" style="width: 100%">Name</th>
-        <th style="width: 8px">Exp</th>
-        <th class="text-right" style="width: 70px">Chance</th>
-        <th style="width: 15px"></th>
-      </tr>
+    <h2>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
+    <div class="grid three">
       {{#each this}}
-      <tr data-item-id="{{_id}}">
-        <td><img class="item" src="{{img}}"> {{name}}
-          <a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a>
+        <a data-item-id="{{_id}}" title="Description" class="entity-link skill-contextmenu" data-entity="Compendium" data-pack="rqg-compendiums.rune-magic-descriptions" data-id="W90IKFM0UUw321rr">
+          <img class="item" src="{{img}}">
+        </a>
+        <div data-item-id="{{_id}}" class="skill-contextmenu" data-item-roll>
+          {{name}}
           {{#each data.data.runes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
           {{/each}}
-        </td>
-        <td><input type="checkbox" data-item-experience {{checked data.data.experience}}></td>
-        <td class="text-right nowrap"><a title="Roll" data-item-roll>{{data.data.chance}}%<img style="border: none" height="14px" src="/icons/svg/d20-black.svg"></a></td>
-        <td class="text-right"><a title="Delete Item" data-item-delete><i class="fas fa-trash"></i></a></td>
-      </tr>
+        </div>
+        <div data-item-id="{{_id}}" class="skill-contextmenu text-right nowrap {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{data.data.chance}}%</div>
       {{/each}}
-    </table>
+    </div>
   </div>
   {{/each}}
 </div>
