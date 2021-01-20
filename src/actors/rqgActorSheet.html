@@ -1,4 +1,5 @@
 <form class="{{cssClass}}" autocomplete="off">
+  <div class="mainbackground"></div>
   {{!-- Sheet Header --}}
   <header class="sheet-header">
     <img
@@ -61,15 +62,10 @@
       </div>
     </div>
   </header>
-  <div class="runeline">
-  </div>
 
-  <div class="flex-row flex-wrap">
-    {{> "systems/rqg/actors/parts/health.html" }}
-    {{> "systems/rqg/actors/parts/combat.html" }}
-  </div>
-
+  <div class="navbackground"></div>
   <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item norse" data-tab="combat">Combat</a>
     <a class="item norse" data-tab="runes">Runes</a>
     <a class="item norse" data-tab="spiritmagic">Spirit Magic</a>
     <a class="item norse" data-tab="runemagic">Rune Magic</a>
@@ -78,10 +74,17 @@
     <a class="item norse" data-tab="gear">Gear</a>
     <a class="item norse" data-tab="passions">Passions</a>
     <a class="item norse" data-tab="background">Background</a>
-    <a class="item norse" data-tab="activeeffectstesting">🧪Active Effects</a>
+    <a class="item norse" data-tab="activeeffectstesting">AE 🧪</a>
   </nav>
 
   <section class="sheet-body">
+    <div class="tab combat" data-group="primary" data-tab="combat">
+        <div class="flex-row flex-wrap">
+          {{> "systems/rqg/actors/parts/health.html" }}
+          {{> "systems/rqg/actors/parts/combat.html" }}
+        </div>
+    </div>
+
     <div class="tab runes" data-group="primary" data-tab="runes">
       {{> "systems/rqg/actors/parts/runes-tab.html" }}
     </div>

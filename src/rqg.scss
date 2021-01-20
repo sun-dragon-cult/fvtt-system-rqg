@@ -1,28 +1,30 @@
 :root {
   --main-color: #854906;
-  --main-bg-color: #dd945c;
+  --main-bg-color: #f3a71e;
   --secondary-color: #5c8322;
   --table-alternate-background: rgba(0, 0, 0, 0.08);
 }
 
 
-//@font-face {
-//  font-family: Norse;
-//  src: url("fonts/Norse-KaWl.otf") format("opentype");
-//}
-//@font-face {
-//  font-family: Norse;
-//  font-weight: bold;
-//  src: url("fonts/NorseBold-2Kge.otf") format("opentype");
-//}
-// TODO Testing it out with only the bold version
 @font-face {
   font-family: Norse;
+  src: url("assets/fonts/Norse-KaWl.otf") format("opentype");
+}
+@font-face {
+  font-family: Norse;
+  font-weight: bold;
   src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
+//// TODO Testing it out with only the bold version
+//@font-face {
+//  font-family: Norse;
+//  src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
+//}
 
 .norse {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
+  font-variant: small-caps;
+  letter-spacing: 1.5px;
 }
 
 .text-left {
@@ -118,6 +120,9 @@
 
   .heading {
     background: var(--main-bg-color) !important;
+    mix-blend-mode: color-burn;
+    text-shadow: 3px 4px 4px #6f644e;
+    box-shadow: inset 0 0 20px 7px #e4a025;
   }
 
   .overlay {
@@ -371,49 +376,117 @@
     }
   }
 
-    /* Sheet Tabs */
-    .tabs {
-      height: 40px;
-      border-top: 1px solid #AAA;
-      border-bottom: 1px solid #AAA;
-      background-color: var(--main-bg-color);
-
-      .item {
-        line-height: 40px;
-        font-weight: bold;
-        white-space: nowrap;
-
-        &.active {
-          text-decoration: underline;
-          text-shadow: none;
-        }
-      }
-    }
-
-    .sheet-body {
-      .tab {
-        height: 100%;
-      }
-    }
-
-    .editor, .editor-content {
+  .sheet-body {
+    .tab {
       height: 100%;
-      min-height: 5rem;
-      background-color: white;
     }
+  }
 
-    /* Items List */
-    .item-list {
-      list-style: none;
-      margin: 7px 0;
-      padding: 0;
-      overflow-y: auto;
-    }
+  .editor, .editor-content {
+    height: 100%;
+    min-height: 5rem;
+    background-color: white;
+  }
+
+  /* Items List */
+  .item-list {
+    list-style: none;
+    margin: 7px 0;
+    padding: 0;
+    overflow-y: auto;
+  }
 }
 
 .rqg.actor {
   .profile-img {
     height: 117px;
+    transform: rotate(5deg);
+    box-shadow: 5px 5px 10px 0 #808080;
+  }
+
+  .mainbackground {
+    grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
+    background: url(./assets/images/scrolltile5.png) repeat-y scroll top left/100%;
+  }
+
+  .window-content {
+    padding: 0;
+    background-image: none;
+
+    form {
+      display: grid;
+      grid-template-columns: min-content auto;
+      grid-template-areas:
+        "nav header"
+        "nav main";
+      grid-template-rows: min-content;
+    }
+
+    .sheet-header {
+      grid-area: header;
+      //background-color: var(--main-bg-color);
+      padding: 8px 4%;
+    }
+
+    .navbackground {
+      grid-area: nav;
+      //background-color: var(--main-bg-color);
+      height: 100%;
+      width: 100%;
+    }
+
+    nav.sheet-tabs {
+      grid-area: nav;
+      flex-direction: row;
+      border: none;
+      padding: 8px 0;
+      margin: 0;
+
+      .item {
+        //line-height: 60px;
+        //height: 60px;
+        //font-weight: bold;
+        white-space: nowrap;
+        //flex-basis: 100%;
+        //text-align: center;
+        //padding: 0 0 0 8px;
+        //transform: rotate(-60deg) translateX(-30px) translateY(-30px);
+        //transform-origin: top;
+        color:  white;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg) translateX(-4px);
+        padding: 10px 0;
+        font-size: 13px;
+        font-variant-caps: normal;
+
+        &.active {
+          //position: relative;
+          //transform: rotate(0deg) translateX(0) translateY(0);
+          //text-align: right;
+
+          //background: #8c0303;
+          //border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
+          //box-shadow: 0 0 3px 4px #8c0303, 0px 0px 20px 4px black;
+          //text-shadow: 2px 2px 8px black;
+
+          // *****
+
+          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
+          box-shadow: inset 2px 2px 7px 2px #000000, 0 0 8px 0 #d9dc17, -3px -3px 7px 2px black;
+          text-shadow: 0 0 3px black, -2px -2px 3px black;
+          background: linear-gradient(purple 0%, #e60000 90%), linear-gradient(to right, #711771 0%, #d6d63a 90%), url(assets/images/stonetexture2.jpg);
+          background-blend-mode: screen, difference;
+          color: white;
+          font-weight: bold;
+        }
+      }
+
+    }
+
+    .sheet-body {
+      grid-area: main;
+      padding: 8px 4%;
+    }
   }
 
   .topheaderline {
@@ -483,14 +556,6 @@
     .norse {
       font-weight: bold;
     }
-  }
-
-  .runeline {
-    margin: 10px 0;
-    border-top: 2px solid black;
-    border-bottom: 2px solid black;
-    display: flex;
-    justify-content: space-between;
   }
 
   input {
