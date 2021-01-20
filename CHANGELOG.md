@@ -1,3 +1,50 @@
+# [0.6.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.5.0...v0.6.0) (2021-01-20)
+
+
+### Bug Fixes
+
+* Display item type in item sheet dialogs. ([d3dd30a](https://github.com/wakeand/fvtt-system-rqg/commit/d3dd30a))
+* Make it possible to create non Embedded Rune Spell Items. Also connect spells dragged to actor, and disconnect spells from deleted Cults. ([58d4e6e](https://github.com/wakeand/fvtt-system-rqg/commit/58d4e6e))
+* NPE if weapon was equipped but didn't have a associated skill. ([9887cd4](https://github.com/wakeand/fvtt-system-rqg/commit/9887cd4))
+* only prevent items with same type & name, also display a notification when adding an item is blocked ([a3540ee](https://github.com/wakeand/fvtt-system-rqg/commit/a3540ee))
+* passion honor automatically gets subject Since passions always will be created directly as ownedItems, the name autofill fix is not needed here. ([00ab88a](https://github.com/wakeand/fvtt-system-rqg/commit/00ab88a))
+* Set default Power Rune chance to 50. ([f92e5ce](https://github.com/wakeand/fvtt-system-rqg/commit/f92e5ce))
+* show itemsheet if weapon skill could not be found ([6c639ec](https://github.com/wakeand/fvtt-system-rqg/commit/6c639ec))
+
+
+### Features
+
+* Add Cult tagline. Also remove redundant data-dtype attributes. ([01303d0](https://github.com/wakeand/fvtt-system-rqg/commit/01303d0))
+* Add dropdown to choose RuneItem minor runes. ([7b2c6a1](https://github.com/wakeand/fvtt-system-rqg/commit/7b2c6a1))
+* Add isNatural checkbox for melee weaponsheet ([a93cccf](https://github.com/wakeand/fvtt-system-rqg/commit/a93cccf))
+* Add price field for gear including all kinds of weapons. ([0d4ae07](https://github.com/wakeand/fvtt-system-rqg/commit/0d4ae07))
+* Add proper RuneMagic data. Also refactor adding cult runes etc to a BaseItem#onEmbedItem & BaseItem#onDeleteItem. ([0209fe0](https://github.com/wakeand/fvtt-system-rqg/commit/0209fe0))
+* Add runes to cults and correct chance calculation of magic runes spells. Also show rune icons för cults and rune magic. ([8c05693](https://github.com/wakeand/fvtt-system-rqg/commit/8c05693))
+* Add runes to skills for Sorcery Magic. ([02c076f](https://github.com/wakeand/fvtt-system-rqg/commit/02c076f))
+* Add skill specializations - like "Speak (Trade talk)" ([517f6b2](https://github.com/wakeand/fvtt-system-rqg/commit/517f6b2))
+* Add spell focus field to spirit magic items. Change name of "spellType" to "concentration" and hide/set that field depending on duration. Improve actor sheet display of spirit magic variable value (yes/no instead of readonly checkbox). ([902017b](https://github.com/wakeand/fvtt-system-rqg/commit/902017b))
+* Add support for magic crystals affecting "data.attributes.magicPoints.max". Also round ENC calculations. ([dec21f7](https://github.com/wakeand/fvtt-system-rqg/commit/dec21f7))
+* Allow edit of current cult runepoints from actorsheet. ([70ffa64](https://github.com/wakeand/fvtt-system-rqg/commit/70ffa64))
+* Auto add linked weapon skill ([#44](https://github.com/wakeand/fvtt-system-rqg/issues/44)) ([7b3fdb6](https://github.com/wakeand/fvtt-system-rqg/commit/7b3fdb6))
+* Automatically add Cult runes to the Actor when "embedding" the Cult. ([fe657db](https://github.com/wakeand/fvtt-system-rqg/commit/fe657db))
+* calculate and use encumbrance penalties for dodge & skill category bonuses ([ef8ad01](https://github.com/wakeand/fvtt-system-rqg/commit/ef8ad01))
+* Change create Actor to create a bare bone actor that can be added to by dragging hitlocations, skills etc to it. ([7b171df](https://github.com/wakeand/fvtt-system-rqg/commit/7b171df))
+* Implement an onUpdateItem "lifecycle" function for BaseItem. Also remove some of the excessive logging. ([1446ff3](https://github.com/wakeand/fvtt-system-rqg/commit/1446ff3))
+* item context menus first unfinished version ([66f666d](https://github.com/wakeand/fvtt-system-rqg/commit/66f666d))
+* Limit HP to max HP. ([069e25f](https://github.com/wakeand/fvtt-system-rqg/commit/069e25f))
+* Make the covered hit locations in armor items selectable from a dropdow populated from a compendium pointer to by a game setting. Also various smaller fixes. ([4076460](https://github.com/wakeand/fvtt-system-rqg/commit/4076460))
+* new ui look, first iteration ([486ad7a](https://github.com/wakeand/fvtt-system-rqg/commit/486ad7a))
+* Populate Skill, Rune & Passion from initial name when created. ([3bd04a9](https://github.com/wakeand/fvtt-system-rqg/commit/3bd04a9))
+* prevent adding duplicate items (based on name) This might need some modification at some point ([23e63dd](https://github.com/wakeand/fvtt-system-rqg/commit/23e63dd))
+* show item image in actor sheet (gear, magic, ...) ([0c94979](https://github.com/wakeand/fvtt-system-rqg/commit/0c94979))
+* Show melee weapon SR in actorsheet Combat section. Also correct size of HP input field length. ([1cfb25f](https://github.com/wakeand/fvtt-system-rqg/commit/1cfb25f))
+* show spirit magic CHA limit and sorcery free INT ([93bcc8c](https://github.com/wakeand/fvtt-system-rqg/commit/93bcc8c))
+* Sort skills. ([d8734b7](https://github.com/wakeand/fvtt-system-rqg/commit/d8734b7))
+* Use Runes from compendium. ([#42](https://github.com/wakeand/fvtt-system-rqg/issues/42)) ([c97b3d4](https://github.com/wakeand/fvtt-system-rqg/commit/c97b3d4))
+
+
+
+
 # [0.5.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.4.0...v0.5.0) (2020-11-17)
 
 
