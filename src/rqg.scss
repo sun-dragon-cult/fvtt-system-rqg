@@ -578,9 +578,10 @@
 }
 
 .rqg img.rune {
-  height: 16px;
+  height: 20px;
   border: none;
   margin: 0;
+  mix-blend-mode: overlay;
 }
 
 .rqg img.item {
