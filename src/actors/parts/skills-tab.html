@@ -13,7 +13,9 @@
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
           {{/each}}
         </div>
-        <div data-item-id="{{_id}}" class="skill-contextmenu text-right nowrap {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{data.data.chance}}%</div>
+      <div data-item-id="{{_id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>
+        <span class="text-right nowrap">{{data.data.chance}}%</span>
+      </div>
       {{/each}}
     </div>
   </div>

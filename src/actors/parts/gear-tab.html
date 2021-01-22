@@ -1,44 +1,64 @@
 <h2>Gear</h2>
 <div class="grid gear">
-      <div class="heading"></div>
-      <div class="text-left heading">Name</div>
-      <div class="text-right heading">Qty</div>
-      <div class="text-right heading">Price</div>
-      <div class="text-right heading">ENC</div>
-      <div class="text-right heading">Equipped</div>
+  <div class="heading"></div>
+  <div class="heading">Name</div>
+  <div class="heading"><span class="text-right">Qty</span></div>
+  <div class="heading"><span class="text-right">Price</span></div>
+  <div class="heading"><span class="text-right">ENC</span></div>
+  <div class="heading"><span class="text-center">Equipped</span></div>
   {{#each data.ownedItems.gear}}
     <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
     <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-    <div data-item-id="{{_id}}" class="text-right gear-contextmenu">{{data.data.quantity}}</div>
-    <div data-item-id="{{_id}}" class="text-right gear-contextmenu">{{#if data.data.price}}{{currency data.data.price 'L'}}{{/if}}</div>
-    <div data-item-id="{{_id}}" class="text-right gear-contextmenu">{{multiply data.data.quantity data.data.encumbrance}}</div>
-    <div data-item-id="{{_id}}" class="text-center gear-contextmenu"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></div>
+    <div data-item-id="{{_id}}" class="gear-contextmenu">
+      <span class="text-right">{{data.data.quantity}}</span>
+    </div>
+    <div data-item-id="{{_id}}" class="gear-contextmenu">
+      <span class="text-right">{{#if data.data.price}}{{currency data.data.price 'L'}}{{/if}}</span>
+    </div>
+    <div data-item-id="{{_id}}" class="gear-contextmenu">
+      <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
+    </div>
+    <div data-item-id="{{_id}}" class="gear-contextmenu">
+      <span class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></span>
+    </div>
   {{/each}}
 </div>
 
 <h2>Melee Weapons & Shields</h2>
 <div class="grid weapon">
   <div class="heading"></div>
-  <div class="text-left heading">Name</div>
-  <div class="text-left heading">Skill</div>
-  <div class="text-left heading">Damage</div>
-  <div class="text-right heading">STR</div>
-  <div class="text-right heading">DEX</div>
-  <div class="text-right heading">HP</div>
-  <div class="text-right heading">ENC</div>
-  <div class="heading">Equipped</div>
+  <div class="heading">Name</div>
+  <div class="heading">Skill</div>
+  <div class="heading"><span class="text-center">Damage</span></div>
+  <div class="heading"><span class="text-right">STR</span></div>
+  <div class="heading"><span class="text-right">DEX</span></div>
+  <div class="heading"><span class="text-right">HP</span></div>
+  <div class="heading"><span class="text-right">ENC</span></div>
+  <div class="heading"><span class="text-center">Equipped</span></div>
 
   {{#each data.ownedItems.meleeWeapon}}
   {{#unless data.data.isNatural}}
     <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
     <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
     <div data-item-id="{{_id}}" class="gear-contextmenu">{{itemname data.data.skillId actor._id}}</div>
-    <div data-item-id="{{_id}}" class="gear-contextmenu">{{data.data.damage}}</div>
-    <div data-item-id="{{_id}}" class="text-right gear-contextmenu">{{data.data.minStrength}}</div>
-    <div data-item-id="{{_id}}" class="text-right gear-contextmenu">{{data.data.minDexterity}}</div>
-    <div data-item-id="{{_id}}" class="text-right gear-contextmenu">{{data.data.hitPoints.value}}</div>
-    <div data-item-id="{{_id}}" class="text-right gear-contextmenu">{{data.data.encumbrance}}</div>
-    <div data-item-id="{{_id}}" class="text-center gear-contextmenu"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></div>
+  <div data-item-id="{{_id}}" class="gear-contextmenu">
+    <span class="text-center">{{data.data.damage}}</span>
+  </div>
+  <div data-item-id="{{_id}}" class="gear-contextmenu">
+    <span class="text-right">{{data.data.minStrength}}</span>
+  </div>
+  <div data-item-id="{{_id}}" class="gear-contextmenu">
+    <span class="text-right">{{data.data.minDexterity}}</span>
+  </div>
+  <div data-item-id="{{_id}}" class="gear-contextmenu">
+    <span class="text-right">{{data.data.hitPoints.value}}</span>
+  </div>
+  <div data-item-id="{{_id}}" class="gear-contextmenu">
+    <span class="text-right">{{data.data.encumbrance}}</span>
+  </div>
+  <div data-item-id="{{_id}}" class="gear-contextmenu">
+    <span class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></span>
+  </div>
   {{/unless}}
   {{/each}}
 </div>
@@ -46,26 +66,38 @@
 <h2>Missile Weapons</h2>
 <div class="grid weapon">
   <div class="heading"></div>
-  <div class="text-left heading">Name</div>
-  <div class="text-left heading">Skill</div>
-  <div class="text-left heading">Damage</div>
-  <div class="text-right heading">STR</div>
-  <div class="text-right heading">DEX</div>
-  <div class="text-right heading">HP</div>
-  <div class="text-right heading">ENC</div>
-  <div class="heading">Equipped</div>
+  <div class="heading">Name</div>
+  <div class="heading">Skill</div>
+  <div class="heading"><span class="text-center">Damage</span></div>
+  <div class="heading"><span class="text-right">STR</span></div>
+  <div class="heading"><span class="text-right">DEX</span></div>
+  <div class="heading"><span class="text-right">HP</span></div>
+  <div class="heading"><span class="text-right">ENC</span></div>
+  <div class="heading"><span class="text-center">Equipped</span></div>
 
   {{#each data.ownedItems.missileWeapon}}
     {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
       <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
       <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
       <div data-item-id="{{_id}}" class="gear-contextmenu">{{itemname data.data.skillId actor._id}}</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu">{{data.data.damage}}</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-right">{{data.data.minStrength}}</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-right">{{data.data.minDexterity}}</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-right">{{data.data.hitPoints.value}}</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-right">{{data.data.encumbrance}}</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <span class="text-center">{{data.data.damage}}</span>
+      </div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <span class="text-right">{{data.data.minStrength}}</span>
+      </div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <span class="text-right">{{data.data.minDexterity}}</span>
+      </div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <span class="text-right">{{data.data.hitPoints.value}}</span>
+      </div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <span class="text-right">{{data.data.encumbrance}}</span>
+      </div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <span class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></span>
+      </div>
     {{/if}}
   {{/each}}
   {{#each data.ownedItems.missileWeapon}}
@@ -73,12 +105,16 @@
       <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
       <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}} ({{data.data.quantity}})</div>
       <div data-item-id="{{_id}}" class="gear-contextmenu">-</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu">-</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-right">-</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-right">-</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-right">-</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-right">{{data.data.encumbrance}}</div>
-      <div data-item-id="{{_id}}" class="gear-contextmenu text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-center">-</span></div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">-</span></div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">-</span></div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">-</span></div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <span class="text-right">{{data.data.encumbrance}}</span>
+      </div>
+      <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <span class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></span>
+      </div>
     {{/if}}
   {{/each}}
 </div>
@@ -87,17 +123,19 @@
 <h2>Armor</h2>
 <div class="grid armor">
   <div class="heading"></div>
-  <div class="heading text-left">Name</div>
-  <div class="heading text-right">Absorbs</div>
-  <div class="heading text-left">Hitlocations</div>
-  <div class="heading text-left">Material</div>
-  <div class="heading text-right">moveQuietly</div>
-  <div class="heading text-right">ENC</div>
-  <div class="heading">Equipped</div>
+  <div class="heading">Name</div>
+  <div class="heading"><span class="text-right">Absorbs</span></div>
+  <div class="heading">Hitlocations</div>
+  <div class="heading">Material</div>
+  <div class="heading"><span class="text-right">moveQuietly</span></div>
+  <div class="heading"><span class="text-right">ENC</span></div>
+  <div class="heading"><span class="text-center">Equipped</span></div>
   {{#each data.ownedItems.armor}}
     <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
     <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-    <div data-item-id="{{_id}}" class="gear-contextmenu text-right">{{data.data.absorbs}}</div>
+    <div data-item-id="{{_id}}" class="gear-contextmenu">
+      <span class="text-right">{{data.data.absorbs}}</span>
+    </div>
     <div data-item-id="{{_id}}" class="gear-contextmenu">[
       {{#each data.data.hitLocations}}
         {{this}},
@@ -105,8 +143,14 @@
       ]
     </div>
     <div data-item-id="{{_id}}" class="gear-contextmenu">{{data.data.material}}</div>
-    <div data-item-id="{{_id}}" class="gear-contextmenu text-right">{{data.data.moveQuietlyPenalty}}</div>
-    <div data-item-id="{{_id}}" class="gear-contextmenu text-right">{{data.data.encumbrance}}</div>
-    <div data-item-id="{{_id}}" class="gear-contextmenu text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></div>
+    <div data-item-id="{{_id}}" class="gear-contextmenu">
+      <span class="text-right">{{data.data.moveQuietlyPenalty}}</span>
+    </div>
+    <div data-item-id="{{_id}}" class="gear-contextmenu">
+      <span class="text-right">{{data.data.encumbrance}}</span>
+    </div>
+    <div data-item-id="{{_id}}" class="gear-contextmenu">
+      <span class="text-center"><input type="checkbox" data-item-equip {{checked data.data.isEquipped}}></span>
+    </div>
   {{/each}}
 </div>

@@ -1,8 +1,10 @@
 <div class="grid rune">
-  <h2 class="norse fullrow">Elemental</h2>
+  <h2 class="fullrow">Elemental</h2>
   {{#each data.ownedItems.rune.element}}
     <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
     <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
-    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>
+      <span class="text-right">{{this.data.data.chance}}%</span>
+    </div>
   {{/each}}
 </div>

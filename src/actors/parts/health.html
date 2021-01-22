@@ -1,7 +1,7 @@
 <div class="health">
-  <h2 class="flex-col norse">Health</h2>
+  <h2 class="flex-col">Health</h2>
   <div class="flexrow nowrap flex-align-center">
-    <label class="norse">Total Hit Points <input
+    <label>Total Hit Points <input
         type="number"
         min="1"
         max="99"
@@ -10,27 +10,27 @@
         size="2"
       /> / {{data.attributes.hitPoints.max}}
     </label>
-    <label class="text-right norse">Healing rate {{data.attributes.healingRate}}/week</label>
+    <label class="text-right"> Healing rate {{data.attributes.healingRate}}/week</label>
   </div>
   <div class="grid hit-location">
-    <div class="text-left" style="grid-column: 1 / span 4;">Hit Location</div>
-    <div class="text-right">HP</div>
-    <div class="text-right">AP</div>
-    <div class="text-left">Wounds</div>
+    <div class="heading" style="grid-column: 1 / span 4;">Hit Location</div>
+    <div class="heading"><span class="text-center">HP</span></div>
+    <div class="heading"><span class="text-right">AP</span></div>
+    <div class="heading">Wounds</div>
     {{#each data.ownedItems.hitLocation}}
-      <div class="text-right hit-location-contextmenu" data-item-id="{{this._id}}">{{this.data.data.dieFrom}}</div>
+    <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right">{{this.data.data.dieFrom}}</span></div>
       <div class="hit-location-contextmenu" data-item-id="{{this._id}}">-</div>
-      <div class="text-right hit-location-contextmenu" data-item-id="{{this._id}}">{{this.data.data.dieTo}}</div>
+    <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right">{{this.data.data.dieTo}}</span></div>
       <div class="hit-location-contextmenu" data-item-id="{{this._id}}">{{this.name}}</div>
-      <div class="hit-location-contextmenu text-right nowrap" data-item-id="{{this._id}}">{{this.data.data.hp.value}} / {{this.data.data.hp.max}}</div>
-      <div class="hit-location-contextmenu text-right" data-item-id="{{this._id}}">{{this.data.data.ap}}</div>
-      <div class="hit-location-contextmenu text-right" data-item-id="{{this._id}}">
-        <a data-item-edit-wounds title="Edit wounds">
+    <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right nowrap">{{this.data.data.hp.value}} / {{this.data.data.hp.max}}</span></div>
+    <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right">{{this.data.data.ap}}</span></div>
+      <div class="hit-location-contextmenu" data-item-id="{{this._id}}">
+        <a data-item-edit-wounds title="Edit wounds" class="nowrap">
           {{#each this.data.data.wounds}}
           <i class="fas fa-notes-medical"></i> {{this}}
           {{/each}}
         </a>
-        <a class="ml-5" title="Add wound" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></a>
+        <a class="ml-5 text-right" title="Add wound" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></a>
       </div>
     {{/each}}
   </div>

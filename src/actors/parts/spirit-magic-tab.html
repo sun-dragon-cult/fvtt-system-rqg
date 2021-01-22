@@ -5,18 +5,28 @@
 <div class="grid spiritmagic">
   <div class="heading"></div>
   <div class="heading">Name</div>
-  <div class="heading text-right">Points</div>
+  <div class="heading"><span class="text-right">Points</span></div>
   <div class="heading">Variable</div>
-  <div class="heading text-left">Range</div>
-  <div class="heading text-left">Duration</div>
-  <div class="heading text-left">Concentration</div>
+  <div class="heading">Range</div>
+  <div class="heading">Duration</div>
+  <div class="heading">Concentration</div>
   {{#each data.ownedItems.spiritMagic}}
     <div data-item-id="{{_id}}" class="spiritmagic-contextmenu"><img class="item" src="{{img}}"></div>
     <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{name}}</div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu text-right">{{data.data.points}}</div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu text-center">{{yes-no this.data.data.isVariable}}</div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{data.data.castingRange}}</div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{data.data.duration}}</div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{data.data.concentration}}</div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+      <span class="text-center">{{data.data.points}}</span>
+    </div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+      <span class="text-center">{{yes-no this.data.data.isVariable}}</span>
+    </div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+      <span class="text-center">{{data.data.castingRange}}</span>
+    </div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+      <span class="text-center">{{data.data.duration}}</span>
+    </div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+      <span class="text-center">{{data.data.concentration}}</span>
+    </div>
   {{/each}}
 </div>

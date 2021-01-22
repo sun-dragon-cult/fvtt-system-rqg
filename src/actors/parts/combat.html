@@ -1,8 +1,8 @@
 <div>
-  <h2 class="norse">Combat</h2>
+  <h2>Combat</h2>
   <div class="flexrow flex-align-center">
-    <label class="norse">Damage Bonus {{data.attributes.damageBonus}}</label>
-    <a class="text-right norse" data-item-id="{{data.dodgeSkill._id}}" data-item-roll>Dodge {{skillchance data.dodgeSkill._id actor._id}}%</a>
+    <label>Damage Bonus {{data.attributes.damageBonus}}</label>
+    <a class="text-right" data-item-id="{{data.dodgeSkill._id}}" data-item-roll>Dodge {{skillchance data.dodgeSkill._id actor._id}}%</a>
   </div>
   <div class="grid six">
     <div class="text-left heading"></div>
@@ -16,10 +16,16 @@
     {{#unless data.data.isNatural}}
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"><img class="item" src="{{img}}"></div>
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">{{name}}</div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu text-right {{experiencedclass data.data.skillId actor._id}}">{{skillchance data.data.skillId actor._id}}%</div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"><input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value" value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu text-right">{{data.data.strikeRank}}</div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu text-left">
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
+        <span class="text-right">{{skillchance data.data.skillId actor._id}}%</span>
+      </div>
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+        <input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value" value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}
+      </div>
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+        <span class="text-right">{{data.data.strikeRank}}</span>
+      </div>
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
         {{#each data.data.combatManeuvers}}
         <a data-melee-roll="{{this}}">{{this}}</a>
         {{/each}}
@@ -33,10 +39,12 @@
     {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}"><img class="item" src="{{img}}"></div>
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">{{name}} ({{quantity data.data.projectileId actor._id}})</div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu text-right {{experiencedclass data.data.skillId actor._id}}">{{skillchance data.data.skillId actor._id}}%</div>
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
+        <span class="text-right">{{skillchance data.data.skillId actor._id}}%</span>
+      </div>
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu text-left">
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
         {{#each data.data.combatManeuvers}}
         <a data-missile-roll="{{this}}">{{this}}</a>
         {{/each}}
@@ -49,10 +57,14 @@
     {{#if data.data.isNatural}}
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}"><img class="item" src="{{img}}"></div>
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">{{name}}</div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu text-right {{experiencedclass data.data.skillId actor._id}}">{{skillchance data.data.skillId actor._id}}%</div>
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
+        <span class="text-right">{{skillchance data.data.skillId actor._id}}%</span>
+      </div>
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu text-right">{{data.data.strikeRank}}</div>
-      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu text-left">
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+        <span class="text-right">{{data.data.strikeRank}}</span>
+      </div>
+      <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
         {{#each data.data.combatManeuvers}}
         <a data-melee-roll="{{this}}">{{this}}</a>
         {{/each}}
@@ -61,9 +73,9 @@
     {{/each}}
   </div>
   <div>
-    <h2 class="norse">Spirit Combat</h2>
+    <h2>Spirit Combat</h2>
     <div class="flexrow nowrap flex-align-center">
-      <label class="mp norse">Magic Points <input
+      <label class="mp">Magic Points <input
         type="number"
         min="0"
         max="99"
@@ -75,11 +87,11 @@
       <i>{{#each data.powCrystals}}
         {{name}}({{size}}MP)<br>
         {{/each}}</i>
-      <label class="norse text-right">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
+      <label class="text-right">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
     </div>
     <div class="grid two">
       <div data-item-id="{{data.spiritCombatSkill._id}}">Spirit Combat</div>
-      <div data-item-id="{{data.spiritCombatSkill._id}}" class="text-right" data-item-roll><a>{{skillchance data.spiritCombatSkill._id actor._id}}%</a></div>
+      <div data-item-id="{{data.spiritCombatSkill._id}}" data-item-roll><span class="text-right">{{skillchance data.spiritCombatSkill._id actor._id}}%</span></div>
     </div>
   </div>
 </div>

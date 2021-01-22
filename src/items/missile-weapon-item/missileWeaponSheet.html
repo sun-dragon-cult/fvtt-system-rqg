@@ -21,7 +21,7 @@
     <div class="flex-row">
     {{#if (or data.isThrownWeapon data.isProjectileWeapon)}}
       <div>
-        <label class="mp norse">Skill</label><br>
+        <label class="mp">Skill</label><br>
         {{#if data.isOwned}}
           <select name="data.skillId">
             {{#select data.skillId}} {{#each data.missileWeaponSkills}}
@@ -29,7 +29,7 @@
             {{/each}} {{/select}}
           </select>
           {{#if data.isProjectileWeapon}}
-          <label class="mp norse">Projectile<br>
+          <label class="mp">Projectile<br>
             <select name="data.projectileId">
               {{#select data.projectileId}} {{#each data.ownedProjectiles}}
               <option value="{{this._id}}">{{this.name}}</option>

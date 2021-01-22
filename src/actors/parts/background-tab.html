@@ -1,6 +1,6 @@
-<h2 class="norse">Background</h2>
+<h2>Background</h2>
 
-<label class="mp norse">Birth Year
+<label class="mp">Birth Year
   <input
     type="number"
     min="0"
@@ -9,7 +9,7 @@
     value="{{data.background.birthyear}}"
   />
 </label>
-<label class="mp norse"> Age
+<label class="mp"> Age
   <input
     type="number"
     min="0"
@@ -18,14 +18,14 @@
     value="{{data.background.age}}"
   />
 </label>
-<label class="mp norse"> Gender
+<label class="mp"> Gender
   <input
     type="text"
     name="data.background.gender"
     value="{{data.background.gender}}"
     size="10"
   /> </label>
-<label class="mp norse"> Reputation
+<label class="mp"> Reputation
   <input
     type="number"
     min="0"
@@ -35,14 +35,14 @@
   />
 </label><br>
 
-<label class="mp norse">Occupation<br>
+<label class="mp">Occupation
   <select name="data.background.occupation">
     {{#select data.background.occupation}} {{#each data.occupations}}
     <option value="{{this}}">{{this}}</option>
     {{/each}} {{/select}}
   </select></label><br>
 
-<label class="mp norse">Homeland<br>
+<label class="mp">Homeland
   <select name="data.background.homeland">
     {{#select data.background.homeland}} {{#each data.homelands}}
     <option value="{{this}}">{{this}}</option>
@@ -50,7 +50,7 @@
   </select></label
 ><br />
 
-<label class="mp norse">Tribe
+<label class="mp">Tribe
   <input
     type="text"
     name="data.background.tribe"
@@ -59,7 +59,7 @@
   />
 </label>
 
-<label class="mp norse">Clan
+<label class="mp">Clan
   <input
     type="text"
     name="data.background.clan"
@@ -68,7 +68,7 @@
   />
 </label><br>
 
-<label class="mp norse">Standard Of Living
+<label class="mp">Standard Of Living
   <input
     type="text"
     name="data.background.standardOfLiving"
@@ -76,7 +76,7 @@
     size="30"
   />
 </label><br>
-<label class="mp norse">Ransom
+<label class="mp">Ransom
   <input
     type="number"
     min="0"
@@ -85,7 +85,7 @@
     value="{{data.background.ransom}}"
   />(L)
 </label>
-<label class="mp norse">Base Income
+<label class="mp">Base Income
   <input
     type="number"
     min="0"

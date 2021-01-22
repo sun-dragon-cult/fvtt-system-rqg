@@ -1,16 +1,20 @@
 <div class="grid opposed-rune">
-  <h2 class="norse fullrow">Form</h2>
+  <h2 class="fullrow">Form</h2>
 
   {{#with data.ownedItems.rune.form.Man}}
     <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
     <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
-    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>
+      <span class="text-right">{{this.data.data.chance}}%</span>
+    </div>
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with data.ownedItems.rune.form.Beast}}
     <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
     <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
-    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>
+      <span class="text-right">{{this.data.data.chance}}%</span>
+    </div>
   {{/with}}
 
   {{#each data.ownedItems.rune.form}}
@@ -19,7 +23,9 @@
     {{#with this}}
       <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
       <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
-      <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>{{this.data.data.chance}}%</div>
+      <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>
+        <span class="text-right">{{this.data.data.chance}}%</span>
+      </div>
       <div></div>
       <div></div>
       <div></div>

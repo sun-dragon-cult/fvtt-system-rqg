@@ -2,9 +2,9 @@
 <div class="grid passions">
   {{#each data.ownedItems.passion}}
   <div class="grid passion">
-    <div data-item-id="{{_id}}" data-item-roll class="passion-contextmenu"><img src="{{img}}"></div>
+    <div data-item-id="{{_id}}" data-item-roll class="passion-contextmenu img"><img src="{{img}}"></div>
     <div data-item-id="{{_id}}" data-item-roll class="passion-contextmenu">{{name}}</div>
-    <div data-item-id="{{_id}}" data-item-roll class="text-right passion-contextmenu {{#if data.data.experience}}experienced{{/if}}">{{this.data.data.chance}}%</div>
+    <div data-item-id="{{_id}}" data-item-roll class="passion-contextmenu {{#if data.data.experience}}experienced{{/if}}">{{this.data.data.chance}}%</div>
     <details data-item-id="{{_id}}" class="description passion-contextmenu"><summary>Back story</summary>{{{this.data.data.description}}}</details>
   </div>
     {{/each}}

@@ -10,14 +10,14 @@
   </header>
   <main>
     <div class="flex-row-start">
-      <label class="mp norse">Range<br>
+      <label class="mp">Range<br>
         <select name="data.castingRange">
           {{#select data.castingRange}} {{#each data.ranges}}
           <option value="{{this}}">{{this}}</option>
           {{/each}} {{/select}}
         </select>
       </label>
-      <label class="mp norse">Duration<br>
+      <label class="mp">Duration<br>
         <select name="data.duration">
           {{#select data.duration}} {{#each data.durations}}
           <option value="{{this}}">{{this}}</option>
@@ -30,7 +30,7 @@
       </div>
     </div>
     {{#if data.isOwned}}
-    <label class="mp norse">Cult<br>
+    <label class="mp">Cult<br>
       <select name="data.cultId">
         {{#select data.cultId}} {{#each data.actorCults}}
         <option value="{{this._id}}">{{this.name}}</option>
