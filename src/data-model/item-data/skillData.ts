@@ -36,6 +36,7 @@ export const emptySkill: SkillData = {
   specialization: "",
   baseChance: 0,
   learnedChance: 0,
-  experience: false,
+  canGetExperience: true,
+  hasExperience: false,
   runes: [],
 };

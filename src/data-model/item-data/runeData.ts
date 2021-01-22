@@ -25,6 +25,7 @@ export type RuneData = IAbility & {
 export const emptyRune: RuneData = {
   rune: "",
   chance: 0,
+  canGetExperience: false,
   experience: false,
   description: "",
   runeType: RuneTypeEnum.Form,

@@ -4,7 +4,7 @@
   {{#with data.ownedItems.rune.form.Man}}
     <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
     <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
-    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
     </div>
   {{/with}}
@@ -12,7 +12,7 @@
   {{#with data.ownedItems.rune.form.Beast}}
     <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
     <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
-    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>
+    <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
     </div>
   {{/with}}
@@ -23,7 +23,7 @@
     {{#with this}}
       <div data-item-id="{{this._id}}" class="skill-contextmenu"><img class="rune" src="{{img}}"></div>
       <div data-item-id="{{this._id}}" class="skill-contextmenu" data-item-roll>{{data.data.rune}}</div>
-      <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.experience}}experienced{{/if}}" data-item-roll>
+      <div data-item-id="{{this._id}}" class="skill-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
         <span class="text-right">{{this.data.data.chance}}%</span>
       </div>
       <div></div>

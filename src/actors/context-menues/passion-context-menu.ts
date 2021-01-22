@@ -27,7 +27,7 @@ export const passionMenuOptions = (actor) => [
     callback: async (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item = actor.getOwnedItem(itemId);
-      await item.update({ "data.experience": !item.data.data.experience }, {});
+      await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
     },
   },
   {
@@ -36,7 +36,7 @@ export const passionMenuOptions = (actor) => [
     condition: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item = actor.getOwnedItem(itemId);
-      return item.data.data.experience;
+      return item.data.data.hasExperience;
     },
     callback: (el) => {
       console.log("======== Improve");

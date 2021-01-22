@@ -1,6 +1,7 @@
 export interface IAbility {
   chance?: number;
-  experience?: boolean;
+  canGetExperience: boolean;
+  hasExperience?: boolean;
 }
 // mod?: string; // Modification, roll modifier formula compatible 0.7.x feature? Let it be a separate interface
 
@@ -15,7 +16,11 @@ export enum ResultEnum {
 }
 
 export class Ability implements IAbility {
-  constructor(public chance: number = 0, public experience?: boolean) {}
+  constructor(
+    public chance: number = 0,
+    public canGetExperience: boolean,
+    public hasExperience?: boolean
+  ) {}
 
   // Do a roll against this ability and factor in all modifiers.
   // stat - an object that implements IAbility
@@ -42,10 +47,8 @@ export class Ability implements IAbility {
   private static evaluateResult(chance: number, roll: number): ResultEnum {
     const specialCritSetting = game.settings.get("rqg", "specialCrit");
 
-    const hyperCritical =
-      specialCritSetting && chance >= 100 ? Math.ceil(chance / 500) : 0;
-    const specialCritical =
-      specialCritSetting && chance >= 100 ? Math.ceil(chance / 100) : 0;
+    const hyperCritical = specialCritSetting && chance >= 100 ? Math.ceil(chance / 500) : 0;
+    const specialCritical = specialCritSetting && chance >= 100 ? Math.ceil(chance / 100) : 0;
 
     const critical = Math.ceil(Math.max(1, chance / 20));
     const special = Math.ceil(chance / 5);
@@ -64,5 +67,3 @@ export class Ability implements IAbility {
     return lookup.filter((v) => roll <= v.limit)[0].result;
   }
 }
-
-export const emptyAbility = new Ability();

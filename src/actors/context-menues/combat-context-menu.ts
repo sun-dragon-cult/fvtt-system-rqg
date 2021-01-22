@@ -27,7 +27,7 @@ export const combatMenuOptions = (actor) => [
     callback: async (el) => {
       const itemId = (el[0].closest("[data-skill-id]") as HTMLElement).dataset.skillId;
       const item = actor.getOwnedItem(itemId);
-      await item.update({ "data.experience": !item.data.data.experience }, {});
+      await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
     },
   },
   {

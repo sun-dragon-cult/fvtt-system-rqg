@@ -15,7 +15,8 @@
     <label>Category Modifier {{item.data.categoryMod}}</label><br>
     <label>Base Chance <input type="number" min="0" max="999" name="data.baseChance" value="{{item.data.baseChance}}"></label><br>
     <label>Learned Chance <input type="number" min="0" max="999" name="data.learnedChance" value="{{item.data.learnedChance}}" /></label><br>
-    <label>Experience <input type="checkbox" name="data.experience" {{checked data.experience}} /></label><br>
+    <label>Can get experience <input type="checkbox" name="data.canGetExperience" {{checked data.canGetExperience}} /></label><br>
+    <label>Experience <input type="checkbox" name="data.hasExperience" {{checked data.hasExperience}} /></label><br>
     <label>Chance {{item.data.chance}}</label><br>
     {{#each data.runes}}
     <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>

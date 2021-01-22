@@ -22,5 +22,6 @@ export const emptyPassion: PassionData = {
   subject: "",
   description: "",
   chance: 0,
-  experience: false,
+  canGetExperience: true,
+  hasExperience: false,
 };

@@ -245,18 +245,18 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
-    // Add Item (create owned item)
-    this.form.querySelectorAll("[data-item-add]").forEach((el) => {
-      const itemType = (el.closest("[data-item-type]") as HTMLElement).dataset.itemType;
-      el.addEventListener("click", () => {
-        // Create item and render sheet afterwards
-        this.actor.createOwnedItem({ name: "Newone", type: itemType }).then((item) => {
-          // We have to reload the item for it to have a sheet
-          const createdItem = this.actor.getOwnedItem(item._id);
-          createdItem.sheet.render(true);
-        });
-      });
-    });
+    // // Add Item (create owned item)
+    // this.form.querySelectorAll("[data-item-add]").forEach((el) => {
+    //   const itemType = (el.closest("[data-item-type]") as HTMLElement).dataset.itemType;
+    //   el.addEventListener("click", () => {
+    //     // Create item and render sheet afterwards
+    //     this.actor.createOwnedItem({ name: "Newone", type: itemType }).then((item) => {
+    //       // We have to reload the item for it to have a sheet
+    //       const createdItem = this.actor.getOwnedItem(item._id);
+    //       createdItem.sheet.render(true);
+    //     });
+    //   });
+    // });
 
     // Equip a physical Item
     this.form.querySelectorAll("[data-item-equip]").forEach((el) => {
@@ -264,15 +264,6 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       el.addEventListener("click", async () => {
         const item = this.actor.getOwnedItem(itemId);
         await item.update({ "data.isEquipped": !item.data.data.isEquipped }, {});
-      });
-    });
-
-    // Toggle experience flag
-    this.form.querySelectorAll("[data-item-experience]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      el.addEventListener("click", async () => {
-        const item = this.actor.getOwnedItem(itemId);
-        await item.update({ "data.experience": !item.data.data.experience }, {});
       });
     });
 

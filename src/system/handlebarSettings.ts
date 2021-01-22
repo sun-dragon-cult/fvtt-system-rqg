@@ -23,7 +23,7 @@ export const handlebarSettings = function () {
   Handlebars.registerHelper("experiencedclass", (itemId, actorId) => {
     const actor = game.actors.find((a) => a._id === actorId);
     const item = actor.items.get(itemId);
-    return item && item.data.data.experience ? "experienced" : "";
+    return item && item.data.data.hasExperience ? "experienced" : "";
   });
 
   Handlebars.registerHelper("quantity", (itemId, actorId) => {
@@ -43,7 +43,7 @@ export const handlebarSettings = function () {
     if (!item) {
       console.warn("Found a null itemId with checkedexperience");
     }
-    return item?.data.data.experience ? "checked" : "";
+    return item?.data.data.hasExperience ? "checked" : "";
   });
 
   Handlebars.registerHelper("yes-no", (bool) => {
