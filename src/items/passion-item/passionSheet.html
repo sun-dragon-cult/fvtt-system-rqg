@@ -1,14 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-    {{!--
-    <input
-      name="name"
-      type="text"
-      value="{{item.name}}"
-      placeholder="Name"
-    />--> --}}
-    <!--      <input type="text" name="data.passion" value="{{item.data.passion}}" />-->
+    <img src="{{item.img}}" />
     <select name="data.passion">
       {{#select data.passion}} {{#each data.passionTypes}}
       <option value="{{this}}">{{this}}</option>
@@ -16,8 +8,7 @@
     </select>
     <input type="text" name="data.subject" value="{{item.data.subject}}" />
     <input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}" />
-    <input type="checkbox" name="data.experience" {{checked data.experience}}
-    /><br />
+    <input type="checkbox" name="data.experience" {{checked data.experience}} /><br />
   </header>
   <section class="sheet-body">
     <div class="wide-section">
