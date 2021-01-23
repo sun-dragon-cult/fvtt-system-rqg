@@ -5,7 +5,6 @@ import { IPhysicalItem } from "./IPhysicalItem";
 export type ArmorData = IPhysicalItem & {
   description: string;
   size: number; // Must match character size
-  // race: RaceEnum; // Must match character race TODO necessary?
   encumbrance: number;
   hitLocations: Array<string>; // Array of hitLocation names
   material: string;

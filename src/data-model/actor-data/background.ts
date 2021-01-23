@@ -32,6 +32,7 @@ export enum HomeLandEnum {
 
 export class Background {
   constructor(
+    public race: string,
     public occupation: OccupationEnum,
     public homeland: HomeLandEnum,
     public birthYear?: number,
@@ -47,7 +48,4 @@ export class Background {
   ) {}
 }
 
-export const emptyBackground = new Background(
-  OccupationEnum.Farmer,
-  HomeLandEnum.Sartar
-);
+export const emptyBackground = new Background("Human", OccupationEnum.Farmer, HomeLandEnum.Sartar);

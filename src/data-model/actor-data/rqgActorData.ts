@@ -1,6 +1,5 @@
 import { Attributes, emptyAttributes } from "./attributes";
 import { Characteristics, emptyCharacteristics } from "./characteristics";
-import { RaceEnum } from "./race";
 import { Background, emptyBackground } from "./background";
 import { emptySkillCategories, SkillCategories } from "./skillCategories";
 import { RqgItem } from "../../items/rqgItem";
@@ -10,7 +9,6 @@ export class RqgActorData {
   constructor(
     public characteristics: Characteristics,
     public background: Background,
-    public race: RaceEnum,
     // --- Derived / Convenience Data Below ---
     public attributes: Attributes, // Most are derived
     public skillCategoryModifiers?: SkillCategories,
@@ -30,7 +28,6 @@ export class RqgActorData {
 export const emptyActorDataRqg: RqgActorData = new RqgActorData(
   emptyCharacteristics,
   emptyBackground,
-  RaceEnum.Humanoid,
   emptyAttributes, // Needs to be persisted?
   emptySkillCategories // Needs to be persisted?
 );
