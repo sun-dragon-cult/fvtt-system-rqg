@@ -3,7 +3,7 @@ export class RqgItemSheet<DataType = any, ItemType extends Item<DataType> = any>
   ItemType
 > {
   get title() {
-    return this.object.permission ? `${this.object.type}: ${this.object.name}` : "";
+    return `${this.object.type}: ${this.object.name}`;
   }
 
   protected activateListeners(html: JQuery) {

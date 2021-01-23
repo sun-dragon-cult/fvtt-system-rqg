@@ -37,8 +37,9 @@
       <div class="heading">Chance</div>
       {{#each @root.data.ownedItems.runeMagic}}
       {{#if (eq ../id data.data.cultId)}}
-      <tr data-item-id="{{this._id}}">
-        <td><a title="Edit Item" data-item-edit><i class="fas fa-edit"></i></a> {{name}}
+        <div data-item-id="{{_id}}" class="rune-magic-contextmenu"><img class="item" src="{{img}}"></div>
+        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
+          {{name}}
           {{#each data.data.runes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
           {{/each}}
