@@ -8,8 +8,8 @@ export class GearSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Gear],
       template: "systems/rqg/items/gear-item/gearSheet.html",
-      width: 520,
-      height: 250,
+      width: 405,
+      height: 400,
     });
   }
 

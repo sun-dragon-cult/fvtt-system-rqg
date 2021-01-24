@@ -9,8 +9,8 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
       template: "systems/rqg/items/skill-item/skillSheet.html",
-      width: 520,
-      height: 250,
+      width: 370,
+      height: 310,
     });
   }
 

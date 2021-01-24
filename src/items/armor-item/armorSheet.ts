@@ -9,8 +9,8 @@ export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Armor],
       template: "systems/rqg/items/armor-item/armorSheet.html",
-      width: 520,
-      height: 250,
+      width: 350,
+      height: 390,
     });
   }
 

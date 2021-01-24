@@ -1,23 +1,19 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img
-      class="profile-img"
-      src="{{item.img}}"
-      data-edit="img"
-      title="{{item.name}}"
-    />
+<!--    <img-->
+<!--      class="profile-img"-->
+<!--      src="{{item.img}}"-->
+<!--      data-edit="img"-->
+<!--      title="{{item.name}}"-->
+<!--    />-->
+  </header>
+  <main>
     <select name="name">
       {{#select item.name}} {{#each data.hitLocationTypes}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
-    </select>
-  </header>
-  <main>
-    <label>Die from<br><input type="number" min="1" max="20" name="data.dieFrom" value="{{item.data.dieFrom}}"></label><br>
-    <label>Die to<br><input type="number" min="1" max="20" name="data.dieTo" value="{{item.data.dieTo}}"></label><br>
-    <label>Natural AP<br><input type="number" min="0" max="99" name="data.naturalAp" value="{{item.data.naturalAp}}"></label><br>
-    <label>Wounds<br>{{#each data.wounds}}
-      [&nbsp;{{this}}&nbsp;]
-    {{/each}}</label>
+    </select><br>
+    <label>Die from-to <input type="number" min="1" max="20" name="data.dieFrom" value="{{item.data.dieFrom}}"></label> - <input type="number" min="1" max="20" name="data.dieTo" value="{{item.data.dieTo}}"></label><br>
+    <label>Natural AP <input type="number" min="0" max="99" name="data.naturalAp" value="{{item.data.naturalAp}}"></label>
   </main>
 </form>

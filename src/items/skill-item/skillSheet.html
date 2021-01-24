@@ -5,25 +5,24 @@
     <label>Specialization<br><input type="text" name="data.specialization" value="{{item.data.specialization}}"></label>
   </header>
   <main>
-    <select name="data.category" >
+    Category: <select name="data.category" >
       {{#select data.category}}
       {{#each data.skillCategories}}
       <option value="{{this}}">{{this}}</option>
       {{/each}}
       {{/select}}
-    </select><br>
+    </select>
     <label>Category Modifier {{item.data.categoryMod}}</label><br>
     <label>Base Chance <input type="number" min="0" max="999" name="data.baseChance" value="{{item.data.baseChance}}"></label><br>
-    <label>Learned Chance <input type="number" min="0" max="999" name="data.learnedChance" value="{{item.data.learnedChance}}" /></label><br>
-    <label>Can get experience <input type="checkbox" name="data.canGetExperience" {{checked data.canGetExperience}} /></label><br>
-    <label>Experience <input type="checkbox" name="data.hasExperience" {{checked data.hasExperience}} /></label><br>
+    <label>Learned Chance <input type="number" min="0" max="999" name="data.learnedChance" value="{{item.data.learnedChance}}" /></label>
     <label>Chance {{item.data.chance}}</label><br>
+    <label><input type="checkbox" name="data.canGetExperience" {{checked data.canGetExperience}} /> Can get experience</label><br>
+    <label><input type="checkbox" name="data.hasExperience" {{checked data.hasExperience}} /> Has experience</label><br>
+    Sorcery Runes:<br>
     {{#each data.runes}}
     <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
-
-    <br>{{json data}}
   </main>
   <datalist id="allRunes">
     {{#each data.allRunes}}

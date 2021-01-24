@@ -9,8 +9,8 @@ export class CultSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Cult],
       template: "systems/rqg/items/cult-item/cultSheet.html",
-      width: 520,
-      height: 250,
+      width: 500,
+      height: 580,
     });
   }
 

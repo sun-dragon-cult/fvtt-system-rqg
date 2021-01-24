@@ -21,15 +21,15 @@
     <div class="flex-row">
     {{#if (or data.isThrownWeapon data.isProjectileWeapon)}}
       <div>
-        <label class="mp">Skill</label><br>
+        <label class="mp">Skill</label>
         {{#if data.isOwned}}
           <select name="data.skillId">
             {{#select data.skillId}} {{#each data.missileWeaponSkills}}
             <option value="{{this._id}}">{{this.name}}</option>
             {{/each}} {{/select}}
-          </select>
+          </select><br>
           {{#if data.isProjectileWeapon}}
-          <label class="mp">Projectile<br>
+          <label class="mp">Projectile
             <select name="data.projectileId">
               {{#select data.projectileId}} {{#each data.ownedProjectiles}}
               <option value="{{this._id}}">{{this.name}}</option>
@@ -64,7 +64,6 @@
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>
-    <br>{{json data}}
     <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
   </main>
 </form>

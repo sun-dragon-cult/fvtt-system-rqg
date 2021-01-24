@@ -21,8 +21,8 @@
           {{else}}
             <i>Drop a weapon skill on this weapon!</i>
           {{/if}}<br>
-        {{/if}}
-        <label>Damage <input name="data.damage" value="{{item.data.damage}}"></label>
+        {{/if}}<br>
+        <label>Damage <input name="data.damage" value="{{item.data.damage}}"></label><br>
         <label>Min STR <input type="number" min="0" max="99" name="data.minStrength" value="{{item.data.minStrength}}"></label><br>
         <label>Min DEX <input type="number" min="0" max="99" name="data.minDexterity" value="{{item.data.minDexterity}}"></label><br>
         <label>SR <input type="number" min="0" max="99" name="data.strikeRank" value="{{item.data.strikeRank}}"></label><br>
@@ -34,7 +34,7 @@
       <div>
         <h3>Combat Manuevers</h3>
         {{#each data.allCombatManeuvers}}
-          <label>{{name}} <input type="checkbox" name="data.allCombatManeuvers.{{name}}.value" {{checked value}}/></label><br>
+          <label><input type="checkbox" name="data.allCombatManeuvers.{{name}}.value" {{checked value}}/> {{name}}</label><br>
         {{/each}}
       </div>
     </div>
@@ -43,7 +43,6 @@
       button=true owner=owner editable=editable}}
     </label>
 
-    <br>{{json data}}
     <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
   </main>
 </form>
