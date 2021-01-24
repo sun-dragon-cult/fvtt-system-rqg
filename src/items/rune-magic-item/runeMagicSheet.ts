@@ -10,14 +10,15 @@ import {
 } from "../../data-model/item-data/runeMagicData";
 import { CultData } from "../../data-model/item-data/cultData";
 import { RuneData } from "../../data-model/item-data/runeData";
+import { RqgActorSheet } from "../../actors/rqgActorSheet";
 
 export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.RuneMagic],
       template: "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
-      width: 520,
-      height: 250,
+      width: 425,
+      height: 400,
     });
   }
 
@@ -56,5 +57,37 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     formData["data.runes"] = duplicate(runes);
     formData["data.chance"] = parseInt(formData["data.chance"]);
     return super._updateObject(event, formData);
+  }
+
+  protected activateListeners(html: JQuery) {
+    super.activateListeners(html);
+    this.form.addEventListener("drop", this._onDrop.bind(this));
+
+    // Open Linked Journal Entry
+    this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
+      const pack = el.dataset.journalPack;
+      const id = el.dataset.journalId;
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+    });
+  }
+
+  protected async _onDrop(event: DragEvent) {
+    super._onDrop(event);
+    // Try to extract the data
+    let droppedItemData;
+    try {
+      droppedItemData = JSON.parse(event.dataTransfer.getData("text/plain"));
+    } catch (err) {
+      return false;
+    }
+    if (droppedItemData.type === "JournalEntry") {
+      const pack = droppedItemData.pack ? droppedItemData.pack : "";
+      await this.item.update(
+        { "data.journalId": droppedItemData.id, "data.journalPack": pack },
+        {}
+      );
+    } else {
+      ui.notifications.warn("You can only drop a journalEntry");
+    }
   }
 }

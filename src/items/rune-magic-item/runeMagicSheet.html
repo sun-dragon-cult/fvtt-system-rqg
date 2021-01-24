@@ -30,7 +30,7 @@
       </div>
     </div>
     {{#if data.isOwned}}
-    <label class="mp">Cult<br>
+    <label class="mp">Cult
       <select name="data.cultId">
         {{#select data.cultId}} {{#each data.actorCults}}
         <option value="{{this._id}}">{{this.name}}</option>
@@ -38,13 +38,21 @@
       </select>
     </label><br>
     {{/if}}
+    Runes:<br>
     {{#each data.runes}}
     <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune">
-    <div> Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}</div>
+    <br>
+    {{#if data.journalPack}}
+    <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
+    {{else if data.journalId}}
+    <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to journal Entry</a>
+    {{/if}}
+
+    <br><i>Drop a journal on this item to connect a description.</i>
+
   </main>
-  {{json data}}
   <input type="hidden" name="data.chance" value="{{item.data.chance}}" placeholder="Select Rune to add">
   <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
   <datalist id="allRunes">

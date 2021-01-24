@@ -386,7 +386,7 @@
     cursor: alias;
   }
 
-  .entity-link {
+  [data-journal-id] {
     cursor: help;
   }
 
@@ -395,6 +395,11 @@
     cursor: default;
     text-align: left;
     text-shadow: initial;
+
+    font-family: 'Signika', sans-serif;
+    font-variant: normal;
+    letter-spacing: normal;
+    font-weight: normal;
 
     li.context-item {
       white-space: nowrap;

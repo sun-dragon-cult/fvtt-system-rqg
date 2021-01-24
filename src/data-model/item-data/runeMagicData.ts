@@ -1,3 +1,5 @@
+import { JournalEntryLink } from "../shared/journalentrylink";
+
 export enum RuneMagicCastingRangeEnum {
   Self = "self",
   Touch = "touch",
@@ -12,8 +14,7 @@ export enum RuneMagicDurationEnum {
   Permanent = "permanent", // Ritual (Enchantment)
 }
 
-export type RuneMagicData = {
-  description: string;
+export type RuneMagicData = JournalEntryLink & {
   cultId: string; // The cult from where to draw rune points
   runes: Array<string>; // Rune names like "Man (form)"
   points: number; // Learned strength
@@ -31,7 +32,6 @@ export type RuneMagicData = {
 };
 
 export const emptyRuneMagic: RuneMagicData = {
-  description: "",
   cultId: "",
   runes: [],
   points: 0,
@@ -40,4 +40,6 @@ export const emptyRuneMagic: RuneMagicData = {
   isStackable: false,
   isOneUse: false,
   chance: 0,
+  journalId: "",
+  journalPack: "",
 };

@@ -235,6 +235,13 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       });
     });
 
+    // Open Linked Journal Entry
+    this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
+      const pack = el.dataset.journalPack;
+      const id = el.dataset.journalId;
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+    });
+
     // Edit Item (open the item sheet)
     this.form.querySelectorAll("[data-item-edit]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
@@ -326,5 +333,23 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         classes: ["rqg", "dialog"],
       }
     ).render(true);
+  }
+
+  // TODO Move somewhere else!
+  static async showJournalEntry(id: string, packName?: string) {
+    let entity;
+
+    // Compendium Link
+    if (packName) {
+      const pack = game.packs.get(packName);
+      entity = id ? await pack.getEntity(id) : null;
+
+      // World Entity Link
+    } else {
+      const cls = CONFIG.JournalEntry.entityClass;
+      entity = cls.collection.get(id);
+    }
+
+    entity && entity.sheet.render(true);
   }
 }
