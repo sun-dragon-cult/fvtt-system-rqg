@@ -9,7 +9,7 @@
 
 {{#each data.ownedItems.cult}}
 <div style="margin-bottom: 1.5rem" data-item-id="{{this._id}}">
-  <h2 class="cult-contextmenu">
+  <h2 class="cult-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
     {{name}}
     {{#each data.data.runes}}
       <img class="rune" src="{{runeImg this}}" title="{{this}}">
@@ -26,47 +26,47 @@
       <span><b>Sub Cults:</b>{{{data.data.subCults}}}</span>
     {{/if}}
   </div>
-    <div class="grid rune-magic">
-      <div class="heading"></div>
-      <div class="heading">Rune Spell</div>
-      <div class="heading">Points</div>
-      <div class="heading"><span class="text-center">Range</span></div>
-      <div class="heading"><span class="text-center">Duration</span></div>
-      <div class="heading">Stackable</div>
-      <div class="heading">One Use</div>
-      <div class="heading">Chance</div>
-      {{#each @root.data.ownedItems.runeMagic}}
-      {{#if (eq ../id data.data.cultId)}}
-        <div data-item-id="{{_id}}" class="rune-magic-contextmenu"
-             {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-          <img class="item" src="{{img}}">
-        </div>
-        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
-          {{name}}
-          {{#each data.data.runes}}
-            <img class="rune" src="{{runeImg this}}" title="{{this}}">
-          {{/each}}
-        </div>
-        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
-          <span class="text-center">{{data.data.points}}</span>
-        </div>
-        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
-          <span class="text-center">{{data.data.castingRange}}</span>
-        </div>
-        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
-          <span class="text-center">{{data.data.duration}}</span>
-        </div>
-        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
-          <span class="text-center">{{yes-no data.data.isStackable}}</span>
-        </div>
-        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
-          <span class="text-center">{{yes-no data.data.isOneUse}}</span>
-        </div>
-        <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu text-right">
-          <span class="text-right">{{data.data.chance}}%</span>
-        </div>
-      {{/if}}
-      {{/each}}
-    </div>
+  <div class="grid rune-magic">
+    <div class="heading"></div>
+    <div class="heading">Rune Spell</div>
+    <div class="heading">Points</div>
+    <div class="heading"><span class="text-center">Range</span></div>
+    <div class="heading"><span class="text-center">Duration</span></div>
+    <div class="heading">Stackable</div>
+    <div class="heading">One Use</div>
+    <div class="heading">Chance</div>
+    {{#each @root.data.ownedItems.runeMagic}}
+    {{#if (eq ../id data.data.cultId)}}
+      <div data-item-id="{{_id}}" class="rune-magic-contextmenu"
+           {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+        <img class="item" src="{{img}}">
+      </div>
+      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
+        {{name}}
+        {{#each data.data.runes}}
+          <img class="rune" src="{{runeImg this}}" title="{{this}}">
+        {{/each}}
+      </div>
+      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
+        <span class="text-center">{{data.data.points}}</span>
+      </div>
+      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
+        <span class="text-center">{{data.data.castingRange}}</span>
+      </div>
+      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
+        <span class="text-center">{{data.data.duration}}</span>
+      </div>
+      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
+        <span class="text-center">{{yes-no data.data.isStackable}}</span>
+      </div>
+      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu">
+        <span class="text-center">{{yes-no data.data.isOneUse}}</span>
+      </div>
+      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu text-right">
+        <span class="text-right">{{data.data.chance}}%</span>
+      </div>
+    {{/if}}
+    {{/each}}
+  </div>
 </div>
 {{/each}}

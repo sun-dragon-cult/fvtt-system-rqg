@@ -18,7 +18,7 @@ export const runeMagicMenuOptions = (actor) => [
     condition: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       let firstItemEl = el[0];
-      while (firstItemEl.previousElementSibling.dataset.itemId === itemId) {
+      while (firstItemEl.previousElementSibling?.dataset?.itemId === itemId) {
         firstItemEl = firstItemEl.previousElementSibling;
       }
       return !!firstItemEl.dataset.journalId;
@@ -26,7 +26,7 @@ export const runeMagicMenuOptions = (actor) => [
     callback: async (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       let firstItemEl = el[0];
-      while (firstItemEl.previousElementSibling.dataset.itemId === itemId) {
+      while (firstItemEl.previousElementSibling?.dataset?.itemId === itemId) {
         firstItemEl = firstItemEl.previousElementSibling;
       }
       RqgActorSheet.showJournalEntry(

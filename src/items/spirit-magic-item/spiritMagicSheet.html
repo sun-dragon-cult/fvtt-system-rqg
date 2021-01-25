@@ -47,8 +47,13 @@
     </div>
   </main>
   <label>spellFocus <input type="text" name="data.spellFocus" value="{{item.data.spellFocus}}">Variable</label>
-  <div>
-    Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
-  </div>
+  <br>
+  {{#if data.journalPack}}
+  <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
+  {{else if data.journalId}}
+  <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to journal Entry</a>
+  {{/if}}
+
+  <br><i>Drop a journal on this item to connect a description.</i>
   <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
 </form>

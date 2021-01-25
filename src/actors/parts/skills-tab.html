@@ -4,9 +4,10 @@
     <h2>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
     <div class="grid three">
       {{#each this}}
-        <a data-item-id="{{_id}}" title="Description" class="entity-link skill-contextmenu" data-entity="Compendium" data-pack="rqg-compendiums.rune-magic-descriptions" data-id="W90IKFM0UUw321rr">
+        <div data-item-id="{{_id}}" title="Description" class="skill-contextmenu"
+          {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
           <img class="item" src="{{img}}">
-        </a>
+        </div>
         <div data-item-id="{{_id}}" class="skill-contextmenu" data-item-roll>
           {{name}}
           {{#each data.data.runes}}

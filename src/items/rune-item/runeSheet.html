@@ -27,9 +27,14 @@
         <input name="data.minorRunes" type="text" list="allRunes" placeholder="Add new minor rune"><br>
       </div>
       <label><input type="checkbox" name="data.isMastered" {{checked data.isMastered}}>Mastered (Sorcery)</label><br>
-      <label>Description
-        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
-      </label>
+      <br>
+      {{#if data.journalPack}}
+      <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
+      {{else if data.journalId}}
+      <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to journal Entry</a>
+      {{/if}}
+
+      <br><i>Drop a journal on this item to connect a description.</i>
     </div>
   </section>
   <datalist id="allRunes">

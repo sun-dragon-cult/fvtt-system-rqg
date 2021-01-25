@@ -1,4 +1,5 @@
 import { IAbility } from "../shared/ability";
+import { JournalEntryLink } from "../shared/journalentrylink";
 
 export enum SkillCategoryEnum {
   Agility = "agility",
@@ -15,20 +16,21 @@ export enum SkillCategoryEnum {
   OtherSkills = "otherSkills",
 }
 
-export type SkillData = IAbility & {
-  category: SkillCategoryEnum;
-  skillName: string;
-  specialization: string;
-  baseChance: number;
-  learnedChance: number;
-  runes: Array<string>; // For Sorcery Magic
-  // --- Derived / Convenience Data Below ---
-  chance?: number;
-  categoryMod?: number;
-  skillCategories?: SkillCategoryEnum[];
-  isGM?: boolean;
-  allRunes?: Array<string>; // For sheet dropdown
-};
+export type SkillData = IAbility &
+  JournalEntryLink & {
+    category: SkillCategoryEnum;
+    skillName: string;
+    specialization: string;
+    baseChance: number;
+    learnedChance: number;
+    runes: Array<string>; // For Sorcery Magic
+    // --- Derived / Convenience Data Below ---
+    chance?: number;
+    categoryMod?: number;
+    skillCategories?: SkillCategoryEnum[];
+    isGM?: boolean;
+    allRunes?: Array<string>; // For sheet dropdown
+  };
 
 export const emptySkill: SkillData = {
   category: SkillCategoryEnum.Magic,
@@ -39,4 +41,6 @@ export const emptySkill: SkillData = {
   canGetExperience: true,
   hasExperience: false,
   runes: [],
+  journalId: "",
+  journalPack: "",
 };

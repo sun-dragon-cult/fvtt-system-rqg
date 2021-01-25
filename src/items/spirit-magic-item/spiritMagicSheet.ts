@@ -8,6 +8,7 @@ import {
   SpiritMagicConcentrationEnum,
 } from "../../data-model/item-data/spiritMagicData";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgActorSheet } from "../../actors/rqgActorSheet";
 
 export class SpiritMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -27,5 +28,37 @@ export class SpiritMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     data.durations = Object.values(SpiritMagicDurationEnum);
     data.types = Object.values(SpiritMagicConcentrationEnum);
     return sheetData;
+  }
+
+  protected activateListeners(html: JQuery) {
+    super.activateListeners(html);
+    this.form.addEventListener("drop", this._onDrop.bind(this));
+
+    // Open Linked Journal Entry
+    this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
+      const pack = el.dataset.journalPack;
+      const id = el.dataset.journalId;
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+    });
+  }
+
+  protected async _onDrop(event: DragEvent) {
+    super._onDrop(event);
+    // Try to extract the data
+    let droppedItemData;
+    try {
+      droppedItemData = JSON.parse(event.dataTransfer.getData("text/plain"));
+    } catch (err) {
+      return false;
+    }
+    if (droppedItemData.type === "JournalEntry") {
+      const pack = droppedItemData.pack ? droppedItemData.pack : "";
+      await this.item.update(
+        { "data.journalId": droppedItemData.id, "data.journalPack": pack },
+        {}
+      );
+    } else {
+      ui.notifications.warn("You can only drop a journalEntry");
+    }
   }
 }

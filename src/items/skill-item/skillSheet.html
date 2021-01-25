@@ -23,6 +23,14 @@
     <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
+    <br>
+    {{#if data.journalPack}}
+    <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
+    {{else if data.journalId}}
+    <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to journal Entry</a>
+    {{/if}}
+
+    <br><i>Drop a journal on this item to connect a description.</i>
   </main>
   <datalist id="allRunes">
     {{#each data.allRunes}}

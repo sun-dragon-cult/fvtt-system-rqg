@@ -1,3 +1,5 @@
+import { JournalEntryLink } from "../shared/journalentrylink";
+
 export enum SpiritMagicCastingRangeEnum {
   Self = "self",
   Touch = "touch",
@@ -16,8 +18,7 @@ export enum SpiritMagicConcentrationEnum {
   Active = "active",
 }
 
-export type SpiritMagicData = {
-  description: string;
+export type SpiritMagicData = JournalEntryLink & {
   points: number; // Learned strength
   isVariable: boolean; // Can the caster decide the number of magic points used
   castingRange: SpiritMagicCastingRangeEnum;
@@ -33,7 +34,6 @@ export type SpiritMagicData = {
 };
 
 export const emptySpiritMagic: SpiritMagicData = {
-  description: "",
   points: 0,
   isVariable: false,
   castingRange: SpiritMagicCastingRangeEnum.Ranged,
@@ -41,4 +41,6 @@ export const emptySpiritMagic: SpiritMagicData = {
   concentration: SpiritMagicConcentrationEnum.Passive,
   incompatibleWith: [],
   spellFocus: "",
+  journalId: "",
+  journalPack: "",
 };

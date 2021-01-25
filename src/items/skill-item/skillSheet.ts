@@ -3,6 +3,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
+import { RqgActorSheet } from "../../actors/rqgActorSheet";
 
 export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -38,5 +39,37 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     runes = runes.filter((r) => r); // Remove empty
     formData["data.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
+  }
+
+  protected activateListeners(html: JQuery) {
+    super.activateListeners(html);
+    this.form.addEventListener("drop", this._onDrop.bind(this));
+
+    // Open Linked Journal Entry
+    this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
+      const pack = el.dataset.journalPack;
+      const id = el.dataset.journalId;
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+    });
+  }
+
+  protected async _onDrop(event: DragEvent) {
+    super._onDrop(event);
+    // Try to extract the data
+    let droppedItemData;
+    try {
+      droppedItemData = JSON.parse(event.dataTransfer.getData("text/plain"));
+    } catch (err) {
+      return false;
+    }
+    if (droppedItemData.type === "JournalEntry") {
+      const pack = droppedItemData.pack ? droppedItemData.pack : "";
+      await this.item.update(
+        { "data.journalId": droppedItemData.id, "data.journalPack": pack },
+        {}
+      );
+    } else {
+      ui.notifications.warn("You can only drop a journalEntry");
+    }
   }
 }

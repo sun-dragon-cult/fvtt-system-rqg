@@ -11,7 +11,9 @@
   <div class="heading">Duration</div>
   <div class="heading">Concentration</div>
   {{#each data.ownedItems.spiritMagic}}
-    <div data-item-id="{{_id}}" class="spiritmagic-contextmenu"><img class="item" src="{{img}}"></div>
+    <div data-item-id="{{_id}}" class="spiritmagic-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="item" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{name}}</div>
     <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
       <span class="text-center">{{data.data.points}}</span>

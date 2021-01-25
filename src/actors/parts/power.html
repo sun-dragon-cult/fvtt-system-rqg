@@ -2,7 +2,9 @@
   <h2 class="fullrow">Power</h2>
 
   {{#with data.ownedItems.rune.power.Fertility}}
-    <div data-item-id="{{this._id}}" class="rune-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+        <img class="rune" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
@@ -10,7 +12,9 @@
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with data.ownedItems.rune.power.Death}}
-    <div data-item-id="{{this._id}}" class="rune-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="rune" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
@@ -18,7 +22,9 @@
   {{/with}}
 
   {{#with data.ownedItems.rune.power.Harmony}}
-    <div data-item-id="{{this._id}}" class="rune-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="rune" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
@@ -26,7 +32,9 @@
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with data.ownedItems.rune.power.Disorder}}
-    <div data-item-id="{{this._id}}" class="rune-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="rune" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
@@ -34,7 +42,9 @@
   {{/with}}
 
   {{#with data.ownedItems.rune.power.Truth}}
-    <div data-item-id="{{this._id}}" class="rune-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="rune" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
@@ -42,7 +52,9 @@
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with data.ownedItems.rune.power.Illusion}}
-    <div data-item-id="{{this._id}}" class="rune-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="rune" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
@@ -50,7 +62,9 @@
   {{/with}}
 
   {{#with data.ownedItems.rune.power.Stasis}}
-    <div data-item-id="{{this._id}}" class="rune-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="rune" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
@@ -58,7 +72,9 @@
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with data.ownedItems.rune.power.Movement}}
-    <div data-item-id="{{this._id}}" class="rune-contextmenu"><img class="rune" src="{{img}}"></div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="rune" src="{{img}}">
+    </div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
     <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
       <span class="text-right">{{this.data.data.chance}}%</span>
