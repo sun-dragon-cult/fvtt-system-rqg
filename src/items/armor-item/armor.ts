@@ -56,7 +56,7 @@ export class Armor extends BaseItem {
       icon: "icons/svg/ice-shield.svg",
       changes: changes,
       transfer: true,
-      disabled: !armorData.isEquipped,
+      disabled: !(armorData.equippedStatus === "equipped"),
     };
   }
 }

@@ -12,7 +12,7 @@
     <div class="text-right heading">SR</div>
     <div class="text-left heading">Combat Maneuvers</div>
     {{#each data.ownedItems.meleeWeapon}}
-    {{#if data.data.isEquipped}}
+    {{#if (eq data.data.equippedStatus "equipped")}}
     {{#unless data.data.isNatural}}
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"><img class="item" src="{{img}}"></div>
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">{{name}}</div>
@@ -35,7 +35,7 @@
     {{/each}}
 
     {{#each data.ownedItems.missileWeapon}}
-    {{#if data.data.isEquipped}}
+    {{#if (eq data.data.equippedStatus "equipped")}}
     {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}"><img class="item" src="{{img}}"></div>
       <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">{{name}} ({{quantity data.data.projectileId actor._id}})</div>

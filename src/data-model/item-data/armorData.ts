@@ -1,4 +1,4 @@
-import { IPhysicalItem } from "./IPhysicalItem";
+import { EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
 
 // TODO Armor shouldn't have quantity (part of IPhysicalItem)
 
@@ -12,6 +12,7 @@ export type ArmorData = IPhysicalItem & {
   moveQuietlyPenalty: number;
   // --- Derived / Convenience Data Below ---
   allHitLocations?: Array<any>; // Index of the hitlocations compendium
+  equippedStatuses?: Array<EquippedStatus>; // For sheet dropdown
 };
 
 export const emptyArmor: ArmorData = {
@@ -19,7 +20,7 @@ export const emptyArmor: ArmorData = {
   size: 0,
   price: 0,
   encumbrance: 1,
-  isEquipped: false,
+  equippedStatus: "carried",
   hitLocations: [],
   material: "",
   absorbs: 0,

@@ -3,6 +3,7 @@ import { ArmorData } from "../../data-model/item-data/armorData";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
+import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 
 export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -25,6 +26,7 @@ export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     } catch (err) {
       data.allHitLocations = [];
     }
+    data.equippedStatuses = [...equippedStatuses];
     return sheetData;
   }
 

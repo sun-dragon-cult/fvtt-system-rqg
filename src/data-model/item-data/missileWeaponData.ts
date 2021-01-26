@@ -1,4 +1,4 @@
-import { IPhysicalItem } from "./IPhysicalItem";
+import { EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
 import { RqgItem } from "../../items/rqgItem";
 import { SkillData } from "./skillData";
@@ -15,7 +15,6 @@ export type MissileWeaponData = IPhysicalItem & {
   rate: number; // 0 = multiple/mr, 1 = 1/mr, 2 = 1/2mr, 3 = 1/3mr, 5 = 1/5mr
   hitPoints: Resource;
   encumbrance: number;
-  isEquipped: boolean;
   isProjectile: boolean;
   isProjectileWeapon: boolean; // No damage bonus & uses projectiles
   isThrownWeapon: boolean; // If true add half DB, if false it's projectile with no db
@@ -27,6 +26,7 @@ export type MissileWeaponData = IPhysicalItem & {
   ownedProjectiles?: Array<RqgItem<MissileWeaponData>>;
   skillName?: string; // For showing the name of the linked skill if the item isn't owned
   isOwned?: boolean;
+  equippedStatuses?: Array<EquippedStatus>; // For sheet dropdown
 };
 
 export const emptyMissileWeapon: MissileWeaponData = {
@@ -42,7 +42,7 @@ export const emptyMissileWeapon: MissileWeaponData = {
   hitPoints: emptyResource,
   encumbrance: 0,
   price: 0,
-  isEquipped: false,
+  equippedStatus: "carried",
   isProjectile: false,
   isProjectileWeapon: true,
   isThrownWeapon: false,

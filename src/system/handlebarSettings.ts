@@ -1,3 +1,5 @@
+import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
+
 export const handlebarSettings = function () {
   Handlebars.registerHelper("concat", (...strs) =>
     strs.filter((s) => typeof s !== "object").join("")
@@ -37,13 +39,18 @@ export const handlebarSettings = function () {
     return allRunesIndex.find((r) => r.name === runeName)?.img;
   });
 
-  Handlebars.registerHelper("checkedexperience", (itemId, actorId) => {
-    const actor = game.actors.find((a) => a._id === actorId);
-    const item = actor.items.get(itemId);
-    if (!item) {
-      console.warn("Found a null itemId with checkedexperience");
-    }
-    return item?.data.data.hasExperience ? "checked" : "";
+  // Handlebars.registerHelper("checkedexperience", (itemId, actorId) => {
+  //   const actor = game.actors.find((a) => a._id === actorId);
+  //   const item = actor.items.get(itemId);
+  //   if (!item) {
+  //     console.warn("Found a null itemId with checkedexperience");
+  //   }
+  //   return item?.data.data.hasExperience ? "checked" : "";
+  // });
+
+  Handlebars.registerHelper("equippedIcon", (equippedStatus: EquippedStatus) => {
+    equippedStatus = equippedStatus ? equippedStatus : "notCarried";
+    return CONFIG.RQG.equippedIcons[equippedStatus];
   });
 
   Handlebars.registerHelper("yes-no", (bool) => {

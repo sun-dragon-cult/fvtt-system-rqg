@@ -18,6 +18,7 @@ import { spiritMagicMenuOptions } from "./context-menues/spirit-magic-context-me
 import { cultMenuOptions } from "./context-menues/cult-context-menu";
 import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
+import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -267,12 +268,16 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     //   });
     // });
 
-    // Equip a physical Item
-    this.form.querySelectorAll("[data-item-equip]").forEach((el) => {
+    // Toggle the equipped state of a physical Item
+    this.form.querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("click", async () => {
         const item = this.actor.getOwnedItem(itemId);
-        await item.update({ "data.isEquipped": !item.data.data.isEquipped }, {});
+        const newStatus =
+          equippedStatuses[
+            (equippedStatuses.indexOf(item.data.data.equippedStatus) + 1) % equippedStatuses.length
+          ];
+        await item.update({ "data.equippedStatus": newStatus }, {});
       });
     });
 

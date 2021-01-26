@@ -4,6 +4,7 @@ import { SkillCategoryEnum, SkillData } from "../../data-model/item-data/skillDa
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
+import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 
 export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -42,6 +43,7 @@ export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
         data.skillName = skill?.name || "";
       }
     }
+    data.equippedStatuses = [...equippedStatuses];
     return sheetData;
   }
 

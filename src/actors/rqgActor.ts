@@ -196,19 +196,21 @@ export class RqgActor extends Actor<RqgActorData> {
 
   private async updateEncumbrance() {
     const equippedEncumbrance = Math.round(
-      this.items.reduce((sum, i) => {
-        const enc = i.data.data.isEquipped
-          ? (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0)
-          : 0;
-        return sum + enc;
-      }, 0)
+      this.items
+        .filter((i) => i.data.data.equippedStatus === "equipped")
+        .reduce((sum, i) => {
+          const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
+          return sum + enc;
+        }, 0)
     );
 
     const travelEncumbrance = Math.round(
-      this.items.reduce(
-        (sum, i) => sum + (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0),
-        0
-      )
+      this.items
+        .filter((i) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
+        .reduce((sum, i) => {
+          const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
+          return sum + enc;
+        }, 0)
     );
     if (
       this.data.data.attributes.equippedEncumbrance !== equippedEncumbrance ||

@@ -3,7 +3,11 @@
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
     <input type="text" name="name" value="{{item.name}}" />
     <label>Enc <input type="number" min="0" max="99" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
-    <label>Equipped <input type="checkbox" name="data.isEquipped" {{checked data.isEquipped}} /></label><br>
+    <select name="data.equippedStatus">
+      {{#select data.equippedStatus}} {{#each data.equippedStatuses}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select>
   </header>
   <main>
     <label>Hit Locations</label><br>

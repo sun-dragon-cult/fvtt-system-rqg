@@ -33,12 +33,13 @@
 
 .text-right {
   text-align: right;
-  width: 100%;
+  margin-left: auto;
 }
 
 .text-center {
   text-align: center;
-  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .small-size {
@@ -618,5 +619,9 @@
   height: 26px;
   border: none;
   vertical-align: inherit;
+}
+
+.rqg img.equipped-status {
+  height: 15px;
 }
 

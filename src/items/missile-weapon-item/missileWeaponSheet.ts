@@ -6,6 +6,7 @@ import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 import { RqgItem } from "../rqgItem";
+import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 
 export class MissileWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   static get defaultOptions(): FormApplicationOptions {
@@ -46,6 +47,7 @@ export class MissileWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
       const skill = await fromUuid(data.skillOrigin);
       data.skillName = skill?.name || "";
     }
+    data.equippedStatuses = [...equippedStatuses];
     return sheetData;
   }
 

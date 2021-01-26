@@ -1,4 +1,4 @@
-import { IPhysicalItem } from "./IPhysicalItem";
+import { EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
 import { RqgItem } from "../../items/rqgItem";
 import { SkillData } from "./skillData";
@@ -23,7 +23,6 @@ export type MeleeWeaponData = IPhysicalItem & {
   strikeRank: number;
   hitPoints: Resource;
   encumbrance: number;
-  isEquipped: boolean;
   isNatural: boolean; // E.g. Fist, Grapple, Kick
   description: string;
   // --- Derived / Convenience Data Below ---
@@ -31,6 +30,7 @@ export type MeleeWeaponData = IPhysicalItem & {
   meleeWeaponSkills?: Array<RqgItem<SkillData>>; // All relevant skills of the owning actor
   skillName?: string; // For showing the name of the linked skill if the item isn't owned
   isOwned?: boolean;
+  equippedStatuses?: Array<EquippedStatus>; // For sheet dropdown
 };
 
 export const emptyMeleeWeapon: MeleeWeaponData = {
@@ -45,6 +45,6 @@ export const emptyMeleeWeapon: MeleeWeaponData = {
   hitPoints: emptyResource,
   encumbrance: 0,
   price: 0,
-  isEquipped: false,
+  equippedStatus: "carried",
   isNatural: false,
 };
