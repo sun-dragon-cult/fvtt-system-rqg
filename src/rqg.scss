@@ -136,255 +136,255 @@
     .fullrow {
       grid-column: 1 / -1;
     }
-  }
 
-  .heading {
-    background: var(--main-bg-color) !important;
-    mix-blend-mode: color-burn;
-    text-shadow: 3px 4px 4px #6f644e;
-    box-shadow: inset 0 0 20px 7px #e4a025;
-  }
+    .headings {
+      grid-column: 1/-1;
+      grid-row: 1/2;
 
-  .overlay {
-    background-color: red;
-    z-index: 10;
-    grid-column: col;
-    grid-row: row;
-  }
-
-  .grid.one {
-    grid-template-columns: [col-start] 30px auto [col-end];
-
-    // Alternating row background
-    > *:nth-child(2n+1)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.two {
-    grid-template-columns: [col-start] 30px auto [col-end];
-
-    // Alternating row background
-    > *:nth-child(4n+1),
-    > *:nth-child(4n+2)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.three {
-    grid-template-columns: [col-start] 30px auto min-content [col-end];
-
-    // Alternating row background for 3 columns
-    > *:nth-child(6n+1),
-    > *:nth-child(6n+2),
-    > *:nth-child(6n+3)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.four {
-    grid-template-columns: [col-start] 30px auto repeat(2, min-content) [col-end];
-
-    // Alternating row background for 4 columns
-    > *:nth-child(8n+1),
-    > *:nth-child(8n+2),
-    > *:nth-child(8n+3),
-    > *:nth-child(8n+4)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.five {
-    grid-template-columns: [col-start] 30px auto repeat(3, min-content) [col-end];
-
-    // Alternating row background for 5 columns
-    > *:nth-child(10n+1),
-    > *:nth-child(10n+2),
-    > *:nth-child(10n+3),
-    > *:nth-child(10n+4),
-    > *:nth-child(10n+5)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.six {
-    grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
-
-    // Alternating row background for 6 columns
-    > *:nth-child(12n+1),
-    > *:nth-child(12n+2),
-    > *:nth-child(12n+3),
-    > *:nth-child(12n+4),
-    > *:nth-child(12n+5),
-    > *:nth-child(12n+6)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.seven {
-    grid-template-columns: [col-start] 30px repeat(6, min-content) [col-end];
-
-    // Alternating row background for 7 columns
-    > *:nth-child(14n+1),
-    > *:nth-child(14n+2),
-    > *:nth-child(14n+3),
-    > *:nth-child(14n+4),
-    > *:nth-child(14n+5),
-    > *:nth-child(14n+6),
-    > *:nth-child(14n+7)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.spiritmagic {
-    grid-template-columns: [col-start] 30px auto repeat(5, min-content) [col-end];
-
-    // Alternating row background for 7 columns
-    > *:nth-child(14n+1),
-    > *:nth-child(14n+2),
-    > *:nth-child(14n+3),
-    > *:nth-child(14n+4),
-    > *:nth-child(14n+5),
-    > *:nth-child(14n+6),
-    > *:nth-child(14n+7)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.gear {
-    grid-template-columns: [col-start] 30px auto repeat(4, max-content) [col-end];
-
-    > *:nth-child(12n+1),
-    > *:nth-child(12n+2),
-    > *:nth-child(12n+3),
-    > *:nth-child(12n+4),
-    > *:nth-child(12n+5),
-    > *:nth-child(12n+6)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.rune-magic {
-    grid-template-columns: [col-start] 30px auto repeat(6, max-content) [col-end];
-
-    > *:nth-child(16n+1),
-    > *:nth-child(16n+2),
-    > *:nth-child(16n+3),
-    > *:nth-child(16n+4),
-    > *:nth-child(16n+5),
-    > *:nth-child(16n+6),
-    > *:nth-child(16n+7),
-    > *:nth-child(16n+8)
-    {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.hit-location {
-    grid-template-columns: [col-start] auto min-content repeat(5, auto) [col-end];
-
-    > *:nth-child(14n+5),
-    > *:nth-child(14n+6),
-    > *:nth-child(14n+7),
-    > *:nth-child(14n+8),
-    > *:nth-child(14n+9),
-    > *:nth-child(14n+10),
-    > *:nth-child(14n+11) {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.passions {
-    display: grid;
-    grid-template-rows: [row-start] auto [row-end];
-    grid-auto-rows: auto;
-    grid-auto-columns: auto;
-    grid-gap: 0;
-    grid-template-columns: [col-start] auto [col-end];
-
-    // Alternating row background
-    > *:nth-child(2n+1) {
-      background: var(--table-alternate-background);
+      background: var(--main-bg-color);
+      mix-blend-mode: color-burn;
+      text-shadow: 3px 4px 4px #6f644e;
+      box-shadow: inset 0 0 20px 7px #e4a025;
+      border: 3px double grey;
+      border-radius: 40px;
+      margin-left: -0.4rem;
+      margin-right: -0.4rem;
     }
 
-    .grid.passion {
+    .head1 {
+      grid-row: 1;
+      grid-column: 1/2;
+    }
+
+    .head2 {
+      grid-row: 1;
+      grid-column: 2/3;
+    }
+
+    .head3 {
+      grid-row: 1;
+      grid-column: 3/4;
+    }
+
+    .head4 {
+      grid-row: 1;
+      grid-column: 4/5;
+    }
+
+    .head5 {
+      grid-row: 1;
+      grid-column: 5/6;
+    }
+
+    .head6 {
+      grid-row: 1;
+      grid-column: 6/7;
+    }
+
+    .head7 {
+      grid-row: 1;
+      grid-column: 7/8;
+    }
+
+    .head8 {
+      grid-row: 1;
+      grid-column: 8/9;
+    }
+
+    .head9 {
+      grid-row: 1;
+      grid-column: 9/10;
+    }
+
+    .head1-4 {
+      grid-row: 1;
+      grid-column: 1 / span 4;
+    }
+
+    &.spirit-combat {
+      grid-template-columns: [col-start] 30px auto [col-end];
+
+      // Alternating row background
+      > *:nth-child(4n+1),
+      > *:nth-child(4n+2) {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.combat {
+      grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
+
+      // Alternating row background for 6 columns
+      > *:nth-child(12n+14),
+      > *:nth-child(12n+15),
+      > *:nth-child(12n+16),
+      > *:nth-child(12n+17),
+      > *:nth-child(12n+18),
+      > *:nth-child(12n+19)
+      {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.spiritmagic {
+      grid-template-columns: [col-start] 30px auto repeat(5, min-content) [col-end];
+
+      // Alternating row background for 7 columns
+      > *:nth-child(14n+16),
+      > *:nth-child(14n+17),
+      > *:nth-child(14n+18),
+      > *:nth-child(14n+19),
+      > *:nth-child(14n+20),
+      > *:nth-child(14n+21),
+      > *:nth-child(14n+22) {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.gear {
+      grid-template-columns: [col-start] 30px auto repeat(4, max-content) [col-end];
+
+      // Alternating row background for 6 columns
+      > *:nth-child(12n+14),
+      > *:nth-child(12n+15),
+      > *:nth-child(12n+16),
+      > *:nth-child(12n+17),
+      > *:nth-child(12n+18),
+      > *:nth-child(12n+19)
+      {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.weapon {
+      grid-template-columns: [col-start] 30px auto auto repeat(6, max-content) [col-end];
+
+      // Alternating row background for 9 columns
+      > *:nth-child(18n+20),
+      > *:nth-child(18n+21),
+      > *:nth-child(18n+22),
+      > *:nth-child(18n+23),
+      > *:nth-child(18n+24),
+      > *:nth-child(18n+25),
+      > *:nth-child(18n+26),
+      > *:nth-child(18n+27),
+      > *:nth-child(18n+28)
+      {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.armor {
+      grid-template-columns: [col-start] 30px auto min-content auto auto repeat(3, max-content) [col-end];
+
+      > *:nth-child(16n+18),
+      > *:nth-child(16n+19),
+      > *:nth-child(16n+20),
+      > *:nth-child(16n+21),
+      > *:nth-child(16n+22),
+      > *:nth-child(16n+23),
+      > *:nth-child(16n+24),
+      > *:nth-child(16n+25) {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.rune-magic {
+      grid-template-columns: [col-start] 30px auto repeat(6, max-content) [col-end];
+
+      > *:nth-child(16n+18),
+      > *:nth-child(16n+19),
+      > *:nth-child(16n+20),
+      > *:nth-child(16n+21),
+      > *:nth-child(16n+22),
+      > *:nth-child(16n+23),
+      > *:nth-child(16n+24),
+      > *:nth-child(16n+25), {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.hit-location {
+      grid-template-columns: [col-start] auto min-content repeat(5, auto) [col-end];
+
+      > *:nth-child(14n+13),
+      > *:nth-child(14n+14),
+      > *:nth-child(14n+15),
+      > *:nth-child(14n+16),
+      > *:nth-child(14n+17),
+      > *:nth-child(14n+18),
+      > *:nth-child(14n+19) {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.skill {
+      grid-template-columns: [col-start] 30px auto min-content [col-end];
+
+      // Alternating row background
+      > *:nth-child(6n+1),
+      > *:nth-child(6n+2),
+      > *:nth-child(6n+3) {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.passions {
       display: grid;
-      grid-template-columns: [col-start] 45px [description-start] auto min-content [description-end col-end];
-      grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+      grid-template-rows: [row-start] auto [row-end];
+      grid-auto-rows: auto;
+      grid-auto-columns: auto;
+      grid-gap: 0;
+      grid-template-columns: [col-start] auto [col-end];
+
+      // Alternating row background
+      > *:nth-child(2n+1) {
+        background: var(--table-alternate-background);
+      }
+
+      .grid.passion {
+        display: grid;
+        grid-template-columns: [col-start] 45px [description-start] auto min-content [description-end col-end];
+        grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+      }
+
+      .description {
+        grid-area: description;
+      }
+
+      .img {
+        grid-row: 1 / -1;
+        mix-blend-mode: soft-light;
+      }
+
     }
 
-    .description {
-      grid-area: description;
+    &.rune {
+      grid-template-columns: [col-start] max-content auto max-content [col-end];
     }
 
-    .img {
-      grid-row: 1 / -1;
-      mix-blend-mode: soft-light;
+    &.opposed-rune {
+      grid-template-columns: [col-start] max-content auto max-content min-content max-content auto max-content [col-end];
     }
-
-  }
-
-  .grid.weapon {
-    grid-template-columns: [col-start] 30px auto auto repeat(6, max-content) [col-end];
-
-    > *:nth-child(18n+1),
-    > *:nth-child(18n+2),
-    > *:nth-child(18n+3),
-    > *:nth-child(18n+4),
-    > *:nth-child(18n+5),
-    > *:nth-child(18n+6),
-    > *:nth-child(18n+7),
-    > *:nth-child(18n+8),
-    > *:nth-child(18n+9) {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.armor {
-    grid-template-columns: [col-start] 30px auto min-content auto auto repeat(3, max-content) [col-end];
-
-    > *:nth-child(16n+1),
-    > *:nth-child(16n+2),
-    > *:nth-child(16n+3),
-    > *:nth-child(16n+4),
-    > *:nth-child(16n+5),
-    > *:nth-child(16n+6),
-    > *:nth-child(16n+7),
-    > *:nth-child(16n+8) {
-      background: var(--table-alternate-background);
-    }
-  }
-
-  .grid.rune {
-    grid-template-columns: [col-start] max-content auto max-content [col-end];
-  }
-
-  .grid.opposed-rune {
-    grid-template-columns: [col-start] max-content auto max-content min-content max-content auto max-content [col-end];
   }
 
   .experienced {
     text-shadow: 0 0 0.5em red, 0 0 1.5em yellow;
   }
 
-  a.entity-link, a.inline-roll {
-    background: initial;
-    padding: unset;
-    border: none;
-    border-radius: 0;
+  [data-item-roll], [data-melee-roll], [data-item-equipped-toggle], [data-item-edit-wounds], [data-item-add-wound], [data-journal-id] {
+    &:hover {
+      box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, .25), -8px -8px 12px 0 rgba(255, 255, 255, .30);
+    }
+
+    &:active {
+      box-shadow: -8px -8px 16px 0 rgba(0, 0, 0, 0.25), 11px 12px 12px 0 rgba(255, 255, 255, 0.30), inset 4px 4px 5px 0px rgba(0, 0, 0, 0.25);
+    }
   }
 
-  [data-item-roll] {
-    cursor: alias;
+  .combat-contextmenu, .rune-contextmenu, .spirit-magic-contextmenu, .cult-contextmenu,
+  .rune-magic-contextmenu, .skill-contextmenu, .gear-contextmenu, .passion-contextmenu {
+    cursor: context-menu;
   }
 
   [data-journal-id] {
@@ -546,10 +546,6 @@
       font-size: 35px;
       font-weight: bold;
     }
-  }
-
-  .skill-category {
-    width: 15rem;
   }
 
   .characteristics {

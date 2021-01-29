@@ -1,11 +1,12 @@
 <h2>Gear</h2>
 <div class="grid gear">
-  <div class="heading"></div>
-  <div class="heading">Name</div>
-  <div class="heading"><span class="text-right">Qty</span></div>
-  <div class="heading"><span class="text-right">Price</span></div>
-  <div class="heading"><span class="text-right">ENC</span></div>
-  <div class="heading"></div>
+  <div class="headings"></div>
+  <div class="head1"></div>
+  <div class="head2">Name</div>
+  <div class="head3"><span class="text-right">Qty</span></div>
+  <div class="head4"><span class="text-right">Price</span></div>
+  <div class="head5"><span class="text-right">ENC</span></div>
+  <div class="head6"></div>
   {{#each data.ownedItems.gear}}
     <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
     <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
@@ -26,15 +27,16 @@
 
 <h2>Melee Weapons & Shields</h2>
 <div class="grid weapon">
-  <div class="heading"></div>
-  <div class="heading">Name</div>
-  <div class="heading">Skill</div>
-  <div class="heading"><span class="text-center">Damage</span></div>
-  <div class="heading"><span class="text-right">STR</span></div>
-  <div class="heading"><span class="text-right">DEX</span></div>
-  <div class="heading"><span class="text-right">HP</span></div>
-  <div class="heading"><span class="text-right">ENC</span></div>
-  <div class="heading"></div>
+  <div class="headings"></div>
+  <div class="head1"></div>
+  <div class="head2">Name</div>
+  <div class="head3">Skill</div>
+  <div class="head4"><span class="text-center">Damage</span></div>
+  <div class="head5"><span class="text-right">STR</span></div>
+  <div class="head6"><span class="text-right">DEX</span></div>
+  <div class="head7"><span class="text-right">HP</span></div>
+  <div class="head8"><span class="text-right">ENC</span></div>
+  <div class="head9"></div>
 
   {{#each data.ownedItems.meleeWeapon}}
   {{#unless data.data.isNatural}}
@@ -65,15 +67,16 @@
 
 <h2>Missile Weapons</h2>
 <div class="grid weapon">
-  <div class="heading"></div>
-  <div class="heading">Name</div>
-  <div class="heading">Skill</div>
-  <div class="heading"><span class="text-center">Damage</span></div>
-  <div class="heading"><span class="text-right">STR</span></div>
-  <div class="heading"><span class="text-right">DEX</span></div>
-  <div class="heading"><span class="text-right">HP</span></div>
-  <div class="heading"><span class="text-right">ENC</span></div>
-  <div class="heading"></div>
+  <div class="headings"></div>
+  <div class="head1"></div>
+  <div class="head2">Name</div>
+  <div class="head3">Skill</div>
+  <div class="head4"><span class="text-center">Damage</span></div>
+  <div class="head5"><span class="text-right">STR</span></div>
+  <div class="head6"><span class="text-right">DEX</span></div>
+  <div class="head7"><span class="text-right">HP</span></div>
+  <div class="head8"><span class="text-right">ENC</span></div>
+  <div class="head9"></div>
 
   {{#each data.ownedItems.missileWeapon}}
     {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
@@ -122,14 +125,15 @@
 
 <h2>Armor</h2>
 <div class="grid armor">
-  <div class="heading"></div>
-  <div class="heading">Name</div>
-  <div class="heading"><span class="text-right">Absorbs</span></div>
-  <div class="heading">Hitlocations</div>
-  <div class="heading">Material</div>
-  <div class="heading"><span class="text-right">moveQuietly</span></div>
-  <div class="heading"><span class="text-right">ENC</span></div>
-  <div class="heading"></div>
+  <div class="headings"></div>
+  <div class="head1"></div>
+  <div class="head2">Name</div>
+  <div class="head3"><span class="text-right">Absorbs</span></div>
+  <div class="head4">Hitlocations</div>
+  <div class="head5">Material</div>
+  <div class="head6"><span class="text-right">moveQuietly</span></div>
+  <div class="head7"><span class="text-right">ENC</span></div>
+  <div class="head8"></div>
   {{#each data.ownedItems.armor}}
     <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
     <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>

@@ -3,13 +3,14 @@
   <span class="small-size">Learnt {{data.spiritMagicPointSum}}/{{data.characteristics.charisma.value}} points</span>
 </h2>
 <div class="grid spiritmagic">
-  <div class="heading"></div>
-  <div class="heading">Name</div>
-  <div class="heading"><span class="text-right">Points</span></div>
-  <div class="heading">Variable</div>
-  <div class="heading">Range</div>
-  <div class="heading">Duration</div>
-  <div class="heading">Concentration</div>
+  <div class="headings"></div>
+  <div class="head1"></div>
+  <div class="head2">Name</div>
+  <div class="head3"><span class="text-right">Points</span></div>
+  <div class="head4">Variable</div>
+  <div class="head5">Range</div>
+  <div class="head6">Duration</div>
+  <div class="head7">Concentration</div>
   {{#each data.ownedItems.spiritMagic}}
     <div data-item-id="{{_id}}" class="spiritmagic-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="item" src="{{img}}">

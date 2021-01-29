@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48mm" height="48mm" version="1.1" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g display="none">
+  <ellipse cx="24" cy="24" rx="22.561" ry="22.561" fill="none" stroke="#000" stroke-linejoin="round" stroke-width="2.8788" style="paint-order:normal"/>
+ </g>
+ <g>
+  <g transform="matrix(.18648 0 0 .18648 1.6996 8.157)">
+   <g id="suitcase">
+    <path id="left" class="body sides" d="m68.475 32v160h-44.475c-13.255 0-24-10.745-24-24v-112c0-13.255 10.745-24 24-24z"/>
+    <rect id="middle" class="body" x="90.045" y="32" width="58.542" height="160" stroke-width=".63761"/>
+    <path id="right" class="body sides" d="m171.53 32h44.475c13.255 0 24 10.745 24 24v112c0 13.255-10.745 24-24 24h-44.475z"/>
+    <path id="handle" d="m70.322 24.268v-24.695c0-13.718 11.121-30.452 24.839-30.452h49.678c13.718 0 24.839 16.734 24.839 30.452v24.695h-22.173v-16.559c0-4.5727-3.7069-12.347-8.2796-12.347h-38.451c-4.5727 0-8.2796 7.7747-8.2796 12.347v16.559z" stroke-width="1.3799"/>
+   </g>
+  </g>
+ </g>
+ <g display="none">
+  <path d="m46.954 18.701-11.039-11.711v-0.021603h-5.137c0 3.5783-2.957 6.4792-6.6047 6.4792-3.6477 0-6.6048-2.9008-6.6048-6.4792h-5.4305l-11.209 11.733 6.6236 6.6542 4.5856-4.8594v21.495h23.777v-21.473l4.5041 4.8375 6.5353-6.6542"/>
+ </g>
+</svg>

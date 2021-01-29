@@ -13,10 +13,11 @@
     <label class="text-right"> Healing rate {{data.attributes.healingRate}}/week</label>
   </div>
   <div class="grid hit-location">
-    <div class="heading" style="grid-column: 1 / span 4;">Hit Location</div>
-    <div class="heading"><span class="text-center">HP</span></div>
-    <div class="heading"><span class="text-right">AP</span></div>
-    <div class="heading">Wounds</div>
+    <div class="headings"></div>
+    <div class="head1-4">Hit Location</div>
+    <div class="head5"><span class="text-center">HP</span></div>
+    <div class="head6"><span class="text-right">AP</span></div>
+    <div class="head7">Wounds</div>
     {{#each data.ownedItems.hitLocation}}
     <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right">{{this.data.data.dieFrom}}</span></div>
       <div class="hit-location-contextmenu" data-item-id="{{this._id}}">-</div>
@@ -25,12 +26,12 @@
     <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right nowrap">{{this.data.data.hp.value}} / {{this.data.data.hp.max}}</span></div>
     <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right">{{this.data.data.ap}}</span></div>
       <div class="hit-location-contextmenu" data-item-id="{{this._id}}">
-        <a data-item-edit-wounds title="Edit wounds" class="nowrap">
+        <div data-item-edit-wounds title="Edit wounds" class="text-right nowrap">
           {{#each this.data.data.wounds}}
           <i class="fas fa-notes-medical"></i> {{this}}
           {{/each}}
-        </a>
-        <a class="ml-5 text-right" title="Add wound" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></a>
+        </div>
+        <div class="ml-5 text-right" title="Add wound" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></div>
       </div>
     {{/each}}
   </div>

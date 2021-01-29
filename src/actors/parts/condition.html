@@ -5,8 +5,8 @@
     <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="rune" src="{{img}}">
     </div>
-    <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll>{{data.data.rune}}</div>
-    <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu" data-item-roll title="Roll">{{data.data.rune}}</div>
+    <div data-item-id="{{this._id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
       <span class="text-right">{{this.data.data.chance}}%</span>
     </div>
   {{/each}}
