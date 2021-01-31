@@ -57,7 +57,11 @@
         </div>
         <div>
           <span class="norse">MOV</span>
+          {{#if data.isGM}}
+          <input type="number" min="0" max="99" name="data.attributes.move" value="{{data.attributes.move}}" size="2" />
+          {{else}}
           {{data.attributes.move}}
+          {{/if}}
         </div>
       </div>
     </div>
