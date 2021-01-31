@@ -1,5 +1,5 @@
 export class Characteristic {
-  constructor(public value: number = 0, public experience?: boolean) {}
+  constructor(public value: number = 0, public hasExperience?: boolean) {}
 }
 
 export class Characteristics {

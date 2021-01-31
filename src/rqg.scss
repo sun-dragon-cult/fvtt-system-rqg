@@ -5,7 +5,6 @@
   --table-alternate-background: rgba(0, 0, 0, 0.08);
 }
 
-
 @font-face {
   font-family: Norse;
   src: url("assets/fonts/Norse-KaWl.otf") format("opentype");
@@ -382,7 +381,7 @@
     }
   }
 
-  .combat-contextmenu, .rune-contextmenu, .spirit-magic-contextmenu, .cult-contextmenu,
+  .characteristic-contextmenu, .combat-contextmenu, .rune-contextmenu, .spirit-magic-contextmenu, .cult-contextmenu,
   .rune-magic-contextmenu, .skill-contextmenu, .gear-contextmenu, .passion-contextmenu {
     cursor: context-menu;
   }
@@ -556,9 +555,12 @@
     div {
       text-align: center;
     }
-    label {
-      font-weight: bold;
+    .value {
       font-size: 23px;
+    }
+    label {
+      font-size: 23px;
+      font-weight: bold;
     }
     input {
       border: none;

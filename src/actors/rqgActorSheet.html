@@ -21,18 +21,13 @@
       </div>
       <div class="characteristics">
         {{#each data.characteristics as | characteristic key |}}
-        <div>
-          <label class="resource-label norse"
-            >{{localize (concat 'characteristic.' key)}}</label
-          ><br />
-          <input
-            type="number"
-            min="0"
-            max="99"
-            name="data.characteristics.{{key}}.value"
-            value="{{characteristic.value}}"
-            size="2"
-          />
+        <div data-characteristic="{{key}}" class="flex-column {{#if characteristic.hasExperience}}experienced{{/if}}">
+          <label class="resource-label norse characteristic-contextmenu" data-characteristic-roll>{{localize (concat 'characteristic.' key)}}</label>
+          {{#if ../data.isGM}}
+            <input type="number" min="0" max="99" name="data.characteristics.{{key}}.value" value="{{characteristic.value}}" size="2">
+          {{else}}
+            <div class="value characteristic-contextmenu" data-characteristic-roll>{{characteristic.value}}</div>
+          {{/if}}
         </div>
         {{/each}}
       </div>
@@ -58,7 +53,7 @@
         <div>
           <span class="norse">MOV</span>
           {{#if data.isGM}}
-          <input type="number" min="0" max="99" name="data.attributes.move" value="{{data.attributes.move}}" size="2" />
+          <input type="number" min="0" max="99" name="data.attributes.move" value="{{data.attributes.move}}" size="2">
           {{else}}
           {{data.attributes.move}}
           {{/if}}

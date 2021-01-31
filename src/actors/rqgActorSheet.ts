@@ -19,6 +19,7 @@ import { cultMenuOptions } from "./context-menues/cult-context-menu";
 import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
+import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -144,6 +145,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
   activateListeners(html): void {
     super.activateListeners(html);
 
+    new ContextMenu(html, ".characteristic-contextmenu", characteristicMenuOptions(this.actor));
     new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor));
     new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));
     new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(this.actor));
@@ -156,6 +158,19 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
+
+    // Roll Characteristic
+    this.form.querySelectorAll("[data-characteristic-roll]").forEach((el) => {
+      const characteristic = (el.closest("[data-characteristic]") as HTMLElement).dataset
+        .characteristic;
+      el.addEventListener("click", () => {
+        const result = Ability.rollAgainst(
+          this.actor.data.data.characteristics[characteristic].value * 5,
+          0,
+          characteristic
+        );
+      });
+    });
 
     // Roll against Item Ability Chance
     this.form.querySelectorAll("[data-item-roll]").forEach((el) => {
