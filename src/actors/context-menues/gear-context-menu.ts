@@ -2,6 +2,38 @@ import { RqgActorSheet } from "../rqgActorSheet";
 
 export const gearMenuOptions = (actor) => [
   {
+    name: "Set as not carried",
+    icon: '<i class="fas fa-book-open"></i>',
+    condition: () => true,
+    callback: async (el) => {
+      console.log("======== TODO set as not carried");
+    },
+  },
+  {
+    name: "Set as carried",
+    icon: '<i class="fas fa-book-open"></i>',
+    condition: () => true,
+    callback: async (el) => {
+      console.log("======== TODO set as carried");
+    },
+  },
+  {
+    name: "Set as equipped",
+    icon: '<i class="fas fa-book-open"></i>',
+    condition: () => true,
+    callback: async (el) => {
+      console.log("======== TODO set as equipped");
+    },
+  },
+  {
+    name: "Split into new location",
+    icon: '<i class="fas fa-book-open"></i>',
+    condition: () => true, // TODO if "quantity item"
+    callback: async (el) => {
+      console.log("======== TODO split ");
+    },
+  },
+  {
     name: "View Description",
     icon: '<i class="fas fa-book-open"></i>',
     condition: () => true,

@@ -3,7 +3,7 @@ import { RqgActorSheet } from "../rqgActorSheet";
 
 export const passionMenuOptions = (actor) => [
   {
-    name: "(Roll with Modifier)",
+    name: "Roll (click))",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: (el) => {
@@ -11,7 +11,7 @@ export const passionMenuOptions = (actor) => [
     },
   },
   {
-    name: "Roll",
+    name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: (el) => {
@@ -31,7 +31,7 @@ export const passionMenuOptions = (actor) => [
     },
   },
   {
-    name: "(Improve)",
+    name: "Improve",
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;

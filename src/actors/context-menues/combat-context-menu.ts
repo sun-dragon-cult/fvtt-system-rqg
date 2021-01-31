@@ -3,7 +3,7 @@ import { RqgActorSheet } from "../rqgActorSheet";
 
 export const combatMenuOptions = (actor) => [
   {
-    name: "(Roll with Modifier)",
+    name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: (el) => {
@@ -11,7 +11,7 @@ export const combatMenuOptions = (actor) => [
     },
   },
   {
-    name: "Roll",
+    name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: (el) => {

@@ -2,7 +2,6 @@
   <h2>Combat</h2>
   <div class="flexrow flex-align-center">
     <label>Damage Bonus {{data.attributes.damageBonus}}</label>
-    <div class="text-right" data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll">Dodge {{skillchance data.dodgeSkill._id actor._id}}%</div>
   </div>
   <div class="grid combat">
     <div class="headings"></div>
@@ -72,7 +71,16 @@
       </div>
     {{/if}}
     {{/each}}
+    <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu"> <img class="item" src="{{data.dodgeSkill.img}}"></div>
+    <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu">Dodge</div>
+    <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu {{experiencedclass data.dodgeSkill._id actor._id}}">
+      <span class="text-right">{{skillchance data.dodgeSkill._id actor._id}}%</span>
+    </div>
+    <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
+    <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
+    <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
   </div>
+
   <div>
     <h2>Spirit Combat</h2>
     <div class="flexrow nowrap flex-align-center">
@@ -91,8 +99,8 @@
       <label class="text-right">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
     </div>
     <div class="grid spirit-combat">
-      <div data-item-id="{{data.spiritCombatSkill._id}}">Spirit Combat</div>
-      <div data-item-id="{{data.spiritCombatSkill._id}}" data-item-roll title="Roll"><span class="text-right">{{skillchance data.spiritCombatSkill._id actor._id}}%</span></div>
+      <div data-item-id="{{data.spiritCombatSkill._id}}" class="skill-contextmenu" data-item-roll title="Roll">Spirit Combat</div>
+      <div data-item-id="{{data.spiritCombatSkill._id}}" class="skill-contextmenu" data-item-roll title="Roll"><span class="text-right">{{skillchance data.spiritCombatSkill._id actor._id}}%</span></div>
     </div>
   </div>
 </div>
