@@ -1,3 +1,22 @@
+# [0.7.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.6.1...v0.7.0) (2021-02-02)
+
+
+### Features
+
+* add race as text field also fix rune context menu ([fe49d85](https://github.com/wakeand/fvtt-system-rqg/commit/fe49d85))
+* allow link to journalentry with description from items Now implemented for: skill, rune, cult, spirit-magic & rune-magic ([5e83fc0](https://github.com/wakeand/fvtt-system-rqg/commit/5e83fc0))
+* allow link to journalentry with description from rune magic item ([2bed846](https://github.com/wakeand/fvtt-system-rqg/commit/2bed846))
+* apply armor penalties to the move quietly skill ([db187d9](https://github.com/wakeand/fvtt-system-rqg/commit/db187d9))
+* autoset passion image depending on passion type ([0c9be18](https://github.com/wakeand/fvtt-system-rqg/commit/0c9be18))
+* chatcards for characteristics also implement click/doubleclick on characteristics ([c695128](https://github.com/wakeand/fvtt-system-rqg/commit/c695128))
+* implement 3-state equipped flag: notCarried, carried, equipped also implement CONFIG.RQG ([18a2fc5](https://github.com/wakeand/fvtt-system-rqg/commit/18a2fc5))
+* let GM edit move ([e52c666](https://github.com/wakeand/fvtt-system-rqg/commit/e52c666))
+* make characteristics rollable also make them editable for GM only ([fe55a2d](https://github.com/wakeand/fvtt-system-rqg/commit/fe55a2d))
+* possibility to remove skill check for skills that needs to be studied ([6f5204d](https://github.com/wakeand/fvtt-system-rqg/commit/6f5204d))
+
+
+
+
 ## [0.6.1](https://github.com/wakeand/fvtt-system-rqg/compare/v0.6.0...v0.6.1) (2021-01-20)
 
 
