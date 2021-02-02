@@ -10,7 +10,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.html",
-      width: 260,
+      width: 310,
       height: 150,
     });
   }
