@@ -1,12 +1,18 @@
 import { Ability } from "../../data-model/shared/ability";
+import { Chat } from "../../chat/chat";
 
 export const characteristicMenuOptions = (actor) => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
-    callback: (el) => {
-      console.log("======== Roll with Modifier", el[0]);
+    callback: async (el) => {
+      const characteristic = (el[0].closest("[data-characteristic]") as HTMLElement).dataset
+        .characteristic;
+      await Chat.showCharacteristicChatCard({
+        name: characteristic,
+        data: actor.data.data.characteristics[characteristic],
+      });
     },
   },
   {

@@ -39,6 +39,7 @@ export class Ability implements IAbility {
     const resultText = game.i18n.localize(`ResultEnum.${result}`);
     r.toMessage({
       speaker: ChatMessage.getSpeaker(),
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flavor: `${flavor} (${chance}${chanceModText}%) ${resultText}`,
     });
     return result;

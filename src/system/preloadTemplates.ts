@@ -34,6 +34,9 @@ export const preloadTemplates = async function () {
     "systems/rqg/items/spirit-magic-item/spiritMagicSheet.html",
     "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
     "systems/rqg/items/cult-item/cultSheet.html",
+
+    // Chat
+    "systems/rqg/chat/characteristicCard.html",
   ];
 
   return loadTemplates(templatePaths);

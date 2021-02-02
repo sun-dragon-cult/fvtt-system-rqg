@@ -54,9 +54,7 @@ function createTransformer(): TransformerFactory<any> {
   /**
    * Transforms import/export declarations to append `.js` extension
    */
-  function importTransformer(
-    context: TransformationContext
-  ): TSTransformer<any> {
+  function importTransformer(context: TransformationContext): TSTransformer<any> {
     return (node: Node) => {
       function visitor(node: Node) {
         if (shouldMutateModuleSpecifier(node)) {
@@ -119,8 +117,7 @@ function string_src(filename, contents) {
   return src;
 }
 
-const json_src = (filename, contents) =>
-  string_src(filename, JSON.stringify(contents));
+const json_src = (filename, contents) => string_src(filename, JSON.stringify(contents));
 /********************/
 /*		BUILD		*/
 /********************/
@@ -136,10 +133,7 @@ function buildTS() {
  * Build SASS
  */
 function buildSASS() {
-  return gulp
-    .src("src/**/*.scss")
-    .pipe(sass().on("error", sass.logError))
-    .pipe(gulp.dest("dist/"));
+  return gulp.src("src/**/*.scss").pipe(sass().on("error", sass.logError)).pipe(gulp.dest("dist/"));
 }
 
 /**
@@ -165,14 +159,7 @@ async function buildTemplates() {
  * Copy static files
  */
 async function copyFiles() {
-  const statics = [
-    "i18n",
-    "assets",
-    "actors",
-    "items",
-    "system",
-    "system.json",
-  ];
+  const statics = ["i18n", "assets", "actors", "items", "chat", "system", "system.json"];
   try {
     for (const file of statics) {
       if (fs.existsSync(path.join("src", file))) {
@@ -192,13 +179,7 @@ function buildWatch() {
   gulp.watch("src/**/*.ts", { ignoreInitial: false }, buildTS);
   gulp.watch("src/**/*.scss", { ignoreInitial: false }, buildSASS);
   gulp.watch(
-    [
-      "src/assets/fonts",
-      "src/i18n",
-      "src/assets/default-items",
-      "src/**/*.html",
-      "src/*.json",
-    ],
+    ["src/assets/fonts", "src/i18n", "src/assets/default-items", "src/**/*.html", "src/*.json"],
     { ignoreInitial: false },
     copyFiles
   );
@@ -221,6 +202,7 @@ async function clean() {
     "assets",
     "actors",
     "items",
+    "chat",
     "system",
     `${name}.js`,
     "system.json",

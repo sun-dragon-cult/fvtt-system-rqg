@@ -19,6 +19,8 @@ export const RQG = {
     equipped: "systems/rqg/assets/images/equipped/equipped.svg",
   },
 
+  dblClickTimeout: 250, // Timeout for differentiating between single & double clicks
+
   dsnColorSets: {},
 
   dsnTextureList: {},

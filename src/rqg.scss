@@ -46,7 +46,12 @@
 }
 
 .rqg {
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: "Norse", "Signika", "Palatino Linotype", serif;
     font-variant: small-caps;
     letter-spacing: 1.5px;
@@ -59,7 +64,6 @@
       font-weight: revert;
     }
   }
-
 
   .flex-row {
     display: flex;
@@ -204,8 +208,8 @@
       grid-template-columns: [col-start] 30px auto [col-end];
 
       // Alternating row background
-      > *:nth-child(4n+1),
-      > *:nth-child(4n+2) {
+      > *:nth-child(4n + 1),
+      > *:nth-child(4n + 2) {
         background: var(--table-alternate-background);
       }
     }
@@ -214,13 +218,12 @@
       grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
 
       // Alternating row background for 6 columns
-      > *:nth-child(12n+14),
-      > *:nth-child(12n+15),
-      > *:nth-child(12n+16),
-      > *:nth-child(12n+17),
-      > *:nth-child(12n+18),
-      > *:nth-child(12n+19)
-      {
+      > *:nth-child(12n + 14),
+      > *:nth-child(12n + 15),
+      > *:nth-child(12n + 16),
+      > *:nth-child(12n + 17),
+      > *:nth-child(12n + 18),
+      > *:nth-child(12n + 19) {
         background: var(--table-alternate-background);
       }
     }
@@ -229,13 +232,13 @@
       grid-template-columns: [col-start] 30px auto repeat(5, min-content) [col-end];
 
       // Alternating row background for 7 columns
-      > *:nth-child(14n+16),
-      > *:nth-child(14n+17),
-      > *:nth-child(14n+18),
-      > *:nth-child(14n+19),
-      > *:nth-child(14n+20),
-      > *:nth-child(14n+21),
-      > *:nth-child(14n+22) {
+      > *:nth-child(14n + 16),
+      > *:nth-child(14n + 17),
+      > *:nth-child(14n + 18),
+      > *:nth-child(14n + 19),
+      > *:nth-child(14n + 20),
+      > *:nth-child(14n + 21),
+      > *:nth-child(14n + 22) {
         background: var(--table-alternate-background);
       }
     }
@@ -244,13 +247,12 @@
       grid-template-columns: [col-start] 30px auto repeat(4, max-content) [col-end];
 
       // Alternating row background for 6 columns
-      > *:nth-child(12n+14),
-      > *:nth-child(12n+15),
-      > *:nth-child(12n+16),
-      > *:nth-child(12n+17),
-      > *:nth-child(12n+18),
-      > *:nth-child(12n+19)
-      {
+      > *:nth-child(12n + 14),
+      > *:nth-child(12n + 15),
+      > *:nth-child(12n + 16),
+      > *:nth-child(12n + 17),
+      > *:nth-child(12n + 18),
+      > *:nth-child(12n + 19) {
         background: var(--table-alternate-background);
       }
     }
@@ -259,16 +261,15 @@
       grid-template-columns: [col-start] 30px auto auto repeat(6, max-content) [col-end];
 
       // Alternating row background for 9 columns
-      > *:nth-child(18n+20),
-      > *:nth-child(18n+21),
-      > *:nth-child(18n+22),
-      > *:nth-child(18n+23),
-      > *:nth-child(18n+24),
-      > *:nth-child(18n+25),
-      > *:nth-child(18n+26),
-      > *:nth-child(18n+27),
-      > *:nth-child(18n+28)
-      {
+      > *:nth-child(18n + 20),
+      > *:nth-child(18n + 21),
+      > *:nth-child(18n + 22),
+      > *:nth-child(18n + 23),
+      > *:nth-child(18n + 24),
+      > *:nth-child(18n + 25),
+      > *:nth-child(18n + 26),
+      > *:nth-child(18n + 27),
+      > *:nth-child(18n + 28) {
         background: var(--table-alternate-background);
       }
     }
@@ -276,14 +277,14 @@
     &.armor {
       grid-template-columns: [col-start] 30px auto min-content auto auto repeat(3, max-content) [col-end];
 
-      > *:nth-child(16n+18),
-      > *:nth-child(16n+19),
-      > *:nth-child(16n+20),
-      > *:nth-child(16n+21),
-      > *:nth-child(16n+22),
-      > *:nth-child(16n+23),
-      > *:nth-child(16n+24),
-      > *:nth-child(16n+25) {
+      > *:nth-child(16n + 18),
+      > *:nth-child(16n + 19),
+      > *:nth-child(16n + 20),
+      > *:nth-child(16n + 21),
+      > *:nth-child(16n + 22),
+      > *:nth-child(16n + 23),
+      > *:nth-child(16n + 24),
+      > *:nth-child(16n + 25) {
         background: var(--table-alternate-background);
       }
     }
@@ -291,14 +292,14 @@
     &.rune-magic {
       grid-template-columns: [col-start] 30px auto repeat(6, max-content) [col-end];
 
-      > *:nth-child(16n+18),
-      > *:nth-child(16n+19),
-      > *:nth-child(16n+20),
-      > *:nth-child(16n+21),
-      > *:nth-child(16n+22),
-      > *:nth-child(16n+23),
-      > *:nth-child(16n+24),
-      > *:nth-child(16n+25), {
+      > *:nth-child(16n + 18),
+      > *:nth-child(16n + 19),
+      > *:nth-child(16n + 20),
+      > *:nth-child(16n + 21),
+      > *:nth-child(16n + 22),
+      > *:nth-child(16n + 23),
+      > *:nth-child(16n + 24),
+      > *:nth-child(16n + 25) {
         background: var(--table-alternate-background);
       }
     }
@@ -306,13 +307,13 @@
     &.hit-location {
       grid-template-columns: [col-start] auto min-content repeat(5, auto) [col-end];
 
-      > *:nth-child(14n+13),
-      > *:nth-child(14n+14),
-      > *:nth-child(14n+15),
-      > *:nth-child(14n+16),
-      > *:nth-child(14n+17),
-      > *:nth-child(14n+18),
-      > *:nth-child(14n+19) {
+      > *:nth-child(14n + 13),
+      > *:nth-child(14n + 14),
+      > *:nth-child(14n + 15),
+      > *:nth-child(14n + 16),
+      > *:nth-child(14n + 17),
+      > *:nth-child(14n + 18),
+      > *:nth-child(14n + 19) {
         background: var(--table-alternate-background);
       }
     }
@@ -321,9 +322,9 @@
       grid-template-columns: [col-start] 30px auto min-content [col-end];
 
       // Alternating row background
-      > *:nth-child(6n+1),
-      > *:nth-child(6n+2),
-      > *:nth-child(6n+3) {
+      > *:nth-child(6n + 1),
+      > *:nth-child(6n + 2),
+      > *:nth-child(6n + 3) {
         background: var(--table-alternate-background);
       }
     }
@@ -337,7 +338,7 @@
       grid-template-columns: [col-start] auto [col-end];
 
       // Alternating row background
-      > *:nth-child(2n+1) {
+      > *:nth-child(2n + 1) {
         background: var(--table-alternate-background);
       }
 
@@ -355,7 +356,6 @@
         grid-row: 1 / -1;
         mix-blend-mode: soft-light;
       }
-
     }
 
     &.rune {
@@ -371,18 +371,31 @@
     text-shadow: 0 0 0.5em red, 0 0 1.5em yellow;
   }
 
-  [data-item-roll], [data-melee-roll], [data-item-equipped-toggle], [data-item-edit-wounds], [data-item-add-wound], [data-journal-id] {
+  [data-item-roll],
+  [data-melee-roll],
+  [data-item-equipped-toggle],
+  [data-item-edit-wounds],
+  [data-item-add-wound],
+  [data-journal-id] {
     &:hover {
-      box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, .25), -8px -8px 12px 0 rgba(255, 255, 255, .30);
+      box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25), -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
     }
 
     &:active {
-      box-shadow: -8px -8px 16px 0 rgba(0, 0, 0, 0.25), 11px 12px 12px 0 rgba(255, 255, 255, 0.30), inset 4px 4px 5px 0px rgba(0, 0, 0, 0.25);
+      box-shadow: -8px -8px 16px 0 rgba(0, 0, 0, 0.25), 11px 12px 12px 0 rgba(255, 255, 255, 0.3),
+        inset 4px 4px 5px 0px rgba(0, 0, 0, 0.25);
     }
   }
 
-  .characteristic-contextmenu, .combat-contextmenu, .rune-contextmenu, .spirit-magic-contextmenu, .cult-contextmenu,
-  .rune-magic-contextmenu, .skill-contextmenu, .gear-contextmenu, .passion-contextmenu {
+  .characteristic-contextmenu,
+  .combat-contextmenu,
+  .rune-contextmenu,
+  .spirit-magic-contextmenu,
+  .cult-contextmenu,
+  .rune-magic-contextmenu,
+  .skill-contextmenu,
+  .gear-contextmenu,
+  .passion-contextmenu {
     cursor: context-menu;
   }
 
@@ -396,7 +409,7 @@
     text-align: left;
     text-shadow: initial;
 
-    font-family: 'Signika', sans-serif;
+    font-family: "Signika", sans-serif;
     font-variant: normal;
     letter-spacing: normal;
     font-weight: normal;
@@ -412,7 +425,8 @@
     }
   }
 
-  .editor, .editor-content {
+  .editor,
+  .editor-content {
     height: 100%;
     min-height: 5rem;
     background-color: white;
@@ -424,6 +438,13 @@
     margin: 7px 0;
     padding: 0;
     overflow-y: auto;
+  }
+
+  &.chat-card.characteristic-card {
+    .multiplier {
+      font-size: 80%;
+      vertical-align: text-top;
+    }
   }
 }
 
@@ -483,7 +504,7 @@
         //padding: 0 0 0 8px;
         //transform: rotate(-60deg) translateX(-30px) translateY(-30px);
         //transform-origin: top;
-        color:  white;
+        color: white;
         writing-mode: vertical-rl;
         transform: rotate(180deg) translateX(-4px);
         padding: 10px 0;
@@ -505,13 +526,13 @@
           border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
           box-shadow: inset 2px 2px 7px 2px #000000, 0 0 8px 0 #d9dc17, -3px -3px 7px 2px black;
           text-shadow: 0 0 3px black, -2px -2px 3px black;
-          background: linear-gradient(purple 0%, #e60000 90%), linear-gradient(to right, #711771 0%, #d6d63a 90%), url(assets/images/stonetexture2.jpg);
+          background: linear-gradient(purple 0%, #e60000 90%),
+            linear-gradient(to right, #711771 0%, #d6d63a 90%), url(assets/images/stonetexture2.jpg);
           background-blend-mode: screen, difference;
           color: white;
           font-weight: bold;
         }
       }
-
     }
 
     .sheet-body {
@@ -624,4 +645,3 @@
 .rqg img.equipped-status {
   height: 15px;
 }
-

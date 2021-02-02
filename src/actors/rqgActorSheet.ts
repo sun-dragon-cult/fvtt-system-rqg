@@ -20,6 +20,7 @@ import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
+import { Chat } from "../chat/chat";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -163,12 +164,30 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     this.form.querySelectorAll("[data-characteristic-roll]").forEach((el) => {
       const characteristic = (el.closest("[data-characteristic]") as HTMLElement).dataset
         .characteristic;
-      el.addEventListener("click", () => {
-        const result = Ability.rollAgainst(
-          this.actor.data.data.characteristics[characteristic].value * 5,
-          0,
-          characteristic
-        );
+
+      let clickCount = 0;
+
+      el.addEventListener("click", (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
+
+        if (clickCount === 2) {
+          const result = Ability.rollAgainst(
+            this.actor.data.data.characteristics[characteristic].value * 5,
+            0,
+            characteristic
+          );
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(() => {
+            if (clickCount === 1) {
+              const result = Chat.showCharacteristicChatCard({
+                name: characteristic,
+                data: this.actor.data.data.characteristics[characteristic],
+              });
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
       });
     });
 
