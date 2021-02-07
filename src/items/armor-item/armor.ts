@@ -29,7 +29,7 @@ export class Armor extends BaseItem {
         {
           _id: existingEffect.id,
           changes: changes,
-          disabled: !itemData.data.isEquipped,
+          disabled: !(itemData.data.equippedStatus === "equipped"),
         },
         {}
       );
