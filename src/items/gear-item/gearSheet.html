@@ -2,8 +2,8 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
     <input type="text" name="name" value="{{item.name}}" />
-    <label>Quantity <input type="number" min="0" max="9999999" name="data.quantity" value="{{item.data.quantity}}"></label>
-    <label>Enc <input type="number" min="0" max="99" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
+
+    <label> Enc <input type="number" min="0" max="99" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
       {{#select data.equippedStatus}} {{#each data.equippedStatuses}}
       <option value="{{this}}">{{this}}</option>
@@ -12,6 +12,18 @@
   </header>
   <main>
     <label>Price <input type="number" min="0" max="99999999" name="data.price" value="{{item.data.price}}">(L)</label><br>
+    <label>Location <input type="text" name="data.location" value="{{item.data.location}}"></label><br>
+    <label><input type="checkbox" name="data.isContainer" {{checked item.data.isContainer}}/>Can contain other items</label><br>
+
+    <select name="data.physicalItemType">
+      {{#select data.physicalItemType}} {{#each data.physicalItemTypes}}
+      <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select>
+    {{#unless (eq data.physicalItemType "unique")}}
+      <label> Quantity <input type="number" min="0" max="9999999" name="data.quantity" value="{{item.data.quantity}}"></label>
+    {{/unless}}
+    <br>
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>

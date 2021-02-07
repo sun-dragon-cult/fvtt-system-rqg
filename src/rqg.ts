@@ -1,8 +1,8 @@
 import { registerRqgSystemSettings } from "./system/settings.js";
-import { preloadTemplates } from "./system/preloadTemplates.js";
+import { handlebarsTemplates } from "./system/handlebarsTemplates.js";
 import { RqgActor } from "./actors/rqgActor.js";
 import { RqgItem } from "./items/rqgItem";
-import { handlebarSettings } from "./system/handlebarSettings";
+import { handlebarsHelpers } from "./system/handlebarsHelpers";
 import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./system/rqgCombat";
 import { RQG } from "./system/config";
@@ -26,8 +26,8 @@ Hooks.once("init", async () => {
   RqgItem.init();
   Chat.init();
   registerRqgSystemSettings();
-  handlebarSettings();
-  await preloadTemplates();
+  await handlebarsTemplates();
+  handlebarsHelpers();
 });
 
 Hooks.once("ready", async () => {

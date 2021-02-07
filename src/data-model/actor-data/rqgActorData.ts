@@ -4,6 +4,7 @@ import { Background, emptyBackground } from "./background";
 import { emptySkillCategories, SkillCategories } from "./skillCategories";
 import { RqgItem } from "../../items/rqgItem";
 import { SkillData } from "../item-data/skillData";
+import { LocationNode } from "../item-data/IPhysicalItem";
 
 export class RqgActorData {
   constructor(
@@ -21,7 +22,9 @@ export class RqgActorData {
     public spiritMagicPointSum?: number, // Total spirit magic points learnt
     public freeInt?: number, // For sorcery
     public isGM?: boolean,
-    public effects?: any // TODO fooling around
+    public effects?: any, // TODO fooling around
+    public locations?: Array<string>,
+    public itemLocationTree?: LocationNode // The tree structure for items containing each other
   ) {}
 }
 

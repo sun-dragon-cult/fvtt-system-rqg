@@ -1,4 +1,4 @@
-export const preloadTemplates = async function () {
+export const handlebarsTemplates = async function () {
   const templatePaths = [
     "systems/rqg/actors/rqgActorSheet.html",
     // ActorSheet tabs
@@ -21,6 +21,7 @@ export const preloadTemplates = async function () {
     "systems/rqg/actors/parts/power.html",
     "systems/rqg/actors/parts/form.html",
     "systems/rqg/actors/parts/condition.html",
+    "systems/rqg/actors/parts/physical-item-location.html",
 
     // Item sheets
     "systems/rqg/items/passion-item/passionSheet.html",

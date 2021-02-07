@@ -1,7 +1,5 @@
 import { EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
 
-// TODO Armor shouldn't have quantity (part of IPhysicalItem)
-
 export type ArmorData = IPhysicalItem & {
   description: string;
   size: number; // Must match character size
@@ -25,4 +23,6 @@ export const emptyArmor: ArmorData = {
   material: "",
   absorbs: 0,
   moveQuietlyPenalty: 0,
+  location: "",
+  physicalItemType: "unique",
 };

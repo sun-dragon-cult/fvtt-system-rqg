@@ -18,7 +18,7 @@ import { spiritMagicMenuOptions } from "./context-menues/spirit-magic-context-me
 import { cultMenuOptions } from "./context-menues/cult-context-menu";
 import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
-import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
+import { equippedStatuses, LocationNode } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
 import { Chat } from "../chat/chat";
 
@@ -33,7 +33,12 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         {
           navSelector: ".sheet-tabs",
           contentSelector: ".sheet-body",
-          initial: "description",
+          initial: "combat",
+        },
+        {
+          navSelector: ".gear-tabs",
+          contentSelector: ".gear-body",
+          initial: "by-item-type",
         },
       ],
       dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
@@ -131,7 +136,108 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
     data.isGM = game.user.isGM;
 
+    const physicalItems = this.actor.items.filter((i) => i.data.data.physicalItemType);
+    data.itemLocationTree = this.createItemLocationTree(physicalItems);
+
+    // Used for DataList input dropdown
+    data.locations = [
+      ...new Set([
+        ...this.actor.items.filter((i) => i.data.data.isContainer).map((i) => i.name),
+        ...physicalItems.map((i) => i.data.data.location),
+      ]),
+    ];
     return sheetData;
+  }
+
+  private createItemLocationTree(physicalItems: any[]): LocationNode {
+    let locationTree: LocationNode = {
+      name: "",
+      id: "",
+      contains: [],
+      physicalItemType: "unique",
+      location: "",
+      encumbrance: 0,
+      equippedStatus: "notCarried",
+    };
+    let physicalItemNodes: LocationNode[] = physicalItems
+      .filter((i) => i.type)
+      .map((i) => {
+        // Placing an item inside itself is not allowed - count it as root level
+        const location = i.data.data.location === i.name ? "" : i.data.data.location;
+        return {
+          name: i.name,
+          id: i._id,
+          location: location,
+          contains: [],
+          physicalItemType: i.data.data.physicalItemType,
+          encumbrance: i.data.data.encumbrance,
+          equippedStatus: i.data.data.equippedStatus,
+          quantity: i.data.data.quantity,
+          price: i.data.data.price,
+        };
+      });
+
+    // 1) Add all "virtual" nodes (locations that don't match a item name)
+    const itemNames = physicalItems.map((i) => i.name);
+    const virtualNodesMap: Map<string, LocationNode> = physicalItemNodes
+      .filter(
+        (node) =>
+          node.location !== "" && // no root node
+          !itemNames.includes(node.location) // no actual item
+      )
+      .reduce((acc, val) => {
+        // No duplicate locations
+        acc.set(val.location, val);
+        return acc;
+      }, new Map());
+
+    const virtualNodes: LocationNode[] = [...virtualNodesMap].map(([i, node]) => {
+      return {
+        name: node.location,
+        id: "",
+        contains: [],
+        physicalItemType: "unique",
+        location: "",
+        encumbrance: 0,
+        equippedStatus: "notCarried",
+      };
+    });
+    locationTree.contains = locationTree.contains.concat(virtualNodes);
+
+    // 2) Recursively add items to the locationTree node where item.location === node.name
+    let retriesLeft = 1000; // Failsafe in case the algorithm fails
+    while (physicalItemNodes.length > 0 && retriesLeft) {
+      retriesLeft--;
+      physicalItemNodes = physicalItemNodes.filter((itemNode) => {
+        const treeNode = this.searchTree(locationTree, itemNode.location);
+        if (treeNode) {
+          treeNode.contains.push(itemNode);
+        }
+        return !treeNode; // keep the ones not added to the tree yet
+      });
+    }
+    if (!retriesLeft) {
+      console.error(
+        "Physical Item Location algoritm did not finish. remaining items:",
+        physicalItems
+      );
+    }
+
+    return locationTree;
+  }
+
+  // Find a node matching the location in the node tree
+  private searchTree(node: LocationNode, location: string): LocationNode | null {
+    if (node.name === location) {
+      return node;
+    } else if (node.contains && node.contains.length > 0) {
+      let result = null;
+      for (let i = 0; result === null && i < node.contains.length; i++) {
+        result = this.searchTree(node.contains[i], location);
+      }
+      return result;
+    }
+    return null;
   }
 
   protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
