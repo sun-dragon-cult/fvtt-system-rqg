@@ -26,7 +26,7 @@ export const registerRqgSystemSettings = function () {
     scope: "world",
     config: true,
     type: String,
-    default: "rqg-compendiums.hitLocations",
+    default: "rqg-compendiums.hitLocations-all",
   });
 
   game.settings.register("rqg", "runes", {
