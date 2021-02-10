@@ -1,3 +1,21 @@
+# [0.8.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.7.0...v0.8.0) (2021-02-10)
+
+
+### Bug Fixes
+
+* armor don't update hitlocation AP ([54723db](https://github.com/wakeand/fvtt-system-rqg/commit/54723db))
+* hitlocation compendium name wrong ([822a0b6](https://github.com/wakeand/fvtt-system-rqg/commit/822a0b6))
+
+
+### Features
+
+* add location, isContainer & physicalItemType to gear-page items also added a separate tab on gear that shows nested objects ([17e4f7f](https://github.com/wakeand/fvtt-system-rqg/commit/17e4f7f))
+* define hitlocation HP delta on hitlocation item ([92cfeae](https://github.com/wakeand/fvtt-system-rqg/commit/92cfeae))
+* equipStatus is now synced across contained items also split gear / currency / consumables view ([b973624](https://github.com/wakeand/fvtt-system-rqg/commit/b973624))
+
+
+
+
 # [0.7.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.6.1...v0.7.0) (2021-02-02)
 
 
