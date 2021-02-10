@@ -7,7 +7,7 @@ export const combatMenuOptions = (actor) => [
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: (el) => {
-      console.log("======== Roll with Modifier");
+      ui.notifications.info("TODO Roll with Modifier");
     },
   },
   {

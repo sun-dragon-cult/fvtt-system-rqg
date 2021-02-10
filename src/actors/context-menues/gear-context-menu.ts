@@ -6,7 +6,7 @@ export const gearMenuOptions = (actor) => [
     icon: '<i class="fas fa-book-open"></i>',
     condition: () => true,
     callback: async (el) => {
-      console.log("======== TODO set as not carried");
+      ui.notifications.info("TODO set as not carried");
     },
   },
   {
@@ -14,7 +14,7 @@ export const gearMenuOptions = (actor) => [
     icon: '<i class="fas fa-book-open"></i>',
     condition: () => true,
     callback: async (el) => {
-      console.log("======== TODO set as carried");
+      ui.notifications.info("TODO set as carried");
     },
   },
   {
@@ -22,15 +22,19 @@ export const gearMenuOptions = (actor) => [
     icon: '<i class="fas fa-book-open"></i>',
     condition: () => true,
     callback: async (el) => {
-      console.log("======== TODO set as equipped");
+      ui.notifications.info("TODO set as equipped");
     },
   },
   {
     name: "Split into new location",
     icon: '<i class="fas fa-book-open"></i>',
-    condition: () => true, // TODO if "quantity item"
+    condition: (el) => {
+      const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      const item = actor.getOwnedItem(itemId);
+      return item.data.data.physicalItemType !== "unique";
+    },
     callback: async (el) => {
-      console.log("======== TODO split ");
+      ui.notifications.info("TODO Split into new location");
     },
   },
   {
@@ -38,7 +42,7 @@ export const gearMenuOptions = (actor) => [
     icon: '<i class="fas fa-book-open"></i>',
     condition: () => true,
     callback: async (el) => {
-      console.log("======== TODO View Description");
+      ui.notifications.info("TODO View Description");
     },
   },
   {
