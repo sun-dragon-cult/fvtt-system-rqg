@@ -4,7 +4,7 @@ import { Background, emptyBackground } from "./background";
 import { emptySkillCategories, SkillCategories } from "./skillCategories";
 import { RqgItem } from "../../items/rqgItem";
 import { SkillData } from "../item-data/skillData";
-import { LocationNode } from "../item-data/IPhysicalItem";
+import { LocationNode } from "../../items/shared/locationNode";
 
 export class RqgActorData {
   constructor(

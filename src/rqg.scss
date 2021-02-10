@@ -9,11 +9,13 @@
   font-family: Norse;
   src: url("assets/fonts/Norse-KaWl.otf") format("opentype");
 }
+
 @font-face {
   font-family: Norse;
   font-weight: bold;
   src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
+
 //// TODO Testing it out with only the bold version
 //@font-face {
 //  font-family: Norse;
@@ -92,6 +94,10 @@
     align-items: center;
   }
 
+  .flex-1 {
+    flex: 1;
+  }
+
   .masonry {
     display: block;
     columns: 12rem auto;
@@ -120,6 +126,23 @@
 
   .ml-5 {
     margin-left: 5px;
+  }
+
+  .tab.gear {
+    article {
+      margin-bottom: 0.7rem;
+    }
+
+    .gear-wrapper {
+      flex-wrap: wrap;
+      margin-left: -16px;
+      margin-right: -16px;
+
+      article {
+        margin-left: 16px;
+        margin-right: 16px;
+      }
+    }
   }
 
   .grid {
@@ -559,6 +582,7 @@
 
     .mp {
       font-weight: bold;
+
       input {
         width: 25px;
         font-family: "Signika", sans-serif;
@@ -584,13 +608,16 @@
     div {
       text-align: center;
     }
+
     .value {
       font-size: 23px;
     }
+
     label {
       font-size: 23px;
       font-weight: bold;
     }
+
     input {
       border: none;
       background-color: transparent;
@@ -613,6 +640,7 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 8px;
+
     .norse {
       font-weight: bold;
     }

@@ -1,10 +1,3 @@
-export type LocationNode = IPhysicalItem & {
-  // For the grouping of physical items in a tree structure
-  name: string;
-  id: string;
-  contains: LocationNode[];
-};
-
 export const equippedStatuses = ["notCarried", "carried", "equipped"] as const;
 export type EquippedStatus = typeof equippedStatuses[number];
 

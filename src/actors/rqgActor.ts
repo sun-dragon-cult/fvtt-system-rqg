@@ -3,6 +3,7 @@ import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgItem } from "../items/rqgItem";
+import { getItemIdsInSameLocationTree } from "../items/shared/locationNode";
 
 export class RqgActor extends Actor<RqgActorData> {
   static init() {
@@ -187,11 +188,36 @@ export class RqgActor extends Actor<RqgActorData> {
     // @ts-ignore
     console.debug("rqgActor # _onModifyEmbeddedEntity", this.name, args);
     if (embeddedName === "OwnedItem") {
-      // Try doing stuff after this has updated
-      setTimeout(this.updateEncumbrance.bind(this), 0); // TODO Solve without releasing thread?
+      this.updateEquippedStatus(args[0]).then(
+        () =>
+          // Try doing stuff after actor has updated
+          setTimeout(this.updateEncumbrance.bind(this), 0) // TODO Solve without releasing thread?
+      );
     }
     // @ts-ignore
     super._onModifyEmbeddedEntity(embeddedName, ...args);
+  }
+
+  private async updateEquippedStatus(changes) {
+    const equippedStatusChanges: any[] = changes.filter(
+      (i) => i.data.equippedStatus || typeof i.data.location !== "undefined"
+    );
+    if (equippedStatusChanges.length) {
+      // Check that equippedStatus has changed
+
+      // const item = this.actor.getOwnedItem(itemId);
+      const newEquippedStatus =
+        equippedStatusChanges[0].data.equippedStatus ||
+        this.getOwnedItem(equippedStatusChanges[0]._id).data.data.equippedStatus; // TODO Always correct?
+
+      const itemsToUpdate = equippedStatusChanges.map((i) =>
+        getItemIdsInSameLocationTree(this.items.get(i._id).data, this).map((id) => {
+          return { _id: id, "data.equippedStatus": newEquippedStatus };
+        })
+      );
+      await this.updateEmbeddedEntity("OwnedItem", itemsToUpdate[0]); // TODO fix nested arrays
+      // await item.update({ "data.equippedStatus": newStatus }, {});
+    }
   }
 
   private async updateEncumbrance() {
