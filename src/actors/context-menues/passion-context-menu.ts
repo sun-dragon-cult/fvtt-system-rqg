@@ -7,7 +7,7 @@ export const passionMenuOptions = (actor) => [
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: (el) => {
-      console.log("======== Roll with Modifier");
+      ui.notifications.info("TODO Roll with Modifier");
     },
   },
   {
@@ -39,7 +39,7 @@ export const passionMenuOptions = (actor) => [
       return item.data.data.hasExperience;
     },
     callback: (el) => {
-      console.log("======== Improve");
+      ui.notifications.info("TODO Improve");
     },
   },
   {
@@ -47,7 +47,7 @@ export const passionMenuOptions = (actor) => [
     icon: '<i class="fas fa-book-open"></i>',
     condition: () => true,
     callback: async (el) => {
-      console.log("======== TODO Edit Description ");
+      ui.notifications.info("TODO Edit Description");
     },
   },
   {

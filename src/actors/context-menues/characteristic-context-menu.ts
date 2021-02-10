@@ -48,7 +48,7 @@ export const characteristicMenuOptions = (actor) => [
       "power" === (el[0].closest("[data-characteristic]") as HTMLElement).dataset.characteristic &&
       actor.data.data.characteristics.power.hasExperience,
     callback: (el) => {
-      console.log("======== Improve", el[0]);
+      ui.notifications.info("TODO Improve");
     },
   },
 ];

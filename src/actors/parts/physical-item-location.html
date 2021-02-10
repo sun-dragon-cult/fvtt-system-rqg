@@ -1,0 +1,26 @@
+<li class="{{#if id}}gear-contextmenu{{else}}virtual{{/if}}" data-item-id="{{id}}">
+  <div class="grid location-row">
+    <div>
+      {{#if contains}}<i class="fas fa-folder-open"> </i>{{/if}}
+      {{#unless (eq physicalItemType "unique")}} {{this.quantity}} {{/unless}}
+      {{name}}
+    </div>
+    {{#if id}}
+    <div>{{encumbrance}}</div>
+    <div>
+      <img data-item-equipped-toggle class="equipped-status text-center" title="{{equippedStatus}}"
+           src="{{equippedIcon equippedStatus}}">
+    </div>
+    {{/if}}
+    <div>
+      {{#if id}}
+      <input type="text" list="locations" data-item-edit-value="data.location" value="{{location}}" size="10">
+      {{/if}}
+    </div>
+  </div>
+  <ul class="{{#if contains}}container{{/if}}">
+    {{#each contains}}
+    {{> "systems/rqg/actors/parts/physical-item-location.html"}}
+    {{/each}}
+  </ul>
+</li>

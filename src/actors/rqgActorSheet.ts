@@ -21,6 +21,7 @@ import { runeMenuOptions } from "./context-menues/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
 import { Chat } from "../chat/chat";
+import { createItemLocationTree } from "../items/shared/locationNode";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -33,7 +34,12 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         {
           navSelector: ".sheet-tabs",
           contentSelector: ".sheet-body",
-          initial: "description",
+          initial: "combat",
+        },
+        {
+          navSelector: ".gear-tabs",
+          contentSelector: ".gear-body",
+          initial: "by-item-type",
         },
       ],
       dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
@@ -131,6 +137,16 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
     data.isGM = game.user.isGM;
 
+    const physicalItems: RqgItem[] = this.actor.items.filter((i) => i.data.data.physicalItemType);
+    data.itemLocationTree = createItemLocationTree(physicalItems);
+
+    // Used for DataList input dropdown
+    data.locations = [
+      ...new Set([
+        ...this.actor.items.filter((i) => i.data.data.isContainer).map((i) => i.name),
+        ...physicalItems.map((i) => i.data.data.location),
+      ]),
+    ];
     return sheetData;
   }
 
@@ -311,6 +327,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
           equippedStatuses[
             (equippedStatuses.indexOf(item.data.data.equippedStatus) + 1) % equippedStatuses.length
           ];
+        // Will trigger a Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
         await item.update({ "data.equippedStatus": newStatus }, {});
       });
     });

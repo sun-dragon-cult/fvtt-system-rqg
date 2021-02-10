@@ -2,10 +2,10 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}">
     <label><br><input type="text" name="name" value="{{item.name}}"></label>
-    {{#if data.isProjectile}}
+    {{#unless (eq data.physicalItemType "unique")}}
     <label>Quantity<br><input type="number" name="data.quantity"
                               value="{{item.data.quantity}}"></label>
-    {{/if}}
+    {{/unless}}
     <label>Enc<br><input type="number" min="0" max="99" name="data.encumbrance"
                          value="{{item.data.encumbrance}}"></label>
     <select name="data.equippedStatus">
@@ -55,7 +55,7 @@
         <label>Rate <input type="number" min="0" max="99" name="data.rate" value="{{item.data.rate}}"></label><br>
         <label>Current HP <input type="number" min="0" max="99" name="data.hitPoints.value" value="{{item.data.hitPoints.value}}"></label><br>
         <label>HP <input type="number" min="0" max="99" name="data.hitPoints.max" value="{{item.data.hitPoints.max}}"></label><br>
-        <label>Price <input type="number" min="0" max="99999999" name="data.price" value="{{item.data.price}}">(L)</label><br>
+        <br>
       </div>
       <div>
         <h3>Combat Manuevers</h3>
@@ -65,6 +65,8 @@
       </div>
     {{/if}}
     </div>
+    <label>Price <input type="number" min="0" max="99999999" name="data.price" value="{{item.data.price}}">(L)</label><br>
+    <label>Location <input type="text" name="data.location" value="{{item.data.location}}"></label><br>
     <label>Description {{editor content=data.description target="data.description"
       button=true owner=owner editable=editable}}
     </label>

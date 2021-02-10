@@ -19,6 +19,11 @@ export const RQG = {
     equipped: "systems/rqg/assets/images/equipped/equipped.svg",
   },
 
+  gearViewIcons: {
+    byItemType: "systems/rqg/assets/images/gear-views/by-item-type.svg",
+    byLocation: "systems/rqg/assets/images/gear-views/by-location.svg",
+  },
+
   dblClickTimeout: 250, // Timeout for differentiating between single & double clicks
 
   dsnColorSets: {},

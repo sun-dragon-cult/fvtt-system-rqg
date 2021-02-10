@@ -1,6 +1,6 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 
-export const handlebarSettings = function () {
+export const handlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
     strs.filter((s) => typeof s !== "object").join("")
   );
@@ -53,11 +53,28 @@ export const handlebarSettings = function () {
     return CONFIG.RQG.equippedIcons[equippedStatus];
   });
 
+  Handlebars.registerHelper("gearViewIcon", (view: string) => {
+    return CONFIG.RQG.gearViewIcons[view];
+  });
+
   Handlebars.registerHelper("yes-no", (bool) => {
     return bool ? "yes" : "no";
   });
 
   Handlebars.registerHelper("multiply", (v1, v2) => {
     return Math.round(v1 * v2);
+  });
+
+  Handlebars.registerHelper("buildPhysicalItemLocation", (physicalItem, level) => {
+    if (!level) level = 1;
+    let str = "";
+    for (let i = 0; i < level; i++) str += "+";
+    str += Handlebars.partials["systems/rqg/actors/parts/physical-item-location.html"]({
+      physicalItemLocation: physicalItem,
+    });
+    physicalItem.friends.forEach((o) => {
+      str = str + this.buildObject(o, level + 1);
+    });
+    return new Handlebars.SafeString(str);
   });
 };

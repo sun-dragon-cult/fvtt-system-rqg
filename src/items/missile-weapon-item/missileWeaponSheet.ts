@@ -63,6 +63,13 @@ export class MissileWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     Object.values(CombatManeuver).forEach(
       (cm) => delete formData[`data.allCombatManeuvers.${cm}.value`]
     );
+
+    if (formData[`data.physicalItemType`] === "unique") {
+      formData[`data.quantity`] = 1;
+    }
+
+    formData[`data.physicalItemType`] = formData[`data.isProjectile`] ? "consumable" : "unique";
+
     return super._updateObject(event, formData);
   }
 

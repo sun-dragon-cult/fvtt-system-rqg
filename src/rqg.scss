@@ -9,11 +9,13 @@
   font-family: Norse;
   src: url("assets/fonts/Norse-KaWl.otf") format("opentype");
 }
+
 @font-face {
   font-family: Norse;
   font-weight: bold;
   src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
+
 //// TODO Testing it out with only the bold version
 //@font-face {
 //  font-family: Norse;
@@ -92,6 +94,10 @@
     align-items: center;
   }
 
+  .flex-1 {
+    flex: 1;
+  }
+
   .masonry {
     display: block;
     columns: 12rem auto;
@@ -120,6 +126,23 @@
 
   .ml-5 {
     margin-left: 5px;
+  }
+
+  .tab.gear {
+    article {
+      margin-bottom: 0.7rem;
+    }
+
+    .gear-wrapper {
+      flex-wrap: wrap;
+      margin-left: -16px;
+      margin-right: -16px;
+
+      article {
+        margin-left: 16px;
+        margin-right: 16px;
+      }
+    }
   }
 
   .grid {
@@ -199,6 +222,11 @@
       grid-column: 9/10;
     }
 
+    .head10 {
+      grid-row: 1;
+      grid-column: 10/11;
+    }
+
     .head1-4 {
       grid-row: 1;
       grid-column: 1 / span 4;
@@ -244,23 +272,41 @@
     }
 
     &.gear {
-      grid-template-columns: [col-start] 30px auto repeat(4, max-content) [col-end];
+      grid-template-columns: [col-start] 30px auto repeat(5, max-content) [col-end];
 
-      // Alternating row background for 6 columns
-      > *:nth-child(12n + 14),
-      > *:nth-child(12n + 15),
-      > *:nth-child(12n + 16),
-      > *:nth-child(12n + 17),
-      > *:nth-child(12n + 18),
-      > *:nth-child(12n + 19) {
+      // Alternating row background for 7 columns
+      > *:nth-child(14n + 16),
+      > *:nth-child(14n + 17),
+      > *:nth-child(14n + 18),
+      > *:nth-child(14n + 19),
+      > *:nth-child(14n + 20),
+      > *:nth-child(14n + 21),
+      > *:nth-child(14n + 22) {
         background: var(--table-alternate-background);
       }
     }
 
     &.weapon {
-      grid-template-columns: [col-start] 30px auto auto repeat(6, max-content) [col-end];
+      grid-template-columns: [col-start] 30px auto auto repeat(7, max-content) [col-end];
 
-      // Alternating row background for 9 columns
+      // Alternating row background for 10 columns
+      > *:nth-child(20n + 22),
+      > *:nth-child(20n + 23),
+      > *:nth-child(20n + 24),
+      > *:nth-child(20n + 25),
+      > *:nth-child(20n + 26),
+      > *:nth-child(20n + 27),
+      > *:nth-child(20n + 28),
+      > *:nth-child(20n + 29),
+      > *:nth-child(20n + 30),
+      > *:nth-child(20n + 31) {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.armor {
+      grid-template-columns: [col-start] 30px auto min-content auto auto repeat(4, max-content) [col-end];
+
       > *:nth-child(18n + 20),
       > *:nth-child(18n + 21),
       > *:nth-child(18n + 22),
@@ -270,21 +316,6 @@
       > *:nth-child(18n + 26),
       > *:nth-child(18n + 27),
       > *:nth-child(18n + 28) {
-        background: var(--table-alternate-background);
-      }
-    }
-
-    &.armor {
-      grid-template-columns: [col-start] 30px auto min-content auto auto repeat(3, max-content) [col-end];
-
-      > *:nth-child(16n + 18),
-      > *:nth-child(16n + 19),
-      > *:nth-child(16n + 20),
-      > *:nth-child(16n + 21),
-      > *:nth-child(16n + 22),
-      > *:nth-child(16n + 23),
-      > *:nth-child(16n + 24),
-      > *:nth-child(16n + 25) {
         background: var(--table-alternate-background);
       }
     }
@@ -495,15 +526,7 @@
       margin: 0;
 
       .item {
-        //line-height: 60px;
-        //height: 60px;
-        //font-weight: bold;
         white-space: nowrap;
-        //flex-basis: 100%;
-        //text-align: center;
-        //padding: 0 0 0 8px;
-        //transform: rotate(-60deg) translateX(-30px) translateY(-30px);
-        //transform-origin: top;
         color: white;
         writing-mode: vertical-rl;
         transform: rotate(180deg) translateX(-4px);
@@ -512,17 +535,6 @@
         font-variant-caps: normal;
 
         &.active {
-          //position: relative;
-          //transform: rotate(0deg) translateX(0) translateY(0);
-          //text-align: right;
-
-          //background: #8c0303;
-          //border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
-          //box-shadow: 0 0 3px 4px #8c0303, 0px 0px 20px 4px black;
-          //text-shadow: 2px 2px 8px black;
-
-          // *****
-
           border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
           box-shadow: inset 2px 2px 7px 2px #000000, 0 0 8px 0 #d9dc17, -3px -3px 7px 2px black;
           text-shadow: 0 0 3px black, -2px -2px 3px black;
@@ -531,6 +543,25 @@
           background-blend-mode: screen, difference;
           color: white;
           font-weight: bold;
+        }
+      }
+    }
+
+    nav.gear-tabs {
+      flex: none;
+
+      img {
+        height: 15px;
+      }
+
+      .item {
+        flex: min-content;
+        padding-left: 5px;
+        padding-right: 5px;
+
+        &.active,
+        &:hover {
+          box-shadow: 0 0 10px red;
         }
       }
     }
@@ -551,6 +582,7 @@
 
     .mp {
       font-weight: bold;
+
       input {
         width: 25px;
         font-family: "Signika", sans-serif;
@@ -576,13 +608,16 @@
     div {
       text-align: center;
     }
+
     .value {
       font-size: 23px;
     }
+
     label {
       font-size: 23px;
       font-weight: bold;
     }
+
     input {
       border: none;
       background-color: transparent;
@@ -605,6 +640,7 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 8px;
+
     .norse {
       font-weight: bold;
     }
@@ -620,6 +656,45 @@
 
   .background label {
     line-height: 2rem;
+  }
+
+  ul.location {
+    list-style: none;
+    padding: 0;
+  }
+
+  .location {
+    ul {
+      list-style: none;
+
+      &.container {
+        border-top: 3px solid var(--main-color);
+        border-left: 3px solid var(--main-color);
+        margin-top: 5px;
+        padding-top: 5px;
+        font-style: normal;
+        background-color: var(--table-alternate-background);
+      }
+    }
+
+    .virtual {
+      font-style: italic;
+    }
+  }
+
+  .grid.location-row {
+    display: grid;
+    grid-template-columns: auto min-content max-content min-content;
+
+    i {
+      color: var(--main-color);
+      margin-right: 5px;
+      position: relative;
+      bottom: -7px;
+      left: -2px;
+      height: 100%;
+      text-align: center;
+    }
   }
 }
 
