@@ -36,7 +36,7 @@ export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     minorRunes = [...new Set(minorRunes.filter((r) => r))]; // Remove empty & duplicates
     formData["data.minorRunes"] = duplicate(minorRunes);
 
-    formData["data.chance"] = parseInt(formData["data.chance"]);
+    formData["data.chance"] = Number(formData["data.chance"]);
     return super._updateObject(event, formData);
   }
 

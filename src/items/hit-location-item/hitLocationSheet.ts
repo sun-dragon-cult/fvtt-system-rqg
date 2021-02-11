@@ -44,7 +44,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
               const subtractAP: boolean = ((html[0] as HTMLElement).querySelector(
                 "[name=subtractAP]"
               ) as HTMLInputElement).checked;
-              let damage = parseInt(
+              let damage = Number(
                 ((html[0] as HTMLElement).querySelector("[name=damage]") as HTMLInputElement).value
               );
               if (subtractAP) {
@@ -103,7 +103,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
               item.data.data.wounds = (html as JQuery)
                 .find("input")
                 .toArray()
-                .map((w) => parseInt(w.value));
+                .map((w) => Number(w.value));
 
               await actor.updateOwnedItem({
                 _id: item._id,

@@ -29,9 +29,9 @@ export class Chat {
     const button = ev.currentTarget;
     button.disabled = true;
 
-    const characteristicValue: number = Chat.cardData.characteristic.data.value;
-    const difficulty: number = parseFloat(Chat.cardData.formData.difficulty);
-    const modifier: number = parseFloat(Chat.cardData.formData.modifier) || 0;
+    const characteristicValue: number = Number(Chat.cardData.characteristic.data.value) || 0;
+    const difficulty: number = Number(Chat.cardData.formData.difficulty) || 1;
+    const modifier: number = Number(Chat.cardData.formData.modifier) || 0;
 
     Ability.rollAgainst(
       characteristicValue * difficulty,
@@ -50,9 +50,9 @@ export class Chat {
       Chat.cardData.formData[name] = value;
     }
 
-    const characteristicValue: number = Chat.cardData.characteristic.data.value;
-    const difficulty: number = parseFloat(Chat.cardData.formData.difficulty);
-    const modifier: number = parseFloat(Chat.cardData.formData.modifier) || 0;
+    const characteristicValue: number = Number(Chat.cardData.characteristic.data.value) || 0;
+    const difficulty: number = Number(Chat.cardData.formData.difficulty) || 1;
+    const modifier: number = Number(Chat.cardData.formData.modifier) || 0;
 
     const buttonEl = form.querySelector("button");
 

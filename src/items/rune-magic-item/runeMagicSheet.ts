@@ -55,7 +55,7 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     runes = Array.isArray(runes) ? runes : [runes];
     runes = runes.filter((r) => r); // Remove empty
     formData["data.runes"] = duplicate(runes);
-    formData["data.chance"] = parseInt(formData["data.chance"]);
+    formData["data.chance"] = Number(formData["data.chance"]);
     return super._updateObject(event, formData);
   }
 
