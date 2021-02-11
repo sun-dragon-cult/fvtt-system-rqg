@@ -14,7 +14,7 @@ export class RqgCalculations {
   }
 
   public static hitPoints(con: number, siz: number, pow: number): number {
-    return con + RqgCalculations.linearMod(siz) + RqgCalculations.flattenedMod(pow);
+    return con + RqgCalculations.linearMod(siz) / 5 + RqgCalculations.flattenedMod(pow) / 5;
   }
 
   public static damageBonus(str: number, siz: number): string {
