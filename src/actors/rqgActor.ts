@@ -71,7 +71,7 @@ export class RqgActor extends Actor<RqgActorData> {
     data.attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
     const movementEncumbrancePenalty = Math.min(
       0,
-      data.attributes.maximumEncumbrance - data.attributes.equippedEncumbrance
+      data.attributes.maximumEncumbrance || 0 - data.attributes.equippedEncumbrance || 0
     );
 
     data.attributes.move += movementEncumbrancePenalty;
