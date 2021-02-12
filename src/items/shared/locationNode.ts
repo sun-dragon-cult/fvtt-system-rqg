@@ -20,7 +20,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
     equippedStatus: "notCarried",
   };
   let physicalItemNodes: LocationNode[] = physicalItems
-    .filter((i) => i.type)
+    .filter((i) => i.type && !i.data.data.isNatural)
     .map((i) => {
       // Placing an item inside itself is not allowed - count it as root level
       let location = i.data.data.location === i.name ? "" : i.data.data.location;
