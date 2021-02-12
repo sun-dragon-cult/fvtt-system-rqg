@@ -19,8 +19,7 @@
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
     <label>Rune Points <input type="number" min="0" max="99" name="data.runePoints.value" value="{{item.data.runePoints.value}}">/<input type="number" min="0" max="99" name="data.runePoints.max" value="{{item.data.runePoints.max}}"></label><br>
     <label>Holy Days {{editor content=data.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
-    <label>Sub Cults {{editor content=data.subCults target="data.subCults" button=true owner=owner editable=editable}}</label><br>
-    <label>Description {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}</label>
+    <label>Actor's Sub Cults {{editor content=data.subCults target="data.subCults" button=true owner=owner editable=editable}}</label><br>
     <br>
     {{#if data.journalPack}}
     <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
