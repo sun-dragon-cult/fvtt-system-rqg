@@ -1,5 +1,6 @@
 <div class="masonry">
   {{#each data.ownedItems.skill}}
+  {{#if this}}
   <div class="masonry-item">
     <h2>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
     <div class="grid skill">
@@ -20,5 +21,6 @@
       {{/each}}
     </div>
   </div>
+  {{/if}}
   {{/each}}
 </div>

@@ -1,4 +1,9 @@
 export const RQG = {
+  debug: {
+    showActorActiveEffectsTab: false,
+    showAllUiSections: false,
+  },
+
   // TODO
   statusEffects: [
     {

@@ -17,6 +17,7 @@ export const handlebarsTemplates = async function () {
     // ActorSheet parts
     "systems/rqg/actors/parts/health.html",
     "systems/rqg/actors/parts/combat.html",
+    "systems/rqg/actors/parts/spirit-combat.html",
     "systems/rqg/actors/parts/elemental.html",
     "systems/rqg/actors/parts/power.html",
     "systems/rqg/actors/parts/form.html",

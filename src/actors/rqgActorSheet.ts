@@ -147,6 +147,37 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         ...physicalItems.map((i) => i.data.data.location),
       ]),
     ];
+
+    data.showUiSection = {
+      health:
+        CONFIG.RQG.debug.showAllUiSections || !!data.ownedItems[ItemTypeEnum.HitLocation]?.length,
+      combat:
+        CONFIG.RQG.debug.showAllUiSections ||
+        !!data.ownedItems[ItemTypeEnum.MeleeWeapon]?.length ||
+        !!data.ownedItems[ItemTypeEnum.MissileWeapon]?.length,
+      runes:
+        CONFIG.RQG.debug.showAllUiSections ||
+        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Rune)?.length,
+      spiritMagic:
+        CONFIG.RQG.debug.showAllUiSections || !!data.ownedItems[ItemTypeEnum.SpiritMagic]?.length,
+      runeMagic:
+        !!data.ownedItems[ItemTypeEnum.Cult] && !!data.ownedItems[ItemTypeEnum.RuneMagic]?.length,
+      sorcery:
+        CONFIG.RQG.debug.showAllUiSections ||
+        this.actor.items.filter((i) => i.type === ItemTypeEnum.Rune && i.data.data.isMastered),
+      skills:
+        CONFIG.RQG.debug.showAllUiSections ||
+        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Skill)?.length,
+      gear:
+        CONFIG.RQG.debug.showAllUiSections ||
+        !!data.ownedItems[ItemTypeEnum.Gear]?.length ||
+        !!data.ownedItems[ItemTypeEnum.MeleeWeapon]?.length ||
+        !!data.ownedItems[ItemTypeEnum.MissileWeapon]?.length,
+      passions:
+        CONFIG.RQG.debug.showAllUiSections || !!data.ownedItems[ItemTypeEnum.Passion]?.length,
+      background: true,
+      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab,
+    };
     return sheetData;
   }
 

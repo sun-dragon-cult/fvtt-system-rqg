@@ -2,12 +2,8 @@
   <div class="mainbackground"></div>
   {{!-- Sheet Header --}}
   <header class="sheet-header">
-    <img
-      class="profile-img"
-      src="{{actor.img}}"
-      data-edit="img"
-      title="{{actor.name}}"
-    />
+
+    <img class="profile-img {{#if (eq actor.img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{actor.img}}" data-edit="img" title="{{actor.name}}">
     <div>
       <div class="topheaderline">
         <h1 class="charname">
@@ -65,22 +61,25 @@
   <div class="navbackground"></div>
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item norse" data-tab="combat">Combat</a>
-    <a class="item norse" data-tab="runes">Runes</a>
-    <a class="item norse" data-tab="spiritmagic">Spirit Magic</a>
-    <a class="item norse" data-tab="runemagic">Rune Magic</a>
-    <a class="item norse" data-tab="sorcery">Sorcery</a>
-    <a class="item norse" data-tab="skills">Skills</a>
-    <a class="item norse" data-tab="gear">Gear</a>
-    <a class="item norse" data-tab="passions">Passions</a>
-    <a class="item norse" data-tab="background">Background</a>
-    <a class="item norse" data-tab="activeeffectstesting">AE 🧪</a>
+    {{#if data.showUiSection.runes}}<a class="item norse" data-tab="runes">Runes</a>{{/if}}
+    {{#if data.showUiSection.spiritMagic}}<a class="item norse" data-tab="spiritmagic">Spirit Magic</a>{{/if}}
+    {{#if data.showUiSection.runeMagic}}<a class="item norse" data-tab="runemagic">Rune Magic</a>{{/if}}
+    {{#if data.showUiSection.sorcery}}<a class="item norse" data-tab="sorcery">Sorcery</a>{{/if}}
+    {{#if data.showUiSection.skills}}<a class="item norse" data-tab="skills">Skills</a>{{/if}}
+    {{#if data.showUiSection.gear}}<a class="item norse" data-tab="gear">Gear</a>{{/if}}
+    {{#if data.showUiSection.passions}}<a class="item norse" data-tab="passions">Passions</a>{{/if}}
+    {{#if data.showUiSection.background}}<a class="item norse" data-tab="background">Background</a>{{/if}}
+    {{#if data.showUiSection.activeEffects}}<a class="item norse" data-tab="activeeffectstesting">AE 🧪</a>{{/if}}
   </nav>
 
   <section class="sheet-body">
     <div class="tab combat" data-group="primary" data-tab="combat">
         <div class="flex-row flex-wrap">
-          {{> "systems/rqg/actors/parts/health.html" }}
-          {{> "systems/rqg/actors/parts/combat.html" }}
+          {{#if data.showUiSection.health}}{{> "systems/rqg/actors/parts/health.html" }}{{/if}}
+          <div>
+            {{#if data.showUiSection.combat}}{{> "systems/rqg/actors/parts/combat.html" }}{{/if}}
+            {{> "systems/rqg/actors/parts/spirit-combat.html" }}
+          </div>
         </div>
     </div>
 
@@ -108,17 +107,20 @@
       {{> "systems/rqg/actors/parts/gear-tab.html" }}
     </div>
 
+    {{#if data.showUiSection.passions}}
     <div class="tab passions" data-group="primary" data-tab="passions">
       {{> "systems/rqg/actors/parts/passions-tab.html" }}
     </div>
+    {{/if}}
 
     <div class="tab background" data-group="primary" data-tab="background">
       {{> "systems/rqg/actors/parts/background-tab.html" }}
     </div>
 
-    {{!-- TEMPORARY Active Effects Testing Tab --}}
+    {{#if data.showUiSection.activeEffects}}
     <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
       {{> "systems/rqg/actors/parts/activeeffectstesting-tab.html" }}
     </div>
+    {{/if}}
   </section>
 </form>

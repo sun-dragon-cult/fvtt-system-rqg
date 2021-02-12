@@ -127,7 +127,7 @@ export function hasLoop(initialItem: RqgItem, physicalItems: RqgItem[]): boolean
 export function getItemIdsInSameLocationTree(item: ItemData, actor: RqgActor): string[] {
   const physicalItems: RqgItem[] = actor.items.filter((i) => i.data.data.physicalItemType);
   const itemLocationTree = createItemLocationTree(physicalItems);
-  let rootNode = searchTree(itemLocationTree, item.name);
+  let rootNode = searchTree(itemLocationTree, item?.name);
   while (rootNode && rootNode.location) {
     rootNode = searchTree(itemLocationTree, rootNode.location);
   }

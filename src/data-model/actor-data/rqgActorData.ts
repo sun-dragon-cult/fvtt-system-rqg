@@ -24,7 +24,20 @@ export class RqgActorData {
     public isGM?: boolean,
     public effects?: any, // TODO fooling around
     public locations?: Array<string>,
-    public itemLocationTree?: LocationNode // The tree structure for items containing each other
+    public itemLocationTree?: LocationNode, // The tree structure for items containing each other
+    public showUiSection?: {
+      health?: boolean;
+      combat?: boolean;
+      runes?: boolean;
+      spiritMagic?: boolean;
+      runeMagic?: boolean;
+      sorcery?: boolean;
+      skills?: boolean;
+      gear?: boolean;
+      passions?: boolean;
+      background?: boolean;
+      activeEffects?: boolean;
+    }
   ) {}
 }
 

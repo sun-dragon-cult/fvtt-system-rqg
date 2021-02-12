@@ -485,6 +485,11 @@
     transform: rotate(5deg);
     box-shadow: 1px 1px 30px 5px #4c3b1ad6, -1px -1px 9px 5px #e2cb9ded;
     border-radius: 10px;
+
+    &.unset {
+      height: 20px;
+      flex: 0 0 20px;
+    }
   }
 
   .mainbackground {

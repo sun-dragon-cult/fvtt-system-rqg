@@ -1,0 +1,22 @@
+<div>
+  <h2>Spirit Combat</h2>
+  <div class="flexrow nowrap flex-align-center">
+    <label class="mp">Magic Points <input
+      type="number"
+      min="0"
+      max="99"
+      name="data.attributes.magicPoints.value"
+      value="{{data.attributes.magicPoints.value}}"
+      size="2"
+    /> / {{data.attributes.magicPoints.max}}
+    </label>
+    <i>{{#each data.powCrystals}}
+      {{name}}({{size}}MP)<br>
+      {{/each}}</i>
+    <label class="text-right">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
+  </div>
+  <div class="grid spirit-combat">
+    <div data-item-id="{{data.spiritCombatSkill._id}}" class="skill-contextmenu" data-item-roll title="Roll">Spirit Combat</div>
+    <div data-item-id="{{data.spiritCombatSkill._id}}" class="skill-contextmenu" data-item-roll title="Roll"><span class="text-right">{{skillchance data.spiritCombatSkill._id actor._id}}%</span></div>
+  </div>
+</div>

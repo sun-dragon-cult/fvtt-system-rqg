@@ -211,7 +211,7 @@ export class RqgActor extends Actor<RqgActorData> {
         this.getOwnedItem(equippedStatusChanges[0]._id).data.data.equippedStatus; // TODO Always correct?
 
       const itemsToUpdate = equippedStatusChanges.map((i) =>
-        getItemIdsInSameLocationTree(this.items.get(i._id).data, this).map((id) => {
+        getItemIdsInSameLocationTree(this.items.get(i._id)?.data, this).map((id) => {
           return { _id: id, "data.equippedStatus": newEquippedStatus };
         })
       );
