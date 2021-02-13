@@ -61,8 +61,20 @@ export const handlebarsHelpers = function () {
     return bool ? "yes" : "no";
   });
 
-  Handlebars.registerHelper("multiply", (v1, v2) => {
-    return Math.round(v1 * v2);
+  Handlebars.registerHelper("multiply", (...nums) => {
+    nums.pop();
+    return nums.reduce((acc, n) => {
+      acc = acc * n;
+      return acc;
+    });
+  });
+
+  Handlebars.registerHelper("sum", (...nums) => {
+    nums.pop();
+    return nums.reduce((acc, n) => {
+      acc = acc + n;
+      return acc;
+    });
   });
 
   Handlebars.registerHelper("buildPhysicalItemLocation", (physicalItem, level) => {

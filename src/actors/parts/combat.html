@@ -22,7 +22,7 @@
       <input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value" value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
-      <span class="text-right">{{data.data.strikeRank}}</span>
+      <span class="text-right">{{sum @root.data.attributes.sizStrikeRank @root.data.attributes.dexStrikeRank data.data.strikeRank}}</span>
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
       {{#each data.data.combatManeuvers}}
@@ -42,7 +42,20 @@
       <span class="text-right">{{skillchance data.data.skillId actor._id}}%</span>
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+      <div class="flex-column flex-align-end">
+        <div>{{sum 6 @root.data.attributes.dexStrikeRank}}
+          {{#if (gt 13 (sum 11 @root.data.attributes.dexStrikeRank))}}
+            / {{sum 11 @root.data.attributes.dexStrikeRank}}
+          {{/if}}
+        </div>
+        <i>{{sum 1 @root.data.attributes.dexStrikeRank}} / {{sum 6 @root.data.attributes.dexStrikeRank}}
+          {{#if (gt 13 (sum 11 @root.data.attributes.dexStrikeRank))}}
+            / {{sum 11 @root.data.attributes.dexStrikeRank}}
+          {{/if}}
+        </i>
+      </div>
+    </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
       {{#each data.data.combatManeuvers}}
       <div data-missile-roll="{{this}}" title="Roll">{{this}}</div>
@@ -61,7 +74,7 @@
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
-      <span class="text-right">{{data.data.strikeRank}}</span>
+      <span class="text-right">{{sum @root.data.attributes.sizStrikeRank @root.data.attributes.dexStrikeRank data.data.strikeRank}}</span>
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
       {{#each data.data.combatManeuvers}}
