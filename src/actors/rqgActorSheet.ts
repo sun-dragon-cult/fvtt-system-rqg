@@ -252,6 +252,20 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       });
     });
 
+    // Roll Damage
+    this.form.querySelectorAll("[data-damage-roll]").forEach((el) => {
+      const damage = (el as HTMLElement).dataset.damageRoll;
+      el.addEventListener("click", () => {
+        const r = new Roll(damage);
+        r.roll();
+        r.toMessage({
+          speaker: ChatMessage.getSpeaker(),
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+          flavor: `damage`,
+        });
+      });
+    });
+
     // Melee Weapon roll
     this.form.querySelectorAll("[data-melee-roll]").forEach((el) => {
       const attackType = (el as HTMLElement).dataset.meleeRoll;

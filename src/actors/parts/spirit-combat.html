@@ -13,7 +13,7 @@
     <i>{{#each data.powCrystals}}
       {{name}}({{size}}MP)<br>
       {{/each}}</i>
-    <label class="text-right">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
+    <label class="text-right" data-damage-roll="{{data.attributes.spiritCombatDamage}}">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
   </div>
   <div class="grid spirit-combat">
     <div data-item-id="{{data.spiritCombatSkill._id}}" class="skill-contextmenu" data-item-roll title="Roll">Spirit Combat</div>
