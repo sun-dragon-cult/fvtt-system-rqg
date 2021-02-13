@@ -6,9 +6,12 @@
     <img class="profile-img {{#if (eq actor.img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{actor.img}}" data-edit="img" title="{{actor.name}}">
     <div>
       <div class="topheaderline">
-        <h1 class="charname">
-          <input name="name" type="text" value="{{actor.name}}">
-        </h1>
+        <h1 class="charname"><input name="name" type="text" value="{{actor.name}}"></h1>
+        <div>
+        {{#each data.characterRunes}}
+          <img class="rune" src="{{this}}">
+        {{/each}}
+        </div>
       </div>
       <div class="characteristics">
         {{#each data.characteristics as | characteristic key |}}

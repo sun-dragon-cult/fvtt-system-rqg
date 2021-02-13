@@ -25,6 +25,7 @@ export class RqgActorData {
     public effects?: any, // TODO fooling around
     public locations?: Array<string>,
     public itemLocationTree?: LocationNode, // The tree structure for items containing each other
+    public characterRunes?: Array<string>, // img links to elemental runes with positive chance
     public showUiSection?: {
       health?: boolean;
       combat?: boolean;

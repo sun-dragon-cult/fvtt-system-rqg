@@ -178,6 +178,11 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       background: true,
       activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab,
     };
+
+    data.characterRunes = data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Element]
+      .filter((r) => r.data.data.chance)
+      .sort((a, b) => b.data.data.chance - a.data.data.chance)
+      .map((r) => r.img);
     return sheetData;
   }
 
