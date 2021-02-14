@@ -42,20 +42,24 @@
       <span class="text-right">{{skillchance data.data.skillId actor._id}}%</span>
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
-      <div class="flex-column flex-align-end">
-        <div>{{sum 6 @root.data.attributes.dexStrikeRank}}
-          {{#if (gt 13 (sum 11 @root.data.attributes.dexStrikeRank))}}
-            / {{sum 11 @root.data.attributes.dexStrikeRank}}
-          {{/if}}
-        </div>
-        <i>{{sum 1 @root.data.attributes.dexStrikeRank}} / {{sum 6 @root.data.attributes.dexStrikeRank}}
-          {{#if (gt 13 (sum 11 @root.data.attributes.dexStrikeRank))}}
-            / {{sum 11 @root.data.attributes.dexStrikeRank}}
-          {{/if}}
-        </i>
+  <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+    {{#if data.data.rate}}
+    <div class="text-right">1/{{data.data.rate}}MR</div>
+    {{else}}
+    <div class="flex-column flex-align-end">
+      <div>
+        {{#each @root.data.unloadedMissileSr}}
+        {{{this}}}
+        {{/each}}
       </div>
+      <i>
+        {{#each @root.data.loadedMissileSr}}
+        {{{this}}}
+        {{/each}}
+      </i>
     </div>
+    {{/if}}
+  </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
       {{#each data.data.combatManeuvers}}
       <div data-missile-roll="{{this}}" title="Roll">{{this}}</div>

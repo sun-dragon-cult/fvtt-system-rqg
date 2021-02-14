@@ -26,6 +26,8 @@ export class RqgActorData {
     public locations?: Array<string>,
     public itemLocationTree?: LocationNode, // The tree structure for items containing each other
     public characterRunes?: Array<string>, // img links to elemental runes with positive chance
+    public unloadedMissileSr?: Array<string>, // missileWeaponSRs if starting without loaded arrow
+    public loadedMissileSr?: Array<string>, // missileWeaponSRs if starting with loaded arrow
     public showUiSection?: {
       health?: boolean;
       combat?: boolean;

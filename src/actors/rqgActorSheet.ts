@@ -183,6 +183,50 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       .filter((r) => r.data.data.chance)
       .sort((a, b) => b.data.data.chance - a.data.data.chance)
       .map((r) => r.img);
+
+    const reload = 5;
+    const dexSr = data.attributes.dexStrikeRank;
+
+    data.unloadedMissileSr = [];
+    let sr = 1;
+    while (true) {
+      // Reload
+      let newSr = sr + reload;
+      if (newSr > 12) {
+        break;
+      }
+      sr = newSr;
+      data.unloadedMissileSr.push("<i class='x-small-size fas fa-redo-alt'></i>");
+
+      // Shoot
+      newSr = sr + dexSr;
+      if (newSr > 12) {
+        break;
+      }
+      sr = newSr;
+      data.unloadedMissileSr.push(newSr.toString());
+    }
+
+    data.loadedMissileSr = [];
+    sr = 1;
+    while (true) {
+      // Shoot
+      let newSr = sr + dexSr;
+      if (newSr > 12) {
+        break;
+      }
+      sr = newSr;
+      data.loadedMissileSr.push(newSr.toString());
+
+      // Reload
+      newSr = sr + reload;
+      if (newSr > 12) {
+        break;
+      }
+      sr = newSr;
+      data.loadedMissileSr.push("<i class='x-small-size  fas fa-redo-alt'></i>");
+    }
+
     return sheetData;
   }
 
