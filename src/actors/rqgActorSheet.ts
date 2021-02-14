@@ -184,48 +184,26 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       .sort((a, b) => b.data.data.chance - a.data.data.chance)
       .map((r) => r.img);
 
-    const reload = 5;
-    const dexSr = data.attributes.dexStrikeRank;
+    const reloadIcon = "<i class='x-small-size fas fa-redo-alt'></i>";
+    const loadedMissileSr = [
+      ["1", reloadIcon, "5", reloadIcon, "10"],
+      ["1", reloadIcon, "7", reloadIcon],
+      ["2", reloadIcon, "9"],
+      ["3", reloadIcon, "11"],
+      ["4", reloadIcon],
+      ["5", reloadIcon],
+    ];
+    const unloadedMissileSr = [
+      [reloadIcon, "5", reloadIcon, "10"],
+      [reloadIcon, "6", reloadIcon, "12"],
+      [reloadIcon, "7", reloadIcon],
+      [reloadIcon, "8"],
+      [reloadIcon, "9"],
+      [reloadIcon, "10"],
+    ];
 
-    data.unloadedMissileSr = [];
-    let sr = 1;
-    while (true) {
-      // Reload
-      let newSr = sr + reload;
-      if (newSr > 12) {
-        break;
-      }
-      sr = newSr;
-      data.unloadedMissileSr.push("<i class='x-small-size fas fa-redo-alt'></i>");
-
-      // Shoot
-      newSr = sr + dexSr;
-      if (newSr > 12) {
-        break;
-      }
-      sr = newSr;
-      data.unloadedMissileSr.push(newSr.toString());
-    }
-
-    data.loadedMissileSr = [];
-    sr = 1;
-    while (true) {
-      // Shoot
-      let newSr = sr + dexSr;
-      if (newSr > 12) {
-        break;
-      }
-      sr = newSr;
-      data.loadedMissileSr.push(newSr.toString());
-
-      // Reload
-      newSr = sr + reload;
-      if (newSr > 12) {
-        break;
-      }
-      sr = newSr;
-      data.loadedMissileSr.push("<i class='x-small-size  fas fa-redo-alt'></i>");
-    }
+    data.unloadedMissileSr = unloadedMissileSr[data.attributes.dexStrikeRank];
+    data.loadedMissileSr = loadedMissileSr[data.attributes.dexStrikeRank];
 
     return sheetData;
   }
