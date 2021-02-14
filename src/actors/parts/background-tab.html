@@ -1,103 +1,147 @@
 <h2>Background</h2>
+<div class="flex-row flex-wrap">
+<fieldset>
+  <legend>Base Data</legend>
 
-<label>Birth Year
-  {{#if data.isGM}}
-    <input type="number" min="0" max="9999" name="data.background.birthyear" value="{{data.background.birthyear}}">
-  {{else}}
-    {{data.background.birthyear}}
-  {{/if}}
-</label>
-<label> Age
-  {{#if data.isGM}}
-    <input type="number" min="0" max="999" name="data.background.age" value="{{data.background.age}}">
-  {{else}}
-    {{data.background.age}}
-  {{/if}}
-</label>
-<label> Gender
-  {{#if data.isGM}}
-    <input type="text" name="data.background.gender" value="{{data.background.gender}}" size="10">
-  {{else}}
-    {{data.background.gender}}
-  {{/if}}
-</label>
-<label> Race
-  {{#if data.isGM}}
-    <input type="text" name="data.background.race" value="{{data.background.race}}" size="20">
-  {{else}}
-    {{data.background.race}}
-  {{/if}}
-</label>
-<label> Reputation
-  {{#if data.isGM}}
-  <input type="number" min="0" max="999" name="data.background.reputation" value="{{data.background.reputation}}">
-  {{else}}
-    {{data.background.reputation}}
-  {{/if}}
-</label><br>
+    <div class="nowrap">
+      {{#if data.isGM}}
+        <label>Birth Year
+          <input type="number" min="0" max="9999" name="data.background.birthyear" value="{{data.background.birthyear}}">
+        </label>
+      {{else}}
+        <b>Birth Year</b> {{data.background.birthyear}}
+      {{/if}}
+    </div>
 
-<label>Occupation
-  {{#if data.isGM}}
-  <select name="data.background.occupation">
-    {{#select data.background.occupation}} {{#each data.occupations}}
-    <option value="{{this}}">{{this}}</option>
-    {{/each}} {{/select}}
-  </select>
-  {{else}}
-    {{data.background.occupation}}
-  {{/if}}
-</label><br>
+  <div class="nowrap">
+    {{#if data.isGM}}
+      <label>Age
+        <input type="number" min="0" max="999" name="data.background.age" value="{{data.background.age}}">
+      </label>
+    {{else}}
+      <b>Age</b> {{data.background.age}}
+    {{/if}}
+  </div>
 
-<label>Homeland
-  {{#if data.isGM}}
-  <select name="data.background.homeland">
-    {{#select data.background.homeland}} {{#each data.homelands}}
-    <option value="{{this}}">{{this}}</option>
-    {{/each}} {{/select}}
-  </select>
-  {{else}}
-    {{data.background.homeland}}
-  {{/if}}
-</label
-><br />
+  <div class="nowrap">
+    {{#if data.isGM}}
+    <label>Gender
+      <input type="text" name="data.background.gender" value="{{data.background.gender}}" size="10">
+    </label>
+    {{else}}
+    <b>Gender</b> {{data.background.gender}}
+    {{/if}}
+  </div>
 
-<label>Tribe
-  {{#if data.isGM}}
-    <input type="text" name="data.background.tribe" value="{{data.background.tribe}}" size="30">
-  {{else}}
-    {{data.background.tribe}}
-  {{/if}}
-</label>
+  <div class="nowrap">
+    {{#if data.isGM}}
+      <label>Race
+        <input type="text" name="data.background.race" value="{{data.background.race}}" size="20">
+      </label>
+    {{else}}
+      <b>Race</b> {{data.background.race}}
+    {{/if}}
+  </div>
+</fieldset>
 
-<label>Clan
-  {{#if data.isGM}}
-    <input type="text" name="data.background.clan" value="{{data.background.clan}}" size="30">
-  {{else}}
-    {{data.background.clan}}
-  {{/if}}
-</label><br>
+<fieldset>
+  <legend>Origin</legend>
 
-<label>Standard Of Living
-  {{#if data.isGM}}
-  <input type="text" name="data.background.standardOfLiving" value="{{data.background.standardOfLiving}}" size="30">
-  {{else}}
-    {{data.background.standardOfLiving}}
-  {{/if}}
-</label><br>
-<label>Ransom
-  {{#if data.isGM}}
-    <input type="number" min="0" max="99999999" name="data.background.ransom" value="{{data.background.ransom}}">
-  {{else}}
-    {{data.background.ransom}}
-  {{/if}}(L)
-</label>
-<label>Base Income
-  {{#if data.isGM}}
-    <input type="number" min="0" max="99999999" name="data.background.baseIncome" value="{{data.background.baseIncome}}">
-  {{else}}
-    {{data.background.baseIncome}}
-  {{/if}}(L)
-</label><br>
+  <div class="nowrap">
+    {{#if data.isGM}}
+    <label>Homeland
+      <select name="data.background.homeland">
+        {{#select data.background.homeland}} {{#each data.homelands}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}} {{/select}}
+      </select>
+    </label>
+    {{else}}
+      <b>Homeland</b> {{data.background.homeland}}
+    {{/if}}
+  </div>
+
+  <div class="nowrap">
+    {{#if data.isGM}}
+    <label>Tribe
+      <input type="text" name="data.background.tribe" value="{{data.background.tribe}}" size="30">
+    </label>
+    {{else}}
+      <b>Tribe</b> {{data.background.tribe}}
+    {{/if}}
+  </div>
+
+  <div class="nowrap">
+    {{#if data.isGM}}
+    <label>Clan
+      <input type="text" name="data.background.clan" value="{{data.background.clan}}" size="30">
+    </label>
+    {{else}}
+      <b>Clan</b> {{data.background.clan}}
+    {{/if}}
+  </div>
+
+</fieldset>
+
+<fieldset>
+  <legend>Circumstance</legend>
+
+  <div class="nowrap">
+    {{#if data.isGM}}
+    <label>Reputation
+      <input type="number" min="0" max="999" name="data.background.reputation" value="{{data.background.reputation}}">
+    </label>
+    {{else}}
+    <b>Reputation</b> {{data.background.reputation}}
+    {{/if}}%
+  </div>
+
+  <div class="nowrap">
+    {{#if data.isGM}}
+      <label>Standard Of Living
+      <input type="text" name="data.background.standardOfLiving" value="{{data.background.standardOfLiving}}" size="30">
+      </label>
+    {{else}}
+      <b>Standard Of Living</b> {{data.background.standardOfLiving}}
+    {{/if}}
+  </div>
+
+  <div class="nowrap">
+    {{#if data.isGM}}
+    <label>Occupation
+      <select name="data.background.occupation">
+        {{#select data.background.occupation}} {{#each data.occupations}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}} {{/select}}
+      </select>
+    </label>
+    {{else}}
+    <b>Occupation</b> {{data.background.occupation}}
+    {{/if}}
+  </div>
+
+  <div class="nowrap">
+    {{#if data.isGM}}
+    <label>Base Income
+      <input type="number" min="0" max="99999999" name="data.background.baseIncome" value="{{data.background.baseIncome}}">
+    </label>
+    {{else}}
+    <b>Base Income</b> {{data.background.baseIncome}}
+    {{/if}}(L)
+  </div>
+
+  <div class="nowrap">
+    {{#if data.isGM}}
+    <label>Ransom
+      <input type="number" min="0" max="99999999" name="data.background.ransom" value="{{data.background.ransom}}">
+    </label>
+    {{else}}
+      <b>Ransom</b> {{data.background.ransom}}
+    {{/if}}(L)
+  </div>
+
+</fieldset>
+</div>
 
 {{#if data.isGM}}
 {{editor content=data.background.biography target="data.background.biography"
