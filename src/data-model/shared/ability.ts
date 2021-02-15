@@ -25,7 +25,7 @@ export class Ability implements IAbility {
   // Do a roll against this ability and factor in all modifiers.
   // stat - an object that implements IAbility
   // chanceMod - a +/- value that changes the chance
-  public static rollAgainst(
+  public static roll(
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     flavor: string // TODO Rename to ability?

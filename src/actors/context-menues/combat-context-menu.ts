@@ -17,7 +17,7 @@ export const combatMenuOptions = (actor) => [
     callback: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.skillId;
       const item: Item = actor.items.get(itemId);
-      const result = Ability.rollAgainst(item.data.data.chance, 0, item.name);
+      const result = Ability.roll(item.data.data.chance, 0, item.name);
     },
   },
   {

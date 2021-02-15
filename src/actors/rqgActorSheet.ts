@@ -245,7 +245,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount === 2) {
-          const result = Ability.rollAgainst(
+          const result = Ability.roll(
             this.actor.data.data.characteristics[characteristic].value * 5,
             0,
             characteristic
@@ -270,7 +270,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = this.actor.items.get(itemId);
       el.addEventListener("click", () => {
-        const result = Ability.rollAgainst(item.data.data.chance, 0, item.name);
+        const result = Ability.roll(item.data.data.chance, 0, item.name);
       });
     });
 
@@ -296,7 +296,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset.skillId;
       const skillItem: Item<SkillData> = this.actor.items.get(skillId);
       el.addEventListener("click", async () => {
-        const result = Ability.rollAgainst(
+        const result = Ability.roll(
           skillItem.data.data.chance,
           0,
           `${weaponItem.name} ${attackType} (${skillItem.name})`
@@ -335,7 +335,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
             "data.quantity": --projectileItem.data.data.quantity,
           });
 
-          const result = Ability.rollAgainst(
+          const result = Ability.roll(
             skillItem.data.data.chance,
             0,
             `${weaponItem.name} ${attackType} (${skillItem.name})`

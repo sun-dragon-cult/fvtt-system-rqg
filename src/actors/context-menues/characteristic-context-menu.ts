@@ -22,7 +22,7 @@ export const characteristicMenuOptions = (actor) => [
     callback: (el) => {
       const characteristic = (el[0].closest("[data-characteristic]") as HTMLElement).dataset
         .characteristic;
-      const result = Ability.rollAgainst(
+      const result = Ability.roll(
         actor.data.data.characteristics[characteristic].value * 5,
         0,
         characteristic

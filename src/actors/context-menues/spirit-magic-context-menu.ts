@@ -9,11 +9,7 @@ export const spiritMagicMenuOptions = (actor) => [
     callback: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
-      const result = Ability.rollAgainst(
-        actor.data.data.characteristics.power.value * 5,
-        0,
-        item.name
-      );
+      const result = Ability.roll(actor.data.data.characteristics.power.value * 5, 0, item.name);
     },
   },
   {

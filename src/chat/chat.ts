@@ -33,7 +33,7 @@ export class Chat {
     const difficulty: number = Number(Chat.cardData.formData.difficulty) || 1;
     const modifier: number = Number(Chat.cardData.formData.modifier) || 0;
 
-    Ability.rollAgainst(
+    Ability.roll(
       characteristicValue * difficulty,
       modifier,
       Chat.cardData.characteristic.name + " check"
