@@ -53,7 +53,7 @@ export class Cult extends BaseItem {
       (i) => i.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultItem._id
     );
     return cultRuneMagicItems.map((i) => {
-      return { _id: i._id, cultId: "" };
+      return { _id: i._id, "data.cultId": "" };
     });
   }
 }
