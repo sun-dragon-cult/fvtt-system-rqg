@@ -39,6 +39,7 @@ export const handlebarsTemplates = async function () {
 
     // ChatCard
     "systems/rqg/chat/characteristicCard.html",
+    "systems/rqg/chat/itemCard.html",
   ];
 
   return loadTemplates(templatePaths);

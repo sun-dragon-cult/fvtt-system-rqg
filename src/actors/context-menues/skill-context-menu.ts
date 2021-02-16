@@ -1,5 +1,7 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
+import { ChatCards } from "../../chat/chatCards";
+import { ItemCard } from "../../chat/itemCard";
 
 export const skillMenuOptions = (actor) => [
   {
@@ -7,7 +9,9 @@ export const skillMenuOptions = (actor) => [
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: (el) => {
-      ui.notifications.info("TODO Roll with Modifier");
+      const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      const item: Item = actor.items.get(itemId);
+      ChatCards.show("itemCard", actor, item._id);
     },
   },
   {
@@ -18,6 +22,7 @@ export const skillMenuOptions = (actor) => [
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
       const result = Ability.roll(item.data.data.chance, 0, item.name);
+      ItemCard.checkExperience(actor, item, result);
     },
   },
   {

@@ -23,6 +23,7 @@ import { characteristicMenuOptions } from "./context-menues/characteristic-conte
 import { ChatCards } from "../chat/chatCards";
 import { createItemLocationTree } from "../items/shared/locationNode";
 import { CharacteristicCard } from "../chat/characteristicCard";
+import { ItemCard } from "../chat/itemCard";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -271,8 +272,25 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     this.form.querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = this.actor.items.get(itemId);
-      el.addEventListener("click", () => {
-        const result = Ability.roll(item.data.data.chance, 0, item.name);
+
+      let clickCount = 0;
+
+      el.addEventListener("click", (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
+
+        if (clickCount === 2) {
+          const result = Ability.roll(item.data.data.chance, 0, item.name);
+          ItemCard.checkExperience(this.actor, item, result);
+
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(() => {
+            if (clickCount === 1) {
+              ChatCards.show("itemCard", this.actor, itemId);
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
       });
     });
 

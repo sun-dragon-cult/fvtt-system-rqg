@@ -1,4 +1,5 @@
 import { CharacteristicCard } from "./characteristicCard";
+import { ItemCard } from "./itemCard";
 import { RqgActor } from "../actors/rqgActor";
 
 export type ChatCardName = "characteristicCard" | "itemCard";
@@ -12,7 +13,7 @@ export interface ChatCard {
 export class ChatCards {
   private static card = {
     characteristicCard: new CharacteristicCard(),
-    // itemCard: new ItemCard(),
+    itemCard: new ItemCard(),
   };
 
   public static init() {
