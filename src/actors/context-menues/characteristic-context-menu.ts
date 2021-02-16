@@ -1,5 +1,6 @@
 import { Ability } from "../../data-model/shared/ability";
-import { Chat } from "../../chat/chat";
+import { ChatCards } from "../../chat/chatCards";
+import { CharacteristicCard } from "../../chat/characteristicCard";
 
 export const characteristicMenuOptions = (actor) => [
   {
@@ -9,7 +10,7 @@ export const characteristicMenuOptions = (actor) => [
     callback: async (el) => {
       const characteristic = (el[0].closest("[data-characteristic]") as HTMLElement).dataset
         .characteristic;
-      await Chat.showCharacteristicChatCard({
+      await ChatCards.show("characteristicCard", actor, {
         name: characteristic,
         data: actor.data.data.characteristics[characteristic],
       });
@@ -27,6 +28,7 @@ export const characteristicMenuOptions = (actor) => [
         0,
         characteristic
       );
+      CharacteristicCard.checkExperience(actor, characteristic, result);
     },
   },
   {

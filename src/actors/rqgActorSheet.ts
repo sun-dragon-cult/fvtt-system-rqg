@@ -20,8 +20,9 @@ import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
-import { Chat } from "../chat/chat";
+import { ChatCards } from "../chat/chatCards";
 import { createItemLocationTree } from "../items/shared/locationNode";
+import { CharacteristicCard } from "../chat/characteristicCard";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -251,10 +252,11 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
             characteristic
           );
           clickCount = 0;
+          CharacteristicCard.checkExperience(this.actor, characteristic, result);
         } else if (clickCount === 1) {
           setTimeout(() => {
             if (clickCount === 1) {
-              const result = Chat.showCharacteristicChatCard({
+              ChatCards.show("characteristicCard", this.actor, {
                 name: characteristic,
                 data: this.actor.data.data.characteristics[characteristic],
               });

@@ -37,7 +37,7 @@ export const handlebarsTemplates = async function () {
     "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
     "systems/rqg/items/cult-item/cultSheet.html",
 
-    // Chat
+    // ChatCard
     "systems/rqg/chat/characteristicCard.html",
   ];
 
