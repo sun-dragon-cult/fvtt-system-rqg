@@ -281,9 +281,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount === 2) {
-          const result = Ability.roll(item.data.data.chance, 0, item.name);
-          ItemCard.checkExperience(this.actor, item, result);
-
+          ItemCard.roll(this.actor, item, 0);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(() => {

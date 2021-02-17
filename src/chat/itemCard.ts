@@ -62,14 +62,17 @@ export class ItemCard implements ChatCard {
     const button = ev.currentTarget;
     button.disabled = true;
 
-    const chance: number = Number(this.cardData.item.data.data.chance) || 0;
     const modifier: number = Number(this.cardData.formData.modifier) || 0;
-
-    const result = Ability.roll(chance, modifier, this.cardData.item.name + " check");
-    ItemCard.checkExperience(this.actor, this.cardData.item, result);
+    ItemCard.roll(this.actor, this.cardData.item, modifier);
 
     button.disabled = false;
     return false;
+  }
+
+  public static roll(actor: RqgActor, item: RqgItem, modifier: number) {
+    const chance: number = Number(item.data.data.chance) || 0;
+    const result = Ability.roll(chance, modifier, item.name + " check");
+    ItemCard.checkExperience(actor, item, result);
   }
 
   public static checkExperience(actor: RqgActor, item: RqgItem, result: ResultEnum): void {
