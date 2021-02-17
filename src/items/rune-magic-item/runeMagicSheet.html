@@ -10,21 +10,24 @@
   </header>
   <main>
     <div class="flex-row-start">
-      <label class="mp">Range<br>
-        <select name="data.castingRange">
-          {{#select data.castingRange}} {{#each data.ranges}}
-          <option value="{{this}}">{{this}}</option>
-          {{/each}} {{/select}}
-        </select>
-      </label>
-      <label class="mp">Duration<br>
-        <select name="data.duration">
-          {{#select data.duration}} {{#each data.durations}}
-          <option value="{{this}}">{{this}}</option>
-          {{/each}} {{/select}}
-        </select>
-      </label>
+      {{#unless data.isRitual}}
+        <label class="mp">Range<br>
+          <select name="data.castingRange">
+            {{#select data.castingRange}} {{#each data.ranges}}
+            <option value="{{this}}">{{this}}</option>
+            {{/each}} {{/select}}
+          </select>
+        </label>
+        <label class="mp">Duration<br>
+          <select name="data.duration">
+            {{#select data.duration}} {{#each data.durations}}
+            <option value="{{this}}">{{this}}</option>
+            {{/each}} {{/select}}
+          </select>
+        </label>
+      {{/unless}}
       <div>
+      <label><input type="checkbox" name="data.isRitual" {{checked data.isRitual}}>Ritual</label><br>
       <label><input type="checkbox" name="data.isStackable" {{checked data.isStackable}}>Stackable</label><br>
       <label><input type="checkbox" name="data.isOneUse" {{checked data.isOneUse}}>One Use</label>
       </div>

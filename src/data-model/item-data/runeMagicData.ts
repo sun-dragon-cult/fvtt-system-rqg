@@ -20,6 +20,7 @@ export type RuneMagicData = JournalEntryLink & {
   points: number; // Learned strength
   castingRange: RuneMagicCastingRangeEnum;
   duration: RuneMagicDurationEnum;
+  isRitual: boolean;
   isStackable: boolean; // Can the caster decide the number of rune points used
   isOneUse: boolean;
   chance: number; // Derived from runes, but has to be persisted?
@@ -37,6 +38,7 @@ export const emptyRuneMagic: RuneMagicData = {
   points: 0,
   castingRange: RuneMagicCastingRangeEnum.Ranged,
   duration: RuneMagicDurationEnum.Temporal,
+  isRitual: false,
   isStackable: false,
   isOneUse: false,
   chance: 0,
