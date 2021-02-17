@@ -1,4 +1,3 @@
-import { Ability } from "../../data-model/shared/ability";
 import { ChatCards } from "../../chat/chatCards";
 import { CharacteristicCard } from "../../chat/characteristicCard";
 
@@ -23,12 +22,13 @@ export const characteristicMenuOptions = (actor) => [
     callback: (el) => {
       const characteristic = (el[0].closest("[data-characteristic]") as HTMLElement).dataset
         .characteristic;
-      const result = Ability.roll(
-        actor.data.data.characteristics[characteristic].value * 5,
-        0,
-        characteristic
+      CharacteristicCard.roll(
+        actor,
+        characteristic,
+        actor.data.data.characteristics[characteristic].value,
+        5,
+        0
       );
-      CharacteristicCard.checkExperience(actor, characteristic, result);
     },
   },
   {

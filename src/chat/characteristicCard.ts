@@ -69,16 +69,30 @@ export class CharacteristicCard implements ChatCard {
     const characteristicValue: number = Number(this.cardData.characteristic.data.value) || 0;
     const difficulty: number = Number(this.cardData.formData.difficulty) || 1;
     const modifier: number = Number(this.cardData.formData.modifier) || 0;
+    CharacteristicCard.roll(
+      this.actor,
+      this.cardData.characteristic.name,
+      characteristicValue,
+      difficulty,
+      modifier
+    );
+    button.disabled = false;
+    return false;
+  }
 
+  public static roll(
+    actor: RqgActor,
+    characteristicName: string,
+    characteristicValue: number,
+    difficulty: number,
+    modifier: number
+  ) {
     const result = Ability.roll(
       characteristicValue * difficulty,
       modifier,
-      this.cardData.characteristic.name + " check"
+      characteristicName + " check"
     );
-    CharacteristicCard.checkExperience(this.actor, this.cardData.characteristic.name, result);
-
-    button.disabled = false;
-    return false;
+    CharacteristicCard.checkExperience(actor, characteristicName, result);
   }
 
   public static checkExperience(

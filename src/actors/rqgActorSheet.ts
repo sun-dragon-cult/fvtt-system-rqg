@@ -248,13 +248,14 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount === 2) {
-          const result = Ability.roll(
-            this.actor.data.data.characteristics[characteristic].value * 5,
-            0,
-            characteristic
+          CharacteristicCard.roll(
+            this.actor,
+            characteristic,
+            this.actor.data.data.characteristics[characteristic].value,
+            5,
+            0
           );
           clickCount = 0;
-          CharacteristicCard.checkExperience(this.actor, characteristic, result);
         } else if (clickCount === 1) {
           setTimeout(() => {
             if (clickCount === 1) {
