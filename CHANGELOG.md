@@ -1,3 +1,25 @@
+# [0.9.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.8.0...v0.9.0) (2021-02-14)
+
+
+### Bug Fixes
+
+* exclude natural weapons from gear by-location view ([bae724d](https://github.com/wakeand/fvtt-system-rqg/commit/bae724d))
+* HP is not correctly calculated ([9f7a734](https://github.com/wakeand/fvtt-system-rqg/commit/9f7a734))
+* MOV not initialised properly ([4b5b86b](https://github.com/wakeand/fvtt-system-rqg/commit/4b5b86b))
+* remove description field from cultSheet and rephrase sub cult field label ([c588731](https://github.com/wakeand/fvtt-system-rqg/commit/c588731))
+* write protect background tab unless GM ([ed5084c](https://github.com/wakeand/fvtt-system-rqg/commit/ed5084c))
+
+
+### Features
+
+* display effective SR in combat section ([2f9073f](https://github.com/wakeand/fvtt-system-rqg/commit/2f9073f))
+* hide menu tabs/sections without content ([604f9e3](https://github.com/wakeand/fvtt-system-rqg/commit/604f9e3))
+* make spirit combat & damage bonus rollable ([2ff9965](https://github.com/wakeand/fvtt-system-rqg/commit/2ff9965))
+* show the actor's elemental runes next to name ([202a651](https://github.com/wakeand/fvtt-system-rqg/commit/202a651))
+
+
+
+
 # [0.8.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.7.0...v0.8.0) (2021-02-10)
 
 
