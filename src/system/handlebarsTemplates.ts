@@ -40,6 +40,7 @@ export const handlebarsTemplates = async function () {
     // ChatCard
     "systems/rqg/chat/characteristicCard.html",
     "systems/rqg/chat/itemCard.html",
+    "systems/rqg/chat/spiritMagicCard.html",
   ];
 
   return loadTemplates(templatePaths);

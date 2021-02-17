@@ -24,6 +24,7 @@ import { ChatCards } from "../chat/chatCards";
 import { createItemLocationTree } from "../items/shared/locationNode";
 import { CharacteristicCard } from "../chat/characteristicCard";
 import { ItemCard } from "../chat/itemCard";
+import { SpiritMagicCard } from "../chat/spiritMagicCard";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -287,6 +288,35 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
           setTimeout(() => {
             if (clickCount === 1) {
               ChatCards.show("itemCard", this.actor, itemId);
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
+    // Roll Spirit Magic
+    this.form.querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
+      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      const item: Item = this.actor.items.get(itemId);
+
+      let clickCount = 0;
+
+      el.addEventListener("click", (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
+
+        if (clickCount === 2) {
+          if (item.data.data.isVariable && item.data.data.points > 1) {
+            ChatCards.show("spiritMagicCard", this.actor, itemId);
+          } else {
+            SpiritMagicCard.roll(this.actor, item, item.data.data.points, 0);
+          }
+
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(() => {
+            if (clickCount === 1) {
+              ChatCards.show("spiritMagicCard", this.actor, itemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

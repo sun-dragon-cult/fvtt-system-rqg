@@ -15,20 +15,20 @@
     <div data-item-id="{{_id}}" class="spiritmagic-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="item" src="{{img}}">
     </div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">{{name}}</div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>{{name}}</div>
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
       <span class="text-center">{{data.data.points}}</span>
     </div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
       <span class="text-center">{{yes-no this.data.data.isVariable}}</span>
     </div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
       <span class="text-center">{{data.data.castingRange}}</span>
     </div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
       <span class="text-center">{{data.data.duration}}</span>
     </div>
-    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu">
+    <div data-item-id="{{this._id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
       <span class="text-center">{{data.data.concentration}}</span>
     </div>
   {{/each}}

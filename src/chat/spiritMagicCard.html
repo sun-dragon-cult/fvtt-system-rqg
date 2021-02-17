@@ -1,0 +1,10 @@
+<form class="card-form" data-chat-card="spiritMagicCard">
+  <div class="rqg chat-card item-card">
+
+    <h3><img class="item" src="{{item.data.img}}"> {{item.data.name}}</h3>
+
+    <label>level <input type="number" min="1" max="{{item.data.data.points}}" value="{{formData.level}}" name="level"></label><br>
+    <label>boost <input type="number" min="0" max="999" value="{{formData.boost}}" name="boost"></label>
+    <button type="submit" data-chat-roll>Roll ({{formData.chance}}%)</button>
+  </div>
+</form>

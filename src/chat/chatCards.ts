@@ -1,8 +1,9 @@
 import { CharacteristicCard } from "./characteristicCard";
 import { ItemCard } from "./itemCard";
 import { RqgActor } from "../actors/rqgActor";
+import { SpiritMagicCard } from "./spiritMagicCard";
 
-export type ChatCardName = "characteristicCard" | "itemCard";
+export type ChatCardName = "characteristicCard" | "itemCard" | "spiritMagicCard";
 
 export interface ChatCard {
   show(actor: RqgActor, data: any): Promise<void>;
@@ -14,6 +15,7 @@ export class ChatCards {
   private static card = {
     characteristicCard: new CharacteristicCard(),
     itemCard: new ItemCard(),
+    spiritMagicCard: new SpiritMagicCard(),
   };
 
   public static init() {
