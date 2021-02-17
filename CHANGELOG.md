@@ -1,3 +1,21 @@
+# [0.10.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.9.0...v0.10.0) (2021-02-17)
+
+
+### Bug Fixes
+
+* rune magic tab still shown even if a cult exists ([a3bb4ac](https://github.com/wakeand/fvtt-system-rqg/commit/a3bb4ac))
+
+
+### Features
+
+* add ritual to runeMagic data ([6849f6c](https://github.com/wakeand/fvtt-system-rqg/commit/6849f6c))
+* check POW experience on successful Characteristic roll also refactor chat cards ([0b53fcb](https://github.com/wakeand/fvtt-system-rqg/commit/0b53fcb))
+* item Card and connect skills to click/dbl click & experience ([1120104](https://github.com/wakeand/fvtt-system-rqg/commit/1120104))
+* spirit magic card and connect spirit magic to click/dbl click & MP decrease ([ec81172](https://github.com/wakeand/fvtt-system-rqg/commit/ec81172))
+
+
+
+
 # [0.9.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.8.0...v0.9.0) (2021-02-14)
 
 
