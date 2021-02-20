@@ -176,7 +176,8 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         CONFIG.RQG.debug.showAllUiSections ||
         data.ownedItems[ItemTypeEnum.Gear]?.length ||
         data.ownedItems[ItemTypeEnum.MeleeWeapon]?.length ||
-        data.ownedItems[ItemTypeEnum.MissileWeapon]?.length,
+        data.ownedItems[ItemTypeEnum.MissileWeapon]?.length ||
+        data.ownedItems[ItemTypeEnum.Armor]?.length,
       passions: CONFIG.RQG.debug.showAllUiSections || data.ownedItems[ItemTypeEnum.Passion]?.length,
       background: true,
       activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab,
@@ -320,6 +321,15 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
         }
+      });
+    });
+
+    // Show Weapon Chat Card
+    this.form.querySelectorAll("[data-weapon-roll]").forEach((el) => {
+      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+      const skillItemId = (el.closest("[data-skill-id]") as HTMLElement).dataset.skillId;
+      el.addEventListener("click", (ev: MouseEvent) => {
+        ChatCards.show("weaponCard", this.actor, { skillId: skillItemId, weaponId: weaponItemId });
       });
     });
 
