@@ -2,11 +2,12 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
 import { SkillData } from "../data-model/item-data/skillData";
 import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
+import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 
 type WeaponCardFlags = {
   actorId: string;
   skillItemData: ItemData<SkillData>;
-  weaponItemData: ItemData<MeleeWeaponData>; // TODO | MissileWeaponData
+  weaponItemData: ItemData<MeleeWeaponData> | ItemData<MissileWeaponData>;
   result: ResultEnum;
   formData: {
     modifier: number;
