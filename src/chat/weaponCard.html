@@ -1,0 +1,19 @@
+<form class="card-form" data-chat-card="weaponCard">
+  <div class="rqg chat-card item-card">
+
+    <h3><img class="item" src="{{weaponItem.img}}"> {{weaponItemData.name}}</h3>
+    <i>{{skillItemData.name}}</i> <span>{{formData.chance}}%</span><br>
+
+    <label>modifier <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label>
+
+    <div class="flex-row">
+    {{#each weaponItemData.data.combatManeuvers}}
+    <button name="{{this}}" type="submit">{{this}}</button>
+    {{/each}}
+    </div>
+
+    {{#if (eq result 4)}}
+      <button>Normal Damage TODO</button>
+    {{/if}}
+  </div>
+</form>

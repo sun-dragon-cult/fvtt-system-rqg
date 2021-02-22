@@ -1,5 +1,5 @@
-import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
+import { WeaponCard } from "../../chat/weaponCard";
 
 export const combatMenuOptions = (actor) => [
   {
@@ -7,17 +7,10 @@ export const combatMenuOptions = (actor) => [
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: (el) => {
-      ui.notifications.info("TODO Roll with Modifier");
-    },
-  },
-  {
-    name: "Direct Roll (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => true,
-    callback: (el) => {
-      const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.skillId;
-      const item: Item = actor.items.get(itemId);
-      const result = Ability.roll(item.data.data.chance, 0, item.name);
+      const skillId = (el[0].closest("[data-skill-id]") as HTMLElement).dataset.skillId;
+      const weaponId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
+
+      WeaponCard.show(actor, skillId, weaponId);
     },
   },
   {

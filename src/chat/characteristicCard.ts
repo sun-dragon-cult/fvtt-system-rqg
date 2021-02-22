@@ -1,77 +1,112 @@
-import { ChatCard } from "./chatCards";
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
+import { Characteristic } from "../data-model/actor-data/characteristics";
 
-export class CharacteristicCard implements ChatCard {
-  private cardData: any = { characteristic: {}, formData: {} };
-  private actor: RqgActor;
+export type CharacteristicData = {
+  name: string;
+  data: Characteristic;
+};
 
-  public async show(actor: RqgActor, characteristic: any): Promise<void> {
-    this.actor = actor;
-    this.cardData.characteristic = characteristic;
-    this.cardData.formData = { difficulty: 5, modifier: 0 }; // TODO Not so nice init
-    this.cardData.formData.chance = CharacteristicCard.calcRollChance(
-      this.cardData.characteristic.data.value,
-      this.cardData.formData.difficulty,
-      this.cardData.formData.modifier
-    );
-    let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", this.cardData);
+type CharacteristicCardFlags = {
+  actorId: string;
+  characteristic: CharacteristicData;
+  formData: {
+    difficulty: number;
+    modifier: number;
+    chance: number;
+  };
+  difficultyOptions: {
+    // TODO generalise
+    "0.5": string;
+    "1": string;
+    "2": string;
+    "3": string;
+    "4": string;
+    "5": string;
+  };
+};
 
-    const chatData = {
-      title: "Characteristic check",
-      flavor: characteristic.name,
-      user: game.user._id,
-      // speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
-      content: html,
-      whisper: [game.user._id],
-      type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
-      flags: {
-        core: { canPopout: true },
+export class CharacteristicCard {
+  public static async show(actor: RqgActor, characteristic: CharacteristicData): Promise<void> {
+    const defaultDifficulty = 5;
+    const defaultModifier = 0;
+    const flags: CharacteristicCardFlags = {
+      actorId: actor.id,
+      characteristic: characteristic,
+      formData: {
+        difficulty: defaultDifficulty,
+        modifier: defaultModifier,
+        chance: CharacteristicCard.calcRollChance(
+          characteristic.data.value,
+          defaultDifficulty,
+          defaultModifier
+        ),
+      },
+      difficultyOptions: {
+        "0.5": "Nearly impossible (*0.5)",
+        "1": "Very Hard (*1)",
+        "2": "Hard (*2)",
+        "3": "Moderate (*3)",
+        "4": "Easy (*4)",
+        "5": "Simple Action (*5)",
       },
     };
 
-    const chatMessage = await ChatMessage.create(chatData);
+    await ChatMessage.create(await CharacteristicCard.renderContent(flags));
   }
 
-  public inputChangeHandler(ev) {
+  public static inputChangeHandler(ev, messageId: string) {
+    const chatMessage = game.messages.get(messageId);
+    const flags: CharacteristicCardFlags = chatMessage.data.flags.rqg;
     const form: HTMLFormElement = ev.target.closest("form");
     const formData = new FormData(form);
     // @ts-ignore
     for (const [name, value] of formData) {
-      this.cardData.formData[name] = value;
+      flags.formData[name] = value;
     }
 
-    const characteristicValue: number = Number(this.cardData.characteristic.data.value) || 0;
-    const difficulty: number = Number(this.cardData.formData.difficulty) || 1;
-    const modifier: number = Number(this.cardData.formData.modifier) || 0;
+    // TODO workaround for foundry removing option value...
+    let difficulty = 1;
+    for (const option in flags.difficultyOptions) {
+      if (flags.difficultyOptions[option] === flags.formData.difficulty) {
+        difficulty = Number(option);
+      }
+    }
+    flags.formData.difficulty = difficulty;
 
-    const buttonEl = form.querySelector("button");
+    const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
+    const modifier: number = Number(flags.formData.modifier) || 0;
 
-    buttonEl.innerHTML = `Roll (${CharacteristicCard.calcRollChance(
+    flags.formData.chance = CharacteristicCard.calcRollChance(
       characteristicValue,
       difficulty,
       modifier
-    ).toString()}%)`;
+    );
+    CharacteristicCard.renderContent(flags).then((d: Object) => chatMessage.update(d));
   }
 
-  public formSubmitHandler(ev) {
+  public static formSubmitHandler(ev, messageId: string) {
     ev.preventDefault();
+
+    const chatMessage = game.messages.get(messageId);
+    const flags: CharacteristicCardFlags = chatMessage.data.flags.rqg;
 
     const formData = new FormData(ev.target);
     // @ts-ignore
     for (const [name, value] of formData) {
-      this.cardData.formData[name] = value;
+      flags.formData[name] = value;
     }
 
     const button = ev.currentTarget;
     button.disabled = true;
 
-    const characteristicValue: number = Number(this.cardData.characteristic.data.value) || 0;
-    const difficulty: number = Number(this.cardData.formData.difficulty) || 1;
-    const modifier: number = Number(this.cardData.formData.modifier) || 0;
+    const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
+    const difficulty: number = Number(flags.formData.difficulty) || 1;
+    const modifier: number = Number(flags.formData.modifier) || 0;
+    const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
     CharacteristicCard.roll(
-      this.actor,
-      this.cardData.characteristic.name,
+      actor,
+      flags.characteristic.name,
       characteristicValue,
       difficulty,
       modifier
@@ -106,11 +141,29 @@ export class CharacteristicCard implements ChatCard {
       !actor.data.data.characteristics.power.hasExperience
     ) {
       actor.update({ "data.characteristics.power.hasExperience": true });
-      ui.notifications.info("Yey, you got an experience check on power!");
+      ui.notifications.info("🎉 Yey, you got an experience check on power!");
     }
   }
 
+  private static async renderContent(flags: CharacteristicCardFlags) {
+    let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
+
+    return {
+      title: "Characteristic check",
+      flavor: flags.characteristic.name,
+      user: game.user._id,
+      speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
+      content: html,
+      whisper: [game.user._id],
+      type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
+      flags: {
+        core: { canPopout: true },
+        rqg: flags,
+      },
+    };
+  }
+
   private static calcRollChance(value: number, difficulty: number, modifier: number): number {
-    return value * difficulty + modifier;
+    return Math.ceil(value * difficulty + modifier);
   }
 }

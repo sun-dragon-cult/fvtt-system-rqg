@@ -1,5 +1,4 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { ChatCards } from "../../chat/chatCards";
 import { SpiritMagicCard } from "../../chat/spiritMagicCard";
 
 export const spiritMagicMenuOptions = (actor) => [
@@ -10,7 +9,7 @@ export const spiritMagicMenuOptions = (actor) => [
     callback: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
-      ChatCards.show("spiritMagicCard", actor, item._id);
+      SpiritMagicCard.show(actor, item._id);
     },
   },
   {
@@ -21,9 +20,9 @@ export const spiritMagicMenuOptions = (actor) => [
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
       if (item.data.data.isVariable && item.data.data.points > 1) {
-        ChatCards.show("spiritMagicCard", actor, item._id);
+        SpiritMagicCard.show(actor, item._id);
       } else {
-        SpiritMagicCard.roll(actor, item, item.data.data.points, 0);
+        SpiritMagicCard.roll(actor, item.data, item.data.data.points, 0);
       }
     },
   },

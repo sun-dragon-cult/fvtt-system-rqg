@@ -1,9 +1,9 @@
 <form class="card-form" data-chat-card="itemCard">
   <div class="rqg chat-card item-card">
 
-    <h3><img class="item" src="{{item.data.img}}"> {{item.data.name}}</h3>
+    <h3><img class="item" src="{{itemData.img}}"> {{itemData.name}}</h3>
 
-    <label>modifier <input type="number" min="-999" max="999" name="modifier"></label>
+    <label>modifier <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label>
     <button type="submit" data-chat-roll>Roll ({{formData.chance}}%)</button>
   </div>
 </form>

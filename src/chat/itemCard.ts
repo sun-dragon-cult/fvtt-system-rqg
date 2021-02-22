@@ -1,85 +1,102 @@
-import { ChatCard } from "./chatCards";
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
-import { RqgItem } from "../items/rqgItem";
 
-export class ItemCard implements ChatCard {
-  private cardData: any = { item: {}, formData: {} };
-  private actor: RqgActor;
+type ItemCardFlags = {
+  actorId: string;
+  itemData: ItemData;
+  result: ResultEnum;
+  formData: {
+    modifier: number;
+    chance: number;
+  };
+};
 
-  public async show(actor: RqgActor, itemId: any): Promise<void> {
-    this.actor = actor;
-    this.cardData.item = this.actor.getOwnedItem(itemId);
-
-    this.cardData.formData = { modifier: 0 };
-    this.cardData.formData.chance = ItemCard.calcRollChance(
-      this.cardData.item.data.data.chance,
-      this.cardData.formData.modifier
-    );
-    let html = await renderTemplate("systems/rqg/chat/itemCard.html", this.cardData);
-
-    const chatData = {
-      title: "Ability check",
-      flavor: "",
-      user: game.user._id,
-      // speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
-      content: html,
-      whisper: [game.user._id],
-      type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
-      flags: {
-        core: { canPopout: true },
+export class ItemCard {
+  public static async show(actor: RqgActor, itemId: any): Promise<void> {
+    const defaultModifier = 0;
+    const item = actor.getOwnedItem(itemId);
+    const flags: ItemCardFlags = {
+      actorId: actor.id,
+      itemData: item.data,
+      result: undefined,
+      formData: {
+        modifier: defaultModifier,
+        chance: item.data.data.chance,
       },
     };
-
-    const chatMessage = await ChatMessage.create(chatData);
+    await ChatMessage.create(await ItemCard.renderContent(flags));
   }
 
-  public inputChangeHandler(ev) {
+  public static inputChangeHandler(ev, messageId: string) {
+    const chatMessage = game.messages.get(messageId);
+    const flags: ItemCardFlags = chatMessage.data.flags.rqg;
     const form: HTMLFormElement = ev.target.closest("form");
     const formData = new FormData(form);
     // @ts-ignore
     for (const [name, value] of formData) {
-      this.cardData.formData[name] = value;
+      flags.formData[name] = value;
     }
 
-    const chance: number = Number(this.cardData.item.data.data.chance) || 0;
-    const modifier: number = Number(this.cardData.formData.modifier) || 0;
+    const chance: number = Number(flags.itemData.data.chance) || 0;
+    const modifier: number = Number(flags.formData.modifier) || 0;
 
-    const buttonEl = form.querySelector("button");
-
-    buttonEl.innerHTML = `Roll (${ItemCard.calcRollChance(chance, modifier).toString()}%)`;
+    flags.formData.chance = ItemCard.calcRollChance(chance, modifier);
+    ItemCard.renderContent(flags).then((d: Object) => chatMessage.update(d));
   }
 
-  public formSubmitHandler(ev) {
+  public static formSubmitHandler(ev, messageId: string) {
     ev.preventDefault();
+
+    const chatMessage = game.messages.get(messageId);
+    const flags: ItemCardFlags = chatMessage.data.flags.rqg;
 
     const formData = new FormData(ev.target);
     // @ts-ignore
     for (const [name, value] of formData) {
-      this.cardData.formData[name] = value;
+      flags.formData[name] = value;
     }
 
     const button = ev.currentTarget;
     button.disabled = true;
 
-    const modifier: number = Number(this.cardData.formData.modifier) || 0;
-    ItemCard.roll(this.actor, this.cardData.item, modifier);
+    const modifier: number = Number(flags.formData.modifier) || 0;
+    const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    ItemCard.roll(actor, flags.itemData, modifier);
 
     button.disabled = false;
     return false;
   }
 
-  public static roll(actor: RqgActor, item: RqgItem, modifier: number) {
-    const chance: number = Number(item.data.data.chance) || 0;
-    const result = Ability.roll(chance, modifier, item.name + " check");
-    ItemCard.checkExperience(actor, item, result);
+  public static roll(actor: RqgActor, itemData: ItemData, modifier: number) {
+    const chance: number = Number(itemData.data.chance) || 0;
+    const result = Ability.roll(chance, modifier, itemData.name + " check");
+    ItemCard.checkExperience(actor, itemData, result);
   }
 
-  public static checkExperience(actor: RqgActor, item: RqgItem, result: ResultEnum): void {
-    if (result <= ResultEnum.Success && !item.data.data.hasExperience) {
-      actor.updateOwnedItem({ _id: item._id, data: { hasExperience: true } });
-      ui.notifications.info("Yey, you got an experience check on " + item.name + "!");
+  public static checkExperience(actor: RqgActor, itemData: ItemData, result: ResultEnum): void {
+    if (result <= ResultEnum.Success && !itemData.data.hasExperience) {
+      // @ts-ignore
+      actor.updateOwnedItem({ _id: itemData._id, data: { hasExperience: true } });
+      ui.notifications.info("Yey, you got an experience check on " + itemData.name + "!");
     }
+  }
+
+  private static async renderContent(flags: ItemCardFlags) {
+    let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
+
+    return {
+      title: "Ability check",
+      flavor: "",
+      user: game.user._id,
+      speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
+      content: html,
+      whisper: [game.user._id],
+      type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
+      flags: {
+        core: { canPopout: true },
+        rqg: flags,
+      },
+    };
   }
 
   private static calcRollChance(value: number, modifier: number): number {

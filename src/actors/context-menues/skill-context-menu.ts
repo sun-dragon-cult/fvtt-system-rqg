@@ -1,5 +1,4 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { ChatCards } from "../../chat/chatCards";
 import { ItemCard } from "../../chat/itemCard";
 
 export const skillMenuOptions = (actor) => [
@@ -9,7 +8,7 @@ export const skillMenuOptions = (actor) => [
     condition: () => true,
     callback: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      ChatCards.show("itemCard", actor, itemId);
+      ItemCard.show(actor, itemId);
     },
   },
   {
@@ -19,7 +18,7 @@ export const skillMenuOptions = (actor) => [
     callback: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
-      ItemCard.roll(actor, item, 0);
+      ItemCard.roll(actor, item.data, 0);
     },
   },
   {

@@ -13,18 +13,18 @@
   {{#each data.ownedItems.meleeWeapon}}
   {{#if (eq data.data.equippedStatus "equipped")}}
   {{#unless data.data.isNatural}}
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"><img class="item" src="{{img}}"></div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">{{name}}</div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu"><img class="item" src="{{img}}"></div>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">{{name}}</div>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
       <span class="text-right">{{skillchance data.data.skillId actor._id}}%</span>
     </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       <input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value" value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}
     </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       <span class="text-right">{{sum @root.data.attributes.sizStrikeRank @root.data.attributes.dexStrikeRank data.data.strikeRank}}</span>
     </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       {{#each data.data.combatManeuvers}}
       <div data-melee-roll="{{this}}" title="Roll">{{this}}</div>
       {{/each}}
@@ -36,13 +36,13 @@
   {{#each data.ownedItems.missileWeapon}}
   {{#if (eq data.data.equippedStatus "equipped")}}
   {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}"><img class="item" src="{{img}}"></div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">{{name}} ({{quantity data.data.projectileId actor._id}})</div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll><img class="item" src="{{img}}"></div>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">{{name}} ({{quantity data.data.projectileId actor._id}})</div>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
       <span class="text-right">{{skillchance data.data.skillId actor._id}}%</span>
     </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
-  <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu"></div>
+  <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
     {{#if data.data.rate}}
     <div class="text-right">1/{{data.data.rate}}MR</div>
     {{else}}
@@ -60,7 +60,7 @@
     </div>
     {{/if}}
   </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       {{#each data.data.combatManeuvers}}
       <div data-missile-roll="{{this}}" title="Roll">{{this}}</div>
       {{/each}}
@@ -71,16 +71,16 @@
 
   {{#each data.ownedItems.meleeWeapon}}
   {{#if data.data.isNatural}}
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}"><img class="item" src="{{img}}"></div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">{{name}}</div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll><img class="item" src="{{img}}"></div>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">{{name}}</div>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId actor._id}}">
       <span class="text-right">{{skillchance data.data.skillId actor._id}}%</span>
     </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu"></div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu"></div>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       <span class="text-right">{{sum @root.data.attributes.sizStrikeRank @root.data.attributes.dexStrikeRank data.data.strikeRank}}</span>
     </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" class="combat-contextmenu">
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       {{#each data.data.combatManeuvers}}
       <div data-melee-roll="{{this}}" title="Roll">{{this}}</div>
       {{/each}}

@@ -6,7 +6,7 @@ import { handlebarsHelpers } from "./system/handlebarsHelpers";
 import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./system/rqgCombat";
 import { RQG } from "./system/config";
-import { ChatCards } from "./chat/chatCards";
+import { ChatCardListeners } from "./chat/chatCardListeners";
 
 Hooks.once("init", async () => {
   console.log("RQG | Initializing the Runequest Glorantha (Unofficial) Game System");
@@ -24,7 +24,7 @@ Hooks.once("init", async () => {
   RqgCombat.init();
   RqgActor.init();
   RqgItem.init();
-  ChatCards.init();
+  ChatCardListeners.init();
   registerRqgSystemSettings();
   await handlebarsTemplates();
   handlebarsHelpers();

@@ -20,11 +20,11 @@ import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
-import { ChatCards } from "../chat/chatCards";
 import { createItemLocationTree } from "../items/shared/locationNode";
 import { CharacteristicCard } from "../chat/characteristicCard";
-import { ItemCard } from "../chat/itemCard";
+import { WeaponCard } from "../chat/weaponCard";
 import { SpiritMagicCard } from "../chat/spiritMagicCard";
+import { ItemCard } from "../chat/itemCard";
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -248,7 +248,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       el.addEventListener("click", (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
-        if (clickCount === 2) {
+        if (clickCount >= 2) {
           CharacteristicCard.roll(
             this.actor,
             characteristic,
@@ -260,7 +260,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         } else if (clickCount === 1) {
           setTimeout(() => {
             if (clickCount === 1) {
-              ChatCards.show("characteristicCard", this.actor, {
+              CharacteristicCard.show(this.actor, {
                 name: characteristic,
                 data: this.actor.data.data.characteristics[characteristic],
               });
@@ -281,13 +281,13 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       el.addEventListener("click", (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
-        if (clickCount === 2) {
-          ItemCard.roll(this.actor, item, 0);
+        if (clickCount >= 2) {
+          ItemCard.roll(this.actor, item.data, 0);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(() => {
             if (clickCount === 1) {
-              ChatCards.show("itemCard", this.actor, itemId);
+              ItemCard.show(this.actor, itemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -305,18 +305,18 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       el.addEventListener("click", (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
-        if (clickCount === 2) {
+        if (clickCount >= 2) {
           if (item.data.data.isVariable && item.data.data.points > 1) {
-            ChatCards.show("spiritMagicCard", this.actor, itemId);
+            SpiritMagicCard.show(this.actor, itemId);
           } else {
-            SpiritMagicCard.roll(this.actor, item, item.data.data.points, 0);
+            SpiritMagicCard.roll(this.actor, item.data, item.data.data.points, 0);
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(() => {
             if (clickCount === 1) {
-              ChatCards.show("spiritMagicCard", this.actor, itemId);
+              SpiritMagicCard.show(this.actor, itemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -328,8 +328,24 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     this.form.querySelectorAll("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const skillItemId = (el.closest("[data-skill-id]") as HTMLElement).dataset.skillId;
+
+      let clickCount = 0;
+
       el.addEventListener("click", (ev: MouseEvent) => {
-        ChatCards.show("weaponCard", this.actor, { skillId: skillItemId, weaponId: weaponItemId });
+        clickCount = Math.max(clickCount, ev.detail);
+
+        if (clickCount >= 2) {
+          // Ignore double clicks by doing the same as on single click
+          WeaponCard.show(this.actor, skillItemId, weaponItemId);
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(() => {
+            if (clickCount === 1) {
+              WeaponCard.show(this.actor, skillItemId, weaponItemId);
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
       });
     });
 

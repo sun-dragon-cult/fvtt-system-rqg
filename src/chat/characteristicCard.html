@@ -1,27 +1,18 @@
 <form class="card-form" data-chat-card="characteristicCard">
   <div class="rqg chat-card characteristic-card">
     <h3>{{name}} check</h3>
+    <select name="difficulty">
+      {{selectOptions difficultyOptions selected=formData.difficulty}}
+    </select><br>
 
-    <!--  TODO value is removed ??? by the backend-->
-    <!--    <select name="difficulty">-->
-    <!--      {{#select difficulty}}-->
-    <!--      <option value="5">Simple Action (*5)</option>-->
-    <!--      <option value="4">Easy (*4)</option>-->
-    <!--      <option value="3">Moderate (*3)</option>-->
-    <!--      <option value="2">Hard (*2)</option>-->
-    <!--      <option value="1">Very Hard (*1)</option>-->
-    <!--      <option value="0.5">Nearly impossible (*0.5)</option>-->
-    <!--      {{/select}}-->
-    <!--    </select><br>-->
+<!--    <label class="nowrap"><input type="radio" name="difficulty" value="5" checked>Simple <span class="multiplier">*5</span></label>-->
+<!--    <label class="nowrap"><input type="radio" name="difficulty" value="4">Easy <span class="multiplier">*4</span></label>-->
+<!--    <label class="nowrap"><input type="radio" name="difficulty" value="3">Moderate <span class="multiplier">*3</span></label>-->
+<!--    <label class="nowrap"><input type="radio" name="difficulty" value="2">Hard <span class="multiplier">*2</span></label>-->
+<!--    <label class="nowrap"><input type="radio" name="difficulty" value="1">Very Hard <span class="multiplier">*1</span></label>-->
+<!--    <label class="nowrap"><input type="radio" name="difficulty" value="0.5">Nearly impossible <span class="multiplier">/2</span></label><br>-->
 
-    <label class="nowrap"><input type="radio" name="difficulty" value="5" checked>Simple <span class="multiplier">*5</span></label>
-    <label class="nowrap"><input type="radio" name="difficulty" value="4">Easy <span class="multiplier">*4</span></label>
-    <label class="nowrap"><input type="radio" name="difficulty" value="3">Moderate <span class="multiplier">*3</span></label>
-    <label class="nowrap"><input type="radio" name="difficulty" value="2">Hard <span class="multiplier">*2</span></label>
-    <label class="nowrap"><input type="radio" name="difficulty" value="1">Very Hard <span class="multiplier">*1</span></label>
-    <label class="nowrap"><input type="radio" name="difficulty" value="0.5">Nearly impossible <span class="multiplier">/2</span></label><br>
-
-    <label>modifier <input type="number" name="modifier"></label>
+    <label>modifier <input type="number" value="{{formData.modifier}}" name="modifier"></label>
     <button type="submit" data-chat-roll>Roll ({{formData.chance}}%)</button>
   </div>
 </form>
