@@ -39,6 +39,10 @@ export const handlebarsHelpers = function () {
     return allRunesIndex.find((r) => r.name === runeName)?.img;
   });
 
+  Handlebars.registerHelper("enrichHtml", (content) => {
+    return TextEditor.enrichHTML(content);
+  });
+
   // Handlebars.registerHelper("checkedexperience", (itemId, actorId) => {
   //   const actor = game.actors.find((a) => a._id === actorId);
   //   const item = actor.items.get(itemId);

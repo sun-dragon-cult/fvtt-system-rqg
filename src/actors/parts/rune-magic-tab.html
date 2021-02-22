@@ -21,9 +21,9 @@
       <b>Rank:</b> {{data.data.rank}}<br>
       <b>Rune Points:</b> <input type="number" min="0" max="99" data-item-edit-value="data.runePoints.value" value="{{data.data.runePoints.value}}">/{{data.data.runePoints.max}}
     </span>
-    <span>{{{data.data.holyDays}}}</span>
+    <span>{{{enrichHtml data.data.holyDays}}}</span>
     {{#if data.data.subCults}}
-      <span><b>Sub Cults:</b>{{{data.data.subCults}}}</span>
+      <span><b>Sub Cults:</b>{{{enrichHtml data.data.subCults}}}</span>
     {{/if}}
   </div>
   <div class="grid rune-magic">
