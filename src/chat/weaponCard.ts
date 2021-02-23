@@ -3,6 +3,7 @@ import { RqgActor } from "../actors/rqgActor";
 import { SkillData } from "../data-model/item-data/skillData";
 import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 type WeaponCardFlags = {
   actorId: string;
@@ -53,7 +54,7 @@ export class WeaponCard extends ChatMessage {
     WeaponCard.renderContent(flags).then((d: Object) => chatMessage.update(d));
   }
 
-  public static formSubmitHandler(ev, messageId: string) {
+  public static async formSubmitHandler(ev, messageId: string) {
     ev.preventDefault();
 
     const chatMessage = game.messages.get(messageId);
@@ -68,27 +69,59 @@ export class WeaponCard extends ChatMessage {
     const button = ev.currentTarget;
     button.disabled = true; // TODO Doesn't work, points to form !!!
 
-    // TODO check is missile Weapon and consume arrows.
-
+    const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
     const action = ev.originalEvent.submitter.name; // combatManeuver | DamageRoll | HitLocationRoll
+
     if (action === "combatManeuver") {
-      WeaponCard.roll(flags, chatMessage);
       flags.formData.combatManeuver = ev.originalEvent.submitter.value; // slash | crush | impale | special | parry
+      const projectileItemData = (flags.weaponItemData.data as MissileWeaponData).isProjectileWeapon
+        ? actor.items.get((flags.weaponItemData.data as MissileWeaponData).projectileId).data
+        : flags.weaponItemData;
+      if (
+        flags.weaponItemData.type === ItemTypeEnum.MissileWeapon &&
+        projectileItemData.data.quantity > 0
+      ) {
+        await actor.updateOwnedItem({
+          // @ts-ignore
+          _id: projectileItemData._id,
+          "data.quantity": --projectileItemData.data.quantity,
+        });
+      } else if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
+        ui.notifications.warn("Out of ammo!");
+        return;
+      }
+      WeaponCard.roll(flags, chatMessage);
     } else if (action === "damageRoll") {
-      const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-      const damageBonus =
+      let damageBonus =
         actor.data.data.attributes.damageBonus !== "0"
           ? `+ ${actor.data.data.attributes.damageBonus}[Damage Bonus]`
           : "";
+
+      if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
+        const missileWeaponData: ItemData<MissileWeaponData> = (flags.weaponItemData as unknown) as ItemData<MissileWeaponData>;
+
+        if (missileWeaponData.data.isThrownWeapon) {
+          damageBonus = " + ceil(" + actor.data.data.attributes.damageBonus + "/2)";
+        } else if (missileWeaponData.data.isProjectileWeapon) {
+          damageBonus = "";
+        }
+      }
+
       const damageType = ev.originalEvent.submitter.value; // Normal Damage | Special Damage | Max Special Damage
       let weaponDamage = flags.weaponItemData.data.damage;
       if (["Special Damage", "Max Special Damage"].includes(damageType)) {
-        weaponDamage = weaponDamage + " + " + weaponDamage;
+        if (["slash", "impale"].includes(flags.formData.combatManeuver)) {
+          weaponDamage = weaponDamage + " + " + weaponDamage;
+        } else if (flags.formData.combatManeuver === "crush") {
+          // @ts-ignore
+          const maxDamageBonus = Roll.create(damageBonus).evaluate({ maximize: true }).total;
+          damageBonus = damageBonus + " + " + maxDamageBonus;
+        }
       }
       const maximise = damageType === "Max Special Damage";
 
       // @ts-ignore
-      const roll = Roll.create(`${weaponDamage} ${damageBonus} #Damage`).evaluate({
+      const roll = Roll.create(`${weaponDamage} ${damageBonus}`).evaluate({
         maximize: maximise,
       });
       roll.toMessage({
@@ -98,11 +131,11 @@ export class WeaponCard extends ChatMessage {
       });
     } else if (action === "hitLocationRoll") {
       // @ts-ignore
-      const roll = Roll.create("1D20 #HitLocation").evaluate();
+      const roll = Roll.create("1D20").evaluate();
       roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        flavor: `hitlocation`,
+        flavor: `Hitlocation`,
       });
     } else {
       ui.notifications.error("Oops you shouldn't see this - unknown button in chat card");

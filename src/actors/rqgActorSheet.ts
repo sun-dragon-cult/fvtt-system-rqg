@@ -346,49 +346,6 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       });
     });
 
-    // // Missile Weapon roll
-    // this.form.querySelectorAll("[data-missile-roll]").forEach((el) => {
-    //   const attackType = (el as HTMLElement).dataset.missileRoll;
-    //   const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-    //   const weaponItem: Item<MissileWeaponData> = this.actor.items.get(weaponItemId);
-    //   const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset.skillId;
-    //   const skillItem: Item<SkillData> = this.actor.items.get(skillId);
-    //   const projectileItem = weaponItem.data.data.isProjectileWeapon
-    //     ? this.actor.items.get(weaponItem.data.data.projectileId)
-    //     : weaponItem;
-    //
-    //   el.addEventListener("click", async () => {
-    //     if (projectileItem.data.data.quantity > 0) {
-    //       // projectileItem.data.data.quantity = projectileItem.data.data
-    //       //   .quantity--;
-    //       await this.actor.updateOwnedItem({
-    //         _id: projectileItem.id,
-    //         "data.quantity": --projectileItem.data.data.quantity,
-    //       });
-    //
-    //       const result = Ability.roll(
-    //         skillItem.data.data.chance,
-    //         0,
-    //         `${weaponItem.name} ${attackType} (${skillItem.name})`
-    //       );
-    //       if (result <= ResultEnum.Success) {
-    //         // TODO Make damage vary depending on success
-    //         const damageBonus: string =
-    //           weaponItem.data.data.isThrownWeapon &&
-    //           this.actor.data.data.attributes.damageBonus !== "0"
-    //             ? ` + ceil(${this.actor.data.data.attributes.damageBonus}[Damage Bonus] / 2)`
-    //             : "";
-    //         await ChatMessage.create({
-    //           content: `Roll damage [[/r ${weaponItem.data.data.damage} ${damageBonus} #Damage]]<br><br>
-    //           and hit location [[/r 1D20 #Hit Location]]`,
-    //         });
-    //       }
-    //     } else {
-    //       await ChatMessage.create({ content: `Out of ammo!` });
-    //     }
-    //   });
-    // });
-
     // Open Linked Journal Entry
     this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
       const pack = el.dataset.journalPack;
@@ -408,7 +365,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
-    // Toggle the equipped state of a physical Item
+    // Cycle the equipped state of a physical Item
     this.form.querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("click", async () => {

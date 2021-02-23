@@ -27,10 +27,10 @@ export class ChatCardListeners {
     html.on("change", "select", ChatCardListeners.inputChangeHandler);
   }
 
-  private static formSubmitHandler(ev): void {
+  private static async formSubmitHandler(ev): Promise<void> {
     const chatCard = ev.target.dataset.chatCard;
     const chatMessageId = ev.target.closest("[data-message-id]").dataset.messageId;
-    ChatCardListeners.card[chatCard].formSubmitHandler(ev, chatMessageId);
+    await ChatCardListeners.card[chatCard].formSubmitHandler(ev, chatMessageId);
   }
 
   private static inputChangeHandler(ev): void {
