@@ -132,6 +132,17 @@
     margin: 3px 3px;
   }
 
+  input[type="submit"] {
+    width: 100%;
+    margin: 0 1px;
+    background: rgba(0, 0, 0, 0.1);
+    border: 2px groove #f0f0e0;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 28px;
+    font-family: "Signika", sans-serif;
+  }
+
   .ml-5 {
     margin-left: 5px;
   }
@@ -262,15 +273,14 @@
     }
 
     &.combat {
-      grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
+      grid-template-columns: [col-start] 30px repeat(4, auto) [col-end];
 
       // Alternating row background for 6 columns
-      > *:nth-child(12n + 14),
-      > *:nth-child(12n + 15),
-      > *:nth-child(12n + 16),
-      > *:nth-child(12n + 17),
-      > *:nth-child(12n + 18),
-      > *:nth-child(12n + 19) {
+      > *:nth-child(10n + 12),
+      > *:nth-child(10n + 13),
+      > *:nth-child(10n + 14),
+      > *:nth-child(10n + 15),
+      > *:nth-child(10n + 16) {
         background: var(--table-alternate-background);
       }
     }

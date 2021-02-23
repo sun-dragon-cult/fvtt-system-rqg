@@ -9,7 +9,6 @@
   <div class="head3 text-right">Chance</div>
   <div class="head4">HP</div>
   <div class="head5 text-right">SR</div>
-  <div class="head6">Combat Maneuvers</div>
   {{#each data.ownedItems.meleeWeapon}}
   {{#if (eq data.data.equippedStatus "equipped")}}
   {{#unless data.data.isNatural}}
@@ -23,11 +22,6 @@
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       <span class="text-right">{{sum @root.data.attributes.sizStrikeRank @root.data.attributes.dexStrikeRank data.data.strikeRank}}</span>
-    </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
-      {{#each data.data.combatManeuvers}}
-      <div data-melee-roll="{{this}}" title="Roll">{{this}}</div>
-      {{/each}}
     </div>
   {{/unless}}
   {{/if}}
@@ -60,11 +54,6 @@
     </div>
     {{/if}}
   </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
-      {{#each data.data.combatManeuvers}}
-      <div data-missile-roll="{{this}}" title="Roll">{{this}}</div>
-      {{/each}}
-    </div>
   {{/if}}
   {{/if}}
   {{/each}}
@@ -80,11 +69,6 @@
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       <span class="text-right">{{sum @root.data.attributes.sizStrikeRank @root.data.attributes.dexStrikeRank data.data.strikeRank}}</span>
     </div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
-      {{#each data.data.combatManeuvers}}
-      <div data-melee-roll="{{this}}" title="Roll">{{this}}</div>
-      {{/each}}
-    </div>
   {{/if}}
   {{/each}}
   <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu"> <img class="item" src="{{data.dodgeSkill.img}}"></div>
@@ -92,7 +76,6 @@
   <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu {{experiencedclass data.dodgeSkill._id actor._id}}">
     <span class="text-right">{{skillchance data.dodgeSkill._id actor._id}}%</span>
   </div>
-  <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
   <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
   <div data-item-id="{{data.dodgeSkill._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
 </div>

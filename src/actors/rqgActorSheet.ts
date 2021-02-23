@@ -1,13 +1,10 @@
 import { SkillCategoryEnum, SkillData } from "../data-model/item-data/skillData";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
-import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationData } from "../data-model/item-data/hitLocationData";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { RqgItem } from "../items/rqgItem";
-import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
-import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { RuneData, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { skillMenuOptions } from "./context-menues/skill-context-menu";
 import { combatMenuOptions } from "./context-menues/combat-context-menu";
@@ -349,89 +346,48 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       });
     });
 
-    // Roll Damage
-    this.form.querySelectorAll("[data-damage-roll]").forEach((el) => {
-      const damage = (el as HTMLElement).dataset.damageRoll;
-      el.addEventListener("click", () => {
-        const r = new Roll(damage);
-        r.roll();
-        r.toMessage({
-          speaker: ChatMessage.getSpeaker(),
-          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-          flavor: `damage`,
-        });
-      });
-    });
-
-    // Melee Weapon roll
-    this.form.querySelectorAll("[data-melee-roll]").forEach((el) => {
-      const attackType = (el as HTMLElement).dataset.meleeRoll;
-      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      const weaponItem: Item<MeleeWeaponData> = this.actor.items.get(weaponItemId);
-      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset.skillId;
-      const skillItem: Item<SkillData> = this.actor.items.get(skillId);
-      el.addEventListener("click", async () => {
-        const result = Ability.roll(
-          skillItem.data.data.chance,
-          0,
-          `${weaponItem.name} ${attackType} (${skillItem.name})`
-        );
-        if (result <= ResultEnum.Success) {
-          // TODO Make damage vary depending on success
-          const damageBonus =
-            this.actor.data.data.attributes.damageBonus !== "0"
-              ? `+ ${this.actor.data.data.attributes.damageBonus}[Damage Bonus]`
-              : "";
-          await ChatMessage.create({
-            content: `Roll damage [[/r ${weaponItem.data.data.damage} ${damageBonus} #Damage]]<br><br>
-                      and hit location [[/r 1D20 #Hit Location]]`,
-          });
-        }
-      });
-    });
-
-    // Missile Weapon roll
-    this.form.querySelectorAll("[data-missile-roll]").forEach((el) => {
-      const attackType = (el as HTMLElement).dataset.missileRoll;
-      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      const weaponItem: Item<MissileWeaponData> = this.actor.items.get(weaponItemId);
-      const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset.skillId;
-      const skillItem: Item<SkillData> = this.actor.items.get(skillId);
-      const projectileItem = weaponItem.data.data.isProjectileWeapon
-        ? this.actor.items.get(weaponItem.data.data.projectileId)
-        : weaponItem;
-
-      el.addEventListener("click", async () => {
-        if (projectileItem.data.data.quantity > 0) {
-          // projectileItem.data.data.quantity = projectileItem.data.data
-          //   .quantity--;
-          await this.actor.updateOwnedItem({
-            _id: projectileItem.id,
-            "data.quantity": --projectileItem.data.data.quantity,
-          });
-
-          const result = Ability.roll(
-            skillItem.data.data.chance,
-            0,
-            `${weaponItem.name} ${attackType} (${skillItem.name})`
-          );
-          if (result <= ResultEnum.Success) {
-            // TODO Make damage vary depending on success
-            const damageBonus: string =
-              weaponItem.data.data.isThrownWeapon &&
-              this.actor.data.data.attributes.damageBonus !== "0"
-                ? ` + ceil(${this.actor.data.data.attributes.damageBonus}[Damage Bonus] / 2)`
-                : "";
-            await ChatMessage.create({
-              content: `Roll damage [[/r ${weaponItem.data.data.damage} ${damageBonus} #Damage]]<br><br>
-              and hit location [[/r 1D20 #Hit Location]]`,
-            });
-          }
-        } else {
-          await ChatMessage.create({ content: `Out of ammo!` });
-        }
-      });
-    });
+    // // Missile Weapon roll
+    // this.form.querySelectorAll("[data-missile-roll]").forEach((el) => {
+    //   const attackType = (el as HTMLElement).dataset.missileRoll;
+    //   const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
+    //   const weaponItem: Item<MissileWeaponData> = this.actor.items.get(weaponItemId);
+    //   const skillId = (el.closest("[data-item-id]") as HTMLElement).dataset.skillId;
+    //   const skillItem: Item<SkillData> = this.actor.items.get(skillId);
+    //   const projectileItem = weaponItem.data.data.isProjectileWeapon
+    //     ? this.actor.items.get(weaponItem.data.data.projectileId)
+    //     : weaponItem;
+    //
+    //   el.addEventListener("click", async () => {
+    //     if (projectileItem.data.data.quantity > 0) {
+    //       // projectileItem.data.data.quantity = projectileItem.data.data
+    //       //   .quantity--;
+    //       await this.actor.updateOwnedItem({
+    //         _id: projectileItem.id,
+    //         "data.quantity": --projectileItem.data.data.quantity,
+    //       });
+    //
+    //       const result = Ability.roll(
+    //         skillItem.data.data.chance,
+    //         0,
+    //         `${weaponItem.name} ${attackType} (${skillItem.name})`
+    //       );
+    //       if (result <= ResultEnum.Success) {
+    //         // TODO Make damage vary depending on success
+    //         const damageBonus: string =
+    //           weaponItem.data.data.isThrownWeapon &&
+    //           this.actor.data.data.attributes.damageBonus !== "0"
+    //             ? ` + ceil(${this.actor.data.data.attributes.damageBonus}[Damage Bonus] / 2)`
+    //             : "";
+    //         await ChatMessage.create({
+    //           content: `Roll damage [[/r ${weaponItem.data.data.damage} ${damageBonus} #Damage]]<br><br>
+    //           and hit location [[/r 1D20 #Hit Location]]`,
+    //         });
+    //       }
+    //     } else {
+    //       await ChatMessage.create({ content: `Out of ammo!` });
+    //     }
+    //   });
+    // });
 
     // Open Linked Journal Entry
     this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
@@ -451,19 +407,6 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
-
-    // // Add Item (create owned item)
-    // this.form.querySelectorAll("[data-item-add]").forEach((el) => {
-    //   const itemType = (el.closest("[data-item-type]") as HTMLElement).dataset.itemType;
-    //   el.addEventListener("click", () => {
-    //     // Create item and render sheet afterwards
-    //     this.actor.createOwnedItem({ name: "Newone", type: itemType }).then((item) => {
-    //       // We have to reload the item for it to have a sheet
-    //       const createdItem = this.actor.getOwnedItem(item._id);
-    //       createdItem.sheet.render(true);
-    //     });
-    //   });
-    // });
 
     // Toggle the equipped state of a physical Item
     this.form.querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {

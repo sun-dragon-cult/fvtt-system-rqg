@@ -1,4 +1,4 @@
-<form class="card-form" data-chat-card="weaponCard">
+<form class="card-form" data-chat-card="weaponCard" method="post">
   <div class="rqg chat-card item-card">
 
     <h3><img class="item" src="{{weaponItem.img}}"> {{weaponItemData.name}}</h3>
@@ -8,12 +8,50 @@
 
     <div class="flex-row">
     {{#each weaponItemData.data.combatManeuvers}}
-    <button name="{{this}}" type="submit">{{this}}</button>
+{{!--      <button name="combatManeuver" value="{{this}}">{{this}}</button> --}}
+      <input type="submit" name="combatManeuver" value="{{this}}">
     {{/each}}
     </div>
 
-    {{#if (eq result 4)}}
-      <button>Normal Damage TODO</button>
-    {{/if}}
+    {{#unless (eq formData.combatManeuver "parry")}}
+      {{#if (eq result 0)}}
+      <h3>TODO Hyper Critical Not yet implemented</h3>
+      {{/if}}
+
+      {{#if (eq result 1)}}
+      <h3>TODO Special Critical Not yet implemented</h3>
+      {{/if}}
+
+      {{#if (eq result 2)}}
+      <div class="flex-row">
+        <input type="submit" name="damageRoll" value="Normal Damage">
+        <input type="submit" name="damageRoll" value="Special Damage">
+        <input type="submit" name="damageRoll" value="Max Special Damage">
+      </div>
+      <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+      {{/if}}
+
+      {{#if (eq result 3)}}
+      <div class="flex-row">
+        <input type="submit" name="damageRoll" value="Normal Damage">
+        <input type="submit" name="damageRoll" value="Special Damage">
+      </div>
+      <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+      {{/if}}
+
+      {{#if (eq result 4)}}
+        <input type="submit" name="damageRoll" value="Normal Damage"><br>
+        <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+      {{/if}}
+
+      {{#if (eq result 5)}}
+      <input type="submit" name="damageRoll" value="Normal Damage"><br>
+      <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+      {{/if}}
+
+      {{#if (eq result 6)}}
+       <h1>Fumble Table Time</h1>
+      {{/if}}
+    {{/unless}}
   </div>
 </form>
