@@ -1,3 +1,22 @@
+# [0.11.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.10.0...v0.11.0) (2021-02-23)
+
+
+### Bug Fixes
+
+* entity links in editor fields don't show up as links for players ([8b56d73](https://github.com/wakeand/fvtt-system-rqg/commit/8b56d73))
+* owned armor doesn't reveal the gear tab ([5729ffd](https://github.com/wakeand/fvtt-system-rqg/commit/5729ffd))
+
+
+### Features
+
+* add weapon chatcard and refactor cards handling ([7452919](https://github.com/wakeand/fvtt-system-rqg/commit/7452919))
+* combat notes for allies and general notes ([749c4b4](https://github.com/wakeand/fvtt-system-rqg/commit/749c4b4))
+* make missileWeapons consume projectiles again also correct special damage depending on combat maneuver & make missile/thrown weapons get correct damage bonus ([2b98427](https://github.com/wakeand/fvtt-system-rqg/commit/2b98427))
+* show damage & hit location buttons in the weapon chat card and do adjusted rolls ([a16169a](https://github.com/wakeand/fvtt-system-rqg/commit/a16169a))
+
+
+
+
 # [0.10.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.9.0...v0.10.0) (2021-02-17)
 
 
