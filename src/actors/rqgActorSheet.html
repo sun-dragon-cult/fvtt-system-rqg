@@ -78,6 +78,10 @@
             {{#if data.showUiSection.combat}}{{> "systems/rqg/actors/parts/combat.html" }}{{/if}}
             {{> "systems/rqg/actors/parts/spirit-combat.html" }}
           </div>
+          <div style="width: 100%">
+            <h2>Allies & Notes</h2>
+            {{editor content=data.allies target="data.allies" button=true owner=owner editable=editable}}
+          </div>
         </div>
     </div>
 

@@ -144,8 +144,7 @@
 </div>
 
 {{#if data.isGM}}
-{{editor content=data.background.biography target="data.background.biography"
-button=true owner=owner editable=editable}}
+  {{editor content=data.background.biography target="data.background.biography" button=true owner=owner editable=editable}}
 {{else}}
-{{{enrichHtml data.background.biography}}}
+  {{{enrichHtml data.background.biography}}}
 {{/if}}
