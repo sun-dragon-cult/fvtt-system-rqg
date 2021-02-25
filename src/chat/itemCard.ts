@@ -85,8 +85,7 @@ export class ItemCard {
     let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
 
     return {
-      title: "Ability check",
-      flavor: "",
+      flavor: flags.itemData.type + ": " + flags.itemData.name,
       user: game.user._id,
       speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
       content: html,

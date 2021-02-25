@@ -172,8 +172,7 @@ export class WeaponCard extends ChatMessage {
     let html = await renderTemplate("systems/rqg/chat/weaponCard.html", flags);
 
     return {
-      title: "Ability check",
-      flavor: "",
+      flavor: "Weapon: " + flags.weaponItemData.name,
       user: game.user._id,
       speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
       content: html,

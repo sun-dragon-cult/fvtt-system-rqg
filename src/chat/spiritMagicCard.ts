@@ -108,8 +108,7 @@ export class SpiritMagicCard {
     let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.html", flags);
 
     return {
-      title: "Spirit Magic",
-      flavor: "",
+      flavor: "Spirit Magic: " + flags.itemData.name,
       user: game.user._id,
       speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
       content: html,

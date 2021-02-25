@@ -149,8 +149,7 @@ export class CharacteristicCard {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
 
     return {
-      title: "Characteristic check",
-      flavor: flags.characteristic.name,
+      flavor: "Characteristic: " + flags.characteristic.name,
       user: game.user._id,
       speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
       content: html,
