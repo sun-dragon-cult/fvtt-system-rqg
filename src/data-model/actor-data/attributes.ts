@@ -6,6 +6,7 @@ export class Attributes {
     public magicPoints: Resource,
     public hitPoints: Resource,
     public move: number, // 8 for humans
+    public heroPoints: number,
     public healingRate?: number,
     public damageBonus?: string, // For example "1D4"
     public spiritCombatDamage?: string, // For example "1D4"
@@ -17,4 +18,4 @@ export class Attributes {
   ) {}
 }
 
-export const emptyAttributes = new Attributes(emptyResource, emptyResource, 8);
+export const emptyAttributes = new Attributes(emptyResource, emptyResource, 8, 0);
