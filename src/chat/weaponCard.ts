@@ -33,12 +33,13 @@ export class WeaponCard extends ChatMessage {
         combatManeuver: undefined,
       },
     };
-    await ChatMessage.create(await WeaponCard.renderContent(flags));
+    await ChatMessage.create(await WeaponCard.renderContent(flags, actor));
   }
 
   public static inputChangeHandler(ev, messageId: string) {
     const chatMessage = game.messages.get(messageId);
     const flags: WeaponCardFlags = chatMessage.data.flags.rqg;
+    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
     const form: HTMLFormElement = ev.target.closest("form");
     const formData = new FormData(form);
     // @ts-ignore
@@ -51,7 +52,7 @@ export class WeaponCard extends ChatMessage {
 
     flags.formData.chance = WeaponCard.calcRollChance(chance, modifier);
 
-    WeaponCard.renderContent(flags).then((d: Object) => chatMessage.update(d));
+    WeaponCard.renderContent(flags, actor).then((d: Object) => chatMessage.update(d));
   }
 
   public static async formSubmitHandler(ev, messageId: string) {
@@ -149,11 +150,9 @@ export class WeaponCard extends ChatMessage {
     const modifier: number = Number(flags.formData.modifier) || 0;
     const chance: number = Number(flags.skillItemData.data.chance) || 0;
     flags.result = Ability.roll(chance, modifier, flags.skillItemData.name + " check");
-    const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
     WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
-    // TODO Link to DamageRoll, FumbleRoll, ...
-
-    WeaponCard.renderContent(flags).then((d: Object) => chatMessage.update(d));
+    WeaponCard.renderContent(flags, actor).then((d: Object) => chatMessage.update(d));
   }
 
   public static checkExperience(
@@ -168,13 +167,13 @@ export class WeaponCard extends ChatMessage {
     }
   }
 
-  private static async renderContent(flags: WeaponCardFlags) {
+  private static async renderContent(flags: WeaponCardFlags, actor: RqgActor) {
     let html = await renderTemplate("systems/rqg/chat/weaponCard.html", flags);
 
     return {
       flavor: "Weapon: " + flags.weaponItemData.name,
       user: game.user._id,
-      speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
+      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
       whisper: [game.user._id],
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

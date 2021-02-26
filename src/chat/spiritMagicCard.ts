@@ -27,7 +27,7 @@ export class SpiritMagicCard {
       },
     };
 
-    await ChatMessage.create(await this.renderContent(flags));
+    await ChatMessage.create(await this.renderContent(flags, actor));
   }
 
   public static inputChangeHandler(ev, messageId: string) {}
@@ -104,13 +104,13 @@ export class SpiritMagicCard {
     }
   }
 
-  private static async renderContent(flags: SpiritMagicCardFlags) {
+  private static async renderContent(flags: SpiritMagicCardFlags, actor: RqgActor) {
     let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.html", flags);
 
     return {
       flavor: "Spirit Magic: " + flags.itemData.name,
       user: game.user._id,
-      speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
+      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
       whisper: [game.user._id],
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

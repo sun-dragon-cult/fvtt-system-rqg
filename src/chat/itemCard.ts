@@ -12,7 +12,7 @@ type ItemCardFlags = {
 };
 
 export class ItemCard {
-  public static async show(actor: RqgActor, itemId: any): Promise<void> {
+  public static async show(actor: RqgActor, itemId: string): Promise<void> {
     const defaultModifier = 0;
     const item = actor.getOwnedItem(itemId);
     const flags: ItemCardFlags = {
@@ -24,12 +24,13 @@ export class ItemCard {
         chance: item.data.data.chance,
       },
     };
-    await ChatMessage.create(await ItemCard.renderContent(flags));
+    await ChatMessage.create(await ItemCard.renderContent(flags, actor));
   }
 
   public static inputChangeHandler(ev, messageId: string) {
     const chatMessage = game.messages.get(messageId);
     const flags: ItemCardFlags = chatMessage.data.flags.rqg;
+    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
     const form: HTMLFormElement = ev.target.closest("form");
     const formData = new FormData(form);
     // @ts-ignore
@@ -41,7 +42,7 @@ export class ItemCard {
     const modifier: number = Number(flags.formData.modifier) || 0;
 
     flags.formData.chance = ItemCard.calcRollChance(chance, modifier);
-    ItemCard.renderContent(flags).then((d: Object) => chatMessage.update(d));
+    ItemCard.renderContent(flags, actor).then((d: Object) => chatMessage.update(d));
   }
 
   public static formSubmitHandler(ev, messageId: string) {
@@ -60,7 +61,7 @@ export class ItemCard {
     button.disabled = true;
 
     const modifier: number = Number(flags.formData.modifier) || 0;
-    const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
     ItemCard.roll(actor, flags.itemData, modifier);
 
     button.disabled = false;
@@ -81,13 +82,13 @@ export class ItemCard {
     }
   }
 
-  private static async renderContent(flags: ItemCardFlags) {
+  private static async renderContent(flags: ItemCardFlags, actor: RqgActor) {
     let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
 
     return {
       flavor: flags.itemData.type + ": " + flags.itemData.name,
       user: game.user._id,
-      speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
+      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
       whisper: [game.user._id],
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

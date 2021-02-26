@@ -52,7 +52,7 @@ export class CharacteristicCard {
       },
     };
 
-    await ChatMessage.create(await CharacteristicCard.renderContent(flags));
+    await ChatMessage.create(await CharacteristicCard.renderContent(flags, actor));
   }
 
   public static inputChangeHandler(ev, messageId: string) {
@@ -76,13 +76,14 @@ export class CharacteristicCard {
 
     const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
     const modifier: number = Number(flags.formData.modifier) || 0;
+    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
 
     flags.formData.chance = CharacteristicCard.calcRollChance(
       characteristicValue,
       difficulty,
       modifier
     );
-    CharacteristicCard.renderContent(flags).then((d: Object) => chatMessage.update(d));
+    CharacteristicCard.renderContent(flags, actor).then((d: Object) => chatMessage.update(d));
   }
 
   public static formSubmitHandler(ev, messageId: string) {
@@ -145,13 +146,13 @@ export class CharacteristicCard {
     }
   }
 
-  private static async renderContent(flags: CharacteristicCardFlags) {
+  private static async renderContent(flags: CharacteristicCardFlags, actor: RqgActor) {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
 
     return {
       flavor: "Characteristic: " + flags.characteristic.name,
       user: game.user._id,
-      speaker: ChatMessage.getSpeaker(), // TODO figure out what actor/token  is speaking
+      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
       whisper: [game.user._id],
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
