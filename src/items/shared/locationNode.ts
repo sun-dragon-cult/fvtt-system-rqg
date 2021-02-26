@@ -16,6 +16,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
     contains: [],
     physicalItemType: "unique",
     location: "",
+    attunedTo: "",
     encumbrance: 0,
     equippedStatus: "notCarried",
   };
@@ -42,6 +43,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
         name: i.name,
         id: i._id,
         location: location,
+        attunedTo: i.data.data.attunedTo,
         contains: [],
         physicalItemType: i.data.data.physicalItemType,
         encumbrance: i.data.data.encumbrance,
@@ -72,6 +74,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
       contains: [],
       physicalItemType: "unique",
       location: "",
+      attunedTo: "",
       encumbrance: 0,
       equippedStatus: "notCarried",
     };

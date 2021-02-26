@@ -24,5 +24,6 @@ export const emptyArmor: ArmorData = {
   absorbs: 0,
   moveQuietlyPenalty: 0,
   location: "",
+  attunedTo: "",
   physicalItemType: "unique",
 };

@@ -49,5 +49,6 @@ export const emptyMissileWeapon: MissileWeaponData = {
   projectileId: "",
   quantity: 1,
   location: "",
+  attunedTo: "",
   physicalItemType: "unique",
 };

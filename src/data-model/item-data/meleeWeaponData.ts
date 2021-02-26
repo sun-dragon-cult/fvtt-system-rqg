@@ -48,5 +48,6 @@ export const emptyMeleeWeapon: MeleeWeaponData = {
   equippedStatus: "carried",
   isNatural: false,
   location: "",
+  attunedTo: "",
   physicalItemType: "unique",
 };

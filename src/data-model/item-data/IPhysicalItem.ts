@@ -8,6 +8,7 @@ export interface IPhysicalItem {
   physicalItemType: PhysicalItemType;
   quantity?: number; // Used for currency & consumables like arrows, torches, food rations. 1 for others
   location: string;
+  attunedTo: string; // Name of the character attuned to it, or empty if not attuned
   encumbrance: number;
   equippedStatus: EquippedStatus;
   price?: number; // Price in Lunars

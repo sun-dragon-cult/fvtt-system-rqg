@@ -18,5 +18,6 @@ export const emptyGear: GearData = {
   equippedStatus: "carried",
   location: "",
   isContainer: false,
+  attunedTo: "",
   physicalItemType: "unique",
 };
