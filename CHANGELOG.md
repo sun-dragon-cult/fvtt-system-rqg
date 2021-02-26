@@ -1,3 +1,18 @@
+# [0.13.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.12.0...v0.13.0) (2021-02-26)
+
+
+### Bug Fixes
+
+* display correct speaker in chat messages ([1c85a91](https://github.com/wakeand/fvtt-system-rqg/commit/1c85a91))
+
+
+### Features
+
+* hero points ([1c2b9f2](https://github.com/wakeand/fvtt-system-rqg/commit/1c2b9f2))
+
+
+
+
 # [0.12.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.11.0...v0.12.0) (2021-02-26)
 
 
