@@ -1,3 +1,13 @@
+# [0.12.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.11.0...v0.12.0) (2021-02-26)
+
+
+### Features
+
+* add attunedTo field on physical items ([75c1508](https://github.com/wakeand/fvtt-system-rqg/commit/75c1508))
+
+
+
+
 # [0.11.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.10.0...v0.11.0) (2021-02-23)
 
 
