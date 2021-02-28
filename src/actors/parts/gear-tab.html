@@ -78,7 +78,7 @@
             <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">
-              <span class="text-right">{{data.data.quantity}}</span>
+              <input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}">
             </div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">
               <span class="text-right">{{#if data.data.price}}{{currency data.data.price 'L'}}{{/if}}</span>

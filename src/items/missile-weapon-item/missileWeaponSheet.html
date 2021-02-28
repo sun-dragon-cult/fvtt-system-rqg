@@ -6,7 +6,7 @@
     <label>Quantity<br><input type="number" name="data.quantity"
                               value="{{item.data.quantity}}"></label>
     {{/unless}}
-    <label>Enc<br><input type="number" min="0" max="99" name="data.encumbrance"
+    <label>Enc<br><input type="number" min="0" max="999999" name="data.encumbrance"
                          value="{{item.data.encumbrance}}"></label>
     <select name="data.equippedStatus">
       {{#select data.equippedStatus}} {{#each data.equippedStatuses}}

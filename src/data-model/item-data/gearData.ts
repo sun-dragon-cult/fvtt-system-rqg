@@ -3,7 +3,6 @@ import { EquippedStatus, IPhysicalItem, PhysicalItemType } from "./IPhysicalItem
 export type GearData = IPhysicalItem & {
   description: string;
   quantity: number;
-  encumbrance: number;
   isContainer: boolean;
   // --- Derived / Convenience Data Below ---
   equippedStatuses?: Array<EquippedStatus>; // For sheet dropdown
