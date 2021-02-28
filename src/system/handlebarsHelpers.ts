@@ -67,10 +67,12 @@ export const handlebarsHelpers = function () {
 
   Handlebars.registerHelper("multiply", (...nums) => {
     nums.pop();
-    return nums.reduce((acc, n) => {
-      acc = acc * n;
-      return acc;
-    });
+    return Math.floor(
+      nums.reduce((acc, n) => {
+        acc = acc * n;
+        return acc;
+      })
+    );
   });
 
   Handlebars.registerHelper("sum", (...nums) => {
