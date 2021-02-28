@@ -84,13 +84,15 @@ export class ItemCard {
 
   private static async renderContent(flags: ItemCardFlags, actor: RqgActor) {
     let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
+    let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
+    whisperRecipients.push(game.user._id);
 
     return {
       flavor: flags.itemData.type + ": " + flags.itemData.name,
       user: game.user._id,
       speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
-      whisper: [game.user._id],
+      whisper: whisperRecipients,
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },
