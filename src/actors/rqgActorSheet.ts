@@ -221,6 +221,11 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
   activateListeners(html): void {
     super.activateListeners(html);
 
+    if (!this.actor.owner) {
+      // Only owners are allowed to interact
+      return;
+    }
+
     new ContextMenu(html, ".characteristic-contextmenu", characteristicMenuOptions(this.actor));
     new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor));
     new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));

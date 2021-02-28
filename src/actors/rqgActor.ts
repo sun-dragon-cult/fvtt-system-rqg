@@ -130,7 +130,7 @@ export class RqgActor extends Actor<RqgActorData> {
   ) {
     console.debug("rqgActor # _onCreateEmbeddedEntity", child.name, child);
 
-    if (embeddedName === "OwnedItem") {
+    if (embeddedName === "OwnedItem" && this.owner) {
       const updateData = await ResponsibleItemClass.get(child.type).onEmbedItem(
         this,
         child,
@@ -147,7 +147,7 @@ export class RqgActor extends Actor<RqgActorData> {
   protected async _onDeleteEmbeddedEntity(embeddedName, child: ItemData, options, userId: string) {
     console.debug("rqgActor # _onDeleteEmbeddedEntity", child.name, child);
 
-    if (embeddedName === "OwnedItem") {
+    if (embeddedName === "OwnedItem" && this.owner) {
       const updateData = await ResponsibleItemClass.get(child.type).onDeleteItem(
         this,
         child,
@@ -169,7 +169,7 @@ export class RqgActor extends Actor<RqgActorData> {
     userId: string
   ) {
     console.debug("rqgActor # _onUpdateEmbeddedEntity", child.name, child);
-    if (embeddedName === "OwnedItem") {
+    if (embeddedName === "OwnedItem" && this.owner) {
       const updateData = await ResponsibleItemClass.get(child.type).onUpdateItem(
         this,
         child,
@@ -187,7 +187,7 @@ export class RqgActor extends Actor<RqgActorData> {
   _onModifyEmbeddedEntity(embeddedName, ...args) {
     // @ts-ignore
     console.debug("rqgActor # _onModifyEmbeddedEntity", this.name, args);
-    if (embeddedName === "OwnedItem") {
+    if (embeddedName === "OwnedItem" && this.owner) {
       this.updateEquippedStatus(args[0]).then(
         () =>
           // Try doing stuff after actor has updated
