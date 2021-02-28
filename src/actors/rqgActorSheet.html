@@ -54,7 +54,11 @@
         </div>
         <div>
           <span class="norse">Hero Points</span>
+          {{#if data.isGM}}
           <input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{data.attributes.heroPoints}}" size="2">
+          {{else}}
+          {{data.attributes.heroPoints}}
+          {{/if}}
         </div>
       </div>
     </div>
