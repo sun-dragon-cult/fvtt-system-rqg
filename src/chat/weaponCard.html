@@ -13,7 +13,40 @@
     {{/each}}
     </div>
 
-    {{#unless (eq formData.combatManeuver "parry")}}
+    {{#if (eq formData.combatManeuver "parry")}}
+      {{#if (eq result 0)}}
+      <h3>TODO Hyper Critical Not yet implemented</h3>
+      {{/if}}
+
+      {{#if (eq result 1)}}
+      <h3>TODO Special Critical Not yet implemented</h3>
+      {{/if}}
+
+      {{#if (eq result 2)}}
+      <div class="flex-row">
+        <input type="submit" name="damageRoll" value="Normal Damage">
+        <input type="submit" name="damageRoll" value="Special Damage">
+      </div>
+      {{/if}}
+
+      {{#if (eq result 3)}}
+      <div class="flex-row">
+        <input type="submit" name="damageRoll" value="Normal Damage">
+        <input type="submit" name="damageRoll" value="Special Damage">
+      </div>
+      {{/if}}
+
+      {{#if (eq result 4)}}
+      <input type="submit" name="damageRoll" value="Normal Damage"><br>
+      {{/if}}
+
+      {{#if (eq result 5)}}
+      {{/if}}
+
+      {{#if (eq result 6)}}
+      <h1>Fumble Table Time</h1>
+      {{/if}}
+    {{else}}
       {{#if (eq result 0)}}
       <h3>TODO Hyper Critical Not yet implemented</h3>
       {{/if}}
@@ -52,6 +85,6 @@
       {{#if (eq result 6)}}
        <h1>Fumble Table Time</h1>
       {{/if}}
-    {{/unless}}
+    {{/if}}
   </div>
 </form>
