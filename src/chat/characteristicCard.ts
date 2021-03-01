@@ -17,12 +17,12 @@ type CharacteristicCardFlags = {
   };
   difficultyOptions: {
     // TODO generalise
-    "0.5": string;
-    "1": string;
-    "2": string;
-    "3": string;
-    "4": string;
-    "5": string;
+    0: string;
+    1: string;
+    2: string;
+    3: string;
+    4: string;
+    5: string;
   };
 };
 
@@ -43,21 +43,109 @@ export class CharacteristicCard {
         ),
       },
       difficultyOptions: {
-        "0.5": "Nearly impossible (*0.5)",
-        "1": "Very Hard (*1)",
-        "2": "Hard (*2)",
-        "3": "Moderate (*3)",
-        "4": "Easy (*4)",
-        "5": "Simple Action (*5)",
+        0: "Nearly impossible (*0.5)",
+        1: "Very Hard (*1)",
+        2: "Hard (*2)",
+        3: "Moderate (*3)",
+        4: "Easy (*4)",
+        5: "Simple Action (*5)",
       },
     };
 
     await ChatMessage.create(await CharacteristicCard.renderContent(flags, actor));
   }
 
-  public static inputChangeHandler(ev, messageId: string) {
+  public static async inputChangeHandler(ev, messageId: string) {
     const chatMessage = game.messages.get(messageId);
     const flags: CharacteristicCardFlags = chatMessage.data.flags.rqg;
+    CharacteristicCard.updateFlagsFromForm(flags, ev);
+
+    const [
+      actor,
+      characteristicValue,
+      difficulty,
+      modifier,
+    ] = CharacteristicCard.getFormDataFromFlags(flags);
+
+    flags.formData.chance = CharacteristicCard.calcRollChance(
+      characteristicValue,
+      difficulty,
+      modifier
+    );
+    const data = await CharacteristicCard.renderContent(flags, actor);
+    await chatMessage.update(data);
+  }
+
+  public static async formSubmitHandler(ev, messageId: string) {
+    ev.preventDefault();
+
+    const chatMessage = game.messages.get(messageId);
+    const flags: CharacteristicCardFlags = chatMessage.data.flags.rqg;
+    CharacteristicCard.updateFlagsFromForm(flags, ev);
+
+    const form = ev.target;
+    // Disable form until completed
+    form.style.pointerEvents = "none";
+
+    const [
+      actor,
+      characteristicValue,
+      difficulty,
+      modifier,
+    ] = CharacteristicCard.getFormDataFromFlags(flags);
+
+    await CharacteristicCard.roll(
+      actor,
+      flags.characteristic.name,
+      characteristicValue,
+      difficulty,
+      modifier
+    );
+
+    // Enabling the form again after DsN animation is finished TODO doesn't wait
+    form.style.pointerEvents = "auto";
+    return false;
+  }
+
+  public static async roll(
+    actor: RqgActor,
+    characteristicName: string,
+    characteristicValue: number,
+    difficulty: number,
+    modifier: number
+  ) {
+    const result = await Ability.roll(
+      characteristicValue * difficulty,
+      modifier,
+      characteristicName + " check"
+    );
+    await CharacteristicCard.checkExperience(actor, characteristicName, result);
+  }
+
+  public static async checkExperience(
+    actor: RqgActor,
+    characteristicName: string,
+    result: ResultEnum
+  ): Promise<void> {
+    if (
+      result <= ResultEnum.Success &&
+      characteristicName === "power" &&
+      !actor.data.data.characteristics.power.hasExperience
+    ) {
+      await actor.update({ "data.characteristics.power.hasExperience": true });
+      ui.notifications.info("🎉 Yey, you got an experience check on power!");
+    }
+  }
+
+  private static getFormDataFromFlags(flags): [RqgActor, number, number, number] {
+    const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
+    const difficulty: number = Number(flags.formData.difficulty) || 5;
+    const modifier: number = Number(flags.formData.modifier) || 0;
+    const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    return [actor, characteristicValue, difficulty, modifier];
+  }
+
+  private static updateFlagsFromForm(flags, ev): void {
     const form: HTMLFormElement = ev.target.closest("form");
     const formData = new FormData(form);
     // @ts-ignore
@@ -66,84 +154,17 @@ export class CharacteristicCard {
     }
 
     // TODO workaround for foundry removing option value...
-    let difficulty = 1;
+    let difficulty = 0;
     for (const option in flags.difficultyOptions) {
-      if (flags.difficultyOptions[option] === flags.formData.difficulty) {
+      if (
+        flags.difficultyOptions.hasOwnProperty(option) &&
+        flags.difficultyOptions[option] === flags.formData.difficulty
+      ) {
         difficulty = Number(option);
       }
     }
-    flags.formData.difficulty = difficulty;
-
-    const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
-    const modifier: number = Number(flags.formData.modifier) || 0;
-    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-
-    flags.formData.chance = CharacteristicCard.calcRollChance(
-      characteristicValue,
-      difficulty,
-      modifier
-    );
-    CharacteristicCard.renderContent(flags, actor).then((d: Object) => chatMessage.update(d));
-  }
-
-  public static formSubmitHandler(ev, messageId: string) {
-    ev.preventDefault();
-
-    const chatMessage = game.messages.get(messageId);
-    const flags: CharacteristicCardFlags = chatMessage.data.flags.rqg;
-
-    const formData = new FormData(ev.target);
-    // @ts-ignore
-    for (const [name, value] of formData) {
-      flags.formData[name] = value;
-    }
-
-    const button = ev.currentTarget;
-    button.disabled = true;
-
-    const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
-    const difficulty: number = Number(flags.formData.difficulty) || 1;
-    const modifier: number = Number(flags.formData.modifier) || 0;
-    const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-    CharacteristicCard.roll(
-      actor,
-      flags.characteristic.name,
-      characteristicValue,
-      difficulty,
-      modifier
-    );
-    button.disabled = false;
-    return false;
-  }
-
-  public static roll(
-    actor: RqgActor,
-    characteristicName: string,
-    characteristicValue: number,
-    difficulty: number,
-    modifier: number
-  ) {
-    const result = Ability.roll(
-      characteristicValue * difficulty,
-      modifier,
-      characteristicName + " check"
-    );
-    CharacteristicCard.checkExperience(actor, characteristicName, result);
-  }
-
-  public static checkExperience(
-    actor: RqgActor,
-    characteristicName: string,
-    result: ResultEnum
-  ): void {
-    if (
-      result <= ResultEnum.Success &&
-      characteristicName === "power" &&
-      !actor.data.data.characteristics.power.hasExperience
-    ) {
-      actor.update({ "data.characteristics.power.hasExperience": true });
-      ui.notifications.info("🎉 Yey, you got an experience check on power!");
-    }
+    // Super ugly I know...
+    flags.formData.difficulty = difficulty ? difficulty : 0.5;
   }
 
   private static async renderContent(flags: CharacteristicCardFlags, actor: RqgActor) {
@@ -152,7 +173,12 @@ export class CharacteristicCard {
     whisperRecipients.push(game.user._id);
 
     return {
-      flavor: "Characteristic: " + flags.characteristic.name,
+      flavor:
+        "Characteristic: " +
+        flags.characteristic.name +
+        " (" +
+        flags.characteristic.data.value +
+        ")",
       user: game.user._id,
       speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,

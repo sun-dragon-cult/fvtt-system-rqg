@@ -30,9 +30,9 @@ export class SpiritMagicCard {
     await ChatMessage.create(await this.renderContent(flags, actor));
   }
 
-  public static inputChangeHandler(ev, messageId: string) {}
+  public static async inputChangeHandler(ev, messageId: string) {}
 
-  public static formSubmitHandler(ev, messageId: string) {
+  public static async formSubmitHandler(ev, messageId: string) {
     ev.preventDefault();
 
     const chatMessage = game.messages.get(messageId);
@@ -50,13 +50,13 @@ export class SpiritMagicCard {
     const level: number = Number(flags.formData.level) || 0;
     const boost: number = Number(flags.formData.boost) || 0;
     const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-    SpiritMagicCard.roll(actor, flags.itemData, level, boost);
+    await SpiritMagicCard.roll(actor, flags.itemData, level, boost);
 
     button.disabled = false;
     return false;
   }
 
-  public static roll(
+  public static async roll(
     actor: RqgActor,
     itemData: ItemData<SpiritMagicData>,
     level: number,
@@ -72,12 +72,12 @@ export class SpiritMagicCard {
     if (validationError) {
       ui.notifications.warn(validationError);
     } else {
-      const result = Ability.roll(
+      const result = await Ability.roll(
         actor.data.data.characteristics.power.value * 5,
         0,
         "Cast " + itemData.name
       );
-      SpiritMagicCard.drawMagicPoints(actor, level + boost, result);
+      await SpiritMagicCard.drawMagicPoints(actor, level + boost, result);
     }
   }
 
@@ -96,10 +96,14 @@ export class SpiritMagicCard {
     }
   }
 
-  public static drawMagicPoints(actor: RqgActor, amount: number, result: ResultEnum): void {
+  public static async drawMagicPoints(
+    actor: RqgActor,
+    amount: number,
+    result: ResultEnum
+  ): Promise<void> {
     if (result <= ResultEnum.Success) {
       const newMp = actor.data.data.attributes.magicPoints.value - amount;
-      actor.update({ "data.attributes.magicPoints.value": newMp });
+      await actor.update({ "data.attributes.magicPoints.value": newMp });
       ui.notifications.info("Successfully cast the spell, drew " + amount + " magic points.");
     }
   }

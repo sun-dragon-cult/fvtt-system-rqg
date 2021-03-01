@@ -27,7 +27,7 @@ export class ItemCard {
     await ChatMessage.create(await ItemCard.renderContent(flags, actor));
   }
 
-  public static inputChangeHandler(ev, messageId: string) {
+  public static async inputChangeHandler(ev, messageId: string) {
     const chatMessage = game.messages.get(messageId);
     const flags: ItemCardFlags = chatMessage.data.flags.rqg;
     const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
@@ -40,12 +40,13 @@ export class ItemCard {
 
     const chance: number = Number(flags.itemData.data.chance) || 0;
     const modifier: number = Number(flags.formData.modifier) || 0;
-
     flags.formData.chance = ItemCard.calcRollChance(chance, modifier);
-    ItemCard.renderContent(flags, actor).then((d: Object) => chatMessage.update(d));
+
+    const data = await ItemCard.renderContent(flags, actor);
+    await chatMessage.update(data);
   }
 
-  public static formSubmitHandler(ev, messageId: string) {
+  public static async formSubmitHandler(ev, messageId: string) {
     ev.preventDefault();
 
     const chatMessage = game.messages.get(messageId);
@@ -62,15 +63,15 @@ export class ItemCard {
 
     const modifier: number = Number(flags.formData.modifier) || 0;
     const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-    ItemCard.roll(actor, flags.itemData, modifier);
+    await ItemCard.roll(actor, flags.itemData, modifier);
 
     button.disabled = false;
     return false;
   }
 
-  public static roll(actor: RqgActor, itemData: ItemData, modifier: number) {
+  public static async roll(actor: RqgActor, itemData: ItemData, modifier: number) {
     const chance: number = Number(itemData.data.chance) || 0;
-    const result = Ability.roll(chance, modifier, itemData.name + " check");
+    const result = await Ability.roll(chance, modifier, itemData.name + " check");
     ItemCard.checkExperience(actor, itemData, result);
   }
 

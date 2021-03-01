@@ -36,7 +36,7 @@ export class WeaponCard extends ChatMessage {
     await ChatMessage.create(await WeaponCard.renderContent(flags, actor));
   }
 
-  public static inputChangeHandler(ev, messageId: string) {
+  public static async inputChangeHandler(ev, messageId: string) {
     const chatMessage = game.messages.get(messageId);
     const flags: WeaponCardFlags = chatMessage.data.flags.rqg;
     const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
@@ -52,7 +52,8 @@ export class WeaponCard extends ChatMessage {
 
     flags.formData.chance = WeaponCard.calcRollChance(chance, modifier);
 
-    WeaponCard.renderContent(flags, actor).then((d: Object) => chatMessage.update(d));
+    const data = await WeaponCard.renderContent(flags, actor);
+    await chatMessage.update(data);
   }
 
   public static async formSubmitHandler(ev, messageId: string) {
@@ -91,7 +92,7 @@ export class WeaponCard extends ChatMessage {
         ui.notifications.warn("Out of ammo!");
         return;
       }
-      WeaponCard.roll(flags, chatMessage);
+      await WeaponCard.roll(flags, chatMessage);
     } else if (action === "damageRoll") {
       let damageBonus =
         actor.data.data.attributes.damageBonus !== "0"
@@ -125,7 +126,7 @@ export class WeaponCard extends ChatMessage {
       const roll = Roll.create(`${weaponDamage} ${damageBonus}`).evaluate({
         maximize: maximise,
       });
-      roll.toMessage({
+      await roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         flavor: `damage`,
@@ -133,7 +134,7 @@ export class WeaponCard extends ChatMessage {
     } else if (action === "hitLocationRoll") {
       // @ts-ignore
       const roll = Roll.create("1D20").evaluate();
-      roll.toMessage({
+      await roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         flavor: `Hitlocation`,
@@ -146,23 +147,24 @@ export class WeaponCard extends ChatMessage {
     return false;
   }
 
-  public static roll(flags: WeaponCardFlags, chatMessage: ChatMessage) {
+  public static async roll(flags: WeaponCardFlags, chatMessage: ChatMessage) {
     const modifier: number = Number(flags.formData.modifier) || 0;
     const chance: number = Number(flags.skillItemData.data.chance) || 0;
-    flags.result = Ability.roll(chance, modifier, flags.skillItemData.name + " check");
+    flags.result = await Ability.roll(chance, modifier, flags.skillItemData.name + " check");
     const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-    WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
-    WeaponCard.renderContent(flags, actor).then((d: Object) => chatMessage.update(d));
+    await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
+    const data = await WeaponCard.renderContent(flags, actor);
+    await chatMessage.update(data);
   }
 
-  public static checkExperience(
+  public static async checkExperience(
     actor: RqgActor,
     skillItemData: ItemData<SkillData>,
     result: ResultEnum
-  ): void {
+  ): Promise<void> {
     if (result <= ResultEnum.Success && !skillItemData.data.hasExperience) {
       // @ts-ignore
-      actor.updateOwnedItem({ _id: skillItemData._id, data: { hasExperience: true } });
+      await actor.updateOwnedItem({ _id: skillItemData._id, data: { hasExperience: true } });
       ui.notifications.info("Yey, you got an experience check on " + skillItemData.name + "!");
     }
   }

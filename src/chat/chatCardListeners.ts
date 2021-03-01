@@ -12,7 +12,6 @@ export class ChatCardListeners {
   };
 
   public static init() {
-    // Hooks.on("getChatLogEntryContext", chat.addChatMessageContextOptions);
     Hooks.on("renderChatLog", (chatLog, html) => {
       ChatCardListeners.addChatListeners(html);
     });
@@ -33,7 +32,7 @@ export class ChatCardListeners {
     await ChatCardListeners.card[chatCard].formSubmitHandler(ev, chatMessageId);
   }
 
-  private static inputChangeHandler(ev): void {
+  private static async inputChangeHandler(ev): Promise<void> {
     const chatCard = ev.target.closest("form").dataset.chatCard;
     const chatMessageId = ev.target.closest("[data-message-id]").dataset.messageId;
     ChatCardListeners.card[chatCard].inputChangeHandler(ev, chatMessageId);

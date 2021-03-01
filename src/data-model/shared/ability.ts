@@ -25,11 +25,11 @@ export class Ability implements IAbility {
   // Do a roll against this ability and factor in all modifiers.
   // stat - an object that implements IAbility
   // chanceMod - a +/- value that changes the chance
-  public static roll(
+  public static async roll(
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     flavor: string // TODO Rename to ability?
-  ): ResultEnum {
+  ): Promise<ResultEnum> {
     const r = new Roll("1D100");
     r.roll();
     const modifiedChance: number = chance + chanceMod;
@@ -37,7 +37,7 @@ export class Ability implements IAbility {
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = game.i18n.localize(`ResultEnum.${result}`);
-    r.toMessage({
+    await r.toMessage({
       speaker: ChatMessage.getSpeaker(),
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flavor: `${flavor} (${chance}${chanceModText}%) ${resultText}`,
