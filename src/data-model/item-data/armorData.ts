@@ -1,9 +1,7 @@
 import { EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
 
 export type ArmorData = IPhysicalItem & {
-  description: string;
   size: number; // Must match character size
-  encumbrance: number;
   hitLocations: Array<string>; // Array of hitLocation names
   material: string;
   absorbs: number;
@@ -24,6 +22,7 @@ export const emptyArmor: ArmorData = {
   absorbs: 0,
   moveQuietlyPenalty: 0,
   location: "",
+  isContainer: false,
   attunedTo: "",
   physicalItemType: "unique",
 };

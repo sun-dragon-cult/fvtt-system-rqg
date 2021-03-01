@@ -22,7 +22,6 @@ export type MeleeWeaponData = IPhysicalItem & {
   minDexterity: number;
   strikeRank: number;
   hitPoints: Resource;
-  encumbrance: number;
   isNatural: boolean; // E.g. Fist, Grapple, Kick
   description: string;
   // --- Derived / Convenience Data Below ---
@@ -48,6 +47,7 @@ export const emptyMeleeWeapon: MeleeWeaponData = {
   equippedStatus: "carried",
   isNatural: false,
   location: "",
+  isContainer: false,
   attunedTo: "",
   physicalItemType: "unique",
 };

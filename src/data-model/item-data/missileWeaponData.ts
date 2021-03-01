@@ -14,7 +14,6 @@ export type MissileWeaponData = IPhysicalItem & {
   range: number; // meters at full chance, up to range*1.5 = 1/2 chance, up to range*2 1/4 chance
   rate: number; // 0 = multiple/mr, 1 = 1/mr, 2 = 1/2mr, 3 = 1/3mr, 5 = 1/5mr
   hitPoints: Resource;
-  encumbrance: number;
   isProjectile: boolean;
   isProjectileWeapon: boolean; // No damage bonus & uses projectiles
   isThrownWeapon: boolean; // If true add half DB, if false it's projectile with no db
@@ -49,6 +48,7 @@ export const emptyMissileWeapon: MissileWeaponData = {
   projectileId: "",
   quantity: 1,
   location: "",
+  isContainer: false,
   attunedTo: "",
   physicalItemType: "unique",
 };
