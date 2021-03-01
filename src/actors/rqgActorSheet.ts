@@ -177,7 +177,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         data.ownedItems[ItemTypeEnum.Armor]?.length,
       passions: CONFIG.RQG.debug.showAllUiSections || data.ownedItems[ItemTypeEnum.Passion]?.length,
       background: true,
-      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab,
+      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && game.user.isGM,
     };
 
     data.characterRunes = data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Element]
