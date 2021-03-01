@@ -115,6 +115,7 @@ export class CharacteristicCard {
     modifier: number
   ) {
     const result = await Ability.roll(
+      actor,
       characteristicValue * difficulty,
       modifier,
       characteristicName + " check"

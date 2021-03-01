@@ -71,7 +71,7 @@ export class ItemCard {
 
   public static async roll(actor: RqgActor, itemData: ItemData, modifier: number) {
     const chance: number = Number(itemData.data.chance) || 0;
-    const result = await Ability.roll(chance, modifier, itemData.name + " check");
+    const result = await Ability.roll(actor, chance, modifier, itemData.name + " check");
     ItemCard.checkExperience(actor, itemData, result);
   }
 

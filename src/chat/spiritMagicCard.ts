@@ -73,6 +73,7 @@ export class SpiritMagicCard {
       ui.notifications.warn(validationError);
     } else {
       const result = await Ability.roll(
+        actor,
         actor.data.data.characteristics.power.value * 5,
         0,
         "Cast " + itemData.name

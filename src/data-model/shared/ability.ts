@@ -1,3 +1,5 @@
+import { RqgActor } from "../../actors/rqgActor";
+
 export interface IAbility {
   chance?: number;
   canGetExperience: boolean;
@@ -15,17 +17,12 @@ export enum ResultEnum {
   Fumble,
 }
 
-export class Ability implements IAbility {
-  constructor(
-    public chance: number = 0,
-    public canGetExperience: boolean,
-    public hasExperience?: boolean
-  ) {}
-
+export class Ability {
   // Do a roll against this ability and factor in all modifiers.
   // stat - an object that implements IAbility
   // chanceMod - a +/- value that changes the chance
   public static async roll(
+    actor: RqgActor,
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     flavor: string // TODO Rename to ability?
@@ -38,7 +35,7 @@ export class Ability implements IAbility {
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = game.i18n.localize(`ResultEnum.${result}`);
     await r.toMessage({
-      speaker: ChatMessage.getSpeaker(),
+      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flavor: `${flavor} (${chance}${chanceModText}%) ${resultText}`,
     });

@@ -9,7 +9,7 @@ export const runeMagicMenuOptions = (actor) => [
     callback: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
-      const result = Ability.roll(item.data.data.chance, 0, item.name);
+      const result = Ability.roll(actor, item.data.data.chance, 0, item.name);
     },
   },
   {

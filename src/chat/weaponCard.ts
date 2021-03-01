@@ -150,8 +150,8 @@ export class WeaponCard extends ChatMessage {
   public static async roll(flags: WeaponCardFlags, chatMessage: ChatMessage) {
     const modifier: number = Number(flags.formData.modifier) || 0;
     const chance: number = Number(flags.skillItemData.data.chance) || 0;
-    flags.result = await Ability.roll(chance, modifier, flags.skillItemData.name + " check");
     const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    flags.result = await Ability.roll(actor, chance, modifier, flags.skillItemData.name + " check");
     await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
     const data = await WeaponCard.renderContent(flags, actor);
     await chatMessage.update(data);
