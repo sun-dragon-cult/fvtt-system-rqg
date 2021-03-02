@@ -22,12 +22,18 @@ export enum OccupationEnum {
 }
 
 export enum HomeLandEnum {
-  Sartar = "sartar",
+  Aggar = "aggar",
+  Balazar = "balazar",
+  Bilini = "bilini",
   Esrolia = "esrolia",
   Grazelands = "grazelands",
-  PraxianTribes = "praxianTribes",
+  Holay = "holay",
+  Imither = "imither",
   LunarTarsh = "lunarTarsh",
   OldTarsh = "oldTarsh",
+  PraxianTribes = "praxianTribes",
+  Sartar = "sartar",
+  Vansh = "vansh",
 }
 
 export class Background {
