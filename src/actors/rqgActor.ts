@@ -99,6 +99,32 @@ export class RqgActor extends Actor<RqgActorData> {
     data.effects = [...this.effects].map((effect) => effect.data);
   }
 
+  // Entity-specific actions that should occur when the Entity is first created
+  protected _onCreate(...args: any[]) {
+    // @ts-ignore
+    super._onCreate(...args);
+    const actorData = args[0];
+
+    // There might be effects with a different actor.id but same itemData.id if the actor
+    // is copied or imported, make sure the actor id is pointing to this new actor.
+    const effectsOriginUpdates = actorData.effects.map((effect) => {
+      return {
+        _id: effect._id,
+        origin: RqgActor.updateEffectOrigin(effect.origin, actorData._id),
+      };
+    });
+    this.updateEmbeddedEntity("ActiveEffect", effectsOriginUpdates);
+  }
+
+  private static updateEffectOrigin(origin: string, actorId: string): string {
+    let [actorLiteral, effectActorId, ownedItemLiteral, effectOwnedItemId] =
+      origin && origin.split(".");
+    if (effectActorId && actorId !== effectActorId) {
+      origin = `${actorLiteral}.${actorId}.${ownedItemLiteral}.${effectOwnedItemId}`;
+    }
+    return origin;
+  }
+
   // Defaults when creating a new Actor
   static async create(data: any, options?: object): Promise<Entity> {
     data.token = data.token || {};
