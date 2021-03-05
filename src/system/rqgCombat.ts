@@ -24,26 +24,28 @@ export class RqgCombat {
 
 function renderCombatTracker(app, html, data) {
   const currentCombat = data.combats[data.currentIndex - 1];
-  html.find(".combatant").each(async (i, el) => {
-    const combId = el.dataset.combatantId;
-    const combatant = currentCombat.data.combatants.find((c) => c._id === combId);
-    if (!combatant.initiative) {
-      const attributes = combatant.actor.data.data.attributes;
-      // TODO How to know primary weapon SR?
-      await currentCombat.setInitiative(
-        combId,
-        attributes.dexStrikeRank + attributes.sizStrikeRank
-      );
-    }
-    const initDiv = el.getElementsByClassName("token-initiative")[0];
-    initDiv.innerHTML = `<input type="number" min="1" max="12" value="${combatant.initiative}" style="color:white">`;
+  if (currentCombat) {
+    html.find(".combatant").each(async (i, el) => {
+      const combId = el.dataset.combatantId;
+      const combatant = currentCombat.data.combatants.find((c) => c._id === combId);
+      if (!combatant.initiative) {
+        const attributes = combatant.actor.data.data.attributes;
+        // TODO How to know primary weapon SR?
+        await currentCombat.setInitiative(
+          combId,
+          attributes.dexStrikeRank + attributes.sizStrikeRank
+        );
+      }
+      const initDiv = el.getElementsByClassName("token-initiative")[0];
+      initDiv.innerHTML = `<input type="number" min="1" max="12" value="${combatant.initiative}" style="color:white">`;
 
-    initDiv.addEventListener("change", async (e) => {
-      const inputElement = e.target;
-      const combatantId = inputElement.closest("[data-combatant-id]").dataset.combatantId;
-      await currentCombat.setInitiative(combatantId, inputElement.value);
+      initDiv.addEventListener("change", async (e) => {
+        const inputElement = e.target;
+        const combatantId = inputElement.closest("[data-combatant-id]").dataset.combatantId;
+        await currentCombat.setInitiative(combatantId, inputElement.value);
+      });
     });
-  });
+  }
 }
 
 function sortCombatants(a, b) {
