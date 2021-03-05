@@ -63,6 +63,16 @@
 
   <div class="nowrap">
     {{#if data.isGM}}
+    <label>Town / Home Area
+      <input type="text" name="data.background.town" value="{{data.background.town}}" size="30">
+    </label>
+    {{else}}
+    <b>Town / Home Area</b> {{data.background.town}}
+    {{/if}}
+  </div>
+
+  <div class="nowrap">
+    {{#if data.isGM}}
     <label>Tribe
       <input type="text" name="data.background.tribe" value="{{data.background.tribe}}" size="30">
     </label>

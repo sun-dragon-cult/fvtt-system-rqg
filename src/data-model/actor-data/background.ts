@@ -41,6 +41,7 @@ export class Background {
     public race: string,
     public occupation: OccupationEnum,
     public homeland: HomeLandEnum,
+    public town?: string,
     public birthYear?: number,
     public age?: number,
     public gender?: string,
