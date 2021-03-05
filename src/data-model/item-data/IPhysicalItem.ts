@@ -4,6 +4,11 @@ export type EquippedStatus = typeof equippedStatuses[number];
 export const physicalItemTypes = ["unique", "currency", "consumable"];
 export type PhysicalItemType = typeof physicalItemTypes[number];
 
+export type Price = {
+  real: number;
+  estimated: number;
+};
+
 export interface IPhysicalItem {
   physicalItemType: PhysicalItemType;
   quantity?: number; // Used for currency & consumables like arrows, torches, food rations. 1 for others
@@ -13,5 +18,10 @@ export interface IPhysicalItem {
   attunedTo: string; // Name of the character attuned to it, or empty if not attuned
   encumbrance: number;
   equippedStatus: EquippedStatus;
-  price?: number; // Price in Lunars
+  price: Price; // Price in Lunars
 }
+
+export const emptyPrice: Price = {
+  real: 0,
+  estimated: 0,
+};

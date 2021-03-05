@@ -1,4 +1,4 @@
-import { IPhysicalItem } from "../../data-model/item-data/IPhysicalItem";
+import { emptyPrice, IPhysicalItem } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
 
@@ -21,6 +21,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
     attunedTo: "",
     encumbrance: 0,
     equippedStatus: "notCarried",
+    price: emptyPrice,
   };
   let physicalItemNodes: LocationNode[] = physicalItems
     .filter((i) => i.type && !i.data.data.isNatural)
@@ -83,6 +84,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
       attunedTo: "",
       encumbrance: 0,
       equippedStatus: "notCarried",
+      price: emptyPrice,
     };
   });
   locationTree.contains = locationTree.contains.concat(virtualNodes);

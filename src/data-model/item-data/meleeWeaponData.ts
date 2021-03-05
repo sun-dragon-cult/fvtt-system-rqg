@@ -1,4 +1,4 @@
-import { EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
+import { emptyPrice, EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
 import { RqgItem } from "../../items/rqgItem";
 import { SkillData } from "./skillData";
@@ -43,7 +43,7 @@ export const emptyMeleeWeapon: MeleeWeaponData = {
   strikeRank: 0,
   hitPoints: emptyResource,
   encumbrance: 0,
-  price: 0,
+  price: emptyPrice,
   equippedStatus: "carried",
   isNatural: false,
   location: "",

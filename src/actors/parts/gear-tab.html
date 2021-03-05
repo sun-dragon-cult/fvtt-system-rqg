@@ -43,7 +43,7 @@
           <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
           <div data-item-id="{{_id}}" class="gear-contextmenu">{{!-- TODO REMOVE QUANTITY --}}</div>
           <div data-item-id="{{_id}}" class="gear-contextmenu">
-            <span class="text-right">{{#if data.data.price}}{{currency data.data.price 'L'}}{{/if}}</span>
+            <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
           </div>
           <div data-item-id="{{_id}}" class="gear-contextmenu">
             <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
@@ -81,7 +81,7 @@
               <input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}">
             </div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">
-              <span class="text-right">{{#if data.data.price}}{{currency data.data.price 'L'}}{{/if}}</span>
+              <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
             </div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">
               <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
@@ -118,7 +118,7 @@
               <span class="text-right">{{data.data.quantity}}</span>
             </div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">
-              <span class="text-right">{{#if data.data.price}}{{currency data.data.price 'L'}}{{/if}}</span>
+              <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
             </div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">
               <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
@@ -141,7 +141,7 @@
               <span class="text-right">{{data.data.quantity}}</span>
             </div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">
-              <span class="text-right">{{#if data.data.price}}{{currency data.data.price 'L'}}{{/if}}</span>
+              <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
             </div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">
               <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>

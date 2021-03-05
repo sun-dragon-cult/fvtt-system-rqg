@@ -1,4 +1,4 @@
-import { EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
+import { emptyPrice, EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
 
 export type ArmorData = IPhysicalItem & {
   size: number; // Must match character size
@@ -14,7 +14,7 @@ export type ArmorData = IPhysicalItem & {
 export const emptyArmor: ArmorData = {
   description: "",
   size: 0,
-  price: 0,
+  price: emptyPrice,
   encumbrance: 1,
   equippedStatus: "carried",
   hitLocations: [],

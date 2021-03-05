@@ -21,7 +21,8 @@
     <label>Move Quietly Penalty <input type="number" min="0" max="99" name="data.moveQuietlyPenalty"
                                        value="{{item.data.moveQuietlyPenalty}}"></label><br>
     <label>Fits size <input type="number" min="1" max="99" name="data.size" value="{{item.data.size}}"></label><br>
-    <label>Price <input type="number" min="0" max="99999999" name="data.price" value="{{item.data.price}}">(L)</label><br>
+    <label>Price (real) <input type="number" min="0" max="99999999" name="data.price.real" value="{{item.data.price.real}}">(L)</label><br>
+    <label>Price (estimated) <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{item.data.price.estimated}}">(L)</label><br>
     <label>Location <input type="text" name="data.location" value="{{item.data.location}}"></label><br>
     <label>Attuned to <input type="text" name="data.attunedTo" value="{{item.data.attunedTo}}"></label><br>
     <label>Description {{editor content=data.description target="data.description"

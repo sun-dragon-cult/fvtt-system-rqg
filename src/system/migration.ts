@@ -172,10 +172,27 @@ export class Migrate {
    * @param item
    */
   private static itemData = function (item) {
-    let updateData = {};
+    let updateData = Migrate.itemEstimatedPrice(item);
     Migrate.removeDeprecatedFields(item, updateData);
     return updateData;
   };
+
+  // Migrate price to new model definition in v0.14.0 +
+  private static itemEstimatedPrice(item) {
+    let updateData = {};
+    if (item.data.physicalItemType && typeof item.data.price !== "object") {
+      const currentPrice = item.data.price;
+      updateData = {
+        data: {
+          price: {
+            real: currentPrice,
+            estimated: 0,
+          },
+        },
+      };
+    }
+    return updateData;
+  }
 
   /* -------------------------------------------- */
 
