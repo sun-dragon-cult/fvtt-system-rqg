@@ -5,12 +5,13 @@ import { RqgItem } from "./items/rqgItem";
 import { handlebarsHelpers } from "./system/handlebarsHelpers";
 import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./system/rqgCombat";
-import { RQG } from "./system/config";
+import { RQG_CONFIG } from "./system/config";
 import { ChatCardListeners } from "./chat/chatCardListeners";
+import { Migrate } from "./system/migration";
 
 Hooks.once("init", async () => {
   console.log("RQG | Initializing the Runequest Glorantha (Unofficial) Game System");
-  CONFIG.RQG = RQG;
+  CONFIG.RQG = RQG_CONFIG;
 
   // CONFIG.debug.hooks = true; // console log when hooks fire
   // @ts-ignore 0.7
@@ -32,6 +33,7 @@ Hooks.once("init", async () => {
 
 Hooks.once("ready", async () => {
   if (game.user.isGM) {
+    await Migrate.world();
     const runeCompendium = game.settings.get("rqg", "runesCompendium");
     // Store runes in settings to avoid await on ItemSheet getData
     try {

@@ -1,4 +1,4 @@
-export const RQG = {
+export const RQG_CONFIG = {
   debug: {
     showActorActiveEffectsTab: false,
     showAllUiSections: false,
