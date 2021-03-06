@@ -1,3 +1,8 @@
+type Updates = {
+  updateData: object;
+  deleteEmbeddedActiveEffectsIds: string[];
+};
+
 export class Migrate {
   /**
    * Perform a system migration for the entire World, applying migrations for Actors, Items, and Compendium packs
@@ -15,10 +20,14 @@ export class Migrate {
     // Migrate World Actors
     for (let a of game.actors.entities) {
       try {
-        const updateData = Migrate.actorData(a.data);
-        if (!isObjectEmpty(updateData)) {
+        const updates = Migrate.actor(a);
+        if (!isObjectEmpty(updates.updateData)) {
           console.log(`RQG | Migrating Actor entity ${a.name}`);
-          await a.update(updateData, { enforceTypes: false });
+          await a.update(updates.updateData, { enforceTypes: false });
+        }
+        if (updates.deleteEmbeddedActiveEffectsIds) {
+          console.log(`RQG | Cleaning Actor Active Effects entity ${a.name}`);
+          await a.deleteEmbeddedEntity("ActiveEffect", updates.deleteEmbeddedActiveEffectsIds);
         }
       } catch (err) {
         console.error("RQG | World Actors Migration Error:", err);
@@ -89,7 +98,7 @@ export class Migrate {
       try {
         let updateData = null;
         if (entity === "Item") updateData = Migrate.itemData(ent.data);
-        else if (entity === "Actor") updateData = Migrate.actorData(ent.data);
+        else if (entity === "Actor") updateData = Migrate.actor(ent);
         else if (entity === "Scene") updateData = Migrate.sceneData(ent.data);
         if (!isObjectEmpty(updateData)) {
           expandObject(updateData);
@@ -110,34 +119,73 @@ export class Migrate {
   /*  Entity Type Migration Helpers               */
   /* -------------------------------------------- */
 
+  private static actor(actor: Actor): Updates {
+    let updates: Updates = { updateData: [], deleteEmbeddedActiveEffectsIds: [] };
+
+    updates.deleteEmbeddedActiveEffectsIds = [].concat(
+      updates.deleteEmbeddedActiveEffectsIds,
+      Migrate.removeOrphanedActiveEffects(actor)
+    );
+    updates.deleteEmbeddedActiveEffectsIds = [].concat(
+      updates.deleteEmbeddedActiveEffectsIds,
+      Migrate.removeDuplicatedActiveEffects(actor)
+    );
+
+    updates.updateData = Migrate.actorData(actor.data);
+    return updates;
+  }
+
   /**
    * Migrate a single Actor entity to incorporate latest data model changes
    * Return an Object of updateData to be applied
-   * @param {Actor} actor   The actor to Update
+   * @param {Actor} actorData   The actor to Update
    * @return {Object}       The updateData to apply
    */
-  private static actorData(actor) {
+  private static actorData(actorData): object {
     let updateData = {};
-    Migrate.removeDeprecatedFields(actor, updateData);
+    Migrate.removeDeprecatedFields(actorData, updateData);
 
     // Migrate Owned Items
-    if (!actor.items) return updateData;
+    if (!actorData.items) {
+      return actorData;
+    }
     let hasItemUpdates = false;
-    const items = actor.items.map((i) => {
+    const items = actorData.items.map((i) => {
       // Migrate the Owned Item
-      let itemUpdate = Migrate.itemData(i);
+      let itemUpdate = Migrate.itemData(i); // TODO rätt?
 
       // Update the Owned Item
       if (!isObjectEmpty(itemUpdate)) {
         hasItemUpdates = true;
         return mergeObject(i, itemUpdate, { enforceTypes: false, inplace: false });
-      } else return i;
+      } else {
+        return i;
+      }
     });
     if (hasItemUpdates) {
       // @ts-ignore
       updateData.items = items;
     }
     return updateData;
+  }
+
+  // Return an array of active Effects Ids to be deleted because they miss origin
+  private static removeOrphanedActiveEffects(actor): string[] {
+    return actor.data.effects.filter((e) => !e.origin).map((e) => e._id);
+  }
+
+  // Return an array of active Effects Ids to be deleted because they are duplicated
+  // (have identical origin)
+  private static removeDuplicatedActiveEffects(actor): string[] {
+    let duplicateActiveEffectIds: string[] = [];
+    let activeEffectOrigins = [];
+    actor.data.effects.forEach((e) => {
+      if (activeEffectOrigins.includes(e.origin)) {
+        duplicateActiveEffectIds.push(e._id);
+      }
+      activeEffectOrigins.push(e.origin);
+    });
+    return duplicateActiveEffectIds;
   }
 
   /* -------------------------------------------- */
@@ -169,19 +217,20 @@ export class Migrate {
 
   /**
    * Migrate a single Item entity to incorporate latest data model changes
-   * @param item
+   * @param itemData
    */
-  private static itemData = function (item) {
-    let updateData = Migrate.itemEstimatedPrice(item);
-    Migrate.removeDeprecatedFields(item, updateData);
+  private static itemData(itemData) {
+    let updateData = {};
+    updateData = mergeObject(updateData, Migrate.itemEstimatedPrice(itemData));
+    Migrate.removeDeprecatedFields(itemData, updateData);
     return updateData;
-  };
+  }
 
   // Migrate price to new model definition in v0.14.0 +
-  private static itemEstimatedPrice(item) {
+  private static itemEstimatedPrice(itemData) {
     let updateData = {};
-    if (item.data.physicalItemType && typeof item.data.price !== "object") {
-      const currentPrice = item.data.price;
+    if (itemData.data.physicalItemType && typeof itemData.data.price !== "object") {
+      const currentPrice = itemData.data.price;
       updateData = {
         data: {
           price: {

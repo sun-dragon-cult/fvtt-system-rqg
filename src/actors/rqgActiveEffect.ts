@@ -11,27 +11,31 @@ export class RqgActiveEffect extends ActiveEffect {
     const items: Array<Item> = actor.items.filter(
       (i: Item) => i.data.type === affectedItem && i.data.name === itemName
     );
-    if (items.length > 1) {
-      console.error(
-        "Rqg apply active effect targets more than one item (item name not unique)",
-        path
-      );
-      return null;
-    } else if (items.length === 0) {
-      console.warn("Rqg apply active effect didn't match any item", path, items);
-      return null;
-    } else {
+    if (items.length === 1) {
+      // Found one and only one item that should be affected (Happy path)
       const currentValue = getProperty(items[0], path) || 0;
-      console.debug(
-        "RqgActiveEffect._applyCustom: adding",
-        change.value,
-        " on",
-        path,
-        " on",
-        items[0]
-      );
       setProperty(items[0], path, change.value + currentValue);
       return change.value;
+    } else if (items.length === 0) {
+      if (this.data.origin) {
+        const message = `Could not find any ${affectedItem} called "${itemName}" on actor "${actor.name}".
+        Please either add a ${affectedItem} item called "${itemName}" or modify the item that has this active effect`;
+        console.warn("RQG |", message, change, this);
+        if (game.user.isGM) {
+          ui.notifications && ui.notifications.warn(message, { permanent: true });
+        }
+      } else {
+        // Remove this AE from the actor since it is orphaned
+        console.warn("RQG | Deleting the Active Effect since it has no origin", this);
+        // @ts-ignore
+        actor.deleteEmbeddedEntity("ActiveEffect", this.id);
+      }
+      return null;
+    } else {
+      const message = `Apply Active Effect targets more than one item (item ${affectedItem} with name name "${itemName}" is not unique) - This is a bug!`;
+      console.error("RQG |", message, change);
+      ui.notifications.error(message);
+      return null;
     }
   }
 }

@@ -20,27 +20,22 @@ export class Armor extends BaseItem {
     // Update the active effect on actor from Item data
     // @ts-ignore
     const uuid = `Actor.${actor.id}.OwnedItem.${itemData._id}`;
-    const changes = Armor.generateActiveEffect(itemData.data).changes;
+    const generatedEffect = Armor.generateActiveEffect(itemData.data);
     // @ts-ignore
-    const existingEffect = actor.effects.find((e) => e.data.origin === uuid);
-    if (existingEffect) {
-      await actor.updateEmbeddedEntity(
-        "ActiveEffect",
-        {
-          _id: existingEffect.id,
-          changes: changes,
+    const existingEffects = actor.effects.filter((e) => e.data.origin === uuid);
+    if (existingEffects.length > 0) {
+      const changes = existingEffects.map((effect) => {
+        return {
+          _id: effect.id,
+          changes: generatedEffect.changes,
           disabled: !(itemData.data.equippedStatus === "equipped"),
-        },
-        {}
-      );
+        };
+      });
+      await actor.updateEmbeddedEntity("ActiveEffect", changes, {});
     } else {
-      console.error("Armor#onUpdateItem actor:", actor, itemData, " update:", update);
-      ui.notifications.error(
-        `This armor item (${itemData.name}) do not have an Active Effect. This is a bug!`,
-        {
-          permanent: true,
-        }
-      );
+      // No Active Effect for this armor item existed - create one
+      generatedEffect.origin = uuid;
+      await actor.createEmbeddedEntity("ActiveEffect", generatedEffect, {});
     }
   }
 
