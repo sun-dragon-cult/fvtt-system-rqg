@@ -13,6 +13,7 @@ export interface IPhysicalItem {
   physicalItemType: PhysicalItemType;
   quantity?: number; // Used for currency & consumables like arrows, torches, food rations. 1 for others
   description: string;
+  gmNotes: string;
   location: string;
   isContainer: boolean;
   attunedTo: string; // Name of the character attuned to it, or empty if not attuned

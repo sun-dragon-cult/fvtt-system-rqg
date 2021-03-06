@@ -8,6 +8,7 @@ export type GearData = IPhysicalItem & {
 
 export const emptyGear: GearData = {
   description: "",
+  gmNotes: "",
   quantity: 1,
   price: emptyPrice,
   encumbrance: 1,

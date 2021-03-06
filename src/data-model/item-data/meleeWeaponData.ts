@@ -34,6 +34,7 @@ export type MeleeWeaponData = IPhysicalItem & {
 
 export const emptyMeleeWeapon: MeleeWeaponData = {
   description: "",
+  gmNotes: "",
   skillId: "",
   skillOrigin: "",
   damage: "1D3",
