@@ -1,3 +1,32 @@
+# [0.14.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.13.1...v0.14.0) (2021-03-06)
+
+
+### Bug Fixes
+
+* active effects on duplicated or imported actors looses origin connection with the actor ownedItems ([2fcaaae](https://github.com/wakeand/fvtt-system-rqg/commit/2fcaaae))
+* characteristic rolls don't include difficulty multiplier also some refactoring to use async in chatcards ([7854de6](https://github.com/wakeand/fvtt-system-rqg/commit/7854de6))
+* don't show error messages for other players when changing equipped status Check that you have owner rights before entering life cycle methods, also disable interaction for observers. ([0f03456](https://github.com/wakeand/fvtt-system-rqg/commit/0f03456))
+* make currency quantity player editable ([437a59f](https://github.com/wakeand/fvtt-system-rqg/commit/437a59f))
+* NPE in RqgCombat ([6aeb3f7](https://github.com/wakeand/fvtt-system-rqg/commit/6aeb3f7))
+* only show the AE tab to GM ([5388e40](https://github.com/wakeand/fvtt-system-rqg/commit/5388e40))
+* round enc on gear.sheet down ([38ca903](https://github.com/wakeand/fvtt-system-rqg/commit/38ca903))
+* wrong actor on roll chat messages ([cdaed85](https://github.com/wakeand/fvtt-system-rqg/commit/cdaed85))
+
+
+### Features
+
+* add GM Notes field to physical items ([4dc9478](https://github.com/wakeand/fvtt-system-rqg/commit/4dc9478))
+* add migrations - clean actor active effects and migrate price model change ([c3e5c1c](https://github.com/wakeand/fvtt-system-rqg/commit/c3e5c1c))
+* add more homelands ([bc95467](https://github.com/wakeand/fvtt-system-rqg/commit/bc95467))
+* add town/home area background field ([ca53c7f](https://github.com/wakeand/fvtt-system-rqg/commit/ca53c7f))
+* only let GM edit hero points ([7078c92](https://github.com/wakeand/fvtt-system-rqg/commit/7078c92))
+* show chatCards to both GM and issuer ([2b9a88d](https://github.com/wakeand/fvtt-system-rqg/commit/2b9a88d))
+* show damage buttons for parry as well ([1e1fcd5](https://github.com/wakeand/fvtt-system-rqg/commit/1e1fcd5))
+* split price into GM visible (real) and player visible (estimated) ([12dac6b](https://github.com/wakeand/fvtt-system-rqg/commit/12dac6b))
+
+
+
+
 ## [0.13.1](https://github.com/wakeand/fvtt-system-rqg/compare/v0.13.0...v0.13.1) (2021-02-26)
 
 
