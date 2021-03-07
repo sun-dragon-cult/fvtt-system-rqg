@@ -21,8 +21,6 @@ export class RqgActor extends Actor<RqgActorData> {
     super.prepareBaseData();
     const actorData = this.data;
     const data = actorData.data;
-
-    console.debug("rqgActor # prepareBaseData", this.name, data);
     // Set this here before Active effects to allow POW crystals to boost it.
     data.attributes.magicPoints.max = data.characteristics.power.value;
   }
@@ -30,10 +28,7 @@ export class RqgActor extends Actor<RqgActorData> {
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
     const [data, str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
-    console.debug("rqgActor # prepareEmbeddedEntities", this.name, data);
-
     data.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
-
     this.items.forEach((item: RqgItem) =>
       ResponsibleItemClass.get(item.type).onActorPrepareEmbeddedEntities(item)
     );
@@ -43,11 +38,7 @@ export class RqgActor extends Actor<RqgActorData> {
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
    */
   applyActiveEffects(): void {
-    console.debug("rqgActor # applyActiveEffects", this.name);
-
     super.applyActiveEffects();
-    // @ts-ignore 0.7
-    console.debug("!! ***applyActiveEffects", this.effects);
   }
 
   /**
@@ -56,10 +47,7 @@ export class RqgActor extends Actor<RqgActorData> {
   prepareDerivedData(): void {
     // @ts-ignore (until foundry-pc-types are updated for 0.7)
     super.prepareDerivedData();
-
     const [data, str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
-    console.debug("rqgActor # prepareDerivedData", this.name, data);
-
     data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
       str,
       siz,
@@ -154,8 +142,6 @@ export class RqgActor extends Actor<RqgActorData> {
     options,
     userId: string
   ) {
-    console.debug("rqgActor # _onCreateEmbeddedEntity", child.name, child);
-
     if (embeddedName === "OwnedItem" && this.owner) {
       const updateData = await ResponsibleItemClass.get(child.type).onEmbedItem(
         this,
@@ -171,8 +157,6 @@ export class RqgActor extends Actor<RqgActorData> {
 
   // @ts-ignore
   protected async _onDeleteEmbeddedEntity(embeddedName, child: ItemData, options, userId: string) {
-    console.debug("rqgActor # _onDeleteEmbeddedEntity", child.name, child);
-
     if (embeddedName === "OwnedItem" && this.owner) {
       const updateData = await ResponsibleItemClass.get(child.type).onDeleteItem(
         this,
@@ -194,7 +178,6 @@ export class RqgActor extends Actor<RqgActorData> {
     options: any,
     userId: string
   ) {
-    console.debug("rqgActor # _onUpdateEmbeddedEntity", child.name, child);
     if (embeddedName === "OwnedItem" && this.owner) {
       const updateData = await ResponsibleItemClass.get(child.type).onUpdateItem(
         this,
@@ -211,8 +194,6 @@ export class RqgActor extends Actor<RqgActorData> {
 
   // @ts-ignore
   _onModifyEmbeddedEntity(embeddedName, ...args) {
-    // @ts-ignore
-    console.debug("rqgActor # _onModifyEmbeddedEntity", this.name, args);
     if (embeddedName === "OwnedItem" && this.owner) {
       this.updateEquippedStatus(args[0]).then(
         () =>

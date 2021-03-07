@@ -106,7 +106,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
   }
   if (!retriesLeft) {
     console.error(
-      "Physical Item Location algorithm did not finish. remaining items:",
+      "RQG | Physical Item Location algorithm did not finish. remaining items:",
       physicalItems
     );
   }

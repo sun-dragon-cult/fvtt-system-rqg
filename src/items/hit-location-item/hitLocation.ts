@@ -11,7 +11,6 @@ export class HitLocation extends BaseItem {
   // }
 
   public static onActorPrepareEmbeddedEntities(item: RqgItem<HitLocationData>): RqgItem {
-    console.debug("*** HitLocation prepareAsEmbeddedItem", item);
     // Remove any healed wounds
     item.data.data.wounds = item.data.data.wounds.filter((w) => w > 0);
 
