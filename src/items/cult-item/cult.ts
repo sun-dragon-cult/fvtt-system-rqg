@@ -34,7 +34,7 @@ export class Cult extends BaseItem {
         (newRune) => allRunesIndex.find((r) => r.name === newRune)?._id
       );
       const newRuneEntities = await Promise.all(newRuneIds.map((id) => runePack.getEntity(id)));
-      newRuneEntities.forEach(async (rune) => await actor.createOwnedItem(rune));
+      newRuneEntities.map(async (rune) => await actor.createOwnedItem(rune));
     }
     return;
   }

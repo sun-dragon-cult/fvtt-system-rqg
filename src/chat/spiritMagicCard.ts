@@ -30,9 +30,9 @@ export class SpiritMagicCard {
     await ChatMessage.create(await this.renderContent(flags, actor));
   }
 
-  public static async inputChangeHandler(ev, messageId: string) {}
+  public static async inputChangeHandler(ev, messageId: string): Promise<void> {}
 
-  public static async formSubmitHandler(ev, messageId: string) {
+  public static async formSubmitHandler(ev, messageId: string): Promise<boolean> {
     ev.preventDefault();
 
     const chatMessage = game.messages.get(messageId);
@@ -61,7 +61,7 @@ export class SpiritMagicCard {
     itemData: ItemData<SpiritMagicData>,
     level: number,
     boost: number
-  ) {
+  ): Promise<void> {
     const validationError = SpiritMagicCard.validateData(
       actor,
       itemData,
@@ -109,7 +109,10 @@ export class SpiritMagicCard {
     }
   }
 
-  private static async renderContent(flags: SpiritMagicCardFlags, actor: RqgActor) {
+  private static async renderContent(
+    flags: SpiritMagicCardFlags,
+    actor: RqgActor
+  ): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.html", flags);
     let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
     whisperRecipients.push(game.user._id);

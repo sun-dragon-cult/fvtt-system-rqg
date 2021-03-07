@@ -55,7 +55,7 @@ export class CharacteristicCard {
     await ChatMessage.create(await CharacteristicCard.renderContent(flags, actor));
   }
 
-  public static async inputChangeHandler(ev, messageId: string) {
+  public static async inputChangeHandler(ev, messageId: string): Promise<void> {
     const chatMessage = game.messages.get(messageId);
     const flags: CharacteristicCardFlags = chatMessage.data.flags.rqg;
     CharacteristicCard.updateFlagsFromForm(flags, ev);
@@ -76,7 +76,7 @@ export class CharacteristicCard {
     await chatMessage.update(data);
   }
 
-  public static async formSubmitHandler(ev, messageId: string) {
+  public static async formSubmitHandler(ev, messageId: string): Promise<boolean> {
     ev.preventDefault();
 
     const chatMessage = game.messages.get(messageId);
@@ -113,7 +113,7 @@ export class CharacteristicCard {
     characteristicValue: number,
     difficulty: number,
     modifier: number
-  ) {
+  ): Promise<void> {
     const result = await Ability.roll(
       actor,
       characteristicValue * difficulty,
@@ -168,7 +168,10 @@ export class CharacteristicCard {
     flags.formData.difficulty = difficulty ? difficulty : 0.5;
   }
 
-  private static async renderContent(flags: CharacteristicCardFlags, actor: RqgActor) {
+  private static async renderContent(
+    flags: CharacteristicCardFlags,
+    actor: RqgActor
+  ): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
     let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
     whisperRecipients.push(game.user._id);

@@ -6,11 +6,11 @@ export const combatMenuOptions = (actor) => [
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
-    callback: (el) => {
+    callback: async (el) => {
       const skillId = (el[0].closest("[data-skill-id]") as HTMLElement).dataset.skillId;
       const weaponId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
 
-      WeaponCard.show(actor, skillId, weaponId);
+      await WeaponCard.show(actor, skillId, weaponId);
     },
   },
   {

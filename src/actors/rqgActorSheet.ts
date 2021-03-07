@@ -247,11 +247,11 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
       let clickCount = 0;
 
-      el.addEventListener("click", (ev: MouseEvent) => {
+      el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          CharacteristicCard.roll(
+          await CharacteristicCard.roll(
             this.actor,
             characteristic,
             this.actor.data.data.characteristics[characteristic].value,
@@ -260,9 +260,9 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
           );
           clickCount = 0;
         } else if (clickCount === 1) {
-          setTimeout(() => {
+          setTimeout(async () => {
             if (clickCount === 1) {
-              CharacteristicCard.show(this.actor, {
+              await CharacteristicCard.show(this.actor, {
                 name: characteristic,
                 data: this.actor.data.data.characteristics[characteristic],
               });
@@ -280,16 +280,16 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
       let clickCount = 0;
 
-      el.addEventListener("click", (ev: MouseEvent) => {
+      el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          ItemCard.roll(this.actor, item.data, 0);
+          await ItemCard.roll(this.actor, item.data, 0);
           clickCount = 0;
         } else if (clickCount === 1) {
-          setTimeout(() => {
+          setTimeout(async () => {
             if (clickCount === 1) {
-              ItemCard.show(this.actor, itemId);
+              await ItemCard.show(this.actor, itemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -304,21 +304,21 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
       let clickCount = 0;
 
-      el.addEventListener("click", (ev: MouseEvent) => {
+      el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
           if (item.data.data.isVariable && item.data.data.points > 1) {
-            SpiritMagicCard.show(this.actor, itemId);
+            await SpiritMagicCard.show(this.actor, itemId);
           } else {
-            SpiritMagicCard.roll(this.actor, item.data, item.data.data.points, 0);
+            await SpiritMagicCard.roll(this.actor, item.data, item.data.data.points, 0);
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
-          setTimeout(() => {
+          setTimeout(async () => {
             if (clickCount === 1) {
-              SpiritMagicCard.show(this.actor, itemId);
+              await SpiritMagicCard.show(this.actor, itemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -333,17 +333,17 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
       let clickCount = 0;
 
-      el.addEventListener("click", (ev: MouseEvent) => {
+      el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
-          WeaponCard.show(this.actor, skillItemId, weaponItemId);
+          await WeaponCard.show(this.actor, skillItemId, weaponItemId);
           clickCount = 0;
         } else if (clickCount === 1) {
-          setTimeout(() => {
+          setTimeout(async () => {
             if (clickCount === 1) {
-              WeaponCard.show(this.actor, skillItemId, weaponItemId);
+              await WeaponCard.show(this.actor, skillItemId, weaponItemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -415,7 +415,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     });
   }
 
-  static confirmItemDelete(actor, itemId) {
+  static confirmItemDelete(actor, itemId): void {
     const item = actor.getOwnedItem(itemId);
     new Dialog(
       {
@@ -444,7 +444,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
   }
 
   // TODO Move somewhere else!
-  static async showJournalEntry(id: string, packName?: string) {
+  static async showJournalEntry(id: string, packName?: string): Promise<void> {
     let entity;
 
     // Compendium Link

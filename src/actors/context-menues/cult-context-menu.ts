@@ -18,7 +18,7 @@ export const cultMenuOptions = (actor) => [
       while (firstItemEl.previousElementSibling?.dataset?.itemId === itemId) {
         firstItemEl = firstItemEl.previousElementSibling;
       }
-      RqgActorSheet.showJournalEntry(
+      await RqgActorSheet.showJournalEntry(
         firstItemEl.dataset.journalId,
         firstItemEl.dataset.journalPack
       );

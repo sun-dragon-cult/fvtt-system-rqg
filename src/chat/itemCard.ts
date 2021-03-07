@@ -27,7 +27,7 @@ export class ItemCard {
     await ChatMessage.create(await ItemCard.renderContent(flags, actor));
   }
 
-  public static async inputChangeHandler(ev, messageId: string) {
+  public static async inputChangeHandler(ev, messageId: string): Promise<void> {
     const chatMessage = game.messages.get(messageId);
     const flags: ItemCardFlags = chatMessage.data.flags.rqg;
     const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
@@ -46,7 +46,7 @@ export class ItemCard {
     await chatMessage.update(data);
   }
 
-  public static async formSubmitHandler(ev, messageId: string) {
+  public static async formSubmitHandler(ev, messageId: string): Promise<boolean> {
     ev.preventDefault();
 
     const chatMessage = game.messages.get(messageId);
@@ -69,21 +69,25 @@ export class ItemCard {
     return false;
   }
 
-  public static async roll(actor: RqgActor, itemData: ItemData, modifier: number) {
+  public static async roll(actor: RqgActor, itemData: ItemData, modifier: number): Promise<void> {
     const chance: number = Number(itemData.data.chance) || 0;
     const result = await Ability.roll(actor, chance, modifier, itemData.name + " check");
-    ItemCard.checkExperience(actor, itemData, result);
+    await ItemCard.checkExperience(actor, itemData, result);
   }
 
-  public static checkExperience(actor: RqgActor, itemData: ItemData, result: ResultEnum): void {
+  public static async checkExperience(
+    actor: RqgActor,
+    itemData: ItemData,
+    result: ResultEnum
+  ): Promise<void> {
     if (result <= ResultEnum.Success && !itemData.data.hasExperience) {
       // @ts-ignore
-      actor.updateOwnedItem({ _id: itemData._id, data: { hasExperience: true } });
+      await actor.updateOwnedItem({ _id: itemData._id, data: { hasExperience: true } });
       ui.notifications.info("Yey, you got an experience check on " + itemData.name + "!");
     }
   }
 
-  private static async renderContent(flags: ItemCardFlags, actor: RqgActor) {
+  private static async renderContent(flags: ItemCardFlags, actor: RqgActor): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
     let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
     whisperRecipients.push(game.user._id);

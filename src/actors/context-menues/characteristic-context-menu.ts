@@ -18,10 +18,10 @@ export const characteristicMenuOptions = (actor) => [
     name: "Direct Roll *5 (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
-    callback: (el) => {
+    callback: async (el) => {
       const characteristic = (el[0].closest("[data-characteristic]") as HTMLElement).dataset
         .characteristic;
-      CharacteristicCard.roll(
+      await CharacteristicCard.roll(
         actor,
         characteristic,
         actor.data.data.characteristics[characteristic].value,

@@ -6,19 +6,19 @@ export const skillMenuOptions = (actor) => [
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
-    callback: (el) => {
+    callback: async (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      ItemCard.show(actor, itemId);
+      await ItemCard.show(actor, itemId);
     },
   },
   {
     name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
-    callback: (el) => {
+    callback: async (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
-      ItemCard.roll(actor, item.data, 0);
+      await ItemCard.roll(actor, item.data, 0);
     },
   },
   {
@@ -64,7 +64,7 @@ export const skillMenuOptions = (actor) => [
       while (firstItemEl.previousElementSibling?.dataset?.itemId === itemId) {
         firstItemEl = firstItemEl.previousElementSibling;
       }
-      RqgActorSheet.showJournalEntry(
+      await RqgActorSheet.showJournalEntry(
         firstItemEl.dataset.journalId,
         firstItemEl.dataset.journalPack
       );

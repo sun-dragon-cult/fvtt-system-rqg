@@ -6,23 +6,23 @@ export const spiritMagicMenuOptions = (actor) => [
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
-    callback: (el) => {
+    callback: async (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
-      SpiritMagicCard.show(actor, item._id);
+      await SpiritMagicCard.show(actor, item._id);
     },
   },
   {
     name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
-    callback: (el) => {
+    callback: async (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = actor.items.get(itemId);
       if (item.data.data.isVariable && item.data.data.points > 1) {
-        SpiritMagicCard.show(actor, item._id);
+        await SpiritMagicCard.show(actor, item._id);
       } else {
-        SpiritMagicCard.roll(actor, item.data, item.data.data.points, 0);
+        await SpiritMagicCard.roll(actor, item.data, item.data.data.points, 0);
       }
     },
   },
@@ -43,7 +43,7 @@ export const spiritMagicMenuOptions = (actor) => [
       while (firstItemEl.previousElementSibling?.dataset?.itemId === itemId) {
         firstItemEl = firstItemEl.previousElementSibling;
       }
-      RqgActorSheet.showJournalEntry(
+      await RqgActorSheet.showJournalEntry(
         firstItemEl.dataset.journalId,
         firstItemEl.dataset.journalPack
       );

@@ -11,7 +11,7 @@ export class ChatCardListeners {
     weaponCard: WeaponCard,
   };
 
-  public static init() {
+  public static init(): void {
     Hooks.on("renderChatLog", (chatLog, html) => {
       ChatCardListeners.addChatListeners(html);
     });
@@ -20,7 +20,7 @@ export class ChatCardListeners {
     });
   }
 
-  private static addChatListeners(html) {
+  private static addChatListeners(html): void {
     html.on("submit", "form", ChatCardListeners.formSubmitHandler);
     html.on("change", "input", ChatCardListeners.inputChangeHandler);
     html.on("change", "select", ChatCardListeners.inputChangeHandler);
