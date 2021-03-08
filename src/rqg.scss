@@ -507,10 +507,30 @@
     overflow-y: auto;
   }
 
-  &.chat-card.characteristic-card {
-    .multiplier {
-      font-size: 80%;
-      vertical-align: text-top;
+  &.chat-card {
+    &.weapon-card {
+      .active {
+        box-shadow: 0 0 0.5em red;
+      }
+      h3 {
+        margin-bottom: -6px;
+      }
+      input[type="submit"] {
+        margin-top: 5px;
+      }
+      .damage {
+        writing-mode: tb;
+        transform: rotate(180deg);
+        height: min-content;
+        margin-right: 3px;
+        margin-left: -4px;
+      }
+    }
+    &.characteristic-card {
+      .multiplier {
+        font-size: 80%;
+        vertical-align: text-top;
+      }
     }
   }
 }

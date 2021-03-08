@@ -1,7 +1,7 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
 import { SkillData } from "../data-model/item-data/skillData";
-import { MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
+import { CombatManeuver, MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
@@ -94,43 +94,8 @@ export class WeaponCard extends ChatMessage {
       }
       await WeaponCard.roll(flags, chatMessage);
     } else if (action === "damageRoll") {
-      let damageBonus =
-        actor.data.data.attributes.damageBonus !== "0"
-          ? `+ ${actor.data.data.attributes.damageBonus}[Damage Bonus]`
-          : "";
-
-      if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
-        const missileWeaponData: ItemData<MissileWeaponData> = (flags.weaponItemData as unknown) as ItemData<MissileWeaponData>;
-
-        if (missileWeaponData.data.isThrownWeapon) {
-          damageBonus = " + ceil(" + actor.data.data.attributes.damageBonus + "/2)";
-        } else if (missileWeaponData.data.isProjectileWeapon) {
-          damageBonus = "";
-        }
-      }
-
-      const damageType = ev.originalEvent.submitter.value; // Normal Damage | Special Damage | Max Special Damage
-      let weaponDamage = flags.weaponItemData.data.damage;
-      if (["Special Damage", "Max Special Damage"].includes(damageType)) {
-        if (["slash", "impale"].includes(flags.formData.combatManeuver)) {
-          weaponDamage = weaponDamage + " + " + weaponDamage;
-        } else if (flags.formData.combatManeuver === "crush") {
-          // @ts-ignore
-          const maxDamageBonus = Roll.create(damageBonus).evaluate({ maximize: true }).total;
-          damageBonus = damageBonus + " + " + maxDamageBonus;
-        }
-      }
-      const maximise = damageType === "Max Special Damage";
-
-      // @ts-ignore
-      const roll = Roll.create(`${weaponDamage} ${damageBonus}`).evaluate({
-        maximize: maximise,
-      });
-      await roll.toMessage({
-        speaker: ChatMessage.getSpeaker(),
-        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        flavor: `damage`,
-      });
+      const damageType = ev.originalEvent.submitter.value; // Normal | Special | Max Special);  damageSeverity ??
+      await WeaponCard.damageRoll(flags, damageType);
     } else if (action === "hitLocationRoll") {
       // @ts-ignore
       const roll = Roll.create("1D20").evaluate();
@@ -189,5 +154,74 @@ export class WeaponCard extends ChatMessage {
 
   private static calcRollChance(value: number, modifier: number): number {
     return value + modifier;
+  }
+
+  private static async damageRoll(flags: WeaponCardFlags, damageType: string): Promise<void> {
+    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    let damageBonus =
+      actor.data.data.attributes.damageBonus !== "0"
+        ? `+ ${actor.data.data.attributes.damageBonus}[Damage Bonus]`
+        : "";
+
+    if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
+      const missileWeaponData: ItemData<MissileWeaponData> = (flags.weaponItemData as unknown) as ItemData<MissileWeaponData>;
+
+      if (missileWeaponData.data.isThrownWeapon) {
+        damageBonus = " + ceil(" + actor.data.data.attributes.damageBonus + "/2)";
+      } else if (missileWeaponData.data.isProjectileWeapon) {
+        damageBonus = "";
+      }
+    }
+
+    let weaponDamage = flags.weaponItemData.data.damage;
+    if (["Special", "Max Special"].includes(damageType)) {
+      if (
+        [CombatManeuver.Slash, CombatManeuver.Impale].includes(
+          flags.formData.combatManeuver as CombatManeuver
+        )
+      ) {
+        weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
+      } else if (flags.formData.combatManeuver === CombatManeuver.Crush) {
+        damageBonus = WeaponCard.crushSpecialDamage(damageBonus);
+      } else if (flags.formData.combatManeuver === CombatManeuver.Parry) {
+        if (flags.weaponItemData.data.combatManeuvers.includes(CombatManeuver.Crush)) {
+          damageBonus = WeaponCard.crushSpecialDamage(damageBonus);
+        } else if (
+          flags.weaponItemData.data.combatManeuvers.some((m) =>
+            [CombatManeuver.Slash, CombatManeuver.Impale].includes(m)
+          )
+        ) {
+          weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
+        } else {
+          console.error(
+            `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`
+          );
+          ui.notifications.error(
+            `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`
+          );
+        }
+      }
+    }
+    const maximise = damageType === "Max Special";
+
+    // @ts-ignore
+    const roll = Roll.create(`${weaponDamage} ${damageBonus}`).evaluate({
+      maximize: maximise,
+    });
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker(),
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+      flavor: `damage`,
+    });
+  }
+
+  private static crushSpecialDamage(damageBonus: string): string {
+    // @ts-ignore
+    const maxDamageBonus = Roll.create(damageBonus).evaluate({ maximize: true }).total;
+    return damageBonus + " + " + maxDamageBonus;
+  }
+
+  private static slashImpaleSpecialDamage(weaponDamage: string): string {
+    return weaponDamage + " + " + weaponDamage;
   }
 }

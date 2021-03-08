@@ -9,81 +9,98 @@
     <div class="flex-row">
     {{#each weaponItemData.data.combatManeuvers}}
 {{!--      <button name="combatManeuver" value="{{this}}">{{this}}</button> --}}
-      <input type="submit" name="combatManeuver" value="{{this}}">
+      <input type="submit" name="combatManeuver" value="{{this}}" {{#if (eq this ../formData.combatManeuver)}}class="active"{{/if}}>
     {{/each}}
     </div>
 
-    {{#if (eq formData.combatManeuver "parry")}}
-      {{#if (eq result 0)}}
-      <h3>TODO Hyper Critical Not yet implemented</h3>
-      {{/if}}
+    {{#if formData.combatManeuver}}
+    <hr>
 
-      {{#if (eq result 1)}}
-      <h3>TODO Special Critical Not yet implemented</h3>
-      {{/if}}
+      {{#if (eq formData.combatManeuver "parry")}}
+        {{#if (eq result 0)}}
+          <h3>TODO Hyper Critical Not yet implemented</h3>
+        {{/if}}
 
-      {{#if (eq result 2)}}
-      <div class="flex-row">
-        <input type="submit" name="damageRoll" value="Normal Damage">
-        <input type="submit" name="damageRoll" value="Special Damage">
-      </div>
-      {{/if}}
+        {{#if (eq result 1)}}
+          <h3>TODO Special Critical Not yet implemented</h3>
+        {{/if}}
 
-      {{#if (eq result 3)}}
-      <div class="flex-row">
-        <input type="submit" name="damageRoll" value="Normal Damage">
-        <input type="submit" name="damageRoll" value="Special Damage">
-      </div>
-      {{/if}}
+        {{#if (eq result 2)}}
+          <div class="flex-row">
+            <div class="damage">Damage</div>
+            <input type="submit" name="damageRoll" value="Normal">
+            <input type="submit" name="damageRoll" value="Special">
+          </div>
+        {{/if}}
 
-      {{#if (eq result 4)}}
-      <input type="submit" name="damageRoll" value="Normal Damage"><br>
-      {{/if}}
+        {{#if (eq result 3)}}
+          <div class="flex-row">
+            <div class="damage">Damage</div>
+            <input type="submit" name="damageRoll" value="Normal">
+            <input type="submit" name="damageRoll" value="Special">
+          </div>
+        {{/if}}
 
-      {{#if (eq result 5)}}
-      {{/if}}
+        {{#if (eq result 4)}}
+          <div class="flex-row">
+            <div class="damage">Damage</div>
+            <input type="submit" name="damageRoll" value="Normal">
+          </div>
+        {{/if}}
 
-      {{#if (eq result 6)}}
-      <h1>Fumble Table Time</h1>
-      {{/if}}
-    {{else}}
-      {{#if (eq result 0)}}
-      <h3>TODO Hyper Critical Not yet implemented</h3>
-      {{/if}}
+        {{#if (eq result 5)}}
+        {{/if}}
 
-      {{#if (eq result 1)}}
-      <h3>TODO Special Critical Not yet implemented</h3>
-      {{/if}}
+        {{#if (eq result 6)}}
+          <h1>Fumble Table Time</h1>
+        {{/if}}
+      {{else}}
+        {{#if (eq result 0)}}
+          <h3>TODO Hyper Critical Not yet implemented</h3>
+        {{/if}}
 
-      {{#if (eq result 2)}}
-      <div class="flex-row">
-        <input type="submit" name="damageRoll" value="Normal Damage">
-        <input type="submit" name="damageRoll" value="Special Damage">
-        <input type="submit" name="damageRoll" value="Max Special Damage">
-      </div>
-      <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
-      {{/if}}
+        {{#if (eq result 1)}}
+          <h3>TODO Special Critical Not yet implemented</h3>
+        {{/if}}
 
-      {{#if (eq result 3)}}
-      <div class="flex-row">
-        <input type="submit" name="damageRoll" value="Normal Damage">
-        <input type="submit" name="damageRoll" value="Special Damage">
-      </div>
-      <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
-      {{/if}}
+        {{#if (eq result 2)}}
+          <div class="flex-row">
+            <div class="damage">Damage</div>
+            <input type="submit" name="damageRoll" value="Normal">
+            <input type="submit" name="damageRoll" value="Special">
+            <input type="submit" name="damageRoll" value="Max Special">
+          </div>
+          <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+        {{/if}}
 
-      {{#if (eq result 4)}}
-        <input type="submit" name="damageRoll" value="Normal Damage"><br>
-        <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
-      {{/if}}
+        {{#if (eq result 3)}}
+          <div class="flex-row">
+            <div class="damage">Damage</div>
+            <input type="submit" name="damageRoll" value="Normal">
+            <input type="submit" name="damageRoll" value="Special">
+          </div>
+          <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+        {{/if}}
 
-      {{#if (eq result 5)}}
-      <input type="submit" name="damageRoll" value="Normal Damage"><br>
-      <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
-      {{/if}}
+        {{#if (eq result 4)}}
+          <div class="flex-row">
+            <div class="damage">Damage</div>
+            <input type="submit" name="damageRoll" value="Normal">
+          </div>
+          <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+        {{/if}}
 
-      {{#if (eq result 6)}}
-       <h1>Fumble Table Time</h1>
+        {{#if (eq result 5)}}
+          <div class="flex-row">
+            <div class="damage">Damage</div>
+            <input type="submit" name="damageRoll" value="Normal">
+          </div>
+          <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+        {{/if}}
+
+        {{#if (eq result 6)}}
+         <h1>Fumble Table Time</h1>
+        {{/if}}
       {{/if}}
     {{/if}}
   </div>
