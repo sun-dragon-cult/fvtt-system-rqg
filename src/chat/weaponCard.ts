@@ -104,8 +104,13 @@ export class WeaponCard extends ChatMessage {
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         flavor: `Hitlocation`,
       });
+    } else if (action === "fumble") {
+      await WeaponCard.fumbleRoll(flags);
     } else {
-      ui.notifications.error("Oops you shouldn't see this - unknown button in chat card");
+      ui.notifications.error(
+        `Oops you shouldn't see this - unknown button "${action}" in weapon chat card`,
+        { permanent: true }
+      );
     }
 
     button.disabled = false;
@@ -213,6 +218,55 @@ export class WeaponCard extends ChatMessage {
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flavor: `damage`,
     });
+  }
+
+  private static async fumbleRoll(flags: WeaponCardFlags) {
+    const fumbleTableName = game.settings.get("rqg", "fumbleRollTable");
+    const fumbleTable = game.tables.getName(fumbleTableName);
+    if (!fumbleTable) {
+      ui.notifications.error(`Misconfiguration, the fumble table "${fumbleTableName}" is missing`, {
+        permanent: true,
+      });
+      return;
+    }
+    const draw = await fumbleTable.draw({ displayChat: false });
+    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+
+    // Construct chat data
+    const nr = draw.results.length > 1 ? `${draw.results.length} results` : "a result";
+
+    // Hide GM fumble rolls from all but other GMs
+    let whisperRecipients = game.user.isGM ? game.users.filter((u) => u.isGM) : undefined;
+
+    const messageData = {
+      flavor: `Draws ${nr} from the ${fumbleTable.name} table.`,
+      user: game.user._id,
+      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
+      whisper: whisperRecipients,
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+      roll: draw.roll,
+      sound: draw.roll ? CONFIG.sounds.dice : null,
+      flags: { "core.RollTable": fumbleTable.id },
+      content: undefined,
+    };
+
+    // Render the chat card which combines the dice roll with the drawn results
+    // @ts-ignore
+    messageData.content = await renderTemplate(CONFIG.RollTable.resultTemplate, {
+      // @ts-ignore
+      description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true }),
+      results: draw.results.map((r) => {
+        r = duplicate(r);
+        // @ts-ignore
+        r.text = fumbleTable._getResultChatText(r);
+        r.icon = r.img || CONFIG.RollTable.resultIcon;
+        return r;
+      }),
+      table: fumbleTable,
+    });
+
+    // Create the chat message
+    await ChatMessage.create(messageData);
   }
 
   private static crushSpecialDamage(damageBonus: string): string {

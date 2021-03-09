@@ -37,6 +37,15 @@ export const registerRqgSystemSettings = function () {
     default: "rqg-compendiums.hitLocations-all",
   });
 
+  game.settings.register("rqg", "fumbleRollTable", {
+    name: "Fumble Roll Table",
+    hint: "The name of the Fumble roll table - will be used in combat",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "Fumble",
+  });
+
   game.settings.register("rqg", "runes", {
     scope: "world",
     config: false,

@@ -1,4 +1,4 @@
-import { registerRqgSystemSettings } from "./system/settings.js";
+import { registerRqgSystemSettings } from "./system/rqgSystemSettings.js";
 import { handlebarsTemplates } from "./system/handlebarsTemplates.js";
 import { RqgActor } from "./actors/rqgActor.js";
 import { RqgItem } from "./items/rqgItem";
