@@ -1,3 +1,18 @@
+# [0.15.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.14.0...v0.15.0) (2021-03-09)
+
+
+### Bug Fixes
+
+* parry special damage is wrong also refactor code and improve weapons card layout ([66187f0](https://github.com/wakeand/fvtt-system-rqg/commit/66187f0))
+
+
+### Features
+
+* add fumble table rolls ([2f2e152](https://github.com/wakeand/fvtt-system-rqg/commit/2f2e152))
+
+
+
+
 # [0.14.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.13.1...v0.14.0) (2021-03-06)
 
 
