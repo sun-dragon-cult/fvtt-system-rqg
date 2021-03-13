@@ -482,6 +482,10 @@
     }
   }
 
+  &.sheet {
+    backdrop-filter: blur(2px);
+  }
+
   .sheet-body {
     .tab {
       height: 100%;
