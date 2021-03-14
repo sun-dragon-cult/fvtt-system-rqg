@@ -3,21 +3,21 @@
   {{!-- Sheet Header --}}
   <header class="sheet-header">
 
-    <img class="profile-img {{#if (eq actor.img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{actor.img}}" data-edit="img" title="{{actor.name}}">
+    <img class="profile-img {{#if (eq rqgActorData.img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{rqgActorData.img}}" data-edit="img" title="{{rqgActorData.name}}">
     <div>
       <div class="topheaderline">
-        <h1 class="charname"><input name="name" type="text" value="{{actor.name}}"></h1>
+        <h1 class="charname"><input name="name" type="text" value="{{rqgActorData.name}}"></h1>
         <div>
-        {{#each data.characterRunes}}
+        {{#each rqgActorData.characterRunes}}
           <img class="rune" src="{{this}}">
         {{/each}}
         </div>
       </div>
       <div class="characteristics">
-        {{#each data.characteristics as | characteristic key |}}
+        {{#each rqgActorData.data.characteristics as | characteristic key |}}
         <div data-characteristic="{{key}}" class="flex-column {{#if characteristic.hasExperience}}experienced{{/if}}">
           <label class="resource-label norse characteristic-contextmenu" data-characteristic-roll>{{localize (concat 'characteristic.' key)}}</label>
-          {{#if ../data.isGM}}
+          {{#if ../isGM}}
             <input type="number" min="0" max="99" name="data.characteristics.{{key}}.value" value="{{characteristic.value}}" size="2">
           {{else}}
             <div class="value characteristic-contextmenu" data-characteristic-roll>{{characteristic.value}}</div>
@@ -27,37 +27,39 @@
       </div>
       <div class="thirdline">
         <div>
-          <span class="norse">SIZ SR</span> {{data.attributes.sizStrikeRank}}
+          <span class="norse">SIZ SR</span>
+          {{rqgActorData.data.attributes.sizStrikeRank}}
         </div>
         <div>
-          <span class="norse">DEX SR</span> {{data.attributes.dexStrikeRank}}
+          <span class="norse">DEX SR</span>
+          {{rqgActorData.data.attributes.dexStrikeRank}}
         </div>
         <div>
           <span class="norse">Max ENC</span>
-          {{data.attributes.maximumEncumbrance}}
+          {{rqgActorData.data.attributes.maximumEncumbrance}}
         </div>
         <div>
           <span class="norse">Equipped ENC</span>
-          {{data.attributes.equippedEncumbrance}}
+          {{rqgActorData.data.attributes.equippedEncumbrance}}
         </div>
         <div>
           <span class="norse">Travel ENC</span>
-          {{data.attributes.travelEncumbrance}}
+          {{rqgActorData.data.attributes.travelEncumbrance}}
         </div>
         <div>
           <span class="norse">MOV</span>
-          {{#if data.isGM}}
-          <input type="number" min="0" max="99" name="data.attributes.move" value="{{data.attributes.move}}" size="2">
+          {{#if isGM}}
+          <input type="number" min="0" max="99" name="data.attributes.move" value="{{rqgActorData.data.attributes.move}}" size="2">
           {{else}}
-          {{data.attributes.move}}
+          {{rqgActorData.data.attributes.move}}
           {{/if}}
         </div>
         <div>
           <span class="norse">Hero Points</span>
-          {{#if data.isGM}}
-          <input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{data.attributes.heroPoints}}" size="2">
+          {{#if isGM}}
+          <input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{rqgActorData.data.attributes.heroPoints}}" size="2">
           {{else}}
-          {{data.attributes.heroPoints}}
+          {{rqgActorData.data.attributes.heroPoints}}
           {{/if}}
         </div>
       </div>
@@ -67,23 +69,23 @@
   <div class="navbackground"></div>
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item norse" data-tab="combat">Combat</a>
-    {{#if data.showUiSection.runes}}<a class="item norse" data-tab="runes">Runes</a>{{/if}}
-    {{#if data.showUiSection.spiritMagic}}<a class="item norse" data-tab="spiritmagic">Spirit Magic</a>{{/if}}
-    {{#if data.showUiSection.runeMagic}}<a class="item norse" data-tab="runemagic">Rune Magic</a>{{/if}}
-    {{#if data.showUiSection.sorcery}}<a class="item norse" data-tab="sorcery">Sorcery</a>{{/if}}
-    {{#if data.showUiSection.skills}}<a class="item norse" data-tab="skills">Skills</a>{{/if}}
-    {{#if data.showUiSection.gear}}<a class="item norse" data-tab="gear">Gear</a>{{/if}}
-    {{#if data.showUiSection.passions}}<a class="item norse" data-tab="passions">Passions</a>{{/if}}
-    {{#if data.showUiSection.background}}<a class="item norse" data-tab="background">Background</a>{{/if}}
-    {{#if data.showUiSection.activeEffects}}<a class="item norse" data-tab="activeeffectstesting">AE 🧪</a>{{/if}}
+    {{#if showUiSection.runes}}<a class="item norse" data-tab="runes">Runes</a>{{/if}}
+    {{#if showUiSection.spiritMagic}}<a class="item norse" data-tab="spiritmagic">Spirit Magic</a>{{/if}}
+    {{#if showUiSection.runeMagic}}<a class="item norse" data-tab="runemagic">Rune Magic</a>{{/if}}
+    {{#if showUiSection.sorcery}}<a class="item norse" data-tab="sorcery">Sorcery</a>{{/if}}
+    {{#if showUiSection.skills}}<a class="item norse" data-tab="skills">Skills</a>{{/if}}
+    {{#if showUiSection.gear}}<a class="item norse" data-tab="gear">Gear</a>{{/if}}
+    {{#if showUiSection.passions}}<a class="item norse" data-tab="passions">Passions</a>{{/if}}
+    {{#if showUiSection.background}}<a class="item norse" data-tab="background">Background</a>{{/if}}
+    {{#if showUiSection.activeEffects}}<a class="item norse" data-tab="activeeffectstesting">AE 🧪</a>{{/if}}
   </nav>
 
   <section class="sheet-body">
     <div class="tab combat" data-group="primary" data-tab="combat">
         <div class="flex-row flex-wrap">
-          {{#if data.showUiSection.health}}{{> "systems/rqg/actors/parts/health.html" }}{{/if}}
+          {{#if showUiSection.health}}{{> "systems/rqg/actors/parts/health.html" }}{{/if}}
           <div>
-            {{#if data.showUiSection.combat}}{{> "systems/rqg/actors/parts/combat.html" }}{{/if}}
+            {{#if showUiSection.combat}}{{> "systems/rqg/actors/parts/combat.html" }}{{/if}}
             {{> "systems/rqg/actors/parts/spirit-combat.html" }}
           </div>
           <div style="width: 100%">
@@ -93,41 +95,55 @@
         </div>
     </div>
 
+    {{#if showUiSection.runes}}
     <div class="tab runes" data-group="primary" data-tab="runes">
       {{> "systems/rqg/actors/parts/runes-tab.html" }}
     </div>
+    {{/if}}
 
+    {{#if showUiSection.spiritMagic}}
     <div class="tab spiritmagic" data-group="primary" data-tab="spiritmagic">
       {{> "systems/rqg/actors/parts/spirit-magic-tab.html" }}
     </div>
+    {{/if}}
 
+    {{#if showUiSection.runeMagic}}
     <div class="tab runemagic" data-group="primary" data-tab="runemagic">
       {{> "systems/rqg/actors/parts/rune-magic-tab.html" }}
     </div>
+    {{/if}}
 
+    {{#if showUiSection.sorcery}}
     <div class="tab sorcery" data-group="primary" data-tab="sorcery">
       {{> "systems/rqg/actors/parts/sorcery-tab.html" }}
     </div>
+    {{/if}}
 
+    {{#if showUiSection.skills}}
     <div class="tab skills" data-group="primary" data-tab="skills">
       {{> "systems/rqg/actors/parts/skills-tab.html" }}
     </div>
+    {{/if}}
 
+    {{#if showUiSection.gear}}
     <div class="tab gear" data-group="primary" data-tab="gear">
       {{> "systems/rqg/actors/parts/gear-tab.html" }}
     </div>
+    {{/if}}
 
-    {{#if data.showUiSection.passions}}
+    {{#if showUiSection.passions}}
     <div class="tab passions" data-group="primary" data-tab="passions">
       {{> "systems/rqg/actors/parts/passions-tab.html" }}
     </div>
     {{/if}}
 
+    {{#if showUiSection.background}}
     <div class="tab background" data-group="primary" data-tab="background">
       {{> "systems/rqg/actors/parts/background-tab.html" }}
     </div>
+    {{/if}}
 
-    {{#if data.showUiSection.activeEffects}}
+    {{#if showUiSection.activeEffects}}
     <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
       {{> "systems/rqg/actors/parts/activeeffectstesting-tab.html" }}
     </div>

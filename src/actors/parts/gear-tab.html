@@ -17,7 +17,7 @@
         <div class="head4" style="width:85px">Location</div>
       </div>
       <ul class="location virtual">
-        {{#each data.itemLocationTree.contains}}
+        {{#each itemLocationTree.contains}}
         {{> "systems/rqg/actors/parts/physical-item-location.html"}}
         {{/each}}
       </ul>
@@ -37,7 +37,7 @@
           <div class="head5"><span class="text-right">ENC</span></div>
           <div class="head6"></div>
           <div class="head7">Location</div>
-          {{#each data.ownedItems.gear}}
+          {{#each ownedItems.gear}}
           {{#if (eq data.data.physicalItemType "unique")}}
           <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
           <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
@@ -73,7 +73,7 @@
             <div class="head5"><span class="text-right">ENC</span></div>
             <div class="head6"></div>
             <div class="head7">Location</div>
-            {{#each data.ownedItems.gear}}
+            {{#each ownedItems.gear}}
             {{#if (eq data.data.physicalItemType "currency")}}
             <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
@@ -110,7 +110,7 @@
             <div class="head5"><span class="text-right">ENC</span></div>
             <div class="head6"></div>
             <div class="head7">Location</div>
-            {{#each data.ownedItems.gear}}
+            {{#each ownedItems.gear}}
             {{#if (eq data.data.physicalItemType "consumable")}}
             <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
@@ -133,7 +133,7 @@
             </div>
             {{/if}}
             {{/each}}
-            {{#each data.ownedItems.missileWeapon}}
+            {{#each ownedItems.missileWeapon}}
             {{#if (eq data.data.physicalItemType "consumable")}}
             <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
@@ -176,11 +176,11 @@
         <div class="head9"></div>
         <div class="head10">Location</div>
 
-        {{#each data.ownedItems.meleeWeapon}}
+        {{#each ownedItems.meleeWeapon}}
         {{#unless data.data.isNatural}}
         <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">{{itemname data.data.skillId actor._id}}</div>
+        <div data-item-id="{{_id}}" class="gear-contextmenu">{{itemname data.data.skillId @root.rqgActorData._id}}</div>
         <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-center">{{data.data.damage}}</span></div>
         <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minStrength}}</span>
         </div>
@@ -219,11 +219,11 @@
         <div class="head9"></div>
         <div class="head10">Location</div>
 
-        {{#each data.ownedItems.missileWeapon}}
+        {{#each ownedItems.missileWeapon}}
         {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
         <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">{{itemname data.data.skillId actor._id}}</div>
+        <div data-item-id="{{_id}}" class="gear-contextmenu">{{itemname data.data.skillId @root.rqgActorData._id}}</div>
         <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-center">{{data.data.damage}}</span></div>
         <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minStrength}}</span>
         </div>
@@ -260,7 +260,7 @@
         <div class="head7"><span class="text-right">ENC</span></div>
         <div class="head8"></div>
         <div class="head9">Location</div>
-        {{#each data.ownedItems.armor}}
+        {{#each ownedItems.armor}}
         <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
         <div data-item-id="{{_id}}" class="gear-contextmenu">

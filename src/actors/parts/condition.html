@@ -1,7 +1,7 @@
-{{#if data.ownedItems.rune.condition}}
+{{#if ownedItems.rune.condition}}
 <div class="grid rune">
   <h2 class="fullrow">Condition</h2>
-  {{#each data.ownedItems.rune.condition}}
+  {{#each ownedItems.rune.condition}}
     <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="rune" src="{{img}}">
     </div>

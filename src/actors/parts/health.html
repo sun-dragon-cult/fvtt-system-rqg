@@ -1,16 +1,17 @@
 <div class="health">
   <h2 class="flex-col">Health</h2>
   <div class="flexrow nowrap flex-align-center">
-    <label>Total Hit Points <input
+    <label>Total Hit Points
+      <input
         type="number"
         min="1"
         max="99"
         name="data.attributes.hitPoints.value"
-        value="{{data.attributes.hitPoints.value}}"
+        value="{{rqgActorData.data.attributes.hitPoints.value}}"
         size="2"
-      /> / {{data.attributes.hitPoints.max}}
+      > / {{rqgActorData.data.attributes.hitPoints.max}}
     </label>
-    <label class="text-right"> Healing rate {{data.attributes.healingRate}}/week</label>
+    <label class="text-right"> Healing rate {{rqgActorData.data.attributes.healingRate}}/week</label>
   </div>
   <div class="grid hit-location">
     <div class="headings"></div>
@@ -18,7 +19,7 @@
     <div class="head5"><span class="text-center">HP</span></div>
     <div class="head6"><span class="text-right">AP</span></div>
     <div class="head7">Wounds</div>
-    {{#each data.ownedItems.hitLocation}}
+    {{#each ownedItems.hitLocation}}
     <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right">{{this.data.data.dieFrom}}</span></div>
       <div class="hit-location-contextmenu" data-item-id="{{this._id}}">-</div>
     <div class="hit-location-contextmenu" data-item-id="{{this._id}}"><span class="text-right">{{this.data.data.dieTo}}</span></div>

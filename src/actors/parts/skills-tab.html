@@ -1,8 +1,8 @@
 <div class="masonry">
-  {{#each data.ownedItems.skill}}
+  {{#each ownedItems.skill}}
   {{#if this}}
   <div class="masonry-item">
-    <h2>{{@key}} ({{#with @root.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
+    <h2>{{@key}} ({{#with @root.rqgActorData.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
     <div class="grid skill">
       {{#each this}}
         <div data-item-id="{{_id}}" title="Description" class="skill-contextmenu"

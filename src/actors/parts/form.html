@@ -1,7 +1,7 @@
 <div class="grid opposed-rune">
   <h2 class="fullrow">Form</h2>
 
-  {{#with data.ownedItems.rune.form.Man}}
+  {{#with ownedItems.rune.form.Man}}
     <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="rune" src="{{img}}">
     </div>
@@ -11,7 +11,7 @@
     </div>
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
-  {{#with data.ownedItems.rune.form.Beast}}
+  {{#with ownedItems.rune.form.Beast}}
     <div data-item-id="{{this._id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="rune" src="{{img}}">
     </div>
@@ -21,7 +21,7 @@
     </div>
   {{/with}}
 
-  {{#each data.ownedItems.rune.form}}
+  {{#each ownedItems.rune.form}}
   {{#unless (eq @key "Man")}}
   {{#unless (eq @key "Beast")}}
     {{#with this}}

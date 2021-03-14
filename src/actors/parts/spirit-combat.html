@@ -1,22 +1,23 @@
 <div>
   <h2>Spirit Combat</h2>
   <div class="flexrow nowrap flex-align-center">
-    <label class="mp">Magic Points <input
+    <label class="mp">Magic Points
+      <input
       type="number"
       min="0"
       max="99"
       name="data.attributes.magicPoints.value"
-      value="{{data.attributes.magicPoints.value}}"
+      value="{{rqgActorData.data.attributes.magicPoints.value}}"
       size="2"
-    /> / {{data.attributes.magicPoints.max}}
+    > / {{rqgActorData.data.attributes.magicPoints.max}}
     </label>
-    <i>{{#each data.powCrystals}}
+    <i>{{#each powCrystals}}
       {{name}}({{size}}MP)<br>
       {{/each}}</i>
-    <label class="text-right" data-damage-roll="{{data.attributes.spiritCombatDamage}}">Spirit Combat Damage {{data.attributes.spiritCombatDamage}}</label>
+    <label class="text-right" data-damage-roll="{{rqgActorData.data.attributes.spiritCombatDamage}}">Spirit Combat Damage {{rqgActorData.data.attributes.spiritCombatDamage}}</label>
   </div>
   <div class="grid spirit-combat">
-    <div data-item-id="{{data.spiritCombatSkill._id}}" class="skill-contextmenu" data-item-roll title="Roll">Spirit Combat</div>
-    <div data-item-id="{{data.spiritCombatSkill._id}}" class="skill-contextmenu" data-item-roll title="Roll"><span class="text-right {{#if data.spiritCombatSkill.data.data.hasExperience}}experienced{{/if}}">{{skillchance data.spiritCombatSkill._id actor._id}}%</span></div>
+    <div data-item-id="{{spiritCombatSkillData._id}}" class="skill-contextmenu" data-item-roll title="Roll">Spirit Combat</div>
+    <div data-item-id="{{spiritCombatSkillData._id}}" class="skill-contextmenu" data-item-roll title="Roll"><span class="text-right {{#if spiritCombatSkillData.data.data.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData._id rqgActorData._id}}%</span></div>
   </div>
 </div>

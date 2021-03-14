@@ -17,11 +17,59 @@ import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
-import { createItemLocationTree } from "../items/shared/locationNode";
+import { createItemLocationTree, LocationNode } from "../items/shared/locationNode";
 import { CharacteristicCard } from "../chat/characteristicCard";
 import { WeaponCard } from "../chat/weaponCard";
 import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
+
+// Data fed to handlebars renderer
+type ActorSheetTemplate = {
+  // Basic (Foundry) data
+  cssClass: string;
+  editable: boolean;
+  limited: boolean;
+  options: object;
+  owner: boolean;
+  title: string;
+
+  // The actor and reorganised owned items
+  rqgActorData: ActorData<RqgActorData>;
+  ownedItems: any; // reorganized for presentation TODO type it better
+
+  spiritCombatSkillData: Item<SkillData>; // Find this skill to show on spirit combat part
+  dodgeSkillData: Item<SkillData>; // Find this skill to show on combat part
+
+  // Lists for dropdown values
+  occupations: Array<`${OccupationEnum}`>;
+  homelands: Array<`${HomeLandEnum}`>;
+  locations: Array<string>;
+
+  // Other data needed for the sheet
+  characterRunes: Array<string>; // Array of img urls to runes with > 0% chance
+  loadedMissileSr: Array<string>; // (html) Precalculated missile weapon SRs if loaded at start of round
+  unloadedMissileSr: Array<string>; // (html) Precalculated missile weapon SRs if not loaded at start of round
+  itemLocationTree: LocationNode; // physical items reorganised as a tree of items containing items
+  powCrystals: any; //  list of pow-crystals TODO type it better
+  spiritMagicPointSum: number;
+  freeInt: number;
+
+  // UI toggles
+  isGM: boolean;
+  showUiSection: {
+    health: boolean;
+    combat: boolean;
+    runes: boolean;
+    spiritMagic: boolean;
+    runeMagic: boolean;
+    sorcery: boolean;
+    skills: boolean;
+    gear: boolean;
+    passions: boolean;
+    background: boolean;
+    activeEffects: boolean;
+  };
+};
 
 export class RqgActorSheet extends ActorSheet<RqgActorData> {
   static get defaultOptions() {
@@ -49,20 +97,152 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
   /* -------------------------------------------- */
 
   getData(): any {
-    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: RqgActorData = sheetData.data;
+    const isOwner: boolean = this.entity.owner;
+    const spiritMagicPointSum = this.getSpiritMagicPointSum();
+    const sheetData: ActorSheetTemplate = {
+      cssClass: isOwner ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.entity.limited,
+      options: this.options,
+      owner: isOwner,
+      title: this.title,
 
-    data.occupations = Object.values(OccupationEnum);
-    data.homelands = Object.values(HomeLandEnum);
+      rqgActorData: duplicate(this.entity.data),
+      ownedItems: this.organizeOwnedItems(),
 
-    // Separate different item types for easy access
-    // ownedItems looks like {armor: [RqgItem], elementalRune: [RqgItem], ... }
-    data.ownedItems = this.actor.itemTypes;
+      spiritCombatSkillData: this.getSkillDataByName("Spirit Combat"),
+      dodgeSkillData: this.getSkillDataByName("Dodge"),
+
+      characterRunes: this.getCharacterRuneImgs(), // Array of img urls to runes with > 0% chance
+      loadedMissileSr: this.getLoadedMissileSr(), // (html) Precalculated missile weapon SRs if loaded at start of round
+      unloadedMissileSr: this.getUnloadedMissileSr(), // (html) Precalculated missile weapon SRs if not loaded at start of round
+      itemLocationTree: this.getItemLocationTree(), // physical items reorganised as a tree of items containing items
+      powCrystals: this.getPowCrystals(),
+      spiritMagicPointSum: spiritMagicPointSum,
+      freeInt: this.getFreeInt(spiritMagicPointSum),
+
+      // Lists for dropdown values
+      occupations: Object.values(OccupationEnum),
+      homelands: Object.values(HomeLandEnum),
+      locations: this.getPhysicalItemLocations(),
+
+      // UI toggles
+      isGM: game.user.isGM,
+      showUiSection: this.getUiSectionVisibility(),
+    };
+    console.log("Actor SheetData", sheetData);
+    return sheetData;
+  }
+
+  private getPhysicalItemLocations(): Array<string> {
+    // Used for DataList input dropdown
+    const physicalItems: RqgItem[] = this.actor.items.filter((i) => i.data.data.physicalItemType);
+    return [
+      ...new Set([
+        ...this.actor.items.filter((i) => i.data.data.isContainer).map((i) => i.name),
+        ...physicalItems.map((i) => i.data.data.location),
+      ]),
+    ];
+  }
+
+  private getItemLocationTree(): LocationNode {
+    const physicalItems: RqgItem[] = this.actor.items.filter((i) => i.data.data.physicalItemType);
+    return createItemLocationTree(physicalItems);
+  }
+
+  private getSpiritMagicPointSum(): number {
+    return this.actor.items
+      .filter((i) => i.type === ItemTypeEnum.SpiritMagic)
+      .reduce((acc, m) => acc + m.data.data.points, 0);
+  }
+
+  private getPowCrystals(): any {
+    return (
+      this.actor.effects &&
+      this.actor.effects
+        .filter((e) => e.data.changes.find((e) => e.key === "data.attributes.magicPoints.max"))
+        .map((e) => {
+          return {
+            name: e.label,
+            size: e.changes
+              .filter((c) => c.key === "data.attributes.magicPoints.max")
+              .reduce((acc, c) => acc + c.value, 0),
+          };
+        })
+    );
+  }
+
+  private getFreeInt(spiritMagicPointSum: number): number {
+    return (
+      this.actor.data.data.characteristics.intelligence.value -
+      spiritMagicPointSum -
+      this.actor.items.filter(
+        (i) =>
+          i.type === ItemTypeEnum.Skill &&
+          i.data.data.category === SkillCategoryEnum.Magic &&
+          i.data.data.runes.length
+      ).length
+    );
+  }
+
+  private getLoadedMissileSr(): Array<string> {
+    const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
+    const loadedMissileSr = [
+      ["1", reloadIcon, "5", reloadIcon, "10"],
+      ["1", reloadIcon, "7", reloadIcon],
+      ["2", reloadIcon, "9"],
+      ["3", reloadIcon, "11"],
+      ["4", reloadIcon],
+      ["5", reloadIcon],
+    ];
+    return loadedMissileSr[this.actor.data.data.attributesdexStrikeRank];
+  }
+
+  private getUnloadedMissileSr(): Array<string> {
+    const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
+    const unloadedMissileSr = [
+      [reloadIcon, "5", reloadIcon, "10"],
+      [reloadIcon, "6", reloadIcon, "12"],
+      [reloadIcon, "7", reloadIcon],
+      [reloadIcon, "8"],
+      [reloadIcon, "9"],
+      [reloadIcon, "10"],
+    ];
+    return unloadedMissileSr[this.actor.data.data.attributesdexStrikeRank];
+  }
+
+  private getCharacterRuneImgs(): Array<string> {
+    return this.actor.items
+      .filter(
+        (i) =>
+          i.type === ItemTypeEnum.Rune &&
+          i.data.runeType === RuneTypeEnum.Element &&
+          i.data.data.chance
+      )
+      .sort((a, b) => b.data.data.chance - a.data.data.chance)
+      .map((r) => r.img);
+  }
+
+  private getSkillDataByName(name: String): Item<SkillData> {
+    return this.actor.items.find((i) => i.data.name === name && i.type === ItemTypeEnum.Skill)
+      ?.data;
+  }
+
+  /**
+   * Take the owned items of the actor and rearrange them for presentation.
+   * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
+   * @private
+   */
+  private organizeOwnedItems(): any {
+    const itemTypes = Object.fromEntries(game.system.entityTypes.Item.map((t) => [t, []]));
+    this.actor.items.forEach((item: RqgItem) => {
+      itemTypes[item.type].push(item);
+    });
 
     // Separate skills into skill categories {agility: [RqgItem], communication: [RqgItem], ... }
     const skills = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
-      skills[cat] = data.ownedItems[ItemTypeEnum.Skill].filter(
+      skills[cat] = itemTypes[ItemTypeEnum.Skill].filter(
         (s: RqgItem<SkillData>) => cat === s.data.data.category
       );
     });
@@ -72,141 +252,86 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         ("" + a.data.name).localeCompare(b.data.name)
       )
     );
-    data.ownedItems[ItemTypeEnum.Skill] = skills;
+    itemTypes[ItemTypeEnum.Skill] = skills;
 
     // Separate runes into types (elemental, power, form, technique)
     const runes = {};
     Object.values(RuneTypeEnum).forEach((type: string) => {
-      runes[type] = data.ownedItems[ItemTypeEnum.Rune].filter(
+      runes[type] = itemTypes[ItemTypeEnum.Rune].filter(
         (r: RqgItem<RuneData>) => type === r.data.data.runeType
       );
     });
-    data.ownedItems[ItemTypeEnum.Rune] = runes;
+    itemTypes[ItemTypeEnum.Rune] = runes;
 
     // Organise powerRunes as { fertility: RqgItem, death: RqgItem, ... }
-    data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power] = {
-      ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce((acc, item: RqgItem) => {
+    itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Power] = {
+      ...itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce((acc, item: RqgItem) => {
         acc[item.data.data.rune] = item;
         return acc;
       }, []),
     };
 
     // Organise formRunes as { man: RqgItem, beast: RqgItem, ... }
-    data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form] = {
-      ...data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce((acc, item: RqgItem) => {
+    itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Form] = {
+      ...itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce((acc, item: RqgItem) => {
         acc[item.data.data.rune] = item;
         return acc;
       }, []),
     };
 
     // Sort the hit locations
-    data.ownedItems[ItemTypeEnum.HitLocation].sort(
+    itemTypes[ItemTypeEnum.HitLocation].sort(
       (a: RqgItem<HitLocationData>, b: RqgItem<HitLocationData>) =>
         b.data.data.dieFrom - a.data.data.dieFrom
     );
 
-    data.spiritCombatSkill = data.ownedItems[ItemTypeEnum.Skill][SkillCategoryEnum.Magic].find(
-      (s) => s.data.name === "Spirit Combat"
-    );
-    data.dodgeSkill = data.ownedItems[ItemTypeEnum.Skill][SkillCategoryEnum.Agility].find(
-      (s) => s.data.name === "Dodge"
-    );
+    return itemTypes;
+  }
 
-    data.powCrystals =
-      data.effects &&
-      data.effects
-        .filter((e) => e.changes.find((e) => e.key === "data.attributes.magicPoints.max"))
-        .map((e) => {
-          return {
-            name: e.label,
-            size: e.changes
-              .filter((c) => c.key === "data.attributes.magicPoints.max")
-              .reduce((acc, c) => acc + c.value, 0),
-          };
-        });
-
-    data.spiritMagicPointSum = data.ownedItems[ItemTypeEnum.SpiritMagic].reduce(
-      (acc, m) => acc + m.data.data.points,
-      0
-    );
-
-    data.freeInt =
-      data.characteristics.intelligence.value -
-      data.spiritMagicPointSum -
-      data.ownedItems[ItemTypeEnum.Skill].magic.filter((s) => s.data.data.runes.length).length;
-
-    data.isGM = game.user.isGM;
-
-    const physicalItems: RqgItem[] = this.actor.items.filter((i) => i.data.data.physicalItemType);
-    data.itemLocationTree = createItemLocationTree(physicalItems);
-
-    // Used for DataList input dropdown
-    data.locations = [
-      ...new Set([
-        ...this.actor.items.filter((i) => i.data.data.isContainer).map((i) => i.name),
-        ...physicalItems.map((i) => i.data.data.location),
-      ]),
-    ];
-
-    data.showUiSection = {
+  private getUiSectionVisibility() {
+    return {
       health:
-        CONFIG.RQG.debug.showAllUiSections || data.ownedItems[ItemTypeEnum.HitLocation]?.length,
+        CONFIG.RQG.debug.showAllUiSections ||
+        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.HitLocation).length,
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
-        data.ownedItems[ItemTypeEnum.MeleeWeapon]?.length ||
-        data.ownedItems[ItemTypeEnum.MissileWeapon]?.length,
+        !!this.actor.items.filter((i) =>
+          [ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon].includes(i.type)
+        ).length,
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.filter((i) => i.type === ItemTypeEnum.Rune)?.length,
+        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Rune).length,
       spiritMagic:
-        CONFIG.RQG.debug.showAllUiSections || data.ownedItems[ItemTypeEnum.SpiritMagic]?.length,
+        CONFIG.RQG.debug.showAllUiSections ||
+        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.SpiritMagic).length,
       runeMagic:
-        data.ownedItems[ItemTypeEnum.Cult]?.length ||
-        data.ownedItems[ItemTypeEnum.RuneMagic]?.length,
+        CONFIG.RQG.debug.showAllUiSections ||
+        !!this.actor.items.filter((i) =>
+          [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(i.type)
+        ).length,
       sorcery:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.filter((i) => i.type === ItemTypeEnum.Rune && i.data.data.isMastered),
+        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Rune && i.data.data.isMastered)
+          .length,
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.filter((i) => i.type === ItemTypeEnum.Skill)?.length,
+        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Skill).length,
       gear:
         CONFIG.RQG.debug.showAllUiSections ||
-        data.ownedItems[ItemTypeEnum.Gear]?.length ||
-        data.ownedItems[ItemTypeEnum.MeleeWeapon]?.length ||
-        data.ownedItems[ItemTypeEnum.MissileWeapon]?.length ||
-        data.ownedItems[ItemTypeEnum.Armor]?.length,
-      passions: CONFIG.RQG.debug.showAllUiSections || data.ownedItems[ItemTypeEnum.Passion]?.length,
+        !!this.actor.items.filter((i) =>
+          [
+            ItemTypeEnum.Gear,
+            ItemTypeEnum.MeleeWeapon,
+            ItemTypeEnum.MissileWeapon,
+            ItemTypeEnum.Armor,
+          ].includes(i.type)
+        ).length,
+      passions:
+        CONFIG.RQG.debug.showAllUiSections ||
+        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Passion).length,
       background: true,
       activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && game.user.isGM,
     };
-
-    data.characterRunes = data.ownedItems[ItemTypeEnum.Rune][RuneTypeEnum.Element]
-      .filter((r) => r.data.data.chance)
-      .sort((a, b) => b.data.data.chance - a.data.data.chance)
-      .map((r) => r.img);
-
-    const reloadIcon = "<i class='x-small-size fas fa-redo-alt'></i>";
-    const loadedMissileSr = [
-      ["1", reloadIcon, "5", reloadIcon, "10"],
-      ["1", reloadIcon, "7", reloadIcon],
-      ["2", reloadIcon, "9"],
-      ["3", reloadIcon, "11"],
-      ["4", reloadIcon],
-      ["5", reloadIcon],
-    ];
-    const unloadedMissileSr = [
-      [reloadIcon, "5", reloadIcon, "10"],
-      [reloadIcon, "6", reloadIcon, "12"],
-      [reloadIcon, "7", reloadIcon],
-      [reloadIcon, "8"],
-      [reloadIcon, "9"],
-      [reloadIcon, "10"],
-    ];
-
-    data.unloadedMissileSr = unloadedMissileSr[data.attributes.dexStrikeRank];
-    data.loadedMissileSr = loadedMissileSr[data.attributes.dexStrikeRank];
-
-    return sheetData;
   }
 
   protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {

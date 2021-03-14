@@ -1,6 +1,6 @@
 <h2>
   Spirit magic
-  <span class="small-size">Learnt {{data.spiritMagicPointSum}}/{{data.characteristics.charisma.value}} points</span>
+  <span class="small-size">Learnt {{spiritMagicPointSum}}/{{rqgActorData.data.characteristics.charisma.value}} points</span>
 </h2>
 <div class="grid spiritmagic">
   <div class="headings"></div>
@@ -11,7 +11,7 @@
   <div class="head5">Range</div>
   <div class="head6">Duration</div>
   <div class="head7">Concentration</div>
-  {{#each data.ownedItems.spiritMagic}}
+  {{#each ownedItems.spiritMagic}}
     <div data-item-id="{{_id}}" class="spiritmagic-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="item" src="{{img}}">
     </div>

@@ -12,25 +12,45 @@ export const handlebarsHelpers = function () {
 
   Handlebars.registerHelper("itemname", (itemId, actorId) => {
     const actor = game.actors.find((a) => a._id === actorId);
-    const item = actor.items.get(itemId);
+    if (!actor) {
+      console.warn(
+        `RQG | Handlebar helper "itemname": Couldn't find actor "${actorId}" while checking itemname "${itemId}" `
+      );
+    }
+    const item = actor?.items.get(itemId);
     return item ? item.data.name : "---";
   });
 
   Handlebars.registerHelper("skillchance", (itemId, actorId) => {
     const actor = game.actors.find((a) => a._id === actorId);
-    const item = actor.items.get(itemId);
+    if (!actor) {
+      console.warn(
+        `RQG | Handlebar helper "skillchance": Couldn't find actor "${actorId}" while checking skill chance on item "${itemId}" `
+      );
+    }
+    const item = actor?.items.get(itemId);
     return item ? item.data.data.chance : "---";
   });
 
   Handlebars.registerHelper("experiencedclass", (itemId, actorId) => {
     const actor = game.actors.find((a) => a._id === actorId);
-    const item = actor.items.get(itemId);
+    if (!actor) {
+      console.warn(
+        `RQG | Handlebar helper "experiencedclass": Couldn't find actor "${actorId}" while checking experience on item "${itemId}" `
+      );
+    }
+    const item = actor?.items.get(itemId);
     return item && item.data.data.hasExperience ? "experienced" : "";
   });
 
   Handlebars.registerHelper("quantity", (itemId, actorId) => {
     const actor = game.actors.find((a) => a._id === actorId);
-    const item = actor.items.get(itemId);
+    if (!actor) {
+      console.warn(
+        `RQG | Handlebar helper "quantity": Couldn't find actor "${actorId}" while checking quantity on item "${itemId}" `
+      );
+    }
+    const item = actor?.items.get(itemId);
     return item ? item.data.data.quantity : "---";
   });
 
@@ -42,15 +62,6 @@ export const handlebarsHelpers = function () {
   Handlebars.registerHelper("enrichHtml", (content) => {
     return TextEditor.enrichHTML(content);
   });
-
-  // Handlebars.registerHelper("checkedexperience", (itemId, actorId) => {
-  //   const actor = game.actors.find((a) => a._id === actorId);
-  //   const item = actor.items.get(itemId);
-  //   if (!item) {
-  //     console.warn("Found a null itemId with checkedexperience");
-  //   }
-  //   return item?.data.data.hasExperience ? "checked" : "";
-  // });
 
   Handlebars.registerHelper("equippedIcon", (equippedStatus: EquippedStatus) => {
     equippedStatus = equippedStatus ? equippedStatus : "notCarried";

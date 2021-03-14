@@ -82,9 +82,6 @@ export class RqgActor extends Actor<RqgActorData> {
     data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
     data.attributes.healingRate = RqgCalculations.healingRate(con);
     data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
-
-    // @ts-ignore 0.7
-    data.effects = [...this.effects].map((effect) => effect.data);
   }
 
   // Entity-specific actions that should occur when the Entity is first created

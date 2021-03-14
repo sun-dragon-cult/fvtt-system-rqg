@@ -22,7 +22,6 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
       data.skillName = sheetData.item.name;
     }
     data.skillCategories = Object.values(SkillCategoryEnum);
-    data.isGM = this.actor ? !this.actor.isPC : true; // TODO isPC is deprecated use getOwners (coming in 0.7.6)
     data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
     data.allRunes = game.settings.get("rqg", "runes");
     return sheetData;

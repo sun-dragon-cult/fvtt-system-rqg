@@ -1,4 +1,4 @@
-{{#each data.ownedItems.runeMagic}}
+{{#each ownedItems.runeMagic}}
 {{#unless data.data.cultId}}
 <div data-item-id="{{this._id}}">
   <a title="Edit Rune Spell" data-item-edit><i class="fas fa-edit"></i>Choose cult for Rune Spell {{name}}</a>
@@ -7,7 +7,7 @@
 {{/unless}}
 {{/each}}
 
-{{#each data.ownedItems.cult}}
+{{#each ownedItems.cult}}
 <div style="margin-bottom: 1.5rem" data-item-id="{{this._id}}">
   <h2 class="cult-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
     {{name}}
@@ -37,7 +37,7 @@
     <div class="head7">Stackable</div>
     <div class="head8">One Use</div>
     <div class="head9">Chance</div>
-    {{#each @root.data.ownedItems.runeMagic}}
+    {{#each @root.ownedItems.runeMagic}}
     {{#if (eq ../id data.data.cultId)}}
       <div data-item-id="{{_id}}" class="rune-magic-contextmenu"
            {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
