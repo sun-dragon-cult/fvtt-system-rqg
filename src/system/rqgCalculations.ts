@@ -74,17 +74,17 @@ export class RqgCalculations {
       RqgCalculations.flattenedMod(pow);
 
     return {
-      agility: agilityMod,
-      communication: communicationMod,
-      knowledge: knowledgeMod,
-      magic: magicMod,
-      manipulation: manipulationMod,
-      perception: perceptionMod,
-      stealth: stealthMod,
-      meleeWeapons: manipulationMod,
-      missileWeapons: manipulationMod,
-      naturalWeapons: manipulationMod,
-      shields: manipulationMod,
+      agility: RqgCalculations.limitExtremeModifiers(agilityMod),
+      communication: RqgCalculations.limitExtremeModifiers(communicationMod),
+      knowledge: RqgCalculations.limitExtremeModifiers(knowledgeMod),
+      magic: RqgCalculations.limitExtremeModifiers(magicMod),
+      manipulation: RqgCalculations.limitExtremeModifiers(manipulationMod),
+      perception: RqgCalculations.limitExtremeModifiers(perceptionMod),
+      stealth: RqgCalculations.limitExtremeModifiers(stealthMod),
+      meleeWeapons: RqgCalculations.limitExtremeModifiers(manipulationMod),
+      missileWeapons: RqgCalculations.limitExtremeModifiers(manipulationMod),
+      naturalWeapons: RqgCalculations.limitExtremeModifiers(manipulationMod),
+      shields: RqgCalculations.limitExtremeModifiers(manipulationMod),
       otherSkills: 0,
     };
   }
@@ -100,6 +100,18 @@ export class RqgCalculations {
   private static lookup<T>(v: number, table: Array<LookupTableEntry<T>>): T {
     const tableEntry: LookupTableEntry<T> = table.find((te) => v >= te.from && v <= te.to);
     return tableEntry ? tableEntry.result : null;
+  }
+
+  /**
+   * Limit extreme modifiers so that beasts like dinosaurs don't get ridiculously good dodge etc
+   * After 30% modifier it only increases in 1% steps instead of 5%
+   * Note, this is not in the RQG rules, but a necessary tweak to make dinosaurs etc work.
+   */
+  private static limitExtremeModifiers(modifier: number): number {
+    const limitBreakpoint = 30;
+    return modifier <= limitBreakpoint
+      ? modifier
+      : Math.ceil((modifier - limitBreakpoint) / 5) + limitBreakpoint;
   }
 }
 
