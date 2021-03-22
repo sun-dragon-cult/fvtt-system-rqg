@@ -24,6 +24,17 @@ export enum HitLocationsEnum {
   RightHead = "rightHead",
 }
 
+// TODO differentiate between severed & maimed? slash / crush or impale
+export const limbHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
+export type LimbHealthState = typeof limbHealthStatuses[number];
+
+export enum HitLocationTypesEnum {
+  Limb = "limb",
+  Head = "head",
+  Chest = "chest",
+  Abdomen = "abdomen",
+}
+
 export type HitLocationData = {
   dieFrom: number;
   dieTo: number;
@@ -31,9 +42,11 @@ export type HitLocationData = {
   baseHpDelta: number; // Chest has +1 while arms have -1 for humans
   naturalAp: number; // Natural armor
   wounds: Array<number>;
+  limbHealthState: LimbHealthState;
+  hitLocationType: HitLocationTypesEnum; // TODO *** kan man göra det här smartare? ***
+  connectedTo: string; // If hitLocationType is Limb then what location is it connected to. Used for Damage.
   // --- Derived / Convenience Data Below ---
   ap?: number; // Natural armor + modified armor Active Effect
-  hitLocationTypes?: HitLocationsEnum[];
 };
 
 export const emptyHitLocation: HitLocationData = {
@@ -43,4 +56,7 @@ export const emptyHitLocation: HitLocationData = {
   baseHpDelta: 0,
   naturalAp: 0,
   wounds: [],
+  limbHealthState: "healthy",
+  hitLocationType: HitLocationTypesEnum.Limb,
+  connectedTo: "",
 };

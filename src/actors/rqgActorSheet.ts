@@ -22,6 +22,7 @@ import { CharacteristicCard } from "../chat/characteristicCard";
 import { WeaponCard } from "../chat/weaponCard";
 import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
+import { HealthEnum } from "../data-model/actor-data/attributes";
 
 // Data fed to handlebars renderer
 type ActorSheetTemplate = {
@@ -53,6 +54,7 @@ type ActorSheetTemplate = {
   powCrystals: any; //  list of pow-crystals TODO type it better
   spiritMagicPointSum: number;
   freeInt: number;
+  combinedHealth: HealthEnum; // a combination of total HP & attributes.health (extra damage effects)
 
   // UI toggles
   isGM: boolean;
@@ -120,6 +122,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
+      combinedHealth: this.getCombinedHealth(),
 
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
@@ -185,6 +188,28 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     );
   }
 
+  private getCombinedHealth(): HealthEnum {
+    const healthEffects = this.actor.data.data.attributes.health;
+    const totalHitPoints = this.actor.data.data.attributes.hitPoints.value;
+
+    if (totalHitPoints <= 0) {
+      return HealthEnum.Dead;
+    } else if (totalHitPoints <= 2) {
+      return HealthEnum.Unconscious;
+    } else if (
+      totalHitPoints !== this.actor.data.data.attributes.hitPoints.max &&
+      ![HealthEnum.Shock, HealthEnum.Unconscious].includes(healthEffects)
+    ) {
+      return HealthEnum.Wounded;
+    } else if (totalHitPoints === this.actor.data.data.attributes.hitPoints.max) {
+      return HealthEnum.Healthy;
+    } else {
+      return healthEffects;
+    }
+
+    // ![HealthEnum.Healthy, HealthEnum.Shock, HealthEnum.Unconscious].includes(healthEffects)
+  }
+
   private getLoadedMissileSr(): Array<string> {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const loadedMissileSr = [
@@ -215,8 +240,8 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     return this.actor.items
       .filter(
         (i) =>
-          i.type === ItemTypeEnum.Rune &&
-          i.data.runeType === RuneTypeEnum.Element &&
+          i.data.type === ItemTypeEnum.Rune &&
+          i.data.data.runeType === RuneTypeEnum.Element &&
           i.data.data.chance
       )
       .sort((a, b) => b.data.data.chance - a.data.data.chance)
@@ -522,13 +547,13 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     // Add wound to hit location TODO move listener to hitlocation
     this.form.querySelectorAll("[data-item-add-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      el.addEventListener("click", () => HitLocationSheet.addWound(this.actor, itemId));
+      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
     });
 
-    // Edit wounds to hit location TODO move listener to hitlocation
+    // Heal wound to hit location TODO move listener to hitlocation
     this.form.querySelectorAll("[data-item-edit-wounds]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      el.addEventListener("click", () => HitLocationSheet.editWounds(this.actor, itemId));
+      el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));
     });
 
     // Edit Actor Active Effect
