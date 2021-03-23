@@ -556,13 +556,17 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     // Add wound to hit location TODO move listener to hitlocation
     (this.form as HTMLElement).querySelectorAll("[data-item-add-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor as any, itemId));
+      el.addEventListener("click", () =>
+        HitLocationSheet.showAddWoundDialog(this.actor as any, itemId)
+      );
     });
 
-    // Edit wounds to hit location TODO move listener to hitlocation
-    (this.form as HTMLElement).querySelectorAll("[data-item-edit-wounds]").forEach((el) => {
+    // Heal wounds to hit location TODO move listener to hitlocation
+    (this.form as HTMLElement).querySelectorAll("[data-item-heal-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor as any, itemId));
+      el.addEventListener("click", () =>
+        HitLocationSheet.showHealWoundDialog(this.actor as any, itemId)
+      );
     });
 
     // Edit Actor Active Effect

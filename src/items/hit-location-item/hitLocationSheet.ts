@@ -33,7 +33,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   }
 
   static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string) {
-    const hitLocation: Item<HitLocationData> = actor.getOwnedItem(hitLocationItemId);
+    const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationData>;
     const dialogContent =
       '<form><input type="number" id="inflictDamagePoints" name="damage"><br><label><input type="checkbox" name="toTotalHp" checked> Apply to total HP</label><br><label><input type="checkbox" name="subtractAP" checked> Subtract AP</label><br></form>';
     new Dialog(
@@ -65,9 +65,8 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     ).render(true);
   }
 
-  // TODO showHealWoundDialog
   static showHealWoundDialog(actor: RqgActor, hitLocationItemId: string): void {
-    const hitLocation: Item<HitLocationData> = actor.getOwnedItem(hitLocationItemId);
+    const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationData>;
     let dialogContent = "<form>Wounds<br>";
 
     hitLocation.data.data.wounds.forEach(
@@ -114,9 +113,9 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     const applyDamageToTotalHp: boolean = !!data.toTotalHp;
     const subtractAP: boolean = !!data.subtractAP;
     let damage = Number(data.damage);
-    const actorUpdateData: ActorData<RqgActorData> = {
+    const actorUpdateData: Actor.Data<RqgActorData> = {
       data: {},
-    } as ActorData<RqgActorData>;
+    } as Actor.Data<RqgActorData>;
 
     let msg;
 
@@ -154,7 +153,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     item: RqgItem,
     damage: number, // Limited to 2*HP
     fullDamage: number,
-    actorUpdateData: ActorData<RqgActorData>
+    actorUpdateData: Actor.Data<RqgActorData>
   ): string {
     const actorName = item.actor.token?.name || item.actor.name;
     let notificationMsg;
@@ -284,9 +283,9 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     const data = Object.fromEntries(formData.entries());
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
-    const actorUpdateData: ActorData<RqgActorData> = {
+    const actorUpdateData: Actor.Data<RqgActorData> = {
       data: {},
-    } as ActorData<RqgActorData>;
+    } as Actor.Data<RqgActorData>;
     const wounds = item.data.data.wounds;
     let limbHealthState = item.data.data.limbHealthState;
 
