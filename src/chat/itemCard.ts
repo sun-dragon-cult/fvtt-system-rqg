@@ -3,7 +3,7 @@ import { RqgActor } from "../actors/rqgActor";
 
 type ItemCardFlags = {
   actorId: string;
-  itemData: ItemData;
+  itemData: Item.Data<any>;
   result: ResultEnum;
   formData: {
     modifier: number;
@@ -14,7 +14,7 @@ type ItemCardFlags = {
 export class ItemCard {
   public static async show(actor: RqgActor, itemId: string): Promise<void> {
     const defaultModifier = 0;
-    const item = actor.getOwnedItem(itemId);
+    const item = actor.getOwnedItem(itemId) as Item<any>;
     const flags: ItemCardFlags = {
       actorId: actor.id,
       itemData: item.data,
@@ -62,22 +62,26 @@ export class ItemCard {
     button.disabled = true;
 
     const modifier: number = Number(flags.formData.modifier) || 0;
-    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-    await ItemCard.roll(actor, flags.itemData, modifier);
+    const actor = game.actors.get(flags.actorId);
+    await ItemCard.roll(actor as any, flags.itemData, modifier);
 
     button.disabled = false;
     return false;
   }
 
-  public static async roll(actor: RqgActor, itemData: ItemData, modifier: number): Promise<void> {
+  public static async roll(
+    actor: RqgActor,
+    itemData: Item.Data<any>,
+    modifier: number
+  ): Promise<void> {
     const chance: number = Number(itemData.data.chance) || 0;
     const result = await Ability.roll(actor, chance, modifier, itemData.name + " check");
-    await ItemCard.checkExperience(actor, itemData, result);
+    await ItemCard.checkExperience(actor as any, itemData, result);
   }
 
   public static async checkExperience(
     actor: RqgActor,
-    itemData: ItemData,
+    itemData: Item.Data<any>,
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success && !itemData.data.hasExperience) {
@@ -90,6 +94,7 @@ export class ItemCard {
   private static async renderContent(flags: ItemCardFlags, actor: RqgActor): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
     let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
+    // @ts-ignore
     whisperRecipients.push(game.user._id);
 
     return {

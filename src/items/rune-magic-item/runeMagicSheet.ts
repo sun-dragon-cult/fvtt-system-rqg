@@ -13,7 +13,7 @@ import { RuneData } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 
 export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.RuneMagic],
       template: "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
@@ -34,17 +34,19 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     if (this.actor) {
       data.actorCults = this.actor
         .getEmbeddedCollection("OwnedItem")
-        .filter((i: ItemData<CultData>) => i.type === ItemTypeEnum.Cult);
-      const cultRunes = data.cultId ? this.actor.getOwnedItem(data.cultId).data.data.runes : [];
+        .filter((i: Item.Data<CultData>) => i.type === ItemTypeEnum.Cult);
+      const cultRunes = data.cultId
+        ? (this.actor.getOwnedItem(data.cultId) as Item<CultData>).data.data.runes
+        : [];
       const runeChances = this.actor
         .getEmbeddedCollection("OwnedItem")
         .filter(
-          (i: ItemData<RuneData>) =>
+          (i: Item.Data<RuneData>) =>
             i.type === ItemTypeEnum.Rune &&
             (data.runes.includes(i.name) ||
               (data.runes.includes("Magic (condition)") && cultRunes.includes(i.name)))
         )
-        .map((r: ItemData<RuneData>) => r.data.chance);
+        .map((r: Item.Data<RuneData>) => r.data.chance);
       data.chance = Math.max(...runeChances);
     }
     return sheetData;
@@ -61,10 +63,10 @@ export class RuneMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
 
   protected activateListeners(html: JQuery) {
     super.activateListeners(html);
-    this.form.addEventListener("drop", this._onDrop.bind(this));
+    (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
 
     // Open Linked Journal Entry
-    this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
+    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
       const pack = el.dataset.journalPack;
       const id = el.dataset.journalId;
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));

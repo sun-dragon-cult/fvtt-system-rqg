@@ -1,6 +1,7 @@
 import { BaseItem } from "../baseItem";
 import { HitLocationData } from "../../data-model/item-data/hitLocationData";
 import { RqgItem } from "../rqgItem";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 
 export class HitLocation extends BaseItem {
   // public static init() {
@@ -11,10 +12,11 @@ export class HitLocation extends BaseItem {
   // }
 
   public static onActorPrepareEmbeddedEntities(item: RqgItem<HitLocationData>): RqgItem {
+    const actorData = item.actor.data.data as RqgActorData;
     // Remove any healed wounds
     item.data.data.wounds = item.data.data.wounds.filter((w) => w > 0);
 
-    const totalHp = item.actor.data.data.attributes.hitPoints.max;
+    const totalHp = actorData.attributes.hitPoints.max;
     item.data.data.hp.max = HitLocation.hitPointsPerLocation(totalHp, item.data.data.baseHpDelta);
     item.data.data.hp.value = item.data.data.wounds.reduce(
       (acc: number, w: number) => acc - w,

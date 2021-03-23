@@ -6,7 +6,7 @@ import { RqgActor } from "../../actors/rqgActor";
 import { RqgItemSheet } from "../RqgItemSheet";
 
 export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.html",
@@ -25,7 +25,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   }
 
   static addWound(actor: RqgActor, itemId: string) {
-    const item: Item<HitLocationData> = actor.getOwnedItem(itemId);
+    const item = actor.getOwnedItem(itemId) as Item<HitLocationData>;
     const dialogContent =
       '<input type="number" name="damage" value="0"/><label><input type="checkbox" name="toTotalHp" checked> Apply to total HP</label><br><label><input type="checkbox" name="subtractAP" checked> Subtract AP</label>';
     new Dialog(
@@ -77,7 +77,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   }
 
   static editWounds(actor: RqgActor, itemId: string) {
-    const item: Item<HitLocationData> = actor.getOwnedItem(itemId);
+    const item = actor.getOwnedItem(itemId) as Item<HitLocationData>;
     let dialogContent = "";
 
     item.data.data.wounds.forEach(

@@ -1,3 +1,5 @@
+import { RqgActor } from "../actors/rqgActor";
+
 type Updates = {
   updateData: object;
   deleteEmbeddedActiveEffectsIds: string[];
@@ -20,7 +22,7 @@ export class Migrate {
     // Migrate World Actors
     for (let a of game.actors.entities) {
       try {
-        const updates = Migrate.actor(a);
+        const updates = Migrate.actor(a as any);
         if (!isObjectEmpty(updates.updateData)) {
           console.log(`RQG | Migrating Actor entity ${a.name}`);
           await a.update(updates.updateData, { enforceTypes: false });
@@ -48,6 +50,7 @@ export class Migrate {
     }
 
     // Migrate Actor Override Tokens
+    // @ts-ignore
     for (let s of game.scenes.entities) {
       try {
         const updateData = Migrate.sceneData(s.data);
@@ -119,7 +122,7 @@ export class Migrate {
   /*  Entity Type Migration Helpers               */
   /* -------------------------------------------- */
 
-  private static actor(actor: Actor): Updates {
+  private static actor(actor: RqgActor): Updates {
     let updates: Updates = { updateData: [], deleteEmbeddedActiveEffectsIds: [] };
 
     updates.deleteEmbeddedActiveEffectsIds = [].concat(

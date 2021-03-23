@@ -16,7 +16,7 @@ export class RuneMagic extends BaseItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    runeMagicItemData: ItemData<RuneMagicData>,
+    runeMagicItemData: Item.Data<RuneMagicData>,
     options,
     userId: string
   ): Promise<any> {

@@ -138,8 +138,10 @@ export function hasLoop(initialItem: RqgItem, physicalItems: RqgItem[]): boolean
   return isLoop;
 }
 
-export function getItemIdsInSameLocationTree(item: ItemData, actor: RqgActor): string[] {
-  const physicalItems: RqgItem[] = actor.items.filter((i) => i.data.data.physicalItemType);
+export function getItemIdsInSameLocationTree(item: Item.Data<any>, actor: RqgActor): string[] {
+  const physicalItems: RqgItem[] = actor.items.filter(
+    (i: Item<any>) => i.data.data.physicalItemType
+  );
   const itemLocationTree = createItemLocationTree(physicalItems);
   let rootNode = searchTree(itemLocationTree, item?.name);
   while (rootNode && rootNode.location) {

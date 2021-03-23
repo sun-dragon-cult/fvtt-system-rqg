@@ -3,6 +3,7 @@ export class RqgItemSheet<DataType = any, ItemType extends Item<DataType> = any>
   ItemType
 > {
   get title() {
+    // @ts-ignore
     return `${this.object.type}: ${this.object.name}`;
   }
 
@@ -10,7 +11,7 @@ export class RqgItemSheet<DataType = any, ItemType extends Item<DataType> = any>
     super.activateListeners(html);
 
     // Edit Item Active Effect
-    this.form.querySelectorAll("[data-item-effect-edit]").forEach(async (el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-effect-edit]").forEach(async (el) => {
       const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items.get(itemId);
@@ -22,7 +23,7 @@ export class RqgItemSheet<DataType = any, ItemType extends Item<DataType> = any>
     });
 
     // Add Item Active Effect
-    this.form.querySelectorAll("[data-item-effect-add]").forEach(async (el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-effect-add]").forEach(async (el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
 
       const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items.get(itemId);
@@ -46,7 +47,7 @@ export class RqgItemSheet<DataType = any, ItemType extends Item<DataType> = any>
     });
 
     // Delete Item Active Effect
-    this.form.querySelectorAll("[data-item-effect-delete]").forEach(async (el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-effect-delete]").forEach(async (el) => {
       const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
 

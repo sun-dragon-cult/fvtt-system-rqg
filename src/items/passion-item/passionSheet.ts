@@ -14,7 +14,7 @@ export class PassionSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     [PassionsEnum.Love, "systems/rqg/assets/images/passion/love.svg"],
   ]);
 
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Passion],
       template: "systems/rqg/items/passion-item/passionSheet.html",

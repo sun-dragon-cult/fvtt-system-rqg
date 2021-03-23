@@ -6,7 +6,7 @@ import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 
 export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Armor],
       template: "systems/rqg/items/armor-item/armorSheet.html",

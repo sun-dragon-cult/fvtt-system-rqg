@@ -6,7 +6,7 @@ import { GearData } from "../../data-model/item-data/gearData";
 import { equippedStatuses, physicalItemTypes } from "../../data-model/item-data/IPhysicalItem";
 
 export class GearSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Gear],
       template: "systems/rqg/items/gear-item/gearSheet.html",

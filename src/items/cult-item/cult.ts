@@ -2,7 +2,6 @@ import { BaseItem } from "../baseItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CultData } from "../../data-model/item-data/cultData";
 import { RqgActor } from "../../actors/rqgActor";
-import { RuneData } from "../../data-model/item-data/runeData";
 
 export class Cult extends BaseItem {
   // public static init() {
@@ -17,14 +16,14 @@ export class Cult extends BaseItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    cultItem: ItemData<CultData>,
+    cultItem: Item.Data<CultData>,
     options,
     userId: string
   ): Promise<any> {
     const cultRuneNames = [...new Set(cultItem.data.runes)]; // No duplicates
     const actorRuneNames = actor.items
       .filter((i) => i.type === ItemTypeEnum.Rune)
-      .map((r: ItemData<RuneData>) => r.name);
+      .map((r) => r.name);
     const newRuneNames = cultRuneNames.filter((r) => !actorRuneNames.includes(r));
     if (newRuneNames) {
       const runesCompendiumName: string = game.settings.get("rqg", "runesCompendium");
@@ -44,7 +43,7 @@ export class Cult extends BaseItem {
    */
   static async onDeleteItem(
     actor: RqgActor,
-    cultItem: ItemData<CultData>,
+    cultItem: Item.Data<CultData>,
     options,
     userId: string
   ): Promise<any | undefined> {

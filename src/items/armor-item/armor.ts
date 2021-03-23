@@ -12,7 +12,7 @@ export class Armor extends BaseItem {
 
   static async onUpdateItem(
     actor: RqgActor,
-    itemData: ItemData,
+    itemData: Item.Data<ArmorData>,
     update: any,
     options: any,
     userId: string
@@ -26,6 +26,7 @@ export class Armor extends BaseItem {
     if (existingEffects.length > 0) {
       const changes = existingEffects.map((effect) => {
         return {
+          //  @ts-ignore
           _id: effect.id,
           changes: generatedEffect.changes,
           disabled: !(itemData.data.equippedStatus === "equipped"),

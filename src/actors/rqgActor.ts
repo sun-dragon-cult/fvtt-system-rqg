@@ -135,7 +135,7 @@ export class RqgActor extends Actor<RqgActorData> {
   // @ts-ignore
   protected async _onCreateEmbeddedEntity(
     embeddedName: string,
-    child: ItemData,
+    child: Item.Data<any>,
     options,
     userId: string
   ) {
@@ -153,7 +153,12 @@ export class RqgActor extends Actor<RqgActorData> {
   }
 
   // @ts-ignore
-  protected async _onDeleteEmbeddedEntity(embeddedName, child: ItemData, options, userId: string) {
+  protected async _onDeleteEmbeddedEntity(
+    embeddedName,
+    child: Item.Data<any>,
+    options,
+    userId: string
+  ) {
     if (embeddedName === "OwnedItem" && this.owner) {
       const updateData = await ResponsibleItemClass.get(child.type).onDeleteItem(
         this,
@@ -170,7 +175,7 @@ export class RqgActor extends Actor<RqgActorData> {
   // @ts-ignore
   protected async _onUpdateEmbeddedEntity(
     embeddedName: string,
-    child: ItemData,
+    child: Item.Data<any>,
     update: any,
     options: any,
     userId: string
@@ -212,7 +217,7 @@ export class RqgActor extends Actor<RqgActorData> {
       // const item = this.actor.getOwnedItem(itemId);
       const newEquippedStatus =
         equippedStatusChanges[0].data.equippedStatus ||
-        this.getOwnedItem(equippedStatusChanges[0]._id).data.data.equippedStatus; // TODO Always correct?
+        (this.getOwnedItem(equippedStatusChanges[0]._id).data.data as any).equippedStatus; // TODO Always correct?
 
       const itemsToUpdate = equippedStatusChanges.map((i) =>
         getItemIdsInSameLocationTree(this.items.get(i._id)?.data, this).map((id) => {
@@ -227,8 +232,8 @@ export class RqgActor extends Actor<RqgActorData> {
   private async updateEncumbrance() {
     const equippedEncumbrance = Math.round(
       this.items
-        .filter((i) => i.data.data.equippedStatus === "equipped")
-        .reduce((sum, i) => {
+        .filter((i: Item<any>) => i.data.data.equippedStatus === "equipped")
+        .reduce((sum, i: Item<any>) => {
           const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
           return sum + enc;
         }, 0)
@@ -236,8 +241,8 @@ export class RqgActor extends Actor<RqgActorData> {
 
     const travelEncumbrance = Math.round(
       this.items
-        .filter((i) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
-        .reduce((sum, i) => {
+        .filter((i: Item<any>) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
+        .reduce((sum, i: Item<any>) => {
           const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
           return sum + enc;
         }, 0)

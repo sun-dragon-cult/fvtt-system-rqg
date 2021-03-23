@@ -1,4 +1,5 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
+import { SkillData } from "../data-model/item-data/skillData";
 
 export const handlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -28,7 +29,7 @@ export const handlebarsHelpers = function () {
         `RQG | Handlebar helper "skillchance": Couldn't find actor "${actorId}" while checking skill chance on item "${itemId}" `
       );
     }
-    const item = actor?.items.get(itemId);
+    const item = actor?.items.get(itemId) as Item<SkillData>;
     return item ? item.data.data.chance : "---";
   });
 
@@ -39,7 +40,7 @@ export const handlebarsHelpers = function () {
         `RQG | Handlebar helper "experiencedclass": Couldn't find actor "${actorId}" while checking experience on item "${itemId}" `
       );
     }
-    const item = actor?.items.get(itemId);
+    const item = actor?.items.get(itemId) as Item<any>;
     return item && item.data.data.hasExperience ? "experienced" : "";
   });
 
@@ -50,7 +51,7 @@ export const handlebarsHelpers = function () {
         `RQG | Handlebar helper "quantity": Couldn't find actor "${actorId}" while checking quantity on item "${itemId}" `
       );
     }
-    const item = actor?.items.get(itemId);
+    const item = actor?.items.get(itemId) as Item<any>;
     return item ? item.data.data.quantity : "---";
   });
 

@@ -1,5 +1,6 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
+import { RuneData } from "../../data-model/item-data/runeData";
 
 export const runeMenuOptions = (actor) => [
   {
@@ -16,7 +17,7 @@ export const runeMenuOptions = (actor) => [
     condition: () => true,
     callback: (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      const item: Item = actor.items.get(itemId);
+      const item: Item<RuneData> = actor.items.get(itemId);
       const result = Ability.roll(actor, item.data.data.chance, 0, item.name);
     },
   },
