@@ -2,6 +2,8 @@ import { SkillData } from "../../data-model/item-data/skillData";
 import { BaseItem } from "../baseItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ArmorData } from "../../data-model/item-data/armorData";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 
 export class Skill extends BaseItem {
   // public static init() {
@@ -13,18 +15,19 @@ export class Skill extends BaseItem {
 
   public static onActorPrepareDerivedData(item: RqgItem<SkillData>): RqgItem {
     const skillData = item.data.data;
+    const actorData = item.actor.data.data as RqgActorData;
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
-    skillData.categoryMod = item.actor.data.data.skillCategoryModifiers[item.data.data.category];
+    skillData.categoryMod = actorData.skillCategoryModifiers[item.data.data.category];
 
     let mod = 0; // For dodge/swim encumbrance & move quietly modifications
 
     // Special case for Dodge & Jump TODO swimEncPenalty Complicated :-(
-    const dex = item.actor.data.data.characteristics.dexterity.value;
+    const dex = actorData.characteristics.dexterity.value;
     if ("Dodge" === item.name) {
       Skill.updateBaseChance(skillData, dex * 2);
       mod = -Math.min(
-        item.actor.data.data.attributes.equippedEncumbrance,
-        item.actor.data.data.attributes.maximumEncumbrance
+        actorData.attributes.equippedEncumbrance,
+        actorData.attributes.maximumEncumbrance
       );
     }
     if ("Jump" === item.name) {
@@ -33,7 +36,7 @@ export class Skill extends BaseItem {
     if ("Move Quietly" === item.name) {
       mod = -item.actor.items
         .filter((i) => i.data.type === ItemTypeEnum.Armor)
-        .reduce((acc, a) => acc + a.data.data.moveQuietlyPenalty, 0);
+        .reduce((acc, a: Item<ArmorData>) => acc + a.data.data.moveQuietlyPenalty, 0);
     }
 
     // Learned chance can't be lower than base chance

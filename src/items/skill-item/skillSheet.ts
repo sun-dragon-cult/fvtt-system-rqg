@@ -6,7 +6,7 @@ import { RqgItem } from "../rqgItem";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 
 export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
       template: "systems/rqg/items/skill-item/skillSheet.html",
@@ -42,10 +42,10 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
 
   protected activateListeners(html: JQuery) {
     super.activateListeners(html);
-    this.form.addEventListener("drop", this._onDrop.bind(this));
+    (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
 
     // Open Linked Journal Entry
-    this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
+    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
       const pack = el.dataset.journalPack;
       const id = el.dataset.journalId;
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));

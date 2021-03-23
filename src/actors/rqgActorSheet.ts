@@ -23,6 +23,7 @@ import { WeaponCard } from "../chat/weaponCard";
 import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
 import { HealthEnum } from "../data-model/actor-data/attributes";
+import { SpiritMagicData } from "../data-model/item-data/spiritMagicData";
 
 // Data fed to handlebars renderer
 type ActorSheetTemplate = {
@@ -35,11 +36,11 @@ type ActorSheetTemplate = {
   title: string;
 
   // The actor and reorganised owned items
-  rqgActorData: ActorData<RqgActorData>;
+  rqgActorData: Actor.Data<RqgActorData>;
   ownedItems: any; // reorganized for presentation TODO type it better
 
-  spiritCombatSkillData: Item<SkillData>; // Find this skill to show on spirit combat part
-  dodgeSkillData: Item<SkillData>; // Find this skill to show on combat part
+  spiritCombatSkillData: Item.Data<SkillData>; // Find this skill to show on spirit combat part
+  dodgeSkillData: Item.Data<SkillData>; // Find this skill to show on combat part
 
   // Lists for dropdown values
   occupations: Array<`${OccupationEnum}`>;
@@ -139,24 +140,28 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
   private getPhysicalItemLocations(): Array<string> {
     // Used for DataList input dropdown
-    const physicalItems: RqgItem[] = this.actor.items.filter((i) => i.data.data.physicalItemType);
+    const physicalItems: RqgItem[] = this.actor.items.filter(
+      (i: Item<any>) => i.data.data.physicalItemType
+    );
     return [
       ...new Set([
-        ...this.actor.items.filter((i) => i.data.data.isContainer).map((i) => i.name),
+        ...this.actor.items.filter((i: Item<any>) => i.data.data.isContainer).map((i) => i.name),
         ...physicalItems.map((i) => i.data.data.location),
       ]),
     ];
   }
 
   private getItemLocationTree(): LocationNode {
-    const physicalItems: RqgItem[] = this.actor.items.filter((i) => i.data.data.physicalItemType);
+    const physicalItems: RqgItem[] = this.actor.items.filter(
+      (i: Item<any>) => i.data.data.physicalItemType
+    );
     return createItemLocationTree(physicalItems);
   }
 
   private getSpiritMagicPointSum(): number {
     return this.actor.items
       .filter((i) => i.type === ItemTypeEnum.SpiritMagic)
-      .reduce((acc, m) => acc + m.data.data.points, 0);
+      .reduce((acc, m: Item<SpiritMagicData>) => acc + m.data.data.points, 0);
   }
 
   private getPowCrystals(): any {
@@ -164,7 +169,8 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       this.actor.effects &&
       this.actor.effects
         .filter((e) => e.data.changes.find((e) => e.key === "data.attributes.magicPoints.max"))
-        .map((e) => {
+        .map((e: any) => {
+          // TODO check typing
           return {
             name: e.label,
             size: e.changes
@@ -180,10 +186,10 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       this.actor.data.data.characteristics.intelligence.value -
       spiritMagicPointSum -
       this.actor.items.filter(
-        (i) =>
+        (i: Item<SkillData>) =>
           i.type === ItemTypeEnum.Skill &&
           i.data.data.category === SkillCategoryEnum.Magic &&
-          i.data.data.runes.length
+          !!i.data.data.runes.length
       ).length
     );
   }
@@ -220,7 +226,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       ["4", reloadIcon],
       ["5", reloadIcon],
     ];
-    return loadedMissileSr[this.actor.data.data.attributesdexStrikeRank];
+    return loadedMissileSr[this.actor.data.data.attributes.dexStrikeRank];
   }
 
   private getUnloadedMissileSr(): Array<string> {
@@ -233,24 +239,26 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       [reloadIcon, "9"],
       [reloadIcon, "10"],
     ];
-    return unloadedMissileSr[this.actor.data.data.attributesdexStrikeRank];
+    return unloadedMissileSr[this.actor.data.data.attributes.dexStrikeRank];
   }
 
   private getCharacterRuneImgs(): Array<string> {
     return this.actor.items
       .filter(
-        (i) =>
+        (i: Item<RuneData>) =>
           i.data.type === ItemTypeEnum.Rune &&
           i.data.data.runeType === RuneTypeEnum.Element &&
-          i.data.data.chance
+          !!i.data.data.chance
       )
-      .sort((a, b) => b.data.data.chance - a.data.data.chance)
+      .sort((a: Item<RuneData>, b: Item<RuneData>) => b.data.data.chance - a.data.data.chance)
       .map((r) => r.img);
   }
 
-  private getSkillDataByName(name: String): Item<SkillData> {
-    return this.actor.items.find((i) => i.data.name === name && i.type === ItemTypeEnum.Skill)
-      ?.data;
+  private getSkillDataByName(name: String): Item.Data<SkillData> {
+    const skillItem = this.actor.items.find(
+      (i: Item<SkillData>) => i.data.name === name && i.type === ItemTypeEnum.Skill
+    ) as Item<SkillData>;
+    return skillItem?.data;
   }
 
   /**
@@ -321,7 +329,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         !!this.actor.items.filter((i) =>
-          [ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon].includes(i.type)
+          [ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon].includes(ItemTypeEnum[i.type])
         ).length,
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -332,12 +340,13 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
       runeMagic:
         CONFIG.RQG.debug.showAllUiSections ||
         !!this.actor.items.filter((i) =>
-          [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(i.type)
+          [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(ItemTypeEnum[i.type])
         ).length,
       sorcery:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Rune && i.data.data.isMastered)
-          .length,
+        !!this.actor.items.filter(
+          (i: Item<RuneData>) => i.type === ItemTypeEnum.Rune && i.data.data.isMastered
+        ).length,
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
         !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Skill).length,
@@ -349,7 +358,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
             ItemTypeEnum.MeleeWeapon,
             ItemTypeEnum.MissileWeapon,
             ItemTypeEnum.Armor,
-          ].includes(i.type)
+          ].includes(ItemTypeEnum[i.type])
         ).length,
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -391,7 +400,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
 
     // Roll Characteristic
-    this.form.querySelectorAll("[data-characteristic-roll]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-characteristic-roll]").forEach((el) => {
       const characteristic = (el.closest("[data-characteristic]") as HTMLElement).dataset
         .characteristic;
 
@@ -402,7 +411,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
         if (clickCount >= 2) {
           await CharacteristicCard.roll(
-            this.actor,
+            this.actor as any,
             characteristic,
             this.actor.data.data.characteristics[characteristic].value,
             5,
@@ -412,7 +421,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await CharacteristicCard.show(this.actor, {
+              await CharacteristicCard.show(this.actor as any, {
                 name: characteristic,
                 data: this.actor.data.data.characteristics[characteristic],
               });
@@ -424,7 +433,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     });
 
     // Roll against Item Ability Chance
-    this.form.querySelectorAll("[data-item-roll]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item: Item = this.actor.items.get(itemId);
 
@@ -434,12 +443,12 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await ItemCard.roll(this.actor, item.data, 0);
+          await ItemCard.roll(this.actor as any, item.data, 0);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await ItemCard.show(this.actor, itemId);
+              await ItemCard.show(this.actor as any, itemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -448,9 +457,9 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     });
 
     // Roll Spirit Magic
-    this.form.querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      const item: Item = this.actor.items.get(itemId);
+      const item = this.actor.items.get(itemId) as Item<SpiritMagicData>;
 
       let clickCount = 0;
 
@@ -459,16 +468,16 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
         if (clickCount >= 2) {
           if (item.data.data.isVariable && item.data.data.points > 1) {
-            await SpiritMagicCard.show(this.actor, itemId);
+            await SpiritMagicCard.show(this.actor as any, itemId);
           } else {
-            await SpiritMagicCard.roll(this.actor, item.data, item.data.data.points, 0);
+            await SpiritMagicCard.roll(this.actor as any, item.data, item.data.data.points, 0);
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await SpiritMagicCard.show(this.actor, itemId);
+              await SpiritMagicCard.show(this.actor as any, itemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -477,7 +486,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     });
 
     // Show Weapon Chat Card
-    this.form.querySelectorAll("[data-weapon-roll]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const skillItemId = (el.closest("[data-skill-id]") as HTMLElement).dataset.skillId;
 
@@ -488,12 +497,12 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
 
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
-          await WeaponCard.show(this.actor, skillItemId, weaponItemId);
+          await WeaponCard.show(this.actor as any, skillItemId, weaponItemId);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await WeaponCard.show(this.actor, skillItemId, weaponItemId);
+              await WeaponCard.show(this.actor as any, skillItemId, weaponItemId);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -502,29 +511,29 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     });
 
     // Open Linked Journal Entry
-    this.form.querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
+    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
       const pack = el.dataset.journalPack;
       const id = el.dataset.journalId;
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
 
     // Edit Item (open the item sheet)
-    this.form.querySelectorAll("[data-item-edit]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-edit]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("click", () => this.actor.getOwnedItem(itemId).sheet.render(true));
     });
 
     // Delete Item (remove item from actor)
-    this.form.querySelectorAll("[data-item-delete]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-delete]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
     // Cycle the equipped state of a physical Item
-    this.form.querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("click", async () => {
-        const item = this.actor.getOwnedItem(itemId);
+        const item = this.actor.getOwnedItem(itemId) as Item<any>;
         const newStatus =
           equippedStatuses[
             (equippedStatuses.indexOf(item.data.data.equippedStatus) + 1) % equippedStatuses.length
@@ -535,7 +544,7 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     });
 
     // Edit item value
-    this.form.querySelectorAll("[data-item-edit-value]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-edit-value]").forEach((el) => {
       const path = (el as HTMLElement).dataset.itemEditValue;
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       el.addEventListener("change", async (event) => {
@@ -545,19 +554,19 @@ export class RqgActorSheet extends ActorSheet<RqgActorData> {
     });
 
     // Add wound to hit location TODO move listener to hitlocation
-    this.form.querySelectorAll("[data-item-add-wound]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-item-add-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
+      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor as any, itemId));
     });
 
-    // Heal wound to hit location TODO move listener to hitlocation
-    this.form.querySelectorAll("[data-item-edit-wounds]").forEach((el) => {
+    // Edit wounds to hit location TODO move listener to hitlocation
+    (this.form as HTMLElement).querySelectorAll("[data-item-edit-wounds]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));
+      el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor as any, itemId));
     });
 
     // Edit Actor Active Effect
-    this.form.querySelectorAll("[data-actor-effect-edit]").forEach((el) => {
+    (this.form as HTMLElement).querySelectorAll("[data-actor-effect-edit]").forEach((el) => {
       const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
       el.addEventListener("click", () =>
         new ActiveEffectConfig(this.actor.effects.get(effectId)).render(true)

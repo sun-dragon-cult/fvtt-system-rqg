@@ -7,7 +7,7 @@ import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 
 export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.MeleeWeapon],
       template: "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.html",
@@ -30,7 +30,7 @@ export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
       data.meleeWeaponSkills = this.actor
         .getEmbeddedCollection("OwnedItem")
         .filter(
-          (i: ItemData<SkillData>) =>
+          (i: Item.Data<SkillData>) =>
             i.type === ItemTypeEnum.Skill &&
             (i.data.category === SkillCategoryEnum.MeleeWeapons ||
               i.data.category === SkillCategoryEnum.Shields ||
@@ -64,7 +64,7 @@ export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   protected activateListeners(html: JQuery) {
     super.activateListeners(html);
     if (!this.item.isOwned) {
-      this.form.addEventListener("drop", this._onDrop.bind(this));
+      (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
     }
   }
 
@@ -79,7 +79,7 @@ export class MeleeWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     }
     if (droppedItemData.type === "Item") {
       // @ts-ignore
-      const item = await Item.fromDropData(droppedItemData);
+      const item = (await Item.fromDropData(droppedItemData)) as Item<any>;
       if (
         (item.type === ItemTypeEnum.Skill &&
           item.data.data.category === SkillCategoryEnum.MeleeWeapons) ||

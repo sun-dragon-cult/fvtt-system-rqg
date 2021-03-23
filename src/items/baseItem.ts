@@ -15,7 +15,7 @@ export abstract class BaseItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    itemData: ItemData,
+    itemData: Item.Data,
     options,
     userId: string
   ): Promise<any> {}
@@ -31,7 +31,7 @@ export abstract class BaseItem {
    */
   static async onUpdateItem(
     actor: RqgActor,
-    itemData: ItemData,
+    itemData: Item.Data,
     update: any,
     options: any,
     userId: string
@@ -47,7 +47,7 @@ export abstract class BaseItem {
    */
   static async onDeleteItem(
     actor: RqgActor,
-    itemData: ItemData,
+    itemData: Item.Data,
     options,
     userId: string
   ): Promise<any> {}

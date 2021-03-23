@@ -1,5 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { SpiritMagicCard } from "../../chat/spiritMagicCard";
+import { SpiritMagicData } from "../../data-model/item-data/spiritMagicData";
 
 export const spiritMagicMenuOptions = (actor) => [
   {
@@ -18,7 +19,7 @@ export const spiritMagicMenuOptions = (actor) => [
     condition: () => true,
     callback: async (el) => {
       const itemId = (el[0].closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      const item: Item = actor.items.get(itemId);
+      const item: Item<SpiritMagicData> = actor.items.get(itemId);
       if (item.data.data.isVariable && item.data.data.points > 1) {
         await SpiritMagicCard.show(actor, item._id);
       } else {

@@ -1,6 +1,6 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
-import { RqgActor } from "../actors/rqgActor";
 import { Characteristic } from "../data-model/actor-data/characteristics";
+import { RqgActor } from "../actors/rqgActor";
 
 export type CharacteristicData = {
   name: string;
@@ -115,7 +115,7 @@ export class CharacteristicCard {
     modifier: number
   ): Promise<void> {
     const result = await Ability.roll(
-      actor,
+      actor as any,
       characteristicValue * difficulty,
       modifier,
       characteristicName + " check"
@@ -142,7 +142,7 @@ export class CharacteristicCard {
     const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
     const difficulty: number = Number(flags.formData.difficulty) || 5;
     const modifier: number = Number(flags.formData.modifier) || 0;
-    const actor: RqgActor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
     return [actor, characteristicValue, difficulty, modifier];
   }
 
@@ -174,6 +174,7 @@ export class CharacteristicCard {
   ): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
     let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
+    // @ts-ignore
     whisperRecipients.push(game.user._id);
 
     return {

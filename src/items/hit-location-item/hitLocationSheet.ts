@@ -12,7 +12,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { HealthEnum } from "../../data-model/actor-data/attributes";
 
 export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.html",

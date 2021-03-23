@@ -9,7 +9,7 @@ import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 
 export class MissileWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplicationOptions {
+  static get defaultOptions(): FormApplication.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.MissileWeapon],
       template: "systems/rqg/items/missile-weapon-item/missileWeaponSheet.html",
@@ -32,14 +32,14 @@ export class MissileWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
       data.missileWeaponSkills = this.actor
         .getEmbeddedCollection("OwnedItem")
         .filter(
-          (i: ItemData<SkillData>) =>
+          (i: Item.Data<SkillData>) =>
             i.type === ItemTypeEnum.Skill && i.data.category === SkillCategoryEnum.MissileWeapons
         );
 
       data.ownedProjectiles = this.actor
         .getEmbeddedCollection("OwnedItem")
         .filter(
-          (i: ItemData<MissileWeaponData>) =>
+          (i: Item.Data<MissileWeaponData>) =>
             i.type === ItemTypeEnum.MissileWeapon && i.data.isProjectile
         );
     } else if (data.skillOrigin) {
@@ -83,7 +83,7 @@ export class MissileWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
   protected activateListeners(html: JQuery) {
     super.activateListeners(html);
     if (!this.item.isOwned) {
-      this.form.addEventListener("drop", this._onDrop.bind(this));
+      (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
     }
   }
 
@@ -98,7 +98,7 @@ export class MissileWeaponSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     }
     if (droppedItemData.type === "Item") {
       // @ts-ignore
-      const item = await Item.fromDropData(droppedItemData);
+      const item = (await Item.fromDropData(droppedItemData)) as Item<any>;
       if (
         item.type === ItemTypeEnum.Skill &&
         item.data.data.category === SkillCategoryEnum.MissileWeapons
