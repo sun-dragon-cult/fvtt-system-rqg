@@ -2,33 +2,34 @@
   "private": true,
   "name": "rqg",
   "version": "0.1.0",
+  "type": "module",
   "description": "",
   "scripts": {
-    "build": "gulp build",
-    "build:watch": "gulp watch",
-    "update": "yarn add -D https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git"
+    "build": "yarn snowpack build && yarn compile:template",
+    "build2": "yarn compile:ts && yarn copy && yarn compile:template",
+    "update": "yarn add -D https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git",
+    "copy": "copyfiles -u 1 -V src/i18n/**/* src/assets/**/* src/system.json src/**/**/*.html dist",
+    "compile:ts": "tsc",
+    "compile:sass": "node-sass ./src/rqg.scss ./dist/rqg.css",
+    "compile:template": "node jsTemplate2json.mjs"
   },
   "author": "",
   "license": "",
   "devDependencies": {
     "@types/fs-extra": "^9.0.6",
-    "@types/gulp": "^4.0.6",
-    "@types/gulp-less": "^0.0.31",
     "@types/jquery": "^3.5.0",
     "@types/node": "^14.14.20",
     "@types/socket.io": "^2.1.8",
     "@types/tinymce": "^4.5.24",
-    "chalk": "^4.1.0",
+    "copyfiles": "^2.4.1",
     "foundry-pc-types": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git",
     "fs-extra": "^9.0.1",
-    "gulp": "^4.0.2",
-    "gulp-git": "^2.10.1",
-    "gulp-sass": "^4.1.0",
-    "gulp-typescript": "^5.0.1",
-    "json-stringify-pretty-compact": "^2.0.0",
     "prettier": "2.2.1",
     "sass": "^1.32.0",
+    "snowpack": "^3.1.2",
     "ts-node": "^9.0.0",
-    "typescript": "^4.1.2"
+    "typescript": "^4.2.3",
+    "@snowpack/plugin-sass": "^1.4.0",
+    "@snowpack/plugin-typescript": "^1.2.1"
   }
 }
