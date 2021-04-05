@@ -1,5 +1,8 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
-import { SkillData } from "../data-model/item-data/skillData";
+import { logBug } from "./util";
+import { RqgConfig } from "./config";
+
+declare const CONFIG: RqgConfig;
 
 export const handlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -12,7 +15,7 @@ export const handlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("itemname", (itemId, actorId) => {
-    const actor = game.actors.find((a) => a._id === actorId);
+    const actor = game.actors?.find((a) => a._id === actorId);
     if (!actor) {
       console.warn(
         `RQG | Handlebar helper "itemname": Couldn't find actor "${actorId}" while checking itemname "${itemId}" `
@@ -23,41 +26,49 @@ export const handlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("skillchance", (itemId, actorId) => {
-    const actor = game.actors.find((a) => a._id === actorId);
+    const actor = game.actors?.find((a) => a._id === actorId);
     if (!actor) {
       console.warn(
         `RQG | Handlebar helper "skillchance": Couldn't find actor "${actorId}" while checking skill chance on item "${itemId}" `
       );
     }
-    const item = actor?.items.get(itemId) as Item<SkillData>;
+    const item = actor?.items.get(itemId);
     return item ? item.data.data.chance : "---";
   });
 
   Handlebars.registerHelper("experiencedclass", (itemId, actorId) => {
-    const actor = game.actors.find((a) => a._id === actorId);
+    const actor = game.actors?.find((a) => a._id === actorId);
     if (!actor) {
       console.warn(
         `RQG | Handlebar helper "experiencedclass": Couldn't find actor "${actorId}" while checking experience on item "${itemId}" `
       );
     }
-    const item = actor?.items.get(itemId) as Item<any>;
+    const item = actor?.items.get(itemId);
     return item && item.data.data.hasExperience ? "experienced" : "";
   });
 
   Handlebars.registerHelper("quantity", (itemId, actorId) => {
-    const actor = game.actors.find((a) => a._id === actorId);
+    const actor = game.actors?.find((a) => a._id === actorId);
     if (!actor) {
       console.warn(
         `RQG | Handlebar helper "quantity": Couldn't find actor "${actorId}" while checking quantity on item "${itemId}" `
       );
     }
-    const item = actor?.items.get(itemId) as Item<any>;
+    const item = actor?.items.get(itemId);
     return item ? item.data.data.quantity : "---";
   });
 
   Handlebars.registerHelper("runeImg", (runeName) => {
-    const allRunesIndex = game.settings.get("rqg", "runes");
-    return allRunesIndex.find((r) => r.name === runeName)?.img;
+    if (!runeName) {
+      return;
+    }
+    const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    const rune = allRunesIndex.find((r) => r.name === runeName);
+    if (rune) {
+      return rune.img;
+    } else {
+      logBug(`Couldn't find rune ${runeName}`);
+    }
   });
 
   Handlebars.registerHelper("enrichHtml", (content) => {
@@ -70,7 +81,7 @@ export const handlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("gearViewIcon", (view: string) => {
-    return CONFIG.RQG.gearViewIcons[view];
+    return CONFIG.RQG.gearViewIcons[view as keyof typeof CONFIG.RQG.gearViewIcons];
   });
 
   Handlebars.registerHelper("yes-no", (bool) => {
@@ -93,18 +104,5 @@ export const handlebarsHelpers = function () {
       acc = acc + n;
       return acc;
     });
-  });
-
-  Handlebars.registerHelper("buildPhysicalItemLocation", (physicalItem, level) => {
-    if (!level) level = 1;
-    let str = "";
-    for (let i = 0; i < level; i++) str += "+";
-    str += Handlebars.partials["systems/rqg/actors/parts/physical-item-location.html"]({
-      physicalItemLocation: physicalItem,
-    });
-    physicalItem.friends.forEach((o) => {
-      str = str + this.buildObject(o, level + 1);
-    });
-    return new Handlebars.SafeString(str);
   });
 };

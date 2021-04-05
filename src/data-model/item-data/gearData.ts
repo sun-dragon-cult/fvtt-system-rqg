@@ -1,10 +1,17 @@
 import { emptyPrice, EquippedStatus, IPhysicalItem, PhysicalItemType } from "./IPhysicalItem";
+import { ItemTypeEnum } from "./itemTypes";
 
-export type GearData = IPhysicalItem & {
+export interface GearData extends IPhysicalItem {
   // --- Derived / Convenience Data Below ---
-  equippedStatuses?: Array<EquippedStatus>; // For sheet dropdown
-  physicalItemTypes?: Array<PhysicalItemType>; // For sheet dropdown
-};
+  /** For sheet dropdown */
+  equippedStatuses?: EquippedStatus[];
+  /** For sheet dropdown */
+  physicalItemTypes?: PhysicalItemType[];
+}
+
+export interface GearItemData extends Item.Data<GearData> {
+  type: ItemTypeEnum.Gear;
+}
 
 export const emptyGear: GearData = {
   description: "",

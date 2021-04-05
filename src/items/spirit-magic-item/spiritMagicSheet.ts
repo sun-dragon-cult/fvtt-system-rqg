@@ -1,17 +1,16 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
-import { RqgItem } from "../rqgItem";
 import {
   SpiritMagicCastingRangeEnum,
-  SpiritMagicData,
   SpiritMagicDurationEnum,
   SpiritMagicConcentrationEnum,
+  SpiritMagicItemData,
 } from "../../data-model/item-data/spiritMagicData";
-import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
+import { logBug } from "../../system/util";
 
-export class SpiritMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplication.Options {
+export class SpiritMagicSheet extends ItemSheet<SpiritMagicItemData> {
+  static get defaultOptions(): BaseEntitySheet.Options {
+    // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.SpiritMagic],
       template: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.html",
@@ -20,36 +19,40 @@ export class SpiritMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     });
   }
 
-  // Wrong type definition super.getData returns ItemData<DataType> ??? I think
-  getData(): any {
-    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: SpiritMagicData = sheetData.item.data;
+  getData(): SpiritMagicItemData {
+    const sheetData = super.getData() as SpiritMagicItemData;
+    const data = sheetData.data;
     data.ranges = Object.values(SpiritMagicCastingRangeEnum);
     data.durations = Object.values(SpiritMagicDurationEnum);
     data.types = Object.values(SpiritMagicConcentrationEnum);
     return sheetData;
   }
 
-  protected activateListeners(html: JQuery) {
+  public activateListeners(html: JQuery): void {
     super.activateListeners(html);
     (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
 
     // Open Linked Journal Entry
-    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
-      const pack = el.dataset.journalPack;
-      const id = el.dataset.journalId;
-      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: Element) => {
+      const elem = el as HTMLElement;
+      const pack = elem.dataset.journalPack;
+      const id = elem.dataset.journalId;
+      if (id) {
+        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+      } else {
+        logBug("Couldn't find linked journal entry from Spirit magic sheet", elem, pack, id);
+      }
     });
   }
 
-  protected async _onDrop(event: DragEvent) {
+  protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
     // Try to extract the data
     let droppedItemData;
     try {
-      droppedItemData = JSON.parse(event.dataTransfer.getData("text/plain"));
+      droppedItemData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
-      return false;
+      return;
     }
     if (droppedItemData.type === "JournalEntry") {
       const pack = droppedItemData.pack ? droppedItemData.pack : "";
@@ -58,7 +61,7 @@ export class SpiritMagicSheet extends RqgItemSheet<RqgActorData, RqgItem> {
         {}
       );
     } else {
-      ui.notifications.warn("You can only drop a journalEntry");
+      ui.notifications?.warn("You can only drop a journalEntry");
     }
   }
 }

@@ -2,12 +2,13 @@ import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
-import { RqgItem } from "../items/rqgItem";
 import { getItemIdsInSameLocationTree } from "../items/shared/locationNode";
+import { logBug } from "../system/util";
+import { RqgItem } from "../items/rqgItem";
 
-export class RqgActor extends Actor<RqgActorData> {
+export class RqgActor extends Actor<RqgActorData, RqgItem> {
   static init() {
-    CONFIG.Actor.entityClass = (RqgActor as unknown) as typeof Actor;
+    CONFIG.Actor.entityClass = RqgActor;
 
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("rqg", RqgActorSheet, { makeDefault: true });
@@ -17,7 +18,6 @@ export class RqgActor extends Actor<RqgActorData> {
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
   prepareBaseData(): void {
-    // @ts-ignore (until foundry-pc-types are updated for 0.7)
     super.prepareBaseData();
     const actorData = this.data;
     const data = actorData.data;
@@ -27,10 +27,11 @@ export class RqgActor extends Actor<RqgActorData> {
 
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
-    const [data, str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
+    const data = this.data.data;
+    const [str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
     data.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
-    this.items.forEach((item: RqgItem) =>
-      ResponsibleItemClass.get(item.type).onActorPrepareEmbeddedEntities(item)
+    this.items.forEach((item) =>
+      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
     );
   }
 
@@ -45,9 +46,9 @@ export class RqgActor extends Actor<RqgActorData> {
    * Apply final transformations to the Actor data after all effects have been applied
    */
   prepareDerivedData(): void {
-    // @ts-ignore (until foundry-pc-types are updated for 0.7)
     super.prepareDerivedData();
-    const [data, str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
+    const data = this.data.data;
+    const [str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
     data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
       str,
       siz,
@@ -59,7 +60,7 @@ export class RqgActor extends Actor<RqgActorData> {
     data.attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
     const movementEncumbrancePenalty = Math.min(
       0,
-      data.attributes.maximumEncumbrance || 0 - data.attributes.equippedEncumbrance || 0
+      data.attributes.maximumEncumbrance || 0 - (data.attributes.equippedEncumbrance || 0)
     );
 
     data.attributes.move += movementEncumbrancePenalty;
@@ -71,8 +72,8 @@ export class RqgActor extends Actor<RqgActorData> {
     data.skillCategoryModifiers.naturalWeapons += movementEncumbrancePenalty * 5;
     data.skillCategoryModifiers.shields += movementEncumbrancePenalty * 5;
 
-    this.items.forEach((item: RqgItem) =>
-      ResponsibleItemClass.get(item.type).onActorPrepareDerivedData(item)
+    this.items.forEach((item) =>
+      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item)
     );
 
     // *** Setup calculated stats ***
@@ -86,15 +87,16 @@ export class RqgActor extends Actor<RqgActorData> {
 
   // Entity-specific actions that should occur when the Entity is first created
   protected _onCreate(...args: any[]) {
-    // @ts-ignore
+    // @ts-ignore TODO remove
     super._onCreate(...args);
     const actorData = args[0];
 
     // There might be effects with a different actor.id but same itemData.id if the actor
     // is copied or imported, make sure the actor id is pointing to this new actor.
-    const effectsOriginUpdates = actorData.effects.map((effect) => {
+    const effectsOriginUpdates = actorData.effects.map((effect: ActiveEffect) => {
       return {
-        _id: effect._id,
+        _id: effect.id,
+        // @ts-ignore origin
         origin: RqgActor.updateEffectOrigin(effect.origin, actorData._id),
       };
     });
@@ -111,7 +113,7 @@ export class RqgActor extends Actor<RqgActorData> {
   }
 
   // Defaults when creating a new Actor
-  static async create(data: any, options?: object): Promise<Entity> {
+  static async create(data: any, options?: object | undefined): Promise<Entity> {
     data.token = data.token || {};
     if (data.type === "character") {
       mergeObject(
@@ -129,18 +131,24 @@ export class RqgActor extends Actor<RqgActorData> {
         { overwrite: false }
       );
     }
-    return await super.create(data, options);
+    const actor = await super.create(data, options);
+    if (actor) {
+      return actor;
+    } else {
+      logBug("Couldn't create actor");
+      return new Actor();
+    }
   }
 
-  // @ts-ignore
+  // @ts-ignore TODO remove
   protected async _onCreateEmbeddedEntity(
     embeddedName: string,
-    child: Item.Data<any>,
-    options,
+    child: Item.Data,
+    options: any,
     userId: string
-  ) {
+  ): Promise<void> {
     if (embeddedName === "OwnedItem" && this.owner) {
-      const updateData = await ResponsibleItemClass.get(child.type).onEmbedItem(
+      const updateData = await ResponsibleItemClass.get(child.type)?.onEmbedItem(
         this,
         child,
         options,
@@ -148,19 +156,19 @@ export class RqgActor extends Actor<RqgActorData> {
       );
       updateData && (await this.updateOwnedItem(updateData));
     }
-    // @ts-ignore
+    // @ts-ignore TODO remove
     return super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
   }
 
-  // @ts-ignore
+  // @ts-ignore TODO remove
   protected async _onDeleteEmbeddedEntity(
-    embeddedName,
-    child: Item.Data<any>,
-    options,
+    embeddedName: string,
+    child: Item.Data,
+    options: any,
     userId: string
   ) {
     if (embeddedName === "OwnedItem" && this.owner) {
-      const updateData = await ResponsibleItemClass.get(child.type).onDeleteItem(
+      const updateData = await ResponsibleItemClass.get(child.type)?.onDeleteItem(
         this,
         child,
         options,
@@ -168,20 +176,19 @@ export class RqgActor extends Actor<RqgActorData> {
       );
       updateData && (await this.updateOwnedItem(updateData));
     }
-    // @ts-ignore
+    // @ts-ignore TODO remove
     return super._onDeleteEmbeddedEntity(embeddedName, child, options, userId);
   }
 
-  // @ts-ignore
   protected async _onUpdateEmbeddedEntity(
     embeddedName: string,
-    child: Item.Data<any>,
+    child: Item.Data,
     update: any,
     options: any,
     userId: string
   ) {
     if (embeddedName === "OwnedItem" && this.owner) {
-      const updateData = await ResponsibleItemClass.get(child.type).onUpdateItem(
+      const updateData = await ResponsibleItemClass.get(child.type)?.onUpdateItem(
         this,
         child,
         update,
@@ -190,11 +197,10 @@ export class RqgActor extends Actor<RqgActorData> {
       );
       updateData && (await this.updateOwnedItem(updateData));
     }
-    // @ts-ignore
     return super._onUpdateEmbeddedEntity(embeddedName, child, update, options, userId);
   }
 
-  // @ts-ignore
+  // @ts-ignore TODO remove
   _onModifyEmbeddedEntity(embeddedName, ...args) {
     if (embeddedName === "OwnedItem" && this.owner) {
       this.updateEquippedStatus(args[0]).then(
@@ -203,13 +209,14 @@ export class RqgActor extends Actor<RqgActorData> {
           setTimeout(this.updateEncumbrance.bind(this), 0) // TODO Solve without releasing thread?
       );
     }
-    // @ts-ignore
+    // @ts-ignore TODO remove
     super._onModifyEmbeddedEntity(embeddedName, ...args);
   }
 
-  private async updateEquippedStatus(changes) {
+  private async updateEquippedStatus(changes: any) {
     const equippedStatusChanges: any[] = changes.filter(
-      (i) => i.data.equippedStatus || typeof i.data.location !== "undefined"
+      // FIXME changes can be a list of id:s if removed *** *** ***
+      (i: any) => i?.data?.equippedStatus || typeof i?.data?.location !== "undefined"
     );
     if (equippedStatusChanges.length) {
       // Check that equippedStatus has changed
@@ -219,11 +226,16 @@ export class RqgActor extends Actor<RqgActorData> {
         equippedStatusChanges[0].data.equippedStatus ||
         (this.getOwnedItem(equippedStatusChanges[0]._id).data.data as any).equippedStatus; // TODO Always correct?
 
-      const itemsToUpdate = equippedStatusChanges.map((i) =>
-        getItemIdsInSameLocationTree(this.items.get(i._id)?.data, this).map((id) => {
-          return { _id: id, "data.equippedStatus": newEquippedStatus };
-        })
-      );
+      const itemsToUpdate = equippedStatusChanges.map((i) => {
+        const item = this.items.get(i._id);
+        if (item) {
+          return getItemIdsInSameLocationTree(item.data, this).map((id) => {
+            return { _id: id, "data.equippedStatus": newEquippedStatus };
+          });
+        } else {
+          logBug("couldn't find item when updating equipped status", i);
+        }
+      });
       await this.updateEmbeddedEntity("OwnedItem", itemsToUpdate[0]); // TODO fix nested arrays
       // await item.update({ "data.equippedStatus": newStatus }, {});
     }
@@ -232,10 +244,16 @@ export class RqgActor extends Actor<RqgActorData> {
   private async updateEncumbrance() {
     const equippedEncumbrance = Math.round(
       this.items
-        .filter((i: Item<any>) => i.data.data.equippedStatus === "equipped")
-        .reduce((sum, i: Item<any>) => {
-          const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
-          return sum + enc;
+        .filter(
+          (i: RqgItem) =>
+            "equippedStatus" in i.data.data && i.data.data.equippedStatus === "equipped"
+        )
+        .reduce((sum, i: RqgItem) => {
+          const quantity =
+            "quantity" in i.data.data && i.data.data.quantity ? i.data.data.quantity : 1;
+          const encumbrance =
+            "encumbrance" in i.data.data && i.data.data.encumbrance ? i.data.data.encumbrance : 0;
+          return sum + quantity * encumbrance;
         }, 0)
     );
 
@@ -267,26 +285,15 @@ export class RqgActor extends Actor<RqgActorData> {
   }
 
   // Return shorthand access to actor data & characteristics
-  private actorCharacteristics(): [
-    RqgActorData,
-    number,
-    number,
-    number,
-    number,
-    number,
-    number,
-    number
-  ] {
-    const actorData = this.data;
-    const data = actorData.data;
-
-    const str = data.characteristics.strength.value;
-    const con = data.characteristics.constitution.value;
-    const siz = data.characteristics.size.value;
-    const dex = data.characteristics.dexterity.value;
-    const int = data.characteristics.intelligence.value;
-    const pow = data.characteristics.power.value;
-    const cha = data.characteristics.charisma.value;
-    return [data, str, con, siz, dex, int, pow, cha];
+  private actorCharacteristics(): [number, number, number, number, number, number, number] {
+    const characteristics = this.data.data.characteristics;
+    const str = characteristics.strength.value;
+    const con = characteristics.constitution.value;
+    const siz = characteristics.size.value;
+    const dex = characteristics.dexterity.value;
+    const int = characteristics.intelligence.value;
+    const pow = characteristics.power.value;
+    const cha = characteristics.charisma.value;
+    return [str, con, siz, dex, int, pow, cha];
   }
 }

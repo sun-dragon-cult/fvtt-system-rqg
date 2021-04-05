@@ -1,28 +1,27 @@
-export class Characteristic {
-  constructor(public value: number = 0, public hasExperience?: boolean) {}
+export interface Characteristic {
+  value: number;
+  hasExperience?: boolean;
 }
 
-export class Characteristics {
-  constructor(
-    public strength: Characteristic,
-    public constitution: Characteristic,
-    public size: Characteristic,
-    public dexterity: Characteristic,
-    public intelligence: Characteristic,
-    public power: Characteristic,
-    public charisma: Characteristic
-  ) {}
+export interface Characteristics {
+  strength: Characteristic;
+  constitution: Characteristic;
+  size: Characteristic;
+  dexterity: Characteristic;
+  intelligence: Characteristic;
+  power: Characteristic;
+  charisma: Characteristic;
 }
 
 // Check if experience exists to see if the Characteristic can be raised with experience (show checkbox)
-const emptyExp = new Characteristic(0, false);
-const emptyNoExp = new Characteristic();
-export const emptyCharacteristics = new Characteristics(
-  emptyNoExp,
-  emptyNoExp,
-  emptyNoExp,
-  emptyNoExp,
-  emptyNoExp,
-  emptyExp,
-  emptyNoExp
-);
+const emptyExp: Characteristic = { value: 0, hasExperience: false };
+const emptyNoExp: Characteristic = { value: 0 };
+export const emptyCharacteristics: Characteristics = {
+  strength: emptyNoExp,
+  constitution: emptyNoExp,
+  size: emptyNoExp,
+  dexterity: emptyNoExp,
+  intelligence: emptyNoExp,
+  power: emptyExp,
+  charisma: emptyNoExp,
+};

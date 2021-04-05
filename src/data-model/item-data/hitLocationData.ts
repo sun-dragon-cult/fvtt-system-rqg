@@ -1,4 +1,5 @@
 import { emptyResource, Resource } from "../shared/resource";
+import { ItemTypeEnum } from "./itemTypes";
 
 export enum HitLocationsEnum {
   Head = "head",
@@ -24,17 +25,25 @@ export enum HitLocationsEnum {
   RightHead = "rightHead",
 }
 
-export type HitLocationData = {
+export interface HitLocationData {
   dieFrom: number;
   dieTo: number;
-  hp: Resource; // Max and value added by ActorSheet.prepareData
-  baseHpDelta: number; // Chest has +1 while arms have -1 for humans
-  naturalAp: number; // Natural armor
-  wounds: Array<number>;
+  /** Max and value added by ActorSheet.prepareData */
+  hp: Resource;
+  /** Chest has +1 while arms have -1 for humans */
+  baseHpDelta: number;
+  /**  Natural armor */
+  naturalAp: number;
+  wounds: number[];
   // --- Derived / Convenience Data Below ---
-  ap?: number; // Natural armor + modified armor Active Effect
+  /** Natural armor + modified armor Active Effect */
+  ap?: number;
   hitLocationTypes?: HitLocationsEnum[];
-};
+}
+
+export interface HitLocationItemData extends Item.Data<HitLocationData> {
+  type: ItemTypeEnum.HitLocation;
+}
 
 export const emptyHitLocation: HitLocationData = {
   dieFrom: 0,

@@ -1,6 +1,7 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { Characteristic } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "../actors/rqgActor";
+import { logBug } from "../system/util";
 
 export type CharacteristicData = {
   name: string;
@@ -55,9 +56,13 @@ export class CharacteristicCard {
     await ChatMessage.create(await CharacteristicCard.renderContent(flags, actor));
   }
 
-  public static async inputChangeHandler(ev, messageId: string): Promise<void> {
-    const chatMessage = game.messages.get(messageId);
-    const flags: CharacteristicCardFlags = chatMessage.data.flags.rqg;
+  public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
+    const chatMessage = game.messages?.get(messageId);
+    const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
+    if (!flags || !chatMessage) {
+      logBug("couldn't find chatmessage");
+      return;
+    }
     CharacteristicCard.updateFlagsFromForm(flags, ev);
 
     const [
@@ -76,14 +81,18 @@ export class CharacteristicCard {
     await chatMessage.update(data);
   }
 
-  public static async formSubmitHandler(ev, messageId: string): Promise<boolean> {
+  public static async formSubmitHandler(ev: Event, messageId: string): Promise<boolean> {
     ev.preventDefault();
 
-    const chatMessage = game.messages.get(messageId);
-    const flags: CharacteristicCardFlags = chatMessage.data.flags.rqg;
+    const chatMessage = game.messages?.get(messageId);
+    const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
+    if (!flags || !chatMessage) {
+      logBug("couldn't find chatmessage");
+      return false;
+    }
     CharacteristicCard.updateFlagsFromForm(flags, ev);
 
-    const form = ev.target;
+    const form = ev.target as HTMLFormElement;
     // Disable form until completed
     form.style.pointerEvents = "none";
 
@@ -134,32 +143,37 @@ export class CharacteristicCard {
       !actor.data.data.characteristics.power.hasExperience
     ) {
       await actor.update({ "data.characteristics.power.hasExperience": true });
-      ui.notifications.info("🎉 Yey, you got an experience check on power!");
+      ui.notifications?.info("🎉 Yey, you got an experience check on power!");
     }
   }
 
-  private static getFormDataFromFlags(flags): [RqgActor, number, number, number] {
+  private static getFormDataFromFlags(
+    flags: CharacteristicCardFlags
+  ): [RqgActor, number, number, number] {
     const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
     const difficulty: number = Number(flags.formData.difficulty) || 5;
     const modifier: number = Number(flags.formData.modifier) || 0;
-    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    const actor = game.actors?.get(flags.actorId) as RqgActor;
     return [actor, characteristicValue, difficulty, modifier];
   }
 
-  private static updateFlagsFromForm(flags, ev): void {
-    const form: HTMLFormElement = ev.target.closest("form");
+  private static updateFlagsFromForm(flags: CharacteristicCardFlags, ev: Event): void {
+    const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
     const formData = new FormData(form);
-    // @ts-ignore
-    for (const [name, value] of formData) {
-      flags.formData[name] = value;
+    // @ts-ignore formData.entries()
+    for (const [name, value] of formData.entries()) {
+      if (name in flags.formData) {
+        flags.formData[name as keyof typeof flags.formData] = value;
+      }
     }
 
     // TODO workaround for foundry removing option value...
     let difficulty = 0;
     for (const option in flags.difficultyOptions) {
       if (
-        flags.difficultyOptions.hasOwnProperty(option) &&
-        flags.difficultyOptions[option] === flags.formData.difficulty
+        option in flags.difficultyOptions &&
+        flags.difficultyOptions[(option as unknown) as keyof typeof flags.difficultyOptions] === // TODO Ugly type conversion!
+          flags.formData.difficulty.toString(10)
       ) {
         difficulty = Number(option);
       }
@@ -173,8 +187,8 @@ export class CharacteristicCard {
     actor: RqgActor
   ): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
-    let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
-    // @ts-ignore
+    let whisperRecipients = game.users?.filter((u) => u.isGM && u.active);
+    // @ts-ignore TODO remove
     whisperRecipients.push(game.user._id);
 
     return {
@@ -184,7 +198,7 @@ export class CharacteristicCard {
         " (" +
         flags.characteristic.data.value +
         ")",
-      user: game.user._id,
+      user: game.user?._id,
       speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
       whisper: whisperRecipients,

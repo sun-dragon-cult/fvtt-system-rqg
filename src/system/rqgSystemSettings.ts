@@ -1,12 +1,4 @@
 export const registerRqgSystemSettings = function () {
-  game.settings.register("rqg", "systemMigrationVersion", {
-    name: "System Migration Version",
-    scope: "world",
-    config: true, // TODO make this false eventually
-    type: String,
-    default: "",
-  });
-
   game.settings.register("rqg", "specialCrit", {
     name: "Special & Hyper Critical results",
     hint:
@@ -51,5 +43,14 @@ export const registerRqgSystemSettings = function () {
     config: false,
     type: Object,
     default: {},
+  });
+
+  game.settings.register("rqg", "systemMigrationVersion", {
+    name: "System Migration Version",
+    hint: "Do not touch this unless you really know what you are doing!",
+    scope: "world",
+    config: true, // TODO make this false eventually
+    type: String,
+    default: "",
   });
 };

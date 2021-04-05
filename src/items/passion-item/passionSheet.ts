@@ -1,10 +1,7 @@
-import { PassionData, PassionsEnum } from "../../data-model/item-data/passionData";
-import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
-import { RqgItem } from "../rqgItem";
+import { PassionItemData, PassionsEnum } from "../../data-model/item-data/passionData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgItemSheet } from "../RqgItemSheet";
 
-export class PassionSheet extends RqgItemSheet<RqgActorData, RqgItem> {
+export class PassionSheet extends ItemSheet<PassionItemData> {
   static passionImgUrl = new Map([
     [PassionsEnum.Devotion, "systems/rqg/assets/images/passion/devotion.svg"],
     [PassionsEnum.Fear, "systems/rqg/assets/images/passion/fear.svg"],
@@ -14,7 +11,8 @@ export class PassionSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     [PassionsEnum.Love, "systems/rqg/assets/images/passion/love.svg"],
   ]);
 
-  static get defaultOptions(): FormApplication.Options {
+  static get defaultOptions(): BaseEntitySheet.Options {
+    // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Passion],
       template: "systems/rqg/items/passion-item/passionSheet.html",
@@ -23,14 +21,14 @@ export class PassionSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     });
   }
 
-  getData(): any {
-    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: PassionData = sheetData.item.data;
+  getData(): PassionItemData {
+    const sheetData = super.getData() as PassionItemData;
+    const data = sheetData.data;
     data.passionTypes = Object.values(PassionsEnum);
     return sheetData;
   }
 
-  protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
+  protected _updateObject(event: Event, formData: any): Promise<any> {
     const subject = formData["data.subject"] ? ` (${formData["data.subject"]})` : "";
     formData["name"] = formData["data.passion"] + subject;
     formData["img"] = PassionSheet.passionImgUrl.get(formData["data.passion"]);

@@ -1,5 +1,6 @@
 import { IAbility } from "../shared/ability";
 import { JournalEntryLink } from "../shared/journalentrylink";
+import { ItemTypeEnum } from "./itemTypes";
 
 export enum RuneTypeEnum {
   Element = "element",
@@ -9,20 +10,28 @@ export enum RuneTypeEnum {
   Technique = "technique",
 }
 
-export type RuneData = IAbility &
-  JournalEntryLink & {
-    rune: string; // The name of the rune Fire for example
-    runeType: RuneTypeEnum;
-    chance: number;
-    experience: boolean;
-    opposingRune: string; // For Power Runes (+ Form: Man & Beast) ex: "Beast (form)"
-    minorRunes: Array<string>; // For Sorcery - Elemental Runes & Techniques ex ["Air (elemental)", "Fire (elemental)"]
-    isMastered: boolean; // For Sorcery
-    // --- Derived / Convenience Data Below ---
-    allRunes?: Array<string>; // For selecting which in sheet
-    runeTypes?: Array<RuneTypeEnum>; // For selecting which in sheet
-  };
+export interface RuneData extends IAbility, JournalEntryLink {
+  /** The name of the rune Fire for example */
+  rune: string;
+  runeType: RuneTypeEnum;
+  chance: number;
+  experience: boolean;
+  /** For Power Runes (+ Form: Man & Beast) ex: "Beast (form)" */
+  opposingRune: string;
+  /** For Sorcery - Elemental Runes & Techniques ex ["Air (elemental)", "Fire (elemental)"] */
+  minorRunes: string[];
+  /** For Sorcery */
+  isMastered: boolean;
+  // --- Derived / Convenience Data Below ---
+  /** For selecting which in sheet */
+  allRunes?: string[];
+  /** For selecting which in sheet */
+  runeTypes?: RuneTypeEnum[];
+}
 
+export interface RuneItemData extends Item.Data<RuneData> {
+  type: ItemTypeEnum.Rune;
+}
 export const emptyRune: RuneData = {
   rune: "",
   chance: 0,

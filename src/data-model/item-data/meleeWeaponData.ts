@@ -1,7 +1,7 @@
 import { emptyPrice, EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
 import { RqgItem } from "../../items/rqgItem";
-import { SkillData } from "./skillData";
+import { ItemTypeEnum } from "./itemTypes";
 
 export enum CombatManeuver {
   Crush = "crush",
@@ -13,24 +13,36 @@ export enum CombatManeuver {
   Special = "special",
 }
 
-export type MeleeWeaponData = IPhysicalItem & {
-  skillId: string; // id of the corresponding skill (when embedded)
-  skillOrigin: string; // the uuid of the required skill Item
+export interface MeleeWeaponData extends IPhysicalItem {
+  /** id of the corresponding skill (when embedded) */
+  skillId: string;
+  /** the uuid of the required skill Item */
+  skillOrigin: string;
   damage: string; // Formula
-  combatManeuvers: Array<CombatManeuver>;
+  combatManeuvers: CombatManeuver[];
   minStrength: number;
   minDexterity: number;
   strikeRank: number;
   hitPoints: Resource;
-  isNatural: boolean; // E.g. Fist, Grapple, Kick
+  /** E.g. Fist, Grapple, Kick */
+  isNatural: boolean;
   description: string;
+
   // --- Derived / Convenience Data Below ---
+
   allCombatManeuvers?: any;
-  meleeWeaponSkills?: Array<RqgItem<SkillData>>; // All relevant skills of the owning actor
-  skillName?: string; // For showing the name of the linked skill if the item isn't owned
+  /** All relevant skills of the owning actor */
+  meleeWeaponSkills?: RqgItem[];
+  /** For showing the name of the linked skill if the item isn't owned */
+  skillName?: string;
   isOwned?: boolean;
-  equippedStatuses?: Array<EquippedStatus>; // For sheet dropdown
-};
+  /** For sheet dropdown */
+  equippedStatuses?: EquippedStatus[];
+}
+
+export interface MeleeWeaponItemData extends Item.Data<MeleeWeaponData> {
+  type: ItemTypeEnum.MeleeWeapon;
+}
 
 export const emptyMeleeWeapon: MeleeWeaponData = {
   description: "",

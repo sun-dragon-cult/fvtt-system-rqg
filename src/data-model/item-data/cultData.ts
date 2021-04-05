@@ -1,5 +1,6 @@
 import { emptyResource, Resource } from "../shared/resource";
 import { JournalEntryLink } from "../shared/journalentrylink";
+import { ItemTypeEnum } from "./itemTypes";
 
 export enum CultRankEnum {
   LayMember = "layMember",
@@ -11,23 +12,27 @@ export enum CultRankEnum {
   HighPriest = "highPriest",
 }
 
-export type CultData = JournalEntryLink & {
+export interface CultData extends JournalEntryLink {
   rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
   runePoints: Resource;
   tagline: string;
   holyDays: string;
-  runes: Array<string>;
-  // cultSkills: Array<string>; // TODO Link to system wide id...
-  // favouredPassions: Array<string>; // TODO Link to system wide id...
-  // cultSpiritMagic: Array<string>; // TODO Link to system wide id...
-  // prohibitedCultSpiritMagic: Array<string>; // TODO Link to system wide id...
-  // cultRuneMagic: Array<string>; // TODO Link to system wide id...
-  // cultEnchantments: Array<string>; // TODO Link to system wide id...
+  runes: string[];
+  // cultSkills: string[]; // TODO Link to system wide id...
+  // favouredPassions: string[]; // TODO Link to system wide id...
+  // cultSpiritMagic: string[]; // TODO Link to system wide id...
+  // prohibitedCultSpiritMagic: string[]; // TODO Link to system wide id...
+  // cultRuneMagic: string[]; // TODO Link to system wide id...
+  // cultEnchantments: string[]; // TODO Link to system wide id...
   subCults: string;
   // --- Derived / Convenience Data Below ---
-  ranksEnum?: Array<CultRankEnum>; // For sheet dropdown
-  allRunes?: Array<string>; // For sheet dropdown
-};
+  ranksEnum?: CultRankEnum[]; // For sheet dropdown
+  allRunes?: Compendium.IndexEntry[]; // For sheet dropdown
+}
+
+export interface CultItemData extends Item.Data<CultData> {
+  type: ItemTypeEnum.Cult;
+}
 
 export const emptyCult: CultData = {
   rank: CultRankEnum.LayMember,

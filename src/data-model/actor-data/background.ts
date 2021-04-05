@@ -36,23 +36,25 @@ export enum HomeLandEnum {
   Vansh = "vansh",
 }
 
-export class Background {
-  constructor(
-    public race: string,
-    public occupation: OccupationEnum,
-    public homeland: HomeLandEnum,
-    public town?: string,
-    public birthYear?: number,
-    public age?: number,
-    public gender?: string,
-    public tribe?: string,
-    public clan?: string,
-    public reputation?: number,
-    public standardOfLiving?: string,
-    public ransom?: number,
-    public baseIncome?: number,
-    public biography?: string
-  ) {}
+export interface Background {
+  race: string;
+  occupation: OccupationEnum;
+  homeland: HomeLandEnum;
+  town?: string;
+  birthYear?: number;
+  age?: number;
+  gender?: string;
+  tribe?: string;
+  clan?: string;
+  reputation?: number;
+  standardOfLiving?: string;
+  ransom?: number;
+  baseIncome?: number;
+  biography?: string;
 }
 
-export const emptyBackground = new Background("Human", OccupationEnum.Farmer, HomeLandEnum.Sartar);
+export const emptyBackground: Background = {
+  race: "Human",
+  occupation: OccupationEnum.Farmer,
+  homeland: HomeLandEnum.Sartar,
+};

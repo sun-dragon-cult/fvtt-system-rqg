@@ -1,6 +1,7 @@
 import { BaseItem } from "../baseItem";
 import { ArmorData, emptyArmor } from "../../data-model/item-data/armorData";
 import { RqgActor } from "../../actors/rqgActor";
+import Change = ActiveEffect.Change;
 
 export class Armor extends BaseItem {
   // public static init() {
@@ -18,15 +19,12 @@ export class Armor extends BaseItem {
     userId: string
   ): Promise<any> {
     // Update the active effect on actor from Item data
-    // @ts-ignore
     const uuid = `Actor.${actor.id}.OwnedItem.${itemData._id}`;
     const generatedEffect = Armor.generateActiveEffect(itemData.data);
-    // @ts-ignore
     const existingEffects = actor.effects.filter((e) => e.data.origin === uuid);
     if (existingEffects.length > 0) {
       const changes = existingEffects.map((effect) => {
         return {
-          //  @ts-ignore
           _id: effect.id,
           changes: generatedEffect.changes,
           disabled: !(itemData.data.equippedStatus === "equipped"),
@@ -41,9 +39,9 @@ export class Armor extends BaseItem {
   }
 
   // TODO return type should be "active effect data"
-  static generateActiveEffect(itemData: ArmorData): any {
-    const armorData: ArmorData = itemData || emptyArmor;
-    const changes = armorData.hitLocations.map((hitLocationName) => {
+  static generateActiveEffect(itemData: ArmorData): ActiveEffect.Data {
+    const armorData = itemData || emptyArmor;
+    const changes: DeepPartial<Change[]> = armorData.hitLocations.map((hitLocationName) => {
       return {
         key: `hitLocation:${hitLocationName}:data.data.ap`,
         value: armorData.absorbs,
@@ -57,6 +55,6 @@ export class Armor extends BaseItem {
       changes: changes,
       transfer: true,
       disabled: !(armorData.equippedStatus === "equipped"),
-    };
+    } as ActiveEffect.Data;
   }
 }

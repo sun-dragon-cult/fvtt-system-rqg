@@ -1,4 +1,7 @@
 import { BaseItem } from "../baseItem";
+import { logMisconfiguration } from "../../system/util";
+import { RqgActor } from "../../actors/rqgActor";
+import { RqgItem } from "../rqgItem";
 
 export class MeleeWeapon extends BaseItem {
   // public static init() {
@@ -12,17 +15,21 @@ export class MeleeWeapon extends BaseItem {
    * Add the skill specified in the weapon to the actor (if not already there)
    * and connect the weapon with the embedded skill item id.
    */
-  static async onEmbedItem(actor, child, options, userId): Promise<any> {
+  static async onEmbedItem(
+    actor: RqgActor,
+    child: any,
+    options: any,
+    userId: string
+  ): Promise<any> {
     let embeddedSkillId;
     if (!child.data.skillId && child.data.skillOrigin) {
       try {
         // Add the specified skill if found
-        // @ts-ignore
-        const skill = await fromUuid(child.data.skillOrigin);
-        const embeddedWeaponSkill = await actor.createOwnedItem(skill);
+        const skill = (await fromUuid(child.data.skillOrigin)) as RqgItem;
+        const embeddedWeaponSkill = await actor.createOwnedItem(skill.data);
         embeddedSkillId = embeddedWeaponSkill._id;
       } catch (e) {
-        ui.notifications.warn("Couldn't find the Skill associated with this weapon.");
+        logMisconfiguration("Couldn't find the Skill associated with this weapon.");
       }
     }
     if (embeddedSkillId) {

@@ -1,15 +1,24 @@
 import { emptyPrice, EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
+import { ItemTypeEnum } from "./itemTypes";
 
-export type ArmorData = IPhysicalItem & {
-  size: number; // Must match character size
-  hitLocations: Array<string>; // Array of hitLocation names
+export interface ArmorData extends IPhysicalItem {
+  /** Must match character size */
+  size: number;
+  /** Array of protected hitLocation names */
+  hitLocations: string[];
   material: string;
   absorbs: number;
   moveQuietlyPenalty: number;
   // --- Derived / Convenience Data Below ---
-  allHitLocations?: Array<any>; // Index of the hitlocations compendium
-  equippedStatuses?: Array<EquippedStatus>; // For sheet dropdown
-};
+  /** Index of the hitlocations compendium */
+  allHitLocations?: any[];
+  /** For sheet dropdown */
+  equippedStatuses?: EquippedStatus[];
+}
+
+export interface ArmorItemData extends Item.Data<ArmorData> {
+  type: ItemTypeEnum.Armor;
+}
 
 export const emptyArmor: ArmorData = {
   description: "",

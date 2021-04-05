@@ -7,8 +7,7 @@ export default {
     src: "/",
   },
   plugins: [
-    "@snowpack/plugin-typescript",
-    "@snowpack/plugin-sass",
+    ["@snowpack/plugin-typescript"], // TODO is run? but don't show the warnings/errors!
     [
       "@snowpack/plugin-sass",
       {

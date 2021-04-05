@@ -1,13 +1,11 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-
-import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
-import { RqgItem } from "../rqgItem";
-import { RqgItemSheet } from "../RqgItemSheet";
-import { RuneData, RuneTypeEnum } from "../../data-model/item-data/runeData";
+import { RuneItemData, RuneTypeEnum } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
+import { logBug } from "../../system/util";
 
-export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplication.Options {
+export class RuneSheet extends ItemSheet<RuneItemData> {
+  static get defaultOptions(): BaseEntitySheet.Options {
+    // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Rune],
       template: "systems/rqg/items/rune-item/runeSheet.html",
@@ -16,50 +14,57 @@ export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     });
   }
 
-  getData(): any {
-    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: RuneData = sheetData.item.data;
+  async getData(): Promise<RuneItemData> {
+    const sheetData = super.getData() as RuneItemData;
+    const data = sheetData.data;
     if (!data.rune) {
-      data.rune = sheetData.item.name;
+      data.rune = sheetData.name;
     }
-    const allRunesIndex = game.settings.get("rqg", "runes");
-    data.allRunes = allRunesIndex !== {} ? allRunesIndex.map((r) => r.name) : [];
+    const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    data.allRunes = allRunesIndex.map((r) => r.name);
     data.runeTypes = Object.values(RuneTypeEnum);
     return sheetData;
   }
 
-  protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
+  protected _updateObject(event: Event, formData: any): Promise<any> {
     formData["name"] = `${formData["data.rune"]} (${formData["data.runeType"]})`;
 
     let minorRunes = formData["data.minorRunes"];
     minorRunes = Array.isArray(minorRunes) ? minorRunes : [minorRunes];
-    minorRunes = [...new Set(minorRunes.filter((r) => r))]; // Remove empty & duplicates
+    minorRunes = [...new Set(minorRunes.filter((r: any) => r))]; // Remove empty & duplicates
     formData["data.minorRunes"] = duplicate(minorRunes);
 
     formData["data.chance"] = Number(formData["data.chance"]);
     return super._updateObject(event, formData);
   }
 
-  protected activateListeners(html: JQuery) {
+  public activateListeners(html: JQuery): void {
     super.activateListeners(html);
-    (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
+    const form = this.form as HTMLFormElement;
+
+    form.addEventListener("drop", this._onDrop.bind(this));
 
     // Open Linked Journal Entry
-    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
+    form.querySelectorAll("[data-journal-id]").forEach((element) => {
+      const el = element as HTMLElement;
       const pack = el.dataset.journalPack;
       const id = el.dataset.journalId;
-      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+      if (id) {
+        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+      } else {
+        logBug("Couldn't find linked journal from runeSheet", el, pack, id);
+      }
     });
   }
 
-  protected async _onDrop(event: DragEvent) {
+  protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
     // Try to extract the data
     let droppedItemData;
     try {
-      droppedItemData = JSON.parse(event.dataTransfer.getData("text/plain"));
+      droppedItemData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
-      return false;
+      return;
     }
     if (droppedItemData.type === "JournalEntry") {
       const pack = droppedItemData.pack ? droppedItemData.pack : "";
@@ -68,7 +73,7 @@ export class RuneSheet extends RqgItemSheet<RqgActorData, RqgItem> {
         {}
       );
     } else {
-      ui.notifications.warn("You can only drop a journalEntry");
+      ui.notifications?.warn("You can only drop a journalEntry");
     }
   }
 }
