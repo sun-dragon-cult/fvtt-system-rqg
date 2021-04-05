@@ -16,7 +16,7 @@ export abstract class BaseItem {
   static async onEmbedItem(
     actor: RqgActor,
     itemData: Item.Data,
-    options,
+    options: any,
     userId: string
   ): Promise<any> {}
 
@@ -48,7 +48,7 @@ export abstract class BaseItem {
   static async onDeleteItem(
     actor: RqgActor,
     itemData: Item.Data,
-    options,
+    options: any,
     userId: string
   ): Promise<any> {}
 
@@ -67,10 +67,10 @@ export abstract class BaseItem {
   }
 
   // TODO return type should be "active effect data"
-  static generateActiveEffect(itemData: any): any {
-    return;
+  static generateActiveEffect(itemData: any): DeepPartial<ActiveEffect.Data> {
+    return {};
   }
 
   // TODO not used (yet)
-  static activateActorSheetListeners(html, sheet) {}
+  static activateActorSheetListeners(html: JQuery, sheet: any) {}
 }

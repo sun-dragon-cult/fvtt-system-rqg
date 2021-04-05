@@ -2,22 +2,28 @@ import { Attributes, emptyAttributes } from "./attributes";
 import { Characteristics, emptyCharacteristics } from "./characteristics";
 import { Background, emptyBackground } from "./background";
 import { emptySkillCategories, SkillCategories } from "./skillCategories";
+import { RqgItemData } from "../item-data/itemTypes";
 
-export class RqgActorData {
-  constructor(
-    public characteristics: Characteristics,
-    public background: Background,
-    public allies: string, // Editor text with links to allies and general notes
-    // --- Derived / Convenience Data Below ---
-    public attributes: Attributes, // Most are derived
-    public skillCategoryModifiers?: SkillCategories
-  ) {}
+export interface RqgCharacterData {
+  characteristics: Characteristics;
+  background: Background;
+  allies: string; // Editor text with links to allies and general notes
+  // --- Derived / Convenience Data Below ---
+  attributes: Attributes; // Most are derived
+  skillCategoryModifiers?: SkillCategories;
 }
 
-export const emptyActorDataRqg: RqgActorData = new RqgActorData(
-  emptyCharacteristics,
-  emptyBackground,
-  "",
-  emptyAttributes, // Needs to be persisted?
-  emptySkillCategories // Needs to be persisted?
-);
+interface CharacterActorData extends Actor.Data<RqgCharacterData, RqgItemData> {
+  type: "character";
+}
+
+// Can be expanded with more actor types in addition to character
+export type RqgActorData = CharacterActorData;
+
+export const emptyCharacterData: RqgCharacterData = {
+  characteristics: emptyCharacteristics,
+  background: emptyBackground,
+  allies: "",
+  attributes: emptyAttributes, // Needs to be persisted?
+  skillCategoryModifiers: emptySkillCategories, // Needs to be persisted?
+};

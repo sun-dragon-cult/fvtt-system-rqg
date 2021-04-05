@@ -1,4 +1,5 @@
 import { JournalEntryLink } from "../shared/journalentrylink";
+import { ItemTypeEnum } from "./itemTypes";
 
 export enum SpiritMagicCastingRangeEnum {
   Self = "self",
@@ -18,20 +19,24 @@ export enum SpiritMagicConcentrationEnum {
   Active = "active",
 }
 
-export type SpiritMagicData = JournalEntryLink & {
+export interface SpiritMagicData extends JournalEntryLink {
   points: number; // Learned strength
   isVariable: boolean; // Can the caster decide the number of magic points used
   castingRange: SpiritMagicCastingRangeEnum;
   duration: SpiritMagicDurationEnum;
   concentration: SpiritMagicConcentrationEnum;
-  incompatibleWith: Array<string>; // Can't be cast if one of the listed spells are already active
+  incompatibleWith: string[]; // Can't be cast if one of the listed spells are already active
   spellFocus: string;
   // --- Derived / Convenience Data Below ---
   strikeRank?: number; // DexSR + points.value - 1
-  ranges?: Array<string>; // For select on sheet
-  durations?: Array<string>; // For select on sheet
-  types?: Array<string>; // For select on sheet
-};
+  ranges?: string[]; // For select on sheet
+  durations?: string[]; // For select on sheet
+  types?: string[]; // For select on sheet
+}
+
+export interface SpiritMagicItemData extends Item.Data<SpiritMagicData> {
+  type: ItemTypeEnum.SpiritMagic;
+}
 
 export const emptySpiritMagic: SpiritMagicData = {
   points: 0,

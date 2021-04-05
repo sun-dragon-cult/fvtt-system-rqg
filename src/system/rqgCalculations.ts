@@ -97,9 +97,11 @@ export class RqgCalculations {
     return value <= 4 ? -5 : value <= 16 ? 0 : (Math.ceil(value / 4) - 4) * 5;
   }
 
-  private static lookup<T>(v: number, table: Array<LookupTableEntry<T>>): T {
-    const tableEntry: LookupTableEntry<T> = table.find((te) => v >= te.from && v <= te.to);
-    return tableEntry ? tableEntry.result : null;
+  private static lookup<T>(v: number, table: LookupTableEntry<T>[]): T {
+    const tableEntry: LookupTableEntry<T> | undefined = table.find(
+      (te) => v >= te.from && v <= te.to
+    );
+    return tableEntry?.result as T;
   }
 
   /**
@@ -116,7 +118,7 @@ export class RqgCalculations {
 }
 
 // DEX Strike Rank lookup
-const dexSrTable: Array<LookupTableEntry<number>> = [
+const dexSrTable: LookupTableEntry<number>[] = [
   { from: -Infinity, to: 5, result: 5 },
   { from: 6, to: 8, result: 4 },
   { from: 9, to: 12, result: 3 },
@@ -126,7 +128,7 @@ const dexSrTable: Array<LookupTableEntry<number>> = [
 ];
 
 // SIZ Strike rank lookup
-const sizSrTable: Array<LookupTableEntry<number>> = [
+const sizSrTable: LookupTableEntry<number>[] = [
   { from: -Infinity, to: 6, result: 3 },
   { from: 7, to: 14, result: 2 },
   { from: 15, to: 21, result: 1 },
@@ -134,7 +136,7 @@ const sizSrTable: Array<LookupTableEntry<number>> = [
 ];
 
 // Damage Bonus <= 40 . Lookup with STR + SIZ
-const damageBonusTable: Array<LookupTableEntry<string>> = [
+const damageBonusTable: LookupTableEntry<string>[] = [
   { from: -Infinity, to: 12, result: "-1D4" },
   { from: 13, to: 24, result: "0" },
   { from: 25, to: 32, result: "1D4" },
@@ -142,7 +144,7 @@ const damageBonusTable: Array<LookupTableEntry<string>> = [
 ];
 
 // Spirit Combat Damage <= 40. Lookup with POW + CHA
-const spiritCombatDamageTable: Array<LookupTableEntry<string>> = [
+const spiritCombatDamageTable: LookupTableEntry<string>[] = [
   { from: -Infinity, to: 12, result: "1D3" },
   { from: 13, to: 24, result: "1D6" },
   { from: 25, to: 32, result: "1D6+1" },

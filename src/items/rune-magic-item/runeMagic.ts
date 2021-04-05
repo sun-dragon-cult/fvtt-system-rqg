@@ -17,13 +17,12 @@ export class RuneMagic extends BaseItem {
   static async onEmbedItem(
     actor: RqgActor,
     runeMagicItemData: Item.Data<RuneMagicData>,
-    options,
+    options: any,
     userId: string
   ): Promise<any> {
     let updateData = {};
     const actorCults = actor.items.filter((i) => i.type === ItemTypeEnum.Cult);
     if (actorCults.length === 1) {
-      // @ts-ignore _id do exist
       updateData = { _id: runeMagicItemData._id, data: { cultId: actorCults[0]._id } };
     }
     return updateData;

@@ -1,4 +1,5 @@
 import { JournalEntryLink } from "../shared/journalentrylink";
+import { ItemTypeEnum } from "./itemTypes";
 
 export enum RuneMagicCastingRangeEnum {
   Self = "self",
@@ -14,9 +15,9 @@ export enum RuneMagicDurationEnum {
   Permanent = "permanent", // Ritual (Enchantment)
 }
 
-export type RuneMagicData = JournalEntryLink & {
+export interface RuneMagicData extends JournalEntryLink {
   cultId: string; // The cult from where to draw rune points
-  runes: Array<string>; // Rune names like "Man (form)"
+  runes: string[]; // Rune names like "Man (form)"
   points: number; // Learned strength
   castingRange: RuneMagicCastingRangeEnum;
   duration: RuneMagicDurationEnum;
@@ -26,11 +27,15 @@ export type RuneMagicData = JournalEntryLink & {
   chance: number; // Derived from runes, but has to be persisted?
   // --- Derived / Convenience Data Below ---
   isOwned?: boolean;
-  ranges?: Array<string>; // For select on sheet
-  durations?: Array<string>; // For select on sheet
-  actorCults?: Array<any>; // For select on sheet
-  allRunes?: Array<any>; // For select on sheet {_id: , name:, img: }
-};
+  ranges?: string[]; // For select on sheet
+  durations?: string[]; // For select on sheet
+  actorCults?: any[]; // For select on sheet
+  allRunes?: any[]; // For select on sheet {_id: , name:, img: }
+}
+
+export interface RuneMagicItemData extends Item.Data<RuneMagicData> {
+  type: ItemTypeEnum.RuneMagic;
+}
 
 export const emptyRuneMagic: RuneMagicData = {
   cultId: "",

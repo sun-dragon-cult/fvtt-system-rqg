@@ -1,15 +1,17 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
-import { SkillData } from "../data-model/item-data/skillData";
+import { SkillData, SkillItemData } from "../data-model/item-data/skillData";
 import { CombatManeuver, MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { logBug, logMisconfiguration } from "../system/util";
+import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 
 type WeaponCardFlags = {
   actorId: string;
   skillItemData: Item.Data<SkillData>;
   weaponItemData: Item.Data<MeleeWeaponData> | Item.Data<MissileWeaponData>;
-  result: ResultEnum;
+  result: ResultEnum | undefined;
   formData: {
     modifier: number;
     chance: number;
@@ -18,89 +20,108 @@ type WeaponCardFlags = {
 };
 
 export class WeaponCard extends ChatMessage {
+  // TODO Should it extend ChatMessage?
   public static async show(actor: RqgActor, skillId: string, weaponId: string): Promise<void> {
     const defaultModifier = 0;
-    const skillItem = actor.getOwnedItem(skillId) as Item<SkillData>;
+    const skillItem = actor.getOwnedItem(skillId) as Item<SkillItemData>;
 
     const flags: WeaponCardFlags = {
       actorId: actor.id,
       skillItemData: skillItem.data,
-      weaponItemData: actor.getOwnedItem(weaponId).data as
+      weaponItemData: actor.getOwnedItem(weaponId)?.data as
         | Item.Data<MeleeWeaponData>
         | Item.Data<MissileWeaponData>,
       result: undefined,
       formData: {
         modifier: defaultModifier,
-        chance: skillItem.data.data.chance,
-        combatManeuver: undefined,
+        chance: skillItem.data.data.chance || 0,
+        combatManeuver: "",
       },
     };
     await ChatMessage.create(await WeaponCard.renderContent(flags, actor));
   }
 
-  public static async inputChangeHandler(ev, messageId: string) {
-    const chatMessage = game.messages.get(messageId);
-    const flags: WeaponCardFlags = chatMessage.data.flags.rqg;
-    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-    const form: HTMLFormElement = ev.target.closest("form");
+  public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
+    const chatMessage = game.messages?.get(messageId);
+    const flags = chatMessage?.data.flags.rqg as WeaponCardFlags;
+    const actor = game.actors?.get(flags.actorId) as RqgActor;
+    const form = (ev.target as HTMLElement).closest("form") as HTMLFormElement;
     const formData = new FormData(form);
-    // @ts-ignore
-    for (const [name, value] of formData) {
-      flags.formData[name] = value;
+    // @ts-ignore formData.entries
+    for (const [name, value] of formData.entries()) {
+      if (name in flags.formData) {
+        // @ts-ignore number/string mismatch
+        flags.formData[name as keyof typeof flags.formData] = value;
+      }
     }
-
     const chance: number = Number(flags.skillItemData.data.chance) || 0;
     const modifier: number = Number(flags.formData.modifier) || 0;
-
     flags.formData.chance = WeaponCard.calcRollChance(chance, modifier);
 
     const data = await WeaponCard.renderContent(flags, actor);
-    await chatMessage.update(data);
+    if (chatMessage && data) {
+      await chatMessage.update(data);
+    }
   }
 
-  public static async formSubmitHandler(ev, messageId: string) {
+  public static async formSubmitHandler(
+    ev: JQueryEventObject,
+    messageId: string
+  ): Promise<boolean> {
     ev.preventDefault();
+    const chatMessage = game.messages?.get(messageId);
+    const flags = chatMessage?.data.flags.rqg as WeaponCardFlags;
 
-    const chatMessage = game.messages.get(messageId);
-    const flags: WeaponCardFlags = chatMessage.data.flags.rqg;
-
-    const formData = new FormData(ev.target);
-    // @ts-ignore
-    for (const [name, value] of formData) {
-      flags.formData[name] = value;
+    const formData = new FormData(ev.target as HTMLFormElement);
+    // @ts-ignore formData.entries
+    for (const [name, value] of formData.entries()) {
+      if (name in flags.formData) {
+        // @ts-ignore number/string mismatch
+        flags.formData[name as keyof typeof flags.formData] = value;
+      }
     }
 
     const button = ev.currentTarget;
-    button.disabled = true; // TODO Doesn't work, points to form !!!
+    // button.disabled = true; // TODO Doesn't work, points to form !!!
 
-    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
-    const action = ev.originalEvent.submitter.name; // combatManeuver | DamageRoll | HitLocationRoll
+    const actor = game.actors?.get(flags.actorId) as RqgActor;
+    if (!actor) {
+      logBug("Couldn't find actor", flags);
+      return false;
+    }
+
+    // @ts-ignore submitter
+    const action = (ev.originalEvent.submitter as HTMLButtonElement).name; // combatManeuver | DamageRoll | HitLocationRoll
 
     if (action === "combatManeuver") {
-      flags.formData.combatManeuver = ev.originalEvent.submitter.value; // slash | crush | impale | special | parry
-      const projectileItemData: Item.Data<any> = (flags.weaponItemData.data as MissileWeaponData)
-        .isProjectileWeapon
-        ? actor.items.get((flags.weaponItemData.data as MissileWeaponData).projectileId).data
+      flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value; // slash | crush | impale | special | parry
+      const projectileItemData = (flags.weaponItemData.data as MissileWeaponData).isProjectileWeapon
+        ? (actor.getOwnedItem((flags.weaponItemData.data as MissileWeaponData).projectileId)
+            ?.data as Item.Data<MissileWeaponData>)
         : flags.weaponItemData;
       if (
         flags.weaponItemData.type === ItemTypeEnum.MissileWeapon &&
+        projectileItemData.data.quantity &&
         projectileItemData.data.quantity > 0
       ) {
-        await actor.updateOwnedItem({
-          // @ts-ignore
+        const updateData: DeepPartial<Actor.OwnedItemData<RqgActorData>> = {
           _id: projectileItemData._id,
-          "data.quantity": --projectileItemData.data.quantity,
-        });
+          data: { quantity: --projectileItemData.data.quantity },
+        };
+        await actor.updateOwnedItem(updateData);
       } else if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
-        ui.notifications.warn("Out of ammo!");
-        return;
+        ui.notifications?.warn("Out of ammo!");
+        return false;
       }
-      await WeaponCard.roll(flags, chatMessage);
+      if (chatMessage) {
+        await WeaponCard.roll(flags, chatMessage);
+      } else {
+        logBug("Couldn't find Chatmessage");
+      }
     } else if (action === "damageRoll") {
-      const damageType = ev.originalEvent.submitter.value; // Normal | Special | Max Special);  damageSeverity ??
+      const damageType = (ev as any).originalEvent.submitter.value; // Normal | Special | Max Special);  damageSeverity ??
       await WeaponCard.damageRoll(flags, damageType);
     } else if (action === "hitLocationRoll") {
-      // @ts-ignore
       const roll = Roll.create("1D20").evaluate();
       await roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
@@ -110,20 +131,17 @@ export class WeaponCard extends ChatMessage {
     } else if (action === "fumble") {
       await WeaponCard.fumbleRoll(flags);
     } else {
-      ui.notifications.error(
-        `Oops you shouldn't see this - unknown button "${action}" in weapon chat card`,
-        { permanent: true }
-      );
+      logBug(`Unknown button "${action}" in weapon chat card`);
     }
 
-    button.disabled = false;
+    // button.disabled = false;
     return false;
   }
 
   public static async roll(flags: WeaponCardFlags, chatMessage: ChatMessage) {
     const modifier: number = Number(flags.formData.modifier) || 0;
     const chance: number = Number(flags.skillItemData.data.chance) || 0;
-    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    const actor = (game.actors?.get(flags.actorId) as unknown) as RqgActor;
     flags.result = await Ability.roll(actor, chance, modifier, flags.skillItemData.name + " check");
     await WeaponCard.checkExperience(actor as any, flags.skillItemData, flags.result);
     const data = await WeaponCard.renderContent(flags, actor as any);
@@ -136,21 +154,19 @@ export class WeaponCard extends ChatMessage {
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success && !skillItemData.data.hasExperience) {
-      // @ts-ignore
       await actor.updateOwnedItem({ _id: skillItemData._id, data: { hasExperience: true } });
-      ui.notifications.info("Yey, you got an experience check on " + skillItemData.name + "!");
+      ui.notifications?.info("Yey, you got an experience check on " + skillItemData.name + "!");
     }
   }
 
-  private static async renderContent(flags: WeaponCardFlags, actor: RqgActor) {
+  private static async renderContent(flags: WeaponCardFlags, actor: RqgActor): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/weaponCard.html", flags);
-    let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
-    // @ts-ignore
-    whisperRecipients.push(game.user._id);
+    let whisperRecipients = game.users?.filter((u) => u.isGM && u.active) || [];
+    whisperRecipients.push(game.user!);
     return {
       flavor: "Weapon: " + flags.weaponItemData.name,
-      user: game.user._id,
-      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
+      user: game.user?.id,
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
       content: html,
       whisper: whisperRecipients,
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
@@ -166,7 +182,7 @@ export class WeaponCard extends ChatMessage {
   }
 
   private static async damageRoll(flags: WeaponCardFlags, damageType: string): Promise<void> {
-    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    const actor = game.actors?.get(flags.actorId) as RqgActor;
     let damageBonus =
       actor.data.data.attributes.damageBonus !== "0"
         ? `+ ${actor.data.data.attributes.damageBonus}[Damage Bonus]`
@@ -202,18 +218,13 @@ export class WeaponCard extends ChatMessage {
         ) {
           weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
         } else {
-          console.error(
-            `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`
-          );
-          ui.notifications.error(
+          logMisconfiguration(
             `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`
           );
         }
       }
     }
     const maximise = damageType === "Max Special";
-
-    // @ts-ignore
     const roll = Roll.create(`${weaponDamage} ${damageBonus}`).evaluate({
       maximize: maximise,
     });
@@ -225,43 +236,41 @@ export class WeaponCard extends ChatMessage {
   }
 
   private static async fumbleRoll(flags: WeaponCardFlags) {
-    const fumbleTableName = game.settings.get("rqg", "fumbleRollTable");
-    const fumbleTable = game.tables.getName(fumbleTableName);
+    const fumbleTableName = game.settings.get("rqg", "fumbleRollTable") as string;
+    const fumbleTable = game.tables?.getName(fumbleTableName);
     if (!fumbleTable) {
-      ui.notifications.error(`Misconfiguration, the fumble table "${fumbleTableName}" is missing`, {
-        permanent: true,
-      });
+      logMisconfiguration(`The fumble table "${fumbleTableName}" is missing`);
       return;
     }
     const draw = await fumbleTable.draw({ displayChat: false });
-    const actor = (game.actors.get(flags.actorId) as unknown) as RqgActor;
+    const actor = game.actors?.get(flags.actorId) as RqgActor;
 
     // Construct chat data
     const nr = draw.results.length > 1 ? `${draw.results.length} results` : "a result";
 
     // Hide GM fumble rolls from all but other GMs
-    let whisperRecipients = game.user.isGM ? game.users.filter((u) => u.isGM) : undefined;
+    let whisperRecipients = game.user?.isGM
+      ? game.users!.filter((u) => u.isGM).map((u) => u.name)
+      : [];
 
-    const messageData = {
+    const messageData: DeepPartial<ChatMessage.Data> = {
       flavor: `Draws ${nr} from the ${fumbleTable.name} table.`,
-      user: game.user._id,
+      user: game.user?.name as string,
       speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       whisper: whisperRecipients,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      roll: draw.roll,
-      sound: draw.roll ? CONFIG.sounds.dice : null,
+      roll: draw.roll.formula,
+      sound: draw.roll ? CONFIG.sounds.dice : undefined,
       flags: { "core.RollTable": fumbleTable.id },
-      content: undefined,
     };
 
     // Render the chat card which combines the dice roll with the drawn results
-    // @ts-ignore
     messageData.content = await renderTemplate(CONFIG.RollTable.resultTemplate, {
-      // @ts-ignore
+      // @ts-ignore TODO have another look
       description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true }),
       results: draw.results.map((r) => {
         r = duplicate(r);
-        // @ts-ignore
+        // @ts-ignore TODO redo without the protected method
         r.text = fumbleTable._getResultChatText(r);
         r.icon = r.img || CONFIG.RollTable.resultIcon;
         return r;
@@ -274,7 +283,6 @@ export class WeaponCard extends ChatMessage {
   }
 
   private static crushSpecialDamage(damageBonus: string): string {
-    // @ts-ignore
     const maxDamageBonus = Roll.create(damageBonus).evaluate({ maximize: true }).total;
     return damageBonus + " + " + maxDamageBonus;
   }

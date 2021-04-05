@@ -1,12 +1,10 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ArmorData } from "../../data-model/item-data/armorData";
-import { RqgItemSheet } from "../RqgItemSheet";
-import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
-import { RqgItem } from "../rqgItem";
+import { ArmorItemData } from "../../data-model/item-data/armorData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 
-export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplication.Options {
+export class ArmorSheet extends ItemSheet<ArmorItemData> {
+  static get defaultOptions(): BaseEntitySheet.Options {
+    // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Armor],
       template: "systems/rqg/items/armor-item/armorSheet.html",
@@ -15,14 +13,15 @@ export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     });
   }
 
-  // @ts-ignore
-  async getData(): any {
-    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: ArmorData = sheetData.item.data;
+  async getData(): Promise<ArmorItemData> {
+    const sheetData = super.getData() as ArmorItemData;
+    const data = sheetData.data;
 
     try {
-      const hitLocationsCompendium = game.settings.get("rqg", "hitLocationsCompendium");
-      data.allHitLocations = await game.packs.get(hitLocationsCompendium).getIndex();
+      const hitLocationsCompendium = game.settings.get("rqg", "hitLocationsCompendium") as string;
+      data.allHitLocations = (await game.packs
+        ?.get(hitLocationsCompendium)
+        ?.getIndex()) as Compendium.IndexEntry[];
     } catch (err) {
       data.allHitLocations = [];
     }
@@ -30,10 +29,10 @@ export class ArmorSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     return sheetData;
   }
 
-  protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
+  protected _updateObject(event: Event, formData: any): Promise<any> {
     let hitLocations = formData["data.hitLocations"];
     hitLocations = Array.isArray(hitLocations) ? hitLocations : [hitLocations];
-    hitLocations = [...new Set(hitLocations.filter((r) => r))]; // Remove empty & duplicates
+    hitLocations = [...new Set(hitLocations.filter((r: any) => r))]; // Remove empty & duplicates
     formData["data.hitLocations"] = duplicate(hitLocations);
     return super._updateObject(event, formData);
   }

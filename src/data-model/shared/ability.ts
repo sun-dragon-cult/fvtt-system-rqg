@@ -1,8 +1,11 @@
 import { RqgActor } from "../../actors/rqgActor";
 
 export interface IAbility {
+  /** The effective % chance of this ability with all modifiers added in */
   chance?: number;
+  /** Is it possible to learn this ability by doing (setting hasExperience=true)? Otherwise the only way to increase the learned chance is by study */
   canGetExperience: boolean;
+  /** Has this ability been successfully used and therefore up for an improvement roll */
   hasExperience?: boolean;
 }
 // mod?: string; // Modification, roll modifier formula compatible 0.7.x feature? Let it be a separate interface
@@ -18,9 +21,10 @@ export enum ResultEnum {
 }
 
 export class Ability {
-  // Do a roll against this ability and factor in all modifiers.
-  // stat - an object that implements IAbility
-  // chanceMod - a +/- value that changes the chance
+  /** Do a roll against this ability and factor in all modifiers.
+   * stat - an object that implements IAbility
+   * chanceMod - a +/- value that changes the chance
+   **/
   public static async roll(
     actor: RqgActor,
     chance: number,
@@ -30,7 +34,7 @@ export class Ability {
     const r = new Roll("1D100");
     r.roll();
     const modifiedChance: number = chance + chanceMod;
-    const result = Ability.evaluateResult(modifiedChance, r.total);
+    const result = Ability.evaluateResult(modifiedChance, r.total!);
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = game.i18n.localize(`ResultEnum.${result}`);

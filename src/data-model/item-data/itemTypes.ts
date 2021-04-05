@@ -10,6 +10,17 @@ import { Cult } from "../../items/cult-item/cult";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
 import { Passion } from "../../items/passion-item/passion";
 import { Rune } from "../../items/rune-item/rune";
+import { ArmorItemData } from "./armorData";
+import { SkillItemData } from "./skillData";
+import { PassionItemData } from "./passionData";
+import { RuneItemData } from "./runeData";
+import { HitLocationItemData } from "./hitLocationData";
+import { GearItemData } from "./gearData";
+import { MeleeWeaponItemData } from "./meleeWeaponData";
+import { MissileWeaponItemData } from "./missileWeaponData";
+import { SpiritMagicItemData } from "./spiritMagicData";
+import { CultItemData } from "./cultData";
+import { RuneMagicItemData } from "./runeMagicData";
 
 export enum ItemTypeEnum {
   Skill = "skill",
@@ -42,3 +53,16 @@ export const ResponsibleItemClass: Map<string, typeof BaseItem> = new Map([
   [ItemTypeEnum.Cult, Cult],
   [ItemTypeEnum.RuneMagic, RuneMagic],
 ]);
+
+export type RqgItemData =
+  | SkillItemData
+  | PassionItemData
+  | RuneItemData
+  | HitLocationItemData
+  | GearItemData
+  | ArmorItemData
+  | MeleeWeaponItemData
+  | MissileWeaponItemData
+  | SpiritMagicItemData
+  | CultItemData
+  | RuneMagicItemData;

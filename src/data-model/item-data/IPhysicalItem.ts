@@ -4,10 +4,10 @@ export type EquippedStatus = typeof equippedStatuses[number];
 export const physicalItemTypes = ["unique", "currency", "consumable"];
 export type PhysicalItemType = typeof physicalItemTypes[number];
 
-export type Price = {
+interface Price {
   real: number;
   estimated: number;
-};
+}
 
 export interface IPhysicalItem {
   physicalItemType: PhysicalItemType;

@@ -5,16 +5,17 @@ import { RqgItem } from "./items/rqgItem";
 import { handlebarsHelpers } from "./system/handlebarsHelpers";
 import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./system/rqgCombat";
-import { RQG_CONFIG } from "./system/config";
+import { RQG_CONFIG, RqgConfig } from "./system/config";
 import { ChatCardListeners } from "./chat/chatCardListeners";
 import { Migrate } from "./system/migration";
+
+declare const CONFIG: RqgConfig;
 
 Hooks.once("init", async () => {
   console.log("RQG | Initializing the Runequest Glorantha (Unofficial) Game System");
   CONFIG.RQG = RQG_CONFIG;
 
   // CONFIG.debug.hooks = true; // console log when hooks fire
-  // @ts-ignore 0.7
   // CONFIG.debug.time = true; // console log time
   CONFIG.ActiveEffect.entityClass = RqgActiveEffect;
   CONFIG.time = {
@@ -32,20 +33,21 @@ Hooks.once("init", async () => {
 });
 
 Hooks.once("ready", async () => {
-  if (game.user.isGM) {
+  if (game.user?.isGM) {
     await Migrate.world();
-    const runeCompendium = game.settings.get("rqg", "runesCompendium");
+    const runeCompendium = game.settings.get("rqg", "runesCompendium") as string;
     // Store runes in settings to avoid await on ItemSheet getData
     try {
-      const runesIndex = await game.packs.get(runeCompendium).getIndex();
+      const runesIndex = await game.packs?.get(runeCompendium)?.getIndex();
       await game.settings.set("rqg", "runes", runesIndex);
     } catch (err) {
       await game.settings.set("rqg", "runes", []);
     }
 
     if (game.modules.get("about-time")?.active) {
-      game.Gametime.DTC.createFromData(game.Gametime.calendars.Glorantha);
-      game.Gametime.DTC.saveUserCalendar(game.Gametime.calendars.Glorantha);
+      const gameTime: any = game.GameTime;
+      gameTime.DTC.createFromData(gameTime.calendars.Glorantha);
+      gameTime.DTC.saveUserCalendar(gameTime.calendars.Glorantha);
     }
   }
 });

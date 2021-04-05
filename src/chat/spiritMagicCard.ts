@@ -15,7 +15,7 @@ type SpiritMagicCardFlags = {
 export class SpiritMagicCard {
   public static async show(actor: RqgActor, spiritMagicItemId: string): Promise<void> {
     const spiritMagicItemData = actor.getOwnedItem(spiritMagicItemId)
-      .data as Item.Data<SpiritMagicData>;
+      ?.data as Item.Data<SpiritMagicData>;
 
     const flags: SpiritMagicCardFlags = {
       actorId: actor._id,
@@ -30,27 +30,29 @@ export class SpiritMagicCard {
     await ChatMessage.create(await this.renderContent(flags, actor as any));
   }
 
-  public static async inputChangeHandler(ev, messageId: string): Promise<void> {}
+  public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {}
 
-  public static async formSubmitHandler(ev, messageId: string): Promise<boolean> {
+  public static async formSubmitHandler(ev: Event, messageId: string): Promise<boolean> {
     ev.preventDefault();
 
-    const chatMessage = game.messages.get(messageId);
-    const flags: SpiritMagicCardFlags = chatMessage.data.flags.rqg;
+    const chatMessage = game.messages?.get(messageId);
+    const flags = chatMessage?.data.flags.rqg as SpiritMagicCardFlags;
 
-    const formData = new FormData(ev.target);
-    // @ts-ignore
-    for (const [name, value] of formData) {
-      flags.formData[name] = value;
+    const formData = new FormData(ev.target as HTMLFormElement);
+    // @ts-ignore formData.entries()
+    for (const [name, value] of formData.entries()) {
+      if (name in flags.formData) {
+        flags.formData[name as keyof typeof flags.formData] = value;
+      }
     }
 
-    const button = ev.currentTarget;
+    const button = ev.currentTarget as HTMLButtonElement;
     button.disabled = true;
 
     const level: number = Number(flags.formData.level) || 0;
     const boost: number = Number(flags.formData.boost) || 0;
-    const actor = game.actors.get(flags.actorId);
-    await SpiritMagicCard.roll(actor as any, flags.itemData, level, boost);
+    const actor = game.actors?.get(flags.actorId) as RqgActor;
+    await SpiritMagicCard.roll(actor, flags.itemData, level, boost);
 
     button.disabled = false;
     return false;
@@ -70,7 +72,7 @@ export class SpiritMagicCard {
     );
 
     if (validationError) {
-      ui.notifications.warn(validationError);
+      ui.notifications?.warn(validationError);
     } else {
       const result = await Ability.roll(
         actor,
@@ -90,7 +92,7 @@ export class SpiritMagicCard {
   ): string {
     if (level > itemData.data.points) {
       return "Can not cast spell above learned level";
-    } else if (level + boost > actor.data.data.attributes.magicPoints.value) {
+    } else if (level + boost > (actor.data.data.attributes.magicPoints.value || 0)) {
       return "Not enough magic points left";
     } else {
       return "";
@@ -103,9 +105,9 @@ export class SpiritMagicCard {
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success) {
-      const newMp = actor.data.data.attributes.magicPoints.value - amount;
+      const newMp = (actor.data.data.attributes.magicPoints.value || 0) - amount;
       await actor.update({ "data.attributes.magicPoints.value": newMp });
-      ui.notifications.info("Successfully cast the spell, drew " + amount + " magic points.");
+      ui.notifications?.info("Successfully cast the spell, drew " + amount + " magic points.");
     }
   }
 
@@ -114,13 +116,13 @@ export class SpiritMagicCard {
     actor: RqgActor
   ): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.html", flags);
-    let whisperRecipients = game.users.filter((u) => u.isGM && u.active);
-    // @ts-ignore
+    let whisperRecipients = game.users?.filter((u) => u.isGM && u.active);
+    // @ts-ignore TODO remove
     whisperRecipients.push(game.user._id);
 
     return {
       flavor: "Spirit Magic: " + flags.itemData.name,
-      user: game.user._id,
+      user: game.user?.id,
       speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
       whisper: whisperRecipients,

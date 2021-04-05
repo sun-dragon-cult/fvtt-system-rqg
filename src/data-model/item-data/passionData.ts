@@ -1,4 +1,5 @@
 import { IAbility } from "../shared/ability";
+import { ItemTypeEnum } from "./itemTypes";
 
 export enum PassionsEnum {
   Devotion = "devotion",
@@ -9,13 +10,17 @@ export enum PassionsEnum {
   Love = "love",
 }
 
-export type PassionData = IAbility & {
+export interface PassionData extends IAbility {
   passion: PassionsEnum;
   subject: string; // The subject of Fear etc
   description: string; // How did the character get this passion
   // --- Derived / Convenience Data Below ---
   passionTypes?: PassionsEnum[];
-};
+}
+
+export interface PassionItemData extends Item.Data<PassionData> {
+  type: ItemTypeEnum.Passion;
+}
 
 export const emptyPassion: PassionData = {
   passion: PassionsEnum.Love,

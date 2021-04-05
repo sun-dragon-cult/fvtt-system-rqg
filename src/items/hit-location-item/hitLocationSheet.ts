@@ -1,18 +1,18 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  HitLocationData,
+  HitLocationItemData,
   HitLocationsEnum,
   HitLocationTypesEnum,
   limbHealthStatuses,
 } from "../../data-model/item-data/hitLocationData";
-import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
-import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
-import { RqgItemSheet } from "../RqgItemSheet";
+import { logBug } from "../../system/util";
 import { HealthEnum } from "../../data-model/actor-data/attributes";
+import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 
-export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplication.Options {
+export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
+  static get defaultOptions(): BaseEntitySheet.Options {
+    // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.html",
@@ -21,19 +21,18 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     });
   }
 
-  // Wrong type definition super.getData returns ItemData<DataType> ??? I think
-  getData(): any {
-    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: HitLocationData = sheetData.item.data;
-    sheetData.hitLocationNamesAll = Object.values(HitLocationsEnum);
-    sheetData.hitLocationTypes = Object.values(HitLocationTypesEnum);
-    sheetData.limbHealthStatuses = Object.values(limbHealthStatuses);
+  getData(): HitLocationItemData {
+    const sheetData = super.getData() as HitLocationItemData;
+    const data = sheetData.data;
+    data.hitLocationNamesAll = Object.values(HitLocationsEnum);
+    data.hitLocationTypes = Object.values(HitLocationTypesEnum);
+    data.limbHealthStatuses = Object.values(limbHealthStatuses);
 
     return sheetData;
   }
 
-  static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string) {
-    const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationData>;
+  static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string): void {
+    const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationItemData>;
     const dialogContent =
       '<form><input type="number" id="inflictDamagePoints" name="damage"><br><label><input type="checkbox" name="toTotalHp" checked> Apply to total HP</label><br><label><input type="checkbox" name="subtractAP" checked> Subtract AP</label><br></form>';
     new Dialog(
@@ -41,7 +40,6 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
         title: `Add damage to ${hitLocation.name}`,
         content: dialogContent,
         default: "submit",
-        // @ts-ignore
         render: () => {
           $("#inflictDamagePoints").focus();
         },
@@ -49,8 +47,8 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: "Add wound",
-            callback: async (html) =>
-              await HitLocationSheet.submitAddWoundDialog(html, hitLocation),
+            callback: async (html: JQuery | HTMLElement) =>
+              await HitLocationSheet.submitAddWoundDialog(html as JQuery, hitLocation),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
@@ -65,9 +63,13 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     ).render(true);
   }
 
-  static showHealWoundDialog(actor: RqgActor, hitLocationItemId: string): void {
-    const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationData>;
-    let dialogContent = "<form>Wounds<br>";
+  static showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
+    const hitLocation = actor.getOwnedItem(hitLocationItemId);
+    if (hitLocation.data.type !== ItemTypeEnum.HitLocation) {
+      logBug("Edit Wounds did not point to a Hit Location Item", hitLocation);
+      return;
+    }
+    let dialogContent = "<form>";
 
     hitLocation.data.data.wounds.forEach(
       (wound, i) =>
@@ -83,7 +85,6 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
         title: `Heal wound in ${hitLocation.name}`,
         content: dialogContent,
         default: "submit",
-        // @ts-ignore
         render: () => {
           $("#healWoundPoints").focus();
         },
@@ -91,7 +92,7 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: "Heal wound",
-            callback: async (html) =>
+            callback: async (html: JQuery | HTMLElement) =>
               await HitLocationSheet.submitHealWoundDialog(html, hitLocation),
           },
           cancel: {
@@ -107,55 +108,79 @@ export class HitLocationSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     ).render(true);
   }
 
-  private static async submitAddWoundDialog(html, item) {
+  private static async submitAddWoundDialog(html: JQuery, hitLocation: Item<HitLocationItemData>) {
     const formData = new FormData(html.find("form")[0]);
+    // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
     const applyDamageToTotalHp: boolean = !!data.toTotalHp;
     const subtractAP: boolean = !!data.subtractAP;
     let damage = Number(data.damage);
-    const actorUpdateData: Actor.Data<RqgActorData> = {
+    const actor = hitLocation.actor as RqgActor;
+    const actorUpdateData: any = {
       data: {},
-    } as Actor.Data<RqgActorData>;
+    };
 
     let msg;
 
     if (subtractAP) {
-      damage = Math.max(0, damage - item.data.data.ap);
+      const ap = hitLocation.data.data.ap;
+      if (ap) {
+        damage = Math.max(0, damage - ap);
+      } else {
+        logBug(
+          `Hit location ${hitLocation.name} doesn't have a calculated total armor point`,
+          hitLocation
+        );
+      }
     }
-    if (item.data.data.hitLocationType === HitLocationTypesEnum.Limb) {
+    if (hitLocation.data.data.hitLocationType === HitLocationTypesEnum.Limb) {
       const fullDamage = damage;
-      damage = damage = Math.min(item.data.data.hp.max * 2, damage); // Max damage to THP inflicted by limb wound is 2*HP
-      msg =
-        item.data.data.limbHealthState === "severed"
-          ? `${item.name} is gone and cannot be hit anymore, reroll to get a new hit location!`
-          : HitLocationSheet.calcLimbDamageEffects(item, damage, fullDamage, actorUpdateData);
-      // TODO Whisper chat to GM?
+      const maxHp = hitLocation.data.data.hp.max;
+      if (maxHp) {
+        damage = damage = Math.min(maxHp * 2, damage); // Max damage to THP inflicted by limb wound is 2*HP
+        msg =
+          hitLocation.data.data.limbHealthState === "severed"
+            ? `${hitLocation.name} is gone and cannot be hit anymore, reroll to get a new hit location!`
+            : HitLocationSheet.calcLimbDamageEffects(
+                hitLocation,
+                damage,
+                fullDamage,
+                actorUpdateData
+              );
+        // TODO Whisper chat to GM?
+      } else {
+        logBug(`Hit location ${hitLocation.name} doesn't have a max hp`, hitLocation);
+      }
     } else {
-      msg = await HitLocationSheet.calcLocationDamageEffects(item, damage, actorUpdateData);
+      msg = await HitLocationSheet.calcLocationDamageEffects(hitLocation, damage, actorUpdateData);
     }
-    msg && ui.notifications.info(msg, { permanent: true });
-    await item.actor.updateOwnedItem({
-      _id: item._id,
+    msg && ui.notifications?.info(msg, { permanent: true });
+    await actor.updateOwnedItem({
+      _id: hitLocation._id,
       data: {
-        wounds: item.data.data.wounds.slice(),
-        limbHealthState: item.data.data.limbHealthState,
+        wounds: hitLocation.data.data.wounds.slice(),
+        limbHealthState: hitLocation.data.data.limbHealthState,
       },
     });
     if (applyDamageToTotalHp) {
-      const currentTotalHp = item.actor.data.data.attributes.hitPoints.value;
-      const newTotalHp = currentTotalHp - damage;
-      HitLocationSheet.actorHitPointsUpdate(actorUpdateData, newTotalHp);
+      const currentTotalHp = actor.data.data.attributes.hitPoints.value;
+      if (currentTotalHp) {
+        const newTotalHp = currentTotalHp - damage;
+        HitLocationSheet.actorHitPointsUpdate(actorUpdateData, newTotalHp);
+      } else {
+        logBug(`Actor ${actor.name} don't have a calculated hitpoint value`, actor);
+      }
     }
-    await item.actor.update(actorUpdateData);
+    await actor.update(actorUpdateData);
   }
 
   private static calcLimbDamageEffects(
-    item: RqgItem,
+    item: Item<HitLocationItemData>,
     damage: number, // Limited to 2*HP
     fullDamage: number,
     actorUpdateData: Actor.Data<RqgActorData>
   ): string {
-    const actorName = item.actor.token?.name || item.actor.name;
+    const actorName = item.actor?.token?.name || item.actor?.name || "";
     let notificationMsg;
     if (
       damage > 0 &&

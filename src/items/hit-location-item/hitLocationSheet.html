@@ -9,23 +9,23 @@
   </header>
   <main>
     <label>Name <select name="name">
-      {{#select item.name}} {{#each hitLocationNamesAll}}
+      {{#select item.name}} {{#each data.hitLocationNamesAll}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
     <label>Limb Health Status <select name="data.limbHealthState">
-      {{#select item.data.limbHealthState}} {{#each limbHealthStatuses}}
+      {{#select item.data.limbHealthState}} {{#each data.limbHealthStatuses}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
     <label>Act as <select name="data.hitLocationType">
-      {{#select item.data.hitLocationType}} {{#each hitLocationTypes}}
+      {{#select item.data.hitLocationType}} {{#each data.hitLocationTypes}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select> for damage calculations.</label><br>
     {{#if (eq item.data.hitLocationType "limb")}}
     <label>Connected to <select name="data.connectedTo">
-      {{#select item.data.connectedTo}} {{#each hitLocationNamesAll}}
+      {{#select item.data.connectedTo}} {{#each data.hitLocationNamesAll}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>

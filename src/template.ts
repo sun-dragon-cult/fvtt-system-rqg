@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
-import { emptyActorDataRqg } from "./data-model/actor-data/rqgActorData";
+import { emptyCharacterData } from "./data-model/actor-data/rqgActorData";
 import { emptySkill } from "./data-model/item-data/skillData";
 import { emptyPassion } from "./data-model/item-data/passionData";
 import { emptyRune } from "./data-model/item-data/runeData";
@@ -14,7 +14,7 @@ import { emptyRuneMagic } from "./data-model/item-data/runeMagicData";
 
 // Instantiated Actor types
 export const Actors = {
-  character: emptyActorDataRqg,
+  character: emptyCharacterData,
 };
 
 export const Items = {

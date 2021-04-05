@@ -1,5 +1,5 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import { ResponsibleItemClass, ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum, ResponsibleItemClass, RqgItemData } from "../data-model/item-data/itemTypes";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
@@ -12,53 +12,64 @@ import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 
-export class RqgItem<DataType = any> extends Item<DataType> {
+export class RqgItem extends Item<RqgItemData> {
   public static init() {
     CONFIG.Item.entityClass = RqgItem;
 
     Items.unregisterSheet("core", ItemSheet);
 
     Items.registerSheet("rqg", PassionSheet, {
+      label: "GM Passion Item Sheet",
       types: [ItemTypeEnum.Passion],
       makeDefault: true,
     });
     Items.registerSheet("rqg", RuneSheet, {
+      label: "GM Rune Item Sheet",
       types: [ItemTypeEnum.Rune],
       makeDefault: true,
     });
     Items.registerSheet("rqg", SkillSheet, {
+      label: "GM Skill Item Sheet",
       types: [ItemTypeEnum.Skill],
       makeDefault: true,
     });
     Items.registerSheet("rqg", HitLocationSheet, {
+      label: "GM Hit Location Item Sheet",
       types: [ItemTypeEnum.HitLocation],
       makeDefault: true,
     });
     Items.registerSheet("rqg", GearSheet, {
+      label: "GM Gear Item Sheet",
       types: [ItemTypeEnum.Gear],
       makeDefault: true,
     });
     Items.registerSheet("rqg", ArmorSheet, {
+      label: "GM Armor Item Sheet",
       types: [ItemTypeEnum.Armor],
       makeDefault: true,
     });
     Items.registerSheet("rqg", MeleeWeaponSheet, {
+      label: "GM Melee Weapon Item Sheet",
       types: [ItemTypeEnum.MeleeWeapon],
       makeDefault: true,
     });
     Items.registerSheet("rqg", MissileWeaponSheet, {
+      label: "GM Missile Weapon Item Sheet",
       types: [ItemTypeEnum.MissileWeapon],
       makeDefault: true,
     });
     Items.registerSheet("rqg", SpiritMagicSheet, {
+      label: "GM Spirit Magic Item Sheet",
       types: [ItemTypeEnum.SpiritMagic],
       makeDefault: true,
     });
     Items.registerSheet("rqg", CultSheet, {
+      label: "GM Cult Item Sheet",
       types: [ItemTypeEnum.Cult],
       makeDefault: true,
     });
     Items.registerSheet("rqg", RuneMagicSheet, {
+      label: "GM Rune Magic Item Sheet",
       types: [ItemTypeEnum.RuneMagic],
       makeDefault: true,
     });
@@ -71,20 +82,19 @@ export class RqgItem<DataType = any> extends Item<DataType> {
         const rqgItem = r as RqgItem;
         // Prevent duplicates
         if (parent.items.find((i) => i.name === r.name && i.type === r.type)) {
-          ui.notifications.warn(
+          ui.notifications?.warn(
             `${parent.name} already has a ${r.type} '${r.name}' and duplicates are not allowed`
           );
           return false;
         }
 
-        // @ts-ignore 0.7
         rqgItem.effects = rqgItem.effects || [];
-        const activeEffect = ResponsibleItemClass.get(rqgItem.type).generateActiveEffect(
+        const activeEffect = ResponsibleItemClass.get(rqgItem.type)?.generateActiveEffect(
           rqgItem.data
         );
         if (activeEffect) {
           activeEffect.origin = `Actor.${parent.id}.OwnedItem.${rqgItem._id}`;
-          // @ts-ignore 0.7
+          // @ts-ignore TODO remove
           rqgItem.effects.push(activeEffect);
         }
       }

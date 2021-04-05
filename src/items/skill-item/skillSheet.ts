@@ -1,12 +1,11 @@
-import { SkillCategoryEnum, SkillData } from "../../data-model/item-data/skillData";
+import { SkillCategoryEnum, SkillItemData } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgItemSheet } from "../RqgItemSheet";
-import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
-import { RqgItem } from "../rqgItem";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
+import { logBug } from "../../system/util";
 
-export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
-  static get defaultOptions(): FormApplication.Options {
+export class SkillSheet extends ItemSheet<SkillItemData> {
+  static get defaultOptions(): BaseEntitySheet.Options {
+    // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
       template: "systems/rqg/items/skill-item/skillSheet.html",
@@ -15,19 +14,19 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
     });
   }
 
-  getData(): any {
-    const sheetData: any = super.getData(); // Don't use directly - not reliably typed
-    const data: SkillData = sheetData.item.data;
+  getData(): SkillItemData {
+    const sheetData = super.getData() as SkillItemData;
+    const data = sheetData.data;
     if (!data.skillName) {
-      data.skillName = sheetData.item.name;
+      data.skillName = sheetData.name;
     }
     data.skillCategories = Object.values(SkillCategoryEnum);
     data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
-    data.allRunes = game.settings.get("rqg", "runes");
+    data.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
     return sheetData;
   }
 
-  protected _updateObject(event: Event | JQuery.Event, formData: any): Promise<any> {
+  protected _updateObject(event: Event, formData: any): Promise<any> {
     const specialization = formData["data.specialization"]
       ? ` (${formData["data.specialization"]})`
       : "";
@@ -35,31 +34,36 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
 
     let runes = formData["data.runes"];
     runes = Array.isArray(runes) ? runes : [runes];
-    runes = runes.filter((r) => r); // Remove empty
+    runes = runes.filter((r: any) => r); // Remove empty
     formData["data.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
 
-  protected activateListeners(html: JQuery) {
+  public activateListeners(html: JQuery): void {
     super.activateListeners(html);
     (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
 
     // Open Linked Journal Entry
-    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: HTMLElement) => {
-      const pack = el.dataset.journalPack;
-      const id = el.dataset.journalId;
-      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: Element) => {
+      const elem = el as HTMLElement;
+      const pack = elem.dataset.journalPack;
+      const id = elem.dataset.journalId;
+      if (id) {
+        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
+      } else {
+        logBug("couldn't find linked journal entry from Skill Item Sheet", elem, pack, id);
+      }
     });
   }
 
-  protected async _onDrop(event: DragEvent) {
+  protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
     // Try to extract the data
     let droppedItemData;
     try {
-      droppedItemData = JSON.parse(event.dataTransfer.getData("text/plain"));
+      droppedItemData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
-      return false;
+      return;
     }
     if (droppedItemData.type === "JournalEntry") {
       const pack = droppedItemData.pack ? droppedItemData.pack : "";
@@ -68,7 +72,7 @@ export class SkillSheet extends RqgItemSheet<RqgActorData, RqgItem> {
         {}
       );
     } else {
-      ui.notifications.warn("You can only drop a journalEntry");
+      ui.notifications?.warn("You can only drop a journalEntry");
     }
   }
 }
