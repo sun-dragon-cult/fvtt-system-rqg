@@ -36,7 +36,7 @@ export class Cult extends BaseItem {
       const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[]; // Index is previously stored in settings
       const newRuneIds = newRuneNames.map((newRune) => {
         const newRuneIndex = allRunesIndex.find((r) => r.name === newRune);
-        if (newRuneIndex) {
+        if (newRuneIndex != null) {
           return newRuneIndex._id;
         } else {
           logBug(`Couldn't find cult rune ${newRune} among allRunesIndex`, actor, cultItem);
