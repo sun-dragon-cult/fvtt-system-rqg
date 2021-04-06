@@ -217,6 +217,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
   private getCombinedHealth(): HealthEnum {
     const healthEffects = this.actor.data.data.attributes.health;
     const totalHitPoints = this.actor.data.data.attributes.hitPoints.value;
+    if (totalHitPoints == null) {
+      logBug(`Actor hit points value ${totalHitPoints} is missing`, this.actor);
+      return healthEffects;
+    }
 
     if (totalHitPoints <= 0) {
       return HealthEnum.Dead;

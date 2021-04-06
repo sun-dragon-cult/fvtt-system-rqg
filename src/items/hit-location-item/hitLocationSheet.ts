@@ -93,7 +93,10 @@ export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
             icon: '<i class="fas fa-check"></i>',
             label: "Heal wound",
             callback: async (html: JQuery | HTMLElement) =>
-              await HitLocationSheet.submitHealWoundDialog(html, hitLocation),
+              await HitLocationSheet.submitHealWoundDialog(
+                html as JQuery,
+                hitLocation as Item<HitLocationItemData>
+              ),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
@@ -116,7 +119,7 @@ export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
     const subtractAP: boolean = !!data.subtractAP;
     let damage = Number(data.damage);
     const actor = hitLocation.actor as RqgActor;
-    const actorUpdateData: any = {
+    const actorUpdateData: DeepPartial<RqgActorData> = {
       data: {},
     };
 
@@ -124,7 +127,7 @@ export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
 
     if (subtractAP) {
       const ap = hitLocation.data.data.ap;
-      if (ap) {
+      if (ap != null) {
         damage = Math.max(0, damage - ap);
       } else {
         logBug(
@@ -175,61 +178,87 @@ export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
   }
 
   private static calcLimbDamageEffects(
-    item: Item<HitLocationItemData>,
+    hitLocation: Item<HitLocationItemData>,
     damage: number, // Limited to 2*HP
     fullDamage: number,
-    actorUpdateData: Actor.Data<RqgActorData>
+    actorUpdateData: DeepPartial<RqgActorData>
   ): string {
-    const actorName = item.actor?.token?.name || item.actor?.name || "";
-    let notificationMsg;
+    const hpValue = hitLocation.data.data.hp.value;
+    const hpMax = hitLocation.data.data.hp.max;
+    if (hpValue == null || hpMax == null) {
+      logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, hitLocation);
+      return "";
+    }
+    const actor = hitLocation.actor as RqgActor;
+    if (actor == null) {
+      logBug(`Couldn't find actor from hitLocation ${hitLocation.name}`, hitLocation);
+      return "";
+    }
+    const actorName = actor.token?.name || actor.name;
+    let notificationMsg = "";
     if (
       damage > 0 &&
-      limbHealthStatuses.indexOf(item.data.data.limbHealthState) <
+      limbHealthStatuses.indexOf(hitLocation.data.data.limbHealthState) <
         limbHealthStatuses.indexOf("wounded")
     ) {
-      item.data.data.limbHealthState = "wounded";
+      hitLocation.data.data.limbHealthState = "wounded";
     }
     if (
-      item.data.data.hp.value - fullDamage <= 0 &&
-      limbHealthStatuses.indexOf(item.data.data.limbHealthState) <
+      hpValue - fullDamage <= 0 &&
+      limbHealthStatuses.indexOf(hitLocation.data.data.limbHealthState) <
         limbHealthStatuses.indexOf("useless")
     ) {
-      notificationMsg = `${actorName}s ${item.name} is useless and cannot hold anything / support standing. You can fight with whatever limbs are still functional.`;
-      item.data.data.limbHealthState = "useless";
+      notificationMsg = `${actorName}s ${hitLocation.name} is useless and cannot hold anything / support standing. You can fight with whatever limbs are still functional.`;
+      hitLocation.data.data.limbHealthState = "useless";
     }
-    if (fullDamage >= item.data.data.hp.max * 2) {
+    if (fullDamage >= hpMax * 2) {
       notificationMsg = `${actorName} is functionally incapacitated: you can no longer fight until healed and am in shock. You may try to heal yourself.`;
       mergeObject(actorUpdateData, {
-        // @ts-ignore sparse data
         data: { attributes: { health: HealthEnum.Shock } },
       });
-      item.actor.token?.toggleEffect(
-        // @ts-ignore testing
+      actor.token?.toggleEffect(
         CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
       );
     }
-    if (fullDamage >= item.data.data.hp.max * 3) {
-      notificationMsg = `${actorName}s ${item.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten
+    if (fullDamage >= hpMax * 3) {
+      notificationMsg = `${actorName}s ${hitLocation.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten
                               minutes can restore a severed limb, assuming all parts are available.`;
-      item.data.data.limbHealthState = "severed";
+      hitLocation.data.data.limbHealthState = "severed";
     }
-    const currentLimbDamage = item.data.data.hp.max - item.data.data.hp.value;
-    const limbWound = Math.min(item.data.data.hp.max * 2 - currentLimbDamage, damage);
-    item.data.data.wounds.push(limbWound);
+    const currentLimbDamage = hpMax - hpValue;
+    const limbWound = Math.min(hpMax * 2 - currentLimbDamage, damage);
+    hitLocation.data.data.wounds.push(limbWound);
     return notificationMsg;
   }
 
-  private static async calcLocationDamageEffects(item, damage, actorUpdateData): Promise<string> {
-    const actorName = item.actor.token?.name || item.actor.name;
-    let notificationMsg;
+  private static async calcLocationDamageEffects(
+    hitLocation: Item<HitLocationItemData>,
+    damage: number,
+    actorUpdateData: DeepPartial<RqgActorData>
+  ): Promise<string> {
+    const actor = hitLocation.actor as RqgActor;
+    if (actor == null) {
+      logBug(`Couldn't find actor from hitLocation ${hitLocation.name}`, hitLocation);
+      return "";
+    }
+    const actorName = actor.token?.name || actor.name;
+    const hpValue = hitLocation.data.data.hp.value;
+    const hpMax = hitLocation.data.data.hp.max;
+    if (hpValue == null || hpMax == null) {
+      logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, hitLocation);
+      return "";
+    }
+
+    let notificationMsg = "";
     // A big hit to Abdomen affects connected limbs, but instant death sized damage should override it
     if (
-      item.data.data.hitLocationType === HitLocationTypesEnum.Abdomen &&
-      item.data.data.hp.value - damage <= 0 &&
-      damage < item.data.data.hp.max * 3
+      hitLocation.data.data.hitLocationType === HitLocationTypesEnum.Abdomen &&
+      hpValue - damage <= 0 &&
+      damage < hpMax * 3
     ) {
-      const attachedLimbs = item.actor.items.filter(
-        (i) => i.data.type === ItemTypeEnum.HitLocation && i.data.data.connectedTo === item.name
+      const attachedLimbs = actor.items.filter(
+        (i) =>
+          i.data.type === ItemTypeEnum.HitLocation && i.data.data.connectedTo === hitLocation.name
       );
       const otherLimbsUpdate = attachedLimbs.map((l) => {
         return {
@@ -239,80 +268,86 @@ export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
           },
         };
       });
-      await item.actor.updateEmbeddedEntity("OwnedItem", otherLimbsUpdate);
-      ui.notifications.info(
+      await actor.updateEmbeddedEntity("OwnedItem", otherLimbsUpdate);
+      ui.notifications?.info(
         `Both legs are useless and ${actorName} falls to the ground. ${actorName} may fight from the ground
                       in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`,
         { permanent: true }
       );
-      item.actor.token?.toggleEffect(
-        // @ts-ignore testing
+      actor.token?.toggleEffect(
         CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "prone")].icon
       );
     }
 
-    if (damage >= item.data.data.hp.max * 3) {
+    if (damage >= hpMax * 3) {
       notificationMsg = `${actorName} dies instantly.`;
       mergeObject(actorUpdateData, {
-        // @ts-ignore sparse data
         data: { attributes: { health: HealthEnum.Dead } },
       });
       // TODO This doesn't set the combatant in the combat tracker as dead - it only adds the dead token effect
-      item.actor.token?.toggleEffect(
-        // @ts-ignore
+      actor.token?.toggleEffect(
         CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "dead")].icon
       );
-    } else if (damage >= item.data.data.hp.max * 2) {
+    } else if (damage >= hpMax * 2) {
       notificationMsg = `${actorName} becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.`;
       mergeObject(actorUpdateData, {
-        // @ts-ignore sparse data
         data: { attributes: { health: HealthEnum.Unconscious } },
       });
-      item.actor.token?.toggleEffect(
-        // @ts-ignore testing
+      actor.token?.toggleEffect(
         CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
       );
-    } else if (item.data.data.hp.value - damage <= 0) {
-      if (item.data.data.hitLocationType === HitLocationTypesEnum.Head) {
+    } else if (hpValue - damage <= 0) {
+      if (hitLocation.data.data.hitLocationType === HitLocationTypesEnum.Head) {
         notificationMsg = `${actorName} is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die`;
         mergeObject(actorUpdateData, {
-          // @ts-ignore sparse data
           data: { attributes: { health: HealthEnum.Unconscious } },
         });
-        item.actor.token?.toggleEffect(
-          // @ts-ignore testing
+        actor.token?.toggleEffect(
           CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
         );
-      } else if (item.data.data.hitLocationType === HitLocationTypesEnum.Chest) {
+      } else if (hitLocation.data.data.hitLocationType === HitLocationTypesEnum.Chest) {
         notificationMsg = `${actorName} falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes
                       unless the bleeding is stopped by First Aid, and cannot take any action, including healing.`;
         mergeObject(actorUpdateData, {
-          // @ts-ignore sparse data
           data: { attributes: { health: HealthEnum.Shock } }, // TODO Not the same as shock from limb wound !!!
         });
-        item.actor.token?.toggleEffect(
-          // @ts-ignore testing
+        actor.token?.toggleEffect(
           CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
         );
       }
     } else if (damage > 0) {
-      item.data.data.limbHealthState = "wounded"; // TODO using limbState as hit location state!!! rename it???
+      hitLocation.data.data.limbHealthState = "wounded"; // TODO using limbState as hit location state!!! rename it???
     }
 
-    item.data.data.wounds.push(damage);
+    hitLocation.data.data.wounds.push(damage);
     return notificationMsg;
   }
 
-  private static async submitHealWoundDialog(html, item) {
+  private static async submitHealWoundDialog(
+    html: JQuery,
+    hitLocation: Item<HitLocationItemData>
+  ): Promise<void> {
     const formData = new FormData(html.find("form")[0]);
+    // @ts-ignore formData.entries
     const data = Object.fromEntries(formData.entries());
+    const actor = hitLocation.actor as RqgActor;
+    const hpValue = hitLocation.data.data.hp.value;
+    const hpMax = hitLocation.data.data.hp.max;
+    if (hpValue == null || hpMax == null) {
+      logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, hitLocation);
+      return;
+    }
+    if (actor == null) {
+      logBug(`Couldn't find actor from hitLocation ${hitLocation.name}`, hitLocation);
+      return;
+    }
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
-    const actorUpdateData: Actor.Data<RqgActorData> = {
+    const actorUpdateData: DeepPartial<RqgActorData> = {
       data: {},
-    } as Actor.Data<RqgActorData>;
-    const wounds = item.data.data.wounds;
-    let limbHealthState = item.data.data.limbHealthState;
+    };
+    const wounds = hitLocation.data.data.wounds;
+    let limbHealthState = hitLocation.data.data.limbHealthState;
 
     healPoints = Math.min(wounds[healWoundIndex], healPoints); // Dont' heal more than wound damage
     wounds[healWoundIndex] -= healPoints;
@@ -324,39 +359,53 @@ export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
     const woundsSumAfter = wounds.reduce((acc, w) => acc + w, 0);
     if (woundsSumAfter === 0 && limbHealthState !== "severed") {
       limbHealthState = "healthy";
-    } else if (woundsSumAfter < item.data.data.hp.max && limbHealthState !== "severed") {
+    } else if (woundsSumAfter < hpMax && limbHealthState !== "severed") {
       limbHealthState = "wounded";
     }
 
-    await item.actor.updateOwnedItem({
-      _id: item._id,
+    await actor.updateOwnedItem({
+      _id: hitLocation._id,
       data: {
         wounds: wounds.slice(),
         limbHealthState: limbHealthState,
       },
     });
 
-    const actorTotalHp = item.actor.data.data.attributes.hitPoints.value;
-    const actorMaxHp = item.actor.data.data.attributes.hitPoints.max;
+    const actorTotalHp = actor.data.data.attributes.hitPoints.value;
+    const actorMaxHp = actor.data.data.attributes.hitPoints.max;
+    if (!actorTotalHp || !actorMaxHp) {
+      logBug(`Couldn't find actor total hp (max or current value)`, actor);
+      return;
+    }
+
     const totalHpAfter = Math.min(actorTotalHp + healPoints, actorMaxHp);
     HitLocationSheet.actorHitPointsUpdate(actorUpdateData, totalHpAfter);
-    HitLocationSheet.actorHealthUpdate(actorUpdateData, item.actor.getOwnedItem(item._id));
+    HitLocationSheet.actorHealthUpdate(
+      actorUpdateData,
+      actor.getOwnedItem(hitLocation._id) as Item<HitLocationItemData>
+    );
 
-    await item.actor.update(actorUpdateData);
+    await actor.update(actorUpdateData);
   }
 
-  private static actorHitPointsUpdate(actorUpdateData, newHp: number): void {
+  private static actorHitPointsUpdate(
+    actorUpdateData: DeepPartial<RqgActorData>,
+    newHp: number
+  ): void {
     mergeObject(actorUpdateData, { data: { attributes: { hitPoints: { value: newHp } } } });
   }
 
-  private static actorHealthUpdate(actorUpdateData, item): void {
+  private static actorHealthUpdate(
+    actorUpdateData: DeepPartial<RqgActorData>,
+    item: Item<HitLocationItemData>
+  ): void {
     if (
-      item &&
-      item.data.data.hitLocationType === HitLocationTypesEnum.Limb &&
-      item.data.data.hp.value > 0
+      (item &&
+        item.data.data.hitLocationType === HitLocationTypesEnum.Limb &&
+        item.data.data.hp.value) ||
+      0 > 0
     ) {
       mergeObject(actorUpdateData, {
-        // @ts-ignore sparse data
         data: { attributes: { health: HealthEnum.Wounded } },
       });
     }
