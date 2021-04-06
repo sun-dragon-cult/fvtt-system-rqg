@@ -28,7 +28,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
   };
   let physicalItemNodes: LocationNode[] = physicalItems
     // @ts-ignore
-    .filter((i) => "physicalItemType" in i.data && !i.data.data.isNatural)
+    .filter((i) => "physicalItemType" in i.data.data && !i.data.data.isNatural)
     .map((i) => {
       // Placing an item inside itself is not allowed - count it as root level
       // @ts-ignore
