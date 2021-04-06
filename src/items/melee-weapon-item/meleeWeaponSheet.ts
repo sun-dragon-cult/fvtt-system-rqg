@@ -3,8 +3,9 @@ import { CombatManeuver, MeleeWeaponItemData } from "../../data-model/item-data/
 import { SkillCategoryEnum, SkillData, SkillItemData } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class MeleeWeaponSheet extends ItemSheet<MeleeWeaponItemData> {
+export class MeleeWeaponSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {

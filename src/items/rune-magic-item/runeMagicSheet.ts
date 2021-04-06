@@ -9,8 +9,9 @@ import { RuneData } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { logBug } from "../../system/util";
 import { CultItemData } from "../../data-model/item-data/cultData";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class RuneMagicSheet extends ItemSheet<RuneMagicItemData> {
+export class RuneMagicSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {

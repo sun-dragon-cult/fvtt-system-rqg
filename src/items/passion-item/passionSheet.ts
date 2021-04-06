@@ -1,7 +1,8 @@
 import { PassionItemData, PassionsEnum } from "../../data-model/item-data/passionData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class PassionSheet extends ItemSheet<PassionItemData> {
+export class PassionSheet extends RqgItemSheet {
   static passionImgUrl = new Map([
     [PassionsEnum.Devotion, "systems/rqg/assets/images/passion/devotion.svg"],
     [PassionsEnum.Fear, "systems/rqg/assets/images/passion/fear.svg"],

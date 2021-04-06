@@ -7,8 +7,9 @@ import {
 import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItem } from "../rqgItem";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class MissileWeaponSheet extends ItemSheet<MissileWeaponItemData> {
+export class MissileWeaponSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {

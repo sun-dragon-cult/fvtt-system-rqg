@@ -1,8 +1,9 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ArmorItemData } from "../../data-model/item-data/armorData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class ArmorSheet extends ItemSheet<ArmorItemData> {
+export class ArmorSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {

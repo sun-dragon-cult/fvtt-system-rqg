@@ -7,8 +7,9 @@ import {
 } from "../../data-model/item-data/spiritMagicData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { logBug } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class SpiritMagicSheet extends ItemSheet<SpiritMagicItemData> {
+export class SpiritMagicSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {

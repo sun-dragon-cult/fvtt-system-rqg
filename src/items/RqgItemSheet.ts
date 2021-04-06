@@ -1,8 +1,9 @@
 import { RqgActiveEffect } from "../actors/rqgActiveEffect";
 import { RqgItem } from "./rqgItem";
 import { logBug } from "../system/util";
+import { RqgItemData } from "../data-model/item-data/itemTypes";
 
-export class RqgItemSheet extends ItemSheet<RqgItem> {
+export class RqgItemSheet extends ItemSheet<RqgItemData> {
   //
   // import { RqgActor } from "../actors/rqgActor";
   // import { RqgItem } from "./rqgItem";
@@ -19,7 +20,7 @@ export class RqgItemSheet extends ItemSheet<RqgItem> {
   //   P extends BaseEntitySheet.Options = BaseEntitySheet.Options
   //   > extends ItemSheet<P, D, O> {
 
-  get title() {
+  get title(): string {
     return `${this.object.type}: ${this.object.name}`;
   }
 

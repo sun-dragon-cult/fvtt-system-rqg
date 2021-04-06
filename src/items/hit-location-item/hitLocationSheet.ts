@@ -2,8 +2,9 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { HitLocationItemData, HitLocationsEnum } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
 import { logBug } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
+export class HitLocationSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
