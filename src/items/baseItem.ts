@@ -13,12 +13,7 @@ export abstract class BaseItem {
    * @param userId
    * @return Data to update other embedded items.
    */
-  static async onEmbedItem(
-    actor: RqgActor,
-    itemData: Item.Data,
-    options: any,
-    userId: string
-  ): Promise<any> {}
+  static onEmbedItem(actor: RqgActor, itemData: Item.Data, options: any, userId: string): any {}
 
   /**
    * Will be called when an embedded (Owned) item is updated.
@@ -29,13 +24,13 @@ export abstract class BaseItem {
    * @param userId
    * @return Data to update other embedded items.
    */
-  static async onUpdateItem(
+  static onUpdateItem(
     actor: RqgActor,
     itemData: Item.Data,
     update: any,
     options: any,
     userId: string
-  ): Promise<any> {}
+  ): any {}
 
   /**
    * Will be called when an embedded item is deleted from the actor.
@@ -45,12 +40,7 @@ export abstract class BaseItem {
    * @param userId
    * @return Data to update other embedded items.
    */
-  static async onDeleteItem(
-    actor: RqgActor,
-    itemData: Item.Data,
-    options: any,
-    userId: string
-  ): Promise<any> {}
+  static onDeleteItem(actor: RqgActor, itemData: Item.Data, options: any, userId: string): any {}
 
   /**
    * Allows each embedded item to prepare its data.

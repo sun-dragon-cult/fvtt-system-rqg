@@ -15,12 +15,12 @@ export class Cult extends BaseItem {
   /*
    * Add the cult runes to the Actor
    */
-  static async onEmbedItem(
+  static onEmbedItem(
     actor: RqgActor,
     cultItem: Item.Data<CultData>,
     options: any,
     userId: string
-  ): Promise<any> {
+  ): any {
     const cultRuneNames = [...new Set(cultItem.data.runes)]; // No duplicates
     const actorRuneNames = actor.items
       .filter((i) => i.type === ItemTypeEnum.Rune)
@@ -43,13 +43,14 @@ export class Cult extends BaseItem {
           return;
         }
       }) as string[];
-      const newRuneEntities = await Promise.all(newRuneIds.map((id) => runePack.getEntity(id)));
-      newRuneEntities.map(async (rune) => {
-        if (rune) {
-          await actor.createOwnedItem(rune.data);
-        } else {
-          logBug("Couldn't find rune in all runes compendium");
-        }
+      Promise.all(newRuneIds.map((id) => runePack.getEntity(id))).then((newRuneEntities) => {
+        newRuneEntities.map(async (rune) => {
+          if (rune) {
+            await actor.createOwnedItem(rune.data);
+          } else {
+            logBug("Couldn't find rune in all runes compendium");
+          }
+        });
       });
     }
     return;
@@ -58,12 +59,12 @@ export class Cult extends BaseItem {
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
-  static async onDeleteItem(
+  static onDeleteItem(
     actor: RqgActor,
     cultItem: Item.Data<CultData>,
     options: any,
     userId: string
-  ): Promise<any> {
+  ): any {
     const cultRuneMagicItems = actor.items.filter(
       (i) => i.data.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultItem._id
     );
