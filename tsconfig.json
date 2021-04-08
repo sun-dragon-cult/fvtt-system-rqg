@@ -2,11 +2,12 @@
   "compilerOptions": {
     "target": "ESNext", // TODO remove? not used by snowpack/esbuild https://esbuild.github.io/content-types/#es-module-interop
     "lib": ["DOM", "ES6", "ESNext"], // TODO - " -
-    "types": ["@league-of-foundry-developers/foundry-vtt-types", "node"],
+    "types": ["@league-of-foundry-developers/foundry-vtt-types", "node", "jest"],
     "outDir": "./dist",
     "removeComments": true,
     "strict": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "esModuleInterop": true
   },
   "include": [
     "src/**/**/*"
