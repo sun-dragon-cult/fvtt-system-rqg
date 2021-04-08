@@ -6,7 +6,8 @@
     "outDir": "./dist",
     "removeComments": true,
     "strict": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "esModuleInterop": true
   },
   "include": [
     "src/**/**/*"

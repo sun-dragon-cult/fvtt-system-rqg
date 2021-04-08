@@ -12,18 +12,15 @@ export class RqgCombat {
       formula: null,
       decimals: 0,
     };
-    Hooks.on("updateCombatant", (combat, combatant, diff) => {
+    Hooks.on("updateCombatant", async (combat: Combat, combatant: Combatant, diff: any) => {
       if (!game.user?.isGM) return;
       if ("defeated" in diff) {
         let updates = combat.combatants
-          .filter(
-            (c: Combatant) =>
-              !!c.tokenId && c.tokenId === combatant.tokenId && c._id !== combatant._id
-          )
-          .map((c: Combatant) => {
+          .filter((c) => !!c.tokenId && c.tokenId === combatant.tokenId && c._id !== combatant._id)
+          .map((c) => {
             return { _id: c._id, defeated: diff.defeated };
-          });
-        combat.updateCombatant(updates);
+          }) as any;
+        await combat.updateCombatant(updates);
       }
     });
   }
