@@ -7,10 +7,11 @@ import {
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
 import { logBug } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 import { HealthEnum } from "../../data-model/actor-data/attributes";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
 
-export class HitLocationSheet extends ItemSheet<HitLocationItemData> {
+export class HitLocationSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {

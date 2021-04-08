@@ -11,13 +11,13 @@ export class Armor extends BaseItem {
   //   });
   // }
 
-  static async onUpdateItem(
+  static onUpdateItem(
     actor: RqgActor,
     itemData: Item.Data<ArmorData>,
     update: any,
     options: any,
     userId: string
-  ): Promise<any> {
+  ): any {
     // Update the active effect on actor from Item data
     const uuid = `Actor.${actor.id}.OwnedItem.${itemData._id}`;
     const generatedEffect = Armor.generateActiveEffect(itemData.data);
@@ -30,11 +30,11 @@ export class Armor extends BaseItem {
           disabled: !(itemData.data.equippedStatus === "equipped"),
         };
       });
-      await actor.updateEmbeddedEntity("ActiveEffect", changes, {});
+      actor.updateEmbeddedEntity("ActiveEffect", changes, {});
     } else {
       // No Active Effect for this armor item existed - create one
       generatedEffect.origin = uuid;
-      await actor.createEmbeddedEntity("ActiveEffect", generatedEffect, {});
+      actor.createEmbeddedEntity("ActiveEffect", generatedEffect, {});
     }
   }
 

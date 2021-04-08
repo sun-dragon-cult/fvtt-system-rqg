@@ -15,6 +15,7 @@ import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 export class RqgItem extends Item<RqgItemData> {
   public static init() {
     CONFIG.Item.entityClass = RqgItem;
+    // CONFIG.Item.sheetClass = RqgItemSheet; // TODO how and why
 
     Items.unregisterSheet("core", ItemSheet);
 
@@ -77,13 +78,13 @@ export class RqgItem extends Item<RqgItemData> {
     // ResponsibleItemClass.forEach((itemClass) => itemClass.init());
 
     // Row 26505
-    Hooks.on("preCreateOwnedItem", (parent, r) => {
+    Hooks.on("preCreateOwnedItem", (parent: Entity, r: any) => {
       if (parent instanceof RqgActor && Object.values(ItemTypeEnum).includes(r.type)) {
         const rqgItem = r as RqgItem;
         // Prevent duplicates
-        if (parent.items.find((i) => i.name === r.name && i.type === r.type)) {
+        if (parent.items.find((i) => i.name === rqgItem.name && i.type === rqgItem.type)) {
           ui.notifications?.warn(
-            `${parent.name} already has a ${r.type} '${r.name}' and duplicates are not allowed`
+            `${parent.name} already has a ${rqgItem.type} '${rqgItem.name}' and duplicates are not allowed`
           );
           return false;
         }

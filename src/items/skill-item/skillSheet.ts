@@ -2,8 +2,9 @@ import { SkillCategoryEnum, SkillItemData } from "../../data-model/item-data/ski
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { logBug } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class SkillSheet extends ItemSheet<SkillItemData> {
+export class SkillSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {

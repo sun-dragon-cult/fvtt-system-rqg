@@ -17,7 +17,7 @@ export class ItemCard {
   public static async show(actor: RqgActor, itemId: string): Promise<void> {
     const defaultModifier = 0;
     const item = actor.getOwnedItem(itemId) as RqgItem;
-    if ("chance" in item.data.data && item.data.data.chance !== undefined) {
+    if ("chance" in item.data.data && item.data.data.chance != null) {
       const flags: ItemCardFlags = {
         actorId: actor.id,
         itemData: item.data,

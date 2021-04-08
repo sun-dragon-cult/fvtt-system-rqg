@@ -21,7 +21,7 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const itemId = getDomDataset(el, "item-id");
       const item = (itemId && actor.getOwnedItem(itemId)) as Item<RuneItemData>;
       const itemChance = item && item.data.data.chance;
-      if (itemChance) {
+      if (itemChance != null) {
         await Ability.roll(actor, itemChance, 0, item.name);
       } else {
         logBug(

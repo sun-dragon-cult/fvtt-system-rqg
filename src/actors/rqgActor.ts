@@ -11,7 +11,11 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     CONFIG.Actor.entityClass = RqgActor;
 
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("rqg", RqgActorSheet, { makeDefault: true });
+    Actors.registerSheet("rqg", RqgActorSheet, {
+      label: "Character Sheet",
+      types: ["character"],
+      makeDefault: true,
+    });
   }
 
   /**
@@ -141,46 +145,46 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
   }
 
   // @ts-ignore TODO remove
-  protected async _onCreateEmbeddedEntity(
+  protected _onCreateEmbeddedEntity(
     embeddedName: string,
     child: Item.Data,
     options: any,
     userId: string
   ): Promise<void> {
     if (embeddedName === "OwnedItem" && this.owner) {
-      const updateData = await ResponsibleItemClass.get(child.type)?.onEmbedItem(
+      const updateData = ResponsibleItemClass.get(child.type)?.onEmbedItem(
         this,
         child,
         options,
         userId
       );
-      updateData && (await this.updateOwnedItem(updateData));
+      updateData && this.updateOwnedItem(updateData);
     }
     // @ts-ignore TODO remove
     return super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
   }
 
   // @ts-ignore TODO remove
-  protected async _onDeleteEmbeddedEntity(
+  protected _onDeleteEmbeddedEntity(
     embeddedName: string,
     child: Item.Data,
     options: any,
     userId: string
   ) {
     if (embeddedName === "OwnedItem" && this.owner) {
-      const updateData = await ResponsibleItemClass.get(child.type)?.onDeleteItem(
+      const updateData = ResponsibleItemClass.get(child.type)?.onDeleteItem(
         this,
         child,
         options,
         userId
       );
-      updateData && (await this.updateOwnedItem(updateData));
+      updateData && this.updateOwnedItem(updateData);
     }
-    // @ts-ignore TODO remove
+    // @ts-ignore
     return super._onDeleteEmbeddedEntity(embeddedName, child, options, userId);
   }
 
-  protected async _onUpdateEmbeddedEntity(
+  protected _onUpdateEmbeddedEntity(
     embeddedName: string,
     child: Item.Data,
     update: any,
@@ -188,21 +192,21 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     userId: string
   ) {
     if (embeddedName === "OwnedItem" && this.owner) {
-      const updateData = await ResponsibleItemClass.get(child.type)?.onUpdateItem(
+      const updateData = ResponsibleItemClass.get(child.type)?.onUpdateItem(
         this,
         child,
         update,
         options,
         userId
       );
-      updateData && (await this.updateOwnedItem(updateData));
+      updateData && this.updateOwnedItem(updateData);
     }
     return super._onUpdateEmbeddedEntity(embeddedName, child, update, options, userId);
   }
 
   // @ts-ignore TODO remove
   _onModifyEmbeddedEntity(embeddedName, ...args) {
-    if (embeddedName === "OwnedItem" && this.owner) {
+    if (embeddedName === "OwnedItem" && this.owner && args[3].action !== "create") {
       this.updateEquippedStatus(args[0]).then(
         () =>
           // Try doing stuff after actor has updated
@@ -233,10 +237,10 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
             return { _id: id, "data.equippedStatus": newEquippedStatus };
           });
         } else {
-          logBug("couldn't find item when updating equipped status", i);
+          logBug("couldn't find item when updating equipped status", i, this);
         }
       });
-      await this.updateEmbeddedEntity("OwnedItem", itemsToUpdate[0]); // TODO fix nested arrays
+      itemsToUpdate[0] && (await this.updateEmbeddedEntity("OwnedItem", itemsToUpdate[0])); // TODO fix nested arrays
       // await item.update({ "data.equippedStatus": newStatus }, {});
     }
   }

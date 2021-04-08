@@ -2,8 +2,9 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CultData, CultItemData, CultRankEnum } from "../../data-model/item-data/cultData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { logBug } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class CultSheet extends ItemSheet<CultItemData> {
+export class CultSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {

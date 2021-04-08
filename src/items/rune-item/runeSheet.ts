@@ -2,8 +2,9 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneItemData, RuneTypeEnum } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { logBug } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 
-export class RuneSheet extends ItemSheet<RuneItemData> {
+export class RuneSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
     // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
