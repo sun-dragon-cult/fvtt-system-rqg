@@ -13,7 +13,7 @@ export interface RqgCharacterData {
   skillCategoryModifiers?: SkillCategories;
 }
 
-interface CharacterActorData extends Actor.Data<RqgCharacterData, RqgItemData> {
+export interface CharacterActorData extends Actor.Data<RqgCharacterData, RqgItemData> {
   type: "character";
 }
 

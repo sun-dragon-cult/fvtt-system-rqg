@@ -47,8 +47,10 @@ export interface HitLocationData {
   naturalAp: number;
   wounds: number[];
   limbHealthState: LimbHealthState;
+  /** How should this hitlocation behave for damage calculation */
   hitLocationType: HitLocationTypesEnum; // TODO *** kan man göra det här smartare? ***
-  connectedTo: string; // If hitLocationType is Limb then what location is it connected to. Used for Damage.
+  /** If hitLocationType is Limb then what location name is it connected to. Used for damage calculations */
+  connectedTo: string;
   // --- Derived / Convenience Data Below ---
   /** Natural armor + modified armor Active Effect */
   ap?: number;
@@ -65,7 +67,7 @@ export interface HitLocationItemData extends Item.Data<HitLocationData> {
 export const emptyHitLocation: HitLocationData = {
   dieFrom: 0,
   dieTo: 0,
-  hp: emptyResource, // Max and value added by ActorSheet.prepareData
+  hp: emptyResource,
   baseHpDelta: 0,
   naturalAp: 0,
   wounds: [],

@@ -10,16 +10,16 @@ import { logBug } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { HealthEnum } from "../../data-model/actor-data/attributes";
 import { RqgActorData } from "../../data-model/actor-data/rqgActorData";
+import { DamageCalculations } from "./damageCalculations";
 
 export class HitLocationSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.html",
       width: 320,
       height: 250,
-    });
+    } as any);
   }
 
   getData(): HitLocationItemData {
@@ -120,12 +120,6 @@ export class HitLocationSheet extends RqgItemSheet {
     const subtractAP: boolean = !!data.subtractAP;
     let damage = Number(data.damage);
     const actor = hitLocation.actor as RqgActor;
-    const actorUpdateData: DeepPartial<RqgActorData> = {
-      data: {},
-    };
-
-    let msg;
-
     if (subtractAP) {
       const ap = hitLocation.data.data.ap;
       if (ap != null) {
@@ -137,191 +131,20 @@ export class HitLocationSheet extends RqgItemSheet {
         );
       }
     }
-    if (hitLocation.data.data.hitLocationType === HitLocationTypesEnum.Limb) {
-      const fullDamage = damage;
-      const maxHp = hitLocation.data.data.hp.max;
-      if (maxHp) {
-        damage = damage = Math.min(maxHp * 2, damage); // Max damage to THP inflicted by limb wound is 2*HP
-        msg =
-          hitLocation.data.data.limbHealthState === "severed"
-            ? `${hitLocation.name} is gone and cannot be hit anymore, reroll to get a new hit location!`
-            : HitLocationSheet.calcLimbDamageEffects(
-                hitLocation,
-                damage,
-                fullDamage,
-                actorUpdateData
-              );
-        // TODO Whisper chat to GM?
-      } else {
-        logBug(`Hit location ${hitLocation.name} doesn't have a max hp`, hitLocation);
-      }
-    } else {
-      msg = await HitLocationSheet.calcLocationDamageEffects(hitLocation, damage, actorUpdateData);
-    }
-    msg && ui.notifications?.info(msg, { permanent: true });
-    await actor.updateOwnedItem({
-      _id: hitLocation._id,
-      data: {
-        wounds: hitLocation.data.data.wounds.slice(),
-        limbHealthState: hitLocation.data.data.limbHealthState,
-      },
-    });
-    if (applyDamageToTotalHp) {
-      const currentTotalHp = actor.data.data.attributes.hitPoints.value;
-      if (currentTotalHp) {
-        const newTotalHp = currentTotalHp - damage;
-        HitLocationSheet.actorHitPointsUpdate(actorUpdateData, newTotalHp);
-      } else {
-        logBug(`Actor ${actor.name} don't have a calculated hitpoint value`, actor);
-      }
-    }
-    await actor.update(actorUpdateData);
-  }
+    const { hitLocationUpdates, actorUpdates, notification } = DamageCalculations.addWound(
+      damage,
+      applyDamageToTotalHp,
+      hitLocation.data,
+      actor.data
+    );
 
-  private static calcLimbDamageEffects(
-    hitLocation: Item<HitLocationItemData>,
-    damage: number, // Limited to 2*HP
-    fullDamage: number,
-    actorUpdateData: DeepPartial<RqgActorData>
-  ): string {
-    const hpValue = hitLocation.data.data.hp.value;
-    const hpMax = hitLocation.data.data.hp.max;
-    if (hpValue == null || hpMax == null) {
-      logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, hitLocation);
-      return "";
-    }
-    const actor = hitLocation.actor as RqgActor;
-    if (actor == null) {
-      logBug(`Couldn't find actor from hitLocation ${hitLocation.name}`, hitLocation);
-      return "";
-    }
-    const actorName = actor.token?.name || actor.name;
-    let notificationMsg = "";
-    if (
-      damage > 0 &&
-      limbHealthStatuses.indexOf(hitLocation.data.data.limbHealthState) <
-        limbHealthStatuses.indexOf("wounded")
-    ) {
-      hitLocation.data.data.limbHealthState = "wounded";
-    }
-    if (
-      hpValue - fullDamage <= 0 &&
-      limbHealthStatuses.indexOf(hitLocation.data.data.limbHealthState) <
-        limbHealthStatuses.indexOf("useless")
-    ) {
-      notificationMsg = `${actorName}s ${hitLocation.name} is useless and cannot hold anything / support standing. You can fight with whatever limbs are still functional.`;
-      hitLocation.data.data.limbHealthState = "useless";
-    }
-    if (fullDamage >= hpMax * 2) {
-      notificationMsg = `${actorName} is functionally incapacitated: you can no longer fight until healed and am in shock. You may try to heal yourself.`;
-      mergeObject(actorUpdateData, {
-        data: { attributes: { health: HealthEnum.Shock } },
-      });
-      actor.token?.toggleEffect(
-        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-      );
-    }
-    if (fullDamage >= hpMax * 3) {
-      notificationMsg = `${actorName}s ${hitLocation.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten
-                              minutes can restore a severed limb, assuming all parts are available.`;
-      hitLocation.data.data.limbHealthState = "severed";
-    }
-    const currentLimbDamage = hpMax - hpValue;
-    const limbWound = Math.min(hpMax * 2 - currentLimbDamage, damage);
-    hitLocation.data.data.wounds.push(limbWound);
-    return notificationMsg;
-  }
-
-  private static async calcLocationDamageEffects(
-    hitLocation: Item<HitLocationItemData>,
-    damage: number,
-    actorUpdateData: DeepPartial<RqgActorData>
-  ): Promise<string> {
-    const actor = hitLocation.actor as RqgActor;
-    if (actor == null) {
-      logBug(`Couldn't find actor from hitLocation ${hitLocation.name}`, hitLocation);
-      return "";
-    }
-    const actorName = actor.token?.name || actor.name;
-    const hpValue = hitLocation.data.data.hp.value;
-    const hpMax = hitLocation.data.data.hp.max;
-    if (hpValue == null || hpMax == null) {
-      logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, hitLocation);
-      return "";
-    }
-
-    let notificationMsg = "";
-    // A big hit to Abdomen affects connected limbs, but instant death sized damage should override it
-    if (
-      hitLocation.data.data.hitLocationType === HitLocationTypesEnum.Abdomen &&
-      hpValue - damage <= 0 &&
-      damage < hpMax * 3
-    ) {
-      const attachedLimbs = actor.items.filter(
-        (i) =>
-          i.data.type === ItemTypeEnum.HitLocation && i.data.data.connectedTo === hitLocation.name
-      );
-      const otherLimbsUpdate = attachedLimbs.map((l) => {
-        return {
-          _id: l._id,
-          data: {
-            limbHealthState: "useless",
-          },
-        };
-      });
-      await actor.updateEmbeddedEntity("OwnedItem", otherLimbsUpdate);
-      ui.notifications?.info(
-        `Both legs are useless and ${actorName} falls to the ground. ${actorName} may fight from the ground
-                      in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`,
-        { permanent: true }
-      );
-      actor.token?.toggleEffect(
-        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "prone")].icon
-      );
-    }
-
-    if (damage >= hpMax * 3) {
-      notificationMsg = `${actorName} dies instantly.`;
-      mergeObject(actorUpdateData, {
-        data: { attributes: { health: HealthEnum.Dead } },
-      });
-      // TODO This doesn't set the combatant in the combat tracker as dead - it only adds the dead token effect
-      actor.token?.toggleEffect(
-        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "dead")].icon
-      );
-    } else if (damage >= hpMax * 2) {
-      notificationMsg = `${actorName} becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.`;
-      mergeObject(actorUpdateData, {
-        data: { attributes: { health: HealthEnum.Unconscious } },
-      });
-      actor.token?.toggleEffect(
-        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-      );
-    } else if (hpValue - damage <= 0) {
-      if (hitLocation.data.data.hitLocationType === HitLocationTypesEnum.Head) {
-        notificationMsg = `${actorName} is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die`;
-        mergeObject(actorUpdateData, {
-          data: { attributes: { health: HealthEnum.Unconscious } },
-        });
-        actor.token?.toggleEffect(
-          CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-        );
-      } else if (hitLocation.data.data.hitLocationType === HitLocationTypesEnum.Chest) {
-        notificationMsg = `${actorName} falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes
-                      unless the bleeding is stopped by First Aid, and cannot take any action, including healing.`;
-        mergeObject(actorUpdateData, {
-          data: { attributes: { health: HealthEnum.Shock } }, // TODO Not the same as shock from limb wound !!!
-        });
-        actor.token?.toggleEffect(
-          CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-        );
-      }
-    } else if (damage > 0) {
-      hitLocation.data.data.limbHealthState = "wounded"; // TODO using limbState as hit location state!!! rename it???
-    }
-
-    hitLocation.data.data.wounds.push(damage);
-    return notificationMsg;
+    notification && ui.notifications?.info(notification, { permanent: true });
+    hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
+    actorUpdates && (await actor.update(actorUpdates));
+    // TODO implement abdomen -> legs useless effect
+    // damageEffects.otherHitLocations.forEach((update) =>
+    //   actor.getOwnedItem(update.id).update(update)
+    // );
   }
 
   private static async submitHealWoundDialog(
@@ -374,7 +197,7 @@ export class HitLocationSheet extends RqgItemSheet {
 
     const actorTotalHp = actor.data.data.attributes.hitPoints.value;
     const actorMaxHp = actor.data.data.attributes.hitPoints.max;
-    if (!actorTotalHp || !actorMaxHp) {
+    if (actorTotalHp == null || actorMaxHp == null) {
       logBug(`Couldn't find actor total hp (max or current value)`, actor);
       return;
     }
