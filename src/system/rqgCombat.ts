@@ -40,8 +40,9 @@ function renderCombatTracker(app: any, html: any, data: any) {
           attributes.dexStrikeRank + attributes.sizStrikeRank
         );
       }
+      const readOnly = combatant.actor.owner ? "" : "readonly";
       const initDiv = el.getElementsByClassName("token-initiative")[0];
-      initDiv.innerHTML = `<input type="number" min="1" max="12" value="${combatant.initiative}" style="color:white">`;
+      initDiv.innerHTML = `<input type="number" min="1" max="12" value="${combatant.initiative}" ${readOnly}>`;
 
       initDiv.addEventListener("change", async (e) => {
         const inputElement = e.target as HTMLInputElement;
