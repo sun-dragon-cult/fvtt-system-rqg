@@ -7,13 +7,16 @@ import { CharacterActorData, RqgActorData } from "../../data-model/actor-data/rq
 import { logBug } from "../../system/util";
 import { HealthEnum } from "../../data-model/actor-data/attributes";
 import { DeepPartial } from "snowpack";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export interface DamageEffects {
   hitLocationUpdates: HitLocationItemData;
   actorUpdates: RqgActorData;
   /** info to the user  */
   notification: string;
-  // otherHitLocations: any[]; // TODO abdomen -> attached limbs effects {name: leftLeg, update: {data: {health: useless}}}
+  effects: string[];
+  /** make limbs useless */
+  uselessLegs: any[];
 }
 
 /**
@@ -73,6 +76,8 @@ export class DamageCalculations {
       hitLocationUpdates: {} as HitLocationItemData,
       actorUpdates: {} as CharacterActorData,
       notification: "",
+      effects: [],
+      uselessLegs: [],
     };
 
     if (hitLocationData.data.limbHealthState === "severed") {
@@ -119,10 +124,9 @@ export class DamageCalculations {
       mergeObject(damageEffects.actorUpdates, {
         data: { attributes: { health: HealthEnum.Shock } },
       } as any);
-      // TODO implement toggle effect after refactoring
-      // actor.token?.toggleEffect(
-      //   CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-      // );
+      damageEffects.effects.push(
+        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "shock")].icon
+      );
     }
     if (fullDamage >= hpMax * 3) {
       damageEffects.notification = `${actorName}s ${hitLocationData.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available.`;
@@ -152,11 +156,20 @@ export class DamageCalculations {
       hitLocationUpdates: {} as HitLocationItemData,
       actorUpdates: {} as CharacterActorData,
       notification: "",
+      effects: [],
+      uselessLegs: [],
     };
 
     const actorName = actorData.token?.name || actorData.name;
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
+    if (!hitLocationData.data.hitLocationType) {
+      logBug(
+        `Hitlocation ${hitLocationData.name} on actor ${actorName} does not have a specified hitLocationType`,
+        hitLocationData
+      );
+      return damageEffects;
+    }
     if (hpValue == null || hpMax == null) {
       logBug(`Hitlocation ${hitLocationData.name} don't have hp value or max`, hitLocationData);
       return damageEffects;
@@ -168,65 +181,58 @@ export class DamageCalculations {
       hpValue - damage <= 0 &&
       damage < hpMax * 3
     ) {
-      // TODO implement abdomen -> useless limbs again
-      // const attachedLimbs = actorData.items.filter(
-      //   (i) =>
-      //     i.type === ItemTypeEnum.HitLocation && i.data.connectedTo === hitLocationData.name
-      // );
-      // const otherLimbsUpdate = attachedLimbs.map((l) => {
-      //   return {
-      //     _id: l._id,
-      //     data: {
-      //       limbHealthState: "useless",
-      //     },
-      //   };
-      // });
-      // await actor.updateEmbeddedEntity("OwnedItem", otherLimbsUpdate);
-      damageEffects.notification = `Both legs are useless and ${actorName} falls to the ground. ${actorName} may fight from the ground
-                    in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`;
+      const attachedLimbs = actorData.items.filter(
+        (i) => i.type === ItemTypeEnum.HitLocation && i.data.connectedTo === hitLocationData.name
+      );
+      damageEffects.uselessLegs = attachedLimbs.map((limb) => {
+        return {
+          _id: limb._id,
+          data: {
+            limbHealthState: "useless",
+          },
+        };
+      });
 
-      // TODO implement token statuseffect again
-      // actor.token?.toggleEffect(
-      //   CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "prone")].icon
-      // );
+      damageEffects.notification = `Both legs are useless and ${actorName} falls to the ground. ${actorName} may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`;
+
+      damageEffects.effects.push(
+        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "prone")].icon
+      );
     }
 
     if (damage >= hpMax * 3) {
       damageEffects.notification = `${actorName} dies instantly.`;
       damageEffects.actorUpdates = { data: { attributes: { health: HealthEnum.Dead } } } as any;
       // TODO This doesn't set the combatant in the combat tracker as dead - it only adds the dead token effect
-      // actor.token?.toggleEffect(
-      //   CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "dead")].icon
-      // );
+      damageEffects.effects = [
+        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "dead")].icon,
+      ];
     } else if (damage >= hpMax * 2) {
       damageEffects.notification = `${actorName} becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.`;
       damageEffects.actorUpdates = {
         data: { attributes: { health: HealthEnum.Unconscious } },
       } as any;
 
-      // TODO implement token statuseffect again
-      // actor.token?.toggleEffect(
-      //   CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-      // );
+      damageEffects.effects = [
+        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon,
+      ];
     } else if (hpValue - damage <= 0) {
       if (hitLocationData.data.hitLocationType === HitLocationTypesEnum.Head) {
         damageEffects.notification = `${actorName} is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die`;
         damageEffects.actorUpdates = {
           data: { attributes: { health: HealthEnum.Unconscious } },
         } as any;
-        // TODO implement token statuseffect again
-        // actor.token?.toggleEffect(
-        //   CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-        // );
+        damageEffects.effects.push(
+          CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
+        );
       } else if (hitLocationData.data.hitLocationType === HitLocationTypesEnum.Chest) {
         damageEffects.notification = `${actorName} falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing.`;
         damageEffects.actorUpdates = {
           data: { attributes: { health: HealthEnum.Shock } }, // TODO Not the same as shock from limb wound !!!
         } as any;
-        // TODO implement token statuseffect again
-        // actor.token?.toggleEffect(
-        //   CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-        // );
+        damageEffects.effects = [
+          CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "shock")].icon,
+        ];
       }
     }
     if (damage > 0) {

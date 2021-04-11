@@ -131,20 +131,32 @@ export class HitLocationSheet extends RqgItemSheet {
         );
       }
     }
-    const { hitLocationUpdates, actorUpdates, notification } = DamageCalculations.addWound(
-      damage,
-      applyDamageToTotalHp,
-      hitLocation.data,
-      actor.data
-    );
+    const {
+      hitLocationUpdates,
+      actorUpdates,
+      notification,
+      effects,
+      uselessLegs,
+    } = DamageCalculations.addWound(damage, applyDamageToTotalHp, hitLocation.data, actor.data);
 
     notification && ui.notifications?.info(notification, { permanent: true });
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
     actorUpdates && (await actor.update(actorUpdates));
-    // TODO implement abdomen -> legs useless effect
-    // damageEffects.otherHitLocations.forEach((update) =>
-    //   actor.getOwnedItem(update.id).update(update)
-    // );
+
+    for (const e of effects) {
+      if (actor.token) {
+        await actor.token.toggleEffect(e);
+      } else {
+        const tokens = actor.getActiveTokens(true);
+        for (const t of tokens) {
+          await t.toggleEffect(e);
+        }
+      }
+    }
+
+    for (const update of uselessLegs) {
+      await actor.getOwnedItem(update._id).update(update);
+    }
   }
 
   private static async submitHealWoundDialog(
