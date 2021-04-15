@@ -24,14 +24,14 @@ export function toCamelCase(s: string): string {
 }
 
 export function logBug(msg: string, ...extraData: any) {
-  ui.notifications?.error(`${msg} - Bug: Contact the Developer!`);
   console.error(`RQG | ${msg}`, extraData);
+  ui?.notifications?.error(`${msg} - Bug: Contact the Developer!`);
 }
 
 export function logMisconfiguration(msg: string, ...extraData: any) {
   // TODO only for GM? game.user.isGM &&
-  ui.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`);
   console.warn(`RQG | ${msg}`, extraData);
+  ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`);
 }
 
 /**

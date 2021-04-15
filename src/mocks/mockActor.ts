@@ -1,4 +1,4 @@
-export const mockActor = {
+export const mockActor: any = {
   _id: "vDyT5iKsZ8odPRE8",
   name: "Crash Test Dummy",
   type: "character",
@@ -49,6 +49,7 @@ export const mockActor = {
       },
       hitPoints: {
         value: 15,
+        max: 15,
       },
       move: 8,
       heroPoints: 0,

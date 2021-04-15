@@ -26,6 +26,7 @@ import { logBug, logMisconfiguration } from "../system/util";
 import { RuneTypeEnum } from "../data-model/item-data/runeData";
 import { RqgConfig } from "../system/config";
 import { HealthEnum } from "../data-model/actor-data/attributes";
+import { DamageCalculations } from "../system/damageCalculations";
 
 declare const CONFIG: RqgConfig;
 
@@ -67,6 +68,7 @@ interface ActorSheetTemplate {
   occupations: `${OccupationEnum}`[];
   homelands: `${HomeLandEnum}`[];
   locations: string[];
+  healthStatuses: `${HealthEnum}`[];
 
   // Other data needed for the sheet
   /** Array of img urls to runes with > 0% chance */
@@ -141,12 +143,13 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
-      combinedHealth: this.getCombinedHealth(),
+      combinedHealth: DamageCalculations.getCombinedActorHealth(this.actor.data),
 
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
       homelands: Object.values(HomeLandEnum),
       locations: this.getPhysicalItemLocations(),
+      healthStatuses: Object.values(HealthEnum),
 
       // UI toggles
       isGM: !!game.user?.isGM,
@@ -212,32 +215,6 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
           !!i.data.data.runes.length
       ).length
     );
-  }
-
-  private getCombinedHealth(): HealthEnum {
-    const healthEffects = this.actor.data.data.attributes.health;
-    const totalHitPoints = this.actor.data.data.attributes.hitPoints.value;
-    if (totalHitPoints == null) {
-      logBug(`Actor hit points value ${totalHitPoints} is missing`, this.actor);
-      return healthEffects;
-    }
-
-    if (totalHitPoints <= 0) {
-      return HealthEnum.Dead;
-    } else if (totalHitPoints <= 2) {
-      return HealthEnum.Unconscious;
-    } else if (
-      totalHitPoints !== this.actor.data.data.attributes.hitPoints.max &&
-      ![HealthEnum.Shock, HealthEnum.Unconscious].includes(healthEffects)
-    ) {
-      return HealthEnum.Wounded;
-    } else if (totalHitPoints === this.actor.data.data.attributes.hitPoints.max) {
-      return HealthEnum.Healthy;
-    } else {
-      return healthEffects;
-    }
-
-    // ![HealthEnum.Healthy, HealthEnum.Shock, HealthEnum.Unconscious].includes(healthEffects)
   }
 
   private getLoadedMissileSr(): string[] {
@@ -411,6 +388,11 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       }
     } else {
       logBug("Actor does not have max hitpoints set.", this.actor);
+    }
+    if (formData["data.attributes.health"] !== formData["combinedHealth"]) {
+      formData["data.attributes.health"] = DamageCalculations.getCombinedActorHealth(
+        this.actor.data
+      );
     }
     return super._updateObject(event, formData);
   }
@@ -666,8 +648,9 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       if (!itemId) {
         logBug(`Couldn't find itemId [${itemId}] to add wound.`);
       } else {
-        el.addEventListener("click", () =>
-          HitLocationSheet.showAddWoundDialog(this.actor as any, itemId)
+        el.addEventListener(
+          "click",
+          () => HitLocationSheet.showAddWoundDialog(this.token as any, this.actor as any, itemId) //
         );
       }
     });
@@ -679,7 +662,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         logBug(`Couldn't find itemId [${itemId}] to heal wound.`);
       } else {
         el.addEventListener("click", () =>
-          HitLocationSheet.showHealWoundDialog(this.actor as any, itemId)
+          HitLocationSheet.showHealWoundDialog(this.token as any, this.actor as any, itemId)
         );
       }
     });

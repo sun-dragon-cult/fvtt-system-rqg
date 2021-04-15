@@ -2,25 +2,25 @@ import {
   HitLocationItemData,
   HitLocationTypesEnum,
   limbHealthStatuses,
-} from "../../data-model/item-data/hitLocationData";
-import { CharacterActorData, RqgActorData } from "../../data-model/actor-data/rqgActorData";
-import { logBug } from "../../system/util";
-import { HealthEnum } from "../../data-model/actor-data/attributes";
+} from "../data-model/item-data/hitLocationData";
+import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
+import { logBug } from "./util";
+import { HealthEnum } from "../data-model/actor-data/attributes";
 import { DeepPartial } from "snowpack";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export interface DamageEffects {
   hitLocationUpdates: HitLocationItemData;
   actorUpdates: RqgActorData;
   /** info to the user  */
   notification: string;
-  effects: string[];
+  addTokenEffects: string[];
   /** make limbs useless */
   uselessLegs: any[];
 }
 
 /**
- * Calculate the effects to apply to hitLocations and actor from damage.
+ * Calculate the effects to apply to hitLocations and actor from inflicting damage.
  */
 export class DamageCalculations {
   /**
@@ -76,7 +76,7 @@ export class DamageCalculations {
       hitLocationUpdates: {} as HitLocationItemData,
       actorUpdates: {} as CharacterActorData,
       notification: "",
-      effects: [],
+      addTokenEffects: [],
       uselessLegs: [],
     };
 
@@ -89,7 +89,7 @@ export class DamageCalculations {
       logBug(`Hit location ${hitLocationData.name} doesn't have a max hp`, hitLocationData);
       return damageEffects;
     }
-
+    const tokenOverLayEfects = actorData.token.overlayEffect;
     const damage = Math.min(maxHp * 2, fullDamage); // Max damage to THP inflicted by limb wound is 2*HP
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
@@ -124,7 +124,7 @@ export class DamageCalculations {
       mergeObject(damageEffects.actorUpdates, {
         data: { attributes: { health: HealthEnum.Shock } },
       } as any);
-      damageEffects.effects.push(
+      damageEffects.addTokenEffects.push(
         CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "shock")].icon
       );
     }
@@ -156,7 +156,7 @@ export class DamageCalculations {
       hitLocationUpdates: {} as HitLocationItemData,
       actorUpdates: {} as CharacterActorData,
       notification: "",
-      effects: [],
+      addTokenEffects: [],
       uselessLegs: [],
     };
 
@@ -195,7 +195,7 @@ export class DamageCalculations {
 
       damageEffects.notification = `Both legs are useless and ${actorName} falls to the ground. ${actorName} may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`;
 
-      damageEffects.effects.push(
+      damageEffects.addTokenEffects.push(
         CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "prone")].icon
       );
     }
@@ -204,7 +204,7 @@ export class DamageCalculations {
       damageEffects.notification = `${actorName} dies instantly.`;
       damageEffects.actorUpdates = { data: { attributes: { health: HealthEnum.Dead } } } as any;
       // TODO This doesn't set the combatant in the combat tracker as dead - it only adds the dead token effect
-      damageEffects.effects = [
+      damageEffects.addTokenEffects = [
         CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "dead")].icon,
       ];
     } else if (damage >= hpMax * 2) {
@@ -213,7 +213,7 @@ export class DamageCalculations {
         data: { attributes: { health: HealthEnum.Unconscious } },
       } as any;
 
-      damageEffects.effects = [
+      damageEffects.addTokenEffects = [
         CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon,
       ];
     } else if (hpValue - damage <= 0) {
@@ -222,7 +222,7 @@ export class DamageCalculations {
         damageEffects.actorUpdates = {
           data: { attributes: { health: HealthEnum.Unconscious } },
         } as any;
-        damageEffects.effects.push(
+        damageEffects.addTokenEffects.push(
           CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
         );
       } else if (hitLocationData.data.hitLocationType === HitLocationTypesEnum.Chest) {
@@ -230,7 +230,7 @@ export class DamageCalculations {
         damageEffects.actorUpdates = {
           data: { attributes: { health: HealthEnum.Shock } }, // TODO Not the same as shock from limb wound !!!
         } as any;
-        damageEffects.effects = [
+        damageEffects.addTokenEffects = [
           CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "shock")].icon,
         ];
       }
@@ -247,5 +247,31 @@ export class DamageCalculations {
       mergeObject(damageEffects.actorUpdates, this.applyDamageToActorTotalHp(damage, actorData));
     }
     return damageEffects;
+  }
+
+  static getCombinedActorHealth(actorData: RqgActorData): HealthEnum {
+    const healthEffects = actorData.data.attributes.health;
+    const totalHitPoints = actorData.data.attributes.hitPoints.value;
+    if (totalHitPoints == null) {
+      logBug(`Actor hit points value ${totalHitPoints} is missing`, actorData);
+      return healthEffects;
+    }
+
+    if (totalHitPoints <= 0) {
+      return HealthEnum.Dead;
+    } else if (totalHitPoints <= 2) {
+      return HealthEnum.Unconscious;
+    } else if (
+      totalHitPoints !== actorData.data.attributes.hitPoints.max &&
+      ![HealthEnum.Shock, HealthEnum.Unconscious].includes(healthEffects)
+    ) {
+      return HealthEnum.Wounded;
+    } else if (totalHitPoints === actorData.data.attributes.hitPoints.max) {
+      return HealthEnum.Healthy;
+    } else {
+      return healthEffects;
+    }
+
+    // ![HealthEnum.Healthy, HealthEnum.Shock, HealthEnum.Unconscious].includes(healthEffects)
   }
 }
