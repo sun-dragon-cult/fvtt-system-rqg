@@ -26,8 +26,8 @@ export enum HitLocationsEnum {
 }
 
 // TODO differentiate between severed & maimed? slash / crush or impale
-export const limbHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
-export type LimbHealthState = typeof limbHealthStatuses[number];
+export const hitLocationHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
+export type HitLocationHealthState = typeof hitLocationHealthStatuses[number];
 
 export enum HitLocationTypesEnum {
   Limb = "limb",
@@ -46,7 +46,7 @@ export interface HitLocationData {
   /**  Natural armor */
   naturalAp: number;
   wounds: number[];
-  limbHealthState: LimbHealthState;
+  hitLocationHealthState: HitLocationHealthState;
   /** How should this hitlocation behave for damage calculation */
   hitLocationType: HitLocationTypesEnum; // TODO *** kan man göra det här smartare? ***
   /** If hitLocationType is Limb then what location name is it connected to. Used for damage calculations */
@@ -57,7 +57,7 @@ export interface HitLocationData {
 
   hitLocationNamesAll?: HitLocationsEnum[];
   hitLocationTypes?: HitLocationTypesEnum[];
-  limbHealthStatuses?: LimbHealthState[];
+  hitLocationHealthStatuses?: HitLocationHealthState[];
 }
 
 export interface HitLocationItemData extends Item.Data<HitLocationData> {
@@ -71,7 +71,7 @@ export const emptyHitLocation: HitLocationData = {
   baseHpDelta: 0,
   naturalAp: 0,
   wounds: [],
-  limbHealthState: "healthy",
+  hitLocationHealthState: "healthy",
   hitLocationType: HitLocationTypesEnum.Limb,
   connectedTo: "",
 };

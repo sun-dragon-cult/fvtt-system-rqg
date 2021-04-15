@@ -40,7 +40,7 @@ describe("healing", () => {
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        limbHealthState: "wounded",
+        hitLocationHealthState: "wounded",
         wounds: [
           1,
           0, // 2-2
@@ -67,7 +67,7 @@ describe("healing", () => {
     const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
     applyTestDamage(33, true, mockLeftLegInstance, mockActorInstance);
-    expect(mockLeftLegInstance.data.limbHealthState).toBe("severed");
+    expect(mockLeftLegInstance.data.hitLocationHealthState).toBe("severed");
 
     // --- Act ---
     const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
@@ -80,7 +80,7 @@ describe("healing", () => {
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        limbHealthState: "wounded",
+        hitLocationHealthState: "wounded",
         wounds: [4],
       },
     });
@@ -104,7 +104,7 @@ describe("healing", () => {
     const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
     applyTestDamage(33, true, mockLeftLegInstance, mockActorInstance);
-    expect(mockLeftLegInstance.data.limbHealthState).toBe("severed");
+    expect(mockLeftLegInstance.data.hitLocationHealthState).toBe("severed");
 
     // --- Act ---
     const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
@@ -117,7 +117,7 @@ describe("healing", () => {
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        limbHealthState: "severed",
+        hitLocationHealthState: "severed",
         wounds: [5],
       },
     });
@@ -156,7 +156,7 @@ describe("healing", () => {
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        limbHealthState: "healthy",
+        hitLocationHealthState: "healthy",
         wounds: [0], // chestDamage - chestDamage
       },
     });
@@ -205,7 +205,7 @@ describe("healing", () => {
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        limbHealthState: "wounded",
+        hitLocationHealthState: "wounded",
         wounds: [5],
       },
     });
@@ -229,7 +229,7 @@ describe("healing", () => {
     const actorTotalHp = mockActorInstance.data.attributes.hitPoints.value!; // 15
 
     applyTestDamage(legDamage, true, mockLeftLegInstance, mockActorInstance);
-    expect(mockLeftLegInstance.data.limbHealthState).toBe("useless");
+    expect(mockLeftLegInstance.data.hitLocationHealthState).toBe("useless");
 
     // --- Act ---
     const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
@@ -242,7 +242,7 @@ describe("healing", () => {
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        limbHealthState: "wounded",
+        hitLocationHealthState: "wounded",
         wounds: [legDamage - 1], // chestDamage - chestDamage
       },
     });

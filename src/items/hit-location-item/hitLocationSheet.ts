@@ -3,7 +3,7 @@ import {
   HitLocationItemData,
   HitLocationsEnum,
   HitLocationTypesEnum,
-  limbHealthStatuses,
+  hitLocationHealthStatuses,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
 import { logBug } from "../../system/util";
@@ -28,7 +28,7 @@ export class HitLocationSheet extends RqgItemSheet {
     const data = sheetData.data;
     data.hitLocationNamesAll = Object.values(HitLocationsEnum);
     data.hitLocationTypes = Object.values(HitLocationTypesEnum);
-    data.limbHealthStatuses = Object.values(limbHealthStatuses);
+    data.hitLocationHealthStatuses = Object.values(hitLocationHealthStatuses);
 
     return sheetData;
   }

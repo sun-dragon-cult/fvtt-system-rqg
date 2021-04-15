@@ -39,7 +39,7 @@ export class HealingCalculations {
       return healingEffects;
     }
     const wounds = hitLocationData.data.wounds.slice();
-    let limbHealthState = hitLocationData.data.limbHealthState;
+    let hitLocationHealthState = hitLocationData.data.hitLocationHealthState;
 
     healPoints = Math.min(wounds[healWoundIndex], healPoints); // Dont' heal more than wound damage
     wounds[healWoundIndex] -= healPoints;
@@ -47,16 +47,16 @@ export class HealingCalculations {
     //   data: { wounds: wounds },
     // } as any);
 
-    if (healPoints >= 6 && limbHealthState === "severed") {
-      limbHealthState = "wounded"; // Remove the "severed" state, but the actual state will be calculated below
+    if (healPoints >= 6 && hitLocationHealthState === "severed") {
+      hitLocationHealthState = "wounded"; // Remove the "severed" state, but the actual state will be calculated below
     }
 
     const woundsSumAfter = wounds.reduce((acc, w) => acc + w, 0);
-    if (woundsSumAfter === 0 && limbHealthState !== "severed") {
-      limbHealthState = "healthy";
+    if (woundsSumAfter === 0 && hitLocationHealthState !== "severed") {
+      hitLocationHealthState = "healthy";
     } else if (woundsSumAfter < hpMax) {
-      if (limbHealthState !== "severed") {
-        limbHealthState = "wounded";
+      if (hitLocationHealthState !== "severed") {
+        hitLocationHealthState = "wounded";
       }
       // To bring actor out of shock / unconsciousness etc when hit location hp is positive
       mergeObject(healingEffects.actorUpdates, {
@@ -67,7 +67,7 @@ export class HealingCalculations {
     mergeObject(healingEffects.hitLocationUpdates, {
       data: {
         wounds: wounds,
-        limbHealthState: limbHealthState,
+        hitLocationHealthState: hitLocationHealthState,
       },
     } as any);
 

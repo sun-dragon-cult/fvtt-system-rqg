@@ -37,7 +37,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -73,7 +73,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "useless",
+          hitLocationHealthState: "useless",
           wounds: [appliedDamage],
         },
       });
@@ -110,7 +110,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "useless",
+          hitLocationHealthState: "useless",
           wounds: [appliedDamage],
         },
       });
@@ -149,7 +149,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "severed",
+          hitLocationHealthState: "severed",
           wounds: [maxDamage],
         },
       });
@@ -213,7 +213,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -249,7 +249,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -287,7 +287,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -325,7 +325,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -363,7 +363,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -399,7 +399,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -437,7 +437,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -475,7 +475,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -512,7 +512,7 @@ describe("Inflict Damage", () => {
 
       // --- Assert ---
       expect(hitLocationUpdates.data.wounds).toStrictEqual([appliedDamage]);
-      expect(hitLocationUpdates.data.limbHealthState).toBe("wounded");
+      expect(hitLocationUpdates.data.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe("");
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -544,7 +544,7 @@ describe("Inflict Damage", () => {
 
       // --- Assert ---
       expect(hitLocationUpdates.data.wounds).toStrictEqual([appliedDamage]);
-      expect(hitLocationUpdates.data.limbHealthState).toBe("wounded");
+      expect(hitLocationUpdates.data.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe(
         "Both legs are useless and Crash Test Dummy falls to the ground. Crash Test Dummy may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes."
       );
@@ -563,13 +563,13 @@ describe("Inflict Damage", () => {
         {
           _id: "hdGC8IiC4yXkDcIZ",
           data: {
-            limbHealthState: "useless",
+            hitLocationHealthState: "useless",
           },
         },
         {
           _id: "pUfoMRe5yg648gkI",
           data: {
-            limbHealthState: "useless",
+            hitLocationHealthState: "useless",
           },
         },
       ]);
@@ -592,7 +592,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });
@@ -614,13 +614,13 @@ describe("Inflict Damage", () => {
         {
           _id: "hdGC8IiC4yXkDcIZ",
           data: {
-            limbHealthState: "useless",
+            hitLocationHealthState: "useless",
           },
         },
         {
           _id: "pUfoMRe5yg648gkI",
           data: {
-            limbHealthState: "useless",
+            hitLocationHealthState: "useless",
           },
         },
       ]);
@@ -643,7 +643,7 @@ describe("Inflict Damage", () => {
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         data: {
-          limbHealthState: "wounded",
+          hitLocationHealthState: "wounded",
           wounds: [appliedDamage],
         },
       });

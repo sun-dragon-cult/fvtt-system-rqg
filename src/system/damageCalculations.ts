@@ -1,7 +1,7 @@
 import {
   HitLocationItemData,
   HitLocationTypesEnum,
-  limbHealthStatuses,
+  hitLocationHealthStatuses,
 } from "../data-model/item-data/hitLocationData";
 import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { logBug } from "./util";
@@ -80,7 +80,7 @@ export class DamageCalculations {
       uselessLegs: [],
     };
 
-    if (hitLocationData.data.limbHealthState === "severed") {
+    if (hitLocationData.data.hitLocationHealthState === "severed") {
       damageEffects.notification = `${hitLocationData.name} is gone and cannot be hit anymore, reroll to get a new hit location!`;
       return damageEffects;
     }
@@ -102,21 +102,21 @@ export class DamageCalculations {
 
     if (
       damage > 0 &&
-      limbHealthStatuses.indexOf(hitLocationData.data.limbHealthState) <
-        limbHealthStatuses.indexOf("wounded")
+      hitLocationHealthStatuses.indexOf(hitLocationData.data.hitLocationHealthState) <
+        hitLocationHealthStatuses.indexOf("wounded")
     ) {
       mergeObject(damageEffects.hitLocationUpdates, {
-        data: { limbHealthState: "wounded" },
+        data: { hitLocationHealthState: "wounded" },
       } as any);
     }
     if (
       hpValue - fullDamage <= 0 &&
-      limbHealthStatuses.indexOf(hitLocationData.data.limbHealthState) <
-        limbHealthStatuses.indexOf("useless")
+      hitLocationHealthStatuses.indexOf(hitLocationData.data.hitLocationHealthState) <
+        hitLocationHealthStatuses.indexOf("useless")
     ) {
       damageEffects.notification = `${actorName}s ${hitLocationData.name} is useless and cannot hold anything / support standing. You can fight with whatever limbs are still functional.`;
       mergeObject(damageEffects.hitLocationUpdates, {
-        data: { limbHealthState: "useless" },
+        data: { hitLocationHealthState: "useless" },
       } as any);
     }
     if (fullDamage >= hpMax * 2) {
@@ -131,7 +131,7 @@ export class DamageCalculations {
     if (fullDamage >= hpMax * 3) {
       damageEffects.notification = `${actorName}s ${hitLocationData.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available.`;
       mergeObject(damageEffects.hitLocationUpdates, {
-        data: { limbHealthState: "severed" },
+        data: { hitLocationHealthState: "severed" },
       } as any);
     }
     const currentLimbDamage = hpMax - hpValue;
@@ -188,7 +188,7 @@ export class DamageCalculations {
         return {
           _id: limb._id,
           data: {
-            limbHealthState: "useless",
+            hitLocationHealthState: "useless",
           },
         };
       });
@@ -238,7 +238,7 @@ export class DamageCalculations {
     if (damage > 0) {
       damageEffects.hitLocationUpdates = {
         data: {
-          limbHealthState: "wounded", // TODO using limbState as hit location state!!! rename it???
+          hitLocationHealthState: "wounded",
           wounds: [...hitLocationData.data.wounds, damage],
         },
       } as any;
