@@ -1,5 +1,4 @@
-import { mockActor } from "../mocks/mockActor";
-import { mockAbdomen, mockChest, mockHead, mockLeftLeg } from "../mocks/mockHitLocation";
+import { mockActor as mockActorOriginal } from "../mocks/mockActor";
 import { HealingCalculations, HealingEffects } from "./healingCalculations";
 import { applyTestDamage } from "./damageCalculations.test";
 import { HitLocationItemData } from "../data-model/item-data/hitLocationData";
@@ -7,39 +6,40 @@ import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgAc
 import { DamageCalculations } from "./damageCalculations";
 
 describe("healing", () => {
-  let mockLeftLegInstance: HitLocationItemData;
-  let mockHeadInstance: HitLocationItemData;
-  let mockChestInstance: HitLocationItemData;
-  let mockAbdomenInstance: HitLocationItemData;
-  let mockActorInstance: RqgActorData;
+  let mockActor: RqgActorData;
+  let mockLeftLeg: HitLocationItemData;
+  let mockHead: HitLocationItemData;
+  let mockChest: HitLocationItemData;
+  let mockAbdomen: HitLocationItemData;
 
   beforeEach(() => {
-    mockLeftLegInstance = JSON.parse(JSON.stringify(mockLeftLeg));
-    mockHeadInstance = JSON.parse(JSON.stringify(mockHead));
-    mockChestInstance = JSON.parse(JSON.stringify(mockChest));
-    mockAbdomenInstance = JSON.parse(JSON.stringify(mockAbdomen));
-    mockActorInstance = JSON.parse(JSON.stringify(mockActor));
+    mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
+    mockLeftLeg = mockActor.items.find((i: any) => i.name === "leftLeg") as HitLocationItemData;
+    mockHead = mockActor.items.find((i: any) => i.name === "head") as HitLocationItemData;
+    mockChest = mockActor.items.find((i: any) => i.name === "chest") as HitLocationItemData;
+    mockAbdomen = mockActor.items.find((i: any) => i.name === "abdomen") as HitLocationItemData;
   });
 
   it("should be correct for healing smaller wounds", () => {
     // --- Arrange ---
     const healPoints = 2;
-    const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
+    const actorTotalHp = mockActor.data.attributes.hitPoints.value!; // 15
 
-    applyTestDamage(1, true, mockLeftLegInstance, mockActorInstance);
-    applyTestDamage(healPoints, true, mockLeftLegInstance, mockActorInstance);
+    applyTestDamage(1, true, mockLeftLeg, mockActor);
+    applyTestDamage(healPoints, true, mockLeftLeg, mockActor);
 
     // --- Act ---
-    const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
+    const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       healPoints,
       1,
-      mockLeftLegInstance,
-      mockActorInstance
+      mockLeftLeg,
+      mockActor
     );
 
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
+        actorHealthImpact: "wounded",
         hitLocationHealthState: "wounded",
         wounds: [
           1,
@@ -50,14 +50,12 @@ describe("healing", () => {
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
-          health: "wounded",
           hitPoints: {
             value: actorTotalHp - 1,
           },
         },
       },
     });
-    expect(removeTokenEffects).toStrictEqual([]);
     expect(usefulLegs).toStrictEqual([]);
   });
 
@@ -66,35 +64,35 @@ describe("healing", () => {
     const healPoints = 6;
     const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
-    applyTestDamage(33, true, mockLeftLegInstance, mockActorInstance);
-    expect(mockLeftLegInstance.data.hitLocationHealthState).toBe("severed");
+    applyTestDamage(33, true, mockLeftLeg, mockActor);
+    expect(mockLeftLeg.data.hitLocationHealthState).toBe("severed");
+    expect(mockLeftLeg.data.wounds).toStrictEqual([4]);
 
     // --- Act ---
-    const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
+    const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       healPoints,
       0,
-      mockLeftLegInstance,
-      mockActorInstance
+      mockLeftLeg,
+      mockActor
     );
 
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        hitLocationHealthState: "wounded",
-        wounds: [4],
+        actorHealthImpact: "healthy",
+        hitLocationHealthState: "healthy",
+        wounds: [0],
       },
     });
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
-          health: "wounded",
           hitPoints: {
-            value: 11,
+            value: 15,
           },
         },
       },
     });
-    expect(removeTokenEffects).toStrictEqual([]);
     expect(usefulLegs).toStrictEqual([]);
   });
 
@@ -103,35 +101,34 @@ describe("healing", () => {
     const healPoints = 5;
     const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
-    applyTestDamage(33, true, mockLeftLegInstance, mockActorInstance);
-    expect(mockLeftLegInstance.data.hitLocationHealthState).toBe("severed");
+    applyTestDamage(33, true, mockLeftLeg, mockActor);
+    expect(mockLeftLeg.data.hitLocationHealthState).toBe("severed");
 
     // --- Act ---
-    const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
+    const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       healPoints,
       0,
-      mockLeftLegInstance,
-      mockActorInstance
+      mockLeftLeg,
+      mockActor
     );
 
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
+        actorHealthImpact: "healthy",
         hitLocationHealthState: "severed",
-        wounds: [5],
+        wounds: [0],
       },
     });
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
-          health: "wounded",
           hitPoints: {
-            value: 10,
+            value: 15,
           },
         },
       },
     });
-    expect(removeTokenEffects).toStrictEqual([]);
     expect(usefulLegs).toStrictEqual([]);
   });
 
@@ -139,31 +136,30 @@ describe("healing", () => {
     // --- Arrange ---
     const chestDamage = 2;
     const legDamage = 3;
-    const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
+    const actorTotalHp = mockActor.data.attributes.hitPoints.value!; // 15
 
-    applyTestDamage(chestDamage, true, mockChestInstance, mockActorInstance);
-    applyTestDamage(legDamage, true, mockLeftLegInstance, mockActorInstance);
-    expect(mockActorInstance.data.attributes.health).toBe("wounded");
+    applyTestDamage(chestDamage, true, mockChest, mockActor);
+    applyTestDamage(legDamage, true, mockLeftLeg, mockActor);
+    expect(mockActor.data.attributes.health).toBe("wounded");
 
     // --- Act ---
-    const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
+    const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       chestDamage + 10,
       0,
-      mockChestInstance,
-      mockActorInstance
+      mockChest,
+      mockActor
     );
 
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
+        actorHealthImpact: "healthy",
         hitLocationHealthState: "healthy",
         wounds: [0], // chestDamage - chestDamage
       },
     });
-    mockActorInstance.data.attributes.health = DamageCalculations.getCombinedActorHealth(
-      mockActorInstance
-    );
-    expect(mockActorInstance.data.attributes.health).toBe("wounded");
+    mockActor.data.attributes.health = DamageCalculations.getCombinedActorHealth(mockActor);
+    expect(mockActor.data.attributes.health).toBe("wounded");
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
@@ -173,7 +169,6 @@ describe("healing", () => {
         },
       },
     });
-    expect(removeTokenEffects).toStrictEqual([]);
     expect(usefulLegs).toStrictEqual([]);
   });
 
@@ -182,85 +177,76 @@ describe("healing", () => {
 
     // --- Arrange ---
     const healPoints = 1;
-    const chestHP = mockChestInstance.data.hp.max!; // 6
+    const chestHP = mockChest.data.hp.max!; // 6
     const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
-    const { addTokenEffects: preEffect } = applyTestDamage(
-      chestHP,
-      true,
-      mockChestInstance,
-      mockActorInstance
-    );
-    expect(mockActorInstance.data.attributes.health).toBe("shock");
-    expect(preEffect).toStrictEqual(["icons/svg/lightning.svg"]);
+    applyTestDamage(chestHP, true, mockChest, mockActor);
+    expect(mockActor.data.attributes.health).toBe("shock");
 
     // --- Act ---
-    const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
+    const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       healPoints,
       0,
-      mockChestInstance,
-      mockActorInstance
+      mockChest,
+      mockActor
     );
 
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
+        actorHealthImpact: "wounded",
         hitLocationHealthState: "wounded",
-        wounds: [5],
+        wounds: [2],
       },
     });
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
-          health: "wounded",
           hitPoints: {
-            value: 10,
+            value: 13,
           },
         },
       },
     });
-    expect(removeTokenEffects).toStrictEqual(["icons/svg/lightning.svg"]);
+    // expect(removeTokenEffects).toStrictEqual(["icons/svg/lightning.svg"]);
     expect(usefulLegs).toStrictEqual([]);
   });
 
   it("should remove 'useless' state from limb when HP > 0", () => {
     // --- Arrange ---
-    const legDamage = mockLeftLegInstance.data.hp.max!; // 5
-    const actorTotalHp = mockActorInstance.data.attributes.hitPoints.value!; // 15
+    const legDamage = mockLeftLeg.data.hp.max!; // 5
+    const actorTotalHp = mockActor.data.attributes.hitPoints.value!; // 15
 
-    applyTestDamage(legDamage, true, mockLeftLegInstance, mockActorInstance);
-    expect(mockLeftLegInstance.data.hitLocationHealthState).toBe("useless");
+    applyTestDamage(legDamage, true, mockLeftLeg, mockActor);
+    expect(mockLeftLeg.data.hitLocationHealthState).toBe("useless");
 
     // --- Act ---
-    const { hitLocationUpdates, actorUpdates, removeTokenEffects, usefulLegs } = applyTestHealing(
+    const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       1,
       0,
-      mockLeftLegInstance,
-      mockActorInstance
+      mockLeftLeg,
+      mockActor
     );
 
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
+        actorHealthImpact: "wounded",
         hitLocationHealthState: "wounded",
         wounds: [legDamage - 1], // chestDamage - chestDamage
       },
     });
-    mockActorInstance.data.attributes.health = DamageCalculations.getCombinedActorHealth(
-      mockActorInstance
-    );
-    expect(mockActorInstance.data.attributes.health).toBe("wounded");
+    mockActor.data.attributes.health = DamageCalculations.getCombinedActorHealth(mockActor);
+    expect(mockActor.data.attributes.health).toBe("wounded");
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
-          health: "wounded",
           hitPoints: {
             value: actorTotalHp - legDamage + 1,
           },
         },
       },
     });
-    expect(removeTokenEffects).toStrictEqual([]);
     expect(usefulLegs).toStrictEqual([]);
   });
 });
@@ -278,7 +264,7 @@ export function applyTestHealing(
     actorData
   );
   mergeObject(hitLocationData, healingEffects.hitLocationUpdates);
-  mergeObject(actorData, healingEffects.actorUpdates); // FIXME Remove - don't add!!! *** *** *** *** *** mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null});   // {k2: "v2"}
+  mergeObject(actorData, healingEffects.actorUpdates);
   actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);
   return healingEffects;
 }

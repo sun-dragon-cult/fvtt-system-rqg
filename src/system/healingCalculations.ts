@@ -1,12 +1,11 @@
 import { HitLocationItemData, HitLocationTypesEnum } from "../data-model/item-data/hitLocationData";
 import { logBug } from "./util";
 import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { HealthEnum } from "../data-model/actor-data/attributes";
+import { ActorHealthState } from "../data-model/actor-data/attributes";
 
 export interface HealingEffects {
   hitLocationUpdates: HitLocationItemData;
   actorUpdates: RqgActorData;
-  removeTokenEffects: string[];
   /** make limbs useful again */
   usefulLegs: any[];
 }
@@ -24,7 +23,6 @@ export class HealingCalculations {
     const healingEffects: HealingEffects = {
       hitLocationUpdates: {} as HitLocationItemData,
       actorUpdates: {} as CharacterActorData,
-      removeTokenEffects: [],
       usefulLegs: [],
     };
     if (hitLocationData.data.wounds.length <= healWoundIndex) {
@@ -39,34 +37,33 @@ export class HealingCalculations {
       return healingEffects;
     }
     const wounds = hitLocationData.data.wounds.slice();
-    let hitLocationHealthState = hitLocationData.data.hitLocationHealthState;
-
-    healPoints = Math.min(wounds[healWoundIndex], healPoints); // Dont' heal more than wound damage
-    wounds[healWoundIndex] -= healPoints;
-    // mergeObject(healingEffects.hitLocationUpdates, {
-    //   data: { wounds: wounds },
-    // } as any);
+    let hitLocationHealthState = hitLocationData.data.hitLocationHealthState || "healthy";
+    let actorHealthImpact: ActorHealthState = hitLocationData.data.actorHealthImpact || "healthy";
 
     if (healPoints >= 6 && hitLocationHealthState === "severed") {
       hitLocationHealthState = "wounded"; // Remove the "severed" state, but the actual state will be calculated below
     }
 
+    healPoints = Math.min(wounds[healWoundIndex], healPoints); // Don't heal more than wound damage
+    wounds[healWoundIndex] -= healPoints;
+
     const woundsSumAfter = wounds.reduce((acc, w) => acc + w, 0);
-    if (woundsSumAfter === 0 && hitLocationHealthState !== "severed") {
-      hitLocationHealthState = "healthy";
+    if (woundsSumAfter === 0) {
+      actorHealthImpact = "healthy";
+      if (hitLocationHealthState !== "severed") {
+        hitLocationHealthState = "healthy";
+      }
     } else if (woundsSumAfter < hpMax) {
+      actorHealthImpact = "wounded";
       if (hitLocationHealthState !== "severed") {
         hitLocationHealthState = "wounded";
       }
-      // To bring actor out of shock / unconsciousness etc when hit location hp is positive
-      mergeObject(healingEffects.actorUpdates, {
-        data: { attributes: { health: HealthEnum.Wounded } },
-      } as any);
     }
 
     mergeObject(healingEffects.hitLocationUpdates, {
       data: {
         wounds: wounds,
+        actorHealthImpact: actorHealthImpact,
         hitLocationHealthState: hitLocationHealthState,
       },
     } as any);
@@ -83,21 +80,6 @@ export class HealingCalculations {
       data: { attributes: { hitPoints: { value: totalHpAfter } } },
     } as any);
 
-    HealingCalculations.actorHealthUpdate(healingEffects.actorUpdates, hitLocationData);
     return healingEffects;
-  }
-
-  private static actorHealthUpdate(
-    actorUpdateData: DeepPartial<RqgActorData>,
-    item: HitLocationItemData
-  ): void {
-    if (
-      (item && item.data.hitLocationType === HitLocationTypesEnum.Limb && item.data.hp.value) ||
-      0 > 0
-    ) {
-      mergeObject(actorUpdateData, {
-        data: { attributes: { health: HealthEnum.Wounded } },
-      });
-    }
   }
 }

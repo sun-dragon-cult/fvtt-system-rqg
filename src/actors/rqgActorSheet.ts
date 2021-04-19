@@ -25,8 +25,8 @@ import { RqgActor } from "./rqgActor";
 import { logBug, logMisconfiguration } from "../system/util";
 import { RuneTypeEnum } from "../data-model/item-data/runeData";
 import { RqgConfig } from "../system/config";
-import { HealthEnum } from "../data-model/actor-data/attributes";
 import { DamageCalculations } from "../system/damageCalculations";
+import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 
 declare const CONFIG: RqgConfig;
 
@@ -68,7 +68,7 @@ interface ActorSheetTemplate {
   occupations: `${OccupationEnum}`[];
   homelands: `${HomeLandEnum}`[];
   locations: string[];
-  healthStatuses: `${HealthEnum}`[];
+  healthStatuses: typeof actorHealthStatuses;
 
   // Other data needed for the sheet
   /** Array of img urls to runes with > 0% chance */
@@ -83,8 +83,6 @@ interface ActorSheetTemplate {
   powCrystals: { name: string; size: number }[];
   spiritMagicPointSum: number;
   freeInt: number;
-  /** a combination of total HP & attributes.health (extra damage effects) */
-  combinedHealth: HealthEnum;
 
   // UI toggles
   isGM: boolean;
@@ -143,13 +141,12 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
-      combinedHealth: DamageCalculations.getCombinedActorHealth(this.actor.data),
 
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
       homelands: Object.values(HomeLandEnum),
       locations: this.getPhysicalItemLocations(),
-      healthStatuses: Object.values(HealthEnum),
+      healthStatuses: [...actorHealthStatuses],
 
       // UI toggles
       isGM: !!game.user?.isGM,
@@ -389,11 +386,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     } else {
       logBug("Actor does not have max hitpoints set.", this.actor);
     }
-    if (formData["data.attributes.health"] !== formData["combinedHealth"]) {
-      formData["data.attributes.health"] = DamageCalculations.getCombinedActorHealth(
-        this.actor.data
-      );
-    }
+    // const tokenHealthBefore = this.token?.actor.data.data.attributes.health;
+    formData["data.attributes.health"] = DamageCalculations.getCombinedActorHealth(this.actor.data);
+    // this.token && HitLocationSheet.setTokenEffect(this.token, tokenHealthBefore); // TODO can't set token effects here since the token isn't updated yet !?!??
+
     return super._updateObject(event, formData);
   }
 

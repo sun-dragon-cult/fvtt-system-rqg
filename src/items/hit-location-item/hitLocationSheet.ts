@@ -10,8 +10,7 @@ import { logBug } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
-import { CharacterActorData } from "../../data-model/actor-data/rqgActorData";
-import { HealthEnum } from "../../data-model/actor-data/attributes";
+import { ActorHealthState, actorHealthStatuses } from "../../data-model/actor-data/attributes";
 
 export class HitLocationSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
@@ -29,7 +28,7 @@ export class HitLocationSheet extends RqgItemSheet {
     data.hitLocationNamesAll = Object.values(HitLocationsEnum);
     data.hitLocationTypes = Object.values(HitLocationTypesEnum);
     data.hitLocationHealthStatuses = Object.values(hitLocationHealthStatuses);
-
+    data.actorHealthImpacts = Object.values(actorHealthStatuses);
     return sheetData;
   }
 
@@ -122,11 +121,11 @@ export class HitLocationSheet extends RqgItemSheet {
         );
       }
     }
+    const actorHealthBefore = (token.actor as RqgActor).data.data.attributes.health;
     const {
       hitLocationUpdates,
       actorUpdates,
       notification,
-      addTokenEffects,
       uselessLegs,
     } = DamageCalculations.addWound(damage, applyDamageToTotalHp, hitLocation.data, actor.data);
 
@@ -134,40 +133,7 @@ export class HitLocationSheet extends RqgItemSheet {
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
     actorUpdates && (await token.actor.update(actorUpdates));
 
-    const combinedHealth: HealthEnum = DamageCalculations.getCombinedActorHealth(
-      token.actor.data as CharacterActorData
-    );
-
-    // TODO testing testing
-    const health2Status: Map<HealthEnum, { id: string; label: string; icon: string }> = new Map([
-      [HealthEnum.Healthy, CONFIG.statusEffects[31]],
-      [HealthEnum.Wounded, CONFIG.statusEffects[21]],
-      [HealthEnum.Shock, CONFIG.statusEffects[14]],
-      [HealthEnum.Unconscious, CONFIG.statusEffects[1]],
-      [HealthEnum.Dead, CONFIG.statusEffects[0]],
-    ]);
-
-    // TODO map to actorHealth - sync actorHealth names to statusEffects names?
-    // TODO create a CONFIG.RQG.statusEffects that contain AE ?
-    const effect = health2Status.get(combinedHealth);
-    const asOverlay = effect?.id === "dead";
-
-    // TODO fix typing!
-    if (!token.actor.effects.find((e: any) => e.data.flags?.core?.statusId === effect?.id)) {
-      await token.toggleEffect(effect as any, { overlay: asOverlay, active: true });
-    }
-
-    // for (const e of addTokenEffects) {
-    //   if (actor.token) {
-    //     await actor.token.toggleEffect(e);
-    //   } else {
-    //     const tokens = actor.getActiveTokens(true);
-    //     for (const t of tokens) {
-    //       await t.toggleEffect(e, { active: true });
-    //     }
-    //   }
-    // }
-
+    await HitLocationSheet.setTokenEffect(token, actorHealthBefore);
     for (const update of uselessLegs) {
       await actor.getOwnedItem(update._id).update(update);
     }
@@ -241,41 +207,58 @@ export class HitLocationSheet extends RqgItemSheet {
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
 
-    const {
-      hitLocationUpdates,
-      actorUpdates,
-      removeTokenEffects,
-      usefulLegs,
-    } = HealingCalculations.healWound(healPoints, healWoundIndex, hitLocation.data, actor.data);
+    const actorHealthBefore = (token.actor as RqgActor).data.data.attributes.health;
+
+    const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
+      healPoints,
+      healWoundIndex,
+      hitLocation.data,
+      actor.data
+    );
 
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
     actorUpdates && (await token.actor.update(actorUpdates));
 
-    const combinedHealth = DamageCalculations.getCombinedActorHealth(
-      token.actor.data as CharacterActorData
-    );
-
-    // TODO map to actorHealth - sync actorHealth names to statusEffects names?
-    // TODO create a CONFIG.RQG.statusEffects that contain AE ?
-    const effect = CONFIG.statusEffects[4];
-    const asOverlay = effect.id === "dead";
-
-    if (!token.actor.effects.find((e: any) => e.data.flags?.core?.statusId === effect.id)) {
-      await token.toggleEffect(effect as any, { overlay: asOverlay, active: true });
-    }
-    // for (const e of removeTokenEffects) {
-    //   if (actor.token) {
-    //     await actor.token.toggleEffect(e);
-    //   } else {
-    //     const tokens = actor.getActiveTokens(true);
-    //     for (const t of tokens) {
-    //       await t.toggleEffect(e, { active: false });
-    //     }
-    //   }
-    // }
+    HitLocationSheet.setTokenEffect(token, actorHealthBefore);
 
     for (const update of usefulLegs) {
       await actor.getOwnedItem(update._id).update(update);
+    }
+  }
+
+  static async setTokenEffect(token: Token, actorHealthBefore: ActorHealthState): Promise<void> {
+    // // TODO testing testing - lägg i nån CONFIG?
+    const health2Effect: Map<
+      ActorHealthState,
+      { id: string; label: string; icon: string }
+    > = new Map([
+      ["shock", CONFIG.statusEffects[14]],
+      ["unconscious", CONFIG.statusEffects[1]],
+      ["dead", CONFIG.statusEffects[0]],
+    ]);
+
+    // TODO map to actorHealth - sync actorHealth names to statusEffects names?
+    // TODO create a CONFIG.RQG.statusEffects that contain AE ?
+
+    const previousEffect = health2Effect.get(actorHealthBefore);
+    const newEffect = health2Effect.get(token.actor.data.data.attributes.health);
+
+    if (newEffect?.label !== previousEffect?.label) {
+      const asOverlay = newEffect?.id === "dead";
+      const newEffectIsOn = !!token.actor.effects.find(
+        (e: ActiveEffect) => e.getFlag("core", "statusId") === newEffect?.id
+      );
+      const previousEffectIsOn = !!token.actor.effects.find(
+        (e: ActiveEffect) => e.getFlag("core", "statusId") === previousEffect?.id
+      );
+
+      const shouldToggleNewEffect = !!newEffect && !newEffectIsOn;
+      const shouldTogglePreviousEffect = !!previousEffect && previousEffectIsOn;
+
+      shouldToggleNewEffect &&
+        (await token.toggleEffect(newEffect as any, { overlay: asOverlay, active: true }));
+      shouldTogglePreviousEffect &&
+        (await token.toggleEffect(previousEffect as any, { overlay: asOverlay, active: true }));
     }
   }
 }

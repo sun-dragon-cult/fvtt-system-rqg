@@ -1,11 +1,11 @@
 import {
+  hitLocationHealthStatuses,
   HitLocationItemData,
   HitLocationTypesEnum,
-  hitLocationHealthStatuses,
 } from "../data-model/item-data/hitLocationData";
 import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { logBug } from "./util";
-import { HealthEnum } from "../data-model/actor-data/attributes";
+import { ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { DeepPartial } from "snowpack";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
@@ -14,7 +14,6 @@ export interface DamageEffects {
   actorUpdates: RqgActorData;
   /** info to the user  */
   notification: string;
-  addTokenEffects: string[];
   /** make limbs useless */
   uselessLegs: any[];
 }
@@ -76,7 +75,6 @@ export class DamageCalculations {
       hitLocationUpdates: {} as HitLocationItemData,
       actorUpdates: {} as CharacterActorData,
       notification: "",
-      addTokenEffects: [],
       uselessLegs: [],
     };
 
@@ -89,7 +87,6 @@ export class DamageCalculations {
       logBug(`Hit location ${hitLocationData.name} doesn't have a max hp`, hitLocationData);
       return damageEffects;
     }
-    const tokenOverLayEfects = actorData.token.overlayEffect;
     const damage = Math.min(maxHp * 2, fullDamage); // Max damage to THP inflicted by limb wound is 2*HP
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
@@ -100,13 +97,14 @@ export class DamageCalculations {
 
     const actorName = actorData.token?.name || actorData.name;
 
+    // TODO simplify if-structure!
     if (
       damage > 0 &&
       hitLocationHealthStatuses.indexOf(hitLocationData.data.hitLocationHealthState) <
         hitLocationHealthStatuses.indexOf("wounded")
     ) {
       mergeObject(damageEffects.hitLocationUpdates, {
-        data: { hitLocationHealthState: "wounded" },
+        data: { hitLocationHealthState: "wounded", actorHealthImpact: "wounded" },
       } as any);
     }
     if (
@@ -121,15 +119,12 @@ export class DamageCalculations {
     }
     if (fullDamage >= hpMax * 2) {
       damageEffects.notification = `${actorName} is functionally incapacitated: you can no longer fight until healed and am in shock. You may try to heal yourself.`;
-      mergeObject(damageEffects.actorUpdates, {
-        data: { attributes: { health: HealthEnum.Shock } },
+      mergeObject(damageEffects.hitLocationUpdates, {
+        data: { hitLocationHealthState: "useless", actorHealthImpact: "shock" },
       } as any);
-      damageEffects.addTokenEffects.push(
-        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "shock")].icon
-      );
     }
     if (fullDamage >= hpMax * 3) {
-      damageEffects.notification = `${actorName}s ${hitLocationData.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available.`;
+      damageEffects.notification = `${actorName}s ${hitLocationData.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. ${actorName} is functionally incapacitated: and can no longer fight until healed and am in shock. You may try to heal yourself.`;
       mergeObject(damageEffects.hitLocationUpdates, {
         data: { hitLocationHealthState: "severed" },
       } as any);
@@ -156,7 +151,6 @@ export class DamageCalculations {
       hitLocationUpdates: {} as HitLocationItemData,
       actorUpdates: {} as CharacterActorData,
       notification: "",
-      addTokenEffects: [],
       uselessLegs: [],
     };
 
@@ -173,6 +167,16 @@ export class DamageCalculations {
     if (hpValue == null || hpMax == null) {
       logBug(`Hitlocation ${hitLocationData.name} don't have hp value or max`, hitLocationData);
       return damageEffects;
+    }
+
+    if (damage > 0) {
+      mergeObject(damageEffects.hitLocationUpdates, {
+        data: {
+          actorHealthImpact: "wounded",
+          hitLocationHealthState: "wounded",
+          wounds: [...hitLocationData.data.wounds, damage],
+        },
+      } as any);
     }
 
     // A big hit to Abdomen affects connected limbs, but instant death sized damage should override it
@@ -192,64 +196,41 @@ export class DamageCalculations {
           },
         };
       });
-
       damageEffects.notification = `Both legs are useless and ${actorName} falls to the ground. ${actorName} may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`;
-
-      damageEffects.addTokenEffects.push(
-        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "prone")].icon
-      );
     }
 
     if (damage >= hpMax * 3) {
       damageEffects.notification = `${actorName} dies instantly.`;
-      damageEffects.actorUpdates = { data: { attributes: { health: HealthEnum.Dead } } } as any;
-      // TODO This doesn't set the combatant in the combat tracker as dead - it only adds the dead token effect
-      damageEffects.addTokenEffects = [
-        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "dead")].icon,
-      ];
+      mergeObject(damageEffects.hitLocationUpdates, {
+        data: { actorHealthImpact: "dead" },
+      } as any);
     } else if (damage >= hpMax * 2) {
       damageEffects.notification = `${actorName} becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.`;
-      damageEffects.actorUpdates = {
-        data: { attributes: { health: HealthEnum.Unconscious } },
-      } as any;
-
-      damageEffects.addTokenEffects = [
-        CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon,
-      ];
+      mergeObject(damageEffects.hitLocationUpdates, {
+        data: { actorHealthImpact: "unconscious" },
+      } as any);
     } else if (hpValue - damage <= 0) {
       if (hitLocationData.data.hitLocationType === HitLocationTypesEnum.Head) {
+        mergeObject(damageEffects.hitLocationUpdates, {
+          data: { actorHealthImpact: "unconscious" },
+        } as any);
+
         damageEffects.notification = `${actorName} is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die`;
-        damageEffects.actorUpdates = {
-          data: { attributes: { health: HealthEnum.Unconscious } },
-        } as any;
-        damageEffects.addTokenEffects.push(
-          CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "unconscious")].icon
-        );
       } else if (hitLocationData.data.hitLocationType === HitLocationTypesEnum.Chest) {
         damageEffects.notification = `${actorName} falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing.`;
-        damageEffects.actorUpdates = {
-          data: { attributes: { health: HealthEnum.Shock } }, // TODO Not the same as shock from limb wound !!!
-        } as any;
-        damageEffects.addTokenEffects = [
-          CONFIG.statusEffects[CONFIG.statusEffects.findIndex((e) => e.id === "shock")].icon,
-        ];
+        mergeObject(damageEffects.hitLocationUpdates, {
+          data: { actorHealthImpact: "shock" },
+        } as any);
       }
     }
-    if (damage > 0) {
-      damageEffects.hitLocationUpdates = {
-        data: {
-          hitLocationHealthState: "wounded",
-          wounds: [...hitLocationData.data.wounds, damage],
-        },
-      } as any;
-    }
+
     if (applyDamageToTotalHp) {
       mergeObject(damageEffects.actorUpdates, this.applyDamageToActorTotalHp(damage, actorData));
     }
     return damageEffects;
   }
 
-  static getCombinedActorHealth(actorData: RqgActorData): HealthEnum {
+  static getCombinedActorHealth(actorData: RqgActorData): ActorHealthState {
     const healthEffects = actorData.data.attributes.health;
     const totalHitPoints = actorData.data.attributes.hitPoints.value;
     if (totalHitPoints == null) {
@@ -258,20 +239,18 @@ export class DamageCalculations {
     }
 
     if (totalHitPoints <= 0) {
-      return HealthEnum.Dead;
+      return "dead";
     } else if (totalHitPoints <= 2) {
-      return HealthEnum.Unconscious;
-    } else if (
-      totalHitPoints !== actorData.data.attributes.hitPoints.max &&
-      ![HealthEnum.Shock, HealthEnum.Unconscious].includes(healthEffects)
-    ) {
-      return HealthEnum.Wounded;
-    } else if (totalHitPoints === actorData.data.attributes.hitPoints.max) {
-      return HealthEnum.Healthy;
+      return "unconscious";
     } else {
-      return healthEffects;
+      return actorData.items
+        .filter((i) => i.type === ItemTypeEnum.HitLocation)
+        .map((h) => (h as HitLocationItemData).data.actorHealthImpact)
+        .reduce(
+          (acc, val) =>
+            actorHealthStatuses.indexOf(val) > actorHealthStatuses.indexOf(acc) ? val : acc,
+          "healthy"
+        );
     }
-
-    // ![HealthEnum.Healthy, HealthEnum.Shock, HealthEnum.Unconscious].includes(healthEffects)
   }
 }

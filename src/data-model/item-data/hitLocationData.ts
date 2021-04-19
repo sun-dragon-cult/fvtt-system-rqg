@@ -1,5 +1,6 @@
 import { emptyResource, Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
+import { ActorHealthState } from "../actor-data/attributes";
 
 export enum HitLocationsEnum {
   Head = "head",
@@ -47,6 +48,7 @@ export interface HitLocationData {
   naturalAp: number;
   wounds: number[];
   hitLocationHealthState: HitLocationHealthState;
+  actorHealthImpact: ActorHealthState;
   /** How should this hitlocation behave for damage calculation */
   hitLocationType: HitLocationTypesEnum; // TODO *** kan man göra det här smartare? ***
   /** If hitLocationType is Limb then what location name is it connected to. Used for damage calculations */
@@ -58,6 +60,7 @@ export interface HitLocationData {
   hitLocationNamesAll?: HitLocationsEnum[];
   hitLocationTypes?: HitLocationTypesEnum[];
   hitLocationHealthStatuses?: HitLocationHealthState[];
+  actorHealthImpacts?: ActorHealthState[];
 }
 
 export interface HitLocationItemData extends Item.Data<HitLocationData> {
@@ -72,6 +75,7 @@ export const emptyHitLocation: HitLocationData = {
   naturalAp: 0,
   wounds: [],
   hitLocationHealthState: "healthy",
+  actorHealthImpact: "healthy",
   hitLocationType: HitLocationTypesEnum.Limb,
   connectedTo: "",
 };

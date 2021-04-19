@@ -1,14 +1,7 @@
 import { emptyResource, Resource } from "../shared/resource";
 
-// TODO rewrite as const array?
-// TODO remove states not directly tied to THP (only keep Shock, Incapacitated & Unconcious)?
-export enum HealthEnum {
-  Healthy = "healthy",
-  Wounded = "wounded",
-  Shock = "shock", // (Functionally Incapacitated)
-  Unconscious = "unconscious",
-  Dead = "dead",
-}
+export const actorHealthStatuses = ["healthy", "wounded", "shock", "unconscious", "dead"] as const;
+export type ActorHealthState = typeof actorHealthStatuses[number];
 
 // Values calculated in RqgActor.prepareData with help from RqgCalculations
 export class Attributes {
@@ -17,7 +10,7 @@ export class Attributes {
     public hitPoints: Resource,
     public move: number, // 8 for humans
     public heroPoints: number,
-    public health: HealthEnum, // TODO store array? and pick the "worst" in prepareData
+    public health: ActorHealthState,
     public healingRate?: number,
     public damageBonus?: string, // For example "1D4"
     public spiritCombatDamage?: string, // For example "1D4"
@@ -29,10 +22,4 @@ export class Attributes {
   ) {}
 }
 
-export const emptyAttributes = new Attributes(
-  emptyResource,
-  emptyResource,
-  8,
-  0,
-  HealthEnum.Healthy
-);
+export const emptyAttributes = new Attributes(emptyResource, emptyResource, 8, 0, "healthy");

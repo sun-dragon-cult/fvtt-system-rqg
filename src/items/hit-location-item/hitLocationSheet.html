@@ -18,6 +18,18 @@
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
+
+{{!-- TODO juset for making it changeable while testing --}}
+    <label>Actor Health Impact <select name="data.actorHealthImpact">
+      {{#select item.data.actorHealthImpact}} {{#each data.actorHealthImpacts}}
+        <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select></label><br>
+
+
+
+
+
     <label>Act as <select name="data.hitLocationType">
       {{#select item.data.hitLocationType}} {{#each data.hitLocationTypes}}
       <option value="{{this}}">{{this}}</option>

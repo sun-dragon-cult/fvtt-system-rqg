@@ -13,10 +13,9 @@
               <option value="{{this}}">{{this}}</option>
             {{/each}} {{/select}}
           </select>
+        {{else}}
+            <i>{{rqgActorData.data.attributes.health}}</i>
         {{/if}}
-
-          <i><input type="text" name="combinedHealth" value="{{combinedHealth}}" ></i>
-          <i>{{combinedHealth}}</i>
         {{#each characterRunes}}
           <img class="rune" src="{{this}}">
         {{/each}}
