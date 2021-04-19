@@ -18,32 +18,27 @@
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
-
-{{!-- TODO juset for making it changeable while testing --}}
-    <label>Actor Health Impact <select name="data.actorHealthImpact">
-      {{#select item.data.actorHealthImpact}} {{#each data.actorHealthImpacts}}
-        <option value="{{this}}">{{this}}</option>
-      {{/each}} {{/select}}
-    </select></label><br>
-
-
-
-
-
     <label>Act as <select name="data.hitLocationType">
       {{#select item.data.hitLocationType}} {{#each data.hitLocationTypes}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select> for damage calculations.</label><br>
     {{#if (eq item.data.hitLocationType "limb")}}
-    <label>Connected to <select name="data.connectedTo">
-      {{#select item.data.connectedTo}} {{#each data.hitLocationNamesAll}}
-      <option value="{{this}}">{{this}}</option>
-      {{/each}} {{/select}}
-    </select></label><br>
+      <label>Connected to <select name="data.connectedTo">
+        {{#select item.data.connectedTo}} {{#each data.hitLocationNamesAll}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}} {{/select}}
+      </select></label><br>
     {{/if}}
-    <label>Die from <input type="number" min="1" max="20" name="data.dieFrom" value="{{item.data.dieFrom}}"> - to <input type="number" min="1" max="20" name="data.dieTo" value="{{item.data.dieTo}}"></label><br>
+    <label>Die from-to <input type="number" min="1" max="20" name="data.dieFrom" value="{{item.data.dieFrom}}"></label> - <input type="number" min="1" max="20" name="data.dieTo" value="{{item.data.dieTo}}"><br>
     <label>Natural AP <input type="number" min="0" max="99" name="data.naturalAp" value="{{item.data.naturalAp}}"></label><br>
     <label>Base HP Delta (+/- from base location HP) <input type="number" min="-9" max="9" name="data.baseHpDelta" value="{{item.data.baseHpDelta}}"></label><br>
+    <br><br>
+    {{!-- TODO just for making it changeable while testing --}}
+    <label>Actor Health Impact <select name="data.actorHealthImpact">
+      {{#select item.data.actorHealthImpact}} {{#each data.actorHealthImpacts}}
+        <option value="{{this}}">{{this}}</option>
+      {{/each}} {{/select}}
+    </select></label><br>
   </main>
 </form>
