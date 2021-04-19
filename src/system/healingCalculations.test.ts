@@ -266,5 +266,7 @@ export function applyTestHealing(
   mergeObject(hitLocationData, healingEffects.hitLocationUpdates);
   mergeObject(actorData, healingEffects.actorUpdates);
   actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);
+  hitLocationData.data.hp.value =
+    hitLocationData.data.hp.max! - hitLocationData.data.wounds.reduce((acc, val) => acc + val, 0);
   return healingEffects;
 }

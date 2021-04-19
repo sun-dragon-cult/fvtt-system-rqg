@@ -625,7 +625,7 @@ describe("Inflict Damage", () => {
         data: {
           attributes: {
             hitPoints: {
-              value: actorTotalHp - appliedDamage,
+              value: actorTotalHp - appliedDamage * 2,
             },
           },
         },
@@ -692,5 +692,7 @@ export function applyTestDamage(
   mergeObject(hitLocationData, damageEffects.hitLocationUpdates);
   mergeObject(actorData, damageEffects.actorUpdates);
   actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);
+  hitLocationData.data.hp.value =
+    hitLocationData.data.hp.max! - hitLocationData.data.wounds.reduce((acc, val) => acc + val, 0);
   return damageEffects;
 }

@@ -94,12 +94,12 @@ export class DamageCalculations {
       logBug(`Hitlocation ${hitLocationData.name} don't have hp value or max`, hitLocationData);
       return damageEffects;
     }
-
+    const totalDamage = hpMax - hpValue + damage;
     const actorName = actorData.token?.name || actorData.name;
 
     // TODO simplify if-structure!
     if (
-      damage > 0 &&
+      totalDamage > 0 &&
       hitLocationHealthStatuses.indexOf(hitLocationData.data.hitLocationHealthState) <
         hitLocationHealthStatuses.indexOf("wounded")
     ) {
@@ -108,7 +108,7 @@ export class DamageCalculations {
       } as any);
     }
     if (
-      hpValue - fullDamage <= 0 &&
+      totalDamage >= hpMax &&
       hitLocationHealthStatuses.indexOf(hitLocationData.data.hitLocationHealthState) <
         hitLocationHealthStatuses.indexOf("useless")
     ) {
@@ -168,8 +168,9 @@ export class DamageCalculations {
       logBug(`Hitlocation ${hitLocationData.name} don't have hp value or max`, hitLocationData);
       return damageEffects;
     }
+    const totalDamage = hpMax - hpValue + damage;
 
-    if (damage > 0) {
+    if (totalDamage > 0) {
       mergeObject(damageEffects.hitLocationUpdates, {
         data: {
           actorHealthImpact: "wounded",
@@ -182,8 +183,8 @@ export class DamageCalculations {
     // A big hit to Abdomen affects connected limbs, but instant death sized damage should override it
     if (
       hitLocationData.data.hitLocationType === HitLocationTypesEnum.Abdomen &&
-      hpValue - damage <= 0 &&
-      damage < hpMax * 3
+      totalDamage >= hpMax &&
+      totalDamage < hpMax * 3
     ) {
       const attachedLimbs = actorData.items.filter(
         (i) => i.type === ItemTypeEnum.HitLocation && i.data.connectedTo === hitLocationData.name
@@ -199,17 +200,17 @@ export class DamageCalculations {
       damageEffects.notification = `Both legs are useless and ${actorName} falls to the ground. ${actorName} may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`;
     }
 
-    if (damage >= hpMax * 3) {
+    if (totalDamage >= hpMax * 3) {
       damageEffects.notification = `${actorName} dies instantly.`;
       mergeObject(damageEffects.hitLocationUpdates, {
         data: { actorHealthImpact: "dead" },
       } as any);
-    } else if (damage >= hpMax * 2) {
+    } else if (totalDamage >= hpMax * 2) {
       damageEffects.notification = `${actorName} becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.`;
       mergeObject(damageEffects.hitLocationUpdates, {
         data: { actorHealthImpact: "unconscious" },
       } as any);
-    } else if (hpValue - damage <= 0) {
+    } else if (totalDamage >= hpMax) {
       if (hitLocationData.data.hitLocationType === HitLocationTypesEnum.Head) {
         mergeObject(damageEffects.hitLocationUpdates, {
           data: { actorHealthImpact: "unconscious" },
