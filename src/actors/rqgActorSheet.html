@@ -7,8 +7,16 @@
     <div>
       <div class="topheaderline">
         <h1 class="charname"><input name="name" type="text" value="{{rqgActorData.name}}"></h1>
-        <div>
-        {{#each rqgActorData.characterRunes}}
+        <div>{{#if isGM}}
+          <select name="data.attributes.health">
+            {{#select rqgActorData.data.attributes.health}} {{#each healthStatuses}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}} {{/select}}
+          </select>
+        {{else}}
+            <i>{{rqgActorData.data.attributes.health}}</i>
+        {{/if}}
+        {{#each characterRunes}}
           <img class="rune" src="{{this}}">
         {{/each}}
         </div>
@@ -90,7 +98,7 @@
           </div>
           <div style="width: 100%">
             <h2>Allies & Notes</h2>
-            {{editor content=data.allies target="data.allies" button=true owner=owner editable=editable}}
+            {{editor content=rqgActorData.data.allies target="data.allies" button=true owner=owner editable=editable}}
           </div>
         </div>
     </div>

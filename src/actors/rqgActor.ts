@@ -5,6 +5,7 @@ import { RqgActorSheet } from "./rqgActorSheet";
 import { getItemIdsInSameLocationTree } from "../items/shared/locationNode";
 import { logBug } from "../system/util";
 import { RqgItem } from "../items/rqgItem";
+import { DamageCalculations } from "../system/damageCalculations";
 
 export class RqgActor extends Actor<RqgActorData, RqgItem> {
   static init() {
@@ -87,6 +88,8 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
     data.attributes.healingRate = RqgCalculations.healingRate(con);
     data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
+
+    data.attributes.health = DamageCalculations.getCombinedActorHealth(this.data);
   }
 
   // Entity-specific actions that should occur when the Entity is first created

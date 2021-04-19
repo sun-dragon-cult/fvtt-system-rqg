@@ -25,6 +25,8 @@ import { RqgActor } from "./rqgActor";
 import { logBug, logMisconfiguration } from "../system/util";
 import { RuneTypeEnum } from "../data-model/item-data/runeData";
 import { RqgConfig } from "../system/config";
+import { DamageCalculations } from "../system/damageCalculations";
+import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 
 declare const CONFIG: RqgConfig;
 
@@ -54,22 +56,31 @@ interface ActorSheetTemplate {
 
   // The actor and reorganised owned items
   rqgActorData: Actor.Data<RqgActorData>;
-  ownedItems: any; // reorganized for presentation TODO type it better
+  /** reorganized for presentation TODO type it better */
+  ownedItems: any;
 
-  spiritCombatSkillData: Item.Data<SkillData>; // Find this skill to show on spirit combat part
-  dodgeSkillData: Item.Data<SkillData>; // Find this skill to show on combat part
+  /** Find this skill to show on spirit combat part */
+  spiritCombatSkillData: Item.Data<SkillData>;
+  /** Find this skill to show on combat part */
+  dodgeSkillData: Item.Data<SkillData>;
 
   // Lists for dropdown values
   occupations: `${OccupationEnum}`[];
   homelands: `${HomeLandEnum}`[];
   locations: string[];
+  healthStatuses: typeof actorHealthStatuses;
 
   // Other data needed for the sheet
-  characterRunes: string[]; // Array of img urls to runes with > 0% chance
-  loadedMissileSr: string[]; // (html) Precalculated missile weapon SRs if loaded at start of round
-  unloadedMissileSr: string[]; // (html) Precalculated missile weapon SRs if not loaded at start of round
-  itemLocationTree: LocationNode; // physical items reorganised as a tree of items containing items
-  powCrystals: { name: string; size: number }[]; // list of pow-crystals
+  /** Array of img urls to runes with > 0% chance */
+  characterRunes: string[];
+  /** (html) Precalculated missile weapon SRs if loaded at start of round */
+  loadedMissileSr: string[];
+  /** (html) Precalculated missile weapon SRs if not loaded at start of round */
+  unloadedMissileSr: string[];
+  /** physical items reorganised as a tree of items containing items */
+  itemLocationTree: LocationNode;
+  /** list of pow-crystals */
+  powCrystals: { name: string; size: number }[];
   spiritMagicPointSum: number;
   freeInt: number;
 
@@ -135,6 +146,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       occupations: Object.values(OccupationEnum),
       homelands: Object.values(HomeLandEnum),
       locations: this.getPhysicalItemLocations(),
+      healthStatuses: [...actorHealthStatuses],
 
       // UI toggles
       isGM: !!game.user?.isGM,
@@ -244,7 +256,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     return this.actor.items
       .filter(
         (i: Item<any>) =>
-          i.type === ItemTypeEnum.Rune &&
+          i.data.type === ItemTypeEnum.Rune &&
           i.data.data.runeType === RuneTypeEnum.Element &&
           !!i.data.data.chance
       )
@@ -374,6 +386,23 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     } else {
       logBug("Actor does not have max hitpoints set.", this.actor);
     }
+
+    let hpTmp; // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
+    if (this.token) {
+      hpTmp = this.token.actor.data.data.attributes.hitPoints.value;
+      this.token.actor.data.data.attributes.hitPoints.value =
+        formData["data.attributes.hitPoints.value"];
+    }
+    const newHealth = DamageCalculations.getCombinedActorHealth(this.actor.data);
+    if (this.token) {
+      this.token.actor.data.data.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
+      const tokenHealthBefore = this.token.actor.data.data.attributes.health;
+      this.token.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
+      HitLocationSheet.setTokenEffect(this.token, tokenHealthBefore);
+    }
+
+    formData["data.attributes.health"] = newHealth;
+
     return super._updateObject(event, formData);
   }
 
@@ -628,17 +657,22 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       if (!itemId) {
         logBug(`Couldn't find itemId [${itemId}] to add wound.`);
       } else {
-        el.addEventListener("click", () => HitLocationSheet.addWound(this.actor as any, itemId));
+        el.addEventListener(
+          "click",
+          () => HitLocationSheet.showAddWoundDialog(this.token as any, this.actor as any, itemId) //
+        );
       }
     });
 
-    // Edit wounds to hit location TODO move listener to hitlocation
-    (this.form as HTMLElement).querySelectorAll("[data-item-edit-wounds]").forEach((el) => {
+    // Heal wounds to hit location TODO move listener to hitlocation
+    (this.form as HTMLElement).querySelectorAll("[data-item-heal-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to add wound.`);
+        logBug(`Couldn't find itemId [${itemId}] to heal wound.`);
       } else {
-        el.addEventListener("click", () => HitLocationSheet.editWounds(this.actor as any, itemId));
+        el.addEventListener("click", () =>
+          HitLocationSheet.showHealWoundDialog(this.token as any, this.actor as any, itemId)
+        );
       }
     });
 

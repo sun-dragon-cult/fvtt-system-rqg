@@ -71,11 +71,13 @@
     </div>
   {{/if}}
   {{/each}}
-  <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"> <img class="item" src="{{dodgeSkillData.img}}"></div>
-  <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu">Dodge</div>
-  <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu {{experiencedclass dodgeSkillData._id @root.rqgActorData._id}}">
-    <span class="text-right">{{skillchance dodgeSkillData._id @root.rqgActorData._id}}%</span>
-  </div>
-  <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
-  <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
+  {{#if dodgeSkillData._id}}
+    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"> <img class="item" src="{{dodgeSkillData.img}}"></div>
+    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu">Dodge</div>
+    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu {{experiencedclass dodgeSkillData._id @root.rqgActorData._id}}">
+      <span class="text-right">{{skillchance dodgeSkillData._id @root.rqgActorData._id}}%</span>
+    </div>
+    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
+    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
+  {{/if}}
 </div>

@@ -1,5 +1,6 @@
 import { emptyResource, Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
+import { ActorHealthState } from "../actor-data/attributes";
 
 export enum HitLocationsEnum {
   Head = "head",
@@ -25,6 +26,17 @@ export enum HitLocationsEnum {
   RightHead = "rightHead",
 }
 
+// TODO differentiate between severed & maimed? slash / crush or impale
+export const hitLocationHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
+export type HitLocationHealthState = typeof hitLocationHealthStatuses[number];
+
+export enum HitLocationTypesEnum {
+  Limb = "limb",
+  Head = "head",
+  Chest = "chest",
+  Abdomen = "abdomen",
+}
+
 export interface HitLocationData {
   dieFrom: number;
   dieTo: number;
@@ -35,10 +47,20 @@ export interface HitLocationData {
   /**  Natural armor */
   naturalAp: number;
   wounds: number[];
+  hitLocationHealthState: HitLocationHealthState;
+  actorHealthImpact: ActorHealthState;
+  /** How should this hitlocation behave for damage calculation */
+  hitLocationType: HitLocationTypesEnum; // TODO *** kan man göra det här smartare? ***
+  /** If hitLocationType is Limb then what location name is it connected to. Used for damage calculations */
+  connectedTo: string;
   // --- Derived / Convenience Data Below ---
   /** Natural armor + modified armor Active Effect */
   ap?: number;
-  hitLocationTypes?: HitLocationsEnum[];
+
+  hitLocationNamesAll?: HitLocationsEnum[];
+  hitLocationTypes?: HitLocationTypesEnum[];
+  hitLocationHealthStatuses?: HitLocationHealthState[];
+  actorHealthImpacts?: ActorHealthState[];
 }
 
 export interface HitLocationItemData extends Item.Data<HitLocationData> {
@@ -48,8 +70,12 @@ export interface HitLocationItemData extends Item.Data<HitLocationData> {
 export const emptyHitLocation: HitLocationData = {
   dieFrom: 0,
   dieTo: 0,
-  hp: emptyResource, // Max and value added by ActorSheet.prepareData
+  hp: emptyResource,
   baseHpDelta: 0,
   naturalAp: 0,
   wounds: [],
+  hitLocationHealthState: "healthy",
+  actorHealthImpact: "healthy",
+  hitLocationType: HitLocationTypesEnum.Limb,
+  connectedTo: "",
 };
