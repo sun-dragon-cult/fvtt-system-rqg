@@ -57,7 +57,7 @@ export class DamageCalculations {
     const actorUpdateData: DeepPartial<RqgActorData> = {
       data: { attributes: { hitPoints: { value: 0 } } },
     };
-    if (currentTotalHp) {
+    if (currentTotalHp != null) {
       actorUpdateData.data!.attributes!.hitPoints!.value = currentTotalHp - damage;
     } else {
       logBug(`Actor ${actorData.name} don't have a calculated hitpoint value`, actorUpdateData);
