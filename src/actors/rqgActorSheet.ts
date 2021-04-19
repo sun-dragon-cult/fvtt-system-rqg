@@ -386,9 +386,22 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     } else {
       logBug("Actor does not have max hitpoints set.", this.actor);
     }
-    // const tokenHealthBefore = this.token?.actor.data.data.attributes.health;
-    formData["data.attributes.health"] = DamageCalculations.getCombinedActorHealth(this.actor.data);
-    // this.token && HitLocationSheet.setTokenEffect(this.token, tokenHealthBefore); // TODO can't set token effects here since the token isn't updated yet !?!??
+
+    let hpTmp; // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
+    if (this.token) {
+      hpTmp = this.token.actor.data.data.attributes.hitPoints.value;
+      this.token.actor.data.data.attributes.hitPoints.value =
+        formData["data.attributes.hitPoints.value"];
+    }
+    const newHealth = DamageCalculations.getCombinedActorHealth(this.actor.data);
+    if (this.token) {
+      this.token.actor.data.data.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
+      const tokenHealthBefore = this.token.actor.data.data.attributes.health;
+      this.token.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
+      HitLocationSheet.setTokenEffect(this.token, tokenHealthBefore);
+    }
+
+    formData["data.attributes.health"] = newHealth;
 
     return super._updateObject(event, formData);
   }
