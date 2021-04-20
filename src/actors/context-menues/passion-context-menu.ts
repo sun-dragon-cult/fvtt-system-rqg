@@ -25,7 +25,8 @@ export const passionMenuOptions = (actor: RqgActor) => [
         const result = Ability.roll(actor, itemChance, 0, item.name);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] or item Chance (item.data.data.chance) on actor ${actor.name} to do a direct roll for passion item from the passion context menu.`
+          `Couldn't find itemId [${itemId}] or item Chance (item.data.data.chance) on actor ${actor.name} to do a direct roll for passion item from the passion context menu.`,
+          true
         );
       }
     },
@@ -41,7 +42,8 @@ export const passionMenuOptions = (actor: RqgActor) => [
         await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on passion item from the passion context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on passion item from the passion context menu.`,
+          true
         );
       }
     },
@@ -77,7 +79,8 @@ export const passionMenuOptions = (actor: RqgActor) => [
         item.sheet.render(true);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit a passion item from the passion context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit a passion item from the passion context menu.`,
+          true
         );
       }
     },
@@ -92,7 +95,8 @@ export const passionMenuOptions = (actor: RqgActor) => [
         RqgActorSheet.confirmItemDelete(actor, itemId);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete a passion item from the passion context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete a passion item from the passion context menu.`,
+          true
         );
       }
     },

@@ -30,7 +30,7 @@ export class Cult extends BaseItem {
       const runesCompendiumName = game.settings.get("rqg", "runesCompendium") as string;
       const runePack = game.packs?.get(runesCompendiumName);
       if (!runePack) {
-        logBug("Couldn't find runes Compendium");
+        logBug("Couldn't find runes Compendium", true);
         return;
       }
       const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[]; // Index is previously stored in settings
@@ -39,7 +39,7 @@ export class Cult extends BaseItem {
         if (newRuneIndex != null) {
           return newRuneIndex._id;
         } else {
-          logBug(`Couldn't find cult rune ${newRune} among allRunesIndex`, actor, cultItem);
+          logBug(`Couldn't find cult rune ${newRune} among allRunesIndex`, true, actor, cultItem);
           return;
         }
       }) as string[];
@@ -48,7 +48,7 @@ export class Cult extends BaseItem {
           if (rune) {
             await actor.createOwnedItem(rune.data);
           } else {
-            logBug("Couldn't find rune in all runes compendium");
+            logBug("Couldn't find rune in all runes compendium", true);
           }
         });
       });

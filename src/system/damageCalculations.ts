@@ -60,7 +60,11 @@ export class DamageCalculations {
     if (currentTotalHp != null) {
       actorUpdateData.data!.attributes!.hitPoints!.value = currentTotalHp - damage;
     } else {
-      logBug(`Actor ${actorData.name} don't have a calculated hitpoint value`, actorUpdateData);
+      logBug(
+        `Actor ${actorData.name} don't have a calculated hitpoint value`,
+        true,
+        actorUpdateData
+      );
     }
     return actorUpdateData as RqgActorData;
   }
@@ -84,14 +88,18 @@ export class DamageCalculations {
     }
     const maxHp = hitLocationData.data.hp.max;
     if (!maxHp) {
-      logBug(`Hit location ${hitLocationData.name} doesn't have a max hp`, hitLocationData);
+      logBug(`Hit location ${hitLocationData.name} doesn't have a max hp`, true, hitLocationData);
       return damageEffects;
     }
     const damage = Math.min(maxHp * 2, fullDamage); // Max damage to THP inflicted by limb wound is 2*HP
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
     if (hpValue == null || hpMax == null) {
-      logBug(`Hitlocation ${hitLocationData.name} don't have hp value or max`, hitLocationData);
+      logBug(
+        `Hitlocation ${hitLocationData.name} don't have hp value or max`,
+        true,
+        hitLocationData
+      );
       return damageEffects;
     }
     const totalDamage = hpMax - hpValue + damage;
@@ -160,12 +168,17 @@ export class DamageCalculations {
     if (!hitLocationData.data.hitLocationType) {
       logBug(
         `Hitlocation ${hitLocationData.name} on actor ${actorName} does not have a specified hitLocationType`,
+        true,
         hitLocationData
       );
       return damageEffects;
     }
     if (hpValue == null || hpMax == null) {
-      logBug(`Hitlocation ${hitLocationData.name} don't have hp value or max`, hitLocationData);
+      logBug(
+        `Hitlocation ${hitLocationData.name} don't have hp value or max`,
+        true,
+        hitLocationData
+      );
       return damageEffects;
     }
     const totalDamage = hpMax - hpValue + damage;
@@ -235,7 +248,7 @@ export class DamageCalculations {
     const healthEffects = actorData.data.attributes.health;
     const totalHitPoints = actorData.data.attributes.hitPoints.value;
     if (totalHitPoints == null) {
-      logBug(`Actor hit points value ${totalHitPoints} is missing`, actorData);
+      logBug(`Actor hit points value ${totalHitPoints} is missing`, true, actorData);
       return healthEffects;
     }
 

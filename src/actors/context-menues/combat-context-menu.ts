@@ -15,7 +15,8 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         await WeaponCard.show(actor, skillItemId, weaponItemId);
       } else {
         logBug(
-          `Couldn't find skillId [${skillItemId}] or weaponId [${weaponItemId}] on actor ${actor.name} to show the weapon chat card from the combat context menu.`
+          `Couldn't find skillId [${skillItemId}] or weaponId [${weaponItemId}] on actor ${actor.name} to show the weapon chat card from the combat context menu.`,
+          true
         );
       }
     },
@@ -32,7 +33,8 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         await item.update({ "data.hasExperience": toggledExperience }, {});
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience from the combat context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience from the combat context menu.`,
+          true
         );
       }
     },
@@ -49,7 +51,8 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         return;
       } else {
         logBug(
-          `Couldn't find itemId [${skillItemId}] on actor ${actor.name} to show skill Item sheet from the combat context menu.`
+          `Couldn't find itemId [${skillItemId}] on actor ${actor.name} to show skill Item sheet from the combat context menu.`,
+          true
         );
       }
     },
@@ -65,7 +68,8 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         item.sheet.render(true);
       } else {
         logBug(
-          `Couldn't find itemId [${weaponItemId}] on actor ${actor.name} to show weapon item sheet from the combat context menu.`
+          `Couldn't find itemId [${weaponItemId}] on actor ${actor.name} to show weapon item sheet from the combat context menu.`,
+          true
         );
       }
     },
@@ -80,7 +84,8 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         RqgActorSheet.confirmItemDelete(actor, skillItemId);
       } else {
         logBug(
-          `Couldn't find itemId [${skillItemId}] on actor ${actor.name} to delete skill item from the combat context menu.`
+          `Couldn't find itemId [${skillItemId}] on actor ${actor.name} to delete skill item from the combat context menu.`,
+          true
         );
       }
     },
@@ -95,7 +100,8 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         RqgActorSheet.confirmItemDelete(actor, weaponItemId);
       } else {
         logBug(
-          `Couldn't find itemId [${weaponItemId}] on actor ${actor.name} to delete weapon item from the combat context menu.`
+          `Couldn't find itemId [${weaponItemId}] on actor ${actor.name} to delete weapon item from the combat context menu.`,
+          true
         );
       }
     },

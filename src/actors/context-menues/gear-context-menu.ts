@@ -61,7 +61,8 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         item.sheet?.render(true);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit item from the gear context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit item from the gear context menu.`,
+          true
         );
       }
     },
@@ -76,7 +77,8 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         RqgActorSheet.confirmItemDelete(actor, itemId);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to drop gear from the gear context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to drop gear from the gear context menu.`,
+          true
         );
       }
     },

@@ -40,7 +40,7 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
           }
         });
       } else {
-        logBug("Couldn't find item or effect id");
+        logBug("Couldn't find item or effect id", true);
       }
     });
 
@@ -68,7 +68,7 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
           new ActiveEffectConfig(item.effects.get(e._id)).render(true);
         });
       } else {
-        logBug("Couldn't find item", itemId);
+        logBug("Couldn't find item", true, itemId);
       }
     });
 
@@ -85,11 +85,11 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
           if (item) {
             item.delete();
           } else {
-            logBug("Couldn't find item");
+            logBug("Couldn't find item", true);
           }
         });
       } else {
-        logBug("Couldn't fins effect or item id");
+        logBug("Couldn't fins effect or item id", true);
       }
     });
   }

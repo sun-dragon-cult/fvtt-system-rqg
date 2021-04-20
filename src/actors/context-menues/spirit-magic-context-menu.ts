@@ -17,6 +17,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll the spiritmagic item from the spiritmagic context menu,`,
+          true,
           el
         );
       }
@@ -38,6 +39,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll for a spiritmagic item from the spiritmagic context menu.`,
+          true,
           el
         );
       }
@@ -68,6 +70,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to view the description of a spirit magic item from the spirit magic context menu.`,
+          true,
           el
         );
       }
@@ -85,6 +88,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the spirit magic item from the spirit magic context menu.`,
+          true,
           el
         );
       }
@@ -101,6 +105,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete a spirit magic item from the spirit magic context menu.`,
+          true,
           el
         );
       }

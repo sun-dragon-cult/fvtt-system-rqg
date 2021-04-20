@@ -51,7 +51,7 @@ function renderCombatTracker(app: any, html: any, data: any) {
         if (combatantId) {
           await currentCombat.setInitiative(combatantId, Number(inputElement.value));
         } else {
-          logBug("Couldn't find combatant when setting initiative");
+          logBug("Couldn't find combatant when setting initiative", true);
         }
       });
     });
@@ -72,7 +72,7 @@ function sortCombatants(a: any, b: any): any {
 function getEntryContextOptions(this: CombatTracker): ContextMenu.Item[] {
   const combat = this.combat;
   if (!combat) {
-    logBug("Couldn't find combat");
+    logBug("Couldn't find combat", true);
     return [];
   }
   return [

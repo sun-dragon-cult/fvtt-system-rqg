@@ -68,7 +68,8 @@ function getCharacteristic(
     ];
   } else {
     logBug(
-      `Couldn't find characteristic name [${characteristicName}] on actor ${actor.name} to do an action from the characteristics context menu.`
+      `Couldn't find characteristic name [${characteristicName}] on actor ${actor.name} to do an action from the characteristics context menu.`,
+      true
     );
     return [undefined, undefined];
   }

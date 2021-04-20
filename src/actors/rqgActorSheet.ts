@@ -152,7 +152,6 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       isGM: !!game.user?.isGM,
       showUiSection: this.getUiSectionVisibility(),
     };
-    console.log("Actor SheetData", sheetData);
     return sheetData;
   }
 
@@ -228,7 +227,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     if (dexStrikeRank != undefined) {
       return loadedMissileSr[dexStrikeRank];
     } else {
-      logBug("Dex SR was not calculated.", this.actor.data);
+      logBug("Dex SR was not calculated.", true, this.actor.data);
       return [""];
     }
   }
@@ -247,7 +246,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     if (dexStrikeRank !== undefined) {
       return unloadedMissileSr[dexStrikeRank];
     } else {
-      logBug("Dex SR was not calculated.", this.actor.data);
+      logBug("Dex SR was not calculated.", true, this.actor.data);
       return [""];
     }
   }
@@ -384,7 +383,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         formData["data.attributes.hitPoints.value"] = maxHitPoints;
       }
     } else {
-      logBug("Actor does not have max hitpoints set.", this.actor);
+      logBug("Actor does not have max hitpoints set.", true, this.actor);
     }
 
     let hpTmp; // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
@@ -437,6 +436,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       if (!characteristicName || !(characteristicName in actorCharacteristics)) {
         logBug(
           `Characteristic [${characteristicName}] isn't found on actor [${this.actor.name}].`,
+          true,
           this.actor
         );
       } else {
@@ -474,6 +474,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       if (!itemId) {
         logBug(
           `Couldn't find item [${itemId}] on actor ${this.actor.name} (token ${this.token?.data.name}) to roll Ability Chance against`,
+          true,
           el
         );
       } else {
@@ -503,13 +504,13 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       const item = itemId && this.actor.getOwnedItem(itemId);
       if (!itemId || !item) {
-        logBug(`Couldn't find item [${itemId}] to roll Spirit Magic against`);
+        logBug(`Couldn't find item [${itemId}] to roll Spirit Magic against`, true);
       } else {
         let clickCount = 0;
 
         el.addEventListener("click", async (ev: Event) => {
           if (item.data.type !== ItemTypeEnum.SpiritMagic) {
-            logBug("Tried to roll a Spirit Magic Roll against some other Item", item);
+            logBug("Tried to roll a Spirit Magic Roll against some other Item", true, item);
           } else {
             clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
 
@@ -540,7 +541,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       const skillItemId = (el.closest("[data-skill-id]") as HTMLElement).dataset.skillId;
       if (!weaponItemId || !skillItemId) {
         logBug(
-          `Couldn't find weaponItem [${weaponItemId}] or skillItem [${skillItemId}] to show Weapon chat card.`
+          `Couldn't find weaponItem [${weaponItemId}] or skillItem [${skillItemId}] to show Weapon chat card.`,
+          true
         );
       } else {
         let clickCount = 0;
@@ -572,6 +574,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       if (!pack || !id) {
         logMisconfiguration(
           `Couldn't find pack [${pack}] or journalId [${id}] to open a journal entry (during setup).`,
+          false,
           el,
           this.actor,
           this.token
@@ -585,14 +588,15 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-item-edit]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to open item sheet (during setup)`);
+        logBug(`Couldn't find itemId [${itemId}] to open item sheet (during setup)`, true);
       } else {
         const item = this.actor.getOwnedItem(itemId);
         if (item && item.sheet) {
           el.addEventListener("click", () => item.sheet!.render(true));
         } else {
           logBug(
-            `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`
+            `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`,
+            true
           );
         }
       }
@@ -602,7 +606,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-item-delete]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to delete item (during setup).`);
+        logBug(`Couldn't find itemId [${itemId}] to delete item (during setup).`, true);
       } else {
         el.addEventListener("click", () =>
           RqgActorSheet.confirmItemDelete(this.actor as any, itemId)
@@ -614,7 +618,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to toggle the equipped state (during setup).`);
+        logBug(
+          `Couldn't find itemId [${itemId}] to toggle the equipped state (during setup).`,
+          true
+        );
       } else {
         el.addEventListener("click", async () => {
           const item = this.actor.getOwnedItem(itemId) as Item<any>;
@@ -627,7 +634,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             // Will trigger a Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
             await item.update({ "data.equippedStatus": newStatus }, {});
           } else {
-            logBug(`Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`);
+            logBug(
+              `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`,
+              true
+            );
           }
         });
       }
@@ -638,14 +648,17 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       const path = (el as HTMLElement).dataset.itemEditValue;
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!path || !itemId) {
-        logBug(`Couldn't find item [${itemId}] or path [${path}] to edit an item (during setup).`);
+        logBug(
+          `Couldn't find item [${itemId}] or path [${path}] to edit an item (during setup).`,
+          true
+        );
       } else {
         el.addEventListener("change", async (event) => {
           const item = this.actor.getOwnedItem(itemId);
           if (item) {
             await item.update({ [path]: (event.target as HTMLInputElement).value }, {});
           } else {
-            logBug(`Couldn't find itemId [${itemId}] to edit an item (when clicked).`);
+            logBug(`Couldn't find itemId [${itemId}] to edit an item (when clicked).`, true);
           }
         });
       }
@@ -655,7 +668,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-item-add-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to add wound.`);
+        logBug(`Couldn't find itemId [${itemId}] to add wound.`, true);
       } else {
         el.addEventListener(
           "click",
@@ -668,7 +681,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-item-heal-wound]").forEach((el) => {
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to heal wound.`);
+        logBug(`Couldn't find itemId [${itemId}] to heal wound.`, true);
       } else {
         el.addEventListener("click", () =>
           HitLocationSheet.showHealWoundDialog(this.token as any, this.actor as any, itemId)
@@ -680,7 +693,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-actor-effect-edit]").forEach((el) => {
       const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
       if (!effectId) {
-        logBug(`Couldn't find active effect id [${effectId}] to edit the effect (during setup).`);
+        logBug(
+          `Couldn't find active effect id [${effectId}] to edit the effect (during setup).`,
+          true
+        );
       } else {
         el.addEventListener("click", () => {
           const effect = this.actor.effects.get(effectId);
@@ -688,7 +704,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             new ActiveEffectConfig(effect).render(true);
           } else {
             logBug(
-              `Couldn't find active effect id [${effectId}] to edit the effect (when clicked).`
+              `Couldn't find active effect id [${effectId}] to edit the effect (when clicked).`,
+              true
             );
           }
         });
@@ -700,7 +717,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     const item = actor.getOwnedItem(itemId);
     if (!item) {
       logBug(
-        `Couldn't find itemId [${itemId}] on actor ${actor.name} to show delete item Dialog (when clicked).`
+        `Couldn't find itemId [${itemId}] on actor ${actor.name} to show delete item Dialog (when clicked).`,
+        true
       );
     } else {
       new Dialog(
@@ -749,7 +767,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     if (entity) {
       entity.sheet.render(true);
     } else {
-      logBug(`Couldn't find journal with id [${id}] and packName ${packName} to to show it.`);
+      logBug(`Couldn't find journal with id [${id}] and packName ${packName} to to show it.`, true);
     }
   }
 }

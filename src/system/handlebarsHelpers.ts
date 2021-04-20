@@ -67,7 +67,7 @@ export const handlebarsHelpers = function () {
     if (rune) {
       return rune.img;
     } else {
-      logBug(`Couldn't find rune ${runeName}`);
+      logBug(`Couldn't find rune ${runeName}`, true);
     }
   });
 

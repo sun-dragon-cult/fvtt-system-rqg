@@ -117,6 +117,7 @@ export class HitLocationSheet extends RqgItemSheet {
       } else {
         logBug(
           `Hit location ${hitLocation.name} doesn't have a calculated total armor point`,
+          true,
           hitLocation
         );
       }
@@ -142,7 +143,7 @@ export class HitLocationSheet extends RqgItemSheet {
   static showHealWoundDialog(token: Token, actor: RqgActor, hitLocationItemId: string) {
     const hitLocation = actor.getOwnedItem(hitLocationItemId);
     if (hitLocation.data.type !== ItemTypeEnum.HitLocation) {
-      logBug("Edit Wounds did not point to a Hit Location Item", hitLocation);
+      logBug("Edit Wounds did not point to a Hit Location Item", true, hitLocation);
       return;
     }
     let dialogContent = "<form><label>Select which wound</label><div>";
@@ -201,7 +202,7 @@ export class HitLocationSheet extends RqgItemSheet {
     const hpValue = hitLocation.data.data.hp.value;
     const hpMax = hitLocation.data.data.hp.max;
     if (hpValue == null || hpMax == null) {
-      logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, hitLocation);
+      logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, true, hitLocation);
       return;
     }
     const healWoundIndex: number = Number(data.wound);

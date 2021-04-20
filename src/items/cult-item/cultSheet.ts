@@ -44,7 +44,7 @@ export class CultSheet extends RqgItemSheet {
       if (id) {
         el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
       } else {
-        logBug("Couldn't find linked journal Entry in Cult Item Sheet", elem, pack, id);
+        logBug("Couldn't find linked journal Entry in Cult Item Sheet", true, elem, pack, id);
       }
     });
   }

@@ -29,7 +29,7 @@ export class MeleeWeapon extends BaseItem {
         const embeddedWeaponSkill = await actor.createOwnedItem(skill.data);
         embeddedSkillId = embeddedWeaponSkill._id;
       } catch (e) {
-        logMisconfiguration("Couldn't find the Skill associated with this weapon.");
+        logMisconfiguration("Couldn't find the Skill associated with this weapon.", true);
       }
     }
     if (embeddedSkillId) {

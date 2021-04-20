@@ -53,7 +53,7 @@ export class RuneSheet extends RqgItemSheet {
       if (id) {
         el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
       } else {
-        logBug("Couldn't find linked journal from runeSheet", el, pack, id);
+        logBug("Couldn't find linked journal from runeSheet", true, el, pack, id);
       }
     });
   }

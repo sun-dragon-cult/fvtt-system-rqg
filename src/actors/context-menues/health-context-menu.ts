@@ -14,7 +14,8 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         item.sheet.render(true);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit hitLocation item from the health context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit hitLocation item from the health context menu.`,
+          true
         );
       }
     },
@@ -29,7 +30,8 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         RqgActorSheet.confirmItemDelete(actor, itemId);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete hitLocation item from the health context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete hitLocation item from the health context menu.`,
+          true
         );
       }
     },

@@ -29,7 +29,7 @@ export class ItemCard {
       };
       await ChatMessage.create(await ItemCard.renderContent(flags, actor));
     } else {
-      logBug(`Tried to show itemcard for item ${item.name} without chance`, item);
+      logBug(`Tried to show itemcard for item ${item.name} without chance`, true, item);
     }
   }
 

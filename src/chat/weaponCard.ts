@@ -86,7 +86,7 @@ export class WeaponCard extends ChatMessage {
 
     const actor = game.actors?.get(flags.actorId) as RqgActor;
     if (!actor) {
-      logBug("Couldn't find actor", flags);
+      logBug("Couldn't find actor", true, flags);
       return false;
     }
 
@@ -116,7 +116,7 @@ export class WeaponCard extends ChatMessage {
       if (chatMessage) {
         await WeaponCard.roll(flags, chatMessage);
       } else {
-        logBug("Couldn't find Chatmessage");
+        logBug("Couldn't find Chatmessage", true);
       }
     } else if (action === "damageRoll") {
       const damageType = (ev as any).originalEvent.submitter.value; // Normal | Special | Max Special);  damageSeverity ??
@@ -131,7 +131,7 @@ export class WeaponCard extends ChatMessage {
     } else if (action === "fumble") {
       await WeaponCard.fumbleRoll(flags);
     } else {
-      logBug(`Unknown button "${action}" in weapon chat card`);
+      logBug(`Unknown button "${action}" in weapon chat card`, true);
     }
 
     // button.disabled = false;
@@ -219,7 +219,8 @@ export class WeaponCard extends ChatMessage {
           weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
         } else {
           logMisconfiguration(
-            `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`
+            `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`,
+            true
           );
         }
       }
@@ -239,7 +240,7 @@ export class WeaponCard extends ChatMessage {
     const fumbleTableName = game.settings.get("rqg", "fumbleRollTable") as string;
     const fumbleTable = game.tables?.getName(fumbleTableName);
     if (!fumbleTable) {
-      logMisconfiguration(`The fumble table "${fumbleTableName}" is missing`);
+      logMisconfiguration(`The fumble table "${fumbleTableName}" is missing`, true);
       return;
     }
     const draw = await fumbleTable.draw({ displayChat: false });

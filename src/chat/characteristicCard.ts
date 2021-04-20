@@ -60,7 +60,7 @@ export class CharacteristicCard {
     const chatMessage = game.messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
     if (!flags || !chatMessage) {
-      logBug("couldn't find chatmessage");
+      logBug("couldn't find chatmessage", true);
       return;
     }
     CharacteristicCard.updateFlagsFromForm(flags, ev);
@@ -87,7 +87,7 @@ export class CharacteristicCard {
     const chatMessage = game.messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
     if (!flags || !chatMessage) {
-      logBug("couldn't find chatmessage");
+      logBug("couldn't find chatmessage", true);
       return false;
     }
     CharacteristicCard.updateFlagsFromForm(flags, ev);

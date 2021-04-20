@@ -9,7 +9,7 @@ export function getDomDataset(el: JQuery | Event, dataset: string): string {
 
   let data = element?.dataset[toCamelCase(dataset)];
   if (!data) {
-    logBug(`Couldn't find dataset [${dataset}]`, el, dataset);
+    logBug(`Couldn't find dataset [${dataset}]`, true, el, dataset);
   }
   return data || "";
 }
@@ -23,15 +23,16 @@ export function toCamelCase(s: string): string {
   });
 }
 
-export function logBug(msg: string, ...extraData: any) {
+export function logBug(msg: string, notify: boolean, ...extraData: any) {
   console.error(`RQG | ${msg}`, extraData);
-  ui?.notifications?.error(`${msg} - Bug: Contact the Developer!`);
+  notify && ui?.notifications?.error(`${msg} - Bug: Contact the Developer!`);
 }
 
-export function logMisconfiguration(msg: string, ...extraData: any) {
+export function logMisconfiguration(msg: string, notify: boolean, ...extraData: any) {
   // TODO only for GM? game.user.isGM &&
   console.warn(`RQG | ${msg}`, extraData);
-  ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`);
+
+  notify && ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`);
 }
 
 /**

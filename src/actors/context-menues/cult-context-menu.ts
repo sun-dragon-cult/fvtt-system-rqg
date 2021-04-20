@@ -28,7 +28,8 @@ export const cultMenuOptions = (actor: RqgActor) => [
         await RqgActorSheet.showJournalEntry(journalId, journalPack);
       } else {
         logBug(
-          `Couldn't find journal Id [${journalId}] on actor ${actor.name} to show it from the cult context menu.`
+          `Couldn't find journal Id [${journalId}] on actor ${actor.name} to show it from the cult context menu.`,
+          true
         );
       }
     },
@@ -44,7 +45,8 @@ export const cultMenuOptions = (actor: RqgActor) => [
         item.sheet.render(true);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit cult item from the cult context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit cult item from the cult context menu.`,
+          true
         );
       }
     },
@@ -59,7 +61,8 @@ export const cultMenuOptions = (actor: RqgActor) => [
         RqgActorSheet.confirmItemDelete(actor, itemId);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete cult item from the cult context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete cult item from the cult context menu.`,
+          true
         );
       }
     },

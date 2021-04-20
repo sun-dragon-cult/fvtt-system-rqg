@@ -26,14 +26,18 @@ export class HealingCalculations {
       usefulLegs: [],
     };
     if (hitLocationData.data.wounds.length <= healWoundIndex) {
-      logBug(`Trying to heal a wound that doesn't exist.`, healWoundIndex, hitLocationData);
+      logBug(`Trying to heal a wound that doesn't exist.`, true, healWoundIndex, hitLocationData);
       return healingEffects;
     }
 
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
     if (hpValue == null || hpMax == null) {
-      logBug(`Hitlocation ${hitLocationData.name} don't have hp value or max`, hitLocationData);
+      logBug(
+        `Hitlocation ${hitLocationData.name} don't have hp value or max`,
+        true,
+        hitLocationData
+      );
       return healingEffects;
     }
     const wounds = hitLocationData.data.wounds.slice();
@@ -71,7 +75,7 @@ export class HealingCalculations {
     const actorTotalHp = actorData.data.attributes.hitPoints.value;
     const actorMaxHp = actorData.data.attributes.hitPoints.max;
     if (actorTotalHp == null || actorMaxHp == null) {
-      logBug(`Couldn't find actor total hp (max or current value)`, actorData);
+      logBug(`Couldn't find actor total hp (max or current value)`, true, actorData);
       return healingEffects;
     }
 

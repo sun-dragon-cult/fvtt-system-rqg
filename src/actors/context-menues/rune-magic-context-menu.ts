@@ -16,7 +16,8 @@ export const runeMagicMenuOptions = (actor: RqgActor) => [
         await Ability.roll(actor, item.data.data.chance, 0, item.name);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll for RuneMagic item from the runemagic context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll for RuneMagic item from the runemagic context menu.`,
+          true
         );
       }
     },
@@ -45,7 +46,8 @@ export const runeMagicMenuOptions = (actor: RqgActor) => [
         await RqgActorSheet.showJournalEntry(journalId, journalPack);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] or journalId on actor ${actor.name} to view description of a rune magic item from the runemagic context menu.`
+          `Couldn't find itemId [${itemId}] or journalId on actor ${actor.name} to view description of a rune magic item from the runemagic context menu.`,
+          true
         );
       }
     },
@@ -61,7 +63,8 @@ export const runeMagicMenuOptions = (actor: RqgActor) => [
         item.sheet.render(true);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the runemagic item from the runemagic context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the runemagic item from the runemagic context menu.`,
+          true
         );
       }
     },
@@ -76,7 +79,8 @@ export const runeMagicMenuOptions = (actor: RqgActor) => [
         RqgActorSheet.confirmItemDelete(actor, itemId);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete the runemagic item from the runemagic context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete the runemagic item from the runemagic context menu.`,
+          true
         );
       }
     },

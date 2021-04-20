@@ -25,7 +25,8 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         await Ability.roll(actor, itemChance, 0, item.name);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] or item chance on actor ${actor.name} to do a direct roll on the rune item from the rune context menu.`
+          `Couldn't find itemId [${itemId}] or item chance on actor ${actor.name} to do a direct roll on the rune item from the rune context menu.`,
+          true
         );
       }
     },
@@ -41,7 +42,8 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a passion item from the passion context menu.`
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a passion item from the passion context menu.`,
+          true
         );
       }
     },
@@ -84,6 +86,7 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         logBug(
           `Couldn't find itemId [${itemId}] or the journalId [${journalId}] on actor ${actor.name} to
           view the rune item description from the rune context menu.`,
+          true,
           el,
           firstItemEl
         );
@@ -102,6 +105,7 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the rune item from the rune context menu.`,
+          true,
           el
         );
       }
@@ -118,6 +122,7 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete the rune item from the rune context menu.`,
+          true,
           el
         );
       }

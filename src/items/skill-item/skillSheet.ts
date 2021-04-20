@@ -52,7 +52,7 @@ export class SkillSheet extends RqgItemSheet {
       if (id) {
         el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
       } else {
-        logBug("couldn't find linked journal entry from Skill Item Sheet", elem, pack, id);
+        logBug("couldn't find linked journal entry from Skill Item Sheet", true, elem, pack, id);
       }
     });
   }

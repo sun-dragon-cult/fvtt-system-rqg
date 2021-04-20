@@ -23,6 +23,7 @@ export class RqgActiveEffect extends ActiveEffect {
         logMisconfiguration(
           `Could not find any ${affectedItem} called "${itemName}" on actor "${actor.name}".
                 Please either add a ${affectedItem} item called "${itemName}" or modify the item that has this active effect`,
+          !this.data.disabled,
           change,
           this
         );
@@ -35,6 +36,7 @@ export class RqgActiveEffect extends ActiveEffect {
     } else {
       logBug(
         `Apply Active Effect targets more than one item (item ${affectedItem} with name name "${itemName}" is not unique).`,
+        true,
         change
       );
       return null;

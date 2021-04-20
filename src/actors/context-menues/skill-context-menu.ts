@@ -16,6 +16,7 @@ export const skillMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the skill item from the skill context menu.`,
+          true,
           el
         );
       }
@@ -33,6 +34,7 @@ export const skillMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll on a skill item from the skill context menu.`,
+          true,
           el
         );
       }
@@ -54,6 +56,7 @@ export const skillMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a skill item from the skill context menu.`,
+          true,
           el
         );
       }
@@ -95,6 +98,7 @@ export const skillMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to view description of a skill item from the skill context menu`,
+          true,
           el
         );
       }
@@ -112,6 +116,7 @@ export const skillMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the skill item from the skill context menu`,
+          true,
           el
         );
       }
@@ -128,6 +133,7 @@ export const skillMenuOptions = (actor: RqgActor) => [
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete the skill item from the skill context menu.`,
+          true,
           el
         );
       }

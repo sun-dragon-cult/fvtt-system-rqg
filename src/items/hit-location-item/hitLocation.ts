@@ -16,6 +16,7 @@ export class HitLocation extends BaseItem {
     if (item.data.type !== ItemTypeEnum.HitLocation) {
       logBug(
         "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
+        true,
         item
       );
       return item;
@@ -35,7 +36,7 @@ export class HitLocation extends BaseItem {
 
       item.data.data.ap = item.data.data.naturalAp; // Init AP with natural AP before active effects
     } else {
-      logBug("Actor doesn't have max hitPoints", actor);
+      logBug("Actor doesn't have max hitPoints", true, actor);
     }
 
     return item;

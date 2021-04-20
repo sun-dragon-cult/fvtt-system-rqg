@@ -19,7 +19,7 @@ export class Skill extends BaseItem {
     const skillData = skillItem.data.data;
     const actor = skillItem.actor! as RqgActor;
     if (actor.data.type !== "character") {
-      logBug("actor is not of type character");
+      logBug("actor is not of type character", true);
       return item;
     }
     const actorData = actor.data.data;
@@ -41,7 +41,7 @@ export class Skill extends BaseItem {
           actorData.attributes.maximumEncumbrance
         );
       } else {
-        logBug("Equipped or max ENC was not set", actor);
+        logBug("Equipped or max ENC was not set", true, actor);
       }
     }
     if ("Jump" === skillItem.name) {

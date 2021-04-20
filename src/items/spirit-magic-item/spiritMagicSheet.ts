@@ -41,7 +41,7 @@ export class SpiritMagicSheet extends RqgItemSheet {
       if (id) {
         el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
       } else {
-        logBug("Couldn't find linked journal entry from Spirit magic sheet", elem, pack, id);
+        logBug("Couldn't find linked journal entry from Spirit magic sheet", true, elem, pack, id);
       }
     });
   }

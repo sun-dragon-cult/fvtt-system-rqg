@@ -37,6 +37,7 @@ export class ChatCardListeners {
     } else {
       logBug(
         `Couldn't find chatCard [${chatCard}] or chatMessageId [${chatMessageId}] while submitting a chat card form.`,
+        true,
         ev
       );
     }
@@ -52,6 +53,7 @@ export class ChatCardListeners {
     } else {
       logBug(
         `Couldn't find chatCard [${chatCard}] or chatMessageId [${chatMessageId}] while processing a chat card change event.`,
+        true,
         ev
       );
     }

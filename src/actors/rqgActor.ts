@@ -142,7 +142,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     if (actor) {
       return actor;
     } else {
-      logBug("Couldn't create actor");
+      logBug("Couldn't create actor", true);
       return new Actor();
     }
   }
@@ -240,7 +240,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
             return { _id: id, "data.equippedStatus": newEquippedStatus };
           });
         } else {
-          logBug("couldn't find item when updating equipped status", i, this);
+          logBug("couldn't find item when updating equipped status", true, i, this);
         }
       });
       itemsToUpdate[0] && (await this.updateEmbeddedEntity("OwnedItem", itemsToUpdate[0])); // TODO fix nested arrays

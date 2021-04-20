@@ -171,7 +171,7 @@ export function getItemIdsInSameLocationTree(item: RqgItemData, actor: RqgActor)
     let itemIds = getDescendants([], rootNode);
     return itemIds.map((id) => id);
   } else {
-    logBug("Couldn't find root location Node", itemLocationTree);
+    logBug("Couldn't find root location Node", true, itemLocationTree);
     return [];
   }
 }
