@@ -483,7 +483,7 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@league-of-foundry-developers/foundry-vtt-types@^0.7.9-5":
+"@league-of-foundry-developers/foundry-vtt-types@^0.7.9-6":
   version "0.7.9-6"
   resolved "https://registry.yarnpkg.com/@league-of-foundry-developers/foundry-vtt-types/-/foundry-vtt-types-0.7.9-6.tgz#02db5044c8cfb377052e054514732dfe542a8f8a"
   integrity sha512-NdLNuzLGTCU8fA94JLUiOHrAMlE8NOa2YA2wc+Q27ljf+ZFPxjhwnp80e8uUryQI4CNb+O0ldPpTXnSAz7AAKA==
@@ -4315,9 +4315,9 @@ sane@^4.0.3:
     walker "~1.0.5"
 
 sass@^1.3.0, sass@^1.32.0:
-  version "1.32.10"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.10.tgz#d40da4e20031b450359ee1c7e69bc8cc89569241"
-  integrity sha512-Nx0pcWoonAkn7CRp0aE/hket1UP97GiR1IFw3kcjV3pnenhWgZEWUf0ZcfPOV2fK52fnOcK3JdC/YYZ9E47DTQ==
+  version "1.32.11"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.11.tgz#b236b3ea55c76602c2ef2bd0445f0db581baa218"
+  integrity sha512-O9tRcob/fegUVSIV1ihLLZcftIOh0AF1VpKgusUfLqnb2jQ0GLDwI5ivv1FYWivGv8eZ/AwntTyTzjcHu0c/qw==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
 
