@@ -1,3 +1,26 @@
+# [0.16.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.15.0...v0.16.0) (2021-04-20)
+
+
+### Bug Fixes
+
+* don't show dodge & spirit combat if the actor doesn't have those items ([bb37c70](https://github.com/wakeand/fvtt-system-rqg/commit/bb37c70))
+* limit extreme skill category modifiers by only increasing in 1% steps after +30% ([8a73bfc](https://github.com/wakeand/fvtt-system-rqg/commit/8a73bfc))
+* locations stopped working ([7618fbc](https://github.com/wakeand/fvtt-system-rqg/commit/7618fbc))
+* mistake when typing itemSheets ([543ef66](https://github.com/wakeand/fvtt-system-rqg/commit/543ef66))
+* multiple smaller wounds doesn't make actor unconscious ([f4b3cef](https://github.com/wakeand/fvtt-system-rqg/commit/f4b3cef))
+* reduce number of gui warning notifications while keeping the console logs ([bd1cb9e](https://github.com/wakeand/fvtt-system-rqg/commit/bd1cb9e))
+* token status effects don't update when affected by low hp ([1fb9212](https://github.com/wakeand/fvtt-system-rqg/commit/1fb9212))
+
+
+### Features
+
+* include damage rules för limbs etc, also rework the edit wounds dialog to a heal wound dialog ([af36f0d](https://github.com/wakeand/fvtt-system-rqg/commit/af36f0d))
+* only combatant (or GM) owner should be allowed to change combat tracker SR ([dfce972](https://github.com/wakeand/fvtt-system-rqg/commit/dfce972))
+* re-add token effects and abdomen hits that make legs useless ([3036945](https://github.com/wakeand/fvtt-system-rqg/commit/3036945))
+
+
+
+
 # [0.15.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.14.0...v0.15.0) (2021-03-09)
 
 
