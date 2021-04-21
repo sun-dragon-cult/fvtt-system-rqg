@@ -116,16 +116,13 @@ export class SpiritMagicCard {
     actor: RqgActor
   ): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.html", flags);
-    let whisperRecipients = game.users?.filter((u) => u.isGM && u.active);
-    // @ts-ignore TODO remove
-    whisperRecipients.push(game.user._id);
 
     return {
       flavor: "Spirit Magic: " + flags.itemData.name,
       user: game.user?.id,
       speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
-      whisper: whisperRecipients,
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

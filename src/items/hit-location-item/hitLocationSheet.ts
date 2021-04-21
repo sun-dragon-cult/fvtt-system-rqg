@@ -109,7 +109,6 @@ export class HitLocationSheet extends RqgItemSheet {
     const applyDamageToTotalHp: boolean = !!data.toTotalHp;
     const subtractAP: boolean = !!data.subtractAP;
     let damage = Number(data.damage);
-    // const actor = hitLocation.actor as RqgActor;
     if (subtractAP) {
       const ap = hitLocation.data.data.ap;
       if (ap != null) {
@@ -130,7 +129,13 @@ export class HitLocationSheet extends RqgItemSheet {
       uselessLegs,
     } = DamageCalculations.addWound(damage, applyDamageToTotalHp, hitLocation.data, actor.data);
 
-    notification && ui.notifications?.info(notification, { permanent: true });
+    await ChatMessage.create({
+      user: game.user?._id,
+      speaker: ChatMessage.getSpeaker({ token: token }),
+      content: `${token.name} Takes a hit to ${hitLocation.name}. ${notification}`,
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
+      type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
+    });
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
     actorUpdates && (await token.actor.update(actorUpdates));
 

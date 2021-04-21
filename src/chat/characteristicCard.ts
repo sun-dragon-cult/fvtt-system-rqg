@@ -187,10 +187,6 @@ export class CharacteristicCard {
     actor: RqgActor
   ): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
-    let whisperRecipients = game.users?.filter((u) => u.isGM && u.active);
-    // @ts-ignore TODO remove
-    whisperRecipients.push(game.user._id);
-
     return {
       flavor:
         "Characteristic: " +
@@ -201,7 +197,7 @@ export class CharacteristicCard {
       user: game.user?._id,
       speaker: ChatMessage.getSpeaker({ actor: actor as any }),
       content: html,
-      whisper: whisperRecipients,
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

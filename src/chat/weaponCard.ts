@@ -161,14 +161,12 @@ export class WeaponCard extends ChatMessage {
 
   private static async renderContent(flags: WeaponCardFlags, actor: RqgActor): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/weaponCard.html", flags);
-    let whisperRecipients = game.users?.filter((u) => u.isGM && u.active) || [];
-    whisperRecipients.push(game.user!);
     return {
       flavor: "Weapon: " + flags.weaponItemData.name,
       user: game.user?.id,
       speaker: ChatMessage.getSpeaker({ actor: actor }),
       content: html,
-      whisper: whisperRecipients,
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

@@ -253,10 +253,8 @@ export class DamageCalculations {
     }
 
     if (totalHitPoints <= 0) {
-      ui.notifications?.info(`${actorData.name} drops dead`);
       return "dead";
     } else if (totalHitPoints <= 2) {
-      ui.notifications?.info(`${actorData.name} falls into unconciousness`);
       return "unconscious";
     } else {
       return actorData.items

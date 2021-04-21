@@ -100,15 +100,12 @@ export class ItemCard {
 
   private static async renderContent(flags: ItemCardFlags, actor: RqgActor): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
-    let whisperRecipients = game.users?.filter((u) => u.isGM && u.active) || [];
-    whisperRecipients.push(game.user!);
-
     return {
       flavor: flags.itemData.type + ": " + flags.itemData.name,
       user: game.user?.id,
       speaker: ChatMessage.getSpeaker({ actor: actor }),
       content: html,
-      whisper: whisperRecipients,
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

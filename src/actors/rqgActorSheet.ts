@@ -393,6 +393,31 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         formData["data.attributes.hitPoints.value"];
     }
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor.data);
+    if (newHealth !== this.actor.data.data.attributes.health) {
+      // Chat to all owners
+      const whisperRecipients = Object.entries(this.actor.data.permission)
+        .filter(([userId, permission]) => permission >= ENTITY_PERMISSIONS.OBSERVER)
+        .map(([userId, permission]) => userId);
+
+      let message;
+      if (newHealth === "dead" && !this.actor.effects.find((e) => e.data.label === "dead")) {
+        message = `${this.actor.name} runs out of hitpoints and dies here and now!`;
+      }
+      if (
+        newHealth === "unconscious" &&
+        !this.actor.effects.find((e) => e.data.label === "unconscious")
+      ) {
+        message = `${this.actor.name} faints from lack of hitpoints!`;
+      }
+      message &&
+        ChatMessage.create({
+          user: game.user?._id,
+          speaker: ChatMessage.getSpeaker({ alias: this.actor.name }),
+          content: message,
+          whisper: whisperRecipients,
+          type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
+        });
+    }
     if (this.token) {
       this.token.actor.data.data.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
       const tokenHealthBefore = this.token.actor.data.data.attributes.health;
