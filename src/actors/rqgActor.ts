@@ -33,7 +33,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
     const data = this.data.data;
-    const [str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
+    const { con, siz, pow } = this.actorCharacteristics();
     data.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
@@ -53,7 +53,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
   prepareDerivedData(): void {
     super.prepareDerivedData();
     const data = this.data.data;
-    const [str, con, siz, dex, int, pow, cha] = this.actorCharacteristics();
+    const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
     data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
       str,
       siz,
@@ -147,14 +147,13 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     }
   }
 
-  // @ts-ignore TODO remove
   protected _onCreateEmbeddedEntity(
     embeddedName: string,
-    child: Item.Data,
+    child: Actor.OwnedItemData<any> | ActiveEffect.Data,
     options: any,
     userId: string
-  ): Promise<void> {
-    if (embeddedName === "OwnedItem" && this.owner) {
+  ): void {
+    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
       const updateData = ResponsibleItemClass.get(child.type)?.onEmbedItem(
         this,
         child,
@@ -163,18 +162,16 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       );
       updateData && this.updateOwnedItem(updateData);
     }
-    // @ts-ignore TODO remove
     return super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
   }
 
-  // @ts-ignore TODO remove
   protected _onDeleteEmbeddedEntity(
     embeddedName: string,
-    child: Item.Data,
+    child: Actor.OwnedItemData<any> | ActiveEffect.Data,
     options: any,
     userId: string
-  ) {
-    if (embeddedName === "OwnedItem" && this.owner) {
+  ): void {
+    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
       const updateData = ResponsibleItemClass.get(child.type)?.onDeleteItem(
         this,
         child,
@@ -183,7 +180,6 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       );
       updateData && this.updateOwnedItem(updateData);
     }
-    // @ts-ignore
     return super._onDeleteEmbeddedEntity(embeddedName, child, options, userId);
   }
 
@@ -194,7 +190,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     options: any,
     userId: string
   ) {
-    if (embeddedName === "OwnedItem" && this.owner) {
+    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
       const updateData = ResponsibleItemClass.get(child.type)?.onUpdateItem(
         this,
         child,
@@ -207,23 +203,27 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     return super._onUpdateEmbeddedEntity(embeddedName, child, update, options, userId);
   }
 
-  // @ts-ignore TODO remove
-  _onModifyEmbeddedEntity(embeddedName, ...args) {
-    if (embeddedName === "OwnedItem" && this.owner && args[3].action !== "create") {
-      this.updateEquippedStatus(args[0]).then(
+  _onModifyEmbeddedEntity(
+    embeddedName: string,
+    changes: Actor.OwnedItemData<any>[] | ActiveEffect.Data[],
+    options: any,
+    userId: string,
+    context: any
+  ) {
+    if (embeddedName === "OwnedItem" && game.user?._id === userId && context.action !== "create") {
+      this.updateEquippedStatus(changes).then(
         () =>
           // Try doing stuff after actor has updated
-          setTimeout(this.updateEncumbrance.bind(this), 0) // TODO Solve without releasing thread?
+          setTimeout(this.updateEncumbrance.bind(this), 0) // TODO Solve without releasing thread?... Or try to do in preUpdate instead!
       );
     }
-    // @ts-ignore TODO remove
-    super._onModifyEmbeddedEntity(embeddedName, ...args);
+    super._onModifyEmbeddedEntity(embeddedName, changes, options, userId, context);
   }
 
-  private async updateEquippedStatus(changes: any) {
-    const equippedStatusChanges: any[] = changes.filter(
+  private async updateEquippedStatus(changes: Actor.OwnedItemData<any>[]): Promise<void> {
+    const equippedStatusChanges = changes.filter(
       // FIXME changes can be a list of id:s if removed *** *** ***
-      (i: any) => i?.data?.equippedStatus || typeof i?.data?.location !== "undefined"
+      (i) => i?.data?.equippedStatus || typeof i?.data?.location !== "undefined"
     );
     if (equippedStatusChanges.length) {
       // Check that equippedStatus has changed
@@ -248,7 +248,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     }
   }
 
-  private async updateEncumbrance() {
+  private async updateEncumbrance(): Promise<void> {
     const equippedEncumbrance = Math.round(
       this.items
         .filter(
@@ -292,7 +292,15 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
   }
 
   // Return shorthand access to actor data & characteristics
-  private actorCharacteristics(): [number, number, number, number, number, number, number] {
+  private actorCharacteristics(): {
+    str: number;
+    con: number;
+    siz: number;
+    dex: number;
+    int: number;
+    pow: number;
+    cha: number;
+  } {
     const characteristics = this.data.data.characteristics;
     const str = characteristics.strength.value;
     const con = characteristics.constitution.value;
@@ -301,6 +309,6 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     const int = characteristics.intelligence.value;
     const pow = characteristics.power.value;
     const cha = characteristics.charisma.value;
-    return [str, con, siz, dex, int, pow, cha];
+    return { str, con, siz, dex, int, pow, cha };
   }
 }
