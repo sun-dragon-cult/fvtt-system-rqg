@@ -132,7 +132,7 @@ export class HitLocationSheet extends RqgItemSheet {
     await ChatMessage.create({
       user: game.user?._id,
       speaker: ChatMessage.getSpeaker({ token: token }),
-      content: `${token.name} Takes a hit to ${hitLocation.name}. ${notification}`,
+      content: `${token.name} takes a hit to ${hitLocation.name}. ${notification}`,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
     });

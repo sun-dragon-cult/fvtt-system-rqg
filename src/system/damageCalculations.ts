@@ -120,19 +120,19 @@ export class DamageCalculations {
       hitLocationHealthStatuses.indexOf(hitLocationData.data.hitLocationHealthState) <
         hitLocationHealthStatuses.indexOf("useless")
     ) {
-      damageEffects.notification = `${actorName}s ${hitLocationData.name} is useless and cannot hold anything / support standing. You can fight with whatever limbs are still functional.`;
+      damageEffects.notification = `${actorName}'s ${hitLocationData.name} is useless and cannot hold anything / support standing. ${actorName} can still fight with whatever limbs are still functional.`;
       mergeObject(damageEffects.hitLocationUpdates, {
         data: { hitLocationHealthState: "useless" },
       } as any);
     }
     if (fullDamage >= hpMax * 2) {
-      damageEffects.notification = `${actorName} is functionally incapacitated: you can no longer fight until healed and am in shock. You may try to heal yourself.`;
+      damageEffects.notification = `${actorName} is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted.`;
       mergeObject(damageEffects.hitLocationUpdates, {
         data: { hitLocationHealthState: "useless", actorHealthImpact: "shock" },
       } as any);
     }
     if (fullDamage >= hpMax * 3) {
-      damageEffects.notification = `${actorName}s ${hitLocationData.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. ${actorName} is functionally incapacitated: and can no longer fight until healed and am in shock. You may try to heal yourself.`;
+      damageEffects.notification = `${actorName}'s ${hitLocationData.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. ${actorName} is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible.`;
       mergeObject(damageEffects.hitLocationUpdates, {
         data: { hitLocationHealthState: "severed" },
       } as any);
