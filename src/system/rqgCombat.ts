@@ -72,7 +72,7 @@ function sortCombatants(a: any, b: any): any {
 function getEntryContextOptions(this: CombatTracker): ContextMenu.Item[] {
   const combat = this.combat;
   if (!combat) {
-    logBug("Couldn't find combat", true);
+    // No currently active combat
     return [];
   }
   return [
