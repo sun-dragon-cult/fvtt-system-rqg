@@ -1,4 +1,4 @@
-import { RqgActor } from "../../actors/rqgActor";
+import { logBug } from "../../system/util";
 
 export interface IAbility {
   /** The effective % chance of this ability with all modifiers added in */
@@ -26,11 +26,14 @@ export class Ability {
    * chanceMod - a +/- value that changes the chance
    **/
   public static async roll(
-    actor: RqgActor,
+    token: Token,
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     flavor: string // TODO Rename to ability?
   ): Promise<ResultEnum> {
+    if (!token) {
+      logBug("No token when doing Ability roll", true);
+    }
     const r = new Roll("1D100");
     r.roll();
     const modifiedChance: number = chance + chanceMod;
@@ -39,7 +42,7 @@ export class Ability {
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = game.i18n.localize(`ResultEnum.${result}`);
     await r.toMessage({
-      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
+      speaker: ChatMessage.getSpeaker({ token: token }),
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flavor: `${flavor} (${chance}${chanceModText}%) ${resultText}`,
     });

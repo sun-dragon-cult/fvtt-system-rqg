@@ -22,7 +22,7 @@ import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
 import { Characteristics } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "./rqgActor";
-import { logBug, logMisconfiguration } from "../system/util";
+import { getTokenFromActor, logBug, logMisconfiguration } from "../system/util";
 import { RuneTypeEnum } from "../data-model/item-data/runeData";
 import { RqgConfig } from "../system/config";
 import { DamageCalculations } from "../system/damageCalculations";
@@ -430,23 +430,36 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     return super._updateObject(event, formData);
   }
 
+  get title(): string {
+    return this.token && !this.token.data.actorLink
+      ? `[Token] ${this.token.name} (${this.actor.name})`
+      : this.actor.name;
+  }
+
   activateListeners(html: JQuery): void {
     super.activateListeners(html);
     if (!this.actor.owner) {
       // Only owners are allowed to interact
       return;
     }
+    const bestEffortToken = this.token ? this.token : getTokenFromActor(this.actor);
 
+    // Most menu options are only reasonable for tokens, but some like edit item is needed for setting up actors
+    // so I supply both token and actor and let the context menu filter on what to show.
     new ContextMenu(html, ".characteristic-contextmenu", characteristicMenuOptions(this.actor));
-    new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor as any));
-    new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor as any));
-    new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(this.actor as any));
-    new ContextMenu(html, ".spirit-magic-contextmenu", spiritMagicMenuOptions(this.actor as any));
+    new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(bestEffortToken, this.actor));
+    new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));
+    new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(bestEffortToken, this.actor));
+    new ContextMenu(
+      html,
+      ".spirit-magic-contextmenu",
+      spiritMagicMenuOptions(bestEffortToken, this.actor)
+    );
     new ContextMenu(html, ".cult-contextmenu", cultMenuOptions(this.actor as any));
     new ContextMenu(html, ".rune-magic-contextmenu", runeMagicMenuOptions(this.actor as any));
-    new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(this.actor as any));
+    new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(bestEffortToken, this.actor));
     new ContextMenu(html, ".gear-contextmenu", gearMenuOptions(this.actor));
-    new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(this.actor as any));
+    new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(bestEffortToken, this.actor));
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
@@ -498,7 +511,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!itemId) {
         logBug(
-          `Couldn't find item [${itemId}] on actor ${this.actor.name} (token ${this.token?.data.name}) to roll Ability Chance against`,
+          `Couldn't find item [${itemId}] on actor ${this.actor.name} (token ${this.token?.name}) to roll Ability Chance against`,
           true,
           el
         );
@@ -508,14 +521,15 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
         el.addEventListener("click", async (ev: Event) => {
           clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+          const bestEffortToken = this.token ? this.token : getTokenFromActor(this.actor);
 
           if (clickCount >= 2) {
-            await ItemCard.roll(this.actor as any, item.data, 0);
+            bestEffortToken && (await ItemCard.roll(bestEffortToken, item.data, 0));
             clickCount = 0;
           } else if (clickCount === 1) {
             setTimeout(async () => {
               if (clickCount === 1) {
-                await ItemCard.show(this.actor as any, itemId);
+                bestEffortToken && (await ItemCard.show(bestEffortToken, itemId));
               }
               clickCount = 0;
             }, CONFIG.RQG.dblClickTimeout);
@@ -538,19 +552,22 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             logBug("Tried to roll a Spirit Magic Roll against some other Item", true, item);
           } else {
             clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-
+            const bestEffortToken = this.token ? this.token : getTokenFromActor(this.actor);
+            if (!bestEffortToken) {
+              return;
+            }
             if (clickCount >= 2) {
               if (item.data.data.isVariable && item.data.data.points > 1) {
-                await SpiritMagicCard.show(this.actor, itemId);
+                await SpiritMagicCard.show(bestEffortToken, itemId);
               } else {
-                await SpiritMagicCard.roll(this.actor, item.data, item.data.data.points, 0);
+                await SpiritMagicCard.roll(bestEffortToken, item.data, item.data.data.points, 0);
               }
 
               clickCount = 0;
             } else if (clickCount === 1) {
               setTimeout(async () => {
                 if (clickCount === 1) {
-                  await SpiritMagicCard.show(this.actor, itemId);
+                  await SpiritMagicCard.show(bestEffortToken, itemId);
                 }
                 clickCount = 0;
               }, CONFIG.RQG.dblClickTimeout);
@@ -573,15 +590,16 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         let clickCount = 0;
         el.addEventListener("click", async (ev: Event) => {
           clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-
+          const bestEffortToken = this.token ? this.token : getTokenFromActor(this.actor);
           if (clickCount >= 2) {
             // Ignore double clicks by doing the same as on single click
-            await WeaponCard.show(this.actor as any, skillItemId, weaponItemId);
+            bestEffortToken && (await WeaponCard.show(bestEffortToken, skillItemId, weaponItemId));
             clickCount = 0;
           } else if (clickCount === 1) {
             setTimeout(async () => {
               if (clickCount === 1) {
-                await WeaponCard.show(this.actor as any, skillItemId, weaponItemId);
+                bestEffortToken &&
+                  (await WeaponCard.show(bestEffortToken, skillItemId, weaponItemId));
               }
               clickCount = 0;
             }, CONFIG.RQG.dblClickTimeout);
