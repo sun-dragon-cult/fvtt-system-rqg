@@ -430,6 +430,12 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     return super._updateObject(event, formData);
   }
 
+  get title(): string {
+    return this.token && !this.token.data.actorLink
+      ? `[Token] ${this.token.name} (${this.actor.name})`
+      : this.actor.name;
+  }
+
   activateListeners(html: JQuery): void {
     super.activateListeners(html);
     if (!this.actor.owner) {
