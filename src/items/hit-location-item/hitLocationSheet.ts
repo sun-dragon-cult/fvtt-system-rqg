@@ -6,7 +6,7 @@ import {
   hitLocationHealthStatuses,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
-import { logBug } from "../../system/util";
+import { getTokenFromActor, logBug } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
@@ -33,20 +33,10 @@ export class HitLocationSheet extends RqgItemSheet {
   }
 
   static showAddWoundDialog(token: Token, actor: RqgActor, hitLocationItemId: string): void {
-    if (!actor.isToken) {
-      if (actor.data.token.actorLink) {
-        // @ts-ignore tokens
-        token = canvas.tokens.ownedTokens.find((t) => t.actor.id === actor._id);
-        if (!token) {
-          ui.notifications?.info("This actor does not have any tokens on the map");
-          return;
-        }
-      } else {
-        ui.notifications?.info("This actor template is not linked and was not opened from a token");
-        return;
-      }
+    const bestEffortToken = token ? token : getTokenFromActor(actor as RqgActor);
+    if (!bestEffortToken) {
+      return;
     }
-
     const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationItemData>;
     const dialogContent =
       '<form><input type="number" id="inflictDamagePoints" name="damage"><br><label><input type="checkbox" name="toTotalHp" checked> Apply to total HP</label><br><label><input type="checkbox" name="subtractAP" checked> Subtract AP</label><br></form>';
@@ -65,7 +55,7 @@ export class HitLocationSheet extends RqgItemSheet {
             callback: async (html: JQuery | HTMLElement) =>
               await HitLocationSheet.submitAddWoundDialog(
                 html as JQuery,
-                token,
+                bestEffortToken,
                 actor,
                 hitLocation
               ),
@@ -89,20 +79,10 @@ export class HitLocationSheet extends RqgItemSheet {
     actor: RqgActor,
     hitLocation: Item<HitLocationItemData>
   ) {
-    if (!actor.isToken) {
-      if (actor.data.token.actorLink) {
-        // @ts-ignore tokens
-        token = canvas.tokens.ownedTokens.find((t) => t.actor.id === actor._id);
-        if (!token) {
-          ui.notifications?.info("This actor does not have any tokens on the map");
-          return;
-        }
-      } else {
-        ui.notifications?.info("This actor template is not linked and was not opened from a token");
-        return;
-      }
+    const bestEffortToken = token ? token : getTokenFromActor(actor as RqgActor);
+    if (!bestEffortToken) {
+      return;
     }
-
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
@@ -121,7 +101,7 @@ export class HitLocationSheet extends RqgItemSheet {
         );
       }
     }
-    const actorHealthBefore = (token.actor as RqgActor).data.data.attributes.health;
+    const actorHealthBefore = (bestEffortToken.actor as RqgActor).data.data.attributes.health;
     const {
       hitLocationUpdates,
       actorUpdates,
@@ -131,15 +111,15 @@ export class HitLocationSheet extends RqgItemSheet {
 
     await ChatMessage.create({
       user: game.user?._id,
-      speaker: ChatMessage.getSpeaker({ token: token }),
-      content: `${token.name} takes a hit to ${hitLocation.name}. ${notification}`,
+      speaker: ChatMessage.getSpeaker({ token: bestEffortToken }),
+      content: `${bestEffortToken.name} takes a hit to ${hitLocation.name}. ${notification}`,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
     });
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
-    actorUpdates && (await token.actor.update(actorUpdates));
+    actorUpdates && (await bestEffortToken.actor.update(actorUpdates));
 
-    await HitLocationSheet.setTokenEffect(token, actorHealthBefore);
+    await HitLocationSheet.setTokenEffect(bestEffortToken, actorHealthBefore);
     for (const update of uselessLegs) {
       await actor.getOwnedItem(update._id).update(update);
     }
@@ -206,6 +186,10 @@ export class HitLocationSheet extends RqgItemSheet {
     const data = Object.fromEntries(formData.entries());
     const hpValue = hitLocation.data.data.hp.value;
     const hpMax = hitLocation.data.data.hp.max;
+    const bestEffortToken = token ? token : getTokenFromActor(actor as RqgActor);
+    if (!bestEffortToken) {
+      return;
+    }
     if (hpValue == null || hpMax == null) {
       logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, true, hitLocation);
       return;
@@ -213,22 +197,22 @@ export class HitLocationSheet extends RqgItemSheet {
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
 
-    const actorHealthBefore = (token.actor as RqgActor).data.data.attributes.health;
+    const actorHealthBefore = (bestEffortToken.actor as RqgActor).data.data.attributes.health;
 
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,
       hitLocation.data,
-      actor.data
+      (bestEffortToken.actor as RqgActor).data
     );
 
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
-    actorUpdates && (await token.actor.update(actorUpdates));
+    actorUpdates && (await bestEffortToken.actor.update(actorUpdates));
 
-    HitLocationSheet.setTokenEffect(token, actorHealthBefore);
+    await HitLocationSheet.setTokenEffect(bestEffortToken, actorHealthBefore);
 
     for (const update of usefulLegs) {
-      await actor.getOwnedItem(update._id).update(update);
+      await bestEffortToken.actor.getOwnedItem(update._id).update(update);
     }
   }
 

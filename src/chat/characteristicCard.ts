@@ -9,7 +9,7 @@ export type CharacteristicData = {
 };
 
 type CharacteristicCardFlags = {
-  actorId: string;
+  actorId: string; // TODO Change to Token
   characteristic: CharacteristicData;
   formData: {
     difficulty: number;
@@ -117,7 +117,7 @@ export class CharacteristicCard {
   }
 
   public static async roll(
-    actor: RqgActor,
+    actor: RqgActor, // TODO Change to Token
     characteristicName: string,
     characteristicValue: number,
     difficulty: number,
@@ -133,7 +133,7 @@ export class CharacteristicCard {
   }
 
   public static async checkExperience(
-    actor: RqgActor,
+    actor: RqgActor, // TODO Change to Token
     characteristicName: string,
     result: ResultEnum
   ): Promise<void> {

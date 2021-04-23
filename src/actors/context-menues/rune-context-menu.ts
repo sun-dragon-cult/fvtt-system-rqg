@@ -4,11 +4,11 @@ import { RuneItemData } from "../../data-model/item-data/runeData";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, logBug } from "../../system/util";
 
-export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const runeMenuOptions = (token: Token | undefined, actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => true,
+    condition: () => !!token,
     callback: () => {
       ui.notifications?.info("TODO Roll with Modifier");
     },
@@ -16,16 +16,18 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => true,
+    condition: () => !!token,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<RuneItemData>;
+      const item = (itemId && token!.actor.getOwnedItem(itemId)) as Item<RuneItemData>;
       const itemChance = item && item.data.data.chance;
       if (itemChance != null) {
-        await Ability.roll(actor, itemChance, 0, item.name);
+        await Ability.roll(token!, itemChance, 0, item.name);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] or item chance on actor ${actor.name} to do a direct roll on the rune item from the rune context menu.`,
+          `Couldn't find itemId [${itemId}] or item chance on token ${
+            token!.name
+          } to do a direct roll on the rune item from the rune context menu.`,
           true
         );
       }
@@ -34,15 +36,17 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Toggle Experience",
     icon: '<i class="fas fa-lightbulb"></i>',
-    condition: () => true,
+    condition: () => !!token,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<RuneItemData>;
+      const item = (itemId && token!.actor.getOwnedItem(itemId)) as Item<RuneItemData>;
       if (item) {
         await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a passion item from the passion context menu.`,
+          `Couldn't find itemId [${itemId}] on token ${
+            token!.name
+          } to toggle experience on a passion item from the passion context menu.`,
           true
         );
       }
@@ -53,7 +57,7 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<RuneItemData>;
+      const item = (itemId && token?.actor.getOwnedItem(itemId)) as Item<RuneItemData>;
       return !!item?.data.data.hasExperience;
     },
     callback: () => {
@@ -84,7 +88,7 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         await RqgActorSheet.showJournalEntry(journalId, journalPack);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] or the journalId [${journalId}] on actor ${actor.name} to
+          `Couldn't find itemId [${itemId}] or the journalId [${journalId}] on token ${token?.name} to
           view the rune item description from the rune context menu.`,
           true,
           el,
