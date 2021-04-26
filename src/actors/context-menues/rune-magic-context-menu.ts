@@ -2,9 +2,9 @@ import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RuneMagicItemData } from "../../data-model/item-data/runeMagicData";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getTokenFromId, logBug } from "../../system/util";
+import { getDomDataset, logBug } from "../../system/util";
 
-export const runeMagicMenuOptions = (actor: RqgActor) => [
+export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Roll",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -13,10 +13,7 @@ export const runeMagicMenuOptions = (actor: RqgActor) => [
       const itemId = getDomDataset(el, "item-id");
       const item = (itemId && actor.getOwnedItem(itemId)) as Item<RuneMagicItemData>;
       if (item) {
-        const token = getTokenFromId(actor.token?.id);
-        if (token) {
-          await Ability.roll(token, item.data.data.chance, 0, item.name);
-        }
+        await Ability.roll(actor, item.data.data.chance, 0, item.name);
       } else {
         logBug(
           `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll for RuneMagic item from the runemagic context menu.`,

@@ -1,4 +1,4 @@
-import { HitLocationItemData, HitLocationTypesEnum } from "../data-model/item-data/hitLocationData";
+import { HitLocationItemData } from "../data-model/item-data/hitLocationData";
 import { logBug } from "./util";
 import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ActorHealthState } from "../data-model/actor-data/attributes";

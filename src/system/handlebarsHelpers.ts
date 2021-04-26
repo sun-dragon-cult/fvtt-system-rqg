@@ -1,5 +1,5 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
-import { logBug } from "./util";
+import { getActorFromIds, logBug } from "./util";
 import { RqgConfig } from "./config";
 
 declare const CONFIG: RqgConfig;
@@ -14,36 +14,23 @@ export const handlebarsHelpers = function () {
     return `${new Intl.NumberFormat().format(value)} ${unit}`;
   });
 
-  Handlebars.registerHelper("itemname", (itemId, actorId) => {
-    const actor = game.actors?.find((a) => a._id === actorId);
-    if (!actor) {
-      console.warn(
-        `RQG | Handlebar helper "itemname": Couldn't find actor "${actorId}" while checking itemname "${itemId}" `
-      );
-    }
-    const item = actor?.items.get(itemId);
+  Handlebars.registerHelper("itemname", (itemId, actorId, tokenId) => {
+    const actor = getActorFromIds(actorId, tokenId);
+    const item = actor.items.get(itemId);
     return item ? item.data.name : "---";
   });
 
-  Handlebars.registerHelper("skillchance", (itemId, actorId) => {
-    const actor = game.actors?.find((a) => a._id === actorId);
-    if (!actor) {
-      console.warn(
-        `RQG | Handlebar helper "skillchance": Couldn't find actor "${actorId}" while checking skill chance on item "${itemId}" `
-      );
-    }
-    const item = actor?.items.get(itemId);
+  Handlebars.registerHelper("skillchance", (itemId, actorId, tokenId) => {
+    const actor = getActorFromIds(actorId, tokenId);
+    const item = actor.items.get(itemId);
+    // @ts-ignore chance
     return item ? item.data.data.chance : "---";
   });
 
-  Handlebars.registerHelper("experiencedclass", (itemId, actorId) => {
-    const actor = game.actors?.find((a) => a._id === actorId);
-    if (!actor) {
-      console.warn(
-        `RQG | Handlebar helper "experiencedclass": Couldn't find actor "${actorId}" while checking experience on item "${itemId}" `
-      );
-    }
-    const item = actor?.items.get(itemId);
+  Handlebars.registerHelper("experiencedclass", (itemId, actorId, tokenId) => {
+    const actor = getActorFromIds(actorId, tokenId);
+    const item = actor.items.get(itemId);
+    // @ts-ignore hasExperience
     return item && item.data.data.hasExperience ? "experienced" : "";
   });
 

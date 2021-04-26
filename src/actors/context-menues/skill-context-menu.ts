@@ -4,20 +4,18 @@ import { RqgActor } from "../rqgActor";
 import { getDomDataset, logBug } from "../../system/util";
 import { SkillItemData } from "../../data-model/item-data/skillData";
 
-export const skillMenuOptions = (token: Token | undefined, actor: RqgActor) => [
+export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => !!token,
+    condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       if (itemId) {
-        await ItemCard.show(token!, itemId);
+        await ItemCard.show(itemId, actor);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on token ${
-            token!.name
-          } to edit the skill item from the skill context menu.`,
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the skill item from the skill context menu.`,
           true,
           el
         );
@@ -27,18 +25,16 @@ export const skillMenuOptions = (token: Token | undefined, actor: RqgActor) => [
   {
     name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => !!token,
+    condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = (itemId && actor.getOwnedItem(itemId)) as Item<SkillItemData>;
       const itemChance = item && item.data.data.chance;
       if (itemChance) {
-        await ItemCard.roll(token!, item.data, 0);
+        await ItemCard.roll(item.data, 0, actor);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on token ${
-            token!.name
-          } to do a direct roll on a skill item from the skill context menu.`,
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll on a skill item from the skill context menu.`,
           true,
           el
         );
@@ -50,12 +46,12 @@ export const skillMenuOptions = (token: Token | undefined, actor: RqgActor) => [
     icon: '<i class="fas fa-lightbulb"></i>',
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = token?.actor.getOwnedItem(itemId) as Item<SkillItemData>;
+      const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
       return !!item?.data.data.canGetExperience;
     },
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && token!.actor.getOwnedItem(itemId)) as Item<SkillItemData>;
+      const item = (itemId && actor.getOwnedItem(itemId)) as Item<SkillItemData>;
       if (item) {
         await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
       } else {
@@ -72,7 +68,7 @@ export const skillMenuOptions = (token: Token | undefined, actor: RqgActor) => [
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && token?.actor.getOwnedItem(itemId)) as Item<SkillItemData>;
+      const item = (itemId && actor.getOwnedItem(itemId)) as Item<SkillItemData>;
       return !!item?.data.data.hasExperience;
     },
     callback: () => {
@@ -102,7 +98,7 @@ export const skillMenuOptions = (token: Token | undefined, actor: RqgActor) => [
         await RqgActorSheet.showJournalEntry(journalId, journalPack);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${token?.name} to view description of a skill item from the skill context menu`,
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to view description of a skill item from the skill context menu`,
           true,
           el
         );

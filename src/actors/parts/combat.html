@@ -14,8 +14,8 @@
   {{#unless data.data.isNatural}}
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu"><img class="item" src="{{img}}"></div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">{{name}}</div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId @root.rqgActorData._id}}">
-      <span class="text-right">{{skillchance data.data.skillId @root.rqgActorData._id}}%</span>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId @root.rqgActorData._id @root.tokenId}}">
+      <span class="text-right">{{skillchance data.data.skillId @root.rqgActorData._id @root.tokenId}}%</span>
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
       <input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value" value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}
@@ -32,8 +32,8 @@
   {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll><img class="item" src="{{img}}"></div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">{{name}} ({{quantity data.data.projectileId @root.rqgActorData._id}})</div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId @root.rqgActorData._id}}">
-      <span class="text-right">{{skillchance data.data.skillId @root.rqgActorData._id}}%</span>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId @root.rqgActorData._id @root.tokenId}}">
+      <span class="text-right">{{skillchance data.data.skillId @root.rqgActorData._id @root.tokenId}}%</span>
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu"></div>
   <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
@@ -62,8 +62,8 @@
   {{#if data.data.isNatural}}
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll><img class="item" src="{{img}}"></div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">{{name}}</div>
-    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId @root.rqgActorData._id}}">
-      <span class="text-right">{{skillchance data.data.skillId @root.rqgActorData._id}}%</span>
+    <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu {{experiencedclass data.data.skillId @root.rqgActorData._id @root.tokenId}}">
+      <span class="text-right">{{skillchance data.data.skillId @root.rqgActorData._id @root.tokenId}}%</span>
     </div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu"></div>
     <div data-skill-id="{{data.data.skillId}}" data-item-id="{{data._id}}" data-weapon-roll class="combat-contextmenu">
@@ -74,8 +74,8 @@
   {{#if dodgeSkillData._id}}
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"> <img class="item" src="{{dodgeSkillData.img}}"></div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu">Dodge</div>
-    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu {{experiencedclass dodgeSkillData._id @root.rqgActorData._id}}">
-      <span class="text-right">{{skillchance dodgeSkillData._id @root.rqgActorData._id}}%</span>
+    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu {{experiencedclass dodgeSkillData._id @root.rqgActorData._id @root.tokenId}}">
+      <span class="text-right">{{skillchance dodgeSkillData._id @root.rqgActorData._id @root.tokenId}}%</span>
     </div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill-contextmenu"></div>

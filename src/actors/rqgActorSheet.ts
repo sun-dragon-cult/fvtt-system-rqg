@@ -22,7 +22,7 @@ import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
 import { Characteristics } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "./rqgActor";
-import { getTokenFromActor, logBug, logMisconfiguration } from "../system/util";
+import { logBug, logMisconfiguration } from "../system/util";
 import { RuneTypeEnum } from "../data-model/item-data/runeData";
 import { RqgConfig } from "../system/config";
 import { DamageCalculations } from "../system/damageCalculations";
@@ -56,6 +56,7 @@ interface ActorSheetTemplate {
 
   // The actor and reorganised owned items
   rqgActorData: Actor.Data<RqgActorData>;
+  tokenId?: string;
   /** reorganized for presentation TODO type it better */
   ownedItems: any;
 
@@ -129,6 +130,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
       // @ts-ignore
       rqgActorData: duplicate(this.entity.data),
+      tokenId: this.token?.id,
       ownedItems: this.organizeOwnedItems(),
 
       spiritCombatSkillData: this.getSkillDataByName("Spirit Combat"),
@@ -386,12 +388,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       logBug("Actor does not have max hitpoints set.", true, this.actor);
     }
 
-    let hpTmp; // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
-    if (this.token) {
-      hpTmp = this.token.actor.data.data.attributes.hitPoints.value;
-      this.token.actor.data.data.attributes.hitPoints.value =
-        formData["data.attributes.hitPoints.value"];
-    }
+    // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
+    const hpTmp = this.actor.data.data.attributes.hitPoints.value;
+    this.actor.data.data.attributes.hitPoints.value = formData["data.attributes.hitPoints.value"];
+
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor.data);
     if (newHealth !== this.actor.data.data.attributes.health) {
       // Chat to all owners
@@ -418,11 +418,12 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
         });
     }
-    if (this.token) {
-      this.token.actor.data.data.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
-      const tokenHealthBefore = this.token.actor.data.data.attributes.health;
-      this.token.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-      HitLocationSheet.setTokenEffect(this.token, tokenHealthBefore);
+
+    this.actor.data.data.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
+    if (this.actor.isToken) {
+      const tokenHealthBefore = this.actor.data.data.attributes.health;
+      this.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
+      HitLocationSheet.setTokenEffect(this.actor.token!, tokenHealthBefore);
     }
 
     formData["data.attributes.health"] = newHealth;
@@ -442,24 +443,17 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       // Only owners are allowed to interact
       return;
     }
-    const bestEffortToken = this.token ? this.token : getTokenFromActor(this.actor);
 
-    // Most menu options are only reasonable for tokens, but some like edit item is needed for setting up actors
-    // so I supply both token and actor and let the context menu filter on what to show.
     new ContextMenu(html, ".characteristic-contextmenu", characteristicMenuOptions(this.actor));
-    new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(bestEffortToken, this.actor));
+    new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor));
     new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));
-    new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(bestEffortToken, this.actor));
-    new ContextMenu(
-      html,
-      ".spirit-magic-contextmenu",
-      spiritMagicMenuOptions(bestEffortToken, this.actor)
-    );
-    new ContextMenu(html, ".cult-contextmenu", cultMenuOptions(this.actor as any));
-    new ContextMenu(html, ".rune-magic-contextmenu", runeMagicMenuOptions(this.actor as any));
-    new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(bestEffortToken, this.actor));
+    new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(this.actor));
+    new ContextMenu(html, ".spirit-magic-contextmenu", spiritMagicMenuOptions(this.actor));
+    new ContextMenu(html, ".cult-contextmenu", cultMenuOptions(this.actor));
+    new ContextMenu(html, ".rune-magic-contextmenu", runeMagicMenuOptions(this.actor));
+    new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(this.actor));
     new ContextMenu(html, ".gear-contextmenu", gearMenuOptions(this.actor));
-    new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(bestEffortToken, this.actor));
+    new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(this.actor));
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
@@ -511,7 +505,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
       if (!itemId) {
         logBug(
-          `Couldn't find item [${itemId}] on actor ${this.actor.name} (token ${this.token?.name}) to roll Ability Chance against`,
+          `Couldn't find item [${itemId}] on actor ${this.actor.name} (token ${this.actor.token?.name}) to roll Ability Chance against`,
           true,
           el
         );
@@ -521,15 +515,14 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
         el.addEventListener("click", async (ev: Event) => {
           clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-          const bestEffortToken = this.token ? this.token : getTokenFromActor(this.actor);
 
           if (clickCount >= 2) {
-            bestEffortToken && (await ItemCard.roll(bestEffortToken, item.data, 0));
+            await ItemCard.roll(item.data, 0, this.actor);
             clickCount = 0;
           } else if (clickCount === 1) {
             setTimeout(async () => {
               if (clickCount === 1) {
-                bestEffortToken && (await ItemCard.show(bestEffortToken, itemId));
+                await ItemCard.show(itemId, this.actor);
               }
               clickCount = 0;
             }, CONFIG.RQG.dblClickTimeout);
@@ -552,22 +545,18 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             logBug("Tried to roll a Spirit Magic Roll against some other Item", true, item);
           } else {
             clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-            const bestEffortToken = this.token ? this.token : getTokenFromActor(this.actor);
-            if (!bestEffortToken) {
-              return;
-            }
             if (clickCount >= 2) {
               if (item.data.data.isVariable && item.data.data.points > 1) {
-                await SpiritMagicCard.show(bestEffortToken, itemId);
+                await SpiritMagicCard.show(itemId, this.actor);
               } else {
-                await SpiritMagicCard.roll(bestEffortToken, item.data, item.data.data.points, 0);
+                await SpiritMagicCard.roll(item.data, item.data.data.points, 0, this.actor);
               }
 
               clickCount = 0;
             } else if (clickCount === 1) {
               setTimeout(async () => {
                 if (clickCount === 1) {
-                  await SpiritMagicCard.show(bestEffortToken, itemId);
+                  await SpiritMagicCard.show(itemId, this.actor);
                 }
                 clickCount = 0;
               }, CONFIG.RQG.dblClickTimeout);
@@ -590,16 +579,14 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         let clickCount = 0;
         el.addEventListener("click", async (ev: Event) => {
           clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-          const bestEffortToken = this.token ? this.token : getTokenFromActor(this.actor);
           if (clickCount >= 2) {
             // Ignore double clicks by doing the same as on single click
-            bestEffortToken && (await WeaponCard.show(bestEffortToken, skillItemId, weaponItemId));
+            await WeaponCard.show(this.actor, skillItemId, weaponItemId);
             clickCount = 0;
           } else if (clickCount === 1) {
             setTimeout(async () => {
               if (clickCount === 1) {
-                bestEffortToken &&
-                  (await WeaponCard.show(bestEffortToken, skillItemId, weaponItemId));
+                await WeaponCard.show(this.actor, skillItemId, weaponItemId);
               }
               clickCount = 0;
             }, CONFIG.RQG.dblClickTimeout);
@@ -619,8 +606,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
           `Couldn't find pack [${pack}] or journalId [${id}] to open a journal entry (during setup).`,
           false,
           el,
-          this.actor,
-          this.token
+          this.actor
         );
       } else {
         el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
@@ -713,10 +699,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       if (!itemId) {
         logBug(`Couldn't find itemId [${itemId}] to add wound.`, true);
       } else {
-        el.addEventListener(
-          "click",
-          () => HitLocationSheet.showAddWoundDialog(this.token as any, this.actor as any, itemId) //
-        );
+        el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
       }
     });
 
@@ -727,7 +710,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         logBug(`Couldn't find itemId [${itemId}] to heal wound.`, true);
       } else {
         el.addEventListener("click", () =>
-          HitLocationSheet.showHealWoundDialog(this.token as any, this.actor as any, itemId)
+          HitLocationSheet.showHealWoundDialog(this.actor, itemId)
         );
       }
     });

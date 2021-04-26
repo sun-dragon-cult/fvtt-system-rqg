@@ -3,24 +3,19 @@ import { WeaponCard } from "../../chat/weaponCard";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, logBug } from "../../system/util";
 
-export const combatMenuOptions = (
-  token: Token | undefined,
-  actor: RqgActor
-): ContextMenu.Item[] => [
+export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => !!token,
+    condition: () => true,
     callback: async (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const weaponItemId = getDomDataset(el, "item-id");
       if (skillItemId && weaponItemId) {
-        await WeaponCard.show(token!, skillItemId, weaponItemId);
+        await WeaponCard.show(actor, skillItemId, weaponItemId);
       } else {
         logBug(
-          `Couldn't find skillId [${skillItemId}] or weaponId [${weaponItemId}] on actor ${
-            token!.name
-          } to show the weapon chat card from the combat context menu.`,
+          `Couldn't find skillId [${skillItemId}] or weaponId [${weaponItemId}] on actor ${actor.name} to show the weapon chat card from the combat context menu.`,
           true
         );
       }
@@ -29,18 +24,16 @@ export const combatMenuOptions = (
   {
     name: "Toggle Experience",
     icon: '<i class="fas fa-lightbulb"></i>',
-    condition: () => !!token,
+    condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "skill-id");
-      const item = itemId && token!.actor.getOwnedItem(itemId);
+      const item = itemId && actor.getOwnedItem(itemId);
       if (item && "hasExperience" in item.data.data) {
         const toggledExperience = !item.data.data.hasExperience;
         await item.update({ "data.hasExperience": toggledExperience }, {});
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on actor ${
-            token!.name
-          } to toggle experience from the combat context menu.`,
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience from the combat context menu.`,
           true
         );
       }

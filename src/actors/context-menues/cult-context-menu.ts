@@ -2,7 +2,7 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, logBug } from "../../system/util";
 
-export const cultMenuOptions = (actor: RqgActor) => [
+export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "View Description",
     icon: '<i class="fas fa-book-open"></i>',

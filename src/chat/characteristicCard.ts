@@ -1,7 +1,7 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { Characteristic } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "../actors/rqgActor";
-import { logBug } from "../system/util";
+import { getActorFromIds, logBug } from "../system/util";
 
 export type CharacteristicData = {
   name: string;
@@ -9,7 +9,8 @@ export type CharacteristicData = {
 };
 
 type CharacteristicCardFlags = {
-  actorId: string; // TODO Change to Token
+  actorId: string;
+  tokenId?: string;
   characteristic: CharacteristicData;
   formData: {
     difficulty: number;
@@ -33,6 +34,7 @@ export class CharacteristicCard {
     const defaultModifier = 0;
     const flags: CharacteristicCardFlags = {
       actorId: actor.id,
+      tokenId: actor.token?.id,
       characteristic: characteristic,
       formData: {
         difficulty: defaultDifficulty,
@@ -117,7 +119,7 @@ export class CharacteristicCard {
   }
 
   public static async roll(
-    actor: RqgActor, // TODO Change to Token
+    actor: RqgActor,
     characteristicName: string,
     characteristicValue: number,
     difficulty: number,
@@ -153,7 +155,7 @@ export class CharacteristicCard {
     const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
     const difficulty: number = Number(flags.formData.difficulty) || 5;
     const modifier: number = Number(flags.formData.modifier) || 0;
-    const actor = game.actors?.get(flags.actorId) as RqgActor;
+    const actor = getActorFromIds(flags.actorId, flags.tokenId);
     return [actor, characteristicValue, difficulty, modifier];
   }
 
@@ -195,7 +197,7 @@ export class CharacteristicCard {
         flags.characteristic.data.value +
         ")",
       user: game.user?._id,
-      speaker: ChatMessage.getSpeaker({ actor: actor as any }),
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
       content: html,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

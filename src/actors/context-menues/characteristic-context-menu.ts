@@ -1,7 +1,7 @@
 import { CharacteristicCard } from "../../chat/characteristicCard";
 import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
-import { getDomDataset, logBug } from "../../system/util";
+import { getDomDataset, RqgError } from "../../system/util";
 
 export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -9,13 +9,11 @@ export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] =
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: async (el: JQuery) => {
-      const [characteristicName, characteristic] = getCharacteristic(actor, el);
-      if (characteristicName && characteristic) {
-        await CharacteristicCard.show(actor, {
-          name: characteristicName,
-          data: characteristic,
-        });
-      }
+      const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
+      await CharacteristicCard.show(actor, {
+        name: characteristicName,
+        data: characteristic,
+      });
     },
   },
   {
@@ -23,17 +21,15 @@ export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] =
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
-      const [characteristicName, characteristic] = getCharacteristic(actor, el);
-      if (characteristicName && characteristic) {
-        await CharacteristicCard.roll(actor, characteristicName, characteristic.value, 5, 0);
-      }
+      const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
+      await CharacteristicCard.roll(actor, characteristicName, characteristic.value, 5, 0);
     },
   },
   {
     name: "Toggle Experience",
     icon: '<i class="fas fa-lightbulb"></i>',
     condition: (el: JQuery) => {
-      const [characteristicName, characteristic] = getCharacteristic(actor, el);
+      const { name: characteristicName } = getCharacteristic(actor, el);
       return characteristicName === "power";
     },
     callback: async (): Promise<RqgActor> =>
@@ -46,7 +42,7 @@ export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] =
     name: "Improve",
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el: JQuery): boolean => {
-      const [characteristicName, characteristic] = getCharacteristic(actor, el);
+      const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
       return !!(characteristicName === "power" && characteristic?.hasExperience);
     },
     callback: (el: JQuery) => {
@@ -55,22 +51,17 @@ export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] =
   },
 ];
 
-function getCharacteristic(
-  actor: RqgActor,
-  el: JQuery
-): [string | undefined, Characteristic | undefined] {
+function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: Characteristic } {
   const characteristicName = getDomDataset(el, "characteristic");
   const actorCharacteristics: Characteristics = actor.data.data.characteristics;
   if (characteristicName && characteristicName in actorCharacteristics) {
-    return [
-      characteristicName,
-      actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
-    ];
+    return {
+      name: characteristicName,
+      value: actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
+    };
   } else {
-    logBug(
-      `Couldn't find characteristic name [${characteristicName}] on actor ${actor.name} to do an action from the characteristics context menu.`,
-      true
+    throw new RqgError(
+      `Couldn't find characteristic name [${characteristicName}] on actor ${actor.name} to do an action from the characteristics context menu.`
     );
-    return [undefined, undefined];
   }
 }

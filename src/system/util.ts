@@ -13,7 +13,7 @@ export function getDomDataset(el: JQuery | Event, dataset: string): string {
   if (!data) {
     logBug(`Couldn't find dataset [${dataset}]`, true, el, dataset);
   }
-  return data || "";
+  return data!;
 }
 
 /**
@@ -25,9 +25,13 @@ export function toCamelCase(s: string): string {
   });
 }
 
+/**
+ *
+ * @deprecated use <code>throw new RqgError(msg,{notify:true, extraData:[a,b]}</code> instead
+ */
 export function logBug(msg: string, notify: boolean, ...extraData: any) {
-  console.error(`RQG | ${msg}`, extraData);
   notify && ui?.notifications?.error(`${msg} - Bug: Contact the Developer!`);
+  throw new RqgError({ msg: `RQG | ${msg}`, extraData: extraData });
 }
 
 export function logMisconfiguration(msg: string, notify: boolean, ...extraData: any) {
@@ -48,32 +52,31 @@ export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
 }
 
 /**
- * Get token and notify user if the token Id doesn't exist.
- * @param tokenId
+ * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
  */
-export function getTokenFromId(tokenId: string | null | undefined): Token | undefined {
+export function getActorFromIds(actorId: string, tokenId?: string): RqgActor {
   const token = canvas
     // @ts-ignore getLayer
     ?.getLayer("TokenLayer")
     .ownedTokens.find((t: Token) => t.id === tokenId);
-  if (!token) {
-    ui.notifications?.info("This actor does not have any tokens on the map (or is unlinked)");
+  const actor = game.actors?.get(actorId) as RqgActor;
+  if (!actor) {
+    throw new RqgError("game.actors is not defined", { extraData: [token, tokenId] });
   }
-  return token;
+  return token ? (token.actor as RqgActor) : actor;
 }
 
-export function getTokenFromActor(actor: RqgActor): Token | undefined {
-  let token;
-  if (actor.token) {
-    token = actor.token;
-  } else {
-    const linkedTokens = actor.getActiveTokens(true);
-    if (linkedTokens.length) {
-      token = linkedTokens[0]; // Just return the first one since they are linked
+export class RqgError extends Error {
+  constructor(public message: any, options: { notify?: boolean; extraData?: any[] } = {}) {
+    super(`RQG | ${message}`);
+    options.extraData && console.error(...options.extraData);
+    this.name = "RqgException";
+    if (options.notify) {
+      ui?.notifications?.error(`${message} - Bug: Contact the Developer!`);
     }
   }
-  if (!token) {
-    ui.notifications?.info("This actor does not have any tokens on the map (or is unlinked)");
-  }
-  return token;
+  // this.value = value.value;
+  // this.toString = function() {
+  //   return this.value + this.message;
+  // };
 }

@@ -4,20 +4,20 @@ import { SpiritMagicItemData } from "../../data-model/item-data/spiritMagicData"
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, logBug } from "../../system/util";
 
-export const spiritMagicMenuOptions = (token: Token | undefined, actor: RqgActor) => [
+export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => !!token,
+    condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = itemId && token!.actor.getOwnedItem(itemId);
+      const item = itemId && actor.getOwnedItem(itemId);
       if (item) {
-        await SpiritMagicCard.show(token!, item._id);
+        await SpiritMagicCard.show(item._id, actor);
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on token ${
-            token!.name
+          `Couldn't find itemId [${itemId}] on actor ${
+            actor!.name
           } to roll the spiritmagic item from the spiritmagic context menu,`,
           true,
           el
@@ -28,21 +28,19 @@ export const spiritMagicMenuOptions = (token: Token | undefined, actor: RqgActor
   {
     name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => !!token,
+    condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = itemId && (token!.actor.getOwnedItem(itemId) as Item<SpiritMagicItemData>);
+      const item = itemId && (actor.getOwnedItem(itemId) as Item<SpiritMagicItemData>);
       if (item) {
         if (item.data.data.isVariable && item.data.data.points > 1) {
-          await SpiritMagicCard.show(token!, item._id);
+          await SpiritMagicCard.show(item._id, actor);
         } else {
-          await SpiritMagicCard.roll(token!, item.data, item.data.data.points, 0);
+          await SpiritMagicCard.roll(item.data, item.data.data.points, 0, actor);
         }
       } else {
         logBug(
-          `Couldn't find itemId [${itemId}] on token ${
-            token!.name
-          } to do a direct roll for a spiritmagic item from the spiritmagic context menu.`,
+          `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll for a spiritmagic item from the spiritmagic context menu.`,
           true,
           el
         );

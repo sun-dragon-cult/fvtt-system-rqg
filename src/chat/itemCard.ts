@@ -1,9 +1,11 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
-import { getTokenFromId, logBug } from "../system/util";
+import { getActorFromIds, logBug } from "../system/util";
+import { RqgActor } from "../actors/rqgActor";
 
 type ItemCardFlags = {
-  tokenId: string;
+  actorId: string;
+  tokenId?: string;
   itemData: Item.Data;
   result: ResultEnum | undefined;
   formData: {
@@ -13,12 +15,13 @@ type ItemCardFlags = {
 };
 
 export class ItemCard {
-  public static async show(token: Token, itemId: string): Promise<void> {
+  public static async show(itemId: string, actor: RqgActor): Promise<void> {
     const defaultModifier = 0;
-    const item = token.actor.getOwnedItem(itemId) as RqgItem;
+    const item = actor.getOwnedItem(itemId) as RqgItem;
     if ("chance" in item.data.data && item.data.data.chance != null) {
       const flags: ItemCardFlags = {
-        tokenId: token.id,
+        actorId: actor.id,
+        tokenId: actor.token?.id,
         itemData: item.data,
         result: undefined,
         formData: {
@@ -28,7 +31,7 @@ export class ItemCard {
       };
       await ChatMessage.create(await ItemCard.renderContent(flags));
     } else {
-      logBug(`Tried to show itemcard for item ${item.name} without chance`, true, item, token);
+      logBug(`Tried to show itemcard for item ${item.name} without chance`, true, item, actor);
     }
   }
 
@@ -72,37 +75,38 @@ export class ItemCard {
     button.disabled = true;
 
     const modifier = Number(flags.formData.modifier) || 0;
-    const token = getTokenFromId(flags.tokenId);
-    token && (await ItemCard.roll(token, flags.itemData, modifier));
+
+    const actor = getActorFromIds(flags.actorId, flags.tokenId);
+    await ItemCard.roll(flags.itemData, modifier, actor);
 
     button.disabled = false;
     return false;
   }
 
-  public static async roll(token: Token, itemData: Item.Data, modifier: number): Promise<void> {
+  public static async roll(itemData: Item.Data, modifier: number, actor: RqgActor): Promise<void> {
     const chance: number = Number(itemData.data.chance) || 0;
-    const result = await Ability.roll(token, chance, modifier, itemData.name + " check");
-    await ItemCard.checkExperience(token, itemData, result);
+    const result = await Ability.roll(actor, chance, modifier, itemData.name + " check");
+    await ItemCard.checkExperience(actor, itemData, result);
   }
 
   public static async checkExperience(
-    token: Token,
+    actor: RqgActor,
     itemData: Item.Data,
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success && !itemData.data.hasExperience) {
-      await token.actor.updateOwnedItem({ _id: itemData._id, data: { hasExperience: true } });
+      await actor.updateOwnedItem({ _id: itemData._id, data: { hasExperience: true } });
       ui.notifications?.info("Yey, you got an experience check on " + itemData.name + "!");
     }
   }
 
   private static async renderContent(flags: ItemCardFlags): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
-    const token = getTokenFromId(flags.tokenId);
+    const actor = getActorFromIds(flags.actorId, flags.tokenId);
     return {
       flavor: flags.itemData.type + ": " + flags.itemData.name,
       user: game.user?.id,
-      speaker: ChatMessage.getSpeaker({ token: token }),
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
       content: html,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

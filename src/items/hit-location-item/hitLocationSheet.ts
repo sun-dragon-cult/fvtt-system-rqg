@@ -6,7 +6,7 @@ import {
   hitLocationHealthStatuses,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
-import { getTokenFromActor, logBug } from "../../system/util";
+import { logBug } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
@@ -32,11 +32,7 @@ export class HitLocationSheet extends RqgItemSheet {
     return sheetData;
   }
 
-  static showAddWoundDialog(token: Token, actor: RqgActor, hitLocationItemId: string): void {
-    const bestEffortToken = token ? token : getTokenFromActor(actor as RqgActor);
-    if (!bestEffortToken) {
-      return;
-    }
+  static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string): void {
     const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationItemData>;
     const dialogContent =
       '<form><input type="number" id="inflictDamagePoints" name="damage"><br><label><input type="checkbox" name="toTotalHp" checked> Apply to total HP</label><br><label><input type="checkbox" name="subtractAP" checked> Subtract AP</label><br></form>';
@@ -53,12 +49,7 @@ export class HitLocationSheet extends RqgItemSheet {
             icon: '<i class="fas fa-check"></i>',
             label: "Add wound",
             callback: async (html: JQuery | HTMLElement) =>
-              await HitLocationSheet.submitAddWoundDialog(
-                html as JQuery,
-                bestEffortToken,
-                actor,
-                hitLocation
-              ),
+              await HitLocationSheet.submitAddWoundDialog(html as JQuery, actor, hitLocation),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
@@ -75,14 +66,9 @@ export class HitLocationSheet extends RqgItemSheet {
 
   private static async submitAddWoundDialog(
     html: JQuery,
-    token: Token,
     actor: RqgActor,
     hitLocation: Item<HitLocationItemData>
   ) {
-    const bestEffortToken = token ? token : getTokenFromActor(actor as RqgActor);
-    if (!bestEffortToken) {
-      return;
-    }
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
@@ -101,7 +87,7 @@ export class HitLocationSheet extends RqgItemSheet {
         );
       }
     }
-    const actorHealthBefore = (bestEffortToken.actor as RqgActor).data.data.attributes.health;
+    const actorHealthBefore = actor.data.data.attributes.health;
     const {
       hitLocationUpdates,
       actorUpdates,
@@ -109,23 +95,26 @@ export class HitLocationSheet extends RqgItemSheet {
       uselessLegs,
     } = DamageCalculations.addWound(damage, applyDamageToTotalHp, hitLocation.data, actor.data);
 
+    const actorName = actor.isToken ? actor.token?.name : actor.name;
     await ChatMessage.create({
       user: game.user?._id,
-      speaker: ChatMessage.getSpeaker({ token: bestEffortToken }),
-      content: `${bestEffortToken.name} takes a hit to ${hitLocation.name}. ${notification}`,
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      content: `${actorName} takes a hit to ${hitLocation.name}. ${notification}`,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
     });
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
-    actorUpdates && (await bestEffortToken.actor.update(actorUpdates));
+    actorUpdates && (await actor.update(actorUpdates));
 
-    await HitLocationSheet.setTokenEffect(bestEffortToken, actorHealthBefore);
+    if (actor.isToken) {
+      await HitLocationSheet.setTokenEffect(actor.token!, actorHealthBefore);
+    }
     for (const update of uselessLegs) {
       await actor.getOwnedItem(update._id).update(update);
     }
   }
 
-  static showHealWoundDialog(token: Token, actor: RqgActor, hitLocationItemId: string) {
+  static showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
     const hitLocation = actor.getOwnedItem(hitLocationItemId);
     if (hitLocation.data.type !== ItemTypeEnum.HitLocation) {
       logBug("Edit Wounds did not point to a Hit Location Item", true, hitLocation);
@@ -157,7 +146,6 @@ export class HitLocationSheet extends RqgItemSheet {
             callback: async (html: JQuery | HTMLElement) =>
               await HitLocationSheet.submitHealWoundDialog(
                 html as JQuery,
-                token,
                 actor,
                 hitLocation as Item<HitLocationItemData>
               ),
@@ -177,7 +165,6 @@ export class HitLocationSheet extends RqgItemSheet {
 
   private static async submitHealWoundDialog(
     html: JQuery,
-    token: Token,
     actor: RqgActor,
     hitLocation: Item<HitLocationItemData>
   ): Promise<void> {
@@ -186,10 +173,6 @@ export class HitLocationSheet extends RqgItemSheet {
     const data = Object.fromEntries(formData.entries());
     const hpValue = hitLocation.data.data.hp.value;
     const hpMax = hitLocation.data.data.hp.max;
-    const bestEffortToken = token ? token : getTokenFromActor(actor as RqgActor);
-    if (!bestEffortToken) {
-      return;
-    }
     if (hpValue == null || hpMax == null) {
       logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, true, hitLocation);
       return;
@@ -197,22 +180,24 @@ export class HitLocationSheet extends RqgItemSheet {
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
 
-    const actorHealthBefore = (bestEffortToken.actor as RqgActor).data.data.attributes.health;
+    const actorHealthBefore = actor.data.data.attributes.health;
 
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,
       hitLocation.data,
-      (bestEffortToken.actor as RqgActor).data
+      actor.data
     );
 
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
-    actorUpdates && (await bestEffortToken.actor.update(actorUpdates));
+    actorUpdates && (await actor.update(actorUpdates));
 
-    await HitLocationSheet.setTokenEffect(bestEffortToken, actorHealthBefore);
+    if (actor.isToken) {
+      await HitLocationSheet.setTokenEffect(actor.token!, actorHealthBefore);
+    }
 
     for (const update of usefulLegs) {
-      await bestEffortToken.actor.getOwnedItem(update._id).update(update);
+      await actor.getOwnedItem(update._id).update(update);
     }
   }
 

@@ -19,7 +19,7 @@
   {{#if spiritCombatSkillData._id}}
     <div class="grid spirit-combat">
       <div data-item-id="{{spiritCombatSkillData._id}}" class="skill-contextmenu" data-item-roll title="Roll">Spirit Combat</div>
-      <div data-item-id="{{spiritCombatSkillData._id}}" class="skill-contextmenu" data-item-roll title="Roll"><span class="text-right {{#if spiritCombatSkillData.data.data.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData._id rqgActorData._id}}%</span></div>
+      <div data-item-id="{{spiritCombatSkillData._id}}" class="skill-contextmenu" data-item-roll title="Roll"><span class="text-right {{#if spiritCombatSkillData.data.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData._id @root.rqgActorData._id @root.tokenId}}%</span></div>
     </div>
   {{/if}}
 </div>
