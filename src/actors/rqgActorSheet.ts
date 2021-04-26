@@ -431,8 +431,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
   }
 
   get title(): string {
-    return this.token && !this.token.data.actorLink
-      ? `[Token] ${this.token.name} (${this.actor.name})`
+    return this.actor.isToken
+      ? `[Token] ${this.actor.token!.data.name} (${this.actor.name})`
       : this.actor.name;
   }
 
