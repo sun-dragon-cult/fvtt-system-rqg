@@ -1,3 +1,22 @@
+# [0.17.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.16.0...v0.17.0) (2021-04-23)
+
+
+### Bug Fixes
+
+* black on grey SR numbers in combat tracker ([af9d56b](https://github.com/wakeand/fvtt-system-rqg/commit/af9d56b))
+* damage text fixes ([15a2462](https://github.com/wakeand/fvtt-system-rqg/commit/15a2462))
+* improve token / actor handling ([ea7c91d](https://github.com/wakeand/fvtt-system-rqg/commit/ea7c91d))
+* unconcious and dead notifications pops up for everyone, also refactored into chatMessages ([0c344b3](https://github.com/wakeand/fvtt-system-rqg/commit/0c344b3))
+* unnecessary notifications about no active combat ([ac47e59](https://github.com/wakeand/fvtt-system-rqg/commit/ac47e59))
+
+
+### Features
+
+* also show token name in actorsheet title ([a35d6b8](https://github.com/wakeand/fvtt-system-rqg/commit/a35d6b8))
+
+
+
+
 # [0.16.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.15.0...v0.16.0) (2021-04-20)
 
 
