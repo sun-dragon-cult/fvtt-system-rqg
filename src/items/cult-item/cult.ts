@@ -2,7 +2,7 @@ import { BaseItem } from "../baseItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CultData } from "../../data-model/item-data/cultData";
 import { RqgActor } from "../../actors/rqgActor";
-import { logBug } from "../../system/util";
+import { RqgError } from "../../system/util";
 
 export class Cult extends BaseItem {
   // public static init() {
@@ -15,43 +15,47 @@ export class Cult extends BaseItem {
   /*
    * Add the cult runes to the Actor
    */
-  static onEmbedItem(
+  static async onEmbedItem(
     actor: RqgActor,
     cultItem: Item.Data<CultData>,
     options: any,
     userId: string
-  ): any {
+  ): Promise<any> {
     const cultRuneNames = [...new Set(cultItem.data.runes)]; // No duplicates
     const actorRuneNames = actor.items
       .filter((i) => i.type === ItemTypeEnum.Rune)
       .map((r) => r.name);
-    const newRuneNames = cultRuneNames.filter((r) => !actorRuneNames.includes(r));
-    if (newRuneNames) {
+    const newRuneNames = cultRuneNames.filter((r: string) => !actorRuneNames.includes(r));
+    if (newRuneNames.length > 0) {
       const runesCompendiumName = game.settings.get("rqg", "runesCompendium") as string;
       const runePack = game.packs?.get(runesCompendiumName);
       if (!runePack) {
-        logBug("Couldn't find runes Compendium", true);
-        return;
+        const msg = `Couldn't find runes Compendium ${runesCompendiumName}`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, runesCompendiumName);
       }
       const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[]; // Index is previously stored in settings
       const newRuneIds = newRuneNames.map((newRune) => {
         const newRuneIndex = allRunesIndex.find((r) => r.name === newRune);
-        if (newRuneIndex != null) {
-          return newRuneIndex._id;
-        } else {
-          logBug(`Couldn't find cult rune ${newRune} among allRunesIndex`, true, actor, cultItem);
-          return;
+        if (newRuneIndex == null) {
+          const msg = `Couldn't find cult rune ${newRune} among allRunesIndex`;
+          ui.notifications?.error(msg);
+          throw new RqgError(msg, actor, cultItem);
         }
-      }) as string[];
-      Promise.all(newRuneIds.map((id) => runePack.getEntity(id))).then((newRuneEntities) => {
-        newRuneEntities.map(async (rune) => {
-          if (rune) {
-            await actor.createOwnedItem(rune.data);
-          } else {
-            logBug("Couldn't find rune in all runes compendium", true);
-          }
-        });
+        return newRuneIndex._id;
       });
+      Promise.all(newRuneIds.map((id: string) => runePack.getEntity(id))).then(
+        (newRuneEntities) => {
+          newRuneEntities.map(async (rune) => {
+            if (rune == null || rune.data.type !== ItemTypeEnum.Rune) {
+              const msg = "Couldn't find rune in all runes compendium";
+              ui.notifications?.error(msg);
+              throw new RqgError(msg, newRuneIds, runePack);
+            }
+            await actor.createOwnedItem(rune.data);
+          });
+        }
+      );
     }
     return;
   }

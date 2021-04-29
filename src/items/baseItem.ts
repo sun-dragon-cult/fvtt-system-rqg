@@ -13,7 +13,12 @@ export abstract class BaseItem {
    * @param userId
    * @return Data to update other embedded items.
    */
-  static onEmbedItem(actor: RqgActor, itemData: Item.Data, options: any, userId: string): any {}
+  static async onEmbedItem(
+    actor: RqgActor,
+    itemData: Item.Data,
+    options: any,
+    userId: string
+  ): Promise<any> {}
 
   /**
    * Will be called when an embedded (Owned) item is updated.

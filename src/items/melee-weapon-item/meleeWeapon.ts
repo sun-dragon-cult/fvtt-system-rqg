@@ -25,7 +25,13 @@ export class MeleeWeapon extends BaseItem {
     if (!child.data.skillId && child.data.skillOrigin) {
       try {
         // Add the specified skill if found
-        const skill = (await fromUuid(child.data.skillOrigin)) as RqgItem;
+        const skill = (await fromUuid(child.data.skillOrigin).catch(() => {
+          logMisconfiguration(
+            `Couldn't find melee weapon skill with uuid from skillOrigin ${child.data.skillOrigin}`,
+            true,
+            child.data
+          );
+        })) as RqgItem;
         const embeddedWeaponSkill = await actor.createOwnedItem(skill.data);
         embeddedSkillId = embeddedWeaponSkill._id;
       } catch (e) {

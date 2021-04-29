@@ -1,6 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, hasOwnProperty, logBug } from "../../system/util";
+import { getRequiredDomDataset, hasOwnProperty, RqgError } from "../../system/util";
 
 export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -31,7 +31,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: "Split into new location",
     icon: '<i class="fas fa-book-open"></i>',
     condition: (el: JQuery): boolean => {
-      const itemId = getDomDataset(el, "item-id");
+      const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.getOwnedItem(itemId);
       return (
         hasOwnProperty(item.data.data, "physicalItemType") &&
@@ -55,16 +55,14 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-edit"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery): void => {
-      const itemId = getDomDataset(el, "item-id");
+      const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.getOwnedItem(itemId);
-      if (item) {
-        item.sheet?.render(true);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit item from the gear context menu.`,
-          true
-        );
+      if (!item) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit item from the gear context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
       }
+      item.sheet?.render(true);
     },
   },
   {
@@ -72,15 +70,8 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-trash"></i>',
     condition: () => true,
     callback: (el: JQuery): void => {
-      const itemId = getDomDataset(el, "item-id");
-      if (itemId) {
-        RqgActorSheet.confirmItemDelete(actor, itemId);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to drop gear from the gear context menu.`,
-          true
-        );
-      }
+      const itemId = getRequiredDomDataset(el, "item-id");
+      RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

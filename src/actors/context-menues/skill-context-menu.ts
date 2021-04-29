@@ -1,7 +1,7 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { ItemCard } from "../../chat/itemCard";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, logBug } from "../../system/util";
+import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 import { SkillItemData } from "../../data-model/item-data/skillData";
 
 export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
@@ -10,16 +10,8 @@ export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: async (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      if (itemId) {
-        await ItemCard.show(itemId, actor);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the skill item from the skill context menu.`,
-          true,
-          el
-        );
-      }
+      const itemId = getRequiredDomDataset(el, "item-id");
+      await ItemCard.show(itemId, actor);
     },
   },
   {
@@ -27,40 +19,34 @@ export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: async (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<SkillItemData>;
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
       const itemChance = item && item.data.data.chance;
-      if (itemChance) {
-        await ItemCard.roll(item.data, 0, actor);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll on a skill item from the skill context menu.`,
-          true,
-          el
-        );
+      if (!itemChance) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll on a skill item from the skill context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
       }
+      await ItemCard.roll(item.data, 0, actor);
     },
   },
   {
     name: "Toggle Experience",
     icon: '<i class="fas fa-lightbulb"></i>',
     condition: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
+      const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
       return !!item?.data.data.canGetExperience;
     },
     callback: async (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<SkillItemData>;
-      if (item) {
-        await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a skill item from the skill context menu.`,
-          true,
-          el
-        );
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
+      if (!item) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a skill item from the skill context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
       }
+      await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
     },
   },
   {
@@ -92,17 +78,9 @@ export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       while ((firstItemEl?.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
         firstItemEl = firstItemEl?.previousElementSibling as HTMLElement;
       }
-      const journalId = firstItemEl.dataset.journalId;
-      const journalPack = firstItemEl.dataset.journalPack;
-      if (journalId) {
-        await RqgActorSheet.showJournalEntry(journalId, journalPack);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to view description of a skill item from the skill context menu`,
-          true,
-          el
-        );
-      }
+      const journalId = getRequiredDomDataset($(firstItemEl), "journal-id");
+      const journalPack = getDomDataset($(firstItemEl), "journal-pack");
+      await RqgActorSheet.showJournalEntry(journalId, journalPack);
     },
   },
   {
@@ -110,17 +88,14 @@ export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-edit"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<SkillItemData>;
-      if (item && item.sheet) {
-        item.sheet.render(true);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the skill item from the skill context menu`,
-          true,
-          el
-        );
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
+      if (!item || !item.sheet) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the skill item from the skill context menu`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
       }
+      item.sheet.render(true);
     },
   },
   {
@@ -128,16 +103,8 @@ export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-trash"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      if (itemId) {
-        RqgActorSheet.confirmItemDelete(actor, itemId);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete the skill item from the skill context menu.`,
-          true,
-          el
-        );
-      }
+      const itemId = getRequiredDomDataset(el, "item-id");
+      RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

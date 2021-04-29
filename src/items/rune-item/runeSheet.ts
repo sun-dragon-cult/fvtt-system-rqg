@@ -1,7 +1,7 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneItemData, RuneTypeEnum } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { logBug } from "../../system/util";
+import { getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 
 export class RuneSheet extends RqgItemSheet {
@@ -48,13 +48,9 @@ export class RuneSheet extends RqgItemSheet {
     // Open Linked Journal Entry
     form.querySelectorAll("[data-journal-id]").forEach((element) => {
       const el = element as HTMLElement;
-      const pack = el.dataset.journalPack;
-      const id = el.dataset.journalId;
-      if (id) {
-        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-      } else {
-        logBug("Couldn't find linked journal from runeSheet", true, el, pack, id);
-      }
+      const pack = getDomDataset($(el), "journal-pack");
+      const id = getRequiredDomDataset($(el), "journal-id");
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
   }
 

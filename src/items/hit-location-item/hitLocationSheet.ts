@@ -6,7 +6,7 @@ import {
   hitLocationHealthStatuses,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
-import { logBug } from "../../system/util";
+import { RqgError } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
@@ -77,15 +77,12 @@ export class HitLocationSheet extends RqgItemSheet {
     let damage = Number(data.damage);
     if (subtractAP) {
       const ap = hitLocation.data.data.ap;
-      if (ap != null) {
-        damage = Math.max(0, damage - ap);
-      } else {
-        logBug(
-          `Hit location ${hitLocation.name} doesn't have a calculated total armor point`,
-          true,
-          hitLocation
-        );
+      if (ap == null) {
+        const msg = `Hit location ${hitLocation.name} doesn't have a calculated total armor point`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, hitLocation);
       }
+      damage = Math.max(0, damage - ap);
     }
     const actorHealthBefore = actor.data.data.attributes.health;
     const {
@@ -117,8 +114,9 @@ export class HitLocationSheet extends RqgItemSheet {
   static showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
     const hitLocation = actor.getOwnedItem(hitLocationItemId);
     if (hitLocation.data.type !== ItemTypeEnum.HitLocation) {
-      logBug("Edit Wounds did not point to a Hit Location Item", true, hitLocation);
-      return;
+      const msg = "Edit Wounds did not point to a Hit Location Item";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocation);
     }
     let dialogContent = "<form><label>Select which wound</label><div>";
 
@@ -174,14 +172,13 @@ export class HitLocationSheet extends RqgItemSheet {
     const hpValue = hitLocation.data.data.hp.value;
     const hpMax = hitLocation.data.data.hp.max;
     if (hpValue == null || hpMax == null) {
-      logBug(`Hitlocation ${hitLocation.name} don't have hp value or max`, true, hitLocation);
-      return;
+      const msg = `Hitlocation ${hitLocation.name} don't have hp value or max`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocation);
     }
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
-
     const actorHealthBefore = actor.data.data.attributes.health;
-
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,

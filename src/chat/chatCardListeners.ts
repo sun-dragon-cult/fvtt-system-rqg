@@ -2,7 +2,7 @@ import { CharacteristicCard } from "./characteristicCard";
 import { ItemCard } from "./itemCard";
 import { WeaponCard } from "./weaponCard";
 import { SpiritMagicCard } from "./spiritMagicCard";
-import { getDomDataset, logBug } from "../system/util";
+import { getDomDataset, RqgError } from "../system/util";
 
 export class ChatCardListeners {
   private static card = {
@@ -30,32 +30,27 @@ export class ChatCardListeners {
   private static async formSubmitHandler(ev: JQueryEventObject): Promise<void> {
     const chatCard = getDomDataset(ev, "chat-card");
     const chatMessageId = getDomDataset(ev, "message-id");
-    if (chatMessageId && chatCard && chatCard in ChatCardListeners.card) {
-      await ChatCardListeners.card[
-        chatCard as keyof typeof ChatCardListeners.card
-      ].formSubmitHandler(ev, chatMessageId);
-    } else {
-      logBug(
-        `Couldn't find chatCard [${chatCard}] or chatMessageId [${chatMessageId}] while submitting a chat card form.`,
-        true,
-        ev
-      );
+    if (!chatMessageId || !chatCard || !(chatCard in ChatCardListeners.card)) {
+      const msg = `Couldn't find chatCard [${chatCard}] or chatMessageId [${chatMessageId}] while submitting a chat card form.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, ev);
     }
+    await ChatCardListeners.card[chatCard as keyof typeof ChatCardListeners.card].formSubmitHandler(
+      ev,
+      chatMessageId
+    );
   }
 
   private static async inputChangeHandler(ev: JQueryEventObject): Promise<void> {
     const chatCard = getDomDataset(ev, "chat-card");
     const chatMessageId = getDomDataset(ev, "message-id");
-    if (chatMessageId && chatCard && chatCard in ChatCardListeners.card) {
-      await ChatCardListeners.card[
-        chatCard as keyof typeof ChatCardListeners.card
-      ].inputChangeHandler(ev, chatMessageId);
-    } else {
-      logBug(
-        `Couldn't find chatCard [${chatCard}] or chatMessageId [${chatMessageId}] while processing a chat card change event.`,
-        true,
-        ev
-      );
+    if (!chatMessageId || !chatCard || !(chatCard in ChatCardListeners.card)) {
+      const msg = `Couldn't find chatCard [${chatCard}] or chatMessageId [${chatMessageId}] while processing a chat card change event.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, ev);
     }
+    await ChatCardListeners.card[
+      chatCard as keyof typeof ChatCardListeners.card
+    ].inputChangeHandler(ev, chatMessageId);
   }
 }

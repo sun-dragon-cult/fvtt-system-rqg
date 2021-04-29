@@ -6,7 +6,7 @@ import {
   SpiritMagicItemData,
 } from "../../data-model/item-data/spiritMagicData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { logBug } from "../../system/util";
+import { RqgError } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 
 export class SpiritMagicSheet extends RqgItemSheet {
@@ -38,11 +38,12 @@ export class SpiritMagicSheet extends RqgItemSheet {
       const elem = el as HTMLElement;
       const pack = elem.dataset.journalPack;
       const id = elem.dataset.journalId;
-      if (id) {
-        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-      } else {
-        logBug("Couldn't find linked journal entry from Spirit magic sheet", true, elem, pack, id);
+      if (!id) {
+        const msg = "Couldn't find linked journal entry from Spirit magic sheet";
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, elem, pack, id);
       }
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
   }
 

@@ -1,8 +1,8 @@
 import { SkillCategoryEnum, SkillItemData } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { logBug } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgError } from "../../system/util";
 
 export class SkillSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
@@ -49,11 +49,12 @@ export class SkillSheet extends RqgItemSheet {
       const elem = el as HTMLElement;
       const pack = elem.dataset.journalPack;
       const id = elem.dataset.journalId;
-      if (id) {
-        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-      } else {
-        logBug("couldn't find linked journal entry from Skill Item Sheet", true, elem, pack, id);
+      if (!id) {
+        const msg = "couldn't find linked journal entry from Skill Item Sheet";
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, elem, pack, id);
       }
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
   }
 

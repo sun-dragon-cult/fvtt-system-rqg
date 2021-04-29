@@ -1,5 +1,5 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { getDomDataset, logBug } from "../../system/util";
+import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 import { RqgActor } from "../rqgActor";
 
 export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
@@ -10,14 +10,12 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = itemId && actor.getOwnedItem(itemId);
-      if (item && item.sheet) {
-        item.sheet.render(true);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit hitLocation item from the health context menu.`,
-          true
-        );
+      if (!item || !item.sheet) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit hitLocation item from the health context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
       }
+      item.sheet.render(true);
     },
   },
   {
@@ -25,15 +23,8 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-trash"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      if (itemId) {
-        RqgActorSheet.confirmItemDelete(actor, itemId);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete hitLocation item from the health context menu.`,
-          true
-        );
-      }
+      const itemId = getRequiredDomDataset(el, "item-id");
+      RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

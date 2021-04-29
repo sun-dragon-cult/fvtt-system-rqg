@@ -1,6 +1,6 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
-import { getActorFromIds, logBug } from "../system/util";
+import { getActorFromIds, RqgError } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 
 type ItemCardFlags = {
@@ -18,21 +18,23 @@ export class ItemCard {
   public static async show(itemId: string, actor: RqgActor): Promise<void> {
     const defaultModifier = 0;
     const item = actor.getOwnedItem(itemId) as RqgItem;
-    if ("chance" in item.data.data && item.data.data.chance != null) {
-      const flags: ItemCardFlags = {
-        actorId: actor.id,
-        tokenId: actor.token?.id,
-        itemData: item.data,
-        result: undefined,
-        formData: {
-          modifier: defaultModifier,
-          chance: item.data.data.chance,
-        },
-      };
-      await ChatMessage.create(await ItemCard.renderContent(flags));
-    } else {
-      logBug(`Tried to show itemcard for item ${item.name} without chance`, true, item, actor);
+
+    if (!("chance" in item.data.data) || item.data.data.chance == null) {
+      const msg = `Tried to show itemcard for item ${item.name} without chance`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, item, actor);
     }
+    const flags: ItemCardFlags = {
+      actorId: actor.id,
+      tokenId: actor.token?.id,
+      itemData: item.data,
+      result: undefined,
+      formData: {
+        modifier: defaultModifier,
+        chance: item.data.data.chance,
+      },
+    };
+    await ChatMessage.create(await ItemCard.renderContent(flags));
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {

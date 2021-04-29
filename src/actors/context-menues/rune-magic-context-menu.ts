@@ -2,7 +2,7 @@ import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RuneMagicItemData } from "../../data-model/item-data/runeMagicData";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, logBug } from "../../system/util";
+import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 
 export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -10,16 +10,14 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: async (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<RuneMagicItemData>;
-      if (item) {
-        await Ability.roll(actor, item.data.data.chance, 0, item.name);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll for RuneMagic item from the runemagic context menu.`,
-          true
-        );
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.getOwnedItem(itemId) as Item<RuneMagicItemData>;
+      if (!item) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll for RuneMagic item from the runemagic context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
       }
+      await Ability.roll(actor, item.data.data.chance, 0, item.name);
     },
   },
   {
@@ -40,16 +38,9 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       while ((firstItemEl?.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
         firstItemEl = firstItemEl?.previousElementSibling as HTMLElement;
       }
-      const journalId = firstItemEl.dataset.journalId;
-      const journalPack = firstItemEl.dataset.journalPack;
-      if (journalId) {
-        await RqgActorSheet.showJournalEntry(journalId, journalPack);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] or journalId on actor ${actor.name} to view description of a rune magic item from the runemagic context menu.`,
-          true
-        );
-      }
+      const journalId = getRequiredDomDataset($(firstItemEl), "journal-id");
+      const journalPack = getDomDataset($(firstItemEl), "journal-pack");
+      await RqgActorSheet.showJournalEntry(journalId, journalPack);
     },
   },
   {
@@ -57,16 +48,14 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-edit"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<RuneMagicItemData>;
-      if (item && item.sheet) {
-        item.sheet.render(true);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the runemagic item from the runemagic context menu.`,
-          true
-        );
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.getOwnedItem(itemId) as Item<RuneMagicItemData>;
+      if (!item || !item.sheet) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the runemagic item from the runemagic context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
       }
+      item.sheet.render(true);
     },
   },
   {
@@ -74,15 +63,8 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-trash"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      if (itemId) {
-        RqgActorSheet.confirmItemDelete(actor, itemId);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete the runemagic item from the runemagic context menu.`,
-          true
-        );
-      }
+      const itemId = getRequiredDomDataset(el, "item-id");
+      RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

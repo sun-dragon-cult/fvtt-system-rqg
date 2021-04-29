@@ -3,8 +3,8 @@ import { BaseItem } from "../baseItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ArmorItemData } from "../../data-model/item-data/armorData";
-import { logBug } from "../../system/util";
 import { RqgActor } from "../../actors/rqgActor";
+import { RqgError } from "../../system/util";
 
 export class Skill extends BaseItem {
   // public static init() {
@@ -19,8 +19,7 @@ export class Skill extends BaseItem {
     const skillData = skillItem.data.data;
     const actor = skillItem.actor! as RqgActor;
     if (actor.data.type !== "character") {
-      logBug("actor is not of type character", true);
-      return item;
+      throw new RqgError("actor is not of type character");
     }
     const actorData = actor.data.data;
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
@@ -33,21 +32,18 @@ export class Skill extends BaseItem {
     if ("Dodge" === skillItem.name) {
       Skill.updateBaseChance(skillData, dex * 2);
       if (
-        actorData.attributes.equippedEncumbrance !== undefined &&
-        actorData.attributes.maximumEncumbrance !== undefined
+        actorData.attributes.equippedEncumbrance === undefined ||
+        actorData.attributes.maximumEncumbrance === undefined
       ) {
-        mod = -Math.min(
-          actorData.attributes.equippedEncumbrance,
-          actorData.attributes.maximumEncumbrance
-        );
-      } else {
-        logBug("Equipped or max ENC was not set", true, actor);
+        throw new RqgError("Equipped or max ENC was not set", actor);
       }
-    }
-    if ("Jump" === skillItem.name) {
+      mod = -Math.min(
+        actorData.attributes.equippedEncumbrance,
+        actorData.attributes.maximumEncumbrance
+      );
+    } else if ("Jump" === skillItem.name) {
       Skill.updateBaseChance(skillData, dex * 3);
-    }
-    if ("Move Quietly" === skillItem.name) {
+    } else if ("Move Quietly" === skillItem.name) {
       mod = -actor.items
         .filter((i) => i.data.type === ItemTypeEnum.Armor)
         .reduce(
@@ -70,7 +66,7 @@ export class Skill extends BaseItem {
     return item;
   }
 
-  private static updateBaseChance(skillData: SkillData, newBaseChance: number) {
+  private static updateBaseChance(skillData: SkillData, newBaseChance: number): void {
     if (skillData.baseChance !== newBaseChance) {
       skillData.baseChance = newBaseChance;
     }

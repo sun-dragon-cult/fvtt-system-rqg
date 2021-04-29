@@ -1,5 +1,5 @@
 import Combatant = Combat.Combatant;
-import { logBug } from "./util";
+import { getRequiredDomDataset } from "./util";
 
 export class RqgCombat {
   public static init() {
@@ -26,11 +26,11 @@ export class RqgCombat {
   }
 }
 
-function renderCombatTracker(app: any, html: any, data: any) {
+function renderCombatTracker(app: any, html: any, data: any): void {
   const currentCombat = data.combats[data.currentIndex - 1];
   if (currentCombat) {
     html.find(".combatant").each(async (i: number, el: HTMLElement) => {
-      const combId = el.dataset.combatantId;
+      const combId = getRequiredDomDataset($(el as HTMLElement), "combatant-id");
       const combatant = currentCombat.data.combatants.find((c: Combatant) => c._id === combId);
       if (!combatant.initiative) {
         const attributes = combatant.actor.data.data.attributes;
@@ -46,13 +46,8 @@ function renderCombatTracker(app: any, html: any, data: any) {
 
       initDiv.addEventListener("change", async (e) => {
         const inputElement = e.target as HTMLInputElement;
-        const combatantId = (inputElement.closest("[data-combatant-id]") as HTMLElement)?.dataset
-          .combatantId;
-        if (combatantId) {
-          await currentCombat.setInitiative(combatantId, Number(inputElement.value));
-        } else {
-          logBug("Couldn't find combatant when setting initiative", true);
-        }
+        const combatantId = getRequiredDomDataset($(el as HTMLElement), "combatant-id");
+        await currentCombat.setInitiative(combatantId, Number(inputElement.value));
       });
     });
   }

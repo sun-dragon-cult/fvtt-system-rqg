@@ -7,7 +7,7 @@ import {
 
 import { RuneData } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { logBug } from "../../system/util";
+import { getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { CultItemData } from "../../data-model/item-data/cultData";
 import { RqgItemSheet } from "../RqgItemSheet";
 
@@ -67,13 +67,9 @@ export class RuneMagicSheet extends RqgItemSheet {
     // Open Linked Journal Entry
     this.form?.querySelectorAll("[data-journal-id]").forEach((el) => {
       const elem = el as HTMLElement;
-      const pack = elem.dataset.journalPack;
-      const id = elem.dataset.journalId;
-      if (id) {
-        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-      } else {
-        logBug("Couldn't find linked journal entry from RuneMagic Sheet", true, elem, pack, id);
-      }
+      const pack = getDomDataset($(elem), "journal-pack");
+      const id = getRequiredDomDataset($(elem), "journal-id");
+      elem.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
   }
 
@@ -84,16 +80,14 @@ export class RuneMagicSheet extends RqgItemSheet {
     try {
       droppedItemData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
+      ui.notifications?.error("Couldn't parse itemData");
       return;
     }
-    if (droppedItemData.type === "JournalEntry") {
-      const pack = droppedItemData.pack ? droppedItemData.pack : "";
-      await this.item.update(
-        { "data.journalId": droppedItemData.id, "data.journalPack": pack },
-        {}
-      );
-    } else {
+    if (droppedItemData.type !== "JournalEntry") {
       ui.notifications?.warn("You can only drop a journalEntry");
+      return;
     }
+    const pack = droppedItemData.pack ? droppedItemData.pack : "";
+    await this.item.update({ "data.journalId": droppedItemData.id, "data.journalPack": pack }, {});
   }
 }

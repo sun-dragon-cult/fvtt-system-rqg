@@ -3,7 +3,7 @@ import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { getItemIdsInSameLocationTree } from "../items/shared/locationNode";
-import { logBug } from "../system/util";
+import { RqgError } from "../system/util";
 import { RqgItem } from "../items/rqgItem";
 import { DamageCalculations } from "../system/damageCalculations";
 
@@ -139,12 +139,12 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       );
     }
     const actor = await super.create(data, options);
-    if (actor) {
-      return actor;
-    } else {
-      logBug("Couldn't create actor", true);
-      return new Actor();
+    if (!actor) {
+      const msg = "Couldn't create actor";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, data);
     }
+    return actor;
   }
 
   protected _onCreateEmbeddedEntity(
@@ -154,13 +154,11 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     userId: string
   ): void {
     if (embeddedName === "OwnedItem" && game.user?._id === userId) {
-      const updateData = ResponsibleItemClass.get(child.type)?.onEmbedItem(
-        this,
-        child,
-        options,
-        userId
-      );
-      updateData && this.updateOwnedItem(updateData);
+      ResponsibleItemClass.get(child.type)
+        ?.onEmbedItem(this, child, options, userId)
+        .then((updateData: any) => {
+          updateData && this.updateOwnedItem(updateData);
+        });
     }
     return super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
   }
@@ -235,13 +233,14 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
 
       const itemsToUpdate = equippedStatusChanges.map((i) => {
         const item = this.items.get(i._id);
-        if (item) {
-          return getItemIdsInSameLocationTree(item.data, this).map((id) => {
-            return { _id: id, "data.equippedStatus": newEquippedStatus };
-          });
-        } else {
-          logBug("couldn't find item when updating equipped status", true, i, this);
+        if (!item) {
+          const msg = "couldn't find item when updating equipped status";
+          ui.notifications?.error(msg);
+          throw new RqgError(msg, i);
         }
+        return getItemIdsInSameLocationTree(item.data, this).map((id) => {
+          return { _id: id, "data.equippedStatus": newEquippedStatus };
+        });
       });
       itemsToUpdate[0] && (await this.updateEmbeddedEntity("OwnedItem", itemsToUpdate[0])); // TODO fix nested arrays
       // await item.update({ "data.equippedStatus": newStatus }, {});

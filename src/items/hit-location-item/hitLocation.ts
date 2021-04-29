@@ -2,7 +2,7 @@ import { BaseItem } from "../baseItem";
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { logBug } from "../../system/util";
+import { RqgError } from "../../system/util";
 
 export class HitLocation extends BaseItem {
   // public static init() {
@@ -14,30 +14,29 @@ export class HitLocation extends BaseItem {
 
   public static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.data.type !== ItemTypeEnum.HitLocation) {
-      logBug(
-        "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
-        true,
-        item
-      );
-      return item;
+      const msg =
+        "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, item);
     }
     const actor = item.actor as RqgActor;
     const actorData = actor.data.data;
+    const totalHp = actorData.attributes.hitPoints.max;
+    if (totalHp == null) {
+      const msg = "Actor doesn't have max hitPoints";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, actor);
+    }
     // Remove any healed wounds
     item.data.data.wounds = item.data.data.wounds.filter((w) => w > 0);
 
-    const totalHp = actorData.attributes.hitPoints.max;
-    if (totalHp) {
-      item.data.data.hp.max = HitLocation.hitPointsPerLocation(totalHp, item.data.data.baseHpDelta);
-      item.data.data.hp.value = item.data.data.wounds.reduce(
-        (acc: number, w: number) => acc - w,
-        item.data.data.hp.max
-      );
+    item.data.data.hp.max = HitLocation.hitPointsPerLocation(totalHp, item.data.data.baseHpDelta);
+    item.data.data.hp.value = item.data.data.wounds.reduce(
+      (acc: number, w: number) => acc - w,
+      item.data.data.hp.max
+    );
 
-      item.data.data.ap = item.data.data.naturalAp; // Init AP with natural AP before active effects
-    } else {
-      logBug("Actor doesn't have max hitPoints", true, actor);
-    }
+    item.data.data.ap = item.data.data.naturalAp; // Init AP with natural AP before active effects
 
     return item;
   }

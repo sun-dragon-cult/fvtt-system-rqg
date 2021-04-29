@@ -1,7 +1,7 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CultData, CultItemData, CultRankEnum } from "../../data-model/item-data/cultData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { logBug } from "../../system/util";
+import { getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 
 export class CultSheet extends RqgItemSheet {
@@ -39,13 +39,9 @@ export class CultSheet extends RqgItemSheet {
     // Open Linked Journal Entry
     (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: Element) => {
       const elem = el as HTMLElement;
-      const pack = elem.dataset.journalPack;
-      const id = elem.dataset.journalId;
-      if (id) {
-        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-      } else {
-        logBug("Couldn't find linked journal Entry in Cult Item Sheet", true, elem, pack, id);
-      }
+      const pack = getDomDataset($(elem), "journal-pack");
+      const id = getRequiredDomDataset($(elem), "journal-id");
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
   }
 

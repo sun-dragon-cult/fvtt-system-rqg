@@ -1,7 +1,7 @@
 import { HitLocationItemData } from "../data-model/item-data/hitLocationData";
-import { logBug } from "./util";
 import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ActorHealthState } from "../data-model/actor-data/attributes";
+import { RqgError } from "./util";
 
 export interface HealingEffects {
   hitLocationUpdates: HitLocationItemData;
@@ -26,19 +26,17 @@ export class HealingCalculations {
       usefulLegs: [],
     };
     if (hitLocationData.data.wounds.length <= healWoundIndex) {
-      logBug(`Trying to heal a wound that doesn't exist.`, true, healWoundIndex, hitLocationData);
-      return healingEffects;
+      const msg = `Trying to heal a wound that doesn't exist.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, healWoundIndex, hitLocationData);
     }
 
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
     if (hpValue == null || hpMax == null) {
-      logBug(
-        `Hitlocation ${hitLocationData.name} don't have hp value or max`,
-        true,
-        hitLocationData
-      );
-      return healingEffects;
+      const msg = `Hitlocation ${hitLocationData.name} don't have hp value or max`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocationData);
     }
     const wounds = hitLocationData.data.wounds.slice();
     let hitLocationHealthState = hitLocationData.data.hitLocationHealthState || "healthy";
@@ -75,8 +73,9 @@ export class HealingCalculations {
     const actorTotalHp = actorData.data.attributes.hitPoints.value;
     const actorMaxHp = actorData.data.attributes.hitPoints.max;
     if (actorTotalHp == null || actorMaxHp == null) {
-      logBug(`Couldn't find actor total hp (max or current value)`, true, actorData);
-      return healingEffects;
+      const msg = `Couldn't find actor total hp (max or current value)`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, actorData);
     }
 
     const totalHpAfter = Math.min(actorTotalHp + healPoints, actorMaxHp);

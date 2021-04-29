@@ -1,5 +1,5 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
-import { getActorFromIds, logBug } from "./util";
+import { getActorFromIds, RqgError } from "./util";
 import { RqgConfig } from "./config";
 
 declare const CONFIG: RqgConfig;
@@ -45,33 +45,34 @@ export const handlebarsHelpers = function () {
     return item ? item.data.data.quantity : "---";
   });
 
-  Handlebars.registerHelper("runeImg", (runeName) => {
+  Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
     if (!runeName) {
       return;
     }
     const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
     const rune = allRunesIndex.find((r) => r.name === runeName);
-    if (rune) {
-      return rune.img;
-    } else {
-      logBug(`Couldn't find rune ${runeName}`, true);
+    if (!rune) {
+      const msg = `Couldn't find rune ${runeName}`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
     }
+    return rune.img;
   });
 
-  Handlebars.registerHelper("enrichHtml", (content) => {
+  Handlebars.registerHelper("enrichHtml", (content: string): string => {
     return TextEditor.enrichHTML(content);
   });
 
-  Handlebars.registerHelper("equippedIcon", (equippedStatus: EquippedStatus) => {
+  Handlebars.registerHelper("equippedIcon", (equippedStatus: EquippedStatus): string => {
     equippedStatus = equippedStatus ? equippedStatus : "notCarried";
     return CONFIG.RQG.equippedIcons[equippedStatus];
   });
 
-  Handlebars.registerHelper("gearViewIcon", (view: string) => {
+  Handlebars.registerHelper("gearViewIcon", (view: string): string => {
     return CONFIG.RQG.gearViewIcons[view as keyof typeof CONFIG.RQG.gearViewIcons];
   });
 
-  Handlebars.registerHelper("yes-no", (bool) => {
+  Handlebars.registerHelper("yes-no", (bool: boolean): string => {
     return bool ? "yes" : "no";
   });
 

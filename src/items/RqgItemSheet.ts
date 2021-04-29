@@ -1,25 +1,9 @@
 import { RqgActiveEffect } from "../actors/rqgActiveEffect";
 import { RqgItem } from "./rqgItem";
-import { logBug } from "../system/util";
 import { RqgItemData } from "../data-model/item-data/itemTypes";
+import { getRequiredDomDataset, RqgError } from "../system/util";
 
 export class RqgItemSheet extends ItemSheet<RqgItemData> {
-  //
-  // import { RqgActor } from "../actors/rqgActor";
-  // import { RqgItem } from "./rqgItem";
-  //
-  // // declare class ItemSheet<
-  // //   D extends object = ActorSheet.Data<Actor>,
-  // //   O extends Item = D extends ItemSheet.Data<infer T> ? T : Item,
-  // //   P extends BaseEntitySheet.Options = BaseEntitySheet.Options
-  // //   > extends BaseEntitySheet<P, D, O> {
-  //
-  // export class RqgItemSheet<
-  //   D extends object = ActorSheet.Data<Actor<Actor.Data<RqgActor>>>,
-  //   O extends Item = D extends ItemSheet.Data<infer T> ? T : Item,
-  //   P extends BaseEntitySheet.Options = BaseEntitySheet.Options
-  //   > extends ItemSheet<P, D, O> {
-
   get title(): string {
     return `${this.object.type}: ${this.object.name}`;
   }
@@ -28,10 +12,11 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
     super.activateListeners(html);
 
     // Edit Item Active Effect
-    (this.form as HTMLElement).querySelectorAll("[data-item-effect-edit]").forEach(async (el) => {
-      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (itemId && effectId) {
+    $(this.form!)
+      .find("[data-item-effect-edit]")
+      .each((i: number, el: HTMLElement) => {
+        const effectId = getRequiredDomDataset($(el), "effect-id");
+        const itemId = getRequiredDomDataset($(el), "item-id");
         const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items?.get(itemId);
         el.addEventListener("click", () => {
           const effect = item?.effects.get(effectId) as RqgActiveEffect;
@@ -39,17 +24,15 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
             new ActiveEffectConfig(effect).render(true);
           }
         });
-      } else {
-        logBug("Couldn't find item or effect id", true);
-      }
-    });
+      });
 
     // Add Item Active Effect
-    (this.form as HTMLElement).querySelectorAll("[data-item-effect-add]").forEach(async (el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (itemId) {
+    $(this.form!)
+      .find("[data-item-effect-add]")
+      .each((i: number, el: HTMLElement) => {
+        const itemId = getRequiredDomDataset($(el), "item-id");
         const item = this.actor
-          ? this.actor.getOwnedItem(itemId)
+          ? this.actor.getOwnedItem(itemId) // TODO prevent this instead?
           : (game.items?.get(itemId) as RqgItem);
         const effect = ActiveEffect.create(
           {
@@ -63,34 +46,29 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
         );
 
         el.addEventListener("click", async () => {
-          const e = await effect.create({});
-          // @ts-ignore TODO remove
-          new ActiveEffectConfig(item.effects.get(e._id)).render(true);
+          const e = await effect.create({}).catch((reason) => {
+            ui.notifications?.error("Couldn't create Active Effect");
+            throw reason;
+          });
+          new ActiveEffectConfig(item.effects.get(e._id)!).render(true);
         });
-      } else {
-        logBug("Couldn't find item", true, itemId);
-      }
-    });
+      });
 
     // Delete Item Active Effect
-    (this.form as HTMLElement).querySelectorAll("[data-item-effect-delete]").forEach(async (el) => {
-      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId as string;
-
-      if (effectId && itemId) {
-        // const actor = await fromUuid(item.getFlag("core", "sourceId"));
-        // const item = actor ? this.actor.getOwnedItem(itemId) : game.items.get(itemId);
+    $(this.form!)
+      .find("[data-item-effect-delete]")
+      .each((i: number, el: HTMLElement) => {
+        const itemId = getRequiredDomDataset($(el), "item-id");
+        const effectId = getRequiredDomDataset($(el), "effect-id");
         el.addEventListener("click", () => {
           const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items?.get(itemId);
-          if (item) {
-            item.delete();
-          } else {
-            logBug("Couldn't find item", true);
+          if (!item) {
+            const msg = "Couldn't find item";
+            ui.notifications?.error(msg);
+            throw new RqgError(msg);
           }
+          item.getEmbeddedEntity("ActiveEffect", effectId).delete();
         });
-      } else {
-        logBug("Couldn't fins effect or item id", true);
-      }
-    });
+      });
   }
 }

@@ -4,7 +4,7 @@ import { SkillData, SkillItemData } from "../data-model/item-data/skillData";
 import { CombatManeuver, MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { getActorFromIds, logBug, logMisconfiguration } from "../system/util";
+import { getActorFromIds, logMisconfiguration, RqgError } from "../system/util";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 
 type WeaponCardFlags = {
@@ -108,11 +108,13 @@ export class WeaponCard extends ChatMessage {
         ui.notifications?.warn("Out of ammo!");
         return false;
       }
-      if (chatMessage) {
-        await WeaponCard.roll(flags, chatMessage);
-      } else {
-        logBug("Couldn't find Chatmessage", true);
+
+      if (!chatMessage) {
+        const msg = "Couldn't find Chatmessage";
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
       }
+      await WeaponCard.roll(flags, chatMessage);
     } else if (action === "damageRoll") {
       const damageType = (ev as any).originalEvent.submitter.value; // Normal | Special | Max Special);  damageSeverity ??
       await WeaponCard.damageRoll(flags, damageType);
@@ -126,7 +128,9 @@ export class WeaponCard extends ChatMessage {
     } else if (action === "fumble") {
       await WeaponCard.fumbleRoll(flags);
     } else {
-      logBug(`Unknown button "${action}" in weapon chat card`, true);
+      const msg = `Unknown button "${action}" in weapon chat card`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
     }
 
     // button.disabled = false;
@@ -261,8 +265,7 @@ export class WeaponCard extends ChatMessage {
 
     // Render the chat card which combines the dice roll with the drawn results
     messageData.content = await renderTemplate(CONFIG.RollTable.resultTemplate, {
-      // @ts-ignore TODO have another look
-      description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true }),
+      description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true } as any),
       results: draw.results.map((r) => {
         r = duplicate(r);
         // @ts-ignore TODO redo without the protected method

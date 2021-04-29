@@ -1,6 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, logBug } from "../../system/util";
+import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 
 export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -23,15 +23,12 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       }
       const journalId = firstItemEl.dataset.journalId;
       const journalPack = firstItemEl.dataset.journalPack;
-
-      if (journalId) {
-        await RqgActorSheet.showJournalEntry(journalId, journalPack);
-      } else {
-        logBug(
-          `Couldn't find journal Id [${journalId}] on actor ${actor.name} to show it from the cult context menu.`,
-          true
-        );
+      if (!journalId) {
+        const msg = `Couldn't find journal Id [${journalId}] on actor ${actor.name} to show it from the cult context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
       }
+      await RqgActorSheet.showJournalEntry(journalId, journalPack);
     },
   },
   {
@@ -39,16 +36,14 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-edit"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
+      const itemId = getRequiredDomDataset(el, "item-id");
       const item = itemId && actor.getOwnedItem(itemId);
-      if (item && item.sheet) {
-        item.sheet.render(true);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit cult item from the cult context menu.`,
-          true
-        );
+      if (!item || !item.sheet) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit cult item from the cult context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
       }
+      item.sheet.render(true);
     },
   },
   {
@@ -56,15 +51,8 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-trash"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      if (itemId) {
-        RqgActorSheet.confirmItemDelete(actor, itemId);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete cult item from the cult context menu.`,
-          true
-        );
-      }
+      const itemId = getRequiredDomDataset(el, "item-id");
+      RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

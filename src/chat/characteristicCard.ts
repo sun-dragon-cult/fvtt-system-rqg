@@ -1,7 +1,7 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { Characteristic } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "../actors/rqgActor";
-import { getActorFromIds, logBug } from "../system/util";
+import { getActorFromIds, RqgError } from "../system/util";
 
 export type CharacteristicData = {
   name: string;
@@ -62,8 +62,9 @@ export class CharacteristicCard {
     const chatMessage = game.messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
     if (!flags || !chatMessage) {
-      logBug("couldn't find chatmessage", true);
-      return;
+      const msg = "couldn't find chatmessage";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
     }
     CharacteristicCard.updateFlagsFromForm(flags, ev);
 
@@ -89,8 +90,9 @@ export class CharacteristicCard {
     const chatMessage = game.messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
     if (!flags || !chatMessage) {
-      logBug("couldn't find chatmessage", true);
-      return false;
+      const msg = "couldn't find chatmessage";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
     }
     CharacteristicCard.updateFlagsFromForm(flags, ev);
 

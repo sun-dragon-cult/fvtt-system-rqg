@@ -4,10 +4,10 @@ import {
   HitLocationTypesEnum,
 } from "../data-model/item-data/hitLocationData";
 import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { logBug } from "./util";
 import { ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { DeepPartial } from "snowpack";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { RqgError } from "./util";
 
 export interface DamageEffects {
   hitLocationUpdates: HitLocationItemData;
@@ -57,15 +57,12 @@ export class DamageCalculations {
     const actorUpdateData: DeepPartial<RqgActorData> = {
       data: { attributes: { hitPoints: { value: 0 } } },
     };
-    if (currentTotalHp != null) {
-      actorUpdateData.data!.attributes!.hitPoints!.value = currentTotalHp - damage;
-    } else {
-      logBug(
-        `Actor ${actorData.name} don't have a calculated hitpoint value`,
-        true,
-        actorUpdateData
-      );
+    if (currentTotalHp == null) {
+      const msg = `Actor ${actorData.name} don't have a calculated hitpoint value`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, actorUpdateData);
     }
+    actorUpdateData.data!.attributes!.hitPoints!.value = currentTotalHp - damage;
     return actorUpdateData as RqgActorData;
   }
 
@@ -87,20 +84,18 @@ export class DamageCalculations {
       return damageEffects;
     }
     const maxHp = hitLocationData.data.hp.max;
-    if (!maxHp) {
-      logBug(`Hit location ${hitLocationData.name} doesn't have a max hp`, true, hitLocationData);
-      return damageEffects;
+    if (maxHp == null) {
+      const msg = `Hit location ${hitLocationData.name} doesn't have a max hp`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocationData);
     }
     const damage = Math.min(maxHp * 2, fullDamage); // Max damage to THP inflicted by limb wound is 2*HP
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
     if (hpValue == null || hpMax == null) {
-      logBug(
-        `Hitlocation ${hitLocationData.name} don't have hp value or max`,
-        true,
-        hitLocationData
-      );
-      return damageEffects;
+      const msg = `Hitlocation ${hitLocationData.name} don't have hp value or max`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
     }
     const totalDamage = hpMax - hpValue + damage;
     const actorName = actorData.token?.name || actorData.name;
@@ -166,20 +161,14 @@ export class DamageCalculations {
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
     if (!hitLocationData.data.hitLocationType) {
-      logBug(
-        `Hitlocation ${hitLocationData.name} on actor ${actorName} does not have a specified hitLocationType`,
-        true,
-        hitLocationData
-      );
-      return damageEffects;
+      const msg = `Hitlocation ${hitLocationData.name} on actor ${actorName} does not have a specified hitLocationType`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocationData);
     }
     if (hpValue == null || hpMax == null) {
-      logBug(
-        `Hitlocation ${hitLocationData.name} don't have hp value or max`,
-        true,
-        hitLocationData
-      );
-      return damageEffects;
+      const msg = `Hitlocation ${hitLocationData.name} don't have hp value or max`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocationData);
     }
     const totalDamage = hpMax - hpValue + damage;
 
@@ -245,11 +234,11 @@ export class DamageCalculations {
   }
 
   static getCombinedActorHealth(actorData: RqgActorData): ActorHealthState {
-    const healthEffects = actorData.data.attributes.health;
     const totalHitPoints = actorData.data.attributes.hitPoints.value;
     if (totalHitPoints == null) {
-      logBug(`Actor hit points value ${totalHitPoints} is missing`, true, actorData);
-      return healthEffects;
+      const msg = `Actor hit points value ${totalHitPoints} is missing`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, actorData);
     }
 
     if (totalHitPoints <= 0) {

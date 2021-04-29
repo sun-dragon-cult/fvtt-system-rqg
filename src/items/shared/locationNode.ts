@@ -1,7 +1,7 @@
 import { emptyPrice, IPhysicalItem } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
-import { logBug } from "../../system/util";
+import { RqgError } from "../../system/util";
 import { RqgItemData } from "../../data-model/item-data/itemTypes";
 
 export type LocationNode = IPhysicalItem & {
@@ -167,13 +167,13 @@ export function getItemIdsInSameLocationTree(item: RqgItemData, actor: RqgActor)
   while (rootNode && rootNode.location) {
     rootNode = searchTree(itemLocationTree, rootNode.location);
   }
-  if (rootNode) {
-    let itemIds = getDescendants([], rootNode);
-    return itemIds.map((id) => id);
-  } else {
-    logBug("Couldn't find root location Node", true, itemLocationTree);
-    return [];
+  if (rootNode == null) {
+    const msg = "Couldn't find root location Node";
+    ui.notifications?.error(msg);
+    throw new RqgError(msg, itemLocationTree);
   }
+  const itemIds = getDescendants([], rootNode);
+  return itemIds.map((id) => id);
 }
 
 export function getDescendants(ids: string[], node: LocationNode): string[] {

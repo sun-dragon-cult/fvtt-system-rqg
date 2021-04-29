@@ -8,6 +8,7 @@ import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { logMisconfiguration } from "../../system/util";
 
 export class MissileWeaponSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
@@ -41,7 +42,13 @@ export class MissileWeaponSheet extends RqgItemSheet {
           i.type === ItemTypeEnum.MissileWeapon && i.data.isProjectile
       );
     } else if (data.skillOrigin) {
-      const skill = (await fromUuid(data.skillOrigin)) as Item<SkillItemData> | null;
+      const skill = (await fromUuid(data.skillOrigin).catch(() => {
+        logMisconfiguration(
+          `Couldn't find missile weapon skill with uuid from skillOrigin ${data.skillOrigin}`,
+          true,
+          data
+        );
+      })) as Item<SkillItemData> | null;
       data.skillName = skill?.name || "";
     }
     data.equippedStatuses = [...equippedStatuses];

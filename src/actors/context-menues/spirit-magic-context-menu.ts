@@ -2,7 +2,7 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { SpiritMagicCard } from "../../chat/spiritMagicCard";
 import { SpiritMagicItemData } from "../../data-model/item-data/spiritMagicData";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, logBug } from "../../system/util";
+import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 
 export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -12,17 +12,14 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = itemId && actor.getOwnedItem(itemId);
-      if (item) {
-        await SpiritMagicCard.show(item._id, actor);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${
-            actor!.name
-          } to roll the spiritmagic item from the spiritmagic context menu,`,
-          true,
-          el
-        );
+      if (!item) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${
+          actor!.name
+        } to roll the spiritmagic item from the spiritmagic context menu,`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
       }
+      await SpiritMagicCard.show(item._id, actor);
     },
   },
   {
@@ -32,18 +29,15 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = itemId && (actor.getOwnedItem(itemId) as Item<SpiritMagicItemData>);
-      if (item) {
-        if (item.data.data.isVariable && item.data.data.points > 1) {
-          await SpiritMagicCard.show(item._id, actor);
-        } else {
-          await SpiritMagicCard.roll(item.data, item.data.data.points, 0, actor);
-        }
+      if (!item) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll for a spiritmagic item from the spiritmagic context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
+      }
+      if (item.data.data.isVariable && item.data.data.points > 1) {
+        await SpiritMagicCard.show(item._id, actor);
       } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll for a spiritmagic item from the spiritmagic context menu.`,
-          true,
-          el
-        );
+        await SpiritMagicCard.roll(item.data, item.data.data.points, 0, actor);
       }
     },
   },
@@ -64,18 +58,9 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       while ((firstItemEl?.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
         firstItemEl = firstItemEl.previousElementSibling as HTMLElement;
       }
-
-      const journalId = firstItemEl.dataset.journalId;
-      const journalPack = firstItemEl.dataset.journalPack;
-      if (journalId) {
-        await RqgActorSheet.showJournalEntry(journalId, journalPack);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to view the description of a spirit magic item from the spirit magic context menu.`,
-          true,
-          el
-        );
-      }
+      const journalId = getRequiredDomDataset($(firstItemEl), "journal-id");
+      const journalPack = getDomDataset($(firstItemEl), "journal-pack");
+      await RqgActorSheet.showJournalEntry(journalId, journalPack);
     },
   },
   {
@@ -85,15 +70,12 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = itemId && (actor.getOwnedItem(itemId) as Item<SpiritMagicItemData>);
-      if (item && item.sheet) {
-        item.sheet.render(true);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the spirit magic item from the spirit magic context menu.`,
-          true,
-          el
-        );
+      if (!item || !item.sheet) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the spirit magic item from the spirit magic context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
       }
+      item.sheet.render(true);
     },
   },
   {
@@ -101,16 +83,8 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: '<i class="fas fa-trash"></i>',
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      if (itemId) {
-        RqgActorSheet.confirmItemDelete(actor, itemId);
-      } else {
-        logBug(
-          `Couldn't find itemId [${itemId}] on actor ${actor.name} to delete a spirit magic item from the spirit magic context menu.`,
-          true,
-          el
-        );
-      }
+      const itemId = getRequiredDomDataset(el, "item-id");
+      RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

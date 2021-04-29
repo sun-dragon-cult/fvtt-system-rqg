@@ -1,12 +1,8 @@
-import { logBug, logMisconfiguration } from "../system/util";
+import { logMisconfiguration, RqgError } from "../system/util";
 
 export class RqgActiveEffect extends ActiveEffect {
   /**
    * Apply an RqgActiveEffect that uses a CUSTOM application mode.
-   * @param  actor                 The Actor to whom this effect should be applied
-   * @param  change   The change data being applied
-   * @return {*}                          The resulting applied value
-   * @private
    */
   _applyCustom(actor: Actor, change: any): any {
     const [affectedItem, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.ap
@@ -34,12 +30,9 @@ export class RqgActiveEffect extends ActiveEffect {
       }
       return null;
     } else {
-      logBug(
-        `Apply Active Effect targets more than one item (item ${affectedItem} with name name "${itemName}" is not unique).`,
-        true,
-        change
-      );
-      return null;
+      const msg = `Apply Active Effect targets more than one item (item ${affectedItem} with name name "${itemName}" is not unique).`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, change);
     }
   }
 }

@@ -22,7 +22,7 @@ import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
 import { Characteristics } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "./rqgActor";
-import { logBug, logMisconfiguration } from "../system/util";
+import { getDomDataset, getRequiredDomDataset, RqgError } from "../system/util";
 import { RuneTypeEnum } from "../data-model/item-data/runeData";
 import { RqgConfig } from "../system/config";
 import { DamageCalculations } from "../system/damageCalculations";
@@ -226,12 +226,12 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       ["5", reloadIcon],
     ];
     const dexStrikeRank = this.actor.data.data.attributes.dexStrikeRank;
-    if (dexStrikeRank != undefined) {
-      return loadedMissileSr[dexStrikeRank];
-    } else {
-      logBug("Dex SR was not calculated.", true, this.actor.data);
-      return [""];
+    if (dexStrikeRank == null) {
+      const msg = "Dex SR was not calculated.";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this.actor);
     }
+    return loadedMissileSr[dexStrikeRank];
   }
 
   private getUnloadedMissileSr(): string[] {
@@ -245,12 +245,12 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       [reloadIcon, "10"],
     ];
     const dexStrikeRank = this.actor.data.data.attributes.dexStrikeRank;
-    if (dexStrikeRank !== undefined) {
-      return unloadedMissileSr[dexStrikeRank];
-    } else {
-      logBug("Dex SR was not calculated.", true, this.actor.data);
-      return [""];
+    if (dexStrikeRank == null) {
+      const msg = "Dex SR was not calculated.";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this.actor);
     }
+    return unloadedMissileSr[dexStrikeRank];
   }
 
   private getCharacterRuneImgs(): string[] {
@@ -380,12 +380,13 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
   protected _updateObject(event: Event, formData: any) {
     const maxHitPoints = this.actor.data.data.attributes.hitPoints.max;
-    if (maxHitPoints) {
-      if (formData["data.attributes.hitPoints.value"] > maxHitPoints) {
-        formData["data.attributes.hitPoints.value"] = maxHitPoints;
-      }
-    } else {
-      logBug("Actor does not have max hitpoints set.", true, this.actor);
+    if (maxHitPoints == null) {
+      const msg = "Actor does not have max hitpoints set.";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this.actor);
+    }
+    if (formData["data.attributes.hitPoints.value"] > maxHitPoints) {
+      formData["data.attributes.hitPoints.value"] = maxHitPoints;
     }
 
     // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
@@ -466,312 +467,236 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       let clickCount = 0;
       const actorCharacteristics: Characteristics = this.actor.data.data.characteristics;
       if (!characteristicName || !(characteristicName in actorCharacteristics)) {
-        logBug(
-          `Characteristic [${characteristicName}] isn't found on actor [${this.actor.name}].`,
-          true,
-          this.actor
-        );
-      } else {
-        el.addEventListener("click", async (ev: Event) => {
-          clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-
-          if (clickCount >= 2) {
-            await CharacteristicCard.roll(
-              this.actor as any,
-              characteristicName,
-              actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
-              5,
-              0
-            );
-            clickCount = 0;
-          } else if (clickCount === 1) {
-            setTimeout(async () => {
-              if (clickCount === 1) {
-                await CharacteristicCard.show(this.actor as any, {
-                  name: characteristicName,
-                  data:
-                    actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
-                });
-              }
-              clickCount = 0;
-            }, CONFIG.RQG.dblClickTimeout);
-          }
-        });
+        const msg = `Characteristic [${characteristicName}] isn't found on actor [${this.actor.name}].`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, this.actor);
       }
+      el.addEventListener("click", async (ev: Event) => {
+        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+
+        if (clickCount >= 2) {
+          await CharacteristicCard.roll(
+            this.actor as any,
+            characteristicName,
+            actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
+            5,
+            0
+          );
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await CharacteristicCard.show(this.actor as any, {
+                name: characteristicName,
+                data: actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
+              });
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
     });
 
     // Roll against Item Ability Chance
     this.form!.querySelectorAll("[data-item-roll]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (!itemId) {
-        logBug(
-          `Couldn't find item [${itemId}] on actor ${this.actor.name} (token ${this.actor.token?.name}) to roll Ability Chance against`,
-          true,
-          el
-        );
-      } else {
-        const item = this.actor.getOwnedItem(itemId) as Item<any>;
-        let clickCount = 0;
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      const item = this.actor.getOwnedItem(itemId) as Item<any>;
+      let clickCount = 0;
 
-        el.addEventListener("click", async (ev: Event) => {
-          clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+      el.addEventListener("click", async (ev: Event) => {
+        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
 
-          if (clickCount >= 2) {
-            await ItemCard.roll(item.data, 0, this.actor);
+        if (clickCount >= 2) {
+          await ItemCard.roll(item.data, 0, this.actor);
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await ItemCard.show(itemId, this.actor);
+            }
             clickCount = 0;
-          } else if (clickCount === 1) {
-            setTimeout(async () => {
-              if (clickCount === 1) {
-                await ItemCard.show(itemId, this.actor);
-              }
-              clickCount = 0;
-            }, CONFIG.RQG.dblClickTimeout);
-          }
-        });
-      }
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
     });
 
     // Roll Spirit Magic
     (this.form as HTMLElement).querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      const item = itemId && this.actor.getOwnedItem(itemId);
-      if (!itemId || !item) {
-        logBug(`Couldn't find item [${itemId}] to roll Spirit Magic against`, true);
-      } else {
-        let clickCount = 0;
-
-        el.addEventListener("click", async (ev: Event) => {
-          if (item.data.type !== ItemTypeEnum.SpiritMagic) {
-            logBug("Tried to roll a Spirit Magic Roll against some other Item", true, item);
-          } else {
-            clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-            if (clickCount >= 2) {
-              if (item.data.data.isVariable && item.data.data.points > 1) {
-                await SpiritMagicCard.show(itemId, this.actor);
-              } else {
-                await SpiritMagicCard.roll(item.data, item.data.data.points, 0, this.actor);
-              }
-
-              clickCount = 0;
-            } else if (clickCount === 1) {
-              setTimeout(async () => {
-                if (clickCount === 1) {
-                  await SpiritMagicCard.show(itemId, this.actor);
-                }
-                clickCount = 0;
-              }, CONFIG.RQG.dblClickTimeout);
-            }
-          }
-        });
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      const item = this.actor.getOwnedItem(itemId);
+      if (!item) {
+        const msg = `Couldn't find item [${itemId}] to roll Spirit Magic against`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
       }
+      let clickCount = 0;
+
+      el.addEventListener("click", async (ev: Event) => {
+        if (item.data.type !== ItemTypeEnum.SpiritMagic) {
+          const msg = "Tried to roll a Spirit Magic Roll against some other Item";
+          ui.notifications?.error(msg);
+          throw new RqgError(msg, item);
+        }
+        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+        if (clickCount >= 2) {
+          if (item.data.data.isVariable && item.data.data.points > 1) {
+            await SpiritMagicCard.show(itemId, this.actor);
+          } else {
+            await SpiritMagicCard.roll(item.data, item.data.data.points, 0, this.actor);
+          }
+
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await SpiritMagicCard.show(itemId, this.actor);
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
     });
 
     // Show Weapon Chat Card
     (this.form as HTMLElement).querySelectorAll("[data-weapon-roll]").forEach((el) => {
-      const weaponItemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      const skillItemId = (el.closest("[data-skill-id]") as HTMLElement).dataset.skillId;
-      if (!weaponItemId || !skillItemId) {
-        logBug(
-          `Couldn't find weaponItem [${weaponItemId}] or skillItem [${skillItemId}] to show Weapon chat card.`,
-          true
-        );
-      } else {
-        let clickCount = 0;
-        el.addEventListener("click", async (ev: Event) => {
-          clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-          if (clickCount >= 2) {
-            // Ignore double clicks by doing the same as on single click
-            await WeaponCard.show(this.actor, skillItemId, weaponItemId);
+      const weaponItemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      const skillItemId = getRequiredDomDataset($(el as HTMLElement), "skill-id");
+
+      let clickCount = 0;
+      el.addEventListener("click", async (ev: Event) => {
+        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+        if (clickCount >= 2) {
+          // Ignore double clicks by doing the same as on single click
+          await WeaponCard.show(this.actor, skillItemId, weaponItemId);
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await WeaponCard.show(this.actor, skillItemId, weaponItemId);
+            }
             clickCount = 0;
-          } else if (clickCount === 1) {
-            setTimeout(async () => {
-              if (clickCount === 1) {
-                await WeaponCard.show(this.actor, skillItemId, weaponItemId);
-              }
-              clickCount = 0;
-            }, CONFIG.RQG.dblClickTimeout);
-          }
-        });
-      }
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
     });
 
     // Open Linked Journal Entry
     (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: Element) => {
-      const dataset = (el as HTMLElement).dataset;
-      const pack = dataset.journalPack;
-      const id = dataset.journalId;
-
-      if (!pack || !id) {
-        logMisconfiguration(
-          `Couldn't find pack [${pack}] or journalId [${id}] to open a journal entry (during setup).`,
-          false,
-          el,
-          this.actor
-        );
-      } else {
-        el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-      }
+      const pack = getDomDataset($(el as HTMLElement), "journal-pack");
+      const id = getRequiredDomDataset($(el as HTMLElement), "journal-id");
+      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
 
     // Edit Item (open the item sheet)
     (this.form as HTMLElement).querySelectorAll("[data-item-edit]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to open item sheet (during setup)`, true);
-      } else {
-        const item = this.actor.getOwnedItem(itemId);
-        if (item && item.sheet) {
-          el.addEventListener("click", () => item.sheet!.render(true));
-        } else {
-          logBug(
-            `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`,
-            true
-          );
-        }
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      const item = this.actor.getOwnedItem(itemId);
+      if (!item || !item.sheet) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
       }
+      el.addEventListener("click", () => item.sheet!.render(true));
     });
 
     // Delete Item (remove item from actor)
     (this.form as HTMLElement).querySelectorAll("[data-item-delete]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to delete item (during setup).`, true);
-      } else {
-        el.addEventListener("click", () =>
-          RqgActorSheet.confirmItemDelete(this.actor as any, itemId)
-        );
-      }
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
     // Cycle the equipped state of a physical Item
     (this.form as HTMLElement).querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (!itemId) {
-        logBug(
-          `Couldn't find itemId [${itemId}] to toggle the equipped state (during setup).`,
-          true
-        );
-      } else {
-        el.addEventListener("click", async () => {
-          const item = this.actor.getOwnedItem(itemId) as Item<any>;
-          if (item) {
-            const newStatus =
-              equippedStatuses[
-                (equippedStatuses.indexOf(item.data.data.equippedStatus) + 1) %
-                  equippedStatuses.length
-              ];
-            // Will trigger a Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
-            await item.update({ "data.equippedStatus": newStatus }, {});
-          } else {
-            logBug(
-              `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`,
-              true
-            );
-          }
-        });
-      }
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      el.addEventListener("click", async () => {
+        const item = this.actor.getOwnedItem(itemId) as Item<any>;
+        if (!item) {
+          const msg = `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`;
+          ui.notifications?.error(msg);
+          throw new RqgError(msg);
+        }
+        const newStatus =
+          equippedStatuses[
+            (equippedStatuses.indexOf(item.data.data.equippedStatus) + 1) % equippedStatuses.length
+          ];
+        // Will trigger a Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
+        await item.update({ "data.equippedStatus": newStatus }, {});
+      });
     });
 
     // Edit item value
     (this.form as HTMLElement).querySelectorAll("[data-item-edit-value]").forEach((el) => {
-      const path = (el as HTMLElement).dataset.itemEditValue;
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (!path || !itemId) {
-        logBug(
-          `Couldn't find item [${itemId}] or path [${path}] to edit an item (during setup).`,
-          true
-        );
-      } else {
-        el.addEventListener("change", async (event) => {
-          const item = this.actor.getOwnedItem(itemId);
-          if (item) {
-            await item.update({ [path]: (event.target as HTMLInputElement).value }, {});
-          } else {
-            logBug(`Couldn't find itemId [${itemId}] to edit an item (when clicked).`, true);
-          }
-        });
-      }
+      const path = getRequiredDomDataset($(el as HTMLElement), "item-edit-value");
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      el.addEventListener("change", async (event) => {
+        const item = this.actor.getOwnedItem(itemId);
+        if (!item) {
+          const msg = `Couldn't find itemId [${itemId}] to edit an item (when clicked).`;
+          ui.notifications?.error(msg);
+          throw new RqgError(msg);
+        }
+        await item.update({ [path]: (event.target as HTMLInputElement).value }, {});
+      });
     });
 
     // Add wound to hit location TODO move listener to hitlocation
     (this.form as HTMLElement).querySelectorAll("[data-item-add-wound]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to add wound.`, true);
-      } else {
-        el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
-      }
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
     });
 
     // Heal wounds to hit location TODO move listener to hitlocation
     (this.form as HTMLElement).querySelectorAll("[data-item-heal-wound]").forEach((el) => {
-      const itemId = (el.closest("[data-item-id]") as HTMLElement).dataset.itemId;
-      if (!itemId) {
-        logBug(`Couldn't find itemId [${itemId}] to heal wound.`, true);
-      } else {
-        el.addEventListener("click", () =>
-          HitLocationSheet.showHealWoundDialog(this.actor, itemId)
-        );
-      }
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));
     });
 
     // Edit Actor Active Effect
     (this.form as HTMLElement).querySelectorAll("[data-actor-effect-edit]").forEach((el) => {
-      const effectId = (el.closest("[data-effect-id]") as HTMLElement).dataset.effectId;
-      if (!effectId) {
-        logBug(
-          `Couldn't find active effect id [${effectId}] to edit the effect (during setup).`,
-          true
-        );
-      } else {
-        el.addEventListener("click", () => {
-          const effect = this.actor.effects.get(effectId);
-          if (effect) {
-            new ActiveEffectConfig(effect).render(true);
-          } else {
-            logBug(
-              `Couldn't find active effect id [${effectId}] to edit the effect (when clicked).`,
-              true
-            );
-          }
-        });
-      }
+      const effectId = getRequiredDomDataset($(el as HTMLElement), "effect-id");
+      el.addEventListener("click", () => {
+        const effect = this.actor.effects.get(effectId);
+        if (!effect) {
+          const msg = `Couldn't find active effect id [${effectId}] to edit the effect (when clicked).`;
+          ui.notifications?.error(msg);
+          throw new RqgError(msg);
+        }
+        new ActiveEffectConfig(effect).render(true);
+      });
     });
   }
 
   static confirmItemDelete(actor: RqgActor, itemId: string): void {
     const item = actor.getOwnedItem(itemId);
     if (!item) {
-      logBug(
-        `Couldn't find itemId [${itemId}] on actor ${actor.name} to show delete item Dialog (when clicked).`,
-        true
-      );
-    } else {
-      new Dialog(
-        {
-          title: `Delete ${item.type}: ${item.name}`,
-          content: "Do you want to delete this item",
-          default: "submit",
-          buttons: {
-            submit: {
-              icon: '<i class="fas fa-check"></i>',
-              label: "Confirm",
-              callback: async () => {
-                await actor.deleteOwnedItem(itemId);
-              },
-            },
-            cancel: {
-              icon: '<i class="fas fa-times"></i>',
-              label: "Cancel",
-              callback: () => null,
+      const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to show delete item Dialog (when clicked).`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
+    new Dialog(
+      {
+        title: `Delete ${item.type}: ${item.name}`,
+        content: "Do you want to delete this item",
+        default: "submit",
+        buttons: {
+          submit: {
+            icon: '<i class="fas fa-check"></i>',
+            label: "Confirm",
+            callback: async () => {
+              await actor.deleteOwnedItem(itemId);
             },
           },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancel",
+            callback: () => null,
+          },
         },
-        {
-          classes: ["rqg", "dialog"],
-        }
-      ).render(true);
-    }
+      },
+      {
+        classes: ["rqg", "dialog"],
+      }
+    ).render(true);
   }
 
   // TODO Move somewhere else!
@@ -789,11 +714,11 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       // @ts-ignore
       entity = cls.collection.get(id);
     }
-
-    if (entity) {
-      entity.sheet.render(true);
-    } else {
-      logBug(`Couldn't find journal with id [${id}] and packName ${packName} to to show it.`, true);
+    if (!entity) {
+      const msg = `Couldn't find journal with id [${id}] and packName ${packName} to to show it.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
     }
+    entity.sheet.render(true);
   }
 }

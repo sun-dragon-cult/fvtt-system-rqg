@@ -5,15 +5,18 @@
  */
 import { RqgActor } from "../actors/rqgActor";
 
-export function getDomDataset(el: JQuery | Event, dataset: string): string {
+export function getRequiredDomDataset(el: JQuery | Event, dataset: string): string {
+  const data = getDomDataset(el, dataset);
+  if (!data) {
+    throw new RqgError(`Couldn't find dataset [${dataset}]`, el, dataset);
+  }
+  return data;
+}
+
+export function getDomDataset(el: JQuery | Event, dataset: string): string | undefined {
   const elem = (el as Event).target ? ((el as Event).target as HTMLElement) : (el as JQuery)[0];
   const element = elem?.closest(`[data-${dataset}]`) as HTMLElement;
-
-  let data = element?.dataset[toCamelCase(dataset)];
-  if (!data) {
-    logBug(`Couldn't find dataset [${dataset}]`, true, el, dataset);
-  }
-  return data!;
+  return element?.dataset[toCamelCase(dataset)];
 }
 
 /**
@@ -25,18 +28,9 @@ export function toCamelCase(s: string): string {
   });
 }
 
-/**
- *
- * @deprecated use <code>throw new RqgError(msg,{notify:true, extraData:[a,b]}</code> instead
- */
-export function logBug(msg: string, notify: boolean, ...extraData: any) {
-  notify && ui?.notifications?.error(`${msg} - Bug: Contact the Developer!`);
-  throw new RqgError({ msg: `RQG | ${msg}`, extraData: extraData });
-}
-
-export function logMisconfiguration(msg: string, notify: boolean, ...extraData: any) {
+export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
   // TODO only for GM? game.user.isGM &&
-  console.warn(`RQG | ${msg}`, extraData);
+  console.warn(`RQG | ${msg}`, debugData);
 
   notify && ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`);
 }
@@ -61,22 +55,19 @@ export function getActorFromIds(actorId: string, tokenId?: string): RqgActor {
     .ownedTokens.find((t: Token) => t.id === tokenId);
   const actor = game.actors?.get(actorId) as RqgActor;
   if (!actor) {
-    throw new RqgError("game.actors is not defined", { extraData: [token, tokenId] });
+    throw new RqgError("game.actors is not defined", token, tokenId);
   }
   return token ? (token.actor as RqgActor) : actor;
 }
 
-export class RqgError extends Error {
-  constructor(public message: any, options: { notify?: boolean; extraData?: any[] } = {}) {
-    super(`RQG | ${message}`);
-    options.extraData && console.error(...options.extraData);
-    this.name = "RqgException";
-    if (options.notify) {
-      ui?.notifications?.error(`${message} - Bug: Contact the Developer!`);
+export class RqgError implements Error {
+  public name: string = "RqgError";
+  public debugData: any[];
+  constructor(public message: string, ...debugData: any[]) {
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, RqgError);
     }
+    this.debugData = debugData;
   }
-  // this.value = value.value;
-  // this.toString = function() {
-  //   return this.value + this.message;
-  // };
 }
