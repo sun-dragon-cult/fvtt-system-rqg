@@ -80,10 +80,10 @@ export class SpiritMagicCard {
       ui.notifications?.warn(validationError);
     } else {
       const result = await Ability.roll(
-        actor,
+        "Cast " + itemData.name,
         actorData.data.characteristics.power.value * 5,
         0,
-        "Cast " + itemData.name
+        actor
       );
       await SpiritMagicCard.drawMagicPoints(actor, level + boost, result);
     }

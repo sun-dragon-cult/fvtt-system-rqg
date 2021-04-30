@@ -12,7 +12,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const skillItemId = getDomDataset(el, "skill-id");
       const weaponItemId = getDomDataset(el, "item-id");
       if (skillItemId && weaponItemId) {
-        await WeaponCard.show(actor, skillItemId, weaponItemId);
+        await WeaponCard.show(weaponItemId, skillItemId, actor);
       } else {
         const msg = `Couldn't find skillId [${skillItemId}] or weaponId [${weaponItemId}] on actor ${actor.name} to show the weapon chat card from the combat context menu.`;
         ui.notifications?.error(msg);

@@ -17,7 +17,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await Ability.roll(actor, item.data.data.chance, 0, item.name);
+      await Ability.roll(item.name, item.data.data.chance, 0, actor);
     },
   },
   {

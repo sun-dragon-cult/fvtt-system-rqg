@@ -29,7 +29,7 @@ type CharacteristicCardFlags = {
 };
 
 export class CharacteristicCard {
-  public static async show(actor: RqgActor, characteristic: CharacteristicData): Promise<void> {
+  public static async show(characteristic: CharacteristicData, actor: RqgActor): Promise<void> {
     const defaultDifficulty = 5;
     const defaultModifier = 0;
     const flags: CharacteristicCardFlags = {
@@ -108,11 +108,11 @@ export class CharacteristicCard {
     ] = CharacteristicCard.getFormDataFromFlags(flags);
 
     await CharacteristicCard.roll(
-      actor,
       flags.characteristic.name,
       characteristicValue,
       difficulty,
-      modifier
+      modifier,
+      actor
     );
 
     // Enabling the form again after DsN animation is finished TODO doesn't wait
@@ -121,17 +121,17 @@ export class CharacteristicCard {
   }
 
   public static async roll(
-    actor: RqgActor,
     characteristicName: string,
     characteristicValue: number,
     difficulty: number,
-    modifier: number
+    modifier: number,
+    actor: RqgActor
   ): Promise<void> {
     const result = await Ability.roll(
-      actor as any,
+      characteristicName + " check",
       characteristicValue * difficulty,
       modifier,
-      characteristicName + " check"
+      actor as any
     );
     await CharacteristicCard.checkExperience(actor, characteristicName, result);
   }

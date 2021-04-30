@@ -22,7 +22,7 @@ type WeaponCardFlags = {
 
 export class WeaponCard extends ChatMessage {
   // TODO Should it extend ChatMessage?
-  public static async show(actor: RqgActor, skillId: string, weaponId: string): Promise<void> {
+  public static async show(weaponId: string, skillId: string, actor: RqgActor): Promise<void> {
     const defaultModifier = 0;
     const skillItem = actor.getOwnedItem(skillId) as Item<SkillItemData>;
 
@@ -142,7 +142,7 @@ export class WeaponCard extends ChatMessage {
     const chance: number = Number(flags.skillItemData.data.chance) || 0;
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
 
-    flags.result = await Ability.roll(actor, chance, modifier, flags.skillItemData.name + " check");
+    flags.result = await Ability.roll(flags.skillItemData.name + " check", chance, modifier, actor);
     await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
     const data = await WeaponCard.renderContent(flags);
     await chatMessage.update(data);

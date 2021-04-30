@@ -476,20 +476,24 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
         if (clickCount >= 2) {
           await CharacteristicCard.roll(
-            this.actor as any,
             characteristicName,
             actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
             5,
-            0
+            0,
+            this.actor as any
           );
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await CharacteristicCard.show(this.actor as any, {
-                name: characteristicName,
-                data: actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
-              });
+              await CharacteristicCard.show(
+                {
+                  name: characteristicName,
+                  data:
+                    actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
+                },
+                this.actor
+              );
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -567,12 +571,12 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
-          await WeaponCard.show(this.actor, skillItemId, weaponItemId);
+          await WeaponCard.show(weaponItemId, skillItemId, this.actor);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await WeaponCard.show(this.actor, skillItemId, weaponItemId);
+              await WeaponCard.show(weaponItemId, skillItemId, this.actor);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

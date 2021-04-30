@@ -10,10 +10,13 @@ export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] =
     condition: () => true,
     callback: async (el: JQuery) => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      await CharacteristicCard.show(actor, {
-        name: characteristicName,
-        data: characteristic,
-      });
+      await CharacteristicCard.show(
+        {
+          name: characteristicName,
+          data: characteristic,
+        },
+        actor
+      );
     },
   },
   {
@@ -22,7 +25,7 @@ export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] =
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      await CharacteristicCard.roll(actor, characteristicName, characteristic.value, 5, 0);
+      await CharacteristicCard.roll(characteristicName, characteristic.value, 5, 0, actor);
     },
   },
   {

@@ -26,10 +26,10 @@ export class Ability {
    * chanceMod - a +/- value that changes the chance
    **/
   public static async roll(
-    actor: RqgActor, // Real or synthetic
+    flavor: string,
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
-    flavor: string // TODO Rename to ability?
+    actor: RqgActor
   ): Promise<ResultEnum> {
     const r = new Roll("1D100");
     r.roll();

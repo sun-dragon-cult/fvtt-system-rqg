@@ -26,7 +26,7 @@ export const passionMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await Ability.roll(actor, itemChance, 0, item.name);
+      await Ability.roll(item.name, itemChance, 0, actor);
     },
   },
   {
