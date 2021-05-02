@@ -4,6 +4,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 
 export class PassionSheet extends RqgItemSheet {
   static passionImgUrl = new Map([
+    [PassionsEnum.Cowardly, "systems/rqg/assets/images/passion/cowardly.svg"],
     [PassionsEnum.Devotion, "systems/rqg/assets/images/passion/devotion.svg"],
     [PassionsEnum.Fear, "systems/rqg/assets/images/passion/fear.svg"],
     [PassionsEnum.Hate, "systems/rqg/assets/images/passion/hate.svg"],

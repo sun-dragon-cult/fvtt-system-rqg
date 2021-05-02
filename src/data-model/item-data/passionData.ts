@@ -2,6 +2,7 @@ import { IAbility } from "../shared/ability";
 import { ItemTypeEnum } from "./itemTypes";
 
 export enum PassionsEnum {
+  Cowardly = "cowardly",
   Devotion = "devotion",
   Fear = "fear",
   Hate = "hate",
