@@ -4,7 +4,7 @@ import { RuneItemData } from "../../data-model/item-data/runeData";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 
-export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -26,7 +26,8 @@ export const runeMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await Ability.roll(item.name, itemChance, 0, actor);
+      const speakerName = token?.name || actor.data.token.name;
+      await Ability.roll(item.name, itemChance, 0, speakerName);
     },
   },
   {

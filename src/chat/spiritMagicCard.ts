@@ -1,6 +1,6 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { SpiritMagicData } from "../data-model/item-data/spiritMagicData";
-import { getActorFromIds } from "../system/util";
+import { getActorFromIds, getSpeakerName } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 
@@ -16,13 +16,17 @@ type SpiritMagicCardFlags = {
 };
 
 export class SpiritMagicCard {
-  public static async show(spiritMagicItemId: string, actor: RqgActor): Promise<void> {
+  public static async show(
+    spiritMagicItemId: string,
+    actor: RqgActor,
+    token: Token | null
+  ): Promise<void> {
     const spiritMagicItemData = actor.getOwnedItem(spiritMagicItemId)
       ?.data as Item.Data<SpiritMagicData>;
 
     const flags: SpiritMagicCardFlags = {
       actorId: actor.id,
-      tokenId: actor.token?.id,
+      tokenId: token?.id,
       itemData: spiritMagicItemData,
       formData: {
         level: spiritMagicItemData.data.points,
@@ -31,7 +35,7 @@ export class SpiritMagicCard {
       },
     };
 
-    await ChatMessage.create(await this.renderContent(flags, actor));
+    await ChatMessage.create(await this.renderContent(flags));
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {}
@@ -57,7 +61,8 @@ export class SpiritMagicCard {
     const boost: number = Number(flags.formData.boost) || 0;
 
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    await SpiritMagicCard.roll(flags.itemData, level, boost, actor);
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+    await SpiritMagicCard.roll(flags.itemData, level, boost, actor, speakerName);
 
     button.disabled = false;
     return false;
@@ -67,7 +72,8 @@ export class SpiritMagicCard {
     itemData: Item.Data<SpiritMagicData>,
     level: number,
     boost: number,
-    actor: RqgActor
+    actor: RqgActor,
+    speakerName: string
   ): Promise<void> {
     const actorData = actor.data;
     const validationError = SpiritMagicCard.validateData(
@@ -83,7 +89,7 @@ export class SpiritMagicCard {
         "Cast " + itemData.name,
         actorData.data.characteristics.power.value * 5,
         0,
-        actor
+        speakerName
       );
       await SpiritMagicCard.drawMagicPoints(actor, level + boost, result);
     }
@@ -116,15 +122,13 @@ export class SpiritMagicCard {
     }
   }
 
-  private static async renderContent(
-    flags: SpiritMagicCardFlags,
-    actor: RqgActor
-  ): Promise<object> {
+  private static async renderContent(flags: SpiritMagicCardFlags): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.html", flags);
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor: "Spirit Magic: " + flags.itemData.name,
       user: game.user?.id,
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      speaker: { alias: speakerName },
       content: html,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

@@ -1,7 +1,7 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { Characteristic } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "../actors/rqgActor";
-import { getActorFromIds, RqgError } from "../system/util";
+import { getActorFromIds, getSpeakerName, RqgError } from "../system/util";
 
 export type CharacteristicData = {
   name: string;
@@ -29,12 +29,16 @@ type CharacteristicCardFlags = {
 };
 
 export class CharacteristicCard {
-  public static async show(characteristic: CharacteristicData, actor: RqgActor): Promise<void> {
+  public static async show(
+    characteristic: CharacteristicData,
+    actor: RqgActor,
+    token: Token | null
+  ): Promise<void> {
     const defaultDifficulty = 5;
     const defaultModifier = 0;
     const flags: CharacteristicCardFlags = {
       actorId: actor.id,
-      tokenId: actor.token?.id,
+      tokenId: token?.id,
       characteristic: characteristic,
       formData: {
         difficulty: defaultDifficulty,
@@ -55,7 +59,7 @@ export class CharacteristicCard {
       },
     };
 
-    await ChatMessage.create(await CharacteristicCard.renderContent(flags, actor));
+    await ChatMessage.create(await CharacteristicCard.renderContent(flags));
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
@@ -80,7 +84,7 @@ export class CharacteristicCard {
       difficulty,
       modifier
     );
-    const data = await CharacteristicCard.renderContent(flags, actor);
+    const data = await CharacteristicCard.renderContent(flags);
     await chatMessage.update(data);
   }
 
@@ -106,13 +110,14 @@ export class CharacteristicCard {
       difficulty,
       modifier,
     ] = CharacteristicCard.getFormDataFromFlags(flags);
-
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     await CharacteristicCard.roll(
       flags.characteristic.name,
       characteristicValue,
       difficulty,
       modifier,
-      actor
+      actor,
+      speakerName
     );
 
     // Enabling the form again after DsN animation is finished TODO doesn't wait
@@ -125,13 +130,14 @@ export class CharacteristicCard {
     characteristicValue: number,
     difficulty: number,
     modifier: number,
-    actor: RqgActor
+    actor: RqgActor,
+    speakerName: string
   ): Promise<void> {
     const result = await Ability.roll(
       characteristicName + " check",
       characteristicValue * difficulty,
       modifier,
-      actor as any
+      speakerName
     );
     await CharacteristicCard.checkExperience(actor, characteristicName, result);
   }
@@ -186,11 +192,9 @@ export class CharacteristicCard {
     flags.formData.difficulty = difficulty ? difficulty : 0.5;
   }
 
-  private static async renderContent(
-    flags: CharacteristicCardFlags,
-    actor: RqgActor
-  ): Promise<object> {
+  private static async renderContent(flags: CharacteristicCardFlags): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor:
         "Characteristic: " +
@@ -199,7 +203,7 @@ export class CharacteristicCard {
         flags.characteristic.data.value +
         ")",
       user: game.user?._id,
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      speaker: { alias: speakerName },
       content: html,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

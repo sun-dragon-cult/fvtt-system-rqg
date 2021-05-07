@@ -1,6 +1,6 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
-import { getActorFromIds, RqgError } from "../system/util";
+import { getActorFromIds, getSpeakerName, RqgError } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 
 type ItemCardFlags = {
@@ -15,7 +15,7 @@ type ItemCardFlags = {
 };
 
 export class ItemCard {
-  public static async show(itemId: string, actor: RqgActor): Promise<void> {
+  public static async show(itemId: string, actor: RqgActor, token: Token | null): Promise<void> {
     const defaultModifier = 0;
     const item = actor.getOwnedItem(itemId) as RqgItem;
 
@@ -26,7 +26,7 @@ export class ItemCard {
     }
     const flags: ItemCardFlags = {
       actorId: actor.id,
-      tokenId: actor.token?.id,
+      tokenId: token?.id,
       itemData: item.data,
       result: undefined,
       formData: {
@@ -79,15 +79,21 @@ export class ItemCard {
     const modifier = Number(flags.formData.modifier) || 0;
 
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    await ItemCard.roll(flags.itemData, modifier, actor);
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+    await ItemCard.roll(flags.itemData, modifier, actor, speakerName);
 
     button.disabled = false;
     return false;
   }
 
-  public static async roll(itemData: Item.Data, modifier: number, actor: RqgActor): Promise<void> {
+  public static async roll(
+    itemData: Item.Data,
+    modifier: number,
+    actor: RqgActor,
+    speakerName: string
+  ): Promise<void> {
     const chance: number = Number(itemData.data.chance) || 0;
-    const result = await Ability.roll(itemData.name + " check", chance, modifier, actor);
+    const result = await Ability.roll(itemData.name + " check", chance, modifier, speakerName);
     await ItemCard.checkExperience(actor, itemData, result);
   }
 
@@ -104,11 +110,11 @@ export class ItemCard {
 
   private static async renderContent(flags: ItemCardFlags): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
-    const actor = getActorFromIds(flags.actorId, flags.tokenId);
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor: flags.itemData.type + ": " + flags.itemData.name,
       user: game.user?.id,
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      speaker: { alias: speakerName },
       content: html,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

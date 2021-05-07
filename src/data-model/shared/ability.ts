@@ -1,5 +1,3 @@
-import { RqgActor } from "../../actors/rqgActor";
-
 export interface IAbility {
   /** The effective % chance of this ability with all modifiers added in */
   chance?: number;
@@ -29,7 +27,7 @@ export class Ability {
     flavor: string,
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
-    actor: RqgActor
+    speakerName: string
   ): Promise<ResultEnum> {
     const r = new Roll("1D100");
     r.roll();
@@ -40,7 +38,7 @@ export class Ability {
     const resultText = game.i18n.localize(`ResultEnum.${result}`);
     await r.toMessage({
       flavor: `${flavor} (${chance}${chanceModText}%) ${resultText}`,
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     });
     return result;

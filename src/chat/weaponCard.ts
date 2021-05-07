@@ -4,7 +4,7 @@ import { SkillData, SkillItemData } from "../data-model/item-data/skillData";
 import { CombatManeuver, MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { getActorFromIds, logMisconfiguration, RqgError } from "../system/util";
+import { getActorFromIds, getSpeakerName, logMisconfiguration, RqgError } from "../system/util";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 
 type WeaponCardFlags = {
@@ -22,13 +22,18 @@ type WeaponCardFlags = {
 
 export class WeaponCard extends ChatMessage {
   // TODO Should it extend ChatMessage?
-  public static async show(weaponId: string, skillId: string, actor: RqgActor): Promise<void> {
+  public static async show(
+    weaponId: string,
+    skillId: string,
+    actor: RqgActor,
+    token?: Token | null
+  ): Promise<void> {
     const defaultModifier = 0;
     const skillItem = actor.getOwnedItem(skillId) as Item<SkillItemData>;
 
     const flags: WeaponCardFlags = {
       actorId: actor.id,
-      tokenId: actor.token?.id,
+      tokenId: token?.id,
       skillItemData: skillItem.data,
       weaponItemData: actor.getOwnedItem(weaponId)?.data as
         | Item.Data<MeleeWeaponData>
@@ -120,8 +125,9 @@ export class WeaponCard extends ChatMessage {
       await WeaponCard.damageRoll(flags, damageType);
     } else if (action === "hitLocationRoll") {
       const roll = Roll.create("1D20").evaluate();
+      const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await roll.toMessage({
-        speaker: ChatMessage.getSpeaker(),
+        speaker: { alias: speakerName },
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         flavor: `Hitlocation`,
       });
@@ -141,8 +147,13 @@ export class WeaponCard extends ChatMessage {
     const modifier: number = Number(flags.formData.modifier) || 0;
     const chance: number = Number(flags.skillItemData.data.chance) || 0;
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-
-    flags.result = await Ability.roll(flags.skillItemData.name + " check", chance, modifier, actor);
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+    flags.result = await Ability.roll(
+      flags.skillItemData.name + " check",
+      chance,
+      modifier,
+      speakerName
+    );
     await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
     const data = await WeaponCard.renderContent(flags);
     await chatMessage.update(data);
@@ -161,11 +172,11 @@ export class WeaponCard extends ChatMessage {
 
   private static async renderContent(flags: WeaponCardFlags): Promise<object> {
     let html = await renderTemplate("systems/rqg/chat/weaponCard.html", flags);
-    const actor = getActorFromIds(flags.actorId, flags.tokenId);
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor: "Weapon: " + flags.weaponItemData.name,
       user: game.user?.id,
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      speaker: { alias: speakerName },
       content: html,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
@@ -228,8 +239,9 @@ export class WeaponCard extends ChatMessage {
     const roll = Roll.create(`${weaponDamage} ${damageBonus}`).evaluate({
       maximize: maximise,
     });
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     await roll.toMessage({
-      speaker: ChatMessage.getSpeaker(),
+      speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flavor: `damage`,
     });
@@ -251,11 +263,11 @@ export class WeaponCard extends ChatMessage {
     let whisperRecipients = game.user?.isGM
       ? game.users!.filter((u) => u.isGM).map((u) => u.name)
       : [];
-
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     const messageData: DeepPartial<ChatMessage.Data> = {
       flavor: `Draws ${nr} from the ${fumbleTable.name} table.`,
       user: game.user?.name as string,
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      speaker: { alias: speakerName },
       whisper: whisperRecipients,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       roll: draw.roll.formula,

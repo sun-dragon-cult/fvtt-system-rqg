@@ -1,14 +1,11 @@
-/**
- * Read a dataset from DOM.
- * @param el Starting point to search outwards from (or an event with a target element)
- * @param dataset A string in the form "item-id" (will match `<div data-item-id="123">)
- */
 import { RqgActor } from "../actors/rqgActor";
 
 export function getRequiredDomDataset(el: JQuery | Event, dataset: string): string {
   const data = getDomDataset(el, dataset);
   if (!data) {
-    throw new RqgError(`Couldn't find dataset [${dataset}]`, el, dataset);
+    const msg = `Couldn't find dataset [${dataset}]`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg, el, dataset);
   }
   return data;
 }
@@ -52,12 +49,28 @@ export function getActorFromIds(actorId: string, tokenId?: string): RqgActor {
   const token = canvas
     // @ts-ignore getLayer
     ?.getLayer("TokenLayer")
-    .ownedTokens.find((t: Token) => t.id === tokenId);
+    .ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
   const actor = game.actors?.get(actorId) as RqgActor;
   if (!actor) {
     throw new RqgError("game.actors is not defined", token, tokenId);
   }
-  return token ? (token.actor as RqgActor) : actor;
+  return (token ? Actor.fromToken(token) : actor) as RqgActor;
+}
+
+export function getSpeakerName(actorId: string, tokenId?: string): string {
+  const token = canvas
+    // @ts-ignore getLayer
+    ?.getLayer("TokenLayer")
+    .ownedTokens.find((t: Token) => t.id === tokenId);
+  if (token) {
+    return token.name;
+  }
+
+  const actor = game.actors?.get(actorId);
+  if (!actor) {
+    throw new RqgError("game.actors or actorId is not defined", actorId);
+  }
+  return actor.data.token.name;
 }
 
 export class RqgError implements Error {

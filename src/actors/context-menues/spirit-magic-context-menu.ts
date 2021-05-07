@@ -4,7 +4,10 @@ import { SpiritMagicItemData } from "../../data-model/item-data/spiritMagicData"
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 
-export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const spiritMagicMenuOptions = (
+  actor: RqgActor,
+  token: Token | null
+): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -19,7 +22,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await SpiritMagicCard.show(item._id, actor);
+      await SpiritMagicCard.show(item._id, actor, token);
     },
   },
   {
@@ -35,9 +38,10 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         throw new RqgError(msg, el);
       }
       if (item.data.data.isVariable && item.data.data.points > 1) {
-        await SpiritMagicCard.show(item._id, actor);
+        await SpiritMagicCard.show(item._id, actor, token);
       } else {
-        await SpiritMagicCard.roll(item.data, item.data.data.points, 0, actor);
+        const speakerName = token?.name || actor.data.token.name;
+        await SpiritMagicCard.roll(item.data, item.data.data.points, 0, actor, speakerName);
       }
     },
   },

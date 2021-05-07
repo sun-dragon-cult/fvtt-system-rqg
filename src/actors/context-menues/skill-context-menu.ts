@@ -4,14 +4,14 @@ import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 import { SkillItemData } from "../../data-model/item-data/skillData";
 
-export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await ItemCard.show(itemId, actor);
+      await ItemCard.show(itemId, actor, token);
     },
   },
   {
@@ -27,7 +27,8 @@ export const skillMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await ItemCard.roll(item.data, 0, actor);
+      const speakerName = token?.name || actor.data.token.name;
+      await ItemCard.roll(item.data, 0, actor, speakerName);
     },
   },
   {

@@ -32,7 +32,7 @@ export class HitLocationSheet extends RqgItemSheet {
     return sheetData;
   }
 
-  static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string): void {
+  static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string, speakerName: string): void {
     const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationItemData>;
     const dialogContent =
       '<form><input type="number" id="inflictDamagePoints" name="damage"><br><label><input type="checkbox" name="toTotalHp" checked> Apply to total HP</label><br><label><input type="checkbox" name="subtractAP" checked> Subtract AP</label><br></form>';
@@ -49,7 +49,12 @@ export class HitLocationSheet extends RqgItemSheet {
             icon: '<i class="fas fa-check"></i>',
             label: "Add wound",
             callback: async (html: JQuery | HTMLElement) =>
-              await HitLocationSheet.submitAddWoundDialog(html as JQuery, actor, hitLocation),
+              await HitLocationSheet.submitAddWoundDialog(
+                html as JQuery,
+                actor,
+                hitLocation,
+                speakerName
+              ),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
@@ -67,7 +72,8 @@ export class HitLocationSheet extends RqgItemSheet {
   private static async submitAddWoundDialog(
     html: JQuery,
     actor: RqgActor,
-    hitLocation: Item<HitLocationItemData>
+    hitLocation: Item<HitLocationItemData>,
+    speakerName: string
   ) {
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
@@ -90,13 +96,18 @@ export class HitLocationSheet extends RqgItemSheet {
       actorUpdates,
       notification,
       uselessLegs,
-    } = DamageCalculations.addWound(damage, applyDamageToTotalHp, hitLocation.data, actor.data);
+    } = DamageCalculations.addWound(
+      damage,
+      applyDamageToTotalHp,
+      hitLocation.data,
+      actor.data,
+      speakerName
+    );
 
-    const actorName = actor.isToken ? actor.token?.name : actor.name;
     await ChatMessage.create({
       user: game.user?._id,
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
-      content: `${actorName} takes a hit to ${hitLocation.name}. ${notification}`,
+      speaker: { alias: speakerName },
+      content: `${speakerName} takes a hit to ${hitLocation.name}. ${notification}`,
       whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
     });

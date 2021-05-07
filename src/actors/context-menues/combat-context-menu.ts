@@ -3,7 +3,7 @@ import { WeaponCard } from "../../chat/weaponCard";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, RqgError } from "../../system/util";
 
-export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const combatMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -12,7 +12,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const skillItemId = getDomDataset(el, "skill-id");
       const weaponItemId = getDomDataset(el, "item-id");
       if (skillItemId && weaponItemId) {
-        await WeaponCard.show(weaponItemId, skillItemId, actor);
+        await WeaponCard.show(weaponItemId, skillItemId, actor, token);
       } else {
         const msg = `Couldn't find skillId [${skillItemId}] or weaponId [${weaponItemId}] on actor ${actor.name} to show the weapon chat card from the combat context menu.`;
         ui.notifications?.error(msg);

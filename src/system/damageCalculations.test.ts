@@ -244,7 +244,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die"
+        "Pelle Plutt is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die"
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -280,7 +280,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
+        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -315,7 +315,7 @@ describe("Inflict Damage", () => {
           wounds: [appliedDamage],
         },
       });
-      expect(notification).toBe("Crash Test Dummy dies instantly.");
+      expect(notification).toBe("Pelle Plutt dies instantly.");
       expect(actorUpdates).toStrictEqual({
         data: {
           attributes: {
@@ -386,7 +386,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing."
+        "Pelle Plutt falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -422,7 +422,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
+        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -457,7 +457,7 @@ describe("Inflict Damage", () => {
           wounds: [appliedDamage],
         },
       });
-      expect(notification).toBe("Crash Test Dummy dies instantly.");
+      expect(notification).toBe("Pelle Plutt dies instantly.");
       expect(actorUpdates).toStrictEqual({
         data: {
           attributes: {
@@ -519,7 +519,7 @@ describe("Inflict Damage", () => {
       expect(hitLocationUpdates.data.wounds).toStrictEqual([appliedDamage]);
       expect(hitLocationUpdates.data.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe(
-        "Both legs are useless and Crash Test Dummy falls to the ground. Crash Test Dummy may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes."
+        "Both legs are useless and Pelle Plutt falls to the ground. Pelle Plutt may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -569,7 +569,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
+        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -619,7 +619,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
+        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -667,7 +667,7 @@ describe("Inflict Damage", () => {
           wounds: [appliedDamage],
         },
       });
-      expect(notification).toBe("Crash Test Dummy dies instantly.");
+      expect(notification).toBe("Pelle Plutt dies instantly.");
       expect(actorUpdates).toStrictEqual({
         data: {
           attributes: {
@@ -688,7 +688,13 @@ export function applyTestDamage(
   hitLocationData: HitLocationItemData,
   actorData: CharacterActorData
 ) {
-  const damageEffects = DamageCalculations.addWound(damage, true, hitLocationData, actorData);
+  const damageEffects = DamageCalculations.addWound(
+    damage,
+    true,
+    hitLocationData,
+    actorData,
+    "Pelle Plutt"
+  );
   mergeObject(hitLocationData, damageEffects.hitLocationUpdates);
   mergeObject(actorData, damageEffects.actorUpdates);
   actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);

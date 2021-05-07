@@ -3,7 +3,10 @@ import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import { getDomDataset, RqgError } from "../../system/util";
 
-export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const characteristicMenuOptions = (
+  actor: RqgActor,
+  token: Token | null
+): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -15,7 +18,8 @@ export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] =
           name: characteristicName,
           data: characteristic,
         },
-        actor
+        actor,
+        token
       );
     },
   },
@@ -25,7 +29,15 @@ export const characteristicMenuOptions = (actor: RqgActor): ContextMenu.Item[] =
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      await CharacteristicCard.roll(characteristicName, characteristic.value, 5, 0, actor);
+      const speakerName = token?.name || actor.data.token.name;
+      await CharacteristicCard.roll(
+        characteristicName,
+        characteristic.value,
+        5,
+        0,
+        actor,
+        speakerName
+      );
     },
   },
   {

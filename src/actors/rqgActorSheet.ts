@@ -400,20 +400,21 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         .filter(([userId, permission]) => permission >= ENTITY_PERMISSIONS.OBSERVER)
         .map(([userId, permission]) => userId);
 
+      const speakerName = this.token?.name || this.actor.data.token.name;
       let message;
       if (newHealth === "dead" && !this.actor.effects.find((e) => e.data.label === "dead")) {
-        message = `${this.actor.name} runs out of hitpoints and dies here and now!`;
+        message = `${speakerName} runs out of hitpoints and dies here and now!`;
       }
       if (
         newHealth === "unconscious" &&
         !this.actor.effects.find((e) => e.data.label === "unconscious")
       ) {
-        message = `${this.actor.name} faints from lack of hitpoints!`;
+        message = `${speakerName} faints from lack of hitpoints!`;
       }
       message &&
         ChatMessage.create({
           user: game.user?._id,
-          speaker: ChatMessage.getSpeaker({ alias: this.actor.name }),
+          speaker: { alias: speakerName },
           content: message,
           whisper: whisperRecipients,
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
@@ -433,9 +434,21 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
   }
 
   get title(): string {
-    return this.actor.isToken
-      ? `[Token] ${this.actor.token!.data.name} (${this.actor.name})`
-      : this.actor.name;
+    const linked = this.actor.data.token.actorLink;
+    const isToken = this.actor.isToken;
+
+    let prefix = "";
+    if (!linked) {
+      prefix = isToken ? "[Token] " : "[Prototype] ";
+    }
+    const speakerName = isToken ? this.actor.token!.data.name : this.actor.data.token.name;
+    const postfix = isToken ? ` (${this.actor.data.token.name})` : "";
+
+    return prefix + speakerName + postfix;
+
+    // return this.actor.isToken
+    //   ? `[Token] ${this.actor.token!.data.name} (${this.actor.data.token.name})`
+    //   : this.actor.data.token.name;
   }
 
   activateListeners(html: JQuery): void {
@@ -445,16 +458,24 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       return;
     }
 
-    new ContextMenu(html, ".characteristic-contextmenu", characteristicMenuOptions(this.actor));
-    new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor));
+    new ContextMenu(
+      html,
+      ".characteristic-contextmenu",
+      characteristicMenuOptions(this.actor, this.token)
+    );
+    new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor, this.token));
     new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));
-    new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(this.actor));
-    new ContextMenu(html, ".spirit-magic-contextmenu", spiritMagicMenuOptions(this.actor));
+    new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(this.actor, this.token));
+    new ContextMenu(
+      html,
+      ".spirit-magic-contextmenu",
+      spiritMagicMenuOptions(this.actor, this.token)
+    );
     new ContextMenu(html, ".cult-contextmenu", cultMenuOptions(this.actor));
-    new ContextMenu(html, ".rune-magic-contextmenu", runeMagicMenuOptions(this.actor));
-    new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(this.actor));
+    new ContextMenu(html, ".rune-magic-contextmenu", runeMagicMenuOptions(this.actor, this.token));
+    new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(this.actor, this.token));
     new ContextMenu(html, ".gear-contextmenu", gearMenuOptions(this.actor));
-    new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(this.actor));
+    new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(this.actor, this.token));
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
@@ -475,12 +496,14 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
 
         if (clickCount >= 2) {
+          const speakerName = this.token?.name || this.actor.data.token.name;
           await CharacteristicCard.roll(
             characteristicName,
             actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
             5,
             0,
-            this.actor as any
+            this.actor,
+            speakerName
           );
           clickCount = 0;
         } else if (clickCount === 1) {
@@ -492,7 +515,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
                   data:
                     actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
                 },
-                this.actor
+                this.actor,
+                this.token
               );
             }
             clickCount = 0;
@@ -511,12 +535,13 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
 
         if (clickCount >= 2) {
-          await ItemCard.roll(item.data, 0, this.actor);
+          const speakerName = this.token?.name || this.actor.data.token.name;
+          await ItemCard.roll(item.data, 0, this.actor, speakerName);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await ItemCard.show(itemId, this.actor);
+              await ItemCard.show(itemId, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -544,16 +569,23 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
         if (clickCount >= 2) {
           if (item.data.data.isVariable && item.data.data.points > 1) {
-            await SpiritMagicCard.show(itemId, this.actor);
+            await SpiritMagicCard.show(itemId, this.actor, this.token);
           } else {
-            await SpiritMagicCard.roll(item.data, item.data.data.points, 0, this.actor);
+            const speakerName = this.token?.name || this.actor.data.token.name;
+            await SpiritMagicCard.roll(
+              item.data,
+              item.data.data.points,
+              0,
+              this.actor,
+              speakerName
+            );
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await SpiritMagicCard.show(itemId, this.actor);
+              await SpiritMagicCard.show(itemId, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -571,12 +603,12 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
-          await WeaponCard.show(weaponItemId, skillItemId, this.actor);
+          await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await WeaponCard.show(weaponItemId, skillItemId, this.actor);
+              await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -646,7 +678,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Add wound to hit location TODO move listener to hitlocation
     (this.form as HTMLElement).querySelectorAll("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
+      const speakerName = this.token?.name || this.actor.data.token.name;
+      el.addEventListener("click", () =>
+        HitLocationSheet.showAddWoundDialog(this.actor, itemId, speakerName)
+      );
     });
 
     // Heal wounds to hit location TODO move listener to hitlocation
