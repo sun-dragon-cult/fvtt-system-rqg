@@ -116,7 +116,12 @@ export class HitLocationSheet extends RqgItemSheet {
 
     if (actor.isToken) {
       await HitLocationSheet.setTokenEffect(actor.token!, actorHealthBefore);
+    } else {
+      const activeTokens = actor.getActiveTokens(true);
+      activeTokens.length &&
+        (await HitLocationSheet.setTokenEffect(activeTokens[0], actorHealthBefore));
     }
+
     for (const update of uselessLegs) {
       await actor.getOwnedItem(update._id).update(update);
     }
@@ -202,6 +207,10 @@ export class HitLocationSheet extends RqgItemSheet {
 
     if (actor.isToken) {
       await HitLocationSheet.setTokenEffect(actor.token!, actorHealthBefore);
+    } else {
+      const activeTokens = actor.getActiveTokens(true);
+      activeTokens.length &&
+        (await HitLocationSheet.setTokenEffect(activeTokens[0], actorHealthBefore));
     }
 
     for (const update of usefulLegs) {
