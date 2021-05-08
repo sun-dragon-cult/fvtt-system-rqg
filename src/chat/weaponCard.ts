@@ -261,16 +261,15 @@ export class WeaponCard extends ChatMessage {
 
     // Hide GM fumble rolls from all but other GMs
     let whisperRecipients = game.user?.isGM
-      ? game.users!.filter((u) => u.isGM).map((u) => u.name)
+      ? game.users!.filter((u) => u.isGM).map((u) => u.id)
       : [];
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     const messageData: DeepPartial<ChatMessage.Data> = {
       flavor: `Draws ${nr} from the ${fumbleTable.name} table.`,
-      user: game.user?.name as string,
+      user: game.user?.id,
       speaker: { alias: speakerName },
       whisper: whisperRecipients,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      roll: draw.roll.formula,
       sound: draw.roll ? CONFIG.sounds.dice : undefined,
       flags: { "core.RollTable": fumbleTable.id },
     };
