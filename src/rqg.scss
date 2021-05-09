@@ -537,6 +537,12 @@
       }
     }
   }
+
+  &.dialog.heal-wound {
+    .woundlist label {
+      padding-right: 5px;
+    }
+  }
 }
 
 .rqg.actor {

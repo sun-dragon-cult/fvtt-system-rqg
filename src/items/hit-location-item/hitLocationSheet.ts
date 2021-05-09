@@ -134,13 +134,13 @@ export class HitLocationSheet extends RqgItemSheet {
       ui.notifications?.error(msg);
       throw new RqgError(msg, hitLocation);
     }
-    let dialogContent = "<form><label>Select which wound</label><div>";
+    let dialogContent = "<form><label>Select which wound to heal</label><div class='woundlist'>";
 
     hitLocation.data.data.wounds.forEach(
       (wound, i) =>
-        (dialogContent += `<input type="radio" name="wound" value="${i}" ${
+        (dialogContent += `<label><input type="radio" name="wound" value="${i}" ${
           !i && "checked"
-        }> ${wound}</label><br>`)
+        }> ${wound}</label> &nbsp;`)
     );
     dialogContent +=
       '</div><br><label>Heal <input id="healWoundPoints" type="number" name="heal" min=0 max=99> points</label><br><br></form>';
@@ -172,7 +172,7 @@ export class HitLocationSheet extends RqgItemSheet {
         },
       },
       {
-        classes: ["rqg", "dialog"],
+        classes: ["rqg", "dialog", "heal-wound"],
       }
     ).render(true);
   }
