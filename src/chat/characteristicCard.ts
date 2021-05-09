@@ -88,8 +88,16 @@ export class CharacteristicCard {
     await chatMessage.update(data);
   }
 
-  public static async formSubmitHandler(ev: Event, messageId: string): Promise<boolean> {
+  public static async formSubmitHandler(
+    ev: JQueryEventObject,
+    messageId: string
+  ): Promise<boolean> {
     ev.preventDefault();
+
+    // @ts-ignore submitter
+    const button = ev.originalEvent.submitter as HTMLButtonElement;
+    button.disabled = true;
+    setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
 
     const chatMessage = game.messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;

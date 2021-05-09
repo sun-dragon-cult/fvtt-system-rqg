@@ -40,7 +40,10 @@ export class SpiritMagicCard {
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {}
 
-  public static async formSubmitHandler(ev: Event, messageId: string): Promise<boolean> {
+  public static async formSubmitHandler(
+    ev: JQueryEventObject,
+    messageId: string
+  ): Promise<boolean> {
     ev.preventDefault();
 
     const chatMessage = game.messages?.get(messageId);
@@ -54,8 +57,10 @@ export class SpiritMagicCard {
       }
     }
 
-    const button = ev.currentTarget as HTMLButtonElement;
+    // @ts-ignore submitter
+    const button = ev.originalEvent.submitter as HTMLButtonElement;
     button.disabled = true;
+    setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
 
     const level: number = Number(flags.formData.level) || 0;
     const boost: number = Number(flags.formData.boost) || 0;
@@ -64,7 +69,6 @@ export class SpiritMagicCard {
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     await SpiritMagicCard.roll(flags.itemData, level, boost, actor, speakerName);
 
-    button.disabled = false;
     return false;
   }
 

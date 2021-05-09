@@ -59,12 +59,18 @@ export class ItemCard {
     }
   }
 
-  public static async formSubmitHandler(ev: Event, messageId: string): Promise<boolean> {
+  public static async formSubmitHandler(
+    ev: JQueryEventObject,
+    messageId: string
+  ): Promise<boolean> {
     ev.preventDefault();
+    // @ts-ignore submitter
+    const button = ev.originalEvent.submitter as HTMLButtonElement;
+    button.disabled = true;
+    setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
 
     const chatMessage = game.messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as ItemCardFlags;
-
     const formData = new FormData(ev.target as HTMLFormElement);
     // @ts-ignore formData.entries
     for (const [name, value] of formData.entries()) {
@@ -73,16 +79,11 @@ export class ItemCard {
       }
     }
 
-    const button = ev.currentTarget as HTMLButtonElement;
-    button.disabled = true;
-
     const modifier = Number(flags.formData.modifier) || 0;
-
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     await ItemCard.roll(flags.itemData, modifier, actor, speakerName);
 
-    button.disabled = false;
     return false;
   }
 

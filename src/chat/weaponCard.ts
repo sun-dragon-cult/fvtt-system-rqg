@@ -75,6 +75,12 @@ export class WeaponCard extends ChatMessage {
     messageId: string
   ): Promise<boolean> {
     ev.preventDefault();
+
+    // @ts-ignore submitter
+    const actionButton = ev.originalEvent.submitter as HTMLButtonElement;
+    actionButton.disabled = true;
+    setTimeout(() => (actionButton.disabled = false), 1000); // Prevent double clicks
+
     const chatMessage = game.messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as WeaponCardFlags;
 
@@ -87,60 +93,58 @@ export class WeaponCard extends ChatMessage {
       }
     }
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    const button = ev.currentTarget;
-    // button.disabled = true; // TODO Doesn't work, points to form !!!
 
-    // @ts-ignore submitter
-    const action = (ev.originalEvent.submitter as HTMLButtonElement).name; // combatManeuver | DamageRoll | HitLocationRoll
+    switch (actionButton.name) {
+      case "combatManeuver":
+        flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value; // slash | crush | impale | special | parry
+        const projectileItemData = (flags.weaponItemData.data as MissileWeaponData)
+          .isProjectileWeapon
+          ? (actor.getOwnedItem((flags.weaponItemData.data as MissileWeaponData).projectileId)
+              ?.data as Item.Data<MissileWeaponData>)
+          : flags.weaponItemData;
+        if (
+          flags.weaponItemData.type === ItemTypeEnum.MissileWeapon &&
+          projectileItemData.data.quantity &&
+          projectileItemData.data.quantity > 0
+        ) {
+          const updateData: DeepPartial<Actor.OwnedItemData<RqgActorData>> = {
+            _id: projectileItemData._id,
+            data: { quantity: --projectileItemData.data.quantity },
+          };
+          await actor.updateOwnedItem(updateData);
+        } else if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
+          ui.notifications?.warn("Out of ammo!");
+          return false;
+        }
 
-    if (action === "combatManeuver") {
-      flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value; // slash | crush | impale | special | parry
-      const projectileItemData = (flags.weaponItemData.data as MissileWeaponData).isProjectileWeapon
-        ? (actor.getOwnedItem((flags.weaponItemData.data as MissileWeaponData).projectileId)
-            ?.data as Item.Data<MissileWeaponData>)
-        : flags.weaponItemData;
-      if (
-        flags.weaponItemData.type === ItemTypeEnum.MissileWeapon &&
-        projectileItemData.data.quantity &&
-        projectileItemData.data.quantity > 0
-      ) {
-        const updateData: DeepPartial<Actor.OwnedItemData<RqgActorData>> = {
-          _id: projectileItemData._id,
-          data: { quantity: --projectileItemData.data.quantity },
-        };
-        await actor.updateOwnedItem(updateData);
-      } else if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
-        ui.notifications?.warn("Out of ammo!");
+        if (!chatMessage) {
+          const msg = "Couldn't find Chatmessage";
+          ui.notifications?.error(msg);
+          throw new RqgError(msg);
+        }
+        await WeaponCard.roll(flags, chatMessage);
         return false;
-      }
-
-      if (!chatMessage) {
-        const msg = "Couldn't find Chatmessage";
+      case "damageRoll":
+        const damageType = (ev as any).originalEvent.submitter.value; // Normal | Special | Max Special);  damageSeverity ??
+        await WeaponCard.damageRoll(flags, damageType);
+        return false;
+      case "hitLocationRoll":
+        const roll = Roll.create("1D20").evaluate();
+        const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+        await roll.toMessage({
+          speaker: { alias: speakerName },
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+          flavor: `Hitlocation`,
+        });
+        return false;
+      case "fumble":
+        await WeaponCard.fumbleRoll(flags);
+        return false;
+      default:
+        const msg = `Unknown button "${actionButton}" in weapon chat card`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
-      }
-      await WeaponCard.roll(flags, chatMessage);
-    } else if (action === "damageRoll") {
-      const damageType = (ev as any).originalEvent.submitter.value; // Normal | Special | Max Special);  damageSeverity ??
-      await WeaponCard.damageRoll(flags, damageType);
-    } else if (action === "hitLocationRoll") {
-      const roll = Roll.create("1D20").evaluate();
-      const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
-      await roll.toMessage({
-        speaker: { alias: speakerName },
-        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        flavor: `Hitlocation`,
-      });
-    } else if (action === "fumble") {
-      await WeaponCard.fumbleRoll(flags);
-    } else {
-      const msg = `Unknown button "${action}" in weapon chat card`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
     }
-
-    // button.disabled = false;
-    return false;
   }
 
   public static async roll(flags: WeaponCardFlags, chatMessage: ChatMessage) {
@@ -254,7 +258,6 @@ export class WeaponCard extends ChatMessage {
       logMisconfiguration(`The fumble table "${fumbleTableName}" is missing`, true);
       return;
     }
-    const actor = getActorFromIds(flags.actorId, flags.tokenId);
     const draw = await fumbleTable.draw({ displayChat: false });
     // Construct chat data
     const nr = draw.results.length > 1 ? `${draw.results.length} results` : "a result";
