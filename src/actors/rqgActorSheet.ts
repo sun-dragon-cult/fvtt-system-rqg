@@ -385,7 +385,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       ui.notifications?.error(msg);
       throw new RqgError(msg, this.actor);
     }
-    if (formData["data.attributes.hitPoints.value"] > maxHitPoints) {
+    if (
+      formData["data.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
+      formData["data.attributes.hitPoints.value"] > maxHitPoints
+    ) {
       formData["data.attributes.hitPoints.value"] = maxHitPoints;
     }
 
