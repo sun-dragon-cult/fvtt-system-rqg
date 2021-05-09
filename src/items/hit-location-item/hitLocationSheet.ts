@@ -216,6 +216,11 @@ export class HitLocationSheet extends RqgItemSheet {
     for (const update of usefulLegs) {
       await actor.getOwnedItem(update._id).update(update);
     }
+
+    // Reopen the dialog if there still are wounds left
+    if (hitLocation.data.data.wounds.length) {
+      this.showHealWoundDialog(actor, hitLocation.id);
+    }
   }
 
   static async setTokenEffect(token: Token, actorHealthBefore: ActorHealthState): Promise<void> {
