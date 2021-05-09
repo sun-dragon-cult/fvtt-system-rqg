@@ -3,14 +3,16 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { RuneItemData } from "../../data-model/item-data/runeData";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
+import { ItemCard } from "../../chat/itemCard";
 
 export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
-    callback: () => {
-      ui.notifications?.info("TODO Roll with Modifier");
+    callback: async (el: JQuery) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      await ItemCard.show(itemId, actor, token);
     },
   },
   {
