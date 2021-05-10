@@ -104,8 +104,8 @@ export class WeaponCard extends ChatMessage {
           : flags.weaponItemData;
         if (
           flags.weaponItemData.type === ItemTypeEnum.MissileWeapon &&
-          projectileItemData.data.quantity &&
-          projectileItemData.data.quantity > 0
+          projectileItemData?.data.quantity &&
+          projectileItemData?.data.quantity > 0
         ) {
           const updateData: DeepPartial<Actor.OwnedItemData<RqgActorData>> = {
             _id: projectileItemData._id,

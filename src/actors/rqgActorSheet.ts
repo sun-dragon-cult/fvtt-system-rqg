@@ -619,6 +619,45 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       });
     });
 
+    // Set Token SR in Combat Tracker
+    (this.form as HTMLElement).querySelectorAll("[data-set-sr]").forEach((el: Element) => {
+      const sr = getRequiredDomDataset($(el as HTMLElement), "set-sr");
+      let token = this.token;
+      if (!token && this.actor.data.token.actorLink) {
+        const activeTokens = this.actor.getActiveTokens();
+        token = activeTokens ? activeTokens[0] : null;
+      }
+
+      let clickCount = 0;
+
+      function setTokenCombatSr() {
+        game.combats?.forEach(async (combat) => {
+          const combatant = token && combat.getCombatantByToken(token.id);
+          combatant &&
+            (await combat.updateEmbeddedEntity("Combatant", {
+              _id: combatant._id,
+              initiative: sr,
+            }));
+        });
+      }
+
+      el.addEventListener("click", async (ev: Event) => {
+        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+        if (clickCount >= 2) {
+          // Ignore double clicks by doing the same as on single click
+          setTokenCombatSr();
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1 && token) {
+              setTokenCombatSr();
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
     // Open Linked Journal Entry
     (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: Element) => {
       const pack = getDomDataset($(el as HTMLElement), "journal-pack");

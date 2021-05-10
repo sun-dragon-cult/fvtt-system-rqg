@@ -283,6 +283,13 @@
       > *:nth-child(10n + 16) {
         background: var(--table-alternate-background);
       }
+
+      // Set-token-SR-in-combat button
+      button {
+        line-height: unset;
+        width: unset;
+        text-align: left;
+      }
     }
 
     &.spiritmagic {
