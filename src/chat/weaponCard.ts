@@ -153,7 +153,7 @@ export class WeaponCard extends ChatMessage {
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     flags.result = await Ability.roll(
-      flags.skillItemData.name + " check",
+      flags.skillItemData.name + " " + flags.formData.combatManeuver,
       chance,
       modifier,
       speakerName
