@@ -70,7 +70,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
         // @ts-ignore
         equippedStatus: i.data.data.equippedStatus,
         // @ts-ignore
-        quantity: i.data.data.quantity,
+        quantity: i.data.data.quantity || 1,
         // @ts-ignore
         price: i.data.data.price,
       };
