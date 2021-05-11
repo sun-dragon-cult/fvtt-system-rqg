@@ -1,3 +1,33 @@
+# [0.18.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.17.0...v0.18.0) (2021-05-11)
+
+
+### Bug Fixes
+
+* clickable hover effect on combat and prevent roll when editing weapon hp ([9e730c7](https://github.com/wakeand/fvtt-system-rqg/commit/9e730c7))
+* fumble rolls don't work anymore ([1bc9134](https://github.com/wakeand/fvtt-system-rqg/commit/1bc9134))
+* harmonise displayed actor / token name for all chat messages If token, use token name else use actor prototype token name. Also update the actorSheet title. For unlinked tokens show "[Token] <token name> (<actor prototype name>)", for unlinked prototype (sidebar) tokens show "[Prototype] <actor prototype token name>", and for linked tokens and prototype tokens show "actor prototype name" ([bc2b8e4](https://github.com/wakeand/fvtt-system-rqg/commit/bc2b8e4))
+* missile weapon SR isn't displayed anymore ([76b609a](https://github.com/wakeand/fvtt-system-rqg/commit/76b609a))
+* NPE if actor doesn't have any hit locations (actually no hitPoints.value) ([d08dfa8](https://github.com/wakeand/fvtt-system-rqg/commit/d08dfa8))
+* show correct ENC in gear - view by location ([884349d](https://github.com/wakeand/fvtt-system-rqg/commit/884349d))
+* token damage effects are not set for linked actors ([b067792](https://github.com/wakeand/fvtt-system-rqg/commit/b067792))
+* token/actor confusion should now mostly be fixed ([d3d812c](https://github.com/wakeand/fvtt-system-rqg/commit/d3d812c))
+* wrong actorsheet title for some synthetic actors ([3387451](https://github.com/wakeand/fvtt-system-rqg/commit/3387451))
+
+
+### Features
+
+* add cowardly passion ([13d0895](https://github.com/wakeand/fvtt-system-rqg/commit/13d0895))
+* add more homelands ([368897b](https://github.com/wakeand/fvtt-system-rqg/commit/368897b))
+* disable clicked card buutons for 1 sec to prevent double clicks ([8e5a5b2](https://github.com/wakeand/fvtt-system-rqg/commit/8e5a5b2))
+* implement context menu rolls for passion and rune ([921499a](https://github.com/wakeand/fvtt-system-rqg/commit/921499a))
+* include combat maneuver in flavor for weapon ability roll (slash/impale/crush/parry/...) ([ea233a2](https://github.com/wakeand/fvtt-system-rqg/commit/ea233a2))
+* reopen heal wounds dialog if there still are unhealed wounds in that hit location after healing ([ccd1f82](https://github.com/wakeand/fvtt-system-rqg/commit/ccd1f82))
+* set combat SR for token from actor sheet not implemented for missile weapons yet ([ab912c3](https://github.com/wakeand/fvtt-system-rqg/commit/ab912c3))
+* show price on weapons and armor ([5b2e087](https://github.com/wakeand/fvtt-system-rqg/commit/5b2e087))
+
+
+
+
 # [0.17.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.16.0...v0.17.0) (2021-04-23)
 
 
