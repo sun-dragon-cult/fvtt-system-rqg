@@ -95,7 +95,7 @@ export class RqgItem extends Item<RqgItemData> {
         );
         if (activeEffect) {
           activeEffect.origin = `Actor.${parent.id}.OwnedItem.${rqgItem._id}`;
-          // @ts-ignore TODO remove
+          // @ts-ignore TODO effects is Array runtime but Collection<ActiveEffects<RqgItem>> "compiletime"
           rqgItem.effects.push(activeEffect);
         }
       }

@@ -257,6 +257,11 @@
       grid-column: 10/11;
     }
 
+    .head11 {
+      grid-row: 1;
+      grid-column: 11/12;
+    }
+
     .head1-4 {
       grid-row: 1;
       grid-column: 1 / span 4;
@@ -323,9 +328,26 @@
     }
 
     &.weapon {
-      grid-template-columns: [col-start] 30px auto auto repeat(7, max-content) [col-end];
+      grid-template-columns: [col-start] 30px auto auto repeat(8, max-content) [col-end];
 
-      // Alternating row background for 10 columns
+      // Alternating row background for 11 columns
+      > *:nth-child(22n + 24),
+      > *:nth-child(22n + 25),
+      > *:nth-child(22n + 26),
+      > *:nth-child(22n + 27),
+      > *:nth-child(22n + 28),
+      > *:nth-child(22n + 29),
+      > *:nth-child(22n + 30),
+      > *:nth-child(22n + 31),
+      > *:nth-child(22n + 32),
+      > *:nth-child(22n + 33) {
+        background: var(--table-alternate-background);
+      }
+    }
+
+    &.armor {
+      grid-template-columns: [col-start] 30px auto min-content auto auto repeat(5, max-content) [col-end];
+
       > *:nth-child(20n + 22),
       > *:nth-child(20n + 23),
       > *:nth-child(20n + 24),
@@ -334,24 +356,7 @@
       > *:nth-child(20n + 27),
       > *:nth-child(20n + 28),
       > *:nth-child(20n + 29),
-      > *:nth-child(20n + 30),
-      > *:nth-child(20n + 31) {
-        background: var(--table-alternate-background);
-      }
-    }
-
-    &.armor {
-      grid-template-columns: [col-start] 30px auto min-content auto auto repeat(4, max-content) [col-end];
-
-      > *:nth-child(18n + 20),
-      > *:nth-child(18n + 21),
-      > *:nth-child(18n + 22),
-      > *:nth-child(18n + 23),
-      > *:nth-child(18n + 24),
-      > *:nth-child(18n + 25),
-      > *:nth-child(18n + 26),
-      > *:nth-child(18n + 27),
-      > *:nth-child(18n + 28) {
+      > *:nth-child(20n + 30) {
         background: var(--table-alternate-background);
       }
     }

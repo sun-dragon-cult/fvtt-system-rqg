@@ -172,9 +172,10 @@
         <div class="head5"><span class="text-right">STR</span></div>
         <div class="head6"><span class="text-right">DEX</span></div>
         <div class="head7"><span class="text-right">HP</span></div>
-        <div class="head8"><span class="text-right">ENC</span></div>
-        <div class="head9"></div>
-        <div class="head10">Location</div>
+        <div class="head8"><span class="text-right">Price</span></div>
+        <div class="head9"><span class="text-right">ENC</span></div>
+        <div class="head10"></div>
+        <div class="head11">Location</div>
 
         {{#each ownedItems.meleeWeapon}}
         {{#unless data.data.isNatural}}
@@ -188,6 +189,9 @@
         </div>
         <div data-item-id="{{_id}}" class="gear-contextmenu"><span
           class="text-right">{{data.data.hitPoints.value}}</span>
+        </div>
+        <div data-item-id="{{_id}}" class="gear-contextmenu">
+          <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
         </div>
         <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.encumbrance}}</span>
         </div>
@@ -215,9 +219,10 @@
         <div class="head5"><span class="text-right">STR</span></div>
         <div class="head6"><span class="text-right">DEX</span></div>
         <div class="head7"><span class="text-right">HP</span></div>
-        <div class="head8"><span class="text-right">ENC</span></div>
-        <div class="head9"></div>
-        <div class="head10">Location</div>
+        <div class="head8"><span class="text-right">Price</span></div>
+        <div class="head9"><span class="text-right">ENC</span></div>
+        <div class="head10"></div>
+        <div class="head11">Location</div>
 
         {{#each ownedItems.missileWeapon}}
         {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
@@ -231,6 +236,9 @@
         </div>
         <div data-item-id="{{_id}}" class="gear-contextmenu"><span
           class="text-right">{{data.data.hitPoints.value}}</span>
+        </div>
+        <div data-item-id="{{_id}}" class="gear-contextmenu">
+          <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
         </div>
         <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.encumbrance}}</span>
         </div>
@@ -257,9 +265,10 @@
         <div class="head4">Hitlocations</div>
         <div class="head5">Material</div>
         <div class="head6"><span class="text-right">moveQuietly</span></div>
-        <div class="head7"><span class="text-right">ENC</span></div>
-        <div class="head8"></div>
-        <div class="head9">Location</div>
+        <div class="head7"><span class="text-right">Price</span></div>
+        <div class="head8"><span class="text-right">ENC</span></div>
+        <div class="head9"></div>
+        <div class="head10">Location</div>
         {{#each ownedItems.armor}}
         <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
@@ -275,6 +284,9 @@
         <div data-item-id="{{_id}}" class="gear-contextmenu">{{data.data.material}}</div>
         <div data-item-id="{{_id}}" class="gear-contextmenu">
           <span class="text-right">{{data.data.moveQuietlyPenalty}}</span>
+        </div>
+        <div data-item-id="{{_id}}" class="gear-contextmenu">
+          <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
         </div>
         <div data-item-id="{{_id}}" class="gear-contextmenu">
           <span class="text-right">{{data.data.encumbrance}}</span>
