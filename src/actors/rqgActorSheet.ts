@@ -72,8 +72,8 @@ interface ActorSheetTemplate {
   healthStatuses: typeof actorHealthStatuses;
 
   // Other data needed for the sheet
-  /** Array of img urls to runes with > 0% chance */
-  characterRunes: string[];
+  /** Array of element runes with > 0% chance */
+  characterRunes: RuneItemData[];
   /** (html) Precalculated missile weapon SRs if loaded at start of round */
   loadedMissileSr: string[];
   /** (html) Precalculated missile weapon SRs if not loaded at start of round */
@@ -136,7 +136,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       spiritCombatSkillData: this.getSkillDataByName("Spirit Combat"),
       dodgeSkillData: this.getSkillDataByName("Dodge"),
 
-      characterRunes: this.getCharacterRuneImgs(), // Array of img urls to runes with > 0% chance
+      characterRunes: this.getCharacterRuneImgs(), // Array of element runes with > 0% chance
       loadedMissileSr: this.getLoadedMissileSr(), // (html) Precalculated missile weapon SRs if loaded at start of round
       unloadedMissileSr: this.getUnloadedMissileSr(), // (html) Precalculated missile weapon SRs if not loaded at start of round
       itemLocationTree: this.getItemLocationTree(), // physical items reorganised as a tree of items containing items
@@ -253,7 +253,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     return unloadedMissileSr[dexStrikeRank];
   }
 
-  private getCharacterRuneImgs(): string[] {
+  private getCharacterRuneImgs(): RuneItemData[] {
     return this.actor.items
       .filter(
         (i: Item<any>) =>

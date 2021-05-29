@@ -17,7 +17,7 @@
             <i>{{rqgActorData.data.attributes.health}}</i>
         {{/if}}
         {{#each characterRunes}}
-          <img class="rune" src="{{this}}">
+          <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
         {{/each}}
         </div>
       </div>
