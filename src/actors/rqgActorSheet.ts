@@ -23,7 +23,7 @@ import { ItemCard } from "../chat/itemCard";
 import { Characteristics } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "./rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../system/util";
-import { RuneTypeEnum } from "../data-model/item-data/runeData";
+import { RuneItemData, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { RqgConfig } from "../system/config";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
@@ -261,8 +261,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
           i.data.data.runeType === RuneTypeEnum.Element &&
           !!i.data.data.chance
       )
-      .sort((a: Item<any>, b: Item<any>) => b.data.data.chance - a.data.data.chance)
-      .map((r) => r.img);
+      .map((r) => r.data as RuneItemData)
+      .sort((a: RuneItemData, b: RuneItemData) => b.data.chance - a.data.chance);
   }
 
   private getSkillDataByName(name: String): Item.Data<SkillData> {
