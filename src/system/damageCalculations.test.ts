@@ -76,7 +76,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy's leftLeg is useless and cannot hold anything / support standing. Crash Test Dummy can still fight with whatever limbs are still functional."
+        "Pelle Plutt's leftLeg is useless and cannot hold anything / support standing. Pelle Plutt can still fight with whatever limbs are still functional."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -112,7 +112,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted."
+        "Pelle Plutt is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -149,7 +149,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Crash Test Dummy's leftLeg is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. Crash Test Dummy is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible."
+        "Pelle Plutt's leftLeg is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. Pelle Plutt is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible."
       );
       expect(actorUpdates).toStrictEqual({
         data: {
