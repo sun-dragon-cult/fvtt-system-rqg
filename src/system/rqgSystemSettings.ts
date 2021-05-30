@@ -19,16 +19,6 @@ export const registerRqgSystemSettings = function () {
     default: "rqg-compendiums.runes",
   });
 
-  game.settings.register("rqg", "hitLocationsCompendium", {
-    name: "Hit location items compendium",
-    hint:
-      "The hit locations in the specified compendium will be used for configuring armor cover. Please include hit locations for all races.",
-    scope: "world",
-    config: true,
-    type: String,
-    default: "rqg-compendiums.hitLocations-all",
-  });
-
   game.settings.register("rqg", "fumbleRollTable", {
     name: "Fumble Roll Table",
     hint: "The name of the Fumble roll table - will be used in combat",

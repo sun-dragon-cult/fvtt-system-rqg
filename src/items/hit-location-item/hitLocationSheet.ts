@@ -25,7 +25,7 @@ export class HitLocationSheet extends RqgItemSheet {
   getData(): HitLocationItemData {
     const sheetData = super.getData() as HitLocationItemData;
     const data = sheetData.data;
-    data.hitLocationNamesAll = Object.values(HitLocationsEnum);
+    data.allHitLocations = Object.values(HitLocationsEnum);
     data.hitLocationTypes = Object.values(HitLocationTypesEnum);
     data.hitLocationHealthStatuses = Object.values(hitLocationHealthStatuses);
     data.actorHealthImpacts = Object.values(actorHealthStatuses);

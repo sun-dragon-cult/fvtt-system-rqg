@@ -2,6 +2,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ArmorItemData } from "../../data-model/item-data/armorData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { HitLocationsEnum } from "../../data-model/item-data/hitLocationData";
 
 export class ArmorSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
@@ -18,14 +19,7 @@ export class ArmorSheet extends RqgItemSheet {
     const sheetData = super.getData() as ArmorItemData;
     const data = sheetData.data;
 
-    try {
-      const hitLocationsCompendium = game.settings.get("rqg", "hitLocationsCompendium") as string;
-      data.allHitLocations = (await game.packs
-        ?.get(hitLocationsCompendium)
-        ?.getIndex()) as Compendium.IndexEntry[];
-    } catch (err) {
-      data.allHitLocations = [];
-    }
+    data.allHitLocations = Object.values(HitLocationsEnum);
     data.equippedStatuses = [...equippedStatuses];
     return sheetData;
   }

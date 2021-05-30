@@ -15,15 +15,46 @@ export enum HitLocationsEnum {
   Tail = "tail",
   LeftHindLeg = "leftHindLeg",
   RightHindLeg = "rightHindLeg",
-  Forequarter = "forequarter",
   Hindquarter = "hindquarter",
-  Thorax = "thorax",
+  Forequarter = "forequarter",
   LeftForeLeg = "leftForeLeg",
   RightForeLeg = "rightForeLeg",
+  LeftMiddleLeg = "leftMiddleLeg",
+  RightMiddleLeg = "rightMiddleLeg",
+  LeftCenterRearLeg = "leftCenterRearLeg",
+  RightCenterRearLeg = "rightCenterRearLeg",
+  LeftCenterFrontLeg = "leftCenterFrontLeg",
+  RightCenterFrontLeg = "rightCenterFrontLeg",
+  HindBody = "hindBody",
+  MidBody = "midBody",
+  FrontBody = "frontBody",
+  Thorax = "thorax",
   Shell = "shell",
-  Forebody = "forebody",
   LeftHead = "leftHead",
   RightHead = "rightHead",
+  Body = "body",
+  Trunk = "trunk",
+  Tentacle1 = "tentacle1",
+  Tentacle2 = "tentacle2",
+  Tentacle3 = "tentacle3",
+  Tentacle4 = "tentacle4",
+  Tentacle5 = "tentacle5",
+  Tentacle6 = "tentacle6",
+  Tentacle7 = "tentacle7",
+  Tentacle8 = "tentacle8",
+  LeftClaw = "leftClaw",
+  RightClaw = "rightClaw",
+  LeftHindFlipper = "leftHindFlipper",
+  RightHindFlipper = "rightHindFlipper",
+  LeftForeFlipper = "leftForeFlipper",
+  RightForeFlipper = "rightForeFlipper",
+  LeftPaw = "leftPaw",
+  RightPaw = "rightPaw",
+  LeftPedipalp = "leftPedipalp",
+  RightPedipalp = "rightPedipalp",
+  Neck = "neck",
+  LowerLeftArm = "lowerLeftArm",
+  LowerRightArm = "lowerRightArm",
 }
 
 // TODO differentiate between severed & maimed? slash / crush or impale
@@ -57,7 +88,7 @@ export interface HitLocationData {
   /** Natural armor + modified armor Active Effect */
   ap?: number;
 
-  hitLocationNamesAll?: HitLocationsEnum[];
+  allHitLocations?: HitLocationsEnum[];
   hitLocationTypes?: HitLocationTypesEnum[];
   hitLocationHealthStatuses?: HitLocationHealthState[];
   actorHealthImpacts?: ActorHealthState[];

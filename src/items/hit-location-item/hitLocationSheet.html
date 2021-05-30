@@ -9,7 +9,7 @@
   </header>
   <main>
     <label>Name <select name="name">
-      {{#select item.name}} {{#each data.hitLocationNamesAll}}
+      {{#select item.name}} {{#each data.allHitLocations}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
@@ -25,7 +25,7 @@
     </select> for damage calculations.</label><br>
     {{#if (eq item.data.hitLocationType "limb")}}
       <label>Connected to <select name="data.connectedTo">
-        {{#select item.data.connectedTo}} {{#each data.hitLocationNamesAll}}
+        {{#select item.data.connectedTo}} {{#each data.allHitLocations}}
         <option value="{{this}}">{{this}}</option>
         {{/each}} {{/select}}
       </select></label><br>
