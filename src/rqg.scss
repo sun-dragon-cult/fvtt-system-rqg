@@ -365,14 +365,14 @@
       grid-template-columns: [col-start] 30px auto repeat(7, max-content) [col-end];
 
       > *:nth-child(18n + 20),
-      > *:nth-child(19n + 21),
-      > *:nth-child(20n + 22),
-      > *:nth-child(21n + 23),
-      > *:nth-child(22n + 24),
-      > *:nth-child(23n + 25),
-      > *:nth-child(24n + 26),
-      > *:nth-child(25n + 27),
-      > *:nth-child(26n + 28) {
+      > *:nth-child(18n + 21),
+      > *:nth-child(18n + 22),
+      > *:nth-child(18n + 23),
+      > *:nth-child(18n + 24),
+      > *:nth-child(18n + 25),
+      > *:nth-child(18n + 26),
+      > *:nth-child(18n + 27),
+      > *:nth-child(18n + 28) {
         background: var(--table-alternate-background);
       }
     }
