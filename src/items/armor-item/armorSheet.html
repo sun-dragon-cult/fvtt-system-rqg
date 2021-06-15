@@ -1,15 +1,20 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-    <input type="text" name="name" value="{{item.name}}" />
+    <fieldset>
+      <legend>Name</legend>
+      <label>Name prefix<br><input type="text" name="data.namePrefix" value="{{item.data.namePrefix}}"></label><br>
+      <label>Armor Type</span><br><input type="text" name="data.armorType" value="{{item.data.armorType}}" list="armorTypeNames"></label><br>
+      <label><span class="paren-head">Material</span><br>( <input type="text" name="data.material" value="{{item.data.material}}" list="materialNames"> )</label><br>
+    </fieldset>
+  </header>
+  <main>
     <label>Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
       {{#select data.equippedStatus}} {{#each data.equippedStatuses}}
-      <option value="{{this}}">{{this}}</option>
+        <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
-  </header>
-  <main>
     <label>Hit Locations</label><br>
     {{#each data.hitLocations}}
     <span><input name="data.hitLocations" type="text" value="{{this}}"></span>
@@ -17,7 +22,7 @@
     <input name="data.hitLocations" type="text" list="allHitLocations" placeholder="Add new covered hit location"><br>
 
     <label>Absorbs <input type="number" min="0" max="99" name="data.absorbs" value="{{item.data.absorbs}}"></label><br>
-    <label>Material <input type="text" name="data.material" value="{{item.data.material}}"></label><br>
+
     <label>Move Quietly Penalty <input type="number" min="0" max="99" name="data.moveQuietlyPenalty"
                                        value="{{item.data.moveQuietlyPenalty}}"></label><br>
     <label>Fits size <input type="number" min="1" max="99" name="data.size" value="{{item.data.size}}"></label><br>
@@ -36,6 +41,16 @@
   <datalist id="allHitLocations">
     {{#each data.allHitLocations}}
     <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+  <datalist id="armorTypeNames">
+    {{#each data.armorTypeNames}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+  <datalist id="materialNames">
+    {{#each data.materialNames}}
+      <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>
 </form>

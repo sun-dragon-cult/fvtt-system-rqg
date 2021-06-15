@@ -10,8 +10,8 @@ export class SkillSheet extends RqgItemSheet {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
       template: "systems/rqg/items/skill-item/skillSheet.html",
-      width: 370,
-      height: 310,
+      width: 570,
+      height: 350,
     });
   }
 
@@ -31,7 +31,8 @@ export class SkillSheet extends RqgItemSheet {
     const specialization = formData["data.specialization"]
       ? ` (${formData["data.specialization"]})`
       : "";
-    formData["name"] = formData["data.skillName"] + specialization;
+    formData["name"] =
+      formData["data.skillName"] + specialization + " - " + formData["data.category"];
 
     let runes = formData["data.runes"];
     runes = Array.isArray(runes) ? runes : [runes];

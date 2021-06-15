@@ -346,17 +346,17 @@
     }
 
     &.armor {
-      grid-template-columns: [col-start] 30px auto min-content auto auto repeat(5, max-content) [col-end];
+      grid-template-columns: [col-start] 30px auto min-content auto repeat(5, max-content) [col-end];
 
-      > *:nth-child(20n + 22),
-      > *:nth-child(20n + 23),
-      > *:nth-child(20n + 24),
-      > *:nth-child(20n + 25),
-      > *:nth-child(20n + 26),
-      > *:nth-child(20n + 27),
-      > *:nth-child(20n + 28),
-      > *:nth-child(20n + 29),
-      > *:nth-child(20n + 30) {
+      > *:nth-child(18n + 20),
+      > *:nth-child(18n + 21),
+      > *:nth-child(18n + 22),
+      > *:nth-child(18n + 23),
+      > *:nth-child(18n + 24),
+      > *:nth-child(18n + 25),
+      > *:nth-child(18n + 26),
+      > *:nth-child(18n + 27),
+      > *:nth-child(18n + 28) {
         background: var(--table-alternate-background);
       }
     }
@@ -782,6 +782,22 @@
   input {
     width: inherit;
   }
+
+  &.skill,
+  &.armor,
+  &.passion,
+  &.rune {
+    fieldset {
+      display: flex;
+    }
+    .paren-head {
+      margin-left: 0.5rem;
+    }
+    label {
+      white-space: nowrap;
+      margin-right: 0.6rem;
+    }
+  }
 }
 
 .rqg img.rune {
@@ -803,4 +819,13 @@
 
 .token-initiative input {
   color: white;
+}
+
+.app.sheet.journal-sheet {
+  font-size: 16px;
+
+  h3,
+  h4 {
+    margin: 0 0 -0.5rem;
+  }
 }

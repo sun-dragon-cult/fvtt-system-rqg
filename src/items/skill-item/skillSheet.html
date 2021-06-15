@@ -1,17 +1,21 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-    <label>Skill<br><input type="text" name="data.skillName" value="{{item.data.skillName}}"></label>
-    <label>Specialization<br><input type="text" name="data.specialization" value="{{item.data.specialization}}"></label>
+    <fieldset>
+      <legend>Name</legend>
+      <label>Skill Name<br><input type="text" name="data.skillName" value="{{item.data.skillName}}"></label>
+      <label><span class="paren-head">Specialization</span><br>( <input type="text" name="data.specialization" value="{{item.data.specialization}}"> )&nbsp;&nbsp;&nbsp;- </label>
+      <label>Category<br><select name="data.category" >
+        {{#select data.category}}
+        {{#each data.skillCategories}}
+          <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      {{/select}}
+      </select></label>
+    </fieldset>
   </header>
   <main>
-    Category: <select name="data.category" >
-      {{#select data.category}}
-      {{#each data.skillCategories}}
-      <option value="{{this}}">{{this}}</option>
-      {{/each}}
-      {{/select}}
-    </select>
+
     <label>Category Modifier {{item.data.categoryMod}}</label><br>
     <label>Base Chance <input type="number" min="0" max="999" name="data.baseChance" value="{{item.data.baseChance}}"></label><br>
     <label>Learned Chance <input type="number" min="0" max="999" name="data.learnedChance" value="{{item.data.learnedChance}}" /></label>

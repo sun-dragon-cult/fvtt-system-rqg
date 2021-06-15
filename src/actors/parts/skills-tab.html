@@ -10,7 +10,7 @@
           <img class="item" src="{{img}}">
         </div>
         <div data-item-id="{{_id}}" class="skill-contextmenu" data-item-roll title="Roll" title="Roll">
-          {{name}}
+          {{data.data.skillName}}{{#if data.data.specialization}} ({{data.data.specialization}}){{/if}}
           {{#each data.data.runes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
           {{/each}}

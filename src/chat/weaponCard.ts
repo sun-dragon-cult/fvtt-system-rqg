@@ -170,7 +170,12 @@ export class WeaponCard extends ChatMessage {
   ): Promise<void> {
     if (result <= ResultEnum.Success && !skillItemData.data.hasExperience) {
       await actor.updateOwnedItem({ _id: skillItemData._id, data: { hasExperience: true } });
-      ui.notifications?.info("Yey, you got an experience check on " + skillItemData.name + "!");
+      const specialization = skillItemData.data.specialization
+        ? ` (${skillItemData.data.specialization})`
+        : "";
+      ui.notifications?.info(
+        `Yey, you got an experience check on ${skillItemData.data.skillName}${specialization}!`
+      );
     }
   }
 
@@ -203,7 +208,8 @@ export class WeaponCard extends ChatMessage {
         : "";
 
     if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
-      const missileWeaponData: Item.Data<MissileWeaponData> = (flags.weaponItemData as unknown) as Item.Data<MissileWeaponData>;
+      const missileWeaponData: Item.Data<MissileWeaponData> =
+        flags.weaponItemData as unknown as Item.Data<MissileWeaponData>;
 
       if (missileWeaponData.data.isThrownWeapon) {
         damageBonus = " + ceil(" + actor.data.data.attributes.damageBonus + "/2)";

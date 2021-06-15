@@ -1,8 +1,12 @@
 import { RqgActor } from "../actors/rqgActor";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum, RqgItemData } from "../data-model/item-data/itemTypes";
+import { RqgItemData } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
-import { HitLocationsEnum, HitLocationTypesEnum } from "../data-model/item-data/hitLocationData";
+import { migrateItemEstimatedPrice } from "./migrations/migrateItemEstimatedPrice";
+import { migrateHitLocationType } from "./migrations/migrateHitLocationType";
+import { migrateSkillName } from "./migrations/migrateSkillName";
+import { migrateArmorName } from "./migrations/migrateArmorName";
+import { migrateRuneDescription, migrateRuneImgLocation } from "./migrations/migrateRuneCompendium";
 
 type Updates = {
   updateData: object;
@@ -136,13 +140,11 @@ export class Migrate {
   private static actor(actor: RqgActor): Updates {
     let updates: Updates = { updateData: [], deleteEmbeddedActiveEffectsIds: [] };
 
-    updates.deleteEmbeddedActiveEffectsIds = [].concat(
-      // @ts-ignore look into
+    updates.deleteEmbeddedActiveEffectsIds = ([] as string[]).concat(
       updates.deleteEmbeddedActiveEffectsIds,
       Migrate.removeOrphanedActiveEffects(actor)
     );
-    updates.deleteEmbeddedActiveEffectsIds = [].concat(
-      // @ts-ignore look into
+    updates.deleteEmbeddedActiveEffectsIds = ([] as string[]).concat(
       updates.deleteEmbeddedActiveEffectsIds,
       Migrate.removeDuplicatedActiveEffects(actor)
     );
@@ -236,56 +238,18 @@ export class Migrate {
    */
   private static itemData(itemData: RqgItemData): object {
     let updateData = {};
-    updateData = mergeObject(updateData, Migrate.itemEstimatedPrice(itemData));
-    updateData = mergeObject(updateData, Migrate.hitLocationType(itemData));
+    [
+      migrateItemEstimatedPrice,
+      migrateHitLocationType,
+      migrateSkillName,
+      migrateArmorName,
+      migrateRuneImgLocation,
+      migrateRuneDescription,
+    ].forEach(
+      (f: (itemData: RqgItemData) => any) => (updateData = mergeObject(updateData, f(itemData)))
+    );
+
     Migrate.removeDeprecatedFields(itemData, updateData);
-    return updateData;
-  }
-
-  // Migrate price to new model definition in v0.14.0 +
-  private static itemEstimatedPrice(itemData: RqgItemData) {
-    let updateData = {};
-    if (
-      "physicalItemType" in itemData.data &&
-      itemData.data.physicalItemType &&
-      typeof itemData.data.price !== "object"
-    ) {
-      const currentPrice = itemData.data.price;
-      updateData = {
-        data: {
-          price: {
-            real: currentPrice,
-            estimated: 0,
-          },
-        },
-      };
-    }
-    return updateData;
-  }
-
-  // Migrate hitLocation type for damage calculations in v0.16.0 +
-  private static hitLocationType(itemData: RqgItemData) {
-    let updateData = {};
-    if (itemData.type === ItemTypeEnum.HitLocation && !itemData.data.hitLocationType) {
-      let hitLocationType: HitLocationTypesEnum;
-      if (itemData.name === HitLocationsEnum.Abdomen) {
-        hitLocationType = HitLocationTypesEnum.Abdomen;
-      } else if (itemData.name === HitLocationsEnum.Head) {
-        hitLocationType = HitLocationTypesEnum.Head;
-      } else if (itemData.name === HitLocationsEnum.Chest) {
-        hitLocationType = HitLocationTypesEnum.Chest;
-      } else {
-        hitLocationType = HitLocationTypesEnum.Limb;
-        if (itemData.name.includes("Leg")) {
-          itemData.data.connectedTo = HitLocationsEnum.Abdomen;
-        }
-      }
-      updateData = {
-        data: {
-          hitLocationType: hitLocationType,
-        },
-      };
-    }
     return updateData;
   }
 

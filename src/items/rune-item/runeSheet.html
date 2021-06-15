@@ -6,18 +6,21 @@
             data-edit="img"
             title="{{item.name}}"
     />
-    <h1 class="name prop"></h1>
 
-    <input type="text" name="data.rune" value="{{item.data.rune}}"/>
-    <select name="data.runeType">
-      {{#select item.data.runeType}} {{#each data.runeTypes}}
-      <option value="{{this}}">{{this}}</option>
-      {{/each}} {{/select}}
-    </select>
-    <label><input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}"/>%</label>
-    <label><input type="checkbox" name="data.hasExperience" {{checked data.hasExperience}} />Exp</label>
+    <fieldset>
+      <legend>Name</legend>
+      <label>Rune<br><input type="text" name="data.rune" value="{{item.data.rune}}"></label>
+      <label class="paren-head">Type<br>( <select name="data.runeType">
+        {{#select item.data.runeType}} {{#each data.runeTypes}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}} {{/select}}
+      </select> )</label>
+    </fieldset>
   </header>
   <section class="sheet-body">
+    <label><input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}"/>%</label>
+    <label><input type="checkbox" name="data.hasExperience" {{checked data.hasExperience}} />Exp</label>
+
     <div class="wide-section">
       <label>Opposing Rune <img class="rune" src="{{runeImg data.opposingRune}}" title="{{data.opposingRune}}"><input type="text" name="data.opposingRune" value="{{item.data.opposingRune}}" list="allRunes"/></label>
       <div>Minor Runes<br>

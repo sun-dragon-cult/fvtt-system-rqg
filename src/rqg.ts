@@ -7,7 +7,7 @@ import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./system/rqgCombat";
 import { RQG_CONFIG, RqgConfig } from "./system/config";
 import { ChatCardListeners } from "./chat/chatCardListeners";
-import { Migrate } from "./system/migration";
+import { Migrate } from "./system/migrate";
 
 declare const CONFIG: RqgConfig;
 

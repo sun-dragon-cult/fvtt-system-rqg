@@ -35,7 +35,7 @@ export class Ability {
     const result = Ability.evaluateResult(modifiedChance, r.total!);
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
-    const resultText = game.i18n.localize(`ResultEnum.${result}`);
+    const resultText = game.i18n.localize(`RQG.ResultEnum.${result}`);
     await r.toMessage({
       flavor: `${flavor} (${chance}${chanceModText}%) ${resultText}`,
       speaker: { alias: speakerName },

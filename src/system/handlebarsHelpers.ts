@@ -1,6 +1,7 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import { getActorFromIds, RqgError } from "./util";
 import { RqgConfig } from "./config";
+import { SkillItemData } from "../data-model/item-data/skillData";
 
 declare const CONFIG: RqgConfig;
 
@@ -18,6 +19,15 @@ export const handlebarsHelpers = function () {
     const actor = getActorFromIds(actorId, tokenId);
     const item = actor.items.get(itemId);
     return item ? item.data.name : "---";
+  });
+
+  Handlebars.registerHelper("skillname", (itemId, actorId, tokenId) => {
+    const actor = getActorFromIds(actorId, tokenId);
+    const item = actor.items.get(itemId) as Item<SkillItemData>;
+    const specialization = item?.data.data.specialization
+      ? ` (${item.data.data.specialization})`
+      : "";
+    return item ? `${item.data.data.skillName}${specialization}` : "---";
   });
 
   Handlebars.registerHelper("skillchance", (itemId, actorId, tokenId) => {

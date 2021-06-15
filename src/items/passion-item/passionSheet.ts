@@ -18,8 +18,8 @@ export class PassionSheet extends RqgItemSheet {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Passion],
       template: "systems/rqg/items/passion-item/passionSheet.html",
-      width: 520,
-      height: 250,
+      width: 490,
+      height: 310,
     });
   }
 
