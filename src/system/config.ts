@@ -18,6 +18,15 @@ export const RQG_CONFIG = {
     },
   ],
 
+  // Skill items that need special handling
+  skillName: {
+    dodge: "Dodge - agility",
+    jump: "Jump - agility",
+    swim: "Swim - agility", // TODO not handled yet
+    moveQuietly: "Move Quietly - stealth",
+    spiritCombat: "Spirit Combat - magic",
+  },
+
   equippedIcons: {
     notCarried: "systems/rqg/assets/images/equipped/not_carried.svg",
     carried: "systems/rqg/assets/images/equipped/carried.svg",

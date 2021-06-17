@@ -133,8 +133,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       tokenId: this.token?.id,
       ownedItems: this.organizeOwnedItems(),
 
-      spiritCombatSkillData: this.getSkillDataByName("Spirit Combat"),
-      dodgeSkillData: this.getSkillDataByName("Dodge"),
+      spiritCombatSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.spiritCombat),
+      dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
 
       characterRunes: this.getCharacterRuneImgs(), // Array of element runes with > 0% chance
       loadedMissileSr: this.getLoadedMissileSr(), // (html) Precalculated missile weapon SRs if loaded at start of round
@@ -515,8 +515,9 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
               await CharacteristicCard.show(
                 {
                   name: characteristicName,
-                  data:
-                    actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
+                  data: actorCharacteristics[
+                    characteristicName as keyof typeof actorCharacteristics
+                  ],
                 },
                 this.actor,
                 this.token

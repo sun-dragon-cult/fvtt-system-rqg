@@ -5,6 +5,9 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ArmorItemData } from "../../data-model/item-data/armorData";
 import { RqgActor } from "../../actors/rqgActor";
 import { RqgError } from "../../system/util";
+import { RqgConfig } from "../../system/config";
+
+declare const CONFIG: RqgConfig;
 
 export class Skill extends BaseItem {
   // public static init() {
@@ -29,7 +32,7 @@ export class Skill extends BaseItem {
 
     // Special case for Dodge & Jump TODO swimEncPenalty Complicated :-(
     const dex = actorData.characteristics.dexterity.value;
-    if ("Dodge" === skillItem.name) {
+    if (CONFIG.RQG.skillName.dodge === skillItem.name) {
       Skill.updateBaseChance(skillData, dex * 2);
       if (
         actorData.attributes.equippedEncumbrance === undefined ||
@@ -41,15 +44,17 @@ export class Skill extends BaseItem {
         actorData.attributes.equippedEncumbrance,
         actorData.attributes.maximumEncumbrance
       );
-    } else if ("Jump" === skillItem.name) {
+    } else if (CONFIG.RQG.skillName.jump === skillItem.name) {
       Skill.updateBaseChance(skillData, dex * 3);
-    } else if ("Move Quietly" === skillItem.name) {
-      mod = -actor.items
-        .filter((i) => i.data.type === ItemTypeEnum.Armor)
-        .reduce(
-          (acc: number, a) => acc + (a as Item<ArmorItemData>).data.data.moveQuietlyPenalty,
-          0
-        );
+    } else if (CONFIG.RQG.skillName.moveQuietly === skillItem.name) {
+      mod = -Math.max(
+        0,
+        ...actor.items
+          .filter(
+            (i) => i.data.type === ItemTypeEnum.Armor && i.data.data.equippedStatus === "equipped"
+          )
+          .map((a) => Math.abs((a as Item<ArmorItemData>).data.data.moveQuietlyPenalty))
+      );
     }
 
     // Learned chance can't be lower than base chance
