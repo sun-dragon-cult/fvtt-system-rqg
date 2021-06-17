@@ -46,15 +46,17 @@ export class Ability {
 
   private static evaluateResult(chance: number, roll: number): ResultEnum {
     const specialCritSetting = game.settings.get("rqg", "specialCrit");
+    chance = Math.max(0, chance); // -50% = 0%
 
     const hyperCritical = specialCritSetting && chance >= 100 ? Math.ceil(chance / 500) : 0;
     const specialCritical = specialCritSetting && chance >= 100 ? Math.ceil(chance / 100) : 0;
 
-    const critical = Math.ceil(Math.max(1, chance / 20));
-    const special = Math.ceil(chance / 5);
-    const fumble = Math.ceil(Math.min(100, 100 - (100 - chance) / 20));
+    const critical = Math.max(1, Math.ceil((chance - 29) / 20) + 1);
+    const special =
+      chance === 6 || chance === 7 ? 2 : Math.min(95, Math.max(1, Math.ceil((chance - 7) / 5) + 1));
+    const fumble = Math.min(100, 100 - Math.ceil((100 - chance - 9) / 20) + 1);
     const success = Math.min(95, Math.max(chance, 5));
-    const fail = Math.min(96, fumble - 1);
+    const fail = fumble === 96 ? 95 : Math.max(96, fumble - 1);
     let lookup = [
       { limit: hyperCritical, result: ResultEnum.HyperCritical },
       { limit: specialCritical, result: ResultEnum.SpecialCritical },
