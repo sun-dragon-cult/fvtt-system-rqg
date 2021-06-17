@@ -1,3 +1,22 @@
+# [0.19.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.18.0...v0.19.0) (2021-06-17)
+
+
+### Bug Fixes
+
+* encumbrance skill category modifiers don't work ([4904647](https://github.com/wakeand/fvtt-system-rqg/commit/4904647))
+* fumbles, specials etc don't follow the result table ([1323814](https://github.com/wakeand/fvtt-system-rqg/commit/1323814))
+* gui alternate row striping on runemagic isn't working ([2a8f0da](https://github.com/wakeand/fvtt-system-rqg/commit/2a8f0da))
+
+
+### Features
+
+* add link to rune description for character main elemental runes on actor sheet ([e541ae3](https://github.com/wakeand/fvtt-system-rqg/commit/e541ae3))
+* add more hitlocation names and remove hitlocation compendium setting ([f696e44](https://github.com/wakeand/fvtt-system-rqg/commit/f696e44))
+* new naming of skill & armor items also includes some minor GUI updates of some item sheets and migrations to use the new compendiums ([d59fa83](https://github.com/wakeand/fvtt-system-rqg/commit/d59fa83))
+
+
+
+
 # [0.18.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.17.0...v0.18.0) (2021-05-11)
 
 
