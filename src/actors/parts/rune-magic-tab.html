@@ -1,6 +1,6 @@
 {{#each ownedItems.runeMagic}}
 {{#unless data.data.cultId}}
-<div data-item-id="{{this._id}}">
+<div data-item-id="{{id}}">
   <a title="Edit Rune Spell" data-item-edit><i class="fas fa-edit"></i>Choose cult for Rune Spell {{name}}</a>
   <a title="Delete Rune Spell" data-item-delete><i class="fas fa-trash"></i></a>
 </div>
@@ -8,7 +8,7 @@
 {{/each}}
 
 {{#each ownedItems.cult}}
-<div style="margin-bottom: 1.5rem" data-item-id="{{this._id}}">
+<div style="margin-bottom: 1.5rem" data-item-id="{{id}}">
   <h2 class="cult-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
     {{name}}
     {{#each data.data.runes}}
@@ -39,35 +39,35 @@
     <div class="head9">Chance</div>
     {{#each @root.ownedItems.runeMagic}}
     {{#if (eq ../id data.data.cultId)}}
-      <div data-item-id="{{_id}}" class="rune-magic-contextmenu"
+      <div data-item-id="{{id}}" class="rune-magic-contextmenu"
            {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
         <img class="item" src="{{img}}">
       </div>
-      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
         {{name}}
         {{#each data.data.runes}}
           <img class="rune" src="{{runeImg this}}" title="{{this}}">
         {{/each}}
       </div>
-      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
         <span class="text-center">{{data.data.points}}</span>
       </div>
-      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
         {{#unless data.data.isRitual}}<span class="text-center">{{data.data.castingRange}}</span>{{/unless}}
       </div>
-      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
         {{#unless data.data.isRitual}}<span class="text-center">{{data.data.duration}}</span>{{/unless}}
       </div>
-      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isRitual}}</span>
       </div>
-      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isStackable}}</span>
       </div>
-      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isOneUse}}</span>
       </div>
-      <div data-item-id="{{_id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-item-roll class="rune-magic-contextmenu" title="Roll">
         <span class="text-right">{{data.data.chance}}%</span>
       </div>
     {{/if}}

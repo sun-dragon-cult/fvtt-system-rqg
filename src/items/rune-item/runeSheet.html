@@ -2,46 +2,46 @@
   <header class="sheet-header">
     <img
             class="profile-img"
-            src="{{item.img}}"
+            src="{{data.img}}"
             data-edit="img"
-            title="{{item.name}}"
+            title="{{data.name}}"
     />
 
     <fieldset>
       <legend>Name</legend>
-      <label>Rune<br><input type="text" name="data.rune" value="{{item.data.rune}}"></label>
+      <label>Rune<br><input type="text" name="data.rune" value="{{runeData.rune}}"></label>
       <label class="paren-head">Type<br>( <select name="data.runeType">
-        {{#select item.data.runeType}} {{#each data.runeTypes}}
+        {{#select runeData.runeType}} {{#each sheetSpecific.runeTypes}}
         <option value="{{this}}">{{this}}</option>
         {{/each}} {{/select}}
       </select> )</label>
     </fieldset>
   </header>
   <section class="sheet-body">
-    <label><input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}"/>%</label>
-    <label><input type="checkbox" name="data.hasExperience" {{checked data.hasExperience}} />Exp</label>
+    <label><input type="number" min="0" max="999" name="data.chance" value="{{runeData.chance}}"/>%</label>
+    <label><input type="checkbox" name="data.hasExperience" {{checked runeData.hasExperience}} />Exp</label>
 
     <div class="wide-section">
-      <label>Opposing Rune <img class="rune" src="{{runeImg data.opposingRune}}" title="{{data.opposingRune}}"><input type="text" name="data.opposingRune" value="{{item.data.opposingRune}}" list="allRunes"/></label>
+      <label>Opposing Rune <img class="rune" src="{{runeImg runeData.opposingRune}}" title="{{runeData.opposingRune}}"><input type="text" name="data.opposingRune" value="{{runeData.opposingRune}}" list="allRunes"/></label>
       <div>Minor Runes<br>
-        {{#each data.minorRunes}}
+        {{#each runeData.minorRunes}}
         <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.minorRunes" type="text" value="{{this}}"> </span>
         {{/each}}
         <input name="data.minorRunes" type="text" list="allRunes" placeholder="Add new minor rune"><br>
       </div>
-      <label><input type="checkbox" name="data.isMastered" {{checked data.isMastered}}>Mastered (Sorcery)</label><br>
+      <label><input type="checkbox" name="data.isMastered" {{checked runeData.isMastered}}>Mastered (Sorcery)</label><br>
       <br>
-      {{#if data.journalPack}}
-      <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
-      {{else if data.journalId}}
-      <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to journal Entry</a>
+      {{#if runeData.journalPack}}
+      <a data-journal-pack="{{runeData.journalPack}}" data-journal-id="{{runeData.journalId}}">Linked to compendium journal Entry</a>
+      {{else if runeData.journalId}}
+      <a data-journal-pack="{{runeData.journalPack}}" data-journal-id="{{runeData.journalId}}">Linked to journal Entry</a>
       {{/if}}
 
       <br><i>Drop a journal on this item to connect a description.</i>
     </div>
   </section>
   <datalist id="allRunes">
-    {{#each data.allRunes}}
+    {{#each sheetSpecific.allRunes}}
     <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>

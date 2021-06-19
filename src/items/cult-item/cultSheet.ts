@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CultData, CultItemData, CultRankEnum } from "../../data-model/item-data/cultData";
+import { CultData, CultRankEnum } from "../../data-model/item-data/cultData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
@@ -15,13 +15,17 @@ export class CultSheet extends RqgItemSheet {
     });
   }
 
-  getData(): CultItemData {
-    const sheetData = super.getData() as CultItemData;
-    const data: CultData = sheetData.data;
-    data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
-    data.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
-    data.ranksEnum = Object.values(CultRankEnum);
-    return sheetData;
+  getData(): any {
+    const context = super.getData() as any;
+    const cultData = (context.cultData = context.data.data) as CultData;
+    const sheetSpecific: any = (context.sheetSpecific = {});
+
+    cultData.runes = Array.isArray(cultData.runes) ? cultData.runes : [cultData.runes];
+
+    sheetSpecific.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    sheetSpecific.ranksEnum = Object.values(CultRankEnum);
+    console.log(context);
+    return context;
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {

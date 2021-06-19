@@ -1,23 +1,23 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img src="{{item.img}}" />
+    <img src="{{data.img}}" />
     <fieldset>
       <legend>Name</legend>
       <label>Passion<br><select name="data.passion">
-        {{#select data.passion}} {{#each data.passionTypes}}
+        {{#select passionData.passion}} {{#each sheetSpecific.passionTypes}}
         <option value="{{this}}">{{this}}</option>
         {{/each}} {{/select}}
       </select></label>
-      <label>Subject<br>( <input type="text" name="data.subject" value="{{item.data.subject}}"> )</label>
+      <label>Subject<br>( <input type="text" name="data.subject" value="{{passionData.subject}}"> )</label>
     </fieldset>
   </header>
   <section class="sheet-body">
     <div class="flex-row-start">
-      <label>Chance<br><input type="number" min="0" max="999" name="data.chance" value="{{item.data.chance}}"> %</label>
-      <label>Experience<br><input type="checkbox" name="data.hasExperience" {{checked data.hasExperience}}></label>
+      <label>Chance<br><input type="number" min="0" max="999" name="data.chance" value="{{passionData.chance}}"> %</label>
+      <label>Experience<br><input type="checkbox" name="data.hasExperience" {{checked passionData.hasExperience}}></label>
     </div><br>
     <div class="wide-section">
-      Backstory {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+      Backstory {{editor content=passionData.description target="data.description" button=true owner=owner editable=editable}}
     </div>
   </section>
 </form>

@@ -1,10 +1,18 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CombatManeuver, MeleeWeaponItemData } from "../../data-model/item-data/meleeWeaponData";
+import { CombatManeuver, MeleeWeaponData } from "../../data-model/item-data/meleeWeaponData";
 import { SkillCategoryEnum, SkillData, SkillItemData } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { logMisconfiguration } from "../../system/util";
+
+type MeleeWeaponsSheetSpecificData = {
+  allCombatManeuvers: string[];
+  isOwned: boolean;
+  meleeWeaponSkills: string[];
+  skillName: string;
+  equippedStatuses: string[];
+};
 
 export class MeleeWeaponSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
@@ -17,18 +25,20 @@ export class MeleeWeaponSheet extends RqgItemSheet {
     });
   }
 
-  async getData(): Promise<MeleeWeaponItemData> {
-    const sheetData = super.getData() as MeleeWeaponItemData;
-    const data = sheetData.data;
-    // TODO improve types
-    data.allCombatManeuvers = Object.values(CombatManeuver).reduce((acc: any, m: any) => {
-      const v = data.combatManeuvers.includes(m);
+  async getData(): Promise<any> {
+    const context = super.getData() as any;
+    const meleeWeaponData = (context.meleeWeaponData = context.data.data) as MeleeWeaponData;
+    const sheetSpecific = (context.sheetSpecific = {} as MeleeWeaponsSheetSpecificData);
+
+    sheetSpecific.allCombatManeuvers = Object.values(CombatManeuver).reduce((acc: any, m: any) => {
+      const v = meleeWeaponData.combatManeuvers.includes(m);
       acc[m] = { name: m, value: v };
       return acc;
     }, {});
-    data.isOwned = this.item.isOwned;
+    // @ts-ignore 0.8 isOwned -> isEmbedded
+    sheetSpecific.isOwned = this.item.isEmbedded;
     if (this.item.isOwned) {
-      data.meleeWeaponSkills = this.actor!.getEmbeddedCollection("OwnedItem").filter(
+      sheetSpecific.meleeWeaponSkills = this.actor!.getEmbeddedCollection("OwnedItem").filter(
         (i: Item.Data<SkillData>) =>
           i.type === ItemTypeEnum.Skill &&
           (i.data.category === SkillCategoryEnum.MeleeWeapons ||
@@ -36,25 +46,25 @@ export class MeleeWeaponSheet extends RqgItemSheet {
             i.data.category === SkillCategoryEnum.NaturalWeapons)
       );
     } else {
-      if (data.skillOrigin) {
-        const skill = (await fromUuid(data.skillOrigin).catch(() => {
+      if (meleeWeaponData.skillOrigin) {
+        const skill = (await fromUuid(meleeWeaponData.skillOrigin).catch(() => {
           logMisconfiguration(
-            `Couldn't find melee weapon skill with uuid from skillOrigin ${data.skillOrigin}`,
+            `Couldn't find melee weapon skill with uuid from skillOrigin ${meleeWeaponData.skillOrigin}`,
             true,
-            data
+            meleeWeaponData
           );
         })) as Item<SkillItemData> | null;
-        data.skillName = skill?.name || "";
+        sheetSpecific.skillName = skill?.name || "";
       }
     }
-    data.equippedStatuses = [...equippedStatuses];
-    return sheetData;
+    sheetSpecific.equippedStatuses = [...equippedStatuses];
+    return context;
   }
 
   protected async _updateObject(event: Event, formData: any): Promise<any> {
     const combatManeuvers: any = [];
     Object.values(CombatManeuver).forEach((m) => {
-      if (formData[`data.allCombatManeuvers.${m}.value`]) {
+      if (formData[`sheetSpecific.allCombatManeuvers.${m}.value`]) {
         combatManeuvers.push(m);
       }
     });

@@ -25,12 +25,6 @@ export interface RuneMagicData extends JournalEntryLink {
   isStackable: boolean; // Can the caster decide the number of rune points used
   isOneUse: boolean;
   chance: number; // Derived from runes, but has to be persisted?
-  // --- Derived / Convenience Data Below ---
-  isOwned?: boolean;
-  ranges?: string[]; // For select on sheet
-  durations?: string[]; // For select on sheet
-  actorCults?: any[]; // For select on sheet
-  allRunes?: any[]; // For select on sheet {_id: , name:, img: }
 }
 
 export interface RuneMagicItemData extends Item.Data<RuneMagicData> {

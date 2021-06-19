@@ -2,64 +2,64 @@
   <header class="sheet-header">
     <img
       class="profile-img"
-      src="{{item.img}}"
+      src="{{data.img}}"
       data-edit="img"
-      title="{{item.name}}"
+      title="{{data.name}}"
     />
-    <input type="text" name="name" value="{{item.name}}"> (<input type="number" name="data.points" value="{{item.data.points}}">)
+    <input type="text" name="name" value="{{data.name}}"> (<input type="number" name="data.points" value="{{runeMagicData.points}}">)
   </header>
   <main>
     <div class="flex-row-start">
-      {{#unless data.isRitual}}
+      {{#unless runeMagicData.isRitual}}
         <label class="mp">Range<br>
           <select name="data.castingRange">
-            {{#select data.castingRange}} {{#each data.ranges}}
+            {{#select runeMagicData.castingRange}} {{#each sheetSpecific.ranges}}
             <option value="{{this}}">{{this}}</option>
             {{/each}} {{/select}}
           </select>
         </label>
         <label class="mp">Duration<br>
           <select name="data.duration">
-            {{#select data.duration}} {{#each data.durations}}
+            {{#select runeMagicData.duration}} {{#each sheetSpecific.durations}}
             <option value="{{this}}">{{this}}</option>
             {{/each}} {{/select}}
           </select>
         </label>
       {{/unless}}
       <div>
-      <label><input type="checkbox" name="data.isRitual" {{checked data.isRitual}}>Ritual</label><br>
-      <label><input type="checkbox" name="data.isStackable" {{checked data.isStackable}}>Stackable</label><br>
-      <label><input type="checkbox" name="data.isOneUse" {{checked data.isOneUse}}>One Use</label>
+      <label><input type="checkbox" name="data.isRitual" {{checked runeMagicData.isRitual}}>Ritual</label><br>
+      <label><input type="checkbox" name="data.isStackable" {{checked runeMagicData.isStackable}}>Stackable</label><br>
+      <label><input type="checkbox" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>One Use</label>
       </div>
     </div>
-    {{#if data.isOwned}}
+    {{#if sheetSpecific.isOwned}}
     <label class="mp">Cult
       <select name="data.cultId">
-        {{#select data.cultId}} {{#each data.actorCults}}
-        <option value="{{this._id}}">{{this.name}}</option>
+        {{#select runeMagicData.cultId}} {{#each sheetSpecific.actorCults}}
+        <option value="{{_id}}">{{name}}</option>
         {{/each}} {{/select}}
       </select>
     </label><br>
     {{/if}}
     Runes:<br>
-    {{#each data.runes}}
+    {{#each runeMagicData.runes}}
     <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune">
     <br>
-    {{#if data.journalPack}}
-    <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
+    {{#if runeMagicData.journalPack}}
+    <a data-journal-pack="{{runeMagicData.journalPack}}" data-journal-id="{{runeMagicData.journalId}}">Linked to compendium journal Entry</a>
     {{else if data.journalId}}
-    <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to journal Entry</a>
+    <a data-journal-pack="{{runeMagicData.journalPack}}" data-journal-id="{{runeMagicData.journalId}}">Linked to journal Entry</a>
     {{/if}}
 
     <br><i>Drop a journal on this item to connect a description.</i>
 
   </main>
-  <input type="hidden" name="data.chance" value="{{item.data.chance}}" placeholder="Select Rune to add">
+  <input type="hidden" name="data.chance" value="{{runeMagicData.chance}}" placeholder="Select Rune to add">
   <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
   <datalist id="allRunes">
-    {{#each data.allRunes}}
+    {{#each sheetSpecific.allRunes}}
     <option value="{{name}}">{{name}}</option>
     {{/each}}
   </datalist>

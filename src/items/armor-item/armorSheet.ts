@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  ArmorItemData,
+  ArmorData,
   armorTypeTranslationKeys,
   materialTranslationKeys,
 } from "../../data-model/item-data/armorData";
@@ -19,15 +19,16 @@ export class ArmorSheet extends RqgItemSheet {
     });
   }
 
-  async getData(): Promise<ArmorItemData> {
-    const sheetData = super.getData() as ArmorItemData;
-    const data = sheetData.data;
+  getData(): any {
+    const context = super.getData() as any;
+    const armorData = (context.armorData = context.data.data) as ArmorData;
+    const sheetSpecific: any = (context.sheetSpecific = {});
 
-    data.allHitLocations = Object.values(HitLocationsEnum);
-    data.equippedStatuses = [...equippedStatuses];
-    sheetData.data.armorTypeNames = armorTypeTranslationKeys.map((key) => game.i18n.localize(key));
-    sheetData.data.materialNames = materialTranslationKeys.map((key) => game.i18n.localize(key));
-    return sheetData;
+    sheetSpecific.allHitLocations = Object.values(HitLocationsEnum);
+    sheetSpecific.equippedStatuses = [...equippedStatuses];
+    sheetSpecific.armorTypeNames = armorTypeTranslationKeys.map((key) => game.i18n.localize(key));
+    sheetSpecific.materialNames = materialTranslationKeys.map((key) => game.i18n.localize(key));
+    return context;
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {

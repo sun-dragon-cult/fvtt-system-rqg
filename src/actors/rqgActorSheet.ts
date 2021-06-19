@@ -118,18 +118,20 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
   // TODO type system presumes ActorSheet.Data<Actor> but I've organised as ActorSheetTemplate
   getData(): any {
-    const isOwner: boolean = this.entity.owner;
+    // @ts-ignore 0.8 document.isOwner
+    const isOwner: boolean = this.document.isOwner;
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
-    const sheetData: ActorSheetTemplate = {
+    const templateData: ActorSheetTemplate = {
       cssClass: isOwner ? "editable" : "locked",
       editable: this.isEditable,
-      limited: this.entity.limited,
+      // @ts-ignore 0.8 document
+      limited: this.document.limited,
       options: this.options,
       owner: isOwner,
       title: this.title,
 
-      // @ts-ignore
-      rqgActorData: duplicate(this.entity.data),
+      // @ts-ignore 0.8 document
+      rqgActorData: duplicate(this.document.data),
       tokenId: this.token?.id,
       ownedItems: this.organizeOwnedItems(),
 
@@ -154,7 +156,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       isGM: !!game.user?.isGM,
       showUiSection: this.getUiSectionVisibility(),
     };
-    return sheetData;
+    return templateData;
   }
 
   private getPhysicalItemLocations(): string[] {
@@ -400,7 +402,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     if (newHealth !== this.actor.data.data.attributes.health) {
       // Chat to all owners
       const whisperRecipients = Object.entries(this.actor.data.permission)
-        .filter(([userId, permission]) => permission >= ENTITY_PERMISSIONS.OBSERVER)
+        .filter(([userId, permission]) => permission >= CONST.ENTITY_PERMISSIONS.OBSERVER)
         .map(([userId, permission]) => userId);
 
       const speakerName = this.token?.name || this.actor.data.token.name;
@@ -456,7 +458,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
   activateListeners(html: JQuery): void {
     super.activateListeners(html);
-    if (!this.actor.owner) {
+    // @ts-ignore 0.8
+    if (!this.actor.isOwner) {
       // Only owners are allowed to interact
       return;
     }
@@ -532,7 +535,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Roll against Item Ability Chance
     this.form!.querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.getOwnedItem(itemId) as Item<any>;
+      const item = this.actor.items.get(itemId) as Item<any>;
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: Event) => {
@@ -556,7 +559,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Roll Spirit Magic
     (this.form as HTMLElement).querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.getOwnedItem(itemId);
+      const item = this.actor.items.get(itemId);
       if (!item) {
         const msg = `Couldn't find item [${itemId}] to roll Spirit Magic against`;
         ui.notifications?.error(msg);
@@ -669,7 +672,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Edit Item (open the item sheet)
     (this.form as HTMLElement).querySelectorAll("[data-item-edit]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.getOwnedItem(itemId);
+      const item = this.actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`;
         ui.notifications?.error(msg);
@@ -688,7 +691,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
       el.addEventListener("click", async () => {
-        const item = this.actor.getOwnedItem(itemId) as Item<any>;
+        const item = this.actor.items.get(itemId) as Item<any>;
         if (!item) {
           const msg = `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`;
           ui.notifications?.error(msg);
@@ -708,7 +711,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       const path = getRequiredDomDataset($(el as HTMLElement), "item-edit-value");
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
       el.addEventListener("change", async (event) => {
-        const item = this.actor.getOwnedItem(itemId);
+        const item = this.actor.items.get(itemId);
         if (!item) {
           const msg = `Couldn't find itemId [${itemId}] to edit an item (when clicked).`;
           ui.notifications?.error(msg);
@@ -749,7 +752,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
   }
 
   static confirmItemDelete(actor: RqgActor, itemId: string): void {
-    const item = actor.getOwnedItem(itemId);
+    const item = actor.items.get(itemId);
     if (!item) {
       const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to show delete item Dialog (when clicked).`;
       ui.notifications?.error(msg);
@@ -782,6 +785,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
   }
 
   // TODO Move somewhere else!
+  // TODO Compare to new foundry implementation!!!
   static async showJournalEntry(id: string, packName?: string): Promise<void> {
     let entity;
 
@@ -792,7 +796,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
       // World Entity Link
     } else {
-      const cls = CONFIG.JournalEntry.entityClass;
+      // @ts-ignore 0.8
+      const cls = CONFIG.JournalEntry.documentClass;
       // @ts-ignore
       entity = cls.collection.get(id);
     }

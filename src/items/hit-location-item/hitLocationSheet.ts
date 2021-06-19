@@ -4,6 +4,7 @@ import {
   HitLocationsEnum,
   HitLocationTypesEnum,
   hitLocationHealthStatuses,
+  HitLocationData,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
 import { RqgError } from "../../system/util";
@@ -22,14 +23,16 @@ export class HitLocationSheet extends RqgItemSheet {
     } as any);
   }
 
-  getData(): HitLocationItemData {
-    const sheetData = super.getData() as HitLocationItemData;
-    const data = sheetData.data;
-    data.allHitLocations = Object.values(HitLocationsEnum);
-    data.hitLocationTypes = Object.values(HitLocationTypesEnum);
-    data.hitLocationHealthStatuses = Object.values(hitLocationHealthStatuses);
-    data.actorHealthImpacts = Object.values(actorHealthStatuses);
-    return sheetData;
+  getData(): any {
+    const context = super.getData() as any;
+    const hitLocationData = (context.hitLocationData = context.data.data) as HitLocationData;
+    const sheetSpecific: any = (context.sheetSpecific = {});
+
+    sheetSpecific.allHitLocations = Object.values(HitLocationsEnum);
+    sheetSpecific.hitLocationTypes = Object.values(HitLocationTypesEnum);
+    sheetSpecific.hitLocationHealthStatuses = Object.values(hitLocationHealthStatuses);
+    sheetSpecific.actorHealthImpacts = Object.values(actorHealthStatuses);
+    return context;
   }
 
   static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string, speakerName: string): void {
@@ -91,18 +94,14 @@ export class HitLocationSheet extends RqgItemSheet {
       damage = Math.max(0, damage - ap);
     }
     const actorHealthBefore = actor.data.data.attributes.health;
-    const {
-      hitLocationUpdates,
-      actorUpdates,
-      notification,
-      uselessLegs,
-    } = DamageCalculations.addWound(
-      damage,
-      applyDamageToTotalHp,
-      hitLocation.data,
-      actor.data,
-      speakerName
-    );
+    const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
+      DamageCalculations.addWound(
+        damage,
+        applyDamageToTotalHp,
+        hitLocation.data,
+        actor.data,
+        speakerName
+      );
 
     await ChatMessage.create({
       user: game.user?._id,
@@ -225,14 +224,12 @@ export class HitLocationSheet extends RqgItemSheet {
 
   static async setTokenEffect(token: Token, actorHealthBefore: ActorHealthState): Promise<void> {
     // // TODO testing testing - lägg i nån CONFIG?
-    const health2Effect: Map<
-      ActorHealthState,
-      { id: string; label: string; icon: string }
-    > = new Map([
-      ["shock", CONFIG.statusEffects[14]],
-      ["unconscious", CONFIG.statusEffects[1]],
-      ["dead", CONFIG.statusEffects[0]],
-    ]);
+    const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
+      new Map([
+        ["shock", CONFIG.statusEffects[14]],
+        ["unconscious", CONFIG.statusEffects[1]],
+        ["dead", CONFIG.statusEffects[0]],
+      ]);
 
     // TODO map to actorHealth - sync actorHealth names to statusEffects names?
     // TODO create a CONFIG.RQG.statusEffects that contain AE ?

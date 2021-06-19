@@ -1,4 +1,4 @@
-import { SkillCategoryEnum, SkillItemData } from "../../data-model/item-data/skillData";
+import { SkillCategoryEnum, SkillData } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { RqgItemSheet } from "../RqgItemSheet";
@@ -15,16 +15,18 @@ export class SkillSheet extends RqgItemSheet {
     });
   }
 
-  getData(): SkillItemData {
-    const sheetData = super.getData() as SkillItemData;
-    const data = sheetData.data;
-    if (!data.skillName) {
-      data.skillName = sheetData.name;
+  getData(): any {
+    const context = super.getData() as any;
+    const skillData = (context.skillData = context.data.data) as SkillData;
+    const sheetSpecific = (context.sheetSpecific = {} as any);
+
+    if (!skillData.skillName) {
+      skillData.skillName = context.data.name;
     }
-    data.skillCategories = Object.values(SkillCategoryEnum);
-    data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
-    data.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
-    return sheetData;
+    skillData.runes = Array.isArray(skillData.runes) ? skillData.runes : [skillData.runes];
+    sheetSpecific.skillCategories = Object.values(SkillCategoryEnum);
+    sheetSpecific.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    return context;
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {

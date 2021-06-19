@@ -39,20 +39,20 @@
           <div class="head7">Location</div>
           {{#each ownedItems.gear}}
           {{#if (eq data.data.physicalItemType "unique")}}
-          <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
-          <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-          <div data-item-id="{{_id}}" class="gear-contextmenu">{{!-- TODO REMOVE QUANTITY --}}</div>
-          <div data-item-id="{{_id}}" class="gear-contextmenu">
+          <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
+          <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
+          <div data-item-id="{{id}}" class="gear-contextmenu">{{!-- TODO REMOVE QUANTITY --}}</div>
+          <div data-item-id="{{id}}" class="gear-contextmenu">
             <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
           </div>
-          <div data-item-id="{{_id}}" class="gear-contextmenu">
+          <div data-item-id="{{id}}" class="gear-contextmenu">
             <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
           </div>
-          <div data-item-id="{{_id}}" data-item-equipped-toggle class="gear-contextmenu">
+          <div data-item-id="{{id}}" data-item-equipped-toggle class="gear-contextmenu">
             <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
                  src="{{equippedIcon data.data.equippedStatus}}">
           </div>
-          <div data-item-id="{{_id}}" class="gear-contextmenu">
+          <div data-item-id="{{id}}" class="gear-contextmenu">
             <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
                    size="10">
           </div>
@@ -75,22 +75,22 @@
             <div class="head7">Location</div>
             {{#each ownedItems.gear}}
             {{#if (eq data.data.physicalItemType "currency")}}
-            <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
+            <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}">
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
             </div>
-            <div data-item-id="{{_id}}" data-item-equipped-toggle class="gear-contextmenu">
+            <div data-item-id="{{id}}" data-item-equipped-toggle class="gear-contextmenu">
               <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
                    src="{{equippedIcon data.data.equippedStatus}}">
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
                      size="10">
             </div>
@@ -112,22 +112,22 @@
             <div class="head7">Location</div>
             {{#each ownedItems.gear}}
             {{#if (eq data.data.physicalItemType "consumable")}}
-            <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
+            <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <span class="text-right">{{data.data.quantity}}</span>
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
             </div>
-            <div data-item-id="{{_id}}" data-item-equipped-toggle class="gear-contextmenu">
+            <div data-item-id="{{id}}" data-item-equipped-toggle class="gear-contextmenu">
               <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
                    src="{{equippedIcon data.data.equippedStatus}}">
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
                      size="10">
             </div>
@@ -135,22 +135,22 @@
             {{/each}}
             {{#each ownedItems.missileWeapon}}
             {{#if (eq data.data.physicalItemType "consumable")}}
-            <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
+            <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <span class="text-right">{{data.data.quantity}}</span>
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
             </div>
-            <div data-item-id="{{_id}}" data-item-equipped-toggle class="gear-contextmenu">
+            <div data-item-id="{{id}}" data-item-equipped-toggle class="gear-contextmenu">
               <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
                    src="{{equippedIcon data.data.equippedStatus}}">
             </div>
-            <div data-item-id="{{_id}}" class="gear-contextmenu">
+            <div data-item-id="{{id}}" class="gear-contextmenu">
               <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
                      size="10">
             </div>
@@ -179,27 +179,27 @@
 
         {{#each ownedItems.meleeWeapon}}
         {{#unless data.data.isNatural}}
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">{{skillname data.data.skillId @root.rqgActorData._id @root.tokenId}}</div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-center">{{data.data.damage}}</span></div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minStrength}}</span>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
+        <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
+        <div data-item-id="{{id}}" class="gear-contextmenu">{{skillname data.data.skillId @root.rqgActorData._id @root.tokenId}}</div>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-center">{{data.data.damage}}</span></div>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minStrength}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minDexterity}}</span>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minDexterity}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span
           class="text-right">{{data.data.hitPoints.value}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.encumbrance}}</span>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-right">{{data.data.encumbrance}}</span>
         </div>
-        <div data-item-id="{{_id}}" data-item-equipped-toggle class="gear-contextmenu">
+        <div data-item-id="{{id}}" data-item-equipped-toggle class="gear-contextmenu">
           <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
                src="{{equippedIcon data.data.equippedStatus}}">
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
                  size="10">
         </div>
@@ -226,27 +226,27 @@
 
         {{#each ownedItems.missileWeapon}}
         {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">{{skillname data.data.skillId @root.rqgActorData._id @root.tokenId}}</div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-center">{{data.data.damage}}</span></div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minStrength}}</span>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
+        <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
+        <div data-item-id="{{id}}" class="gear-contextmenu">{{skillname data.data.skillId @root.rqgActorData._id @root.tokenId}}</div>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-center">{{data.data.damage}}</span></div>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minStrength}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minDexterity}}</span>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minDexterity}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span
           class="text-right">{{data.data.hitPoints.value}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><span class="text-right">{{data.data.encumbrance}}</span>
+        <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-right">{{data.data.encumbrance}}</span>
         </div>
-        <div data-item-id="{{_id}}" data-item-equipped-toggle class="gear-contextmenu">
+        <div data-item-id="{{id}}" data-item-equipped-toggle class="gear-contextmenu">
           <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
                src="{{equippedIcon data.data.equippedStatus}}">
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
                  size="10">
         </div>
@@ -269,31 +269,31 @@
         <div class="head8"></div>
         <div class="head9">Location</div>
         {{#each ownedItems.armor}}
-        <div data-item-id="{{_id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">{{name}}</div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
+        <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <span class="text-right">{{data.data.absorbs}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">[
+        <div data-item-id="{{id}}" class="gear-contextmenu">[
           {{#each data.data.hitLocations}}
           {{this}},
           {{/each}}
           ]
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <span class="text-right">{{data.data.moveQuietlyPenalty}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <span class="text-right">{{data.data.encumbrance}}</span>
         </div>
-        <div data-item-id="{{_id}}" data-item-equipped-toggle class="gear-contextmenu">
+        <div data-item-id="{{id}}" data-item-equipped-toggle class="gear-contextmenu">
           <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
                src="{{equippedIcon data.data.equippedStatus}}">
         </div>
-        <div data-item-id="{{_id}}" class="gear-contextmenu">
+        <div data-item-id="{{id}}" class="gear-contextmenu">
           <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
                  size="10">
         </div>

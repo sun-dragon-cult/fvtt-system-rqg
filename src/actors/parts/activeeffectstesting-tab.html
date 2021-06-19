@@ -9,14 +9,14 @@
   </tr>
   </thead>
   {{#each rqgActorData.effects}}
-  <tbody data-effect-id="{{this._id}}">
+  <tbody data-effect-id="{{id}}">
   <tr data-actor-effect-edit>
-    <td>{{this.label}}</td>
-    <td>{{this.disabled}}</td>
-    <td>{{this.duration.startTime}}</td>
+    <td>{{label}}</td>
+    <td>{{disabled}}</td>
+    <td>{{duration.startTime}}</td>
     <td>
       {{#each this.changes}}
-        {{this.key}} - {{this.value}} - {{this.mode}}<br>
+        {{key}} - {{value}} - {{mode}}<br>
       {{/each}}</td>
     </tr>
 

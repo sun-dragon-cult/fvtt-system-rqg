@@ -52,7 +52,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
       }
       return {
         name: i.name,
-        id: i._id,
+        id: i.id,
         location: location,
         // @ts-ignore
         description: i.data.data.description,

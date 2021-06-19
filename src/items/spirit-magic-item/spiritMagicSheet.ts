@@ -4,6 +4,7 @@ import {
   SpiritMagicDurationEnum,
   SpiritMagicConcentrationEnum,
   SpiritMagicItemData,
+  SpiritMagicData,
 } from "../../data-model/item-data/spiritMagicData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { RqgError } from "../../system/util";
@@ -21,12 +22,14 @@ export class SpiritMagicSheet extends RqgItemSheet {
   }
 
   getData(): SpiritMagicItemData {
-    const sheetData = super.getData() as SpiritMagicItemData;
-    const data = sheetData.data;
-    data.ranges = Object.values(SpiritMagicCastingRangeEnum);
-    data.durations = Object.values(SpiritMagicDurationEnum);
-    data.types = Object.values(SpiritMagicConcentrationEnum);
-    return sheetData;
+    const context = super.getData() as any;
+    const spiritMagicData = (context.spiritMagicData = context.data.data) as SpiritMagicData;
+    const sheetSpecific: any = (context.sheetSpecific = {});
+
+    sheetSpecific.ranges = Object.values(SpiritMagicCastingRangeEnum);
+    sheetSpecific.durations = Object.values(SpiritMagicDurationEnum);
+    sheetSpecific.types = Object.values(SpiritMagicConcentrationEnum);
+    return context;
   }
 
   public activateListeners(html: JQuery): void {

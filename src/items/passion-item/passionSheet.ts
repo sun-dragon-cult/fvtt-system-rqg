@@ -1,4 +1,4 @@
-import { PassionItemData, PassionsEnum } from "../../data-model/item-data/passionData";
+import { PassionData, PassionsEnum } from "../../data-model/item-data/passionData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
 
@@ -23,11 +23,13 @@ export class PassionSheet extends RqgItemSheet {
     });
   }
 
-  getData(): PassionItemData {
-    const sheetData = super.getData() as PassionItemData;
-    const data = sheetData.data;
-    data.passionTypes = Object.values(PassionsEnum);
-    return sheetData;
+  getData(): any {
+    const context = super.getData() as any;
+    const passionData = (context.passionData = context.data.data) as PassionData;
+    const sheetSpecific: any = (context.sheetSpecific = {});
+
+    sheetSpecific.passionTypes = Object.values(PassionsEnum);
+    return context;
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {

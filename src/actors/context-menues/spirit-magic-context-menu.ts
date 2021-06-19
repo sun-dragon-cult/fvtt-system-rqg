@@ -22,7 +22,7 @@ export const spiritMagicMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await SpiritMagicCard.show(item._id, actor, token);
+      await SpiritMagicCard.show(item.id, actor, token);
     },
   },
   {
@@ -38,7 +38,7 @@ export const spiritMagicMenuOptions = (
         throw new RqgError(msg, el);
       }
       if (item.data.data.isVariable && item.data.data.points > 1) {
-        await SpiritMagicCard.show(item._id, actor, token);
+        await SpiritMagicCard.show(item.id, actor, token);
       } else {
         const speakerName = token?.name || actor.data.token.name;
         await SpiritMagicCard.roll(item.data, item.data.data.points, 0, actor, speakerName);

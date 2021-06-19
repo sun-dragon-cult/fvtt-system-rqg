@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneItemData, RuneTypeEnum } from "../../data-model/item-data/runeData";
+import { RuneData, RuneTypeEnum } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
@@ -15,16 +15,18 @@ export class RuneSheet extends RqgItemSheet {
     });
   }
 
-  async getData(): Promise<RuneItemData> {
-    const sheetData = super.getData() as RuneItemData;
-    const data = sheetData.data;
-    if (!data.rune) {
-      data.rune = sheetData.name;
+  getData(): any {
+    const context = super.getData() as any;
+    const runeData = (context.runeData = context.data.data) as RuneData;
+    const sheetSpecific: any = (context.sheetSpecific = {});
+
+    if (!runeData.rune) {
+      runeData.rune = context.data.name;
     }
     const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
-    data.allRunes = allRunesIndex.map((r) => r.name);
-    data.runeTypes = Object.values(RuneTypeEnum);
-    return sheetData;
+    sheetSpecific.allRunes = allRunesIndex.map((r) => r.name);
+    sheetSpecific.runeTypes = Object.values(RuneTypeEnum);
+    return context;
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {

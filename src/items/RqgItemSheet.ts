@@ -34,23 +34,27 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
         const item = this.actor
           ? this.actor.getOwnedItem(itemId) // TODO prevent this instead?
           : (game.items?.get(itemId) as RqgItem);
-        const effect = ActiveEffect.create(
-          {
-            icon: "icons/svg/aura.svg",
-            changes: [],
-            label: "New Active Effect",
-            transfer: true,
-            disabled: false,
-          },
-          item
-        );
 
         el.addEventListener("click", async () => {
-          const e = await effect.create({}).catch((reason) => {
-            ui.notifications?.error("Couldn't create Active Effect");
-            throw reason;
-          });
-          new ActiveEffectConfig(item.effects.get(e._id)!).render(true);
+          const effect = new ActiveEffect(
+            {
+              icon: "icons/svg/aura.svg",
+              changes: [],
+              label: "New Active Effect",
+              transfer: true,
+              disabled: false,
+            },
+            item
+          );
+
+          const e = await item
+            // @ts-ignore 0.8
+            .createEmbeddedDocuments("ActiveEffect", [effect.toObject()])
+            .catch((reason: any) => {
+              ui.notifications?.error("Couldn't create Active Effect");
+              throw reason;
+            });
+          new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);
         });
       });
 

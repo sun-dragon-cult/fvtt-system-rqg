@@ -1,10 +1,10 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-    <input type="text" name="name" value="{{item.name}}" />
-    <label>Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
+    <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+    <input type="text" name="name" value="{{data.name}}" />
+    <label>Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{meleeWeaponData.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
-      {{#select data.equippedStatus}} {{#each data.equippedStatuses}}
+      {{#select meleeWeaponData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
@@ -13,43 +13,43 @@
     <div class="flex-row">
       <div>
         <label class="mp">Skill</label><br>
-        {{#if data.isOwned}}
+        {{#if sheetSpecific.isOwned}}
           <select name="data.skillId">
-            {{#select data.skillId}} {{#each data.meleeWeaponSkills}}
-            <option value="{{this._id}}">{{this.name}}</option>
+            {{#select meleeWeaponData.skillId}} {{#each sheetSpecific.meleeWeaponSkills}}
+            <option value="{{id}}">{{name}}</option>
             {{/each}} {{/select}}
           </select>
         {{else}}
-          {{#if data.skillName}}
-        {{data.skillName}} <i>(Drop some other weapon skill on this weapon to change)</i>
+          {{#if sheetSpecific.skillName}}
+            {{sheetSpecific.skillName}} <i>(Drop some other weapon skill on this weapon to change)</i>
           {{else}}
             <i>Drop a weapon skill on this weapon!</i>
           {{/if}}<br>
         {{/if}}<br>
-        <label>Damage <input name="data.damage" value="{{item.data.damage}}"></label><br>
-        <label>Min STR <input type="number" min="0" max="99" name="data.minStrength" value="{{item.data.minStrength}}"></label><br>
-        <label>Min DEX <input type="number" min="0" max="99" name="data.minDexterity" value="{{item.data.minDexterity}}"></label><br>
-        <label>SR <input type="number" min="0" max="99" name="data.strikeRank" value="{{item.data.strikeRank}}"></label><br>
-        <label>Current HP <input type="number" min="0" max="99" name="data.hitPoints.value" value="{{item.data.hitPoints.value}}"></label><br>
-        <label>HP <input type="number" min="0" max="99" name="data.hitPoints.max" value="{{item.data.hitPoints.max}}"></label><br>
-        <label><input type="checkbox" name="data.isNatural" {{checked item.data.isNatural}}/>Is natural weapon</label><br>
-        <label>Price (real) <input type="number" min="0" max="99999999" name="data.price.real" value="{{item.data.price.real}}">(L)</label><br>
-        <label>Price (estimated) <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{item.data.price.estimated}}">(L)</label><br>
-        <label>Location <input type="text" name="data.location" value="{{item.data.location}}"></label><br>
-        <label>Attuned to <input type="text" name="data.attunedTo" value="{{item.data.attunedTo}}"></label><br>
+        <label>Damage <input name="data.damage" value="{{meleeWeaponData.damage}}"></label><br>
+        <label>Min STR <input type="number" min="0" max="99" name="data.minStrength" value="{{meleeWeaponData.minStrength}}"></label><br>
+        <label>Min DEX <input type="number" min="0" max="99" name="data.minDexterity" value="{{meleeWeaponData.minDexterity}}"></label><br>
+        <label>SR <input type="number" min="0" max="99" name="data.strikeRank" value="{{meleeWeaponData.strikeRank}}"></label><br>
+        <label>Current HP <input type="number" min="0" max="99" name="data.hitPoints.value" value="{{meleeWeaponData.hitPoints.value}}"></label><br>
+        <label>HP <input type="number" min="0" max="99" name="data.hitPoints.max" value="{{meleeWeaponData.hitPoints.max}}"></label><br>
+        <label><input type="checkbox" name="data.isNatural" {{checked meleeWeaponData.isNatural}}/>Is natural weapon</label><br>
+        <label>Price (real) <input type="number" min="0" max="99999999" name="data.price.real" value="{{meleeWeaponData.price.real}}">(L)</label><br>
+        <label>Price (estimated) <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{meleeWeaponData.price.estimated}}">(L)</label><br>
+        <label>Location <input type="text" name="data.location" value="{{meleeWeaponData.location}}"></label><br>
+        <label>Attuned to <input type="text" name="data.attunedTo" value="{{meleeWeaponData.attunedTo}}"></label><br>
       </div>
       <div>
         <h3>Combat Manuevers</h3>
-        {{#each data.allCombatManeuvers}}
-          <label><input type="checkbox" name="data.allCombatManeuvers.{{name}}.value" {{checked value}}/> {{name}}</label><br>
+        {{#each sheetSpecific.allCombatManeuvers}}
+          <label><input type="checkbox" name="sheetSpecific.allCombatManeuvers.{{name}}.value" {{checked value}}/> {{name}}</label><br>
         {{/each}}
       </div>
     </div>
 
-    <label>Description {{editor content=data.description target="data.description"
+    <label>Description {{editor content=meleeWeaponData.description target="data.description"
       button=true owner=owner editable=editable}}
     </label><br>
-    <label>GM Notes {{editor content=data.gmNotes target="data.gmNotes"
+    <label>GM Notes {{editor content=meleeWeaponData.gmNotes target="data.gmNotes"
       button=true owner=owner editable=editable}}
     </label>
 
