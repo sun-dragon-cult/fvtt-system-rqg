@@ -1,8 +1,8 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
-import { RuneMagicItemData } from "../../data-model/item-data/runeMagicData";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
@@ -11,8 +11,8 @@ export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): Cont
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<RuneMagicItemData>;
-      if (!item) {
+      const item = actor.items.get(itemId);
+      if (!item || item.data.type !== ItemTypeEnum.RuneMagic) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll for RuneMagic item from the runemagic context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
@@ -50,7 +50,7 @@ export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): Cont
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<RuneMagicItemData>;
+      const item = actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the runemagic item from the runemagic context menu.`;
         ui.notifications?.error(msg);

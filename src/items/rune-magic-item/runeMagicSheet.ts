@@ -10,6 +10,7 @@ import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { CultItemData } from "../../data-model/item-data/cultData";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItem } from "../rqgItem";
 
 type RuneMagicSheetSpecificData = {
   isOwned?: boolean;
@@ -45,16 +46,16 @@ export class RuneMagicSheet extends RqgItemSheet {
     sheetSpecific.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
     if (this.actor) {
       sheetSpecific.actorCults = this.actor
-        .getEmbeddedCollection("OwnedItem")
-        .filter((i: Item.Data<CultItemData>) => i.type === ItemTypeEnum.Cult);
+        .getEmbeddedCollection("Item")
+        .filter((i: RqgItem) => i.type === ItemTypeEnum.Cult);
       const cultRunes = runeMagicData.cultId
-        ? (this.actor.getOwnedItem(runeMagicData.cultId) as Item<CultItemData>).data.data.runes
+        ? (this.actor.items.get(runeMagicData.cultId) as Item<CultItemData>).data.data.runes
         : [];
       const runeChances = this.actor
-        .getEmbeddedCollection("OwnedItem")
+        .getEmbeddedCollection("Item")
         .filter(
-          (i: Item.Data<RuneData>) =>
-            i.type === ItemTypeEnum.Rune &&
+          (i: RqgItem) =>
+            i.data.type === ItemTypeEnum.Rune &&
             (runeMagicData.runes.includes(i.name) ||
               (runeMagicData.runes.includes("Magic (condition)") && cultRunes.includes(i.name)))
         )

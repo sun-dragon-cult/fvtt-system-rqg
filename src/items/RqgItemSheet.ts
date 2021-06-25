@@ -17,7 +17,7 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
       .each((i: number, el: HTMLElement) => {
         const effectId = getRequiredDomDataset($(el), "effect-id");
         const itemId = getRequiredDomDataset($(el), "item-id");
-        const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items?.get(itemId);
+        const item = this.actor ? this.actor.items.get(itemId) : game.items?.get(itemId);
         el.addEventListener("click", () => {
           const effect = item?.effects.get(effectId) as RqgActiveEffect;
           if (effect) {
@@ -32,9 +32,14 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
       .each((i: number, el: HTMLElement) => {
         const itemId = getRequiredDomDataset($(el), "item-id");
         const item = this.actor
-          ? this.actor.getOwnedItem(itemId) // TODO prevent this instead?
+          ? this.actor.items.get(itemId) // TODO prevent this instead?
           : (game.items?.get(itemId) as RqgItem);
 
+        if (!item) {
+          const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor?.name} to add active effect.`;
+          ui.notifications?.error(msg);
+          throw new RqgError(msg);
+        }
         el.addEventListener("click", async () => {
           const effect = new ActiveEffect(
             {
@@ -65,7 +70,7 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
         const itemId = getRequiredDomDataset($(el), "item-id");
         const effectId = getRequiredDomDataset($(el), "effect-id");
         el.addEventListener("click", () => {
-          const item = this.actor ? this.actor.getOwnedItem(itemId) : game.items?.get(itemId);
+          const item = this.actor ? this.actor.items.get(itemId) : game.items?.get(itemId);
           if (!item) {
             const msg = "Couldn't find item";
             ui.notifications?.error(msg);

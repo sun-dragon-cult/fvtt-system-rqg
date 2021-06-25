@@ -1,9 +1,9 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
-import { RuneItemData } from "../../data-model/item-data/runeData";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
@@ -21,9 +21,9 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<RuneItemData>;
-      const itemChance = item && item.data.data.chance;
-      if (itemChance == null) {
+      const item = actor.items.get(itemId);
+      const itemChance = item && (item.data.data as any).chance;
+      if (itemChance == null || !item || item.data.type !== ItemTypeEnum.Rune) {
         const msg = `Couldn't find itemId [${itemId}] or item chance on actor ${actor.name} to do a direct roll on the rune item from the rune context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
@@ -38,9 +38,9 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<RuneItemData>;
-      if (!item) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a passion item from the passion context menu.`;
+      const item = actor.items.get(itemId);
+      if (!item || item.data.type !== ItemTypeEnum.Rune) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a rune item from the rune context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -52,8 +52,8 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<RuneItemData>;
-      return !!item?.data.data.hasExperience;
+      const item = actor.items.get(itemId);
+      return !!(item?.data.data as any).hasExperience;
     },
     callback: () => {
       ui.notifications?.info("TODO Improve");
@@ -87,7 +87,7 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<RuneItemData>;
+      const item = actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the rune item from the rune context menu.`;
         ui.notifications?.error(msg);

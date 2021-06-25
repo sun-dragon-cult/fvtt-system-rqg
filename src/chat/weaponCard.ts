@@ -1,6 +1,6 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
-import { SkillData, SkillItemData } from "../data-model/item-data/skillData";
+import { SkillData } from "../data-model/item-data/skillData";
 import { CombatManeuver, MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
@@ -29,15 +29,29 @@ export class WeaponCard extends ChatMessage {
     token?: Token | null
   ): Promise<void> {
     const defaultModifier = 0;
-    const skillItem = actor.getOwnedItem(skillId) as Item<SkillItemData>;
-
+    const skillItem = actor.items.get(skillId);
+    if (!skillItem || skillItem.data.type !== ItemTypeEnum.Skill) {
+      const msg = `Couldn't find skill with itemId [${skillItem}] on actor ${actor.name} to show a weapon chat card.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
+    const weaponItem = actor.items.get(weaponId);
+    if (
+      !weaponItem ||
+      !(
+        weaponItem.data.type === ItemTypeEnum.MeleeWeapon ||
+        weaponItem.data.type === ItemTypeEnum.MissileWeapon
+      )
+    ) {
+      const msg = `Couldn't find weapon with itemId [${skillItem}] on actor ${actor.name} to show a weapon chat card.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
     const flags: WeaponCardFlags = {
       actorId: actor.id,
       tokenId: token?.id,
       skillItemData: skillItem.data,
-      weaponItemData: actor.getOwnedItem(weaponId)?.data as
-        | Item.Data<MeleeWeaponData>
-        | Item.Data<MissileWeaponData>,
+      weaponItemData: weaponItem.data,
       result: undefined,
       formData: {
         modifier: defaultModifier,
@@ -99,7 +113,7 @@ export class WeaponCard extends ChatMessage {
         flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value; // slash | crush | impale | special | parry
         const projectileItemData = (flags.weaponItemData.data as MissileWeaponData)
           .isProjectileWeapon
-          ? (actor.getOwnedItem((flags.weaponItemData.data as MissileWeaponData).projectileId)
+          ? (actor.items.get((flags.weaponItemData.data as MissileWeaponData).projectileId)
               ?.data as Item.Data<MissileWeaponData>)
           : flags.weaponItemData;
         if (

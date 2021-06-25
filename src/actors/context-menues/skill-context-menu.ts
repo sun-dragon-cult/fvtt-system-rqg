@@ -2,7 +2,7 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { ItemCard } from "../../chat/itemCard";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
-import { SkillItemData } from "../../data-model/item-data/skillData";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
@@ -20,9 +20,9 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
-      const itemChance = item && item.data.data.chance;
-      if (!itemChance) {
+      const item = actor.items.get(itemId);
+      const itemChance = (item?.data?.data as any).chance;
+      if (!itemChance || !item || item.data.type !== ItemTypeEnum.Skill) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll on a skill item from the skill context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
@@ -36,13 +36,13 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
     icon: '<i class="fas fa-lightbulb"></i>',
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
-      return !!item?.data.data.canGetExperience;
+      const item = actor.items.get(itemId);
+      return !!(item?.data?.data as any)?.canGetExperience;
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
-      if (!item) {
+      const item = actor.items.get(itemId);
+      if (!item || item.data.type !== ItemTypeEnum.Skill) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a skill item from the skill context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
@@ -55,8 +55,8 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.getOwnedItem(itemId)) as Item<SkillItemData>;
-      return !!item?.data.data.hasExperience;
+      const item = itemId && actor.items.get(itemId);
+      return !!(item && item.data.type === ItemTypeEnum.Skill && item.data.data.hasExperience);
     },
     callback: () => {
       ui.notifications?.info("TODO Improve");
@@ -90,7 +90,7 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<SkillItemData>;
+      const item = actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the skill item from the skill context menu`;
         ui.notifications?.error(msg);

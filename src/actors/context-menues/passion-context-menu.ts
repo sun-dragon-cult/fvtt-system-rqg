@@ -1,9 +1,9 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
-import { PassionItemData } from "../../data-model/item-data/passionData";
 import { RqgActor } from "../rqgActor";
 import { getRequiredDomDataset, RqgError } from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const passionMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
@@ -21,15 +21,14 @@ export const passionMenuOptions = (actor: RqgActor, token: Token | null): Contex
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<PassionItemData>;
-      const itemChance = item?.data.data.chance;
-      if (!itemChance) {
+      const item = actor.items.get(itemId);
+      if (!item || item.data.type !== ItemTypeEnum.Passion || item.data.data.chance == null) {
         const msg = `Couldn't find itemId [${itemId}] or item Chance (item.data.data.chance) on actor ${actor.name} to do a direct roll for passion item from the passion context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
       const speakerName = token?.name || actor.data.token.name;
-      await Ability.roll(item.name, itemChance, 0, speakerName);
+      await Ability.roll(item.name, item.data.data.chance, 0, speakerName);
     },
   },
   {
@@ -38,8 +37,8 @@ export const passionMenuOptions = (actor: RqgActor, token: Token | null): Contex
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<PassionItemData>;
-      if (!item) {
+      const item = actor.items.get(itemId);
+      if (!item || item.data.type !== ItemTypeEnum.Passion) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on passion item from the passion context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
@@ -52,8 +51,13 @@ export const passionMenuOptions = (actor: RqgActor, token: Token | null): Contex
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<PassionItemData>;
-      return !!item?.data.data.hasExperience;
+      const item = actor.items.get(itemId);
+      if (!item || item.data.type !== ItemTypeEnum.Passion) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to improve passion item from the passion context menu.`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
+      }
+      return !!item.data.data.hasExperience;
     },
     callback: () => {
       ui.notifications?.info("TODO Improve");
@@ -73,7 +77,7 @@ export const passionMenuOptions = (actor: RqgActor, token: Token | null): Contex
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.getOwnedItem(itemId) as Item<PassionItemData>;
+      const item = actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit a passion item from the passion context menu.`;
         ui.notifications?.error(msg);

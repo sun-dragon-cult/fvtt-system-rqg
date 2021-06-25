@@ -2,6 +2,8 @@ import { BaseItem } from "../baseItem";
 import { logMisconfiguration } from "../../system/util";
 import { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../rqgItem";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { MeleeWeaponData } from "../../data-model/item-data/meleeWeaponData";
 
 export class MeleeWeapon extends BaseItem {
   // public static init() {
@@ -17,17 +19,24 @@ export class MeleeWeapon extends BaseItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    child: any,
+    child: RqgItem,
     options: any,
     userId: string
   ): Promise<any> {
     let embeddedSkillId;
-    if (!child.data.skillId && child.data.skillOrigin) {
+    if (
+      child.data.type === ItemTypeEnum.MeleeWeapon &&
+      !child.data.data.skillId &&
+      child.data.data.skillOrigin
+    ) {
       try {
         // Add the specified skill if found
-        const skill = (await fromUuid(child.data.skillOrigin).catch(() => {
+        // @ts-ignore TODO wrong types
+        const skill = (await fromUuid(child.data.data.skillOrigin).catch(() => {
           logMisconfiguration(
-            `Couldn't find melee weapon skill with uuid from skillOrigin ${child.data.skillOrigin}`,
+            `Couldn't find melee weapon skill with uuid from skillOrigin ${
+              (child.data.data as any).skillOrigin
+            }`,
             true,
             child.data
           );

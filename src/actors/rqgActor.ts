@@ -229,7 +229,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       // const item = this.actor.getOwnedItem(itemId);
       const newEquippedStatus =
         equippedStatusChanges[0].data.equippedStatus ||
-        (this.getOwnedItem(equippedStatusChanges[0]._id).data.data as any).equippedStatus; // TODO Always correct?
+        (this.items.get(equippedStatusChanges[0].id)?.data.data as any).equippedStatus; // TODO Always correct?
 
       const itemsToUpdate = equippedStatusChanges.map((i) => {
         const item = this.items.get(i._id);

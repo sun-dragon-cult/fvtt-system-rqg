@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CombatManeuver, MeleeWeaponData } from "../../data-model/item-data/meleeWeaponData";
-import { SkillCategoryEnum, SkillData, SkillItemData } from "../../data-model/item-data/skillData";
+import { SkillCategoryEnum, SkillItemData } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
@@ -38,12 +38,12 @@ export class MeleeWeaponSheet extends RqgItemSheet {
     // @ts-ignore 0.8 isOwned -> isEmbedded
     sheetSpecific.isOwned = this.item.isEmbedded;
     if (this.item.isOwned) {
-      sheetSpecific.meleeWeaponSkills = this.actor!.getEmbeddedCollection("OwnedItem").filter(
-        (i: Item.Data<SkillData>) =>
-          i.type === ItemTypeEnum.Skill &&
-          (i.data.category === SkillCategoryEnum.MeleeWeapons ||
-            i.data.category === SkillCategoryEnum.Shields ||
-            i.data.category === SkillCategoryEnum.NaturalWeapons)
+      sheetSpecific.meleeWeaponSkills = this.actor!.getEmbeddedCollection("Item").filter(
+        (i: RqgItem) =>
+          i.data.type === ItemTypeEnum.Skill &&
+          (i.data.data.category === SkillCategoryEnum.MeleeWeapons ||
+            i.data.data.category === SkillCategoryEnum.Shields ||
+            i.data.data.category === SkillCategoryEnum.NaturalWeapons)
       );
     } else {
       if (meleeWeaponData.skillOrigin) {
@@ -58,6 +58,7 @@ export class MeleeWeaponSheet extends RqgItemSheet {
       }
     }
     sheetSpecific.equippedStatuses = [...equippedStatuses];
+    console.log("MELEEWEAPONSSHEET ", context);
     return context;
   }
 

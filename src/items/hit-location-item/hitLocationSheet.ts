@@ -36,7 +36,13 @@ export class HitLocationSheet extends RqgItemSheet {
   }
 
   static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string, speakerName: string): void {
-    const hitLocation = actor.getOwnedItem(hitLocationItemId) as Item<HitLocationItemData>;
+    const hitLocation = actor.items.get(hitLocationItemId);
+    if (!hitLocation || hitLocation.data.type !== ItemTypeEnum.HitLocation) {
+      const msg = `Couldn't find hitlocation with itemId [${hitLocationItemId}] on actor ${actor.name} to show add wound dialog.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
+
     const dialogContent =
       '<form><input type="number" id="inflictDamagePoints" name="damage"><br><label><input type="checkbox" name="toTotalHp" checked> Apply to total HP</label><br><label><input type="checkbox" name="subtractAP" checked> Subtract AP</label><br></form>';
     new Dialog(
@@ -55,7 +61,7 @@ export class HitLocationSheet extends RqgItemSheet {
               await HitLocationSheet.submitAddWoundDialog(
                 html as JQuery,
                 actor,
-                hitLocation,
+                hitLocation as any, // TODO *** !!! ***
                 speakerName
               ),
           },
@@ -122,13 +128,19 @@ export class HitLocationSheet extends RqgItemSheet {
     }
 
     for (const update of uselessLegs) {
-      await actor.getOwnedItem(update._id).update(update);
+      const leg = actor.items.get(update._id);
+      if (!leg || leg.data.type !== ItemTypeEnum.HitLocation) {
+        const msg = "Useless leg did not point to a Hit Location Item";
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, hitLocation);
+      }
+      await leg.update(update);
     }
   }
 
   static showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
-    const hitLocation = actor.getOwnedItem(hitLocationItemId);
-    if (hitLocation.data.type !== ItemTypeEnum.HitLocation) {
+    const hitLocation = actor.items.get(hitLocationItemId);
+    if (!hitLocation || hitLocation.data.type !== ItemTypeEnum.HitLocation) {
       const msg = "Edit Wounds did not point to a Hit Location Item";
       ui.notifications?.error(msg);
       throw new RqgError(msg, hitLocation);
@@ -213,7 +225,8 @@ export class HitLocationSheet extends RqgItemSheet {
     }
 
     for (const update of usefulLegs) {
-      await actor.getOwnedItem(update._id).update(update);
+      const item = actor.items.get(update._id);
+      item && (await item.update(update));
     }
 
     // Reopen the dialog if there still are wounds left

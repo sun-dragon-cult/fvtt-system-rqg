@@ -1,8 +1,9 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { SpiritMagicData } from "../data-model/item-data/spiritMagicData";
-import { getActorFromIds, getSpeakerName } from "../system/util";
+import { getActorFromIds, getSpeakerName, RqgError } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 type SpiritMagicCardFlags = {
   actorId: string;
@@ -21,15 +22,18 @@ export class SpiritMagicCard {
     actor: RqgActor,
     token: Token | null
   ): Promise<void> {
-    const spiritMagicItemData = actor.getOwnedItem(spiritMagicItemId)
-      ?.data as Item.Data<SpiritMagicData>;
-
+    const spiritMagicItem = actor.items.get(spiritMagicItemId);
+    if (!spiritMagicItem || spiritMagicItem.data.type !== ItemTypeEnum.SpiritMagic) {
+      const msg = `Couldn't find spirit magic item with itemId [${spiritMagicItemId}] on actor ${actor.name} to show a spirit magic chat card.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
     const flags: SpiritMagicCardFlags = {
       actorId: actor.id,
       tokenId: token?.id,
-      itemData: spiritMagicItemData,
+      itemData: spiritMagicItem.data,
       formData: {
-        level: spiritMagicItemData.data.points,
+        level: spiritMagicItem.data.data.points,
         boost: 0,
         chance: actor.data.data.characteristics.power.value * 5,
       },

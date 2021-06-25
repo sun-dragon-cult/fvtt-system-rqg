@@ -156,6 +156,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       isGM: !!game.user?.isGM,
       showUiSection: this.getUiSectionVisibility(),
     };
+    console.log(templateData);
     return templateData;
   }
 

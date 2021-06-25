@@ -1,8 +1,8 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { SpiritMagicCard } from "../../chat/spiritMagicCard";
-import { SpiritMagicItemData } from "../../data-model/item-data/spiritMagicData";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const spiritMagicMenuOptions = (
   actor: RqgActor,
@@ -14,8 +14,8 @@ export const spiritMagicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = itemId && actor.getOwnedItem(itemId);
-      if (!item) {
+      const item = itemId && actor.items.get(itemId);
+      if (!item || item.data.type !== ItemTypeEnum.SpiritMagic) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${
           actor!.name
         } to roll the spiritmagic item from the spiritmagic context menu,`;
@@ -31,8 +31,8 @@ export const spiritMagicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = itemId && (actor.getOwnedItem(itemId) as Item<SpiritMagicItemData>);
-      if (!item) {
+      const item = itemId && actor.items.get(itemId);
+      if (!item || item.data.type !== ItemTypeEnum.SpiritMagic) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll for a spiritmagic item from the spiritmagic context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
@@ -73,7 +73,7 @@ export const spiritMagicMenuOptions = (
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = itemId && (actor.getOwnedItem(itemId) as Item<SpiritMagicItemData>);
+      const item = itemId && actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the spirit magic item from the spirit magic context menu.`;
         ui.notifications?.error(msg);

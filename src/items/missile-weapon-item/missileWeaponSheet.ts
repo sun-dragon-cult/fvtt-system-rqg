@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { SkillCategoryEnum, SkillData, SkillItemData } from "../../data-model/item-data/skillData";
+import { SkillCategoryEnum, SkillItemData } from "../../data-model/item-data/skillData";
 import { MissileWeaponData } from "../../data-model/item-data/missileWeaponData";
 import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
 import { EquippedStatus, equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
@@ -41,14 +41,14 @@ export class MissileWeaponSheet extends RqgItemSheet {
     }, {});
     sheetSpecific.isOwned = this.item.isOwned;
     if (this.item.isOwned) {
-      sheetSpecific.missileWeaponSkills = this.actor!.getEmbeddedCollection("OwnedItem").filter(
-        (i: Item.Data<SkillData>) =>
-          i.type === ItemTypeEnum.Skill && i.data.category === SkillCategoryEnum.MissileWeapons
+      sheetSpecific.missileWeaponSkills = this.actor!.getEmbeddedCollection("Item").filter(
+        (i: RqgItem) =>
+          i.data.type === ItemTypeEnum.Skill &&
+          i.data.data.category === SkillCategoryEnum.MissileWeapons
       );
 
-      sheetSpecific.ownedProjectiles = this.actor!.getEmbeddedCollection("OwnedItem").filter(
-        (i: Item.Data<MissileWeaponData>) =>
-          i.type === ItemTypeEnum.MissileWeapon && i.data.isProjectile
+      sheetSpecific.ownedProjectiles = this.actor!.getEmbeddedCollection("Item").filter(
+        (i: RqgItem) => i.data.type === ItemTypeEnum.MissileWeapon && i.data.data.isProjectile
       );
     } else if (missileWeaponData.skillOrigin) {
       const skill = (await fromUuid(missileWeaponData.skillOrigin).catch(() => {
