@@ -30,7 +30,8 @@ export class Ability {
     speakerName: string
   ): Promise<ResultEnum> {
     const r = new Roll("1D100");
-    r.roll();
+    // @ts-ignore 0.8 async roll
+    await r.evaluate({ async: true });
     const modifiedChance: number = chance + chanceMod;
     const result = Ability.evaluateResult(modifiedChance, r.total!);
     const sign = chanceMod > 0 ? "+" : "";

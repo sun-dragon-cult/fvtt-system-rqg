@@ -58,7 +58,6 @@ export class MeleeWeaponSheet extends RqgItemSheet {
       }
     }
     sheetSpecific.equippedStatuses = [...equippedStatuses];
-    console.log("MELEEWEAPONSSHEET ", context);
     return context;
   }
 

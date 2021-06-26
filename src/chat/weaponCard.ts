@@ -143,7 +143,9 @@ export class WeaponCard extends ChatMessage {
         await WeaponCard.damageRoll(flags, damageType);
         return false;
       case "hitLocationRoll":
-        const roll = Roll.create("1D20").evaluate();
+        const roll = new Roll("1D20");
+        // @ts-ignore async roll
+        await roll.evaluate({ async: true });
         const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
         await roll.toMessage({
           speaker: { alias: speakerName },
@@ -241,10 +243,10 @@ export class WeaponCard extends ChatMessage {
       ) {
         weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
       } else if (flags.formData.combatManeuver === CombatManeuver.Crush) {
-        damageBonus = WeaponCard.crushSpecialDamage(damageBonus);
+        damageBonus = await WeaponCard.crushSpecialDamage(damageBonus);
       } else if (flags.formData.combatManeuver === CombatManeuver.Parry) {
         if (flags.weaponItemData.data.combatManeuvers.includes(CombatManeuver.Crush)) {
-          damageBonus = WeaponCard.crushSpecialDamage(damageBonus);
+          damageBonus = await WeaponCard.crushSpecialDamage(damageBonus);
         } else if (
           flags.weaponItemData.data.combatManeuvers.some((m) =>
             [CombatManeuver.Slash, CombatManeuver.Impale].includes(m)
@@ -260,8 +262,11 @@ export class WeaponCard extends ChatMessage {
       }
     }
     const maximise = damageType === "Max Special";
-    const roll = Roll.create(`${weaponDamage} ${damageBonus}`).evaluate({
+    const roll = new Roll(`${weaponDamage} ${damageBonus}`);
+    await roll.evaluate({
       maximize: maximise,
+      // @ts-ignore 0.8 async roll
+      async: true,
     });
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     await roll.toMessage({
@@ -314,9 +319,11 @@ export class WeaponCard extends ChatMessage {
     await ChatMessage.create(messageData);
   }
 
-  private static crushSpecialDamage(damageBonus: string): string {
-    const maxDamageBonus = Roll.create(damageBonus).evaluate({ maximize: true }).total;
-    return damageBonus + " + " + maxDamageBonus;
+  private static async crushSpecialDamage(damageBonus: string): Promise<string> {
+    const maxDamageBonus = new Roll(damageBonus);
+    // @ts-ignore 0.8 async roll
+    await maxDamageBonus.evaluate({ maximize: true, async: true });
+    return damageBonus + " + " + maxDamageBonus.total;
   }
 
   private static slashImpaleSpecialDamage(weaponDamage: string): string {
