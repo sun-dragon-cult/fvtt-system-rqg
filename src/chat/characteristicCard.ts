@@ -72,12 +72,8 @@ export class CharacteristicCard {
     }
     CharacteristicCard.updateFlagsFromForm(flags, ev);
 
-    const [
-      actor,
-      characteristicValue,
-      difficulty,
-      modifier,
-    ] = CharacteristicCard.getFormDataFromFlags(flags);
+    const [actor, characteristicValue, difficulty, modifier] =
+      CharacteristicCard.getFormDataFromFlags(flags);
 
     flags.formData.chance = CharacteristicCard.calcRollChance(
       characteristicValue,
@@ -112,12 +108,8 @@ export class CharacteristicCard {
     // Disable form until completed
     form.style.pointerEvents = "none";
 
-    const [
-      actor,
-      characteristicValue,
-      difficulty,
-      modifier,
-    ] = CharacteristicCard.getFormDataFromFlags(flags);
+    const [actor, characteristicValue, difficulty, modifier] =
+      CharacteristicCard.getFormDataFromFlags(flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     await CharacteristicCard.roll(
       flags.characteristic.name,
@@ -190,7 +182,7 @@ export class CharacteristicCard {
     for (const option in flags.difficultyOptions) {
       if (
         option in flags.difficultyOptions &&
-        flags.difficultyOptions[(option as unknown) as keyof typeof flags.difficultyOptions] === // TODO Ugly type conversion!
+        flags.difficultyOptions[option as unknown as keyof typeof flags.difficultyOptions] === // TODO Ugly type conversion!
           flags.formData.difficulty.toString(10)
       ) {
         difficulty = Number(option);
@@ -210,10 +202,10 @@ export class CharacteristicCard {
         " (" +
         flags.characteristic.data.value +
         ")",
-      user: game.user?._id,
+      user: game.user?.id,
       speaker: { alias: speakerName },
       content: html,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

@@ -131,7 +131,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       title: this.title,
 
       // @ts-ignore 0.8 document
-      rqgActorData: duplicate(this.document.data),
+      rqgActorData: this.document.data.toObject(false),
       tokenId: this.token?.id,
       ownedItems: this.organizeOwnedItems(),
 
@@ -419,7 +419,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       }
       message &&
         ChatMessage.create({
-          user: game.user?._id,
+          user: game.user?.id,
           speaker: { alias: speakerName },
           content: message,
           whisper: whisperRecipients,

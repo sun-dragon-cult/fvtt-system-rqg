@@ -45,7 +45,7 @@ export const handlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("quantity", (itemId, actorId) => {
-    const actor = game.actors?.find((a) => a.id === actorId);
+    const actor = game?.actors?.find((a) => a.id === actorId);
     if (!actor) {
       console.warn(
         `RQG | Handlebar helper "quantity": Couldn't find actor "${actorId}" while checking quantity on item "${itemId}" `

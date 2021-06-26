@@ -110,10 +110,10 @@ export class HitLocationSheet extends RqgItemSheet {
       );
 
     await ChatMessage.create({
-      user: game.user?._id,
+      user: game.user?.id,
       speaker: { alias: speakerName },
       content: `${speakerName} takes a hit to ${hitLocation.name}. ${notification}`,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
     });
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));

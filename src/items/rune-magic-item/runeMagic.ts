@@ -23,7 +23,8 @@ export class RuneMagic extends BaseItem {
     let updateData = {};
     const actorCults = actor.items.filter((i) => i.type === ItemTypeEnum.Cult);
     if (actorCults.length === 1) {
-      updateData = { _id: runeMagicItemData._id, data: { cultId: actorCults[0]._id } };
+      // @ts-ignore 0.8 _id
+      updateData = { _id: runeMagicItemData.id, data: { cultId: actorCults[0].id } };
     }
     return updateData;
   }

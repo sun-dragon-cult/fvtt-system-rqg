@@ -203,7 +203,7 @@ export class WeaponCard extends ChatMessage {
       user: game.user?.id,
       speaker: { alias: speakerName },
       content: html,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

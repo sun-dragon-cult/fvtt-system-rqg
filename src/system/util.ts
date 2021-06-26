@@ -54,7 +54,7 @@ export function getActorFromIds(actorId: string, tokenId?: string): RqgActor {
   if (!actor) {
     throw new RqgError("game.actors is not defined", token, tokenId);
   }
-  return (token ? Actor.fromToken(token) : actor) as RqgActor;
+  return (token ? token.document.getActor() : actor) as RqgActor;
 }
 
 export function getSpeakerName(actorId: string, tokenId?: string): string {
