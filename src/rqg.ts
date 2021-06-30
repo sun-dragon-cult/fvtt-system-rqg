@@ -17,7 +17,8 @@ Hooks.once("init", async () => {
 
   // CONFIG.debug.hooks = true; // console log when hooks fire
   // CONFIG.debug.time = true; // console log time
-  CONFIG.ActiveEffect.entityClass = RqgActiveEffect;
+  // @ts-ignore 0.8
+  CONFIG.ActiveEffect.documentClass = RqgActiveEffect;
   CONFIG.time = {
     turnTime: 0, // Don't advance time per combatant
     roundTime: 12, // Melee round

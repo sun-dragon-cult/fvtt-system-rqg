@@ -9,7 +9,8 @@ import { DamageCalculations } from "../system/damageCalculations";
 
 export class RqgActor extends Actor<RqgActorData, RqgItem> {
   static init() {
-    CONFIG.Actor.entityClass = RqgActor;
+    // @ts-ignore 0.8
+    CONFIG.Actor.documentClass = RqgActor;
 
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("rqg", RqgActorSheet, {
@@ -32,9 +33,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
 
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
-    const data = this.data.data;
+    const actorData = this.data.data;
     const { con, siz, pow } = this.actorCharacteristics();
-    data.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+    actorData.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
     );
@@ -52,9 +53,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
    */
   prepareDerivedData(): void {
     super.prepareDerivedData();
-    const data = this.data.data;
+    const { attributes, skillCategoryModifiers } = this.data.data;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
-    data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
+    this.data.data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
       str,
       siz,
       dex,
@@ -62,10 +63,10 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       pow,
       cha
     );
-    data.attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
+    attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
     const movementEncumbrancePenalty = Math.min(
       0,
-      (data.attributes.maximumEncumbrance || 0) - (data.attributes.equippedEncumbrance || 0)
+      (attributes.maximumEncumbrance || 0) - (attributes.equippedEncumbrance || 0)
     );
     attributes.equippedEncumbrance = Math.round(
       this.items
@@ -91,28 +92,26 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
         }, 0)
     );
 
-    data.attributes.move += movementEncumbrancePenalty;
-    data.skillCategoryModifiers.agility += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.manipulation += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.stealth += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.meleeWeapons += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.missileWeapons += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.naturalWeapons += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.shields += movementEncumbrancePenalty * 5;
+    attributes.move += movementEncumbrancePenalty;
+    skillCategoryModifiers!.agility += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.manipulation += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.stealth += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.meleeWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.missileWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.naturalWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.shields += movementEncumbrancePenalty * 5;
 
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item)
     );
 
-    // *** Setup calculated stats ***
+    attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
+    attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
+    attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
+    attributes.healingRate = RqgCalculations.healingRate(con);
+    attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
 
-    data.attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
-    data.attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
-    data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
-    data.attributes.healingRate = RqgCalculations.healingRate(con);
-    data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
-
-    data.attributes.health = DamageCalculations.getCombinedActorHealth(this.data);
+    attributes.health = DamageCalculations.getCombinedActorHealth(this.data);
   }
 
   // Entity-specific actions that should occur when the Entity is first created
@@ -184,18 +183,25 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
 
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    child: Actor.OwnedItemData<any> | ActiveEffect.Data,
-    options: any,
+    documents: any[], // Document[]
+    result: object[],
+    options: object[],
     userId: string
+    // TODO *** REWORK FOR 0.8 !!! ***
   ): void {
-    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
-      ResponsibleItemClass.get(child.type)
-        ?.onEmbedItem(this, child, options, userId)
-        .then((updateData: any) => {
-          updateData && this.updateOwnedItem(updateData);
-        });
+    if (embeddedName === "Item" && game.user?.id === userId) {
+      documents.forEach((d) => {
+        ResponsibleItemClass.get(d.type)
+          ?.onEmbedItem(this, d, options, userId)
+          .then((updateData: any) => {
+            // @ts-ignore 0.8
+            updateData && this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
+          });
+      });
+      this.updateEquippedStatus(result);
     }
-    return super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
+    // @ts-ignore 0.8
+    return super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
   }
 
   protected _onDeleteEmbeddedDocuments(

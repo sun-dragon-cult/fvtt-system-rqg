@@ -14,7 +14,8 @@ import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 
 export class RqgItem extends Item<RqgItemData> {
   public static init() {
-    CONFIG.Item.entityClass = RqgItem;
+    // @ts-ignore 0.8
+    CONFIG.Item.documentClass = RqgItem;
     // CONFIG.Item.sheetClass = RqgItemSheet; // TODO how and why
 
     Items.unregisterSheet("core", ItemSheet);

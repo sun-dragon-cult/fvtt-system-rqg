@@ -13,7 +13,7 @@ export abstract class BaseEmbeddedItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    itemData: Item.Data,
+    child: RqgItem,
     options: any,
     userId: string
   ): Promise<any> {}
