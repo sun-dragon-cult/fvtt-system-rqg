@@ -1,17 +1,15 @@
 import { RqgItem } from "./rqgItem";
 import { RqgActor } from "../actors/rqgActor";
 
-export abstract class BaseItem {
+/**
+ * Separate item specific actions that should be done on embedded items when actor _onCreateEmbeddedDocuments etc. is called.
+ */
+export abstract class BaseEmbeddedItem {
   // TODO ***
   // public static init() {}
 
   /**
    * Will be called when the item is embedded into an actor.
-   * @param actor
-   * @param itemData - Is actually not a ItemData, but an Object with {data, flags, effects, name, img, type, _id, sort}
-   * @param options
-   * @param userId
-   * @return Data to update other embedded items.
    */
   static async onEmbedItem(
     actor: RqgActor,
@@ -22,30 +20,16 @@ export abstract class BaseItem {
 
   /**
    * Will be called when an embedded (Owned) item is updated.
-   * @param actor
-   * @param itemData - Is actually not a ItemData, but an Object with {data, flags, effects, name, img, type, _id, sort}
-   * @param update
-   * @param options
-   * @param userId
-   * @return Data to update other embedded items.
    */
   static onUpdateItem(
     actor: RqgActor,
-    itemData: Item.Data,
+    item: RqgItem,
     update: any,
     options: any,
     userId: string
   ): any {}
 
-  /**
-   * Will be called when an embedded item is deleted from the actor.
-   * @param actor
-   * @param itemData - Is actually not a ItemData, but an Object with {data, flags, effects, name, img, type, _id, sort}
-   * @param options
-   * @param userId
-   * @return Data to update other embedded items.
-   */
-  static onDeleteItem(actor: RqgActor, itemData: Item.Data, options: any, userId: string): any {}
+  static onDeleteItem(actor: RqgActor, itemData: RqgItem, options: any, userId: string): any {}
 
   /**
    * Allows each embedded item to prepare its data.

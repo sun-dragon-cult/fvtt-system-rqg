@@ -1,6 +1,6 @@
-import { BaseItem } from "../baseItem";
+import { BaseEmbeddedItem } from "../baseEmbeddedItem";
 
-export class Rune extends BaseItem {
+export class Rune extends BaseEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", RuneSheet, {
   //     types: [ItemTypeEnum.ElementalRune],

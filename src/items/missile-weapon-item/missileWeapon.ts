@@ -1,9 +1,10 @@
-import { BaseItem } from "../baseItem";
+import { BaseEmbeddedItem } from "../baseEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
-import { logMisconfiguration } from "../../system/util";
+import { logMisconfiguration, RqgError } from "../../system/util";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
-export class MissileWeapon extends BaseItem {
+export class MissileWeapon extends BaseEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", MissileWeaponSheet, {
   //     types: [ItemTypeEnum.MissileWeapon],
@@ -17,29 +18,38 @@ export class MissileWeapon extends BaseItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    child: any,
+    child: RqgItem,
     options: any,
     userId: string
   ): Promise<any> {
     let embeddedSkillId;
-    if (!child.data.skillId && child.data.skillOrigin) {
+    if (child.data.type !== ItemTypeEnum.MissileWeapon) {
+      const msg = `Tried to embed something else than a missileWeapon`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, child, actor);
+    }
+
+    if (!child.data.data.skillId && child.data.data.skillOrigin) {
       try {
         // Add the specified skill if found
-        const skill = (await fromUuid(child.data.skillOrigin).catch(() => {
+        const skill = await fromUuid(child.data.data.skillOrigin).catch(() => {
           logMisconfiguration(
-            `Couldn't find missile weapon skill with uuid from skillOrigin ${child.data.skillOrigin}`,
+            `Couldn't find missile weapon skill with uuid from skillOrigin ${
+              (child.data.data as any).skillOrigin
+            }`,
             true,
             child.data
           );
-        })) as RqgItem;
-        const embeddedWeaponSkill = await actor.createOwnedItem(skill.data);
-        embeddedSkillId = embeddedWeaponSkill._id;
+        });
+        // @ts-ignore 0.8
+        const embeddedWeaponSkill = await actor.createEmbeddedDocuments("Item", [skill.data]);
+        embeddedSkillId = embeddedWeaponSkill[0].id; // A weapon can only have 1 skill for now
       } catch (e) {
         ui.notifications?.warn("Couldn't find the Skill associated with this weapon.");
       }
     }
     if (embeddedSkillId) {
-      return { _id: child._id, data: { skillId: embeddedSkillId } };
+      return { _id: child.id, data: { skillId: embeddedSkillId } };
     } else {
       // Didn't find the weapon skill - open the item sheet to let the user select one
       options.renderSheet = true;

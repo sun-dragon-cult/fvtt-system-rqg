@@ -1,9 +1,9 @@
-import { BaseItem } from "../baseItem";
-import { RuneMagicData } from "../../data-model/item-data/runeMagicData";
+import { BaseEmbeddedItem } from "../baseEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../../actors/rqgActor";
+import { RqgItem } from "../rqgItem";
 
-export class RuneMagic extends BaseItem {
+export class RuneMagic extends BaseEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", RuneMagicSheet, {
   //     types: [ItemTypeEnum.RuneMagic],
@@ -16,7 +16,7 @@ export class RuneMagic extends BaseItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    runeMagicItemData: Item.Data<RuneMagicData>,
+    runeMagicItemData: RqgItem,
     options: any,
     userId: string
   ): Promise<any> {

@@ -121,6 +121,14 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // @ts-ignore 0.8 document.isOwner
     const isOwner: boolean = this.document.isOwner;
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
+    // @ts-ignore 0.8 document
+    const rqgActorData = this.document.data.toObject(false);
+    const dexStrikeRank = rqgActorData.data.attributes.dexStrikeRank;
+    if (dexStrikeRank == null) {
+      const msg = "Dex SR was not yet calculated.";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this.actor);
+    }
     const templateData: ActorSheetTemplate = {
       cssClass: isOwner ? "editable" : "locked",
       editable: this.isEditable,
@@ -130,8 +138,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       owner: isOwner,
       title: this.title,
 
-      // @ts-ignore 0.8 document
-      rqgActorData: this.document.data.toObject(false),
+      rqgActorData: rqgActorData,
       tokenId: this.token?.id,
       ownedItems: this.organizeOwnedItems(),
 
@@ -139,8 +146,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
 
       characterRunes: this.getCharacterRuneImgs(), // Array of element runes with > 0% chance
-      loadedMissileSr: this.getLoadedMissileSr(), // (html) Precalculated missile weapon SRs if loaded at start of round
-      unloadedMissileSr: this.getUnloadedMissileSr(), // (html) Precalculated missile weapon SRs if not loaded at start of round
+      loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
+      unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
       itemLocationTree: this.getItemLocationTree(), // physical items reorganised as a tree of items containing items
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
@@ -218,7 +225,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     );
   }
 
-  private getLoadedMissileSr(): string[] {
+  private getLoadedMissileSr(dexSr: number): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const loadedMissileSr = [
       ["1", reloadIcon, "5", reloadIcon, "10"],
@@ -228,16 +235,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       ["4", reloadIcon],
       ["5", reloadIcon],
     ];
-    const dexStrikeRank = this.actor.data.data.attributes.dexStrikeRank;
-    if (dexStrikeRank == null) {
-      const msg = "Dex SR was not calculated.";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this.actor);
-    }
-    return loadedMissileSr[dexStrikeRank];
+    return loadedMissileSr[dexSr];
   }
 
-  private getUnloadedMissileSr(): string[] {
+  private getUnloadedMissileSr(dexSr: number): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const unloadedMissileSr = [
       [reloadIcon, "5", reloadIcon, "10"],
@@ -247,13 +248,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       [reloadIcon, "9"],
       [reloadIcon, "10"],
     ];
-    const dexStrikeRank = this.actor.data.data.attributes.dexStrikeRank;
-    if (dexStrikeRank == null) {
-      const msg = "Dex SR was not calculated.";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this.actor);
-    }
-    return unloadedMissileSr[dexStrikeRank];
+    return unloadedMissileSr[dexSr];
   }
 
   private getCharacterRuneImgs(): RuneItemData[] {
@@ -604,16 +599,21 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Show Weapon Chat Card
     (this.form as HTMLElement).querySelectorAll("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const skillItemId = getRequiredDomDataset($(el as HTMLElement), "skill-id");
+      const skillItemId = getDomDataset($(el as HTMLElement), "skill-id");
+      if (!skillItemId) {
+        console.warn(
+          `Weapon ${weaponItemId} is missing a skill. Normal if you just dragged the weapon in, but should only happen then`
+        );
+      }
 
       let clickCount = 0;
       el.addEventListener("click", async (ev: Event) => {
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-        if (clickCount >= 2) {
+        if (skillItemId && clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
           await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
           clickCount = 0;
-        } else if (clickCount === 1) {
+        } else if (skillItemId && clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
               await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
@@ -692,8 +692,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
       el.addEventListener("click", async () => {
-        const item = this.actor.items.get(itemId) as Item<any>;
-        if (!item) {
+        const item = this.actor.items.get(itemId);
+        if (!item || !("equippedStatus" in item.data.data)) {
           const msg = `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`;
           ui.notifications?.error(msg);
           throw new RqgError(msg);
@@ -703,7 +703,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             (equippedStatuses.indexOf(item.data.data.equippedStatus) + 1) % equippedStatuses.length
           ];
         // Will trigger a Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
-        await item.update({ "data.equippedStatus": newStatus }, {});
+        await item.update({ "data.equippedStatus": newStatus });
       });
     });
 
@@ -769,7 +769,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             icon: '<i class="fas fa-check"></i>',
             label: "Confirm",
             callback: async () => {
-              await actor.deleteOwnedItem(itemId);
+              // @ts-ignore 0.8
+              await actor.deleteEmbeddedDocuments("Item", [itemId]);
             },
           },
           cancel: {

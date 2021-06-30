@@ -67,6 +67,29 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       0,
       (data.attributes.maximumEncumbrance || 0) - (data.attributes.equippedEncumbrance || 0)
     );
+    attributes.equippedEncumbrance = Math.round(
+      this.items
+        .filter(
+          (i: RqgItem) =>
+            "equippedStatus" in i.data.data && i.data.data.equippedStatus === "equipped"
+        )
+        .reduce((sum, i: RqgItem) => {
+          const quantity =
+            "quantity" in i.data.data && i.data.data.quantity ? i.data.data.quantity : 1;
+          const encumbrance =
+            "encumbrance" in i.data.data && i.data.data.encumbrance ? i.data.data.encumbrance : 0;
+          return sum + quantity * encumbrance;
+        }, 0)
+    );
+
+    attributes.travelEncumbrance = Math.round(
+      this.items
+        .filter((i: Item<any>) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
+        .reduce((sum, i: Item<any>) => {
+          const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
+          return sum + enc;
+        }, 0)
+    );
 
     data.attributes.move += movementEncumbrancePenalty;
     data.skillCategoryModifiers.agility += movementEncumbrancePenalty * 5;
@@ -107,7 +130,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
         origin: RqgActor.updateEffectOrigin(effect.origin, actorData._id),
       };
     });
-    this.updateEmbeddedEntity("ActiveEffect", effectsOriginUpdates);
+    effectsOriginUpdates.length &&
+      // @ts-ignore 0.8
+      this.updateEmbeddedDocuments("ActiveEffect", [effectsOriginUpdates]);
   }
 
   private static updateEffectOrigin(origin: string, actorId: string): string {
@@ -122,7 +147,10 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
   // Defaults when creating a new Actor
   static async create(data: any, options?: object | undefined): Promise<Entity> {
     data.token = data.token || {};
+    data.data = data.data || {};
+    data.data.attributes = data.data.attributes || {};
     if (data.type === "character") {
+      // Defaults for actor token
       mergeObject(
         data.token,
         {
@@ -137,6 +165,13 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
         },
         { overwrite: false }
       );
+
+      // Initialize derived encumbrance to 0 since actor has no gear yet
+      mergeObject(
+        data.data.attributes,
+        { equippedEncumbrance: 0, travelEncumbrance: 0 },
+        { overwrite: false }
+      );
     }
     const actor = await super.create(data, options);
     if (!actor) {
@@ -147,7 +182,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     return actor;
   }
 
-  protected _onCreateEmbeddedEntity(
+  protected _onCreateEmbeddedDocuments(
     embeddedName: string,
     child: Actor.OwnedItemData<any> | ActiveEffect.Data,
     options: any,
@@ -163,59 +198,46 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     return super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
   }
 
-  protected _onDeleteEmbeddedEntity(
+  protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    child: Actor.OwnedItemData<any> | ActiveEffect.Data,
-    options: any,
+    documents: any[], // Document[]
+    result: object[],
+    options: object[],
     userId: string
   ): void {
-    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
-      const updateData = ResponsibleItemClass.get(child.type)?.onDeleteItem(
-        this,
-        child,
-        options,
-        userId
-      );
-      updateData && this.updateOwnedItem(updateData);
+    if (embeddedName === "Item" && game.user?.id === userId) {
+      documents.forEach((d) => {
+        const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(this, d, options, userId);
+        updateData && this.updateOwnedItem(updateData);
+      });
+      this.updateEquippedStatus(result);
     }
-    return super._onDeleteEmbeddedEntity(embeddedName, child, options, userId);
+    // @ts-ignore 0.8
+    return super._onDeleteEmbeddedDocuments(embeddedName, documents, options, userId);
   }
 
-  protected _onUpdateEmbeddedEntity(
+  protected _onUpdateEmbeddedDocuments(
     embeddedName: string,
-    child: Item.Data,
-    update: any,
-    options: any,
+    documents: any[], // Document[]
+    result: object[],
+    options: object[],
     userId: string
   ) {
-    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
-      const updateData = ResponsibleItemClass.get(child.type)?.onUpdateItem(
-        this,
-        child,
-        update,
-        options,
-        userId
-      );
-      updateData && this.updateOwnedItem(updateData);
+    if (embeddedName === "Item" && game.user?.id === userId) {
+      documents.forEach((d) => {
+        const updateData = ResponsibleItemClass.get(d.type)?.onUpdateItem(
+          this,
+          d,
+          result,
+          options,
+          userId
+        );
+        updateData && this.updateOwnedItem(updateData);
+      });
+      this.updateEquippedStatus(result);
     }
-    return super._onUpdateEmbeddedEntity(embeddedName, child, update, options, userId);
-  }
-
-  _onModifyEmbeddedEntity(
-    embeddedName: string,
-    changes: Actor.OwnedItemData<any>[] | ActiveEffect.Data[],
-    options: any,
-    userId: string,
-    context: any
-  ) {
-    if (embeddedName === "OwnedItem" && game.user?._id === userId && context.action !== "create") {
-      this.updateEquippedStatus(changes).then(
-        () =>
-          // Try doing stuff after actor has updated
-          setTimeout(this.updateEncumbrance.bind(this), 0) // TODO Solve without releasing thread?... Or try to do in preUpdate instead!
-      );
-    }
-    super._onModifyEmbeddedEntity(embeddedName, changes, options, userId, context);
+    // @ts-ignore 0.8
+    return super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
   }
 
   private async updateEquippedStatus(changes: Actor.OwnedItemData<any>[]): Promise<void> {
@@ -242,51 +264,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
           return { _id: id, "data.equippedStatus": newEquippedStatus };
         });
       });
-      itemsToUpdate[0] && (await this.updateEmbeddedEntity("OwnedItem", itemsToUpdate[0])); // TODO fix nested arrays
+      // @ts-ignore 0.8
+      itemsToUpdate[0] && (await this.updateEmbeddedDocuments("Item", itemsToUpdate[0])); // TODO fix nested arrays
       // await item.update({ "data.equippedStatus": newStatus }, {});
-    }
-  }
-
-  private async updateEncumbrance(): Promise<void> {
-    const equippedEncumbrance = Math.round(
-      this.items
-        .filter(
-          (i: RqgItem) =>
-            "equippedStatus" in i.data.data && i.data.data.equippedStatus === "equipped"
-        )
-        .reduce((sum, i: RqgItem) => {
-          const quantity =
-            "quantity" in i.data.data && i.data.data.quantity ? i.data.data.quantity : 1;
-          const encumbrance =
-            "encumbrance" in i.data.data && i.data.data.encumbrance ? i.data.data.encumbrance : 0;
-          return sum + quantity * encumbrance;
-        }, 0)
-    );
-
-    const travelEncumbrance = Math.round(
-      this.items
-        .filter((i: Item<any>) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
-        .reduce((sum, i: Item<any>) => {
-          const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
-          return sum + enc;
-        }, 0)
-    );
-    if (
-      this.data.data.attributes.equippedEncumbrance !== equippedEncumbrance ||
-      this.data.data.attributes.travelEncumbrance !== travelEncumbrance
-    ) {
-      await this.update(
-        {
-          _id: this._id,
-          data: {
-            attributes: {
-              equippedEncumbrance: equippedEncumbrance,
-              travelEncumbrance: travelEncumbrance,
-            },
-          },
-        },
-        { render: true }
-      );
     }
   }
 

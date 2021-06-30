@@ -27,7 +27,7 @@
   "gridDistance": 3,
   "gridUnits": "m",
   "minimumCoreVersion": "0.8.6",
-  "compatibleCoreVersion": "0.8.7",
+  "compatibleCoreVersion": "0.8.8",
   "url": "https://github.com/wakeand/foundry-vtt-rqg",
   "manifest": "https://github.com/wakeand/fvtt-system-rqg/releases/latest/download/system.json",
   "download": "https://github.com/wakeand/fvtt-system-rqg/releases/download/v0.19.0/rqg.zip",

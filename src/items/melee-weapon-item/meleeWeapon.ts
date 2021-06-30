@@ -1,11 +1,10 @@
-import { BaseItem } from "../baseItem";
+import { BaseEmbeddedItem } from "../baseEmbeddedItem";
 import { logMisconfiguration } from "../../system/util";
 import { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { MeleeWeaponData } from "../../data-model/item-data/meleeWeaponData";
 
-export class MeleeWeapon extends BaseItem {
+export class MeleeWeapon extends BaseEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", MeleeWeaponSheet, {
   //     types: [ItemTypeEnum.MeleeWeapon],
@@ -41,14 +40,15 @@ export class MeleeWeapon extends BaseItem {
             child.data
           );
         })) as RqgItem;
-        const embeddedWeaponSkill = await actor.createOwnedItem(skill.data);
-        embeddedSkillId = embeddedWeaponSkill._id;
+        // @ts-ignore 0.8
+        const embeddedWeaponSkill = await actor.createEmbeddedDocuments("Item", [skill.data]);
+        embeddedSkillId = embeddedWeaponSkill[0].id; // A weapon can only have 1 skill for now
       } catch (e) {
         logMisconfiguration("Couldn't find the Skill associated with this weapon.", true);
       }
     }
     if (embeddedSkillId) {
-      return { _id: child._id, data: { skillId: embeddedSkillId } };
+      return { _id: child.id, data: { skillId: embeddedSkillId } };
     } else {
       // Didn't find the weapon skill - open the item sheet to let the user select one
       options.renderSheet = true;

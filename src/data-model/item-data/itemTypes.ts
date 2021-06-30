@@ -1,5 +1,5 @@
 import { Skill } from "../../items/skill-item/skill";
-import { BaseItem } from "../../items/baseItem";
+import { BaseEmbeddedItem } from "../../items/baseEmbeddedItem";
 import { HitLocation } from "../../items/hit-location-item/hitLocation";
 import { Gear } from "../../items/gear-item/gear";
 import { Armor } from "../../items/armor-item/armor";
@@ -38,9 +38,9 @@ export enum ItemTypeEnum {
 }
 
 /**
- * Map from ItemTypeEnum to responsible BaseItem class.
+ * Map from ItemTypeEnum to responsible BaseEmbeddedItem class.
  */
-export const ResponsibleItemClass: Map<string, typeof BaseItem> = new Map([
+export const ResponsibleItemClass: Map<string, typeof BaseEmbeddedItem> = new Map([
   [ItemTypeEnum.Skill, Skill],
   [ItemTypeEnum.Passion, Passion],
   [ItemTypeEnum.Rune, Rune],

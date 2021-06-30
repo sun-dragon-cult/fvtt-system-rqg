@@ -1,10 +1,10 @@
-import { BaseItem } from "../baseItem";
+import { BaseEmbeddedItem } from "../baseEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CultData } from "../../data-model/item-data/cultData";
 import { RqgActor } from "../../actors/rqgActor";
 import { RqgError } from "../../system/util";
+import { RqgItem } from "../rqgItem";
 
-export class Cult extends BaseItem {
+export class Cult extends BaseEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", CultSheet, {
   //     types: [ItemTypeEnum.Cult],
@@ -17,11 +17,16 @@ export class Cult extends BaseItem {
    */
   static async onEmbedItem(
     actor: RqgActor,
-    cultItem: Item.Data<CultData>,
+    cultItem: RqgItem,
     options: any,
     userId: string
   ): Promise<any> {
-    const cultRuneNames = [...new Set(cultItem.data.runes)]; // No duplicates
+    if (cultItem.data.type !== ItemTypeEnum.Cult) {
+      const msg = "Expected Cult item";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, cultItem, actor);
+    }
+    const cultRuneNames = [...new Set(cultItem.data.data.runes)]; // No duplicates
     const actorRuneNames = actor.items
       .filter((i) => i.type === ItemTypeEnum.Rune)
       .map((r) => r.name);
@@ -52,7 +57,8 @@ export class Cult extends BaseItem {
               ui.notifications?.error(msg);
               throw new RqgError(msg, newRuneIds, runePack);
             }
-            await actor.createOwnedItem(rune.data);
+            // @ts-ignore 0.8
+            await actor.createEmbeddedDocuments("Item", [rune.data]);
           });
         }
       );
@@ -63,12 +69,7 @@ export class Cult extends BaseItem {
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
-  static onDeleteItem(
-    actor: RqgActor,
-    cultItem: Item.Data<CultData>,
-    options: any,
-    userId: string
-  ): any {
+  static onDeleteItem(actor: RqgActor, cultItem: RqgItem, options: any, userId: string): any {
     const cultRuneMagicItems = actor.items.filter(
       (i) => i.data.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultItem._id
     );

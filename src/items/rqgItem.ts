@@ -79,6 +79,7 @@ export class RqgItem extends Item<RqgItemData> {
 
     // Row 26505
     Hooks.on("preCreateOwnedItem", (parent: Entity, r: any) => {
+      // Validate that embedded items are unique (name + type)
       if (parent instanceof RqgActor && Object.values(ItemTypeEnum).includes(r.type)) {
         const rqgItem = r as RqgItem;
         // Prevent duplicates
@@ -89,6 +90,7 @@ export class RqgItem extends Item<RqgItemData> {
           return false;
         }
 
+        // Generate item AE when embedding
         rqgItem.effects = rqgItem.effects || [];
         const activeEffect = ResponsibleItemClass.get(rqgItem.type)?.generateActiveEffect(
           rqgItem.data

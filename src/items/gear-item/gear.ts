@@ -1,6 +1,6 @@
-import { BaseItem } from "../baseItem";
+import { BaseEmbeddedItem } from "../baseEmbeddedItem";
 
-export class Gear extends BaseItem {
+export class Gear extends BaseEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", GearSheet, {
   //     types: [ItemTypeEnum.Gear],

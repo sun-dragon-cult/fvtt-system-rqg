@@ -1,7 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import { getRequiredDomDataset, hasOwnProperty, RqgError } from "../../system/util";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -59,7 +58,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || item.data.type !== ItemTypeEnum.Gear) {
+      if (!item) {
         const msg = `Couldn't find gear with itemId [${itemId}] on actor ${actor.name} to edit item from the gear context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);

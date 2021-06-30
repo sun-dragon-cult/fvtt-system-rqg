@@ -1,15 +1,13 @@
 import { SkillData, SkillItemData } from "../../data-model/item-data/skillData";
-import { BaseItem } from "../baseItem";
+import { BaseEmbeddedItem } from "../baseEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ArmorItemData } from "../../data-model/item-data/armorData";
-import { RqgActor } from "../../actors/rqgActor";
 import { RqgError } from "../../system/util";
 import { RqgConfig } from "../../system/config";
 
 declare const CONFIG: RqgConfig;
 
-export class Skill extends BaseItem {
+export class Skill extends BaseEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", SkillSheet, {
   //     types: [ItemTypeEnum.Skill],
@@ -20,29 +18,35 @@ export class Skill extends BaseItem {
   public static onActorPrepareDerivedData(item: RqgItem): RqgItem {
     const skillItem = item as Item<SkillItemData>;
     const skillData = skillItem.data.data;
-    const actor = skillItem.actor! as RqgActor;
+    const actor = skillItem.actor!;
     if (actor.data.type !== "character") {
-      throw new RqgError("actor is not of type character");
+      const msg = `Actor is not of type character`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, actor);
     }
-    const actorData = actor.data.data;
+    // @ts-ignore 0.8
+    const actorData = actor.data.toObject();
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
-    skillData.categoryMod = actorData.skillCategoryModifiers![skillItem.data.data.category];
+    skillData.categoryMod = actorData.data.skillCategoryModifiers![skillItem.data.data.category];
 
     let mod = 0; // For dodge/swim encumbrance & move quietly modifications
 
     // Special case for Dodge & Jump TODO swimEncPenalty Complicated :-(
-    const dex = actorData.characteristics.dexterity.value;
+    const dex = actorData.data.characteristics.dexterity.value;
     if (CONFIG.RQG.skillName.dodge === skillItem.name) {
       Skill.updateBaseChance(skillData, dex * 2);
       if (
-        actorData.attributes.equippedEncumbrance === undefined ||
-        actorData.attributes.maximumEncumbrance === undefined
+        actorData.data.attributes.equippedEncumbrance === undefined ||
+        actorData.data.attributes.maximumEncumbrance === undefined
       ) {
-        throw new RqgError("Equipped or max ENC was not set", actor);
+        const msg = `Equipped or max ENC was not set`;
+        ui.notifications?.warn(msg);
+        // ui.notifications?.error(msg);
+        // throw new RqgError(msg, actor); // TODO Should it not always be set?
       }
       mod = -Math.min(
-        actorData.attributes.equippedEncumbrance,
-        actorData.attributes.maximumEncumbrance
+        actorData.data.attributes.equippedEncumbrance || 0,
+        actorData.data.attributes.maximumEncumbrance || 0
       );
     } else if (CONFIG.RQG.skillName.jump === skillItem.name) {
       Skill.updateBaseChance(skillData, dex * 3);
@@ -51,9 +55,10 @@ export class Skill extends BaseItem {
         0,
         ...actor.items
           .filter(
-            (i) => i.data.type === ItemTypeEnum.Armor && i.data.data.equippedStatus === "equipped"
+            (i: RqgItem) =>
+              i.data.type === ItemTypeEnum.Armor && i.data.data.equippedStatus === "equipped"
           )
-          .map((a) => Math.abs((a as Item<ArmorItemData>).data.data.moveQuietlyPenalty))
+          .map((a: any) => Math.abs(a.data.data.moveQuietlyPenalty))
       );
     }
 

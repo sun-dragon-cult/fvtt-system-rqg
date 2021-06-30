@@ -1,9 +1,12 @@
-import { BaseItem } from "../baseItem";
+import { BaseEmbeddedItem } from "../baseEmbeddedItem";
 import { ArmorData, emptyArmor } from "../../data-model/item-data/armorData";
 import { RqgActor } from "../../actors/rqgActor";
 import Change = ActiveEffect.Change;
+import { RqgItem } from "../rqgItem";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { RqgError } from "../../system/util";
 
-export class Armor extends BaseItem {
+export class Armor extends BaseEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", ArmorSheet, {
   //     types: [ItemTypeEnum.Armor],
@@ -13,21 +16,28 @@ export class Armor extends BaseItem {
 
   static onUpdateItem(
     actor: RqgActor,
-    itemData: Item.Data<ArmorData>,
+    item: RqgItem,
     update: any,
     options: any,
     userId: string
   ): any {
+    if (item.data.type !== ItemTypeEnum.Armor) {
+      const msg = `Tried to update something else than armor`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, item, actor);
+    }
+
     // Update the active effect on actor from Item data
-    const uuid = `Actor.${actor.id}.OwnedItem.${itemData._id}`;
-    const generatedEffect = Armor.generateActiveEffect(itemData.data);
+    const uuid = `Actor.${actor.id}.OwnedItem.${item.id}`;
+    const generatedEffect = Armor.generateActiveEffect(item.data.data);
     const existingEffects = actor.effects.filter((e) => e.data.origin === uuid);
     if (existingEffects.length > 0) {
+      const shouldBeDisabled = item.data.data.equippedStatus === "equipped"; // TODO Should it not be !== "equipped"? alternatively rename varible
       const changes = existingEffects.map((effect) => {
         return {
           _id: effect.id,
           changes: generatedEffect.changes,
-          disabled: !(itemData.data.equippedStatus === "equipped"),
+          disabled: shouldBeDisabled,
         };
       });
       actor.updateEmbeddedEntity("ActiveEffect", changes, {});
