@@ -188,11 +188,14 @@ export class DamageCalculations {
       totalDamage < hpMax * 3
     ) {
       const attachedLimbs = actorData.items.filter(
-        (i) => i.type === ItemTypeEnum.HitLocation && i.data.connectedTo === hitLocationData.name
+        (i) =>
+          // @ts-ignore 0.8 i is RqgItem
+          i.type === ItemTypeEnum.HitLocation && i.data.data.connectedTo === hitLocationData.name
       );
       damageEffects.uselessLegs = attachedLimbs.map((limb) => {
         return {
-          _id: limb._id,
+          // @ts-ignore 0.8 limb is RqgItem
+          _id: limb.id,
           data: {
             hitLocationHealthState: "useless",
           },
@@ -245,14 +248,18 @@ export class DamageCalculations {
     } else if (totalHitPoints <= 2) {
       return "unconscious";
     } else {
-      return actorData.items
-        .filter((i) => i.type === ItemTypeEnum.HitLocation)
-        .map((h) => (h as HitLocationItemData).data.actorHealthImpact)
-        .reduce(
-          (acc, val) =>
-            actorHealthStatuses.indexOf(val) > actorHealthStatuses.indexOf(acc) ? val : acc,
-          "healthy"
-        );
+      return (
+        actorData.items
+          // @ts-ignore 0.8 i is RqgItem
+          .filter((i) => i.data.type === ItemTypeEnum.HitLocation)
+          // @ts-ignore 0.8 h is RqgItem
+          .map((h) => h.data.data.actorHealthImpact)
+          .reduce(
+            (acc, val) =>
+              actorHealthStatuses.indexOf(val) > actorHealthStatuses.indexOf(acc) ? val : acc,
+            "healthy"
+          )
+      );
     }
   }
 }
