@@ -28,7 +28,7 @@ export class DamageCalculations {
   public static addWound(
     damage: number,
     applyDamageToTotalHp: boolean,
-    hitLocationData: HitLocationItemData,
+    hitLocationData: any,
     actorData: CharacterActorData,
     speakerName: string
   ): DamageEffects {
@@ -144,7 +144,7 @@ export class DamageCalculations {
   }
 
   private static calcLocationDamageEffects(
-    hitLocationData: HitLocationItemData,
+    hitLocationData: any,
     damage: number,
     actorData: RqgActorData,
     applyDamageToTotalHp: boolean,

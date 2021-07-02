@@ -1,22 +1,20 @@
 import { DamageCalculations } from "./damageCalculations";
 import { mockActor as mockActorOriginal } from "../mocks/mockActor";
-import { HitLocationItemData } from "../data-model/item-data/hitLocationData";
 import { CharacterActorData } from "../data-model/actor-data/rqgActorData";
 
 describe("Inflict Damage", () => {
   let mockActor: any;
-  let mockLeftLeg: HitLocationItemData;
-  let mockHead: HitLocationItemData;
-  let mockChest: HitLocationItemData;
-  let mockAbdomen: HitLocationItemData;
+  let mockLeftLeg: any;
+  let mockHead: any;
+  let mockChest: any;
+  let mockAbdomen: any;
 
   beforeEach(() => {
     mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
-    mockLeftLeg = mockActor.items.find((i: any) => i.name === "leftLeg") as HitLocationItemData;
-
-    mockHead = mockActor.items.find((i: any) => i.name === "head") as HitLocationItemData;
-    mockChest = mockActor.items.find((i: any) => i.name === "chest") as HitLocationItemData;
-    mockAbdomen = mockActor.items.find((i: any) => i.name === "abdomen") as HitLocationItemData;
+    mockLeftLeg = mockActor.items.find((i: any) => i.data.name === "leftLeg").data;
+    mockHead = mockActor.items.find((i: any) => i.data.name === "head").data;
+    mockChest = mockActor.items.find((i: any) => i.data.name === "chest").data;
+    mockAbdomen = mockActor.items.find((i: any) => i.data.name === "abdomen").data;
   });
 
   describe("Limb Damage", () => {
@@ -685,7 +683,7 @@ describe("Inflict Damage", () => {
 export function applyTestDamage(
   damage: number,
   applyDamageToTotalHp: boolean,
-  hitLocationData: HitLocationItemData,
+  hitLocationData: any,
   actorData: CharacterActorData
 ) {
   const damageEffects = DamageCalculations.addWound(
@@ -699,6 +697,7 @@ export function applyTestDamage(
   mergeObject(actorData, damageEffects.actorUpdates);
   actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);
   hitLocationData.data.hp.value =
-    hitLocationData.data.hp.max! - hitLocationData.data.wounds.reduce((acc, val) => acc + val, 0);
+    hitLocationData.data.hp.max! -
+    hitLocationData.data.wounds.reduce((acc: number, val: number) => acc + val, 0);
   return damageEffects;
 }

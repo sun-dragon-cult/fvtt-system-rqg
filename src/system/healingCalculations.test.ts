@@ -2,22 +2,22 @@ import { mockActor as mockActorOriginal } from "../mocks/mockActor";
 import { HealingCalculations, HealingEffects } from "./healingCalculations";
 import { applyTestDamage } from "./damageCalculations.test";
 import { HitLocationItemData } from "../data-model/item-data/hitLocationData";
-import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
+import { CharacterActorData } from "../data-model/actor-data/rqgActorData";
 import { DamageCalculations } from "./damageCalculations";
 
 describe("healing", () => {
-  let mockActor: RqgActorData;
-  let mockLeftLeg: HitLocationItemData;
-  let mockHead: HitLocationItemData;
-  let mockChest: HitLocationItemData;
-  let mockAbdomen: HitLocationItemData;
+  let mockActor: any;
+  let mockLeftLeg: any;
+  let mockHead: any;
+  let mockChest: any;
+  let mockAbdomen: any;
 
   beforeEach(() => {
     mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
-    mockLeftLeg = mockActor.items.find((i: any) => i.name === "leftLeg") as HitLocationItemData;
-    mockHead = mockActor.items.find((i: any) => i.name === "head") as HitLocationItemData;
-    mockChest = mockActor.items.find((i: any) => i.name === "chest") as HitLocationItemData;
-    mockAbdomen = mockActor.items.find((i: any) => i.name === "abdomen") as HitLocationItemData;
+    mockLeftLeg = mockActor.items.find((i: any) => i.data.name === "leftLeg").data;
+    mockHead = mockActor.items.find((i: any) => i.data.name === "head").data;
+    mockChest = mockActor.items.find((i: any) => i.data.name === "chest").data;
+    mockAbdomen = mockActor.items.find((i: any) => i.data.name === "abdomen").data;
   });
 
   it("should be correct for healing smaller wounds", () => {
@@ -62,11 +62,10 @@ describe("healing", () => {
   it("should heal severed limb when healing more than 6 points", () => {
     // --- Arrange ---
     const healPoints = 6;
-    const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
     applyTestDamage(33, true, mockLeftLeg, mockActor);
     expect(mockLeftLeg.data.hitLocationHealthState).toBe("severed");
-    expect(mockLeftLeg.data.wounds).toStrictEqual([4]);
+    expect(mockLeftLeg.data.wounds).toStrictEqual([10]);
 
     // --- Act ---
     const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
@@ -79,16 +78,16 @@ describe("healing", () => {
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        actorHealthImpact: "healthy",
-        hitLocationHealthState: "healthy",
-        wounds: [0],
+        actorHealthImpact: "wounded",
+        hitLocationHealthState: "wounded",
+        wounds: [4],
       },
     });
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
           hitPoints: {
-            value: 15,
+            value: 11,
           },
         },
       },
@@ -99,7 +98,6 @@ describe("healing", () => {
   it("should not heal severed limb when healing less than 6 points", () => {
     // --- Arrange ---
     const healPoints = 5;
-    const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
     applyTestDamage(33, true, mockLeftLeg, mockActor);
     expect(mockLeftLeg.data.hitLocationHealthState).toBe("severed");
@@ -115,16 +113,16 @@ describe("healing", () => {
     // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       data: {
-        actorHealthImpact: "healthy",
+        actorHealthImpact: "shock",
         hitLocationHealthState: "severed",
-        wounds: [0],
+        wounds: [5],
       },
     });
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
           hitPoints: {
-            value: 15,
+            value: 10,
           },
         },
       },
@@ -178,7 +176,6 @@ describe("healing", () => {
     // --- Arrange ---
     const healPoints = 1;
     const chestHP = mockChest.data.hp.max!; // 6
-    const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
     applyTestDamage(chestHP, true, mockChest, mockActor);
     expect(mockActor.data.attributes.health).toBe("shock");
@@ -196,19 +193,18 @@ describe("healing", () => {
       data: {
         actorHealthImpact: "wounded",
         hitLocationHealthState: "wounded",
-        wounds: [2],
+        wounds: [5],
       },
     });
     expect(actorUpdates).toStrictEqual({
       data: {
         attributes: {
           hitPoints: {
-            value: 13,
+            value: 10,
           },
         },
       },
     });
-    // expect(removeTokenEffects).toStrictEqual(["icons/svg/lightning.svg"]);
     expect(usefulLegs).toStrictEqual([]);
   });
 
