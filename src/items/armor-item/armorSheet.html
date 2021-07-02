@@ -11,7 +11,7 @@
   <main>
     <label>Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{armorData.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
-      {{#select data.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
+      {{#select armorData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
         <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
