@@ -25,7 +25,7 @@ export class Skill extends BaseEmbeddedItem {
       throw new RqgError(msg, actor);
     }
     // @ts-ignore 0.8
-    const actorData = actor.data.toObject();
+    const actorData = actor.data.toObject(false);
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
     skillData.categoryMod = actorData.data.skillCategoryModifiers![skillItem.data.data.category];
 
