@@ -639,10 +639,14 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         game.combats?.forEach(async (combat) => {
           const combatant = token && combat.getCombatantByToken(token.id);
           combatant &&
-            (await combat.updateEmbeddedEntity("Combatant", {
-              _id: combatant._id,
-              initiative: sr,
-            }));
+            // @ts-ignore 0.8
+            (await combat.updateEmbeddedDocuments("Combatant", [
+              {
+                // @ts-ignore 0.8
+                _id: combatant.id,
+                initiative: sr,
+              },
+            ]));
         });
       }
 

@@ -5,7 +5,7 @@ import { SkillItemData } from "../data-model/item-data/skillData";
 
 declare const CONFIG: RqgConfig;
 
-export const handlebarsHelpers = function () {
+export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
     strs.filter((s) => typeof s !== "object").join("")
   );

@@ -1,4 +1,4 @@
-export const handlebarsTemplates = async function () {
+export const loadHandlebarsTemplates = async function () {
   const templatePaths = [
     "systems/rqg/actors/rqgActorSheet.html",
     // ActorSheet tabs

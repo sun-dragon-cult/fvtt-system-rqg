@@ -1,6 +1,11 @@
 import { logMisconfiguration, RqgError } from "../system/util";
 
 export class RqgActiveEffect extends ActiveEffect {
+  static init() {
+    // @ts-ignore 0.8
+    CONFIG.ActiveEffect.documentClass = RqgActiveEffect;
+  }
+
   /**
    * Apply an RqgActiveEffect that uses a CUSTOM application mode.
    */
