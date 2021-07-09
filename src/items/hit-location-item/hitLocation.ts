@@ -36,7 +36,7 @@ export class HitLocation extends BaseEmbeddedItem {
       item.data.data.hp.max
     );
 
-    item.data.data.ap = item.data.data.naturalAp; // Init AP with natural AP before active effects
+    item.data.data.ap = (item.data.data.ap || 0) + item.data.data.naturalAp; // Add natural AP to any active effects
 
     return item;
   }

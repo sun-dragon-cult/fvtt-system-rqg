@@ -230,17 +230,16 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     userId: string
   ) {
     if (embeddedName === "Item" && game.user?.id === userId) {
-      documents.forEach((d) => {
-        const updateData = ResponsibleItemClass.get(d.type)?.onUpdateItem(
-          this,
-          d,
-          result,
-          options,
-          userId
-        );
-        updateData && this.updateOwnedItem(updateData);
-      });
-      this.updateEquippedStatus(result);
+      const updates = documents
+        .map((d) => {
+          return ResponsibleItemClass.get(d.type)?.onUpdateItem(this, d, result, options, userId);
+        })
+        .filter((u) => u); // Remove empty updates
+      if (updates.length) {
+        // @ts-ignore 0.8
+        this.updateEmbeddedDocuments("Item", updates);
+        this.updateEquippedStatus(result);
+      }
     }
     // @ts-ignore 0.8
     return super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);

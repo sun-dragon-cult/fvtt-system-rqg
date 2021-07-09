@@ -28,11 +28,11 @@ export class Armor extends BaseEmbeddedItem {
     }
 
     // Update the active effect on actor from Item data
-    const uuid = `Actor.${actor.id}.OwnedItem.${item.id}`;
+    const uuid = `Actor.${actor.id}.Item.${item.id}`;
     const generatedEffect = Armor.generateActiveEffect(item.data.data);
     const existingEffects = actor.effects.filter((e) => e.data.origin === uuid);
     if (existingEffects.length > 0) {
-      const shouldBeDisabled = item.data.data.equippedStatus === "equipped"; // TODO Should it not be !== "equipped"? alternatively rename varible
+      const shouldBeDisabled = item.data.data.equippedStatus !== "equipped";
       const changes = existingEffects.map((effect) => {
         return {
           _id: effect.id,
@@ -40,11 +40,13 @@ export class Armor extends BaseEmbeddedItem {
           disabled: shouldBeDisabled,
         };
       });
-      actor.updateEmbeddedEntity("ActiveEffect", changes, {});
+      // @ts-ignore 0.8
+      actor.updateEmbeddedDocuments("ActiveEffect", changes, {});
     } else {
       // No Active Effect for this armor item existed - create one
       generatedEffect.origin = uuid;
-      actor.createEmbeddedEntity("ActiveEffect", generatedEffect, {});
+      // @ts-ignore 0.8
+      actor.createEmbeddedDocuments("ActiveEffect", [generatedEffect], {});
     }
   }
 
