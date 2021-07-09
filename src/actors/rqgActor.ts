@@ -181,6 +181,26 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     return actor;
   }
 
+  _preCreateEmbeddedDocuments(
+    embeddedName: string,
+    result: any[],
+    options: object,
+    userId: string
+  ) {
+    result.forEach((item) => {
+      if (embeddedName === "Item" && game.user?.id === userId) {
+        // Generate item AE when embedding
+        item.effects = item.effects || [];
+        const activeEffect = ResponsibleItemClass.get(item.type)?.generateActiveEffect(item.data);
+        if (activeEffect) {
+          activeEffect.origin = `Actor.${this.id}.Item.${item._id}`;
+          // @ts-ignore TODO effects is Array runtime but Collection<ActiveEffects<RqgItem>> "compiletime"?
+          item.effects.push(activeEffect);
+        }
+      }
+    });
+  }
+
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
     documents: any[], // Document[]
