@@ -5,7 +5,6 @@ import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 import { GearSheet } from "./gear-item/gearSheet";
 import { ArmorSheet } from "./armor-item/armorSheet";
-import { RqgActor } from "../actors/rqgActor";
 import { MeleeWeaponSheet } from "./melee-weapon-item/meleeWeaponSheet";
 import { MissileWeaponSheet } from "./missile-weapon-item/missileWeaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
@@ -78,20 +77,29 @@ export class RqgItem extends Item<RqgItemData> {
     // TODO this doesn't compile!? Sheet registration would be better in Item init
     // ResponsibleItemClass.forEach((itemClass) => itemClass.init());
 
-    // Row 26505
-    Hooks.on("preCreateOwnedItem", (parent: Entity, r: any) => {
-      // Validate that embedded items are unique (name + type)
-      if (parent instanceof RqgActor && Object.values(ItemTypeEnum).includes(r.type)) {
-        const rqgItem = r as RqgItem;
-        // Prevent duplicates
-        if (parent.items.find((i) => i.name === rqgItem.name && i.type === rqgItem.type)) {
-          ui.notifications?.warn(
-            `${parent.name} already has a ${rqgItem.type} '${rqgItem.name}' and duplicates are not allowed`
-          );
-          return false;
-        }
+    Hooks.on("preCreateItem", (document: any) => {
+      const isDuplicate = RqgItem.isDuplicateItem(document);
+      if (isDuplicate) {
+        ui.notifications?.warn(
+          // @ts-ignore 0.8
+          `${document.parent.name} already has a ${document.data.type} '${document.name}' and duplicates are not allowed`
+        );
       }
-      return true;
+      return !isDuplicate;
     });
+  }
+
+  // Validate that embedded items are unique (name + type)
+  private static isDuplicateItem(document: any): boolean {
+    const isOwnedItem =
+      document instanceof RqgItem &&
+      // @ts-ignore 0.8
+      document.parent &&
+      Object.values(ItemTypeEnum).includes(document.data.type);
+
+    return (
+      isOwnedItem &&
+      document.parent.items.find((i: any) => i.name === document.name && i.type === document.type)
+    );
   }
 }
