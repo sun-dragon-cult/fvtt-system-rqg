@@ -50,8 +50,10 @@ export class WeaponCard extends ChatMessage {
     const flags: WeaponCardFlags = {
       actorId: actor.id,
       tokenId: token?.id,
-      skillItemData: skillItem.data,
-      weaponItemData: weaponItem.data,
+      // @ts-ignore 0.8
+      skillItemData: skillItem.data.toObject(false),
+      // @ts-ignore 0.8
+      weaponItemData: weaponItem.data.toObject(false),
       result: undefined,
       formData: {
         modifier: defaultModifier,
@@ -125,7 +127,8 @@ export class WeaponCard extends ChatMessage {
             _id: projectileItemData._id,
             data: { quantity: --projectileItemData.data.quantity },
           };
-          await actor.updateOwnedItem(updateData);
+          // @ts-ignore 0.8
+          await actor.updateEmbeddedDocuments("Item", [updateData]);
         } else if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
           ui.notifications?.warn("Out of ammo!");
           return false;
@@ -185,7 +188,10 @@ export class WeaponCard extends ChatMessage {
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success && !skillItemData.data.hasExperience) {
-      await actor.updateOwnedItem({ _id: skillItemData._id, data: { hasExperience: true } });
+      // @ts-ignore 0.8
+      await actor.updateEmbeddedDocuments("Item", [
+        { _id: skillItemData._id, data: { hasExperience: true } },
+      ]);
       const specialization = skillItemData.data.specialization
         ? ` (${skillItemData.data.specialization})`
         : "";

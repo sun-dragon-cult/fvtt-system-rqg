@@ -25,7 +25,8 @@ export class ItemCard {
     const flags: ItemCardFlags = {
       actorId: actor.id,
       tokenId: token?.id,
-      itemData: item.data,
+      // @ts-ignore 0.8
+      itemData: item.data.toObject(false),
       result: undefined,
       formData: {
         modifier: defaultModifier,
@@ -98,11 +99,14 @@ export class ItemCard {
 
   public static async checkExperience(
     actor: RqgActor,
-    itemData: Item.Data,
+    itemData: any,
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success && !itemData.data.hasExperience) {
-      await actor.updateOwnedItem({ _id: itemData._id, data: { hasExperience: true } });
+      // @ts-ignore 0.8
+      await actor.updateEmbeddedDocuments("Item", [
+        { _id: itemData._id, data: { hasExperience: true } },
+      ]);
       ui.notifications?.info("Yey, you got an experience check on " + itemData.name + "!");
     }
   }

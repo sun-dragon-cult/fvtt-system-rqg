@@ -234,7 +234,8 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     if (embeddedName === "Item" && game.user?.id === userId) {
       documents.forEach((d) => {
         const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(this, d, options, userId);
-        updateData && this.updateOwnedItem(updateData);
+        // @ts-ignore 0.8
+        updateData && this.updateEmbeddedDocuments("Item", [updateData]);
       });
       this.updateEquippedStatus(result);
     }

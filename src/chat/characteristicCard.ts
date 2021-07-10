@@ -177,19 +177,10 @@ export class CharacteristicCard {
       }
     }
 
-    // TODO workaround for foundry removing option value...
-    let difficulty = 0;
-    for (const option in flags.difficultyOptions) {
-      if (
-        option in flags.difficultyOptions &&
-        flags.difficultyOptions[option as unknown as keyof typeof flags.difficultyOptions] === // TODO Ugly type conversion!
-          flags.formData.difficulty.toString(10)
-      ) {
-        difficulty = Number(option);
-      }
+    // Using value 0 as a standin for 0.5
+    if (Number(flags.formData.difficulty) === 0) {
+      flags.formData.difficulty = 0.5;
     }
-    // Super ugly I know...
-    flags.formData.difficulty = difficulty ? difficulty : 0.5;
   }
 
   private static async renderContent(flags: CharacteristicCardFlags): Promise<object> {

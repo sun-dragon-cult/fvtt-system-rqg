@@ -31,7 +31,8 @@ export class SpiritMagicCard {
     const flags: SpiritMagicCardFlags = {
       actorId: actor.id,
       tokenId: token?.id,
-      itemData: spiritMagicItem.data,
+      // @ts-ignore 0.8
+      itemData: spiritMagicItem.data.toObject(false),
       formData: {
         level: spiritMagicItem.data.data.points,
         boost: 0,
