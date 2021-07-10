@@ -304,20 +304,22 @@ export class WeaponCard extends ChatMessage {
       speaker: { alias: speakerName },
       whisper: whisperRecipients,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      sound: draw.roll ? CONFIG.sounds.dice : undefined,
+      // @ts-ignore roll string?
+      roll: draw.roll,
+      // @ts-ignore 0.8 null
+      sound: draw.roll ? CONFIG.sounds.dice : null,
       flags: { "core.RollTable": fumbleTable.id },
     };
 
     // Render the chat card which combines the dice roll with the drawn results
     messageData.content = await renderTemplate(CONFIG.RollTable.resultTemplate, {
-      description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true } as any),
+      // @ts-ignore 0.8
+      description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true }),
       results: draw.results.map((r) => {
-        r = duplicate(r);
-        // @ts-ignore TODO redo without the protected method
-        r.text = fumbleTable._getResultChatText(r);
-        r.icon = r.img || CONFIG.RollTable.resultIcon;
+        r.text = r.getChatText();
         return r;
       }),
+      rollHTML: fumbleTable.data.displayRoll ? await draw.roll.render() : null,
       table: fumbleTable,
     });
 
