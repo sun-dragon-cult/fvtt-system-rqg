@@ -63,7 +63,6 @@ export class Armor extends BaseEmbeddedItem {
 
     return {
       label: "Armor",
-      icon: "icons/svg/ice-shield.svg",
       changes: changes,
       transfer: true,
       disabled: !(armorData.equippedStatus === "equipped"),
