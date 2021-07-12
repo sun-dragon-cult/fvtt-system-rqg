@@ -259,8 +259,8 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       if (updates.length) {
         // @ts-ignore 0.8
         this.updateEmbeddedDocuments("Item", updates);
-        this.updateEquippedStatus(result);
       }
+      this.updateEquippedStatus(result);
     }
     // @ts-ignore 0.8
     return super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
@@ -277,7 +277,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       // const item = this.actor.getOwnedItem(itemId);
       const newEquippedStatus =
         equippedStatusChanges[0].data.equippedStatus ||
-        (this.items.get(equippedStatusChanges[0].id)?.data.data as any).equippedStatus; // TODO Always correct?
+        (this.items.get(equippedStatusChanges[0]._id)?.data.data as any).equippedStatus; // TODO Always correct?
 
       const itemsToUpdate = equippedStatusChanges.map((i) => {
         const item = this.items.get(i._id);
@@ -286,7 +286,8 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
           ui.notifications?.error(msg);
           throw new RqgError(msg, i);
         }
-        return getItemIdsInSameLocationTree(item.data, this).map((id) => {
+        // @ts-ignore 0.8
+        return getItemIdsInSameLocationTree(item.data.toObject(false), this).map((id) => {
           return { _id: id, "data.equippedStatus": newEquippedStatus };
         });
       });

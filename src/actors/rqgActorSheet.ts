@@ -148,7 +148,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       characterRunes: this.getCharacterRuneImgs(), // Array of element runes with > 0% chance
       loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
       unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
-      itemLocationTree: this.getItemLocationTree(), // physical items reorganised as a tree of items containing items
+      // @ts-ignore 0.8 toObject
+      itemLocationTree: createItemLocationTree(this.actor.items.toObject(false)), // physical items reorganised as a tree of items containing items
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
@@ -178,13 +179,6 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         ...physicalItems.map((i: Item) => i.data.data.location),
       ]),
     ];
-  }
-
-  private getItemLocationTree(): LocationNode {
-    const physicalItems: RqgItem[] = this.actor.items.filter(
-      (i: Item) => i.data.data.physicalItemType
-    );
-    return createItemLocationTree(physicalItems);
   }
 
   private getSpiritMagicPointSum(): number {

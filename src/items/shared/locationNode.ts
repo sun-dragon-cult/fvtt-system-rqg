@@ -11,7 +11,8 @@ export type LocationNode = IPhysicalItem & {
   contains: LocationNode[];
 };
 
-export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
+// TODO fix type. items is really Object (item.data.toObject)
+export function createItemLocationTree(items: RqgItem[]): LocationNode {
   let locationTree: LocationNode = {
     name: "",
     id: "",
@@ -26,13 +27,15 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
     equippedStatus: "notCarried",
     price: emptyPrice,
   };
+  const physicalItems: RqgItem[] = items.filter((i: Item<any>) => i.data.physicalItemType);
+
   let physicalItemNodes: LocationNode[] = physicalItems
     // @ts-ignore
-    .filter((i) => "physicalItemType" in i.data.data && !i.data.data.isNatural)
+    .filter((i) => "physicalItemType" in i.data && !i.data.isNatural)
     .map((i) => {
       // Placing an item inside itself is not allowed - count it as root level
       // @ts-ignore
-      let location = i.data.data.location === i.name ? "" : i.data.data.location;
+      let location = i.data.location === i.name ? "" : i.data.location;
       if (hasLoop(i, physicalItems)) {
         ui.notifications?.warn(
           "Circular gear locations (A in B in A) - check your gear locations: " +
@@ -43,40 +46,40 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
       }
       const containingItem = physicalItems.find(
         // @ts-ignore
-        (p) => i.data.data.location && p.name === i.data.data.location
+        (p) => i.data.location && p.name === i.data.location
       );
       // @ts-ignore
-      if (containingItem && !containingItem.data.data.isContainer) {
+      if (containingItem && !containingItem.data.isContainer) {
         ui.notifications?.warn(containingItem.name + " is not a container"); // TODO make a real solution!
         location = "";
       }
       return {
         name: i.name,
-        id: i.id,
+        id: i._id,
         location: location,
         // @ts-ignore
-        description: i.data.data.description,
+        description: i.data.description,
         // @ts-ignore
-        gmNotes: i.data.data.gmNotes,
+        gmNotes: i.data.gmNotes,
         // @ts-ignore
-        attunedTo: i.data.data.attunedTo,
+        attunedTo: i.data.attunedTo,
         contains: [],
         // @ts-ignore
-        isContainer: i.data.data.isContainer,
+        isContainer: i.data.isContainer,
         // @ts-ignore
-        physicalItemType: i.data.data.physicalItemType,
+        physicalItemType: i.data.physicalItemType,
         // @ts-ignore
-        encumbrance: i.data.data.encumbrance,
+        encumbrance: i.data.encumbrance,
         // @ts-ignore
-        equippedStatus: i.data.data.equippedStatus,
+        equippedStatus: i.data.equippedStatus,
         // @ts-ignore
-        quantity: i.data.data.quantity || 1,
+        quantity: i.data.quantity || 1,
         // @ts-ignore
-        price: i.data.data.price,
+        price: i.data.price,
       };
     });
 
-  // 1) Add all "virtual" nodes (locations that don't match a item name)
+  // 1) Add all "virtual" nodes (locations that don't match an item name)
   const itemNames = physicalItems.map((i) => i.name);
   const virtualNodesMap: Map<string, LocationNode> = physicalItemNodes
     .filter(
@@ -131,7 +134,7 @@ export function createItemLocationTree(physicalItems: RqgItem[]): LocationNode {
 }
 
 // Find a node matching the location in the node tree
-export function searchTree(node: LocationNode, location: string): LocationNode | null {
+function searchTree(node: LocationNode, location: string): LocationNode | null {
   if (node.name === location) {
     return node;
   } else if (node.contains && node.contains.length > 0) {
@@ -144,25 +147,23 @@ export function searchTree(node: LocationNode, location: string): LocationNode |
   return null;
 }
 
-export function hasLoop(initialItem: RqgItem, physicalItems: RqgItem[]): boolean {
+function hasLoop(initialItem: RqgItem, physicalItems: RqgItem[]): boolean {
   // @ts-ignore
-  let currentItem = physicalItems.find((i) => initialItem.name === i.data.data.location);
+  let currentItem = physicalItems.find((i) => initialItem.name === i.data.location);
   let isLoop: boolean = false;
   // @ts-ignore
-  while (currentItem?.data?.data?.location && !isLoop) {
+  while (currentItem?.data?.location && !isLoop) {
     // @ts-ignore
-    isLoop = initialItem.data.data.location === currentItem?.name;
+    isLoop = initialItem.data.location === currentItem?.name;
     // @ts-ignore
-    currentItem = physicalItems.find((i) => i.name === currentItem.data.data.location);
+    currentItem = physicalItems.find((i) => i.name === currentItem.data.location);
   }
   return isLoop;
 }
 
 export function getItemIdsInSameLocationTree(item: RqgItemData, actor: RqgActor): string[] {
-  const physicalItems: RqgItem[] = actor.items.filter(
-    (i: Item<any>) => i.data.data.physicalItemType
-  );
-  const itemLocationTree = createItemLocationTree(physicalItems);
+  // @ts-ignore 0.8
+  const itemLocationTree = createItemLocationTree(actor.items.toObject(false));
   let rootNode = searchTree(itemLocationTree, item.name);
   while (rootNode && rootNode.location) {
     rootNode = searchTree(itemLocationTree, rootNode.location);
@@ -176,7 +177,7 @@ export function getItemIdsInSameLocationTree(item: RqgItemData, actor: RqgActor)
   return itemIds.map((id) => id);
 }
 
-export function getDescendants(ids: string[], node: LocationNode): string[] {
+function getDescendants(ids: string[], node: LocationNode): string[] {
   if (node) {
     if (node.id) {
       ids.push(node.id);
