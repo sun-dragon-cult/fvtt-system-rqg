@@ -242,6 +242,13 @@ export class DamageCalculations {
       ui.notifications?.error(msg);
       throw new RqgError(msg, actorData);
     }
+    const maxHitPoints = actorData.data.attributes.hitPoints.max;
+    if (maxHitPoints == null) {
+      const msg = `Actor hit points value ${maxHitPoints} is missing`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, actorData);
+    }
+    const baseHealth = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
 
     if (totalHitPoints <= 0) {
       return "dead";
@@ -257,7 +264,7 @@ export class DamageCalculations {
           .reduce(
             (acc, val) =>
               actorHealthStatuses.indexOf(val) > actorHealthStatuses.indexOf(acc) ? val : acc,
-            "healthy"
+            baseHealth
           )
       );
     }
