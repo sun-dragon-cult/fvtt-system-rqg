@@ -417,10 +417,11 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     }
 
     this.actor.data.data.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
-    if (this.actor.isToken) {
-      const tokenHealthBefore = this.actor.data.data.attributes.health;
-      this.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-      HitLocationSheet.setTokenEffect(this.actor.token!, tokenHealthBefore);
+    if (this.token) {
+      const tokenHealthBefore = this.token.actor.data.data.attributes.health;
+      this.token.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
+      // @ts-ignore 0.8 object - token is actually a TokenDocument?
+      HitLocationSheet.setTokenEffect(this.token.object, tokenHealthBefore);
     }
 
     formData["data.attributes.health"] = newHealth;

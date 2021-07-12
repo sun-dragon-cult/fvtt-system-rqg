@@ -265,7 +265,10 @@ export class HitLocationSheet extends RqgItemSheet {
       shouldToggleNewEffect &&
         (await token.toggleEffect(newEffect as any, { overlay: asOverlay, active: true }));
       shouldTogglePreviousEffect &&
-        (await token.toggleEffect(previousEffect as any, { overlay: asOverlay, active: true }));
+        (await token.toggleEffect(previousEffect as any, {
+          overlay: asOverlay,
+          active: true,
+        }));
     }
   }
 }
