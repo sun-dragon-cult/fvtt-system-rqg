@@ -1,10 +1,10 @@
-import { RqgItem } from "./rqgItem";
-import { RqgActor } from "../actors/rqgActor";
+import { RqgItem } from "../../items/rqgItem";
+import { RqgActor } from "../rqgActor";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateEmbeddedDocuments etc. is called.
  */
-export abstract class BaseEmbeddedItem {
+export abstract class AbstractEmbeddedItem {
   // TODO ***
   // public static init() {}
 

@@ -1,13 +1,13 @@
 import { SkillData, SkillItemData } from "../../data-model/item-data/skillData";
-import { BaseEmbeddedItem } from "../baseEmbeddedItem";
-import { RqgItem } from "../rqgItem";
+import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
+import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgError } from "../../system/util";
 import { RqgConfig } from "../../system/config";
 
 declare const CONFIG: RqgConfig;
 
-export class Skill extends BaseEmbeddedItem {
+export class Skill extends AbstractEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", SkillSheet, {
   //     types: [ItemTypeEnum.Skill],

@@ -1,8 +1,8 @@
-import { emptyPrice, IPhysicalItem } from "../../data-model/item-data/IPhysicalItem";
-import { RqgItem } from "../rqgItem";
-import { RqgActor } from "../../actors/rqgActor";
-import { RqgError } from "../../system/util";
-import { RqgItemData } from "../../data-model/item-data/itemTypes";
+import { emptyPrice, IPhysicalItem } from "../../../data-model/item-data/IPhysicalItem";
+import { RqgItem } from "../../../items/rqgItem";
+import { RqgActor } from "../../rqgActor";
+import { RqgError } from "../../../system/util";
+import { RqgItemData } from "../../../data-model/item-data/itemTypes";
 
 export type LocationNode = IPhysicalItem & {
   // For the grouping of physical items in a tree structure

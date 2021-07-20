@@ -1,10 +1,10 @@
-import { BaseEmbeddedItem } from "../baseEmbeddedItem";
-import { RqgItem } from "../rqgItem";
-import { RqgActor } from "../../actors/rqgActor";
+import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
+import { RqgItem } from "../../items/rqgItem";
+import { RqgActor } from "../rqgActor";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgError } from "../../system/util";
 
-export class HitLocation extends BaseEmbeddedItem {
+export class HitLocation extends AbstractEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", HitLocationSheet, {
   //     types: [ItemTypeEnum.HitLocation],

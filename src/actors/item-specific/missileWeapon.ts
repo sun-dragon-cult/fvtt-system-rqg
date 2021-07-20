@@ -1,10 +1,10 @@
-import { BaseEmbeddedItem } from "../baseEmbeddedItem";
-import { RqgItem } from "../rqgItem";
-import { RqgActor } from "../../actors/rqgActor";
+import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
+import { RqgItem } from "../../items/rqgItem";
+import { RqgActor } from "../rqgActor";
 import { logMisconfiguration, RqgError } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
-export class MissileWeapon extends BaseEmbeddedItem {
+export class MissileWeapon extends AbstractEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", MissileWeaponSheet, {
   //     types: [ItemTypeEnum.MissileWeapon],

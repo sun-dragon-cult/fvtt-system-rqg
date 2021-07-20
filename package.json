@@ -10,7 +10,7 @@
     "compile:template": "node jsTemplate2json.mjs"
   },
   "author": "",
-  "license": "",
+  "license": "UNLICENCED",
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^0.7.10-0",
     "@snowpack/plugin-sass": "^1.4.0",

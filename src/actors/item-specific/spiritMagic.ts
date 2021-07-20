@@ -1,6 +1,6 @@
-import { BaseEmbeddedItem } from "../baseEmbeddedItem";
+import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 
-export class SpiritMagic extends BaseEmbeddedItem {
+export class SpiritMagic extends AbstractEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", SpiritMagicSheet, {
   //     types: [ItemTypeEnum.SpiritMagic],

@@ -15,7 +15,7 @@ import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
-import { createItemLocationTree, LocationNode } from "../items/shared/locationNode";
+import { createItemLocationTree, LocationNode } from "./item-specific/shared/locationNode";
 import { CharacteristicCard } from "../chat/characteristicCard";
 import { WeaponCard } from "../chat/weaponCard";
 import { SpiritMagicCard } from "../chat/spiritMagicCard";

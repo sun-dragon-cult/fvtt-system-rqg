@@ -2,7 +2,7 @@ import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
-import { getItemIdsInSameLocationTree } from "../items/shared/locationNode";
+import { getItemIdsInSameLocationTree } from "./item-specific/shared/locationNode";
 import { RqgError } from "../system/util";
 import { RqgItem } from "../items/rqgItem";
 import { DamageCalculations } from "../system/damageCalculations";

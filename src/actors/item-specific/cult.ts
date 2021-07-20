@@ -1,10 +1,10 @@
-import { BaseEmbeddedItem } from "../baseEmbeddedItem";
+import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgActor } from "../rqgActor";
 import { RqgError } from "../../system/util";
-import { RqgItem } from "../rqgItem";
+import { RqgItem } from "../../items/rqgItem";
 
-export class Cult extends BaseEmbeddedItem {
+export class Cult extends AbstractEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", CultSheet, {
   //     types: [ItemTypeEnum.Cult],

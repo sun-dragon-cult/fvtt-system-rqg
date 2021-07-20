@@ -1,9 +1,9 @@
-import { BaseEmbeddedItem } from "../baseEmbeddedItem";
+import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgActor } from "../../actors/rqgActor";
-import { RqgItem } from "../rqgItem";
+import { RqgActor } from "../rqgActor";
+import { RqgItem } from "../../items/rqgItem";
 
-export class RuneMagic extends BaseEmbeddedItem {
+export class RuneMagic extends AbstractEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", RuneMagicSheet, {
   //     types: [ItemTypeEnum.RuneMagic],

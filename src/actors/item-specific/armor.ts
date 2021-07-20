@@ -1,12 +1,12 @@
-import { BaseEmbeddedItem } from "../baseEmbeddedItem";
+import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ArmorData, emptyArmor } from "../../data-model/item-data/armorData";
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgActor } from "../rqgActor";
 import Change = ActiveEffect.Change;
-import { RqgItem } from "../rqgItem";
+import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgError } from "../../system/util";
 
-export class Armor extends BaseEmbeddedItem {
+export class Armor extends AbstractEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", ArmorSheet, {
   //     types: [ItemTypeEnum.Armor],
