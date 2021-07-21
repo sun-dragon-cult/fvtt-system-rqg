@@ -62,11 +62,12 @@ export class RuneMagicSheet extends RqgItemSheet {
         .map((r: Item.Data<RuneData>) => r.data.chance);
       runeMagicData.chance = Math.max(...runeChances);
     }
+    console.log("runemagic shetetr", context);
     return context;
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    let runes = formData["sheetSpecific.runes"];
+    let runes = formData["data.runes"];
     runes = Array.isArray(runes) ? runes : [runes];
     runes = runes.filter((r: string) => r); // Remove empty
     formData["data.runes"] = duplicate(runes);
