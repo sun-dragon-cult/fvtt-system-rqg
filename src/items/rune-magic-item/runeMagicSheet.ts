@@ -5,12 +5,11 @@ import {
   RuneMagicDurationEnum,
 } from "../../data-model/item-data/runeMagicData";
 
-import { RuneData } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { getDomDataset, getRequiredDomDataset } from "../../system/util";
-import { CultItemData } from "../../data-model/item-data/cultData";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
+import { calcRuneMagicChance } from "./calculations";
 
 type RuneMagicSheetSpecificData = {
   isOwned?: boolean;
@@ -48,21 +47,13 @@ export class RuneMagicSheet extends RqgItemSheet {
       sheetSpecific.actorCults = this.actor
         .getEmbeddedCollection("Item")
         .filter((i: RqgItem) => i.type === ItemTypeEnum.Cult);
-      const cultRunes = runeMagicData.cultId
-        ? (this.actor.items.get(runeMagicData.cultId) as Item<CultItemData>).data.data.runes
-        : [];
-      const runeChances = this.actor
-        .getEmbeddedCollection("Item")
-        .filter(
-          (i: RqgItem) =>
-            i.data.type === ItemTypeEnum.Rune &&
-            (runeMagicData.runes.includes(i.name) ||
-              (runeMagicData.runes.includes("Magic (condition)") && cultRunes.includes(i.name)))
-        )
-        .map((r: Item.Data<RuneData>) => r.data.chance);
-      runeMagicData.chance = Math.max(...runeChances);
+      runeMagicData.chance = calcRuneMagicChance(
+        // @ts-ignore type confusion
+        this.actor.items,
+        runeMagicData.cultId,
+        runeMagicData.runes
+      );
     }
-    console.log("runemagic shetetr", context);
     return context;
   }
 
