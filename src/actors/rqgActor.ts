@@ -221,7 +221,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       this.updateEquippedStatus(result);
     }
     // @ts-ignore 0.8
-    return super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+    super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
   }
 
   protected _onDeleteEmbeddedDocuments(
@@ -240,7 +240,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       this.updateEquippedStatus(result);
     }
     // @ts-ignore 0.8
-    return super._onDeleteEmbeddedDocuments(embeddedName, documents, options, userId);
+    super._onDeleteEmbeddedDocuments(embeddedName, documents, options, userId);
   }
 
   protected _onUpdateEmbeddedDocuments(
@@ -249,7 +249,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     result: object[],
     options: object[],
     userId: string
-  ) {
+  ): void {
     if (embeddedName === "Item" && game.user?.id === userId) {
       const updates = documents
         .map((d) => {
@@ -263,7 +263,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       this.updateEquippedStatus(result);
     }
     // @ts-ignore 0.8
-    return super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+    super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
   }
 
   private async updateEquippedStatus(changes: Actor.OwnedItemData<any>[]): Promise<void> {

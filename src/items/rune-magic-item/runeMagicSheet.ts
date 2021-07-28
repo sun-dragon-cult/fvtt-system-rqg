@@ -9,7 +9,6 @@ import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
-import { calcRuneMagicChance } from "./calculations";
 
 type RuneMagicSheetSpecificData = {
   isOwned?: boolean;
@@ -47,12 +46,6 @@ export class RuneMagicSheet extends RqgItemSheet {
       sheetSpecific.actorCults = this.actor
         .getEmbeddedCollection("Item")
         .filter((i: RqgItem) => i.type === ItemTypeEnum.Cult);
-      runeMagicData.chance = calcRuneMagicChance(
-        // @ts-ignore type confusion
-        this.actor.items,
-        runeMagicData.cultId,
-        runeMagicData.runes
-      );
     }
     return context;
   }
@@ -62,7 +55,6 @@ export class RuneMagicSheet extends RqgItemSheet {
     runes = Array.isArray(runes) ? runes : [runes];
     runes = runes.filter((r: string) => r); // Remove empty
     formData["data.runes"] = duplicate(runes);
-    formData["data.chance"] = Number(formData["data.chance"]);
     return super._updateObject(event, formData);
   }
 

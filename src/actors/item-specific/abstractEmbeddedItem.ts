@@ -19,7 +19,13 @@ export abstract class AbstractEmbeddedItem {
   ): Promise<any> {}
 
   /**
+   * Will be called before an embedded (Owned) item is updated.
+   */
+  static preUpdateItem(actor: RqgActor, item: RqgItem, result: object[], options: any): void {}
+
+  /**
    * Will be called when an embedded (Owned) item is updated.
+   * @deprecated use preUpdateItem instead to avoid extra updates
    */
   static onUpdateItem(
     actor: RqgActor,

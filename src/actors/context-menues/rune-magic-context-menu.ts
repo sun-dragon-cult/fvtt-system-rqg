@@ -12,7 +12,7 @@ export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): Cont
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || item.data.type !== ItemTypeEnum.RuneMagic) {
+      if (!item || item.data.type !== ItemTypeEnum.RuneMagic || !item.data.data.chance) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll for RuneMagic item from the runemagic context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);

@@ -1,5 +1,5 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import { ItemTypeEnum, RqgItemData } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum, ResponsibleItemClass, RqgItemData } from "../data-model/item-data/itemTypes";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
@@ -10,12 +10,12 @@ import { MissileWeaponSheet } from "./missile-weapon-item/missileWeaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
+import { RqgError } from "../system/util";
 
 export class RqgItem extends Item<RqgItemData> {
   public static init() {
     // @ts-ignore 0.8
     CONFIG.Item.documentClass = RqgItem;
-    // CONFIG.Item.sheetClass = RqgItemSheet; // TODO how and why
 
     Items.unregisterSheet("core", ItemSheet);
 
@@ -87,6 +87,31 @@ export class RqgItem extends Item<RqgItemData> {
       }
       return !isDuplicate;
     });
+  }
+
+  static async updateDocuments(updates: any[], context: any): Promise<any> {
+    const { parent, pack, ...options } = context;
+    if (parent.documentName === "Actor") {
+      updates.forEach((u) => {
+        // @ts-ignore 0.8
+        const document = parent.items.get(u._id);
+        // @ts-ignore 0.8
+        if (!document || document.documentName !== "Item") {
+          const msg = "couldn't find item document from result";
+          ui.notifications?.error(msg);
+          throw new RqgError(msg, updates);
+        }
+        // Will update "updates" as a side effect
+        ResponsibleItemClass.get(document.data.type)?.preUpdateItem(
+          parent,
+          document,
+          updates,
+          options
+        );
+      });
+    }
+    // @ts-ignore 0.8
+    return super.updateDocuments(updates, context);
   }
 
   // Validate that embedded items are unique (name + type)
