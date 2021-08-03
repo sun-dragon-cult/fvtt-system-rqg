@@ -85,7 +85,7 @@ export interface HitLocationData {
   /** If hitLocationType is Limb then what location name is it connected to. Used for damage calculations */
   connectedTo: string;
   // --- Derived Data Below ---
-  /** Natural armor + modified armor Active Effect */
+  /** Natural armor + armor absorption */
   ap?: number;
 }
 

@@ -91,7 +91,7 @@ export class RqgItem extends Item<RqgItemData> {
 
   static async updateDocuments(updates: any[], context: any): Promise<any> {
     const { parent, pack, ...options } = context;
-    if (parent.documentName === "Actor") {
+    if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
         // @ts-ignore 0.8
         const document = parent.items.get(u._id);

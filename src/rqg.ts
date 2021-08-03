@@ -7,7 +7,7 @@ import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./combat/rqgCombat";
 import { RQG_CONFIG, RqgConfig } from "./system/config";
 import { ChatCardListeners } from "./chat/chatCardListeners";
-import { Migrate } from "./system/migrate";
+import { migrateWorld } from "./system/migrate";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
 import { setupSimpleCalendar } from "./module-integration/simple-calendar-init";
@@ -39,7 +39,7 @@ Hooks.once("init", async () => {
 
 Hooks.once("ready", async () => {
   if (game.user?.isGM) {
-    await Migrate.world();
+    await migrateWorld();
     const runeCompendium = game.settings.get("rqg", "runesCompendium") as string;
     // Store runes in settings to avoid await on ItemSheet getData
     try {

@@ -23,7 +23,7 @@ export class RqgActiveEffect extends ActiveEffect {
       foundry.utils.setProperty(affectedItem, path, changeValue + currentValue);
       return changeValue;
     } else if (items.length === 0) {
-      if (this.data.origin) {
+      if (this.data.origin && this.data.origin?.split(".")[1] === actor.id) {
         logMisconfiguration(
           `Could not find any ${affectedItemType} called "${itemName}" on actor "${actor.name}".
                 Please either add a ${affectedItemType} item called "${itemName}" or modify the item that has this active effect`,
@@ -33,8 +33,12 @@ export class RqgActiveEffect extends ActiveEffect {
         );
       } else {
         // Remove this AE from the actor since it is orphaned
-        console.warn("RQG | Deleting the Active Effect since it has no origin", this);
-        actor.deleteEmbeddedEntity("ActiveEffect", this.id);
+        console.warn(
+          "RQG | Deleting the Active Effect since it has no origin or the origin does not point to this actor",
+          this
+        );
+        // @ts-ignore 0.8
+        actor.deleteEmbeddedDocuments("ActiveEffect", [this.id]);
       }
       return null;
     } else {

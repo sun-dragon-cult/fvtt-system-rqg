@@ -21,6 +21,22 @@ export class HitLocation extends AbstractEmbeddedItem {
     }
     const actor = item.actor as RqgActor;
     const actorData = actor.data.data;
+
+    // Add equipped armor absorptions for this hit location
+    const armorAbsorption = actor.items.reduce((sum, armorItem) => {
+      if (
+        armorItem.data.type === ItemTypeEnum.Armor &&
+        armorItem.data.data.equippedStatus === "equipped" &&
+        armorItem.data.data.hitLocations.includes(item.data.name)
+      ) {
+        sum += armorItem.data.data.absorbs;
+      }
+      return sum;
+    }, 0);
+
+    item.data.data.ap = item.data.data.naturalAp + armorAbsorption;
+
+    // Calc HP
     const totalHp = actorData.attributes.hitPoints.max;
     if (totalHp == null) {
       const msg = "Actor doesn't have max hitPoints";
@@ -35,8 +51,6 @@ export class HitLocation extends AbstractEmbeddedItem {
       (acc: number, w: number) => acc - w,
       item.data.data.hp.max
     );
-
-    item.data.data.ap = (item.data.data.ap || 0) + item.data.data.naturalAp; // Add natural AP to any active effects
 
     return item;
   }
