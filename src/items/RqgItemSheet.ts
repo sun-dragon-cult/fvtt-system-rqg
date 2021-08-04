@@ -76,7 +76,8 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
             ui.notifications?.error(msg);
             throw new RqgError(msg);
           }
-          item.getEmbeddedEntity("ActiveEffect", effectId).delete();
+          // @ts-ignore 0.8
+          item.getEmbeddedDocument("ActiveEffect", effectId).delete();
         });
       });
   }

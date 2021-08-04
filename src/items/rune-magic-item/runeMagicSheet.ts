@@ -6,7 +6,7 @@ import {
 } from "../../data-model/item-data/runeMagicData";
 
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { getDomDataset, getRequiredDomDataset } from "../../system/util";
+import { getAllRunesIndex, getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 
@@ -41,7 +41,7 @@ export class RuneMagicSheet extends RqgItemSheet {
       : [runeMagicData.runes];
     // @ts-ignore 0.8 isOwned -> isEmbedded
     sheetSpecific.isOwned = this.item.isEmbedded;
-    sheetSpecific.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    sheetSpecific.allRunes = getAllRunesIndex();
     if (this.actor) {
       sheetSpecific.actorCults = this.actor
         .getEmbeddedCollection("Item")

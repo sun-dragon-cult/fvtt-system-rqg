@@ -793,7 +793,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Compendium Link
     if (packName) {
       const pack = game.packs?.get(packName);
-      entity = id && pack ? await pack.getEntity(id) : null;
+      // @ts-ignore 0.8
+      entity = id && pack ? await pack.getDocument(id) : null;
 
       // World Entity Link
     } else {

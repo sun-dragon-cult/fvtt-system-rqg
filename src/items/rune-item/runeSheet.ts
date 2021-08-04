@@ -1,7 +1,7 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneData, RuneTypeEnum } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { getDomDataset, getRequiredDomDataset } from "../../system/util";
+import { getAllRunesIndex, getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 
 export class RuneSheet extends RqgItemSheet {
@@ -23,7 +23,7 @@ export class RuneSheet extends RqgItemSheet {
     if (!runeData.rune) {
       runeData.rune = context.data.name;
     }
-    const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    const allRunesIndex = getAllRunesIndex();
     sheetSpecific.allRunes = allRunesIndex.map((r) => r.name);
     sheetSpecific.runeTypes = Object.values(RuneTypeEnum);
     return context;

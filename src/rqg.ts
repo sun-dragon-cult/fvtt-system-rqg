@@ -11,6 +11,7 @@ import { migrateWorld } from "./system/migrate";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
 import { setupSimpleCalendar } from "./module-integration/simple-calendar-init";
+import { RqgError } from "./system/util";
 
 declare const CONFIG: RqgConfig;
 
@@ -41,12 +42,13 @@ Hooks.once("ready", async () => {
   if (game.user?.isGM) {
     await migrateWorld();
     const runeCompendium = game.settings.get("rqg", "runesCompendium") as string;
-    // Store runes in settings to avoid await on ItemSheet getData
+    // Make sure the index for runes is preloaded
     try {
-      const runesIndex = await game.packs?.get(runeCompendium)?.getIndex();
-      await game.settings.set("rqg", "runes", runesIndex);
+      await game.packs!.get(runeCompendium)!.getIndex();
     } catch (err) {
-      await game.settings.set("rqg", "runes", []);
+      const msg = `Couldn't load rune compendium - check that you have the compendium specified in the "Rune items compendium" enabled and that the link is correct`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, runeCompendium);
     }
     await setupSimpleCalendar();
   }

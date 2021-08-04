@@ -2,7 +2,7 @@ import { SkillCategoryEnum, SkillData } from "../../data-model/item-data/skillDa
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { RqgError } from "../../system/util";
+import { getAllRunesIndex, RqgError } from "../../system/util";
 
 export class SkillSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
@@ -25,7 +25,7 @@ export class SkillSheet extends RqgItemSheet {
     }
     skillData.runes = Array.isArray(skillData.runes) ? skillData.runes : [skillData.runes];
     sheetSpecific.skillCategories = Object.values(SkillCategoryEnum);
-    sheetSpecific.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    sheetSpecific.allRunes = getAllRunesIndex();
     return context;
   }
 

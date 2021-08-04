@@ -1,5 +1,5 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
-import { getActorFromIds, RqgError } from "./util";
+import { getActorFromIds, getAllRunesIndex, RqgError } from "./util";
 import { RqgConfig } from "./config";
 import { SkillItemData } from "../data-model/item-data/skillData";
 
@@ -59,7 +59,7 @@ export const registerHandlebarsHelpers = function () {
     if (!runeName) {
       return;
     }
-    const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    const allRunesIndex = getAllRunesIndex();
     const rune = allRunesIndex.find((r) => r.name === runeName);
     if (!rune) {
       const msg = `Couldn't find rune ${runeName}`;

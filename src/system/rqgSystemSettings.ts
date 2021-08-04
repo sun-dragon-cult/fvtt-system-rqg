@@ -1,8 +1,7 @@
 export const registerRqgSystemSettings = function () {
   game.settings.register("rqg", "specialCrit", {
     name: "Special & Hyper Critical results",
-    hint:
-      "Add the possibility to roll a special critical (skill/100) and hyper critical (skill/500)",
+    hint: "Add the possibility to roll a special critical (skill/100) and hyper critical (skill/500)",
     scope: "world",
     config: true,
     type: Boolean,
@@ -11,8 +10,7 @@ export const registerRqgSystemSettings = function () {
 
   game.settings.register("rqg", "runesCompendium", {
     name: "Rune items compendium",
-    hint:
-      "The runes in the specified compendium will be used in the system. Please include all possible runes.",
+    hint: "The runes in the specified compendium will be used in the system. Please include all possible runes.",
     scope: "world",
     config: true,
     type: String,
@@ -26,13 +24,6 @@ export const registerRqgSystemSettings = function () {
     config: true,
     type: String,
     default: "Fumble",
-  });
-
-  game.settings.register("rqg", "runes", {
-    scope: "world",
-    config: false,
-    type: Object,
-    default: {},
   });
 
   game.settings.register("rqg", "systemMigrationVersion", {

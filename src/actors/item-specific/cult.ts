@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../rqgActor";
-import { RqgError } from "../../system/util";
+import { getAllRunesIndex, RqgError } from "../../system/util";
 import { RqgItem } from "../../items/rqgItem";
 
 export class Cult extends AbstractEmbeddedItem {
@@ -39,9 +39,10 @@ export class Cult extends AbstractEmbeddedItem {
         ui.notifications?.error(msg);
         throw new RqgError(msg, runesCompendiumName);
       }
-      const allRunesIndex = game.settings.get("rqg", "runes") as Compendium.IndexEntry[]; // Index is previously stored in settings
+      const allRunesIndex = getAllRunesIndex(); // Index is previously stored in settings
       const newRuneIds = newRuneNames.map((newRune) => {
-        const newRuneIndex = allRunesIndex.find((r) => r.name === newRune);
+        // @ts-ignore 0.8
+        const newRuneIndex = allRunesIndex.getName(newRune);
         if (newRuneIndex == null) {
           const msg = `Couldn't find cult rune ${newRune} among allRunesIndex`;
           ui.notifications?.error(msg);
@@ -49,7 +50,8 @@ export class Cult extends AbstractEmbeddedItem {
         }
         return newRuneIndex._id;
       });
-      Promise.all(newRuneIds.map((id: string) => runePack.getEntity(id))).then(
+      // @ts-ignore 0.8
+      Promise.all(newRuneIds.map((id: string) => runePack.getDocument(id))).then(
         (newRuneEntities) => {
           newRuneEntities.map(async (rune) => {
             if (rune == null || rune.data.type !== ItemTypeEnum.Rune) {

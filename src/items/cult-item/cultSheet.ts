@@ -1,7 +1,7 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CultData, CultRankEnum } from "../../data-model/item-data/cultData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { getDomDataset, getRequiredDomDataset } from "../../system/util";
+import { getAllRunesIndex, getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 
 export class CultSheet extends RqgItemSheet {
@@ -22,7 +22,7 @@ export class CultSheet extends RqgItemSheet {
 
     cultData.runes = Array.isArray(cultData.runes) ? cultData.runes : [cultData.runes];
 
-    sheetSpecific.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+    sheetSpecific.allRunes = getAllRunesIndex();
     sheetSpecific.ranksEnum = Object.values(CultRankEnum);
     console.log(context);
     return context;
