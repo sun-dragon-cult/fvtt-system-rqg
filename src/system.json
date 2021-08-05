@@ -24,6 +24,8 @@
       "path": "i18n/en.json"
     }
   ],
+  "primaryTokenAttribute": "attributes.hitPoints.value",
+  "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 3,
   "gridUnits": "m",
   "minimumCoreVersion": "0.8.6",

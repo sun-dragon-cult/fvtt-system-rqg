@@ -143,44 +143,6 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     return origin;
   }
 
-  // Defaults when creating a new Actor
-  static async create(data: any, options?: object | undefined): Promise<Entity> {
-    data.token = data.token || {};
-    data.data = data.data || {};
-    data.data.attributes = data.data.attributes || {};
-    if (data.type === "character") {
-      // Defaults for actor token
-      mergeObject(
-        data.token,
-        {
-          vision: true,
-          dimSight: 30,
-          brightSight: 0,
-          actorLink: true,
-          disposition: 1,
-          bar1: { attribute: "attributes.hitPoints" },
-          bar2: { attribute: "attributes.magicPoints" },
-          displayBars: CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
-        },
-        { overwrite: false }
-      );
-
-      // Initialize derived encumbrance to 0 since actor has no gear yet
-      mergeObject(
-        data.data.attributes,
-        { equippedEncumbrance: 0, travelEncumbrance: 0 },
-        { overwrite: false }
-      );
-    }
-    const actor = await super.create(data, options);
-    if (!actor) {
-      const msg = "Couldn't create actor";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, data);
-    }
-    return actor;
-  }
-
   _preCreateEmbeddedDocuments(
     embeddedName: string,
     result: any[],
