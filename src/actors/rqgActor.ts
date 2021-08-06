@@ -2,8 +2,6 @@ import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
-import { getItemIdsInSameLocationTree } from "./item-specific/shared/locationNode";
-import { RqgError } from "../system/util";
 import { RqgItem } from "../items/rqgItem";
 import { DamageCalculations } from "../system/damageCalculations";
 
@@ -143,26 +141,6 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     return origin;
   }
 
-  _preCreateEmbeddedDocuments(
-    embeddedName: string,
-    result: any[],
-    options: object,
-    userId: string
-  ) {
-    result.forEach((item) => {
-      if (embeddedName === "Item" && game.user?.id === userId) {
-        // Generate item AE when embedding
-        item.effects = item.effects || [];
-        const activeEffect = ResponsibleItemClass.get(item.type)?.generateActiveEffect(item.data);
-        if (activeEffect) {
-          activeEffect.origin = `Actor.${this.id}.Item.${item._id}`;
-          // @ts-ignore TODO effects is Array runtime but Collection<ActiveEffects<RqgItem>> "compiletime"?
-          item.effects.push(activeEffect);
-        }
-      }
-    });
-  }
-
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
     documents: any[], // Document[]
@@ -180,7 +158,6 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
             updateData && this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
           });
       });
-      this.updateEquippedStatus(result);
     }
     // @ts-ignore 0.8
     super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
@@ -199,64 +176,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
         // @ts-ignore 0.8
         updateData && this.updateEmbeddedDocuments("Item", [updateData]);
       });
-      this.updateEquippedStatus(result);
     }
     // @ts-ignore 0.8
     super._onDeleteEmbeddedDocuments(embeddedName, documents, options, userId);
-  }
-
-  protected _onUpdateEmbeddedDocuments(
-    embeddedName: string,
-    documents: any[], // Document[]
-    result: object[],
-    options: object[],
-    userId: string
-  ): void {
-    if (embeddedName === "Item" && game.user?.id === userId) {
-      const updates = documents
-        .map((d) => {
-          return ResponsibleItemClass.get(d.type)?.onUpdateItem(this, d, result, options, userId);
-        })
-        .filter((u) => u); // Remove empty updates
-      if (updates.length) {
-        // @ts-ignore 0.8
-        this.updateEmbeddedDocuments("Item", updates);
-      }
-      this.updateEquippedStatus(result);
-    }
-    // @ts-ignore 0.8
-    super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
-  }
-
-  private async updateEquippedStatus(changes: Actor.OwnedItemData<any>[]): Promise<void> {
-    const equippedStatusChanges = changes.filter(
-      // FIXME changes can be a list of id:s if removed *** *** ***
-      (i) => i?.data?.equippedStatus || typeof i?.data?.location !== "undefined"
-    );
-    if (equippedStatusChanges.length) {
-      // Check that equippedStatus has changed
-
-      // const item = this.actor.getOwnedItem(itemId);
-      const newEquippedStatus =
-        equippedStatusChanges[0].data.equippedStatus ||
-        (this.items.get(equippedStatusChanges[0]._id)?.data.data as any).equippedStatus; // TODO Always correct?
-
-      const itemsToUpdate = equippedStatusChanges.map((i) => {
-        const item = this.items.get(i._id);
-        if (!item) {
-          const msg = "couldn't find item when updating equipped status";
-          ui.notifications?.error(msg);
-          throw new RqgError(msg, i);
-        }
-        // @ts-ignore 0.8
-        return getItemIdsInSameLocationTree(item.data.toObject(false), this).map((id) => {
-          return { _id: id, "data.equippedStatus": newEquippedStatus };
-        });
-      });
-      // @ts-ignore 0.8
-      itemsToUpdate[0] && (await this.updateEmbeddedDocuments("Item", itemsToUpdate[0])); // TODO fix nested arrays
-      // await item.update({ "data.equippedStatus": newStatus }, {});
-    }
   }
 
   // Return shorthand access to actor data & characteristics

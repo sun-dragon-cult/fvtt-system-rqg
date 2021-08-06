@@ -3,6 +3,7 @@ import { logMisconfiguration } from "../../system/util";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { getSameLocationUpdates } from "./shared/physicalItemUtil";
 
 export class MeleeWeapon extends AbstractEmbeddedItem {
   // public static init() {
@@ -11,6 +12,17 @@ export class MeleeWeapon extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
+
+  static preUpdateItem(
+    actor: RqgActor,
+    meleeWeapon: RqgItem,
+    updates: object[],
+    options: any
+  ): void {
+    if (meleeWeapon.data.type === ItemTypeEnum.MeleeWeapon) {
+      updates.push(...getSameLocationUpdates(actor, meleeWeapon, updates));
+    }
+  }
 
   /*
    * Add the skill specified in the weapon to the actor (if not already there)

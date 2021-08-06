@@ -1,6 +1,5 @@
 import { emptyPrice, IPhysicalItem } from "../../../data-model/item-data/IPhysicalItem";
 import { RqgItem } from "../../../items/rqgItem";
-import { RqgActor } from "../../rqgActor";
 import { RqgError } from "../../../system/util";
 import { RqgItemData } from "../../../data-model/item-data/itemTypes";
 
@@ -161,10 +160,13 @@ function hasLoop(initialItem: RqgItem, physicalItems: RqgItem[]): boolean {
   return isLoop;
 }
 
-export function getItemIdsInSameLocationTree(item: RqgItemData, actor: RqgActor): string[] {
+export function getOtherItemIdsInSameLocationTree(
+  itemName: string,
+  items: RqgItemData[]
+): string[] {
   // @ts-ignore 0.8
-  const itemLocationTree = createItemLocationTree(actor.items.toObject(false));
-  let rootNode = searchTree(itemLocationTree, item.name);
+  const itemLocationTree = createItemLocationTree(items);
+  let rootNode = searchTree(itemLocationTree, itemName);
   while (rootNode && rootNode.location) {
     rootNode = searchTree(itemLocationTree, rootNode.location);
   }

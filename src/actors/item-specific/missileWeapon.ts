@@ -3,6 +3,7 @@ import { RqgItem } from "../../items/rqgItem";
 import { RqgActor } from "../rqgActor";
 import { logMisconfiguration, RqgError } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { getSameLocationUpdates } from "./shared/physicalItemUtil";
 
 export class MissileWeapon extends AbstractEmbeddedItem {
   // public static init() {
@@ -11,6 +12,17 @@ export class MissileWeapon extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
+
+  static preUpdateItem(
+    actor: RqgActor,
+    missileWeapon: RqgItem,
+    updates: object[],
+    options: any
+  ): void {
+    if (missileWeapon.data.type === ItemTypeEnum.MissileWeapon) {
+      updates.push(...getSameLocationUpdates(actor, missileWeapon, updates));
+    }
+  }
 
   /*
    * Add the skill specified in the weapon to the actor (if not already there)

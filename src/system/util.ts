@@ -75,12 +75,12 @@ export function getSpeakerName(actorId: string, tokenId?: string): string {
 
 export function getAllRunesIndex(): Compendium.IndexEntry[] {
   const runeCompendiumName = game.settings.get("rqg", "runesCompendium") as string;
-  const pack = runeCompendiumName ?? game.packs!.get(runeCompendiumName);
+  const pack = runeCompendiumName && game.packs!.get(runeCompendiumName);
   // @ts-ignore 0.8
   if (!pack?.indexed) {
-    const msg = "Runes pack is not yet indexed";
+    const msg = "Runes pack is not yet indexed, try again";
     ui.notifications?.error(msg);
-    throw new RqgError(msg, runeCompendiumName, pack);
+    game.packs!.get(runeCompendiumName)!.getIndex();
   }
   // @ts-ignore 0.8
   return pack.index as unknown as Compendium.IndexEntry[];
