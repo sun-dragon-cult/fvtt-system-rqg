@@ -1,3 +1,13 @@
+## [1.0.1](https://github.com/wakeand/fvtt-system-rqg/compare/v1.0.0...v1.0.1) (2021-08-09)
+
+
+### Bug Fixes
+
+* ts / 0.8 errors ([cc95a2b](https://github.com/wakeand/fvtt-system-rqg/commit/cc95a2b))
+
+
+
+
 # [1.0.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.19.0...v1.0.0) (2021-08-09)
 
 
