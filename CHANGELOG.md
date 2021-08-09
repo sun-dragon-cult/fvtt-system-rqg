@@ -1,3 +1,51 @@
+# [1.0.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.19.0...v1.0.0) (2021-08-09)
+
+
+### Bug Fixes
+
+* about time does not work the same anymore - switch to simple calendar ([90eabb1](https://github.com/wakeand/fvtt-system-rqg/commit/90eabb1))
+* actor health not affected by hitlocation wounds ([ea30273](https://github.com/wakeand/fvtt-system-rqg/commit/ea30273))
+* armor AE doesn't work ([750776f](https://github.com/wakeand/fvtt-system-rqg/commit/750776f))
+* armorSheet equipped status dropdown don't work ([c224a5f](https://github.com/wakeand/fvtt-system-rqg/commit/c224a5f))
+* calc ENC and SR + lots of fixes ([28f3045](https://github.com/wakeand/fvtt-system-rqg/commit/28f3045))
+* combat tracker doesn't work ([fe7d470](https://github.com/wakeand/fvtt-system-rqg/commit/fe7d470))
+* difficulty dropdown on characteristic roll doesn't work and chances in chat cards are not correct ([6f243d1](https://github.com/wakeand/fvtt-system-rqg/commit/6f243d1))
+* duplicate items are not prevented ([87e2349](https://github.com/wakeand/fvtt-system-rqg/commit/87e2349))
+* fumble rolls don't work ([3ff9964](https://github.com/wakeand/fvtt-system-rqg/commit/3ff9964))
+* itemsSheets not working, refactor sheet data and fix _id -> id ([5b9d7a2](https://github.com/wakeand/fvtt-system-rqg/commit/5b9d7a2))
+* location does not affect updates to equippedstatus correctly ([f92ba14](https://github.com/wakeand/fvtt-system-rqg/commit/f92ba14))
+* make items with same location have a synced equipppedstatus at all times also cleanup som unused lifecycle methods ([a6bde7b](https://github.com/wakeand/fvtt-system-rqg/commit/a6bde7b))
+* migrations don't work also change the way armor works from AE to derived data to avoid orphaned Armor AE on actors ([4623cd6](https://github.com/wakeand/fvtt-system-rqg/commit/4623cd6))
+* remove armor AE icon so it doesn't show up on token and combat tracker ([1b90c6e](https://github.com/wakeand/fvtt-system-rqg/commit/1b90c6e))
+* runeMagic chance is now calculated as a derived value so that it is updated whenever a rune chance changes. Also opposing runes gets updated when one is updated. ([20dad17](https://github.com/wakeand/fvtt-system-rqg/commit/20dad17))
+* runeMagic chance not calculated when embedding runeMagic Item ([d75e41b](https://github.com/wakeand/fvtt-system-rqg/commit/d75e41b))
+* runeMagic runes on sheet doesn't work ([d649fec](https://github.com/wakeand/fvtt-system-rqg/commit/d649fec))
+* skill category modifiers not added to skill chance ([5cef324](https://github.com/wakeand/fvtt-system-rqg/commit/5cef324))
+* switch from getOwnedItems to items.get ([f60d80a](https://github.com/wakeand/fvtt-system-rqg/commit/f60d80a))
+* token effects are not updated ([16b911c](https://github.com/wakeand/fvtt-system-rqg/commit/16b911c))
+* unlinken token doesn't get damage token effects ([c7bd131](https://github.com/wakeand/fvtt-system-rqg/commit/c7bd131))
+* use async dice rolls ([ca3d0b3](https://github.com/wakeand/fvtt-system-rqg/commit/ca3d0b3))
+* use id instead of _id, also fix actorsheet derived data ([2e2564b](https://github.com/wakeand/fvtt-system-rqg/commit/2e2564b))
+
+
+### chore
+
+* dummy commit to force major version update ([7355514](https://github.com/wakeand/fvtt-system-rqg/commit/7355514))
+
+
+### Features
+
+* rely on Foundry "default Token Configuration" instead of presets when creating an actor GM will have to set the desired presets in each world. Token bars defaults to hitPoints & magicPoints, but there are now no more defaults from the system. ([ff885c7](https://github.com/wakeand/fvtt-system-rqg/commit/ff885c7))
+* update actor health status to wounded if current hp is less than max hp even if there are no injuries to hitlocations ([8aecf16](https://github.com/wakeand/fvtt-system-rqg/commit/8aecf16))
+
+
+### BREAKING CHANGES
+
+* only works with foundry v8+
+
+
+
+
 # [0.19.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.18.0...v0.19.0) (2021-06-17)
 
 
