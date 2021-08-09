@@ -1,5 +1,4 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
-import { RqgItem } from "../items/rqgItem";
 import { getActorFromIds, getSpeakerName, RqgError } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 
@@ -17,17 +16,17 @@ type ItemCardFlags = {
 export class ItemCard {
   public static async show(itemId: string, actor: RqgActor, token: Token | null): Promise<void> {
     const defaultModifier = 0;
-    const item = actor.getOwnedItem(itemId) as RqgItem;
-
-    if (!("chance" in item.data.data) || item.data.data.chance == null) {
-      const msg = `Tried to show itemcard for item ${item.name} without chance`;
+    const item = actor.items.get(itemId);
+    if (!item || !("chance" in item.data.data) || item.data.data.chance == null) {
+      const msg = `Couldn't find item with chance and itemId [${itemId}] on actor ${actor.name} to show item chat card.`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg, item, actor);
+      throw new RqgError(msg);
     }
     const flags: ItemCardFlags = {
       actorId: actor.id,
       tokenId: token?.id,
-      itemData: item.data,
+      // @ts-ignore 0.8
+      itemData: item.data.toObject(false),
       result: undefined,
       formData: {
         modifier: defaultModifier,
@@ -100,11 +99,14 @@ export class ItemCard {
 
   public static async checkExperience(
     actor: RqgActor,
-    itemData: Item.Data,
+    itemData: any,
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success && !itemData.data.hasExperience) {
-      await actor.updateOwnedItem({ _id: itemData._id, data: { hasExperience: true } });
+      // @ts-ignore 0.8
+      await actor.updateEmbeddedDocuments("Item", [
+        { _id: itemData._id, data: { hasExperience: true } },
+      ]);
       ui.notifications?.info("Yey, you got an experience check on " + itemData.name + "!");
     }
   }
@@ -117,7 +119,7 @@ export class ItemCard {
       user: game.user?.id,
       speaker: { alias: speakerName },
       content: html,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

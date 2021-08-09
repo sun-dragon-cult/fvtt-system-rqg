@@ -1,0 +1,38 @@
+<div class="health">
+  <h2 class="flex-col">Health</h2>
+  <div class="flexrow nowrap flex-align-center">
+    <label>Total Hit Points
+      <input
+        type="number"
+        min="-99"
+        max="99"
+        name="data.attributes.hitPoints.value"
+        value="{{rqgActorData.data.attributes.hitPoints.value}}"
+      > / {{rqgActorData.data.attributes.hitPoints.max}}
+    </label>
+    <label class="text-right"> Healing rate {{rqgActorData.data.attributes.healingRate}}/week</label>
+  </div>
+  <div class="grid hit-location">
+    <div class="headings"></div>
+    <div class="head1-4">Hit Location</div>
+    <div class="head5"><span class="text-center">HP</span></div>
+    <div class="head6"><span class="text-right">AP</span></div>
+    <div class="head7">Wounds</div>
+    {{#each ownedItems.hitLocation}}
+    <div class="hit-location-contextmenu" data-item-id="{{id}}"><span class="text-right">{{data.data.dieFrom}}</span></div>
+      <div class="hit-location-contextmenu" data-item-id="{{id}}">-</div>
+    <div class="hit-location-contextmenu" data-item-id="{{id}}"><span class="text-right">{{data.data.dieTo}}</span></div>
+    <div class="hit-location-contextmenu" data-item-id="{{id}}">{{name}} {{#unless (eq data.data.hitLocationHealthState "healthy")}}<i>&nbsp;{{data.data.hitLocationHealthState}}</i>{{/unless}}</div>
+    <div class="hit-location-contextmenu" data-item-id="{{id}}"><span class="text-right nowrap">{{data.data.hp.value}} / {{this.data.data.hp.max}}</span></div>
+    <div class="hit-location-contextmenu" data-item-id="{{id}}"><span class="text-right">{{data.data.ap}}</span></div>
+      <div class="hit-location-contextmenu" data-item-id="{{id}}">
+        <div data-item-heal-wound title="Heal wound" class="text-right nowrap">
+          {{#each data.data.wounds}}
+          <i class="fas fa-notes-medical"></i> {{this}}
+          {{/each}}
+        </div>
+        <div class="ml-5 text-right" title="Add wound" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></div>
+      </div>
+    {{/each}}
+  </div>
+</div>

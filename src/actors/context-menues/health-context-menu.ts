@@ -9,7 +9,7 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = itemId && actor.getOwnedItem(itemId);
+      const item = itemId && actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit hitLocation item from the health context menu.`;
         ui.notifications?.error(msg);

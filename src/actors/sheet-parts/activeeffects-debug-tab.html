@@ -1,0 +1,26 @@
+<h2>🐛Active Effects🧪</h2>
+<table>
+  <thead>
+  <tr>
+    <th class="text-left">Label</th>
+    <th class="text-left">Disabled</th>
+    <th class="text-left">Start Time</th>
+    <th class="text-left">Key - Value - Mode</th>
+  </tr>
+  </thead>
+  {{#each rqgActorData.effects}}
+  <tbody data-effect-id="{{_id}}">
+  <tr data-actor-effect-edit>
+    <td>{{label}}</td>
+    <td>{{disabled}}</td>
+    <td>{{duration.startTime}}</td>
+    <td>
+      {{#each this.changes}}
+        {{key}} - {{value}} - {{mode}}<br>
+      {{/each}}</td>
+    </tr>
+
+  </tbody>
+  {{/each}}
+
+</table>

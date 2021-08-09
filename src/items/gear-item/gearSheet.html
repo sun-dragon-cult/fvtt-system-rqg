@@ -1,37 +1,37 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
-    <input type="text" name="name" value="{{item.name}}" />
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}">
+    <input type="text" name="name" value="{{item.name}}">
 
-    <label> Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
+    <label> Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{gearData.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
-      {{#select data.equippedStatus}} {{#each data.equippedStatuses}}
+      {{#select gearData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
   </header>
   <main>
-    <label>Price (real) <input type="number" min="0" max="99999999" name="data.price.real" value="{{item.data.price.real}}">(L)</label><br>
-    <label>Price (estimated) <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{item.data.price.estimated}}">(L)</label><br>
-    <label>Location <input type="text" name="data.location" value="{{item.data.location}}"></label><br>
-    <label>Attuned to <input type="text" name="data.attunedTo" value="{{item.data.attunedTo}}"></label><br>
-    <label><input type="checkbox" name="data.isContainer" {{checked item.data.isContainer}}/>Can contain other items</label><br>
+    <label>Price (real) <input type="number" min="0" max="99999999" name="data.price.real" value="{{gearData.price.real}}">(L)</label><br>
+    <label>Price (estimated) <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{gearData.price.estimated}}">(L)</label><br>
+    <label>Location <input type="text" name="data.location" value="{{gearData.location}}"></label><br>
+    <label>Attuned to <input type="text" name="data.attunedTo" value="{{gearData.attunedTo}}"></label><br>
+    <label><input type="checkbox" name="data.isContainer" {{checked gearData.isContainer}}>Can contain other items</label><br>
 
     <select name="data.physicalItemType">
-      {{#select data.physicalItemType}} {{#each data.physicalItemTypes}}
+      {{#select gearData.physicalItemType}} {{#each sheetSpecific.physicalItemTypes}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
-    {{#unless (eq data.physicalItemType "unique")}}
-      <label> Quantity <input type="number" min="0" max="9999999" name="data.quantity" value="{{item.data.quantity}}"></label>
+    {{#unless (eq gearData.physicalItemType "unique")}}
+      <label> Quantity <input type="number" min="0" max="9999999" name="data.quantity" value="{{gearData.quantity}}"></label>
     {{/unless}}
     <br>
-    <label>Description {{editor content=data.description target="data.description"
+    <label>Description {{editor content=gearData.description target="data.description"
       button=true owner=owner editable=editable}}
     </label><br>
-    <label>GM Notes {{editor content=data.gmNotes target="data.gmNotes"
+    <label>GM Notes {{editor content=gearData.gmNotes target="data.gmNotes"
       button=true owner=owner editable=editable}}
     </label>
-    <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
+    <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
   </main>
 </form>

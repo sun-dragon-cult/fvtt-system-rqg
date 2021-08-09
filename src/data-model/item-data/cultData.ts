@@ -25,9 +25,6 @@ export interface CultData extends JournalEntryLink {
   // cultRuneMagic: string[]; // TODO Link to system wide id...
   // cultEnchantments: string[]; // TODO Link to system wide id...
   subCults: string;
-  // --- Derived / Convenience Data Below ---
-  ranksEnum?: CultRankEnum[]; // For sheet dropdown
-  allRunes?: Compendium.IndexEntry[]; // For sheet dropdown
 }
 
 export interface CultItemData extends Item.Data<CultData> {

@@ -1,13 +1,7 @@
-import { emptyPrice, EquippedStatus, IPhysicalItem, PhysicalItemType } from "./IPhysicalItem";
+import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 
-export interface GearData extends IPhysicalItem {
-  // --- Derived / Convenience Data Below ---
-  /** For sheet dropdown */
-  equippedStatuses?: EquippedStatus[];
-  /** For sheet dropdown */
-  physicalItemTypes?: PhysicalItemType[];
-}
+export interface GearData extends IPhysicalItem {}
 
 export interface GearItemData extends Item.Data<GearData> {
   type: ItemTypeEnum.Gear;

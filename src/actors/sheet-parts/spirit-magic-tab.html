@@ -1,0 +1,35 @@
+<h2>
+  Spirit magic
+  <span class="small-size">Learnt {{spiritMagicPointSum}}/{{rqgActorData.data.characteristics.charisma.value}} points</span>
+</h2>
+<div class="grid spiritmagic">
+  <div class="headings"></div>
+  <div class="head1"></div>
+  <div class="head2">Name</div>
+  <div class="head3"><span class="text-right">Points</span></div>
+  <div class="head4">Variable</div>
+  <div class="head5">Range</div>
+  <div class="head6">Duration</div>
+  <div class="head7">Concentration</div>
+  {{#each ownedItems.spiritMagic}}
+    <div data-item-id="{{id}}" class="spiritmagic-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="item" src="{{img}}">
+    </div>
+    <div data-item-id="{{id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>{{name}}</div>
+    <div data-item-id="{{id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
+      <span class="text-center">{{data.data.points}}</span>
+    </div>
+    <div data-item-id="{{id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
+      <span class="text-center">{{yes-no this.data.data.isVariable}}</span>
+    </div>
+    <div data-item-id="{{id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
+      <span class="text-center">{{data.data.castingRange}}</span>
+    </div>
+    <div data-item-id="{{id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
+      <span class="text-center">{{data.data.duration}}</span>
+    </div>
+    <div data-item-id="{{id}}" class="spirit-magic-contextmenu" data-spirit-magic-roll>
+      <span class="text-center">{{data.data.concentration}}</span>
+    </div>
+  {{/each}}
+</div>

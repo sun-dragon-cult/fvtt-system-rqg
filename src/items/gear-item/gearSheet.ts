@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { GearItemData } from "../../data-model/item-data/gearData";
+import { GearData } from "../../data-model/item-data/gearData";
 import { equippedStatuses, physicalItemTypes } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 
@@ -14,12 +14,14 @@ export class GearSheet extends RqgItemSheet {
     });
   }
 
-  getData(): GearItemData {
-    const sheetData = super.getData() as GearItemData;
-    const data = sheetData.data;
-    data.equippedStatuses = [...equippedStatuses];
-    data.physicalItemTypes = [...physicalItemTypes];
-    return sheetData;
+  getData(): any {
+    const context = super.getData() as any;
+    const gearData = (context.gearData = context.data.data) as GearData;
+    const sheetSpecific: any = (context.sheetSpecific = {});
+
+    sheetSpecific.equippedStatuses = [...equippedStatuses];
+    sheetSpecific.physicalItemTypes = [...physicalItemTypes];
+    return context;
   }
 
   protected async _updateObject(event: Event, formData: any): Promise<any> {

@@ -25,12 +25,8 @@ export interface SkillData extends IAbility, JournalEntryLink {
   learnedChance: number;
   /** For Sorcery Magic */
   runes: string[];
-  // --- Derived / Convenience Data Below ---
+  // --- Derived Data Below ---
   categoryMod?: number;
-  skillCategories?: SkillCategoryEnum[];
-  isGM?: boolean;
-  /** For sheet dropdown */
-  allRunes?: Compendium.IndexEntry[];
 }
 
 export interface SkillItemData extends Item.Data<SkillData> {

@@ -1,6 +1,5 @@
-import { emptyPrice, EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
+import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
-import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "./itemTypes";
 
 export enum CombatManeuver {
@@ -27,17 +26,6 @@ export interface MeleeWeaponData extends IPhysicalItem {
   /** E.g. Fist, Grapple, Kick */
   isNatural: boolean;
   description: string;
-
-  // --- Derived / Convenience Data Below ---
-
-  allCombatManeuvers?: any;
-  /** All relevant skills of the owning actor */
-  meleeWeaponSkills?: RqgItem[];
-  /** For showing the name of the linked skill if the item isn't owned */
-  skillName?: string;
-  isOwned?: boolean;
-  /** For sheet dropdown */
-  equippedStatuses?: EquippedStatus[];
 }
 
 export interface MeleeWeaponItemData extends Item.Data<MeleeWeaponData> {

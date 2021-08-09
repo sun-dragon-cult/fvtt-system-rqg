@@ -15,8 +15,6 @@ export interface PassionData extends IAbility {
   passion: PassionsEnum;
   subject: string; // The subject of Fear etc
   description: string; // How did the character get this passion
-  // --- Derived / Convenience Data Below ---
-  passionTypes?: PassionsEnum[];
 }
 
 export interface PassionItemData extends Item.Data<PassionData> {

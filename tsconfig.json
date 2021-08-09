@@ -9,6 +9,8 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "sourceMap": true,
+    "module": "ESNext",
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/**/*"

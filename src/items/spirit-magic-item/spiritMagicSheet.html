@@ -2,58 +2,58 @@
   <header class="sheet-header">
     <img
       class="profile-img"
-      src="{{item.img}}"
+      src="{{data.img}}"
       data-edit="img"
-      title="{{item.name}}"
+      title="{{data.name}}"
     />
-    <input type="text" name="name" value="{{item.name}}"> (<input type="number" name="data.points" value="{{item.data.points}}">)
-    <label><input type="checkbox" name="data.isVariable" {{checked data.isVariable}}>Variable</label>
+    <input type="text" name="name" value="{{data.name}}"> (<input type="number" name="data.points" value="{{spiritMagicData.points}}">)
+    <label><input type="checkbox" name="data.isVariable" {{checked spiritMagicData.isVariable}}>Variable</label>
   </header>
   <main>
     <div class="flex-row-start">
       <span>Range<br>
         <select name="data.castingRange">
-          {{#select item.data.castingRange}} {{#each data.ranges}}
+          {{#select spiritMagicData.castingRange}} {{#each sheetSpecific.ranges}}
           <option value="{{this}}">{{this}}</option>
           {{/each}} {{/select}}
         </select>
       </span>
       <span>Duration<br>
         <select name="data.duration">
-          {{#select item.data.duration}} {{#each data.durations}}
+          {{#select spiritMagicData.duration}} {{#each sheetSpecific.durations}}
           <option value="{{this}}">{{this}}</option>
           {{/each}} {{/select}}
         </select>
       </span>
-      {{#if (eq item.data.duration "temporal")}}
+      {{#if (eq spiritMagicData.duration "temporal")}}
       <span>Concentration<br>
         <select name="data.concentration">
-          {{#select item.data.concentration}} {{#each data.types}}
+          {{#select spiritMagicData.concentration}} {{#each sheetSpecific.types}}
           <option value="{{this}}">{{this}}</option>
           {{/each}} {{/select}}
         </select>
       </span>
       {{/if}}
-      {{#if (eq item.data.duration "focused")}}
+      {{#if (eq spiritMagicData.duration "focused")}}
       <span>Concentration<br>
         <input type="text" name="data.concentration" value="active" readonly>
       </span>
       {{/if}}
-      {{#unless (eq item.data.duration "temporal")}}
+      {{#unless (eq spiritMagicData.duration "temporal")}}
       {{#unless (eq item.data.duration "focused")}}
         <input type="text" name="data.concentration" value="" hidden>
       {{/unless}}
       {{/unless}}
     </div>
   </main>
-  <label>spellFocus <input type="text" name="data.spellFocus" value="{{item.data.spellFocus}}">Variable</label>
+  <label>spellFocus <input type="text" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}"></label>
   <br>
-  {{#if data.journalPack}}
-  <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
-  {{else if data.journalId}}
-  <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to journal Entry</a>
+  {{#if spiritMagicData.journalPack}}
+    <a data-journal-pack="{{spiritMagicData.journalPack}}" data-journal-id="{{spiritMagicData.journalId}}">Linked to compendium journal Entry</a>
+  {{else if spiritMagicData.journalId}}
+    <a data-journal-pack="{{spiritMagicData.journalPack}}" data-journal-id="{{spiritMagicData.journalId}}">Linked to journal Entry</a>
   {{/if}}
 
   <br><i>Drop a journal on this item to connect a description.</i>
-  <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
+  <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
 </form>

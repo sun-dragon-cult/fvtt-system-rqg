@@ -1,0 +1,14 @@
+{{#if ownedItems.rune.condition}}
+<div class="grid rune">
+  <h2 class="fullrow">Condition</h2>
+  {{#each ownedItems.rune.condition}}
+    <div data-item-id="{{id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <img class="rune" src="{{img}}">
+    </div>
+    <div data-item-id="{{id}}" class="rune-contextmenu" data-item-roll title="Roll">{{data.data.rune}}</div>
+    <div data-item-id="{{id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
+      <span class="text-right">{{data.data.chance}}%</span>
+    </div>
+  {{/each}}
+</div>
+{{/if}}

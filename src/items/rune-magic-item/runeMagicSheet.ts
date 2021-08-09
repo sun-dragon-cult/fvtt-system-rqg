@@ -1,15 +1,22 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
   RuneMagicCastingRangeEnum,
+  RuneMagicData,
   RuneMagicDurationEnum,
-  RuneMagicItemData,
 } from "../../data-model/item-data/runeMagicData";
 
-import { RuneData } from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { getDomDataset, getRequiredDomDataset } from "../../system/util";
-import { CultItemData } from "../../data-model/item-data/cultData";
+import { getAllRunesIndex, getDomDataset, getRequiredDomDataset } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItem } from "../rqgItem";
+
+type RuneMagicSheetSpecificData = {
+  isOwned?: boolean;
+  ranges?: string[];
+  durations?: string[];
+  actorCults?: any[];
+  allRunes?: any[]; // For select on sheet {_id: , name:, img: }
+};
 
 export class RuneMagicSheet extends RqgItemSheet {
   static get defaultOptions(): BaseEntitySheet.Options {
@@ -22,33 +29,25 @@ export class RuneMagicSheet extends RqgItemSheet {
     });
   }
 
-  getData(): RuneMagicItemData {
-    const sheetData = super.getData() as RuneMagicItemData;
-    const data = sheetData.data;
-    data.ranges = Object.values(RuneMagicCastingRangeEnum);
-    data.durations = Object.values(RuneMagicDurationEnum);
-    data.runes = Array.isArray(data.runes) ? data.runes : [data.runes];
-    data.isOwned = this.item.isOwned;
-    data.allRunes = game.settings.get("rqg", "runes") as Compendium.IndexEntry[];
+  getData(): any {
+    const context = super.getData() as any;
+    const runeMagicData = (context.runeMagicData = context.data.data) as RuneMagicData;
+    const sheetSpecific = (context.sheetSpecific = {} as RuneMagicSheetSpecificData);
+
+    sheetSpecific.ranges = Object.values(RuneMagicCastingRangeEnum);
+    sheetSpecific.durations = Object.values(RuneMagicDurationEnum);
+    runeMagicData.runes = Array.isArray(runeMagicData.runes)
+      ? runeMagicData.runes
+      : [runeMagicData.runes];
+    // @ts-ignore 0.8 isOwned -> isEmbedded
+    sheetSpecific.isOwned = this.item.isEmbedded;
+    sheetSpecific.allRunes = getAllRunesIndex();
     if (this.actor) {
-      data.actorCults = this.actor
-        .getEmbeddedCollection("OwnedItem")
-        .filter((i: Item.Data<CultItemData>) => i.type === ItemTypeEnum.Cult);
-      const cultRunes = data.cultId
-        ? (this.actor.getOwnedItem(data.cultId) as Item<CultItemData>).data.data.runes
-        : [];
-      const runeChances = this.actor
-        .getEmbeddedCollection("OwnedItem")
-        .filter(
-          (i: Item.Data<RuneData>) =>
-            i.type === ItemTypeEnum.Rune &&
-            (data.runes.includes(i.name) ||
-              (data.runes.includes("Magic (condition)") && cultRunes.includes(i.name)))
-        )
-        .map((r: Item.Data<RuneData>) => r.data.chance);
-      data.chance = Math.max(...runeChances);
+      sheetSpecific.actorCults = this.actor
+        .getEmbeddedCollection("Item")
+        .filter((i: RqgItem) => i.type === ItemTypeEnum.Cult);
     }
-    return sheetData;
+    return context;
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
@@ -56,7 +55,6 @@ export class RuneMagicSheet extends RqgItemSheet {
     runes = Array.isArray(runes) ? runes : [runes];
     runes = runes.filter((r: string) => r); // Remove empty
     formData["data.runes"] = duplicate(runes);
-    formData["data.chance"] = Number(formData["data.chance"]);
     return super._updateObject(event, formData);
   }
 

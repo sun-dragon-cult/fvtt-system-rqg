@@ -1,42 +1,34 @@
 <form class="{{cssClass}}" autocomplete="off">
-  <header class="sheet-header">
-<!--    <img-->
-<!--      class="profile-img"-->
-<!--      src="{{item.img}}"-->
-<!--      data-edit="img"-->
-<!--      title="{{item.name}}"-->
-<!--    />-->
-  </header>
   <main>
     <label>Name <select name="name">
-      {{#select item.name}} {{#each data.allHitLocations}}
+      {{#select data.name}} {{#each sheetSpecific.allHitLocations}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
     <label>Hit Location Health Status <select name="data.hitLocationHealthState">
-      {{#select item.data.hitLocationHealthState}} {{#each data.hitLocationHealthStatuses}}
+      {{#select hitLocationData.hitLocationHealthState}} {{#each sheetSpecific.hitLocationHealthStatuses}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
     <label>Act as <select name="data.hitLocationType">
-      {{#select item.data.hitLocationType}} {{#each data.hitLocationTypes}}
+      {{#select hitLocationData.hitLocationType}} {{#each sheetSpecific.hitLocationTypes}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select> for damage calculations.</label><br>
-    {{#if (eq item.data.hitLocationType "limb")}}
+    {{#if (eq hitLocationData.hitLocationType "limb")}}
       <label>Connected to <select name="data.connectedTo">
-        {{#select item.data.connectedTo}} {{#each data.allHitLocations}}
+        {{#select hitLocationData.connectedTo}} {{#each sheetSpecific.allHitLocations}}
         <option value="{{this}}">{{this}}</option>
         {{/each}} {{/select}}
       </select></label><br>
     {{/if}}
-    <label>Die from-to <input type="number" min="1" max="20" name="data.dieFrom" value="{{item.data.dieFrom}}"></label> - <input type="number" min="1" max="20" name="data.dieTo" value="{{item.data.dieTo}}"><br>
-    <label>Natural AP <input type="number" min="0" max="99" name="data.naturalAp" value="{{item.data.naturalAp}}"></label><br>
-    <label>Base HP Delta (+/- from base location HP) <input type="number" min="-9" max="9" name="data.baseHpDelta" value="{{item.data.baseHpDelta}}"></label><br>
+    <label>Die from-to <input type="number" min="1" max="20" name="data.dieFrom" value="{{hitLocationData.dieFrom}}"></label> - <input type="number" min="1" max="20" name="data.dieTo" value="{{hitLocationData.dieTo}}"><br>
+    <label>Natural AP <input type="number" min="0" max="99" name="data.naturalAp" value="{{hitLocationData.naturalAp}}"></label><br>
+    <label>Base HP Delta (+/- from base location HP) <input type="number" min="-9" max="9" name="data.baseHpDelta" value="{{hitLocationData.baseHpDelta}}"></label><br>
     <br><br>
     {{!-- TODO just for making it changeable while testing --}}
     <label>Actor Health Impact <select name="data.actorHealthImpact">
-      {{#select item.data.actorHealthImpact}} {{#each data.actorHealthImpacts}}
+      {{#select hitLocationData.actorHealthImpact}} {{#each sheetSpecific.actorHealthImpacts}}
         <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>

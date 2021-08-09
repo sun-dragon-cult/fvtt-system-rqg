@@ -2,309 +2,248 @@ import { RqgActor } from "../actors/rqgActor";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { RqgItemData } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
-import { migrateItemEstimatedPrice } from "./migrations/migrateItemEstimatedPrice";
-import { migrateHitLocationType } from "./migrations/migrateHitLocationType";
-import { migrateSkillName } from "./migrations/migrateSkillName";
-import { migrateArmorName } from "./migrations/migrateArmorName";
-import { migrateRuneDescription, migrateRuneImgLocation } from "./migrations/migrateRuneCompendium";
+import { migrateItemEstimatedPrice } from "./migrations-item/migrateItemEstimatedPrice";
+import { migrateHitLocationType } from "./migrations-item/migrateHitLocationType";
+import { migrateSkillName } from "./migrations-item/migrateSkillName";
+import { migrateArmorName } from "./migrations-item/migrateArmorName";
+import {
+  migrateRuneDescription,
+  migrateRuneImgLocation,
+} from "./migrations-item/migrateRuneCompendium";
+import { removeArmorActiveEffects } from "./migrations-actor/removeArmorActiveEffects";
 
 type Updates = {
-  updateData: object;
+  updateData: any;
   deleteEmbeddedActiveEffectsIds: string[];
 };
 
-export class Migrate {
-  /**
-   * Perform a system migration for the entire World, applying migrations for Actors, Items, and Compendium packs
-   */
-  public static async world(): Promise<void> {
-    if (game.system.data.version === game.settings.get("rqg", "systemMigrationVersion")) {
-      return; // Already updated
-    }
+/**
+ * Perform a system migration for the entire World, applying migrations for what is in it
+ */
+export async function migrateWorld(): Promise<void> {
+  if (game.system.data.version === game.settings.get("rqg", "systemMigrationVersion")) {
+    return; // Already updated
+  }
 
-    ui.notifications?.info(
-      `Applying RQG System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`,
-      { permanent: true }
-    );
+  ui.notifications?.info(
+    `Applying RQG System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`,
+    { permanent: true }
+  );
+  await migrateWorldActors();
+  await migrateWorldItems();
+  await migrateWorldScenes();
+  await migrateWorldCompendiumPacks();
 
-    // Migrate World Actors
-    for (let actor of game.actors!.entities as RqgActor[]) {
-      try {
-        const updates = Migrate.actor(actor);
-        if (!isObjectEmpty(updates.updateData)) {
-          console.log(`RQG | Migrating Actor entity ${actor.name}`);
-          await actor.update(updates.updateData, { enforceTypes: false });
-        }
-        if (updates.deleteEmbeddedActiveEffectsIds) {
-          console.log(`RQG | Cleaning Actor Active Effects entity ${actor.name}`);
-          // @ts-ignore arg can be string | string[] TODO make a PR on the typings
-          await actor.deleteEmbeddedEntity("ActiveEffect", updates.deleteEmbeddedActiveEffectsIds);
-        }
-      } catch (err) {
-        console.error("RQG | World Actors Migration Error:", err);
+  // *** Set the migration as complete ***
+  await game.settings.set("rqg", "systemMigrationVersion", game.system.data.version);
+  ui.notifications?.info(`RQG System Migration to version ${game.system.data.version} completed!`, {
+    permanent: true,
+  });
+}
+
+async function migrateWorldActors() {
+  // @ts-ignore 0.8 contents
+  for (let actor of game.actors!.contents as RqgActor[]) {
+    try {
+      // @ts-ignore 0.8
+      const updates = migrateActorData(actor.toObject());
+      // @ts-ignore 0.8
+      if (!foundry.utils.isObjectEmpty(updates)) {
+        console.log(`RQG | Migrating Actor entity ${actor.name}`);
+        await actor.update(updates.updateData, { enforceTypes: false });
       }
-    }
-
-    // Migrate World Items
-    for (let item of game.items!.entities as RqgItem[]) {
-      try {
-        const updateData = Migrate.itemData(item.data);
-        if (!isObjectEmpty(updateData)) {
-          console.log(`RQG | Migrating Item entity ${item.name}`);
-          await item.update(updateData, { enforceTypes: false });
-        }
-      } catch (err) {
-        console.error("RQG | World Items Migration Error:", err);
-      }
-    }
-
-    // Migrate Actor Override Tokens
-    for (let scene of game.scenes!.entities) {
-      try {
-        const updateData = Migrate.sceneData(scene.data);
-        if (!isObjectEmpty(updateData)) {
-          console.log(`RQG | Migrating Scene entity ${scene.name}`);
-          await scene.update(updateData, { enforceTypes: false });
-        }
-      } catch (err) {
-        console.error("RQG | Actor Override Tokens Migration Error:", err);
-      }
-    }
-
-    // Migrate World Compendium Packs
-    const packs: Compendium[] =
-      game.packs?.filter((p) => {
-        return (
-          p.metadata.package === "world" && ["Actor", "Item", "Scene"].includes(p.metadata.entity)
+      if (updates.deleteEmbeddedActiveEffectsIds?.length) {
+        console.log(
+          `RQG | Cleaning ${updates.deleteEmbeddedActiveEffectsIds.length} Active Effects from Actor ${actor.name}`
         );
-      }) || [];
-    for (let p of packs) {
-      await Migrate.compendium(p);
-    }
-
-    // Set the migration as complete
-    await game.settings.set("rqg", "systemMigrationVersion", game.system.data.version);
-    ui.notifications?.info(
-      `RQG System Migration to version ${game.system.data.version} completed!`,
-      { permanent: true }
-    );
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Apply migration rules to all Entities within a single Compendium pack
-   * @param pack
-   * @return {Promise}
-   */
-  private static async compendium(pack: Compendium): Promise<void> {
-    const entity: string = pack.metadata.entity;
-    if (!["Actor", "Item", "Scene"].includes(entity)) {
-      return;
-    }
-
-    // Begin by requesting server-side data model migration and get the migrated content
-    await pack.migrate({});
-    const content = (await pack.getContent()) as Entity[];
-
-    // Iterate over compendium entries - applying fine-tuned migration functions
-    for (let ent of content) {
-      try {
-        let updateData = {} as DeepPartial<Data>; // TODO Not a good way - assign _id and update at the same time instead?
-        if (entity === "Item") {
-          updateData = Migrate.itemData(ent.data as RqgItemData);
-        } else if (entity === "Actor") {
-          updateData = Migrate.actor(ent as RqgActor);
-        } else if (entity === "Scene") {
-          updateData = Migrate.sceneData(ent.data as Scene.Data);
-        }
-        if (!isObjectEmpty(updateData)) {
-          expandObject(updateData);
-          updateData["_id"] = ent._id;
-          await pack.updateEntity(updateData as Data);
-          console.log(
-            `RQG | Migrated ${entity} entity ${ent.name} in Compendium ${pack.collection}`
-          );
-        }
-      } catch (err) {
-        console.error("RQG | Compendium Migration Error:", err);
+        // @ts-ignore arg can be string | string[] TODO make a PR on the typings
+        await actor.deleteEmbeddedDocuments("ActiveEffect", updates.deleteEmbeddedActiveEffectsIds);
       }
+    } catch (err) {
+      err.message = `RQG | Failed system migration for Actor ${actor.name}: ${err.message}`;
+      console.error(err, actor);
     }
-    console.log(`RQG | Migrated all ${entity} entities from Compendium ${pack.collection}`);
+  }
+}
+
+async function migrateWorldItems() {
+  // @ts-ignore 0.8 contents
+  for (let item of game.items!.contents as RqgItem[]) {
+    try {
+      // @ts-ignore 0.8
+      const updateData = migrateItemData(item.toObject());
+      // @ts-ignore 0.8
+      if (!foundry.utils.isObjectEmpty(updateData)) {
+        console.log(`RQG | Migrating Item entity ${item.name}`);
+        await item.update(updateData, { enforceTypes: false });
+      }
+    } catch (err) {
+      err.message = `RQG | Failed system migration for Item ${item.name}: ${err.message}`;
+      console.error(err, item);
+    }
+  }
+}
+
+async function migrateWorldScenes() {
+  // @ts-ignore 0.8 contents
+  for (let scene of game.scenes!.contents) {
+    try {
+      const updateData = migrateSceneData(scene.data);
+      // @ts-ignore 0.8
+      if (!foundry.utils.isObjectEmpty(updateData)) {
+        console.log(`RQG | Migrating Scene entity ${scene.name}`);
+        await scene.update(updateData, { enforceTypes: false });
+        // If we do not do this, then synthetic token actors remain in cache
+        // with the un-updated actorData.
+        scene.tokens.contents.forEach((t: any) => (t._actor = null));
+      }
+    } catch (err) {
+      err.message = `RQG | Failed system migration for Scene ${scene.name}: ${err.message}`;
+      console.error(err, scene);
+    }
+  }
+}
+
+async function migrateWorldCompendiumPacks() {
+  for (let pack of game.packs!) {
+    if (pack.metadata.package !== "world") continue;
+    if (!["Actor", "Item", "Scene"].includes(pack.metadata.entity)) continue;
+    await migrateCompendium(pack);
+  }
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Apply migration rules to all Entities within a single Compendium pack
+ * @param pack
+ * @return {Promise}
+ */
+async function migrateCompendium(pack: Compendium): Promise<void> {
+  const entity: string = pack.metadata.entity;
+  if (!["Actor", "Item", "Scene"].includes(entity)) {
+    return;
   }
 
-  /* -------------------------------------------- */
-  /*  Entity Type Migration Helpers               */
-  /* -------------------------------------------- */
+  // Unlock the pack for editing
+  const wasLocked = pack.locked;
+  await pack.configure({ locked: false });
 
-  private static actor(actor: RqgActor): Updates {
-    let updates: Updates = { updateData: [], deleteEmbeddedActiveEffectsIds: [] };
+  // Begin by requesting server-side data model migration and get the migrated content
+  await pack.migrate({});
+  // @ts-ignore 0.8
+  const documents = await pack.getDocuments();
 
-    updates.deleteEmbeddedActiveEffectsIds = ([] as string[]).concat(
-      updates.deleteEmbeddedActiveEffectsIds,
-      Migrate.removeOrphanedActiveEffects(actor)
-    );
-    updates.deleteEmbeddedActiveEffectsIds = ([] as string[]).concat(
-      updates.deleteEmbeddedActiveEffectsIds,
-      Migrate.removeDuplicatedActiveEffects(actor)
-    );
+  // Iterate over compendium entries - applying fine-tuned migration functions
+  for (let doc of documents) {
+    let updateData = {};
+    try {
+      switch (entity) {
+        case "Actor":
+          updateData = migrateActorData(doc.toObject());
+          break;
+        case "Item":
+          updateData = migrateItemData(doc.toObject());
+          break;
+        case "Scene":
+          updateData = migrateSceneData(doc.data);
+          break;
+      }
 
-    updates.updateData = Migrate.actorData(actor.data);
+      // Save the entry, if data was changed
+      // @ts-ignore 0.8
+      if (foundry.utils.isObjectEmpty(updateData)) continue;
+      await doc.update(updateData);
+      console.log(`RQG | Migrated ${entity} entity ${doc.name} in Compendium ${pack.collection}`);
+    } catch (err) {
+      err.message = `RQG | Failed system migration for entity ${doc.name} in pack ${pack.collection}: ${err.message}`;
+      console.error(err, doc);
+    }
+  }
+  // Apply the original locked status for the pack
+  await pack.configure({ locked: wasLocked });
+  console.log(`RQG | Migrated all ${entity} entities from Compendium ${pack.collection}`);
+}
+
+/* -------------------------------------------- */
+/*  Entity Type Migration Helpers               */
+/* -------------------------------------------- */
+
+function migrateActorData(actorData: RqgActorData): Updates {
+  let updates: Updates = { updateData: [], deleteEmbeddedActiveEffectsIds: [] };
+
+  // Find active effects that should be removed from the actor
+  [removeArmorActiveEffects].forEach((fn: (actorData: RqgActorData) => string[]) =>
+    updates.deleteEmbeddedActiveEffectsIds.push(...fn(actorData))
+  );
+
+  // Migrate Owned Items
+  if (!actorData.items) {
     return updates;
   }
+  let hasItemUpdates = false;
+  const items = actorData.items.map((i) => {
+    let itemUpdate = migrateItemData(i);
 
-  /**
-   * Migrate a single Actor entity to incorporate latest data model changes
-   * Return an Object of updateData to be applied
-   * @param {Actor} actorData   The actor to Update
-   * @return {Object}       The updateData to apply
-   */
-  private static actorData(actorData: RqgActorData): object {
-    let updateData: any = {};
-    Migrate.removeDeprecatedFields(actorData, updateData);
-
-    // Migrate Owned Items
-    if (!actorData.items) {
-      return actorData;
+    // Update the Owned Item
+    if (!isObjectEmpty(itemUpdate)) {
+      hasItemUpdates = true;
+      return mergeObject(i, itemUpdate, { enforceTypes: false, inplace: false });
+    } else {
+      return i;
     }
-    let hasItemUpdates = false;
-    const items = actorData.items.map((i) => {
-      // Migrate the Owned Item
-      let itemUpdate = Migrate.itemData(i); // TODO rätt?
-
-      // Update the Owned Item
-      if (!isObjectEmpty(itemUpdate)) {
-        hasItemUpdates = true;
-        return mergeObject(i, itemUpdate, { enforceTypes: false, inplace: false });
-      } else {
-        return i;
-      }
-    });
-    if (hasItemUpdates) {
-      updateData.items = items;
-    }
-    return updateData;
+  });
+  if (hasItemUpdates) {
+    updates.updateData.items = items;
   }
+  return updates;
+}
 
-  // Return an array of active Effects Ids to be deleted because they miss origin
-  private static removeOrphanedActiveEffects(actor: RqgActor): string[] {
-    return actor.data.effects.filter((e) => !e.origin).map((e) => e._id);
-  }
+/* -------------------------------------------- */
 
-  // Return an array of active Effects Ids to be deleted because they are duplicated
-  // (have identical origin)
-  private static removeDuplicatedActiveEffects(actor: RqgActor): string[] {
-    let duplicateActiveEffectIds: string[] = [];
-    let activeEffectOrigins: any[] = [];
-    actor.data.effects.forEach((e: any) => {
-      if (activeEffectOrigins.includes(e.origin)) {
-        duplicateActiveEffectIds.push(e._id);
-      }
-      activeEffectOrigins.push(e.origin);
-    });
-    return duplicateActiveEffectIds;
-  }
+function migrateItemData(itemData: RqgItemData): object {
+  let updateData = {};
+  [
+    migrateItemEstimatedPrice,
+    migrateHitLocationType,
+    migrateSkillName,
+    migrateArmorName,
+    migrateRuneImgLocation,
+    migrateRuneDescription,
+  ].forEach(
+    (f: (itemData: RqgItemData) => any) => (updateData = mergeObject(updateData, f(itemData)))
+  );
 
-  /* -------------------------------------------- */
+  return updateData;
+}
 
-  /**
-   * Scrub an Actor's system data, removing all keys which are not explicitly defined in the system template
-   * @param {Object} actorData    The data object for an Actor
-   * @return {Object}             The scrubbed Actor data
-   */
-  private static cleanActorData(actorData: any) {
-    // Scrub system data
-    const model: any = game.system.model.Actor[actorData.type];
-    actorData.data = filterObject(actorData.data, model);
+/* -------------------------------------------- */
 
-    // // Scrub system flags
-    // const allowedFlags = CONFIG.DND5E.allowedActorFlags.reduce((obj, f) => {
-    //   obj[f] = null;
-    //   return obj;
-    // }, {});
-    // if (actorData.flags.dnd5e) {
-    //   actorData.flags.dnd5e = filterObject(actorData.flags.dnd5e, allowedFlags);
-    // }
-
-    // Return the scrubbed data
-    return actorData;
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Migrate a single Item entity to incorporate latest data model changes
-   * @param itemData
-   */
-  private static itemData(itemData: RqgItemData): object {
-    let updateData = {};
-    [
-      migrateItemEstimatedPrice,
-      migrateHitLocationType,
-      migrateSkillName,
-      migrateArmorName,
-      migrateRuneImgLocation,
-      migrateRuneDescription,
-    ].forEach(
-      (f: (itemData: RqgItemData) => any) => (updateData = mergeObject(updateData, f(itemData)))
-    );
-
-    Migrate.removeDeprecatedFields(itemData, updateData);
-    return updateData;
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Migrate a single Scene entity to incorporate changes to the data model of it's actor data overrides
-   * Return an Object of updateData to be applied
-   * @param {Object} scene  The Scene data to Update
-   * @return {Object}       The updateData to apply
-   */
-  private static sceneData(scene: Scene.Data): object {
-    const tokens = duplicate(scene.tokens) as Token.Data[];
-    return {
-      tokens: tokens.map((t: Token.Data) => {
-        if (!t.actorId || t.actorLink || !t.actorData.data) {
-          t.actorData = {};
-          return t;
-        }
-        const token = new Token(t);
-        if (!token.actor) {
-          // @ts-ignore null to required string
-          t.actorId = null;
-          t.actorData = {};
-        } else if (!t.actorLink) {
-          const updateData = Migrate.actorData(token.data.actorData as RqgActorData);
-          t.actorData = mergeObject(token.data.actorData, updateData);
-        }
-        return t;
-      }),
-    };
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * A general migration to remove all fields from the data model which are flagged with a _deprecated tag
-   */
-  private static removeDeprecatedFields(ent: any, updateData: any) {
-    const flat = flattenObject(ent.data);
-
-    // Identify objects to deprecate
-    const toDeprecate = Object.entries(flat)
-      .filter((e) => e[0].endsWith("_deprecated") && e[1] === true)
-      .map((e) => {
-        let parent = e[0].split(".");
-        parent.pop();
-        return parent.join(".");
+function migrateSceneData(scene: Scene.Data): object {
+  const tokens = scene.tokens.map((token: any) => {
+    const t = token.toJSON();
+    if (!t.actorId || t.actorLink) {
+      t.actorData = {};
+    } else if (!game.actors!.has(t.actorId)) {
+      t.actorId = null;
+      t.actorData = {};
+    } else if (!t.actorLink) {
+      const actorData = duplicate(t.actorData);
+      actorData.type = token.actor?.type;
+      const update = migrateActorData(actorData) as any;
+      ["items", "effects"].forEach((embeddedName) => {
+        if (!update[embeddedName]?.length) return;
+        const updates = new Map(update[embeddedName].map((u: any) => [u._id, u]));
+        t.actorData[embeddedName].forEach((original: any) => {
+          const update = updates.get(original._id);
+          if (update) mergeObject(original, update);
+        });
+        delete update[embeddedName];
       });
 
-    // Remove them
-    for (let k of toDeprecate) {
-      let parts = k.split(".");
-      parts[parts.length - 1] = "-=" + parts[parts.length - 1];
-      updateData[`data.${parts.join(".")}`] = null;
+      mergeObject(t.actorData, update);
     }
-  }
+    return t;
+  });
+  return { tokens };
 }

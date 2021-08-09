@@ -5,17 +5,17 @@ import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 import { GearSheet } from "./gear-item/gearSheet";
 import { ArmorSheet } from "./armor-item/armorSheet";
-import { RqgActor } from "../actors/rqgActor";
 import { MeleeWeaponSheet } from "./melee-weapon-item/meleeWeaponSheet";
 import { MissileWeaponSheet } from "./missile-weapon-item/missileWeaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
+import { RqgError } from "../system/util";
 
 export class RqgItem extends Item<RqgItemData> {
   public static init() {
-    CONFIG.Item.entityClass = RqgItem;
-    // CONFIG.Item.sheetClass = RqgItemSheet; // TODO how and why
+    // @ts-ignore 0.8
+    CONFIG.Item.documentClass = RqgItem;
 
     Items.unregisterSheet("core", ItemSheet);
 
@@ -77,29 +77,54 @@ export class RqgItem extends Item<RqgItemData> {
     // TODO this doesn't compile!? Sheet registration would be better in Item init
     // ResponsibleItemClass.forEach((itemClass) => itemClass.init());
 
-    // Row 26505
-    Hooks.on("preCreateOwnedItem", (parent: Entity, r: any) => {
-      if (parent instanceof RqgActor && Object.values(ItemTypeEnum).includes(r.type)) {
-        const rqgItem = r as RqgItem;
-        // Prevent duplicates
-        if (parent.items.find((i) => i.name === rqgItem.name && i.type === rqgItem.type)) {
-          ui.notifications?.warn(
-            `${parent.name} already has a ${rqgItem.type} '${rqgItem.name}' and duplicates are not allowed`
-          );
-          return false;
-        }
-
-        rqgItem.effects = rqgItem.effects || [];
-        const activeEffect = ResponsibleItemClass.get(rqgItem.type)?.generateActiveEffect(
-          rqgItem.data
+    Hooks.on("preCreateItem", (document: any) => {
+      const isDuplicate = RqgItem.isDuplicateItem(document);
+      if (isDuplicate) {
+        ui.notifications?.warn(
+          // @ts-ignore 0.8
+          `${document.parent.name} already has a ${document.data.type} '${document.name}' and duplicates are not allowed`
         );
-        if (activeEffect) {
-          activeEffect.origin = `Actor.${parent.id}.OwnedItem.${rqgItem._id}`;
-          // @ts-ignore TODO effects is Array runtime but Collection<ActiveEffects<RqgItem>> "compiletime"
-          rqgItem.effects.push(activeEffect);
-        }
       }
-      return true;
+      return !isDuplicate;
     });
+  }
+
+  static async updateDocuments(updates: any[], context: any): Promise<any> {
+    const { parent, pack, ...options } = context;
+    if (parent?.documentName === "Actor") {
+      updates.forEach((u) => {
+        // @ts-ignore 0.8
+        const document = parent.items.get(u._id);
+        // @ts-ignore 0.8
+        if (!document || document.documentName !== "Item") {
+          const msg = "couldn't find item document from result";
+          ui.notifications?.error(msg);
+          throw new RqgError(msg, updates);
+        }
+        // Will update "updates" as a side effect
+        ResponsibleItemClass.get(document.data.type)?.preUpdateItem(
+          parent,
+          document,
+          updates,
+          options
+        );
+      });
+    }
+    // @ts-ignore 0.8
+    return super.updateDocuments(updates, context);
+  }
+
+  // Validate that embedded items are unique (name + type)
+  private static isDuplicateItem(document: any): boolean {
+    const isOwnedItem =
+      document instanceof RqgItem &&
+      // @ts-ignore 0.8
+      document.parent &&
+      Object.values(ItemTypeEnum).includes(document.data.type);
+
+    return (
+      isOwnedItem &&
+      document.parent.items.find((i: any) => i.name === document.name && i.type === document.type)
+    );
   }
 }

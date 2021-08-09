@@ -1,4 +1,4 @@
-import { emptyPrice, EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
+import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 
 export const armorTypeTranslationKeys = [
@@ -45,13 +45,6 @@ export interface ArmorData extends IPhysicalItem {
   material: string;
   absorbs: number;
   moveQuietlyPenalty: number;
-  // --- Derived / Convenience Data Below ---
-  /** Index of the hitlocations compendium */
-  allHitLocations?: any[];
-  /** For sheet dropdown */
-  equippedStatuses?: EquippedStatus[];
-  armorTypeNames?: string[]; // Translated list of ArmorType list
-  materialNames?: string[]; // Translated list of ArmorMaterial list
 }
 
 export interface ArmorItemData extends Item.Data<ArmorData> {

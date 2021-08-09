@@ -27,11 +27,6 @@ export interface SpiritMagicData extends JournalEntryLink {
   concentration: SpiritMagicConcentrationEnum;
   incompatibleWith: string[]; // Can't be cast if one of the listed spells are already active
   spellFocus: string;
-  // --- Derived / Convenience Data Below ---
-  strikeRank?: number; // DexSR + points.value - 1
-  ranges?: string[]; // For select on sheet
-  durations?: string[]; // For select on sheet
-  types?: string[]; // For select on sheet
 }
 
 export interface SpiritMagicItemData extends Item.Data<SpiritMagicData> {

@@ -2,14 +2,13 @@ import { RqgCalculations } from "../system/rqgCalculations";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
-import { getItemIdsInSameLocationTree } from "../items/shared/locationNode";
-import { RqgError } from "../system/util";
 import { RqgItem } from "../items/rqgItem";
 import { DamageCalculations } from "../system/damageCalculations";
 
 export class RqgActor extends Actor<RqgActorData, RqgItem> {
   static init() {
-    CONFIG.Actor.entityClass = RqgActor;
+    // @ts-ignore 0.8
+    CONFIG.Actor.documentClass = RqgActor;
 
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("rqg", RqgActorSheet, {
@@ -32,9 +31,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
 
   prepareEmbeddedEntities(): void {
     super.prepareEmbeddedEntities();
-    const data = this.data.data;
+    const actorData = this.data.data;
     const { con, siz, pow } = this.actorCharacteristics();
-    data.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+    actorData.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
     );
@@ -52,9 +51,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
    */
   prepareDerivedData(): void {
     super.prepareDerivedData();
-    const data = this.data.data;
+    const { attributes, skillCategoryModifiers } = this.data.data;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
-    data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
+    this.data.data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
       str,
       siz,
       dex,
@@ -62,34 +61,55 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       pow,
       cha
     );
-    data.attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
+    attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
     const movementEncumbrancePenalty = Math.min(
       0,
-      (data.attributes.maximumEncumbrance || 0) - (data.attributes.equippedEncumbrance || 0)
+      (attributes.maximumEncumbrance || 0) - (attributes.equippedEncumbrance || 0)
+    );
+    attributes.equippedEncumbrance = Math.round(
+      this.items
+        .filter(
+          (i: RqgItem) =>
+            "equippedStatus" in i.data.data && i.data.data.equippedStatus === "equipped"
+        )
+        .reduce((sum, i: RqgItem) => {
+          const quantity =
+            "quantity" in i.data.data && i.data.data.quantity ? i.data.data.quantity : 1;
+          const encumbrance =
+            "encumbrance" in i.data.data && i.data.data.encumbrance ? i.data.data.encumbrance : 0;
+          return sum + quantity * encumbrance;
+        }, 0)
     );
 
-    data.attributes.move += movementEncumbrancePenalty;
-    data.skillCategoryModifiers.agility += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.manipulation += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.stealth += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.meleeWeapons += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.missileWeapons += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.naturalWeapons += movementEncumbrancePenalty * 5;
-    data.skillCategoryModifiers.shields += movementEncumbrancePenalty * 5;
+    attributes.travelEncumbrance = Math.round(
+      this.items
+        .filter((i: Item<any>) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
+        .reduce((sum, i: Item<any>) => {
+          const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
+          return sum + enc;
+        }, 0)
+    );
+
+    attributes.move += movementEncumbrancePenalty;
+    skillCategoryModifiers!.agility += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.manipulation += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.stealth += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.meleeWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.missileWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.naturalWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers!.shields += movementEncumbrancePenalty * 5;
 
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item)
     );
 
-    // *** Setup calculated stats ***
+    attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
+    attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
+    attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
+    attributes.healingRate = RqgCalculations.healingRate(con);
+    attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
 
-    data.attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
-    data.attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
-    data.attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
-    data.attributes.healingRate = RqgCalculations.healingRate(con);
-    data.attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
-
-    data.attributes.health = DamageCalculations.getCombinedActorHealth(this.data);
+    attributes.health = DamageCalculations.getCombinedActorHealth(this.data);
   }
 
   // Entity-specific actions that should occur when the Entity is first created
@@ -107,7 +127,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
         origin: RqgActor.updateEffectOrigin(effect.origin, actorData._id),
       };
     });
-    this.updateEmbeddedEntity("ActiveEffect", effectsOriginUpdates);
+    effectsOriginUpdates.length &&
+      // @ts-ignore 0.8
+      this.updateEmbeddedDocuments("ActiveEffect", [effectsOriginUpdates]);
   }
 
   private static updateEffectOrigin(origin: string, actorId: string): string {
@@ -119,175 +141,44 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     return origin;
   }
 
-  // Defaults when creating a new Actor
-  static async create(data: any, options?: object | undefined): Promise<Entity> {
-    data.token = data.token || {};
-    if (data.type === "character") {
-      mergeObject(
-        data.token,
-        {
-          vision: true,
-          dimSight: 30,
-          brightSight: 0,
-          actorLink: true,
-          disposition: 1,
-          bar1: { attribute: "attributes.hitPoints" },
-          bar2: { attribute: "attributes.magicPoints" },
-          displayBars: CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
-        },
-        { overwrite: false }
-      );
-    }
-    const actor = await super.create(data, options);
-    if (!actor) {
-      const msg = "Couldn't create actor";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, data);
-    }
-    return actor;
-  }
-
-  protected _onCreateEmbeddedEntity(
+  protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    child: Actor.OwnedItemData<any> | ActiveEffect.Data,
-    options: any,
+    documents: any[], // Document[]
+    result: object[],
+    options: object[],
     userId: string
+    // TODO *** REWORK FOR 0.8 !!! ***
   ): void {
-    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
-      ResponsibleItemClass.get(child.type)
-        ?.onEmbedItem(this, child, options, userId)
-        .then((updateData: any) => {
-          updateData && this.updateOwnedItem(updateData);
-        });
-    }
-    return super._onCreateEmbeddedEntity(embeddedName, child, options, userId);
-  }
-
-  protected _onDeleteEmbeddedEntity(
-    embeddedName: string,
-    child: Actor.OwnedItemData<any> | ActiveEffect.Data,
-    options: any,
-    userId: string
-  ): void {
-    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
-      const updateData = ResponsibleItemClass.get(child.type)?.onDeleteItem(
-        this,
-        child,
-        options,
-        userId
-      );
-      updateData && this.updateOwnedItem(updateData);
-    }
-    return super._onDeleteEmbeddedEntity(embeddedName, child, options, userId);
-  }
-
-  protected _onUpdateEmbeddedEntity(
-    embeddedName: string,
-    child: Item.Data,
-    update: any,
-    options: any,
-    userId: string
-  ) {
-    if (embeddedName === "OwnedItem" && game.user?._id === userId) {
-      const updateData = ResponsibleItemClass.get(child.type)?.onUpdateItem(
-        this,
-        child,
-        update,
-        options,
-        userId
-      );
-      updateData && this.updateOwnedItem(updateData);
-    }
-    return super._onUpdateEmbeddedEntity(embeddedName, child, update, options, userId);
-  }
-
-  _onModifyEmbeddedEntity(
-    embeddedName: string,
-    changes: Actor.OwnedItemData<any>[] | ActiveEffect.Data[],
-    options: any,
-    userId: string,
-    context: any
-  ) {
-    if (embeddedName === "OwnedItem" && game.user?._id === userId && context.action !== "create") {
-      this.updateEquippedStatus(changes).then(
-        () =>
-          // Try doing stuff after actor has updated
-          setTimeout(this.updateEncumbrance.bind(this), 0) // TODO Solve without releasing thread?... Or try to do in preUpdate instead!
-      );
-    }
-    super._onModifyEmbeddedEntity(embeddedName, changes, options, userId, context);
-  }
-
-  private async updateEquippedStatus(changes: Actor.OwnedItemData<any>[]): Promise<void> {
-    const equippedStatusChanges = changes.filter(
-      // FIXME changes can be a list of id:s if removed *** *** ***
-      (i) => i?.data?.equippedStatus || typeof i?.data?.location !== "undefined"
-    );
-    if (equippedStatusChanges.length) {
-      // Check that equippedStatus has changed
-
-      // const item = this.actor.getOwnedItem(itemId);
-      const newEquippedStatus =
-        equippedStatusChanges[0].data.equippedStatus ||
-        (this.getOwnedItem(equippedStatusChanges[0]._id).data.data as any).equippedStatus; // TODO Always correct?
-
-      const itemsToUpdate = equippedStatusChanges.map((i) => {
-        const item = this.items.get(i._id);
-        if (!item) {
-          const msg = "couldn't find item when updating equipped status";
-          ui.notifications?.error(msg);
-          throw new RqgError(msg, i);
-        }
-        return getItemIdsInSameLocationTree(item.data, this).map((id) => {
-          return { _id: id, "data.equippedStatus": newEquippedStatus };
-        });
+    if (embeddedName === "Item" && game.user?.id === userId) {
+      documents.forEach((d) => {
+        ResponsibleItemClass.get(d.type)
+          ?.onEmbedItem(this, d, options, userId)
+          .then((updateData: any) => {
+            // @ts-ignore 0.8
+            updateData && this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
+          });
       });
-      itemsToUpdate[0] && (await this.updateEmbeddedEntity("OwnedItem", itemsToUpdate[0])); // TODO fix nested arrays
-      // await item.update({ "data.equippedStatus": newStatus }, {});
     }
+    // @ts-ignore 0.8
+    super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
   }
 
-  private async updateEncumbrance(): Promise<void> {
-    const equippedEncumbrance = Math.round(
-      this.items
-        .filter(
-          (i: RqgItem) =>
-            "equippedStatus" in i.data.data && i.data.data.equippedStatus === "equipped"
-        )
-        .reduce((sum, i: RqgItem) => {
-          const quantity =
-            "quantity" in i.data.data && i.data.data.quantity ? i.data.data.quantity : 1;
-          const encumbrance =
-            "encumbrance" in i.data.data && i.data.data.encumbrance ? i.data.data.encumbrance : 0;
-          return sum + quantity * encumbrance;
-        }, 0)
-    );
-
-    const travelEncumbrance = Math.round(
-      this.items
-        .filter((i: Item<any>) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
-        .reduce((sum, i: Item<any>) => {
-          const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
-          return sum + enc;
-        }, 0)
-    );
-    if (
-      this.data.data.attributes.equippedEncumbrance !== equippedEncumbrance ||
-      this.data.data.attributes.travelEncumbrance !== travelEncumbrance
-    ) {
-      await this.update(
-        {
-          _id: this._id,
-          data: {
-            attributes: {
-              equippedEncumbrance: equippedEncumbrance,
-              travelEncumbrance: travelEncumbrance,
-            },
-          },
-        },
-        { render: true }
-      );
+  protected _onDeleteEmbeddedDocuments(
+    embeddedName: string,
+    documents: any[], // Document[]
+    result: object[],
+    options: object[],
+    userId: string
+  ): void {
+    if (embeddedName === "Item" && game.user?.id === userId) {
+      documents.forEach((d) => {
+        const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(this, d, options, userId);
+        // @ts-ignore 0.8
+        updateData && this.updateEmbeddedDocuments("Item", [updateData]);
+      });
     }
+    // @ts-ignore 0.8
+    super._onDeleteEmbeddedDocuments(embeddedName, documents, options, userId);
   }
 
   // Return shorthand access to actor data & characteristics

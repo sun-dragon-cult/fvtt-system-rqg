@@ -1,13 +1,17 @@
 import { registerRqgSystemSettings } from "./system/rqgSystemSettings.js";
-import { handlebarsTemplates } from "./system/handlebarsTemplates.js";
+import { loadHandlebarsTemplates } from "./system/loadHandlebarsTemplates.js";
 import { RqgActor } from "./actors/rqgActor.js";
 import { RqgItem } from "./items/rqgItem";
-import { handlebarsHelpers } from "./system/handlebarsHelpers";
+import { registerHandlebarsHelpers } from "./system/registerHandlebarsHelpers";
 import { RqgActiveEffect } from "./actors/rqgActiveEffect";
-import { RqgCombat } from "./system/rqgCombat";
+import { RqgCombat } from "./combat/rqgCombat";
 import { RQG_CONFIG, RqgConfig } from "./system/config";
 import { ChatCardListeners } from "./chat/chatCardListeners";
-import { Migrate } from "./system/migrate";
+import { migrateWorld } from "./system/migrate";
+import { RqgCombatTracker } from "./combat/RqgCombatTracker";
+import { RqgToken } from "./combat/rqgToken";
+import { setupSimpleCalendar } from "./module-integration/simple-calendar-init";
+import { RqgError } from "./system/util";
 
 declare const CONFIG: RqgConfig;
 
@@ -17,37 +21,35 @@ Hooks.once("init", async () => {
 
   // CONFIG.debug.hooks = true; // console log when hooks fire
   // CONFIG.debug.time = true; // console log time
-  CONFIG.ActiveEffect.entityClass = RqgActiveEffect;
+
   CONFIG.time = {
     turnTime: 0, // Don't advance time per combatant
     roundTime: 12, // Melee round
   };
-
+  RqgActiveEffect.init();
   RqgCombat.init();
+  RqgCombatTracker.init();
+  RqgToken.init();
   RqgActor.init();
   RqgItem.init();
   ChatCardListeners.init();
   registerRqgSystemSettings();
-  await handlebarsTemplates();
-  handlebarsHelpers();
+  await loadHandlebarsTemplates();
+  registerHandlebarsHelpers();
 });
 
 Hooks.once("ready", async () => {
   if (game.user?.isGM) {
-    await Migrate.world();
+    await migrateWorld();
     const runeCompendium = game.settings.get("rqg", "runesCompendium") as string;
-    // Store runes in settings to avoid await on ItemSheet getData
+    // Make sure the index for runes is preloaded
     try {
-      const runesIndex = await game.packs?.get(runeCompendium)?.getIndex();
-      await game.settings.set("rqg", "runes", runesIndex);
+      await game.packs!.get(runeCompendium)!.getIndex();
     } catch (err) {
-      await game.settings.set("rqg", "runes", []);
+      const msg = `Couldn't load rune compendium - check that you have the compendium specified in the "Rune items compendium" enabled and that the link is correct`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, runeCompendium);
     }
-
-    if (game.modules.get("about-time")?.active) {
-      const gameTime: any = game.GameTime;
-      gameTime.DTC.createFromData(gameTime.calendars.Glorantha);
-      gameTime.DTC.saveUserCalendar(gameTime.calendars.Glorantha);
-    }
+    await setupSimpleCalendar();
   }
 });

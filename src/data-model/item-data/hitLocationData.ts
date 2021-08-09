@@ -84,14 +84,9 @@ export interface HitLocationData {
   hitLocationType: HitLocationTypesEnum; // TODO *** kan man göra det här smartare? ***
   /** If hitLocationType is Limb then what location name is it connected to. Used for damage calculations */
   connectedTo: string;
-  // --- Derived / Convenience Data Below ---
-  /** Natural armor + modified armor Active Effect */
+  // --- Derived Data Below ---
+  /** Natural armor + armor absorption */
   ap?: number;
-
-  allHitLocations?: HitLocationsEnum[];
-  hitLocationTypes?: HitLocationTypesEnum[];
-  hitLocationHealthStatuses?: HitLocationHealthState[];
-  actorHealthImpacts?: ActorHealthState[];
 }
 
 export interface HitLocationItemData extends Item.Data<HitLocationData> {

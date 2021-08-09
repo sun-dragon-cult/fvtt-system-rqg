@@ -15,7 +15,7 @@ import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menues/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
-import { createItemLocationTree, LocationNode } from "../items/shared/locationNode";
+import { createItemLocationTree, LocationNode } from "./item-specific/shared/locationNode";
 import { CharacteristicCard } from "../chat/characteristicCard";
 import { WeaponCard } from "../chat/weaponCard";
 import { SpiritMagicCard } from "../chat/spiritMagicCard";
@@ -118,18 +118,27 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
   // TODO type system presumes ActorSheet.Data<Actor> but I've organised as ActorSheetTemplate
   getData(): any {
-    const isOwner: boolean = this.entity.owner;
+    // @ts-ignore 0.8 document.isOwner
+    const isOwner: boolean = this.document.isOwner;
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
-    const sheetData: ActorSheetTemplate = {
+    // @ts-ignore 0.8 document
+    const rqgActorData = this.document.data.toObject(false);
+    const dexStrikeRank = rqgActorData.data.attributes.dexStrikeRank;
+    if (dexStrikeRank == null) {
+      const msg = "Dex SR was not yet calculated.";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this.actor);
+    }
+    const templateData: ActorSheetTemplate = {
       cssClass: isOwner ? "editable" : "locked",
       editable: this.isEditable,
-      limited: this.entity.limited,
+      // @ts-ignore 0.8 document
+      limited: this.document.limited,
       options: this.options,
       owner: isOwner,
       title: this.title,
 
-      // @ts-ignore
-      rqgActorData: duplicate(this.entity.data),
+      rqgActorData: rqgActorData,
       tokenId: this.token?.id,
       ownedItems: this.organizeOwnedItems(),
 
@@ -137,9 +146,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
 
       characterRunes: this.getCharacterRuneImgs(), // Array of element runes with > 0% chance
-      loadedMissileSr: this.getLoadedMissileSr(), // (html) Precalculated missile weapon SRs if loaded at start of round
-      unloadedMissileSr: this.getUnloadedMissileSr(), // (html) Precalculated missile weapon SRs if not loaded at start of round
-      itemLocationTree: this.getItemLocationTree(), // physical items reorganised as a tree of items containing items
+      loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
+      unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
+      // @ts-ignore 0.8 toObject
+      itemLocationTree: createItemLocationTree(this.actor.items.toObject(false)), // physical items reorganised as a tree of items containing items
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
@@ -154,7 +164,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       isGM: !!game.user?.isGM,
       showUiSection: this.getUiSectionVisibility(),
     };
-    return sheetData;
+    console.log(templateData);
+    return templateData;
   }
 
   private getPhysicalItemLocations(): string[] {
@@ -168,13 +179,6 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         ...physicalItems.map((i: Item) => i.data.data.location),
       ]),
     ];
-  }
-
-  private getItemLocationTree(): LocationNode {
-    const physicalItems: RqgItem[] = this.actor.items.filter(
-      (i: Item) => i.data.data.physicalItemType
-    );
-    return createItemLocationTree(physicalItems);
   }
 
   private getSpiritMagicPointSum(): number {
@@ -215,7 +219,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     );
   }
 
-  private getLoadedMissileSr(): string[] {
+  private getLoadedMissileSr(dexSr: number): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const loadedMissileSr = [
       ["1", reloadIcon, "5", reloadIcon, "10"],
@@ -225,16 +229,10 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       ["4", reloadIcon],
       ["5", reloadIcon],
     ];
-    const dexStrikeRank = this.actor.data.data.attributes.dexStrikeRank;
-    if (dexStrikeRank == null) {
-      const msg = "Dex SR was not calculated.";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this.actor);
-    }
-    return loadedMissileSr[dexStrikeRank];
+    return loadedMissileSr[dexSr];
   }
 
-  private getUnloadedMissileSr(): string[] {
+  private getUnloadedMissileSr(dexSr: number): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const unloadedMissileSr = [
       [reloadIcon, "5", reloadIcon, "10"],
@@ -244,13 +242,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       [reloadIcon, "9"],
       [reloadIcon, "10"],
     ];
-    const dexStrikeRank = this.actor.data.data.attributes.dexStrikeRank;
-    if (dexStrikeRank == null) {
-      const msg = "Dex SR was not calculated.";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this.actor);
-    }
-    return unloadedMissileSr[dexStrikeRank];
+    return unloadedMissileSr[dexSr];
   }
 
   private getCharacterRuneImgs(): RuneItemData[] {
@@ -400,7 +392,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     if (newHealth !== this.actor.data.data.attributes.health) {
       // Chat to all owners
       const whisperRecipients = Object.entries(this.actor.data.permission)
-        .filter(([userId, permission]) => permission >= ENTITY_PERMISSIONS.OBSERVER)
+        .filter(([userId, permission]) => permission >= CONST.ENTITY_PERMISSIONS.OBSERVER)
         .map(([userId, permission]) => userId);
 
       const speakerName = this.token?.name || this.actor.data.token.name;
@@ -416,7 +408,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       }
       message &&
         ChatMessage.create({
-          user: game.user?._id,
+          user: game.user?.id,
           speaker: { alias: speakerName },
           content: message,
           whisper: whisperRecipients,
@@ -425,10 +417,11 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     }
 
     this.actor.data.data.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
-    if (this.actor.isToken) {
-      const tokenHealthBefore = this.actor.data.data.attributes.health;
-      this.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-      HitLocationSheet.setTokenEffect(this.actor.token!, tokenHealthBefore);
+    if (this.token) {
+      const tokenHealthBefore = this.token.actor.data.data.attributes.health;
+      this.token.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
+      // @ts-ignore 0.8 object - token is actually a TokenDocument?
+      HitLocationSheet.setTokenEffect(this.token.object, tokenHealthBefore);
     }
 
     formData["data.attributes.health"] = newHealth;
@@ -456,7 +449,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
   activateListeners(html: JQuery): void {
     super.activateListeners(html);
-    if (!this.actor.owner) {
+    // @ts-ignore 0.8
+    if (!this.actor.isOwner) {
       // Only owners are allowed to interact
       return;
     }
@@ -532,7 +526,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Roll against Item Ability Chance
     this.form!.querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.getOwnedItem(itemId) as Item<any>;
+      const item = this.actor.items.get(itemId) as Item<any>;
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: Event) => {
@@ -556,7 +550,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Roll Spirit Magic
     (this.form as HTMLElement).querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.getOwnedItem(itemId);
+      const item = this.actor.items.get(itemId);
       if (!item) {
         const msg = `Couldn't find item [${itemId}] to roll Spirit Magic against`;
         ui.notifications?.error(msg);
@@ -600,16 +594,21 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Show Weapon Chat Card
     (this.form as HTMLElement).querySelectorAll("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const skillItemId = getRequiredDomDataset($(el as HTMLElement), "skill-id");
+      const skillItemId = getDomDataset($(el as HTMLElement), "skill-id");
+      if (!skillItemId) {
+        console.warn(
+          `Weapon ${weaponItemId} is missing a skill. Normal if you just dragged the weapon in, but should only happen then`
+        );
+      }
 
       let clickCount = 0;
       el.addEventListener("click", async (ev: Event) => {
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-        if (clickCount >= 2) {
+        if (skillItemId && clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
           await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
           clickCount = 0;
-        } else if (clickCount === 1) {
+        } else if (skillItemId && clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
               await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
@@ -635,10 +634,14 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         game.combats?.forEach(async (combat) => {
           const combatant = token && combat.getCombatantByToken(token.id);
           combatant &&
-            (await combat.updateEmbeddedEntity("Combatant", {
-              _id: combatant._id,
-              initiative: sr,
-            }));
+            // @ts-ignore 0.8
+            (await combat.updateEmbeddedDocuments("Combatant", [
+              {
+                // @ts-ignore 0.8
+                _id: combatant.id,
+                initiative: sr,
+              },
+            ]));
         });
       }
 
@@ -669,7 +672,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Edit Item (open the item sheet)
     (this.form as HTMLElement).querySelectorAll("[data-item-edit]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.getOwnedItem(itemId);
+      const item = this.actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`;
         ui.notifications?.error(msg);
@@ -688,8 +691,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     (this.form as HTMLElement).querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
       el.addEventListener("click", async () => {
-        const item = this.actor.getOwnedItem(itemId) as Item<any>;
-        if (!item) {
+        const item = this.actor.items.get(itemId);
+        if (!item || !("equippedStatus" in item.data.data)) {
           const msg = `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`;
           ui.notifications?.error(msg);
           throw new RqgError(msg);
@@ -699,7 +702,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             (equippedStatuses.indexOf(item.data.data.equippedStatus) + 1) % equippedStatuses.length
           ];
         // Will trigger a Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
-        await item.update({ "data.equippedStatus": newStatus }, {});
+        await item.update({ "data.equippedStatus": newStatus });
       });
     });
 
@@ -708,7 +711,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       const path = getRequiredDomDataset($(el as HTMLElement), "item-edit-value");
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
       el.addEventListener("change", async (event) => {
-        const item = this.actor.getOwnedItem(itemId);
+        const item = this.actor.items.get(itemId);
         if (!item) {
           const msg = `Couldn't find itemId [${itemId}] to edit an item (when clicked).`;
           ui.notifications?.error(msg);
@@ -749,7 +752,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
   }
 
   static confirmItemDelete(actor: RqgActor, itemId: string): void {
-    const item = actor.getOwnedItem(itemId);
+    const item = actor.items.get(itemId);
     if (!item) {
       const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to show delete item Dialog (when clicked).`;
       ui.notifications?.error(msg);
@@ -765,7 +768,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             icon: '<i class="fas fa-check"></i>',
             label: "Confirm",
             callback: async () => {
-              await actor.deleteOwnedItem(itemId);
+              // @ts-ignore 0.8
+              await actor.deleteEmbeddedDocuments("Item", [itemId]);
             },
           },
           cancel: {
@@ -782,17 +786,20 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
   }
 
   // TODO Move somewhere else!
+  // TODO Compare to new foundry implementation!!!
   static async showJournalEntry(id: string, packName?: string): Promise<void> {
     let entity;
 
     // Compendium Link
     if (packName) {
       const pack = game.packs?.get(packName);
-      entity = id && pack ? await pack.getEntity(id) : null;
+      // @ts-ignore 0.8
+      entity = id && pack ? await pack.getDocument(id) : null;
 
       // World Entity Link
     } else {
-      const cls = CONFIG.JournalEntry.entityClass;
+      // @ts-ignore 0.8
+      const cls = CONFIG.JournalEntry.documentClass;
       // @ts-ignore
       entity = cls.collection.get(id);
     }

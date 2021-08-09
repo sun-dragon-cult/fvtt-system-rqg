@@ -91,10 +91,10 @@
   <section class="sheet-body">
     <div class="tab combat" data-group="primary" data-tab="combat">
         <div class="flex-row flex-wrap">
-          {{#if showUiSection.health}}{{> "systems/rqg/actors/parts/health.html" }}{{/if}}
+          {{#if showUiSection.health}}{{> "systems/rqg/actors/sheet-parts/health.html" }}{{/if}}
           <div>
-            {{#if showUiSection.combat}}{{> "systems/rqg/actors/parts/combat.html" }}{{/if}}
-            {{> "systems/rqg/actors/parts/spirit-combat.html" }}
+            {{#if showUiSection.combat}}{{> "systems/rqg/actors/sheet-parts/combat.html" }}{{/if}}
+            {{> "systems/rqg/actors/sheet-parts/spirit-combat.html" }}
           </div>
           <div style="width: 100%">
             <h2>Allies & Notes</h2>
@@ -105,55 +105,55 @@
 
     {{#if showUiSection.runes}}
     <div class="tab runes" data-group="primary" data-tab="runes">
-      {{> "systems/rqg/actors/parts/runes-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/runes-tab.html" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.spiritMagic}}
     <div class="tab spiritmagic" data-group="primary" data-tab="spiritmagic">
-      {{> "systems/rqg/actors/parts/spirit-magic-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/spirit-magic-tab.html" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.runeMagic}}
     <div class="tab runemagic" data-group="primary" data-tab="runemagic">
-      {{> "systems/rqg/actors/parts/rune-magic-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/rune-magic-tab.html" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.sorcery}}
     <div class="tab sorcery" data-group="primary" data-tab="sorcery">
-      {{> "systems/rqg/actors/parts/sorcery-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/sorcery-tab.html" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.skills}}
     <div class="tab skills" data-group="primary" data-tab="skills">
-      {{> "systems/rqg/actors/parts/skills-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/skills-tab.html" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.gear}}
     <div class="tab gear" data-group="primary" data-tab="gear">
-      {{> "systems/rqg/actors/parts/gear-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/gear-tab.html" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.passions}}
     <div class="tab passions" data-group="primary" data-tab="passions">
-      {{> "systems/rqg/actors/parts/passions-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/passions-tab.html" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.background}}
     <div class="tab background" data-group="primary" data-tab="background">
-      {{> "systems/rqg/actors/parts/background-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/background-tab.html" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.activeEffects}}
     <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
-      {{> "systems/rqg/actors/parts/activeeffectstesting-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.html" }}
     </div>
     {{/if}}
   </section>

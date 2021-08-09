@@ -1,55 +1,55 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     <fieldset>
       <legend>Name</legend>
-      <label>Name prefix<br><input type="text" name="data.namePrefix" value="{{item.data.namePrefix}}"></label><br>
-      <label>Armor Type</span><br><input type="text" name="data.armorType" value="{{item.data.armorType}}" list="armorTypeNames"></label><br>
-      <label><span class="paren-head">Material</span><br>( <input type="text" name="data.material" value="{{item.data.material}}" list="materialNames"> )</label><br>
+      <label>Name prefix<br><input type="text" name="data.namePrefix" value="{{armorData.namePrefix}}"></label><br>
+      <label>Armor Type<br><input type="text" name="data.armorType" value="{{armorData.armorType}}" list="armorTypeNames"></label><br>
+      <label><span class="paren-head">Material</span><br>( <input type="text" name="data.material" value="{{armorData.material}}" list="materialNames"> )</label><br>
     </fieldset>
   </header>
   <main>
-    <label>Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{item.data.encumbrance}}"></label><br>
+    <label>Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{armorData.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
-      {{#select data.equippedStatus}} {{#each data.equippedStatuses}}
+      {{#select armorData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
         <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select>
     <label>Hit Locations</label><br>
-    {{#each data.hitLocations}}
+    {{#each armorData.hitLocations}}
     <span><input name="data.hitLocations" type="text" value="{{this}}"></span>
     {{/each}}
     <input name="data.hitLocations" type="text" list="allHitLocations" placeholder="Add new covered hit location"><br>
 
-    <label>Absorbs <input type="number" min="0" max="99" name="data.absorbs" value="{{item.data.absorbs}}"></label><br>
+    <label>Absorbs <input type="number" min="0" max="99" name="data.absorbs" value="{{armorData.absorbs}}"></label><br>
 
     <label>Move Quietly Penalty <input type="number" min="0" max="99" name="data.moveQuietlyPenalty"
-                                       value="{{item.data.moveQuietlyPenalty}}"></label><br>
-    <label>Fits size <input type="number" min="1" max="99" name="data.size" value="{{item.data.size}}"></label><br>
-    <label>Price (real) <input type="number" min="0" max="99999999" name="data.price.real" value="{{item.data.price.real}}">(L)</label><br>
-    <label>Price (estimated) <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{item.data.price.estimated}}">(L)</label><br>
-    <label>Location <input type="text" name="data.location" value="{{item.data.location}}"></label><br>
-    <label>Attuned to <input type="text" name="data.attunedTo" value="{{item.data.attunedTo}}"></label><br>
-    <label>Description {{editor content=data.description target="data.description"
+                                       value="{{armorData.moveQuietlyPenalty}}"></label><br>
+    <label>Fits size <input type="number" min="1" max="99" name="data.size" value="{{armorData.size}}"></label><br>
+    <label>Price (real) <input type="number" min="0" max="99999999" name="data.price.real" value="{{armorData.price.real}}">(L)</label><br>
+    <label>Price (estimated) <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{armorData.price.estimated}}">(L)</label><br>
+    <label>Location <input type="text" name="data.location" value="{{armorData.location}}"></label><br>
+    <label>Attuned to <input type="text" name="data.attunedTo" value="{{armorData.attunedTo}}"></label><br>
+    <label>Description {{editor content=armorData.description target="data.description"
       button=true owner=owner editable=editable}}
     </label><br>
-    <label>GM Notes {{editor content=data.gmNotes target="data.gmNotes"
+    <label>GM Notes {{editor content=armorData.gmNotes target="data.gmNotes"
       button=true owner=owner editable=editable}}
     </label>
   </main>
-  <br>{{> "systems/rqg/items/parts/itemActiveEffects.html"}}
+  <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
   <datalist id="allHitLocations">
-    {{#each data.allHitLocations}}
+    {{#each sheetSpecific.allHitLocations}}
     <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>
   <datalist id="armorTypeNames">
-    {{#each data.armorTypeNames}}
+    {{#each sheetSpecific.armorTypeNames}}
       <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>
   <datalist id="materialNames">
-    {{#each data.materialNames}}
+    {{#each sheetSpecific.materialNames}}
       <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>

@@ -1,15 +1,15 @@
-import { Skill } from "../../items/skill-item/skill";
-import { BaseItem } from "../../items/baseItem";
-import { HitLocation } from "../../items/hit-location-item/hitLocation";
-import { Gear } from "../../items/gear-item/gear";
-import { Armor } from "../../items/armor-item/armor";
-import { MeleeWeapon } from "../../items/melee-weapon-item/meleeWeapon";
-import { MissileWeapon } from "../../items/missile-weapon-item/missileWeapon";
-import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
-import { Cult } from "../../items/cult-item/cult";
-import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
-import { Passion } from "../../items/passion-item/passion";
-import { Rune } from "../../items/rune-item/rune";
+import { Skill } from "../../actors/item-specific/skill";
+import { AbstractEmbeddedItem } from "../../actors/item-specific/abstractEmbeddedItem";
+import { HitLocation } from "../../actors/item-specific/hitLocation";
+import { Gear } from "../../actors/item-specific/gear";
+import { Armor } from "../../actors/item-specific/armor";
+import { MeleeWeapon } from "../../actors/item-specific/meleeWeapon";
+import { MissileWeapon } from "../../actors/item-specific/missileWeapon";
+import { SpiritMagic } from "../../actors/item-specific/spiritMagic";
+import { Cult } from "../../actors/item-specific/cult";
+import { RuneMagic } from "../../actors/item-specific/runeMagic";
+import { Passion } from "../../actors/item-specific/passion";
+import { Rune } from "../../actors/item-specific/rune";
 import { ArmorItemData } from "./armorData";
 import { SkillItemData } from "./skillData";
 import { PassionItemData } from "./passionData";
@@ -38,9 +38,9 @@ export enum ItemTypeEnum {
 }
 
 /**
- * Map from ItemTypeEnum to responsible BaseItem class.
+ * Map from ItemTypeEnum to responsible AbstractEmbeddedItem class.
  */
-export const ResponsibleItemClass: Map<string, typeof BaseItem> = new Map([
+export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = new Map([
   [ItemTypeEnum.Skill, Skill],
   [ItemTypeEnum.Passion, Passion],
   [ItemTypeEnum.Rune, Rune],

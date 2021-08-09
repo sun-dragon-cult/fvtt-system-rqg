@@ -22,11 +22,6 @@ export interface RuneData extends IAbility, JournalEntryLink {
   minorRunes: string[];
   /** For Sorcery */
   isMastered: boolean;
-  // --- Derived / Convenience Data Below ---
-  /** For selecting which in sheet */
-  allRunes?: string[];
-  /** For selecting which in sheet */
-  runeTypes?: RuneTypeEnum[];
 }
 
 export interface RuneItemData extends Item.Data<RuneData> {

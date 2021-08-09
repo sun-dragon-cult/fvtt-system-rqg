@@ -26,15 +26,14 @@ export const combatMenuOptions = (actor: RqgActor, token: Token | null): Context
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "skill-id");
-      const item = itemId && actor.getOwnedItem(itemId);
-      if (item && "hasExperience" in item.data.data) {
-        const toggledExperience = !item.data.data.hasExperience;
-        await item.update({ "data.hasExperience": toggledExperience }, {});
-      } else {
+      const item = itemId && actor.items.get(itemId);
+      if (!item || !("hasExperience" in item.data.data)) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience from the combat context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
+      const toggledExperience = !item.data.data.hasExperience;
+      await item.update({ "data.hasExperience": toggledExperience }, {});
     },
   },
   {
@@ -43,15 +42,14 @@ export const combatMenuOptions = (actor: RqgActor, token: Token | null): Context
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
-      const skillItem = skillItemId && actor.getOwnedItem(skillItemId);
-      if (skillItem && skillItem.sheet) {
-        skillItem.sheet.render(true);
-        return;
-      } else {
+      const skillItem = skillItemId && actor.items.get(skillItemId);
+      if (!skillItem || !skillItem.sheet) {
         const msg = `Couldn't find itemId [${skillItemId}] on actor ${actor.name} to show skill Item sheet from the combat context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
+      skillItem.sheet.render(true);
+      return;
     },
   },
   {
@@ -60,14 +58,13 @@ export const combatMenuOptions = (actor: RqgActor, token: Token | null): Context
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");
-      const item = weaponItemId && actor.getOwnedItem(weaponItemId);
-      if (item && item.sheet) {
-        item.sheet.render(true);
-      } else {
+      const item = weaponItemId && actor.items.get(weaponItemId);
+      if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${weaponItemId}] on actor ${actor.name} to show weapon item sheet from the combat context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
+      item.sheet.render(true);
     },
   },
   {

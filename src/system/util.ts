@@ -54,7 +54,7 @@ export function getActorFromIds(actorId: string, tokenId?: string): RqgActor {
   if (!actor) {
     throw new RqgError("game.actors is not defined", token, tokenId);
   }
-  return (token ? Actor.fromToken(token) : actor) as RqgActor;
+  return (token ? token.document.getActor() : actor) as RqgActor;
 }
 
 export function getSpeakerName(actorId: string, tokenId?: string): string {
@@ -71,6 +71,19 @@ export function getSpeakerName(actorId: string, tokenId?: string): string {
     throw new RqgError("game.actors or actorId is not defined", actorId);
   }
   return actor.data.token.name;
+}
+
+export function getAllRunesIndex(): Compendium.IndexEntry[] {
+  const runeCompendiumName = game.settings.get("rqg", "runesCompendium") as string;
+  const pack = runeCompendiumName && game.packs!.get(runeCompendiumName);
+  // @ts-ignore 0.8
+  if (!pack?.indexed) {
+    const msg = "Runes pack is not yet indexed, try again";
+    ui.notifications?.error(msg);
+    game.packs!.get(runeCompendiumName)!.getIndex();
+  }
+  // @ts-ignore 0.8
+  return pack.index as unknown as Compendium.IndexEntry[];
 }
 
 export class RqgError implements Error {

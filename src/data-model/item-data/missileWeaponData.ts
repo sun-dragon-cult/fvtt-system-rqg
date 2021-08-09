@@ -1,6 +1,5 @@
-import { emptyPrice, EquippedStatus, IPhysicalItem } from "./IPhysicalItem";
+import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
-import { RqgItem } from "../../items/rqgItem";
 import { CombatManeuver } from "./meleeWeaponData";
 import { ItemTypeEnum } from "./itemTypes";
 
@@ -30,17 +29,6 @@ export interface MissileWeaponData extends IPhysicalItem {
   /** ItemId of ammunition for this projectile weapon */
   projectileId: string;
   description: string;
-
-  // --- Derived / Convenience Data Below ---
-
-  allCombatManeuvers?: any;
-  missileWeaponSkills?: RqgItem[];
-  ownedProjectiles?: RqgItem[];
-  /** For showing the name of the linked skill if the item isn't owned */
-  skillName?: string;
-  isOwned?: boolean;
-  /** For sheet dropdown */
-  equippedStatuses?: EquippedStatus[];
 }
 
 export interface MissileWeaponItemData extends Item.Data<MissileWeaponData> {

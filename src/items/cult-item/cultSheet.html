@@ -1,37 +1,41 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     <div>
-      <input type="text" name="name" value="{{item.name}}" placeholder="Cult Name"><br>
-      <input type="text" name="data.tagline" value="{{item.data.tagline}}" placeholder="Cult Tagline">
+      <input type="text" name="name" value="{{data.name}}" placeholder="Cult Name"><br>
+      <input type="text" name="data.tagline" value="{{cultData.tagline}}" placeholder="Cult Tagline">
     </div>
 
   </header>
   <main>
     <select name="data.rank">
-      {{#select data.rank}} {{#each data.ranksEnum}}
-      <option value="{{this}}">{{this}}</option>
+      {{#select cultData.rank}} {{#each sheetSpecific.ranksEnum}}
+        <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select><br>
-    {{#each data.runes}}
+    {{#each cultData.runes}}
       <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
-    <label>Rune Points <input type="number" min="0" max="99" name="data.runePoints.value" value="{{item.data.runePoints.value}}">/<input type="number" min="0" max="99" name="data.runePoints.max" value="{{item.data.runePoints.max}}"></label><br>
-    <label>Holy Days {{editor content=data.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
-    <label>Actor's Sub Cults {{editor content=data.subCults target="data.subCults" button=true owner=owner editable=editable}}</label><br>
+    <label>Rune Points <input type="number" min="0" max="99" name="data.runePoints.value"
+                              value="{{cultData.runePoints.value}}">/<input type="number" min="0" max="99"
+                                                                             name="data.runePoints.max"
+                                                                             value="{{cultData.runePoints.max}}"></label><br>
+    <label>Holy Days {{editor content=cultData.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
+    <label>Actor's Sub Cults {{editor content=cultData.subCults target="data.subCults" button=true owner=owner editable=editable}}</label><br>
     <br>
-    {{#if data.journalPack}}
-    <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to compendium journal Entry</a>
-    {{else if data.journalId}}
-    <a data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}">Linked to journal Entry</a>
+    {{#if cultData.journalPack}}
+      <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to compendium journal
+        Entry</a>
+    {{else if cultData.journalId}}
+      <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to journal Entry</a>
     {{/if}}
 
     <br><i>Drop a journal on this item to connect a description.</i>
   </main>
   <datalist id="allRunes">
-    {{#each data.allRunes}}
-    <option value="{{name}}">{{name}}</option>
+    {{#each sheetSpecific.allRunes}}
+      <option value="{{name}}">{{name}}</option>
     {{/each}}
   </datalist>
 </form>

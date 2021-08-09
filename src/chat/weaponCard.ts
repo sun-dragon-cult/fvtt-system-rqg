@@ -1,6 +1,6 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
-import { SkillData, SkillItemData } from "../data-model/item-data/skillData";
+import { SkillData } from "../data-model/item-data/skillData";
 import { CombatManeuver, MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
@@ -29,15 +29,31 @@ export class WeaponCard extends ChatMessage {
     token?: Token | null
   ): Promise<void> {
     const defaultModifier = 0;
-    const skillItem = actor.getOwnedItem(skillId) as Item<SkillItemData>;
-
+    const skillItem = actor.items.get(skillId);
+    if (!skillItem || skillItem.data.type !== ItemTypeEnum.Skill) {
+      const msg = `Couldn't find skill with itemId [${skillItem}] on actor ${actor.name} to show a weapon chat card.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
+    const weaponItem = actor.items.get(weaponId);
+    if (
+      !weaponItem ||
+      !(
+        weaponItem.data.type === ItemTypeEnum.MeleeWeapon ||
+        weaponItem.data.type === ItemTypeEnum.MissileWeapon
+      )
+    ) {
+      const msg = `Couldn't find weapon with itemId [${skillItem}] on actor ${actor.name} to show a weapon chat card.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
     const flags: WeaponCardFlags = {
       actorId: actor.id,
       tokenId: token?.id,
-      skillItemData: skillItem.data,
-      weaponItemData: actor.getOwnedItem(weaponId)?.data as
-        | Item.Data<MeleeWeaponData>
-        | Item.Data<MissileWeaponData>,
+      // @ts-ignore 0.8
+      skillItemData: skillItem.data.toObject(false),
+      // @ts-ignore 0.8
+      weaponItemData: weaponItem.data.toObject(false),
       result: undefined,
       formData: {
         modifier: defaultModifier,
@@ -99,7 +115,7 @@ export class WeaponCard extends ChatMessage {
         flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value; // slash | crush | impale | special | parry
         const projectileItemData = (flags.weaponItemData.data as MissileWeaponData)
           .isProjectileWeapon
-          ? (actor.getOwnedItem((flags.weaponItemData.data as MissileWeaponData).projectileId)
+          ? (actor.items.get((flags.weaponItemData.data as MissileWeaponData).projectileId)
               ?.data as Item.Data<MissileWeaponData>)
           : flags.weaponItemData;
         if (
@@ -111,7 +127,8 @@ export class WeaponCard extends ChatMessage {
             _id: projectileItemData._id,
             data: { quantity: --projectileItemData.data.quantity },
           };
-          await actor.updateOwnedItem(updateData);
+          // @ts-ignore 0.8
+          await actor.updateEmbeddedDocuments("Item", [updateData]);
         } else if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
           ui.notifications?.warn("Out of ammo!");
           return false;
@@ -129,7 +146,9 @@ export class WeaponCard extends ChatMessage {
         await WeaponCard.damageRoll(flags, damageType);
         return false;
       case "hitLocationRoll":
-        const roll = Roll.create("1D20").evaluate();
+        const roll = new Roll("1D20");
+        // @ts-ignore async roll
+        await roll.evaluate({ async: true });
         const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
         await roll.toMessage({
           speaker: { alias: speakerName },
@@ -169,7 +188,10 @@ export class WeaponCard extends ChatMessage {
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success && !skillItemData.data.hasExperience) {
-      await actor.updateOwnedItem({ _id: skillItemData._id, data: { hasExperience: true } });
+      // @ts-ignore 0.8
+      await actor.updateEmbeddedDocuments("Item", [
+        { _id: skillItemData._id, data: { hasExperience: true } },
+      ]);
       const specialization = skillItemData.data.specialization
         ? ` (${skillItemData.data.specialization})`
         : "";
@@ -187,7 +209,7 @@ export class WeaponCard extends ChatMessage {
       user: game.user?.id,
       speaker: { alias: speakerName },
       content: html,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u._id === game.user?._id),
+      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },
@@ -227,10 +249,10 @@ export class WeaponCard extends ChatMessage {
       ) {
         weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
       } else if (flags.formData.combatManeuver === CombatManeuver.Crush) {
-        damageBonus = WeaponCard.crushSpecialDamage(damageBonus);
+        damageBonus = await WeaponCard.crushSpecialDamage(damageBonus);
       } else if (flags.formData.combatManeuver === CombatManeuver.Parry) {
         if (flags.weaponItemData.data.combatManeuvers.includes(CombatManeuver.Crush)) {
-          damageBonus = WeaponCard.crushSpecialDamage(damageBonus);
+          damageBonus = await WeaponCard.crushSpecialDamage(damageBonus);
         } else if (
           flags.weaponItemData.data.combatManeuvers.some((m) =>
             [CombatManeuver.Slash, CombatManeuver.Impale].includes(m)
@@ -246,8 +268,11 @@ export class WeaponCard extends ChatMessage {
       }
     }
     const maximise = damageType === "Max Special";
-    const roll = Roll.create(`${weaponDamage} ${damageBonus}`).evaluate({
+    const roll = new Roll(`${weaponDamage} ${damageBonus}`);
+    await roll.evaluate({
       maximize: maximise,
+      // @ts-ignore 0.8 async roll
+      async: true,
     });
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     await roll.toMessage({
@@ -279,20 +304,22 @@ export class WeaponCard extends ChatMessage {
       speaker: { alias: speakerName },
       whisper: whisperRecipients,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      sound: draw.roll ? CONFIG.sounds.dice : undefined,
+      // @ts-ignore roll string?
+      roll: draw.roll,
+      // @ts-ignore 0.8 null
+      sound: draw.roll ? CONFIG.sounds.dice : null,
       flags: { "core.RollTable": fumbleTable.id },
     };
 
     // Render the chat card which combines the dice roll with the drawn results
     messageData.content = await renderTemplate(CONFIG.RollTable.resultTemplate, {
-      description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true } as any),
+      // @ts-ignore 0.8
+      description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true }),
       results: draw.results.map((r) => {
-        r = duplicate(r);
-        // @ts-ignore TODO redo without the protected method
-        r.text = fumbleTable._getResultChatText(r);
-        r.icon = r.img || CONFIG.RollTable.resultIcon;
+        r.text = r.getChatText();
         return r;
       }),
+      rollHTML: fumbleTable.data.displayRoll ? await draw.roll.render() : null,
       table: fumbleTable,
     });
 
@@ -300,9 +327,11 @@ export class WeaponCard extends ChatMessage {
     await ChatMessage.create(messageData);
   }
 
-  private static crushSpecialDamage(damageBonus: string): string {
-    const maxDamageBonus = Roll.create(damageBonus).evaluate({ maximize: true }).total;
-    return damageBonus + " + " + maxDamageBonus;
+  private static async crushSpecialDamage(damageBonus: string): Promise<string> {
+    const maxDamageBonus = new Roll(damageBonus);
+    // @ts-ignore 0.8 async roll
+    await maxDamageBonus.evaluate({ maximize: true, async: true });
+    return damageBonus + " + " + maxDamageBonus.total;
   }
 
   private static slashImpaleSpecialDamage(weaponDamage: string): string {
