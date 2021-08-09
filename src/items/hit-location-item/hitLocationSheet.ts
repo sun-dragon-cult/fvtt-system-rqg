@@ -120,7 +120,7 @@ export class HitLocationSheet extends RqgItemSheet {
     actorUpdates && (await actor.update(actorUpdates));
 
     if (actor.isToken) {
-      await HitLocationSheet.setTokenEffect(actor.token!, actorHealthBefore);
+      await HitLocationSheet.setTokenEffect(actor.token.object!, actorHealthBefore);
     } else {
       const activeTokens = actor.getActiveTokens(true);
       activeTokens.length &&
@@ -217,7 +217,7 @@ export class HitLocationSheet extends RqgItemSheet {
     actorUpdates && (await actor.update(actorUpdates));
 
     if (actor.isToken) {
-      await HitLocationSheet.setTokenEffect(actor.token!, actorHealthBefore);
+      await HitLocationSheet.setTokenEffect(actor.token!.object, actorHealthBefore);
     } else {
       const activeTokens = actor.getActiveTokens(true);
       activeTokens.length &&
