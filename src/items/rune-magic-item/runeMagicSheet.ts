@@ -16,6 +16,7 @@ type RuneMagicSheetSpecificData = {
   durations?: string[];
   actorCults?: any[];
   allRunes?: any[]; // For select on sheet {_id: , name:, img: }
+  journalEntryName: string | undefined;
 };
 
 export class RuneMagicSheet extends RqgItemSheet {
@@ -46,6 +47,21 @@ export class RuneMagicSheet extends RqgItemSheet {
       sheetSpecific.actorCults = this.actor
         .getEmbeddedCollection("Item")
         .filter((i: RqgItem) => i.type === ItemTypeEnum.Cult);
+    }
+
+    if (runeMagicData.journalId) {
+      if (runeMagicData.journalPack) {
+        const pack = game.packs?.get(runeMagicData.journalPack);
+        // @ts-ignore
+        sheetSpecific.journalEntryName = pack?.index.get(runeMagicData.journalId)?.name;
+      } else {
+        sheetSpecific.journalEntryName = game.journal?.get(runeMagicData.journalId)?.name;
+      }
+      if (!sheetSpecific.journalEntryName) {
+        ui.notifications?.warn(
+          "Skill description link not found - please make sure the journal exists or relink to another description"
+        );
+      }
     }
     return context;
   }

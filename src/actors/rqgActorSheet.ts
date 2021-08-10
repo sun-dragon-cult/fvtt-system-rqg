@@ -799,9 +799,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       // World Entity Link
     } else {
       // @ts-ignore 0.8
-      const cls = CONFIG.JournalEntry.documentClass;
-      // @ts-ignore
-      entity = cls.collection.get(id);
+      const collection = CONFIG.JournalEntry.collection.instance;
+      entity = collection.get(id);
     }
     if (!entity) {
       const msg = `Couldn't find journal with id [${id}] and packName ${packName} to to show it.`;

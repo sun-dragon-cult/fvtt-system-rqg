@@ -24,7 +24,20 @@ export class CultSheet extends RqgItemSheet {
 
     sheetSpecific.allRunes = getAllRunesIndex();
     sheetSpecific.ranksEnum = Object.values(CultRankEnum);
-    console.log(context);
+    if (cultData.journalId) {
+      if (cultData.journalPack) {
+        const pack = game.packs?.get(cultData.journalPack);
+        // @ts-ignore
+        sheetSpecific.journalEntryName = pack?.index.get(cultData.journalId)?.name;
+      } else {
+        sheetSpecific.journalEntryName = game.journal?.get(cultData.journalId)?.name;
+      }
+      if (!sheetSpecific.journalEntryName) {
+        ui.notifications?.warn(
+          "Cult description link not found - please make sure the journal exists or relink to another description"
+        );
+      }
+    }
     return context;
   }
 

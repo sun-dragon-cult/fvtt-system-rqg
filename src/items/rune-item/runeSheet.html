@@ -32,9 +32,9 @@
       <label><input type="checkbox" name="data.isMastered" {{checked runeData.isMastered}}>Mastered (Sorcery)</label><br>
       <br>
       {{#if runeData.journalPack}}
-      <a data-journal-pack="{{runeData.journalPack}}" data-journal-id="{{runeData.journalId}}">Linked to compendium journal Entry</a>
+        <a data-journal-pack="{{runeData.journalPack}}" data-journal-id="{{runeData.journalId}}">Linked to compendium [{{runeData.journalPack}}] journal Entry [{{sheetSpecific.journalEntryName}}]</a>
       {{else if runeData.journalId}}
-      <a data-journal-pack="{{runeData.journalPack}}" data-journal-id="{{runeData.journalId}}">Linked to journal Entry</a>
+        <a data-journal-pack="{{runeData.journalPack}}" data-journal-id="{{runeData.journalId}}">Linked to journal Entry [{{sheetSpecific.journalEntryName}}]</a>
       {{/if}}
 
       <br><i>Drop a journal on this item to connect a description.</i>

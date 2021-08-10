@@ -19,6 +19,20 @@ export class SkillSheet extends RqgItemSheet {
     const context = super.getData() as any;
     const skillData = (context.skillData = context.data.data) as SkillData;
     const sheetSpecific = (context.sheetSpecific = {} as any);
+    if (skillData.journalId) {
+      if (skillData.journalPack) {
+        const pack = game.packs?.get(skillData.journalPack);
+        // @ts-ignore
+        sheetSpecific.journalEntryName = pack?.index.get(skillData.journalId)?.name;
+      } else {
+        sheetSpecific.journalEntryName = game.journal?.get(skillData.journalId)?.name;
+      }
+      if (!sheetSpecific.journalEntryName) {
+        ui.notifications?.warn(
+          "Skill description link not found - please make sure the journal exists or relink to another description"
+        );
+      }
+    }
 
     if (!skillData.skillName) {
       skillData.skillName = context.data.name;

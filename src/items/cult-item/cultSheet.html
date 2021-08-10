@@ -25,10 +25,10 @@
     <label>Actor's Sub Cults {{editor content=cultData.subCults target="data.subCults" button=true owner=owner editable=editable}}</label><br>
     <br>
     {{#if cultData.journalPack}}
-      <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to compendium journal
-        Entry</a>
+      <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to compendium [{{cultData.journalPack}}] journal
+        Entry [{{sheetSpecific.journalEntryName}}]</a>
     {{else if cultData.journalId}}
-      <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to journal Entry</a>
+      <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to journal Entry [{{sheetSpecific.journalEntryName}}]</a>
     {{/if}}
 
     <br><i>Drop a journal on this item to connect a description.</i>

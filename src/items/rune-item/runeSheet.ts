@@ -26,6 +26,21 @@ export class RuneSheet extends RqgItemSheet {
     const allRunesIndex = getAllRunesIndex();
     sheetSpecific.allRunes = allRunesIndex.map((r) => r.name);
     sheetSpecific.runeTypes = Object.values(RuneTypeEnum);
+
+    if (runeData.journalId) {
+      if (runeData.journalPack) {
+        const pack = game.packs?.get(runeData.journalPack);
+        // @ts-ignore
+        sheetSpecific.journalEntryName = pack?.index.get(runeData.journalId)?.name;
+      } else {
+        sheetSpecific.journalEntryName = game.journal?.get(runeData.journalId)?.name;
+      }
+      if (!sheetSpecific.journalEntryName) {
+        ui.notifications?.warn(
+          "Rune description link not found - please make sure the journal exists or relink to another description"
+        );
+      }
+    }
     return context;
   }
 

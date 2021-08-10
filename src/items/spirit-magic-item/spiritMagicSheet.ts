@@ -29,6 +29,21 @@ export class SpiritMagicSheet extends RqgItemSheet {
     sheetSpecific.ranges = Object.values(SpiritMagicCastingRangeEnum);
     sheetSpecific.durations = Object.values(SpiritMagicDurationEnum);
     sheetSpecific.types = Object.values(SpiritMagicConcentrationEnum);
+    if (spiritMagicData.journalId) {
+      if (spiritMagicData.journalPack) {
+        const pack = game.packs?.get(spiritMagicData.journalPack);
+        // @ts-ignore
+        sheetSpecific.journalEntryName = pack?.index.get(spiritMagicData.journalId)?.name;
+      } else {
+        sheetSpecific.journalEntryName = game.journal?.get(spiritMagicData.journalId)?.name;
+      }
+      if (!sheetSpecific.journalEntryName) {
+        ui.notifications?.warn(
+          "Skill description link not found - please make sure the journal exists or relink to another description"
+        );
+      }
+    }
+
     return context;
   }
 

@@ -47,10 +47,11 @@
     {{/each}}
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune">
     <br>
+    <br>
     {{#if runeMagicData.journalPack}}
-    <a data-journal-pack="{{runeMagicData.journalPack}}" data-journal-id="{{runeMagicData.journalId}}">Linked to compendium journal Entry</a>
-    {{else if data.journalId}}
-    <a data-journal-pack="{{runeMagicData.journalPack}}" data-journal-id="{{runeMagicData.journalId}}">Linked to journal Entry</a>
+      <a data-journal-pack="{{runeMagicData.journalPack}}" data-journal-id="{{runeMagicData.journalId}}">Linked to compendium [{{runeMagicData.journalPack}}] journal Entry [{{sheetSpecific.journalEntryName}}]</a>
+    {{else if runeMagicData.journalId}}
+      <a data-journal-pack="{{runeMagicData.journalPack}}" data-journal-id="{{runeMagicData.journalId}}">Linked to journal Entry [{{sheetSpecific.journalEntryName}}]</a>
     {{/if}}
 
     <br><i>Drop a journal on this item to connect a description.</i>

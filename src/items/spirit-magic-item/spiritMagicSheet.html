@@ -49,9 +49,9 @@
   <label>spellFocus <input type="text" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}"></label>
   <br>
   {{#if spiritMagicData.journalPack}}
-    <a data-journal-pack="{{spiritMagicData.journalPack}}" data-journal-id="{{spiritMagicData.journalId}}">Linked to compendium journal Entry</a>
+    <a data-journal-pack="{{spiritMagicData.journalPack}}" data-journal-id="{{spiritMagicData.journalId}}">Linked to compendium [{{spiritMagicData.journalPack}}] journal Entry [{{sheetSpecific.journalEntryName}}]</a>
   {{else if spiritMagicData.journalId}}
-    <a data-journal-pack="{{spiritMagicData.journalPack}}" data-journal-id="{{spiritMagicData.journalId}}">Linked to journal Entry</a>
+    <a data-journal-pack="{{spiritMagicData.journalPack}}" data-journal-id="{{spiritMagicData.journalId}}">Linked to journal Entry [{{sheetSpecific.journalEntryName}}]</a>
   {{/if}}
 
   <br><i>Drop a journal on this item to connect a description.</i>
