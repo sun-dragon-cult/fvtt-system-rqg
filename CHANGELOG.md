@@ -1,3 +1,13 @@
+## [1.0.2](https://github.com/wakeand/fvtt-system-rqg/compare/v1.0.1...v1.0.2) (2021-08-11)
+
+
+### Bug Fixes
+
+* world journal links don't work also improve display of linked journals in item sheets ([3213317](https://github.com/wakeand/fvtt-system-rqg/commit/3213317))
+
+
+
+
 ## [1.0.1](https://github.com/wakeand/fvtt-system-rqg/compare/v1.0.0...v1.0.1) (2021-08-09)
 
 
