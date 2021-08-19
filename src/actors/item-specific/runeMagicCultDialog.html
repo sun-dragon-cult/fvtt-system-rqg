@@ -1,0 +1,9 @@
+<h3>Actor: {{actorName}}</h3>
+<h3>Rune Magic: {{runeMagicName}}</h3>
+<label class="mp">Cult
+  <select name="cultId">
+    {{#select cultId}} {{#each actorCults}}
+      <option value="{{id}}">{{name}}</option>
+    {{/each}} {{/select}}
+  </select>
+</label>

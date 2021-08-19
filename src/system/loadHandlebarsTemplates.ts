@@ -24,6 +24,9 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/actors/sheet-parts/condition.html",
     "systems/rqg/actors/sheet-parts/physical-item-location.html",
 
+    // Dialog template for selecting runeMagic Cult
+    "systems/rqg/actors/item-specific/runeMagicCultDialog.html",
+
     // Item sheets
     "systems/rqg/items/passion-item/passionSheet.html",
     "systems/rqg/items/skill-item/skillSheet.html",

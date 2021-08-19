@@ -8,6 +8,8 @@ export abstract class AbstractEmbeddedItem {
   // TODO ***
   // public static init() {}
 
+  static preEmbedItem(actor: RqgActor, item: RqgItem, options: object[], userId: string): void {}
+
   /**
    * Will be called when the item is embedded into an actor.
    */

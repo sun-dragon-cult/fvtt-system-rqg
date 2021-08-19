@@ -78,14 +78,31 @@ export class RqgItem extends Item<RqgItemData> {
     // ResponsibleItemClass.forEach((itemClass) => itemClass.init());
 
     Hooks.on("preCreateItem", (document: any) => {
-      const isDuplicate = RqgItem.isDuplicateItem(document);
-      if (isDuplicate) {
+      const isOwnedItem =
+        document instanceof RqgItem &&
+        // @ts-ignore 0.8
+        document.parent &&
+        Object.values(ItemTypeEnum).includes(document.data.type);
+      if (!isOwnedItem) {
+        return true;
+      }
+
+      if (RqgItem.isDuplicateItem(document)) {
         ui.notifications?.warn(
           // @ts-ignore 0.8
           `${document.parent.name} already has a ${document.data.type} '${document.name}' and duplicates are not allowed`
         );
+        return false;
       }
-      return !isDuplicate;
+
+      if (RqgItem.isRuneMagicWithoutCult(document)) {
+        ui.notifications?.warn(
+          // @ts-ignore 0.8
+          `${document.parent.name} has to join a cult before learning the ${document.name} rune magic spell`
+        );
+        return false;
+      }
+      return true;
     });
   }
 
@@ -116,15 +133,18 @@ export class RqgItem extends Item<RqgItemData> {
 
   // Validate that embedded items are unique (name + type)
   private static isDuplicateItem(document: any): boolean {
-    const isOwnedItem =
-      document instanceof RqgItem &&
-      // @ts-ignore 0.8
-      document.parent &&
-      Object.values(ItemTypeEnum).includes(document.data.type);
-
-    return (
-      isOwnedItem &&
-      document.parent.items.find((i: any) => i.name === document.name && i.type === document.type)
+    return document.parent.items.some(
+      (i: RqgItem) => i.name === document.name && i.type === document.type
     );
+  }
+
+  // Validate that embedded runeMagic can be connected to a cult
+  private static isRuneMagicWithoutCult(document: any): boolean {
+    const isRuneMagic = document.data.type === ItemTypeEnum.RuneMagic;
+    const actorHasCult = document.parent.items.some(
+      (i: RqgItem) => i.data.type === ItemTypeEnum.Cult
+    );
+    const okToAdd = !isRuneMagic || !(isRuneMagic && !actorHasCult);
+    return !okToAdd;
   }
 }

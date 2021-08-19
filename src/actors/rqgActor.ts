@@ -141,6 +141,19 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     return origin;
   }
 
+  protected _preCreateEmbeddedDocuments(
+    embeddedName: string,
+    result: RqgItem[],
+    options: object[],
+    userId: string
+  ): void {
+    if (embeddedName === "Item" && game.user?.id === userId) {
+      result.forEach((d) => {
+        ResponsibleItemClass.get(d.type)?.preEmbedItem(this, d, options, userId);
+      });
+    }
+  }
+
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
     documents: any[], // Document[]

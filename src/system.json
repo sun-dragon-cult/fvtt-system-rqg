@@ -26,7 +26,7 @@
   ],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
-  "gridDistance": 3,
+  "gridDistance": 1.5,
   "gridUnits": "m",
   "minimumCoreVersion": "0.8.6",
   "compatibleCoreVersion": "0.8.9",
