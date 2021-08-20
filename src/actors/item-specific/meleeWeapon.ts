@@ -1,5 +1,5 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
-import { logMisconfiguration } from "../../system/util";
+import { logMisconfiguration, RqgError } from "../../system/util";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
@@ -35,14 +35,15 @@ export class MeleeWeapon extends AbstractEmbeddedItem {
     userId: string
   ): Promise<any> {
     let embeddedSkillId;
-    if (
-      child.data.type === ItemTypeEnum.MeleeWeapon &&
-      !child.data.data.skillId &&
-      child.data.data.skillOrigin
-    ) {
+    if (child.data.type !== ItemTypeEnum.MeleeWeapon) {
+      const msg = `Tried to embed something else than a meleeWeapon`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, child, actor);
+    }
+
+    if (!child.data.data.skillId && child.data.data.skillOrigin) {
       try {
         // Add the specified skill if found
-        // @ts-ignore TODO wrong types
         const skill = (await fromUuid(child.data.data.skillOrigin).catch(() => {
           logMisconfiguration(
             `Couldn't find melee weapon skill with uuid from skillOrigin ${
@@ -52,11 +53,15 @@ export class MeleeWeapon extends AbstractEmbeddedItem {
             child.data
           );
         })) as RqgItem;
-        // @ts-ignore 0.8
-        const embeddedWeaponSkill = await actor.createEmbeddedDocuments("Item", [skill.data]);
+
+        const sameSkillAlreadyOnActor = actor.items.find((i: RqgItem) => i.name === skill.name);
+        const embeddedWeaponSkill = sameSkillAlreadyOnActor
+          ? [sameSkillAlreadyOnActor]
+          : // @ts-ignore 0.8
+            await actor.createEmbeddedDocuments("Item", [skill.data]);
         embeddedSkillId = embeddedWeaponSkill[0].id; // A weapon can only have 1 skill for now
       } catch (e) {
-        logMisconfiguration("Couldn't find the Skill associated with this weapon.", true);
+        logMisconfiguration("Couldn't find the Skill associated with this melee weapon.", true);
       }
     }
     if (embeddedSkillId) {

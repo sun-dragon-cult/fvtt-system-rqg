@@ -44,7 +44,7 @@ export class MissileWeapon extends AbstractEmbeddedItem {
     if (!child.data.data.skillId && child.data.data.skillOrigin) {
       try {
         // Add the specified skill if found
-        const skill = await fromUuid(child.data.data.skillOrigin).catch(() => {
+        const skill = (await fromUuid(child.data.data.skillOrigin).catch(() => {
           logMisconfiguration(
             `Couldn't find missile weapon skill with uuid from skillOrigin ${
               (child.data.data as any).skillOrigin
@@ -52,12 +52,16 @@ export class MissileWeapon extends AbstractEmbeddedItem {
             true,
             child.data
           );
-        });
-        // @ts-ignore 0.8
-        const embeddedWeaponSkill = await actor.createEmbeddedDocuments("Item", [skill.data]);
+        })) as RqgItem;
+
+        const sameSkillAlreadyOnActor = actor.items.find((i: RqgItem) => i.name === skill.name);
+        const embeddedWeaponSkill = sameSkillAlreadyOnActor
+          ? [sameSkillAlreadyOnActor]
+          : // @ts-ignore 0.8
+            await actor.createEmbeddedDocuments("Item", [skill.data]);
         embeddedSkillId = embeddedWeaponSkill[0].id; // A weapon can only have 1 skill for now
       } catch (e) {
-        ui.notifications?.warn("Couldn't find the Skill associated with this weapon.");
+        ui.notifications?.warn("Couldn't find the Skill associated with this missile weapon.");
       }
     }
     if (embeddedSkillId) {
