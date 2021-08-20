@@ -327,10 +327,12 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         !!this.actor.items.filter((i) => i.type === ItemTypeEnum.HitLocation).length,
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) =>
-          [ItemTypeEnum.MeleeWeapon as string, ItemTypeEnum.MissileWeapon as string].includes(
-            i.type
-          )
+        !!this.actor.items.filter(
+          (i) =>
+            i.name === CONFIG.RQG.skillName.dodge ||
+            [ItemTypeEnum.MeleeWeapon as string, ItemTypeEnum.MissileWeapon as string].includes(
+              i.type
+            )
         ).length,
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
