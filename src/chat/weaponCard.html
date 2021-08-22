@@ -4,17 +4,16 @@
     <img class="item" src="{{weaponItemData.img}}">
     <i>{{skillItemData.name}}</i> <span>{{formData.chance}}%</span><br>
 
-    <label>modifier <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label>
+    <label>{{localize 'RQG.modifier'}} <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label>
 
     <div class="flex-row">
-    {{#each weaponItemData.data.combatManeuvers}}
-{{!--      <button name="combatManeuver" value="{{this}}">{{this}}</button> --}}
-      <input type="submit" name="combatManeuver" value="{{this}}" {{#if (eq this ../formData.combatManeuver)}}class="active"{{/if}}>
-    {{/each}}
+      {{#each weaponItemData.data.combatManeuvers}}
+            <button name="combatManeuver" value="{{this}}" {{#if (eq this ../formData.combatManeuver)}}class="active"{{/if}}>{{localize (concat 'RQG.combatManeuver.' this)}}</button>
+      {{/each}}
     </div>
 
     {{#if formData.combatManeuver}}
-    <hr>
+      <hr>
 
       {{#if (eq formData.combatManeuver "parry")}}
         {{#if (eq result 0)}}
@@ -27,24 +26,24 @@
 
         {{#if (eq result 2)}}
           <div class="flex-row">
-            <div class="damage">Damage</div>
-            <input type="submit" name="damageRoll" value="Normal">
-            <input type="submit" name="damageRoll" value="Special">
+            <div class="damage">{{localize 'RQG.Damage'}}</div>
+            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
+            <button name="damageRoll" value="special">{{localize 'RQG.damageRollType.special'}}</button>
           </div>
         {{/if}}
 
         {{#if (eq result 3)}}
           <div class="flex-row">
-            <div class="damage">Damage</div>
-            <input type="submit" name="damageRoll" value="Normal">
-            <input type="submit" name="damageRoll" value="Special">
+            <div class="damage">{{localize 'RQG.Damage'}}</div>
+            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
+            <button name="damageRoll" value="special">{{localize 'RQG.damageRollType.special'}}</button>
           </div>
         {{/if}}
 
         {{#if (eq result 4)}}
           <div class="flex-row">
-            <div class="damage">Damage</div>
-            <input type="submit" name="damageRoll" value="Normal">
+            <div class="damage">{{localize 'RQG.Damage'}}</div>
+            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
           </div>
         {{/if}}
 
@@ -52,9 +51,9 @@
         {{/if}}
 
         {{#if (eq result 6)}}
-          <input type="submit" name="fumble" value="Roll Fumble">
-    {{/if}}
-      {{else}}
+          <button name="fumble">{{localize 'RQG.fumbleRoll'}}</button>
+        {{/if}}
+      {{else}} {{!-- not parry => (slash / impale / grapple / ...) --}}
         {{#if (eq result 0)}}
           <h3>TODO Hyper Critical Not yet implemented</h3>
         {{/if}}
@@ -65,41 +64,41 @@
 
         {{#if (eq result 2)}}
           <div class="flex-row">
-            <div class="damage">Damage</div>
-            <input type="submit" name="damageRoll" value="Normal">
-            <input type="submit" name="damageRoll" value="Special">
-            <input type="submit" name="damageRoll" value="Max Special">
+            <div class="damage">{{localize 'RQG.Damage'}}</div>
+            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
+            <button name="damageRoll" value="special">{{localize 'RQG.damageRollType.special'}}</button>
+            <button name="damageRoll" value="maxSpecial">{{localize 'RQG.damageRollType.maxSpecial'}}</button>
           </div>
-          <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+          <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
         {{/if}}
 
         {{#if (eq result 3)}}
           <div class="flex-row">
-            <div class="damage">Damage</div>
-            <input type="submit" name="damageRoll" value="Normal">
-            <input type="submit" name="damageRoll" value="Special">
+            <div class="damage">{{localize 'RQG.Damage'}}</div>
+            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
+            <button name="damageRoll" value="special">{{localize 'RQG.damageRollType.special'}}</button>
           </div>
-          <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+          <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
         {{/if}}
 
         {{#if (eq result 4)}}
           <div class="flex-row">
-            <div class="damage">Damage</div>
-            <input type="submit" name="damageRoll" value="Normal">
+            <div class="damage">{{localize 'RQG.Damage'}}</div>
+            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
           </div>
-          <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+          <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
         {{/if}}
 
         {{#if (eq result 5)}}
           <div class="flex-row">
-            <div class="damage">Damage</div>
-            <input type="submit" name="damageRoll" value="Normal">
+            <div class="damage">{{localize 'RQG.Damage'}}</div>
+            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
           </div>
-          <input type="submit" name="hitLocationRoll" value="Roll Hitlocation">
+          <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
         {{/if}}
 
         {{#if (eq result 6)}}
-          <input type="submit" name="fumble" value="Roll Fumble">
+          <button name="fumble">{{localize 'RQG.fumbleRoll'}}</button>
         {{/if}}
       {{/if}}
     {{/if}}

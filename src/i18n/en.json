@@ -43,5 +43,24 @@
   "RQG.ArmorMaterial.RingMail": "Ring Mail",
   "RQG.ArmorMaterial.TurtleShell": "Turtle Shell",
   "RQG.ArmorMaterial.Quilted": "Quilted",
-  "RQG.ArmorMaterial.Linen": "Linen"
+  "RQG.ArmorMaterial.Linen": "Linen",
+
+  "RQG.modifier": "modifier",
+
+  "RQG.combatManeuver.crush":  "crush",
+  "RQG.combatManeuver.slash":  "slash",
+  "RQG.combatManeuver.impale":  "impale",
+  "RQG.combatManeuver.grapple":  "grapple",
+  "RQG.combatManeuver.knockback":  "knockback",
+  "RQG.combatManeuver.special":  "special",
+  "RQG.combatManeuver.parry":  "parry",
+
+  "RQG.Damage": "Damage",
+
+  "RQG.damageRollType.normal": "Normal",
+  "RQG.damageRollType.special": "Special",
+  "RQG.damageRollType.maxSpecial": "Max Special",
+
+  "RQG.fumbleRoll": "Roll Fumble",
+  "RQG.hitLocationRoll": "Roll Hit location"
 }

@@ -16,9 +16,15 @@ type WeaponCardFlags = {
   formData: {
     modifier: number;
     chance: number;
-    combatManeuver: string;
+    combatManeuver: CombatManeuver | undefined;
   };
 };
+
+enum DamageRollTypeEnum {
+  Normal = "normal",
+  Special = "special",
+  MaxSpecial = "maxSpecial",
+}
 
 export class WeaponCard extends ChatMessage {
   // TODO Should it extend ChatMessage?
@@ -58,7 +64,7 @@ export class WeaponCard extends ChatMessage {
       formData: {
         modifier: defaultModifier,
         chance: skillItem.data.data.chance || 0,
-        combatManeuver: "",
+        combatManeuver: undefined,
       },
     };
     await ChatMessage.create(await WeaponCard.renderContent(flags));
@@ -112,7 +118,7 @@ export class WeaponCard extends ChatMessage {
 
     switch (actionButton.name) {
       case "combatManeuver":
-        flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value; // slash | crush | impale | special | parry
+        flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value;
         const projectileItemData = (flags.weaponItemData.data as MissileWeaponData)
           .isProjectileWeapon
           ? (actor.items.get((flags.weaponItemData.data as MissileWeaponData).projectileId)
@@ -141,10 +147,12 @@ export class WeaponCard extends ChatMessage {
         }
         await WeaponCard.roll(flags, chatMessage);
         return false;
+
       case "damageRoll":
-        const damageType = (ev as any).originalEvent.submitter.value; // Normal | Special | Max Special);  damageSeverity ??
-        await WeaponCard.damageRoll(flags, damageType);
+        const damageRollType: DamageRollTypeEnum = (ev as any).originalEvent.submitter.value;
+        await WeaponCard.damageRoll(flags, damageRollType);
         return false;
+
       case "hitLocationRoll":
         const roll = new Roll("1D20");
         // @ts-ignore async roll
@@ -156,9 +164,11 @@ export class WeaponCard extends ChatMessage {
           flavor: `Hitlocation`,
         });
         return false;
+
       case "fumble":
         await WeaponCard.fumbleRoll(flags);
         return false;
+
       default:
         const msg = `Unknown button "${actionButton}" in weapon chat card`;
         ui.notifications?.error(msg);
@@ -222,7 +232,16 @@ export class WeaponCard extends ChatMessage {
     return value + modifier;
   }
 
-  private static async damageRoll(flags: WeaponCardFlags, damageType: string): Promise<void> {
+  private static async damageRoll(
+    flags: WeaponCardFlags,
+    damageType: DamageRollTypeEnum
+  ): Promise<void> {
+    if (!flags.formData.combatManeuver) {
+      const msg = `Damage Roll didn't have a combat maneuver`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, flags, damageType);
+    }
+
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
     let damageBonus =
       actor.data.data.attributes.damageBonus !== "0"
@@ -241,12 +260,8 @@ export class WeaponCard extends ChatMessage {
     }
 
     let weaponDamage = flags.weaponItemData.data.damage;
-    if (["Special", "Max Special"].includes(damageType)) {
-      if (
-        [CombatManeuver.Slash, CombatManeuver.Impale].includes(
-          flags.formData.combatManeuver as CombatManeuver
-        )
-      ) {
+    if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageType)) {
+      if ([CombatManeuver.Slash, CombatManeuver.Impale].includes(flags.formData.combatManeuver)) {
         weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
       } else if (flags.formData.combatManeuver === CombatManeuver.Crush) {
         damageBonus = await WeaponCard.crushSpecialDamage(damageBonus);
@@ -267,7 +282,7 @@ export class WeaponCard extends ChatMessage {
         }
       }
     }
-    const maximise = damageType === "Max Special";
+    const maximise = damageType === DamageRollTypeEnum.MaxSpecial;
     const roll = new Roll(`${weaponDamage} ${damageBonus}`);
     await roll.evaluate({
       maximize: maximise,
