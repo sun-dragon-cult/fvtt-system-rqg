@@ -16,8 +16,13 @@ export class ChatCardListeners {
     Hooks.on("renderChatLog", (chatLog: any, html: JQuery) => {
       ChatCardListeners.addChatListeners(html);
     });
-    Hooks.on("renderChatPopout", (chatLog: any, html: JQuery) => {
-      ChatCardListeners.addChatListeners(html);
+    Hooks.on("renderChatPopout", (chatPopout: any, html: JQuery) => {
+      if (html === chatPopout._element) {
+        // This is called on chatMessage.update as well with different html - resulting in double listeners.
+        // To prevent that check that html (which is a li.chat-message element in case of update) is the same as
+        // chatPopout.element (which always is div.chat-popout)
+        ChatCardListeners.addChatListeners(html);
+      }
     });
   }
 
