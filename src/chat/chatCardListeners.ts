@@ -49,6 +49,9 @@ export class ChatCardListeners {
   private static async inputChangeHandler(ev: JQueryEventObject): Promise<void> {
     const chatCard = getDomDataset(ev, "chat-card");
     const chatMessageId = getDomDataset(ev, "message-id");
+    if (ev.target.classList.contains("roll-type-select")) {
+      return; // No need to handle foundry roll type select dropdown
+    }
     if (!chatMessageId || !chatCard || !(chatCard in ChatCardListeners.card)) {
       const msg = `Couldn't find chatCard [${chatCard}] or chatMessageId [${chatMessageId}] while processing a chat card change event.`;
       ui.notifications?.error(msg);
