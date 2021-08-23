@@ -97,3 +97,15 @@ export class RqgError implements Error {
     this.debugData = debugData;
   }
 }
+
+export function moveCursorToEnd(el: HTMLInputElement) {
+  el.focus();
+  const originalInputType = el.type;
+  if (originalInputType === "number") {
+    el.type = "text";
+  }
+  el.selectionStart = el.selectionEnd = el.value.length;
+  if (originalInputType === "number") {
+    el.type = "number";
+  }
+}

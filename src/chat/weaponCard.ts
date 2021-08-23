@@ -4,7 +4,13 @@ import { SkillData } from "../data-model/item-data/skillData";
 import { CombatManeuver, MeleeWeaponData } from "../data-model/item-data/meleeWeaponData";
 import { MissileWeaponData } from "../data-model/item-data/missileWeaponData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { getActorFromIds, getSpeakerName, logMisconfiguration, RqgError } from "../system/util";
+import {
+  getActorFromIds,
+  getSpeakerName,
+  logMisconfiguration,
+  moveCursorToEnd,
+  RqgError,
+} from "../system/util";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 
 type WeaponCardFlags = {
@@ -14,7 +20,7 @@ type WeaponCardFlags = {
   weaponItemData: Item.Data<MeleeWeaponData> | Item.Data<MissileWeaponData>;
   result: ResultEnum | undefined;
   formData: {
-    modifier: number;
+    modifier: number | null; // Null is a placeholder instead of 0 to keep modifier in the object
     chance: number;
     combatManeuver: CombatManeuver | undefined;
   };
@@ -34,7 +40,6 @@ export class WeaponCard extends ChatMessage {
     actor: RqgActor,
     token?: Token | null
   ): Promise<void> {
-    const defaultModifier = 0;
     const skillItem = actor.items.get(skillId);
     if (!skillItem || skillItem.data.type !== ItemTypeEnum.Skill) {
       const msg = `Couldn't find skill with itemId [${skillItem}] on actor ${actor.name} to show a weapon chat card.`;
@@ -62,7 +67,7 @@ export class WeaponCard extends ChatMessage {
       weaponItemData: weaponItem.data.toObject(false),
       result: undefined,
       formData: {
-        modifier: defaultModifier,
+        modifier: null,
         chance: skillItem.data.data.chance || 0,
         combatManeuver: undefined,
       },
@@ -90,9 +95,22 @@ export class WeaponCard extends ChatMessage {
     flags.formData.chance = WeaponCard.calcRollChance(chance, modifier);
 
     const data = await WeaponCard.renderContent(flags);
-    if (chatMessage && data) {
-      await chatMessage.update(data);
+    if (!chatMessage || !data || !flags.formData.modifier) {
+      return; // Not ready to update chatmessages
     }
+    const domChatMessages = document.querySelectorAll(`[data-message-id="${chatMessage.id}"]`);
+    const domChatMessage = Array.from(domChatMessages).find((m) =>
+      m.contains(ev.currentTarget as Node)
+    );
+    const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
+    await chatMessage.update(data); // Rerenders the dom chatmessages
+
+    const newDomChatMessages = document.querySelectorAll(`[data-message-id="${chatMessage.id}"]`);
+    const newDomChatMessage = Array.from(newDomChatMessages).find(
+      (m) => !!m.closest(".chat-popout") === isFromPopoutChat
+    );
+    const inputElement = newDomChatMessage?.querySelector("input");
+    inputElement && moveCursorToEnd(inputElement);
   }
 
   public static async formSubmitHandler(
