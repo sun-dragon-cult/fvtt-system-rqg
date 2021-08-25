@@ -7,7 +7,7 @@ import {
   HitLocationData,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
-import { RqgError } from "../../system/util";
+import { RqgError, usersThatOwnActor } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
@@ -113,7 +113,7 @@ export class HitLocationSheet extends RqgItemSheet {
       user: game.user?.id,
       speaker: { alias: speakerName },
       content: `${speakerName} takes a hit to ${hitLocation.name}. ${notification}`,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
+      whisper: usersThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
     });
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));

@@ -10,6 +10,7 @@ import {
   logMisconfiguration,
   moveCursorToEnd,
   RqgError,
+  usersThatOwnActor,
 } from "../system/util";
 import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 
@@ -242,7 +243,7 @@ export class WeaponCard extends ChatMessage {
       user: game.user?.id,
       speaker: { alias: speakerName },
       content: html,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
+      whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },
@@ -346,17 +347,13 @@ export class WeaponCard extends ChatMessage {
     const draw = await fumbleTable.draw({ displayChat: false });
     // Construct chat data
     const nr = draw.results.length > 1 ? `${draw.results.length} results` : "a result";
-
-    // Hide GM fumble rolls from all but other GMs
-    let whisperRecipients = game.user?.isGM
-      ? game.users!.filter((u) => u.isGM).map((u) => u.id)
-      : [];
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     const messageData: DeepPartial<ChatMessage.Data> = {
       flavor: `Draws ${nr} from the ${fumbleTable.name} table.`,
       user: game.user?.id,
       speaker: { alias: speakerName },
-      whisper: whisperRecipients,
+      // @ts-ignore mistyped?
+      whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       // @ts-ignore roll string?
       roll: draw.roll,

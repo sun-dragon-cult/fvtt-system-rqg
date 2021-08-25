@@ -22,7 +22,7 @@ import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
 import { Characteristics } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "./rqgActor";
-import { getDomDataset, getRequiredDomDataset, RqgError } from "../system/util";
+import { getDomDataset, getRequiredDomDataset, RqgError, usersThatOwnActor } from "../system/util";
 import { RuneItemData, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { RqgConfig } from "../system/config";
 import { DamageCalculations } from "../system/damageCalculations";
@@ -391,11 +391,6 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor.data);
     if (newHealth !== this.actor.data.data.attributes.health) {
-      // Chat to all owners
-      const whisperRecipients = Object.entries(this.actor.data.permission)
-        .filter(([userId, permission]) => permission >= CONST.ENTITY_PERMISSIONS.OBSERVER)
-        .map(([userId, permission]) => userId);
-
       const speakerName = this.token?.name || this.actor.data.token.name;
       let message;
       if (newHealth === "dead" && !this.actor.effects.find((e) => e.data.label === "dead")) {
@@ -412,7 +407,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
           user: game.user?.id,
           speaker: { alias: speakerName },
           content: message,
-          whisper: whisperRecipients,
+          whisper: usersThatOwnActor(this.actor),
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
         });
     }

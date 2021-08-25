@@ -1,5 +1,5 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
-import { getActorFromIds, getSpeakerName, RqgError } from "../system/util";
+import { getActorFromIds, getSpeakerName, RqgError, usersThatOwnActor } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 
 type ItemCardFlags = {
@@ -122,7 +122,7 @@ export class ItemCard {
       user: game.user?.id,
       speaker: { alias: speakerName },
       content: html,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
+      whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

@@ -1,7 +1,7 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { Characteristic } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "../actors/rqgActor";
-import { getActorFromIds, getSpeakerName, RqgError } from "../system/util";
+import { getActorFromIds, getSpeakerName, RqgError, usersThatOwnActor } from "../system/util";
 
 export type CharacteristicData = {
   name: string;
@@ -198,7 +198,7 @@ export class CharacteristicCard {
       user: game.user?.id,
       speaker: { alias: speakerName },
       content: html,
-      whisper: game.users?.filter((u) => (u.isGM && u.active) || u.id === game.user?.id),
+      whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },

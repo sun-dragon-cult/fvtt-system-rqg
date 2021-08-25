@@ -49,6 +49,10 @@ export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
   return obj.hasOwnProperty(prop);
 }
 
+export function usersThatOwnActor(actor: RqgActor): User[] {
+  return game.users?.filter((u: User) => actor.hasPerm(u, CONST.ENTITY_PERMISSIONS.OWNER)) ?? [];
+}
+
 /**
  * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
  */
