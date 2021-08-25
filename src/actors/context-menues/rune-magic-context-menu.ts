@@ -3,10 +3,20 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemCard } from "../../chat/itemCard";
 
 export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
-    name: "Roll",
+    name: "Roll (click)",
+    icon: '<i class="fas fa-dice-d20"></i>',
+    condition: () => true,
+    callback: async (el: JQuery) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      await ItemCard.show(itemId, actor, token);
+    },
+  },
+  {
+    name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: () => true,
     callback: async (el: JQuery) => {
