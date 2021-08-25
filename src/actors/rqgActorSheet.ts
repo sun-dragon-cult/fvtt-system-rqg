@@ -531,6 +531,17 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: Event) => {
+        if (
+          [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
+            item.data.data.category
+          )
+        ) {
+          ui.notifications?.warn(
+            "To use a weapon please make sure it is equipped and use the Combat tab instead."
+          );
+          return;
+        }
+
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
 
         if (clickCount >= 2) {

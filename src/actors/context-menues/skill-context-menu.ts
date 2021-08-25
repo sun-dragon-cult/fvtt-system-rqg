@@ -3,12 +3,23 @@ import { ItemCard } from "../../chat/itemCard";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 
 export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => true,
+    condition: (el: JQuery) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      return !!(
+        item &&
+        item.data.type === ItemTypeEnum.Skill &&
+        ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
+          item.data.data.category
+        )
+      );
+    },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       await ItemCard.show(itemId, actor, token);
@@ -17,7 +28,17 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
   {
     name: "Direct Roll (dbl click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => true,
+    condition: (el: JQuery) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      return !!(
+        item &&
+        item.data.type === ItemTypeEnum.Skill &&
+        ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
+          item.data.data.category
+        )
+      );
+    },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
