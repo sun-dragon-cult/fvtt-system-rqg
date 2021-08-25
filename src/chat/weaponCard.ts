@@ -111,6 +111,8 @@ export class WeaponCard extends ChatMessage {
     );
     const inputElement = newDomChatMessage?.querySelector("input");
     inputElement && moveCursorToEnd(inputElement);
+    // @ts-ignore is marked as private!?
+    ui.chat?.scrollBottom(); // Fix that he weapon card gets bigger and pushes the rest of the chatlog down
   }
 
   public static async formSubmitHandler(
