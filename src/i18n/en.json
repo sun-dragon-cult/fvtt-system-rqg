@@ -1,4 +1,16 @@
 {
+  "ITEM.TypeSkill": "Skill",
+  "ITEM.TypePassion": "Passion",
+  "ITEM.TypeRune": "Rune",
+  "ITEM.TypeHitlocation": "Hit Location",
+  "ITEM.TypeGear": "Gear",
+  "ITEM.TypeArmor": "Armor",
+  "ITEM.TypeMeleeweapon": "Melee Weapon",
+  "ITEM.TypeMissileweapon": "Missile Weapon",
+  "ITEM.TypeSpiritmagic": "Spirit Magic",
+  "ITEM.TypeCult": "Cult",
+  "ITEM.TypeRunemagic": "Rune Magic",
+
   "RQG.characteristic.strength": "STR",
   "RQG.characteristic.constitution": "CON",
   "RQG.characteristic.size": "SIZ",

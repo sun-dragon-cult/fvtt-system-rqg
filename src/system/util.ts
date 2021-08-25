@@ -25,6 +25,13 @@ export function toCamelCase(s: string): string {
   });
 }
 
+/**
+ * Make all but the first character lowercase
+ */
+export function capitalize(word: string): string {
+  return word[0].toUpperCase() + word.substring(1).toLowerCase();
+}
+
 export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
   // TODO only for GM? game.user.isGM &&
   console.warn(`RQG | ${msg}`, debugData);

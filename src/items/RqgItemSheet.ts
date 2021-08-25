@@ -1,11 +1,11 @@
 import { RqgActiveEffect } from "../actors/rqgActiveEffect";
 import { RqgItem } from "./rqgItem";
 import { RqgItemData } from "../data-model/item-data/itemTypes";
-import { getRequiredDomDataset } from "../system/util";
+import { capitalize, getRequiredDomDataset } from "../system/util";
 
 export class RqgItemSheet extends ItemSheet<RqgItemData> {
   get title(): string {
-    return `${this.object.type}: ${this.object.name}`;
+    return `${game.i18n.format("ITEM.Type" + capitalize(this.object.type))}: ${this.object.name}`;
   }
 
   public activateListeners(html: JQuery): void {
