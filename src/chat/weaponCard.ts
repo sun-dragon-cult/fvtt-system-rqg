@@ -264,9 +264,10 @@ export class WeaponCard extends ChatMessage {
     }
 
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    let damageBonus =
+    let damageBonusFormula: string =
       actor.data.data.attributes.damageBonus !== "0"
-        ? `+ ${actor.data.data.attributes.damageBonus}[Damage Bonus]`
+        ? // @ts-ignore 0.8 parse
+          `${actor.data.data.attributes.damageBonus}`
         : "";
 
     if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
@@ -274,27 +275,37 @@ export class WeaponCard extends ChatMessage {
         flags.weaponItemData as unknown as Item.Data<MissileWeaponData>;
 
       if (missileWeaponData.data.isThrownWeapon) {
-        damageBonus = " + ceil(" + actor.data.data.attributes.damageBonus + "/2)";
+        // @ts-ignore 0.8 parse
+        damageBonusFormula = "ceil(" + actor.data.data.attributes.damageBonus + "/2)";
       } else if (missileWeaponData.data.isProjectileWeapon) {
-        damageBonus = "";
+        damageBonusFormula = "";
       }
     }
 
-    let weaponDamage = flags.weaponItemData.data.damage;
+    // @ts-ignore 0.8 parse
+    const weaponDamage = Roll.parse(`(${flags.weaponItemData.data.damage})[weapon]`);
+
+    // @ts-ignore 0.8 parse
+    const damageRollTerms = flags.weaponItemData.data.damage ? weaponDamage : []; // Don't add 0 damage rollTerm
+
     if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageType)) {
       if ([CombatManeuver.Slash, CombatManeuver.Impale].includes(flags.formData.combatManeuver)) {
-        weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
+        damageRollTerms.push(
+          ...WeaponCard.slashImpaleSpecialDamage(flags.weaponItemData.data.damage)
+        );
       } else if (flags.formData.combatManeuver === CombatManeuver.Crush) {
-        damageBonus = await WeaponCard.crushSpecialDamage(damageBonus);
+        damageRollTerms.push(...(await WeaponCard.crushSpecialDamage(damageBonusFormula)));
       } else if (flags.formData.combatManeuver === CombatManeuver.Parry) {
         if (flags.weaponItemData.data.combatManeuvers.includes(CombatManeuver.Crush)) {
-          damageBonus = await WeaponCard.crushSpecialDamage(damageBonus);
+          damageRollTerms.push(...(await WeaponCard.crushSpecialDamage(damageBonusFormula)));
         } else if (
           flags.weaponItemData.data.combatManeuvers.some((m) =>
             [CombatManeuver.Slash, CombatManeuver.Impale].includes(m)
           )
         ) {
-          weaponDamage = WeaponCard.slashImpaleSpecialDamage(weaponDamage);
+          damageRollTerms.push(
+            ...WeaponCard.slashImpaleSpecialDamage(flags.weaponItemData.data.damage)
+          );
         } else {
           logMisconfiguration(
             `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`,
@@ -303,8 +314,13 @@ export class WeaponCard extends ChatMessage {
         }
       }
     }
+    if (damageBonusFormula.length) {
+      // @ts-ignore
+      damageRollTerms.push(...Roll.parse(`+ ${damageBonusFormula}[dmg bonus]`));
+    }
     const maximise = damageType === DamageRollTypeEnum.MaxSpecial;
-    const roll = new Roll(`${weaponDamage} ${damageBonus}`);
+    // @ts-ignore
+    const roll = Roll.fromTerms(damageRollTerms);
     await roll.evaluate({
       maximize: maximise,
       // @ts-ignore 0.8 async roll
@@ -363,14 +379,21 @@ export class WeaponCard extends ChatMessage {
     await ChatMessage.create(messageData);
   }
 
-  private static async crushSpecialDamage(damageBonus: string): Promise<string> {
-    const maxDamageBonus = new Roll(damageBonus);
-    // @ts-ignore 0.8 async roll
-    await maxDamageBonus.evaluate({ maximize: true, async: true });
-    return damageBonus + " + " + maxDamageBonus.total;
+  private static async crushSpecialDamage(damageBonus: string): Promise<any[]> {
+    if (damageBonus.length) {
+      // @ts-ignore 0.8
+      const specialDamage = Roll.parse(damageBonus);
+      // @ts-ignore 0.8
+      const roll = Roll.fromTerms(specialDamage);
+      await roll.evaluate({ maximize: true, async: true });
+      // @ts-ignore 0.8
+      return Roll.parse(`+ ${roll.result}[special]`);
+    }
+    return [];
   }
 
-  private static slashImpaleSpecialDamage(weaponDamage: string): string {
-    return weaponDamage + " + " + weaponDamage;
+  private static slashImpaleSpecialDamage(weaponDamage: string): any[] {
+    // @ts-ignore 0.8
+    return Roll.parse(`+ (${weaponDamage})[special]`);
   }
 }
