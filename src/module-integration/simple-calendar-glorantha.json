@@ -1,5 +1,4 @@
 {
-  "currentDate": { "year": 1601, "month": 9, "day": 4, "seconds": 29166 },
   "generalSettings": {
     "gameWorldTimeIntegration": "mixed",
     "showClock": true,
