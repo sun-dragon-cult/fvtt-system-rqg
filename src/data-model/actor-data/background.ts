@@ -1,4 +1,5 @@
 export enum OccupationEnum {
+  NoOccupation = "",
   AssistantShaman = "assistantShaman",
   Bandit = "bandit",
   ChariotDriver = "chariotDriver",
@@ -43,6 +44,14 @@ export enum HomeLandEnum {
   StinkingForest = "stinkingForest",
   TrollWoods = "trollWoods",
   Vansh = "vansh",
+  HabitatPlains = "habitatPlains",
+  HabitatForest = "habitatForest",
+  HabitatMountainsHills = "habitatMountainsHills",
+  HabitatMarshSwamp = "habitatMarshSwamp",
+  HabitatWaterSea = "habitatWaterSea",
+  HabitatSky = "habitatSky",
+  HabitatGlacier = "habitatGlacier",
+  HabitatUnderground = "habitatUnderground",
 }
 
 export interface Background {
@@ -64,6 +73,6 @@ export interface Background {
 
 export const emptyBackground: Background = {
   race: "Human",
-  occupation: OccupationEnum.Farmer,
+  occupation: OccupationEnum.NoOccupation,
   homeland: HomeLandEnum.Sartar,
 };
