@@ -7,7 +7,6 @@ export default {
     src: "/",
   },
   plugins: [
-    ["@snowpack/plugin-typescript"], // TODO is run? but don't show the warnings/errors!
     [
       "@snowpack/plugin-sass",
       {
@@ -15,8 +14,19 @@ export default {
       },
     ],
   ],
+  external: ["template.json"],
+  optimize: {
+    entrypoints: ["rqg.js", "template.js"],
+    splitting: false,
+    bundle: true,
+    minify: true,
+    target: "es2020",
+  },
   packageOptions: {},
-  devOptions: {},
+  devOptions: {
+    out: "dist/",
+    open: "none",
+  },
   buildOptions: {
     out: "dist/",
   },
