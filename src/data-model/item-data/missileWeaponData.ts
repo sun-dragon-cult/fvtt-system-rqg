@@ -40,7 +40,7 @@ export const emptyMissileWeapon: MissileWeaponData = {
   gmNotes: "",
   skillId: "",
   skillOrigin: "",
-  damage: "1D3",
+  damage: "1d3",
   combatManeuvers: [CombatManeuver.Knockback, CombatManeuver.Parry],
   minStrength: 0,
   minDexterity: 0,

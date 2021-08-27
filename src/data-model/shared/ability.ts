@@ -29,7 +29,7 @@ export class Ability {
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     speakerName: string
   ): Promise<ResultEnum> {
-    const r = new Roll("1D100");
+    const r = new Roll("1d100");
     // @ts-ignore 0.8 async roll
     await r.evaluate({ async: true });
     const modifiedChance: number = chance + chanceMod;

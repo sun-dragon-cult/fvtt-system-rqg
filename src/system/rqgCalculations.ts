@@ -137,16 +137,16 @@ const sizSrTable: LookupTableEntry<number>[] = [
 
 // Damage Bonus <= 40 . Lookup with STR + SIZ
 const damageBonusTable: LookupTableEntry<string>[] = [
-  { from: -Infinity, to: 12, result: "-1D4" },
+  { from: -Infinity, to: 12, result: "-1d4" },
   { from: 13, to: 24, result: "0" },
-  { from: 25, to: 32, result: "1D4" },
-  { from: 33, to: 40, result: "1D6" },
+  { from: 25, to: 32, result: "1d4" },
+  { from: 33, to: 40, result: "1d6" },
 ];
 
 // Spirit Combat Damage <= 40. Lookup with POW + CHA
 const spiritCombatDamageTable: LookupTableEntry<string>[] = [
-  { from: -Infinity, to: 12, result: "1D3" },
-  { from: 13, to: 24, result: "1D6" },
-  { from: 25, to: 32, result: "1D6+1" },
-  { from: 33, to: 40, result: "1D6+3" },
+  { from: -Infinity, to: 12, result: "1d3" },
+  { from: 13, to: 24, result: "1d6" },
+  { from: 25, to: 32, result: "1d6+1" },
+  { from: 33, to: 40, result: "1d6+3" },
 ];

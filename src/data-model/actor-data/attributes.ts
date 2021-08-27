@@ -12,8 +12,8 @@ export class Attributes {
     public heroPoints: number,
     public health: ActorHealthState,
     public healingRate?: number,
-    public damageBonus?: string, // For example "1D4"
-    public spiritCombatDamage?: string, // For example "1D4"
+    public damageBonus?: string, // For example "1d4"
+    public spiritCombatDamage?: string, // For example "1d4"
     public maximumEncumbrance?: number,
     public equippedEncumbrance?: number,
     public travelEncumbrance?: number,

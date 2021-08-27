@@ -178,7 +178,7 @@ export class WeaponCard extends ChatMessage {
         return false;
 
       case "hitLocationRoll":
-        const roll = new Roll("1D20");
+        const roll = new Roll("1d20");
         // @ts-ignore async roll
         await roll.evaluate({ async: true });
         const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
