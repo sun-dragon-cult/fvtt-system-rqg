@@ -1,3 +1,34 @@
+# [1.1.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.0.2...v1.1.0) (2021-08-27)
+
+
+### Bug Fixes
+
+* actorsheet combat panel isn't visible if actor only has dodge skill but no other weapons ([e2a673e](https://github.com/wakeand/fvtt-system-rqg/commit/e2a673e))
+* bottom of chatlog is hidden after weaponcard is updated ([0231dd1](https://github.com/wakeand/fvtt-system-rqg/commit/0231dd1))
+* changing foundry roll mode results in exception ([46a2d1f](https://github.com/wakeand/fvtt-system-rqg/commit/46a2d1f))
+* embedding a weapon with a skill the actor already knows fails to connect to the known skill ([20bb649](https://github.com/wakeand/fvtt-system-rqg/commit/20bb649))
+* Exception when adding natural weapons ([ad0baba](https://github.com/wakeand/fvtt-system-rqg/commit/ad0baba))
+* Exception when opening some items from compendiums additionally now hides active effects from items if they are owned ([819c365](https://github.com/wakeand/fvtt-system-rqg/commit/819c365))
+* popped out weapon chat cards roll twice if updated at any point ([0343a56](https://github.com/wakeand/fvtt-system-rqg/commit/0343a56))
+* runeMagic cult links can crash actor Redo the system to prompt for what cult should be connected to the added runeMagic ([eba22cb](https://github.com/wakeand/fvtt-system-rqg/commit/eba22cb))
+* simple calendar init fails ([9a93f02](https://github.com/wakeand/fvtt-system-rqg/commit/9a93f02))
+* Use lower case "d" for rolls to be consistent with foundry rolls notation ([b4627d5](https://github.com/wakeand/fvtt-system-rqg/commit/b4627d5))
+
+
+### Features
+
+* activate chat tab when showing a chat card hopefully fixes players not noticing that there is a new chat card when for example attacking with a weapon ([d22bd5b](https://github.com/wakeand/fvtt-system-rqg/commit/d22bd5b))
+* add habitats to homeland dropdown for animals also translate background tab ([a45afd7](https://github.com/wakeand/fvtt-system-rqg/commit/a45afd7))
+* disallow rolling weapon skills from the skills tab - this should be done from the weapon on the combat tab ([e2ea248](https://github.com/wakeand/fvtt-system-rqg/commit/e2ea248))
+* improve damage roll flavor also avoid error if edgecase of weapon without damage ([f5d10f2](https://github.com/wakeand/fvtt-system-rqg/commit/f5d10f2))
+* localize weapon chat card ([e1a33e7](https://github.com/wakeand/fvtt-system-rqg/commit/e1a33e7))
+* runemagic context menu now includes both direct roll & show roll chat card ([e498d6b](https://github.com/wakeand/fvtt-system-rqg/commit/e498d6b))
+* translate item names ([d4b87cf](https://github.com/wakeand/fvtt-system-rqg/commit/d4b87cf))
+* update chance immediately from weapon chat card involves finding the correct input, refocusing and setting cursor at the end after update ([ac4ccba](https://github.com/wakeand/fvtt-system-rqg/commit/ac4ccba))
+
+
+
+
 ## [1.0.2](https://github.com/wakeand/fvtt-system-rqg/compare/v1.0.1...v1.0.2) (2021-08-11)
 
 
