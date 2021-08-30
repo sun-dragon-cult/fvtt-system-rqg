@@ -10,7 +10,7 @@
                          value="{{missileWeaponData.encumbrance}}"></label>
     <select name="data.equippedStatus">
       {{#select missileWeaponData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
-      <option value="{{this}}">{{this}}</option>
+      <option value="{{this}}">{{localize (concat "RQG.EquippedStatus." this)}}</option>
       {{/each}} {{/select}}
     </select>
   </header>

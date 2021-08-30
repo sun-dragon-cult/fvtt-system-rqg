@@ -73,6 +73,11 @@
       "chiefPriest": "Chief Priest",
       "highPriest": "High Priest"
     },
+    "EquippedStatus":{
+      "notCarried":  "Not Carried",
+      "carried":  "Carried",
+      "equipped": "Equipped"
+    },
     "SkillCategory": {
       "agility": "Agility",
       "communication": "Communication,",
