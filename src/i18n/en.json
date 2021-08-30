@@ -64,6 +64,15 @@
       "Quilted": "Quilted",
       "Linen": "Linen"
     },
+    "CultRank": {
+      "layMember": "Lay Member",
+      "initiate": "Initiate",
+      "godTalker": "God Talker",
+      "runePriest": "Rune Priest",
+      "runeLord": "Rune Lord",
+      "chiefPriest": "Chief Priest",
+      "highPriest": "High Priest"
+    },
     "SkillCategory": {
       "agility": "Agility",
       "communication": "Communication,",

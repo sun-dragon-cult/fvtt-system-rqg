@@ -10,7 +10,7 @@
   <main>
     <select name="data.rank">
       {{#select cultData.rank}} {{#each sheetSpecific.ranksEnum}}
-        <option value="{{this}}">{{this}}</option>
+        <option value="{{this}}">{{localize (concat "RQG.CultRank." this)}}</option>
       {{/each}} {{/select}}
     </select><br>
     {{#each cultData.runes}}
