@@ -8,7 +8,7 @@
       <label>Category<br><select name="data.category" >
         {{#select skillData.category}}
         {{#each sheetSpecific.skillCategories}}
-          <option value="{{this}}">{{this}}</option>
+          <option value="{{this}}">{{localize (concat 'RQG.SkillCategory.' this)}}</option>
         {{/each}}
       {{/select}}
       </select></label>

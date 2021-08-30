@@ -64,6 +64,20 @@
       "Quilted": "Quilted",
       "Linen": "Linen"
     },
+    "SkillCategory": {
+      "agility": "Agility",
+      "communication": "Communication,",
+      "knowledge": "Knowledge",
+      "magic": "Magic",
+      "manipulation": "Manipulation",
+      "perception": "Perception",
+      "stealth": "Stealth",
+      "otherSkills": "Other Skills",
+      "meleeWeapons": "Melee Weapons",
+      "missileWeapons": "Missile Weapons",
+      "shields": "Shields",
+      "naturalWeapons": "Natural Weapons"
+    },
     "Homeland": {
       "Heading": "Homeland",
       "aggar": "Aggar",
