@@ -38,7 +38,7 @@ export enum HomeLandEnum {
   Imither = "imither",
   LunarTarsh = "lunarTarsh",
   OldTarsh = "oldTarsh",
-  PraxianTribes = "praxianTribes",
+  Prax = "prax",
   Sartar = "sartar",
   ShadowPlateau = "shadowPlateau",
   StinkingForest = "stinkingForest",
