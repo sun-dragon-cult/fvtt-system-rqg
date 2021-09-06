@@ -62,10 +62,6 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       cha
     );
     attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
-    const movementEncumbrancePenalty = Math.min(
-      0,
-      (attributes.maximumEncumbrance || 0) - (attributes.equippedEncumbrance || 0)
-    );
     attributes.equippedEncumbrance = Math.round(
       this.items
         .filter(
@@ -81,6 +77,11 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
         }, 0)
     );
 
+    const movementEncumbrancePenalty = Math.min(
+      0,
+      (attributes.maximumEncumbrance || 0) - (attributes.equippedEncumbrance || 0)
+    );
+
     attributes.travelEncumbrance = Math.round(
       this.items
         .filter((i: Item<any>) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
@@ -90,7 +91,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
         }, 0)
     );
 
-    attributes.move += movementEncumbrancePenalty;
+    attributes.move = this.data._source.data.attributes.move + movementEncumbrancePenalty;
     skillCategoryModifiers!.agility += movementEncumbrancePenalty * 5;
     skillCategoryModifiers!.manipulation += movementEncumbrancePenalty * 5;
     skillCategoryModifiers!.stealth += movementEncumbrancePenalty * 5;
