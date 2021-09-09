@@ -27,6 +27,7 @@ export enum HomeLandEnum {
   Balazar = "balazar",
   BeastValley = "beastValley",
   Bilini = "bilini",
+  BlackHorseCounty = "blackHorseCounty",
   DagoriInkarth = "dagoriInkarth",
   DragonPass = "dragonPass",
   DryadWoods = "dryadWoods",
