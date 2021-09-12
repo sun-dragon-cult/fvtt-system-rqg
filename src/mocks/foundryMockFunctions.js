@@ -1,8 +1,5 @@
-import { getGame } from "../system/util";
-
 global.mergeObject = jest.fn((...args) => mockMergeObject(...args));
 global.getType = jest.fn((...args) => mockGetType(...args));
-getGame = jest.fn(() => mockGetGame());
 
 const mockCONFIG = {
   statusEffects: [
@@ -279,8 +276,4 @@ function mockGetType(token) {
     else return "Object";
   }
   return tof;
-}
-
-function mockGetGame() {
-  return game;
 }

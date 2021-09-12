@@ -54,7 +54,7 @@ describe("Evaluate Roll Result", () => {
     ${101} | ${3}   | ${ResultEnum.Critical}
   `("chance $chance & roll $roll", ({ chance, roll, expected }) => {
     it(`should return ${expected}`, () => {
-      expect(Ability["evaluateResult"](chance, roll)).toBe(expected);
+      expect(Ability["evaluateResult"](chance, roll, true)).toBe(expected);
     });
   });
 });

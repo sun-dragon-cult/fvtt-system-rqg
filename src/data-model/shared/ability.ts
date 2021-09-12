@@ -34,7 +34,8 @@ export class Ability {
     const r = new Roll("1d100");
     await r.evaluate({ async: true });
     const modifiedChance: number = chance + chanceMod;
-    const result = Ability.evaluateResult(modifiedChance, r.total!);
+    const useSpecialCriticals = getGame().settings.get("rqg", "specialCrit");
+    const result = Ability.evaluateResult(modifiedChance, r.total!, useSpecialCriticals);
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = getGame().i18n.localize(`RQG.ResultEnum.${result}`);
@@ -46,12 +47,15 @@ export class Ability {
     return result;
   }
 
-  private static evaluateResult(chance: number, roll: number): ResultEnum {
-    const specialCritSetting = getGame().settings.get("rqg", "specialCrit");
+  private static evaluateResult(
+    chance: number,
+    roll: number,
+    useSpecialCriticals: boolean
+  ): ResultEnum {
     chance = Math.max(0, chance); // -50% = 0%
 
-    const hyperCritical = specialCritSetting && chance >= 100 ? Math.ceil(chance / 500) : 0;
-    const specialCritical = specialCritSetting && chance >= 100 ? Math.ceil(chance / 100) : 0;
+    const hyperCritical = useSpecialCriticals && chance >= 100 ? Math.ceil(chance / 500) : 0;
+    const specialCritical = useSpecialCriticals && chance >= 100 ? Math.ceil(chance / 100) : 0;
 
     const critical = Math.max(1, Math.ceil((chance - 29) / 20) + 1);
     const special =
