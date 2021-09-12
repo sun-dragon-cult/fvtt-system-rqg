@@ -1,3 +1,29 @@
+# [1.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.1.0...v1.2.0) (2021-09-12)
+
+
+### Bug Fixes
+
+* add homeland "Black Horse County" ([e6cda1e](https://github.com/wakeand/fvtt-system-rqg/commit/e6cda1e))
+* change naming of "praxian tribes" to "prax" ([fd3d788](https://github.com/wakeand/fvtt-system-rqg/commit/fd3d788))
+* Extra comma in translation ([5f6baa1](https://github.com/wakeand/fvtt-system-rqg/commit/5f6baa1))
+* make sure runeMagic is connected to a cault and that that connection is persisted ([383124b](https://github.com/wakeand/fvtt-system-rqg/commit/383124b))
+* modifier field in chatcards only accept one character worked for weapon card - fixed for the other cards as well ([44c46a1](https://github.com/wakeand/fvtt-system-rqg/commit/44c46a1))
+* MOV encumbrance penalty is not properly calculated ([e96ca2b](https://github.com/wakeand/fvtt-system-rqg/commit/e96ca2b))
+* nested tab in gear isn't highlighted ([8f804e5](https://github.com/wakeand/fvtt-system-rqg/commit/8f804e5))
+* preload rune compendium for all players ([7abb869](https://github.com/wakeand/fvtt-system-rqg/commit/7abb869))
+* switch to new typescript definitions also contains some minor fixes ([d111b51](https://github.com/wakeand/fvtt-system-rqg/commit/d111b51))
+* wrong headers for Homeland & Occupation in player mode (background tab) ([31423a1](https://github.com/wakeand/fvtt-system-rqg/commit/31423a1))
+
+
+### Features
+
+* translate cult ranks ([a80cb81](https://github.com/wakeand/fvtt-system-rqg/commit/a80cb81))
+* translate equipped status ([cfa3c2f](https://github.com/wakeand/fvtt-system-rqg/commit/cfa3c2f))
+* translate skill categories ([2f33ec6](https://github.com/wakeand/fvtt-system-rqg/commit/2f33ec6))
+
+
+
+
 # [1.1.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.0.2...v1.1.0) (2021-08-27)
 
 
