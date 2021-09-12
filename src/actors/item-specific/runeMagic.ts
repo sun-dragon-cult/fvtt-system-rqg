@@ -2,7 +2,7 @@ import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
-import { RqgError } from "../../system/util";
+import { assertItemType, RqgError } from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export class RuneMagic extends AbstractEmbeddedItem {
@@ -13,14 +13,6 @@ export class RuneMagic extends AbstractEmbeddedItem {
   //   });
   // }
 
-  // If the actor only has one cult then attach this runeMagic to that Cult
-  static preEmbedItem(actor: RqgActor, itemData: any, options: object[], userId: string): void {
-    const actorCults = actor.items.filter((i) => i.data.type === ItemTypeEnum.Cult);
-    if (actorCults.length === 1 && itemData.type === ItemTypeEnum.RuneMagic) {
-      itemData.data.cultId = actorCults[0].id;
-    }
-  }
-
   static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.data.type !== ItemTypeEnum.RuneMagic || !item.actor) {
       const msg = `Wrong itemtype or not embedded item in Actor PrepareEmbeddedEntities`;
@@ -28,20 +20,21 @@ export class RuneMagic extends AbstractEmbeddedItem {
       throw new RqgError(msg, item);
     }
     const actor = item.actor;
-    const runeMagicCult = actor.items.get(item.data.data.cultId);
-    if (!runeMagicCult || runeMagicCult.data.type !== ItemTypeEnum.Cult) {
-      const msg = `Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}`;
-      ui.notifications?.warn(msg);
-      console.warn(msg, item, actor);
-      item.data.data.cultId = ""; // remove the mismatched link to make it appear in the GUI
-    }
-    if (runeMagicCult && runeMagicCult.data.type === ItemTypeEnum.Cult) {
-      item.data.data.chance = RuneMagic.calcRuneMagicChance(
-        // TODO should this be returning ItemData ??? no ItemDataSource
-        actor.items.toObject(),
-        runeMagicCult.data.data.runes,
-        item.data.data.runes
-      );
+    if (item.data.data.cultId) {
+      const runeMagicCult = actor.items.get(item.data.data.cultId);
+      if (!runeMagicCult || runeMagicCult.data.type !== ItemTypeEnum.Cult) {
+        const msg = `Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}`;
+        ui.notifications?.warn(msg);
+        console.warn(msg, item, actor);
+        item.data.data.cultId = ""; // remove the mismatched link to make it appear in the GUI
+      }
+      if (runeMagicCult && runeMagicCult.data.type === ItemTypeEnum.Cult) {
+        item.data.data.chance = RuneMagic.calcRuneMagicChance(
+          actor.items.toObject(),
+          runeMagicCult.data.data.runes,
+          item.data.data.runes
+        );
+      }
     }
     return item;
   }
@@ -65,8 +58,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   }
 
   /*
-   * If the runeMagic item still isn't connected to a cult (after preEmbedItem),
-   * then ask the user what cult it should be connected to.
+   * Connect runeMagic item to a cult.
    */
   static async onEmbedItem(
     actor: RqgActor,
@@ -76,19 +68,23 @@ export class RuneMagic extends AbstractEmbeddedItem {
   ): Promise<any> {
     let updateData = {};
     const actorCults = actor.items.filter((i) => i.type === ItemTypeEnum.Cult);
-    if (runeMagicItem.data.type !== ItemTypeEnum.RuneMagic) {
-      const msg = `Called runeMagic onEmbedItem with something else than a runeMagic Item`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, runeMagicItem);
-    }
+    assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
+
     if (!runeMagicItem.data.data.cultId) {
-      const cultId = await RuneMagic.chooseCultDialog(
-        actorCults.map((c) => {
-          return { name: c.name, id: c.id };
-        }),
-        runeMagicItem.name ?? "",
-        actor.name ?? ""
-      );
+      let cultId;
+      // If the actor only has one cult then attach this runeMagic to that Cult
+      if (actorCults.length === 1 && actorCults[0].id) {
+        cultId = actorCults[0].id;
+      } else {
+        // else ask which one
+        cultId = await RuneMagic.chooseCultDialog(
+          actorCults.map((c) => {
+            return { name: c.name, id: c.id };
+          }),
+          runeMagicItem.name ?? "",
+          actor.name ?? ""
+        );
+      }
       updateData = {
         _id: runeMagicItem.id,
         data: { cultId: cultId },
