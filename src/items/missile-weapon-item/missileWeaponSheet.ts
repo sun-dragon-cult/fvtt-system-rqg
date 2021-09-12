@@ -1,25 +1,32 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { SkillCategoryEnum, SkillItemData } from "../../data-model/item-data/skillData";
-import { MissileWeaponData } from "../../data-model/item-data/missileWeaponData";
-import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
+import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
+import {
+  MissileWeaponDataProperties,
+  MissileWeaponDataPropertiesData,
+} from "../../data-model/item-data/missileWeaponData";
 import { EquippedStatus, equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { logMisconfiguration } from "../../system/util";
+import { assertItemType, logMisconfiguration } from "../../system/util";
+import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
 
-type MissileWeaponsSheetSpecificData = {
-  allCombatManeuvers?: any;
-  missileWeaponSkills?: RqgItem[];
-  ownedProjectiles?: RqgItem[];
-  /** For showing the name of the linked skill if the item isn't owned */
-  skillName?: string;
-  isOwned?: boolean;
-  /** For sheet dropdown */
-  equippedStatuses?: EquippedStatus[];
-};
-export class MissileWeaponSheet extends RqgItemSheet {
-  static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
+interface MissileWeaponSheetData {
+  data: MissileWeaponDataProperties; // Actually contains more...complete with effects, flags etc
+  missileWeaponData: MissileWeaponDataPropertiesData;
+  sheetSpecific: {
+    allCombatManeuvers: any;
+    missileWeaponSkills: RqgItem[];
+    /** For showing the name of the linked skill if the item isn't owned */
+    skillName: string;
+    equippedStatuses: EquippedStatus[];
+    ownedProjectiles: RqgItem[];
+  };
+}
+export class MissileWeaponSheet extends RqgItemSheet<
+  ItemSheet.Options,
+  MissileWeaponSheetData | ItemSheet.Data
+> {
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.MissileWeapon],
       template: "systems/rqg/items/missile-weapon-item/missileWeaponSheet.html",
@@ -28,40 +35,71 @@ export class MissileWeaponSheet extends RqgItemSheet {
     });
   }
 
-  async getData(): Promise<any> {
-    const context = super.getData() as any;
-    const missileWeaponData = (context.missileWeaponData = context.data.data) as MissileWeaponData;
-    const sheetSpecific = (context.sheetSpecific = {} as MissileWeaponsSheetSpecificData);
+  async getData(): Promise<MissileWeaponSheetData | ItemSheet.Data> {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.MissileWeapon);
 
-    // TODO improve types
-    sheetSpecific.allCombatManeuvers = Object.values(CombatManeuver).reduce((acc: any, m: any) => {
+    const missileWeaponData = itemData.data;
+
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isOwner,
+      options: this.options,
+      data: itemData,
+      missileWeaponData: missileWeaponData,
+      sheetSpecific: {
+        allCombatManeuvers: this.getAllCombatManeuvers(missileWeaponData),
+        missileWeaponSkills: this.getMissileWeaponSkills(),
+        skillName: await this.getSkillName(missileWeaponData),
+        equippedStatuses: [...equippedStatuses],
+        ownedProjectiles: this.getOwnedProjectiles(),
+      },
+    };
+  }
+
+  private getAllCombatManeuvers(missileWeaponData: MissileWeaponDataPropertiesData): any {
+    return Object.values(CombatManeuver).reduce((acc: any, m: CombatManeuver) => {
       const v = missileWeaponData.combatManeuvers.includes(m);
       acc[m] = { name: m, value: v };
       return acc;
     }, {});
-    sheetSpecific.isOwned = this.item.isOwned;
-    if (this.item.isOwned) {
-      sheetSpecific.missileWeaponSkills = this.actor!.getEmbeddedCollection("Item").filter(
-        (i: RqgItem) =>
-          i.data.type === ItemTypeEnum.Skill &&
-          i.data.data.category === SkillCategoryEnum.MissileWeapons
-      );
+  }
 
-      sheetSpecific.ownedProjectiles = this.actor!.getEmbeddedCollection("Item").filter(
-        (i: RqgItem) => i.data.type === ItemTypeEnum.MissileWeapon && i.data.data.isProjectile
-      );
-    } else if (missileWeaponData.skillOrigin) {
-      const skill = (await fromUuid(missileWeaponData.skillOrigin).catch(() => {
+  private getMissileWeaponSkills(): any {
+    return this.item.isEmbedded && this.actor
+      ? this.actor
+          .getEmbeddedCollection("Item")
+          .filter(
+            (i) =>
+              i.data.type === ItemTypeEnum.Skill &&
+              i.data.data.category === SkillCategoryEnum.MissileWeapons
+          )
+      : [];
+  }
+
+  private async getSkillName(missileWeaponData: MissileWeaponDataPropertiesData): Promise<any> {
+    if (!this.item.isEmbedded && missileWeaponData.skillOrigin) {
+      const skill = await fromUuid(missileWeaponData.skillOrigin).catch(() => {
         logMisconfiguration(
           `Couldn't find missile weapon skill with uuid from skillOrigin ${missileWeaponData.skillOrigin}`,
           true,
           missileWeaponData
         );
-      })) as Item<SkillItemData> | null;
-      sheetSpecific.skillName = skill?.name || "";
+      });
+      return skill?.name ?? "";
     }
-    sheetSpecific.equippedStatuses = [...equippedStatuses];
-    return context;
+    return "";
+  }
+
+  private getOwnedProjectiles(): any {
+    if (this.item.isOwned) {
+      return this.actor!.getEmbeddedCollection("Item").filter(
+        (i) => i.data.type === ItemTypeEnum.MissileWeapon && i.data.data.isProjectile
+      );
+    }
+    return [];
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {

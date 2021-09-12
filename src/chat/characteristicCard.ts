@@ -1,7 +1,14 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { Characteristic } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "../actors/rqgActor";
-import { getActorFromIds, getSpeakerName, RqgError, usersThatOwnActor } from "../system/util";
+import {
+  getActorFromIds,
+  getGame,
+  getSpeakerName,
+  requireValue,
+  RqgError,
+  usersThatOwnActor,
+} from "../system/util";
 
 export type CharacteristicData = {
   name: string;
@@ -10,7 +17,7 @@ export type CharacteristicData = {
 
 type CharacteristicCardFlags = {
   actorId: string;
-  tokenId?: string;
+  tokenId: string | null;
   characteristic: CharacteristicData;
   formData: {
     difficulty: number;
@@ -32,13 +39,14 @@ export class CharacteristicCard {
   public static async show(
     characteristic: CharacteristicData,
     actor: RqgActor,
-    token: Token | null
+    token: TokenDocument | null | undefined
   ): Promise<void> {
+    requireValue(actor.id, "Called show characteristic Card with actor without id");
     const defaultDifficulty = 5;
     const defaultModifier = 0;
     const flags: CharacteristicCardFlags = {
       actorId: actor.id,
-      tokenId: token?.id,
+      tokenId: token?.id ?? null,
       characteristic: characteristic,
       formData: {
         difficulty: defaultDifficulty,
@@ -65,7 +73,7 @@ export class CharacteristicCard {
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
-    const chatMessage = game.messages?.get(messageId);
+    const chatMessage = getGame().messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
     if (!flags || !chatMessage) {
       const msg = "couldn't find chatmessage";
@@ -97,7 +105,7 @@ export class CharacteristicCard {
     button.disabled = true;
     setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
 
-    const chatMessage = game.messages?.get(messageId);
+    const chatMessage = getGame().messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
     if (!flags || !chatMessage) {
       const msg = "couldn't find chatmessage";
@@ -112,7 +120,7 @@ export class CharacteristicCard {
 
     const [actor, characteristicValue, difficulty, modifier] =
       CharacteristicCard.getFormDataFromFlags(flags);
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+    const speakerName = getSpeakerName(flags.actorId, flags.tokenId ?? null);
     await CharacteristicCard.roll(
       flags.characteristic.name,
       characteristicValue,
@@ -195,7 +203,7 @@ export class CharacteristicCard {
         " (" +
         flags.characteristic.data.value +
         ")",
-      user: game.user?.id,
+      user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,
       whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),

@@ -1,11 +1,9 @@
-import { SkillData, SkillItemData } from "../../data-model/item-data/skillData";
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgError } from "../../system/util";
-import { RqgConfig } from "../../system/config";
-
-declare const CONFIG: RqgConfig;
+import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
+import { SkillDataPropertiesData } from "../../data-model/item-data/skillData";
 
 export class Skill extends AbstractEmbeddedItem {
   // public static init() {
@@ -15,16 +13,19 @@ export class Skill extends AbstractEmbeddedItem {
   //   });
   // }
 
-  public static onActorPrepareDerivedData(item: RqgItem): RqgItem {
-    const skillItem = item as Item<SkillItemData>;
+  public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
+    if (skillItem.data.type !== ItemTypeEnum.Skill) {
+      const msg = `Calling Skill#onActorPrepareDerivedData with something else than a skill`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, skillItem);
+    }
     const skillData = skillItem.data.data;
     const actor = skillItem.actor!;
-    if (actor.data.type !== "character") {
+    if (actor.data.type !== ActorTypeEnum.Character) {
       const msg = `Actor is not of type character`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, actor);
     }
-    // @ts-ignore 0.8
     const actorData = actor.data.toObject(false);
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
     skillData.categoryMod = actorData.data.skillCategoryModifiers![skillItem.data.data.category];
@@ -73,10 +74,10 @@ export class Skill extends AbstractEmbeddedItem {
       skillData.baseChance > 0 || skillData.learnedChance > 0
         ? Math.max(0, skillData.learnedChance + (skillData.categoryMod || 0) + mod)
         : 0;
-    return item;
+    return skillItem;
   }
 
-  private static updateBaseChance(skillData: SkillData, newBaseChance: number): void {
+  private static updateBaseChance(skillData: SkillDataPropertiesData, newBaseChance: number): void {
     if (skillData.baseChance !== newBaseChance) {
       skillData.baseChance = newBaseChance;
     }

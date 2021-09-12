@@ -1,4 +1,6 @@
 export class JournalEntryLink {
-  journalId: string = ""; // uuid of the journalEntry or entryId if in compendium
-  journalPack: string = ""; // compendium pack (if it's in a compendium)
+  /** uuid of the journalEntry or entryId if in compendium*/
+  journalId: string = "";
+  /** compendium pack (if it's in a compendium) */
+  journalPack: string = "";
 }

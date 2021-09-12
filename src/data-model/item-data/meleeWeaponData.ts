@@ -2,6 +2,7 @@ import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
 
+// Shared between melee & missile weapons
 export enum CombatManeuver {
   Crush = "crush",
   Slash = "slash",
@@ -12,7 +13,7 @@ export enum CombatManeuver {
   Special = "special",
 }
 
-export interface MeleeWeaponData extends IPhysicalItem {
+export interface MeleeWeaponDataSourceData extends IPhysicalItem {
   /** id of the corresponding skill (when embedded) */
   skillId: string;
   /** the uuid of the required skill Item */
@@ -28,11 +29,20 @@ export interface MeleeWeaponData extends IPhysicalItem {
   description: string;
 }
 
-export interface MeleeWeaponItemData extends Item.Data<MeleeWeaponData> {
+// --- Derived Data ---
+export interface MeleeWeaponDataPropertiesData extends MeleeWeaponDataSourceData {}
+
+export interface MeleeWeaponDataSource {
   type: ItemTypeEnum.MeleeWeapon;
+  data: MeleeWeaponDataSourceData;
 }
 
-export const emptyMeleeWeapon: MeleeWeaponData = {
+export interface MeleeWeaponDataProperties {
+  type: ItemTypeEnum.MeleeWeapon;
+  data: MeleeWeaponDataPropertiesData;
+}
+
+export const emptyMeleeWeapon: MeleeWeaponDataSourceData = {
   description: "",
   gmNotes: "",
   skillId: "",

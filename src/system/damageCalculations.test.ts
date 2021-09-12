@@ -1,6 +1,6 @@
 import { DamageCalculations } from "./damageCalculations";
 import { mockActor as mockActorOriginal } from "../mocks/mockActor";
-import { CharacterActorData } from "../data-model/actor-data/rqgActorData";
+import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
 describe("Inflict Damage", () => {
   let mockActor: any;
@@ -484,8 +484,8 @@ describe("Inflict Damage", () => {
       );
 
       // --- Assert ---
-      expect(hitLocationUpdates.data.wounds).toStrictEqual([appliedDamage]);
-      expect(hitLocationUpdates.data.hitLocationHealthState).toBe("wounded");
+      expect(hitLocationUpdates.data?.wounds).toStrictEqual([appliedDamage]);
+      expect(hitLocationUpdates.data?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe("");
       expect(actorUpdates).toStrictEqual({
         data: {
@@ -514,8 +514,8 @@ describe("Inflict Damage", () => {
       );
 
       // --- Assert ---
-      expect(hitLocationUpdates.data.wounds).toStrictEqual([appliedDamage]);
-      expect(hitLocationUpdates.data.hitLocationHealthState).toBe("wounded");
+      expect(hitLocationUpdates.data?.wounds).toStrictEqual([appliedDamage]);
+      expect(hitLocationUpdates.data?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe(
         "Both legs are useless and Pelle Plutt falls to the ground. Pelle Plutt may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes."
       );
@@ -684,7 +684,7 @@ export function applyTestDamage(
   damage: number,
   applyDamageToTotalHp: boolean,
   hitLocationData: any,
-  actorData: CharacterActorData
+  actorData: ActorData
 ) {
   const damageEffects = DamageCalculations.addWound(
     damage,

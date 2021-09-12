@@ -5,7 +5,7 @@ import { getDomDataset, RqgError } from "../../system/util";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
-  token: Token | null
+  token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
@@ -29,7 +29,7 @@ export const characteristicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      const speakerName = token?.name || actor.data.token.name;
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
       await CharacteristicCard.roll(
         characteristicName,
         characteristic.value,
@@ -47,10 +47,10 @@ export const characteristicMenuOptions = (
       const { name: characteristicName } = getCharacteristic(actor, el);
       return characteristicName === "power";
     },
-    callback: async (): Promise<RqgActor> =>
-      actor.update({
-        "data.characteristics.power.hasExperience": !actor.data.data.characteristics.power
-          .hasExperience,
+    callback: async (): Promise<RqgActor | undefined> =>
+      await actor.update({
+        "data.characteristics.power.hasExperience":
+          !actor.data.data.characteristics.power.hasExperience,
       }),
   },
   {

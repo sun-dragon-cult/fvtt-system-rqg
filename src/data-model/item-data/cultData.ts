@@ -12,7 +12,7 @@ export enum CultRankEnum {
   HighPriest = "highPriest",
 }
 
-export interface CultData extends JournalEntryLink {
+export interface CultDataSourceData extends JournalEntryLink {
   rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
   runePoints: Resource;
   tagline: string;
@@ -27,11 +27,20 @@ export interface CultData extends JournalEntryLink {
   subCults: string;
 }
 
-export interface CultItemData extends Item.Data<CultData> {
+// --- Derived Data ---
+export interface CultDataPropertiesData extends CultDataSourceData {}
+
+export interface CultDataSource {
   type: ItemTypeEnum.Cult;
+  data: CultDataSourceData;
 }
 
-export const emptyCult: CultData = {
+export interface CultDataProperties {
+  type: ItemTypeEnum.Cult;
+  data: CultDataPropertiesData;
+}
+
+export const emptyCult: CultDataSourceData = {
   rank: CultRankEnum.LayMember,
   runePoints: emptyResource,
   tagline: "",

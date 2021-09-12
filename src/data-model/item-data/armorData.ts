@@ -35,8 +35,8 @@ export const materialTranslationKeys = [
   "RQG.ArmorMaterial.Linen",
 ];
 
-export interface ArmorData extends IPhysicalItem {
-  /** Must match character size */
+export interface ArmorDataSourceData extends IPhysicalItem {
+  /** Must match character size (TODO check not implemented yet) */
   size: number;
   /** Array of protected hitLocation names */
   hitLocations: string[];
@@ -47,11 +47,20 @@ export interface ArmorData extends IPhysicalItem {
   moveQuietlyPenalty: number;
 }
 
-export interface ArmorItemData extends Item.Data<ArmorData> {
+// --- Derived Data ---
+export interface ArmorDataPropertiesData extends ArmorDataSourceData {}
+
+export interface ArmorDataSource {
   type: ItemTypeEnum.Armor;
+  data: ArmorDataSourceData;
 }
 
-export const emptyArmor: ArmorData = {
+export interface ArmorDataProperties {
+  type: ItemTypeEnum.Armor;
+  data: ArmorDataPropertiesData;
+}
+
+export const emptyArmor: ArmorDataSourceData = {
   description: "",
   gmNotes: "",
   size: 0,

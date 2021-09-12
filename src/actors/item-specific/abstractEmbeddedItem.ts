@@ -23,7 +23,7 @@ export abstract class AbstractEmbeddedItem {
   /**
    * Will be called before an embedded (Owned) item is updated.
    */
-  static preUpdateItem(actor: RqgActor, item: RqgItem, result: object[], options: any): void {}
+  static preUpdateItem(actor: RqgActor, item: RqgItem, result: any[], options: any): void {}
 
   static onDeleteItem(actor: RqgActor, itemData: RqgItem, options: any, userId: string): any {}
 

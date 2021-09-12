@@ -3,16 +3,29 @@ import {
   SpiritMagicCastingRangeEnum,
   SpiritMagicDurationEnum,
   SpiritMagicConcentrationEnum,
-  SpiritMagicItemData,
-  SpiritMagicData,
+  SpiritMagicDataProperties,
+  SpiritMagicDataPropertiesData,
 } from "../../data-model/item-data/spiritMagicData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { RqgError } from "../../system/util";
+import { assertItemType, getJournalEntryName, RqgError } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 
-export class SpiritMagicSheet extends RqgItemSheet {
-  static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
+interface SpiritMagicSheetData {
+  data: SpiritMagicDataProperties; // Actually contains more...complete with effects, flags etc
+  spiritMagicData: SpiritMagicDataPropertiesData;
+  sheetSpecific: {
+    ranges: SpiritMagicCastingRangeEnum[];
+    durations: SpiritMagicDurationEnum[];
+    types: SpiritMagicConcentrationEnum[];
+    journalEntryName: string;
+  };
+}
+
+export class SpiritMagicSheet extends RqgItemSheet<
+  ItemSheet.Options,
+  SpiritMagicSheetData | ItemSheet.Data
+> {
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.SpiritMagic],
       template: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.html",
@@ -21,30 +34,26 @@ export class SpiritMagicSheet extends RqgItemSheet {
     });
   }
 
-  getData(): SpiritMagicItemData {
-    const context = super.getData() as any;
-    const spiritMagicData = (context.spiritMagicData = context.data.data) as SpiritMagicData;
-    const sheetSpecific: any = (context.sheetSpecific = {});
+  getData(): SpiritMagicSheetData | ItemSheet.Data {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.SpiritMagic);
 
-    sheetSpecific.ranges = Object.values(SpiritMagicCastingRangeEnum);
-    sheetSpecific.durations = Object.values(SpiritMagicDurationEnum);
-    sheetSpecific.types = Object.values(SpiritMagicConcentrationEnum);
-    if (spiritMagicData.journalId) {
-      if (spiritMagicData.journalPack) {
-        const pack = game.packs?.get(spiritMagicData.journalPack);
-        // @ts-ignore
-        sheetSpecific.journalEntryName = pack?.index.get(spiritMagicData.journalId)?.name;
-      } else {
-        sheetSpecific.journalEntryName = game.journal?.get(spiritMagicData.journalId)?.name;
-      }
-      if (!sheetSpecific.journalEntryName) {
-        ui.notifications?.warn(
-          "Skill description link not found - please make sure the journal exists or relink to another description"
-        );
-      }
-    }
-
-    return context;
+    const spiritMagicData = itemData.data;
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isOwner,
+      options: this.options,
+      data: itemData,
+      spiritMagicData: itemData.data,
+      sheetSpecific: {
+        ranges: Object.values(SpiritMagicCastingRangeEnum),
+        durations: Object.values(SpiritMagicDurationEnum),
+        types: Object.values(SpiritMagicConcentrationEnum),
+        journalEntryName: getJournalEntryName(spiritMagicData),
+      },
+    };
   }
 
   public activateListeners(html: JQuery): void {

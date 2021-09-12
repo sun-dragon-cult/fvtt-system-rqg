@@ -1,8 +1,10 @@
-import { ItemTypeEnum, RqgItemData } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { HitLocationsEnum, HitLocationTypesEnum } from "../../data-model/item-data/hitLocationData";
+import { ItemUpdate } from "../migrate";
+import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 // Migrate hitLocation type for damage calculations in v0.16.0 +
-export function migrateHitLocationType(itemData: RqgItemData): any {
+export function migrateHitLocationType(itemData: ItemData): ItemUpdate {
   let updateData = {};
   if (itemData.type === ItemTypeEnum.HitLocation && !itemData.data.hitLocationType) {
     let hitLocationType: HitLocationTypesEnum;

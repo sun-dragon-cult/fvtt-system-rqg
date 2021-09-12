@@ -1,9 +1,11 @@
 import { mockActor as mockActorOriginal } from "../mocks/mockActor";
 import { HealingCalculations, HealingEffects } from "./healingCalculations";
 import { applyTestDamage } from "./damageCalculations.test";
-import { HitLocationItemData } from "../data-model/item-data/hitLocationData";
-import { CharacterActorData } from "../data-model/actor-data/rqgActorData";
 import { DamageCalculations } from "./damageCalculations";
+import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import { assertItemType } from "./util";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 describe("healing", () => {
   let mockActor: any;
@@ -250,9 +252,10 @@ describe("healing", () => {
 export function applyTestHealing(
   healPoints: number,
   healWoundIndex: number,
-  hitLocationData: HitLocationItemData,
-  actorData: CharacterActorData
+  hitLocationData: ItemData,
+  actorData: ActorData
 ): HealingEffects {
+  assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
   const healingEffects = HealingCalculations.healWound(
     healPoints,
     healWoundIndex,

@@ -1,9 +1,6 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
-import { getActorFromIds, getAllRunesIndex, RqgError } from "./util";
-import { RqgConfig } from "./config";
-import { SkillItemData } from "../data-model/item-data/skillData";
-
-declare const CONFIG: RqgConfig;
+import { getActorFromIds, getAllRunesIndex, hasOwnProperty, RqgError } from "./util";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -23,11 +20,19 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("skillname", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
-    const item = actor.items.get(itemId) as Item<SkillItemData>;
-    const specialization = item?.data.data.specialization
+    const item = actor.items.get(itemId);
+    if (!item) {
+      return "---";
+    }
+    if (item.data.type !== ItemTypeEnum.Skill) {
+      const msg = `Handlebar helper "skillname" called with an item that is not a skill`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, item, actor);
+    }
+    const specialization = item.data.data.specialization
       ? ` (${item.data.data.specialization})`
       : "";
-    return item ? `${item.data.data.skillName}${specialization}` : "---";
+    return `${item.data.data.skillName}${specialization}`;
   });
 
   Handlebars.registerHelper("skillchance", (itemId, actorId, tokenId) => {
@@ -44,28 +49,32 @@ export const registerHandlebarsHelpers = function () {
     return item && item.data.data.hasExperience ? "experienced" : "";
   });
 
-  Handlebars.registerHelper("quantity", (itemId, actorId) => {
-    const actor = game?.actors?.find((a) => a.id === actorId);
-    if (!actor) {
-      console.warn(
-        `RQG | Handlebar helper "quantity": Couldn't find actor "${actorId}" while checking quantity on item "${itemId}" `
-      );
+  Handlebars.registerHelper("quantity", (itemId, actorId, tokenId) => {
+    const actor = getActorFromIds(actorId, tokenId);
+    const item = actor.items.get(itemId);
+    if (!item) {
+      return "---";
     }
-    const item = actor?.items.get(itemId);
-    return item ? item.data.data.quantity : "---";
+    if (!hasOwnProperty(item.data.data, "quantity")) {
+      const msg = `Handlebar helper quantity was called with an item without quantity propery`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, item);
+    }
+    return item.data.data.quantity;
   });
-
   Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
     if (!runeName) {
       return;
     }
     const allRunesIndex = getAllRunesIndex();
+    // @ts-ignore waiting for issue #897 in foundry-vtt-types (r.name)
     const rune = allRunesIndex.find((r) => r.name === runeName);
     if (!rune) {
       const msg = `Couldn't find rune ${runeName}`;
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
+    // @ts-ignore waiting for issue #897 in foundry-vtt-types
     return rune.img;
   });
 

@@ -17,7 +17,7 @@ export enum SkillCategoryEnum {
   OtherSkills = "otherSkills",
 }
 
-export interface SkillData extends IAbility, JournalEntryLink {
+export interface SkillDataSourceData extends IAbility, JournalEntryLink {
   category: SkillCategoryEnum;
   skillName: string;
   specialization: string;
@@ -25,15 +25,27 @@ export interface SkillData extends IAbility, JournalEntryLink {
   learnedChance: number;
   /** For Sorcery Magic */
   runes: string[];
-  // --- Derived Data Below ---
-  categoryMod?: number;
 }
 
-export interface SkillItemData extends Item.Data<SkillData> {
+// --- Derived Data ---
+export interface SkillDataPropertiesData extends SkillDataSourceData {
+  /** Derived: Learned chance + categoryMod (from IAbility) */
+  chance: number;
+  /** Derived: The modifier from skill category for this skill*/
+  categoryMod: number;
+}
+
+export interface SkillDataSource {
   type: ItemTypeEnum.Skill;
+  data: SkillDataSourceData;
 }
 
-export const emptySkill: SkillData = {
+export interface SkillDataProperties {
+  type: ItemTypeEnum.Skill;
+  data: SkillDataPropertiesData;
+}
+
+export const emptySkill: SkillDataSourceData = {
   category: SkillCategoryEnum.Magic,
   skillName: "",
   specialization: "",

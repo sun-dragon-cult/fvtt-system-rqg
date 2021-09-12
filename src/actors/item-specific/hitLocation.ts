@@ -1,6 +1,5 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgItem } from "../../items/rqgItem";
-import { RqgActor } from "../rqgActor";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgError } from "../../system/util";
 
@@ -19,7 +18,12 @@ export class HitLocation extends AbstractEmbeddedItem {
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
-    const actor = item.actor as RqgActor;
+    const actor = item.actor;
+    if (!actor) {
+      const msg = "hitlocation item didn't have an actor";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, item);
+    }
     const actorData = actor.data.data;
 
     // Add equipped armor absorptions for this hit location

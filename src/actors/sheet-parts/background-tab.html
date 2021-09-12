@@ -6,40 +6,40 @@
     <div class="nowrap">
       {{#if isGM}}
         <label>{{localize 'RQG.BirthYear'}}
-          <input type="number" min="0" max="9999" name="data.background.birthyear" value="{{rqgActorData.data.background.birthyear}}">
+          <input type="number" min="0" max="9999" name="data.background.birthyear" value="{{characterData.background.birthyear}}">
         </label>
-      {{else if rqgActorData.data.background.birthyear}}
-        <b>{{localize 'RQG.BirthYear'}}</b> {{rqgActorData.data.background.birthyear}}
+      {{else if characterData.background.birthyear}}
+        <b>{{localize 'RQG.BirthYear'}}</b> {{characterData.background.birthyear}}
       {{/if}}
     </div>
 
   <div class="nowrap">
     {{#if isGM}}
       <label>{{localize 'RQG.Age'}}
-        <input type="number" min="0" max="999" name="data.background.age" value="{{rqgActorData.data.background.age}}">
+        <input type="number" min="0" max="999" name="data.background.age" value="{{characterData.background.age}}">
       </label>
-    {{else if rqgActorData.data.background.age}}
-      <b>{{localize 'RQG.Age'}}</b> {{rqgActorData.data.background.age}}
+    {{else if characterData.background.age}}
+      <b>{{localize 'RQG.Age'}}</b> {{characterData.background.age}}
     {{/if}}
   </div>
 
   <div class="nowrap">
     {{#if isGM}}
     <label>{{localize 'RQG.Gender'}}
-      <input type="text" name="data.background.gender" value="{{rqgActorData.data.background.gender}}" size="10">
+      <input type="text" name="data.background.gender" value="{{characterData.background.gender}}" size="10">
     </label>
-    {{else if rqgActorData.data.background.gender}}
-    <b>{{localize 'RQG.Gender'}}</b> {{rqgActorData.data.background.gender}}
+    {{else if data.data.background.gender}}
+    <b>{{localize 'RQG.Gender'}}</b> {{data.data.background.gender}}
     {{/if}}
   </div>
 
   <div class="nowrap">
     {{#if isGM}}
       <label>{{localize 'RQG.Race'}}
-        <input type="text" name="data.background.race" value="{{rqgActorData.data.background.race}}" size="20">
+        <input type="text" name="data.background.race" value="{{data.data.background.race}}" size="20">
       </label>
-    {{else if rqgActorData.data.background.race}}
-      <b>{{localize 'RQG.Race'}}</b> {{rqgActorData.data.background.race}}
+    {{else if data.data.background.race}}
+      <b>{{localize 'RQG.Race'}}</b> {{data.data.background.race}}
     {{/if}}
   </div>
 </fieldset>
@@ -51,43 +51,43 @@
     {{#if isGM}}
     <label>{{localize 'RQG.Homeland.Heading'}}
       <select name="data.background.homeland">
-        {{#select rqgActorData.data.background.homeland}} {{#each homelands}}
+        {{#select data.data.background.homeland}} {{#each homelands}}
         <option value="{{this}}">{{localize (concat 'RQG.Homeland.' this)}}</option>
         {{/each}} {{/select}}
       </select>
     </label>
-    {{else if rqgActorData.data.background.homeland}}
-      <b>{{localize 'RQG.Homeland.Heading'}}</b> {{localize (concat 'RQG.Homeland.' rqgActorData.data.background.homeland)}}
+    {{else if data.data.background.homeland}}
+      <b>{{localize 'RQG.Homeland.Heading'}}</b> {{localize (concat 'RQG.Homeland.' data.data.background.homeland)}}
     {{/if}}
   </div>
 
   <div class="nowrap">
     {{#if isGM}}
     <label>{{localize 'RQG.TownHomeArea'}}
-      <input type="text" name="data.background.town" value="{{rqgActorData.data.background.town}}" size="30">
+      <input type="text" name="data.background.town" value="{{data.data.background.town}}" size="30">
     </label>
-    {{else if rqgActorData.data.background.town}}
-    <b>{{localize 'RQG.TownHomeArea'}}</b> {{rqgActorData.data.background.town}}
+    {{else if data.data.background.town}}
+    <b>{{localize 'RQG.TownHomeArea'}}</b> {{data.data.background.town}}
     {{/if}}
   </div>
 
   <div class="nowrap">
     {{#if isGM}}
     <label>{{localize 'RQG.Tribe'}}
-      <input type="text" name="data.background.tribe" value="{{rqgActorData.data.background.tribe}}" size="30">
+      <input type="text" name="data.background.tribe" value="{{data.data.background.tribe}}" size="30">
     </label>
-    {{else if rqgActorData.data.background.tribe}}
-      <b>{{localize 'RQG.Tribe'}}</b> {{rqgActorData.data.background.tribe}}
+    {{else if data.data.background.tribe}}
+      <b>{{localize 'RQG.Tribe'}}</b> {{data.data.background.tribe}}
     {{/if}}
   </div>
 
   <div class="nowrap">
     {{#if isGM}}
     <label>{{localize 'RQG.Clan'}}
-      <input type="text" name="data.background.clan" value="{{rqgActorData.data.background.clan}}" size="30">
+      <input type="text" name="data.background.clan" value="{{data.data.background.clan}}" size="30">
     </label>
-    {{else if rqgActorData.data.background.clan}}
-      <b>{{localize 'RQG.Clan'}}</b> {{rqgActorData.data.background.clan}}
+    {{else if data.data.background.clan}}
+      <b>{{localize 'RQG.Clan'}}</b> {{data.data.background.clan}}
     {{/if}}
   </div>
 
@@ -99,20 +99,20 @@
   <div class="nowrap">
     {{#if isGM}}
     <label>{{localize 'RQG.Reputation'}}
-      <input type="number" min="0" max="999" name="data.background.reputation" value="{{rqgActorData.data.background.reputation}}">
+      <input type="number" min="0" max="999" name="data.background.reputation" value="{{data.data.background.reputation}}">
     </label>%
-    {{else if rqgActorData.data.background.reputation}}
-    <b>{{localize 'RQG.Reputation'}}</b> {{rqgActorData.data.background.reputation}}%
+    {{else if data.data.background.reputation}}
+    <b>{{localize 'RQG.Reputation'}}</b> {{data.data.background.reputation}}%
     {{/if}}
   </div>
 
   <div class="nowrap">
     {{#if isGM}}
       <label>{{localize 'RQG.StandardOfLiving'}}
-      <input type="text" name="data.background.standardOfLiving" value="{{rqgActorData.data.background.standardOfLiving}}" size="30">
+      <input type="text" name="data.background.standardOfLiving" value="{{data.data.background.standardOfLiving}}" size="30">
       </label>
-    {{else if rqgActorData.data.background.standardOfLiving}}
-      <b>{{localize 'RQG.StandardOfLiving'}}</b> {{rqgActorData.data.background.standardOfLiving}}
+    {{else if data.data.background.standardOfLiving}}
+      <b>{{localize 'RQG.StandardOfLiving'}}</b> {{data.data.background.standardOfLiving}}
     {{/if}}
   </div>
 
@@ -120,33 +120,33 @@
     {{#if isGM}}
     <label>{{localize 'RQG.Occupation.Heading'}}
       <select name="data.background.occupation">
-        {{#select rqgActorData.data.background.occupation}} {{#each occupations}}
+        {{#select data.data.background.occupation}} {{#each occupations}}
         <option value="{{this}}">{{localize (concat 'RQG.Occupation.' this)}}</option>
         {{/each}} {{/select}}
       </select>
     </label>
-    {{else if rqgActorData.data.background.occupation}}
-    <b>{{localize 'RQG.Occupation.Heading'}}</b> {{localize (concat 'RQG.Occupation.' rqgActorData.data.background.occupation)}}
+    {{else if data.data.background.occupation}}
+    <b>{{localize 'RQG.Occupation.Heading'}}</b> {{localize (concat 'RQG.Occupation.' data.data.background.occupation)}}
     {{/if}}
   </div>
 
   <div class="nowrap">
     {{#if isGM}}
     <label>{{localize 'RQG.BaseIncome'}}
-      <input type="number" min="0" max="99999999" name="data.background.baseIncome" value="{{rqgActorData.data.background.baseIncome}}">
+      <input type="number" min="0" max="99999999" name="data.background.baseIncome" value="{{data.data.background.baseIncome}}">
     </label>(L)
-    {{else if rqgActorData.data.background.baseIncome}}
-    <b>{{localize 'RQG.BaseIncome'}}</b> {{rqgActorData.data.background.baseIncome}} (L)
+    {{else if data.data.background.baseIncome}}
+    <b>{{localize 'RQG.BaseIncome'}}</b> {{data.data.background.baseIncome}} (L)
     {{/if}}
   </div>
 
   <div class="nowrap">
     {{#if isGM}}
     <label>{{localize 'RQG.Ransom'}}
-      <input type="number" min="0" max="99999999" name="data.background.ransom" value="{{rqgActorData.data.background.ransom}}">
+      <input type="number" min="0" max="99999999" name="data.background.ransom" value="{{data.data.background.ransom}}">
     </label>(L)
-    {{else if rqgActorData.data.background.ransom}}
-      <b>{{localize 'RQG.Ransom'}}</b> {{rqgActorData.data.background.ransom}} (L)
+    {{else if data.data.background.ransom}}
+      <b>{{localize 'RQG.Ransom'}}</b> {{data.data.background.ransom}} (L)
     {{/if}}
   </div>
 
@@ -154,7 +154,7 @@
 </div>
 
 {{#if isGM}}
-  {{editor content=rqgActorData.data.background.biography target="data.background.biography" button=true owner=owner editable=editable}}
-{{else if rqgActorData.data.background.biography}}
-  {{{enrichHtml rqgActorData.data.background.biography}}}
+  {{editor content=data.data.background.biography target="data.background.biography" button=true owner=owner editable=editable}}
+{{else if data.data.background.biography}}
+  {{{enrichHtml data.data.background.biography}}}
 {{/if}}

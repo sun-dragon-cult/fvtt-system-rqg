@@ -19,7 +19,7 @@ export enum SpiritMagicConcentrationEnum {
   Active = "active",
 }
 
-export interface SpiritMagicData extends JournalEntryLink {
+export interface SpiritMagicDataSourceData extends JournalEntryLink {
   points: number; // Learned strength
   isVariable: boolean; // Can the caster decide the number of magic points used
   castingRange: SpiritMagicCastingRangeEnum;
@@ -29,11 +29,20 @@ export interface SpiritMagicData extends JournalEntryLink {
   spellFocus: string;
 }
 
-export interface SpiritMagicItemData extends Item.Data<SpiritMagicData> {
+// --- Derived Data ---
+export interface SpiritMagicDataPropertiesData extends SpiritMagicDataSourceData {}
+
+export interface SpiritMagicDataSource {
   type: ItemTypeEnum.SpiritMagic;
+  data: SpiritMagicDataSourceData;
 }
 
-export const emptySpiritMagic: SpiritMagicData = {
+export interface SpiritMagicDataProperties {
+  type: ItemTypeEnum.SpiritMagic;
+  data: SpiritMagicDataPropertiesData;
+}
+
+export const emptySpiritMagic: SpiritMagicDataSourceData = {
   points: 0,
   isVariable: false,
   castingRange: SpiritMagicCastingRangeEnum.Ranged,

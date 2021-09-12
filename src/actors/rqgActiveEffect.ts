@@ -1,15 +1,16 @@
 import { logMisconfiguration, RqgError } from "../system/util";
+import { EffectChangeData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
+import { RqgActor } from "./rqgActor";
 
 export class RqgActiveEffect extends ActiveEffect {
   static init() {
-    // @ts-ignore 0.8
     CONFIG.ActiveEffect.documentClass = RqgActiveEffect;
   }
 
   /**
    * Apply an RqgActiveEffect that uses a CUSTOM application mode.
    */
-  _applyCustom(actor: Actor, change: any): any {
+  _applyCustom(actor: RqgActor, change: EffectChangeData): any {
     const [affectedItemType, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.ap
     const items: Item[] = actor.items.filter(
       (i: Item) => i.data.type === affectedItemType && i.data.name === itemName
@@ -19,7 +20,6 @@ export class RqgActiveEffect extends ActiveEffect {
       const affectedItem = items[0];
       const currentValue: number = getProperty(items[0], path) || 0;
       const changeValue: number = Number(change.value) || 0;
-      // @ts-ignore 0.8
       foundry.utils.setProperty(affectedItem, path, changeValue + currentValue);
       return changeValue;
     } else if (items.length === 0) {
@@ -37,8 +37,7 @@ export class RqgActiveEffect extends ActiveEffect {
           "RQG | Deleting the Active Effect since it has no origin or the origin does not point to this actor",
           this
         );
-        // @ts-ignore 0.8
-        actor.deleteEmbeddedDocuments("ActiveEffect", [this.id]);
+        actor.deleteEmbeddedDocuments("ActiveEffect", [this.id!]);
       }
       return null;
     } else {

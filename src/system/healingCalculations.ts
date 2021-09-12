@@ -1,13 +1,22 @@
-import { HitLocationItemData } from "../data-model/item-data/hitLocationData";
-import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ActorHealthState } from "../data-model/actor-data/attributes";
-import { RqgError } from "./util";
+import { assertItemType, RqgError } from "./util";
+import {
+  HitLocationDataSource,
+  HitLocationHealthState,
+} from "../data-model/item-data/hitLocationData";
+import { CharacterDataSource } from "../data-model/actor-data/rqgActorData";
+import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export interface HealingEffects {
-  hitLocationUpdates: HitLocationItemData;
-  actorUpdates: RqgActorData;
-  /** make limbs useful again */
-  usefulLegs: any[];
+  /** Updates to the hitlocation item's wounds, health and actor health impact */
+  hitLocationUpdates: DeepPartial<HitLocationDataSource>;
+  /** Updates to the actor health */
+  actorUpdates: DeepPartial<CharacterDataSource>;
+  /** Updates to make limbs useful again */
+  usefulLegs: DeepPartial<ItemDataConstructorData>[];
 }
 
 /**
@@ -17,13 +26,14 @@ export class HealingCalculations {
   static healWound(
     healPoints: number,
     healWoundIndex: number,
-    hitLocationData: HitLocationItemData,
-    actorData: CharacterActorData
+    hitLocationData: ItemData,
+    actorData: ActorData
   ): HealingEffects {
+    assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
     const healingEffects: HealingEffects = {
-      hitLocationUpdates: {} as HitLocationItemData,
-      actorUpdates: {} as CharacterActorData,
-      usefulLegs: [],
+      hitLocationUpdates: {},
+      actorUpdates: {},
+      usefulLegs: [], // Not used yet
     };
     if (hitLocationData.data.wounds.length <= healWoundIndex) {
       const msg = `Trying to heal a wound that doesn't exist.`;
@@ -39,7 +49,8 @@ export class HealingCalculations {
       throw new RqgError(msg, hitLocationData);
     }
     const wounds = hitLocationData.data.wounds.slice();
-    let hitLocationHealthState = hitLocationData.data.hitLocationHealthState || "healthy";
+    let hitLocationHealthState: HitLocationHealthState =
+      hitLocationData.data.hitLocationHealthState || "healthy";
     let actorHealthImpact: ActorHealthState = hitLocationData.data.actorHealthImpact || "healthy";
 
     if (healPoints >= 6 && hitLocationHealthState === "severed") {
@@ -49,7 +60,7 @@ export class HealingCalculations {
     healPoints = Math.min(wounds[healWoundIndex], healPoints); // Don't heal more than wound damage
     wounds[healWoundIndex] -= healPoints;
 
-    const woundsSumAfter = wounds.reduce((acc, w) => acc + w, 0);
+    const woundsSumAfter = wounds.reduce((acc: number, w: number) => acc + w, 0);
     if (woundsSumAfter === 0) {
       actorHealthImpact = "healthy";
       if (hitLocationHealthState !== "severed") {
@@ -68,7 +79,7 @@ export class HealingCalculations {
         actorHealthImpact: actorHealthImpact,
         hitLocationHealthState: hitLocationHealthState,
       },
-    } as any);
+    });
 
     const actorTotalHp = actorData.data.attributes.hitPoints.value;
     const actorMaxHp = actorData.data.attributes.hitPoints.max;
@@ -81,7 +92,7 @@ export class HealingCalculations {
     const totalHpAfter = Math.min(actorTotalHp + healPoints, actorMaxHp);
     mergeObject(healingEffects.actorUpdates, {
       data: { attributes: { hitPoints: { value: totalHpAfter } } },
-    } as any);
+    });
 
     return healingEffects;
   }

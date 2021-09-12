@@ -11,17 +11,26 @@ export enum PassionsEnum {
   Love = "love",
 }
 
-export interface PassionData extends IAbility {
+export interface PassionDataSourceData extends IAbility {
   passion: PassionsEnum;
   subject: string; // The subject of Fear etc
   description: string; // How did the character get this passion
 }
 
-export interface PassionItemData extends Item.Data<PassionData> {
+// --- Derived Data ---
+export interface PassionDataPropertiesData extends PassionDataSourceData {}
+
+export interface PassionDataSource {
   type: ItemTypeEnum.Passion;
+  data: PassionDataSourceData;
 }
 
-export const emptyPassion: PassionData = {
+export interface PassionDataProperties {
+  type: ItemTypeEnum.Passion;
+  data: PassionDataPropertiesData;
+}
+
+export const emptyPassion: PassionDataSourceData = {
   passion: PassionsEnum.Love,
   subject: "",
   description: "",

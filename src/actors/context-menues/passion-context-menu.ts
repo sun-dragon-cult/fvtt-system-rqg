@@ -1,11 +1,14 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getRequiredDomDataset, RqgError } from "../../system/util";
+import { assertItemType, getGameUser, getRequiredDomDataset, RqgError } from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
-export const passionMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
+export const passionMenuOptions = (
+  actor: RqgActor,
+  token: TokenDocument | null
+): ContextMenu.Item[] => [
   {
     name: "Roll (click))",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -22,13 +25,14 @@ export const passionMenuOptions = (actor: RqgActor, token: Token | null): Contex
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || item.data.type !== ItemTypeEnum.Passion || item.data.data.chance == null) {
+      assertItemType(item?.data.type, ItemTypeEnum.Passion);
+      if (item.data.data.chance == null) {
         const msg = `Couldn't find itemId [${itemId}] or item Chance (item.data.data.chance) on actor ${actor.name} to do a direct roll for passion item from the passion context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      const speakerName = token?.name || actor.data.token.name;
-      await Ability.roll(item.name, item.data.data.chance, 0, speakerName);
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      await Ability.roll(item.name ?? "", item.data.data.chance, 0, speakerName);
     },
   },
   {
@@ -74,7 +78,7 @@ export const passionMenuOptions = (actor: RqgActor, token: Token | null): Contex
   {
     name: "Edit",
     icon: '<i class="fas fa-edit"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => getGameUser().isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -89,7 +93,7 @@ export const passionMenuOptions = (actor: RqgActor, token: Token | null): Contex
   {
     name: "Delete",
     icon: '<i class="fas fa-trash"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => getGameUser().isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

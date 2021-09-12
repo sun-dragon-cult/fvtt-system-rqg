@@ -1,11 +1,20 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
+import {
+  assertItemType,
+  getDomDataset,
+  getGame,
+  getRequiredDomDataset,
+  RqgError,
+} from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
-export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
+export const runeMenuOptions = (
+  actor: RqgActor,
+  token: TokenDocument | null
+): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -22,14 +31,10 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      const itemChance = item && (item.data.data as any).chance;
-      if (itemChance == null || !item || item.data.type !== ItemTypeEnum.Rune) {
-        const msg = `Couldn't find itemId [${itemId}] or item chance on actor ${actor.name} to do a direct roll on the rune item from the rune context menu.`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg);
-      }
-      const speakerName = token?.name || actor.data.token.name;
-      await Ability.roll(item.name, itemChance, 0, speakerName);
+      assertItemType(item?.data.type, ItemTypeEnum.Rune);
+      const itemChance = item.data.data.chance;
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      await Ability.roll(item.name ?? "", itemChance, 0, speakerName);
     },
   },
   {
@@ -39,11 +44,7 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || item.data.type !== ItemTypeEnum.Rune) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a rune item from the rune context menu.`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg);
-      }
+      assertItemType(item?.data.type, ItemTypeEnum.Rune);
       await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
     },
   },
@@ -53,7 +54,8 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      return !!(item?.data.data as any).hasExperience;
+      assertItemType(item?.data.type, ItemTypeEnum.Rune);
+      return !!item.data.data.hasExperience;
     },
     callback: () => {
       ui.notifications?.info("TODO Improve");
@@ -84,12 +86,13 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
   {
     name: "Edit",
     icon: '<i class="fas fa-edit"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || !item.sheet) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the rune item from the rune context menu.`;
+      assertItemType(item?.data.type, ItemTypeEnum.Rune);
+      if (!item.sheet) {
+        const msg = `Couldn't find itemsheet [${item?.name}] on actor ${actor.name} to edit the rune item from the rune context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
@@ -99,7 +102,7 @@ export const runeMenuOptions = (actor: RqgActor, token: Token | null): ContextMe
   {
     name: "Delete",
     icon: '<i class="fas fa-trash"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

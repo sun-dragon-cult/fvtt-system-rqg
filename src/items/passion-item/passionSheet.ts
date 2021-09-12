@@ -1,8 +1,25 @@
-import { PassionData, PassionsEnum } from "../../data-model/item-data/passionData";
+import {
+  PassionDataProperties,
+  PassionDataPropertiesData,
+  PassionsEnum,
+} from "../../data-model/item-data/passionData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { assertItemType } from "../../system/util";
 
-export class PassionSheet extends RqgItemSheet {
+export interface PassionSheetData {
+  data: PassionDataProperties; // Actually contains more...complete with effects, flags etc
+  passionData: PassionDataPropertiesData;
+  sheetSpecific: {
+    passionTypes: PassionsEnum[];
+  };
+}
+
+export class PassionSheet extends RqgItemSheet<
+  ItemSheet.Options,
+  PassionSheetData | ItemSheet.Data
+> {
+  // TODO move to config?
   static passionImgUrl = new Map([
     [PassionsEnum.Cowardly, "systems/rqg/assets/images/passion/cowardly.svg"],
     [PassionsEnum.Devotion, "systems/rqg/assets/images/passion/devotion.svg"],
@@ -13,8 +30,7 @@ export class PassionSheet extends RqgItemSheet {
     [PassionsEnum.Love, "systems/rqg/assets/images/passion/love.svg"],
   ]);
 
-  static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Passion],
       template: "systems/rqg/items/passion-item/passionSheet.html",
@@ -23,13 +39,22 @@ export class PassionSheet extends RqgItemSheet {
     });
   }
 
-  getData(): any {
-    const context = super.getData() as any;
-    const passionData = (context.passionData = context.data.data) as PassionData;
-    const sheetSpecific: any = (context.sheetSpecific = {});
+  getData(): PassionSheetData | ItemSheet.Data {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.Passion);
 
-    sheetSpecific.passionTypes = Object.values(PassionsEnum);
-    return context;
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isOwner,
+      options: this.options,
+      data: itemData,
+      passionData: itemData.data,
+      sheetSpecific: {
+        passionTypes: Object.values(PassionsEnum),
+      },
+    };
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {

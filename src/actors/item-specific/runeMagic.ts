@@ -3,6 +3,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { RqgError } from "../../system/util";
+import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export class RuneMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -36,8 +37,8 @@ export class RuneMagic extends AbstractEmbeddedItem {
     }
     if (runeMagicCult && runeMagicCult.data.type === ItemTypeEnum.Cult) {
       item.data.data.chance = RuneMagic.calcRuneMagicChance(
-        // @ts-ignore 0.8 toObject
-        actor.items.toObject(false),
+        // TODO should this be returning ItemData ??? no ItemDataSource
+        actor.items.toObject(),
         runeMagicCult.data.data.runes,
         item.data.data.runes
       );
@@ -46,18 +47,19 @@ export class RuneMagic extends AbstractEmbeddedItem {
   }
 
   private static calcRuneMagicChance(
-    actorItems: RqgItem[],
+    actorItems: ItemDataSource[],
     cultRuneNames: string[],
     runeMagicRuneNames: string[]
   ): number {
     const runeChances = actorItems
       .filter(
-        (i: RqgItem) =>
+        (i) =>
           i.type === ItemTypeEnum.Rune &&
-          (runeMagicRuneNames.includes(i.name) ||
-            (runeMagicRuneNames.includes("Magic (condition)") && cultRuneNames.includes(i.name)))
+          (runeMagicRuneNames.includes(i.name ?? "") ||
+            (runeMagicRuneNames.includes("Magic (condition)") &&
+              cultRuneNames.includes(i.name ?? "")))
       )
-      // @ts-ignore r is a runeItem
+      // @ts-ignore r is a runeItem TODO rewrite as reduce
       .map((r: RqgItem) => r.data.chance);
     return Math.max(...runeChances);
   }
@@ -84,8 +86,8 @@ export class RuneMagic extends AbstractEmbeddedItem {
         actorCults.map((c) => {
           return { name: c.name, id: c.id };
         }),
-        runeMagicItem.name,
-        actor.name
+        runeMagicItem.name ?? "",
+        actor.name ?? ""
       );
       updateData = {
         _id: runeMagicItem.id,
@@ -117,13 +119,12 @@ export class RuneMagic extends AbstractEmbeddedItem {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: "Add Rune Magic",
-            // @ts-ignore typing
-            callback: (html: JQuery) => {
-              const selectedCultId = html.find("[name=cultId]").val() as string;
+
+            callback: (html: JQuery | HTMLElement) => {
+              const selectedCultId = (html as JQuery).find("[name=cultId]").val() as string;
               resolve(selectedCultId);
             },
           },
-          // @ts-ignore typing
           cancel: {
             label: "Cancel",
             icon: '<i class="fas fa-times"></i>',

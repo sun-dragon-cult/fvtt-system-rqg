@@ -1,6 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getRequiredDomDataset, hasOwnProperty, RqgError } from "../../system/util";
+import { getGame, getRequiredDomDataset, hasOwnProperty, RqgError } from "../../system/util";
 
 export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -34,9 +34,8 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       return (
-        !!item &&
-        hasOwnProperty(item.data.data, "physicalItemType") &&
-        item.data.data.physicalItemType !== "unique"
+        hasOwnProperty(item?.data.data, "physicalItemType") &&
+        item?.data.data.physicalItemType !== "unique"
       );
     },
     callback: async (): Promise<void> => {
@@ -54,7 +53,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Edit",
     icon: '<i class="fas fa-edit"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);

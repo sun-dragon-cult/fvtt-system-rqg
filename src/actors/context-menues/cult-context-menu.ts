@@ -1,6 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
+import { getDomDataset, getGame, getRequiredDomDataset, RqgError } from "../../system/util";
 
 export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -34,7 +34,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Edit",
     icon: '<i class="fas fa-edit"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = itemId && actor.items.get(itemId);
@@ -49,7 +49,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Delete",
     icon: '<i class="fas fa-trash"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

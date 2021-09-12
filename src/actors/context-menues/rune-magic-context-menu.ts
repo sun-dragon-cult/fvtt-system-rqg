@@ -1,11 +1,20 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
+import {
+  assertItemType,
+  getDomDataset,
+  getGame,
+  getRequiredDomDataset,
+  RqgError,
+} from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ItemCard } from "../../chat/itemCard";
 
-export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
+export const runeMagicMenuOptions = (
+  actor: RqgActor,
+  token: TokenDocument | null
+): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -22,13 +31,9 @@ export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): Cont
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || item.data.type !== ItemTypeEnum.RuneMagic || !item.data.data.chance) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to roll for RuneMagic item from the runemagic context menu.`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg);
-      }
-      const speakerName = token?.name || actor.data.token.name;
-      await Ability.roll(item.name, item.data.data.chance, 0, speakerName);
+      assertItemType(item?.data.type, ItemTypeEnum.RuneMagic);
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      await Ability.roll(item.name ?? "", item.data.data.chance, 0, speakerName);
     },
   },
   {
@@ -57,11 +62,12 @@ export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): Cont
   {
     name: "Edit",
     icon: '<i class="fas fa-edit"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || !item.sheet) {
+      assertItemType(item?.data.type, ItemTypeEnum.RuneMagic);
+      if (!item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the runemagic item from the runemagic context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
@@ -72,7 +78,7 @@ export const runeMagicMenuOptions = (actor: RqgActor, token: Token | null): Cont
   {
     name: "Delete",
     icon: '<i class="fas fa-trash"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

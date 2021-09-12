@@ -1,19 +1,21 @@
 import { RqgCalculations } from "../system/rqgCalculations";
-import { RqgActorData } from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgItem } from "../items/rqgItem";
 import { DamageCalculations } from "../system/damageCalculations";
+import { getGame, hasOwnProperty } from "../system/util";
+import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
-export class RqgActor extends Actor<RqgActorData, RqgItem> {
+export class RqgActor extends Actor {
   static init() {
-    // @ts-ignore 0.8
     CONFIG.Actor.documentClass = RqgActor;
 
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("rqg", RqgActorSheet, {
+    Actors.registerSheet("rqg", RqgActorSheet as any, {
       label: "Character Sheet",
-      types: ["character"],
+      types: [ActorTypeEnum.Character],
       makeDefault: true,
     });
   }
@@ -65,14 +67,16 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
     attributes.equippedEncumbrance = Math.round(
       this.items
         .filter(
-          (i: RqgItem) =>
-            "equippedStatus" in i.data.data && i.data.data.equippedStatus === "equipped"
+          (item: RqgItem) =>
+            "equippedStatus" in item.data.data && item.data.data.equippedStatus === "equipped"
         )
-        .reduce((sum, i: RqgItem) => {
+        .reduce((sum, item: RqgItem) => {
           const quantity =
-            "quantity" in i.data.data && i.data.data.quantity ? i.data.data.quantity : 1;
+            "quantity" in item.data.data && item.data.data.quantity ? item.data.data.quantity : 1;
           const encumbrance =
-            "encumbrance" in i.data.data && i.data.data.encumbrance ? i.data.data.encumbrance : 0;
+            "encumbrance" in item.data.data && item.data.data.encumbrance
+              ? item.data.data.encumbrance
+              : 0;
           return sum + quantity * encumbrance;
         }, 0)
     );
@@ -84,9 +88,22 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
 
     attributes.travelEncumbrance = Math.round(
       this.items
-        .filter((i: Item<any>) => ["carried", "equipped"].includes(i.data.data.equippedStatus))
-        .reduce((sum, i: Item<any>) => {
-          const enc = (i.data.data.quantity || 1) * (i.data.data.encumbrance || 0);
+        .filter(
+          (item: RqgItem) =>
+            hasOwnProperty(item.data.data, "equippedStatus") &&
+            ["carried", "equipped"].includes(item.data.data.equippedStatus)
+        )
+        .reduce((sum: number, item: RqgItem) => {
+          if (
+            !hasOwnProperty(item.data, "quantity") ||
+            !hasOwnProperty(item.data.data, "encumbrance")
+          ) {
+            // const msg = "Item with equippedStatus didn't have quantity or encumbrance";
+            // ui.notifications?.error(msg);
+            // throw new RqgError(msg, item);
+            return sum;
+          }
+          const enc = (item.data.data.quantity || 1) * (item.data.data.encumbrance || 0);
           return sum + enc;
         }, 0)
     );
@@ -114,10 +131,9 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
   }
 
   // Entity-specific actions that should occur when the Entity is first created
-  protected _onCreate(...args: any[]) {
-    // @ts-ignore TODO remove
-    super._onCreate(...args);
-    const actorData = args[0];
+  // @ts-ignore
+  protected _onCreate(actorData: ActorData, options: DocumentModificationOptions, userId: string) {
+    super._onCreate(actorData as any, options, userId); // TODO type bug ??
 
     // There might be effects with a different actor.id but same itemData.id if the actor
     // is copied or imported, make sure the actor id is pointing to this new actor.
@@ -129,8 +145,7 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
       };
     });
     effectsOriginUpdates.length &&
-      // @ts-ignore 0.8
-      this.updateEmbeddedDocuments("ActiveEffect", [effectsOriginUpdates]);
+      this.updateEmbeddedDocuments("ActiveEffect", effectsOriginUpdates);
   }
 
   private static updateEffectOrigin(origin: string, actorId: string): string {
@@ -144,12 +159,13 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
 
   protected _preCreateEmbeddedDocuments(
     embeddedName: string,
-    result: RqgItem[],
-    options: object[],
+    result: Record<string, unknown>[],
+    options: DocumentModificationOptions,
     userId: string
   ): void {
-    if (embeddedName === "Item" && game.user?.id === userId) {
+    if (embeddedName === "Item" && getGame().user?.id === userId) {
       result.forEach((d) => {
+        // @ts-ignore
         ResponsibleItemClass.get(d.type)?.preEmbedItem(this, d, options, userId);
       });
     }
@@ -157,42 +173,44 @@ export class RqgActor extends Actor<RqgActorData, RqgItem> {
 
   protected _onCreateEmbeddedDocuments(
     embeddedName: string,
-    documents: any[], // Document[]
-    result: object[],
-    options: object[],
+    documents: foundry.abstract.Document<any, any>[],
+    result: Record<string, unknown>[],
+    options: DocumentModificationOptions,
     userId: string
-    // TODO *** REWORK FOR 0.8 !!! ***
   ): void {
-    if (embeddedName === "Item" && game.user?.id === userId) {
-      documents.forEach((d) => {
+    if (embeddedName === "Item" && getGame().user?.id === userId) {
+      documents.forEach((d: any) => {
+        // TODO any bailout - fix types!
         ResponsibleItemClass.get(d.type)
           ?.onEmbedItem(this, d, options, userId)
           .then((updateData: any) => {
-            // @ts-ignore 0.8
             updateData && this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
           });
       });
     }
-    // @ts-ignore 0.8
     super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
   }
 
   protected _onDeleteEmbeddedDocuments(
     embeddedName: string,
-    documents: any[], // Document[]
-    result: object[],
-    options: object[],
+    documents: foundry.abstract.Document<any, any>[],
+    result: string[],
+    options: DocumentModificationContext,
     userId: string
   ): void {
-    if (embeddedName === "Item" && game.user?.id === userId) {
+    if (embeddedName === "Item" && getGame().user?.id === userId) {
       documents.forEach((d) => {
-        const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(this, d, options, userId);
-        // @ts-ignore 0.8
+        const updateData = ResponsibleItemClass.get(d.data.type)?.onDeleteItem(
+          this,
+          d as RqgItem, // TODO type bailout - fixme
+          options,
+          userId
+        );
         updateData && this.updateEmbeddedDocuments("Item", [updateData]);
       });
     }
-    // @ts-ignore 0.8
-    super._onDeleteEmbeddedDocuments(embeddedName, documents, options, userId);
+
+    super._onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId);
   }
 
   // Return shorthand access to actor data & characteristics

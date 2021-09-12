@@ -3,7 +3,7 @@ import { emptyResource, Resource } from "../shared/resource";
 import { CombatManeuver } from "./meleeWeaponData";
 import { ItemTypeEnum } from "./itemTypes";
 
-export interface MissileWeaponData extends IPhysicalItem {
+export interface MissileWeaponDataSourceData extends IPhysicalItem {
   /** id of skillItem (for weapon) */
   skillId: string;
   /** the uuid of the required skill Item */
@@ -31,11 +31,20 @@ export interface MissileWeaponData extends IPhysicalItem {
   description: string;
 }
 
-export interface MissileWeaponItemData extends Item.Data<MissileWeaponData> {
+// --- Derived Data ---
+export interface MissileWeaponDataPropertiesData extends MissileWeaponDataSourceData {}
+
+export interface MissileWeaponDataSource {
   type: ItemTypeEnum.MissileWeapon;
+  data: MissileWeaponDataSourceData;
 }
 
-export const emptyMissileWeapon: MissileWeaponData = {
+export interface MissileWeaponDataProperties {
+  type: ItemTypeEnum.MissileWeapon;
+  data: MissileWeaponDataPropertiesData;
+}
+
+export const emptyMissileWeapon: MissileWeaponDataSourceData = {
   description: "",
   gmNotes: "",
   skillId: "",

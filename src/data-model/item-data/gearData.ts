@@ -1,13 +1,23 @@
 import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
+import { RuneMagicDataSourceData } from "./runeMagicData";
 
-export interface GearData extends IPhysicalItem {}
+export interface GearDataSourceData extends IPhysicalItem {}
 
-export interface GearItemData extends Item.Data<GearData> {
+// --- Derived Data ---
+export interface GearDataPropertiesData extends RuneMagicDataSourceData {}
+
+export interface GearDataSource {
   type: ItemTypeEnum.Gear;
+  data: GearDataSourceData;
 }
 
-export const emptyGear: GearData = {
+export interface GearDataProperties {
+  type: ItemTypeEnum.Gear;
+  data: GearDataPropertiesData;
+}
+
+export const emptyGear: GearDataSourceData = {
   description: "",
   gmNotes: "",
   quantity: 1,

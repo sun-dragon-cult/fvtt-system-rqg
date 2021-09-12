@@ -1,12 +1,27 @@
-import { SkillCategoryEnum, SkillData } from "../../data-model/item-data/skillData";
+import {
+  SkillCategoryEnum,
+  SkillDataProperties,
+  SkillDataPropertiesData,
+} from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getAllRunesIndex, RqgError } from "../../system/util";
+import { assertItemType, getAllRunesIndex, getJournalEntryName, RqgError } from "../../system/util";
+import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
+import { RqgItem } from "../rqgItem";
 
-export class SkillSheet extends RqgItemSheet {
-  static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
+interface SkillSheetData {
+  data: SkillDataProperties; // Actually contains more...complete with effects, flags etc
+  skillData: SkillDataPropertiesData;
+  sheetSpecific: {
+    skillCategories: SkillCategoryEnum[];
+    journalEntryName: string;
+    allRunes: IndexTypeForMetadata<CompendiumCollection.Metadata>;
+  };
+}
+
+export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
       template: "systems/rqg/items/skill-item/skillSheet.html",
@@ -15,35 +30,32 @@ export class SkillSheet extends RqgItemSheet {
     });
   }
 
-  getData(): any {
-    const context = super.getData() as any;
-    const skillData = (context.skillData = context.data.data) as SkillData;
-    const sheetSpecific = (context.sheetSpecific = {} as any);
-    if (skillData.journalId) {
-      if (skillData.journalPack) {
-        const pack = game.packs?.get(skillData.journalPack);
-        // @ts-ignore
-        sheetSpecific.journalEntryName = pack?.index.get(skillData.journalId)?.name;
-      } else {
-        sheetSpecific.journalEntryName = game.journal?.get(skillData.journalId)?.name;
-      }
-      if (!sheetSpecific.journalEntryName) {
-        ui.notifications?.warn(
-          "Skill description link not found - please make sure the journal exists or relink to another description"
-        );
-      }
-    }
-
+  getData(): SkillSheetData | ItemSheet.Data {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.Skill);
+    const skillData = itemData.data;
     if (!skillData.skillName) {
-      skillData.skillName = context.data.name;
+      skillData.skillName = itemData.name;
     }
     skillData.runes = Array.isArray(skillData.runes) ? skillData.runes : [skillData.runes];
-    sheetSpecific.skillCategories = Object.values(SkillCategoryEnum);
-    sheetSpecific.allRunes = getAllRunesIndex();
-    return context;
+
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isOwner,
+      options: this.options,
+      data: itemData,
+      skillData: itemData.data,
+      sheetSpecific: {
+        skillCategories: Object.values(SkillCategoryEnum),
+        journalEntryName: getJournalEntryName(skillData),
+        allRunes: getAllRunesIndex(),
+      },
+    };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     const specialization = formData["data.specialization"]
       ? ` (${formData["data.specialization"]})`
       : "";

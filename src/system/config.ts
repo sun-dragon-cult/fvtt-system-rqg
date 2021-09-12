@@ -47,6 +47,4 @@ export const RQG_CONFIG = {
   dsnTextureList: {},
 };
 
-export interface RqgConfig extends CONFIG {
-  RQG: typeof RQG_CONFIG;
-}
+export type RqgConfig = typeof RQG_CONFIG;

@@ -1,12 +1,33 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CultData, CultRankEnum } from "../../data-model/item-data/cultData";
+import {
+  CultDataProperties,
+  CultDataPropertiesData,
+  CultRankEnum,
+} from "../../data-model/item-data/cultData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { getAllRunesIndex, getDomDataset, getRequiredDomDataset } from "../../system/util";
+import {
+  assertItemType,
+  getAllRunesIndex,
+  getDomDataset,
+  getJournalEntryName,
+  getRequiredDomDataset,
+} from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
+import { RqgItem } from "../rqgItem";
 
-export class CultSheet extends RqgItemSheet {
-  static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
+interface CultSheetData {
+  data: CultDataProperties; // Actually contains more...complete with effects, flags etc
+  cultData: CultDataPropertiesData;
+  sheetSpecific: {
+    allRunes: IndexTypeForMetadata<CompendiumCollection.Metadata>;
+    journalEntryName: string;
+    ranksEnum: CultRankEnum[];
+  };
+}
+
+export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | ItemSheet.Data> {
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Cult],
       template: "systems/rqg/items/cult-item/cultSheet.html",
@@ -15,33 +36,30 @@ export class CultSheet extends RqgItemSheet {
     });
   }
 
-  getData(): any {
-    const context = super.getData() as any;
-    const cultData = (context.cultData = context.data.data) as CultData;
-    const sheetSpecific: any = (context.sheetSpecific = {});
+  getData(): CultSheetData | ItemSheet.Data {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.Cult);
 
+    const cultData = itemData.data;
     cultData.runes = Array.isArray(cultData.runes) ? cultData.runes : [cultData.runes];
 
-    sheetSpecific.allRunes = getAllRunesIndex();
-    sheetSpecific.ranksEnum = Object.values(CultRankEnum);
-    if (cultData.journalId) {
-      if (cultData.journalPack) {
-        const pack = game.packs?.get(cultData.journalPack);
-        // @ts-ignore
-        sheetSpecific.journalEntryName = pack?.index.get(cultData.journalId)?.name;
-      } else {
-        sheetSpecific.journalEntryName = game.journal?.get(cultData.journalId)?.name;
-      }
-      if (!sheetSpecific.journalEntryName) {
-        ui.notifications?.warn(
-          "Cult description link not found - please make sure the journal exists or relink to another description"
-        );
-      }
-    }
-    return context;
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isOwner,
+      options: this.options,
+      data: itemData,
+      cultData: itemData.data,
+      sheetSpecific: {
+        allRunes: getAllRunesIndex(),
+        journalEntryName: getJournalEntryName(cultData),
+        ranksEnum: Object.values(CultRankEnum),
+      },
+    };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     let runes = formData["data.runes"];
     runes = Array.isArray(runes) ? runes : [runes];
     runes = runes.filter((r: any) => r); // Remove empty

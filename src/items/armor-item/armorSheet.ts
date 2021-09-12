@@ -1,16 +1,29 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  ArmorData,
+  ArmorDataProperties,
+  ArmorDataPropertiesData,
   armorTypeTranslationKeys,
   materialTranslationKeys,
 } from "../../data-model/item-data/armorData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { HitLocationsEnum } from "../../data-model/item-data/hitLocationData";
+import { assertItemType, getGame } from "../../system/util";
+import { RqgItem } from "../rqgItem";
 
-export class ArmorSheet extends RqgItemSheet {
-  static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
+interface ArmorSheetData {
+  data: ArmorDataProperties; // Actually contains more...complete with effects, flags etc
+  armorData: ArmorDataPropertiesData;
+  sheetSpecific: {
+    allHitLocations: string[];
+    equippedStatuses: string[];
+    armorTypeNames: string[];
+    materialNames: string[];
+  };
+}
+
+export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData | ItemSheet.Data> {
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Armor],
       template: "systems/rqg/items/armor-item/armorSheet.html",
@@ -19,19 +32,27 @@ export class ArmorSheet extends RqgItemSheet {
     });
   }
 
-  getData(): any {
-    const context = super.getData() as any;
-    const armorData = (context.armorData = context.data.data) as ArmorData;
-    const sheetSpecific: any = (context.sheetSpecific = {});
-
-    sheetSpecific.allHitLocations = Object.values(HitLocationsEnum);
-    sheetSpecific.equippedStatuses = [...equippedStatuses];
-    sheetSpecific.armorTypeNames = armorTypeTranslationKeys.map((key) => game.i18n.localize(key));
-    sheetSpecific.materialNames = materialTranslationKeys.map((key) => game.i18n.localize(key));
-    return context;
+  getData(): ArmorSheetData | ItemSheet.Data {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.Armor);
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isEmbedded,
+      options: this.options,
+      data: itemData,
+      armorData: itemData.data,
+      sheetSpecific: {
+        allHitLocations: Object.values(HitLocationsEnum),
+        equippedStatuses: [...equippedStatuses],
+        armorTypeNames: armorTypeTranslationKeys.map((key) => getGame().i18n.localize(key)),
+        materialNames: materialTranslationKeys.map((key) => getGame().i18n.localize(key)),
+      },
+    };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     let hitLocations = formData["data.hitLocations"];
     hitLocations = Array.isArray(hitLocations) ? hitLocations : [hitLocations];
     hitLocations = [...new Set(hitLocations.filter((r: any) => r))]; // Remove empty & duplicates

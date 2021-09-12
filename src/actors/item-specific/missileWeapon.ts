@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgItem } from "../../items/rqgItem";
 import { RqgActor } from "../rqgActor";
-import { logMisconfiguration, RqgError } from "../../system/util";
+import { assertItemType, logMisconfiguration } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { getSameLocationUpdates } from "./shared/physicalItemUtil";
 
@@ -35,33 +35,33 @@ export class MissileWeapon extends AbstractEmbeddedItem {
     userId: string
   ): Promise<any> {
     let embeddedSkillId;
-    if (child.data.type !== ItemTypeEnum.MissileWeapon) {
-      const msg = `Tried to embed something else than a missileWeapon`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, child, actor);
-    }
+    assertItemType(child.data.type, ItemTypeEnum.MissileWeapon);
 
     if (!child.data.data.skillId && child.data.data.skillOrigin) {
       try {
         // Add the specified skill if found
-        const skill = (await fromUuid(child.data.data.skillOrigin).catch(() => {
+        const skill = await fromUuid(child.data.data.skillOrigin).catch((e) => {
+          logMisconfiguration(`Couldn't find missile weapon skill`, true, child.data, e);
+        });
+        if (!skill) {
           logMisconfiguration(
-            `Couldn't find missile weapon skill with uuid from skillOrigin ${
-              (child.data.data as any).skillOrigin
-            }`,
+            `No melee weapon skill with from skillOrigin ${child.data.data.skillOrigin}`,
             true,
             child.data
           );
-        })) as RqgItem;
-
-        const sameSkillAlreadyOnActor = actor.items.find((i: RqgItem) => i.name === skill.name);
-        const embeddedWeaponSkill = sameSkillAlreadyOnActor
-          ? [sameSkillAlreadyOnActor]
-          : // @ts-ignore 0.8
-            await actor.createEmbeddedDocuments("Item", [skill.data]);
-        embeddedSkillId = embeddedWeaponSkill[0].id; // A weapon can only have 1 skill for now
+        } else {
+          const sameSkillAlreadyOnActor = actor.items.find((i: RqgItem) => i.name === skill.name);
+          const embeddedWeaponSkill = sameSkillAlreadyOnActor
+            ? [sameSkillAlreadyOnActor]
+            : await actor.createEmbeddedDocuments("Item", [skill.data]);
+          embeddedSkillId = embeddedWeaponSkill[0].id; // A weapon can only have 1 skill for now
+        }
       } catch (e) {
-        ui.notifications?.warn("Couldn't find the Skill associated with this missile weapon.");
+        logMisconfiguration(
+          `Couldn't find the Skill associated with this missile weapon.`,
+          true,
+          e
+        );
       }
     }
     if (embeddedSkillId) {

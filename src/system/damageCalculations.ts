@@ -1,21 +1,24 @@
 import {
+  HitLocationDataProperties,
   hitLocationHealthStatuses,
-  HitLocationItemData,
   HitLocationTypesEnum,
 } from "../data-model/item-data/hitLocationData";
-import { CharacterActorData, RqgActorData } from "../data-model/actor-data/rqgActorData";
+import { RqgActorDataProperties, RqgActorDataSource } from "../data-model/actor-data/rqgActorData";
 import { ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { DeepPartial } from "snowpack";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { RqgError } from "./util";
+import { assertItemType, RqgError } from "./util";
+import { RqgItem } from "../items/rqgItem";
+import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 export interface DamageEffects {
-  hitLocationUpdates: HitLocationItemData;
-  actorUpdates: RqgActorData;
+  hitLocationUpdates: DeepPartial<HitLocationDataProperties>;
+  actorUpdates: DeepPartial<RqgActorDataProperties>;
   /** info to the user  */
   notification: string;
   /** make limbs useless */
-  uselessLegs: any[];
+  uselessLegs: DeepPartial<HitLocationDataProperties>[];
 }
 
 /**
@@ -28,10 +31,11 @@ export class DamageCalculations {
   public static addWound(
     damage: number,
     applyDamageToTotalHp: boolean,
-    hitLocationData: any,
-    actorData: CharacterActorData,
+    hitLocationData: ItemData,
+    actorData: ActorData,
     speakerName: string
   ): DamageEffects {
+    assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
     if (hitLocationData.data.hitLocationType === HitLocationTypesEnum.Limb) {
       return DamageCalculations.calcLimbDamageEffects(
         hitLocationData,
@@ -51,9 +55,12 @@ export class DamageCalculations {
     }
   }
 
-  private static applyDamageToActorTotalHp(damage: number, actorData: RqgActorData): RqgActorData {
+  private static applyDamageToActorTotalHp(
+    damage: number,
+    actorData: ActorData
+  ): DeepPartial<RqgActorDataSource> {
     const currentTotalHp = actorData.data.attributes.hitPoints.value;
-    const actorUpdateData: DeepPartial<RqgActorData> = {
+    const actorUpdateData: DeepPartial<RqgActorDataSource> = {
       data: { attributes: { hitPoints: { value: 0 } } },
     };
     if (currentTotalHp == null) {
@@ -62,19 +69,20 @@ export class DamageCalculations {
       throw new RqgError(msg, actorUpdateData);
     }
     actorUpdateData.data!.attributes!.hitPoints!.value = currentTotalHp - damage;
-    return actorUpdateData as RqgActorData;
+    return actorUpdateData;
   }
 
   private static calcLimbDamageEffects(
-    hitLocationData: HitLocationItemData,
+    hitLocationData: ItemData,
     fullDamage: number,
-    actorData: RqgActorData,
+    actorData: ActorData,
     applyDamageToTotalHp: boolean,
     speakerName: string
   ): DamageEffects {
+    assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
     const damageEffects: DamageEffects = {
-      hitLocationUpdates: {} as HitLocationItemData,
-      actorUpdates: {} as CharacterActorData,
+      hitLocationUpdates: {},
+      actorUpdates: {},
       notification: "",
       uselessLegs: [],
     };
@@ -144,19 +152,19 @@ export class DamageCalculations {
   }
 
   private static calcLocationDamageEffects(
-    hitLocationData: any,
+    hitLocationData: ItemData,
     damage: number,
-    actorData: RqgActorData,
+    actorData: ActorData,
     applyDamageToTotalHp: boolean,
     speakerName: string
   ): DamageEffects {
     const damageEffects: DamageEffects = {
-      hitLocationUpdates: {} as HitLocationItemData,
-      actorUpdates: {} as CharacterActorData,
+      hitLocationUpdates: {},
+      actorUpdates: {},
       notification: "",
       uselessLegs: [],
     };
-
+    assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
     const hpValue = hitLocationData.data.hp.value;
     const hpMax = hitLocationData.data.hp.max;
     if (!hitLocationData.data.hitLocationType) {
@@ -188,13 +196,12 @@ export class DamageCalculations {
       totalDamage < hpMax * 3
     ) {
       const attachedLimbs = actorData.items.filter(
-        (i) =>
-          // @ts-ignore 0.8 i is RqgItem
-          i.type === ItemTypeEnum.HitLocation && i.data.data.connectedTo === hitLocationData.name
+        (i: RqgItem) =>
+          i.data.type === ItemTypeEnum.HitLocation &&
+          i.data.data.connectedTo === hitLocationData.name
       );
       damageEffects.uselessLegs = attachedLimbs.map((limb) => {
         return {
-          // @ts-ignore 0.8 limb is RqgItem
           _id: limb.id,
           data: {
             hitLocationHealthState: "useless",
@@ -235,7 +242,7 @@ export class DamageCalculations {
     return damageEffects;
   }
 
-  static getCombinedActorHealth(actorData: RqgActorData): ActorHealthState {
+  static getCombinedActorHealth(actorData: ActorData): ActorHealthState {
     const totalHitPoints = actorData.data.attributes.hitPoints.value;
     if (totalHitPoints == null) {
       const msg = `Actor hit points value ${totalHitPoints} is missing`;
@@ -248,25 +255,23 @@ export class DamageCalculations {
       ui.notifications?.error(msg);
       throw new RqgError(msg, actorData);
     }
-    const baseHealth = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
+    const baseHealth: ActorHealthState = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
 
     if (totalHitPoints <= 0) {
       return "dead";
     } else if (totalHitPoints <= 2) {
       return "unconscious";
     } else {
-      return (
-        actorData.items
-          // @ts-ignore 0.8 i is RqgItem
-          .filter((i) => i.data.type === ItemTypeEnum.HitLocation)
-          // @ts-ignore 0.8 h is RqgItem
-          .map((h) => h.data.data.actorHealthImpact)
-          .reduce(
-            (acc, val) =>
-              actorHealthStatuses.indexOf(val) > actorHealthStatuses.indexOf(acc) ? val : acc,
-            baseHealth
-          )
-      );
+      return actorData.items.reduce((acc: ActorHealthState, item: RqgItem) => {
+        if (item.data.type !== ItemTypeEnum.HitLocation) {
+          return acc;
+        } else {
+          const actorHealthImpact = item.data.data.actorHealthImpact;
+          return actorHealthStatuses.indexOf(actorHealthImpact) > actorHealthStatuses.indexOf(acc)
+            ? actorHealthImpact
+            : acc;
+        }
+      }, baseHealth);
     }
   }
 }

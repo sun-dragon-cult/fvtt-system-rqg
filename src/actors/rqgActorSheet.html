@@ -3,18 +3,18 @@
   {{!-- Sheet Header --}}
   <header class="sheet-header">
 
-    <img class="profile-img {{#if (eq rqgActorData.img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{rqgActorData.img}}" data-edit="img" title="{{rqgActorData.name}}">
+    <img class="profile-img {{#if (eq data.img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{data.img}}" data-edit="img" title="{{data.name}}">
     <div>
       <div class="topheaderline">
-        <h1 class="charname"><input name="name" type="text" value="{{rqgActorData.name}}"></h1>
+        <h1 class="charname"><input name="name" type="text" value="{{data.name}}"></h1>
         <div>{{#if isGM}}
           <select name="data.attributes.health">
-            {{#select rqgActorData.data.attributes.health}} {{#each healthStatuses}}
+            {{#select characterData.attributes.health}} {{#each healthStatuses}}
               <option value="{{this}}">{{this}}</option>
             {{/each}} {{/select}}
           </select>
         {{else}}
-            <i>{{rqgActorData.data.attributes.health}}</i>
+            <i>{{characterData.attributes.health}}</i>
         {{/if}}
         {{#each characterRunes}}
           <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="characteristics">
-        {{#each rqgActorData.data.characteristics as | characteristic key |}}
+        {{#each characterData.characteristics as | characteristic key |}}
         <div data-characteristic="{{key}}" class="flex-column {{#if characteristic.hasExperience}}experienced{{/if}}">
           <label class="resource-label norse characteristic-contextmenu" data-characteristic-roll>{{localize (concat 'RQG.characteristic.' key)}}</label>
           {{#if ../isGM}}
@@ -36,38 +36,38 @@
       <div class="thirdline">
         <div>
           <span class="norse">SIZ SR</span>
-          {{rqgActorData.data.attributes.sizStrikeRank}}
+          {{characterData.attributes.sizStrikeRank}}
         </div>
         <div>
           <span class="norse">DEX SR</span>
-          {{rqgActorData.data.attributes.dexStrikeRank}}
+          {{characterData.attributes.dexStrikeRank}}
         </div>
         <div>
           <span class="norse">Max ENC</span>
-          {{rqgActorData.data.attributes.maximumEncumbrance}}
+          {{characterData.attributes.maximumEncumbrance}}
         </div>
         <div>
           <span class="norse">Equipped ENC</span>
-          {{rqgActorData.data.attributes.equippedEncumbrance}}
+          {{characterData.attributes.equippedEncumbrance}}
         </div>
         <div>
           <span class="norse">Travel ENC</span>
-          {{rqgActorData.data.attributes.travelEncumbrance}}
+          {{characterData.attributes.travelEncumbrance}}
         </div>
         <div>
           <span class="norse">MOV</span>
           {{#if isGM}}
-          <input type="number" min="0" max="99" name="data.attributes.move" value="{{rqgActorData.data.attributes.move}}" size="2">
+          <input type="number" min="0" max="99" name="data.attributes.move" value="{{characterData.attributes.move}}" size="2">
           {{else}}
-          {{rqgActorData.data.attributes.move}}
+          {{characterData.attributes.move}}
           {{/if}}
         </div>
         <div>
           <span class="norse">Hero Points</span>
           {{#if isGM}}
-          <input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{rqgActorData.data.attributes.heroPoints}}" size="2">
+          <input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{characterData.attributes.heroPoints}}" size="2">
           {{else}}
-          {{rqgActorData.data.attributes.heroPoints}}
+          {{characterData.attributes.heroPoints}}
           {{/if}}
         </div>
       </div>
@@ -98,7 +98,7 @@
           </div>
           <div style="width: 100%">
             <h2>Allies & Notes</h2>
-            {{editor content=rqgActorData.data.allies target="data.allies" button=true owner=owner editable=editable}}
+            {{editor content=characterData.allies target="data.allies" button=true owner=owner editable=editable}}
           </div>
         </div>
     </div>

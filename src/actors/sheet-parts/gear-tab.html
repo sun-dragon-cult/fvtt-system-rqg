@@ -181,7 +181,7 @@
         {{#unless data.data.isNatural}}
         <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
-        <div data-item-id="{{id}}" class="gear-contextmenu">{{skillname data.data.skillId @root.rqgActorData._id @root.tokenId}}</div>
+        <div data-item-id="{{id}}" class="gear-contextmenu">{{skillname data.data.skillId @root.data._id @root.tokenId}}</div>
         <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-center">{{data.data.damage}}</span></div>
         <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minStrength}}</span>
         </div>
@@ -228,7 +228,7 @@
         {{#if (or data.data.isProjectileWeapon data.data.isThrownWeapon)}}
         <div data-item-id="{{id}}" class="gear-contextmenu"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{id}}" class="gear-contextmenu">{{name}}</div>
-        <div data-item-id="{{id}}" class="gear-contextmenu">{{skillname data.data.skillId @root.rqgActorData._id @root.tokenId}}</div>
+        <div data-item-id="{{id}}" class="gear-contextmenu">{{skillname data.data.skillId @root.data._id @root.tokenId}}</div>
         <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-center">{{data.data.damage}}</span></div>
         <div data-item-id="{{id}}" class="gear-contextmenu"><span class="text-right">{{data.data.minStrength}}</span>
         </div>

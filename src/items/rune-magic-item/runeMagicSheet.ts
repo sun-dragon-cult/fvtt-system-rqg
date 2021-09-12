@@ -1,27 +1,39 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
   RuneMagicCastingRangeEnum,
-  RuneMagicData,
+  RuneMagicDataProperties,
+  RuneMagicDataPropertiesData,
   RuneMagicDurationEnum,
 } from "../../data-model/item-data/runeMagicData";
 
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { getAllRunesIndex, getDomDataset, getRequiredDomDataset } from "../../system/util";
+import {
+  assertItemType,
+  getAllRunesIndex,
+  getDomDataset,
+  getJournalEntryName,
+  getRequiredDomDataset,
+} from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { RqgItem } from "../rqgItem";
+import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 
-type RuneMagicSheetSpecificData = {
-  isOwned?: boolean;
-  ranges?: string[];
-  durations?: string[];
-  actorCults?: any[];
-  allRunes?: any[]; // For select on sheet {_id: , name:, img: }
-  journalEntryName: string | undefined;
+type RuneMagicSheetData = {
+  data: RuneMagicDataProperties; // Actually contains more...complete with effects, flags etc
+  runeMagicData: RuneMagicDataPropertiesData;
+  sheetSpecific: {
+    ranges: RuneMagicCastingRangeEnum[];
+    durations: RuneMagicDurationEnum[];
+    actorCults: any[];
+    allRunes: IndexTypeForMetadata<CompendiumCollection.Metadata>;
+    journalEntryName: string | undefined;
+  };
 };
 
-export class RuneMagicSheet extends RqgItemSheet {
-  static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
+export class RuneMagicSheet extends RqgItemSheet<
+  ItemSheet.Options,
+  RuneMagicSheetData | ItemSheet.Data
+> {
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.RuneMagic],
       template: "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
@@ -30,40 +42,37 @@ export class RuneMagicSheet extends RqgItemSheet {
     });
   }
 
-  getData(): any {
-    const context = super.getData() as any;
-    const runeMagicData = (context.runeMagicData = context.data.data) as RuneMagicData;
-    const sheetSpecific = (context.sheetSpecific = {} as RuneMagicSheetSpecificData);
+  getData(): RuneMagicSheetData | ItemSheet.Data {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
 
-    sheetSpecific.ranges = Object.values(RuneMagicCastingRangeEnum);
-    sheetSpecific.durations = Object.values(RuneMagicDurationEnum);
+    const runeMagicData = itemData.data;
     runeMagicData.runes = Array.isArray(runeMagicData.runes)
       ? runeMagicData.runes
       : [runeMagicData.runes];
-    // @ts-ignore 0.8 isOwned -> isEmbedded
-    sheetSpecific.isOwned = this.item.isEmbedded;
-    sheetSpecific.allRunes = getAllRunesIndex();
-    if (this.actor) {
-      sheetSpecific.actorCults = this.actor
-        .getEmbeddedCollection("Item")
-        .filter((i: RqgItem) => i.type === ItemTypeEnum.Cult);
-    }
 
-    if (runeMagicData.journalId) {
-      if (runeMagicData.journalPack) {
-        const pack = game.packs?.get(runeMagicData.journalPack);
-        // @ts-ignore
-        sheetSpecific.journalEntryName = pack?.index.get(runeMagicData.journalId)?.name;
-      } else {
-        sheetSpecific.journalEntryName = game.journal?.get(runeMagicData.journalId)?.name;
-      }
-      if (!sheetSpecific.journalEntryName) {
-        ui.notifications?.warn(
-          "Skill description link not found - please make sure the journal exists or relink to another description"
-        );
-      }
-    }
-    return context;
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isEmbedded,
+      options: this.options,
+      data: itemData,
+      runeMagicData: itemData.data,
+      sheetSpecific: {
+        ranges: Object.values(RuneMagicCastingRangeEnum),
+        durations: Object.values(RuneMagicDurationEnum),
+        actorCults: this.getActorCults(),
+        allRunes: getAllRunesIndex(),
+        journalEntryName: getJournalEntryName(runeMagicData),
+      },
+    };
+  }
+
+  private getActorCults(): any[] {
+    return this.actor
+      ? this.actor.getEmbeddedCollection("Item").filter((i) => i.data.type === ItemTypeEnum.Cult)
+      : [];
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
@@ -74,7 +83,7 @@ export class RuneMagicSheet extends RqgItemSheet {
     return super._updateObject(event, formData);
   }
 
-  public activateListeners(html: JQuery) {
+  public activateListeners(html: JQuery): void {
     super.activateListeners(html);
     this.form?.addEventListener("drop", this._onDrop.bind(this));
 

@@ -10,7 +10,7 @@ export enum RuneTypeEnum {
   Technique = "technique",
 }
 
-export interface RuneData extends IAbility, JournalEntryLink {
+export interface RuneDataSourceData extends IAbility, JournalEntryLink {
   /** The name of the rune Fire for example */
   rune: string;
   runeType: RuneTypeEnum;
@@ -24,10 +24,20 @@ export interface RuneData extends IAbility, JournalEntryLink {
   isMastered: boolean;
 }
 
-export interface RuneItemData extends Item.Data<RuneData> {
+// --- Derived Data ---
+export interface RuneDataPropertiesData extends RuneDataSourceData {}
+
+export interface RuneDataSource {
   type: ItemTypeEnum.Rune;
+  data: RuneDataSourceData;
 }
-export const emptyRune: RuneData = {
+
+export interface RuneDataProperties {
+  type: ItemTypeEnum.Rune;
+  data: RuneDataPropertiesData;
+}
+
+export const emptyRune: RuneDataSourceData = {
   rune: "",
   chance: 0,
   canGetExperience: true,

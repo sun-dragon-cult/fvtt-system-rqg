@@ -1,6 +1,9 @@
 import { RqgActor } from "../actors/rqgActor";
+import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 
-export function getRequiredDomDataset(el: JQuery | Event, dataset: string): string {
+export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
   if (!data) {
     const msg = `Couldn't find dataset [${dataset}]`;
@@ -10,10 +13,57 @@ export function getRequiredDomDataset(el: JQuery | Event, dataset: string): stri
   return data;
 }
 
-export function getDomDataset(el: JQuery | Event, dataset: string): string | undefined {
-  const elem = (el as Event).target ? ((el as Event).target as HTMLElement) : (el as JQuery)[0];
-  const element = elem?.closest(`[data-${dataset}]`) as HTMLElement;
-  return element?.dataset[toCamelCase(dataset)];
+export function getDomDataset(
+  el: HTMLElement | Event | JQuery,
+  dataset: string
+): string | undefined {
+  const elem =
+    el instanceof HTMLElement
+      ? el
+      : !!(el as Event).target
+      ? ((el as Event).target as HTMLElement)
+      : (el as JQuery).get(0);
+
+  const closestElement = elem?.closest(`[data-${dataset}]`) as HTMLElement;
+  return closestElement?.dataset[toCamelCase(dataset)];
+}
+
+/**
+ * Gets game and Throws RqgExceptions if not initialized yet.
+ */
+export function getGame(): Game {
+  if (!(game instanceof Game)) {
+    const msg = `game is not initialized yet! (Initialized between the 'DOMContentLoaded' event and the 'init' hook event.)`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg);
+  }
+  return game;
+}
+
+/**
+ * Gets game.users and Throws RqgExceptions if not initialized yet.
+ */
+export function getGameUsers(): Users {
+  const users = getGame().users;
+  if (!users) {
+    const msg = `game.users is not initialized yet! ( Initialized between the 'setup' and 'ready' hook events.)`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg);
+  }
+  return users;
+}
+
+/**
+ * Gets game.user and Throws RqgExceptions if not initialized yet.
+ */
+export function getGameUser(): User {
+  const user = getGame().user;
+  if (!(user instanceof User)) {
+    const msg = `game.user is not initialized yet!`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg);
+  }
+  return user;
 }
 
 /**
@@ -33,7 +83,7 @@ export function capitalize(word: string): string {
 }
 
 export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
-  // TODO only for GM? game.user.isGM &&
+  // TODO only for GM? getGame().user.isGM &&
   console.warn(`RQG | ${msg}`, debugData);
 
   notify && ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`);
@@ -42,59 +92,108 @@ export function logMisconfiguration(msg: string, notify: boolean, ...debugData: 
 /**
  * Check if obj has property prop and narrow type of obj if so.
  */
-export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
+export function hasOwnProperty<X extends {} | undefined, Y extends PropertyKey>(
   obj: X,
   prop: Y
 ): obj is X & Record<Y, unknown> {
-  return obj.hasOwnProperty(prop);
+  return obj && obj.hasOwnProperty(prop);
 }
 
-export function usersThatOwnActor(actor: RqgActor): User[] {
-  return game.users?.filter((u: User) => actor.hasPerm(u, CONST.ENTITY_PERMISSIONS.OWNER)) ?? [];
+/**
+ * Check if item data type if of correct type to narrow type to that itemtype.
+ */
+export function assertItemType<T extends ItemTypeEnum>(
+  itemType: ItemTypeEnum | undefined,
+  type: T
+): asserts itemType is T {
+  if (!itemType || itemType !== type) {
+    const msg = `Got unexpected item type in assert, ${itemType} ≠ ${type}`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg);
+  }
+}
+
+/**
+ * Check if actor data type if of correct type to narrow type to that actor type.
+ */
+export function assertActorType<T extends ActorTypeEnum>(
+  actorType: ActorTypeEnum | undefined,
+  type: T
+): asserts actorType is T {
+  if (!actorType || actorType !== type) {
+    const msg = `Got unexpected actor type in assert, ${actorType} ≠ ${type}`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg);
+  }
+}
+
+export function requireValue(val: unknown, errorMessage: string, ...debugData: any): asserts val {
+  if (val == null) {
+    ui.notifications?.error(errorMessage);
+    throw new RqgError(errorMessage, debugData);
+  }
+}
+
+export function usersThatOwnActor(actor: RqgActor): StoredDocument<User>[] {
+  return getGameUsers().filter((user: User) =>
+    actor.testUserPermission(user, CONST.ENTITY_PERMISSIONS.OWNER)
+  );
 }
 
 /**
  * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
  */
-export function getActorFromIds(actorId: string, tokenId?: string): RqgActor {
-  const token = canvas
-    // @ts-ignore getLayer
-    ?.getLayer("TokenLayer")
-    .ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
-  const actor = game.actors?.get(actorId) as RqgActor;
+export function getActorFromIds(actorId: string, tokenId: string | null): RqgActor {
+  const token = canvas?.getLayer("TokenLayer")?.ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
+  const actor = getGame().actors?.get(actorId);
   if (!actor) {
     throw new RqgError("game.actors is not defined", token, tokenId);
   }
   return (token ? token.document.getActor() : actor) as RqgActor;
 }
 
-export function getSpeakerName(actorId: string, tokenId?: string): string {
-  const token = canvas
-    // @ts-ignore getLayer
-    ?.getLayer("TokenLayer")
-    .ownedTokens.find((t: Token) => t.id === tokenId);
+export function getSpeakerName(actorId: string, tokenId: string | null): string {
+  const token = canvas?.getLayer("TokenLayer")?.ownedTokens.find((t: Token) => t.id === tokenId);
   if (token) {
     return token.name;
   }
 
-  const actor = game.actors?.get(actorId);
+  const actor = getGame().actors?.get(actorId);
   if (!actor) {
     throw new RqgError("game.actors or actorId is not defined", actorId);
   }
-  return actor.data.token.name;
+  return actor.data.token.name ?? ""; // TODO What to do if token name is undefined
 }
 
-export function getAllRunesIndex(): Compendium.IndexEntry[] {
-  const runeCompendiumName = game.settings.get("rqg", "runesCompendium") as string;
-  const pack = runeCompendiumName && game.packs!.get(runeCompendiumName);
-  // @ts-ignore 0.8
-  if (!pack?.indexed) {
+export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Metadata> {
+  const runeCompendiumName = getGame().settings.get("rqg", "runesCompendium");
+  const pack = getGame().packs.get(runeCompendiumName);
+  if (!pack) {
+    const msg = `Couldn't find Compendium of runes named ${runeCompendiumName}`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg);
+  }
+  // @ts-ignore waiting for issue #897 in foundry-vtt-types
+  if (!pack.indexed) {
     const msg = "Runes pack is not yet indexed, try again";
     ui.notifications?.error(msg);
-    game.packs!.get(runeCompendiumName)!.getIndex();
+    getGame().packs!.get(runeCompendiumName)!.getIndex();
   }
-  // @ts-ignore 0.8
-  return pack.index as unknown as Compendium.IndexEntry[];
+  return pack.index;
+}
+
+// Returns the linked item name in the compendium for items extending JournalEntryLink
+export function getJournalEntryName(itemData: any): string {
+  if (!itemData.journalId) {
+    return "";
+  }
+  if (itemData.journalPack) {
+    const pack = getGame().packs.get(itemData.journalPack);
+    // @ts-ignore
+    return pack?.index.get(itemData.journalId)?.name;
+  } else {
+    return getGame().journal?.get(itemData.journalId)?.name ?? "";
+  }
 }
 
 export class RqgError implements Error {

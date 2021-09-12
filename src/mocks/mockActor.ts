@@ -1,3 +1,5 @@
+import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+
 const embeddedItems = [
   {
     id: "Jq9Xav1BWcoHQFSy",
@@ -296,7 +298,7 @@ const embeddedItems = [
 
 export const mockActor: any = {
   name: "Crash Test Dummy",
-  type: "character",
+  type: ActorTypeEnum.Character,
   img: "icons/svg/mystery-man.svg",
   data: {
     characteristics: {

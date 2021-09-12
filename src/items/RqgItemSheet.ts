@@ -1,11 +1,13 @@
-import { RqgActiveEffect } from "../actors/rqgActiveEffect";
-import { RqgItem } from "./rqgItem";
-import { RqgItemData } from "../data-model/item-data/itemTypes";
-import { capitalize, getRequiredDomDataset } from "../system/util";
+import { capitalize, getGame, getRequiredDomDataset } from "../system/util";
 
-export class RqgItemSheet extends ItemSheet<RqgItemData> {
+export class RqgItemSheet<
+  Options extends ItemSheet.Options,
+  Data extends object = ItemSheet.Data<Options>
+> extends ItemSheet<Options, Data> {
   get title(): string {
-    return `${game.i18n.format("ITEM.Type" + capitalize(this.object.type))}: ${this.object.name}`;
+    return `${getGame().i18n.localize("ITEM.Type" + capitalize(this.object.type))}: ${
+      this.object.name
+    }`;
   }
 
   public activateListeners(html: JQuery): void {
@@ -17,12 +19,12 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
       .each((i: number, el: HTMLElement) => {
         const effectId = getRequiredDomDataset($(el), "effect-id");
         const itemId = getRequiredDomDataset($(el), "item-id");
-        const item = game.items?.get(itemId);
+        const item = getGame().items?.get(itemId);
         if (!item) {
           return; // The item is not in the world (ie it's in a compendium)
         }
         el.addEventListener("click", () => {
-          const effect = item?.effects.get(effectId) as RqgActiveEffect;
+          const effect = item?.effects.get(effectId);
           if (effect) {
             new ActiveEffectConfig(effect).render(true);
           }
@@ -34,7 +36,7 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
       .find("[data-item-effect-add]")
       .each((i: number, el: HTMLElement) => {
         const itemId = getRequiredDomDataset($(el), "item-id");
-        const item = game.items?.get(itemId) as RqgItem;
+        const item = getGame().items?.get(itemId);
         if (!item) {
           return; // The item is not in the world (ie it's in a compendium)
         }
@@ -47,17 +49,16 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
               transfer: true,
               disabled: false,
             },
-            item
+            item as any // TODO Type bailout - fixme!
           );
 
           const e = await item
-            // @ts-ignore 0.8
             .createEmbeddedDocuments("ActiveEffect", [effect.toObject()])
             .catch((reason: any) => {
               ui.notifications?.error("Couldn't create Active Effect");
               throw reason;
             });
-          new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);
+          e[0].id && new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);
         });
       });
 
@@ -68,7 +69,7 @@ export class RqgItemSheet extends ItemSheet<RqgItemData> {
         const itemId = getRequiredDomDataset($(el), "item-id");
         const effectId = getRequiredDomDataset($(el), "effect-id");
         el.addEventListener("click", () => {
-          const item = game.items?.get(itemId);
+          const item = getGame().items?.get(itemId);
           if (!item) {
             return; // The item is not in the world (ie it's in a compendium)
           }

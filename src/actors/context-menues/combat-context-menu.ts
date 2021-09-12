@@ -1,9 +1,12 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { WeaponCard } from "../../chat/weaponCard";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, RqgError } from "../../system/util";
+import { getDomDataset, getGame, RqgError } from "../../system/util";
 
-export const combatMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
+export const combatMenuOptions = (
+  actor: RqgActor,
+  token: TokenDocument | null
+): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
@@ -39,7 +42,7 @@ export const combatMenuOptions = (actor: RqgActor, token: Token | null): Context
   {
     name: "Edit Skill",
     icon: '<i class="fas fa-edit"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const skillItem = skillItemId && actor.items.get(skillItemId);
@@ -55,7 +58,7 @@ export const combatMenuOptions = (actor: RqgActor, token: Token | null): Context
   {
     name: "Edit Weapon",
     icon: '<i class="fas fa-edit"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");
       const item = weaponItemId && actor.items.get(weaponItemId);
@@ -70,7 +73,7 @@ export const combatMenuOptions = (actor: RqgActor, token: Token | null): Context
   {
     name: "Delete Skill",
     icon: '<i class="fas fa-trash"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       if (skillItemId) {
@@ -85,7 +88,7 @@ export const combatMenuOptions = (actor: RqgActor, token: Token | null): Context
   {
     name: "Delete Weapon",
     icon: '<i class="fas fa-trash"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");
       if (weaponItemId) {

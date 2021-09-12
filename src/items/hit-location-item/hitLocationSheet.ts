@@ -1,38 +1,63 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  HitLocationItemData,
+  HitLocationDataProperties,
+  HitLocationDataPropertiesData,
+  hitLocationHealthStatuses,
   HitLocationsEnum,
   HitLocationTypesEnum,
-  hitLocationHealthStatuses,
-  HitLocationData,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
-import { RqgError, usersThatOwnActor } from "../../system/util";
+import { assertItemType, getGame, RqgError, usersThatOwnActor } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
 import { ActorHealthState, actorHealthStatuses } from "../../data-model/actor-data/attributes";
+import { RqgItem } from "../rqgItem";
+import { RqgToken } from "../../combat/rqgToken";
 
-export class HitLocationSheet extends RqgItemSheet {
-  static get defaultOptions(): BaseEntitySheet.Options {
+interface HitLocationSheetData {
+  data: HitLocationDataProperties; // Actually contains more...complete with effects, flags etc
+  hitLocationData: HitLocationDataPropertiesData;
+  sheetSpecific: {
+    allHitLocations: string[];
+    hitLocationTypes: string[];
+    hitLocationHealthStatuses: string[];
+    actorHealthImpacts: string[];
+  };
+}
+
+export class HitLocationSheet extends RqgItemSheet<
+  ItemSheet.Options,
+  HitLocationSheetData | ItemSheet.Data
+> {
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.html",
       width: 320,
       height: 250,
-    } as any);
+    });
   }
 
-  getData(): any {
-    const context = super.getData() as any;
-    const hitLocationData = (context.hitLocationData = context.data.data) as HitLocationData;
-    const sheetSpecific: any = (context.sheetSpecific = {});
+  getData(): HitLocationSheetData | ItemSheet.Data {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.HitLocation);
 
-    sheetSpecific.allHitLocations = Object.values(HitLocationsEnum);
-    sheetSpecific.hitLocationTypes = Object.values(HitLocationTypesEnum);
-    sheetSpecific.hitLocationHealthStatuses = Object.values(hitLocationHealthStatuses);
-    sheetSpecific.actorHealthImpacts = Object.values(actorHealthStatuses);
-    return context;
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isEmbedded,
+      options: this.options,
+      data: itemData,
+      hitLocationData: itemData.data,
+      sheetSpecific: {
+        allHitLocations: Object.values(HitLocationsEnum),
+        hitLocationTypes: Object.values(HitLocationTypesEnum),
+        hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
+        actorHealthImpacts: Object.values(actorHealthStatuses),
+      },
+    };
   }
 
   static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string, speakerName: string): void {
@@ -61,7 +86,7 @@ export class HitLocationSheet extends RqgItemSheet {
               await HitLocationSheet.submitAddWoundDialog(
                 html as JQuery,
                 actor,
-                hitLocation as any, // TODO *** !!! ***
+                hitLocation,
                 speakerName
               ),
           },
@@ -81,9 +106,10 @@ export class HitLocationSheet extends RqgItemSheet {
   private static async submitAddWoundDialog(
     html: JQuery,
     actor: RqgActor,
-    hitLocation: Item<HitLocationItemData>,
+    hitLocation: RqgItem,
     speakerName: string
   ) {
+    assertItemType(hitLocation.data.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
@@ -110,42 +136,38 @@ export class HitLocationSheet extends RqgItemSheet {
       );
 
     await ChatMessage.create({
-      user: game.user?.id,
+      user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: `${speakerName} takes a hit to ${hitLocation.name}. ${notification}`,
       whisper: usersThatOwnActor(actor),
-      type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
     });
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
     actorUpdates && (await actor.update(actorUpdates));
 
-    if (actor.isToken) {
-      // @ts-ignore 0.8
-      await HitLocationSheet.setTokenEffect(actor.token!.object, actorHealthBefore);
+    if (actor.isToken && actor.token) {
+      await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken, actorHealthBefore);
     } else {
       const activeTokens = actor.getActiveTokens(true);
-      activeTokens.length &&
-        (await HitLocationSheet.setTokenEffect(activeTokens[0], actorHealthBefore));
+      const sceneTokens = getGame().scenes?.active?.data.tokens;
+      if (activeTokens.length && sceneTokens) {
+        const token = sceneTokens.find((t) => t.id === activeTokens[0].id);
+        token &&
+          (await HitLocationSheet.setTokenEffect(token.object as RqgToken, actorHealthBefore));
+      }
     }
 
     for (const update of uselessLegs) {
+      // @ts-ignore _id
       const leg = actor.items.get(update._id);
-      if (!leg || leg.data.type !== ItemTypeEnum.HitLocation) {
-        const msg = "Useless leg did not point to a Hit Location Item";
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, hitLocation);
-      }
+      assertItemType(leg?.data.type, ItemTypeEnum.HitLocation);
       await leg.update(update);
     }
   }
 
   static showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
     const hitLocation = actor.items.get(hitLocationItemId);
-    if (!hitLocation || hitLocation.data.type !== ItemTypeEnum.HitLocation) {
-      const msg = "Edit Wounds did not point to a Hit Location Item";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, hitLocation);
-    }
+    assertItemType(hitLocation?.data.type, ItemTypeEnum.HitLocation);
+
     let dialogContent = "<form><label>Select which wound to heal</label><div class='woundlist'>";
 
     hitLocation.data.data.wounds.forEach(
@@ -170,11 +192,7 @@ export class HitLocationSheet extends RqgItemSheet {
             icon: '<i class="fas fa-check"></i>',
             label: "Heal wound",
             callback: async (html: JQuery | HTMLElement) =>
-              await HitLocationSheet.submitHealWoundDialog(
-                html as JQuery,
-                actor,
-                hitLocation as Item<HitLocationItemData>
-              ),
+              await HitLocationSheet.submitHealWoundDialog(html as JQuery, actor, hitLocation),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
@@ -192,8 +210,9 @@ export class HitLocationSheet extends RqgItemSheet {
   private static async submitHealWoundDialog(
     html: JQuery,
     actor: RqgActor,
-    hitLocation: Item<HitLocationItemData>
+    hitLocation: RqgItem
   ): Promise<void> {
+    assertItemType(hitLocation.data.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore formData.entries
     const data = Object.fromEntries(formData.entries());
@@ -218,26 +237,35 @@ export class HitLocationSheet extends RqgItemSheet {
     actorUpdates && (await actor.update(actorUpdates));
 
     if (actor.isToken) {
-      // @ts-ignore 0.8
-      await HitLocationSheet.setTokenEffect(actor.token!.object, actorHealthBefore);
+      actor.token &&
+        (await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken, actorHealthBefore));
     } else {
-      const activeTokens = actor.getActiveTokens(true);
-      activeTokens.length &&
-        (await HitLocationSheet.setTokenEffect(activeTokens[0], actorHealthBefore));
+      const activeTokens = actor.getActiveTokens(true, false);
+      const activeScene = getGame().scenes?.active;
+      if (activeScene && activeTokens.length) {
+        const token = activeScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as
+          | TokenDocument
+          | undefined; // TODO Hardcoded "first" token
+        token &&
+          (await HitLocationSheet.setTokenEffect(token.object as RqgToken, actorHealthBefore));
+      }
     }
 
     for (const update of usefulLegs) {
-      const item = actor.items.get(update._id);
-      item && (await item.update(update));
+      if (update != null && update._id != null) {
+        // TODO make sure usefulLegs only contain real data
+        const item = actor.items.get(update._id);
+        item && (await item.update(update));
+      }
     }
 
     // Reopen the dialog if there still are wounds left
     if (hitLocation.data.data.wounds.length) {
-      this.showHealWoundDialog(actor, hitLocation.id);
+      this.showHealWoundDialog(actor, hitLocation.id!);
     }
   }
 
-  static async setTokenEffect(token: Token, actorHealthBefore: ActorHealthState): Promise<void> {
+  static async setTokenEffect(token: RqgToken, actorHealthBefore: ActorHealthState): Promise<void> {
     // // TODO testing testing - lägg i nån CONFIG?
     const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
       new Map([
@@ -248,6 +276,11 @@ export class HitLocationSheet extends RqgItemSheet {
 
     // TODO map to actorHealth - sync actorHealth names to statusEffects names?
     // TODO create a CONFIG.RQG.statusEffects that contain AE ?
+
+    if (!token.actor) {
+      ui.notifications?.warn("no actor on token???");
+      return;
+    }
 
     const previousEffect = health2Effect.get(actorHealthBefore);
     const newEffect = health2Effect.get(token.actor.data.data.attributes.health);
@@ -265,9 +298,9 @@ export class HitLocationSheet extends RqgItemSheet {
       const shouldTogglePreviousEffect = !!previousEffect && previousEffectIsOn;
 
       shouldToggleNewEffect &&
-        (await token.toggleEffect(newEffect as any, { overlay: asOverlay, active: true }));
+        (await token.toggleEffect(newEffect, { overlay: asOverlay, active: true }));
       shouldTogglePreviousEffect &&
-        (await token.toggleEffect(previousEffect as any, {
+        (await token.toggleEffect(previousEffect, {
           overlay: asOverlay,
           active: true,
         }));

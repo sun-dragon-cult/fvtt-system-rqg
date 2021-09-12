@@ -2,7 +2,7 @@
   {{#each ownedItems.skill}}
   {{#if this}}
   <div class="masonry-item">
-    <h2>{{localize (concat 'RQG.SkillCategory.' @key)}} ({{#with @root.rqgActorData.data.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
+    <h2>{{localize (concat 'RQG.SkillCategory.' @key)}} ({{#with @root.characterData.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
     <div class="grid skill">
       {{#each this}}
         <div data-item-id="{{id}}" title="Description" class="skill-contextmenu"

@@ -1,6 +1,5 @@
-import { SkillCategoryEnum, SkillData } from "../data-model/item-data/skillData";
+import { SkillCategoryEnum, SkillDataProperties } from "../data-model/item-data/skillData";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
-import { RqgActorData } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { RqgItem } from "../items/rqgItem";
@@ -22,13 +21,27 @@ import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
 import { Characteristics } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "./rqgActor";
-import { getDomDataset, getRequiredDomDataset, RqgError, usersThatOwnActor } from "../system/util";
-import { RuneItemData, RuneTypeEnum } from "../data-model/item-data/runeData";
-import { RqgConfig } from "../system/config";
+import {
+  assertActorType,
+  assertItemType,
+  getDomDataset,
+  getGame,
+  getGameUser,
+  getRequiredDomDataset,
+  hasOwnProperty,
+  requireValue,
+  RqgError,
+  usersThatOwnActor,
+} from "../system/util";
+import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
-
-declare const CONFIG: RqgConfig;
+import { RqgToken } from "../combat/rqgToken";
+import {
+  ActorTypeEnum,
+  CharacterDataProperties,
+  CharacterDataPropertiesData,
+} from "../data-model/actor-data/rqgActorData";
 
 interface UiSections {
   health: boolean;
@@ -44,26 +57,19 @@ interface UiSections {
   activeEffects: boolean;
 }
 
-// Data fed to handlebars renderer
-interface ActorSheetTemplate {
-  // Basic (Foundry) data
-  cssClass: string;
-  editable: boolean;
-  limited: boolean;
-  options: object;
-  owner: boolean;
-  title: string;
+interface CharacterSheetData {
+  data: CharacterDataProperties;
+  characterData: CharacterDataPropertiesData;
 
-  // The actor and reorganised owned items
-  rqgActorData: Actor.Data<RqgActorData>;
+  // sheetSpecific { ... TODO organize as in itemSheets with sheetSpecific & data + characterData (data = current Characterdata)
   tokenId?: string;
   /** reorganized for presentation TODO type it better */
   ownedItems: any;
 
   /** Find this skill to show on spirit combat part */
-  spiritCombatSkillData: Item.Data<SkillData>;
+  spiritCombatSkillData: SkillDataProperties | undefined;
   /** Find this skill to show on combat part */
-  dodgeSkillData: Item.Data<SkillData>;
+  dodgeSkillData: SkillDataProperties | undefined;
 
   // Lists for dropdown values
   occupations: `${OccupationEnum}`[];
@@ -73,7 +79,7 @@ interface ActorSheetTemplate {
 
   // Other data needed for the sheet
   /** Array of element runes with > 0% chance */
-  characterRunes: RuneItemData[];
+  characterRunes: RuneDataSource[];
   /** (html) Precalculated missile weapon SRs if loaded at start of round */
   loadedMissileSr: string[];
   /** (html) Precalculated missile weapon SRs if not loaded at start of round */
@@ -90,11 +96,28 @@ interface ActorSheetTemplate {
   showUiSection: UiSections;
 }
 
-export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActor> {
-  static get defaultOptions() {
-    // @ts-ignore mergeObject
+// Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
+export class RqgActorSheet extends ActorSheet<
+  ActorSheet.Options,
+  CharacterSheetData | ActorSheet.Data
+> {
+  get title(): string {
+    const linked = this.actor.data.token.actorLink;
+    const isToken = this.actor.isToken;
+
+    let prefix = "";
+    if (!linked) {
+      prefix = isToken ? "[Token] " : "[Prototype] ";
+    }
+    const speakerName = isToken ? this.actor.token!.data.name : this.actor.data.token.name;
+    const postfix = isToken ? ` (${this.actor.data.token.name})` : "";
+
+    return prefix + speakerName + postfix;
+  }
+
+  static get defaultOptions(): ActorSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", "actor"],
+      classes: ["rqg", "sheet", ActorTypeEnum.Character],
       template: "systems/rqg/actors/rqgActorSheet.html",
       width: 550,
       height: 650,
@@ -116,40 +139,37 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
   /* -------------------------------------------- */
 
-  // TODO type system presumes ActorSheet.Data<Actor> but I've organised as ActorSheetTemplate
-  getData(): any {
-    // @ts-ignore 0.8 document.isOwner
+  getData(): CharacterSheetData | ActorSheet.Data {
+    const actorData = this.document.data.toObject(false);
+    assertActorType(actorData.type, ActorTypeEnum.Character);
+
     const isOwner: boolean = this.document.isOwner;
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
-    // @ts-ignore 0.8 document
-    const rqgActorData = this.document.data.toObject(false);
-    const dexStrikeRank = rqgActorData.data.attributes.dexStrikeRank;
-    if (dexStrikeRank == null) {
-      const msg = "Dex SR was not yet calculated.";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this.actor);
-    }
-    const templateData: ActorSheetTemplate = {
+    const dexStrikeRank = actorData.data.attributes.dexStrikeRank;
+    requireValue(dexStrikeRank, "Dex SR was not yet calculated.");
+
+    return {
       cssClass: isOwner ? "editable" : "locked",
       editable: this.isEditable,
-      // @ts-ignore 0.8 document
       limited: this.document.limited,
       options: this.options,
       owner: isOwner,
       title: this.title,
 
-      rqgActorData: rqgActorData,
-      tokenId: this.token?.id,
+      data: actorData,
+      characterData: actorData.data,
+
+      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
       ownedItems: this.organizeOwnedItems(),
 
       spiritCombatSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.spiritCombat),
       dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
 
-      characterRunes: this.getCharacterRuneImgs(), // Array of element runes with > 0% chance
+      characterRunes: this.getCharacterRuneImgs(), // Sorted array of element runes with > 0% chance
       loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
       unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
-      // @ts-ignore 0.8 toObject
-      itemLocationTree: createItemLocationTree(this.actor.items.toObject(false)), // physical items reorganised as a tree of items containing items
+      itemLocationTree: createItemLocationTree(this.actor.items.toObject()), // physical items reorganised as a tree of items containing items
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
@@ -161,29 +181,38 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       healthStatuses: [...actorHealthStatuses],
 
       // UI toggles
-      isGM: !!game.user?.isGM,
+      isGM: getGameUser().isGM,
       showUiSection: this.getUiSectionVisibility(),
     };
-    return templateData;
   }
 
   private getPhysicalItemLocations(): string[] {
     // Used for DataList input dropdown
-    const physicalItems: RqgItem[] = this.actor.items.filter(
-      (i: Item) => i.data.data.physicalItemType
+    const physicalItems: RqgItem[] = this.actor.items.filter((i: RqgItem) =>
+      hasOwnProperty(i.data.data, "physicalItemType")
     );
     return [
       ...new Set([
-        ...this.actor.items.filter((i: Item) => i.data.data.isContainer).map((i) => i.name),
-        ...physicalItems.map((i: Item) => i.data.data.location),
+        // Make a unique list of names of container items and "free text" locations
+        ...this.actor.items.reduce((acc: string[], i: RqgItem) => {
+          if (hasOwnProperty(i.data.data, "isContainer") && i.data.data.isContainer && i.name) {
+            acc.push(i.name);
+          }
+          return acc;
+        }, []),
+        ...physicalItems.map((i: RqgItem) => (i.data.data as any).location ?? ""),
       ]),
     ];
   }
 
   private getSpiritMagicPointSum(): number {
-    return this.actor.items
-      .filter((i: Item<any>) => i.type === (ItemTypeEnum.SpiritMagic as string))
-      .reduce((acc: number, m: Item<any>) => acc + m.data.data.points, 0);
+    return this.actor.items.reduce((acc: number, item: RqgItem) => {
+      if (item.data.type === ItemTypeEnum.SpiritMagic) {
+        return acc + item.data.data.points;
+      } else {
+        return acc;
+      }
+    }, 0);
   }
 
   private getPowCrystals(): { name: string; size: number }[] {
@@ -210,8 +239,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       this.actor.data.data.characteristics.intelligence.value -
       spiritMagicPointSum -
       this.actor.items.filter(
-        (i: Item<any>) =>
-          i.type === ItemTypeEnum.Skill &&
+        (i: RqgItem) =>
+          i.data.type === ItemTypeEnum.Skill &&
           i.data.data.category === SkillCategoryEnum.Magic &&
           !!i.data.data.runes.length
       ).length
@@ -244,33 +273,41 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     return unloadedMissileSr[dexSr];
   }
 
-  private getCharacterRuneImgs(): RuneItemData[] {
+  private getCharacterRuneImgs(): RuneDataSource[] {
     return this.actor.items
-      .filter(
-        (i: Item<any>) =>
+      .reduce((acc: RuneDataSource[], i: RqgItem) => {
+        if (
           i.data.type === ItemTypeEnum.Rune &&
           i.data.data.runeType === RuneTypeEnum.Element &&
           !!i.data.data.chance
-      )
-      .map((r) => r.data as RuneItemData)
-      .sort((a: RuneItemData, b: RuneItemData) => b.data.chance - a.data.chance);
+        ) {
+          acc.push(i.data);
+        }
+        return acc;
+      }, [])
+      .sort((a: RuneDataSource, b: RuneDataSource) => b.data.chance - a.data.chance);
   }
 
-  private getSkillDataByName(name: String): Item.Data<SkillData> {
+  private getSkillDataByName(name: String): SkillDataProperties | undefined {
     const skillItem = this.actor.items.find(
-      (i) => i.data.name === name && i.type === ItemTypeEnum.Skill
+      (i: RqgItem) => i.data.name === name && i.type === ItemTypeEnum.Skill
     );
-    return skillItem?.data as Item.Data<SkillData>;
+
+    if (!skillItem) {
+      return;
+    }
+    assertItemType(skillItem.data.type, ItemTypeEnum.Skill);
+    return skillItem.data;
   }
 
   /**
    * Take the owned items of the actor and rearrange them for presentation.
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
-   * @private
+   * TODO Fix the typing
    */
   private organizeOwnedItems(): any {
     const itemTypes: any = Object.fromEntries(
-      game.system.entityTypes.Item.map((t: string) => [t, []])
+      getGame().system.entityTypes.Item.map((t: string) => [t, []])
     );
     this.actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
@@ -299,6 +336,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Organise powerRunes as { fertility: RqgItem, death: RqgItem, ... }
     itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Power] = {
       ...itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce((acc: any, item: Item) => {
+        assertItemType(item.data.type, ItemTypeEnum.Rune);
         acc[item.data.data.rune] = item;
         return acc;
       }, []),
@@ -307,6 +345,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Organise formRunes as { man: RqgItem, beast: RqgItem, ... }
     itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Form] = {
       ...itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce((acc: any, item: Item) => {
+        assertItemType(item.data.type, ItemTypeEnum.Rune);
         acc[item.data.data.rune] = item;
         return acc;
       }, []),
@@ -314,7 +353,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
     // Sort the hit locations
     itemTypes[ItemTypeEnum.HitLocation].sort(
-      (a: Item, b: Item) => b.data.data.dieFrom - a.data.data.dieFrom
+      (a: any, b: any) => b.data.data.dieFrom - a.data.data.dieFrom
     );
 
     return itemTypes;
@@ -324,60 +363,54 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     return {
       health:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.HitLocation).length,
+        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.HitLocation),
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter(
-          (i) =>
+        this.actor.items.some(
+          (i: RqgItem) =>
             i.name === CONFIG.RQG.skillName.dodge ||
-            [ItemTypeEnum.MeleeWeapon as string, ItemTypeEnum.MissileWeapon as string].includes(
-              i.type
-            )
-        ).length,
+            [ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon].includes(i.type)
+        ),
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Rune).length,
+        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Rune),
       spiritMagic:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.SpiritMagic).length,
+        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.SpiritMagic),
       runeMagic:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) =>
-          [ItemTypeEnum.Cult as string, ItemTypeEnum.RuneMagic as string].includes(i.type)
-        ).length,
+        this.actor.items.some((i: RqgItem) =>
+          [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(i.type)
+        ),
       sorcery:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter(
-          (i: Item<any>) => i.type === (ItemTypeEnum.Rune as string) && i.data.data.isMastered
-        ).length,
+        this.actor.items.some(
+          (i: RqgItem) => i.data.type === ItemTypeEnum.Rune && i.data.data.isMastered
+        ),
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Skill).length,
+        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Skill),
       gear:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) =>
+        this.actor.items.some((i: RqgItem) =>
           [
-            ItemTypeEnum.Gear as string,
-            ItemTypeEnum.MeleeWeapon as string,
-            ItemTypeEnum.MissileWeapon as string,
-            ItemTypeEnum.Armor as string,
+            ItemTypeEnum.Gear,
+            ItemTypeEnum.MeleeWeapon,
+            ItemTypeEnum.MissileWeapon,
+            ItemTypeEnum.Armor,
           ].includes(i.type)
-        ).length,
+        ),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
-        !!this.actor.items.filter((i) => i.type === ItemTypeEnum.Passion).length,
+        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Passion),
       background: true,
-      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && !!game.user?.isGM,
+      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && getGameUser().isGM,
     };
   }
 
-  protected _updateObject(event: Event, formData: any) {
+  protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
     const maxHitPoints = this.actor.data.data.attributes.hitPoints.max;
-    if (maxHitPoints == null) {
-      const msg = "Actor does not have max hitpoints set.";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this.actor);
-    }
+    requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
     if (
       formData["data.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
       formData["data.attributes.hitPoints.value"] > maxHitPoints
@@ -391,6 +424,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor.data);
     if (newHealth !== this.actor.data.data.attributes.health) {
+      // @ts-ignore wait for foundry-vtt-types issue #1165
       const speakerName = this.token?.name || this.actor.data.token.name;
       let message;
       if (newHealth === "dead" && !this.actor.effects.find((e) => e.data.label === "dead")) {
@@ -404,20 +438,22 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
       }
       message &&
         ChatMessage.create({
-          user: game.user?.id,
+          user: getGameUser().id,
           speaker: { alias: speakerName },
           content: message,
-          whisper: usersThatOwnActor(this.actor),
+          whisper: usersThatOwnActor(this.actor).map((u) => u.id),
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
         });
     }
 
     this.actor.data.data.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
     if (this.token) {
-      const tokenHealthBefore = this.token.actor.data.data.attributes.health;
+      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      const tokenHealthBefore = this.token?.actor?.data.data.attributes.health;
+      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       this.token.actor.data.data.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-      // @ts-ignore 0.8 object - token is actually a TokenDocument?
-      HitLocationSheet.setTokenEffect(this.token.object, tokenHealthBefore);
+      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      HitLocationSheet.setTokenEffect(this.token.object as RqgToken, tokenHealthBefore);
     }
 
     formData["data.attributes.health"] = newHealth;
@@ -425,27 +461,8 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     return super._updateObject(event, formData);
   }
 
-  get title(): string {
-    const linked = this.actor.data.token.actorLink;
-    const isToken = this.actor.isToken;
-
-    let prefix = "";
-    if (!linked) {
-      prefix = isToken ? "[Token] " : "[Prototype] ";
-    }
-    const speakerName = isToken ? this.actor.token!.data.name : this.actor.data.token.name;
-    const postfix = isToken ? ` (${this.actor.data.token.name})` : "";
-
-    return prefix + speakerName + postfix;
-
-    // return this.actor.isToken
-    //   ? `[Token] ${this.actor.token!.data.name} (${this.actor.data.token.name})`
-    //   : this.actor.data.token.name;
-  }
-
   activateListeners(html: JQuery): void {
     super.activateListeners(html);
-    // @ts-ignore 0.8
     if (!this.actor.isOwner) {
       // Only owners are allowed to interact
       return;
@@ -454,20 +471,27 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     new ContextMenu(
       html,
       ".characteristic-contextmenu",
+      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       characteristicMenuOptions(this.actor, this.token)
     );
+    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor, this.token));
     new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));
+    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(this.actor, this.token));
     new ContextMenu(
       html,
       ".spirit-magic-contextmenu",
+      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       spiritMagicMenuOptions(this.actor, this.token)
     );
     new ContextMenu(html, ".cult-contextmenu", cultMenuOptions(this.actor));
+    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune-magic-contextmenu", runeMagicMenuOptions(this.actor, this.token));
+    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(this.actor, this.token));
     new ContextMenu(html, ".gear-contextmenu", gearMenuOptions(this.actor));
+    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(this.actor, this.token));
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
@@ -489,6 +513,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
 
         if (clickCount >= 2) {
+          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
           const speakerName = this.token?.name || this.actor.data.token.name;
           await CharacteristicCard.roll(
             characteristicName,
@@ -510,6 +535,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
                   ],
                 },
                 this.actor,
+                // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
                 this.token
               );
             }
@@ -522,11 +548,13 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Roll against Item Ability Chance
     this.form!.querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.items.get(itemId) as Item<any>;
+      const item = this.actor.items.get(itemId);
+      requireValue(item, "AbilityChance roll couldn't find skillItem");
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: Event) => {
         if (
+          hasOwnProperty(item.data.data, "category") &&
           [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
             item.data.data.category
           )
@@ -540,12 +568,14 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
 
         if (clickCount >= 2) {
+          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
           const speakerName = this.token?.name || this.actor.data.token.name;
           await ItemCard.roll(item.data, 0, this.actor, speakerName);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
+              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
               await ItemCard.show(itemId, this.actor, this.token);
             }
             clickCount = 0;
@@ -574,11 +604,13 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
         if (clickCount >= 2) {
           if (item.data.data.isVariable && item.data.data.points > 1) {
+            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             await SpiritMagicCard.show(itemId, this.actor, this.token);
           } else {
+            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             const speakerName = this.token?.name || this.actor.data.token.name;
             await SpiritMagicCard.roll(
-              item.data,
+              item.data.toObject(),
               item.data.data.points,
               0,
               this.actor,
@@ -590,6 +622,7 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
+              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
               await SpiritMagicCard.show(itemId, this.actor, this.token);
             }
             clickCount = 0;
@@ -613,11 +646,13 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
         if (skillItemId && clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
+          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
           await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
           clickCount = 0;
         } else if (skillItemId && clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
+              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
               await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
             }
             clickCount = 0;
@@ -629,22 +664,20 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     // Set Token SR in Combat Tracker
     (this.form as HTMLElement).querySelectorAll("[data-set-sr]").forEach((el: Element) => {
       const sr = getRequiredDomDataset($(el as HTMLElement), "set-sr");
-      let token = this.token;
+      let token = this.token as TokenDocument | null;
       if (!token && this.actor.data.token.actorLink) {
         const activeTokens = this.actor.getActiveTokens();
-        token = activeTokens ? activeTokens[0] : null;
+        token = activeTokens ? activeTokens[0] : null; // TODO Just picks the first token found
       }
 
       let clickCount = 0;
 
       function setTokenCombatSr() {
-        game.combats?.forEach(async (combat) => {
-          const combatant = token && combat.getCombatantByToken(token.id);
+        getGame().combats?.forEach(async (combat) => {
+          const combatant = token && token.id ? combat.getCombatantByToken(token.id) : undefined;
           combatant &&
-            // @ts-ignore 0.8
             (await combat.updateEmbeddedDocuments("Combatant", [
               {
-                // @ts-ignore 0.8
                 _id: combatant.id,
                 initiative: sr,
               },
@@ -670,15 +703,15 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     });
 
     // Open Linked Journal Entry
-    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: Element) => {
-      const pack = getDomDataset($(el as HTMLElement), "journal-pack");
-      const id = getRequiredDomDataset($(el as HTMLElement), "journal-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-journal-id]").forEach((el) => {
+      const pack = getDomDataset(el, "journal-pack");
+      const id = getRequiredDomDataset(el, "journal-id");
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
 
     // Edit Item (open the item sheet)
-    (this.form as HTMLElement).querySelectorAll("[data-item-edit]").forEach((el) => {
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-item-edit]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId);
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`;
@@ -689,14 +722,14 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     });
 
     // Delete Item (remove item from actor)
-    (this.form as HTMLElement).querySelectorAll("[data-item-delete]").forEach((el) => {
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-item-delete]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
     // Cycle the equipped state of a physical Item
-    (this.form as HTMLElement).querySelectorAll("[data-item-equipped-toggle]").forEach((el) => {
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", async () => {
         const item = this.actor.items.get(itemId);
         if (!item || !("equippedStatus" in item.data.data)) {
@@ -714,9 +747,9 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     });
 
     // Edit item value
-    (this.form as HTMLElement).querySelectorAll("[data-item-edit-value]").forEach((el) => {
-      const path = getRequiredDomDataset($(el as HTMLElement), "item-edit-value");
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    this.form?.querySelectorAll<HTMLInputElement>("[data-item-edit-value]").forEach((el) => {
+      const path = getRequiredDomDataset(el, "item-edit-value");
+      const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("change", async (event) => {
         const item = this.actor.items.get(itemId);
         if (!item) {
@@ -724,13 +757,15 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
           ui.notifications?.error(msg);
           throw new RqgError(msg);
         }
-        await item.update({ [path]: (event.target as HTMLInputElement).value }, {});
+
+        await item.update({ [path]: (event.target as HTMLInputElement)?.value }, {});
       });
     });
 
     // Add wound to hit location TODO move listener to hitlocation
-    (this.form as HTMLElement).querySelectorAll("[data-item-add-wound]").forEach((el) => {
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       const speakerName = this.token?.name || this.actor.data.token.name;
       el.addEventListener("click", () =>
         HitLocationSheet.showAddWoundDialog(this.actor, itemId, speakerName)
@@ -738,33 +773,41 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
     });
 
     // Heal wounds to hit location TODO move listener to hitlocation
-    (this.form as HTMLElement).querySelectorAll("[data-item-heal-wound]").forEach((el) => {
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-item-heal-wound]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));
     });
 
     // Edit Actor Active Effect
-    (this.form as HTMLElement).querySelectorAll("[data-actor-effect-edit]").forEach((el) => {
-      const effectId = getRequiredDomDataset($(el as HTMLElement), "effect-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-actor-effect-edit]").forEach((el) => {
+      const effectId = getRequiredDomDataset(el, "effect-id");
       el.addEventListener("click", () => {
         const effect = this.actor.effects.get(effectId);
-        if (!effect) {
-          const msg = `Couldn't find active effect id [${effectId}] to edit the effect (when clicked).`;
-          ui.notifications?.error(msg);
-          throw new RqgError(msg);
-        }
+        requireValue(effect, `No active effect id [${effectId}] to edit the effect`);
         new ActiveEffectConfig(effect).render(true);
+      });
+    });
+
+    // Roll Damage for spirit magic (and separate damage bonus)
+    this.form?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
+      const damage = el.dataset.damageRoll;
+      requireValue(damage, "direct damage roll without damage");
+      el.addEventListener("click", async () => {
+        const r = new Roll(damage);
+        await r.evaluate({ async: true });
+        await r.toMessage({
+          speaker: ChatMessage.getSpeaker(),
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+          flavor: `damage`,
+        });
       });
     });
   }
 
   static confirmItemDelete(actor: RqgActor, itemId: string): void {
     const item = actor.items.get(itemId);
-    if (!item) {
-      const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to show delete item Dialog (when clicked).`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
-    }
+    requireValue(item, `No itemId [${itemId}] on actor ${actor.name} to show delete item Dialog`);
+
     new Dialog(
       {
         title: `Delete ${item.type}: ${item.name}`,
@@ -775,7 +818,6 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
             icon: '<i class="fas fa-check"></i>',
             label: "Confirm",
             callback: async () => {
-              // @ts-ignore 0.8
               await actor.deleteEmbeddedDocuments("Item", [itemId]);
             },
           },
@@ -799,21 +841,18 @@ export class RqgActorSheet extends ActorSheet<ActorSheet.Data<RqgActor>, RqgActo
 
     // Compendium Link
     if (packName) {
-      const pack = game.packs?.get(packName);
-      // @ts-ignore 0.8
-      entity = id && pack ? await pack.getDocument(id) : null;
+      const pack = getGame().packs?.get(packName);
+      entity = id && pack ? await pack.getDocument(id) : undefined;
 
       // World Entity Link
     } else {
-      // @ts-ignore 0.8
-      const collection = CONFIG.JournalEntry.collection.instance;
+      const collection = getGame().journal;
+      requireValue(collection, "game.journal not yet initialised");
+      // const collection = CONFIG.JournalEntry.collection.instance;
       entity = collection.get(id);
     }
-    if (!entity) {
-      const msg = `Couldn't find journal with id [${id}] and packName ${packName} to to show it.`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
-    }
+    requireValue(entity, `No journal with id [${id}] and packName ${packName} when showing it.`);
+    requireValue(entity.sheet, "journal entry entity.sheet not present");
     entity.sheet.render(true);
   }
 }

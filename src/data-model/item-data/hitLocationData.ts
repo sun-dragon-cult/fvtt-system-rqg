@@ -68,7 +68,7 @@ export enum HitLocationTypesEnum {
   Abdomen = "abdomen",
 }
 
-export interface HitLocationData {
+export interface HitLocationDataSourceData {
   dieFrom: number;
   dieTo: number;
   /** Max and value added by ActorSheet.prepareData */
@@ -84,16 +84,25 @@ export interface HitLocationData {
   hitLocationType: HitLocationTypesEnum; // TODO *** kan man göra det här smartare? ***
   /** If hitLocationType is Limb then what location name is it connected to. Used for damage calculations */
   connectedTo: string;
-  // --- Derived Data Below ---
+}
+
+// --- Derived Data ---
+export interface HitLocationDataPropertiesData extends HitLocationDataSourceData {
   /** Natural armor + armor absorption */
-  ap?: number;
+  ap: number;
 }
 
-export interface HitLocationItemData extends Item.Data<HitLocationData> {
+export interface HitLocationDataSource {
   type: ItemTypeEnum.HitLocation;
+  data: HitLocationDataSourceData;
 }
 
-export const emptyHitLocation: HitLocationData = {
+export interface HitLocationDataProperties {
+  type: ItemTypeEnum.HitLocation;
+  data: HitLocationDataPropertiesData;
+}
+
+export const emptyHitLocation: HitLocationDataSourceData = {
   dieFrom: 0,
   dieTo: 0,
   hp: emptyResource,

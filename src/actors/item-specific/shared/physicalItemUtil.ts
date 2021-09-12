@@ -1,6 +1,7 @@
 import { RqgActor } from "../../rqgActor";
 import { RqgItem } from "../../../items/rqgItem";
 import { getOtherItemIdsInSameLocationTree } from "./locationNode";
+import { requireValue } from "../../../system/util";
 
 export function getSameLocationUpdates(
   actor: RqgActor,
@@ -10,22 +11,20 @@ export function getSameLocationUpdates(
   if ("isNatural" in physicalItem.data.data && physicalItem.data.data.isNatural) {
     return []; // natural weapons don't have location and are excluded from the LocationTree
   }
-  // @ts-ignore 0.8
-  const physicalItemDataObject = physicalItem.data.toObject(false);
-  // @ts-ignore 0.8
-  const actorObject = actor.toObject(false);
+  const actorObject = actor.toObject();
   const actorOwnedItems = actorObject.items;
 
   const newLocationUpdate = updates.find((u: any) => u["data.location"] != null) as any;
   if (newLocationUpdate) {
     // Change location of the item that is sent to getOtherItemIdsInSameLocationTree
     const item = actorOwnedItems.find((i: any) => i._id === newLocationUpdate._id);
+    requireValue(item, "location didn't find item", actorOwnedItems, newLocationUpdate);
+    // @ts-ignore physicalItem location
     item.data.location = newLocationUpdate["data.location"];
   }
 
-  // @ts-ignore 0.8
   const sameLocationItemIds = getOtherItemIdsInSameLocationTree(
-    physicalItemDataObject.name,
+    physicalItem.name ?? "",
     actorOwnedItems
   );
 

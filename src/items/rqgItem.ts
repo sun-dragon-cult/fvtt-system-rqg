@@ -1,5 +1,5 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import { ItemTypeEnum, ResponsibleItemClass, RqgItemData } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
@@ -12,64 +12,63 @@ import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import { RqgError } from "../system/util";
 
-export class RqgItem extends Item<RqgItemData> {
+export class RqgItem extends Item {
   public static init() {
-    // @ts-ignore 0.8
     CONFIG.Item.documentClass = RqgItem;
 
     Items.unregisterSheet("core", ItemSheet);
 
-    Items.registerSheet("rqg", PassionSheet, {
+    Items.registerSheet("rqg", PassionSheet as any, {
       label: "GM Passion Item Sheet",
       types: [ItemTypeEnum.Passion],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", RuneSheet, {
+    Items.registerSheet("rqg", RuneSheet as any, {
       label: "GM Rune Item Sheet",
       types: [ItemTypeEnum.Rune],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", SkillSheet, {
+    Items.registerSheet("rqg", SkillSheet as any, {
       label: "GM Skill Item Sheet",
       types: [ItemTypeEnum.Skill],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", HitLocationSheet, {
+    Items.registerSheet("rqg", HitLocationSheet as any, {
       label: "GM Hit Location Item Sheet",
       types: [ItemTypeEnum.HitLocation],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", GearSheet, {
+    Items.registerSheet("rqg", GearSheet as any, {
       label: "GM Gear Item Sheet",
       types: [ItemTypeEnum.Gear],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", ArmorSheet, {
+    Items.registerSheet("rqg", ArmorSheet as any, {
       label: "GM Armor Item Sheet",
       types: [ItemTypeEnum.Armor],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", MeleeWeaponSheet, {
+    Items.registerSheet("rqg", MeleeWeaponSheet as any, {
       label: "GM Melee Weapon Item Sheet",
       types: [ItemTypeEnum.MeleeWeapon],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", MissileWeaponSheet, {
+    Items.registerSheet("rqg", MissileWeaponSheet as any, {
       label: "GM Missile Weapon Item Sheet",
       types: [ItemTypeEnum.MissileWeapon],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", SpiritMagicSheet, {
+    Items.registerSheet("rqg", SpiritMagicSheet as any, {
       label: "GM Spirit Magic Item Sheet",
       types: [ItemTypeEnum.SpiritMagic],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", CultSheet, {
+    Items.registerSheet("rqg", CultSheet as any, {
       label: "GM Cult Item Sheet",
       types: [ItemTypeEnum.Cult],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", RuneMagicSheet, {
+    Items.registerSheet("rqg", RuneMagicSheet as any, {
       label: "GM Rune Magic Item Sheet",
       types: [ItemTypeEnum.RuneMagic],
       makeDefault: true,
@@ -80,7 +79,6 @@ export class RqgItem extends Item<RqgItemData> {
     Hooks.on("preCreateItem", (document: any) => {
       const isOwnedItem =
         document instanceof RqgItem &&
-        // @ts-ignore 0.8
         document.parent &&
         Object.values(ItemTypeEnum).includes(document.data.type);
       if (!isOwnedItem) {
@@ -89,7 +87,6 @@ export class RqgItem extends Item<RqgItemData> {
 
       if (RqgItem.isDuplicateItem(document)) {
         ui.notifications?.warn(
-          // @ts-ignore 0.8
           `${document.parent.name} already has a ${document.data.type} '${document.name}' and duplicates are not allowed`
         );
         return false;
@@ -97,7 +94,6 @@ export class RqgItem extends Item<RqgItemData> {
 
       if (RqgItem.isRuneMagicWithoutCult(document)) {
         ui.notifications?.warn(
-          // @ts-ignore 0.8
           `${document.parent.name} has to join a cult before learning the ${document.name} rune magic spell`
         );
         return false;
@@ -110,9 +106,7 @@ export class RqgItem extends Item<RqgItemData> {
     const { parent, pack, ...options } = context;
     if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
-        // @ts-ignore 0.8
         const document = parent.items.get(u._id);
-        // @ts-ignore 0.8
         if (!document || document.documentName !== "Item") {
           const msg = "couldn't find item document from result";
           ui.notifications?.error(msg);
@@ -127,7 +121,6 @@ export class RqgItem extends Item<RqgItemData> {
         );
       });
     }
-    // @ts-ignore 0.8
     return super.updateDocuments(updates, context);
   }
 

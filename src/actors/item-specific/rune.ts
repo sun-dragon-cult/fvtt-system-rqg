@@ -11,21 +11,18 @@ export class Rune extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
-  static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: object[], options: any): void {
+  static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {
     if (rune.data.type === ItemTypeEnum.Rune) {
-      // @ts-ignore 0.8
       const chanceResult = updates.find((r) => r["data.chance"] != null);
       if (!chanceResult) {
         return;
       }
       if (rune.data.data.opposingRune) {
         const opposingRune = actor.items.getName(rune.data.data.opposingRune);
-        // @ts-ignore 0.8
         this.adjustOpposingRuneChance(
           opposingRune,
           rune,
           actor,
-          // @ts-ignore 0.8
           chanceResult["data.chance"],
           updates
         );
@@ -34,7 +31,7 @@ export class Rune extends AbstractEmbeddedItem {
   }
 
   private static adjustOpposingRuneChance(
-    opposingRune: RqgItem | null,
+    opposingRune: RqgItem | undefined,
     item: RqgItem,
     actor: RqgActor,
     newChance: number,

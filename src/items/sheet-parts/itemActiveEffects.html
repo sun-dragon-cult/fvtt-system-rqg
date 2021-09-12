@@ -1,12 +1,12 @@
-{{#unless document.isOwned}}
+{{#unless owner}}
 <h2>
     <span class="flex-row">
     🐛Active Effects🧪
-    <a title="Add Effect" data-item-id="{{item.id}}" data-item-effect-add><i class="fas fa-plus"></i></a>
+    <a title="Add Effect" data-item-id="{{data._id}}" data-item-effect-add><i class="fas fa-plus"></i></a>
     </span>
 </h2>
 
-<table data-item-id="{{item.id}}">
+<table data-item-id="{{data._id}}">
   <thead>
   <tr>
     <th class="text-left">Label</th>

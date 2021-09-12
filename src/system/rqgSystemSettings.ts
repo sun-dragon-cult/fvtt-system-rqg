@@ -1,5 +1,7 @@
+import { getGame } from "./util";
+
 export const registerRqgSystemSettings = function () {
-  game.settings.register("rqg", "specialCrit", {
+  getGame().settings.register("rqg", "specialCrit", {
     name: "Special & Hyper Critical results",
     hint: "Add the possibility to roll a special critical (skill/100) and hyper critical (skill/500)",
     scope: "world",
@@ -8,7 +10,7 @@ export const registerRqgSystemSettings = function () {
     default: false,
   });
 
-  game.settings.register("rqg", "runesCompendium", {
+  getGame().settings.register("rqg", "runesCompendium", {
     name: "Rune items compendium",
     hint: "The runes in the specified compendium will be used in the system. Please include all possible runes.",
     scope: "world",
@@ -17,7 +19,7 @@ export const registerRqgSystemSettings = function () {
     default: "rqg-core.runes",
   });
 
-  game.settings.register("rqg", "fumbleRollTable", {
+  getGame().settings.register("rqg", "fumbleRollTable", {
     name: "Fumble Roll Table",
     hint: "The name of the Fumble roll table - will be used in combat",
     scope: "world",
@@ -26,7 +28,7 @@ export const registerRqgSystemSettings = function () {
     default: "Fumble",
   });
 
-  game.settings.register("rqg", "systemMigrationVersion", {
+  getGame().settings.register("rqg", "systemMigrationVersion", {
     name: "System Migration Version",
     hint: "Do not touch this unless you really know what you are doing!",
     scope: "world",

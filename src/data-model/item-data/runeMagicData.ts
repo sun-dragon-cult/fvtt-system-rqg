@@ -15,24 +15,38 @@ export enum RuneMagicDurationEnum {
   Permanent = "permanent", // Ritual (Enchantment)
 }
 
-export interface RuneMagicData extends JournalEntryLink {
-  cultId: string; // The cult from where to draw rune points
-  runes: string[]; // Rune names like "Man (form)"
-  points: number; // Learned strength
+export interface RuneMagicDataSourceData extends JournalEntryLink {
+  /** The cult this rune magic is learned from and where to draw rune points */
+  cultId: string;
+  /** Array of rune names like "Man (form)" */
+  runes: string[];
+  /** Learned strength */
+  points: number;
   castingRange: RuneMagicCastingRangeEnum;
   duration: RuneMagicDurationEnum;
   isRitual: boolean;
-  isStackable: boolean; // Can the caster decide the number of rune points used
+  /** Can the caster decide the number of rune points used */
+  isStackable: boolean;
   isOneUse: boolean;
-  // --- Derived Data Below ---
-  chance?: number; // Derived from Runes & Cults
 }
 
-export interface RuneMagicItemData extends Item.Data<RuneMagicData> {
+// --- Derived Data ---
+export interface RuneMagicDataPropertiesData extends RuneMagicDataSourceData {
+  /** Derived: Calculated from rune & cult items on the same actor */
+  chance: number;
+}
+
+export interface RuneMagicDataSource {
   type: ItemTypeEnum.RuneMagic;
+  data: RuneMagicDataSourceData;
 }
 
-export const emptyRuneMagic: RuneMagicData = {
+export interface RuneMagicDataProperties {
+  type: ItemTypeEnum.RuneMagic;
+  data: RuneMagicDataPropertiesData;
+}
+
+export const emptyRuneMagic: RuneMagicDataSourceData = {
   cultId: "",
   runes: [],
   points: 0,

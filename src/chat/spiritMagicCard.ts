@@ -1,14 +1,21 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
-import { SpiritMagicData } from "../data-model/item-data/spiritMagicData";
-import { getActorFromIds, getSpeakerName, RqgError, usersThatOwnActor } from "../system/util";
+import {
+  assertItemType,
+  getActorFromIds,
+  getGame,
+  getSpeakerName,
+  RqgError,
+  usersThatOwnActor,
+} from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
-import { RqgActorData } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { RqgActorDataSource } from "../data-model/actor-data/rqgActorData";
+import { ItemTypeEnum, RqgItemDataSource } from "../data-model/item-data/itemTypes";
+import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 type SpiritMagicCardFlags = {
   actorId: string;
-  tokenId?: string; // Needed to avoid saving a full (possibly syntetic) actor
-  itemData: Item.Data<SpiritMagicData>;
+  tokenId: string | null; // Needed to avoid saving a full (possibly syntetic) actor
+  itemData: ItemDataSource;
   formData: {
     level: number;
     boost: number;
@@ -20,19 +27,20 @@ export class SpiritMagicCard {
   public static async show(
     spiritMagicItemId: string,
     actor: RqgActor,
-    token: Token | null
+    token: TokenDocument | null
   ): Promise<void> {
     const spiritMagicItem = actor.items.get(spiritMagicItemId);
-    if (!spiritMagicItem || spiritMagicItem.data.type !== ItemTypeEnum.SpiritMagic) {
-      const msg = `Couldn't find spirit magic item with itemId [${spiritMagicItemId}] on actor ${actor.name} to show a spirit magic chat card.`;
+    assertItemType(spiritMagicItem?.data.type, ItemTypeEnum.SpiritMagic);
+    if (!actor.id) {
+      const msg = `Actor without id in spirit magic card`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg);
+      throw new RqgError(msg, actor);
     }
+
     const flags: SpiritMagicCardFlags = {
       actorId: actor.id,
-      tokenId: token?.id,
-      // @ts-ignore 0.8
-      itemData: spiritMagicItem.data.toObject(false),
+      tokenId: token?.id ?? null,
+      itemData: spiritMagicItem.data.toObject(),
       formData: {
         level: spiritMagicItem.data.data.points,
         boost: 0,
@@ -40,8 +48,7 @@ export class SpiritMagicCard {
       },
     };
 
-    // @ts-ignore 0.8 tabs
-    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
+    ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
     await ChatMessage.create(await this.renderContent(flags));
   }
 
@@ -53,7 +60,7 @@ export class SpiritMagicCard {
   ): Promise<boolean> {
     ev.preventDefault();
 
-    const chatMessage = game.messages?.get(messageId);
+    const chatMessage = getGame().messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as SpiritMagicCardFlags;
 
     const formData = new FormData(ev.target as HTMLFormElement);
@@ -80,12 +87,13 @@ export class SpiritMagicCard {
   }
 
   public static async roll(
-    itemData: Item.Data<SpiritMagicData>,
+    itemData: ItemDataSource,
     level: number,
     boost: number,
     actor: RqgActor,
     speakerName: string
   ): Promise<void> {
+    assertItemType(itemData.type, ItemTypeEnum.SpiritMagic);
     const actorData = actor.data;
     const validationError = SpiritMagicCard.validateData(
       actorData,
@@ -107,11 +115,12 @@ export class SpiritMagicCard {
   }
 
   public static validateData(
-    actorData: RqgActorData,
-    itemData: Item.Data<SpiritMagicData>,
+    actorData: RqgActorDataSource,
+    itemData: RqgItemDataSource,
     level: number,
     boost: number
   ): string {
+    assertItemType(itemData.type, ItemTypeEnum.SpiritMagic);
     if (level > itemData.data.points) {
       return "Can not cast spell above learned level";
     } else if (level + boost > (actorData.data.attributes.magicPoints.value || 0)) {
@@ -138,7 +147,7 @@ export class SpiritMagicCard {
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor: "Spirit Magic: " + flags.itemData.name,
-      user: game.user?.id,
+      user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,
       whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),

@@ -1,23 +1,29 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { ItemCard } from "../../chat/itemCard";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getRequiredDomDataset, RqgError } from "../../system/util";
+import {
+  assertItemType,
+  getDomDataset,
+  getGame,
+  getRequiredDomDataset,
+  RqgError,
+} from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 
-export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextMenu.Item[] => [
+export const skillMenuOptions = (
+  actor: RqgActor,
+  token: TokenDocument | null
+): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      return !!(
-        item &&
-        item.data.type === ItemTypeEnum.Skill &&
-        ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
-          item.data.data.category
-        )
+      assertItemType(item?.data.type, ItemTypeEnum.Skill);
+      return ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
+        item.data.data.category
       );
     },
     callback: async (el: JQuery) => {
@@ -31,24 +37,22 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      return !!(
-        item &&
-        item.data.type === ItemTypeEnum.Skill &&
-        ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
-          item.data.data.category
-        )
+      assertItemType(item?.data.type, ItemTypeEnum.Skill);
+      return ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
+        item.data.data.category
       );
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      const itemChance = (item?.data?.data as any).chance;
-      if (!itemChance || !item || item.data.type !== ItemTypeEnum.Skill) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to do a direct roll on a skill item from the skill context menu.`;
+      assertItemType(item?.data.type, ItemTypeEnum.Skill);
+      const itemChance = item.data.data.chance;
+      if (!itemChance) {
+        const msg = `Item [${item.name}] on actor ${actor.name} didn't have chance to do a direct roll on a skill item from the skill context menu.`;
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      const speakerName = token?.name || actor.data.token.name;
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
       await ItemCard.roll(item.data, 0, actor, speakerName);
     },
   },
@@ -58,16 +62,13 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      return !!(item?.data?.data as any)?.canGetExperience;
+      assertItemType(item?.data.type, ItemTypeEnum.Skill);
+      return item.data.data.canGetExperience;
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || item.data.type !== ItemTypeEnum.Skill) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on a skill item from the skill context menu.`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, el);
-      }
+      assertItemType(item?.data.type, ItemTypeEnum.Skill);
       await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
     },
   },
@@ -108,12 +109,13 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
   {
     name: "Edit",
     icon: '<i class="fas fa-edit"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || !item.sheet) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the skill item from the skill context menu`;
+      assertItemType(item?.data.type, ItemTypeEnum.Skill);
+      if (!item.sheet) {
+        const msg = `Couldn't find sheet on [${item.name}] on actor ${actor.name} to edit the skill item from the skill context menu`;
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
@@ -123,7 +125,7 @@ export const skillMenuOptions = (actor: RqgActor, token: Token | null): ContextM
   {
     name: "Delete",
     icon: '<i class="fas fa-trash"></i>',
-    condition: () => !!game.user?.isGM,
+    condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

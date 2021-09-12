@@ -1,3 +1,5 @@
+import { getGame } from "../../system/util";
+
 export interface IAbility {
   /** The effective % chance of this ability with all modifiers added in */
   chance?: number;
@@ -30,13 +32,12 @@ export class Ability {
     speakerName: string
   ): Promise<ResultEnum> {
     const r = new Roll("1d100");
-    // @ts-ignore 0.8 async roll
     await r.evaluate({ async: true });
     const modifiedChance: number = chance + chanceMod;
     const result = Ability.evaluateResult(modifiedChance, r.total!);
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
-    const resultText = game.i18n.localize(`RQG.ResultEnum.${result}`);
+    const resultText = getGame().i18n.localize(`RQG.ResultEnum.${result}`);
     await r.toMessage({
       flavor: `${flavor} (${chance}${chanceModText}%) ${resultText}`,
       speaker: { alias: speakerName },
@@ -46,7 +47,7 @@ export class Ability {
   }
 
   private static evaluateResult(chance: number, roll: number): ResultEnum {
-    const specialCritSetting = game.settings.get("rqg", "specialCrit");
+    const specialCritSetting = getGame().settings.get("rqg", "specialCrit");
     chance = Math.max(0, chance); // -50% = 0%
 
     const hyperCritical = specialCritSetting && chance >= 100 ? Math.ceil(chance / 500) : 0;

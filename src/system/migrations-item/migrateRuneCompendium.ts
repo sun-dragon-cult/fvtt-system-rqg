@@ -1,11 +1,14 @@
-import { ItemTypeEnum, RqgItemData } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemUpdate } from "../migrate";
+import { JournalEntryLink } from "../../data-model/shared/journalentrylink";
+import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 // Migrate rune img url to new compendium
-export function migrateRuneImgLocation(itemData: RqgItemData): any {
+export function migrateRuneImgLocation(itemData: ItemData): ItemUpdate {
   let updateData = {};
   if (
     itemData.type === ItemTypeEnum.Rune &&
-    itemData.img.includes("modules/rqg-compendiums/assets/runes/")
+    itemData.img?.includes("modules/rqg-compendiums/assets/runes/")
   ) {
     const newUrl =
       "modules/rqg-core/assets/runes/" +
@@ -18,7 +21,7 @@ export function migrateRuneImgLocation(itemData: RqgItemData): any {
 }
 
 // Migrate rune descriptions to new compendium
-export function migrateRuneDescription(itemData: RqgItemData): any {
+export function migrateRuneDescription(itemData: ItemData): ItemUpdate {
   let updateData = {};
   if (
     itemData.type === ItemTypeEnum.Rune &&
@@ -36,7 +39,7 @@ export function migrateRuneDescription(itemData: RqgItemData): any {
   return updateData;
 }
 
-const runeDescription: any = {
+const runeDescription: { [runeName: string]: JournalEntryLink } = {
   "Air (element)": {
     journalId: "l6On1MA7MnW7qWrA",
     journalPack: "rqg-core.rune-descriptions",

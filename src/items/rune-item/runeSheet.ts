@@ -1,12 +1,32 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneData, RuneTypeEnum } from "../../data-model/item-data/runeData";
+import {
+  RuneDataProperties,
+  RuneDataPropertiesData,
+  RuneTypeEnum,
+} from "../../data-model/item-data/runeData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { getAllRunesIndex, getDomDataset, getRequiredDomDataset } from "../../system/util";
+import {
+  assertItemType,
+  getAllRunesIndex,
+  getDomDataset,
+  getJournalEntryName,
+  getRequiredDomDataset,
+} from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItem } from "../rqgItem";
 
-export class RuneSheet extends RqgItemSheet {
-  static get defaultOptions(): BaseEntitySheet.Options {
-    // @ts-ignore mergeObject
+interface RuneSheetData {
+  data: RuneDataProperties; // Actually contains more...complete with effects, flags etc
+  runeData: RuneDataPropertiesData;
+  sheetSpecific: {
+    allRunes: string[];
+    runeTypes: RuneTypeEnum[];
+    journalEntryName: string;
+  };
+}
+
+export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
+  static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Rune],
       template: "systems/rqg/items/rune-item/runeSheet.html",
@@ -15,36 +35,33 @@ export class RuneSheet extends RqgItemSheet {
     });
   }
 
-  getData(): any {
-    const context = super.getData() as any;
-    const runeData = (context.runeData = context.data.data) as RuneData;
-    const sheetSpecific: any = (context.sheetSpecific = {});
+  getData(): RuneSheetData | ItemSheet.Data {
+    const itemData = this.document.data.toObject(false);
+    assertItemType(itemData.type, ItemTypeEnum.Rune);
 
+    const runeData = itemData.data;
     if (!runeData.rune) {
-      runeData.rune = context.data.name;
+      runeData.rune = itemData.name;
     }
-    const allRunesIndex = getAllRunesIndex();
-    sheetSpecific.allRunes = allRunesIndex.map((r) => r.name);
-    sheetSpecific.runeTypes = Object.values(RuneTypeEnum);
 
-    if (runeData.journalId) {
-      if (runeData.journalPack) {
-        const pack = game.packs?.get(runeData.journalPack);
-        // @ts-ignore
-        sheetSpecific.journalEntryName = pack?.index.get(runeData.journalId)?.name;
-      } else {
-        sheetSpecific.journalEntryName = game.journal?.get(runeData.journalId)?.name;
-      }
-      if (!sheetSpecific.journalEntryName) {
-        ui.notifications?.warn(
-          "Rune description link not found - please make sure the journal exists or relink to another description"
-        );
-      }
-    }
-    return context;
+    return {
+      cssClass: this.isEditable ? "editable" : "locked",
+      editable: this.isEditable,
+      limited: this.document.limited,
+      owner: this.document.isEmbedded,
+      options: this.options,
+      data: itemData,
+      runeData: itemData.data,
+      sheetSpecific: {
+        // @ts-ignore name
+        allRunes: getAllRunesIndex().map((r) => r.name),
+        runeTypes: Object.values(RuneTypeEnum),
+        journalEntryName: getJournalEntryName(runeData),
+      },
+    };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     formData["name"] = `${formData["data.rune"]} (${formData["data.runeType"]})`;
 
     let minorRunes = formData["data.minorRunes"];

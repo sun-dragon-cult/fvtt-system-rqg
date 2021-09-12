@@ -10,17 +10,17 @@ import { Cult } from "../../actors/item-specific/cult";
 import { RuneMagic } from "../../actors/item-specific/runeMagic";
 import { Passion } from "../../actors/item-specific/passion";
 import { Rune } from "../../actors/item-specific/rune";
-import { ArmorItemData } from "./armorData";
-import { SkillItemData } from "./skillData";
-import { PassionItemData } from "./passionData";
-import { RuneItemData } from "./runeData";
-import { HitLocationItemData } from "./hitLocationData";
-import { GearItemData } from "./gearData";
-import { MeleeWeaponItemData } from "./meleeWeaponData";
-import { MissileWeaponItemData } from "./missileWeaponData";
-import { SpiritMagicItemData } from "./spiritMagicData";
-import { CultItemData } from "./cultData";
-import { RuneMagicItemData } from "./runeMagicData";
+import { ArmorDataProperties, ArmorDataSource } from "./armorData";
+import { PassionDataProperties, PassionDataSource } from "./passionData";
+import { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
+import { GearDataProperties, GearDataSource } from "./gearData";
+import { MeleeWeaponDataProperties, MeleeWeaponDataSource } from "./meleeWeaponData";
+import { MissileWeaponDataProperties, MissileWeaponDataSource } from "./missileWeaponData";
+import { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
+import { CultDataProperties, CultDataSource } from "./cultData";
+import { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
+import { SkillDataProperties, SkillDataSource } from "./skillData";
+import { RuneDataProperties, RuneDataSource } from "./runeData";
 
 export enum ItemTypeEnum {
   Skill = "skill",
@@ -41,28 +41,41 @@ export enum ItemTypeEnum {
  * Map from ItemTypeEnum to responsible AbstractEmbeddedItem class.
  */
 export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = new Map([
-  [ItemTypeEnum.Skill, Skill],
-  [ItemTypeEnum.Passion, Passion],
-  [ItemTypeEnum.Rune, Rune],
-  [ItemTypeEnum.HitLocation, HitLocation],
-  [ItemTypeEnum.Gear, Gear],
   [ItemTypeEnum.Armor, Armor],
+  [ItemTypeEnum.Cult, Cult],
+  [ItemTypeEnum.Gear, Gear],
+  [ItemTypeEnum.HitLocation, HitLocation],
   [ItemTypeEnum.MeleeWeapon, MeleeWeapon],
   [ItemTypeEnum.MissileWeapon, MissileWeapon],
-  [ItemTypeEnum.SpiritMagic, SpiritMagic],
-  [ItemTypeEnum.Cult, Cult],
+  [ItemTypeEnum.Passion, Passion],
+  [ItemTypeEnum.Rune, Rune],
   [ItemTypeEnum.RuneMagic, RuneMagic],
+  [ItemTypeEnum.Skill, Skill],
+  [ItemTypeEnum.SpiritMagic, SpiritMagic],
 ]);
 
-export type RqgItemData =
-  | SkillItemData
-  | PassionItemData
-  | RuneItemData
-  | HitLocationItemData
-  | GearItemData
-  | ArmorItemData
-  | MeleeWeaponItemData
-  | MissileWeaponItemData
-  | SpiritMagicItemData
-  | CultItemData
-  | RuneMagicItemData;
+export type RqgItemDataSource =
+  | ArmorDataSource
+  | CultDataSource
+  | GearDataSource
+  | HitLocationDataSource
+  | MeleeWeaponDataSource
+  | MissileWeaponDataSource
+  | PassionDataSource
+  | RuneDataSource
+  | RuneMagicDataSource
+  | SkillDataSource
+  | SpiritMagicDataSource;
+
+export type RqgItemDataProperties =
+  | ArmorDataProperties
+  | CultDataProperties
+  | GearDataProperties
+  | HitLocationDataProperties
+  | MeleeWeaponDataProperties
+  | MissileWeaponDataProperties
+  | PassionDataProperties
+  | RuneDataProperties
+  | RuneMagicDataProperties
+  | SkillDataProperties
+  | SpiritMagicDataProperties;
