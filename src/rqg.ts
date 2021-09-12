@@ -39,15 +39,15 @@ Hooks.once("init", async () => {
 Hooks.once("ready", async () => {
   if (getGame().user?.isGM) {
     await migrateWorld();
-    const runeCompendium = getGame().settings.get("rqg", "runesCompendium");
-    // Make sure the index for runes is preloaded
-    try {
-      await getGame().packs!.get(runeCompendium)!.getIndex();
-    } catch (err) {
-      const msg = `Couldn't load rune compendium - check that you have the compendium specified in the "Rune items compendium" enabled and that the link is correct`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, runeCompendium);
-    }
     await setupSimpleCalendar();
+  }
+  const runeCompendium = getGame().settings.get("rqg", "runesCompendium");
+  // Make sure the index for runes is preloaded
+  try {
+    await getGame().packs!.get(runeCompendium)!.getIndex();
+  } catch (err) {
+    const msg = `Couldn't load rune compendium - check that you have the compendium specified in the "Rune items compendium" enabled and that the link is correct`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg, runeCompendium);
   }
 });
