@@ -3,7 +3,7 @@
 
     <h3><img class="item" src="{{itemData.img}}"> {{itemData.name}}</h3>
 
-    <label>modifier <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label>
-    <button type="submit" data-chat-roll>Roll ({{formData.chance}}%)</button>
+    <label>{{localize 'RQG.modifier'}} <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label>
+    <button data-chat-roll>Roll ({{formData.chance}}%)</button>
   </div>
 </form>

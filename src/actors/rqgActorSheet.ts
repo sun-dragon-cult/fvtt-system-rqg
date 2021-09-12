@@ -570,7 +570,7 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
           const speakerName = this.token?.name || this.actor.data.token.name;
-          await ItemCard.roll(item.data, 0, this.actor, speakerName);
+          await ItemCard.roll(item.data.toObject(), 0, this.actor, speakerName);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {

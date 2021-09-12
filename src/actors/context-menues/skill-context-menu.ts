@@ -53,7 +53,7 @@ export const skillMenuOptions = (
         throw new RqgError(msg, el);
       }
       const speakerName = token?.name ?? actor.data.token.name ?? "";
-      await ItemCard.roll(item.data, 0, actor, speakerName);
+      await ItemCard.roll(item.data.toObject(), 0, actor, speakerName);
     },
   },
   {

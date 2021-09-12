@@ -3,17 +3,19 @@ import {
   getActorFromIds,
   getGame,
   getSpeakerName,
+  hasOwnProperty,
+  moveCursorToEnd,
   requireValue,
   RqgError,
   usersThatOwnActor,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
-import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 type ItemCardFlags = {
   actorId: string;
   tokenId: string | null;
-  itemData: ItemData;
+  itemData: ItemDataSource;
   result: ResultEnum | undefined;
   formData: {
     modifier: number;
@@ -39,7 +41,7 @@ export class ItemCard {
     const flags: ItemCardFlags = {
       actorId: actor.id,
       tokenId: token?.id ?? null,
-      itemData: item.data,
+      itemData: item.data.toObject(),
       result: undefined,
       formData: {
         modifier: defaultModifier,
@@ -65,15 +67,30 @@ export class ItemCard {
       }
     }
 
-    // @ts-ignore chance
-    const chance: number = Number(flags.itemData.data.chance) || 0;
+    const chance: number =
+      (hasOwnProperty(flags.itemData.data, "chance") && Number(flags.itemData.data.chance)) || 0;
     const modifier: number = Number(flags.formData.modifier) || 0;
     flags.formData.chance = ItemCard.calcRollChance(chance, modifier);
 
     const data = await ItemCard.renderContent(flags);
-    if (chatMessage && data) {
-      await chatMessage.update(data);
+    if (!chatMessage || !data || !flags.formData.modifier) {
+      return; // Not ready to update chatmessages
     }
+    const domChatMessages = document.querySelectorAll(`[data-message-id="${chatMessage.id}"]`);
+    const domChatMessage = Array.from(domChatMessages).find((m) =>
+      m.contains(ev.currentTarget as Node)
+    );
+    const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
+
+    await chatMessage.update(data);
+    const newDomChatMessages = document.querySelectorAll<HTMLElement>(
+      `[data-message-id="${chatMessage.id}"]`
+    );
+    const newDomChatMessage = Array.from(newDomChatMessages).find(
+      (m) => !!m.closest<HTMLElement>(".chat-popout") === isFromPopoutChat
+    );
+    const inputElement = newDomChatMessage?.querySelector("input");
+    inputElement && moveCursorToEnd(inputElement);
   }
 
   public static async formSubmitHandler(
@@ -105,7 +122,7 @@ export class ItemCard {
   }
 
   public static async roll(
-    itemData: ItemData,
+    itemData: ItemDataSource,
     modifier: number,
     actor: RqgActor,
     speakerName: string

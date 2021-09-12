@@ -5,6 +5,7 @@ import {
   getActorFromIds,
   getGame,
   getSpeakerName,
+  moveCursorToEnd,
   requireValue,
   RqgError,
   usersThatOwnActor,
@@ -91,7 +92,22 @@ export class CharacteristicCard {
       modifier
     );
     const data = await CharacteristicCard.renderContent(flags);
-    await chatMessage.update(data);
+    if (!chatMessage || !data || !flags.formData.modifier) {
+      return; // Not ready to update chatmessages
+    }
+    const domChatMessages = document.querySelectorAll(`[data-message-id="${chatMessage.id}"]`);
+    const domChatMessage = Array.from(domChatMessages).find((m) =>
+      m.contains(ev.currentTarget as Node)
+    );
+    const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
+    await chatMessage.update(data); // Rerenders the dom chatmessages
+
+    const newDomChatMessages = document.querySelectorAll(`[data-message-id="${chatMessage.id}"]`);
+    const newDomChatMessage = Array.from(newDomChatMessages).find(
+      (m) => !!m.closest(".chat-popout") === isFromPopoutChat
+    );
+    const inputElement = newDomChatMessage?.querySelector("input");
+    inputElement && moveCursorToEnd(inputElement);
   }
 
   public static async formSubmitHandler(
