@@ -8,7 +8,7 @@ import { assertItemType, logMisconfiguration } from "../../system/util";
 import {
   MeleeWeaponDataProperties,
   MeleeWeaponDataPropertiesData,
-} from "../../data-model/item-data/MeleeWeaponData";
+} from "../../data-model/item-data/meleeWeaponData";
 
 interface MeleeWeaponSheetData {
   data: MeleeWeaponDataProperties; // Actually contains more...complete with effects, flags etc
