@@ -16,7 +16,7 @@ import {
 import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
-import { ActorHealthState, actorHealthStatuses } from "../../data-model/actor-data/attributes";
+import { ActorHealthState } from "../../data-model/actor-data/attributes";
 import { RqgItem } from "../rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
 
@@ -27,7 +27,6 @@ interface HitLocationSheetData {
     allHitLocations: string[];
     hitLocationTypes: string[];
     hitLocationHealthStatuses: string[];
-    actorHealthImpacts: string[];
   };
 }
 
@@ -60,7 +59,6 @@ export class HitLocationSheet extends RqgItemSheet<
         allHitLocations: getHitLocations(),
         hitLocationTypes: Object.values(HitLocationTypesEnum),
         hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
-        actorHealthImpacts: Object.values(actorHealthStatuses),
       },
     };
   }

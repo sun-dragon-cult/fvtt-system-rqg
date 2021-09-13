@@ -7,18 +7,11 @@
     <div>
       <div class="topheaderline">
         <h1 class="charname"><input name="name" type="text" value="{{data.name}}"></h1>
-        <div>{{#if isGM}}
-          <select name="data.attributes.health">
-            {{#select characterData.attributes.health}} {{#each healthStatuses}}
-              <option value="{{this}}">{{this}}</option>
-            {{/each}} {{/select}}
-          </select>
-        {{else}}
-            <i>{{characterData.attributes.health}}</i>
-        {{/if}}
-        {{#each characterRunes}}
-          <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
-        {{/each}}
+        <div>
+          <i>{{characterData.attributes.health}}</i>
+          {{#each characterRunes}}
+            <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
+          {{/each}}
         </div>
       </div>
       <div class="characteristics">
