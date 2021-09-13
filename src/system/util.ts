@@ -2,6 +2,7 @@ import { RqgActor } from "../actors/rqgActor";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+import { hitLocationNamesObject } from "./settings/hitLocationNames";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
@@ -51,6 +52,11 @@ export function getGameUsers(): Users {
     throw new RqgError(msg);
   }
   return users;
+}
+
+export function getHitLocations(): string[] {
+  return (getGame().settings.get("rqg", "hitLocations") as typeof hitLocationNamesObject)
+    .hitLocationItemNames;
 }
 
 /**

@@ -3,11 +3,16 @@ import {
   HitLocationDataProperties,
   HitLocationDataPropertiesData,
   hitLocationHealthStatuses,
-  HitLocationsEnum,
   HitLocationTypesEnum,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
-import { assertItemType, getGame, RqgError, usersThatOwnActor } from "../../system/util";
+import {
+  assertItemType,
+  getGame,
+  getHitLocations,
+  RqgError,
+  usersThatOwnActor,
+} from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
@@ -52,7 +57,7 @@ export class HitLocationSheet extends RqgItemSheet<
       data: itemData,
       hitLocationData: itemData.data,
       sheetSpecific: {
-        allHitLocations: Object.values(HitLocationsEnum),
+        allHitLocations: getHitLocations(),
         hitLocationTypes: Object.values(HitLocationTypesEnum),
         hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
         actorHealthImpacts: Object.values(actorHealthStatuses),

@@ -7,8 +7,7 @@ import {
 } from "../../data-model/item-data/armorData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { HitLocationsEnum } from "../../data-model/item-data/hitLocationData";
-import { assertItemType, getGame } from "../../system/util";
+import { assertItemType, getGame, getHitLocations } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 
 interface ArmorSheetData {
@@ -44,7 +43,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       data: itemData,
       armorData: itemData.data,
       sheetSpecific: {
-        allHitLocations: Object.values(HitLocationsEnum),
+        allHitLocations: getHitLocations(),
         equippedStatuses: [...equippedStatuses],
         armorTypeNames: armorTypeTranslationKeys.map((key) => getGame().i18n.localize(key)),
         materialNames: materialTranslationKeys.map((key) => getGame().i18n.localize(key)),

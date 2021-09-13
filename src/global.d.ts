@@ -32,6 +32,7 @@ declare global {
       "rqg.runesCompendium": string;
       "rqg.fumbleRollTable": string;
       "rqg.systemMigrationVersion": string;
+      "rqg.hitLocations": Object;
     }
   }
 }

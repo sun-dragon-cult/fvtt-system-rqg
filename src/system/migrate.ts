@@ -1,6 +1,5 @@
 import { RqgItem } from "../items/rqgItem";
 import { migrateItemEstimatedPrice } from "./migrations-item/migrateItemEstimatedPrice";
-import { migrateHitLocationType } from "./migrations-item/migrateHitLocationType";
 import { migrateSkillName } from "./migrations-item/migrateSkillName";
 import { migrateArmorName } from "./migrations-item/migrateArmorName";
 import {
@@ -17,6 +16,7 @@ import {
   ItemData,
   SceneData,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { migrateHitLocationName } from "./migrations-item/migrateHitLocationName";
 
 export type ItemUpdate =
   | object &
@@ -237,11 +237,11 @@ function migrateItemData(itemData: ItemData): ItemUpdate {
   let updateData: ItemUpdate = {};
   [
     migrateItemEstimatedPrice,
-    migrateHitLocationType,
     migrateSkillName,
     migrateArmorName,
     migrateRuneImgLocation,
     migrateRuneDescription,
+    migrateHitLocationName,
   ].forEach(
     (fn: (itemData: ItemData) => ItemUpdate) => (updateData = mergeObject(updateData, fn(itemData)))
   );

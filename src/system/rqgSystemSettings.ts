@@ -1,4 +1,5 @@
 import { getGame } from "./util";
+import { hitLocationNamesObject } from "./settings/hitLocationNames";
 
 export const registerRqgSystemSettings = function () {
   getGame().settings.register("rqg", "specialCrit", {
@@ -26,6 +27,15 @@ export const registerRqgSystemSettings = function () {
     config: true,
     type: String,
     default: "Fumble",
+  });
+
+  getGame().settings.register("rqg", "hitLocations", {
+    name: "List of hit location names",
+    hint: "The hit location names are used in dropdowns for armor coverage and when naming a new hit location.",
+    scope: "world",
+    config: false, // TODO create a submenu for configuration
+    type: Object,
+    default: hitLocationNamesObject,
   });
 
   getGame().settings.register("rqg", "systemMigrationVersion", {
