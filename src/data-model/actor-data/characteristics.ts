@@ -14,8 +14,8 @@ export interface Characteristics {
 }
 
 // Check if experience exists to see if the Characteristic can be raised with experience (show checkbox)
-const emptyExp: Characteristic = { value: 0, hasExperience: false };
-const emptyNoExp: Characteristic = { value: 0 };
+const emptyExp: Characteristic = { value: 11, hasExperience: false };
+const emptyNoExp: Characteristic = { value: 11 };
 export const emptyCharacteristics: Characteristics = {
   strength: emptyNoExp,
   constitution: emptyNoExp,

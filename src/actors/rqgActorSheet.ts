@@ -146,7 +146,6 @@ export class RqgActorSheet extends ActorSheet<
     const isOwner: boolean = this.document.isOwner;
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = actorData.data.attributes.dexStrikeRank;
-    requireValue(dexStrikeRank, "Dex SR was not yet calculated.");
 
     return {
       cssClass: isOwner ? "editable" : "locked",
@@ -247,7 +246,7 @@ export class RqgActorSheet extends ActorSheet<
     );
   }
 
-  private getLoadedMissileSr(dexSr: number): string[] {
+  private getLoadedMissileSr(dexSr: number | undefined): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const loadedMissileSr = [
       ["1", reloadIcon, "5", reloadIcon, "10"],
@@ -257,10 +256,10 @@ export class RqgActorSheet extends ActorSheet<
       ["4", reloadIcon],
       ["5", reloadIcon],
     ];
-    return loadedMissileSr[dexSr];
+    return dexSr ? loadedMissileSr[dexSr] : [];
   }
 
-  private getUnloadedMissileSr(dexSr: number): string[] {
+  private getUnloadedMissileSr(dexSr: number | undefined): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const unloadedMissileSr = [
       [reloadIcon, "5", reloadIcon, "10"],
@@ -270,7 +269,7 @@ export class RqgActorSheet extends ActorSheet<
       [reloadIcon, "9"],
       [reloadIcon, "10"],
     ];
-    return unloadedMissileSr[dexSr];
+    return dexSr ? unloadedMissileSr[dexSr] : [];
   }
 
   private getCharacterRuneImgs(): RuneDataSource[] {
