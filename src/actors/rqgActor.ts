@@ -53,32 +53,23 @@ export class RqgActor extends Actor {
    */
   prepareDerivedData(): void {
     super.prepareDerivedData();
-    const { attributes, skillCategoryModifiers } = this.data.data;
+    const attributes = this.data.data.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
-    this.data.data.skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
-      str,
-      siz,
-      dex,
-      int,
-      pow,
-      cha
-    );
+    const skillCategoryModifiers = (this.data.data.skillCategoryModifiers =
+      RqgCalculations.skillCategoryModifiers(str, siz, dex, int, pow, cha));
     attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
     attributes.equippedEncumbrance = Math.round(
-      this.items
-        .filter(
-          (item: RqgItem) =>
-            "equippedStatus" in item.data.data && item.data.data.equippedStatus === "equipped"
-        )
-        .reduce((sum, item: RqgItem) => {
-          const quantity =
-            "quantity" in item.data.data && item.data.data.quantity ? item.data.data.quantity : 1;
-          const encumbrance =
-            "encumbrance" in item.data.data && item.data.data.encumbrance
-              ? item.data.data.encumbrance
-              : 0;
+      this.items.reduce((sum, item: RqgItem) => {
+        if (
+          hasOwnProperty(item.data.data, "physicalItemType") &&
+          item.data.data.equippedStatus === "equipped"
+        ) {
+          const quantity = item.data.data.quantity ?? 1;
+          const encumbrance = item.data.data.encumbrance ?? 0;
           return sum + quantity * encumbrance;
-        }, 0)
+        }
+        return sum;
+      }, 0)
     );
 
     const movementEncumbrancePenalty = Math.min(
@@ -87,35 +78,26 @@ export class RqgActor extends Actor {
     );
 
     attributes.travelEncumbrance = Math.round(
-      this.items
-        .filter(
-          (item: RqgItem) =>
-            hasOwnProperty(item.data.data, "equippedStatus") &&
-            ["carried", "equipped"].includes(item.data.data.equippedStatus)
-        )
-        .reduce((sum: number, item: RqgItem) => {
-          if (
-            !hasOwnProperty(item.data, "quantity") ||
-            !hasOwnProperty(item.data.data, "encumbrance")
-          ) {
-            // const msg = "Item with equippedStatus didn't have quantity or encumbrance";
-            // ui.notifications?.error(msg);
-            // throw new RqgError(msg, item);
-            return sum;
-          }
-          const enc = (item.data.data.quantity || 1) * (item.data.data.encumbrance || 0);
+      this.items.reduce((sum: number, item: RqgItem) => {
+        if (
+          hasOwnProperty(item.data.data, "equippedStatus") &&
+          ["carried", "equipped"].includes(item.data.data.equippedStatus)
+        ) {
+          const enc = (item.data.data.quantity ?? 1) * (item.data.data.encumbrance ?? 0);
           return sum + enc;
-        }, 0)
+        }
+        return sum;
+      }, 0)
     );
 
     attributes.move = this.data._source.data.attributes.move + movementEncumbrancePenalty;
-    skillCategoryModifiers!.agility += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers!.manipulation += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers!.stealth += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers!.meleeWeapons += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers!.missileWeapons += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers!.naturalWeapons += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers!.shields += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers.agility += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers.manipulation += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers.stealth += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers.meleeWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers.missileWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers.naturalWeapons += movementEncumbrancePenalty * 5;
+    skillCategoryModifiers.shields += movementEncumbrancePenalty * 5;
 
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item)
