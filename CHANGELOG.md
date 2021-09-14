@@ -1,3 +1,20 @@
+# [1.3.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.2.0...v1.3.0) (2021-09-14)
+
+
+### Bug Fixes
+
+* create Actor fails with "Dex SR was not yet calculated." ([2392a5c](https://github.com/wakeand/fvtt-system-rqg/commit/2392a5c))
+* remove debugging dropdowns for actor health in actor sheet and hitlocation sheet ([fd9608f](https://github.com/wakeand/fvtt-system-rqg/commit/fd9608f))
+* skillCategoryModifiers was not set properly also cleanup some reduce syntax ([afc986b](https://github.com/wakeand/fvtt-system-rqg/commit/afc986b))
+
+
+### Features
+
+* Improve hit location names ([0025625](https://github.com/wakeand/fvtt-system-rqg/commit/0025625))
+
+
+
+
 # [1.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.1.0...v1.2.0) (2021-09-12)
 
 
