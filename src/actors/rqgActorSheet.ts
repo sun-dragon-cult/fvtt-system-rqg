@@ -475,7 +475,7 @@ export class RqgActorSheet extends ActorSheet<
     );
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor, this.token));
-    new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));
+    new ContextMenu(html, ".hit-location.contextmenu", hitLocationMenuOptions(this.actor));
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
     new ContextMenu(

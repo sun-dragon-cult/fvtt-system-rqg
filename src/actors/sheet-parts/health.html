@@ -19,13 +19,13 @@
     <div class="head6"><span class="text-right">AP</span></div>
     <div class="head7">Wounds</div>
     {{#each ownedItems.hitLocation}}
-    <div class="hit-location-contextmenu" data-item-id="{{id}}"><span class="text-right">{{data.data.dieFrom}}</span></div>
-      <div class="hit-location-contextmenu" data-item-id="{{id}}">-</div>
-    <div class="hit-location-contextmenu" data-item-id="{{id}}"><span class="text-right">{{data.data.dieTo}}</span></div>
-    <div class="hit-location-contextmenu" data-item-id="{{id}}">{{name}} {{#unless (eq data.data.hitLocationHealthState "healthy")}}<i>&nbsp;{{data.data.hitLocationHealthState}}</i>{{/unless}}</div>
-    <div class="hit-location-contextmenu" data-item-id="{{id}}"><span class="text-right nowrap">{{data.data.hp.value}} / {{this.data.data.hp.max}}</span></div>
-    <div class="hit-location-contextmenu" data-item-id="{{id}}"><span class="text-right">{{data.data.ap}}</span></div>
-      <div class="hit-location-contextmenu" data-item-id="{{id}}">
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}}  data-item-id="{{id}}"><span class="text-right">{{data.data.dieFrom}}</span></div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">-</div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right">{{data.data.dieTo}}</span></div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">{{name}} {{#unless (eq data.data.hitLocationHealthState "healthy")}}<i>&nbsp;{{data.data.hitLocationHealthState}}</i>{{/unless}}</div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right nowrap">{{data.data.hp.value}} / {{this.data.data.hp.max}}</span></div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right">{{data.data.ap}}</span></div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">
         <div data-item-heal-wound title="Heal wound" class="text-right nowrap">
           {{#each data.data.wounds}}
           <i class="fas fa-notes-medical"></i> {{this}}
