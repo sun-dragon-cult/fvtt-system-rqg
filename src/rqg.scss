@@ -706,6 +706,11 @@
         border: 1px solid grey;
         background-color: #f1f1f1;
       }
+
+      &[type="text"] {
+        font-size: 12px;
+        margin-top: -4px;
+      }
     }
   }
 

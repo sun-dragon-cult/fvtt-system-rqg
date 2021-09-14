@@ -1,5 +1,6 @@
 export interface Characteristic {
   value: number;
+  formula: string;
   hasExperience?: boolean;
 }
 
@@ -14,14 +15,15 @@ export interface Characteristics {
 }
 
 // Check if experience exists to see if the Characteristic can be raised with experience (show checkbox)
-const emptyExp: Characteristic = { value: 11, hasExperience: false };
-const emptyNoExp: Characteristic = { value: 11 };
+const emptyExp: Characteristic = { value: 0, formula: "3d6", hasExperience: false };
+const emptyNoExp: Characteristic = { value: 0, formula: "3d6" };
+const emptyNoExpGreater: Characteristic = { value: 0, formula: "2d6+6" };
 export const emptyCharacteristics: Characteristics = {
   strength: emptyNoExp,
   constitution: emptyNoExp,
-  size: emptyNoExp,
+  size: emptyNoExpGreater,
   dexterity: emptyNoExp,
-  intelligence: emptyNoExp,
+  intelligence: emptyNoExpGreater,
   power: emptyExp,
   charisma: emptyNoExp,
 };

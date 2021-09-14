@@ -7,6 +7,7 @@ import { DamageCalculations } from "../system/damageCalculations";
 import { getGame, hasOwnProperty } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import { initializeAllCharacteristics } from "./context-menues/characteristic-context-menu";
 
 export class RqgActor extends Actor {
   static init() {
@@ -128,6 +129,8 @@ export class RqgActor extends Actor {
     });
     effectsOriginUpdates.length &&
       this.updateEmbeddedDocuments("ActiveEffect", effectsOriginUpdates);
+
+    initializeAllCharacteristics(this, true);
   }
 
   private static updateEffectOrigin(origin: string, actorId: string): string {
