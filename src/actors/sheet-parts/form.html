@@ -2,21 +2,21 @@
   <h2 class="fullrow">Form</h2>
 
   {{#with ownedItems.rune.form.Man}}
-    <div data-item-id="{{id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+    <div data-item-id="{{id}}" class="rune contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="rune" src="{{img}}">
     </div>
-    <div data-item-id="{{id}}" class="rune-contextmenu" data-item-roll title="Roll">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
+    <div data-item-id="{{id}}" class="rune contextmenu" data-item-roll title="Roll">{{data.data.rune}}</div>
+    <div data-item-id="{{id}}" class="rune contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
       <span class="text-right">{{data.data.chance}}%</span>
     </div>
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with ownedItems.rune.form.Beast}}
-    <div data-item-id="{{id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+    <div data-item-id="{{id}}" class="rune contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="rune" src="{{img}}">
     </div>
-    <div data-item-id="{{id}}" class="rune-contextmenu" data-item-roll title="Roll">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
+    <div data-item-id="{{id}}" class="rune contextmenu" data-item-roll title="Roll">{{data.data.rune}}</div>
+    <div data-item-id="{{id}}" class="rune contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
       <span class="text-right">{{data.data.chance}}%</span>
     </div>
   {{/with}}
@@ -25,11 +25,11 @@
   {{#unless (eq @key "Man")}}
   {{#unless (eq @key "Beast")}}
     {{#with this}}
-      <div data-item-id="{{id}}" class="rune-contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      <div data-item-id="{{id}}" class="rune contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
         <img class="rune" src="{{img}}">
       </div>
-      <div data-item-id="{{id}}" class="rune-contextmenu" data-item-roll title="Roll">{{data.data.rune}}</div>
-      <div data-item-id="{{id}}" class="rune-contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
+      <div data-item-id="{{id}}" class="rune contextmenu" data-item-roll title="Roll">{{data.data.rune}}</div>
+      <div data-item-id="{{id}}" class="rune contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
         <span class="text-right">{{data.data.chance}}%</span>
       </div>
       <div></div>

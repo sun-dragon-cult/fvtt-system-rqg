@@ -469,29 +469,29 @@ export class RqgActorSheet extends ActorSheet<
 
     new ContextMenu(
       html,
-      ".characteristic-contextmenu",
+      ".characteristic.contextmenu",
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       characteristicMenuOptions(this.actor, this.token)
     );
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".combat-contextmenu", combatMenuOptions(this.actor, this.token));
+    new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor, this.token));
     new ContextMenu(html, ".hit-location-contextmenu", hitLocationMenuOptions(this.actor));
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".rune-contextmenu", runeMenuOptions(this.actor, this.token));
+    new ContextMenu(html, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
     new ContextMenu(
       html,
-      ".spirit-magic-contextmenu",
+      ".spirit-magic.contextmenu",
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       spiritMagicMenuOptions(this.actor, this.token)
     );
-    new ContextMenu(html, ".cult-contextmenu", cultMenuOptions(this.actor));
+    new ContextMenu(html, ".cult.contextmenu", cultMenuOptions(this.actor));
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".rune-magic-contextmenu", runeMagicMenuOptions(this.actor, this.token));
+    new ContextMenu(html, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor, this.token));
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".skill-contextmenu", skillMenuOptions(this.actor, this.token));
-    new ContextMenu(html, ".gear-contextmenu", gearMenuOptions(this.actor));
+    new ContextMenu(html, ".skill.contextmenu", skillMenuOptions(this.actor, this.token));
+    new ContextMenu(html, ".gear.contextmenu", gearMenuOptions(this.actor));
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".passion-contextmenu", passionMenuOptions(this.actor, this.token));
+    new ContextMenu(html, ".passion.contextmenu", passionMenuOptions(this.actor, this.token));
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
@@ -751,12 +751,7 @@ export class RqgActorSheet extends ActorSheet<
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("change", async (event) => {
         const item = this.actor.items.get(itemId);
-        if (!item) {
-          const msg = `Couldn't find itemId [${itemId}] to edit an item (when clicked).`;
-          ui.notifications?.error(msg);
-          throw new RqgError(msg);
-        }
-
+        requireValue(item, `Couldn't find itemId [${itemId}] to edit an item (when clicked).`);
         await item.update({ [path]: (event.target as HTMLInputElement)?.value }, {});
       });
     });

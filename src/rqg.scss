@@ -427,7 +427,9 @@
 
       .img {
         grid-row: 1 / -1;
-        mix-blend-mode: soft-light;
+        img {
+          mix-blend-mode: soft-light;
+        }
       }
     }
 
@@ -463,15 +465,7 @@
     }
   }
 
-  .characteristic-contextmenu,
-  .combat-contextmenu,
-  .rune-contextmenu,
-  .spirit-magic-contextmenu,
-  .cult-contextmenu,
-  .rune-magic-contextmenu,
-  .skill-contextmenu,
-  .gear-contextmenu,
-  .passion-contextmenu {
+  .contextmenu {
     cursor: context-menu;
   }
 
