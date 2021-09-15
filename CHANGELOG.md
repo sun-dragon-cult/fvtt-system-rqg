@@ -1,3 +1,19 @@
+# [1.4.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.3.0...v1.4.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* more ability rolls that get 0% chance ([4b85f5a](https://github.com/wakeand/fvtt-system-rqg/commit/4b85f5a))
+* skillrolls from chat gets 0% chance ([c6b8c54](https://github.com/wakeand/fvtt-system-rqg/commit/c6b8c54))
+
+
+### Features
+
+* randomise characteristics when creating new actor Base characteristic formula is by default for humans. ([6eaa7c5](https://github.com/wakeand/fvtt-system-rqg/commit/6eaa7c5))
+
+
+
+
 # [1.3.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.2.0...v1.3.0) (2021-09-14)
 
 
