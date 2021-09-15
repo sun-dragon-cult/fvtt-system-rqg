@@ -16,14 +16,17 @@ import {
   usersThatOwnActor,
 } from "../system/util";
 import { DeepPartial } from "snowpack";
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import {
+  ItemDataProperties,
+  ItemDataSource,
+} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 type WeaponCardFlags = {
   actorId: string;
   tokenId: string | null;
-  skillItemData: ItemDataSource;
-  weaponItemData: ItemDataSource;
+  skillItemData: ItemDataProperties;
+  weaponItemData: ItemDataProperties;
   result: ResultEnum | undefined;
   formData: {
     modifier: number | null; // Null is a placeholder instead of 0 to keep modifier in the object
@@ -68,8 +71,8 @@ export class WeaponCard extends ChatMessage {
     const flags: WeaponCardFlags = {
       actorId: actor.id,
       tokenId: token?.id ?? null,
-      skillItemData: skillItem.data.toObject(),
-      weaponItemData: weaponItem.data.toObject(),
+      skillItemData: skillItem.data.toObject(false) as unknown as ItemDataProperties,
+      weaponItemData: weaponItem.data.toObject(false) as unknown as ItemDataProperties,
       result: undefined,
       formData: {
         modifier: null,
@@ -229,7 +232,7 @@ export class WeaponCard extends ChatMessage {
 
   public static async checkExperience(
     actor: RqgActor,
-    skillItemData: ItemDataSource,
+    skillItemData: ItemDataProperties,
     result: ResultEnum
   ): Promise<void> {
     assertItemType(skillItemData.type, ItemTypeEnum.Skill);
@@ -285,7 +288,7 @@ export class WeaponCard extends ChatMessage {
         : "";
 
     if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
-      const missileWeaponData: ItemDataSource = flags.weaponItemData;
+      const missileWeaponData = flags.weaponItemData;
 
       if (missileWeaponData.data.isThrownWeapon) {
         damageBonusFormula = "ceil(" + actor.data.data.attributes.damageBonus + "/2)";
