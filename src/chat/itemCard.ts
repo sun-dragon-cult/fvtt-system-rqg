@@ -10,12 +10,15 @@ import {
   usersThatOwnActor,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import {
+  ItemDataProperties,
+  ItemDataSource,
+} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 type ItemCardFlags = {
   actorId: string;
   tokenId: string | null;
-  itemData: ItemDataSource;
+  itemData: ItemDataProperties;
   result: ResultEnum | undefined;
   formData: {
     modifier: number;
@@ -41,7 +44,8 @@ export class ItemCard {
     const flags: ItemCardFlags = {
       actorId: actor.id,
       tokenId: token?.id ?? null,
-      itemData: item.data.toObject(),
+      // Need false to get derived chance TODO type of toObject(false) ??
+      itemData: item.data.toObject(false) as unknown as ItemDataProperties,
       result: undefined,
       formData: {
         modifier: defaultModifier,
