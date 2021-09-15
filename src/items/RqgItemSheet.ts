@@ -1,11 +1,11 @@
-import { capitalize, getGame, getRequiredDomDataset } from "../system/util";
+import { getGame, getRequiredDomDataset } from "../system/util";
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
   Data extends object = ItemSheet.Data<Options>
 > extends ItemSheet<Options, Data> {
   get title(): string {
-    return `${getGame().i18n.localize("ITEM.Type" + capitalize(this.object.type))}: ${
+    return `${getGame().i18n.localize("ITEM.Type" + this.object.type.titleCase())}: ${
       this.object.name
     }`;
   }
