@@ -2,13 +2,13 @@ import { IAbility } from "../shared/ability";
 import { ItemTypeEnum } from "./itemTypes";
 
 export enum PassionsEnum {
-  Cowardly = "cowardly",
-  Devotion = "devotion",
-  Fear = "fear",
-  Hate = "hate",
-  Honor = "honor",
-  Loyalty = "loyalty",
-  Love = "love",
+  Cowardly = "Cowardly",
+  Devotion = "Devotion",
+  Fear = "Fear",
+  Hate = "Hate",
+  Honor = "Honor",
+  Loyalty = "Loyalty",
+  Love = "Love",
 }
 
 export interface PassionDataSourceData extends IAbility {

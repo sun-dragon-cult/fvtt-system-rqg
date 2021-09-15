@@ -17,6 +17,7 @@ import {
   SceneData,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { migrateHitLocationName } from "./migrations-item/migrateHitLocationName";
+import { migratePassionName } from "./migrations-item/migratePassionName";
 
 export type ItemUpdate =
   | object &
@@ -242,6 +243,7 @@ function migrateItemData(itemData: ItemData): ItemUpdate {
     migrateRuneImgLocation,
     migrateRuneDescription,
     migrateHitLocationName,
+    migratePassionName,
   ].forEach(
     (fn: (itemData: ItemData) => ItemUpdate) => (updateData = mergeObject(updateData, fn(itemData)))
   );
