@@ -31,8 +31,8 @@ export class MeleeWeaponSheet extends RqgItemSheet<
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.MeleeWeapon],
       template: "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.html",
-      width: 355,
-      height: 510,
+      width: 550,
+      height: 750,
     });
   }
 

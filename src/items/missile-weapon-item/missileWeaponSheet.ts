@@ -30,8 +30,8 @@ export class MissileWeaponSheet extends RqgItemSheet<
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.MissileWeapon],
       template: "systems/rqg/items/missile-weapon-item/missileWeaponSheet.html",
-      width: 450,
-      height: 600,
+      width: 550,
+      height: 750,
     });
   }
 

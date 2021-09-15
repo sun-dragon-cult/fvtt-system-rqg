@@ -38,7 +38,7 @@ export class RuneMagicSheet extends RqgItemSheet<
       classes: ["rqg", "sheet", ItemTypeEnum.RuneMagic],
       template: "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
       width: 425,
-      height: 400,
+      height: 350,
     });
   }
 
