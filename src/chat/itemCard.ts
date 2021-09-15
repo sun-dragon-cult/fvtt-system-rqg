@@ -10,10 +10,7 @@ import {
   usersThatOwnActor,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
-import {
-  ItemDataProperties,
-  ItemDataSource,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 type ItemCardFlags = {
   actorId: string;
@@ -126,7 +123,7 @@ export class ItemCard {
   }
 
   public static async roll(
-    itemData: ItemDataSource,
+    itemData: ItemDataProperties,
     modifier: number,
     actor: RqgActor,
     speakerName: string

@@ -42,6 +42,7 @@ import {
   CharacterDataProperties,
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
+import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 interface UiSections {
   health: boolean;
@@ -569,7 +570,12 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
           const speakerName = this.token?.name || this.actor.data.token.name;
-          await ItemCard.roll(item.data.toObject(), 0, this.actor, speakerName);
+          await ItemCard.roll(
+            item.data.toObject(false) as unknown as ItemDataProperties,
+            0,
+            this.actor,
+            speakerName
+          );
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {

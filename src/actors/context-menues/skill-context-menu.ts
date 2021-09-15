@@ -10,6 +10,7 @@ import {
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
+import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export const skillMenuOptions = (
   actor: RqgActor,
@@ -53,7 +54,12 @@ export const skillMenuOptions = (
         throw new RqgError(msg, el);
       }
       const speakerName = token?.name ?? actor.data.token.name ?? "";
-      await ItemCard.roll(item.data.toObject(), 0, actor, speakerName);
+      await ItemCard.roll(
+        item.data.toObject(false) as unknown as ItemDataProperties,
+        0,
+        actor,
+        speakerName
+      );
     },
   },
   {
