@@ -1,3 +1,19 @@
+# [1.5.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.4.0...v1.5.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* correct hitlocationname migration for tentacles ([1702bdb](https://github.com/wakeand/fvtt-system-rqg/commit/1702bdb))
+* rolls from weapon chat card always rolled against 0% ([b5beb7c](https://github.com/wakeand/fvtt-system-rqg/commit/b5beb7c))
+
+
+### Features
+
+* show weapon damage on combat panel ([e11327b](https://github.com/wakeand/fvtt-system-rqg/commit/e11327b))
+
+
+
+
 # [1.4.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.3.0...v1.4.0) (2021-09-15)
 
 
