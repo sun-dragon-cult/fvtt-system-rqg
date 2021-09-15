@@ -278,14 +278,15 @@
     }
 
     &.combat {
-      grid-template-columns: [col-start] 30px repeat(4, auto) [col-end];
+      grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
 
-      // Alternating row background for 6 columns
-      > *:nth-child(10n + 12),
-      > *:nth-child(10n + 13),
-      > *:nth-child(10n + 14),
-      > *:nth-child(10n + 15),
-      > *:nth-child(10n + 16) {
+      // Alternating row background
+      > *:nth-child(12n + 14),
+      > *:nth-child(12n + 15),
+      > *:nth-child(12n + 16),
+      > *:nth-child(12n + 17),
+      > *:nth-child(12n + 18),
+      > *:nth-child(12n + 19) {
         background: var(--table-alternate-background);
       }
 
