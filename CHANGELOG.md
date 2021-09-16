@@ -1,3 +1,19 @@
+# [1.6.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.5.0...v1.6.0) (2021-09-16)
+
+
+### Bug Fixes
+
+* item active effects don't show effects i table ([4a933cb](https://github.com/wakeand/fvtt-system-rqg/commit/4a933cb))
+* meleeweapon sheet don't shot active effect table refactored the flags isOwned & isEmbedded across all item sheets ([cddfdba](https://github.com/wakeand/fvtt-system-rqg/commit/cddfdba))
+
+
+### Features
+
+* add delete button to actor active effects table ([cf7e3f5](https://github.com/wakeand/fvtt-system-rqg/commit/cf7e3f5))
+
+
+
+
 # [1.5.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.4.0...v1.5.0) (2021-09-15)
 
 
