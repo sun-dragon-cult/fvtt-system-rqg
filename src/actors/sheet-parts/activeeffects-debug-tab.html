@@ -6,18 +6,20 @@
     <th class="text-left">Disabled</th>
     <th class="text-left">Start Time</th>
     <th class="text-left">Key - Value - Mode</th>
+    <th class="text-left"></th>
   </tr>
   </thead>
   {{#each data.effects}}
   <tbody data-effect-id="{{_id}}">
   <tr data-actor-effect-edit>
     <td>{{label}}</td>
-    <td>{{disabled}}</td>
+    <td>{{yes-no disabled}}</td>
     <td>{{duration.startTime}}</td>
     <td>
-      {{#each this.changes}}
+      {{#each changes}}
         {{key}} - {{value}} - {{mode}}<br>
       {{/each}}</td>
+    <td class="text-right"><a title="Delete Effect" data-actor-effect-delete><i class="fas fa-trash"></i></a></td>
     </tr>
 
   </tbody>

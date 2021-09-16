@@ -188,7 +188,7 @@ export function getJournalEntryName(itemData: any): string {
   }
   if (itemData.journalPack) {
     const pack = getGame().packs.get(itemData.journalPack);
-    // @ts-ignore
+    // @ts-ignore name
     return pack?.index.get(itemData.journalId)?.name;
   } else {
     return getGame().journal?.get(itemData.journalId)?.name ?? "";

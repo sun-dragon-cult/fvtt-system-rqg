@@ -788,6 +788,14 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
+    // Delete Item Active Effect
+    this.form?.querySelectorAll<HTMLElement>("[data-actor-effect-delete]").forEach((el) => {
+      const effectId = getRequiredDomDataset(el, "effect-id");
+      el.addEventListener("click", () => {
+        this.actor.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
+      });
+    });
+
     // Roll Damage for spirit magic (and separate damage bonus)
     this.form?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
       const damage = el.dataset.damageRoll;

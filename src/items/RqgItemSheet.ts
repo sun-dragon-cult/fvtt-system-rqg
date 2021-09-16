@@ -63,19 +63,11 @@ export class RqgItemSheet<
       });
 
     // Delete Item Active Effect
-    $(this.form!)
-      .find("[data-item-effect-delete]")
-      .each((i: number, el: HTMLElement) => {
-        const itemId = getRequiredDomDataset($(el), "item-id");
-        const effectId = getRequiredDomDataset($(el), "effect-id");
-        el.addEventListener("click", () => {
-          const item = getGame().items?.get(itemId);
-          if (!item) {
-            return; // The item is not in the world (ie it's in a compendium)
-          }
-          // @ts-ignore 0.8
-          item.getEmbeddedDocument("ActiveEffect", effectId).delete();
-        });
+    this.form?.querySelectorAll<HTMLElement>("[data-item-effect-delete]").forEach((el) => {
+      const effectId = getRequiredDomDataset(el, "effect-id");
+      el.addEventListener("click", () => {
+        this.item.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
       });
+    });
   }
 }
