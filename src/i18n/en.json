@@ -92,6 +92,12 @@
       "shields": "Shields",
       "naturalWeapons": "Natural Weapons"
     },
+    "HitLocationType": {
+      "limb": "Limb",
+      "head": "Head",
+      "chest": "Chest",
+      "abdomen": "Abdomen"
+    },
     "Homeland": {
       "Heading": "Homeland",
       "aggar": "Aggar",
