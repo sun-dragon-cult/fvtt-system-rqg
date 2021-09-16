@@ -15,14 +15,15 @@
     <th class="text-left">Key - Value - Mode</th>
   </tr>
   </thead>
-  {{#each item.effects}}
-    <tbody data-effect-id="{{id}}">
+  {{#each data.effects}}
+    {{log "inside data.effects" this}}
+    <tbody data-effect-id="{{_id}}">
     <tr>
-      <td><a data-item-effect-edit>{{data.label}}</a></td>
-      <td><a data-item-effect-edit>{{data.disabled}}</a></td>
-      <td><a data-item-effect-edit>{{data.duration.startTime}}</a></td>
+      <td><a data-item-effect-edit>{{label}}</a></td>
+      <td><a data-item-effect-edit>{{yes-no disabled}}</a></td>
+      <td><a data-item-effect-edit>{{duration.startTime}}</a></td>
       <td><a data-item-effect-edit>
-        {{#each data.changes}}
+        {{#each changes}}
           {{key}} - {{value}} - {{mode}}<br>
         {{/each}}</a></td>
       <td class="text-right"><a title="Delete Effect" data-item-effect-delete><i class="fas fa-trash"></i></a></td>
