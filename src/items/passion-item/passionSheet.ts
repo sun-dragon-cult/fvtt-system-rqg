@@ -8,6 +8,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { assertItemType } from "../../system/util";
 
 export interface PassionSheetData {
+  isEmbedded: boolean;
   data: PassionDataProperties; // Actually contains more...complete with effects, flags etc
   passionData: PassionDataPropertiesData;
   sheetSpecific: {
@@ -48,6 +49,7 @@ export class PassionSheet extends RqgItemSheet<
       editable: this.isEditable,
       limited: this.document.limited,
       owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       passionData: itemData.data,

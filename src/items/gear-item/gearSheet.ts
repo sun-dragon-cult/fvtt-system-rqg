@@ -5,6 +5,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { assertItemType } from "../../system/util";
 
 interface GearSheetData {
+  isEmbedded: boolean;
   data: GearDataProperties; // Actually contains more...complete with effects, flags etc
   gearData: GearDataPropertiesData;
 
@@ -31,7 +32,8 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       cssClass: this.isEditable ? "editable" : "locked",
       editable: this.isEditable,
       limited: this.document.limited,
-      owner: this.document.isEmbedded,
+      owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       gearData: itemData.data,

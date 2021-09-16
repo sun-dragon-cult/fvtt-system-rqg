@@ -11,6 +11,7 @@ import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-
 import { RqgItem } from "../rqgItem";
 
 interface SkillSheetData {
+  isEmbedded: boolean;
   data: SkillDataProperties; // Actually contains more...complete with effects, flags etc
   skillData: SkillDataPropertiesData;
   sheetSpecific: {
@@ -44,6 +45,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       editable: this.isEditable,
       limited: this.document.limited,
       owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       skillData: itemData.data,

@@ -13,7 +13,7 @@
     <div class="flex-row">
       <div>
         <label class="mp">Skill</label><br>
-        {{#if sheetSpecific.isOwned}}
+        {{#if isEmbedded}}
           <select name="data.skillId">
             {{#select meleeWeaponData.skillId}} {{#each sheetSpecific.meleeWeaponSkills}}
             <option value="{{id}}">{{name}}</option>
@@ -52,7 +52,6 @@
     <label>GM Notes {{editor content=meleeWeaponData.gmNotes target="data.gmNotes"
       button=true owner=owner editable=editable}}
     </label>
-
     <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
   </main>
 </form>

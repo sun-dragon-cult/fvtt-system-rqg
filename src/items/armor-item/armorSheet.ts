@@ -11,6 +11,7 @@ import { assertItemType, getGame, getHitLocations } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 
 interface ArmorSheetData {
+  isEmbedded: boolean;
   data: ArmorDataProperties; // Actually contains more...complete with effects, flags etc
   armorData: ArmorDataPropertiesData;
   sheetSpecific: {
@@ -38,7 +39,8 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       cssClass: this.isEditable ? "editable" : "locked",
       editable: this.isEditable,
       limited: this.document.limited,
-      owner: this.document.isEmbedded,
+      owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       armorData: itemData.data,

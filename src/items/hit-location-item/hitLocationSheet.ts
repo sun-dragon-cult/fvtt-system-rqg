@@ -21,6 +21,7 @@ import { RqgItem } from "../rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
 
 interface HitLocationSheetData {
+  isEmbedded: boolean;
   data: HitLocationDataProperties; // Actually contains more...complete with effects, flags etc
   hitLocationData: HitLocationDataPropertiesData;
   sheetSpecific: {
@@ -51,7 +52,8 @@ export class HitLocationSheet extends RqgItemSheet<
       cssClass: this.isEditable ? "editable" : "locked",
       editable: this.isEditable,
       limited: this.document.limited,
-      owner: this.document.isEmbedded,
+      owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       hitLocationData: itemData.data,

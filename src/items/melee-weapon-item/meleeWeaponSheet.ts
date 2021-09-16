@@ -11,11 +11,11 @@ import {
 } from "../../data-model/item-data/meleeWeaponData";
 
 interface MeleeWeaponSheetData {
+  isEmbedded: boolean;
   data: MeleeWeaponDataProperties; // Actually contains more...complete with effects, flags etc
   meleeWeaponData: MeleeWeaponDataPropertiesData;
   sheetSpecific: {
     allCombatManeuvers: string[];
-    isOwned: boolean;
     meleeWeaponSkills: any[];
     /** For showing the name of the linked skill if the item isn't owned */
     skillName: string;
@@ -45,12 +45,12 @@ export class MeleeWeaponSheet extends RqgItemSheet<
       editable: this.isEditable,
       limited: this.document.limited,
       owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       meleeWeaponData: meleeWeaponData,
       sheetSpecific: {
         allCombatManeuvers: this.getAllCombatManeuvers(meleeWeaponData),
-        isOwned: this.item.isEmbedded,
         meleeWeaponSkills: this.getMeleeWeaponSkills(),
         skillName: await this.getSkillName(meleeWeaponData),
         equippedStatuses: [...equippedStatuses],

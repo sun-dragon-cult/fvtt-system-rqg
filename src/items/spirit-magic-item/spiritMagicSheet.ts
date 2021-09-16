@@ -11,6 +11,7 @@ import { assertItemType, getJournalEntryName, RqgError } from "../../system/util
 import { RqgItemSheet } from "../RqgItemSheet";
 
 interface SpiritMagicSheetData {
+  isEmbedded: boolean;
   data: SpiritMagicDataProperties; // Actually contains more...complete with effects, flags etc
   spiritMagicData: SpiritMagicDataPropertiesData;
   sheetSpecific: {
@@ -44,6 +45,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
       editable: this.isEditable,
       limited: this.document.limited,
       owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       spiritMagicData: itemData.data,

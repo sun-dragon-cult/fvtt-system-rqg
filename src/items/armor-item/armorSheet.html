@@ -36,8 +36,8 @@
     <label>GM Notes {{editor content=armorData.gmNotes target="data.gmNotes"
       button=true owner=owner editable=editable}}
     </label>
+    <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
   </main>
-  <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
   <datalist id="allHitLocations">
     {{#each sheetSpecific.allHitLocations}}
     <option value="{{this}}">{{this}}</option>

@@ -18,6 +18,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 
 type RuneMagicSheetData = {
+  isEmbedded: boolean;
   data: RuneMagicDataProperties; // Actually contains more...complete with effects, flags etc
   runeMagicData: RuneMagicDataPropertiesData;
   sheetSpecific: {
@@ -55,7 +56,8 @@ export class RuneMagicSheet extends RqgItemSheet<
       cssClass: this.isEditable ? "editable" : "locked",
       editable: this.isEditable,
       limited: this.document.limited,
-      owner: this.document.isEmbedded,
+      owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       runeMagicData: itemData.data,

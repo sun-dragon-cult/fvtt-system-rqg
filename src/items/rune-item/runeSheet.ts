@@ -16,6 +16,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 
 interface RuneSheetData {
+  isEmbedded: boolean;
   data: RuneDataProperties; // Actually contains more...complete with effects, flags etc
   runeData: RuneDataPropertiesData;
   sheetSpecific: {
@@ -48,7 +49,8 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       cssClass: this.isEditable ? "editable" : "locked",
       editable: this.isEditable,
       limited: this.document.limited,
-      owner: this.document.isEmbedded,
+      owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       runeData: itemData.data,

@@ -32,7 +32,7 @@
       <label><input type="checkbox" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>One Use</label>
       </div>
     </div>
-    {{#if owner}}
+    {{#if isEmbedded}}
     <label class="mp">Cult
       <select name="data.cultId">
         {{#select runeMagicData.cultId}} {{#each sheetSpecific.actorCults}}
@@ -56,8 +56,8 @@
 
     <br><i>Drop a journal on this item to connect a description.</i>
 
+    <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
   </main>
-  <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
   <datalist id="allRunes">
     {{#each sheetSpecific.allRunes}}
     <option value="{{name}}">{{name}}</option>

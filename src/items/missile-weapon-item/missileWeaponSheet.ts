@@ -11,6 +11,7 @@ import { assertItemType, logMisconfiguration } from "../../system/util";
 import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
 
 interface MissileWeaponSheetData {
+  isEmbedded: boolean;
   data: MissileWeaponDataProperties; // Actually contains more...complete with effects, flags etc
   missileWeaponData: MissileWeaponDataPropertiesData;
   sheetSpecific: {
@@ -46,6 +47,7 @@ export class MissileWeaponSheet extends RqgItemSheet<
       editable: this.isEditable,
       limited: this.document.limited,
       owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       missileWeaponData: missileWeaponData,

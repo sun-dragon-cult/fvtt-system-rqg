@@ -1,4 +1,4 @@
-{{#unless owner}}
+{{#unless isEmbedded}}
 <h2>
     <span class="flex-row">
     🐛Active Effects🧪
@@ -13,6 +13,7 @@
     <th class="text-left">Disabled</th>
     <th class="text-left">Start Time</th>
     <th class="text-left">Key - Value - Mode</th>
+    <th class="text-left"></th>
   </tr>
   </thead>
   {{#each data.effects}}
@@ -32,6 +33,5 @@
 
     </tbody>
   {{/each}}
-
 </table>
 {{/unless}}

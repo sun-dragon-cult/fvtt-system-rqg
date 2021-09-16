@@ -17,6 +17,7 @@ import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-
 import { RqgItem } from "../rqgItem";
 
 interface CultSheetData {
+  isEmbedded: boolean;
   data: CultDataProperties; // Actually contains more...complete with effects, flags etc
   cultData: CultDataPropertiesData;
   sheetSpecific: {
@@ -48,6 +49,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       editable: this.isEditable,
       limited: this.document.limited,
       owner: this.document.isOwner,
+      isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
       cultData: itemData.data,
