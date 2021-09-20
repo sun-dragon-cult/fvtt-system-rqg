@@ -11,7 +11,7 @@ export class RqgActiveEffect extends ActiveEffect {
    * Apply an RqgActiveEffect that uses a CUSTOM application mode.
    */
   _applyCustom(actor: RqgActor, change: EffectChangeData): any {
-    const [affectedItemType, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.ap
+    const [affectedItemType, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.armorPoints
     const items: Item[] = actor.items.filter(
       (i: Item) => i.data.type === affectedItemType && i.data.name === itemName
     );

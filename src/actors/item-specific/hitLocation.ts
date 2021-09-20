@@ -38,7 +38,7 @@ export class HitLocation extends AbstractEmbeddedItem {
       return sum;
     }, 0);
 
-    item.data.data.ap = item.data.data.naturalAp + armorAbsorption;
+    item.data.data.armorPoints = item.data.data.naturalAp + armorAbsorption;
 
     // Calc HP
     const totalHp = actorData.attributes.hitPoints.max;

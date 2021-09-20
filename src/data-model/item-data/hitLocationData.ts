@@ -34,7 +34,7 @@ export interface HitLocationDataSourceData {
 // --- Derived Data ---
 export interface HitLocationDataPropertiesData extends HitLocationDataSourceData {
   /** Natural armor + armor absorption */
-  ap: number;
+  armorPoints: number;
 }
 
 export interface HitLocationDataSource {

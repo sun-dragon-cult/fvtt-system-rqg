@@ -123,13 +123,13 @@ export class HitLocationSheet extends RqgItemSheet<
     const subtractAP: boolean = !!data.subtractAP;
     let damage = Number(data.damage);
     if (subtractAP) {
-      const ap = hitLocation.data.data.ap;
-      if (ap == null) {
+      const armorPoints = hitLocation.data.data.armorPoints;
+      if (armorPoints == null) {
         const msg = `Hit location ${hitLocation.name} doesn't have a calculated total armor point`;
         ui.notifications?.error(msg);
         throw new RqgError(msg, hitLocation);
       }
-      damage = Math.max(0, damage - ap);
+      damage = Math.max(0, damage - armorPoints);
     }
     const actorHealthBefore = actor.data.data.attributes.health;
     const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
