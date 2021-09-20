@@ -177,7 +177,7 @@ describe("healing", () => {
 
     // --- Arrange ---
     const healPoints = 1;
-    const chestHP = mockChest.data.hp.max!; // 6
+    const chestHP = mockChest.data.hitPoints.max!; // 6
 
     applyTestDamage(chestHP, true, mockChest, mockActor);
     expect(mockActor.data.attributes.health).toBe("shock");
@@ -212,7 +212,7 @@ describe("healing", () => {
 
   it("should remove 'useless' state from limb when HP > 0", () => {
     // --- Arrange ---
-    const legDamage = mockLeftLeg.data.hp.max!; // 5
+    const legDamage = mockLeftLeg.data.hitPoints.max!; // 5
     const actorTotalHp = mockActor.data.attributes.hitPoints.value!; // 15
 
     applyTestDamage(legDamage, true, mockLeftLeg, mockActor);
@@ -265,7 +265,8 @@ export function applyTestHealing(
   mergeObject(hitLocationData, healingEffects.hitLocationUpdates);
   mergeObject(actorData, healingEffects.actorUpdates);
   actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);
-  hitLocationData.data.hp.value =
-    hitLocationData.data.hp.max! - hitLocationData.data.wounds.reduce((acc, val) => acc + val, 0);
+  hitLocationData.data.hitPoints.value =
+    hitLocationData.data.hitPoints.max! -
+    hitLocationData.data.wounds.reduce((acc, val) => acc + val, 0);
   return healingEffects;
 }

@@ -91,15 +91,15 @@ export class DamageCalculations {
       damageEffects.notification = `${hitLocationData.name} is gone and cannot be hit anymore, reroll to get a new hit location!`;
       return damageEffects;
     }
-    const maxHp = hitLocationData.data.hp.max;
+    const maxHp = hitLocationData.data.hitPoints.max;
     if (maxHp == null) {
       const msg = `Hit location ${hitLocationData.name} doesn't have a max hp`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, hitLocationData);
     }
     const damage = Math.min(maxHp * 2, fullDamage); // Max damage to THP inflicted by limb wound is 2*HP
-    const hpValue = hitLocationData.data.hp.value;
-    const hpMax = hitLocationData.data.hp.max;
+    const hpValue = hitLocationData.data.hitPoints.value;
+    const hpMax = hitLocationData.data.hitPoints.max;
     if (hpValue == null || hpMax == null) {
       const msg = `Hitlocation ${hitLocationData.name} don't have hp value or max`;
       ui.notifications?.error(msg);
@@ -165,8 +165,8 @@ export class DamageCalculations {
       uselessLegs: [],
     };
     assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
-    const hpValue = hitLocationData.data.hp.value;
-    const hpMax = hitLocationData.data.hp.max;
+    const hpValue = hitLocationData.data.hitPoints.value;
+    const hpMax = hitLocationData.data.hitPoints.max;
     if (!hitLocationData.data.hitLocationType) {
       const msg = `Hitlocation ${hitLocationData.name} on actor ${speakerName} does not have a specified hitLocationType`;
       ui.notifications?.error(msg);

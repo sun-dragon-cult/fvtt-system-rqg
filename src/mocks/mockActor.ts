@@ -46,7 +46,7 @@ const embeddedItems = [
       data: {
         dieFrom: 9,
         dieTo: 11,
-        hp: {
+        hitPoints: {
           value: 5,
           max: 5,
         },
@@ -83,7 +83,7 @@ const embeddedItems = [
       data: {
         dieFrom: 12,
         dieTo: 12,
-        hp: {
+        hitPoints: {
           value: 6,
           max: 6,
         },
@@ -120,7 +120,7 @@ const embeddedItems = [
       data: {
         dieFrom: 19,
         dieTo: 20,
-        hp: {
+        hitPoints: {
           value: 5,
           max: 5,
         },
@@ -157,7 +157,7 @@ const embeddedItems = [
       data: {
         dieFrom: 16,
         dieTo: 18,
-        hp: {
+        hitPoints: {
           value: 4,
           max: 4,
         },
@@ -194,7 +194,7 @@ const embeddedItems = [
       data: {
         dieFrom: 5,
         dieTo: 8,
-        hp: {
+        hitPoints: {
           value: 5,
           max: 5,
         },
@@ -231,7 +231,7 @@ const embeddedItems = [
       data: {
         dieFrom: 13,
         dieTo: 15,
-        hp: {
+        hitPoints: {
           value: 4,
           max: 4,
         },
@@ -268,7 +268,7 @@ const embeddedItems = [
       data: {
         dieFrom: 1,
         dieTo: 4,
-        hp: {
+        hitPoints: {
           value: 5,
           max: 5,
         },

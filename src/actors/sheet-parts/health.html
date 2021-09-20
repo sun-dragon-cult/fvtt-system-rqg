@@ -23,7 +23,7 @@
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">-</div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right">{{data.data.dieTo}}</span></div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">{{name}} {{#unless (eq data.data.hitLocationHealthState "healthy")}}<i>&nbsp;{{data.data.hitLocationHealthState}}</i>{{/unless}}</div>
-      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right nowrap">{{data.data.hp.value}} / {{this.data.data.hp.max}}</span></div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right nowrap">{{data.data.hitPoints.value}} / {{this.data.data.hitPoints.max}}</span></div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right">{{data.data.ap}}</span></div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">
         <div data-item-heal-wound title="Heal wound" class="text-right nowrap">

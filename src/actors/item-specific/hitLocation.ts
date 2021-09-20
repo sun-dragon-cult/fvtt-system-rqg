@@ -50,10 +50,13 @@ export class HitLocation extends AbstractEmbeddedItem {
     // Remove any healed wounds
     item.data.data.wounds = item.data.data.wounds.filter((w) => w > 0);
 
-    item.data.data.hp.max = HitLocation.hitPointsPerLocation(totalHp, item.data.data.baseHpDelta);
-    item.data.data.hp.value = item.data.data.wounds.reduce(
+    item.data.data.hitPoints.max = HitLocation.hitPointsPerLocation(
+      totalHp,
+      item.data.data.baseHpDelta
+    );
+    item.data.data.hitPoints.value = item.data.data.wounds.reduce(
       (acc: number, w: number) => acc - w,
-      item.data.data.hp.max
+      item.data.data.hitPoints.max
     );
 
     return item;

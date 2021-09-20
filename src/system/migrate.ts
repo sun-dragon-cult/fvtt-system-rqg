@@ -6,7 +6,7 @@ import {
   migrateRuneDescription,
   migrateRuneImgLocation,
 } from "./migrations-item/migrateRuneCompendium";
-import { getGame } from "./util";
+import { convertDeleteKeyToFoundrySyntax, getGame } from "./util";
 import {
   ActorDataConstructorData,
   ActorDataSource,
@@ -18,6 +18,7 @@ import {
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { migrateHitLocationName } from "./migrations-item/migrateHitLocationName";
 import { migratePassionName } from "./migrations-item/migratePassionName";
+import { migrateHitLocationHPName } from "./migrations-item/migrateHitLocationHPName";
 
 export type ItemUpdate =
   | object &
@@ -37,6 +38,7 @@ export async function migrateWorld(): Promise<void> {
     }. Please be patient and do not close your game or shut down your server.`,
     { permanent: true }
   );
+  console.log(`RQG | Starting system migration to version ${getGame().system.data.version}`);
   await migrateWorldActors();
   await migrateWorldItems();
   await migrateWorldScenes();
@@ -50,6 +52,7 @@ export async function migrateWorld(): Promise<void> {
       permanent: true,
     }
   );
+  console.log(`RQG | Finished system migration`);
 }
 
 async function migrateWorldActors(): Promise<void> {
@@ -57,14 +60,15 @@ async function migrateWorldActors(): Promise<void> {
     try {
       const updates = migrateActorData(actor.toObject());
       if (!foundry.utils.isObjectEmpty(updates)) {
-        console.log(`RQG | Migrating Actor entity ${actor.name}`);
-        await actor.update(updates, { enforceTypes: false });
+        const convertedUpdates = convertDeleteKeyToFoundrySyntax(updates);
+        console.log(`RQG | Migrating Actor document ${actor.name}`, convertedUpdates);
+        await actor.update(convertedUpdates, { enforceTypes: false });
       }
-      const deletions = getActiveEffectsToDelete(actor.toObject());
-      if (deletions.length) {
-        console.log(`RQG | Deleting ${deletions.length} Active Effects from Actor ${actor.name}`);
-        await actor.deleteEmbeddedDocuments("ActiveEffect", deletions);
-      }
+      // const deletions = getActiveEffectsToDelete(actor.toObject());
+      // if (deletions.length) {
+      //   console.log(`RQG | Deleting ${deletions.length} Active Effects from Actor ${actor.name}`);
+      //   await actor.deleteEmbeddedDocuments("ActiveEffect", deletions);
+      // }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Actor ${actor.name}: ${err.message}`;
       console.error(err, actor);
@@ -77,8 +81,9 @@ async function migrateWorldItems() {
     try {
       const updateData = migrateItemData(item.data);
       if (!foundry.utils.isObjectEmpty(updateData)) {
-        console.log(`RQG | Migrating Item entity ${item.name}`);
-        await item.update(updateData, { enforceTypes: false });
+        const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
+        console.log(`RQG | Migrating Item document ${item.name}`, convertedUpdates);
+        await item.update(convertedUpdates, { enforceTypes: false });
       }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Item ${item.name}: ${err.message}`;
@@ -92,8 +97,9 @@ async function migrateWorldScenes() {
     try {
       const updateData = migrateSceneData(scene.data);
       if (!foundry.utils.isObjectEmpty(updateData)) {
-        console.log(`RQG | Migrating Scene entity ${scene.name}`);
-        await scene.update(updateData, { enforceTypes: false });
+        const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
+        console.log(`RQG | Migrating Scene document ${scene.name}`, convertedUpdates);
+        await scene.update(convertedUpdates, { enforceTypes: false });
 
         // If we do not do this, then synthetic token actors remain in cache
         // with the un-updated actorData.
@@ -128,8 +134,8 @@ async function migrateWorldCompendiumPacks() {
 async function migrateCompendium(
   pack: CompendiumCollection<CompendiumCollection.Metadata>
 ): Promise<void> {
-  const entity: string = pack.metadata.entity;
-  if (!["Actor", "Item", "Scene"].includes(entity)) {
+  const documentType: string = pack.metadata.entity;
+  if (!["Actor", "Item", "Scene"].includes(documentType)) {
     return;
   }
 
@@ -146,7 +152,7 @@ async function migrateCompendium(
     let updateData = {};
     let deleteIds: string[] = [];
     try {
-      switch (entity) {
+      switch (documentType) {
         case "Actor":
           updateData = migrateActorData(doc.toObject());
           deleteIds = getActiveEffectsToDelete(doc.toObject());
@@ -162,7 +168,7 @@ async function migrateCompendium(
       if (deleteIds.length) {
         await doc.deleteEmbeddedDocuments("ActiveEffect", deleteIds);
         console.log(
-          `RQG | Deleted ${deleteIds.length} Active Effects from entity ${doc.name} in Compendium ${pack.collection}`
+          `RQG | Deleted ${deleteIds.length} Active Effects from document ${doc.name} in Compendium ${pack.collection}`
         );
       }
 
@@ -170,20 +176,24 @@ async function migrateCompendium(
       if (foundry.utils.isObjectEmpty(updateData)) {
         continue;
       }
-      await doc.update(updateData);
-      console.log(`RQG | Migrated ${entity} entity ${doc.name} in Compendium ${pack.collection}`);
+      const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
+      console.log(
+        `RQG | Migrating ${documentType} document ${doc.name} in Compendium ${pack.collection}`,
+        convertedUpdates
+      );
+      await doc.update(convertedUpdates);
     } catch (err: any) {
-      err.message = `RQG | Failed system migration for entity ${doc.name} in pack ${pack.collection}: ${err.message}`;
+      err.message = `RQG | Failed system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
       console.error(err, doc);
     }
   }
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
-  console.log(`RQG | Migrated all ${entity} entities from Compendium ${pack.collection}`);
+  console.log(`RQG | Migrated all ${documentType} documents from Compendium ${pack.collection}`);
 }
 
 /* -------------------------------------------- */
-/*  Entity Type Migration Helpers               */
+/*  Document Type Migration Helpers               */
 /* -------------------------------------------- */
 
 function migrateActorData(actorData: Partial<ActorDataSource>): ActorDataConstructorData {
@@ -244,6 +254,7 @@ function migrateItemData(itemData: ItemData): ItemUpdate {
     migrateRuneDescription,
     migrateHitLocationName,
     migratePassionName,
+    migrateHitLocationHPName,
   ].forEach(
     (fn: (itemData: ItemData) => ItemUpdate) => (updateData = mergeObject(updateData, fn(itemData)))
   );

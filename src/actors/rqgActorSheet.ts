@@ -24,6 +24,7 @@ import { RqgActor } from "./rqgActor";
 import {
   assertActorType,
   assertItemType,
+  getDocumentTypes,
   getDomDataset,
   getGame,
   getGameUser,

@@ -20,7 +20,7 @@ describe("Inflict Damage", () => {
   describe("Limb Damage", () => {
     it("should be correct for smaller wounds", () => {
       // --- Arrange ---
-      const appliedDamage = mockLeftLeg.data.hp.max! - 1;
+      const appliedDamage = mockLeftLeg.data.hitPoints.max! - 1;
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -54,7 +54,7 @@ describe("Inflict Damage", () => {
 
     it(">= HP should make limb useless", () => {
       // --- Arrange ---
-      const appliedDamage = mockLeftLeg.data.hp.max!; // 5
+      const appliedDamage = mockLeftLeg.data.hitPoints.max!; // 5
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -90,7 +90,7 @@ describe("Inflict Damage", () => {
 
     it("should be maxed out to 2*Limb HP", () => {
       // --- Arrange ---
-      const appliedDamage = mockLeftLeg.data.hp.max! * 2; // 10
+      const appliedDamage = mockLeftLeg.data.hitPoints.max! * 2; // 10
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -126,9 +126,9 @@ describe("Inflict Damage", () => {
 
     it(">= 3 * HP should severe the limb", () => {
       // --- Arrange ---
-      const appliedDamage = mockLeftLeg.data.hp.max! * 3; // 15
+      const appliedDamage = mockLeftLeg.data.hitPoints.max! * 3; // 15
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
-      const maxDamage = mockLeftLeg.data.hp.max! * 2; // Limbs can't take more damage
+      const maxDamage = mockLeftLeg.data.hitPoints.max! * 2; // Limbs can't take more damage
 
       // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
@@ -187,7 +187,7 @@ describe("Inflict Damage", () => {
   describe("Head Damage", () => {
     it("should be correct for smaller wounds", () => {
       // --- Arrange ---
-      const appliedDamage = mockHead.data.hp.max! - 1;
+      const appliedDamage = mockHead.data.hitPoints.max! - 1;
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -222,7 +222,7 @@ describe("Inflict Damage", () => {
 
     it(">= HP should knock actor unconscious", () => {
       // --- Arrange ---
-      const appliedDamage = mockHead.data.hp.max!; // 2
+      const appliedDamage = mockHead.data.hitPoints.max!; // 2
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -258,7 +258,7 @@ describe("Inflict Damage", () => {
 
     it(">= 2*HP should knock actor unconscious", () => {
       // --- Arrange ---
-      const appliedDamage = mockHead.data.hp.max! * 2; // 10
+      const appliedDamage = mockHead.data.hitPoints.max! * 2; // 10
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -294,7 +294,7 @@ describe("Inflict Damage", () => {
 
     it(">= 3*HP kills the actor", () => {
       // --- Arrange ---
-      const appliedDamage = mockHead.data.hp.max! * 3; // 15
+      const appliedDamage = mockHead.data.hitPoints.max! * 3; // 15
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -330,7 +330,7 @@ describe("Inflict Damage", () => {
   describe("Chest Damage", () => {
     it("should be correct for smaller wounds", () => {
       // --- Arrange ---
-      const appliedDamage = mockChest.data.hp.max! - 1;
+      const appliedDamage = mockChest.data.hitPoints.max! - 1;
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -364,7 +364,7 @@ describe("Inflict Damage", () => {
 
     it(">= HP should put actor in shock", () => {
       // --- Arrange ---
-      const appliedDamage = mockChest.data.hp.max!; // 6
+      const appliedDamage = mockChest.data.hitPoints.max!; // 6
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -400,7 +400,7 @@ describe("Inflict Damage", () => {
 
     it(">= 2*HP should knock actor unconscious", () => {
       // --- Arrange ---
-      const appliedDamage = mockChest.data.hp.max! * 2; // 12
+      const appliedDamage = mockChest.data.hitPoints.max! * 2; // 12
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -436,7 +436,7 @@ describe("Inflict Damage", () => {
 
     it(">= 3*HP kills the actor", () => {
       // --- Arrange ---
-      const appliedDamage = mockChest.data.hp.max! * 3; // 18
+      const appliedDamage = mockChest.data.hitPoints.max! * 3; // 18
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -472,7 +472,7 @@ describe("Inflict Damage", () => {
   describe("Abdomen Damage", () => {
     it("should be correct for smaller wounds", () => {
       // --- Arrange ---
-      const appliedDamage = mockAbdomen.data.hp.max! - 1;
+      const appliedDamage = mockAbdomen.data.hitPoints.max! - 1;
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -502,7 +502,7 @@ describe("Inflict Damage", () => {
 
     it(">= HP should make actor fall", () => {
       // --- Arrange ---
-      const appliedDamage = mockAbdomen.data.hp.max!;
+      const appliedDamage = mockAbdomen.data.hitPoints.max!;
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -547,7 +547,7 @@ describe("Inflict Damage", () => {
 
     it(">= 2*HP should knock actor unconscious", () => {
       // --- Arrange ---
-      const appliedDamage = mockAbdomen.data.hp.max! * 2; // 10
+      const appliedDamage = mockAbdomen.data.hitPoints.max! * 2; // 10
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -596,7 +596,7 @@ describe("Inflict Damage", () => {
 
     it(">= 2*HP from 2 smaller wounds should still knock actor unconscious", () => {
       // --- Arrange ---
-      const appliedDamage = mockAbdomen.data.hp.max!; // 10
+      const appliedDamage = mockAbdomen.data.hitPoints.max!; // 10
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -646,7 +646,7 @@ describe("Inflict Damage", () => {
 
     it(">= 3*HP kills the actor", () => {
       // --- Arrange ---
-      const appliedDamage = mockAbdomen.data.hp.max! * 3; // 15
+      const appliedDamage = mockAbdomen.data.hitPoints.max! * 3; // 15
       const actorTotalHp = mockActor.data.attributes.hitPoints.value; // 15
 
       // --- Act ---
@@ -696,8 +696,8 @@ export function applyTestDamage(
   mergeObject(hitLocationData, damageEffects.hitLocationUpdates);
   mergeObject(actorData, damageEffects.actorUpdates);
   actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);
-  hitLocationData.data.hp.value =
-    hitLocationData.data.hp.max! -
+  hitLocationData.data.hitPoints.value =
+    hitLocationData.data.hitPoints.max! -
     hitLocationData.data.wounds.reduce((acc: number, val: number) => acc + val, 0);
   return damageEffects;
 }

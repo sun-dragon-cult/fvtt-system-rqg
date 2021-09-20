@@ -10,6 +10,7 @@ import {
   assertItemType,
   getGame,
   getHitLocations,
+  requireValue,
   RqgError,
   usersThatOwnActor,
 } from "../../system/util";
@@ -221,13 +222,11 @@ export class HitLocationSheet extends RqgItemSheet<
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore formData.entries
     const data = Object.fromEntries(formData.entries());
-    const hpValue = hitLocation.data.data.hp.value;
-    const hpMax = hitLocation.data.data.hp.max;
-    if (hpValue == null || hpMax == null) {
-      const msg = `Hitlocation ${hitLocation.name} don't have hp value or max`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, hitLocation);
-    }
+    requireValue(
+      hitLocation.data.data.hitPoints.value,
+      `No value on hitlocation ${hitLocation.name}`
+    );
+    requireValue(hitLocation.data.data.hitPoints.max, `No max on hitlocation ${hitLocation.name}`);
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
     const actorHealthBefore = actor.data.data.attributes.health;

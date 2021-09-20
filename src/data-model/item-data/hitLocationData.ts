@@ -17,7 +17,7 @@ export interface HitLocationDataSourceData {
   dieFrom: number;
   dieTo: number;
   /** Max and value added by ActorSheet.prepareData */
-  hp: Resource;
+  hitPoints: Resource;
   /** Chest has +1 while arms have -1 for humans */
   baseHpDelta: number;
   /**  Natural armor */
@@ -50,7 +50,7 @@ export interface HitLocationDataProperties {
 export const emptyHitLocation: HitLocationDataSourceData = {
   dieFrom: 0,
   dieTo: 0,
-  hp: emptyResource,
+  hitPoints: emptyResource,
   baseHpDelta: 0,
   naturalAp: 0,
   wounds: [],

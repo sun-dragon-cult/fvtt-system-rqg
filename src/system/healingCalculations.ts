@@ -41,8 +41,8 @@ export class HealingCalculations {
       throw new RqgError(msg, healWoundIndex, hitLocationData);
     }
 
-    const hpValue = hitLocationData.data.hp.value;
-    const hpMax = hitLocationData.data.hp.max;
+    const hpValue = hitLocationData.data.hitPoints.value;
+    const hpMax = hitLocationData.data.hitPoints.max;
     if (hpValue == null || hpMax == null) {
       const msg = `Hitlocation ${hitLocationData.name} don't have hp value or max`;
       ui.notifications?.error(msg);
