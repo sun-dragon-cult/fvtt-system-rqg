@@ -306,9 +306,7 @@ export class RqgActorSheet extends ActorSheet<
    * TODO Fix the typing
    */
   private organizeOwnedItems(): any {
-    const itemTypes: any = Object.fromEntries(
-      getGame().system.entityTypes.Item.map((t: string) => [t, []])
-    );
+    const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
     this.actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
     });

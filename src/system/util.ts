@@ -207,6 +207,20 @@ export class RqgError implements Error {
   }
 }
 
+// Temporary fix to get both v8 & v9 compatability
+export function getDocumentTypes(): {
+  [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
+} {
+  if (getGame().system.entityTypes) {
+    return getGame().system.entityTypes; // v8
+  } else {
+    // @ts-ignore
+    return getGame().system.documentTypes as {
+      [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
+    }; // v9
+  }
+}
+
 export function moveCursorToEnd(el: HTMLInputElement) {
   el.focus();
   const originalInputType = el.type;
