@@ -12,7 +12,7 @@ export function migrateCharacterMov(actorData: ActorData): ActorUpdate {
       actorData.data?.attributes?.move == null)
   ) {
     const previousMove: number = (actorData.data?.attributes?.move as unknown as number) ?? 8;
-    const swimMove = actorData.data?.background?.race === "Human" ? 2 : undefined;
+    const swimMove = (actorData.data?.background as any)?.race === "Human" ? 2 : undefined;
     return {
       data: {
         attributes: {

@@ -326,7 +326,7 @@ export const mockActor: any = {
       },
     },
     background: {
-      race: "Human",
+      species: "Human",
       occupation: "farmer",
       homeland: "sartar",
       birthyear: null,

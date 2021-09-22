@@ -56,7 +56,7 @@ export enum HomeLandEnum {
 }
 
 export interface Background {
-  race: string;
+  species: string;
   occupation: OccupationEnum;
   homeland: HomeLandEnum;
   town?: string;
@@ -73,7 +73,7 @@ export interface Background {
 }
 
 export const emptyBackground: Background = {
-  race: "Human",
+  species: "Human",
   occupation: OccupationEnum.NoOccupation,
   homeland: HomeLandEnum.Sartar,
 };

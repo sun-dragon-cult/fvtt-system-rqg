@@ -22,6 +22,7 @@ import { migratePassionName } from "./migrations-item/migratePassionName";
 import { migrateHitLocationHPName } from "./migrations-item/migrateHitLocationHPName";
 import { migrateDoubleLeftArms } from "./migrations-item/migrateDoubleLeftArms";
 import { migrateCharacterMov } from "./migrations-actor/migrateCharacterMov";
+import { migrateRenameCharacterRace } from "./migrations-actor/migrateRenameCharacterRace";
 
 export type ItemUpdate =
   | object &
@@ -205,7 +206,7 @@ async function migrateCompendium(
 
 function migrateActorData(actorData: ActorData): ActorUpdate {
   let updateData: ActorUpdate = {};
-  [migrateCharacterMov].forEach(
+  [migrateCharacterMov, migrateRenameCharacterRace].forEach(
     (fn: (actorData: ActorData) => ActorUpdate) =>
       (updateData = mergeObject(updateData, fn(actorData)))
   );
