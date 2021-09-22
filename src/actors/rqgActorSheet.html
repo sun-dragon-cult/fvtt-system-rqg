@@ -1,3 +1,4 @@
+{{log "*** actorSheet" this}}
 <form class="{{cssClass}}" autocomplete="off">
   <div class="mainbackground"></div>
   {{!-- Sheet Header --}}
@@ -29,39 +30,64 @@
       </div>
       <div class="thirdline">
         <div>
-          <span class="norse">SIZ SR</span>
-          {{characterData.attributes.sizStrikeRank}}
+          <div class="norse">SIZ SR</div>
+          <div class="text-center">{{characterData.attributes.sizStrikeRank}}</div>
         </div>
         <div>
-          <span class="norse">DEX SR</span>
-          {{characterData.attributes.dexStrikeRank}}
+          <div class="norse">DEX SR</div>
+          <div class="text-center">{{characterData.attributes.dexStrikeRank}}</div>
+        </div>
+        <fieldset class="mov-enc">
+          <legend>{{characterData.attributes.move.currentLocomotion}}</legend>
+          <div class="flex-column">
+            {{#if (or isGM characterData.attributes.move.walk.value)}}
+              <label class="nowrap"><input type="radio" name="data.attributes.move.currentLocomotion" value="walk" {{checked (eq "walk" characterData.attributes.move.currentLocomotion)}}> <i class="fas fa-walking "></i></label>
+            {{/if}}
+            {{#if (or isGM characterData.attributes.move.swim.value)}}
+              <label class="nowrap"><input type="radio" name="data.attributes.move.currentLocomotion" value="swim" {{checked (eq "swim" characterData.attributes.move.currentLocomotion)}}> <i class="fas fa-swimmer fa-flip-horizontal"></i></label>
+            {{/if}}
+            {{#if (or isGM characterData.attributes.move.fly.value)}}
+              <label class="nowrap"><input type="radio" name="data.attributes.move.currentLocomotion" value="fly" {{checked (eq "fly" characterData.attributes.move.currentLocomotion)}}> <i class="fas fa-dove"></i></label>
+            {{/if}}
+          </div>
+        <div>
+          <div class="norse nowrap">MOV <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg"> ENC</div>
+          <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.equipped characterData.attributes.encumbrance.max)}}warning{{/if}}">
+            <span>{{characterData.attributes.move.equipped}}</span> • <span>{{characterData.attributes.encumbrance.equipped}} / {{characterData.attributes.encumbrance.max}}</span>
+          </div>
         </div>
         <div>
-          <span class="norse">Max ENC</span>
-          {{characterData.attributes.maximumEncumbrance}}
+          <div class="norse nowrap">MOV <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg"> ENC</div>
+          <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.travel characterData.attributes.encumbrance.max)}}warning{{/if}}">
+            <span>{{characterData.attributes.move.travel}}</span> • <span>{{characterData.attributes.encumbrance.travel}} / {{characterData.attributes.encumbrance.max}}</span>
+          </div>
         </div>
         <div>
-          <span class="norse">Equipped ENC</span>
-          {{characterData.attributes.equippedEncumbrance}}
-        </div>
-        <div>
-          <span class="norse">Travel ENC</span>
-          {{characterData.attributes.travelEncumbrance}}
-        </div>
-        <div>
-          <span class="norse">MOV</span>
+          <div class="norse">MOV</div>
           {{#if isGM}}
-          <input type="number" min="0" max="99" name="data.attributes.move" value="{{characterData.attributes.move}}" size="2">
+            {{#with (lookup characterData.attributes.move characterData.attributes.move.currentLocomotion) }}
+              <div class="text-center"><input type="number" min="0" max="99" name="{{concat 'data.attributes.move.' @root.characterData.attributes.move.currentLocomotion '.value'}}" value="{{value}}" size="2"></div>
+            {{/with}}
           {{else}}
-          {{characterData.attributes.move}}
+            <div class="text-center">{{characterData.attributes.move.value}}</div>
           {{/if}}
         </div>
+{{#if isGM}}
         <div>
-          <span class="norse">Hero Points</span>
+          <div class="norse">ENC factor</div>
+            {{#with (lookup characterData.attributes.move characterData.attributes.move.currentLocomotion) }}
+              <div class="text-center"><input type="number" min="0" max="99" name="{{concat 'data.attributes.move.' @root.characterData.attributes.move.currentLocomotion '.carryingFactor'}}" value="{{carryingFactor}}" size="2"></div>
+            {{/with}}
+        </div>
+{{/if}}
+
+        </fieldset>
+        <div>
+          <div class="norse">Hero Points</div>
           {{#if isGM}}
-          <input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{characterData.attributes.heroPoints}}" size="2">
+            <div class="text-center"><input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{characterData.attributes.heroPoints}}" size="2"></div>
           {{else}}
-          {{characterData.attributes.heroPoints}}
+            <div class="text-center">{{characterData.attributes.heroPoints}}</div>
           {{/if}}
         </div>
       </div>

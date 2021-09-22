@@ -8,6 +8,7 @@ import {
 } from "./migrations-item/migrateRuneCompendium";
 import { convertDeleteKeyToFoundrySyntax, getGame } from "./util";
 import {
+  ActorData,
   ActorDataConstructorData,
   ActorDataSource,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
@@ -19,10 +20,16 @@ import {
 import { migrateHitLocationName } from "./migrations-item/migrateHitLocationName";
 import { migratePassionName } from "./migrations-item/migratePassionName";
 import { migrateHitLocationHPName } from "./migrations-item/migrateHitLocationHPName";
+import { migrateDoubleLeftArms } from "./migrations-item/migrateDoubleLeftArms";
+import { migrateCharacterMov } from "./migrations-actor/migrateCharacterMov";
 
 export type ItemUpdate =
   | object &
       DeepPartial<ItemDataConstructorData | (ItemDataConstructorData & Record<string, unknown>)>;
+
+export type ActorUpdate =
+  | object &
+      DeepPartial<ActorDataConstructorData | (ActorDataConstructorData & Record<string, unknown>)>;
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -58,7 +65,7 @@ export async function migrateWorld(): Promise<void> {
 async function migrateWorldActors(): Promise<void> {
   for (let actor of getGame().actors!.contents) {
     try {
-      const updates = migrateActorData(actor.toObject());
+      const updates = migrateActorData(actor.toObject() as any); // TODO fix type
       if (!foundry.utils.isObjectEmpty(updates)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updates);
         console.log(`RQG | Migrating Actor document ${actor.name}`, convertedUpdates);
@@ -196,8 +203,13 @@ async function migrateCompendium(
 /*  Document Type Migration Helpers               */
 /* -------------------------------------------- */
 
-function migrateActorData(actorData: Partial<ActorDataSource>): ActorDataConstructorData {
-  const updateData = {} as ActorDataConstructorData;
+function migrateActorData(actorData: ActorData): ActorUpdate {
+  let updateData: ActorUpdate = {};
+  [migrateCharacterMov].forEach(
+    (fn: (actorData: ActorData) => ActorUpdate) =>
+      (updateData = mergeObject(updateData, fn(actorData)))
+  );
+
   // Migrate Owned Items
   if (actorData.items) {
     let hasItemUpdates = false;
@@ -255,6 +267,7 @@ function migrateItemData(itemData: ItemData): ItemUpdate {
     migrateHitLocationName,
     migratePassionName,
     migrateHitLocationHPName,
+    migrateDoubleLeftArms,
   ].forEach(
     (fn: (itemData: ItemData) => ItemUpdate) => (updateData = mergeObject(updateData, fn(itemData)))
   );
@@ -272,23 +285,24 @@ function migrateSceneData(scene: SceneData): object {
       t.actorId = null;
       t.actorData = {};
     } else if (!t.actorLink) {
-      const actorData = duplicate(t.actorData) as Partial<ActorDataSource>;
+      const actorData = duplicate(t.actorData);
       actorData.type = token.actor?.type;
-      const update = migrateActorData(actorData) as any; // TODO fix type
+      const update = migrateActorData(actorData as any); // TODO fix type
       ["items", "effects"].forEach((embeddedName: string) => {
-        if (!update[embeddedName]?.length) {
+        if (!(update as any)[embeddedName]?.length) {
+          // TODO fix type
           return;
         }
-        const updates = new Map(update[embeddedName].map((u: any) => [u._id, u]));
-        // @ts-ignore embeddedName
-        t.actorData[embeddedName].forEach((original: any) => {
+        const updates = new Map((update as any)[embeddedName].map((u: any) => [u._id, u])); // TODO fix type
+        (t.actorData as any)[embeddedName].forEach((original: any) => {
+          // TODO fix type
           const update: any = updates.get(original._id);
           if (update) {
             mergeObject(original, update);
           }
         });
 
-        delete update[embeddedName];
+        delete (update as any)[embeddedName]; // TODO fix type
       });
 
       // TODO implement AE Delete for scene Actors as well?

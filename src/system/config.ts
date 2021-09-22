@@ -22,7 +22,6 @@ export const RQG_CONFIG = {
   skillName: {
     dodge: "Dodge - agility",
     jump: "Jump - agility",
-    swim: "Swim - agility", // TODO not handled yet
     moveQuietly: "Move Quietly - stealth",
     spiritCombat: "Spirit Combat - magic",
   },

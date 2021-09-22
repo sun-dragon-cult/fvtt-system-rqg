@@ -8,6 +8,7 @@ import { getGame, hasOwnProperty } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { initializeAllCharacteristics } from "./context-menues/characteristic-context-menu";
+import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
 
 export class RqgActor extends Actor {
   static init() {
@@ -58,47 +59,39 @@ export class RqgActor extends Actor {
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
     const skillCategoryModifiers = (this.data.data.skillCategoryModifiers =
       RqgCalculations.skillCategoryModifiers(str, siz, dex, int, pow, cha));
-    attributes.maximumEncumbrance = Math.round(Math.min(str, (str + con) / 2));
-    attributes.equippedEncumbrance = Math.round(
-      this.items.reduce((sum, item: RqgItem) => {
-        if (
-          hasOwnProperty(item.data.data, "physicalItemType") &&
-          item.data.data.equippedStatus === "equipped"
-        ) {
-          const quantity = item.data.data.quantity ?? 1;
-          const encumbrance = item.data.data.encumbrance ?? 0;
-          return sum + quantity * encumbrance;
-        }
-        return sum;
-      }, 0)
-    );
 
-    const movementEncumbrancePenalty = Math.min(
+    attributes.encumbrance = {
+      max: this.calcMaxEncumbrance(
+        str,
+        con,
+        attributes.move?.[attributes.move?.currentLocomotion]?.carryingFactor
+      ),
+      travel: this.calcTravelEncumbrance(this.items),
+      equipped: this.calcEquippedEncumbrance(this.items),
+    };
+
+    const equippedMovementEncumbrancePenalty = Math.min(
       0,
-      (attributes.maximumEncumbrance || 0) - (attributes.equippedEncumbrance || 0)
+      (attributes.encumbrance.max || 0) - (attributes.encumbrance.equipped || 0)
     );
 
-    attributes.travelEncumbrance = Math.round(
-      this.items.reduce((sum: number, item: RqgItem) => {
-        if (
-          hasOwnProperty(item.data.data, "equippedStatus") &&
-          ["carried", "equipped"].includes(item.data.data.equippedStatus)
-        ) {
-          const enc = (item.data.data.quantity ?? 1) * (item.data.data.encumbrance ?? 0);
-          return sum + enc;
-        }
-        return sum;
-      }, 0)
-    );
+    attributes.move.value =
+      this.data.data.attributes.move?.[attributes.move?.currentLocomotion]?.value || 0;
 
-    attributes.move = this.data._source.data.attributes.move + movementEncumbrancePenalty;
-    skillCategoryModifiers.agility += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers.manipulation += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers.stealth += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers.meleeWeapons += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers.missileWeapons += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers.naturalWeapons += movementEncumbrancePenalty * 5;
-    skillCategoryModifiers.shields += movementEncumbrancePenalty * 5;
+    attributes.move.equipped = attributes.move.value + equippedMovementEncumbrancePenalty;
+    skillCategoryModifiers.agility += equippedMovementEncumbrancePenalty * 5;
+    skillCategoryModifiers.manipulation += equippedMovementEncumbrancePenalty * 5;
+    skillCategoryModifiers.stealth += equippedMovementEncumbrancePenalty * 5;
+    skillCategoryModifiers.meleeWeapons += equippedMovementEncumbrancePenalty * 5;
+    skillCategoryModifiers.missileWeapons += equippedMovementEncumbrancePenalty * 5;
+    skillCategoryModifiers.naturalWeapons += equippedMovementEncumbrancePenalty * 5;
+    skillCategoryModifiers.shields += equippedMovementEncumbrancePenalty * 5;
+
+    const travelMovementEncumbrancePenalty = Math.min(
+      0,
+      attributes.encumbrance.max - attributes.encumbrance.travel
+    );
+    attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item)
@@ -111,6 +104,41 @@ export class RqgActor extends Actor {
     attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
 
     attributes.health = DamageCalculations.getCombinedActorHealth(this.data);
+  }
+
+  private calcMaxEncumbrance(str: number, con: number, carryingFactor: number | undefined): number {
+    return Math.round(Math.min(str, (str + con) / 2) * (carryingFactor ?? 1));
+  }
+
+  private calcTravelEncumbrance(items: EmbeddedCollection<typeof RqgItem, ActorData>): number {
+    return Math.round(
+      items.reduce((sum: number, item: RqgItem) => {
+        if (
+          hasOwnProperty(item.data.data, "equippedStatus") &&
+          ["carried", "equipped"].includes(item.data.data.equippedStatus)
+        ) {
+          const enc = (item.data.data.quantity ?? 1) * (item.data.data.encumbrance ?? 0);
+          return sum + enc;
+        }
+        return sum;
+      }, 0)
+    );
+  }
+
+  private calcEquippedEncumbrance(items: EmbeddedCollection<typeof RqgItem, ActorData>): number {
+    return Math.round(
+      items.reduce((sum, item: RqgItem) => {
+        if (
+          hasOwnProperty(item.data.data, "physicalItemType") &&
+          item.data.data.equippedStatus === "equipped"
+        ) {
+          const quantity = item.data.data.quantity ?? 1;
+          const encumbrance = item.data.data.encumbrance ?? 0;
+          return sum + quantity * encumbrance;
+        }
+        return sum;
+      }, 0)
+    );
   }
 
   // Entity-specific actions that should occur when the Entity is first created

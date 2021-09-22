@@ -148,7 +148,7 @@ export class HitLocationSheet extends RqgItemSheet<
       whisper: usersThatOwnActor(actor),
     });
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
-    actorUpdates && (await actor.update(actorUpdates));
+    actorUpdates && (await actor.update(actorUpdates as any)); // TODO fix type
 
     if (actor.isToken && actor.token) {
       await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken, actorHealthBefore);

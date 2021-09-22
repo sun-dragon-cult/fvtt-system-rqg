@@ -106,6 +106,29 @@
     flex: 1;
   }
 
+  .warning {
+    outline: 2px dashed #ff640045;
+    background-color: #ff640045;
+  }
+
+  .mov-enc {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0 5px 2px;
+    margin: -12px 0 0;
+    background-color: #d8b16e;
+    border: none;
+
+    legend {
+      background-color: #e4cc9d;
+      padding: 0 15px;
+      margin: 0 auto -4px;
+      border-radius: 50%;
+    }
+  }
+
   .masonry {
     display: block;
     columns: 12rem auto;
@@ -813,8 +836,9 @@
   vertical-align: inherit;
 }
 
-.rqg img.equipped-status {
+.rqg.sheet img.equipped-status {
   height: 15px;
+  margin: 0;
 }
 
 .token-initiative input {

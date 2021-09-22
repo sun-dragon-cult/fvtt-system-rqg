@@ -36,7 +36,7 @@ import {
 } from "../system/util";
 import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
-import { actorHealthStatuses } from "../data-model/actor-data/attributes";
+import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { RqgToken } from "../combat/rqgToken";
 import {
   ActorTypeEnum,
@@ -92,6 +92,7 @@ interface CharacterSheetData {
   powCrystals: { name: string; size: number }[];
   spiritMagicPointSum: number;
   freeInt: number;
+  locomotionModes: { [a: string]: string };
 
   // UI toggles
   isGM: boolean;
@@ -180,6 +181,11 @@ export class RqgActorSheet extends ActorSheet<
       homelands: Object.values(HomeLandEnum),
       locations: this.getPhysicalItemLocations(),
       healthStatuses: [...actorHealthStatuses],
+      locomotionModes: {
+        [LocomotionEnum.Walk]: "Walk",
+        [LocomotionEnum.Swim]: "Swim",
+        [LocomotionEnum.Fly]: "Fly",
+      },
 
       // UI toggles
       isGM: getGameUser().isGM,

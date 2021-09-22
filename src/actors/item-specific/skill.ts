@@ -30,24 +30,16 @@ export class Skill extends AbstractEmbeddedItem {
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
     skillData.categoryMod = actorData.data.skillCategoryModifiers![skillItem.data.data.category];
 
-    let mod = 0; // For dodge/swim encumbrance & move quietly modifications
+    let mod = 0;
 
-    // Special case for Dodge & Jump TODO swimEncPenalty Complicated :-(
+    // Special case for Dodge, Jump & Move Quietly
     const dex = actorData.data.characteristics.dexterity.value;
     if (CONFIG.RQG.skillName.dodge === skillItem.name) {
       Skill.updateBaseChance(skillData, dex * 2);
-      if (
-        actorData.data.attributes.equippedEncumbrance === undefined ||
-        actorData.data.attributes.maximumEncumbrance === undefined
-      ) {
-        const msg = `Equipped or max ENC was not set`;
-        ui.notifications?.warn(msg);
-        // ui.notifications?.error(msg);
-        // throw new RqgError(msg, actor); // TODO Should it not always be set?
-      }
       mod = -Math.min(
-        actorData.data.attributes.equippedEncumbrance || 0,
-        actorData.data.attributes.maximumEncumbrance || 0
+        // mod is equipped ENC modifier
+        actorData.data.attributes.encumbrance?.equipped || 0,
+        actorData.data.attributes.encumbrance?.max || 0
       );
     } else if (CONFIG.RQG.skillName.jump === skillItem.name) {
       Skill.updateBaseChance(skillData, dex * 3);
