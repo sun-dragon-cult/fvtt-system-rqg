@@ -68,6 +68,7 @@ export interface Background {
   reputation?: number;
   standardOfLiving?: string;
   ransom?: number;
+  ransomDetails?: string;
   baseIncome?: number;
   biography?: string;
 }

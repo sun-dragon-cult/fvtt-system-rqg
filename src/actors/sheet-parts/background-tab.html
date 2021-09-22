@@ -144,9 +144,9 @@
     {{#if isGM}}
     <label>{{localize 'RQG.Ransom'}}
       <input type="number" min="0" max="99999999" name="data.background.ransom" value="{{data.data.background.ransom}}">
-    </label>(L)
+    </label>(L) <label> {{localize 'RQG.RansomDetails'}} <input type="text" name="data.background.ransomDetails" value="{{data.data.background.ransomDetails}}" size="30"></label>
     {{else if data.data.background.ransom}}
-      <b>{{localize 'RQG.Ransom'}}</b> {{data.data.background.ransom}} (L)
+      <b>{{localize 'RQG.Ransom'}}</b> {{data.data.background.ransom}} (L) {{data.data.background.ransomDetails}}
     {{/if}}
   </div>
 

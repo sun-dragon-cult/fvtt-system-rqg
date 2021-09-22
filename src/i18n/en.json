@@ -187,6 +187,7 @@
     "Reputation": "Reputation",
     "StandardOfLiving": "Standard Of Living",
     "BaseIncome": "Base Income",
-    "Ransom": "Ransom"
+    "Ransom": "Ransom",
+    "RansomDetails": "Details"
   }
 }
