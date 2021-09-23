@@ -36,6 +36,7 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/items/armor-item/armorSheet.html",
     "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.html",
     "systems/rqg/items/missile-weapon-item/missileWeaponSheet.html",
+    "systems/rqg/items/weapon-item/weaponSheet.html",
     "systems/rqg/items/spirit-magic-item/spiritMagicSheet.html",
     "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
     "systems/rqg/items/cult-item/cultSheet.html",

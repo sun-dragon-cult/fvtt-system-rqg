@@ -8,6 +8,7 @@
     "TypeArmor": "Armor",
     "TypeMeleeweapon": "Melee Weapon",
     "TypeMissileweapon": "Missile Weapon",
+    "TypeWeapon": "Weapon",
     "TypeSpiritmagic": "Spirit Magic",
     "TypeCult": "Cult",
     "TypeRunemagic": "Rune Magic"

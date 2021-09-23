@@ -21,6 +21,8 @@ import { CultDataProperties, CultDataSource } from "./cultData";
 import { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
 import { SkillDataProperties, SkillDataSource } from "./skillData";
 import { RuneDataProperties, RuneDataSource } from "./runeData";
+import { WeaponDataProperties, WeaponDataSource } from "./weaponData";
+import { Weapon } from "../../actors/item-specific/weapon";
 
 export enum ItemTypeEnum {
   Skill = "skill",
@@ -31,6 +33,7 @@ export enum ItemTypeEnum {
   Armor = "armor",
   MeleeWeapon = "meleeWeapon",
   MissileWeapon = "missileWeapon",
+  Weapon = "weapon",
   SpiritMagic = "spiritMagic",
   Cult = "cult",
   RuneMagic = "runeMagic",
@@ -47,6 +50,7 @@ export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = ne
   [ItemTypeEnum.HitLocation, HitLocation],
   [ItemTypeEnum.MeleeWeapon, MeleeWeapon],
   [ItemTypeEnum.MissileWeapon, MissileWeapon],
+  [ItemTypeEnum.Weapon, Weapon],
   [ItemTypeEnum.Passion, Passion],
   [ItemTypeEnum.Rune, Rune],
   [ItemTypeEnum.RuneMagic, RuneMagic],
@@ -61,6 +65,7 @@ export type RqgItemDataSource =
   | HitLocationDataSource
   | MeleeWeaponDataSource
   | MissileWeaponDataSource
+  | WeaponDataSource
   | PassionDataSource
   | RuneDataSource
   | RuneMagicDataSource
@@ -74,6 +79,7 @@ export type RqgItemDataProperties =
   | HitLocationDataProperties
   | MeleeWeaponDataProperties
   | MissileWeaponDataProperties
+  | WeaponDataProperties
   | PassionDataProperties
   | RuneDataProperties
   | RuneMagicDataProperties
