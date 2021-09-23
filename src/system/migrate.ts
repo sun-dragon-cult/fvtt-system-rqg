@@ -72,11 +72,6 @@ async function migrateWorldActors(): Promise<void> {
         console.log(`RQG | Migrating Actor document ${actor.name}`, convertedUpdates);
         await actor.update(convertedUpdates, { enforceTypes: false });
       }
-      // const deletions = getActiveEffectsToDelete(actor.toObject());
-      // if (deletions.length) {
-      //   console.log(`RQG | Deleting ${deletions.length} Active Effects from Actor ${actor.name}`);
-      //   await actor.deleteEmbeddedDocuments("ActiveEffect", deletions);
-      // }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Actor ${actor.name}: ${err.message}`;
       console.error(err, actor);
@@ -229,16 +224,6 @@ function migrateActorData(actorData: ActorData): ActorUpdate {
       updateData.items = items;
     }
   }
-  // // Remove Armor Active Effects // TODO remove this migration
-  // if (actorData.effects) {
-  //   effectsToDelete = [];
-  //   actorData.effects.forEach((e) => console.warn(e.data.label));
-  //
-  //   if (actorData.effects.some((e) => e.label === "Armor")) {
-  //     console.log("*** Found Armor", actorData);
-  //   }
-  //   updateData.effects = actorData.effects.filter((e) => e.label !== "Armor");
-  // }
   return updateData;
 }
 
