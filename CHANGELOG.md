@@ -1,3 +1,17 @@
+# [1.7.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.6.0...v1.7.0) (2021-09-23)
+
+
+### Features
+
+* add ransom details field ([1960093](https://github.com/wakeand/fvtt-system-rqg/commit/1960093))
+* calculate move & enc for travel & equipped also include enc factor for making horses etc capable of carrying more ([a352554](https://github.com/wakeand/fvtt-system-rqg/commit/a352554))
+* character sheets don't load in foundry v9 ([b203c34](https://github.com/wakeand/fvtt-system-rqg/commit/b203c34))
+* rename race to species ([ff6b8b2](https://github.com/wakeand/fvtt-system-rqg/commit/ff6b8b2))
+* translate hitlocation type to match appearance of hitlocation names ([aa54faa](https://github.com/wakeand/fvtt-system-rqg/commit/aa54faa))
+
+
+
+
 # [1.6.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.5.0...v1.6.0) (2021-09-16)
 
 
