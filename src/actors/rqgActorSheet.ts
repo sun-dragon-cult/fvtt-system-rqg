@@ -122,7 +122,7 @@ export class RqgActorSheet extends ActorSheet<
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ActorTypeEnum.Character],
       template: "systems/rqg/actors/rqgActorSheet.html",
-      width: 550,
+      width: 600,
       height: 650,
       tabs: [
         {
