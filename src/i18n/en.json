@@ -129,7 +129,8 @@
       "habitatWaterSea": "Habitat: Water / Sea",
       "habitatSky": "Habitat: Sky",
       "habitatGlacier": "Habitat: Glacier",
-      "habitatUnderground": "Habitat: Underground"
+      "habitatUnderground": "Habitat: Underground",
+      "habitatChaosArea": "Habitat: Chaos Area"
     },
     "Occupation": {
       "Heading": "Occupation",

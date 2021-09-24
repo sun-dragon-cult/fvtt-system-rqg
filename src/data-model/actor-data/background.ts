@@ -53,6 +53,7 @@ export enum HomeLandEnum {
   HabitatSky = "habitatSky",
   HabitatGlacier = "habitatGlacier",
   HabitatUnderground = "habitatUnderground",
+  HabitatChaosArea = "habitatChaosArea",
 }
 
 export interface Background {
