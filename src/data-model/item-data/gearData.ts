@@ -1,6 +1,5 @@
 import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
-import { RuneMagicDataSourceData } from "./runeMagicData";
 
 export interface GearDataSourceData extends IPhysicalItem {}
 
