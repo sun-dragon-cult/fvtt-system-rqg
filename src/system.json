@@ -16,7 +16,15 @@
   "styles": [
     "rqg.css"
   ],
-  "packs": [],
+  "packs": [
+    {
+    "name": "runes",
+    "label": "Runes",
+    "system": "rqg",
+    "path": "assets/packs/runes.db",
+    "entity": "Item"
+    }
+  ],
   "languages": [
     {
       "lang": "en",

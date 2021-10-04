@@ -8,11 +8,22 @@
     <div>
       <div class="topheaderline">
         <h1 class="charname"><input name="name" type="text" value="{{data.name}}"></h1>
-        <div>
-          <i>{{characterData.attributes.health}}</i>
-          {{#each characterRunes}}
-            <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
-          {{/each}}
+        <div class="flex-row gap1rem">
+          {{#unless (eq characterData.attributes.health "healthy")}}<i>{{characterData.attributes.health}}</i>{{/unless}}
+          {{#if characterElementRunes}}
+              <div>
+                {{#each characterElementRunes}}
+                  <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
+                {{/each}}
+              </div>
+          {{/if}}
+          {{#if characterPowerRunes}}
+            <div>
+              {{#each characterPowerRunes}}
+                <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
+              {{/each}}
+            </div>
+          {{/if}}
         </div>
       </div>
       <div class="characteristics">

@@ -81,7 +81,8 @@ interface CharacterSheetData {
 
   // Other data needed for the sheet
   /** Array of element runes with > 0% chance */
-  characterRunes: RuneDataSource[];
+  characterElementRunes: RuneDataSource[];
+  characterPowerRunes: RuneDataSource[];
   /** (html) Precalculated missile weapon SRs if loaded at start of round */
   loadedMissileSr: string[];
   /** (html) Precalculated missile weapon SRs if not loaded at start of round */
@@ -168,7 +169,8 @@ export class RqgActorSheet extends ActorSheet<
       spiritCombatSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.spiritCombat),
       dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
 
-      characterRunes: this.getCharacterRuneImgs(), // Sorted array of element runes with > 0% chance
+      characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
+      characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of element runes with > 0% chance
       loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
       unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
       itemLocationTree: createItemLocationTree(this.actor.items.toObject()), // physical items reorganised as a tree of items containing items
@@ -280,13 +282,28 @@ export class RqgActorSheet extends ActorSheet<
     return dexSr ? unloadedMissileSr[dexSr] : [];
   }
 
-  private getCharacterRuneImgs(): RuneDataSource[] {
+  private getCharacterElementRuneImgs(): RuneDataSource[] {
     return this.actor.items
       .reduce((acc: RuneDataSource[], i: RqgItem) => {
         if (
           i.data.type === ItemTypeEnum.Rune &&
           i.data.data.runeType === RuneTypeEnum.Element &&
           !!i.data.data.chance
+        ) {
+          acc.push(i.data);
+        }
+        return acc;
+      }, [])
+      .sort((a: RuneDataSource, b: RuneDataSource) => b.data.chance - a.data.chance);
+  }
+
+  private getCharacterPowerRuneImgs(): RuneDataSource[] {
+    return this.actor.items
+      .reduce((acc: RuneDataSource[], i: RqgItem) => {
+        if (
+          i.data.type === ItemTypeEnum.Rune &&
+          i.data.data.runeType === RuneTypeEnum.Power &&
+          i.data.data.chance > 50
         ) {
           acc.push(i.data);
         }
