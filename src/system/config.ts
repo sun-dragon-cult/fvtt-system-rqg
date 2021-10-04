@@ -26,6 +26,9 @@ export const RQG_CONFIG = {
     spiritCombat: "Spirit Combat - magic",
   },
 
+  // Default Combat Maneuvers for weapon items
+  combatManeuvers: ["Throw", "Shoot", "Trust", "Cut", "Bash", "Parry", "Grapple", "Knockback"],
+
   equippedIcons: {
     notCarried: "systems/rqg/assets/images/equipped/not_carried.svg",
     carried: "systems/rqg/assets/images/equipped/carried.svg",

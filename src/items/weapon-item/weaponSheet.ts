@@ -1,11 +1,11 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CombatManeuver } from "../../data-model/item-data/weaponData";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { assertItemType, logMisconfiguration } from "../../system/util";
+import { assertItemType, getRequiredDomDataset, logMisconfiguration } from "../../system/util";
 import {
+  damageType,
   WeaponDataProperties,
   WeaponDataPropertiesData,
 } from "../../data-model/item-data/weaponData";
@@ -15,10 +15,11 @@ interface WeaponSheetData {
   data: WeaponDataProperties; // Actually contains more...complete with effects, flags etc
   weaponData: WeaponDataPropertiesData;
   sheetSpecific: {
-    allCombatManeuvers: string[];
+    defaultCombatManeuverNames: string[];
+    damageTypes: string[];
     weaponSkills: any[];
     /** For showing the name of the linked skill if the item isn't owned */
-    skillName: string;
+    skillNames: any;
     equippedStatuses: string[];
   };
 }
@@ -47,20 +48,13 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       data: itemData,
       weaponData: weaponData,
       sheetSpecific: {
-        allCombatManeuvers: this.getAllCombatManeuvers(weaponData),
+        defaultCombatManeuverNames: CONFIG.RQG.combatManeuvers,
+        damageTypes: Object.values(damageType),
         weaponSkills: this.getWeaponSkills(),
-        skillName: await this.getSkillName(weaponData),
+        skillNames: await this.getSkillNames(),
         equippedStatuses: [...equippedStatuses],
       },
     };
-  }
-
-  private getAllCombatManeuvers(weaponData: WeaponDataPropertiesData): any {
-    return Object.values(CombatManeuver).reduce((acc: any, m: CombatManeuver) => {
-      const v = weaponData.combatManeuvers.includes(m);
-      acc[m] = { name: m, value: v };
-      return acc;
-    }, {});
   }
 
   private getWeaponSkills(): any {
@@ -77,43 +71,102 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       : [];
   }
 
-  private async getSkillName(weaponData: WeaponDataPropertiesData): Promise<any> {
-    if (!this.item.isEmbedded && weaponData.skillOrigin) {
-      const skill = await fromUuid(weaponData.skillOrigin).catch(() => {
-        logMisconfiguration(
-          `Couldn't find weapon skill with uuid from skillOrigin ${weaponData.skillOrigin}`,
-          true,
-          weaponData
-        );
-      });
-      return skill?.name ?? "";
+  private async getSkillNames(): Promise<any> {
+    if (!this.item.isEmbedded) {
+      assertItemType(this.item.data.type, ItemTypeEnum.Weapon);
+      return {
+        oneHand: await this.getSkillName(this.item.data.data.usage.oneHand.skillOrigin),
+        offHand: await this.getSkillName(this.item.data.data.usage.offHand.skillOrigin),
+        twoHand: await this.getSkillName(this.item.data.data.usage.twoHand.skillOrigin),
+        missile: await this.getSkillName(this.item.data.data.usage.missile.skillOrigin),
+      };
     }
-    return "";
+  }
+
+  private async getSkillName(origin: string): Promise<string> {
+    const skill = origin
+      ? await fromUuid(origin).catch(() => {
+          logMisconfiguration(`Couldn't find weapon skill with uuid`, true, this.item);
+        })
+      : null;
+    return skill?.name ?? "";
   }
 
   protected async _updateObject(event: Event, formData: any): Promise<any> {
-    const combatManeuvers: any = [];
-    Object.values(CombatManeuver).forEach((m) => {
-      if (formData[`sheetSpecific.allCombatManeuvers.${m}.value`]) {
-        combatManeuvers.push(m);
-      }
-    });
-    formData["data.combatManeuvers"] = combatManeuvers;
-    Object.values(CombatManeuver).forEach(
-      (cm) => delete formData[`data.allCombatManeuvers.${cm}.value`]
+    formData["data.usage.oneHand.combatManeuvers"] = this.getUsageCombatManeuvers(
+      "oneHand",
+      formData
+    );
+    formData["data.usage.offHand.combatManeuvers"] = this.getUsageCombatManeuvers(
+      "offHand",
+      formData
+    );
+    formData["data.usage.twoHand.combatManeuvers"] = this.getUsageCombatManeuvers(
+      "twoHand",
+      formData
+    );
+    formData["data.usage.missile.combatManeuvers"] = this.getUsageCombatManeuvers(
+      "missile",
+      formData
     );
     return super._updateObject(event, formData);
+  }
+
+  private getUsageCombatManeuvers(usage: string, formData: any): any[] {
+    const usageNames = formData[`data.usage.${usage}.combatManeuvers.name`];
+    const usageCombatManueversNames = Array.isArray(usageNames) ? usageNames : [usageNames];
+
+    const usageCombatManeuvers = usageCombatManueversNames.reduce((acc, name, i) => {
+      if (name) {
+        const dmgType = formData[`data.usage.${usage}.combatManeuvers.damageTypes`];
+        const damageTypes = Array.isArray(dmgType) ? dmgType : [dmgType];
+        const damageType = damageTypes.length >= i ? damageTypes[i] : "";
+
+        const desc = formData[`data.usage.${usage}.combatManeuvers.description`];
+        const descriptions = Array.isArray(desc) ? desc : [desc];
+        const description = descriptions.length >= i ? descriptions[i] : "";
+
+        acc.push({
+          name: name,
+          damageType: damageType,
+          description: description,
+        });
+      }
+      return acc;
+    }, []);
+
+    return duplicate(usageCombatManeuvers);
   }
 
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
     if (!this.item.isOwned) {
-      (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
+      html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+        elem.addEventListener("drop", this._onDrop.bind(this));
+        elem.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
+          dropzone && dropzone.classList.add("drag-hover");
+        });
+        elem.addEventListener("dragenter", (e) => {
+          e.preventDefault();
+          const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
+          dropzone && dropzone.classList.add("drag-hover");
+        });
+        elem.addEventListener("dragleave", (e) => {
+          e.preventDefault();
+          const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
+          dropzone && dropzone.classList.remove("drag-hover");
+        });
+      });
     }
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
+    const usage = getRequiredDomDataset(event, "dropzone");
+    const dropzone = (event.target as HTMLElement)?.closest("[data-dropzone]");
+    dropzone && dropzone.classList.remove("drag-hover");
     // Try to extract the data
     let droppedItemData;
     try {
@@ -126,11 +179,12 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       if (
         item.data.type === ItemTypeEnum.Skill &&
         (item.data.data.category === SkillCategoryEnum.MeleeWeapons ||
+          item.data.data.category === SkillCategoryEnum.MissileWeapons ||
           item.data.data.category === SkillCategoryEnum.NaturalWeapons ||
           item.data.data.category === SkillCategoryEnum.Shields)
       ) {
         const skillId = item.uuid || "";
-        await this.item.update({ "data.skillOrigin": skillId }, {});
+        await this.item.update({ [`data.usage.${usage}.skillOrigin`]: skillId }, {});
       } else {
         ui.notifications?.warn(
           "The item must be a weapon skill (category melee, shield or natural weapon)"

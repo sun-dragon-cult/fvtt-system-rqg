@@ -106,6 +106,14 @@
     flex: 1;
   }
 
+  .no-display {
+    display: none;
+  }
+
+  .drag-hover {
+    outline: forestgreen dashed 5px;
+  }
+
   .warning {
     outline: 2px dashed #ff640045;
     background-color: #ff640045;
