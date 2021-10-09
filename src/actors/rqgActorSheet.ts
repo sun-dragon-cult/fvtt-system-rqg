@@ -520,7 +520,7 @@ export class RqgActorSheet extends ActorSheet<
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
 
     // Roll Characteristic
-    this.form!.querySelectorAll("[data-characteristic-roll]").forEach((el) => {
+    this.form?.querySelectorAll("[data-characteristic-roll]").forEach((el) => {
       const characteristicName = (el.closest("[data-characteristic]") as HTMLElement).dataset
         .characteristic;
 
@@ -568,7 +568,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll against Item Ability Chance
-    this.form!.querySelectorAll("[data-item-roll]").forEach((el) => {
+    this.form?.querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
       const item = this.actor.items.get(itemId);
       requireValue(item, "AbilityChance roll couldn't find skillItem");
@@ -612,7 +612,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll Spirit Magic
-    (this.form as HTMLElement).querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
+    this.form?.querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
       const item = this.actor.items.get(itemId);
       if (!item) {
@@ -659,9 +659,10 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Show Weapon Chat Card
-    (this.form as HTMLElement).querySelectorAll("[data-weapon-roll]").forEach((el) => {
-      const weaponItemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const skillItemId = getDomDataset($(el as HTMLElement), "skill-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
+      const weaponUsage = getRequiredDomDataset(el, "weapon-roll");
+      const weaponItemId = getRequiredDomDataset(el, "item-id");
+      const skillItemId = getDomDataset(el, "skill-id");
       if (!skillItemId) {
         console.warn(
           `Weapon ${weaponItemId} is missing a skill. Normal if you just dragged the weapon in, but should only happen then`
@@ -674,13 +675,13 @@ export class RqgActorSheet extends ActorSheet<
         if (skillItemId && clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
+          await WeaponCard.show(weaponItemId, weaponUsage, skillItemId, this.actor, this.token);
           clickCount = 0;
         } else if (skillItemId && clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
               // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await WeaponCard.show(weaponItemId, skillItemId, this.actor, this.token);
+              await WeaponCard.show(weaponItemId, weaponUsage, skillItemId, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -689,7 +690,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Set Token SR in Combat Tracker
-    (this.form as HTMLElement).querySelectorAll("[data-set-sr]").forEach((el: Element) => {
+    this.form?.querySelectorAll("[data-set-sr]").forEach((el: Element) => {
       const sr = getRequiredDomDataset($(el as HTMLElement), "set-sr");
       let token = this.token as TokenDocument | null;
       if (!token && this.actor.data.token.actorLink) {

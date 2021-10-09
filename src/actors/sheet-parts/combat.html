@@ -10,6 +10,47 @@
   <div class="head4 text-right">Chance</div>
   <div class="head5">HP</div>
   <div class="head6 text-right">SR</div>
+
+  {{#each ownedItems.weapon}}
+    {{#if (eq data.data.equippedStatus "equipped")}}
+      {{#unless data.data.isNatural}}
+        <div data-item-id="{{data._id}}" class="combat contextmenu"><img class="item" src="{{img}}"></div>
+        <div data-item-id="{{data._id}}" class="combat contextmenu">{{name}}</div>
+        <div>
+          <span>
+          {{#each data.data.usage}}
+            {{#if skillId}}
+              <span class="combat contextmenu" data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">{{damage}}</span><br>
+            {{/if}}
+          {{/each}}
+          </span>
+        </div>
+        <div>
+          <span class="text-right">
+            {{#each data.data.usage}}
+              {{#if skillId}}
+                <span class="combat contextmenu" data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">{{@key}} <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span></span><br>
+              {{/if}}
+            {{/each}}
+          </span>
+        </div>
+        <div data-item-id="{{data._id}}" class="combat contextmenu">
+          <label><input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value" value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</label>
+        </div>
+        <div data-item-id="{{data._id}}"
+             data-set-sr="{{sum @root.data.data.attributes.sizStrikeRank @root.data.data.attributes.dexStrikeRank data.data.strikeRank}}"
+             class="combat contextmenu">
+          <button class="text-right">
+            {{sum @root.data.data.attributes.sizStrikeRank @root.data.data.attributes.dexStrikeRank data.data.strikeRank}}
+          </button>
+        </div>
+      {{/unless}}
+    {{/if}}
+  {{/each}}
+
+
+
+
   {{#each ownedItems.meleeWeapon}}
   {{#if (eq data.data.equippedStatus "equipped")}}
   {{#unless data.data.isNatural}}
@@ -81,9 +122,9 @@
         {{sum @root.data.data.attributes.sizStrikeRank @root.data.data.attributes.dexStrikeRank data.data.strikeRank}}
       </button>
     </div>
-
   {{/if}}
   {{/each}}
+
   {{#if dodgeSkillData}}
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill contextmenu"> <img class="item" src="{{dodgeSkillData.img}}"></div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill contextmenu">Dodge</div>

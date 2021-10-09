@@ -11,11 +11,11 @@ export const damageType = {
 } as const;
 export type DamageType = typeof damageType[keyof typeof damageType];
 
-export interface CombatManeuver {
+export type CombatManeuver = {
   name: string;
   damageType: DamageType;
   description?: string;
-}
+};
 
 export type Usage = {
   /** id of the corresponding skill (when embedded) */

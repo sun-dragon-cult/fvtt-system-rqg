@@ -1,15 +1,19 @@
+{{log "weaponcard" this}}
 <form class="card-form" data-chat-card="weaponCard" method="post">
   <div class="rqg chat-card weapon-card">
 
     <img class="item" src="{{weaponItemData.img}}">
-    <i>{{skillItemData.name}}</i> <span>{{formData.chance}}%</span><br>
+    <i>{{skillItemData.data.skillName}}{{#if skillItemData.data.specialization}} ({{skillItemData.data.specialization}}){{/if}}</i><br>
 
-    <label>{{localize 'RQG.modifier'}} <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label>
+    <label>{{localize 'RQG.modifier'}} <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label> <i class="fas fa-arrow-right"></i> <span>{{formData.chance}}%</span>
 
     <div class="flex-row">
-      {{#each weaponItemData.data.combatManeuvers}}
-            <button name="combatManeuver" value="{{this}}" {{#if (eq this ../formData.combatManeuver)}}class="active"{{/if}}>{{localize (concat 'RQG.combatManeuver.' this)}}</button>
+      {{#with (lookup weaponItemData.data.usage usage)}}
+      {{#each combatManeuvers}}
+            <button name="combatManeuver" value="{{name}}" {{#if (eq name ../../formData.combatManeuver)}}class="active"{{/if}}
+                    >{{localize (concat 'RQG.combatManeuver.' name)}}</button>
       {{/each}}
+      {{/with}}
     </div>
 
     {{#if formData.combatManeuver}}
