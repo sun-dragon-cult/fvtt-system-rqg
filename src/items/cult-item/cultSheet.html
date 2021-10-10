@@ -5,25 +5,16 @@
       <input type="text" name="name" value="{{data.name}}" placeholder="Cult Name"><br>
       <input type="text" name="data.tagline" value="{{cultData.tagline}}" placeholder="Cult Tagline">
     </div>
-
   </header>
   <main>
-    <select name="data.rank">
-      {{#select cultData.rank}} {{#each sheetSpecific.ranksEnum}}
-        <option value="{{this}}">{{localize (concat "RQG.CultRank." this)}}</option>
-      {{/each}} {{/select}}
-    </select><br>
+
     {{#each cultData.runes}}
       <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
-    <label>Rune Points <input type="number" min="0" max="99" name="data.runePoints.value"
-                              value="{{cultData.runePoints.value}}">/<input type="number" min="0" max="99"
-                                                                             name="data.runePoints.max"
-                                                                             value="{{cultData.runePoints.max}}"></label><br>
+
     <label>Holy Days {{editor content=cultData.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
-    <label>Actor's Sub Cults {{editor content=cultData.subCults target="data.subCults" button=true owner=owner editable=editable}}</label><br>
-    <br>
+
     {{#if cultData.journalPack}}
       <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to compendium [{{cultData.journalPack}}] journal
         Entry [{{sheetSpecific.journalEntryName}}]</a>
@@ -31,7 +22,23 @@
       <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to journal Entry [{{sheetSpecific.journalEntryName}}]</a>
     {{/if}}
 
-    <br><i>Drop a journal on this item to connect a description.</i>
+    <p><i>Drop a journal on this item to connect a description.</i></p>
+
+    {{#if isEmbedded}}
+      <hr>
+      <label>Rune Points <input type="number" min="0" max="99" name="data.runePoints.value"
+                                value="{{cultData.runePoints.value}}">/<input type="number" min="0" max="99"
+                                                                              name="data.runePoints.max"
+                                                                              value="{{cultData.runePoints.max}}"></label><br>
+      <select name="data.rank">
+        {{#select cultData.rank}} {{#each sheetSpecific.ranksEnum}}
+          <option value="{{this}}">{{localize (concat "RQG.CultRank." this)}}</option>
+        {{/each}} {{/select}}
+      </select><br>
+      <label>Actor's Gifts {{editor content=cultData.gifts target="data.gifts" button=true owner=owner editable=editable}}</label><br>
+      <label>Actor's Geases {{editor content=cultData.geases target="data.geases" button=true owner=owner editable=editable}}</label><br>
+      <label>Actor's Sub Cults {{editor content=cultData.subCults target="data.subCults" button=true owner=owner editable=editable}}</label>
+    {{/if}}
   </main>
   <datalist id="allRunes">
     {{#each sheetSpecific.allRunes}}

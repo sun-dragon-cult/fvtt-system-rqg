@@ -1,4 +1,4 @@
-import { emptyResource, Resource } from "../shared/resource";
+import { Resource } from "../shared/resource";
 import { JournalEntryLink } from "../shared/journalentrylink";
 import { ItemTypeEnum } from "./itemTypes";
 
@@ -17,6 +17,8 @@ export interface CultDataSourceData extends JournalEntryLink {
   runePoints: Resource;
   tagline: string;
   holyDays: string;
+  gifts: string;
+  geases: string;
   runes: string[];
   // cultSkills: string[]; // TODO Link to system wide id...
   // favouredPassions: string[]; // TODO Link to system wide id...
@@ -42,9 +44,11 @@ export interface CultDataProperties {
 
 export const emptyCult: CultDataSourceData = {
   rank: CultRankEnum.LayMember,
-  runePoints: emptyResource,
+  runePoints: { value: 0, max: 0 },
   tagline: "",
   holyDays: "",
+  gifts: "",
+  geases: "",
   runes: [],
   subCults: "",
   journalId: "",
