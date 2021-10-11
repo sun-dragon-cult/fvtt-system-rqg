@@ -216,7 +216,7 @@ export class RqgActorSheet extends ActorSheet<
 
   private getSpiritMagicPointSum(): number {
     return this.actor.items.reduce((acc: number, item: RqgItem) => {
-      if (item.data.type === ItemTypeEnum.SpiritMagic) {
+      if (item.data.type === ItemTypeEnum.SpiritMagic && !item.data.data.isMatrix) {
         return acc + item.data.data.points;
       } else {
         return acc;

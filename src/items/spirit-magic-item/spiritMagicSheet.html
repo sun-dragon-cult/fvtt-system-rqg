@@ -46,8 +46,8 @@
       {{/unless}}
     </div>
   </main>
-  <label>spellFocus <input type="text" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}"></label>
-  <br>
+  <label>spellFocus <input type="text" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}"></label><br>
+  <label><input type="checkbox" name="data.isMatrix" {{checked spiritMagicData.isMatrix}}>Is Matrix</label><br>
   {{#if spiritMagicData.journalPack}}
     <a data-journal-pack="{{spiritMagicData.journalPack}}" data-journal-id="{{spiritMagicData.journalId}}">Linked to compendium [{{spiritMagicData.journalPack}}] journal Entry [{{sheetSpecific.journalEntryName}}]</a>
   {{else if spiritMagicData.journalId}}

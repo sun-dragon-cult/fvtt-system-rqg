@@ -27,6 +27,8 @@ export interface SpiritMagicDataSourceData extends JournalEntryLink {
   concentration: SpiritMagicConcentrationEnum;
   incompatibleWith: string[]; // Can't be cast if one of the listed spells are already active
   spellFocus: string;
+  /** Should this spell be included for CHA limit calculations */
+  isMatrix: boolean;
 }
 
 // --- Derived Data ---
@@ -52,4 +54,5 @@ export const emptySpiritMagic: SpiritMagicDataSourceData = {
   spellFocus: "",
   journalId: "",
   journalPack: "",
+  isMatrix: false,
 };
