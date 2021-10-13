@@ -5,6 +5,7 @@
     <h2>{{localize (concat 'RQG.SkillCategory.' @key)}} ({{#with @root.characterData.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
     <div class="grid skill">
       {{#each this}}
+        {{#unless data.data.runes}}
         <div data-item-id="{{id}}" title="Description" class="skill contextmenu"
           {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
           <img class="item" src="{{img}}">
@@ -18,6 +19,7 @@
       <div data-item-id="{{id}}" class="skill contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
         <span class="text-right nowrap">{{data.data.chance}}%</span>
       </div>
+        {{/unless}}
       {{/each}}
     </div>
   </div>

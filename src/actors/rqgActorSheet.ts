@@ -407,7 +407,9 @@ export class RqgActorSheet extends ActorSheet<
       sorcery:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
-          (i: RqgItem) => i.data.type === ItemTypeEnum.Rune && i.data.data.isMastered
+          (i: RqgItem) =>
+            i.data.type === ItemTypeEnum.Rune &&
+            (i.data.data.isMastered || i.data.data.runeType === RuneTypeEnum.Technique)
         ),
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
