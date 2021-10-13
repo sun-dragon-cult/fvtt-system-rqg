@@ -20,14 +20,7 @@
       <label>Location <input type="text" name="data.location" value="{{weaponData.location}}"></label><br>
       <label>Attuned to <input type="text" name="data.attunedTo" value="{{weaponData.attunedTo}}"></label><br>
 
-      <fieldset>
-        <legend>Melee Weapon settings</legend>
-        <label>SR <input type="number" min="0" max="99" name="data.strikeRank" value="{{weaponData.strikeRank}}"></label><br>
-      </fieldset>
-      <fieldset>
-        <legend>Missile Weapon settings</legend>
-<span>TODO add the settings here</span>
-      </fieldset>
+
 
     </div>
     <br>
@@ -55,6 +48,7 @@
               <label>Damage <input type="text" name="data.usage.{{@key}}.damage" value="{{damage}}"></label>
               <label>Min STR <input type="number" min="0" max="99" name="data.usage.{{@key}}.minStrength" value="{{minStrength}}"></label>
               <label>Min DEX <input type="number" min="0" max="99" name="data.usage.{{@key}}.minDexterity" value="{{minDexterity}}"></label>
+              {{#unless (eq @key "missile")}}<label>SR <input type="number" min="0" max="99" name="data.usage.{{@key}}.strikeRank" value="{{strikeRank}}"></label>{{/unless}}
             </div><br>
             {{/if}}
             <div>
@@ -88,6 +82,45 @@
                 </tr>
               </table>
             </div>
+
+            {{#if (eq @key "missile")}}
+            {{#with @root}}
+              <label><input type="checkbox" name="data.isThrownWeapon" {{checked weaponData.isThrownWeapon}}>Thrown Weapon (gets
+                half damage bonus)</label><br>
+              <label><input type="checkbox" name="data.isProjectileWeapon" {{checked weaponData.isProjectileWeapon}}>Projectile
+                Weapon (uses projectiles)</label><br>
+              <label><input type="checkbox" name="data.isProjectile" {{checked weaponData.isProjectile}}>Projectile (used as
+                ammunition)</label><br>
+              <hr>
+              <div class="flex-row">
+                {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon)}}
+                  <div>
+                    {{#if weaponData.isProjectileWeapon}}
+                      <label class="mp">Projectile
+                        <select name="data.projectileId">
+                          {{#select weaponData.projectileId}} {{#each sheetSpecific.ownedProjectiles}}
+                            <option value="{{_id}}">{{name}}</option>
+                          {{/each}} {{/select}}
+                        </select>
+                      </label><br>
+                    {{/if}}
+                    <label>Range <input type="number" min="0" max="999" name="data.range" value="{{weaponData.range}}"></label><br>
+                    {{!--              <label>Rate <input type="number" min="0" max="99" name="data.rate" value="{{weaponData.rate}}"></label><br>--}}
+                    <label>Rate
+                      <select name="data.rate">
+                        {{#select weaponData.rate}} {{#each sheetSpecific.rateOfFire}}
+                          <option value="{{this}}">{{@key}}</option>
+                        {{/each}} {{/select}}
+                      </select>
+                    </label><br>
+                  </div>
+                {{/if}}
+                {{#unless (eq weaponData.physicalItemType "unique")}}
+                  <label>Quantity<br><input type="number" name="data.quantity" value="{{weaponData.quantity}}"></label>
+                {{/unless}}
+              </div>
+            {{/with}}
+        {{/if}}
           </fieldset>
         {{/each}}
 

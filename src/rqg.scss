@@ -327,9 +327,17 @@
 
       // Set-token-SR-in-combat button
       button {
+        height: 1.5rem;
         line-height: unset;
         width: unset;
         text-align: left;
+      }
+
+      .usage {
+        line-height: 1.5rem;
+        &.missile {
+          line-height: 3rem;
+        }
       }
     }
 

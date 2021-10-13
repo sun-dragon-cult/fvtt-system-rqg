@@ -133,6 +133,29 @@
             </div>
             {{/if}}
             {{/each}}
+            {{#each ownedItems.weapon}}
+              {{#if (eq data.data.physicalItemType "consumable")}}
+                <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
+                <div data-item-id="{{id}}" class="gear contextmenu">{{name}}</div>
+                <div data-item-id="{{id}}" class="gear contextmenu">
+                  <span class="text-right">{{data.data.quantity}}</span>
+                </div>
+                <div data-item-id="{{id}}" class="gear contextmenu">
+                  <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
+                </div>
+                <div data-item-id="{{id}}" class="gear contextmenu">
+                  <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
+                </div>
+                <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu">
+                  <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
+                       src="{{equippedIcon data.data.equippedStatus}}">
+                </div>
+                <div data-item-id="{{id}}" class="gear contextmenu">
+                  <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
+                         size="10">
+                </div>
+              {{/if}}
+            {{/each}}
             {{#each ownedItems.missileWeapon}}
             {{#if (eq data.data.physicalItemType "consumable")}}
             <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>

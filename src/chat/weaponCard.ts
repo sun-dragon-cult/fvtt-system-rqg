@@ -296,8 +296,13 @@ export class WeaponCard extends ChatMessage {
         ? `${actor.data.data.attributes.damageBonus}`
         : "";
 
-    // TODO Handle missile weapons
-    if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
+    assertItemType(flags.weaponItemData.type, ItemTypeEnum.Weapon);
+    const weaponUsage: Usage = (flags.weaponItemData.data.usage as any)[flags.usage];
+    const weaponDamage = hasOwnProperty(weaponUsage, "damage")
+      ? Roll.parse(`(${weaponUsage.damage})[weapon]`, {})
+      : [];
+
+    if (flags.usage === "missile") {
       const missileWeaponData = flags.weaponItemData;
 
       if (missileWeaponData.data.isThrownWeapon) {
@@ -306,12 +311,6 @@ export class WeaponCard extends ChatMessage {
         damageBonusFormula = "";
       }
     }
-
-    assertItemType(flags.weaponItemData.type, ItemTypeEnum.Weapon);
-    const weaponUsage: Usage = (flags.weaponItemData.data.usage as any)[flags.usage];
-    const weaponDamage = hasOwnProperty(weaponUsage, "damage")
-      ? Roll.parse(`(${weaponUsage.damage})[weapon]`, {})
-      : [];
 
     const damageRollTerms =
       hasOwnProperty(weaponUsage, "damage") && weaponUsage.damage ? weaponDamage : []; // Don't add 0 damage rollTerm

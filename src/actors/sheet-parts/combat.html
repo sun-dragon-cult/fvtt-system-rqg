@@ -6,48 +6,131 @@
   <div class="headings"></div>
   <div class="head1"></div>
   <div class="head2">Weapon</div>
-  <div class="head3">Damage</div>
+  <div class="head3">HP</div>
   <div class="head4 text-right">Chance</div>
-  <div class="head5">HP</div>
-  <div class="head6 text-right">SR</div>
+  <div class="head5">Damage</div>
+  <div class="head6">SR</div>
 
   {{#each ownedItems.weapon}}
     {{#if (eq data.data.equippedStatus "equipped")}}
       {{#unless data.data.isNatural}}
         <div data-item-id="{{data._id}}" class="combat contextmenu"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{data._id}}" class="combat contextmenu">{{name}}</div>
-        <div>
-          <span>
-          {{#each data.data.usage}}
-            {{#if skillId}}
-              <span class="combat contextmenu" data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">{{damage}}</span><br>
-            {{/if}}
-          {{/each}}
-          </span>
+        <div data-item-id="{{data._id}}" class="combat contextmenu">
+          <label><input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value"
+                        value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</label>
         </div>
         <div>
-          <span class="text-right">
+          <span class="flex-column text-right">
             {{#each data.data.usage}}
               {{#if skillId}}
-                <span class="combat contextmenu" data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">{{@key}} <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span></span><br>
+                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
+                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">{{localize
+                  (concat "RQG.usage." @key)}}
+                  <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span>
+                </span>
               {{/if}}
             {{/each}}
           </span>
         </div>
-        <div data-item-id="{{data._id}}" class="combat contextmenu">
-          <label><input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value" value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</label>
+        <div>
+          <span class="flex-column">
+            {{#each data.data.usage}}
+              {{#if skillId}}
+                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
+                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}"
+                      data-weapon-roll="{{@key}}">{{damage}}</span>
+              {{/if}}
+            {{/each}}
+          </span>
         </div>
-        <div data-item-id="{{data._id}}"
-             data-set-sr="{{sum @root.data.data.attributes.sizStrikeRank @root.data.data.attributes.dexStrikeRank data.data.strikeRank}}"
-             class="combat contextmenu">
-          <button class="text-right">
-            {{sum @root.data.data.attributes.sizStrikeRank @root.data.data.attributes.dexStrikeRank data.data.strikeRank}}
-          </button>
+        <div>
+          <span class="flex-column">
+            {{#each data.data.usage}}
+              {{#if skillId}}
+                {{#if (eq @key "missile")}}
+                  <div class="flex-column usage">
+                    <div>
+                      {{#each @root.unloadedMissileSr}}
+                        {{{this}}}
+                      {{/each}}
+                    </div>
+                    <div><i>
+                      {{#each @root.loadedMissileSr}}
+                        {{{this}}}
+                      {{/each}}
+                    </i></div>
+                  </div>
+                {{else}}
+                  <span><button class="combat contextmenu" data-item-id="{{../data._id}}"
+                                data-set-sr="{{sum @root.data.data.attributes.sizStrikeRank
+                                                   @root.data.data.attributes.dexStrikeRank strikeRank}}">
+                    {{sum @root.data.data.attributes.sizStrikeRank @root.data.data.attributes.dexStrikeRank strikeRank}}
+                  </button></span>
+                {{/if}}
+              {{/if}}
+            {{/each}}
+          </span>
         </div>
       {{/unless}}
     {{/if}}
   {{/each}}
 
+  {{#each ownedItems.weapon}}
+    {{#if data.data.isNatural}}
+      <div data-item-id="{{data._id}}" class="combat contextmenu"><img class="item" src="{{img}}"></div>
+      <div data-item-id="{{data._id}}" class="combat contextmenu">{{name}}</div>
+      <div data-item-id="{{data._id}}" class="combat contextmenu"></div>
+      <div>
+          <span class="flex-column text-right">
+            {{#each data.data.usage}}
+              {{#if skillId}}
+                <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span>
+              {{/if}}
+            {{/each}}
+          </span>
+      </div>
+      <div>
+          <span class="flex-column">
+            {{#each data.data.usage}}
+              {{#if skillId}}
+                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
+                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}"
+                      data-weapon-roll="{{@key}}">{{damage}}</span>
+              {{/if}}
+            {{/each}}
+          </span>
+      </div>
+      <div>
+          <span class="flex-column">
+            {{#each data.data.usage}}
+              {{#if skillId}}
+                {{#if (eq @key "missile")}}
+                  <div class="flex-column usage">
+                    <div>
+                      {{#each @root.unloadedMissileSr}}
+                        {{{this}}}
+                      {{/each}}
+                    </div>
+                    <div><i>
+                      {{#each @root.loadedMissileSr}}
+                        {{{this}}}
+                      {{/each}}
+                    </i></div>
+                  </div>
+                {{else}}
+                  <span><button class="combat contextmenu" data-item-id="{{../data._id}}"
+                                data-set-sr="{{sum @root.data.data.attributes.sizStrikeRank
+                                                   @root.data.data.attributes.dexStrikeRank strikeRank}}">
+                    {{sum @root.data.data.attributes.sizStrikeRank @root.data.data.attributes.dexStrikeRank strikeRank}}
+                  </button></span>
+                {{/if}}
+              {{/if}}
+            {{/each}}
+          </span>
+      </div>
+    {{/if}}
+  {{/each}}
 
 
 

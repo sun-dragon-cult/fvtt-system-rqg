@@ -167,6 +167,12 @@
       "Grapple": "Grapple",
       "Knockback": "Knockback"
     },
+    "usage": {
+      "oneHand": "1H",
+      "offHand": "offH",
+      "twoHand": "2H",
+      "missile": "Missile"
+    },
     "damageRollType": {
       "normal": "Normal",
       "special": "Special",

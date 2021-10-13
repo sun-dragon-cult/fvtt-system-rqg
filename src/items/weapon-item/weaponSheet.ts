@@ -21,6 +21,8 @@ interface WeaponSheetData {
     /** For showing the name of the linked skill if the item isn't owned */
     skillNames: any;
     equippedStatuses: string[];
+    rateOfFire: { [label: string]: number };
+    ownedProjectiles: RqgItem[];
   };
 }
 
@@ -29,8 +31,8 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Weapon],
       template: "systems/rqg/items/weapon-item/weaponSheet.html",
-      width: 550,
-      height: 750,
+      width: 960,
+      height: 800,
     });
   }
 
@@ -53,6 +55,15 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         weaponSkills: this.getWeaponSkills(),
         skillNames: await this.getSkillNames(),
         equippedStatuses: [...equippedStatuses],
+        ownedProjectiles: this.getOwnedProjectiles(),
+        rateOfFire: {
+          "S/MR": 0,
+          "1/MR": 1,
+          "1/2MR": 2,
+          "1/3MR": 3,
+          "1/4MR": 4,
+          "1/5MR": 5,
+        },
       },
     };
   }
@@ -92,6 +103,15 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     return skill?.name ?? "";
   }
 
+  private getOwnedProjectiles(): any {
+    if (this.item.isOwned) {
+      return this.actor!.getEmbeddedCollection("Item").filter(
+        (i) => i.data.type === ItemTypeEnum.Weapon && i.data.data.isProjectile
+      );
+    }
+    return [];
+  }
+
   protected async _updateObject(event: Event, formData: any): Promise<any> {
     formData["data.usage.oneHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "oneHand",
@@ -109,6 +129,21 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       "missile",
       formData
     );
+
+    formData["data.physicalItemType"] = formData["data.isProjectile"] ? "consumable" : "unique";
+
+    if (
+      !formData["data.isProjectile"] &&
+      !formData["data.isProjectileWeapon"] &&
+      !formData["data.isThrownWeapon"]
+    ) {
+      formData["data.isProjectileWeapon"] = true;
+    }
+
+    if (formData["data.physicalItemType"] === "unique") {
+      formData["data.quantity"] = 1;
+    }
+
     return super._updateObject(event, formData);
   }
 

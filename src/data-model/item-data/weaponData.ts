@@ -27,6 +27,8 @@ export type Usage = {
   damage: string;
   minStrength: number;
   minDexterity: number;
+  //** Melee weapon SR */
+  strikeRank?: number;
 };
 
 export interface WeaponDataSourceData extends IPhysicalItem {
@@ -42,13 +44,9 @@ export interface WeaponDataSourceData extends IPhysicalItem {
   /** E.g. Fist, Grapple, Spit */
   isNatural: boolean;
 
-  // --- melee weapon specific ---
-
-  strikeRank: number;
-
   // --- missile weapon specific ---
 
-  /** 0 = multiple/mr, 1 = 1/mr, 2 = 1/2mr, 3 = 1/3mr, 5 = 1/5mr */
+  /** 0 =  s/mr (multiple/mr), 1 = 1/mr, 2 = 1/2mr, 3 = 1/3mr, 5 = 1/5mr */
   rate: number;
   /** meters at full chance, up to range*1.5 = 1/2 chance, up to range*2 1/4 chance */
   range: number;
@@ -85,6 +83,7 @@ export const emptyWeapon: WeaponDataSourceData = {
       damage: "",
       minStrength: 0,
       minDexterity: 0,
+      strikeRank: 0,
     },
     offHand: {
       skillId: "",
@@ -93,6 +92,7 @@ export const emptyWeapon: WeaponDataSourceData = {
       damage: "",
       minStrength: 0,
       minDexterity: 0,
+      strikeRank: 0,
     },
     twoHand: {
       skillId: "",
@@ -101,6 +101,7 @@ export const emptyWeapon: WeaponDataSourceData = {
       damage: "",
       minStrength: 0,
       minDexterity: 0,
+      strikeRank: 0,
     },
     missile: {
       skillId: "",
@@ -122,7 +123,6 @@ export const emptyWeapon: WeaponDataSourceData = {
   price: emptyPrice,
   isNatural: false,
   equippedStatus: "carried",
-  strikeRank: 0,
   rate: 0,
   range: 0,
   isProjectile: false,
