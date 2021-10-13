@@ -122,15 +122,16 @@
       "stinkingForest": "Stinking Forest",
       "trollWoods": "Troll Woods",
       "vansh": "Vansh",
-      "habitatPlains": "Habitat: Plains",
+      "habitatChaosArea": "Habitat: Chaos Area",
       "habitatForest": "Habitat: Forest",
-      "habitatMountainsHills": "Habitat: Mountains / Hills",
-      "habitatMarshSwamp": "Habitat: Marsh / Swamp",
-      "habitatWaterSea": "Habitat: Water / Sea",
-      "habitatSky": "Habitat: Sky",
       "habitatGlacier": "Habitat: Glacier",
+      "habitatMarshSwamp": "Habitat: Marsh / Swamp",
+      "habitatMountainsHills": "Habitat: Mountains / Hills",
+      "habitatPlains": "Habitat: Plains",
+      "habitatSky": "Habitat: Sky",
+      "habitatSpiritPlane": "Habitat: Spirit Plane",
       "habitatUnderground": "Habitat: Underground",
-      "habitatChaosArea": "Habitat: Chaos Area"
+      "habitatWaterSea": "Habitat: Water / Sea"
     },
     "Occupation": {
       "Heading": "Occupation",
