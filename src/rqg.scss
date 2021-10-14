@@ -384,7 +384,8 @@
       > *:nth-child(22n + 30),
       > *:nth-child(22n + 31),
       > *:nth-child(22n + 32),
-      > *:nth-child(22n + 33) {
+      > *:nth-child(22n + 33),
+      > *:nth-child(22n + 34) {
         background: var(--table-alternate-background);
       }
     }
