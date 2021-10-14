@@ -8,9 +8,9 @@
     "TypeArmor": "Armor",
     "TypeMeleeweapon": "Melee Weapon",
     "TypeMissileweapon": "Missile Weapon",
-    "TypeSpiritmagic": "Spirit Magic",
+    "TypeSpiritmagic": "Spirit Magic Spell",
     "TypeCult": "Cult",
-    "TypeRunemagic": "Rune Magic"
+    "TypeRunemagic": "Rune Magic Spell"
   },
   "RQG": {
     "characteristic": {
