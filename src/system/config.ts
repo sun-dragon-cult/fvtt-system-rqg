@@ -27,7 +27,7 @@ export const RQG_CONFIG = {
   },
 
   // Default Combat Maneuvers for weapon items
-  combatManeuvers: ["Throw", "Shoot", "Trust", "Cut", "Bash", "Parry", "Grapple", "Knockback"],
+  combatManeuvers: ["Throw", "Shoot", "Thrust", "Cut", "Bash", "Parry", "Grapple", "Knockback"],
 
   equippedIcons: {
     notCarried: "systems/rqg/assets/images/equipped/not_carried.svg",
