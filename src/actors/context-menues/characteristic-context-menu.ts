@@ -101,6 +101,12 @@ async function getCharacteristicUpdate(
   formula: string,
   speakerName?: string
 ): Promise<DeepPartial<ActorDataConstructorData>> {
+  if (!formula) {
+    return {
+      data: { characteristics: { [characteristic]: { value: "" } } },
+    };
+  }
+
   const r = new Roll(formula, {});
   await r.evaluate({ async: true });
   if (speakerName) {

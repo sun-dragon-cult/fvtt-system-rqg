@@ -16,12 +16,18 @@
     {{/each}}
     <span class="small-size">{{data.data.tagline}}</span>
   </h2>
-  <div class="flex-row cult contextmenu">
+  <div class="flex-row flex-wrap gap1rem cult contextmenu">
     <span>
       <b>Rank:</b> {{localize (concat "RQG.CultRank." data.data.rank)}}<br>
       <b>Rune Points:</b> <input type="number" min="0" max="99" data-item-edit-value="data.runePoints.value" value="{{data.data.runePoints.value}}">/{{data.data.runePoints.max}}
     </span>
     <span>{{{enrichHtml data.data.holyDays}}}</span>
+    {{#if data.data.gifts}}
+      <span><b>Gifts:</b>{{{enrichHtml data.data.gifts}}}</span>
+    {{/if}}
+    {{#if data.data.geases}}
+      <span><b>Geases:</b>{{{enrichHtml data.data.geases}}}</span>
+    {{/if}}
     {{#if data.data.subCults}}
       <span><b>Sub Cults:</b>{{{enrichHtml data.data.subCults}}}</span>
     {{/if}}
