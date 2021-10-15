@@ -97,6 +97,7 @@ interface CharacterSheetData {
 
   // UI toggles
   isGM: boolean;
+  isPC: boolean;
   showUiSection: UiSections;
 }
 
@@ -191,6 +192,7 @@ export class RqgActorSheet extends ActorSheet<
 
       // UI toggles
       isGM: getGameUser().isGM,
+      isPC: this.actor.hasPlayerOwner,
       showUiSection: this.getUiSectionVisibility(),
     };
   }

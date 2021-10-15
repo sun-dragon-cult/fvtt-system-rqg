@@ -40,14 +40,18 @@
         {{/each}}
       </div>
       <div class="thirdline">
-        <div>
-          <div class="norse">SIZ SR</div>
-          <div class="text-center">{{characterData.attributes.sizStrikeRank}}</div>
-        </div>
-        <div>
-          <div class="norse">DEX SR</div>
-          <div class="text-center">{{characterData.attributes.dexStrikeRank}}</div>
-        </div>
+        {{#if characterData.characteristics.size.value}}
+          <div>
+            <div class="norse">SIZ SR</div>
+            <div class="text-center">{{characterData.attributes.sizStrikeRank}}</div>
+          </div>
+        {{/if}}
+        {{#if characterData.characteristics.dexterity.value}}
+          <div>
+            <div class="norse">DEX SR</div>
+            <div class="text-center">{{characterData.attributes.dexStrikeRank}}</div>
+          </div>
+        {{/if}}
         <fieldset class="mov-enc">
           <legend>{{characterData.attributes.move.currentLocomotion}}</legend>
           <div class="flex-column">
@@ -61,38 +65,45 @@
               <label class="nowrap"><input type="radio" name="data.attributes.move.currentLocomotion" value="fly" {{checked (eq "fly" characterData.attributes.move.currentLocomotion)}}> <i class="fas fa-dove"></i></label>
             {{/if}}
           </div>
-        <div>
-          <div class="norse nowrap">MOV <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg"> ENC</div>
-          <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.equipped characterData.attributes.encumbrance.max)}}warning{{/if}}">
-            <span>{{characterData.attributes.move.equipped}}</span> • <span>{{characterData.attributes.encumbrance.equipped}} / {{characterData.attributes.encumbrance.max}}</span>
+        {{#if characterData.attributes.encumbrance.max}}
+          <div>
+            <div class="norse nowrap">MOV <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg"> ENC</div>
+            <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.equipped characterData.attributes.encumbrance.max)}}warning{{/if}}">
+              <span>{{characterData.attributes.move.equipped}}</span> • <span>{{characterData.attributes.encumbrance.equipped}} / {{characterData.attributes.encumbrance.max}}</span>
+            </div>
           </div>
-        </div>
-        <div>
-          <div class="norse nowrap">MOV <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg"> ENC</div>
-          <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.travel characterData.attributes.encumbrance.max)}}warning{{/if}}">
-            <span>{{characterData.attributes.move.travel}}</span> • <span>{{characterData.attributes.encumbrance.travel}} / {{characterData.attributes.encumbrance.max}}</span>
+        {{/if}}
+        {{#if characterData.attributes.encumbrance.max}}
+          <div>
+            <div class="norse nowrap">MOV <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg"> ENC</div>
+            <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.travel characterData.attributes.encumbrance.max)}}warning{{/if}}">
+              <span>{{characterData.attributes.move.travel}}</span> • <span>{{characterData.attributes.encumbrance.travel}} / {{characterData.attributes.encumbrance.max}}</span>
+            </div>
           </div>
-        </div>
+        {{/if}}
         <div>
-          <div class="norse">MOV</div>
-          {{#if isGM}}
-            {{#with (lookup characterData.attributes.move characterData.attributes.move.currentLocomotion) }}
-              <div class="text-center"><input type="number" min="0" max="99" name="{{concat 'data.attributes.move.' @root.characterData.attributes.move.currentLocomotion '.value'}}" value="{{value}}" size="2"></div>
-            {{/with}}
-          {{else}}
-            <div class="text-center">{{characterData.attributes.move.value}}</div>
-          {{/if}}
-        </div>
-{{#if isGM}}
-        <div>
-          <div class="norse">ENC factor</div>
-            {{#with (lookup characterData.attributes.move characterData.attributes.move.currentLocomotion) }}
-              <div class="text-center"><input type="number" min="0" max="99" name="{{concat 'data.attributes.move.' @root.characterData.attributes.move.currentLocomotion '.carryingFactor'}}" value="{{carryingFactor}}" size="2"></div>
-            {{/with}}
-        </div>
-{{/if}}
+        <div class="norse">MOV</div>
+        {{#if isGM}}
+          {{#with (lookup characterData.attributes.move characterData.attributes.move.currentLocomotion) }}
+            <div class="text-center"><input type="number" min="0" max="99" name="{{concat 'data.attributes.move.' @root.characterData.attributes.move.currentLocomotion '.value'}}" value="{{value}}" size="2"></div>
+          {{/with}}
+        {{else}}
+          <div class="text-center">{{characterData.attributes.move.value}}</div>
+        {{/if}}
+      </div>
+        {{#if characterData.attributes.encumbrance.max}}
+        {{#if isGM}}
+          <div>
+            <div class="norse">ENC factor</div>
+              {{#with (lookup characterData.attributes.move characterData.attributes.move.currentLocomotion) }}
+                <div class="text-center"><input type="number" min="0" max="99" name="{{concat 'data.attributes.move.' @root.characterData.attributes.move.currentLocomotion '.carryingFactor'}}" value="{{carryingFactor}}" size="2"></div>
+              {{/with}}
+          </div>
+        {{/if}}
+        {{/if}}
 
         </fieldset>
+        {{#if isPC}}
         <div>
           <div class="norse">Hero Points</div>
           {{#if isGM}}
@@ -101,6 +112,7 @@
             <div class="text-center">{{characterData.attributes.heroPoints}}</div>
           {{/if}}
         </div>
+        {{/if}}
       </div>
     </div>
   </header>
