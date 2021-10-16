@@ -67,38 +67,54 @@
         {{/if}}
 
         {{#if (eq result 2)}}
-          <div class="flex-row">
-            <div class="damage">{{localize 'RQG.Damage'}}</div>
-            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
-            <button name="damageRoll" value="special">{{localize 'RQG.damageRollType.special'}}</button>
-            <button name="damageRoll" value="maxSpecial">{{localize 'RQG.damageRollType.maxSpecial'}}</button>
-          </div>
-          <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
+          {{#if specialDamageTypeText}}
+            <p>{{{specialDamageTypeText}}}</p>
+          {{else}}
+            <div class="flex-row">
+              <div class="damage">{{localize 'RQG.Damage'}}</div>
+              <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
+              <button name="damageRoll" value="special">{{localize 'RQG.damageRollType.special'}}</button>
+              <button name="damageRoll" value="maxSpecial">{{localize 'RQG.damageRollType.maxSpecial'}}</button>
+            </div>
+            <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
+          {{/if}}
         {{/if}}
 
         {{#if (eq result 3)}}
-          <div class="flex-row">
-            <div class="damage">{{localize 'RQG.Damage'}}</div>
-            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
-            <button name="damageRoll" value="special">{{localize 'RQG.damageRollType.special'}}</button>
-          </div>
-          <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
+          {{#if specialDamageTypeText}}
+            <p>{{{specialDamageTypeText}}}</p>
+          {{else}}
+            <div class="flex-row">
+              <div class="damage">{{localize 'RQG.Damage'}}</div>
+              <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
+              <button name="damageRoll" value="special">{{localize 'RQG.damageRollType.special'}}</button>
+            </div>
+            <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
+          {{/if}}
         {{/if}}
 
         {{#if (eq result 4)}}
-          <div class="flex-row">
-            <div class="damage">{{localize 'RQG.Damage'}}</div>
-            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
-          </div>
-          <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
+          {{#if specialDamageTypeText}}
+            <p>{{{specialDamageTypeText}}}</p>
+          {{else}}
+            <div class="flex-row">
+              <div class="damage">{{localize 'RQG.Damage'}}</div>
+              <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
+            </div>
+            <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
+          {{/if}}
         {{/if}}
 
         {{#if (eq result 5)}}
-          <div class="flex-row">
-            <div class="damage">{{localize 'RQG.Damage'}}</div>
-            <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
-          </div>
-          <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
+          {{#if specialDamageTypeText}}
+            <p>{{{specialDamageTypeText}}}</p>
+          {{else}}
+            <div class="flex-row">
+              <div class="damage">{{localize 'RQG.Damage'}}</div>
+              <button name="damageRoll" value="normal">{{localize 'RQG.damageRollType.normal'}}</button>
+            </div>
+            <button name="hitLocationRoll">{{localize 'RQG.hitLocationRoll'}}</button>
+          {{/if}}
         {{/if}}
 
         {{#if (eq result 6)}}

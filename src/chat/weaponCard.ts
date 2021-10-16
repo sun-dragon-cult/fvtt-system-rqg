@@ -29,6 +29,7 @@ type WeaponCardFlags = {
   weaponItemData: ItemDataProperties;
   usage: string; // oneHand | twoHand | offhand | missile
   result: ResultEnum | undefined;
+  specialDamageTypeText: string | undefined;
   formData: {
     modifier: number | null; // Null is a placeholder instead of 0 to keep modifier in the object
     chance: number;
@@ -59,24 +60,15 @@ export class WeaponCard extends ChatMessage {
       throw new RqgError(msg);
     }
     const weaponItem = actor.items.get(weaponId);
-    if (
-      !weaponItem ||
-      !(
-        weaponItem.data.type === ItemTypeEnum.MeleeWeapon ||
-        weaponItem.data.type === ItemTypeEnum.MissileWeapon ||
-        weaponItem.data.type === ItemTypeEnum.Weapon
-      )
-    ) {
-      const msg = `Couldn't find weapon with itemId [${skillItem}] on actor ${actor.name} to show a weapon chat card.`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
-    }
+    assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
+
     const flags: WeaponCardFlags = {
       actorId: actor.id,
       tokenId: token?.id ?? null,
       skillItemData: skillItem.data.toObject(false) as unknown as ItemDataProperties,
       weaponItemData: weaponItem.data.toObject(false) as unknown as ItemDataProperties,
       usage: usage,
+      specialDamageTypeText: undefined,
       result: undefined,
       formData: {
         modifier: null,
@@ -157,6 +149,16 @@ export class WeaponCard extends ChatMessage {
     switch (actionButton.name) {
       case "combatManeuver":
         flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value;
+
+        const weaponUsage: Usage = (flags.weaponItemData.data as any).usage[flags.usage];
+        const combatManeuver = weaponUsage.combatManeuvers.find(
+          (m) => m.name === flags.formData.combatManeuver
+        );
+        const damageType = combatManeuver?.damageType;
+
+        flags.specialDamageTypeText =
+          damageType === "special" ? combatManeuver?.description : undefined;
+
         const projectileItemData =
           hasOwnProperty(flags.weaponItemData.data, "isProjectileWeapon") &&
           flags.weaponItemData.data.isProjectileWeapon
@@ -164,8 +166,7 @@ export class WeaponCard extends ChatMessage {
             : flags.weaponItemData;
 
         if (
-          flags.weaponItemData.type === ItemTypeEnum.MissileWeapon &&
-          projectileItemData?.type === ItemTypeEnum.MissileWeapon &&
+          projectileItemData?.type === ItemTypeEnum.Weapon &&
           projectileItemData.data.quantity &&
           projectileItemData.data.quantity > 0
         ) {
@@ -174,7 +175,10 @@ export class WeaponCard extends ChatMessage {
             data: { quantity: --projectileItemData.data.quantity },
           };
           await actor.updateEmbeddedDocuments("Item", [updateData]);
-        } else if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
+        } else if (
+          flags.weaponItemData.type === ItemTypeEnum.Weapon &&
+          flags.weaponItemData.data.isProjectileWeapon
+        ) {
           ui.notifications?.warn("Out of ammo!");
           return false;
         }
