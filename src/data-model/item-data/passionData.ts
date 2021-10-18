@@ -9,6 +9,8 @@ export enum PassionsEnum {
   Honor = "Honor",
   Loyalty = "Loyalty",
   Love = "Love",
+  Gluttony = "Gluttony",
+  Vanity = "Vanity",
 }
 
 export interface PassionDataSourceData extends IAbility {

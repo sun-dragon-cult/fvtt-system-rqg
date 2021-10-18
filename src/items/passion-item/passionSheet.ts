@@ -25,10 +25,12 @@ export class PassionSheet extends RqgItemSheet<
     [PassionsEnum.Cowardly, "systems/rqg/assets/images/passion/cowardly.svg"],
     [PassionsEnum.Devotion, "systems/rqg/assets/images/passion/devotion.svg"],
     [PassionsEnum.Fear, "systems/rqg/assets/images/passion/fear.svg"],
+    [PassionsEnum.Gluttony, "systems/rqg/assets/images/passion/gluttony.svg"],
     [PassionsEnum.Hate, "systems/rqg/assets/images/passion/hate.svg"],
     [PassionsEnum.Honor, "systems/rqg/assets/images/passion/honor.svg"],
     [PassionsEnum.Loyalty, "systems/rqg/assets/images/passion/loyalty.svg"],
     [PassionsEnum.Love, "systems/rqg/assets/images/passion/love.svg"],
+    [PassionsEnum.Vanity, "systems/rqg/assets/images/passion/vanity.svg"],
   ]);
 
   static get defaultOptions(): ItemSheet.Options {
