@@ -180,7 +180,9 @@ export class WeaponCard extends ChatMessage {
           await actor.updateEmbeddedDocuments("Item", [updateData]);
         } else if (
           flags.weaponItemData.type === ItemTypeEnum.Weapon &&
-          flags.weaponItemData.data.isProjectileWeapon
+          flags.weaponItemData.data.isProjectileWeapon &&
+          flags.usage === "missile" &&
+          !["parry", "special"].includes(damageType ?? "")
         ) {
           ui.notifications?.warn("Out of ammo!");
           return false;
