@@ -155,9 +155,12 @@ export class WeaponCard extends ChatMessage {
           (m) => m.name === flags.formData.combatManeuver
         );
         const damageType = combatManeuver?.damageType;
+        const specialDamageTypeDescription =
+          damageType === "special" ? combatManeuver?.description || undefined : undefined;
 
         flags.specialDamageTypeText =
-          damageType === "special" ? combatManeuver?.description : undefined;
+          specialDamageTypeDescription ??
+          CONFIG.RQG.combatManeuvers.get(combatManeuver?.name ?? "")?.specialDescriptionHtml;
 
         const projectileItemData =
           hasOwnProperty(flags.weaponItemData.data, "isProjectileWeapon") &&

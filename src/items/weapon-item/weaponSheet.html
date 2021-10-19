@@ -73,7 +73,7 @@
                       {{/if}}
                     </td>
                     <td>
-                        <textarea {{#unless (eq damageType "special")}}class="no-display"{{/unless}} rows="1" name="data.usage.{{../usage}}.combatManeuvers.description" placeholder="Description of how this attack works">{{description}}</textarea>
+                        <textarea {{#unless (eq damageType "special")}}class="no-display"{{/unless}} rows="1" name="data.usage.{{../usage}}.combatManeuvers.description" placeholder="{{placeholder}}">{{description}}</textarea>
                     </td>
                   </tr>
                 {{/each}}

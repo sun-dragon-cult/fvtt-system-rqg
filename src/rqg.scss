@@ -118,6 +118,10 @@
     gap: 1rem;
   }
 
+  .gap03rem {
+    gap: 0.3rem;
+  }
+
   .warning {
     outline: 2px dashed #ff640045;
     background-color: #ff640045;
@@ -580,6 +584,11 @@
         height: min-content;
         margin-right: 3px;
         margin-left: -4px;
+      }
+
+      [name="combatManeuver"] {
+        width: min-content;
+        flex: 1 1 auto;
       }
     }
     &.characteristic-card {

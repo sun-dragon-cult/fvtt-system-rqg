@@ -50,7 +50,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       data: itemData,
       weaponData: weaponData,
       sheetSpecific: {
-        defaultCombatManeuverNames: CONFIG.RQG.combatManeuvers,
+        defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()),
         damageTypes: Object.values(damageType),
         weaponSkills: this.getWeaponSkills(),
         skillNames: await this.getSkillNames(),
@@ -155,16 +155,23 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       if (name) {
         const dmgType = formData[`data.usage.${usage}.combatManeuvers.damageTypes`];
         const damageTypes = Array.isArray(dmgType) ? dmgType : [dmgType];
-        const damageType = damageTypes.length >= i ? damageTypes[i] : "";
+        const defaultDamageTypeDescription =
+          CONFIG.RQG.combatManeuvers.get(name)?.specialDescriptionHtml;
+        const damageType =
+          damageTypes.length > i
+            ? damageTypes[i]
+            : CONFIG.RQG.combatManeuvers.get(name)?.defaultDamageType;
 
         const desc = formData[`data.usage.${usage}.combatManeuvers.description`];
         const descriptions = Array.isArray(desc) ? desc : [desc];
-        const description = descriptions.length >= i ? descriptions[i] : "";
-
+        const description = descriptions.length > i ? descriptions[i] : "";
         acc.push({
           name: name,
           damageType: damageType,
           description: description,
+          placeholder:
+            defaultDamageTypeDescription ??
+            "Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)",
         });
       }
       return acc;

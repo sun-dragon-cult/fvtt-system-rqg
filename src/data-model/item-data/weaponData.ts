@@ -12,6 +12,7 @@ export const damageType = {
 export type DamageType = typeof damageType[keyof typeof damageType];
 
 export type CombatManeuver = {
+  //** name used to identify this maneuver */
   name: string;
   damageType: DamageType;
   description?: string;
