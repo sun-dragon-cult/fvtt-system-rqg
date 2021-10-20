@@ -40,6 +40,10 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     const itemData = this.document.data.toObject(false);
     assertItemType(itemData.type, ItemTypeEnum.Weapon);
     const weaponData = itemData.data;
+    if (isNaN(Number(weaponData.quantity))) {
+      weaponData.quantity = 1;
+    }
+
     return {
       cssClass: this.isEditable ? "editable" : "locked",
       editable: this.isEditable,
@@ -130,18 +134,22 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       formData
     );
 
-    formData["data.physicalItemType"] = formData["data.isProjectile"] ? "consumable" : "unique";
+    formData["data.rate"] = Number(formData["data.rate"]);
 
-    if (
-      !formData["data.isProjectile"] &&
-      !formData["data.isProjectileWeapon"] &&
-      !formData["data.isThrownWeapon"]
-    ) {
-      formData["data.isProjectileWeapon"] = true;
-    }
+    formData["data.physicalItemType"] = formData["data.isProjectile"] ? "consumable" : "unique";
 
     if (formData["data.physicalItemType"] === "unique") {
       formData["data.quantity"] = 1;
+    }
+
+    // Non projectile weapons should not decrease any projectile quantity
+    if (!formData["data.isProjectileWeapon"] && !formData["data.isThrownWeapon"]) {
+      formData["data.projectileId"] = "";
+    }
+
+    // Thrown weapons should decrease quantity of themselves
+    if (formData["data.isThrownWeapon"]) {
+      formData["data.projectileId"] = this.item.id;
     }
 
     return super._updateObject(event, formData);

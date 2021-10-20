@@ -15,7 +15,12 @@
     {{#if (eq data.data.equippedStatus "equipped")}}
       {{#unless data.data.isNatural}}
         <div data-item-id="{{data._id}}" class="combat contextmenu"><img class="item" src="{{img}}"></div>
-        <div data-item-id="{{data._id}}" class="combat contextmenu">{{name}}</div>
+        <div data-item-id="{{data._id}}" class="combat contextmenu">{{name}}
+          {{#if (or data.data.isThrownWeapon data.data.isProjectileWeapon)}}({{quantity data.data.projectileId @root.data._id @root.tokenId}})
+          {{else if data.data.isProjectile}}
+            [{{data.data.quantity}}]
+          {{/if}}
+        </div>
         <div data-item-id="{{data._id}}" class="combat contextmenu">
           <label><input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value"
                         value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</label>
@@ -49,18 +54,22 @@
             {{#each data.data.usage}}
               {{#if skillId}}
                 {{#if (eq @key "missile")}}
-                  <div class="flex-column usage">
-                    <div>
-                      {{#each @root.unloadedMissileSr}}
-                        {{{this}}}
-                      {{/each}}
+                  {{#if ../data.data.rate}}
+                    <div class="text-right">1/{{#unless (eq 1 ../data.data.rate)}}{{../data.data.rate}}{{/unless}}MR</div>
+                  {{else}}
+                    <div class="flex-column">
+                      <div>
+                        {{#each @root.unloadedMissileSr}}
+                          {{{this}}}
+                        {{/each}}
+                      </div>
+                      <div><i>
+                        {{#each @root.loadedMissileSr}}
+                          {{{this}}}
+                        {{/each}}
+                      </i></div>
                     </div>
-                    <div><i>
-                      {{#each @root.loadedMissileSr}}
-                        {{{this}}}
-                      {{/each}}
-                    </i></div>
-                  </div>
+                  {{/if}}
                 {{else}}
                   <span><button class="combat contextmenu" data-item-id="{{../data._id}}"
                                 data-set-sr="{{sum @root.data.data.attributes.sizStrikeRank
@@ -107,18 +116,22 @@
             {{#each data.data.usage}}
               {{#if skillId}}
                 {{#if (eq @key "missile")}}
-                  <div class="flex-column usage">
-                    <div>
-                      {{#each @root.unloadedMissileSr}}
-                        {{{this}}}
-                      {{/each}}
+                  {{#if ../data.data.rate}}
+                    <div class="text-right">1/{{#unless (eq 1 ../data.data.rate)}}{{../data.data.rate}}{{/unless}}MR</div>
+                  {{else}}
+                    <div class="flex-column">
+                      <div>
+                        {{#each @root.unloadedMissileSr}}
+                          {{{this}}}
+                        {{/each}}
+                      </div>
+                      <div><i>
+                        {{#each @root.loadedMissileSr}}
+                          {{{this}}}
+                        {{/each}}
+                      </i></div>
                     </div>
-                    <div><i>
-                      {{#each @root.loadedMissileSr}}
-                        {{{this}}}
-                      {{/each}}
-                    </i></div>
-                  </div>
+                  {{/if}}
                 {{else}}
                   <span><button class="combat contextmenu" data-item-id="{{../data._id}}"
                                 data-set-sr="{{sum @root.data.data.attributes.sizStrikeRank
@@ -132,8 +145,6 @@
       </div>
     {{/if}}
   {{/each}}
-
-
 
   {{#each ownedItems.meleeWeapon}}
   {{#if (eq data.data.equippedStatus "equipped")}}
