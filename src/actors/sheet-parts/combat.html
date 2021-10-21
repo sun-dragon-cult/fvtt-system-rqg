@@ -16,7 +16,10 @@
       {{#unless data.data.isNatural}}
         <div data-item-id="{{data._id}}" class="combat contextmenu"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{data._id}}" class="combat contextmenu">{{name}}
-          {{#if (or data.data.isThrownWeapon data.data.isProjectileWeapon)}}({{quantity data.data.projectileId @root.data._id @root.tokenId}})
+          {{#if data.data.isProjectileWeapon}}
+            ({{quantity data.data.projectileId @root.data._id @root.tokenId}})
+          {{else if data.data.isThrownWeapon}}
+            [{{quantity data.data.projectileId @root.data._id @root.tokenId}}]
           {{else if data.data.isProjectile}}
             [{{data.data.quantity}}]
           {{/if}}

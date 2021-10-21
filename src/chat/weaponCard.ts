@@ -166,23 +166,29 @@ export class WeaponCard extends ChatMessage {
           hasOwnProperty(flags.weaponItemData.data, "isProjectileWeapon") &&
           flags.weaponItemData.data.isProjectileWeapon
             ? actor.items.get(flags.weaponItemData.data.projectileId)?.data
-            : flags.weaponItemData;
+            : flags.weaponItemData; // Thrown (or melee)
 
+        // Decrease quantity of linked projectile if shooting
         if (
           projectileItemData?.type === ItemTypeEnum.Weapon &&
           projectileItemData.data.quantity &&
-          projectileItemData.data.quantity > 0
+          projectileItemData.data.quantity > 0 &&
+          flags.usage === "missile" &&
+          !["parry", "special"].includes(damageType ?? "")
         ) {
           const updateData: DeepPartial<ItemDataSource> = {
             _id: projectileItemData._id,
+            // TODO Update chatcard data as well !!!!! ***************
             data: { quantity: --projectileItemData.data.quantity },
           };
           await actor.updateEmbeddedDocuments("Item", [updateData]);
-        } else if (
-          flags.weaponItemData.type === ItemTypeEnum.Weapon &&
-          flags.weaponItemData.data.isProjectileWeapon &&
-          flags.usage === "missile" &&
-          !["parry", "special"].includes(damageType ?? "")
+        }
+
+        // Prevent using weapons with projectile quantity 0
+        if (
+          projectileItemData?.type === ItemTypeEnum.Weapon &&
+          projectileItemData.data.quantity != null &&
+          projectileItemData.data.quantity <= 0
         ) {
           ui.notifications?.warn("Out of ammo!");
           return false;

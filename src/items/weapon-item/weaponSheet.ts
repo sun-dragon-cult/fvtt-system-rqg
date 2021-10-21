@@ -134,6 +134,8 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       formData
     );
 
+    this.copyOneHandData2offHand(formData);
+
     formData["data.rate"] = Number(formData["data.rate"]);
 
     formData["data.physicalItemType"] =
@@ -154,6 +156,14 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     }
 
     return super._updateObject(event, formData);
+  }
+
+  private copyOneHandData2offHand(formData: any): void {
+    formData["data.usage.offHand.combatManeuvers"] = formData["data.usage.oneHand.combatManeuvers"];
+    formData["data.usage.offHand.damage"] = formData["data.usage.oneHand.damage"];
+    formData["data.usage.offHand.minStrength"] = formData["data.usage.oneHand.minStrength"];
+    formData["data.usage.offHand.minDexterity"] = formData["data.usage.oneHand.minDexterity"];
+    formData["data.usage.offHand.strikeRank"] = formData["data.usage.oneHand.strikeRank"];
   }
 
   private getUsageCombatManeuvers(usage: string, formData: any): any[] {

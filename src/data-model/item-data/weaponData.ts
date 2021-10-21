@@ -89,6 +89,7 @@ export const emptyWeapon: WeaponDataSourceData = {
       strikeRank: 0,
     },
     offHand: {
+      // All but skillID & skillOrigin should normally be equal to oneHand
       skillId: "",
       skillOrigin: "",
       combatManeuvers: [],

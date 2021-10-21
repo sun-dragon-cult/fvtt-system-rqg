@@ -26,31 +26,41 @@
     <br>
     <h3>Uses of Weapon</h3>
     <div class="flex-row flex-wrap">
-        {{#each weaponData.usage}}
-          <fieldset data-dropzone="{{@key}}">
-          <legend>{{@key}}</legend>
+      {{#each weaponData.usage}}
+        <fieldset data-dropzone="{{@key}}">
+
+            <legend>{{@key}}</legend>
             {{#if combatManeuvers}}
-          {{#if isEmbedded}}
-            <select name="data.skillId">
-              {{#select skillId}} {{#each weaponSkills}}
-                <option value="{{id}}">{{name}}</option>
-              {{/each}} {{/select}}
-            </select>
-          {{else}}
-            <label class="mp">Skill</label><br>
-            {{#if @root.sheetSpecific.skillNames}}
-              {{lookup @root.sheetSpecific.skillNames @key}}<br><i>(Drop some other weapon skill on this weapon to change)</i>
-            {{else}}
-              <i>Drop a weapon skill on this weapon!</i>
-            {{/if}}<br>
-          {{/if}}<br>
-            <div class="flex-row">
-              <label>Damage <input type="text" name="data.usage.{{@key}}.damage" value="{{damage}}"></label>
-              <label>Min STR <input type="number" min="0" max="99" name="data.usage.{{@key}}.minStrength" value="{{minStrength}}"></label>
-              <label>Min DEX <input type="number" min="0" max="99" name="data.usage.{{@key}}.minDexterity" value="{{minDexterity}}"></label>
-              {{#unless (eq @key "missile")}}<label>SR <input type="number" min="0" max="99" name="data.usage.{{@key}}.strikeRank" value="{{strikeRank}}"></label>{{/unless}}
-            </div><br>
+              {{#if isEmbedded}}
+                <select name="data.skillId">
+                  {{#select skillId}} {{#each weaponSkills}}
+                    <option value="{{id}}">{{name}}</option>
+                  {{/each}} {{/select}}
+                </select>
+              {{else}}
+                <label class="mp">Skill</label><br>
+                {{#if @root.sheetSpecific.skillNames}}
+                  {{lookup @root.sheetSpecific.skillNames @key}}<br><i>(Drop some other weapon skill on this weapon to
+                  change)</i>
+                {{else}}
+                  <i>Drop a weapon skill on this weapon!</i>
+                {{/if}}<br>
+              {{/if}}<br>
+              {{#unless (eq @key "offHand")}}
+              <div class="flex-row">
+                <label>Damage <input type="text" name="data.usage.{{@key}}.damage" value="{{damage}}"></label>
+                <label>Min STR <input type="number" min="0" max="99" name="data.usage.{{@key}}.minStrength"
+                                      value="{{minStrength}}"></label>
+                <label>Min DEX <input type="number" min="0" max="99" name="data.usage.{{@key}}.minDexterity"
+                                      value="{{minDexterity}}"></label>
+                {{#unless (eq @key "missile")}}
+                  <label>SR <input type="number" min="0" max="99" name="data.usage.{{@key}}.strikeRank"
+                                   value="{{strikeRank}}"></label>{{/unless}}
+              </div>
+              <br>
+              {{/unless}}
             {{/if}}
+            {{#unless (eq @key "offHand")}}
             <div>
               <h3>Combat Manuevers</h3>
               <table>
@@ -61,68 +71,82 @@
                 {{setVar 'usage' @key this}}
                 {{#each combatManeuvers}}
                   <tr>
-                    <td><input type="text" list="defaultCombatManeuverNames" name="data.usage.{{../usage}}.combatManeuvers.name" value="{{name}}"></td>
+                    <td><input type="text" list="defaultCombatManeuverNames"
+                               name="data.usage.{{../usage}}.combatManeuvers.name" value="{{name}}"></td>
                     <td>
                       {{#if name}}
-                      <select name="data.usage.{{../usage}}.combatManeuvers.damageTypes">
-                        {{#select damageType}} {{#each @root.sheetSpecific.damageTypes}}
-                          <option value="{{this}}">{{this}}</option>
-                        {{/each}} {{/select}}
-                      </select>
+                        <select name="data.usage.{{../usage}}.combatManeuvers.damageTypes">
+                          {{#select damageType}} {{#each @root.sheetSpecific.damageTypes}}
+                            <option value="{{this}}">{{this}}</option>
+                          {{/each}} {{/select}}
+                        </select>
                       {{/if}}
                     </td>
                     <td>
-                        <textarea {{#unless (eq damageType "special")}}class="no-display"{{/unless}} rows="1" name="data.usage.{{../usage}}.combatManeuvers.description" placeholder="{{placeholder}}">{{description}}</textarea>
+                      <textarea{{#unless (eq damageType "special")}} class="no-display"{{/unless}} rows="1"
+                               name="data.usage.{{../usage}}.combatManeuvers.description"
+                               placeholder="{{placeholder}}">{{description}}</textarea>
                     </td>
                   </tr>
                 {{/each}}
                 <tr>
-                  <td><input type="text" list="defaultCombatManeuverNames" name="data.usage.{{usage}}.combatManeuvers.name"></td>
+                  <td><input type="text" list="defaultCombatManeuverNames"
+                             name="data.usage.{{usage}}.combatManeuvers.name"></td>
                 </tr>
               </table>
             </div>
 
             {{#if (eq @key "missile")}}
-            {{#with @root}}
-              <label><input type="checkbox" name="data.isThrownWeapon" {{checked weaponData.isThrownWeapon}}>Thrown Weapon (gets
-                half damage bonus, is it's own projectile)</label><br>
-              <label><input type="checkbox" name="data.isProjectileWeapon" {{checked weaponData.isProjectileWeapon}}>Projectile
-                Weapon (no damage bonus, uses linked projectiles)</label><br>
-              <label><input type="checkbox" name="data.isRangedWeapon" {{checked weaponData.isRangedWeapon}}>Ranged Weapon (no damage bonus, no projectile)</label><br>
-              <label><input type="checkbox" name="data.isProjectile" {{checked weaponData.isProjectile}}>Projectile (used as
-                ammunition)</label><br>
-              <hr>
-              <div class="flex-row">
-                {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon weaponData.isRangedWeapon)}}
-                  <div>
-                    {{#if weaponData.isProjectileWeapon}}
-                      <label class="mp">Projectile
-                        <select name="data.projectileId">
-                          {{#select weaponData.projectileId}} {{#each sheetSpecific.ownedProjectiles}}
-                            <option value="{{_id}}">{{name}}</option>
+              {{#with @root}}
+                <label><input type="checkbox" name="data.isThrownWeapon" {{checked weaponData.isThrownWeapon}}>Thrown
+                  Weapon (gets
+                  half damage bonus, is it's own projectile)</label><br>
+                <label><input type="checkbox" name="data.isProjectileWeapon" {{checked weaponData.isProjectileWeapon}}>Projectile
+                  Weapon (no damage bonus, uses linked projectiles)</label><br>
+                <label><input type="checkbox" name="data.isRangedWeapon" {{checked weaponData.isRangedWeapon}}>Ranged
+                  Weapon (no damage bonus, no projectile)</label><br>
+                <label><input type="checkbox" name="data.isProjectile" {{checked weaponData.isProjectile}}>Projectile
+                  (used as
+                  ammunition)</label><br>
+                <hr>
+                <div class="flex-row">
+                  {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon weaponData.isRangedWeapon)}}
+                    <div>
+                      {{#if weaponData.isProjectileWeapon}}
+                        <label class="mp">Projectile
+                          <select name="data.projectileId">
+                            {{#select weaponData.projectileId}} {{#each sheetSpecific.ownedProjectiles}}
+                              <option value="{{_id}}">{{name}}</option>
+                            {{/each}} {{/select}}
+                          </select>
+                        </label><br>
+                      {{/if}}
+                      <label>Range <input type="number" min="0" max="999" name="data.range"
+                                          value="{{weaponData.range}}"></label><br>
+                      {{!--              <label>Rate <input type="number" min="0" max="99" name="data.rate" value="{{weaponData.rate}}"></label><br>--}}
+                      <label>Rate
+                        <select name="data.rate">
+                          {{#select weaponData.rate}} {{#each sheetSpecific.rateOfFire}}
+                            <option value="{{this}}">{{@key}}</option>
                           {{/each}} {{/select}}
                         </select>
                       </label><br>
-                    {{/if}}
-                    <label>Range <input type="number" min="0" max="999" name="data.range" value="{{weaponData.range}}"></label><br>
-                    {{!--              <label>Rate <input type="number" min="0" max="99" name="data.rate" value="{{weaponData.rate}}"></label><br>--}}
-                    <label>Rate
-                      <select name="data.rate">
-                        {{#select weaponData.rate}} {{#each sheetSpecific.rateOfFire}}
-                          <option value="{{this}}">{{@key}}</option>
-                        {{/each}} {{/select}}
-                      </select>
-                    </label><br>
-                  </div>
-                {{/if}}
-                {{#unless (eq weaponData.physicalItemType "unique")}}
-                  <label>Quantity<br><input type="number" name="data.quantity" value="{{weaponData.quantity}}"></label>
-                {{/unless}}
-              </div>
-            {{/with}}
-        {{/if}}
-          </fieldset>
-        {{/each}}
+                    </div>
+                  {{/if}}
+                  {{#unless (eq weaponData.physicalItemType "unique")}}
+                    <label>Quantity<br><input type="number" name="data.quantity"
+                                              value="{{weaponData.quantity}}"></label>
+                  {{/unless}}
+                </div>
+              {{/with}}
+            {{/if}}
+            {{/unless}}
+          {{#if (eq @key "offHand")}}
+            <p>Same data as oneHand</p>
+
+          {{/if}}
+        </fieldset>
+      {{/each}}
 
     </div>
 
