@@ -391,7 +391,9 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some(
           (i: RqgItem) =>
             i.name === CONFIG.RQG.skillName.dodge ||
-            [ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon].includes(i.type)
+            [ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon, ItemTypeEnum.Weapon].includes(
+              i.type
+            )
         ),
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
