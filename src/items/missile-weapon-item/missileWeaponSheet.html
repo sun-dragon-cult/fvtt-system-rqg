@@ -23,7 +23,7 @@
       ammunition)</label><br>
     <hr>
     <div class="flex-row">
-    {{#if (or missileWeaponData.isThrownWeapon missileWeaponData.isProjectileWeapon)}}
+    {{#if (or missileWeaponData.isThrownWeapon missileWeaponData.isProjectileWeapon missileWeaponData.isRangedWeapon)}}
       <div>
         <label class="mp">Skill</label>
         {{#if sheetSpecific.isOwned}}

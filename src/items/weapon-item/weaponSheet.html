@@ -85,14 +85,15 @@
             {{#if (eq @key "missile")}}
             {{#with @root}}
               <label><input type="checkbox" name="data.isThrownWeapon" {{checked weaponData.isThrownWeapon}}>Thrown Weapon (gets
-                half damage bonus)</label><br>
+                half damage bonus, is it's own projectile)</label><br>
               <label><input type="checkbox" name="data.isProjectileWeapon" {{checked weaponData.isProjectileWeapon}}>Projectile
-                Weapon (uses projectiles)</label><br>
+                Weapon (no damage bonus, uses linked projectiles)</label><br>
+              <label><input type="checkbox" name="data.isRangedWeapon" {{checked weaponData.isRangedWeapon}}>Ranged Weapon (no damage bonus, no projectile)</label><br>
               <label><input type="checkbox" name="data.isProjectile" {{checked weaponData.isProjectile}}>Projectile (used as
                 ammunition)</label><br>
               <hr>
               <div class="flex-row">
-                {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon)}}
+                {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon weaponData.isRangedWeapon)}}
                   <div>
                     {{#if weaponData.isProjectileWeapon}}
                       <label class="mp">Projectile

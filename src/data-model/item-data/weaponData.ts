@@ -57,6 +57,8 @@ export interface WeaponDataSourceData extends IPhysicalItem {
   isProjectileWeapon: boolean;
   /** If true add half DB, if false it's projectile with no db */
   isThrownWeapon: boolean;
+  /** No damage bonus & no linked projectile - lasso for example */
+  isRangedWeapon: boolean;
   /** ItemId of ammunition for this projectile weapon */
   projectileId: string;
 }
@@ -129,5 +131,6 @@ export const emptyWeapon: WeaponDataSourceData = {
   isProjectile: false,
   isProjectileWeapon: false,
   isThrownWeapon: false,
+  isRangedWeapon: false,
   projectileId: "",
 };

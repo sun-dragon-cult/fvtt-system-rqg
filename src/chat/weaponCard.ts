@@ -316,7 +316,7 @@ export class WeaponCard extends ChatMessage {
 
       if (missileWeaponData.data.isThrownWeapon) {
         damageBonusFormula = "ceil(" + actor.data.data.attributes.damageBonus + "/2)";
-      } else if (missileWeaponData.data.isProjectileWeapon) {
+      } else {
         damageBonusFormula = "";
       }
     }

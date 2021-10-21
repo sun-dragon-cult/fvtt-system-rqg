@@ -136,13 +136,14 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
 
     formData["data.rate"] = Number(formData["data.rate"]);
 
-    formData["data.physicalItemType"] = formData["data.isProjectile"] ? "consumable" : "unique";
+    formData["data.physicalItemType"] =
+      formData["data.isProjectile"] || formData["data.isThrownWeapon"] ? "consumable" : "unique";
 
     if (formData["data.physicalItemType"] === "unique") {
       formData["data.quantity"] = 1;
     }
 
-    // Non projectile weapons should not decrease any projectile quantity
+    // Non projectile weapons should not decrease any projectile quantity (remove link)
     if (!formData["data.isProjectileWeapon"] && !formData["data.isThrownWeapon"]) {
       formData["data.projectileId"] = "";
     }
