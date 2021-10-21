@@ -60,7 +60,6 @@
                 </tr>
                 {{setVar 'usage' @key this}}
                 {{#each combatManeuvers}}
-                  {{log "combatManeuver" ../this}}
                   <tr>
                     <td><input type="text" list="defaultCombatManeuverNames" name="data.usage.{{../usage}}.combatManeuvers.name" value="{{name}}"></td>
                     <td>
