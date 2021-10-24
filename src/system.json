@@ -23,6 +23,22 @@
     "system": "rqg",
     "path": "assets/packs/runes.db",
     "entity": "Item"
+    },
+    {
+      "name": "skills-basic",
+      "label": "Skills - Basic ",
+      "system": "rqg",
+      "path": "assets/packs/skills-basic.db",
+      "entity": "Item",
+      "module": "rqg"
+    },
+    {
+      "name": "skills-profession",
+      "label": "Skills - Profession",
+      "system": "rqg",
+      "path": "assets/packs/skills-profession.db",
+      "entity": "Item",
+      "module": "rqg"
     }
   ],
   "languages": [
