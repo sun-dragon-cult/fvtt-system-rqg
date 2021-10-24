@@ -22,7 +22,8 @@
     "label": "Runes",
     "system": "rqg",
     "path": "assets/packs/runes.db",
-    "entity": "Item"
+    "entity": "Item",
+    "type": "Item"
     },
     {
       "name": "skills-basic",
@@ -30,7 +31,7 @@
       "system": "rqg",
       "path": "assets/packs/skills-basic.db",
       "entity": "Item",
-      "module": "rqg"
+      "type": "Item"
     },
     {
       "name": "skills-profession",
@@ -38,7 +39,7 @@
       "system": "rqg",
       "path": "assets/packs/skills-profession.db",
       "entity": "Item",
-      "module": "rqg"
+      "type": "Item"
     }
   ],
   "languages": [
