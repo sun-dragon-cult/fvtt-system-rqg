@@ -149,6 +149,10 @@ export class WeaponCard extends ChatMessage {
       }
     }
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
+    if (!actor) {
+      ui.notifications?.warn("Couldn't find world actor to do action");
+      return false;
+    }
 
     switch (actionButton.name) {
       case "combatManeuver":
@@ -218,14 +222,19 @@ export class WeaponCard extends ChatMessage {
         Number(flags.skillItemData.data.chance)) ||
       0;
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
-    flags.result = await Ability.roll(
-      flags.skillItemData.name + " " + flags.formData.combatManeuver,
-      chance,
-      modifier,
-      speakerName
-    );
-    await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
+    if (actor) {
+      const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+      flags.result = await Ability.roll(
+        flags.skillItemData.name + " " + flags.formData.combatManeuver,
+        chance,
+        modifier,
+        speakerName
+      );
+      await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
+    } else {
+      ui.notifications?.warn("Couldn't find world actor to do weapon roll");
+    }
+
     const data = await WeaponCard.renderContent(flags);
     await chatMessage.update(data);
   }
@@ -281,6 +290,10 @@ export class WeaponCard extends ChatMessage {
     }
 
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
+    if (!actor) {
+      ui.notifications?.warn("Could not find world actor to do damage roll");
+      return;
+    }
     let damageBonusFormula: string =
       actor.data.data.attributes.damageBonus !== "0"
         ? // @ts-ignore 0.8 parse

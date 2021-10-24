@@ -17,7 +17,7 @@ export type CharacteristicData = {
 };
 
 type CharacteristicCardFlags = {
-  actorId: string;
+  actorId: string | null;
   tokenId: string | null;
   characteristic: CharacteristicData;
   formData: {
@@ -136,15 +136,19 @@ export class CharacteristicCard {
 
     const [actor, characteristicValue, difficulty, modifier] =
       CharacteristicCard.getFormDataFromFlags(flags);
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId ?? null);
-    await CharacteristicCard.roll(
-      flags.characteristic.name,
-      characteristicValue,
-      difficulty,
-      modifier,
-      actor,
-      speakerName
-    );
+    if (actor) {
+      const speakerName = getSpeakerName(flags.actorId, flags.tokenId ?? null);
+      await CharacteristicCard.roll(
+        flags.characteristic.name,
+        characteristicValue,
+        difficulty,
+        modifier,
+        actor,
+        speakerName
+      );
+    } else {
+      ui.notifications?.warn("Couldn't find actor to do roll");
+    }
 
     // Enabling the form again after DsN animation is finished TODO doesn't wait
     form.style.pointerEvents = "auto";
@@ -185,7 +189,7 @@ export class CharacteristicCard {
 
   private static getFormDataFromFlags(
     flags: CharacteristicCardFlags
-  ): [RqgActor, number, number, number] {
+  ): [RqgActor | null, number, number, number] {
     const characteristicValue: number = Number(flags.characteristic.data.value) || 0;
     const difficulty: number = Number(flags.formData.difficulty) || 5;
     const modifier: number = Number(flags.formData.modifier) || 0;

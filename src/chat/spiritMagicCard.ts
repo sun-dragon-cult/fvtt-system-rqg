@@ -80,9 +80,12 @@ export class SpiritMagicCard {
     const boost: number = Number(flags.formData.boost) || 0;
 
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
-    await SpiritMagicCard.roll(flags.itemData, level, boost, actor, speakerName);
-
+    if (actor) {
+      const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+      await SpiritMagicCard.roll(flags.itemData, level, boost, actor, speakerName);
+    } else {
+      ui.notifications?.warn("Couldn't find world actor to do spirit magic roll");
+    }
     return false;
   }
 
