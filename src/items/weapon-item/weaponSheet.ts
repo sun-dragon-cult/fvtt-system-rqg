@@ -180,7 +180,10 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
 
     const usageCombatManeuvers = usageCombatManueversNames.reduce((acc, name, i) => {
       if (name) {
-        const dmgType = formData[`data.usage.${usage}.combatManeuvers.damageTypes`];
+        const dmgType =
+          formData[`data.usage.${usage}.combatManeuvers.damageTypes`] ??
+          CONFIG.RQG.combatManeuvers.get(name)?.defaultDamageType;
+
         const damageTypes = Array.isArray(dmgType) ? dmgType : [dmgType];
         const defaultDamageTypeDescription =
           CONFIG.RQG.combatManeuvers.get(name)?.specialDescriptionHtml;
