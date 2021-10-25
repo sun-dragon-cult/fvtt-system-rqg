@@ -41,6 +41,8 @@ export interface WeaponDataSourceData extends IPhysicalItem {
     missile: Usage;
   };
   hitPoints: Resource;
+  /** E.g. arm or --- instead of a number */
+  hitPointLocation: string;
   description: string;
   /** E.g. Fist, Grapple, Spit */
   isNatural: boolean;
@@ -119,6 +121,7 @@ export const emptyWeapon: WeaponDataSourceData = {
   description: "",
   gmNotes: "",
   hitPoints: emptyResource,
+  hitPointLocation: "",
   encumbrance: 0,
   location: "",
   attunedTo: "",

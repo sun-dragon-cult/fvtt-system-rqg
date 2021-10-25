@@ -155,6 +155,11 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       formData["data.projectileId"] = this.item.id;
     }
 
+    if (formData["data.hitPointLocation"]) {
+      formData["data.hitPoints.value"] = "";
+      formData["data.hitPoints.max"] = "";
+    }
+
     return super._updateObject(event, formData);
   }
 

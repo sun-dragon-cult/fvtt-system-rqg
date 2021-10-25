@@ -25,8 +25,12 @@
           {{/if}}
         </div>
         <div data-item-id="{{data._id}}" class="combat contextmenu">
+          {{#if data.data.hitPointLocation}}
+            {{data.data.hitPointLocation}}
+          {{else}}
           <label><input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value"
                         value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</label>
+          {{/if}}
         </div>
         <div>
           <span class="flex-column text-right">
