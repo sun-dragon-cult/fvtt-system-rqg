@@ -107,11 +107,14 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     return skill?.name ?? "";
   }
 
-  private getOwnedProjectiles(): any {
+  private getOwnedProjectiles(): any[] {
     if (this.item.isOwned) {
-      return this.actor!.getEmbeddedCollection("Item").filter(
-        (i) => i.data.type === ItemTypeEnum.Weapon && i.data.data.isProjectile
-      );
+      return [
+        [{ _id: "", name: "---" }],
+        ...this.actor!.getEmbeddedCollection("Item").filter(
+          (i) => i.data.type === ItemTypeEnum.Weapon && i.data.data.isProjectile
+        ),
+      ];
     }
     return [];
   }

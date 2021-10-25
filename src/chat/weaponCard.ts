@@ -184,6 +184,11 @@ export class WeaponCard extends ChatMessage {
           await actor.updateEmbeddedDocuments("Item", [updateData]);
         }
 
+        if (flags.usage === "missile" && !projectileItemData) {
+          ui.notifications?.warn("Out of ammo!");
+          return false;
+        }
+
         // Prevent using weapons with projectile quantity 0
         if (
           projectileItemData?.type === ItemTypeEnum.Weapon &&
