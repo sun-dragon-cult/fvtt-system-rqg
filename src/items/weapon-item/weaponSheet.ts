@@ -232,6 +232,13 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         });
       });
     }
+
+    html[0].querySelectorAll<HTMLElement>("[data-delete-skill]").forEach((elem) => {
+      elem.addEventListener("click", async () => {
+        const use = getRequiredDomDataset(elem, "delete-skill");
+        await this.item.update({ [`data.usage.${use}.skillOrigin`]: "" });
+      });
+    });
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {

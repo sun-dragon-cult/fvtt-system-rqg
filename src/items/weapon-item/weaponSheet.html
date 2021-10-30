@@ -43,8 +43,9 @@
               {{else}}
                 <label class="mp">Skill</label><br>
                 {{#if @root.sheetSpecific.skillNames}}
-                  {{lookup @root.sheetSpecific.skillNames @key}}<br><i>(Drop some other weapon skill on this weapon to
-                  change)</i>
+                  {{lookup @root.sheetSpecific.skillNames @key}}
+                  {{#if skillOrigin}}<i data-delete-skill="{{@key}}" class="fas fa-trash"></i>{{/if}}<br>
+                  <i>(Drop some other weapon skill on this weapon to change)</i>
                 {{else}}
                   <i>Drop a weapon skill on this weapon!</i>
                 {{/if}}<br>
