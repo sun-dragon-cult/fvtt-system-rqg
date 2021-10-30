@@ -30,22 +30,22 @@ export class Weapon extends AbstractEmbeddedItem {
     userId: string
   ): Promise<any> {
     assertItemType(child.data.type, ItemTypeEnum.Weapon);
-    const oneHandSkillId = await Weapon.getEmbeddedSkillId(
+    const oneHandSkillId = await Weapon.embedLinkedSkill(
       child.data.data.usage.oneHand.skillId,
       child.data.data.usage.oneHand.skillOrigin,
       actor
     );
-    const offHandSkillId = await Weapon.getEmbeddedSkillId(
+    const offHandSkillId = await Weapon.embedLinkedSkill(
       child.data.data.usage.offHand.skillId,
       child.data.data.usage.offHand.skillOrigin,
       actor
     );
-    const twoHandSkillId = await Weapon.getEmbeddedSkillId(
+    const twoHandSkillId = await Weapon.embedLinkedSkill(
       child.data.data.usage.twoHand.skillId,
       child.data.data.usage.twoHand.skillOrigin,
       actor
     );
-    const missileSkillId = await Weapon.getEmbeddedSkillId(
+    const missileSkillId = await Weapon.embedLinkedSkill(
       child.data.data.usage.missile.skillId,
       child.data.data.usage.missile.skillOrigin,
       actor
@@ -55,9 +55,13 @@ export class Weapon extends AbstractEmbeddedItem {
       // TODO how to handle this?
       options.renderSheet = true;
     }
+    // Thrown weapons should decrease quantity of themselves
+    const projectileId = child.data.data.isThrownWeapon ? child.id : child.data.data.projectileId;
+
     return {
       _id: child.id,
       data: {
+        projectileId: projectileId,
         usage: {
           oneHand: { skillId: oneHandSkillId },
           offHand: { skillId: offHandSkillId },
@@ -68,20 +72,24 @@ export class Weapon extends AbstractEmbeddedItem {
     };
   }
 
-  static async getEmbeddedSkillId(
-    skillId: string,
-    skillOrigin: string,
-    actor: RqgActor
+  /**
+   * Checks if the specified skill is already owned by the actor.
+   * If not it embeds the referenced skill.
+   * Returns the id of the skill on the actor.
+   */
+  static async embedLinkedSkill(
+    embeddedSkillId: string,
+    skillOrigin: string, // Linked skill item origin (uuid)
+    actor: RqgActor // The actor that should have the skill
   ): Promise<string> {
-    let embeddedSkillId = skillId;
-    if (!skillId && skillOrigin) {
+    if (!embeddedSkillId && skillOrigin) {
       try {
         // Add the specified skill if found
         const skill = await fromUuid(skillOrigin).catch((e) => {
-          logMisconfiguration(`Couldn't find weapon skill`, true, skillId, e);
+          logMisconfiguration(`Couldn't find weapon skill`, true, embeddedSkillId, e);
         });
         if (!skill) {
-          logMisconfiguration(`No melee weapon skill with from skillOrigin ${skillOrigin}`, true);
+          logMisconfiguration(`No weapon skill with from skillOrigin ${skillOrigin}`, true);
         } else {
           const sameSkillAlreadyOnActor = actor.items.find((i: RqgItem) => i.name === skill.name);
           const embeddedWeaponSkill = sameSkillAlreadyOnActor

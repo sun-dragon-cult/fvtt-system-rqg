@@ -126,6 +126,7 @@ export const emptyWeapon: WeaponDataSourceData = {
   location: "",
   attunedTo: "",
   physicalItemType: "unique",
+  quantity: 1,
   isContainer: false,
   price: emptyPrice,
   isNatural: false,
