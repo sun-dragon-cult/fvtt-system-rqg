@@ -77,7 +77,7 @@ export class Weapon extends AbstractEmbeddedItem {
    * If not it embeds the referenced skill.
    * Returns the id of the skill on the actor.
    */
-  static async embedLinkedSkill(
+  public static async embedLinkedSkill(
     embeddedSkillId: string,
     skillOrigin: string, // Linked skill item origin (uuid)
     actor: RqgActor // The actor that should have the skill

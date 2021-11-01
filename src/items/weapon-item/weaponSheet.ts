@@ -9,6 +9,7 @@ import {
   WeaponDataProperties,
   WeaponDataPropertiesData,
 } from "../../data-model/item-data/weaponData";
+import { Weapon } from "../../actors/item-specific/weapon";
 
 interface WeaponSheetData {
   isEmbedded: boolean;
@@ -87,15 +88,13 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   }
 
   private async getSkillNames(): Promise<any> {
-    if (!this.item.isEmbedded) {
-      assertItemType(this.item.data.type, ItemTypeEnum.Weapon);
-      return {
-        oneHand: await this.getSkillName(this.item.data.data.usage.oneHand.skillOrigin),
-        offHand: await this.getSkillName(this.item.data.data.usage.offHand.skillOrigin),
-        twoHand: await this.getSkillName(this.item.data.data.usage.twoHand.skillOrigin),
-        missile: await this.getSkillName(this.item.data.data.usage.missile.skillOrigin),
-      };
-    }
+    assertItemType(this.item.data.type, ItemTypeEnum.Weapon);
+    return {
+      oneHand: await this.getSkillName(this.item.data.data.usage.oneHand.skillOrigin),
+      offHand: await this.getSkillName(this.item.data.data.usage.offHand.skillOrigin),
+      twoHand: await this.getSkillName(this.item.data.data.usage.twoHand.skillOrigin),
+      missile: await this.getSkillName(this.item.data.data.usage.missile.skillOrigin),
+    };
   }
 
   private async getSkillName(origin: string): Promise<string> {
@@ -212,26 +211,25 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
 
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
-    if (!this.item.isOwned) {
-      html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
-        elem.addEventListener("drop", this._onDrop.bind(this));
-        elem.addEventListener("dragover", (e) => {
-          e.preventDefault();
-          const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
-          dropzone && dropzone.classList.add("drag-hover");
-        });
-        elem.addEventListener("dragenter", (e) => {
-          e.preventDefault();
-          const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
-          dropzone && dropzone.classList.add("drag-hover");
-        });
-        elem.addEventListener("dragleave", (e) => {
-          e.preventDefault();
-          const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
-          dropzone && dropzone.classList.remove("drag-hover");
-        });
+
+    html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+      elem.addEventListener("drop", this._onDrop.bind(this));
+      elem.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
+        dropzone && dropzone.classList.add("drag-hover");
       });
-    }
+      elem.addEventListener("dragenter", (e) => {
+        e.preventDefault();
+        const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
+        dropzone && dropzone.classList.add("drag-hover");
+      });
+      elem.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
+        dropzone && dropzone.classList.remove("drag-hover");
+      });
+    });
 
     html[0].querySelectorAll<HTMLElement>("[data-delete-skill]").forEach((elem) => {
       elem.addEventListener("click", async () => {
@@ -254,16 +252,28 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       return;
     }
     if (droppedItemData.type === "Item") {
-      const item = (await Item.fromDropData(droppedItemData)) as RqgItem;
+      const droppedItem = (await Item.fromDropData(droppedItemData)) as RqgItem;
       if (
-        item.data.type === ItemTypeEnum.Skill &&
-        (item.data.data.category === SkillCategoryEnum.MeleeWeapons ||
-          item.data.data.category === SkillCategoryEnum.MissileWeapons ||
-          item.data.data.category === SkillCategoryEnum.NaturalWeapons ||
-          item.data.data.category === SkillCategoryEnum.Shields)
+        droppedItem.data.type === ItemTypeEnum.Skill &&
+        (droppedItem.data.data.category === SkillCategoryEnum.MeleeWeapons ||
+          droppedItem.data.data.category === SkillCategoryEnum.MissileWeapons ||
+          droppedItem.data.data.category === SkillCategoryEnum.NaturalWeapons ||
+          droppedItem.data.data.category === SkillCategoryEnum.Shields)
       ) {
-        const skillId = item.uuid || "";
-        await this.item.update({ [`data.usage.${usage}.skillOrigin`]: skillId }, {});
+        const originSkillId = droppedItem.uuid || "";
+        if (this.item.isOwned) {
+          const weaponItem = this.item;
+          assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
+          const embeddedSkillId = await Weapon.embedLinkedSkill("", originSkillId, this.actor!);
+          await this.item.update({
+            [`data.usage.${usage}.skillId`]: embeddedSkillId,
+            [`data.usage.${usage}.skillOrigin`]: originSkillId,
+          });
+        } else {
+          await this.item.update({
+            [`data.usage.${usage}.skillOrigin`]: originSkillId,
+          });
+        }
       } else {
         ui.notifications?.warn(
           "The item must be a weapon skill (category melee, shield or natural weapon)"
