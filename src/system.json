@@ -3,7 +3,7 @@
   "type": "system",
   "title": "RuneQuest Glorantha (Unofficial)",
   "description": "A RuneQuest Glorantha (Unofficial) system for FoundryVTT!",
-  "version": "1.7.0",
+  "version": "1.8.0-23e10a4",
   "authors": [
     {
       "name": "Wake",
@@ -18,11 +18,11 @@
   ],
   "packs": [
     {
-    "name": "runes",
-    "label": "Runes",
-    "system": "rqg",
-    "path": "assets/packs/runes.db",
-    "entity": "Item"
+      "name": "runes",
+      "label": "Runes",
+      "system": "rqg",
+      "path": "assets/packs/runes.db",
+      "entity": "Item"
     },
     {
       "name": "skills-basic",
@@ -56,9 +56,9 @@
   "compatibleCoreVersion": "0.8.9",
   "url": "https://github.com/wakeand/foundry-vtt-rqg",
   "manifest": "https://github.com/wakeand/fvtt-system-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/wakeand/fvtt-system-rqg/releases/download/v1.7.0/rqg.zip",
-  "readme": "https://github.com/wakeand/fvtt-system-rqg/blob/v1.7.0/readme.md",
-  "changelog": "https://github.com/wakeand/fvtt-system-rqg/blob/v1.7.0/CHANGELOG.md",
+  "download": "https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/releases/download/v1.8.0-23e10a4/rqg.zip",
+  "readme": "https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/blob/v1.8.0-23e10a4/readme.md",
+  "changelog": "https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/blob/v1.8.0-23e10a4/CHANGELOG.md",
   "license": "UNLICENSED",
   "bugs": "https://github.com/wakeand/foundry-vtt-rqg/issues"
 }
