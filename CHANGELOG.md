@@ -1,3 +1,13 @@
+# [1.8.0-7868c28](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.8.0-23e10a4...v1.8.0-7868c28) (2021-11-03)
+
+
+### Features
+
+* migrate meleeWeaponItems & missileWeaponItems to weaponItems ([7868c28](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/7868c28))
+
+
+
+
 # [1.8.0-23e10a4](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.7.0...v1.8.0-23e10a4) (2021-11-01)
 
 
