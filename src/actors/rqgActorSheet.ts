@@ -423,6 +423,7 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some((i: RqgItem) =>
           [
             ItemTypeEnum.Gear,
+            ItemTypeEnum.Weapon,
             ItemTypeEnum.MeleeWeapon,
             ItemTypeEnum.MissileWeapon,
             ItemTypeEnum.Armor,

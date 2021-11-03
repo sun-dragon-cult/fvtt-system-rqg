@@ -15,7 +15,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
   static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.data.type !== ItemTypeEnum.RuneMagic || !item.actor) {
-      const msg = `Wrong itemtype or not embedded item in Actor PrepareEmbeddedEntities`;
+      const msg = `RQG | Wrong itemtype or not embedded item in Actor PrepareEmbeddedEntities`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
@@ -23,7 +23,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     if (item.data.data.cultId) {
       const runeMagicCult = actor.items.get(item.data.data.cultId);
       if (!runeMagicCult || runeMagicCult.data.type !== ItemTypeEnum.Cult) {
-        const msg = `Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}`;
+        const msg = `RQG | Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}`;
         ui.notifications?.warn(msg);
         console.warn(msg, item, actor);
         item.data.data.cultId = ""; // remove the mismatched link to make it appear in the GUI
