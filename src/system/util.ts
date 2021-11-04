@@ -133,35 +133,32 @@ export function requireValue(val: unknown, errorMessage: string, ...debugData: a
   }
 }
 
-export function usersThatOwnActor(actor: RqgActor): StoredDocument<User>[] {
-  return getGameUsers().filter((user: User) =>
-    actor.testUserPermission(user, CONST.ENTITY_PERMISSIONS.OWNER)
-  );
+export function usersThatOwnActor(actor: RqgActor | null): StoredDocument<User>[] {
+  if (actor) {
+    return getGameUsers().filter((user: User) =>
+      actor.testUserPermission(user, CONST.ENTITY_PERMISSIONS.OWNER)
+    );
+  }
+  return [];
 }
 
 /**
  * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
  */
-export function getActorFromIds(actorId: string, tokenId: string | null): RqgActor {
+export function getActorFromIds(actorId: string | null, tokenId: string | null): RqgActor | null {
   const token = canvas?.getLayer("TokenLayer")?.ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
-  const actor = getGame().actors?.get(actorId);
-  if (!actor) {
-    throw new RqgError("game.actors is not defined", token, tokenId);
-  }
-  return (token ? token.document.getActor() : actor) as RqgActor;
+  const actor = actorId ? getGame().actors?.get(actorId) ?? null : null;
+  return token ? token.document.getActor() : actor;
 }
 
-export function getSpeakerName(actorId: string, tokenId: string | null): string {
+export function getSpeakerName(actorId: string | null, tokenId: string | null): string {
   const token = canvas?.getLayer("TokenLayer")?.ownedTokens.find((t: Token) => t.id === tokenId);
   if (token) {
     return token.name;
   }
 
-  const actor = getGame().actors?.get(actorId);
-  if (!actor) {
-    throw new RqgError("game.actors or actorId is not defined", actorId);
-  }
-  return actor.data.token.name ?? ""; // TODO What to do if token name is undefined
+  const actor = actorId ? getGame().actors?.get(actorId) : null;
+  return actor?.data.token.name ?? ""; // TODO What to do if token name is undefined
 }
 
 export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Metadata> {

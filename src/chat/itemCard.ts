@@ -116,9 +116,12 @@ export class ItemCard {
 
     const modifier = Number(flags.formData.modifier) || 0;
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
-    await ItemCard.roll(flags.itemData, modifier, actor, speakerName);
-
+    if (actor) {
+      const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+      await ItemCard.roll(flags.itemData, modifier, actor, speakerName);
+    } else {
+      ui.notifications?.warn("Could not find world actor to do ability roll");
+    }
     return false;
   }
 

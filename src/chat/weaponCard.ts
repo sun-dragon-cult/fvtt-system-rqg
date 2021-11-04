@@ -145,6 +145,10 @@ export class WeaponCard extends ChatMessage {
       }
     }
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
+    if (!actor) {
+      ui.notifications?.warn("Couldn't find world actor to do action");
+      return false;
+    }
 
     switch (actionButton.name) {
       case "combatManeuver":
@@ -242,19 +246,23 @@ export class WeaponCard extends ChatMessage {
         Number(flags.skillItemData.data.chance)) ||
       0;
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
-    const skillSpecialization = (flags.skillItemData.data as any).specialization
-      ? ` (${(flags.skillItemData.data as any).specialization})`
-      : "";
-    const skillName = (flags.skillItemData.data as any).skillName + skillSpecialization;
+    if (actor) {
+      const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+      const skillSpecialization = (flags.skillItemData.data as any).specialization
+        ? ` (${(flags.skillItemData.data as any).specialization})`
+        : "";
+      const skillName = (flags.skillItemData.data as any).skillName + skillSpecialization;
+      flags.result = await Ability.roll(
+        flags.skillItemData.name + " " + flags.formData.combatManeuver,
+        chance,
+        modifier,
+        speakerName
+      );
+      await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
+    } else {
+      ui.notifications?.warn("Couldn't find world actor to do weapon roll");
+    }
 
-    flags.result = await Ability.roll(
-      skillName + " " + flags.formData.combatManeuver,
-      chance,
-      modifier,
-      speakerName
-    );
-    await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
     const data = await WeaponCard.renderContent(flags);
     await chatMessage.update(data);
   }
@@ -311,6 +319,10 @@ export class WeaponCard extends ChatMessage {
     );
 
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
+    if (!actor) {
+      ui.notifications?.warn("Could not find world actor to do damage roll");
+      return;
+    }
     let damageBonusFormula: string =
       actor.data.data.attributes.damageBonus !== "0"
         ? `${actor.data.data.attributes.damageBonus}`

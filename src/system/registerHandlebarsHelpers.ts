@@ -20,13 +20,13 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("itemname", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
-    const item = actor.items.get(itemId);
+    const item = actor && actor.items.get(itemId);
     return item ? item.data.name : "---";
   });
 
   Handlebars.registerHelper("skillname", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
-    const item = actor.items.get(itemId);
+    const item = actor && actor.items.get(itemId);
     if (!item) {
       return "---";
     }
@@ -43,21 +43,21 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("skillchance", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
-    const item = actor.items.get(itemId);
+    const item = actor && actor.items.get(itemId);
     // @ts-ignore chance
     return item ? item.data.data.chance : "---";
   });
 
   Handlebars.registerHelper("experiencedclass", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
-    const item = actor.items.get(itemId);
+    const item = actor && actor.items.get(itemId);
     // @ts-ignore hasExperience
     return item && item.data.data.hasExperience ? "experienced" : "";
   });
 
   Handlebars.registerHelper("quantity", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
-    const item = actor.items.get(itemId);
+    const item = actor && actor.items.get(itemId);
     if (!item) {
       return "---";
     }
