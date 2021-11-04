@@ -14,7 +14,7 @@ export async function migrateToWeaponItem(
   itemData: ItemData,
   owningActorData?: ActorData
 ): Promise<ItemUpdate> {
-  const cmTranslation = new Map([
+  const missileCmTranslation = new Map([
     [
       CombatManeuver.Crush,
       {
@@ -67,9 +67,62 @@ export async function migrateToWeaponItem(
     ],
   ]);
 
+  const meleeCmTranslation = new Map([
+    [
+      CombatManeuver.Crush,
+      {
+        name: "Bash",
+        damageType: "crush",
+      },
+    ],
+    [
+      CombatManeuver.Slash,
+      {
+        name: "Cut",
+        damageType: "slash",
+      },
+    ],
+    [
+      CombatManeuver.Impale,
+      {
+        name: "Thrust",
+        damageType: "impale",
+      },
+    ],
+    [
+      CombatManeuver.Grapple,
+      {
+        name: "Grapple",
+        damageType: "special",
+      },
+    ],
+    [
+      CombatManeuver.Knockback,
+      {
+        name: "Knockback",
+        damageType: "special",
+      },
+    ],
+    [
+      CombatManeuver.Parry,
+      {
+        name: "Parry",
+        damageType: "parry",
+      },
+    ],
+    [
+      CombatManeuver.Special,
+      {
+        name: "Special",
+        damageType: "special",
+        description: "Migrated from previous Missile- / Melee- Item Special damage",
+      },
+    ],
+  ]);
+
   if (itemData.type === ItemTypeEnum.MeleeWeapon) {
     const newCombatManeuvers = itemData.data.combatManeuvers.map(
-      (cm) => cmTranslation.get(cm) as WeaponCombatManeuver
+      (cm) => meleeCmTranslation.get(cm) as WeaponCombatManeuver
     );
     let skill;
     let isSkillOriginFound = false;
@@ -177,7 +230,7 @@ export async function migrateToWeaponItem(
 
   if (itemData.type === ItemTypeEnum.MissileWeapon) {
     const newCombatManeuvers = itemData.data.combatManeuvers.map(
-      (cm) => cmTranslation.get(cm) as WeaponCombatManeuver
+      (cm) => missileCmTranslation.get(cm) as WeaponCombatManeuver
     );
 
     const updateData: DeepPartial<WeaponDataProperties> = {
