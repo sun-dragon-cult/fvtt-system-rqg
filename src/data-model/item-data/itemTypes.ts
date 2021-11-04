@@ -25,19 +25,20 @@ import { WeaponDataProperties, WeaponDataSource } from "./weaponData";
 import { Weapon } from "../../actors/item-specific/weapon";
 
 export enum ItemTypeEnum {
-  Skill = "skill",
+  Armor = "armor",
+  Cult = "cult",
+  Gear = "gear",
+  HitLocation = "hitLocation",
   Passion = "passion",
   Rune = "rune",
-  HitLocation = "hitLocation",
-  Gear = "gear",
-  Armor = "armor",
+  RuneMagic = "runeMagic",
+  Skill = "skill",
+  SpiritMagic = "spiritMagic",
+  Weapon = "weapon",
+  ShamanicAbility = "shamanicAbility",
+  SorceryMagic = "sorceryMagic",
   MeleeWeapon = "meleeWeapon",
   MissileWeapon = "missileWeapon",
-  Weapon = "weapon",
-  SpiritMagic = "spiritMagic",
-  Cult = "cult",
-  RuneMagic = "runeMagic",
-  ShamanicAbility = "shamanicAbility",
 }
 
 /**
@@ -48,14 +49,14 @@ export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = ne
   [ItemTypeEnum.Cult, Cult],
   [ItemTypeEnum.Gear, Gear],
   [ItemTypeEnum.HitLocation, HitLocation],
-  [ItemTypeEnum.MeleeWeapon, MeleeWeapon],
-  [ItemTypeEnum.MissileWeapon, MissileWeapon],
-  [ItemTypeEnum.Weapon, Weapon],
   [ItemTypeEnum.Passion, Passion],
   [ItemTypeEnum.Rune, Rune],
   [ItemTypeEnum.RuneMagic, RuneMagic],
   [ItemTypeEnum.Skill, Skill],
   [ItemTypeEnum.SpiritMagic, SpiritMagic],
+  [ItemTypeEnum.Weapon, Weapon],
+  [ItemTypeEnum.MeleeWeapon, MeleeWeapon],
+  [ItemTypeEnum.MissileWeapon, MissileWeapon],
 ]);
 
 export type RqgItemDataSource =
@@ -63,25 +64,25 @@ export type RqgItemDataSource =
   | CultDataSource
   | GearDataSource
   | HitLocationDataSource
-  | MeleeWeaponDataSource
-  | MissileWeaponDataSource
-  | WeaponDataSource
   | PassionDataSource
   | RuneDataSource
   | RuneMagicDataSource
   | SkillDataSource
-  | SpiritMagicDataSource;
+  | SpiritMagicDataSource
+  | WeaponDataSource
+  | MeleeWeaponDataSource
+  | MissileWeaponDataSource;
 
 export type RqgItemDataProperties =
   | ArmorDataProperties
   | CultDataProperties
   | GearDataProperties
   | HitLocationDataProperties
-  | MeleeWeaponDataProperties
-  | MissileWeaponDataProperties
-  | WeaponDataProperties
   | PassionDataProperties
   | RuneDataProperties
   | RuneMagicDataProperties
   | SkillDataProperties
-  | SpiritMagicDataProperties;
+  | SpiritMagicDataProperties
+  | WeaponDataProperties
+  | MeleeWeaponDataProperties
+  | MissileWeaponDataProperties;

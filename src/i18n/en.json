@@ -6,12 +6,12 @@
     "TypeHitlocation": "Hit Location",
     "TypeGear": "Gear",
     "TypeArmor": "Armor",
-    "TypeMeleeweapon": "Melee Weapon",
-    "TypeMissileweapon": "Missile Weapon",
     "TypeWeapon": "Weapon",
     "TypeSpiritmagic": "Spirit Magic Spell",
     "TypeCult": "Cult",
-    "TypeRunemagic": "Rune Magic Spell"
+    "TypeRunemagic": "Rune Magic Spell",
+    "TypeMeleeweapon": "~ Melee Weapon",
+    "TypeMissileweapon": "~ Missile Weapon"
   },
   "RQG": {
     "characteristic": {

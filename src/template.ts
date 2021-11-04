@@ -19,17 +19,18 @@ export const Actors = {
 };
 
 export const Items = {
-  [ItemTypeEnum.Skill]: emptySkill,
+  [ItemTypeEnum.Armor]: emptyArmor,
+  [ItemTypeEnum.Cult]: emptyCult,
+  [ItemTypeEnum.Gear]: emptyGear,
+  [ItemTypeEnum.HitLocation]: emptyHitLocation,
   [ItemTypeEnum.Passion]: emptyPassion,
   [ItemTypeEnum.Rune]: emptyRune,
-  [ItemTypeEnum.HitLocation]: emptyHitLocation,
-  [ItemTypeEnum.Gear]: emptyGear,
-  [ItemTypeEnum.Armor]: emptyArmor,
+  [ItemTypeEnum.RuneMagic]: emptyRuneMagic,
+  [ItemTypeEnum.Skill]: emptySkill,
+  // [ItemTypeEnum.ShamanicAbility]: emptyShamanicAbility,
+  [ItemTypeEnum.SpiritMagic]: emptySpiritMagic,
+  // [ItemTypeEnum.SorceryMagic]: emptySorceryMagic,
+  [ItemTypeEnum.Weapon]: emptyWeapon,
   [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
   [ItemTypeEnum.MissileWeapon]: emptyMissileWeapon,
-  [ItemTypeEnum.Weapon]: emptyWeapon,
-  [ItemTypeEnum.SpiritMagic]: emptySpiritMagic,
-  [ItemTypeEnum.Cult]: emptyCult,
-  [ItemTypeEnum.RuneMagic]: emptyRuneMagic,
-  // [ItemTypeEnum.ShamanicAbility]: emptyShamanicAbility,
 };
