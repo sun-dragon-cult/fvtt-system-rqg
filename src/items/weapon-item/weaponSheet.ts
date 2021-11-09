@@ -123,7 +123,15 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
 
   // Look for item name first in uuid link then in embedded actor
   private getName(uuid: string, embeddedSkillId: string): string {
-    return uuid2Name(uuid) ?? this.actor?.items.get(embeddedSkillId)?.name ?? "";
+    const uuidName = uuid2Name(uuid);
+    if (uuidName) {
+      return uuidName;
+    }
+    const embeddedName = this.actor?.items.get(embeddedSkillId)?.name;
+    if (embeddedName) {
+      return `${embeddedName} (embedded)`;
+    }
+    return "";
   }
 
   protected async _updateObject(event: Event, formData: any): Promise<any> {
