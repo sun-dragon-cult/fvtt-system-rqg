@@ -3,7 +3,7 @@ import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { assertItemType, getRequiredDomDataset, logMisconfiguration } from "../../system/util";
+import { assertItemType, getRequiredDomDataset, uuid2Name } from "../../system/util";
 import {
   damageType,
   WeaponDataProperties,
@@ -37,7 +37,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     });
   }
 
-  async getData(): Promise<WeaponSheetData | ItemSheet.Data> {
+  getData(): WeaponSheetData | ItemSheet.Data {
     const itemData = this.document.data.toObject(false);
     assertItemType(itemData.type, ItemTypeEnum.Weapon);
     const weaponData = itemData.data;
@@ -58,7 +58,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()),
         damageTypes: Object.values(damageType),
         weaponSkills: this.getWeaponSkills(),
-        skillNames: await this.getSkillNames(),
+        skillNames: this.getSkillNames(),
         equippedStatuses: [...equippedStatuses],
         ownedProjectiles: this.getOwnedProjectiles(),
         rateOfFire: {
@@ -87,23 +87,26 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       : [];
   }
 
-  private async getSkillNames(): Promise<any> {
+  private getSkillNames(): any {
     assertItemType(this.item.data.type, ItemTypeEnum.Weapon);
     return {
-      oneHand: await this.getSkillName(this.item.data.data.usage.oneHand.skillOrigin),
-      offHand: await this.getSkillName(this.item.data.data.usage.offHand.skillOrigin),
-      twoHand: await this.getSkillName(this.item.data.data.usage.twoHand.skillOrigin),
-      missile: await this.getSkillName(this.item.data.data.usage.missile.skillOrigin),
+      oneHand: this.getName(
+        this.item.data.data.usage.oneHand.skillOrigin,
+        this.item.data.data.usage.oneHand.skillId
+      ),
+      offHand: this.getName(
+        this.item.data.data.usage.offHand.skillOrigin,
+        this.item.data.data.usage.offHand.skillId
+      ),
+      twoHand: this.getName(
+        this.item.data.data.usage.twoHand.skillOrigin,
+        this.item.data.data.usage.twoHand.skillId
+      ),
+      missile: this.getName(
+        this.item.data.data.usage.missile.skillOrigin,
+        this.item.data.data.usage.missile.skillId
+      ),
     };
-  }
-
-  private async getSkillName(origin: string): Promise<string> {
-    const skill = origin
-      ? await fromUuid(origin).catch(() => {
-          logMisconfiguration(`Couldn't find weapon skill with uuid`, true, this.item);
-        })
-      : null;
-    return skill?.name ?? "";
   }
 
   private getOwnedProjectiles(): any[] {
@@ -116,6 +119,11 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       ];
     }
     return [];
+  }
+
+  // Look for item name first in uuid link then in embedded actor
+  private getName(uuid: string, embeddedSkillId: string): string {
+    return uuid2Name(uuid) ?? this.actor?.items.get(embeddedSkillId)?.name ?? "";
   }
 
   protected async _updateObject(event: Event, formData: any): Promise<any> {
