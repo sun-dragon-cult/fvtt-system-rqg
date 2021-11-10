@@ -7,7 +7,7 @@ import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./combat/rqgCombat";
 import { RQG_CONFIG } from "./system/config";
 import { ChatCardListeners } from "./chat/chatCardListeners";
-import { migrateWorld } from "./system/migrate";
+import { forceMigrateWorld, migrateWorld } from "./system/migrate";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
 import { setupSimpleCalendar } from "./module-integration/simple-calendar-init";
@@ -58,6 +58,12 @@ Hooks.once("init", async () => {
   registerRqgSystemSettings();
   await loadHandlebarsTemplates();
   registerHandlebarsHelpers();
+
+  // run game.system.api.migrate() to force a new migration
+  (getGame().system as any).api = {
+    // installModules: installModules,
+    migrate: forceMigrateWorld,
+  };
 });
 
 Hooks.once("ready", async () => {
