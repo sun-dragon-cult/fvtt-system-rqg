@@ -37,10 +37,12 @@ export type ActorUpdate =
  * Perform a system migration for the entire World, applying migrations for what is in it
  */
 export async function migrateWorld(): Promise<void> {
-  if (getGame().system.data.version === getGame().settings.get("rqg", "systemMigrationVersion")) {
-    return; // Already updated
+  if (getGame().system.data.version !== getGame().settings.get("rqg", "systemMigrationVersion")) {
+    await forceMigrateWorld();
   }
+}
 
+export async function forceMigrateWorld(): Promise<void> {
   ui.notifications?.info(
     `Applying RQG System Migration for version ${
       getGame().system.data.version
