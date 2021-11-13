@@ -19,6 +19,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
     contains: [],
     isContainer: false,
     physicalItemType: "unique",
+    quantity: 1,
     location: "",
     attunedTo: "",
     encumbrance: 0,
@@ -83,6 +84,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
     return {
       name: node.location,
       id: "",
+      quantity: 1,
       description: "",
       gmNotes: "",
       contains: [],

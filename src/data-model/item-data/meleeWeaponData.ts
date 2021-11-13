@@ -61,4 +61,5 @@ export const emptyMeleeWeapon: MeleeWeaponDataSourceData = {
   isContainer: false,
   attunedTo: "",
   physicalItemType: "unique",
+  quantity: 1,
 };

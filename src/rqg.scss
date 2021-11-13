@@ -106,8 +106,20 @@
     flex: 1;
   }
 
+  .no-display {
+    display: none;
+  }
+
+  .drag-hover {
+    outline: forestgreen dashed 5px;
+  }
+
   .gap1rem {
     gap: 1rem;
+  }
+
+  .gap03rem {
+    gap: 0.3rem;
   }
 
   .warning {
@@ -319,9 +331,17 @@
 
       // Set-token-SR-in-combat button
       button {
+        height: 1.5rem;
         line-height: unset;
         width: unset;
         text-align: left;
+      }
+
+      .usage {
+        line-height: 1.5rem;
+        &.missile {
+          line-height: 3rem;
+        }
       }
     }
 
@@ -368,7 +388,8 @@
       > *:nth-child(22n + 30),
       > *:nth-child(22n + 31),
       > *:nth-child(22n + 32),
-      > *:nth-child(22n + 33) {
+      > *:nth-child(22n + 33),
+      > *:nth-child(22n + 34) {
         background: var(--table-alternate-background);
       }
     }
@@ -406,7 +427,7 @@
     }
 
     &.hit-location {
-      grid-template-columns: [col-start] auto min-content repeat(5, auto) [col-end];
+      grid-template-columns: [col-start] repeat(3, min-content) repeat(4, auto) [col-end];
 
       > *:nth-child(14n + 13),
       > *:nth-child(14n + 14),
@@ -563,6 +584,11 @@
         height: min-content;
         margin-right: 3px;
         margin-left: -4px;
+      }
+
+      [name="combatManeuver"] {
+        width: min-content;
+        flex: 1 1 auto;
       }
     }
     &.characteristic-card {

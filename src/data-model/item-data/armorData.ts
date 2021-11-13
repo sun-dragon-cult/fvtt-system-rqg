@@ -77,4 +77,5 @@ export const emptyArmor: ArmorDataSourceData = {
   isContainer: false,
   attunedTo: "",
   physicalItemType: "unique",
+  quantity: 1,
 };

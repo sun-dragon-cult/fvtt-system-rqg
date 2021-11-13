@@ -1,7 +1,7 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { WeaponCard } from "../../chat/weaponCard";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getGame, RqgError } from "../../system/util";
+import { getDomDataset, getGame, getRequiredDomDataset, RqgError } from "../../system/util";
 
 export const combatMenuOptions = (
   actor: RqgActor,
@@ -10,12 +10,13 @@ export const combatMenuOptions = (
   {
     name: "Roll (click)",
     icon: '<i class="fas fa-dice-d20"></i>',
-    condition: () => true,
+    condition: (el) => !!getDomDataset(el, "weapon-roll"),
     callback: async (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const weaponItemId = getDomDataset(el, "item-id");
+      const usage = getRequiredDomDataset(el, "weapon-roll");
       if (skillItemId && weaponItemId) {
-        await WeaponCard.show(weaponItemId, skillItemId, actor, token);
+        await WeaponCard.show(weaponItemId, usage, skillItemId, actor, token);
       } else {
         const msg = `Couldn't find skillId [${skillItemId}] or weaponId [${weaponItemId}] on actor ${actor.name} to show the weapon chat card from the combat context menu.`;
         ui.notifications?.error(msg);

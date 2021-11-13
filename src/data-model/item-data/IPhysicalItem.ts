@@ -11,7 +11,7 @@ interface Price {
 
 export interface IPhysicalItem {
   physicalItemType: PhysicalItemType;
-  quantity?: number; // Used for currency & consumables like arrows, torches, food rations. 1 for others
+  quantity: number; // Used for currency & consumables like arrows, torches, food rations. 1 for others
   description: string;
   gmNotes: string;
   location: string;

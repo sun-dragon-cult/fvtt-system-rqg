@@ -1,6 +1,5 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
-import { CombatManeuver } from "../data-model/item-data/meleeWeaponData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import {
   assertItemType,
@@ -21,17 +20,20 @@ import {
   ItemDataSource,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { CombatManeuver, DamageType, Usage } from "../data-model/item-data/weaponData";
 
 type WeaponCardFlags = {
   actorId: string;
   tokenId: string | null;
   skillItemData: ItemDataProperties;
   weaponItemData: ItemDataProperties;
+  usage: string; // oneHand | twoHand | offhand | missile
   result: ResultEnum | undefined;
+  specialDamageTypeText: string | undefined;
   formData: {
     modifier: number | null; // Null is a placeholder instead of 0 to keep modifier in the object
     chance: number;
-    combatManeuver: CombatManeuver | undefined;
+    combatManeuver: string | undefined;
   };
 };
 
@@ -45,6 +47,7 @@ export class WeaponCard extends ChatMessage {
   // TODO Should it extend ChatMessage?
   public static async show(
     weaponId: string,
+    usage: string,
     skillId: string,
     actor: RqgActor,
     token: TokenDocument | null
@@ -57,22 +60,15 @@ export class WeaponCard extends ChatMessage {
       throw new RqgError(msg);
     }
     const weaponItem = actor.items.get(weaponId);
-    if (
-      !weaponItem ||
-      !(
-        weaponItem.data.type === ItemTypeEnum.MeleeWeapon ||
-        weaponItem.data.type === ItemTypeEnum.MissileWeapon
-      )
-    ) {
-      const msg = `Couldn't find weapon with itemId [${skillItem}] on actor ${actor.name} to show a weapon chat card.`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
-    }
+    assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
+
     const flags: WeaponCardFlags = {
       actorId: actor.id,
       tokenId: token?.id ?? null,
       skillItemData: skillItem.data.toObject(false) as unknown as ItemDataProperties,
       weaponItemData: weaponItem.data.toObject(false) as unknown as ItemDataProperties,
+      usage: usage,
+      specialDamageTypeText: undefined,
       result: undefined,
       formData: {
         modifier: null,
@@ -157,24 +153,52 @@ export class WeaponCard extends ChatMessage {
     switch (actionButton.name) {
       case "combatManeuver":
         flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value;
+
+        const weaponUsage: Usage = (flags.weaponItemData.data as any).usage[flags.usage];
+        const combatManeuver = weaponUsage.combatManeuvers.find(
+          (m) => m.name === flags.formData.combatManeuver
+        );
+        const damageType = combatManeuver?.damageType;
+        const specialDamageTypeDescription =
+          damageType === "special" ? combatManeuver?.description || undefined : undefined;
+
+        flags.specialDamageTypeText =
+          specialDamageTypeDescription ??
+          CONFIG.RQG.combatManeuvers.get(combatManeuver?.name ?? "")?.specialDescriptionHtml;
+
         const projectileItemData =
           hasOwnProperty(flags.weaponItemData.data, "isProjectileWeapon") &&
           flags.weaponItemData.data.isProjectileWeapon
             ? actor.items.get(flags.weaponItemData.data.projectileId)?.data
-            : flags.weaponItemData;
+            : flags.weaponItemData; // Thrown (or melee)
 
+        // Decrease quantity of linked projectile if shooting
         if (
-          flags.weaponItemData.type === ItemTypeEnum.MissileWeapon &&
-          projectileItemData?.type === ItemTypeEnum.MissileWeapon &&
+          projectileItemData?.type === ItemTypeEnum.Weapon &&
           projectileItemData.data.quantity &&
-          projectileItemData.data.quantity > 0
+          projectileItemData.data.quantity > 0 &&
+          flags.usage === "missile" &&
+          !["parry", "special"].includes(damageType ?? "")
         ) {
           const updateData: DeepPartial<ItemDataSource> = {
             _id: projectileItemData._id,
+            // TODO Update chatcard data as well !!!!! ***************
             data: { quantity: --projectileItemData.data.quantity },
           };
           await actor.updateEmbeddedDocuments("Item", [updateData]);
-        } else if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
+        }
+
+        if (flags.usage === "missile" && !projectileItemData) {
+          ui.notifications?.warn("Out of ammo!");
+          return false;
+        }
+
+        // Prevent using weapons with projectile quantity 0
+        if (
+          projectileItemData?.type === ItemTypeEnum.Weapon &&
+          projectileItemData.data.quantity != null &&
+          projectileItemData.data.quantity <= 0
+        ) {
           ui.notifications?.warn("Out of ammo!");
           return false;
         }
@@ -224,6 +248,10 @@ export class WeaponCard extends ChatMessage {
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
     if (actor) {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+      const skillSpecialization = (flags.skillItemData.data as any).specialization
+        ? ` (${(flags.skillItemData.data as any).specialization})`
+        : "";
+      const skillName = (flags.skillItemData.data as any).skillName + skillSpecialization;
       flags.result = await Ability.roll(
         flags.skillItemData.name + " " + flags.formData.combatManeuver,
         chance,
@@ -281,13 +309,14 @@ export class WeaponCard extends ChatMessage {
 
   private static async damageRoll(
     flags: WeaponCardFlags,
-    damageType: DamageRollTypeEnum
+    damageRollType: DamageRollTypeEnum
   ): Promise<void> {
-    if (!flags.formData.combatManeuver) {
-      const msg = `Damage Roll didn't have a combat maneuver`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, flags, damageType);
-    }
+    requireValue(
+      flags.formData.combatManeuver,
+      `No combat maneuver in Damage Roll`,
+      flags,
+      damageRollType
+    );
 
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
     if (!actor) {
@@ -296,51 +325,49 @@ export class WeaponCard extends ChatMessage {
     }
     let damageBonusFormula: string =
       actor.data.data.attributes.damageBonus !== "0"
-        ? // @ts-ignore 0.8 parse
-          `${actor.data.data.attributes.damageBonus}`
+        ? `${actor.data.data.attributes.damageBonus}`
         : "";
 
-    if (flags.weaponItemData.type === ItemTypeEnum.MissileWeapon) {
+    assertItemType(flags.weaponItemData.type, ItemTypeEnum.Weapon);
+    const weaponUsage: Usage = (flags.weaponItemData.data.usage as any)[flags.usage];
+    const weaponDamage = hasOwnProperty(weaponUsage, "damage")
+      ? Roll.parse(`(${weaponUsage.damage})[weapon]`, {})
+      : [];
+
+    if (flags.usage === "missile") {
       const missileWeaponData = flags.weaponItemData;
 
       if (missileWeaponData.data.isThrownWeapon) {
         damageBonusFormula = "ceil(" + actor.data.data.attributes.damageBonus + "/2)";
-      } else if (missileWeaponData.data.isProjectileWeapon) {
+      } else {
         damageBonusFormula = "";
       }
     }
 
-    const weaponDamage = hasOwnProperty(flags.weaponItemData.data, "damage")
-      ? Roll.parse(`(${flags.weaponItemData.data.damage})[weapon]`, {})
-      : [];
-
     const damageRollTerms =
-      hasOwnProperty(flags.weaponItemData.data, "damage") && flags.weaponItemData.data.damage
-        ? weaponDamage
-        : []; // Don't add 0 damage rollTerm
+      hasOwnProperty(weaponUsage, "damage") && weaponUsage.damage ? weaponDamage : []; // Don't add 0 damage rollTerm
 
-    if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageType)) {
-      if ([CombatManeuver.Slash, CombatManeuver.Impale].includes(flags.formData.combatManeuver)) {
-        damageRollTerms.push(
-          // @ts-ignore damage
-          ...WeaponCard.slashImpaleSpecialDamage(flags.weaponItemData.data.damage)
-        );
-      } else if (flags.formData.combatManeuver === CombatManeuver.Crush) {
+    const damageType = weaponUsage.combatManeuvers.find(
+      (m) => m.name === flags.formData.combatManeuver
+    )?.damageType;
+    requireValue(damageType, "weapon didn't have a combatManeuver");
+
+    if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageRollType)) {
+      if (["slash", "impale"].includes(damageType)) {
+        damageRollTerms.push(...WeaponCard.slashImpaleSpecialDamage(weaponUsage.damage));
+      } else if (damageType === "crush") {
         damageRollTerms.push(...(await WeaponCard.crushSpecialDamage(damageBonusFormula)));
-      } else if (flags.formData.combatManeuver === CombatManeuver.Parry) {
-        // @ts-ignore combatManeuvers
-        if (flags.weaponItemData.data.combatManeuvers.includes(CombatManeuver.Crush)) {
+      } else if (damageType === "parry") {
+        // Parry will use crush if existing or slash/impale if not, will work unless some weapon has both crush & slash
+        // No weapon in the core rulebook has that though
+        const usedParryingDamageType = WeaponCard.getDamageTypeString(
+          damageType,
+          weaponUsage.combatManeuvers
+        );
+        if (usedParryingDamageType === "crush") {
           damageRollTerms.push(...(await WeaponCard.crushSpecialDamage(damageBonusFormula)));
-        } else if (
-          // @ts-ignore combatManeuvers
-          flags.weaponItemData.data.combatManeuvers.some((m) =>
-            [CombatManeuver.Slash, CombatManeuver.Impale].includes(m)
-          )
-        ) {
-          damageRollTerms.push(
-            // @ts-ignore damage
-            ...WeaponCard.slashImpaleSpecialDamage(flags.weaponItemData.data.damage)
-          );
+        } else if (["slash", "impale"].includes(usedParryingDamageType)) {
+          damageRollTerms.push(...WeaponCard.slashImpaleSpecialDamage(weaponUsage.damage));
         } else {
           logMisconfiguration(
             `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`,
@@ -352,7 +379,7 @@ export class WeaponCard extends ChatMessage {
     if (damageBonusFormula.length) {
       damageRollTerms.push(...Roll.parse(`+ ${damageBonusFormula}[dmg bonus]`, {}));
     }
-    const maximise = damageType === DamageRollTypeEnum.MaxSpecial;
+    const maximise = damageRollType === DamageRollTypeEnum.MaxSpecial;
     const roll = Roll.fromTerms(damageRollTerms);
     await roll.evaluate({
       maximize: maximise,
@@ -362,8 +389,24 @@ export class WeaponCard extends ChatMessage {
     await roll.toMessage({
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: `damage`,
+      flavor: `damage: ${WeaponCard.getDamageTypeString(damageType, weaponUsage.combatManeuvers)}`,
     });
+  }
+
+  private static getDamageTypeString(
+    damageType: DamageType,
+    combatManeuvers: CombatManeuver[]
+  ): string {
+    if (damageType === "parry") {
+      if (combatManeuvers.some((cm) => cm.damageType === "crush")) {
+        damageType = "crush";
+      } else if (combatManeuvers.some((cm) => cm.damageType === "slash")) {
+        damageType = "slash";
+      } else if (combatManeuvers.some((cm) => cm.damageType === "impale")) {
+        damageType = "impale";
+      }
+    }
+    return damageType;
   }
 
   private static async fumbleRoll(flags: WeaponCardFlags) {

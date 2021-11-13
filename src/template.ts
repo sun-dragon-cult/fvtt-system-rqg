@@ -11,6 +11,7 @@ import { emptySpiritMagic } from "./data-model/item-data/spiritMagicData";
 import { emptyCult } from "./data-model/item-data/cultData";
 import { emptyRuneMagic } from "./data-model/item-data/runeMagicData";
 import { emptyHitLocation } from "./data-model/item-data/hitLocationData";
+import { emptyWeapon } from "./data-model/item-data/weaponData";
 
 // Instantiated Actor types
 export const Actors = {
@@ -18,16 +19,18 @@ export const Actors = {
 };
 
 export const Items = {
-  [ItemTypeEnum.Skill]: emptySkill,
+  [ItemTypeEnum.Armor]: emptyArmor,
+  [ItemTypeEnum.Cult]: emptyCult,
+  [ItemTypeEnum.Gear]: emptyGear,
+  [ItemTypeEnum.HitLocation]: emptyHitLocation,
   [ItemTypeEnum.Passion]: emptyPassion,
   [ItemTypeEnum.Rune]: emptyRune,
-  [ItemTypeEnum.HitLocation]: emptyHitLocation,
-  [ItemTypeEnum.Gear]: emptyGear,
-  [ItemTypeEnum.Armor]: emptyArmor,
+  [ItemTypeEnum.RuneMagic]: emptyRuneMagic,
+  [ItemTypeEnum.Skill]: emptySkill,
+  // [ItemTypeEnum.ShamanicAbility]: emptyShamanicAbility,
+  [ItemTypeEnum.SpiritMagic]: emptySpiritMagic,
+  // [ItemTypeEnum.SorceryMagic]: emptySorceryMagic,
+  [ItemTypeEnum.Weapon]: emptyWeapon,
   [ItemTypeEnum.MeleeWeapon]: emptyMeleeWeapon,
   [ItemTypeEnum.MissileWeapon]: emptyMissileWeapon,
-  [ItemTypeEnum.SpiritMagic]: emptySpiritMagic,
-  [ItemTypeEnum.Cult]: emptyCult,
-  [ItemTypeEnum.RuneMagic]: emptyRuneMagic,
-  // [ItemTypeEnum.ShamanicAbility]: emptyShamanicAbility,
 };

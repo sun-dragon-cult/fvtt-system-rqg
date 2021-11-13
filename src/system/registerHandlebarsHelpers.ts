@@ -8,6 +8,12 @@ export const registerHandlebarsHelpers = function () {
   );
   Handlebars.registerHelper("json", (context) => JSON.stringify(context));
 
+  /** Workaround since handlebars can't handle ../@key
+   * Will create a variable in scope, call with {{setVar 'myvar' @key this}}  */
+  Handlebars.registerHelper("setVar", (varName, varValue, scope) => {
+    scope[varName] = varValue;
+  });
+
   Handlebars.registerHelper("currency", (value, unit) => {
     return `${new Intl.NumberFormat().format(value)} ${unit}`;
   });

@@ -23,6 +23,7 @@ import { migrateHitLocationHPName } from "./migrations-item/migrateHitLocationHP
 import { migrateDoubleLeftArms } from "./migrations-item/migrateDoubleLeftArms";
 import { migrateCharacterMov } from "./migrations-actor/migrateCharacterMov";
 import { migrateRenameCharacterRace } from "./migrations-actor/migrateRenameCharacterRace";
+import { migrateToWeaponItem } from "./migrations-item/migrateToWeaponItem";
 
 export type ItemUpdate =
   | object &
@@ -68,7 +69,7 @@ export async function forceMigrateWorld(): Promise<void> {
 async function migrateWorldActors(): Promise<void> {
   for (let actor of getGame().actors!.contents) {
     try {
-      const updates = migrateActorData(actor.toObject() as any); // TODO fix type
+      const updates = await migrateActorData(actor.toObject() as any); // TODO fix type
       if (!foundry.utils.isObjectEmpty(updates)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updates);
         console.log(`RQG | Migrating Actor document ${actor.name}`, convertedUpdates);
@@ -84,7 +85,7 @@ async function migrateWorldActors(): Promise<void> {
 async function migrateWorldItems() {
   for (let item of getGame().items!.contents as RqgItem[]) {
     try {
-      const updateData = migrateItemData(item.data);
+      const updateData = await migrateItemData(item.data);
       if (!foundry.utils.isObjectEmpty(updateData)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
         console.log(`RQG | Migrating Item document ${item.name}`, convertedUpdates);
@@ -100,7 +101,7 @@ async function migrateWorldItems() {
 async function migrateWorldScenes() {
   for (let scene of getGame().scenes!) {
     try {
-      const updateData = migrateSceneData(scene.data);
+      const updateData = await migrateSceneData(scene.data);
       if (!foundry.utils.isObjectEmpty(updateData)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
         console.log(`RQG | Migrating Scene document ${scene.name}`, convertedUpdates);
@@ -159,14 +160,14 @@ async function migrateCompendium(
     try {
       switch (documentType) {
         case "Actor":
-          updateData = migrateActorData(doc.toObject());
+          updateData = await migrateActorData(doc.toObject());
           deleteIds = getActiveEffectsToDelete(doc.toObject());
           break;
         case "Item":
-          updateData = migrateItemData(doc.toObject());
+          updateData = await migrateItemData(doc.toObject());
           break;
         case "Scene":
-          updateData = migrateSceneData(doc.data);
+          updateData = await migrateSceneData(doc.data);
           break;
       }
 
@@ -201,7 +202,7 @@ async function migrateCompendium(
 /*  Document Type Migration Helpers               */
 /* -------------------------------------------- */
 
-function migrateActorData(actorData: ActorData): ActorUpdate {
+async function migrateActorData(actorData: ActorData): Promise<ActorUpdate> {
   let updateData: ActorUpdate = {};
   [migrateCharacterMov, migrateRenameCharacterRace].forEach(
     (fn: (actorData: ActorData) => ActorUpdate) =>
@@ -211,17 +212,19 @@ function migrateActorData(actorData: ActorData): ActorUpdate {
   // Migrate Owned Items
   if (actorData.items) {
     let hasItemUpdates = false;
-    const items = actorData.items.map((item: any) => {
-      let itemUpdate = migrateItemData(item); // TODO item is mistyped?? ItemDataSource or ItemData?
+    const items = await Promise.all(
+      actorData.items.map(async (item: any) => {
+        let itemUpdate = await migrateItemData(item, actorData); // TODO item is mistyped?? ItemDataSource or ItemData?
 
-      // Update the Owned Item
-      if (!isObjectEmpty(itemUpdate)) {
-        hasItemUpdates = true;
-        return mergeObject(item, itemUpdate, { enforceTypes: false, inplace: false });
-      } else {
-        return item;
-      }
-    });
+        // Update the Owned Item
+        if (!isObjectEmpty(itemUpdate)) {
+          hasItemUpdates = true;
+          return mergeObject(item, itemUpdate, { enforceTypes: false, inplace: false });
+        } else {
+          return item;
+        }
+      })
+    );
     if (hasItemUpdates) {
       updateData.items = items;
     }
@@ -244,9 +247,12 @@ function getActiveEffectsToDelete(actorData: Partial<ActorDataSource>): string[]
 
 /* -------------------------------------------- */
 
-function migrateItemData(itemData: ItemData): ItemUpdate {
+async function migrateItemData(
+  itemData: ItemData,
+  owningActorData?: ActorData
+): Promise<ItemUpdate> {
   let updateData: ItemUpdate = {};
-  [
+  for (const fn of [
     migrateItemEstimatedPrice,
     migrateSkillName,
     migrateArmorName,
@@ -256,48 +262,51 @@ function migrateItemData(itemData: ItemData): ItemUpdate {
     migratePassionName,
     migrateHitLocationHPName,
     migrateDoubleLeftArms,
-  ].forEach(
-    (fn: (itemData: ItemData) => ItemUpdate) => (updateData = mergeObject(updateData, fn(itemData)))
-  );
+    migrateToWeaponItem,
+  ]) {
+    updateData = mergeObject(updateData, await fn(itemData, owningActorData));
+  }
   return updateData;
 }
 
 /* -------------------------------------------- */
 
-function migrateSceneData(scene: SceneData): object {
-  const tokens = scene.tokens.map((token) => {
-    const t = token.toJSON();
-    if (!t.actorId || t.actorLink) {
-      t.actorData = {};
-    } else if (!getGame().actors!.has(t.actorId)) {
-      t.actorId = null;
-      t.actorData = {};
-    } else if (!t.actorLink) {
-      const actorData = duplicate(t.actorData);
-      actorData.type = token.actor?.type;
-      const update = migrateActorData(actorData as any); // TODO fix type
-      ["items", "effects"].forEach((embeddedName: string) => {
-        if (!(update as any)[embeddedName]?.length) {
-          // TODO fix type
-          return;
-        }
-        const updates = new Map((update as any)[embeddedName].map((u: any) => [u._id, u])); // TODO fix type
-        (t.actorData as any)[embeddedName].forEach((original: any) => {
-          // TODO fix type
-          const update: any = updates.get(original._id);
-          if (update) {
-            mergeObject(original, update);
+async function migrateSceneData(scene: SceneData): Promise<object> {
+  const tokens = await Promise.all(
+    scene.tokens.map(async (token) => {
+      const t = token.toJSON();
+      if (!t.actorId || t.actorLink) {
+        t.actorData = {};
+      } else if (!getGame().actors!.has(t.actorId)) {
+        t.actorId = null;
+        t.actorData = {};
+      } else if (!t.actorLink) {
+        const actorData = duplicate(t.actorData);
+        actorData.type = token.actor?.type;
+        const update = await migrateActorData(actorData as any); // TODO fix type
+        ["items", "effects"].forEach((embeddedName: string) => {
+          if (!(update as any)[embeddedName]?.length) {
+            // TODO fix type
+            return;
           }
+          const updates = new Map((update as any)[embeddedName].map((u: any) => [u._id, u])); // TODO fix type
+          (t.actorData as any)[embeddedName].forEach((original: any) => {
+            // TODO fix type
+            const update: any = updates.get(original._id);
+            if (update) {
+              mergeObject(original, update);
+            }
+          });
+
+          delete (update as any)[embeddedName]; // TODO fix type
         });
 
-        delete (update as any)[embeddedName]; // TODO fix type
-      });
+        // TODO implement AE Delete for scene Actors as well?
 
-      // TODO implement AE Delete for scene Actors as well?
-
-      mergeObject(t.actorData, update);
-    }
-    return t;
-  });
+        mergeObject(t.actorData, update);
+      }
+      return t;
+    })
+  );
   return { tokens };
 }

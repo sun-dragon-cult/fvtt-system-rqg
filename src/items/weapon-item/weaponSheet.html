@@ -1,0 +1,170 @@
+{{log "Weapon Sheet" this}}
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+    <input type="text" name="name" value="{{data.name}}" />
+    <label>Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{weaponData.encumbrance}}"></label><br>
+    <select name="data.equippedStatus">
+      {{#select weaponData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
+      <option value="{{this}}">{{localize (concat "RQG.EquippedStatus." this)}}</option>
+      {{/each}} {{/select}}
+    </select>
+  </header>
+  <main>
+    <div>
+      {{#unless weaponData.hitPointLocation}}
+        <label>HP <input type="number" min="0" max="99" name="data.hitPoints.max" value="{{weaponData.hitPoints.max}}"></label>
+        <label>Current HP <input type="number" min="0" max="99" name="data.hitPoints.value" value="{{weaponData.hitPoints.value}}"></label>
+      {{/unless}}
+      <label>Hitpoint location <input type="text" name="data.hitPointLocation" value="{{weaponData.hitPointLocation}}"></label><br>
+      <label><input type="checkbox" name="data.isNatural" {{checked weaponData.isNatural}}/>Is natural weapon</label><br>
+      <label>Price (real) <input type="number" min="0" max="99999999" name="data.price.real" value="{{weaponData.price.real}}">(L)</label>
+      <label>Price (estimated) <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{weaponData.price.estimated}}">(L)</label><br>
+      <label>Location <input type="text" name="data.location" value="{{weaponData.location}}"></label><br>
+      <label>Attuned to <input type="text" name="data.attunedTo" value="{{weaponData.attunedTo}}"></label><br>
+
+
+
+    </div>
+    <br>
+    <h3>Uses of Weapon</h3>
+    <div class="flex-row flex-wrap">
+      {{#each weaponData.usage}}
+        <fieldset data-dropzone="{{@key}}">
+
+            <legend>{{@key}}</legend>
+            {{#if combatManeuvers}}
+              {{#if isEmbedded}}
+                <select name="data.skillId">
+                  {{#select skillId}} {{#each weaponSkills}}
+                    <option value="{{id}}">{{name}}</option>
+                  {{/each}} {{/select}}
+                </select>
+              {{else}}
+                <label class="mp">Skill</label><br>
+                {{#if @root.sheetSpecific.skillNames}}
+                  {{lookup @root.sheetSpecific.skillNames @key}}
+                  {{#if skillOrigin}}<i data-delete-skill="{{@key}}" class="fas fa-trash"></i>{{/if}}<br>
+                  <i>(Drop some other weapon skill on this weapon to change)</i>
+                {{else}}
+                  <i>Drop a weapon skill on this weapon!</i>
+                {{/if}}<br>
+              {{/if}}<br>
+              {{#unless (eq @key "offHand")}}
+              <div class="flex-row">
+                <label>Damage <input type="text" name="data.usage.{{@key}}.damage" value="{{damage}}"></label>
+                <label>Min STR <input type="number" min="0" max="99" name="data.usage.{{@key}}.minStrength"
+                                      value="{{minStrength}}"></label>
+                <label>Min DEX <input type="number" min="0" max="99" name="data.usage.{{@key}}.minDexterity"
+                                      value="{{minDexterity}}"></label>
+                {{#unless (eq @key "missile")}}
+                  <label>SR <input type="number" min="0" max="99" name="data.usage.{{@key}}.strikeRank"
+                                   value="{{strikeRank}}"></label>{{/unless}}
+              </div>
+              <br>
+              {{/unless}}
+            {{/if}}
+            {{#unless (eq @key "offHand")}}
+            <div>
+              <h3>Combat Manuevers</h3>
+              <table>
+                <tr>
+                  <th>Label</th>
+                  <th>Damage Type</th>
+                </tr>
+                {{setVar 'usage' @key this}}
+                {{#each combatManeuvers}}
+                  <tr>
+                    <td><input type="text" list="defaultCombatManeuverNames"
+                               name="data.usage.{{../usage}}.combatManeuvers.name" value="{{name}}"></td>
+                    <td>
+                      {{#if name}}
+                        <select name="data.usage.{{../usage}}.combatManeuvers.damageTypes">
+                          {{#select damageType}} {{#each @root.sheetSpecific.damageTypes}}
+                            <option value="{{this}}">{{this}}</option>
+                          {{/each}} {{/select}}
+                        </select>
+                      {{/if}}
+                    </td>
+                    <td>
+                      <textarea{{#unless (eq damageType "special")}} class="no-display"{{/unless}} rows="1"
+                               name="data.usage.{{../usage}}.combatManeuvers.description"
+                               placeholder="{{placeholder}}">{{description}}</textarea>
+                    </td>
+                  </tr>
+                {{/each}}
+                <tr>
+                  <td><input type="text" list="defaultCombatManeuverNames"
+                             name="data.usage.{{usage}}.combatManeuvers.name"></td>
+                </tr>
+              </table>
+            </div>
+
+            {{#if (eq @key "missile")}}
+              {{#with @root}}
+                <label><input type="checkbox" name="data.isThrownWeapon" {{checked weaponData.isThrownWeapon}}>Thrown
+                  Weapon (gets
+                  half damage bonus, is it's own projectile)</label><br>
+                <label><input type="checkbox" name="data.isProjectileWeapon" {{checked weaponData.isProjectileWeapon}}>Projectile
+                  Weapon (no damage bonus, uses linked projectiles)</label><br>
+                <label><input type="checkbox" name="data.isRangedWeapon" {{checked weaponData.isRangedWeapon}}>Ranged
+                  Weapon (no damage bonus, no projectile)</label><br>
+                <label><input type="checkbox" name="data.isProjectile" {{checked weaponData.isProjectile}}>Projectile
+                  (used as
+                  ammunition)</label><br>
+                <hr>
+                <div class="flex-row">
+                  {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon weaponData.isRangedWeapon)}}
+                    <div>
+                      {{#if weaponData.isProjectileWeapon}}
+                        <label class="mp">Projectile
+                          <select name="data.projectileId">
+                            {{#select weaponData.projectileId}} {{#each sheetSpecific.ownedProjectiles}}
+                              <option value="{{_id}}">{{name}}</option>
+                            {{/each}} {{/select}}
+                          </select>
+                        </label><br>
+                      {{/if}}
+                      <label>Range <input type="number" min="0" max="999" name="data.range"
+                                          value="{{weaponData.range}}"></label><br>
+                      {{!--              <label>Rate <input type="number" min="0" max="99" name="data.rate" value="{{weaponData.rate}}"></label><br>--}}
+                      <label>Rate
+                        <select name="data.rate">
+                          {{#select weaponData.rate}} {{#each sheetSpecific.rateOfFire}}
+                            <option value="{{this}}">{{@key}}</option>
+                          {{/each}} {{/select}}
+                        </select>
+                      </label><br>
+                    </div>
+                  {{/if}}
+                  {{#unless (eq weaponData.physicalItemType "unique")}}
+                    <label>Quantity<br><input type="number" name="data.quantity"
+                                              value="{{weaponData.quantity}}"></label>
+                  {{/unless}}
+                </div>
+              {{/with}}
+            {{/if}}
+            {{/unless}}
+          {{#if (eq @key "offHand")}}
+            <p>Same data as oneHand</p>
+
+          {{/if}}
+        </fieldset>
+      {{/each}}
+
+    </div>
+
+    <label>Description {{editor content=weaponData.description target="data.description"
+      button=true owner=owner editable=editable}}
+    </label><br>
+    <label>GM Notes {{editor content=weaponData.gmNotes target="data.gmNotes"
+      button=true owner=owner editable=editable}}
+    </label>
+    <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.html"}}
+  </main>
+  <datalist id="defaultCombatManeuverNames">
+    {{#each sheetSpecific.defaultCombatManeuverNames}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+</form>

@@ -1,3 +1,65 @@
+# [1.8.0-7868c28](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.8.0-23e10a4...v1.8.0-7868c28) (2021-11-03)
+
+
+### Features
+
+* migrate meleeWeaponItems & missileWeaponItems to weaponItems ([7868c28](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/7868c28))
+
+
+
+
+# [1.8.0-23e10a4](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.7.0...v1.8.0-23e10a4) (2021-11-01)
+
+
+### Bug Fixes
+
+* allow duplicate RuneMagic to allow the same spell on multiple cults ([8213c50](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/8213c50))
+* alternating background of weapon grid don't include last column ([06ac373](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/06ac373))
+* can't drop weapon skill on owned weapon ([23e10a4](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/23e10a4))
+* combat panel not shown if actor only owns weapon items ([bd25c38](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/bd25c38))
+* don't crash if characteristic formula is empty ([33b5d39](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/33b5d39))
+* first weapon damageType defaults to crush ([3fa528b](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/3fa528b))
+* GUI fix for foundry v9 ([92a77f8](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/92a77f8))
+* move spirit combat panel with magic points up above combat to make mp easier to find ([5bc7403](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/5bc7403))
+* natural weapon roll from chance cell - also make sure chance & damage align ([afe7ae9](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/afe7ae9))
+* spelling mistake ([bff9a7f](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/bff9a7f))
+* Thrown weapons should use themselves as ammo when added to an actor ([bc96a5f](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/bc96a5f))
+* weapon reduces ammo regardless of combat action ([3b7fb78](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/3b7fb78))
+* weapons need to be able to have no linked projectile ([194369b](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/194369b))
+* wrong type on gear data ([c93b759](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/c93b759))
+* wrong type on gear data ([1f5635e](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/1f5635e))
+
+
+### Features
+
+* add Chaos Area habitat ([0f7bf21](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/0f7bf21))
+* add Chaos Area habitat ([1b8e457](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/1b8e457))
+* add gift & geas to cult item ([7c25763](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/7c25763))
+* add gluttony & vanity passions ([e64c394](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/e64c394))
+* add habitat "SpiritPlane" ([577fbe9](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/577fbe9))
+* add isMatrix flag to indicate if spirit magic spell should be included in CHA limit calcultions or not ([a126437](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/a126437))
+* add new missile weapon typ "Ranged Weapon" that don't have ammo or damage bonus An example of that could be lasso. ([b586c25](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/b586c25))
+* add rune images ([bb013d2](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/bb013d2))
+* add runes compendium ([bc5719e](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/bc5719e))
+* add skills from character sheet ([d442324](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/d442324))
+* add weaponsheet support for usage types and drag'n'drop multiple skills also import those skills when dragging weapon to actor missile weapon stats not yet part of sheet ([e55efc5](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/e55efc5))
+* Create a WeaponItem ([45e82b1](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/45e82b1))
+* define default texts for special damage types ([c0286f3](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/c0286f3))
+* hide not relevant derived data from sparse actors Note will also hide hero points for actors that are not owned by any player user ([fa256e9](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/fa256e9))
+* improve handling of sorcery ([6f45e40](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/6f45e40))
+* improve naming of Spirit & Rune Magic items ([b2bdaed](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/b2bdaed))
+* make it possible to remove a weapon skill link ([14a9120](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/14a9120))
+* make weapon chat card work ([790c30f](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/790c30f))
+* move SR into usage, show missile data ([447a53a](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/447a53a))
+* prevent usage of weapons with quantity 0. and copy all data except skill from oneHand to offHand also show [] around self quantity, and () around linked projectile (ammo) quantity ([221fd4e](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/221fd4e))
+* show high power runes on sheet top ([345cd00](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/345cd00))
+* show quantity for missile weapon ammo etc ([b153e15](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/b153e15))
+* show special damage text in chatcard on success ([e171df5](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/e171df5))
+* support weapons without HP ([2d261d4](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/commit/2d261d4))
+
+
+
+
 # [1.7.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.6.0...v1.7.0) (2021-09-23)
 
 

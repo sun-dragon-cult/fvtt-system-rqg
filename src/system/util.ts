@@ -192,6 +192,29 @@ export function getJournalEntryName(itemData: any): string {
   }
 }
 
+export function uuid2Name(uuid: string | undefined): string | null {
+  const parts = uuid?.split(".") ?? [];
+  let name;
+
+  // Compendium Documents
+  if (parts[0] === "Compendium") {
+    parts.shift();
+    const [scope, packName, id] = parts.slice(0, 3);
+    const pack = getGame().packs.get(`${scope}.${packName}`);
+    // @ts-ignore name
+    name = pack?.index.get(id)?.name;
+    name = name ? name + ` (from compendium ${scope}.${packName})` : name;
+  } else {
+    // World Documents
+    const [docName, docId] = parts.slice(0, 2);
+    const collection = docName && (CONFIG as any)[docName].collection.instance;
+    const doc = collection && collection.get(docId);
+    name = doc?.name;
+    name = name ? name + ` (from world items)` : name;
+  }
+  return name || null;
+}
+
 export class RqgError implements Error {
   public name: string = "RqgError";
   public debugData: any[];

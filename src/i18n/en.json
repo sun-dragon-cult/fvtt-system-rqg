@@ -6,11 +6,12 @@
     "TypeHitlocation": "Hit Location",
     "TypeGear": "Gear",
     "TypeArmor": "Armor",
-    "TypeMeleeweapon": "Melee Weapon",
-    "TypeMissileweapon": "Missile Weapon",
+    "TypeWeapon": "Weapon",
     "TypeSpiritmagic": "Spirit Magic Spell",
     "TypeCult": "Cult",
-    "TypeRunemagic": "Rune Magic Spell"
+    "TypeRunemagic": "Rune Magic Spell",
+    "TypeMeleeweapon": "~ Melee Weapon",
+    "TypeMissileweapon": "~ Missile Weapon"
   },
   "RQG": {
     "characteristic": {
@@ -158,13 +159,20 @@
       "warriorLightCavalry": "Warrior Light Cavalry"
     },
     "combatManeuver": {
-      "crush": "crush",
-      "slash": "slash",
-      "impale": "impale",
-      "grapple": "grapple",
-      "knockback": "knockback",
-      "special": "special",
-      "parry": "parry"
+      "Throw": "Throw",
+      "Shoot": "Shoot",
+      "Thrust": "Thrust",
+      "Cut": "Cut",
+      "Bash": "Bash",
+      "Parry": "Parry",
+      "Grapple": "Grapple",
+      "Knockback": "Knockback"
+    },
+    "usage": {
+      "oneHand": "1H",
+      "offHand": "offH",
+      "twoHand": "2H",
+      "missile": "Missile"
     },
     "damageRollType": {
       "normal": "Normal",
