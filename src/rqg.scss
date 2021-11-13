@@ -427,7 +427,7 @@
     }
 
     &.hit-location {
-      grid-template-columns: [col-start] auto min-content repeat(5, auto) [col-end];
+      grid-template-columns: [col-start] repeat(3, min-content) repeat(4, auto) [col-end];
 
       > *:nth-child(14n + 13),
       > *:nth-child(14n + 14),
