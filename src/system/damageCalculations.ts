@@ -245,15 +245,15 @@ export class DamageCalculations {
   static getCombinedActorHealth(actorData: ActorData): ActorHealthState {
     const totalHitPoints = actorData.data.attributes.hitPoints.value;
     if (totalHitPoints == null) {
-      const msg = `Actor hit points value ${totalHitPoints} is missing`;
+      const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actorData.name}`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, actorData);
     }
-    const maxHitPoints = actorData.data.attributes.hitPoints.max;
+    let maxHitPoints = actorData.data.attributes.hitPoints.max;
     if (maxHitPoints == null) {
-      const msg = `Actor hit points value ${maxHitPoints} is missing`;
+      const msg = `Actor max hit points value ${maxHitPoints} is missing in actor ${actorData.name}`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg, actorData);
+      maxHitPoints = 0;
     }
     const baseHealth: ActorHealthState = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
 

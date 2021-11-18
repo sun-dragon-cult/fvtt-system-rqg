@@ -117,6 +117,7 @@
                   {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon weaponData.isRangedWeapon)}}
                     <div>
                       {{#if weaponData.isProjectileWeapon}}
+                      {{#if @root.isEmbedded}}
                         <label class="mp">Projectile
                           <select name="data.projectileId">
                             {{#select weaponData.projectileId}} {{#each sheetSpecific.ownedProjectiles}}
@@ -124,6 +125,7 @@
                             {{/each}} {{/select}}
                           </select>
                         </label><br>
+                      {{/if}}
                       {{/if}}
                       <label>Range <input type="number" min="0" max="999" name="data.range"
                                           value="{{weaponData.range}}"></label><br>
