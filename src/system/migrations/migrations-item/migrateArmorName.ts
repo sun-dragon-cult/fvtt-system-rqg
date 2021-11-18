@@ -1,9 +1,9 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ItemUpdate } from "../migrate";
+import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ItemUpdate } from "../applyMigrations";
 
 // Migrate armor item name in v0.19.0 +
-export function migrateArmorName(itemData: ItemData): ItemUpdate {
+export async function migrateArmorName(itemData: ItemData): Promise<ItemUpdate> {
   if (
     itemData.type === ItemTypeEnum.Armor &&
     !itemData.data.namePrefix &&

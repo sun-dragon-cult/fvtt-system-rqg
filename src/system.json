@@ -4,6 +4,7 @@
   "title": "RuneQuest Glorantha (Unofficial)",
   "description": "A RuneQuest Glorantha (Unofficial) system for FoundryVTT!",
   "version": "1.8.0-7868c28",
+  "license": "UNLICENSED",
   "authors": [
     {
       "name": "Wake",
@@ -62,12 +63,11 @@
   "gridDistance": 1.5,
   "gridUnits": "m",
   "minimumCoreVersion": "0.8.6",
-  "compatibleCoreVersion": "0.8.9",
-  "url": "https://github.com/wakeand/foundry-vtt-rqg",
-  "manifest": "https://github.com/wakeand/fvtt-system-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/releases/download/v1.8.0-7868c28/rqg.zip",
-  "readme": "https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/blob/v1.8.0-7868c28/readme.md",
-  "changelog": "https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/blob/v1.8.0-7868c28/CHANGELOG.md",
-  "license": "UNLICENSED",
-  "bugs": "https://github.com/wakeand/foundry-vtt-rqg/issues"
+  "compatibleCoreVersion": "9",
+  "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
+  "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
+  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.8.0-7868c28/rqg.zip",
+  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.8.0-7868c28/readme.md",
+  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.8.0-7868c28/CHANGELOG.md",
+  "bugs": "https://github.com/sun-dragon-cult/foundry-vtt-rqg/issues"
 }

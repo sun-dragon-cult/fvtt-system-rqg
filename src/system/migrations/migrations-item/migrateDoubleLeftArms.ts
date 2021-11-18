@@ -1,8 +1,8 @@
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ItemUpdate } from "../migrate";
+import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
+import { ItemUpdate } from "../applyMigrations";
 
-export function migrateDoubleLeftArms(itemData: ItemData): ItemUpdate {
+export async function migrateDoubleLeftArms(itemData: ItemData): Promise<ItemUpdate> {
   if (
     itemData.type === ItemTypeEnum.HitLocation &&
     itemData.data.dieFrom === 13 &&

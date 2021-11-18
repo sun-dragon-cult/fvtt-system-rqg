@@ -1,7 +1,7 @@
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import { ActorUpdate } from "../migrate";
-import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
-import { deleteKeyPrefix } from "../util";
+import { ActorTypeEnum } from "../../../data-model/actor-data/rqgActorData";
+import { deleteKeyPrefix } from "../../util";
+import { ActorUpdate } from "../applyMigrations";
 
 // Rename background.race => background.species
 export function migrateRenameCharacterRace(actorData: ActorData): ActorUpdate {

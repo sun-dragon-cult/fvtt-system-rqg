@@ -1,29 +1,16 @@
-import { RqgItem } from "../items/rqgItem";
-import { migrateItemEstimatedPrice } from "./migrations-item/migrateItemEstimatedPrice";
-import { migrateSkillName } from "./migrations-item/migrateSkillName";
-import { migrateArmorName } from "./migrations-item/migrateArmorName";
-import {
-  migrateRuneDescription,
-  migrateRuneImgLocation,
-} from "./migrations-item/migrateRuneCompendium";
-import { convertDeleteKeyToFoundrySyntax, getGame } from "./util";
+import { convertDeleteKeyToFoundrySyntax, getGame } from "../util";
+import { RqgItem } from "../../items/rqgItem";
 import {
   ActorData,
   ActorDataConstructorData,
   ActorDataSource,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import {
   ItemData,
   SceneData,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import { migrateHitLocationName } from "./migrations-item/migrateHitLocationName";
-import { migratePassionName } from "./migrations-item/migratePassionName";
-import { migrateHitLocationHPName } from "./migrations-item/migrateHitLocationHPName";
-import { migrateDoubleLeftArms } from "./migrations-item/migrateDoubleLeftArms";
-import { migrateCharacterMov } from "./migrations-actor/migrateCharacterMov";
-import { migrateRenameCharacterRace } from "./migrations-actor/migrateRenameCharacterRace";
-import { migrateToWeaponItem } from "./migrations-item/migrateToWeaponItem";
+
+import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export type ItemUpdate =
   | object &
@@ -33,43 +20,33 @@ export type ActorUpdate =
   | object &
       DeepPartial<ActorDataConstructorData | (ActorDataConstructorData & Record<string, unknown>)>;
 
-/**
- * Perform a system migration for the entire World, applying migrations for what is in it
- */
-export async function migrateWorld(): Promise<void> {
-  if (getGame().system.data.version !== getGame().settings.get("rqg", "systemMigrationVersion")) {
-    await forceMigrateWorld();
-  }
+export type ItemMigration = (
+  itemData: ItemData,
+  owningActorData?: ActorData
+) => Promise<ItemUpdate>;
+export type ActorMigration = (actorData: ActorData) => ActorUpdate;
+
+export async function applyMigrations(
+  itemMigrations: ItemMigration[],
+  actorMigrations: ActorMigration[]
+): Promise<void> {
+  await migrateWorldActors(itemMigrations, actorMigrations);
+  await migrateWorldItems(itemMigrations);
+  await migrateWorldScenes(itemMigrations, actorMigrations);
+  await migrateWorldCompendiumPacks(itemMigrations, actorMigrations);
 }
 
-export async function forceMigrateWorld(): Promise<void> {
-  ui.notifications?.info(
-    `Applying RQG System Migration for version ${
-      getGame().system.data.version
-    }. Please be patient and do not close your game or shut down your server.`,
-    { permanent: true }
-  );
-  console.log(`RQG | Starting system migration to version ${getGame().system.data.version}`);
-  await migrateWorldActors();
-  await migrateWorldItems();
-  await migrateWorldScenes();
-  await migrateWorldCompendiumPacks();
-
-  // *** Set the migration as complete ***
-  await getGame().settings.set("rqg", "systemMigrationVersion", getGame().system.data.version);
-  ui.notifications?.info(
-    `RQG System Migration to version ${getGame().system.data.version} completed!`,
-    {
-      permanent: true,
-    }
-  );
-  console.log(`RQG | Finished system migration`);
-}
-
-async function migrateWorldActors(): Promise<void> {
+async function migrateWorldActors(
+  itemMigrations: ItemMigration[],
+  actorMigrations: ActorMigration[]
+): Promise<void> {
   for (let actor of getGame().actors!.contents) {
     try {
-      const updates = await migrateActorData(actor.toObject() as any); // TODO fix type
+      const updates = await migrateActorData(
+        actor.toObject() as any,
+        itemMigrations,
+        actorMigrations
+      ); // TODO fix type
       if (!foundry.utils.isObjectEmpty(updates)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updates);
         console.log(`RQG | Migrating Actor document ${actor.name}`, convertedUpdates);
@@ -82,10 +59,10 @@ async function migrateWorldActors(): Promise<void> {
   }
 }
 
-async function migrateWorldItems() {
+async function migrateWorldItems(itemMigrations: ItemMigration[]) {
   for (let item of getGame().items!.contents as RqgItem[]) {
     try {
-      const updateData = await migrateItemData(item.data);
+      const updateData = await migrateItemData(item.data, itemMigrations);
       if (!foundry.utils.isObjectEmpty(updateData)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
         console.log(`RQG | Migrating Item document ${item.name}`, convertedUpdates);
@@ -98,10 +75,13 @@ async function migrateWorldItems() {
   }
 }
 
-async function migrateWorldScenes() {
+async function migrateWorldScenes(
+  itemMigrations: ItemMigration[],
+  actorMigrations: ActorMigration[]
+) {
   for (let scene of getGame().scenes!) {
     try {
-      const updateData = await migrateSceneData(scene.data);
+      const updateData = await migrateSceneData(scene.data, itemMigrations, actorMigrations);
       if (!foundry.utils.isObjectEmpty(updateData)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
         console.log(`RQG | Migrating Scene document ${scene.name}`, convertedUpdates);
@@ -118,7 +98,10 @@ async function migrateWorldScenes() {
   }
 }
 
-async function migrateWorldCompendiumPacks() {
+async function migrateWorldCompendiumPacks(
+  itemMigrations: ItemMigration[],
+  actorMigrations: ActorMigration[]
+) {
   for (let pack of getGame().packs!) {
     if (pack.metadata.package !== "world") {
       continue;
@@ -126,7 +109,7 @@ async function migrateWorldCompendiumPacks() {
     if (!["Actor", "Item", "Scene"].includes(pack.metadata.entity)) {
       continue;
     }
-    await migrateCompendium(pack);
+    await migrateCompendium(pack, itemMigrations, actorMigrations);
   }
 }
 
@@ -134,11 +117,11 @@ async function migrateWorldCompendiumPacks() {
 
 /**
  * Apply migration rules to all Entities within a single Compendium pack
- * @param pack
- * @return {Promise}
  */
 async function migrateCompendium(
-  pack: CompendiumCollection<CompendiumCollection.Metadata>
+  pack: CompendiumCollection<CompendiumCollection.Metadata>,
+  itemMigrations: ItemMigration[],
+  actorMigrations: ActorMigration[]
 ): Promise<void> {
   const documentType: string = pack.metadata.entity;
   if (!["Actor", "Item", "Scene"].includes(documentType)) {
@@ -160,14 +143,14 @@ async function migrateCompendium(
     try {
       switch (documentType) {
         case "Actor":
-          updateData = await migrateActorData(doc.toObject());
+          updateData = await migrateActorData(doc.toObject(), itemMigrations, actorMigrations);
           deleteIds = getActiveEffectsToDelete(doc.toObject());
           break;
         case "Item":
-          updateData = await migrateItemData(doc.toObject());
+          updateData = await migrateItemData(doc.toObject(), itemMigrations);
           break;
         case "Scene":
-          updateData = await migrateSceneData(doc.data);
+          updateData = await migrateSceneData(doc.data, itemMigrations, actorMigrations);
           break;
       }
 
@@ -199,12 +182,15 @@ async function migrateCompendium(
 }
 
 /* -------------------------------------------- */
-/*  Document Type Migration Helpers               */
+/*  Document Type Migration Helpers             */
 /* -------------------------------------------- */
-
-async function migrateActorData(actorData: ActorData): Promise<ActorUpdate> {
+async function migrateActorData(
+  actorData: ActorData,
+  itemMigrations: ItemMigration[],
+  actorMigrations: ActorMigration[]
+): Promise<ActorUpdate> {
   let updateData: ActorUpdate = {};
-  [migrateCharacterMov, migrateRenameCharacterRace].forEach(
+  actorMigrations.forEach(
     (fn: (actorData: ActorData) => ActorUpdate) =>
       (updateData = mergeObject(updateData, fn(actorData)))
   );
@@ -214,7 +200,7 @@ async function migrateActorData(actorData: ActorData): Promise<ActorUpdate> {
     let hasItemUpdates = false;
     const items = await Promise.all(
       actorData.items.map(async (item: any) => {
-        let itemUpdate = await migrateItemData(item, actorData); // TODO item is mistyped?? ItemDataSource or ItemData?
+        let itemUpdate = await migrateItemData(item, itemMigrations, actorData); // TODO item is mistyped?? ItemDataSource or ItemData?
 
         // Update the Owned Item
         if (!isObjectEmpty(itemUpdate)) {
@@ -249,21 +235,11 @@ function getActiveEffectsToDelete(actorData: Partial<ActorDataSource>): string[]
 
 async function migrateItemData(
   itemData: ItemData,
+  itemMigrations: ItemMigration[],
   owningActorData?: ActorData
 ): Promise<ItemUpdate> {
   let updateData: ItemUpdate = {};
-  for (const fn of [
-    migrateItemEstimatedPrice,
-    migrateSkillName,
-    migrateArmorName,
-    migrateRuneImgLocation,
-    migrateRuneDescription,
-    migrateHitLocationName,
-    migratePassionName,
-    migrateHitLocationHPName,
-    migrateDoubleLeftArms,
-    migrateToWeaponItem,
-  ]) {
+  for (const fn of itemMigrations) {
     updateData = mergeObject(updateData, await fn(itemData, owningActorData));
   }
   return updateData;
@@ -271,7 +247,11 @@ async function migrateItemData(
 
 /* -------------------------------------------- */
 
-async function migrateSceneData(scene: SceneData): Promise<object> {
+async function migrateSceneData(
+  scene: SceneData,
+  itemMigrations: ItemMigration[],
+  actorMigrations: ActorMigration[]
+): Promise<object> {
   const tokens = await Promise.all(
     scene.tokens.map(async (token) => {
       const t = token.toJSON();
@@ -283,7 +263,7 @@ async function migrateSceneData(scene: SceneData): Promise<object> {
       } else if (!t.actorLink) {
         const actorData = duplicate(t.actorData);
         actorData.type = token.actor?.type;
-        const update = await migrateActorData(actorData as any); // TODO fix type
+        const update = await migrateActorData(actorData as any, itemMigrations, actorMigrations); // TODO fix type
         ["items", "effects"].forEach((embeddedName: string) => {
           if (!(update as any)[embeddedName]?.length) {
             // TODO fix type

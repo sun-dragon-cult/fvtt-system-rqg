@@ -1,10 +1,10 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ItemUpdate } from "../migrate";
-import { JournalEntryLink } from "../../data-model/shared/journalentrylink";
+import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
+import { JournalEntryLink } from "../../../data-model/shared/journalentrylink";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ItemUpdate } from "../applyMigrations";
 
 // Migrate rune img url to new compendium
-export function migrateRuneImgLocation(itemData: ItemData): ItemUpdate {
+export async function migrateRuneImgLocation(itemData: ItemData): Promise<ItemUpdate> {
   let updateData = {};
   if (
     itemData.type === ItemTypeEnum.Rune &&
@@ -21,7 +21,7 @@ export function migrateRuneImgLocation(itemData: ItemData): ItemUpdate {
 }
 
 // Migrate rune descriptions to new compendium
-export function migrateRuneDescription(itemData: ItemData): ItemUpdate {
+export async function migrateRuneDescription(itemData: ItemData): Promise<ItemUpdate> {
   let updateData = {};
   if (
     itemData.type === ItemTypeEnum.Rune &&

@@ -1,14 +1,14 @@
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ItemUpdate } from "../migrate";
-import { CombatManeuver } from "../../data-model/item-data/meleeWeaponData";
+import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
+import { CombatManeuver } from "../../../data-model/item-data/meleeWeaponData";
 import type {
   CombatManeuver as WeaponCombatManeuver,
   WeaponDataProperties,
-} from "../../data-model/item-data/weaponData";
+} from "../../../data-model/item-data/weaponData";
 import { DeepPartial } from "snowpack";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import { deleteKeyPrefix } from "../util";
+import { deleteKeyPrefix } from "../../util";
+import { ItemUpdate } from "../applyMigrations";
 
 export async function migrateToWeaponItem(
   itemData: ItemData,

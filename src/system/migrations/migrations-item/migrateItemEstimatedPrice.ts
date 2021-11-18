@@ -1,8 +1,8 @@
-import { ItemUpdate } from "../migrate";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ItemUpdate } from "../applyMigrations";
 
 // Migrate price to new model definition in v0.14.0 +
-export function migrateItemEstimatedPrice(itemData: ItemData): ItemUpdate {
+export async function migrateItemEstimatedPrice(itemData: ItemData): Promise<ItemUpdate> {
   if (
     "physicalItemType" in itemData.data &&
     itemData.data.physicalItemType &&

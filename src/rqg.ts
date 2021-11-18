@@ -7,11 +7,12 @@ import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./combat/rqgCombat";
 import { RQG_CONFIG } from "./system/config";
 import { ChatCardListeners } from "./chat/chatCardListeners";
-import { forceMigrateWorld, migrateWorld } from "./system/migrate";
+import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
 import { setupSimpleCalendar } from "./module-integration/simple-calendar-init";
 import { getGame, RqgError } from "./system/util";
+import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
 
 Hooks.once("init", async () => {
   console.log(
@@ -62,7 +63,8 @@ Hooks.once("init", async () => {
   // run game.system.api.migrate() to force a new migration
   (getGame().system as any).api = {
     // installModules: installModules,
-    migrate: forceMigrateWorld,
+    migrate: applyDefaultWorldMigrations,
+    consolidate: consolidateCompendiumItems,
   };
 });
 

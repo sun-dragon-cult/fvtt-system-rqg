@@ -1,10 +1,10 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGame } from "../util";
-import { ItemUpdate } from "../migrate";
+import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
+import { getGame } from "../../util";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ItemUpdate } from "../applyMigrations";
 
 // Migrate skill item name in v0.19.0 +
-export function migrateSkillName(itemData: ItemData): ItemUpdate {
+export async function migrateSkillName(itemData: ItemData): Promise<ItemUpdate> {
   let updateData = {};
   const currentGameVersion = getGame().settings.get("rqg", "systemMigrationVersion") as string;
   if (
