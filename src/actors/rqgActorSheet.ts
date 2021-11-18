@@ -438,8 +438,11 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
-    const maxHitPoints = this.actor.data.data.attributes.hitPoints.max;
-    requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
+    let maxHitPoints = this.actor.data.data.attributes.hitPoints.max;
+    if (!maxHitPoints) {
+      ui.notifications?.warn("Actor does not have max hitpoints set.");
+      maxHitPoints = 0;
+    }
     if (
       formData["data.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
       formData["data.attributes.hitPoints.value"] > maxHitPoints
@@ -889,7 +892,12 @@ export class RqgActorSheet extends ActorSheet<
       // const collection = CONFIG.JournalEntry.collection.instance;
       entity = collection.get(id);
     }
-    requireValue(entity, `No journal with id [${id}] and packName ${packName} when showing it.`);
+    if (!entity) {
+      const msg = `No journal with id [${id}] and packName ${packName} when showing it.`;
+      ui.notifications?.warn(msg);
+      console.warn(msg);
+      return;
+    }
     requireValue(entity.sheet, "journal entry entity.sheet not present");
     entity.sheet.render(true);
   }
