@@ -4,27 +4,49 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { getGame, hasOwnProperty } from "../util";
 import { RqgItem } from "../../items/rqgItem";
 import { applyMigrations, ItemUpdate } from "./applyMigrations";
+import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 
-const compendiumItems = new Map<string, compendiumItemData>();
+const compendiumCultHolyDays = new Map<string, CompendiumCultData>(); // key is cult name
+const compendiumWeaponSkills = new Map<string, CompendiumWeaponSkillData>(); // key is skill name
+const compendiumJournalLinks = new Map<string, CompendiumJournalData>(); // key is "<itemType>.<itemName>"
 
-type compendiumItemData = {
-  type: ItemTypeEnum;
-  name: string;
+type CompendiumCultData = { cultHolyDays: string };
+type CompendiumWeaponSkillData = { img: string; skillOrigin: string };
+type CompendiumJournalData = {
+  img: string;
   journalId: string;
   journalPack: string;
-  cultHolyDays?: string;
-  img: string;
 };
 
-// item update function to be run by the applyMigrations function on all items in a world
-async function consolidate(itemData: ItemData, owningActorData?: ActorData): Promise<ItemUpdate> {
-  const compendiumItem = compendiumItems.get(`${itemData.type}.${itemData.name}`);
+/*** item update functions to be run by the applyMigrations function on all items in a world ***/
+
+// Update links to journal descriptions & item img
+async function relinkJournalEntries(
+  itemData: ItemData,
+  owningActorData?: ActorData
+): Promise<ItemUpdate> {
+  const compendiumItem = compendiumJournalLinks.get(`${itemData.type}.${itemData.name}`);
   if (compendiumItem) {
     return {
       img: compendiumItem.img,
       data: {
         journalId: compendiumItem.journalId,
         journalPack: compendiumItem.journalPack,
+      },
+    };
+  }
+  return {};
+}
+
+// Update holyDays field in cult items
+async function updateCultHolyDays(
+  itemData: ItemData,
+  owningActorData?: ActorData
+): Promise<ItemUpdate> {
+  const compendiumItem = compendiumCultHolyDays.get(itemData.name);
+  if (itemData.type === ItemTypeEnum.Cult && compendiumItem) {
+    return {
+      data: {
         holyDays: compendiumItem.cultHolyDays,
       },
     };
@@ -32,7 +54,33 @@ async function consolidate(itemData: ItemData, owningActorData?: ActorData): Pro
   return {};
 }
 
-// Updates the compendiumItems variable to contain the data from the most prioritized compendium item.
+async function relinkWeaponSkillItems(
+  itemData: ItemData,
+  owningActorData?: ActorData
+): Promise<ItemUpdate> {
+  // if (itemData.type === ItemTypeEnum.Weapon) {
+  //   if (itemData.data.usage.oneHand.skillId) {
+  //     const embeddedSkillName = owningActorData?.items.get(
+  //       itemData.data.usage.oneHand.skillId
+  //     ).name;
+  //     const skillItem = skillItems.get(`${itemData.type}.${itemData.name}`);
+  //
+  //     itemData.data.usage.oneHand.skillOrigin = xxx;
+  //   }
+  //   return {
+  //     skillOrigin: skillItem.origin,
+  //     data: {
+  //       // TODO *** FIXME ***
+  //     },
+  //   };
+  // }
+  return {};
+}
+
+// -------
+
+// Updates the compendiumJournalLinks, compendiumCultHolydays & compendiumWeaponSkills variables
+// to contain the data from the most prioritized compendium item.
 async function chooseCurrentCompendiumItems(sortedPacks: any[]): Promise<void> {
   for (let pack of sortedPacks) {
     if (pack.metadata.entity !== "Item") {
@@ -44,21 +92,38 @@ async function chooseCurrentCompendiumItems(sortedPacks: any[]): Promise<void> {
         continue;
       }
 
-      // The items that has journal links are Rune, Skill, Cult, SpiritMagic & RuneMagic
-      if (!hasOwnProperty(item.data.data, "journalId")) {
-        continue;
+      // Save update info about weapon skills
+      if (
+        item.data.type === ItemTypeEnum.Skill &&
+        [
+          SkillCategoryEnum.MeleeWeapons,
+          SkillCategoryEnum.MissileWeapons,
+          SkillCategoryEnum.Shields,
+          SkillCategoryEnum.NaturalWeapons,
+        ].includes(item.data.data.category)
+      ) {
+        compendiumWeaponSkills.set(item.data.name, {
+          img: item.data.img ?? "",
+          skillOrigin: item.id,
+        });
       }
 
-      compendiumItems.set(`${item.data.type}.${item.name}`, {
-        type: item.data.type,
-        name: item.name,
-        journalId: item.data.data.journalId,
-        journalPack: item.data.data.journalPack,
-        cultHolyDays: hasOwnProperty(item.data.data, "holyDays")
-          ? item.data.data.holyDays
-          : undefined,
-        img: item.data.img ?? "",
-      });
+      // Save update info about cult holy days
+      if (item.data.type === ItemTypeEnum.Cult) {
+        compendiumCultHolyDays.set(item.name, {
+          cultHolyDays: item.data.data.holyDays,
+        });
+      }
+
+      // Save update info about items with journalLinks
+      // The items that have journal links are Rune, Skill, Cult, SpiritMagic & RuneMagic
+      if (hasOwnProperty(item.data.data, "journalId")) {
+        compendiumJournalLinks.set(`${item.data.type}.${item.name}`, {
+          img: item.data.img ?? "",
+          journalId: item.data.data.journalId,
+          journalPack: item.data.data.journalPack,
+        });
+      }
     }
   }
 }
@@ -77,6 +142,8 @@ export async function consolidateCompendiumItems(): Promise<void> {
     .map((p) => p[1]);
   await chooseCurrentCompendiumItems(sortedPacks);
 
+  console.debug(compendiumJournalLinks, compendiumCultHolyDays, compendiumWeaponSkills);
+
   const msg = `Consolidating compendium versions in prio order [${prioOrder}].`;
   ui.notifications?.info(
     `${msg} Please be patient and do not close your game or shut down your server.`,
@@ -84,7 +151,7 @@ export async function consolidateCompendiumItems(): Promise<void> {
   );
   console.log(`RQG | [${msg}]`);
 
-  await applyMigrations([consolidate], []);
+  await applyMigrations([updateCultHolyDays, relinkJournalEntries, relinkWeaponSkillItems], []);
 
   ui.notifications?.info(`Finished compendium consolidation!`, {
     permanent: true,
