@@ -22,6 +22,7 @@ export class PassionSheet extends RqgItemSheet<
 > {
   // TODO move to config?
   static passionImgUrl = new Map([
+    [PassionsEnum.Ambition, "systems/rqg/assets/images/passion/ambition.svg"],
     [PassionsEnum.Cowardly, "systems/rqg/assets/images/passion/cowardly.svg"],
     [PassionsEnum.Devotion, "systems/rqg/assets/images/passion/devotion.svg"],
     [PassionsEnum.Fear, "systems/rqg/assets/images/passion/fear.svg"],
