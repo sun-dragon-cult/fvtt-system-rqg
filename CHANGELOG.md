@@ -1,3 +1,31 @@
+# [1.8.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.0-7868c28...v1.8.0) (2021-11-23)
+
+
+### Bug Fixes
+
+* can't open actor sheet directly from compendium ([c762aa5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c762aa5))
+* wrong naming of combat actions in weapon migration ([56166f1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/56166f1))
+
+
+### Features
+
+* add api method to run system migration ([c7ff232](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c7ff232))
+* add armor images ([3c4c9c7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3c4c9c7))
+* add compendium consolidation code also refactor migration code ([4a80391](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/4a80391))
+* add human hitlocations pack, rename default runes pack and a GUI fix for hitloction margins ([0e30841](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0e30841))
+* add img asset for general lore skill ([23de907](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/23de907))
+* add passion "Ambition" ([16a5d5b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/16a5d5b))
+* add weapon images ([e4679e4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e4679e4))
+* hide linked missile unless weapon is owned also relax one more place where maxHitPoints were required ([487941b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/487941b))
+* improve weapon sheet display of skillname ([723ddde](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/723ddde))
+* improve weapon sheet display of skillname - also show where the skill comes from ([6c9a42a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6c9a42a))
+* relax some required values to just show a warning if missing ([adc568a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/adc568a))
+* relink description links and update cult holidays not yet finished for skill links ([080254b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/080254b))
+* relink weapon item originId also add some consolidation debug logging ([1e43bd9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1e43bd9))
+
+
+
+
 # [1.8.0-7868c28](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.8.0-23e10a4...v1.8.0-7868c28) (2021-11-03)
 
 

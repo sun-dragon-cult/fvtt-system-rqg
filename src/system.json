@@ -3,7 +3,7 @@
   "type": "system",
   "title": "RuneQuest Glorantha (Unofficial)",
   "description": "A RuneQuest Glorantha (Unofficial) system for FoundryVTT!",
-  "version": "1.8.0-7868c28",
+  "version": "1.8.0",
   "license": "UNLICENSED",
   "authors": [
     {
@@ -19,12 +19,12 @@
   ],
   "packs": [
     {
-    "name": "pc-runes",
-    "label": "Runes (Player Character)",
-    "system": "rqg",
-    "path": "assets/packs/pc-runes.db",
-    "entity": "Item",
-    "type": "Item"
+      "name": "pc-runes",
+      "label": "Runes (Player Character)",
+      "system": "rqg",
+      "path": "assets/packs/pc-runes.db",
+      "entity": "Item",
+      "type": "Item"
     },
     {
       "name": "skills-basic",
@@ -66,8 +66,8 @@
   "compatibleCoreVersion": "9",
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.8.0-7868c28/rqg.zip",
-  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.8.0-7868c28/readme.md",
-  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.8.0-7868c28/CHANGELOG.md",
+  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.8.0/rqg.zip",
+  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.8.0/readme.md",
+  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.8.0/CHANGELOG.md",
   "bugs": "https://github.com/sun-dragon-cult/foundry-vtt-rqg/issues"
 }
