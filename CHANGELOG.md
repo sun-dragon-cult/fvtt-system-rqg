@@ -1,3 +1,13 @@
+## [1.8.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.0...v1.8.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* update hardcoded modulenames ([e969c33](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e969c33))
+
+
+
+
 # [1.8.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.0-7868c28...v1.8.0) (2021-11-23)
 
 
