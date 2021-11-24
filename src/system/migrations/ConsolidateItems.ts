@@ -219,7 +219,7 @@ function isWeaponSkill(item: RqgItem): boolean {
 
 export async function consolidateCompendiumItems(): Promise<void> {
   // Sort packs in prio order according to scope (module), hardcoded for now
-  const prioOrder = ["world", "core-book", "starter-set", "rqg"];
+  const prioOrder = ["world", "core-book-rqg", "starter-set-rqg", "rqg"];
 
   const packs = getGame().packs;
   const sortedPacks = [...packs.entries()]
