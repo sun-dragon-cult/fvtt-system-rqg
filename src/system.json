@@ -3,7 +3,7 @@
   "type": "system",
   "title": "RuneQuest Glorantha (Unofficial)",
   "description": "A RuneQuest Glorantha (Unofficial) system for FoundryVTT!",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "license": "UNLICENSED",
   "authors": [
     {
@@ -66,8 +66,8 @@
   "compatibleCoreVersion": "9",
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.8.1/rqg.zip",
-  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.8.1/readme.md",
-  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.8.1/CHANGELOG.md",
+  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.9.0/rqg.zip",
+  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.9.0/readme.md",
+  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.9.0/CHANGELOG.md",
   "bugs": "https://github.com/sun-dragon-cult/foundry-vtt-rqg/issues"
 }

@@ -1,3 +1,13 @@
+# [1.9.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.1...v1.9.0) (2021-11-29)
+
+
+### Features
+
+* add more images ([de8769c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/de8769c))
+
+
+
+
 ## [1.8.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.0...v1.8.1) (2021-11-24)
 
 
