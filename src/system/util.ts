@@ -146,13 +146,21 @@ export function usersThatOwnActor(actor: RqgActor | null): StoredDocument<User>[
  * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
  */
 export function getActorFromIds(actorId: string | null, tokenId: string | null): RqgActor | null {
-  const token = canvas?.getLayer("TokenLayer")?.ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
+  // @ts-ignore for foundry 9
+  const token = canvas.layers
+    .find((l) => l.name === "TokenLayer")
+    // @ts-ignore for foundry 9
+    ?.ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
   const actor = actorId ? getGame().actors?.get(actorId) ?? null : null;
   return token ? token.document.getActor() : actor;
 }
 
 export function getSpeakerName(actorId: string | null, tokenId: string | null): string {
-  const token = canvas?.getLayer("TokenLayer")?.ownedTokens.find((t: Token) => t.id === tokenId);
+  // @ts-ignore for foundry 9
+  const token = canvas.layers
+    .find((l) => l.name === "TokenLayer")
+    // @ts-ignore for foundry 9
+    ?.ownedTokens.find((t: Token) => t.id === tokenId);
   if (token) {
     return token.name;
   }
