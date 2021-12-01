@@ -2,9 +2,10 @@
   "name": "rqg",
   "type": "system",
   "title": "RuneQuest Glorantha (Unofficial)",
-  "description": "A RuneQuest Glorantha (Unofficial) system for FoundryVTT!",
+  "description": "A RuneQuest Glorantha (Unofficial) system implementation.",
   "version": "1.9.0",
   "license": "UNLICENSED",
+  "author": "Sun Dragon Cult",
   "authors": [
     {
       "name": "Wake",
