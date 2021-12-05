@@ -1,3 +1,21 @@
+# [1.10.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.9.0...v1.10.0) (2021-12-05)
+
+
+### Bug Fixes
+
+* foundry9 deprecated canvas.getLayer ([b8adebb](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b8adebb))
+* max hitpoints value not calculated in foundry9 foundry 9 changed name of life cycle method "prepareEmbeddedEntities". Duplicate code to new name "prepareEmbeddedDocuments". Also re-tighten checks for hitpoints.max value. ([6f519cf](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6f519cf))
+* update system setting to point to system rune compendium ([00bb0c2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/00bb0c2))
+
+
+### Features
+
+* add some demo items and actors to help explain the system. ([18b9f5c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/18b9f5c))
+* update author ([32b7c4d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/32b7c4d))
+
+
+
+
 # [1.9.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.1...v1.9.0) (2021-11-29)
 
 
