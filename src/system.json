@@ -50,6 +50,22 @@
       "path": "assets/packs/human-hit-locations.db",
       "entity": "Item",
       "type": "Item"
+    },
+    {
+      "name": "demo-items",
+      "label": "Demo",
+      "system": "rqg",
+      "path": "assets/packs/demo-items.db",
+      "entity": "Item",
+      "type": "Item"
+    },
+    {
+      "name": "demo-actors",
+      "label": "Demo Actors",
+      "system": "rqg",
+      "path": "assets/packs/demo-actors.db",
+      "entity": "Actor",
+      "type": "Actor"
     }
   ],
   "languages": [
