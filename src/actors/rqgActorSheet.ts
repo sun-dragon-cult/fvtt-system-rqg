@@ -439,10 +439,7 @@ export class RqgActorSheet extends ActorSheet<
 
   protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
     let maxHitPoints = this.actor.data.data.attributes.hitPoints.max;
-    if (!maxHitPoints) {
-      ui.notifications?.warn("Actor does not have max hitpoints set.");
-      maxHitPoints = 0;
-    }
+    requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
     if (
       formData["data.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
       formData["data.attributes.hitPoints.value"] > maxHitPoints

@@ -253,7 +253,7 @@ export class DamageCalculations {
     if (maxHitPoints == null) {
       const msg = `Actor max hit points value ${maxHitPoints} is missing in actor ${actorData.name}`;
       ui.notifications?.error(msg);
-      maxHitPoints = 0;
+      throw new RqgError(msg, actorData);
     }
     const baseHealth: ActorHealthState = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
 
