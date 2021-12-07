@@ -1,3 +1,14 @@
+## [1.10.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.10.0...v1.10.1) (2021-12-07)
+
+
+### Bug Fixes
+
+* demo sword and demo bow is not linked properly to their skills This prevented them to be auto added to the actors ([49694d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/49694d8))
+* keep combat tracker SR empty instead of initialised to DEX + SIZ SR This makes it possible clear the SR (initiative) with the "Reset Initiative" button at the top of the combat tracker. ([175c6cf](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/175c6cf))
+
+
+
+
 # [1.10.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.9.0...v1.10.0) (2021-12-05)
 
 
