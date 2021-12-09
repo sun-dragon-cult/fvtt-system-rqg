@@ -1,3 +1,13 @@
+# [1.11.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.10.1...v1.11.0) (2021-12-09)
+
+
+### Features
+
+* add all runes ([ec1cb00](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ec1cb00))
+
+
+
+
 ## [1.10.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.10.0...v1.10.1) (2021-12-07)
 
 
