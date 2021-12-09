@@ -17,7 +17,7 @@ export const registerRqgSystemSettings = function () {
     scope: "world",
     config: true,
     type: String,
-    default: "rqg.pc-runes",
+    default: "rqg.runes",
   });
 
   getGame().settings.register("rqg", "fumbleRollTable", {
