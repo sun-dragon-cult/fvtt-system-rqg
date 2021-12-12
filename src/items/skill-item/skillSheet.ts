@@ -25,7 +25,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
-      template: "systems/rqg/items/skill-item/skillSheet.html",
+      template: "systems/rqg/items/skill-item/skillSheet.hbs",
       width: 505,
       height: 405,
     });

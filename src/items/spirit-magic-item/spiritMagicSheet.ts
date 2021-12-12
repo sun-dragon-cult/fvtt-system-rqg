@@ -29,7 +29,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.SpiritMagic],
-      template: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.html",
+      template: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
       width: 520,
       height: 250,
     });

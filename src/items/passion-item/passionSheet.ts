@@ -37,7 +37,7 @@ export class PassionSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Passion],
-      template: "systems/rqg/items/passion-item/passionSheet.html",
+      template: "systems/rqg/items/passion-item/passionSheet.hbs",
       width: 490,
       height: 310,
     });

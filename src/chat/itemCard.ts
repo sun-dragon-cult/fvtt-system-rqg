@@ -151,7 +151,7 @@ export class ItemCard {
   }
 
   private static async renderContent(flags: ItemCardFlags): Promise<object> {
-    let html = await renderTemplate("systems/rqg/chat/itemCard.html", flags);
+    let html = await renderTemplate("systems/rqg/chat/itemCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor: flags.itemData.type + ": " + flags.itemData.name,

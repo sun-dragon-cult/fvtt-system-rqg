@@ -39,7 +39,7 @@ export class HitLocationSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
-      template: "systems/rqg/items/hit-location-item/hitLocationSheet.html",
+      template: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
       width: 320,
       height: 250,
     });

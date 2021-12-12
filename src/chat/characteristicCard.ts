@@ -214,7 +214,7 @@ export class CharacteristicCard {
   }
 
   private static async renderContent(flags: CharacteristicCardFlags): Promise<object> {
-    let html = await renderTemplate("systems/rqg/chat/characteristicCard.html", flags);
+    let html = await renderTemplate("systems/rqg/chat/characteristicCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor:

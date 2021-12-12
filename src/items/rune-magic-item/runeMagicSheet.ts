@@ -37,7 +37,7 @@ export class RuneMagicSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.RuneMagic],
-      template: "systems/rqg/items/rune-magic-item/runeMagicSheet.html",
+      template: "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
       width: 425,
       height: 350,
     });

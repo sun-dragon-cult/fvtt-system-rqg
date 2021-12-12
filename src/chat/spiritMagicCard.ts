@@ -146,7 +146,7 @@ export class SpiritMagicCard {
   }
 
   private static async renderContent(flags: SpiritMagicCardFlags): Promise<object> {
-    let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.html", flags);
+    let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor: "Spirit Magic: " + flags.itemData.name,

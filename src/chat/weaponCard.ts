@@ -287,7 +287,7 @@ export class WeaponCard extends ChatMessage {
   }
 
   private static async renderContent(flags: WeaponCardFlags): Promise<object> {
-    let html = await renderTemplate("systems/rqg/chat/weaponCard.html", flags);
+    let html = await renderTemplate("systems/rqg/chat/weaponCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
       flavor: "Weapon: " + flags.weaponItemData.name,

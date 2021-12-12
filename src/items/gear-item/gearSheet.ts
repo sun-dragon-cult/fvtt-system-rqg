@@ -19,7 +19,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Gear],
-      template: "systems/rqg/items/gear-item/gearSheet.html",
+      template: "systems/rqg/items/gear-item/gearSheet.hbs",
       width: 420,
       height: 580,
     });

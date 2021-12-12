@@ -30,7 +30,7 @@ export class MeleeWeaponSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.MeleeWeapon],
-      template: "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.html",
+      template: "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.hbs",
       width: 550,
       height: 750,
     });

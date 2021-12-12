@@ -26,7 +26,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Armor],
-      template: "systems/rqg/items/armor-item/armorSheet.html",
+      template: "systems/rqg/items/armor-item/armorSheet.hbs",
       width: 580,
       height: 725,
     });

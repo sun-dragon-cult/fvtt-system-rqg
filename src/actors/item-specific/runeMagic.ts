@@ -99,7 +99,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     actorName: string
   ): Promise<string> {
     const htmlContent = await renderTemplate(
-      "systems/rqg/actors/item-specific/runeMagicCultDialog.html",
+      "systems/rqg/actors/item-specific/runeMagicCultDialog.hbs",
       {
         actorCults: actorCults,
         runeMagicName: runeMagicName,

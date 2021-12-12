@@ -140,10 +140,10 @@
   <section class="sheet-body">
     <div class="tab combat" data-group="primary" data-tab="combat">
         <div class="flex-row flex-wrap">
-          {{#if showUiSection.health}}{{> "systems/rqg/actors/sheet-parts/health.html" }}{{/if}}
+          {{#if showUiSection.health}}{{> "systems/rqg/actors/sheet-parts/health.hbs" }}{{/if}}
           <div>
-            {{> "systems/rqg/actors/sheet-parts/spirit-combat.html" }}<br>
-            {{#if showUiSection.combat}}{{> "systems/rqg/actors/sheet-parts/combat.html" }}{{/if}}
+            {{> "systems/rqg/actors/sheet-parts/spirit-combat.hbs" }}<br>
+            {{#if showUiSection.combat}}{{> "systems/rqg/actors/sheet-parts/combat.hbs" }}{{/if}}
           </div>
           <div style="width: 100%">
             <h2>Allies & Notes</h2>
@@ -154,55 +154,55 @@
 
     {{#if showUiSection.runes}}
     <div class="tab runes" data-group="primary" data-tab="runes">
-      {{> "systems/rqg/actors/sheet-parts/runes-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/runes-tab.hbs" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.spiritMagic}}
     <div class="tab spiritmagic" data-group="primary" data-tab="spiritmagic">
-      {{> "systems/rqg/actors/sheet-parts/spirit-magic-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.runeMagic}}
     <div class="tab runemagic" data-group="primary" data-tab="runemagic">
-      {{> "systems/rqg/actors/sheet-parts/rune-magic-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/rune-magic-tab.hbs" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.sorcery}}
     <div class="tab sorcery" data-group="primary" data-tab="sorcery">
-      {{> "systems/rqg/actors/sheet-parts/sorcery-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/sorcery-tab.hbs" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.skills}}
     <div class="tab skills" data-group="primary" data-tab="skills">
-      {{> "systems/rqg/actors/sheet-parts/skills-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.gear}}
     <div class="tab gear" data-group="primary" data-tab="gear">
-      {{> "systems/rqg/actors/sheet-parts/gear-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/gear-tab.hbs" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.passions}}
     <div class="tab passions" data-group="primary" data-tab="passions">
-      {{> "systems/rqg/actors/sheet-parts/passions-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.background}}
     <div class="tab background" data-group="primary" data-tab="background">
-      {{> "systems/rqg/actors/sheet-parts/background-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/background-tab.hbs" }}
     </div>
     {{/if}}
 
     {{#if showUiSection.activeEffects}}
     <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
-      {{> "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.html" }}
+      {{> "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs" }}
     </div>
     {{/if}}
   </section>

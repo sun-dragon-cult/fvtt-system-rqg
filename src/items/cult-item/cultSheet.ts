@@ -31,7 +31,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Cult],
-      template: "systems/rqg/items/cult-item/cultSheet.html",
+      template: "systems/rqg/items/cult-item/cultSheet.hbs",
       width: 390,
       height: 530,
     });
