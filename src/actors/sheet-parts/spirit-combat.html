@@ -1,25 +1,30 @@
 <div>
   <h2>Spirit Combat</h2>
-  <div class="flexrow nowrap flex-align-center">
-    <label class="mp">Magic Points
-      <input
-      type="number"
-      min="0"
-      max="99"
-      name="data.attributes.magicPoints.value"
-      value="{{characterData.attributes.magicPoints.value}}"
-      size="2"
-    > / {{characterData.attributes.magicPoints.max}}
-    </label>
-    <i>{{#each powCrystals}}
-      {{name}}({{size}}MP)<br>
-      {{/each}}</i>
-    <label class="text-right" data-damage-roll="{{characterData.attributes.spiritCombatDamage}}">Spirit Combat Damage {{characterData.attributes.spiritCombatDamage}}</label>
+  <div class="flex-row nowrap flex-align-center">
+    <div>
+      <label class="mp">Magic Points
+        <input
+          type="number"
+          min="0"
+          max="99"
+          name="data.attributes.magicPoints.value"
+          value="{{characterData.attributes.magicPoints.value}}"
+          size="2"
+        > / {{characterData.attributes.magicPoints.max}}
+      </label><br>
+      <i>{{#each powCrystals}}{{name}} ({{size}} MP)<br>{{/each}}</i>
+    </div>
+    <label class="text-right" data-damage-roll="{{characterData.attributes.spiritCombatDamage}}">Spirit Combat Damage
+      {{characterData.attributes.spiritCombatDamage}}</label>
   </div>
   {{#if spiritCombatSkillData}}
-    <div class="grid spirit-combat">
-      <div data-item-id="{{spiritCombatSkillData._id}}" class="skill contextmenu" data-item-roll title="Roll">Spirit Combat</div>
-      <div data-item-id="{{spiritCombatSkillData._id}}" class="skill contextmenu" data-item-roll title="Roll"><span class="text-right {{#if spiritCombatSkillData.data.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData._id @root.data._id @root.tokenId}}%</span></div>
+  <div class="grid spirit-combat">
+    <div data-item-id="{{spiritCombatSkillData._id}}" class="skill contextmenu" data-item-roll title="Roll">Spirit
+      Combat
     </div>
+    <div data-item-id="{{spiritCombatSkillData._id}}" class="skill contextmenu" data-item-roll title="Roll"><span
+      class="text-right {{#if spiritCombatSkillData.data.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData._id @root.data._id @root.tokenId}}%</span>
+    </div>
+  </div>
   {{/if}}
 </div>
