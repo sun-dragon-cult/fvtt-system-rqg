@@ -23,6 +23,13 @@
               {{/each}}
             </div>
           {{/if}}
+          {{#if characterFormRunes}}
+            <div>
+              {{#each characterFormRunes}}
+                <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
+              {{/each}}
+            </div>
+          {{/if}}
         </div>
       </div>
       <div class="characteristics">

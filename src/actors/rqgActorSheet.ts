@@ -83,6 +83,7 @@ interface CharacterSheetData {
   /** Array of element runes with > 0% chance */
   characterElementRunes: RuneDataSource[];
   characterPowerRunes: RuneDataSource[];
+  characterFormRunes: RuneDataSource[];
   /** (html) Precalculated missile weapon SRs if loaded at start of round */
   loadedMissileSr: string[];
   /** (html) Precalculated missile weapon SRs if not loaded at start of round */
@@ -123,7 +124,7 @@ export class RqgActorSheet extends ActorSheet<
   static get defaultOptions(): ActorSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ActorTypeEnum.Character],
-      template: "systems/rqg/actors/rqgActorSheet.html",
+      template: "systems/rqg/actors/rqgActorSheet.hbs",
       width: 800,
       height: 650,
       tabs: [
@@ -171,7 +172,8 @@ export class RqgActorSheet extends ActorSheet<
       dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
 
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
-      characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of element runes with > 0% chance
+      characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
+      characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character
       loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
       unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
       itemLocationTree: createItemLocationTree(this.actor.items.toObject()), // physical items reorganised as a tree of items containing items
@@ -306,6 +308,21 @@ export class RqgActorSheet extends ActorSheet<
           i.data.type === ItemTypeEnum.Rune &&
           i.data.data.runeType === RuneTypeEnum.Power &&
           i.data.data.chance > 50
+        ) {
+          acc.push(i.data);
+        }
+        return acc;
+      }, [])
+      .sort((a: RuneDataSource, b: RuneDataSource) => b.data.chance - a.data.chance);
+  }
+
+  private getCharacterFormRuneImgs(): RuneDataSource[] {
+    return this.actor.items
+      .reduce((acc: RuneDataSource[], i: RqgItem) => {
+        if (
+          i.data.type === ItemTypeEnum.Rune &&
+          i.data.data.runeType === RuneTypeEnum.Form &&
+          (!i.data.data.opposingRune || i.data.data.chance > 50)
         ) {
           acc.push(i.data);
         }

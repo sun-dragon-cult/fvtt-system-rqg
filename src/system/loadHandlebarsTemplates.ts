@@ -1,6 +1,6 @@
 export const loadHandlebarsTemplates = async function () {
   const templatePaths = [
-    "systems/rqg/actors/rqgActorSheet.html",
+    "systems/rqg/actors/rqgActorSheet.hbs",
     // ActorSheet tabs
     "systems/rqg/actors/sheet-parts/runes-tab.html",
     "systems/rqg/actors/sheet-parts/spirit-magic-tab.html",
