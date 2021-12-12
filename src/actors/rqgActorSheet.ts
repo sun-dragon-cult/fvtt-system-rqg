@@ -239,7 +239,7 @@ export class RqgActorSheet extends ActorSheet<
             name: e.data.label,
             size: e.data.changes
               .filter((c: any) => c.key === "data.attributes.magicPoints.max")
-              .reduce((acc: number, c: any) => acc + c.value, 0),
+              .reduce((acc: number, c: any) => acc + Number(c.value), 0),
           };
         })
     );
