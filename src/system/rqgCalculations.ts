@@ -5,12 +5,12 @@ type LookupTableEntry<T> = {
 };
 
 export class RqgCalculations {
-  public static dexSR(dex: number): number {
-    return this.lookup<number>(dex, dexSrTable);
+  public static dexSR(dex: number): number | undefined {
+    return this.lookup<number | undefined>(dex, dexSrTable);
   }
 
-  public static sizSR(siz: number): number {
-    return this.lookup<number>(siz, sizSrTable);
+  public static sizSR(siz: number): number | undefined {
+    return this.lookup<number | undefined>(siz, sizSrTable);
   }
 
   public static hitPoints(con: number, siz: number, pow: number): number {
@@ -118,8 +118,9 @@ export class RqgCalculations {
 }
 
 // DEX Strike Rank lookup
-const dexSrTable: LookupTableEntry<number>[] = [
-  { from: -Infinity, to: 5, result: 5 },
+const dexSrTable: LookupTableEntry<number | undefined>[] = [
+  { from: -Infinity, to: 0, result: undefined },
+  { from: 1, to: 5, result: 5 },
   { from: 6, to: 8, result: 4 },
   { from: 9, to: 12, result: 3 },
   { from: 13, to: 15, result: 2 },
@@ -127,9 +128,10 @@ const dexSrTable: LookupTableEntry<number>[] = [
   { from: 19, to: Infinity, result: 0 },
 ];
 
-// SIZ Strike rank lookup
-const sizSrTable: LookupTableEntry<number>[] = [
-  { from: -Infinity, to: 6, result: 3 },
+// SIZ Strike Rank lookup
+const sizSrTable: LookupTableEntry<number | undefined>[] = [
+  { from: -Infinity, to: 0, result: undefined },
+  { from: 1, to: 6, result: 3 },
   { from: 7, to: 14, result: 2 },
   { from: 15, to: 21, result: 1 },
   { from: 22, to: Infinity, result: 0 },

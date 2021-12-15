@@ -94,6 +94,8 @@ interface CharacterSheetData {
   powCrystals: { name: string; size: number }[];
   spiritMagicPointSum: number;
   freeInt: number;
+  baseStrikeRank: number | undefined;
+
   locomotionModes: { [a: string]: string };
 
   // UI toggles
@@ -180,6 +182,10 @@ export class RqgActorSheet extends ActorSheet<
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
+      baseStrikeRank: this.getBaseStrikeRank(
+        dexStrikeRank,
+        actorData.data.attributes.sizStrikeRank
+      ),
 
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
@@ -284,6 +290,20 @@ export class RqgActorSheet extends ActorSheet<
       [reloadIcon, "10"],
     ];
     return dexSr ? unloadedMissileSr[dexSr] : [];
+  }
+
+  private getBaseStrikeRank(
+    dexStrikeRank: number | undefined,
+    sizStrikeRank: number | undefined
+  ): number | undefined {
+    if (dexStrikeRank == null && sizStrikeRank == null) {
+      return undefined;
+    }
+
+    return [dexStrikeRank, sizStrikeRank].reduce(
+      (acc: number, value: number | undefined) => (Number(value) ? acc + Number(value) : acc),
+      0
+    );
   }
 
   private getCharacterElementRuneImgs(): RuneDataSource[] {

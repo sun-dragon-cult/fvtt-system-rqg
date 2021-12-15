@@ -103,19 +103,11 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("multiply", (...nums) => {
     nums.pop();
-    return Math.floor(
-      nums.reduce((acc, n) => {
-        acc = acc * n;
-        return acc;
-      })
-    );
+    return Math.floor(nums.reduce((acc, n) => acc * n));
   });
 
   Handlebars.registerHelper("sum", (...nums) => {
     nums.pop();
-    return nums.reduce((acc, n) => {
-      acc = acc + n;
-      return acc;
-    });
+    return nums.reduce((acc, n) => acc + (n ?? 0));
   });
 };
