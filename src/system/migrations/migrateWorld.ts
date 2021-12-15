@@ -1,18 +1,6 @@
-import { migrateItemEstimatedPrice } from "./migrations-item/migrateItemEstimatedPrice";
-import { migrateSkillName } from "./migrations-item/migrateSkillName";
-import { migrateArmorName } from "./migrations-item/migrateArmorName";
-import {
-  migrateRuneDescription,
-  migrateRuneImgLocation,
-} from "./migrations-item/migrateRuneCompendium";
+import { migrateItemDummy } from "./migrations-item/migrateItemDummy";
 import { getGame } from "../util";
-import { migrateHitLocationName } from "./migrations-item/migrateHitLocationName";
-import { migratePassionName } from "./migrations-item/migratePassionName";
-import { migrateHitLocationHPName } from "./migrations-item/migrateHitLocationHPName";
-import { migrateDoubleLeftArms } from "./migrations-item/migrateDoubleLeftArms";
-import { migrateCharacterMov } from "./migrations-actor/migrateCharacterMov";
-import { migrateRenameCharacterRace } from "./migrations-actor/migrateRenameCharacterRace";
-import { migrateToWeaponItem } from "./migrations-item/migrateToWeaponItem";
+import { migrateActorDummy } from "./migrations-actor/migrateActorDummy";
 import { ActorMigration, applyMigrations, ItemMigration } from "./applyMigrations";
 
 /**
@@ -43,20 +31,8 @@ export async function migrateWorld(): Promise<void> {
 }
 
 export async function applyDefaultWorldMigrations(): Promise<void> {
-  const worldItemMigrations: ItemMigration[] = [
-    migrateItemEstimatedPrice,
-    migrateSkillName,
-    migrateArmorName,
-    migrateRuneImgLocation,
-    migrateRuneDescription,
-    migrateHitLocationName,
-    migratePassionName,
-    migrateHitLocationHPName,
-    migrateDoubleLeftArms,
-    migrateToWeaponItem,
-  ];
-
-  const worldActorMigrations: ActorMigration[] = [migrateCharacterMov, migrateRenameCharacterRace];
+  const worldItemMigrations: ItemMigration[] = [migrateItemDummy];
+  const worldActorMigrations: ActorMigration[] = [migrateActorDummy];
 
   await applyMigrations(worldItemMigrations, worldActorMigrations);
 }

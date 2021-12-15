@@ -28,7 +28,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
   };
   const physicalItemDatas = itemDatas.filter((i) => hasOwnProperty(i.data, "physicalItemType"));
   let physicalItemNodes: LocationNode[] = physicalItemDatas
-    .filter((itemData) => !(itemData.type === ItemTypeEnum.MeleeWeapon && itemData.data.isNatural))
+    .filter((itemData) => !(itemData.type === ItemTypeEnum.Weapon && itemData.data.isNatural))
     .map((itemData) => {
       const itemLocation =
         (hasOwnProperty(itemData.data, "location") && itemData.data.location) || "";

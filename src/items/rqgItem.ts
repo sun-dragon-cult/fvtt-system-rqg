@@ -5,8 +5,6 @@ import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
 import { GearSheet } from "./gear-item/gearSheet";
 import { ArmorSheet } from "./armor-item/armorSheet";
-import { MeleeWeaponSheet } from "./melee-weapon-item/meleeWeaponSheet";
-import { MissileWeaponSheet } from "./missile-weapon-item/missileWeaponSheet";
 import { WeaponSheet } from "./weapon-item/weaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
@@ -47,16 +45,6 @@ export class RqgItem extends Item {
     Items.registerSheet("rqg", ArmorSheet as any, {
       label: "GM Armor Item Sheet",
       types: [ItemTypeEnum.Armor],
-      makeDefault: true,
-    });
-    Items.registerSheet("rqg", MeleeWeaponSheet as any, {
-      label: "GM Melee Weapon Item Sheet",
-      types: [ItemTypeEnum.MeleeWeapon],
-      makeDefault: true,
-    });
-    Items.registerSheet("rqg", MissileWeaponSheet as any, {
-      label: "GM Missile Weapon Item Sheet",
-      types: [ItemTypeEnum.MissileWeapon],
       makeDefault: true,
     });
     Items.registerSheet("rqg", WeaponSheet as any, {

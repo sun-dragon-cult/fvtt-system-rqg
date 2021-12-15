@@ -34,8 +34,6 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
     "systems/rqg/items/gear-item/gearSheet.hbs",
     "systems/rqg/items/armor-item/armorSheet.hbs",
-    "systems/rqg/items/melee-weapon-item/meleeWeaponSheet.hbs",
-    "systems/rqg/items/missile-weapon-item/missileWeaponSheet.hbs",
     "systems/rqg/items/weapon-item/weaponSheet.hbs",
     "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
     "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",

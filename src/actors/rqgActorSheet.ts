@@ -428,11 +428,7 @@ export class RqgActorSheet extends ActorSheet<
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
-          (i: RqgItem) =>
-            i.name === CONFIG.RQG.skillName.dodge ||
-            [ItemTypeEnum.MeleeWeapon, ItemTypeEnum.MissileWeapon, ItemTypeEnum.Weapon].includes(
-              i.type
-            )
+          (i: RqgItem) => i.name === CONFIG.RQG.skillName.dodge || i.type === ItemTypeEnum.Weapon
         ),
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -458,13 +454,7 @@ export class RqgActorSheet extends ActorSheet<
       gear:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some((i: RqgItem) =>
-          [
-            ItemTypeEnum.Gear,
-            ItemTypeEnum.Weapon,
-            ItemTypeEnum.MeleeWeapon,
-            ItemTypeEnum.MissileWeapon,
-            ItemTypeEnum.Armor,
-          ].includes(i.type)
+          [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(i.type)
         ),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||

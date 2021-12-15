@@ -3,13 +3,10 @@ import { ActorTypeEnum } from "../../../data-model/actor-data/rqgActorData";
 import { deleteKeyPrefix } from "../../util";
 import { ActorUpdate } from "../applyMigrations";
 
-// Rename background.race => background.species
-export function migrateRenameCharacterRace(actorData: ActorData): ActorUpdate {
+// Dummy Actor Migrator
+export function migrateActorDummy(actorData: ActorData): ActorUpdate {
   let updateData = {};
-  if (
-    actorData.type === ActorTypeEnum.Character &&
-    (actorData.data?.background as any)?.race != null
-  ) {
+  if (actorData.type === ActorTypeEnum.Character && false) {
     updateData = {
       data: {
         background: {

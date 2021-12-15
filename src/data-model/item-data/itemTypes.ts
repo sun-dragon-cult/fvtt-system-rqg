@@ -3,8 +3,6 @@ import { AbstractEmbeddedItem } from "../../actors/item-specific/abstractEmbedde
 import { HitLocation } from "../../actors/item-specific/hitLocation";
 import { Gear } from "../../actors/item-specific/gear";
 import { Armor } from "../../actors/item-specific/armor";
-import { MeleeWeapon } from "../../actors/item-specific/meleeWeapon";
-import { MissileWeapon } from "../../actors/item-specific/missileWeapon";
 import { SpiritMagic } from "../../actors/item-specific/spiritMagic";
 import { Cult } from "../../actors/item-specific/cult";
 import { RuneMagic } from "../../actors/item-specific/runeMagic";
@@ -14,8 +12,6 @@ import { ArmorDataProperties, ArmorDataSource } from "./armorData";
 import { PassionDataProperties, PassionDataSource } from "./passionData";
 import { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
 import { GearDataProperties, GearDataSource } from "./gearData";
-import { MeleeWeaponDataProperties, MeleeWeaponDataSource } from "./meleeWeaponData";
-import { MissileWeaponDataProperties, MissileWeaponDataSource } from "./missileWeaponData";
 import { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
 import { CultDataProperties, CultDataSource } from "./cultData";
 import { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
@@ -37,8 +33,6 @@ export enum ItemTypeEnum {
   Weapon = "weapon",
   ShamanicAbility = "shamanicAbility",
   SorceryMagic = "sorceryMagic",
-  MeleeWeapon = "meleeWeapon",
-  MissileWeapon = "missileWeapon",
 }
 
 /**
@@ -55,8 +49,6 @@ export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = ne
   [ItemTypeEnum.Skill, Skill],
   [ItemTypeEnum.SpiritMagic, SpiritMagic],
   [ItemTypeEnum.Weapon, Weapon],
-  [ItemTypeEnum.MeleeWeapon, MeleeWeapon],
-  [ItemTypeEnum.MissileWeapon, MissileWeapon],
 ]);
 
 export type RqgItemDataSource =
@@ -69,9 +61,7 @@ export type RqgItemDataSource =
   | RuneMagicDataSource
   | SkillDataSource
   | SpiritMagicDataSource
-  | WeaponDataSource
-  | MeleeWeaponDataSource
-  | MissileWeaponDataSource;
+  | WeaponDataSource;
 
 export type RqgItemDataProperties =
   | ArmorDataProperties
@@ -83,6 +73,4 @@ export type RqgItemDataProperties =
   | RuneMagicDataProperties
   | SkillDataProperties
   | SpiritMagicDataProperties
-  | WeaponDataProperties
-  | MeleeWeaponDataProperties
-  | MissileWeaponDataProperties;
+  | WeaponDataProperties;
