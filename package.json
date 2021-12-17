@@ -5,9 +5,11 @@
   "type": "module",
   "description": "",
   "scripts": {
-    "build": "yarn snowpack build && yarn compile:template && tsc --noEmit",
-    "test": "jest",
-    "compile:template": "node jsTemplate2json.mjs"
+    "build": "run-s pack compile:template checktypescript",
+    "pack": "yarn snowpack build",
+    "compile:template": "node jsTemplate2json.mjs",
+    "checktypescript": "tsc --noEmit",
+    "test": "jest"
   },
   "author": "",
   "license": "UNLICENCED",
@@ -22,6 +24,7 @@
     "@types/ws": "^7.4.1",
     "fs-extra": "^10.0.0",
     "jest": "^27.1.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.4.0",
     "sass": "^1.39.2",
     "snowpack": "^3.8.8",
