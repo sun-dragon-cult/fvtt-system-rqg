@@ -85,7 +85,7 @@ export const skillMenuOptions = (
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = itemId && actor.items.get(itemId);
-      return !!(item && item.data.type === ItemTypeEnum.Skill && item.data.data.hasExperience);
+      return !!(item && item.data.type === ItemTypeEnum.Skill);
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

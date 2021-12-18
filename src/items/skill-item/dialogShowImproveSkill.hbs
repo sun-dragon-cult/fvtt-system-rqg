@@ -1,0 +1,37 @@
+<form>
+    <h1>{{localize "DIALOG.improveSkillDialog.improvementTypeQ"}}</h1>
+    {{#if skill.data.hasExperience}}
+    <div class="experience">
+        <h2>{{localize "DIALOG.improveSkillDialog.fromExperience"}}</h2>
+        <p>{{localize "DIALOG.improveSkillDialog.experienceExplanation"}}</p>
+        <label>
+            <input type="checkbox" class="improvement-type-checkbox" name="experience3"> {{localize "DIALOG.improveSkillDialog.experiencGainFixed"}}
+        </label>
+        <label>
+            <input type="checkbox" class="improvement-type-checkbox" name="experience1d6"> {{localize "DIALOG.improveSkillDialog.experiencGainRandom"}}
+        </label>
+    </div>
+    {{else}}
+    <div class="experience">
+        <h2>{{localize "DIALOG.improveSkillDialog.noExperienceCheckTitle"}}</h2>
+        <p>{{localize "DIALOG.improveSkillDialog.noExperienceCheckExplanation"}}</p>
+    </div>
+    {{/if}}
+    {{#if skill.data.hideTraining}}
+    <div class="training">
+        <h2>{{localize "DIALOG.improveSkillDialog.skillOver75Title"}}</h2>
+        <p>{{localize "DIALOG.improveSkillDialog.skillOver75Explanation"}}</p>
+    </div>
+    {{else}}
+    <div class="training">
+        <h2>{{localize "DIALOG.improveSkillDialog.throughTraining"}}</h2>
+        <p>{{localize "DIALOG.improveSkillDialog.afterTraining"}}</p>
+        <label>
+            <input type="checkbox" class="improvement-type-checkbox" name="training2"> {{localize "DIALOG.improveSkillDialog.trainingGainFixed"}}
+        </label>
+        <label>
+            <input type="checkbox" class="improvement-type-checkbox" name="training1d6minus1"> {{localize "DIALOG.improveSkillDialog.trainingGainrandom"}}
+        </label>
+    </div>
+    {{/if}}
+</form>

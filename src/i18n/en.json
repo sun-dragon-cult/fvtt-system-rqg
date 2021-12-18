@@ -197,5 +197,41 @@
     "BaseIncome": "Base Income",
     "Ransom": "Ransom",
     "RansomDetails": "Details"
+  },
+  "DIALOG": {
+    "improveSkillDialog": {
+      "title": "Skill Improvement for {skillName}",
+      "improvementTypeQ": "What type of improvement are you attempting?",
+      "fromExperience": "From experience:",
+      "experienceExplanation": "Roll 1d100 and add the skill category mod.  If this FAILS:",
+      "experiencGainFixed": "Gain 3%",
+      "experiencGainRandom": "Gain 1d6%",
+      "noExperienceCheckTitle": "No Experience Check",
+      "noExperienceCheckExplanation": "This character does not have an experience check in this skill and may not improve from Experience.",
+      "throughTraining": "Through training:",
+      "afterTraining": "After training:",
+      "trainingGainFixed": "Gain 2%",
+      "trainingGainrandom": "Gain 1d6-1%",
+      "skillOver75Title": "Skill Over 75%",
+      "skillOver75Explanation": "You may not train in skills with a value over 75%.",
+      "btnAttemptImprovement": "Attempt Improvement",
+      "btnCancel": "Cancel",
+      "attemptCard": {
+        "flavorHeader": "{skillName} experience improvement",
+        "flavorExplanation": "Requires FAILURE or FUMBLE to gain."
+      },
+      "experienceResultCard": {
+        "flavorHeader": "Experience improvement for {skillName}",
+        "flavorText": "Chose fixed gain of 3%."
+      },
+      "trainingResultCard": {
+        "flavorHeader": "Training improvement for {skillName}",
+        "flavorText": "Chose fixed gain of 2%."
+      },
+      "notifications": {
+        "didNotGain": "{actorName} did not gain in {skillName}, and the experience check has been removed.",
+        "noExperience": "{actorName} does not have an experience check in {skillName} and it cannot be improved right now."
+      }
+    }
   }
 }

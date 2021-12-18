@@ -11,6 +11,7 @@ import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
 import { Ability, ResultEnum } from "../../data-model/shared/ability";
+import { getGame } from "../../system/util";
 
 interface SkillSheetData {
   isEmbedded: boolean;
@@ -118,64 +119,54 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
-    const dialogContent = `<form>
-    <h1>What type of improvement are you attempting?</h1>
-    <p>See pages 415-417.</p>
-    <div class="experience">
-        <h2>From experience:</h2>
-        <p>Roll 1d100 and add the skill category mod.  If this FAILS:</p>
-        <label>
-            <input type="checkbox" class="improvement-type-checkbox" name="experience3"> Gain 3%
-        </label>
-        <label>
-            <input type="checkbox" class="improvement-type-checkbox" name="experience1d6"> Gain 1d6%
-        </label>
-    </div>
-    <div class="training">
-        <h2>Through training:</h2>
-        <p>After training:</p>
-        <label>
-            <input type="checkbox" class="improvement-type-checkbox" name="training2"> Gain 2
-        </label>
-        <label>
-            <input type="checkbox" class="improvement-type-checkbox" name="training1d6minus1"> Gain 1d6-1%
-        </label>
-    </div>
-</form>`;
-    new Dialog(
-      {
-        title: `Skill Improvement ${item.name}`,
-        content: dialogContent,
-        default: "submit",
-        render: () => {
-          $(".improvement-type-checkbox").on('change', function() {
-            // ensure only one checkbox is checked
-            $('.improvement-type-checkbox').not(this).prop('checked', false);
-          });
-        },
-        buttons: {
-          submit: {
-            icon: '<i class="fas fa-check"></i>',
-            label: "Attempt Improvement",
-            callback: async (html: JQuery | HTMLElement) =>
-              await SkillSheet.submitImproveSkillDialog(
-                html as JQuery,
-                actor,
-                item,
-                speakerName
-              )
+    const skill = item.data as SkillDataProperties;
+    
+    if (item.data.data.chance > 75) {
+      //@ts-ignore hideTraining
+      item.data.data.hideTraining = true;
+    }
+
+    //TODO: Not sure why this wouldn't work with "await"
+    renderTemplate("systems/rqg/items/skill-item/dialogShowImproveSkill.hbs", {skill: skill}).then(content => {
+      const title = getGame().i18n.format("DIALOG.improveSkillDialog.title", {skillName: skill.data.skillName});
+      const btnImprove = getGame().i18n.format("DIALOG.improveSkillDialog.btnAttemptImprovement");
+      const btnCancel = getGame().i18n.format("DIALOG.improveSkillDialog.btnCancel");
+      new Dialog(
+        {
+          title: title,
+          content: content,
+          default: "submit",
+          render: () => {
+            $(".improvement-type-checkbox").on('change', function() {
+              // ensure only one checkbox is checked
+              $('.improvement-type-checkbox').not(this).prop('checked', false);
+            });
           },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
-            callback: () => null,
+          buttons: {
+            submit: {
+              icon: '<i class="fas fa-check"></i>',
+              label: btnImprove,
+              callback: async (html: JQuery | HTMLElement) =>
+                await SkillSheet.submitImproveSkillDialog(
+                  html as JQuery,
+                  actor,
+                  item,
+                  speakerName
+                )
+            },
+            cancel: {
+              icon: '<i class="fas fa-times"></i>',
+              label: btnCancel,
+              callback: () => null,
+            },
           },
         },
-      },
-      {
-        classes: ["rqg", "dialog"],
-      }
-    ).render(true);
+        {
+          classes: ["rqg", "dialog"],
+        }
+      ).render(true);      
+    });
+
   }
 
   private static async submitImproveSkillDialog(
@@ -206,18 +197,22 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
         var chance: number = Number(item.data.data.chance) || 0;
         // @ts-ignore categoryMod
         var categoryMod: number = Number(item.data.data.categoryMod) || 0;
-        const flavor = `<h3>${item.name} experience improvement</h3><p>Requires FAILURE or FUMBLE to gain.</p>`;
+        const flavorHeader = getGame().i18n.format("DIALOG.improveSkillDialog.attemptCard.flavorHeader", {skillName: skillData.data.skillName});
+        const flavorExplanation = getGame().i18n.format("DIALOG.improveSkillDialog.attemptCard.flavorExplanation");
+        const flavor = `<h3>${flavorHeader}</h3><p>${flavorExplanation}</p>`;
         const result = await Ability.roll(flavor, chance, categoryMod, speakerName);
-        console.log("Result: " + result);
+
         if (result >= ResultEnum.Failure) {
           // FAILED ability check means increase skill
+          const resultFlavorHeader = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.flavorHeader", {skillName: skillData.data.skillName});
+          const resultFlavorText = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.flavorText");
           if (experience3) {
             const roll = new Roll("3");
-            const result = await roll.evaluate({ async: true});
+            await roll.evaluate({ async: true});
             await roll.toMessage({
               speaker: { alias: speakerName},
               type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-              flavor: `<h3>Experience improvement for ${item.name}</h3><p>Chose fixed gain of 3%.</p>`
+              flavor: `<h3>${resultFlavorHeader}</h3><p>${resultFlavorText}</p>`
             });
             gain = 3;
           }
@@ -227,7 +222,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
             await roll.toMessage({
               speaker: { alias: speakerName},
               type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-              flavor: `<h3>Experience improvement for ${item.name}</h3>`
+              flavor: `<h3>${resultFlavorHeader}</h3>`
             });
             gain = Number(result.total) || 0; 
           }
@@ -235,29 +230,34 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
         } else {
           // SUCCEEDED ability check means no skill increase 
           gain = 0;
-          ui.notifications?.info(`${actor.name} did not gain in ${item.name}, and the experience check has been removed.`);
+          const msg = getGame().i18n.format("DIALOG.improveSkillDialog.notifications.didNotGain", {actorName: actor.name, skillName: skillData.data.skillName});
+          ui.notifications?.error(msg);
         }
       } else {
-        ui.notifications?.error(`The ${item.name} skill does not have an experience and cannot be improved right now.`);
+        const msg = getGame().i18n.format("DIALOG.improveSkillDialog.notifications.noExperience", {actorName: actor.name, skillName: skillData.data.skillName});
+        ui.notifications?.error(msg);
       }
     }
     if (training2) {
       const roll = new Roll("2");
       const result = await roll.evaluate({ async: true});
+      const flavorHeader = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavorHeader", {skillName: skillData.data.skillName});
+      const flavorText = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavorText");
       await roll.toMessage({
         speaker: { alias: speakerName},
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        flavor: `<h3>Training improvement for ${item.name}</h3><p>Chose fixed gain of 2%.</p>`
+        flavor: `<h3>${flavorHeader}</h3><p>${flavorText}</p>`
       });
       gain = 2;
     }
     if (training1d6minus1) {
       const roll = new Roll("1d6-1");
       const result = await roll.evaluate({ async: true});
+      const flavorHeader = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavorHeader", {skillName: skillData.data.skillName});
       await roll.toMessage({
         speaker: { alias: speakerName},
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        flavor: `<h3>Training improvement for ${item.name}</h3>`
+        flavor: `<h3>${flavorHeader}</h3>`
       });
       gain = Number(result.total) || 0; 
     }
