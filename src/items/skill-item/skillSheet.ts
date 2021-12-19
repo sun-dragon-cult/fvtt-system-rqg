@@ -175,6 +175,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     item: RqgItem,
     speakerName: string
   ) {
+    assertItemType(item.data.type, ItemTypeEnum.Skill);
     const skillData = item.data as SkillDataProperties;
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
@@ -193,45 +194,57 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
 
     if (experience3 || experience1d6) {
       if (skillData.data.hasExperience) {
-        // @ts-ignore chance
         var chance: number = Number(item.data.data.chance) || 0;
-        // @ts-ignore categoryMod
         var categoryMod: number = Number(item.data.data.categoryMod) || 0;
-        const flavorHeader = getGame().i18n.format("DIALOG.improveSkillDialog.attemptCard.flavorHeader", {skillName: skillData.data.skillName});
-        const flavorExplanation = getGame().i18n.format("DIALOG.improveSkillDialog.attemptCard.flavorExplanation");
-        const flavor = `<h3>${flavorHeader}</h3><p>${flavorExplanation}</p>`;
-        const result = await Ability.roll(flavor, chance, categoryMod, speakerName);
+        const rollFlavor = getGame().i18n.format("DIALOG.improveSkillDialog.experienceRoll.flavor", {actorName: actor.name, skillName: skillData.data.skillName});
+        const rollContent = getGame().i18n.format("DIALOG.improveSkillDialog.experienceRoll.content", {mod: categoryMod, skillChance: skillData.data.chance});
+        // const result = await Ability.roll(flavor, chance, categoryMod, speakerName);
 
-        if (result >= ResultEnum.Failure) {
-          // FAILED ability check means increase skill
-          const resultFlavorHeader = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.flavorHeader", {skillName: skillData.data.skillName});
-          const resultFlavorText = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.flavorText");
+        // roll 1d100 and add the category mod
+        const expRoll = new Roll("1d100+" + categoryMod);
+        await expRoll.toMessage({
+          speaker: {alias: speakerName},
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+          flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`
+        });
+
+        // Gain if the modified d100 roll is greater than (but not equal to) the skill chance, or if the roll is greater than or equal to 100
+        if ( expRoll.total !== undefined && (expRoll.total > skillData.data.chance || expRoll.total >= 100)) {
+          // increase skill learnedChance, clear experience check
+          const resultFlavor = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.flavor", {skillName: skillData.data.skillName});
           if (experience3) {
-            const roll = new Roll("3");
-            await roll.evaluate({ async: true});
-            await roll.toMessage({
+            const resultContentChose3 = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.contentChose3");
+            const gainRoll = new Roll("3");
+            await gainRoll.toMessage({
               speaker: { alias: speakerName},
               type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-              flavor: `<h3>${resultFlavorHeader}</h3><p>${resultFlavorText}</p>`
+              flavor: `<h3>${resultFlavor}</h3><p>${resultContentChose3}</p>`
             });
             gain = 3;
           }
           if (experience1d6) {
-            const roll = new Roll("1d6");
-            const result = await roll.evaluate({ async: true});
-            await roll.toMessage({
+            const resultContentChose1d6 = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.contentChose1d6");
+            const gainRoll = new Roll("1d6");
+            await gainRoll.toMessage({
               speaker: { alias: speakerName},
               type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-              flavor: `<h3>${resultFlavorHeader}</h3>`
+              flavor: `<h3>${resultFlavor}</h3><p>${resultContentChose1d6}</p>`
             });
-            gain = Number(result.total) || 0; 
+            gain = Number(gainRoll.total) || 0; 
           }
           ui.notifications?.info(`${actor.name} gained ${gain}% in ${item.name}!`);
         } else {
-          // SUCCEEDED ability check means no skill increase 
+          // no increase, clear experience check 
           gain = 0;
-          const msg = getGame().i18n.format("DIALOG.improveSkillDialog.notifications.didNotGain", {actorName: actor.name, skillName: skillData.data.skillName});
-          ui.notifications?.error(msg);
+          const failedFlavor = getGame().i18n.format("DIALOG.improveSkillDialog.experienceGainFailed.flavor", {skillName: skillData.data.skillName});
+          const failedContent = getGame().i18n.format("DIALOG.improveSkillDialog.experienceGainFailed.content", {actorName: actor.name, skillName: skillData.data.skillName})
+          const failChat = {
+            type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            flavor: failedFlavor,
+            content: failedContent,
+            speaker: {alias: speakerName}
+          };
+          ChatMessage.create(failChat);
         }
       } else {
         const msg = getGame().i18n.format("DIALOG.improveSkillDialog.notifications.noExperience", {actorName: actor.name, skillName: skillData.data.skillName});
@@ -239,27 +252,26 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       }
     }
     if (training2) {
+      const flavor = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavor", {skillName: skillData.data.skillName});
+      const content = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.contentChose2");
       const roll = new Roll("2");
-      const result = await roll.evaluate({ async: true});
-      const flavorHeader = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavorHeader", {skillName: skillData.data.skillName});
-      const flavorText = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavorText");
       await roll.toMessage({
         speaker: { alias: speakerName},
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        flavor: `<h3>${flavorHeader}</h3><p>${flavorText}</p>`
+        flavor: `<h3>${flavor}</h3><p>${content}</p>`
       });
       gain = 2;
     }
     if (training1d6minus1) {
-      const roll = new Roll("1d6-1");
-      const result = await roll.evaluate({ async: true});
-      const flavorHeader = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavorHeader", {skillName: skillData.data.skillName});
-      await roll.toMessage({
+      const flavor = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavor", {skillName: skillData.data.skillName});
+      const content = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.contentChose1d6minus1");
+      const gainRoll = new Roll("1d6-1");
+      await gainRoll.toMessage({
         speaker: { alias: speakerName},
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        flavor: `<h3>${flavorHeader}</h3>`
+        flavor: `<h3>${flavor}</h3><p>${content}</p>`
       });
-      gain = Number(result.total) || 0; 
+      gain = Number(gainRoll.total) || 0; 
     }
     let newLearnedChance: number = Number(skillData.data.learnedChance) + gain;
     await actor.updateEmbeddedDocuments("Item", [
