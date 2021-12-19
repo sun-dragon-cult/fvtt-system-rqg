@@ -1,9 +1,9 @@
 <form>
     <h1>{{localize "DIALOG.improveSkillDialog.improvementTypeQ"}}</h1>
     {{#if skill.data.hasExperience}}
-    <div class="experience">
+    <div class="experience" style="margin-bottom: 10px; padding: 5px; border: 1px black solid;">
         <h2>{{localize "DIALOG.improveSkillDialog.fromExperience"}}</h2>
-        <p>{{localize "DIALOG.improveSkillDialog.experienceExplanation"}}</p>
+        <p>{{localize "DIALOG.improveSkillDialog.experienceExplanation" mod=skill.data.categoryMod chance=skill.data.chance}}</p>
         <label>
             <input type="checkbox" class="improvement-type-checkbox" name="experience3"> {{localize "DIALOG.improveSkillDialog.experiencGainFixed"}}
         </label>
@@ -23,7 +23,7 @@
         <p>{{localize "DIALOG.improveSkillDialog.skillOver75Explanation"}}</p>
     </div>
     {{else}}
-    <div class="training">
+    <div class="training" style="margin-bottom: 10px; padding: 5px; border: 1px black solid;">
         <h2>{{localize "DIALOG.improveSkillDialog.throughTraining"}}</h2>
         <p>{{localize "DIALOG.improveSkillDialog.afterTraining"}}</p>
         <label>

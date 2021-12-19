@@ -203,7 +203,7 @@
       "title": "Skill Improvement for {skillName}",
       "improvementTypeQ": "What type of improvement are you attempting?",
       "fromExperience": "From experience:",
-      "experienceExplanation": "Roll 1d100 and add the skill category mod.  If this FAILS:",
+      "experienceExplanation": "Roll 1d100 and add the skill category mod ({mod}).  If this roll exceeds the value of the skill ({chance}%) or the roll is 100 or more, then gain:",
       "experiencGainFixed": "Gain 3%",
       "experiencGainRandom": "Gain 1d6%",
       "noExperienceCheckTitle": "No Experience Check",
@@ -216,21 +216,26 @@
       "skillOver75Explanation": "You may not train in skills with a value over 75%.",
       "btnAttemptImprovement": "Attempt Improvement",
       "btnCancel": "Cancel",
-      "attemptCard": {
-        "flavorHeader": "{skillName} experience improvement",
-        "flavorExplanation": "Requires FAILURE or FUMBLE to gain."
+      "experienceRoll": {
+        "flavor": "{actorName} makes an experience improvement check for {skillName}",
+        "content": "Roll 1d100 and add the skill category modifier ({mod}) and gain if the modified roll is HIGHER than the skill value ({skillChance}%) or 100."
       },
       "experienceResultCard": {
-        "flavorHeader": "Experience improvement for {skillName}",
-        "flavorText": "Chose fixed gain of 3%."
+        "flavor": "Experience improvement for {skillName} succeeded",
+        "contentChose3": "Chose fixed gain of 3%.",
+        "contentChose1d6": "Chose gain of 1d6%."
       },
       "trainingResultCard": {
-        "flavorHeader": "Training improvement for {skillName}",
-        "flavorText": "Chose fixed gain of 2%."
+        "flavor": "Training improvement for {skillName}",
+        "contentChose2": "Chose fixed gain of 2%.",
+        "contentChose1d6minus1": "Chose gain of 1d6-1%"
+      },
+      "experienceGainFailed": {
+        "flavor": "Experience improvement for {skillName} failed",
+        "content": "{actorName} failed to learn from experience and the experience check has been cleared from {skillName}."
       },
       "notifications": {
-        "didNotGain": "{actorName} did not gain in {skillName}, and the experience check has been removed.",
-        "noExperience": "{actorName} does not have an experience check in {skillName} and it cannot be improved right now."
+        "noExperience": "{actorName} does not have an experience check in {skillName} and cannot gain from experience now."
       }
     }
   }
