@@ -44,6 +44,7 @@ import {
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { Weapon } from "./item-specific/weapon";
 
 interface UiSections {
   health: boolean;
@@ -416,6 +417,54 @@ export class RqgActorSheet extends ActorSheet<
     itemTypes[ItemTypeEnum.HitLocation].sort(
       (a: any, b: any) => b.data.data.dieFrom - a.data.data.dieFrom
     );
+
+    //@ts-ignore
+    itemTypes[ItemTypeEnum.Weapon].forEach(weapon => {
+      assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
+      console.log(weapon);
+      //@ts-ignore
+      // weapon.data.data.usage.forEach(usage => {
+      //   console.log("Usage");
+      //   console.log(usage);
+      //   usage.underMinSTR = true;
+      // }); 
+      let usages = weapon.data.data.usage;
+      let actorStr = this.actor.data.data.characteristics.strength.value;
+      let actorDex = this.actor.data.data.characteristics.dexterity.value;
+      for (const key in usages) {
+        usages[key].underMinSTR = true;
+        console.log("KEY");
+        console.log(key);
+        console.log("Value");
+        console.log(usages[key]);
+        let usage = usages[key];
+        if (actorStr < usage.minStrength) {
+          usage.underMinSTR = true;
+        }
+        if (actorDex < usage.minDexterity) {
+          usage.underMinDEX = true;
+        }
+        if (usage.underMinSTR && usage.underMinDEX) {
+          usage.unusable = true;
+        } else if (usage.underMinSTR) {
+          let deficiency = usage.minStrength - actorStr;
+          let dexover = (actorDex - usage.minDexterity) / 2;
+          if (deficiency > dexover) {
+            usage.unusable = true;
+          } else {
+            usage.useablewarning = true;
+          }
+        } else if (usage.underMinDEX) {
+          let deficiency = usage.minDexterity = actorDex;
+          let strover = (actorStr = usage.minStrength) / 2;
+          if (deficiency > strover) {
+            usage.unusable = true;
+          } else {
+            usage.usablewarning = true;
+          }
+        }
+      }
+    });
 
     return itemTypes;
   }
