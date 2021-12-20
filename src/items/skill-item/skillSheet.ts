@@ -112,7 +112,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     }
   }
 
-  static showImproveSkillDialog(actor: RqgActor, skillItemId: string, speakerName: string): void {
+  static async showImproveSkillDialog(actor: RqgActor, skillItemId: string, speakerName: string): Promise<void> {
     const item = actor.items.get(skillItemId);
     if (!item || item.data.type !== ItemTypeEnum.Skill) {
       const msg = `Couldn't find skill with itemId [${skillItemId}] on actor ${actor.name} to show Improve Skill dialog.`;
@@ -137,17 +137,9 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
 
     const btnImprove = getGame().i18n.format("DIALOG.improveSkillDialog.btnDoImprovement");
     const btnCancel = getGame().i18n.format("DIALOG.improveSkillDialog.btnCancel");
-    var buttons = {};
+    const buttons: any = {};
     
-    //@ts-ignore cancel
-    buttons.cancel = {
-      icon: '<i class="fas fa-times"></i>',
-      label: btnCancel,
-      callback: () => null,
-    }
-
     if (skill.data.hasExperience || skill.data.chance < 75) {
-      //@ts-ignore submit
       buttons.submit = {
         icon: '<i class="fas fa-check"></i>',
         label: btnImprove,
@@ -160,29 +152,30 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
           )
       }
     }
+    
+    buttons.cancel = {
+      icon: '<i class="fas fa-times"></i>',
+      label: btnCancel,
+      callback: () => null,
+    }
 
-    //TODO: Not sure why this wouldn't work with "await"
-    renderTemplate("systems/rqg/items/skill-item/dialogShowImproveSkill.hbs", {skill: skill, chanceToGain: chanceToGain}).then(content => {
-      const title = getGame().i18n.format("DIALOG.improveSkillDialog.title", {skillName: skill.data.skillName});
-      new Dialog(
-        {
-          title: title,
-          content: content,
-          default: "submit",
-          render: () => {
-            $(".improvement-type-checkbox").on('change', function() {
-              // ensure only one checkbox is checked
-              $('.improvement-type-checkbox').not(this).prop('checked', false);
-            });
-          },
-          buttons: buttons,
-        },
-        {
-          classes: ["rqg", "dialog"],
-        }
-      ).render(true);      
-    });
+    const experience1d6Checked = skill.data.hasExperience;
+    const training1d6minus1Checked =  ((!experience1d6Checked) ? true : false);
 
+    const content: string = await renderTemplate("systems/rqg/items/skill-item/dialogShowImproveSkill.hbs", {skill: skill, chanceToGain: chanceToGain, experience1d6Checked: experience1d6Checked, training1d6minus1Checked: training1d6minus1Checked})
+    
+    const title = getGame().i18n.format("DIALOG.improveSkillDialog.title", {skillName: skill.data.skillName});
+    new Dialog(
+      {
+        title: title,
+        content: content,
+        default: "submit",
+        buttons: buttons,
+      },
+      {
+        classes: ["rqg", "dialog"],
+      }
+    ).render(true);      
   }
 
   private static async submitImproveSkillDialog(

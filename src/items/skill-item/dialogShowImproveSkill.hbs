@@ -10,7 +10,8 @@
                 {{localize "DIALOG.improveSkillDialog.experiencGainFixed"}}
             </label>
             <label>
-                <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience1d6">
+                <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience1d6"
+                    {{#if experience1d6Checked}}checked="checked"{{/if}}>
                 {{localize "DIALOG.improveSkillDialog.experiencGainRandom"}}
             </label>
         </div>
@@ -35,7 +36,8 @@
             </label>
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox"
-                    value="training1d6minus1"> {{localize "DIALOG.improveSkillDialog.trainingGainrandom"}}
+                    value="training1d6minus1" {{#if training1d6minus1Checked}}checked="checked"{{/if}}>
+                {{localize "DIALOG.improveSkillDialog.trainingGainrandom"}}
             </label>
         </div>
     </div>

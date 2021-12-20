@@ -201,7 +201,7 @@
   "DIALOG": {
     "improveSkillDialog": {
       "title": "Skill Improvement for {skillName}",
-      "improvementTypeQ": "What type of improvement are you attempting?",
+      "improvementTypeQ": "What type of skill improvement?",
       "fromExperience": ". . . from experience",
       "chanceToGain": "{chanceToGain}% chance to gain:",
       "experiencGainFixed": "Gain 3%",
