@@ -126,11 +126,44 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       item.data.data.hideTraining = true;
     }
 
+    const chance: number = Number(item.data.data.chance) || 0;
+    const categoryMod: number = Number(item.data.data.categoryMod) || 0;
+    var chanceToGain = 0;
+    if (chance > 100) {
+      chanceToGain = categoryMod;
+    } else {
+      chanceToGain = (100 - chance) + categoryMod;
+    }
+
+    const btnImprove = getGame().i18n.format("DIALOG.improveSkillDialog.btnDoImprovement");
+    const btnCancel = getGame().i18n.format("DIALOG.improveSkillDialog.btnCancel");
+    var buttons = {};
+    
+    //@ts-ignore cancel
+    buttons.cancel = {
+      icon: '<i class="fas fa-times"></i>',
+      label: btnCancel,
+      callback: () => null,
+    }
+
+    if (skill.data.hasExperience || skill.data.chance < 75) {
+      //@ts-ignore submit
+      buttons.submit = {
+        icon: '<i class="fas fa-check"></i>',
+        label: btnImprove,
+        callback: async (html: JQuery | HTMLElement) =>
+          await SkillSheet.submitImproveSkillDialog(
+            html as JQuery,
+            actor,
+            item,
+            speakerName
+          )
+      }
+    }
+
     //TODO: Not sure why this wouldn't work with "await"
-    renderTemplate("systems/rqg/items/skill-item/dialogShowImproveSkill.hbs", {skill: skill}).then(content => {
+    renderTemplate("systems/rqg/items/skill-item/dialogShowImproveSkill.hbs", {skill: skill, chanceToGain: chanceToGain}).then(content => {
       const title = getGame().i18n.format("DIALOG.improveSkillDialog.title", {skillName: skill.data.skillName});
-      const btnImprove = getGame().i18n.format("DIALOG.improveSkillDialog.btnAttemptImprovement");
-      const btnCancel = getGame().i18n.format("DIALOG.improveSkillDialog.btnCancel");
       new Dialog(
         {
           title: title,
@@ -142,24 +175,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
               $('.improvement-type-checkbox').not(this).prop('checked', false);
             });
           },
-          buttons: {
-            submit: {
-              icon: '<i class="fas fa-check"></i>',
-              label: btnImprove,
-              callback: async (html: JQuery | HTMLElement) =>
-                await SkillSheet.submitImproveSkillDialog(
-                  html as JQuery,
-                  actor,
-                  item,
-                  speakerName
-                )
-            },
-            cancel: {
-              icon: '<i class="fas fa-times"></i>',
-              label: btnCancel,
-              callback: () => null,
-            },
-          },
+          buttons: buttons,
         },
         {
           classes: ["rqg", "dialog"],
@@ -180,19 +196,10 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
-    console.log(data);
-    const experience3: boolean = !!data.experience3;
-    const experience1d6: boolean = !!data.experience1d6;
-    const training2: boolean = !!data.training2;
-    const training1d6minus1: boolean = !!data.training1d6minus1;
-
-    //TODO: data validation to ensure they didn't figure out some way to check more than one?
-
+    const gaintype: string = data.experiencegaintype;
     var gain: number = 0;
 
-    console.log(item);
-
-    if (experience3 || experience1d6) {
+    if (gaintype === "experience3" || gaintype === "experience1d6") {
       if (skillData.data.hasExperience) {
         var chance: number = Number(item.data.data.chance) || 0;
         var categoryMod: number = Number(item.data.data.categoryMod) || 0;
@@ -212,7 +219,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
         if ( expRoll.total !== undefined && (expRoll.total > skillData.data.chance || expRoll.total >= 100)) {
           // increase skill learnedChance, clear experience check
           const resultFlavor = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.flavor", {skillName: skillData.data.skillName});
-          if (experience3) {
+          if (gaintype === "experience3") {
             const resultContentChose3 = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.contentChose3");
             const gainRoll = new Roll("3");
             await gainRoll.toMessage({
@@ -222,7 +229,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
             });
             gain = 3;
           }
-          if (experience1d6) {
+          if (gaintype === "experience1d6") {
             const resultContentChose1d6 = getGame().i18n.format("DIALOG.improveSkillDialog.experienceResultCard.contentChose1d6");
             const gainRoll = new Roll("1d6");
             await gainRoll.toMessage({
@@ -251,7 +258,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
         ui.notifications?.error(msg);
       }
     }
-    if (training2) {
+    if (gaintype === "training2") {
       const flavor = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavor", {skillName: skillData.data.skillName});
       const content = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.contentChose2");
       const roll = new Roll("2");
@@ -262,7 +269,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       });
       gain = 2;
     }
-    if (training1d6minus1) {
+    if (gaintype === "training1d6minus1") {
       const flavor = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.flavor", {skillName: skillData.data.skillName});
       const content = getGame().i18n.format("DIALOG.improveSkillDialog.trainingResultCard.contentChose1d6minus1");
       const gainRoll = new Roll("1d6-1");
