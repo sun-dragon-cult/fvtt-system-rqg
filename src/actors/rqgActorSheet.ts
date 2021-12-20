@@ -449,8 +449,13 @@ export class RqgActorSheet extends ActorSheet<
             // STR can compensate for being under DEX min on 2 for 1 basis
             let deficiency = usage.minDexterity - actorDex;
             let strover = Math.floor((actorStr - usage.minStrength) / 2);
-            if (deficiency > strover) {
+            if (usage.minStrength === null) {
               usage.unusable = true;
+            } else if (deficiency > strover) {
+              usage.unusable = true;
+            } else {
+              // Character has enough STR to compensate for being below DEX min
+              usage.unusable = false;
             }
           }          
         }

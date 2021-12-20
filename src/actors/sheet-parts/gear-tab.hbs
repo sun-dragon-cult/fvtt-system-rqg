@@ -163,12 +163,9 @@
             <div data-item-id="{{id}}" class="gear contextmenu nowrap" style="display: block;">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                <div {{#if unusable}}style="background-color: red"{{/if}} {{#if usablewarning}}style="background-color: orange"{{/if}}>
+                <div {{#if unusable}}class="warning" title="{{localize "ACTORSHEET.Combat.StrDexMinsNotMetTip"}}"{{/if}}>
                   {{skillchance skillId @root.data._id @root.tokenId}}%&nbsp; {{skillname skillId @root.data._id @root.tokenId}}
                 </div>
-                  {{!-- <span {{#if unusable}}style="background-color: red"{{/if}} {{#if usablewarning}}style="background-color: orange"{{/if}}>
-                  {{skillchance skillId @root.data._id @root.tokenId}}%&nbsp; {{skillname skillId @root.data._id @root.tokenId}}</span><br> --}}
-                  
                 {{/if}}
               {{/each}}
             </div>
@@ -186,8 +183,8 @@
             <div data-item-id="{{id}}" class="gear contextmenu" style="display: block;"><span class="text-right">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                  <div {{#if underMinSTR}}style="background-color: pink"{{/if}}></span>
-                    {{minStrength}}
+                  <div {{#if underMinSTR}}class="warning" title="{{localize "ACTORSHEET.Combat.StrMinNotMetTip"}}"{{/if}}></span>
+                    {{#if minStrength}}{{minStrength}}{{else}}—{{/if}}
                   </div>
                 {{/if}}
               {{/each}}
@@ -197,8 +194,8 @@
               <span class="text-right">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                  <div {{#if underMinDEX}}style="background-color: pink"{{/if}}>
-                    {{minDexterity}}
+                  <div {{#if underMinDEX}}class="warning" title="{{localize "ACTORSHEET.Combat.DexMinNotMetTip"}}"{{/if}}>
+                    {{#if minDexterity}}{{minDexterity}}{{else}}—{{/if}}
                   </div>                                    
                 {{/if}}
               {{/each}}

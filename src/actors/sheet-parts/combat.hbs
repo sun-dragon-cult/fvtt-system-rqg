@@ -36,11 +36,18 @@
           <span class="flex-column text-right">
             {{#each data.data.usage}}
               {{#if skillId}}
-                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"  {{#if unusable}}style="background-color: red" title="Do not meet STR and DEX requirements.  Use at half chance%."{{/if}} {{#if usablewarning}}style="background-color: orange" title="Only meets one of the STR or DEX requirements, but the other characteristic has enough exess to allow full usage."{{/if}}
-                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">{{localize
-                  (concat "RQG.usage." @key)}}
+                <div  class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{#if unusable}}warning{{/if}}"  
+                      {{#if unusable}}title="{{localize "ACTORSHEET.Combat.StrDexMinsNotMetTip"}}"{{/if}}
+                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">
+                  {{localize (concat "RQG.usage." @key)}}
                   <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span>
-                </span>
+                </div> 
+                {{!-- <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"  
+                    {{#if unusable}}class="warning" title="{{localize "ACTORSHEET.Combat.StrDexMinsNotMetTip"}}"{{/if}}
+                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">
+                      {{localize (concat "RQG.usage." @key)}}
+                  <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span>
+                </span> --}}
               {{/if}}
             {{/each}}
           </span>
