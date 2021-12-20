@@ -80,6 +80,7 @@ export const characteristicMenuOptions = (
           actor.name ?? getGameUser().name ?? ""
         );
         await actor.update(updateData);
+        await initializeCurrentDerivedAttributes(actor);
       }
     },
   },
@@ -136,6 +137,14 @@ export async function initializeAllCharacteristics(
     mergeObject(updateData, update);
   }
   await actor.update(updateData);
+  await initializeCurrentDerivedAttributes(actor);
+}
+
+/** Sets actor's current hitPoints.value to the hitPoints.max */
+async function initializeCurrentDerivedAttributes(actor: RqgActor) {
+  const hpUpdate = {"data.attributes.hitPoints.value": actor.data.data.attributes.hitPoints.max,
+                    "data.attributes.magicPoints.value": actor.data.data.attributes.magicPoints.max}
+  await actor.update(hpUpdate);
 }
 
 function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: Characteristic } {
@@ -166,8 +175,8 @@ async function confirmInitializeDialog(
     const content = !!characteristic
       ? `Do you want to overwrite the current value of ${getGame().i18n.localize(
           "RQG.characteristic." + characteristic
-        )}?`
-      : `Do you want to overwrite the current value of all characteristics?`;
+        )}? This may also set current Hit Points to the new maximum Hit Points and set current Magic Points to the new maximum Magic Points.`
+      : `Do you want to overwrite the current value of all characteristics? This may also set current Hit Points to the new maximum Hit Points and set current Magic Points to the new maximum Magic Points.`;
     const dialog = new Dialog({
       title: title,
       content: content,
