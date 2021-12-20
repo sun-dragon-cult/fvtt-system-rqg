@@ -421,7 +421,6 @@ export class RqgActorSheet extends ActorSheet<
     //@ts-ignore
     itemTypes[ItemTypeEnum.Weapon].forEach(weapon => {
       assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
-      console.log(weapon);
 
       let usages = weapon.data.data.usage;
       let actorStr = this.actor.data.data.characteristics.strength.value;
@@ -429,10 +428,6 @@ export class RqgActorSheet extends ActorSheet<
       for (const key in usages) {
         let usage = usages[key];
         if (usage.skillId) {
-          console.log("KEY");
-          console.log(key);
-          console.log("Value");
-          console.log(usages[key]);
           usage.unusable = false;
           usage.underMinSTR = false;
           usage.underMinDEX = false;
