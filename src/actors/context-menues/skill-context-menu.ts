@@ -1,3 +1,4 @@
+import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { ItemCard } from "../../chat/itemCard";
 import { RqgActor } from "../rqgActor";
@@ -12,6 +13,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { SkillSheet } from "../../items/skill-item/skillSheet";
+import { ImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 
 export const skillMenuOptions = (
   actor: RqgActor,
@@ -92,7 +94,7 @@ export const skillMenuOptions = (
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Skill);
       const speakerName = token?.name ?? actor.data.token.name ?? "";
-      SkillSheet.showImproveSkillDialog(actor, itemId, speakerName);
+      ImproveAbilityDialog.showImproveAbilityDialog(actor, itemId, item, speakerName);
     },
   },
   {

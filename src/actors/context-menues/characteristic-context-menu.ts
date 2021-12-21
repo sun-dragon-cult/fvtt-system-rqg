@@ -3,6 +3,7 @@ import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import { getDomDataset, getGame, getGameUser, requireValue, RqgError } from "../../system/util";
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import { ImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
@@ -59,10 +60,19 @@ export const characteristicMenuOptions = (
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el: JQuery): boolean => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      return !!(characteristicName === "power" && characteristic?.hasExperience);
+      // You can train STR, CON, SIZ, DEX, POW, and CHA, and you can increase POW via experience
+      // You cannot train INT or increase it via experience
+      return !!(characteristicName !== "intelligence");
     },
     callback: (el: JQuery) => {
-      ui.notifications?.info("TODO Improve");
+      console.log(el);
+      const charName = getDomDataset(el, "characteristic");
+      requireValue(charName, "Couldn't find dataset for characteristic");
+
+      const characteristic = (actor.data.data.characteristics as any)[charName];
+      characteristic.name = charName;
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      ImproveAbilityDialog.showImproveAbilityDialog(actor, "characteristic", characteristic, speakerName);
     },
   },
   {

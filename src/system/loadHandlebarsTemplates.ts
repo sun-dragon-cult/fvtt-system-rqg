@@ -46,7 +46,7 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/chat/weaponCard.hbs",
 
     // Dialogs
-    "systems/rqg/items/skill-item/dialogShowImproveSkill.hbs"
+    "systems/rqg/dialog/improveAbilityDialog.hbs"
   ];
 
   return loadTemplates(templatePaths);

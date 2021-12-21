@@ -10,6 +10,7 @@ import {
 } from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 
 export const runeMenuOptions = (
   actor: RqgActor,
@@ -57,8 +58,12 @@ export const runeMenuOptions = (
       assertItemType(item?.data.type, ItemTypeEnum.Rune);
       return !!item.data.data.hasExperience;
     },
-    callback: () => {
-      ui.notifications?.info("TODO Improve");
+    callback: (el: JQuery) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      assertItemType(item?.data.type, ItemTypeEnum.Rune);
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      ImproveAbilityDialog.showImproveAbilityDialog(actor, itemId, item, speakerName);
     },
   },
   {

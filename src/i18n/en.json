@@ -199,15 +199,15 @@
     "RansomDetails": "Details"
   },
   "DIALOG": {
-    "improveSkillDialog": {
-      "title": "Skill Improvement for {skillName}",
-      "improvementTypeQ": "What type of skill improvement?",
+    "improveAbilityDialog": {
+      "title": "Improvement for {typeLocName} \"{name}\"",
+      "header": "Improving {name}",
       "fromExperience": ". . . from experience",
       "chanceToGain": "{chanceToGain}% chance to gain:",
       "experiencGainFixed": "Gain 3%",
       "experiencGainRandom": "Gain 1d6%",
       "noExperienceCheckTitle": "No Experience Check",
-      "noExperienceCheckExplanation": "This character does not have an experience check in this skill and may not improve from Experience.",
+      "noExperienceCheckExplanation": "This character does not have an experience check in this {typeLocName} and may not improve from Experience.",
       "throughTraining": ". . . through training",
       "afterTraining": "After training:",
       "trainingGainFixed": "Gain 2%",
