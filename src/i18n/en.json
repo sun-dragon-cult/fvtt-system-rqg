@@ -198,6 +198,12 @@
     "Ransom": "Ransom",
     "RansomDetails": "Details"
   },
+  "ACTORSHEET": {
+    "Combat": {
+      "StrDexMinsNotMetTip": "Character does not meet STR and/or DEX minimums for this weapon.  Use at half skill chance.",
+      "StrMinNotMetTip": "Character does not meet STR minimum for this weapon. Use at half skill chance.",
+      "DexMinNotMetTip": "Character does not meet DEX minimum for this weapon. STR over STR minimum can make up for this at two points of STR for one point of DEX, or use at half skill chance."
+  },
   "DIALOG": {
     "improveSkillDialog": {
       "title": "Skill Improvement for {skillName}",
