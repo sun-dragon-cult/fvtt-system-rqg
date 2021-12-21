@@ -44,6 +44,7 @@ import {
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { Weapon } from "./item-specific/weapon";
 
 interface UiSections {
   health: boolean;
@@ -416,6 +417,45 @@ export class RqgActorSheet extends ActorSheet<
     itemTypes[ItemTypeEnum.HitLocation].sort(
       (a: any, b: any) => b.data.data.dieFrom - a.data.data.dieFrom
     );
+
+    //@ts-ignore
+    itemTypes[ItemTypeEnum.Weapon].forEach(weapon => {
+      assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
+
+      let usages = weapon.data.data.usage;
+      let actorStr = this.actor.data.data.characteristics.strength.value;
+      let actorDex = this.actor.data.data.characteristics.dexterity.value;
+      for (const key in usages) {
+        let usage = usages[key];
+        if (usage.skillId) {
+          usage.unusable = false;
+          usage.underMinSTR = false;
+          usage.underMinDEX = false;
+          if (actorStr < usage.minStrength) {
+            usage.underMinSTR = true;
+          }
+          if (actorDex < usage.minDexterity) {
+            usage.underMinDEX = true;
+          }
+          if (usage.underMinSTR) {
+            usage.unusable = true;
+          } 
+          if (usage.underMinDEX) {
+            // STR can compensate for being under DEX min on 2 for 1 basis
+            let deficiency = usage.minDexterity - actorDex;
+            let strover = Math.floor((actorStr - usage.minStrength) / 2);
+            if (usage.minStrength === null) {
+              usage.unusable = true;
+            } else if (deficiency > strover) {
+              usage.unusable = true;
+            } else {
+              // Character has enough STR to compensate for being below DEX min
+              usage.unusable = false;
+            }
+          }          
+        }
+      }
+    });
 
     return itemTypes;
   }
