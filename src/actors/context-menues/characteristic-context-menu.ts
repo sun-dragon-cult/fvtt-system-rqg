@@ -60,9 +60,11 @@ export const characteristicMenuOptions = (
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
     condition: (el: JQuery): boolean => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      // You can train STR, CON, SIZ, DEX, POW, and CHA, and you can increase POW via experience
+      // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
       // You cannot train INT or increase it via experience
-      return !!(characteristicName !== "intelligence");
+      
+      const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
+      return !!(trainable.includes(characteristicName));
     },
     callback: (el: JQuery) => {
       console.log(el);
@@ -72,7 +74,7 @@ export const characteristicMenuOptions = (
       const characteristic = (actor.data.data.characteristics as any)[charName];
       characteristic.name = charName;
       const speakerName = token?.name ?? actor.data.token.name ?? "";
-      ImproveAbilityDialog.showImproveAbilityDialog(actor, "characteristic", characteristic, speakerName);
+      ImproveAbilityDialog.showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
     },
   },
   {

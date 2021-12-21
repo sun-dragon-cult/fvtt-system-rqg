@@ -1,6 +1,8 @@
 <form>
     <h1>
+        {{#if adapter.img}}
         <img class="item" src="{{adapter.img}}" title="{{adapter.name}}" style="padding-right: 10px;" />
+        {{/if}}
         {{localize "DIALOG.improveAbilityDialog.header" name=adapter.name}}
     </h1>
     <div style="display: flex;">
@@ -10,33 +12,49 @@
             <p>{{localize "DIALOG.improveAbilityDialog.chanceToGain" chanceToGain=adapter.chanceToGain}}</p>
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience3">
-                {{localize "DIALOG.improveAbilityDialog.experiencGainFixed"}}
+                {{#if forChar}}
+                {{localize "DIALOG.improveAbilityDialog.gainchar" gain=adapter.experienceGainFixed}}
+                {{else}}
+                {{localize "DIALOG.improveAbilityDialog.gain" gain=adapter.experienceGainFixed}}
+                {{/if}}
             </label>
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience1d6"
                     {{#if adapter.showExperience}}checked="checked"{{/if}}>
-                {{localize "DIALOG.improveAbilityDialog.experiencGainRandom"}}
+                {{#if forChar}}
+                {{localize "DIALOG.improveAbilityDialog.gainchar" gain=adapter.experienceGainRandom}}
+                {{else}}
+                {{localize "DIALOG.improveAbilityDialog.gain" gain=adapter.experienceGainRandom}}
+                {{/if}}
             </label>
         </div>
         {{else}}
+        {{#unless adapter.noExperienceGain}}
         <div class="experience" style="margin-bottom: 10px; padding: 5px; flex: 1;">
             <h2>{{localize "DIALOG.improveAbilityDialog.noExperienceCheckTitle"}}</h2>
             <p>{{localize "DIALOG.improveAbilityDialog.noExperienceCheckExplanation" typeLocName=adapter.typeLocName}}</p>
         </div>
+        {{/unless}}
         {{/if}}
         {{#if adapter.showTraining}}
         
         <div class="training" style="margin-bottom: 10px; padding: 5px; flex: 1;">
             <h2>{{localize "DIALOG.improveAbilityDialog.throughTraining" }}</h2>
             <p>{{localize "DIALOG.improveAbilityDialog.afterTraining"}}</p>
+            {{#unless adapter.forChar}}
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="training2">
-                {{localize "DIALOG.improveAbilityDialog.trainingGainFixed"}}
+                {{localize "DIALOG.improveAbilityDialog.gain" gain=adapter.trainingGainFixed}}
             </label>
+            {{/unless}}
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox"
                     value="training1d6minus1" {{#unless adapter.showExperience}}checked="checked"{{/unless}}>
-                {{localize "DIALOG.improveAbilityDialog.trainingGainrandom"}}
+                {{#if forChar}}
+                {{localize "DIALOG.improveAbilityDialog.gainchar" gain=adapter.trainingGainRandom}}
+                {{else}}
+                {{localize "DIALOG.improveAbilityDialog.gain" gain=adapter.trainingGainRandom}}
+                {{/if}}
             </label>
         </div>
         {{else}}

@@ -21,6 +21,15 @@
       "power": "POW",
       "charisma": "CHA"
     },
+    "characteristicfull": {
+      "strength": "Strength",
+      "constitution": "Constitution",
+      "size": "Size",
+      "dexterity": "Dexterity",
+      "intelligence": "Intelligence",
+      "power": "Power",
+      "charisma": "Charisma"
+    },
     "ResultEnum": {
       "0": "Hyper Critical",
       "1": "Special Critical",
@@ -201,6 +210,7 @@
   "DIALOG": {
     "improveAbilityDialog": {
       "title": "Improvement for {typeLocName} \"{name}\"",
+      "titleChar": "Improvement for Characteristic \"{name}\"",
       "header": "Improving {name}",
       "fromExperience": ". . . from experience",
       "chanceToGain": "{chanceToGain}% chance to gain:",
@@ -210,8 +220,8 @@
       "noExperienceCheckExplanation": "This character does not have an experience check in this {typeLocName} and may not improve from Experience.",
       "throughTraining": ". . . through training",
       "afterTraining": "After training:",
-      "trainingGainFixed": "Gain 2%",
-      "trainingGainrandom": "Gain 1d6-1%",
+      "gain": "Gain {gain}%",
+      "gainchar": "Gain {gain}",
       "skillOver75Title": "Skill Over 75%",
       "skillOver75Explanation": "You may not train in skills with a value over 75%.",
       "btnDoImprovement": "Do Improvement",
