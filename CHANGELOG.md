@@ -1,3 +1,22 @@
+# [1.12.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.11.0...v1.12.0) (2021-12-21)
+
+
+### Bug Fixes
+
+* can't select projectile on weapon used id instead of _id that has been deprecated in foundry9 ([d27b85b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d27b85b))
+* make character sheet wider to make combat table visible by default also some other minor css fixes ([8ddb4fe](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8ddb4fe))
+* MP storage calc ([66c9ef1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/66c9ef1))
+
+
+### Features
+
+* a small start at using css variables for styling ([1fba82d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1fba82d))
+* calculate and show Base SR (SIZ + DEX SR) also some refactoring for when calculating SR ([e83ff28](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e83ff28))
+* include character defining form runes in the header rune line ([b19b90a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b19b90a))
+
+
+
+
 # [1.11.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.10.1...v1.11.0) (2021-12-09)
 
 
