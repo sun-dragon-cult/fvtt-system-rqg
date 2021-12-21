@@ -11,6 +11,7 @@ import {
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { SkillSheet } from "../../items/skill-item/skillSheet";
 
 export const skillMenuOptions = (
   actor: RqgActor,
@@ -84,10 +85,14 @@ export const skillMenuOptions = (
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = itemId && actor.items.get(itemId);
-      return !!(item && item.data.type === ItemTypeEnum.Skill && item.data.data.hasExperience);
+      return !!(item && item.data.type === ItemTypeEnum.Skill);
     },
-    callback: () => {
-      ui.notifications?.info("TODO Improve");
+    callback: async (el: JQuery) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      assertItemType(item?.data.type, ItemTypeEnum.Skill);
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      SkillSheet.showImproveSkillDialog(actor, itemId, speakerName);
     },
   },
   {
