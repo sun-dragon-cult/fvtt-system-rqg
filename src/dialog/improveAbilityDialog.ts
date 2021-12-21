@@ -123,36 +123,45 @@ export class ImproveAbilityDialog {
     console.log(char);
 
     const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
+    const researchable = ["strength", "constitution", "dexterity", "charisma"];
 
-    const speciesMax = 21; //TODO: get this from the max value of the dice expression in formula
-    const speciesMin = 3; //TODO: get this from the min value of the dice expression in formula
+    const rollmax = Roll.create(char.formula);
+    const speciesRollableMax =  (await rollmax.evaluate({maximize: true, async: true})).total || 0;
+    const rollmin = Roll.create(char.formula);
+    const speciesRollableMin  =  (await rollmin.evaluate({minimize: true, async: true})).total || 0;
+    const speciesMax = speciesRollableMax + speciesRollableMin;
+
+    console.log(`speciesRollableMax: ${speciesRollableMax}, speciesRollableMin: ${speciesRollableMin}, speciesMax: ${speciesMax}`);
 
     const adapter: any = {
       showExperience: char.hasExperience,
       noExperienceGain: !!(char.name !== "power"),
       showTraining: !!trainable.includes(char.name),
+      showResearch: !!researchable.includes(char.name),
       chance: char.value || 0,
-      chanceToGain: 100 - Number(char.value) || 0,
+      chanceToGain: (speciesMax - Number(char.value)) * 5 || 0,
       experienceGainFixed: 1,
       experienceGainRandom: "1d3-1",
       trainingGainFixed: false,
       trainingGainRandom: "1d3-1",
+      researchGainRandom: "1d3-1",
       name: getGame().i18n.localize("RQG.characteristicfull." + char.name),
       typeLocName: itemId,
       forChar: true,
     };
-
+        
     //TODO: in theory we should be limiting DEX to DEX x 1.5 or the species max, whichever is lower but we don't have a way to store starting DEX
     if (char.value >= speciesMax) {
       adapter.showExperience = false;
       adapter.showTraining = false;
+      adapter.showResearch = false;
       adapter.speciesMax = true;
     }
 
     const btnImprove = getGame().i18n.format("DIALOG.improveAbilityDialog.btnDoImprovement");
     const btnCancel = getGame().i18n.format("DIALOG.improveAbilityDialog.btnCancel");
     const buttons: any = {};
-    if (adapter.showExperience || adapter.showTraining) {
+    if (adapter.showExperience || adapter.showTraining || adapter.showResearch) {
       // There's at least one thing to do so show the Submit button
       buttons.submit = {
         icon: '<i class="fas fa-check"></i>',

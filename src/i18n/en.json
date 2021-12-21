@@ -229,8 +229,11 @@
       "afterTraining": "After training:",
       "gain": "Gain {gain}%",
       "gainchar": "Gain {gain}",
+      "throughResearch": ". . . through research",
       "skillOver75Title": "Skill Over 75%",
       "skillOver75Explanation": "You may not train in skills with a value over 75%.",
+      "speciesMaxTitle": "At species maximum for {name}",
+      "speciesMaxExplanation": "You are at or above the species maximum for {name} and may not gain any more.",
       "btnDoImprovement": "Do Improvement",
       "btnCancel": "Cancel",
       "experienceRoll": {
