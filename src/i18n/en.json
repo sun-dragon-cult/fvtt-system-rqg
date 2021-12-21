@@ -237,25 +237,26 @@
       "btnDoImprovement": "Do Improvement",
       "btnCancel": "Cancel",
       "experienceRoll": {
-        "flavor": "{actorName} makes an experience improvement check for {skillName}",
-        "content": "Roll 1d100 and add the skill category modifier ({mod}) and gain if the modified roll is HIGHER than the skill value ({skillChance}%) or 100."
+        "flavor": "{actorName} makes an experience improvement check for {typeLocName} \"{name}\"",
+        "contentSkill": "Roll 1d100 and add the skill category modifier ({mod}) and gain if the modified roll is HIGHER than the {typeLocName} \"{name}\" value {skillChance}% or 100.",
+        "contentOther": "Roll 1d100 and gain if the roll is HIGHER than the {typeLocName} \"{name}\" value of {chance}%"
       },
       "experienceResultCard": {
-        "flavor": "Experience improvement for {skillName} succeeded",
-        "contentChose3": "Chose fixed gain of 3%.",
-        "contentChose1d6": "Chose gain of 1d6%."
+        "flavor": "Experience improvement for {typeLocName} \"{name}\" succeeded",
+        "contentChoseFixed": "Chose fixed gain of 3%.",
+        "contentChoseRandom": "Chose gain of 1d6%."
       },
       "trainingResultCard": {
-        "flavor": "Training improvement for {skillName}",
-        "contentChose2": "Chose fixed gain of 2%.",
-        "contentChose1d6minus1": "Chose gain of 1d6-1%"
+        "flavor": "Training improvement for {typeLocName} \"{name}\"",
+        "contentChoseFixed": "Chose fixed gain of 2%.",
+        "contentChoseRandom": "Chose gain of 1d6-1%"
       },
       "experienceGainFailed": {
-        "flavor": "Experience improvement for {skillName} failed",
-        "content": "{actorName} failed to learn from experience and the experience check has been cleared from {skillName}."
+        "flavor": "Experience improvement for {typeLocName} \"{name}\" failed",
+        "content": "{actorName} failed to learn from experience and the experience check has been cleared from {typeLocName} \"{name}\"."
       },
       "notifications": {
-        "noExperience": "{actorName} does not have an experience check in {skillName} and cannot gain from experience now."
+        "noExperience": "{actorName} does not have an experience check in {typeLocName} \"{name}\" and cannot gain from experience now."
       }
     }
   }
