@@ -64,24 +64,28 @@
       <div class="flex-1">
         <article>
           <h2>Currency</h2>
-          <div class="grid gear">
+          <div class="grid currency">
             <div class="headings"></div>
             <div class="head1"></div>
             <div class="head2">Name</div>
             <div class="head3"><span class="text-right">Qty</span></div>
             <div class="head4"><span class="text-right">Price</span></div>
-            <div class="head5"><span class="text-right">ENC</span></div>
-            <div class="head6"></div>
-            <div class="head7">Location</div>
+            <div class="head5"><span class="text-right">Ext</span></div>
+            <div class="head6"><span class="text-right">ENC</span></div>
+            <div class="head7"></div>
+            <div class="head8">Location</div>
             {{#each ownedItems.gear}}
             {{#if (eq data.data.physicalItemType "currency")}}
             <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{id}}" class="gear contextmenu">{{name}}</div>
             <div data-item-id="{{id}}" class="gear contextmenu">
-              <input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}">
+              <span class="text-right"><input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}"></span>
             </div>
             <div data-item-id="{{id}}" class="gear contextmenu">
               <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
+            </div>
+            <div data-item-id="{{id}}" class="gear contextmenu">
+              <span class="text-right">{{#if data.data.price.estimated}}{{multiply data.data.quantity data.data.price.estimated}}&thinsp;L{{/if}}</span>
             </div>
             <div data-item-id="{{id}}" class="gear contextmenu">
               <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
