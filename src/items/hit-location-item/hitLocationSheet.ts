@@ -49,6 +49,10 @@ export class HitLocationSheet extends RqgItemSheet<
     const itemData = this.document.data.toObject(false);
     assertItemType(itemData.type, ItemTypeEnum.HitLocation);
 
+    if (this.item.img === "icons/svg/item-bag.svg") {
+      this.item.update({ img: "/systems/rqg/assets/images/items/hit-location.svg" }, {});
+    }
+
     return {
       cssClass: this.isEditable ? "editable" : "locked",
       editable: this.isEditable,

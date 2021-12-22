@@ -47,6 +47,10 @@ export class RuneMagicSheet extends RqgItemSheet<
     const itemData = this.document.data.toObject(false);
     assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
 
+    if (this.item.img === "icons/svg/item-bag.svg") {
+      this.item.update({ img: "/systems/rqg/assets/images/items/rune-magic.svg" }, {});
+    }
+
     const runeMagicData = itemData.data;
     runeMagicData.runes = Array.isArray(runeMagicData.runes)
       ? runeMagicData.runes
