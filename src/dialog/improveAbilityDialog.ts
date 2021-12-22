@@ -87,7 +87,7 @@ export class ImproveAbilityDialog {
       label: btnCancel,
       callback: () => null,
     };
-
+    
     const content: string = await renderTemplate("systems/rqg/dialog/improveAbilityDialog.hbs", {
       adapter: adapter,
     });
@@ -95,8 +95,6 @@ export class ImproveAbilityDialog {
       name: adapter.name,
       typeLocName: adapter.typeLocName,
     });
-
-    console.log(adapter);
 
     new Dialog(
       {
@@ -118,8 +116,6 @@ export class ImproveAbilityDialog {
     speakerName: string,
     adapter: any
   ): Promise<void> {
-    console.log("submitImproveAbilityDialog");
-
     if (adapter.isPassion) {
       assertItemType(item?.data.type, ItemTypeEnum.Passion);
     } else if (adapter.isRune) {
@@ -139,12 +135,11 @@ export class ImproveAbilityDialog {
     // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
     const gaintype: string = data.experiencegaintype;
-    var gain: number = 0;
+    let gain: number = 0;
 
     if (gaintype === "experience-gain-fixed" || gaintype === "experience-gain-random") {
       if (abilityData.hasExperience) {
-        var chance: number = Number(item.data.data.chance) || 0;
-        var categoryMod: number = adapter.categoryMod || 0;
+        let categoryMod: number = adapter.categoryMod || 0;
         const rollFlavor = getGame().i18n.format(
           "DIALOG.improveAbilityDialog.experienceRoll.flavor",
           { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
@@ -153,7 +148,12 @@ export class ImproveAbilityDialog {
         if (adapter.isSkill) {
           rollContent = getGame().i18n.format(
             "DIALOG.improveAbilityDialog.experienceRoll.contentSkill",
-            { mod: categoryMod, skillChance: abilityData.chance, name: adapter.name, typeLocName: adapter.typeLocName }
+            {
+              mod: categoryMod,
+              skillChance: abilityData.chance,
+              name: adapter.name,
+              typeLocName: adapter.typeLocName,
+            }
           );
         } else {
           rollContent = getGame().i18n.format(
@@ -163,7 +163,11 @@ export class ImproveAbilityDialog {
         }
 
         // roll 1d100 and add the category mod
-        const expRoll = new Roll("1d100+" + categoryMod);
+        let diceExpr = "1d100";
+        if (adapter.isSkill) {
+          diceExpr += "+" + categoryMod;
+        }
+        const expRoll = new Roll(diceExpr);
         await expRoll.toMessage({
           speaker: { alias: speakerName },
           type: CONST.CHAT_MESSAGE_TYPES.ROLL,
@@ -175,37 +179,37 @@ export class ImproveAbilityDialog {
           expRoll.total !== undefined &&
           (expRoll.total > Number(abilityData.chance) || expRoll.total >= 100)
         ) {
-          // increase skill learnedChance, clear experience check
+          // increase ability learnedChance, clear experience check
           const resultFlavor = getGame().i18n.format(
             "DIALOG.improveAbilityDialog.experienceResultCard.flavor",
-            { name: adapter.name,
-              typeLocName: adapter.typeLocName, }
+            { name: adapter.name, typeLocName: adapter.typeLocName }
           );
           if (gaintype === "experience-gain-fixed") {
-            const resultContentChose3 = getGame().i18n.format(
-              "DIALOG.improveAbilityDialog.experienceResultCard.contentChoseFixed"
+            const resultContentChoseFixed = getGame().i18n.format(
+              "DIALOG.improveAbilityDialog.experienceResultCard.contentChoseFixed",
+              { gain: adapter.experienceGainFixed + "%" }
             );
-            const gainRoll = new Roll("3");
+            const gainRoll = new Roll(String(adapter.experienceGainFixed));
             await gainRoll.toMessage({
               speaker: { alias: speakerName },
               type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-              flavor: `<h3>${resultFlavor}</h3><p>${resultContentChose3}</p>`,
+              flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseFixed}</p>`,
             });
-            gain = 3;
+            gain = adapter.experienceGainFixed;
           }
           if (gaintype === "experience-gain-random") {
-            const resultContentChose1d6 = getGame().i18n.format(
-              "DIALOG.improveAbilityDialog.experienceResultCard.contentChoseRandom"
+            const resultContentChoseRandom = getGame().i18n.format(
+              "DIALOG.improveAbilityDialog.experienceResultCard.contentChoseRandom",
+              { gain: adapter.experienceGainRandom + "%" }
             );
-            const gainRoll = new Roll("1d6");
+            const gainRoll = new Roll(adapter.experienceGainRandom);
             await gainRoll.toMessage({
               speaker: { alias: speakerName },
               type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-              flavor: `<h3>${resultFlavor}</h3><p>${resultContentChose1d6}</p>`,
+              flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseRandom}</p>`,
             });
             gain = Number(gainRoll.total) || 0;
           }
-          ui.notifications?.info(`${actor.name} gained ${gain}% in ${item.name}!`);
         } else {
           // no increase, clear experience check
           gain = 0;
@@ -246,15 +250,16 @@ export class ImproveAbilityDialog {
         }
       );
       const content = getGame().i18n.format(
-        "DIALOG.improveAbilityDialog.trainingResultCard.contentChoseFixed"
+        "DIALOG.improveAbilityDialog.trainingResultCard.contentChoseFixed",
+        { gain: adapter.trainingGainFixed + "%" }
       );
-      const roll = new Roll("2");
+      const roll = new Roll(String(adapter.trainingGainFixed));
       await roll.toMessage({
         speaker: { alias: speakerName },
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         flavor: `<h3>${flavor}</h3><p>${content}</p>`,
       });
-      gain = 2;
+      gain = adapter.trainingGainFixed;
     }
     if (gaintype === "training-gain-random") {
       const flavor = getGame().i18n.format(
@@ -265,9 +270,10 @@ export class ImproveAbilityDialog {
         }
       );
       const content = getGame().i18n.format(
-        "DIALOG.improveAbilityDialog.trainingResultCard.contentChoseRandom"
+        "DIALOG.improveAbilityDialog.trainingResultCard.contentChoseRandom",
+        { gain: adapter.trainingGainRandom + "%" }
       );
-      const gainRoll = new Roll("1d6-1");
+      const gainRoll = new Roll(adapter.trainingGainRandom);
       await gainRoll.toMessage({
         speaker: { alias: speakerName },
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
@@ -287,12 +293,12 @@ export class ImproveAbilityDialog {
         { _id: item.id, data: { hasExperience: false, chance: newChance } },
       ]);
       if (adapter.isRune) {
-        //TODO: Run this through rune.adjustOpposingRuneChance???
-        //@ts-ignore opposingRune
-        const opposingRune = actor.items.filter(r => r.type === 'rune' && r.name === item.data.data.opposingRune);
-        console.log("Opposing Rune:");
-        console.log(opposingRune);
-        if (opposingRune  && opposingRune.length === 1) {
+        assertItemType(item?.data.type, ItemTypeEnum.Rune);
+        const opposingRuneName = item.data.data.opposingRune;
+        const opposingRune = actor.items.filter(
+          (r) => r.type === "rune" && r.name === opposingRuneName
+        );
+        if (opposingRune && opposingRune.length === 1) {
           const opposingRuneChance = 100 - newChance;
           await actor.updateEmbeddedDocuments("Item", [
             { _id: opposingRune[0].id, data: { hasExperience: false, chance: opposingRuneChance } },
@@ -309,10 +315,6 @@ export class ImproveAbilityDialog {
     char: any,
     speakerName: string
   ): Promise<void> {
-    console.log("showImproveCharacteristicDialog");
-    console.log(itemId);
-    console.log(char);
-
     const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
     const researchable = ["strength", "constitution", "dexterity", "charisma"];
 
@@ -321,10 +323,6 @@ export class ImproveAbilityDialog {
     const rollmin = Roll.create(char.formula);
     const speciesRollableMin = (await rollmin.evaluate({ minimize: true, async: true })).total || 0;
     const speciesMax = speciesRollableMax + speciesRollableMin;
-
-    console.log(
-      `speciesRollableMax: ${speciesRollableMax}, speciesRollableMin: ${speciesRollableMin}, speciesMax: ${speciesMax}`
-    );
 
     const adapter: any = {
       showExperience: char.hasExperience,
@@ -341,6 +339,7 @@ export class ImproveAbilityDialog {
       name: getGame().i18n.localize("RQG.characteristicfull." + char.name),
       typeLocName: itemId,
       forChar: true,
+      speciesMax: speciesMax,
     };
 
     //TODO: in theory we should be limiting DEX to DEX x 1.5 or the species max, whichever is lower but we don't have a way to store starting DEX
@@ -348,7 +347,7 @@ export class ImproveAbilityDialog {
       adapter.showExperience = false;
       adapter.showTraining = false;
       adapter.showResearch = false;
-      adapter.speciesMax = true;
+      adapter.atSpeciesMax = true;
     }
 
     const btnImprove = getGame().i18n.format("DIALOG.improveAbilityDialog.btnDoImprovement");
@@ -364,7 +363,8 @@ export class ImproveAbilityDialog {
             html as JQuery,
             actor,
             char,
-            speakerName
+            speakerName,
+            adapter
           ),
       };
     }
@@ -382,8 +382,6 @@ export class ImproveAbilityDialog {
       typeLocName: adapter.typeLocName,
     });
 
-    console.log(adapter);
-
     new Dialog(
       {
         title: title,
@@ -400,9 +398,197 @@ export class ImproveAbilityDialog {
   private static async submitImproveCharacteristicDialog(
     html: JQuery,
     actor: RqgActor,
-    item: RqgItem,
-    speakerName: string
+    char: any,
+    speakerName: string,
+    adapter: any
   ): Promise<void> {
-    console.log("submitImproveAbilityDialog");
+    const formData = new FormData(html.find("form")[0]);
+    // @ts-ignore entries
+    const data = Object.fromEntries(formData.entries());
+    const gaintype: string = data.experiencegaintype;
+    let gain: number = 0;
+
+    if (gaintype === "experience-gain-fixed" || gaintype === "experience-gain-random") {
+      if (char.hasExperience) {
+        const rollFlavor = getGame().i18n.format(
+          "DIALOG.improveAbilityDialog.experienceRoll.flavor",
+          { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
+        );
+        let rollContent = getGame().i18n.format(
+          "DIALOG.improveAbilityDialog.experienceRoll.contentChar",
+          {
+            chance: adapter.chance,
+            chanceToGain: adapter.chanceToGain,
+            speciesMax: adapter.speciesMax,
+            name: adapter.name,
+            typeLocName: adapter.typeLocName,
+          }
+        );
+
+        const expRoll = new Roll("1d100");
+        await expRoll.toMessage({
+          speaker: { alias: speakerName },
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+          flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`,
+        });
+
+        if (expRoll.total !== undefined && expRoll.total <= adapter.chanceToGain) {
+          // Increase characteristic, clear experience check
+
+          const resultFlavor = getGame().i18n.format(
+            "DIALOG.improveAbilityDialog.experienceResultCard.flavor",
+            { name: adapter.name, typeLocName: adapter.typeLocName }
+          );
+          if (gaintype === "experience-gain-fixed") {
+            const resultContentChoseFixed = getGame().i18n.format(
+              "DIALOG.improveAbilityDialog.experienceResultCard.contentChoseFixed",
+              { gain: adapter.experienceGainFixed }
+            );
+            const gainRoll = new Roll(String(adapter.experienceGainFixed));
+            await gainRoll.toMessage({
+              speaker: { alias: speakerName },
+              type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+              flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseFixed}</p>`,
+            });
+            gain = adapter.experienceGainFixed;
+          }
+          if (gaintype === "experience-gain-random") {
+            const resultContentChoseRandom = getGame().i18n.format(
+              "DIALOG.improveAbilityDialog.experienceResultCard.contentChoseRandom",
+              { gain: adapter.experienceGainRandom }
+            );
+            const gainRoll = new Roll(adapter.experienceGainRandom);
+            await gainRoll.toMessage({
+              speaker: { alias: speakerName },
+              type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+              flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseRandom}</p>`,
+            });
+            gain = Number(gainRoll.total) || 0;
+          }
+        } else {
+          // no increase, clear experience check
+          gain = 0;
+          const failedFlavor = getGame().i18n.format(
+            "DIALOG.improveAbilityDialog.experienceGainFailed.flavor",
+            { name: adapter.name, typeLocName: adapter.typeLocName }
+          );
+          const failedContent = getGame().i18n.format(
+            "DIALOG.improveAbilityDialog.experienceGainFailed.content",
+            { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
+          );
+          const failChat = {
+            type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            flavor: failedFlavor,
+            content: failedContent,
+            speaker: { alias: speakerName },
+          };
+          ChatMessage.create(failChat);
+        }
+      } else {
+        const msg = getGame().i18n.format(
+          "DIALOG.improveAbilityDialog.notifications.noExperience",
+          {
+            actorName: actor.name,
+            name: adapter.name,
+            typeLocName: adapter.typeLocName,
+          }
+        );
+        ui.notifications?.error(msg);
+      }
+    }
+    if (gaintype === "training-gain-random") {
+      const flavor = getGame().i18n.format(
+        "DIALOG.improveAbilityDialog.trainingResultCard.flavor",
+        {
+          name: adapter.name,
+          typeLocName: adapter.typeLocName,
+        }
+      );
+      const content = getGame().i18n.format(
+        "DIALOG.improveAbilityDialog.trainingResultCard.contentChoseRandom",
+        { gain: adapter.trainingGainRandom }
+      );
+      const gainRoll = new Roll(adapter.trainingGainRandom);
+      await gainRoll.toMessage({
+        speaker: { alias: speakerName },
+        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+        flavor: `<h3>${flavor}</h3><p>${content}</p>`,
+      });
+      gain = Number(gainRoll.total) || 0;
+    }
+    if (gaintype === "research-gain-random") {
+      const rollFlavor = getGame().i18n.format("DIALOG.improveAbilityDialog.researchRoll.flavor", {
+        actorName: actor.name,
+        name: adapter.name,
+        typeLocName: adapter.typeLocName,
+      });
+      let rollContent = getGame().i18n.format(
+        "DIALOG.improveAbilityDialog.researchRoll.contentChar",
+        {
+          chance: adapter.chance,
+          chanceToGain: adapter.chanceToGain,
+          speciesMax: adapter.speciesMax,
+          name: adapter.name,
+          typeLocName: adapter.typeLocName,
+        }
+      );
+
+      const expRoll = new Roll("1d100");
+      await expRoll.toMessage({
+        speaker: { alias: speakerName },
+        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+        flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`,
+      });
+
+      if (expRoll.total !== undefined && expRoll.total <= adapter.chanceToGain) {
+        const flavor = getGame().i18n.format(
+          "DIALOG.improveAbilityDialog.researchResultCard.flavor",
+          {
+            name: adapter.name,
+            typeLocName: adapter.typeLocName,
+          }
+        );
+        const content = getGame().i18n.format(
+          "DIALOG.improveAbilityDialog.researchResultCard.contentChoseRandom",
+          { gain: adapter.trainingGainRandom }
+        );
+        const gainRoll = new Roll(adapter.researchGainRandom);
+        await gainRoll.toMessage({
+          speaker: { alias: speakerName },
+          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+          flavor: `<h3>${flavor}</h3><p>${content}</p>`,
+        });
+        gain = Number(gainRoll.total) || 0;
+      } else {
+        // no increase, clear experience check
+        gain = 0;
+        const failedFlavor = getGame().i18n.format(
+          "DIALOG.improveAbilityDialog.researchGainFailed.flavor",
+          { name: adapter.name, typeLocName: adapter.typeLocName }
+        );
+        const failedContent = getGame().i18n.format(
+          "DIALOG.improveAbilityDialog.researchGainFailed.content",
+          { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
+        );
+        const failChat = {
+          type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+          flavor: failedFlavor,
+          content: failedContent,
+          speaker: { alias: speakerName },
+        };
+        ChatMessage.create(failChat);
+      }
+    }
+
+    //update
+    const charUpdate: any = {
+      data: { characteristics: { [char.name]: { value: char.value + gain } } },
+    };
+
+    if (char.hasExperience) {
+      charUpdate.data.characteristics[char.name].hasExperience = false;
+    }
+
+    await actor.update(charUpdate);
   }
 }
