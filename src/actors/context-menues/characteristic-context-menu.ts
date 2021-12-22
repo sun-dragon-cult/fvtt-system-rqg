@@ -3,7 +3,7 @@ import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import { getDomDataset, getGame, getGameUser, requireValue, RqgError } from "../../system/util";
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import { ImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
+import { showImproveCharacteristicDialog } from "../../dialog/improveCharacteristicDialog";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
@@ -74,7 +74,7 @@ export const characteristicMenuOptions = (
       const characteristic = (actor.data.data.characteristics as any)[charName];
       characteristic.name = charName;
       const speakerName = token?.name ?? actor.data.token.name ?? "";
-      ImproveAbilityDialog.showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
+      showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
     },
   },
   {

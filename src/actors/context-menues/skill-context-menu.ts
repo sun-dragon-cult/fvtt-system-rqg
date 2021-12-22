@@ -12,8 +12,7 @@ import {
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { SkillSheet } from "../../items/skill-item/skillSheet";
-import { ImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
+import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 
 export const skillMenuOptions = (
   actor: RqgActor,
@@ -94,7 +93,7 @@ export const skillMenuOptions = (
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Skill);
       const speakerName = token?.name ?? actor.data.token.name ?? "";
-      ImproveAbilityDialog.showImproveAbilityDialog(actor, itemId, item, speakerName);
+      showImproveAbilityDialog(actor, itemId, item, speakerName);
     },
   },
   {
