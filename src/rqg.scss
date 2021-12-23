@@ -1,4 +1,4 @@
-@use 'variables';
+@use "variables";
 
 //:root {
 //  --main-color: #854906;
@@ -272,6 +272,20 @@
       margin-right: -0.4rem;
     }
 
+    .footer {
+      grid-column: 1/-1;
+      grid-row: auto;
+
+      background: var(--rqg-color-main-bg);
+      mix-blend-mode: color-burn;
+      text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
+      box-shadow: var(--rqg-box-shadow-grid-header);
+      border: 3px double grey;
+      border-radius: 40px;
+      margin-left: -0.4rem;
+      margin-right: -0.4rem;
+    }
+
     .head1 {
       grid-row: 1;
       grid-column: 1/2;
@@ -332,6 +346,66 @@
       grid-column: 1 / span 4;
     }
 
+    .foot1 {
+      grid-row: auto;
+      grid-column: 1/2;
+    }
+
+    .foot2 {
+      grid-row: auto;
+      grid-column: 2/3;
+    }
+
+    .foot3 {
+      grid-row: auto;
+      grid-column: 3/4;
+    }
+
+    .foot4 {
+      grid-row: auto;
+      grid-column: 4/5;
+    }
+
+    .foot5 {
+      grid-row: auto;
+      grid-column: 5/6;
+    }
+
+    .foot6 {
+      grid-row: auto;
+      grid-column: 6/7;
+    }
+
+    .foot7 {
+      grid-row: auto;
+      grid-column: 7/8;
+    }
+
+    .foot8 {
+      grid-row: auto;
+      grid-column: 8/9;
+    }
+
+    .foot9 {
+      grid-row: auto;
+      grid-column: 9/10;
+    }
+
+    .foot10 {
+      grid-row: auto;
+      grid-column: 10/11;
+    }
+
+    .foot11 {
+      grid-row: auto;
+      grid-column: 11/12;
+    }
+
+    .foot1-4 {
+      grid-row: auto;
+      grid-column: 1 / span 4;
+    }
+
     &.spirit-combat {
       grid-template-columns: [col-start] 30px auto [col-end];
 
@@ -385,7 +459,7 @@
         background: var(--rqg-table-alternate-background);
       }
     }
-    
+
     &.gear {
       grid-template-columns: [col-start] 30px auto repeat(5, max-content) [col-end];
 
@@ -397,21 +471,6 @@
       > *:nth-child(14n + 20),
       > *:nth-child(14n + 21),
       > *:nth-child(14n + 22) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    &.currency {
-      grid-template-columns: [col-start] 30px auto repeat(6, max-content) [col-end];
-
-      // Alternating row background for 8 columns
-      > *:nth-child(16n + 18),
-      > *:nth-child(16n + 19),
-      > *:nth-child(16n + 20),
-      > *:nth-child(16n + 21),
-      > *:nth-child(16n + 22),
-      > *:nth-child(16n + 23),
-      > *:nth-child(16n + 24) {
         background: var(--rqg-table-alternate-background);
       }
     }

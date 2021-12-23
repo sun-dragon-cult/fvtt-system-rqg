@@ -64,31 +64,28 @@
       <div class="flex-1">
         <article>
           <h2>Currency</h2>
-          <div class="grid currency">
+          <div class="grid gear">
             <div class="headings"></div>
             <div class="head1"></div>
             <div class="head2">Name</div>
             <div class="head3"><span class="text-right">Qty</span></div>
-            <div class="head4"><span class="text-right">Price</span></div>
-            <div class="head5"><span class="text-right">Ext</span></div>
-            <div class="head6"><span class="text-right">ENC</span></div>
-            <div class="head7"></div>
-            <div class="head8">Location</div>
+            {{!-- <div class="head4"><span class="text-right">Price</span></div> --}}
+            <div class="head4"><span class="text-right">Ext</span></div>
+            <div class="head5"><span class="text-right">ENC</span></div>
+            <div class="head6"></div>
+            <div class="head7">Location</div>
             {{#each ownedItems.gear}}
             {{#if (eq data.data.physicalItemType "currency")}}
             <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
-            <div data-item-id="{{id}}" class="gear contextmenu">{{name}}</div>
+            <div data-item-id="{{id}}" class="gear contextmenu" title="{{data.data.price.conversion}}">{{name}}</div>
             <div data-item-id="{{id}}" class="gear contextmenu">
               <span class="text-right"><input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}"></span>
             </div>
             <div data-item-id="{{id}}" class="gear contextmenu">
-              <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
+              <span class="text-right">{{#if data.data.price.estimated}}{{multiplyfixed2 data.data.quantity data.data.price.estimated}}&thinsp;L{{/if}}</span>
             </div>
             <div data-item-id="{{id}}" class="gear contextmenu">
-              <span class="text-right">{{#if data.data.price.estimated}}{{multiply data.data.quantity data.data.price.estimated}}&thinsp;L{{/if}}</span>
-            </div>
-            <div data-item-id="{{id}}" class="gear contextmenu">
-              <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
+              <span class="text-right">{{multiplyfixed2 data.data.quantity data.data.encumbrance}}</span>
             </div>
             <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu">
               <img class="equipped-status text-center" title="{{data.data.equippedStatus}}"
@@ -100,6 +97,14 @@
             </div>
             {{/if}}
             {{/each}}
+            <div class="footer"></div>
+            <div class="foot1"></div>
+            <div class="foot2">Total</div>
+            <div class="foot3"><span class="text-right">{{currencyTotals.quantity}}</span></div>
+            <div class="foot4"><span class="text-right">{{numberFormat currencyTotals.price.estimated decimals=2}}&thinsp;L</span></div>
+            <div class="foot5"><span class="text-right">{{numberFormat currencyTotals.encumbrance decimals=2}}</span></div>
+            <div class="foot6"></div>
+            <div class="foot7" style="background-color: transparent;"></div>
           </div>
         </article>
 

@@ -31,7 +31,7 @@
       "6": "Fumble"
     },
     "ArmorType": {
-      "Hood":  "Hood",
+      "Hood": "Hood",
       "BroadBrimmedHat": "Broad-brimmed Hat",
       "Cap": "Cap",
       "CompositeHelm": "Composite Helm",
@@ -48,7 +48,7 @@
       "PantsTrews": "Pants",
       "Greaves": "Greaves"
     },
-    "ArmorMaterial" : {
+    "ArmorMaterial": {
       "Leather": "Leather",
       "HeavyLeather": "Heavy Leather",
       "StuddedLeather": "Studded Leather",
@@ -72,9 +72,9 @@
       "chiefPriest": "Chief Priest",
       "highPriest": "High Priest"
     },
-    "EquippedStatus":{
-      "notCarried":  "Not Carried",
-      "carried":  "Carried",
+    "EquippedStatus": {
+      "notCarried": "Not Carried",
+      "carried": "Carried",
       "equipped": "Equipped"
     },
     "SkillCategory": {
@@ -203,6 +203,11 @@
       "StrDexMinsNotMetTip": "Character does not meet STR and/or DEX minimums for this weapon.  Use at half skill chance.",
       "StrMinNotMetTip": "Character does not meet STR minimum for this weapon. Use at half skill chance.",
       "DexMinNotMetTip": "Character does not meet DEX minimum for this weapon. STR over STR minimum can make up for this at two points of STR for one point of DEX, or use at half skill chance."
+    },
+    "Gear": {
+      "CurrencyConversionTipOver1": "One {name} is worth {value} Lunars.",
+      "CurrencyConversionTipLunar": "Lunars are the standard basis of currency.",
+      "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s."
     }
   },
   "DIALOG": {
