@@ -9,7 +9,11 @@ import { WeaponSheet } from "./weapon-item/weaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
-import { RqgError } from "../system/util";
+import { getGame, RqgError } from "../system/util";
+import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import {
+  ItemDataSource,
+} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export class RqgItem extends Item {
   public static init() {
@@ -94,6 +98,101 @@ export class RqgItem extends Item {
       }
       return true;
     });
+  }
+
+  protected _onCreate(
+    data: ItemDataSource,
+    options: DocumentModificationOptions,
+    userId: string
+  ): void;
+  protected _onCreate(
+    data: RqgItem["data"]["_source"],
+    options: DocumentModificationOptions,
+    userId: string
+  ): void {
+
+    if (data.type === ItemTypeEnum.Armor) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconArmor")),
+        "data.namePrefix": data.name,
+      });
+    }
+
+    if (data.type === ItemTypeEnum.Cult) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconCult")),
+      });
+    }
+
+    if (data.type === ItemTypeEnum.Gear) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconGear")),
+      });
+    }
+
+    if (data.type === ItemTypeEnum.HitLocation) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconHitLocation")),
+      });
+    }
+    if (data.type === ItemTypeEnum.Passion) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      //TODO: Enhancement: regex to see if the user typed something like "Loyalty (clan)" and put the parts fo that in the right places.
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconPassion")),
+        "data.subject": data.name,
+      });
+    }
+
+    if (data.type === ItemTypeEnum.Rune) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconRune")),
+      });
+    }
+
+    if (data.type === ItemTypeEnum.RuneMagic) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconRuneMagicSpell")),
+      });
+    }
+    
+    if (data.type === ItemTypeEnum.Skill) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconSkill")),
+      });
+    }
+
+    if (data.type === ItemTypeEnum.SpiritMagic) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconSpiritMagicSpell")),
+      });
+    }
+
+    if (data.type === ItemTypeEnum.Weapon) {
+      //@ts-ignore
+      const item = getGame().items?.get(data._id);
+      item?.update({
+        img: String(getGame().settings.get("rqg", "defaultIconWeapon")),
+      });
+    }
+    return super._onCreate(data, options, userId);
   }
 
   static async updateDocuments(updates: any[], context: any): Promise<any> {

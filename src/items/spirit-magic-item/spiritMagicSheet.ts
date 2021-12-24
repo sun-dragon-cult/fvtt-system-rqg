@@ -39,9 +39,9 @@ export class SpiritMagicSheet extends RqgItemSheet<
     const itemData = this.document.data.toObject(false);
     assertItemType(itemData.type, ItemTypeEnum.SpiritMagic);
 
-    if (this.item.img === "icons/svg/item-bag.svg") {
-      this.item.update({ img: "/systems/rqg/assets/images/items/spirit-magic.svg" }, {});
-    }
+    // if (this.item.img === "icons/svg/item-bag.svg") {
+    //   this.item.update({ img: "/systems/rqg/assets/images/items/spirit-magic.svg" }, {});
+    // }
 
     const spiritMagicData = itemData.data;
     return {
