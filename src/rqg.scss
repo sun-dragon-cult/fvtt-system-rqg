@@ -401,6 +401,14 @@
       }
     }
 
+    .usagecontainer {
+      display: block;
+    }
+
+    .usagecell {
+      padding-top: 4px;
+    }
+
     &.weapon {
       grid-template-columns: [col-start] 30px auto auto repeat(8, max-content) [col-end];
 
