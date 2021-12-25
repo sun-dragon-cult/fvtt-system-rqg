@@ -412,6 +412,24 @@ export class RqgActorSheet extends ActorSheet<
       itemTypes[item.type].push(item);
     });
 
+    const currency: any = [];
+    this.actor.items.forEach((item) => {
+      if (item.type === ItemTypeEnum.Gear) {
+        //TODO: Assert that this is Gear or something else that has physicalItemType??
+        //@ts-ignore physicalItemType
+        if (item.data.data.physicalItemType === "currency") {
+          currency.push(item);
+        }
+      }
+    });
+
+    currency.sort(
+      (a: any, b: any) =>
+        (Number(a.data.data.price.estimated) < Number(b.data.data.price.estimated) ? 1 : -1) - 1
+    );
+
+    itemTypes.currency = currency;
+
     // Separate skills into skill categories {agility: [RqgItem], communication: [RqgItem], ... }
     const skills: any = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {

@@ -74,8 +74,7 @@
             <div class="head5"><span class="text-right">ENC</span></div>
             <div class="head6"></div>
             <div class="head7">Location</div>
-            {{#each ownedItems.gear}}
-            {{#if (eq data.data.physicalItemType "currency")}}
+            {{#each ownedItems.currency}}
             <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{id}}" class="gear contextmenu" title="{{data.data.price.conversion}}">{{name}}</div>
             <div data-item-id="{{id}}" class="gear contextmenu">
@@ -84,7 +83,7 @@
             <div data-item-id="{{id}}" class="gear contextmenu">
               <span class="text-right">{{#if data.data.price.estimated}}{{multiplyfixed2 data.data.quantity data.data.price.estimated}}&thinsp;L{{/if}}</span>
             </div>
-            <div data-item-id="{{id}}" class="gear contextmenu">
+            <div data-item-id="{{id}}" class="gear contextmenu pad-left">
               <span class="text-right">{{multiplyfixed2 data.data.quantity data.data.encumbrance}}</span>
             </div>
             <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu">
@@ -95,16 +94,15 @@
               <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
                      size="10">
             </div>
-            {{/if}}
             {{/each}}
-            <div class="footer"></div>
             <div class="foot1"></div>
             <div class="foot2">Total</div>
-            <div class="foot3"><span class="text-right">{{currencyTotals.quantity}}</span></div>
+            <div class="foot3"><span class="text-right"></span></div>
             <div class="foot4"><span class="text-right">{{numberFormat currencyTotals.price.estimated decimals=2}}&thinsp;L</span></div>
             <div class="foot5"><span class="text-right">{{numberFormat currencyTotals.encumbrance decimals=2}}</span></div>
             <div class="foot6"></div>
             <div class="foot7" style="background-color: transparent;"></div>
+            <div class="footer"></div>
           </div>
         </article>
 

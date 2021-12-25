@@ -49,6 +49,10 @@
   letter-spacing: 1.5px;
 }
 
+.pad-left {
+  padding-left: 10px !important;
+}
+
 .text-left {
   text-align: left;
 }
@@ -275,7 +279,7 @@
     .footer {
       grid-column: 1/-1;
       grid-row: auto;
-
+      margin-top: -1.3rem;
       background: var(--rqg-color-main-bg);
       mix-blend-mode: color-burn;
       text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
