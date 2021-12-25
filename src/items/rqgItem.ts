@@ -101,11 +101,6 @@ export class RqgItem extends Item {
   }
 
   protected _onCreate(
-    data: ItemDataSource,
-    options: DocumentModificationOptions,
-    userId: string
-  ): void;
-  protected _onCreate(
     data: RqgItem["data"]["_source"],
     options: DocumentModificationOptions,
     userId: string
