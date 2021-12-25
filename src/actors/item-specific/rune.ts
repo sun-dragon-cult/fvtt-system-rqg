@@ -2,7 +2,6 @@ import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgError } from "../../system/util";
 
 export class Rune extends AbstractEmbeddedItem {
   // public static init() {
@@ -39,8 +38,8 @@ export class Rune extends AbstractEmbeddedItem {
   ) {
     if (!opposingRune || opposingRune.data.type !== ItemTypeEnum.Rune) {
       const msg = "Opposing Rune doesn't exist";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, item, actor);
+      ui.notifications?.warn(msg);
+      return;
     }
     const opposingRuneChance = opposingRune.data.data.chance;
     if (newChance + opposingRuneChance !== 100) {
