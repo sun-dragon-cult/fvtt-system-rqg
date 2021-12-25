@@ -160,41 +160,41 @@
             <div data-item-id="{{id}}" class="gear contextmenu">{{name}}
               {{#if (eq data.data.physicalItemType "consumable")}} ({{data.data.quantity}}){{/if}}
             </div>
-            <div data-item-id="{{id}}" class="gear contextmenu nowrap" style="display: block;">
+            <div data-item-id="{{id}}" class="gear usagecontainer contextmenu nowrap">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                <div {{#if unusable}}class="warning" title="{{localize "ACTORSHEET.Combat.StrDexMinsNotMetTip"}}"{{/if}}>
+                <div class="usagecell {{#if unusable}} warning{{/if}}" {{#if unusable}}title="{{localize "ACTORSHEET.Combat.StrDexMinsNotMetTip"}}"{{/if}}>
                   {{skillchance skillId @root.data._id @root.tokenId}}%&nbsp; {{skillname skillId @root.data._id @root.tokenId}}
                 </div>
                 {{/if}}
               {{/each}}
             </div>
-            <div data-item-id="{{id}}" class="gear contextmenu" style="display: block;">
+            <div data-item-id="{{id}}" class="gear usagecontainer contextmenu">
               <span class="text-center">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                <div>
+                <div class="usagecell">
                   {{damage}}
                 </div>
                 {{/if}}
               {{/each}}
               </span>
             </div>
-            <div data-item-id="{{id}}" class="gear contextmenu" style="display: block;"><span class="text-right">
+            <div data-item-id="{{id}}" class="gear usagecontainer contextmenu"><span class="text-right">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                  <div {{#if underMinSTR}}class="warning" title="{{localize "ACTORSHEET.Combat.StrMinNotMetTip"}}"{{/if}}></span>
+                  <div class="usagecell {{#if underMinSTR}} warning{{/if}}" {{#if underMinSTR}}title="{{localize "ACTORSHEET.Combat.StrMinNotMetTip"}}"{{/if}}></span>
                     {{#if minStrength}}{{minStrength}}{{else}}—{{/if}}
                   </div>
                 {{/if}}
               {{/each}}
             </span>
             </div>
-            <div data-item-id="{{id}}" class="gear contextmenu" style="display: block;">
+            <div data-item-id="{{id}}" class="gear usagecontainer contextmenu">
               <span class="text-right">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                  <div {{#if underMinDEX}}class="warning" title="{{localize "ACTORSHEET.Combat.DexMinNotMetTip"}}"{{/if}}>
+                  <div class="usagecell {{#if underMinDEX}} warning{{/if}}" {{#if underMinDEX}}title="{{localize "ACTORSHEET.Combat.DexMinNotMetTip"}}"{{/if}}>
                     {{#if minDexterity}}{{minDexterity}}{{else}}—{{/if}}
                   </div>                                    
                 {{/if}}
