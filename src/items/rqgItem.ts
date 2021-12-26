@@ -106,11 +106,13 @@ export class RqgItem extends Item {
     userId: string
   ): void {
 
+    const defaultIconSettings: any = getGame().settings.get("rqg", "defaultIconSettings");
+
     if (data.type === ItemTypeEnum.Armor) {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconArmor")),
+        img: defaultIconSettings[ItemTypeEnum.Armor],
         "data.namePrefix": data.name,
       });
     }
@@ -119,7 +121,7 @@ export class RqgItem extends Item {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconCult")),
+        img: defaultIconSettings[ItemTypeEnum.Cult],
       });
     }
 
@@ -127,7 +129,7 @@ export class RqgItem extends Item {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconGear")),
+        img: defaultIconSettings[ItemTypeEnum.Gear],
       });
     }
 
@@ -135,7 +137,7 @@ export class RqgItem extends Item {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconHitLocation")),
+        img: defaultIconSettings[ItemTypeEnum.HitLocation],
       });
     }
     if (data.type === ItemTypeEnum.Passion) {
@@ -143,7 +145,7 @@ export class RqgItem extends Item {
       const item = getGame().items?.get(data._id);
       //TODO: Enhancement: regex to see if the user typed something like "Loyalty (clan)" and put the parts fo that in the right places.
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconPassion")),
+        img: defaultIconSettings[ItemTypeEnum.Passion],
         "data.subject": data.name,
       });
     }
@@ -152,7 +154,7 @@ export class RqgItem extends Item {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconRune")),
+        img: defaultIconSettings[ItemTypeEnum.Rune],
       });
     }
 
@@ -160,7 +162,7 @@ export class RqgItem extends Item {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconRuneMagicSpell")),
+        img: defaultIconSettings[ItemTypeEnum.RuneMagic],
       });
     }
     
@@ -168,7 +170,7 @@ export class RqgItem extends Item {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconSkill")),
+        img: defaultIconSettings[ItemTypeEnum.Skill],
       });
     }
 
@@ -176,7 +178,7 @@ export class RqgItem extends Item {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconSpiritMagicSpell")),
+        img: defaultIconSettings[ItemTypeEnum.SpiritMagic],
       });
     }
 
@@ -184,7 +186,7 @@ export class RqgItem extends Item {
       //@ts-ignore
       const item = getGame().items?.get(data._id);
       item?.update({
-        img: String(getGame().settings.get("rqg", "defaultIconWeapon")),
+        img: defaultIconSettings[ItemTypeEnum.Weapon],
       });
     }
     return super._onCreate(data, options, userId);
