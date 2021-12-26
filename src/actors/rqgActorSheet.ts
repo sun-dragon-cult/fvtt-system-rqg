@@ -44,7 +44,6 @@ import {
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { Weapon } from "./item-specific/weapon";
 
 interface UiSections {
   health: boolean;
@@ -419,7 +418,7 @@ export class RqgActorSheet extends ActorSheet<
     );
 
     //@ts-ignore
-    itemTypes[ItemTypeEnum.Weapon].forEach(weapon => {
+    itemTypes[ItemTypeEnum.Weapon].forEach((weapon) => {
       assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
 
       let usages = weapon.data.data.usage;
@@ -439,7 +438,7 @@ export class RqgActorSheet extends ActorSheet<
           }
           if (usage.underMinSTR) {
             usage.unusable = true;
-          } 
+          }
           if (usage.underMinDEX) {
             // STR can compensate for being under DEX min on 2 for 1 basis
             let deficiency = usage.minDexterity - actorDex;
@@ -452,7 +451,7 @@ export class RqgActorSheet extends ActorSheet<
               // Character has enough STR to compensate for being below DEX min
               usage.unusable = false;
             }
-          }          
+          }
         }
       }
     });
@@ -863,7 +862,7 @@ export class RqgActorSheet extends ActorSheet<
     this.form?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-      const speakerName = this.token?.name || this.actor.data.token.name;
+      const speakerName = (this.token?.name || this.actor.data.token.name) ?? "";
       el.addEventListener("click", () =>
         HitLocationSheet.showAddWoundDialog(this.actor, itemId, speakerName)
       );

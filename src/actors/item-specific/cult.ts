@@ -41,9 +41,7 @@ export class Cult extends AbstractEmbeddedItem {
       }
       const allRunesIndex = getAllRunesIndex();
       const newRuneIds = newRuneNames.map((newRune) => {
-        // @ts-ignore TODO Pick "type" only?
-        const newRuneIndex = allRunesIndex.find((r) => r.name === newRune);
-        // const newRuneIndex = allRunesIndex.getName(newRune);
+        const newRuneIndex = allRunesIndex.getName(newRune);
         if (newRuneIndex == null) {
           const msg = `Couldn't find cult rune ${newRune} among allRunesIndex`;
           ui.notifications?.error(msg);
@@ -54,7 +52,7 @@ export class Cult extends AbstractEmbeddedItem {
       });
       Promise.all(newRuneIds.map((id: string) => runePack.getDocument(id))).then(
         (newRuneEntities) => {
-          newRuneEntities.map(async (rune) => {
+          newRuneEntities.map(async (rune: StoredDocument<any>) => {
             if (rune == null || rune.data.type !== ItemTypeEnum.Rune) {
               const msg = "Couldn't find rune in all runes compendium";
               ui.notifications?.error(msg);
