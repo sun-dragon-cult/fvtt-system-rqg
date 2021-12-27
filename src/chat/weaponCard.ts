@@ -172,6 +172,8 @@ export class WeaponCard extends ChatMessage {
             ? actor.items.get(flags.weaponItemData.data.projectileId)?.data
             : flags.weaponItemData; // Thrown (or melee)
 
+        let originalAmmoQty: number = 0;    
+
         // Decrease quantity of linked projectile if shooting
         if (
           projectileItemData?.type === ItemTypeEnum.Weapon &&
@@ -180,6 +182,7 @@ export class WeaponCard extends ChatMessage {
           flags.usage === "missile" &&
           !["parry", "special"].includes(damageType ?? "")
         ) {
+          originalAmmoQty = projectileItemData.data.quantity;
           const updateData: DeepPartial<ItemDataSource> = {
             _id: projectileItemData._id,
             // TODO Update chatcard data as well !!!!! ***************
@@ -199,8 +202,12 @@ export class WeaponCard extends ChatMessage {
           projectileItemData.data.quantity != null &&
           projectileItemData.data.quantity <= 0
         ) {
-          ui.notifications?.warn("Out of ammo!");
-          return false;
+          if (originalAmmoQty > 0) {
+            ui.notifications?.warn(`You just used your last ${projectileItemData.name}!`);
+          } else {
+            ui.notifications?.warn(`You don't have any ${projectileItemData.name} to ${combatManeuver?.name}!`);
+            return false;
+          }
         }
 
         if (!chatMessage) {
