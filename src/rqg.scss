@@ -350,66 +350,6 @@
       grid-column: 1 / span 4;
     }
 
-    .foot1 {
-      grid-row: auto;
-      grid-column: 1/2;
-    }
-
-    .foot2 {
-      grid-row: auto;
-      grid-column: 2/3;
-    }
-
-    .foot3 {
-      grid-row: auto;
-      grid-column: 3/4;
-    }
-
-    .foot4 {
-      grid-row: auto;
-      grid-column: 4/5;
-    }
-
-    .foot5 {
-      grid-row: auto;
-      grid-column: 5/6;
-    }
-
-    .foot6 {
-      grid-row: auto;
-      grid-column: 6/7;
-    }
-
-    .foot7 {
-      grid-row: auto;
-      grid-column: 7/8;
-    }
-
-    .foot8 {
-      grid-row: auto;
-      grid-column: 8/9;
-    }
-
-    .foot9 {
-      grid-row: auto;
-      grid-column: 9/10;
-    }
-
-    .foot10 {
-      grid-row: auto;
-      grid-column: 10/11;
-    }
-
-    .foot11 {
-      grid-row: auto;
-      grid-column: 11/12;
-    }
-
-    .foot1-4 {
-      grid-row: auto;
-      grid-column: 1 / span 4;
-    }
-
     &.spirit-combat {
       grid-template-columns: [col-start] 30px auto [col-end];
 
