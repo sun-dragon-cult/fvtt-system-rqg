@@ -1,38 +1,33 @@
 import { getGame } from "../system/util";
+import Options = FormApplication.Options;
 
 export class DefaultIconSettings extends FormApplication {
-  constructor(options: any) {
-    super(options);
-    this.options = options;
+  constructor(object: any, options?: Partial<Options>) {
+    super(object, options);
   }
 
-  static get defaultOptions(): FormApplication.Options {
-      return mergeObject(super.defaultOptions, {
-        classes: ['form'],
-        popOut: true,
-        template: 'defaultIconSettings.hbs',
-        id: "default-icons-settings-dialog",
-        title: "Default Icon Settings",
-      })
+  static get defaultOptions(): Options {
+    return mergeObject(super.defaultOptions, {
+      id: "default-icons-settings-dialog",
+      title: "Default Item Icon Settings",
+      template: "./systems/rqg/dialog/defaultIconSettings.hbs",
+      classes: ["form", "default-icons"],
+      width: 500,
+      closeOnSubmit: false,
+      submitOnChange: true,
+    });
   }
 
-  getData(
-    options?: Application.RenderOptions
-  ):
-    | FormApplication.Data<{}, FormApplication.Options>
-    | Promise<FormApplication.Data<{}, FormApplication.Options>> {
-    const data: FormApplication.Data<{}, FormApplication.Options> = getGame().settings.get(
-      "rqg",
-      "defaultIconSettings"
-    ) as FormApplication.Data<{}, FormApplication.Options>;
-    return data;
+  getData(): any {
+    return getGame().settings.get("rqg", "defaultIconSettings");
   }
 
-  protected _updateObject(event: Event, formData?: object): Promise<unknown> {
-    if (formData !== undefined) {
+  async _updateObject(event: Event, formData?: object): Promise<void> {
+    console.log("*** _updateObject", event, formData);
+    if (formData != null) {
       const data = expandObject(formData);
-      getGame().settings.set("rqg", "defaultIconSettings", data);
+      await getGame().settings.set("rqg", "defaultIconSettings", data);
+      this.render();
     }
-    return Promise.resolve();
   }
 }

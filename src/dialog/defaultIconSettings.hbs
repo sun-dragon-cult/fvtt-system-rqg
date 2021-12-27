@@ -1,3 +1,12 @@
 <form>
-    <h1>Default Icon Settings</h1>
+  <h2>Default Item Icon Settings</h2>
+{{log '*** Default Item Icon Settings'  this}}
+  {{#each this}}
+    <label>
+      <span>{{@key}}</span>
+      <img src="{{this}}">
+      {{filePicker target=@key type="image"}}
+      <input type="text" id="{{@key}}" value="{{this}}" name="{{@key}}">
+    </label><br>
+  {{/each}}
 </form>
