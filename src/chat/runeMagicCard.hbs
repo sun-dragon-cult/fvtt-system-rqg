@@ -1,0 +1,34 @@
+<form class="card-form" data-chat-card="runeMagicCard">
+  <div class="rqg chat-card rune-magic-card">
+
+    <h1><img class="item" src="{{itemData.img}}" /> {{itemData.name}}
+    
+      {{#each itemData.data.runes}}
+        <img class="rune" src="{{runeImg this}}" title="{{this}}" />
+      {{/each}}
+    </h1>
+
+    <label>level
+      <input
+        type="number"
+        min="1"
+        max="{{itemData.data.points}}"
+        value="{{formData.level}}"
+        name="level"
+      /></label><br />
+    <label>boost
+      <input type="number" min="0" max="999" value="{{formData.boost}}" name="boost" /></label>
+      <br />
+
+    <label>Cast using Rune: </label>
+    {{#each formData.runes}}
+    <br />
+    <input type="radio" id="select-rune-{{this.rune}}" name="selected-rune-to-cast">
+      <img class="rune" src="{{runeImg this.rune}}" title="{{this.rune}}"> {{this.rune}} 
+        <span {{#if this.actorRune.data.data.hasExperience}}class="experienced"{{/if}}>{{this.actorRune.data.data.chance}}%</span> {{#if this.actorRune.data.data.hasExperience}}already checked{{/if}}
+    </input>
+    {{/each}}
+
+    <button type="submit" data-chat-roll>Roll ({{formData.chance}}%)</button>
+  </div>
+</form>
