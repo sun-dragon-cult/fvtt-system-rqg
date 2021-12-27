@@ -350,6 +350,10 @@
       grid-column: 1 / span 4;
     }
 
+    .no-background {
+      background-color: transparent !important;
+    }
+
     &.spirit-combat {
       grid-template-columns: [col-start] 30px auto [col-end];
 
