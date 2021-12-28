@@ -1,0 +1,9 @@
+<form>
+  <h2>Available Hit Location Names</h2>
+  <input type="text" name="hitLocationItemNames" placeholder="Add another hitlocation"><br><br>
+  <div class="flexrow">
+    {{#each hitLocationItemNames}}
+        <input type="text" value="{{this}}" name="hitLocationItemNames"><br>
+    {{/each}}
+  </div>
+</form>

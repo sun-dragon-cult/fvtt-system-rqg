@@ -1,5 +1,6 @@
 import { getGame } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
+import { HitLocationSettings } from "../dialog/hitLocationSettings";
 
 export const registerRqgSystemSettings = function () {
   getGame().settings.register("rqg", "specialCrit", {
@@ -36,6 +37,15 @@ export const registerRqgSystemSettings = function () {
     config: false, // TODO create a submenu for configuration
     type: Object,
     default: hitLocationNamesObject,
+  });
+
+  getGame().settings.registerMenu("rqg", "hitLocations", {
+    name: "Hit Location Settings",
+    label: "Available Hit Locations",
+    hint: "List the available hit location names used when creating new hit locations and armor items.",
+    icon: "fas fa-child",
+    type: HitLocationSettings,
+    restricted: true,
   });
 
   getGame().settings.register("rqg", "systemMigrationVersion", {
