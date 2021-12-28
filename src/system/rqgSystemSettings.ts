@@ -1,6 +1,6 @@
 import { getGame } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
-import { DefaultIconSettings } from "../dialog/DefautIconSettings";
+import { DefaultIconSettings } from "../dialog/defaultIconSettings";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export const registerRqgSystemSettings = function () {

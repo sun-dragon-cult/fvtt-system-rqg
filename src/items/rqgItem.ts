@@ -11,9 +11,6 @@ import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import { getGame, RqgError } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
-import {
-  ItemDataSource,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export class RqgItem extends Item {
   public static init() {
@@ -105,90 +102,19 @@ export class RqgItem extends Item {
     options: DocumentModificationOptions,
     userId: string
   ): void {
-
     const defaultIconSettings: any = getGame().settings.get("rqg", "defaultIconSettings");
+    const item = data._id && getGame().items?.get(data._id);
+    const updateData: any = {
+      img: defaultIconSettings[data.type],
+      "data.namePrefix": data.name,
+    };
 
-    if (data.type === ItemTypeEnum.Armor) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.Armor],
-        "data.namePrefix": data.name,
-      });
-    }
-
-    if (data.type === ItemTypeEnum.Cult) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.Cult],
-      });
-    }
-
-    if (data.type === ItemTypeEnum.Gear) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.Gear],
-      });
-    }
-
-    if (data.type === ItemTypeEnum.HitLocation) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.HitLocation],
-      });
-    }
     if (data.type === ItemTypeEnum.Passion) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      //TODO: Enhancement: regex to see if the user typed something like "Loyalty (clan)" and put the parts fo that in the right places.
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.Passion],
-        "data.subject": data.name,
-      });
+      updateData.data = { subject: data.name };
     }
 
-    if (data.type === ItemTypeEnum.Rune) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.Rune],
-      });
-    }
-
-    if (data.type === ItemTypeEnum.RuneMagic) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.RuneMagic],
-      });
-    }
-    
-    if (data.type === ItemTypeEnum.Skill) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.Skill],
-      });
-    }
-
-    if (data.type === ItemTypeEnum.SpiritMagic) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.SpiritMagic],
-      });
-    }
-
-    if (data.type === ItemTypeEnum.Weapon) {
-      //@ts-ignore
-      const item = getGame().items?.get(data._id);
-      item?.update({
-        img: defaultIconSettings[ItemTypeEnum.Weapon],
-      });
-    }
+    // @ts-ignore
+    item?.update(updateData);
     return super._onCreate(data, options, userId);
   }
 

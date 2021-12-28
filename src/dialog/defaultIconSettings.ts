@@ -18,6 +18,11 @@ export class DefaultIconSettings extends FormApplication {
     });
   }
 
+  protected _onSelectFile(selection: string, filePicker: FilePicker): void {
+    super._onSelectFile(selection, filePicker);
+    this.submit();
+  }
+
   getData(): any {
     return getGame().settings.get("rqg", "defaultIconSettings");
   }
