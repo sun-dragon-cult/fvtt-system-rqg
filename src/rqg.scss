@@ -940,3 +940,29 @@
     margin: 0 0 -0.5rem;
   }
 }
+
+
+.app.default-icons {
+  label {
+    display: flex;
+
+    span {
+      flex: 1;
+    }
+
+    img {
+      height: 26px;
+      border: none;
+      vertical-align: inherit;
+    }
+
+    .file-picker {
+      width: min-content;
+    }
+
+    input {
+      width: 22rem;
+    }
+  }
+
+}
