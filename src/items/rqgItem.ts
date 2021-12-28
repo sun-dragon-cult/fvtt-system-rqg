@@ -9,7 +9,8 @@ import { WeaponSheet } from "./weapon-item/weaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
-import { RqgError } from "../system/util";
+import { getGame, RqgError } from "../system/util";
+import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 export class RqgItem extends Item {
   public static init() {
@@ -94,6 +95,26 @@ export class RqgItem extends Item {
       }
       return true;
     });
+  }
+
+  protected _onCreate(
+    data: RqgItem["data"]["_source"],
+    options: DocumentModificationOptions,
+    userId: string
+  ): void {
+    const defaultItemIconSettings: any = getGame().settings.get("rqg", "defaultItemIconSettings");
+    const item = data._id ? getGame().items?.get(data._id) : undefined;
+    const updateData: any = {
+      img: defaultItemIconSettings[data.type],
+      "data.namePrefix": data.name,
+    };
+
+    if (data.type === ItemTypeEnum.Passion) {
+      updateData.data = { subject: data.name };
+    }
+
+    item?.update(updateData);
+    return super._onCreate(data, options, userId);
   }
 
   static async updateDocuments(updates: any[], context: any): Promise<any> {

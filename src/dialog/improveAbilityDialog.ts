@@ -8,7 +8,7 @@ import { assertItemType, getGame } from "../system/util";
 export async function showImproveAbilityDialog(
   actor: RqgActor,
   itemId: string,
-  item: Item,
+  item: RqgItem,
   speakerName: string
 ): Promise<void> {
   const ability = item.data.data as IAbility;

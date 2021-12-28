@@ -237,7 +237,6 @@ export class RqgActorSheet extends ActorSheet<
       }
       //@ts-ignore
       curr.data.data.price.conversion = conv;
-      console.log(conv);
     });
     return result;
   }
