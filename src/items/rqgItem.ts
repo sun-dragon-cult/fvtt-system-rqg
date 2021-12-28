@@ -103,7 +103,7 @@ export class RqgItem extends Item {
     userId: string
   ): void {
     const defaultIconSettings: any = getGame().settings.get("rqg", "defaultIconSettings");
-    const item = data._id && getGame().items?.get(data._id);
+    const item = data._id ? getGame().items?.get(data._id) : undefined;
     const updateData: any = {
       img: defaultIconSettings[data.type],
       "data.namePrefix": data.name,
@@ -113,7 +113,6 @@ export class RqgItem extends Item {
       updateData.data = { subject: data.name };
     }
 
-    // @ts-ignore
     item?.update(updateData);
     return super._onCreate(data, options, userId);
   }
