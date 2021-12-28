@@ -12,6 +12,14 @@
     "TypeRunemagic": "Rune Magic Spell"
   },
   "RQG": {
+    "Settings": {
+      "DefaultItemIcons": {
+        "title": "Default Item Icon Settings",
+        "settingsName": "Default Item Icons",
+        "settingsLabel": "Configure Default Icons for new Items",
+        "settingsHint": "Set the default icons used when creating new items."
+      }
+    },
     "characteristic": {
       "strength": "STR",
       "constitution": "CON",
@@ -205,27 +213,7 @@
     "StandardOfLiving": "Standard Of Living",
     "BaseIncome": "Base Income",
     "Ransom": "Ransom",
-    "RansomDetails": "Details",
-    "SETTINGS": {
-      "defaultIconArmorName": "Default Armor Icon",
-      "defaultIconArmorHint": "The icon used for newly created Armor items.",
-      "defaultIconCultName": "Default Cult Icon",
-      "defaultIconCultHint": "The icon used for newly created Cult items.",
-      "defaultIconGearName": "Default Gear Icon",
-      "defaultIconGearHint": "The icon used for newly created Gear items.",
-      "defaultIconHitLocationName": "Default Hit Location Icon",
-      "defaultIconHitLocationHint": "The icon used for newly created Hit Location items.",
-      "defaultIconPassionName": "Default Passion Icon",
-      "defaultIconPassionHint": "The icon used for newly created Passion items.",
-      "defaultIconRuneName": "Default Rune Icon",
-      "defaultIconRuneHint": "The icon used for newly created Rune items.",
-      "defaultIconRuneMagicSpellName": "Default Rune Magic Spell Icon",
-      "defaultIconRuneMagicSpellHint": "The icon used for newly created Rune Magic Spell items.",
-      "defaultIconSkillName": "Default Skill Icon",
-      "defaultIconSkillHint": "The icon used for newly created Skill items.",
-      "defaultIconSpiritMagicSpellName": "Default Spirit Magic Spell Icon",
-      "defaultIconSpiritMagicSpellHint": "The icon used for newly created Spirit Magic Spell items."
-    }
+    "RansomDetails": "Details"
   },
   "ACTORSHEET": {
     "Combat": {
@@ -240,9 +228,6 @@
     }
   },
   "DIALOG": {
-    "defaultIconSettings": {
-      "header": "Default Item Icon Settings"
-    },
     "improveAbilityDialog": {
       "title": "Improvement for {typeLocName} \"{name}\"",
       "titleChar": "Improvement for Characteristic \"{name}\"",

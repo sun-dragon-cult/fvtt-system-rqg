@@ -41,10 +41,10 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.registerMenu("rqg", "defaultIconSettings", {
-    name: "Default Icon Settings",
-    label: "Default Icon Settings",
-    hint: "Set the default icons used when creating new items.",
-    icon: "fas fa-bars",
+    name: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsName"),
+    label: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsLabel"),
+    hint: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsHint"),
+    icon: "fas fa-image",
     type: DefaultIconSettings,
     restricted: true,
   });
