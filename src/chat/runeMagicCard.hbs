@@ -8,22 +8,68 @@
       {{/each}}
     </h1>
 
-    <label>level
+
+    <a class="entity-link" data-entity="JournalEntry" data-id="{{itemData.data.journalId}}">
+      <i class="fas fa-book-open"></i> {{formData.journalEntryName}}
+    </a>
+    <br />
+    <label>Rune Point Cost
       <input
         type="number"
         min="1"
         max="{{itemData.data.points}}"
-        value="{{formData.level}}"
-        name="level"
-      /></label><br />
-    <label>boost
-      <input type="number" min="0" max="999" value="{{formData.boost}}" name="boost" /></label>
-      <br />
+        value="{{formData.runePointCost}}"
+        name="runePointCost"
+        {{#unless itemData.data.isStackable}}readonly="readonly" title="Not Stackable"{{/unless}}
+      /></label>
+    <br />
+    <label>Magic Point Boost
+      <input type="number" min="0" max="999" value="{{formData.magicPointBoost}}" name="magicPointBoost" /></label>
+    <br />
+    <label>Meditation or Ritual:</label>
+    <select name="ritualOrMeditation" class="chat-select-wide">
+      <option value="0" selected="true">None</option>
+      <option value="5">Meditate: 1 melee round, +5% bonus</option>
+      <option value="10">Meditate: 2 melee rounds, +10% bonus</option>
+      <option value="15">Meditate: 5 melee rounds (1 minute), +15% bonus</option>
+      <option value="20">Meditate: 25 melee rounds (5 minutes), +20% bonus</option>
+      <option value="25">Meditate: 50 melee rounds (10 minutes), +25% bonus</option>
+      <option value="30">Ritual: Half an hour, +30% bonus</option>
+      <option value="35">Ritual: 1 hour, +35% bonus</option>
+      <option value="40">Ritual: 5 hours, +40% bonus</option>
+      <option value="45">Ritual: 10 hours, +45% bonus</option>
+      <option value="50">Ritual: 1 day, +50% bonus</option>
+      <option value="55">Ritual: 2 days, +55% bonus</option>
+      <option value="60">Ritual: 1 week, +60% bonus</option>
+      <option value="65">Ritual: 2 weeks, +65% bonus</option>
+      <option value="70">Ritual: 4 weeks, +70% bonus</option>
+      <option value="75">Ritual: 1 season, +75% bonus</option>
+      <option value="80">Ritual: 1 year, +80% bonus</option>
+      <option value="85">Ritual: 2 years, +85% bonus</option>
+      <option value="90">Ritual: 5 years, +90% bonus</option>
+      <option value="95">Ritual: 10 years, +95% bonus</option>
+      <option value="100">Ritual: 20 years, +100% bonus</option>
+    </select>
+    <br />
+
+    <label>Skill Augmentation:</label>
+    <select name="skillAugmentation" class="chat-select-wide">
+      <option value="0">None</option>
+      <option value="50">Critical Success, +50%</option>
+      <option value="30">Special Success, +30%</option>
+      <option value="20">Success, +20%</option>
+      <option value="-20">Failure, -20%</option>
+      <option value="-50">Fumble Success, -50%</option>
+    </select>
+
+    <label>Other Modifiers
+      <input type="number" min="-999" max="999" value="{{formData.otherModifiers}}" name="otherModifiers" /></label>
+    <br />
 
     <label>Cast using Rune: </label>
-    {{#each formData.runes}}
+    {{#each eligibleRunes}}
     <br />
-    <input type="radio" id="select-rune-{{this.rune}}" name="selected-rune-to-cast">
+    <input type="radio" id="select-rune-{{this.actorRune._id}}" name="selectedRune" value="{{this.actorRune._id}}">
       <img class="rune" src="{{runeImg this.rune}}" title="{{this.rune}}"> {{this.rune}} 
         <span {{#if this.actorRune.data.data.hasExperience}}class="experienced"{{/if}}>{{this.actorRune.data.data.chance}}%</span> {{#if this.actorRune.data.data.hasExperience}}already checked{{/if}}
     </input>

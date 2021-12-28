@@ -711,12 +711,14 @@ export class RqgActorSheet extends ActorSheet<
           } else {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             const speakerName = this.token?.name || this.actor.data.token.name;
-            await RuneMagicCard.roll(
-              item.data.toObject(),
-              item.data.data.points,
-              this.actor,
-              speakerName
-            );
+            console.log("rqgActorSheet Double-click Rune Magic: TODO");
+            //TODO: construct a RuneMagicCardFlags object???
+            // await RuneMagicCard.roll(
+            //   item.data.toObject(),
+            //   item.data.data.points,
+            //   this.actor,
+            //   speakerName
+            // );
           }
 
           clickCount = 0;
