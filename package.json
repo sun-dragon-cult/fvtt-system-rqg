@@ -14,7 +14,7 @@
   "author": "",
   "license": "UNLICENCED",
   "devDependencies": {
-    "@league-of-foundry-developers/foundry-vtt-types": "^0.8.9-2",
+    "@league-of-foundry-developers/foundry-vtt-types": "0.8.9-2",
     "@snowpack/plugin-sass": "^1.4.0",
     "@snowpack/plugin-typescript": "^1.2.1",
     "@types/fs-extra": "^9.0.10",

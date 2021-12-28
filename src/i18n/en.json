@@ -21,6 +21,15 @@
       "power": "POW",
       "charisma": "CHA"
     },
+    "characteristicfull": {
+      "strength": "Strength",
+      "constitution": "Constitution",
+      "size": "Size",
+      "dexterity": "Dexterity",
+      "intelligence": "Intelligence",
+      "power": "Power",
+      "charisma": "Charisma"
+    },
     "ResultEnum": {
       "0": "Hyper Critical",
       "1": "Special Critical",
@@ -31,7 +40,7 @@
       "6": "Fumble"
     },
     "ArmorType": {
-      "Hood":  "Hood",
+      "Hood": "Hood",
       "BroadBrimmedHat": "Broad-brimmed Hat",
       "Cap": "Cap",
       "CompositeHelm": "Composite Helm",
@@ -48,7 +57,7 @@
       "PantsTrews": "Pants",
       "Greaves": "Greaves"
     },
-    "ArmorMaterial" : {
+    "ArmorMaterial": {
       "Leather": "Leather",
       "HeavyLeather": "Heavy Leather",
       "StuddedLeather": "Studded Leather",
@@ -72,9 +81,9 @@
       "chiefPriest": "Chief Priest",
       "highPriest": "High Priest"
     },
-    "EquippedStatus":{
-      "notCarried":  "Not Carried",
-      "carried":  "Carried",
+    "EquippedStatus": {
+      "notCarried": "Not Carried",
+      "carried": "Carried",
       "equipped": "Equipped"
     },
     "SkillCategory": {
@@ -223,46 +232,69 @@
       "StrDexMinsNotMetTip": "Character does not meet STR and/or DEX minimums for this weapon.  Use at half skill chance.",
       "StrMinNotMetTip": "Character does not meet STR minimum for this weapon. Use at half skill chance.",
       "DexMinNotMetTip": "Character does not meet DEX minimum for this weapon. STR over STR minimum can make up for this at two points of STR for one point of DEX, or use at half skill chance."
+    },
+    "Gear": {
+      "CurrencyConversionTipOver1": "One {name} is worth {value} Lunars.",
+      "CurrencyConversionTipLunar": "Lunars are the standard basis of currency.",
+      "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s."
     }
   },
   "DIALOG": {
-    "improveSkillDialog": {
-      "title": "Skill Improvement for {skillName}",
-      "improvementTypeQ": "What type of skill improvement?",
+    "improveAbilityDialog": {
+      "title": "Improvement for {typeLocName} \"{name}\"",
+      "titleChar": "Improvement for Characteristic \"{name}\"",
+      "header": "Improving {name}",
       "fromExperience": ". . . from experience",
       "chanceToGain": "{chanceToGain}% chance to gain:",
       "experiencGainFixed": "Gain 3%",
       "experiencGainRandom": "Gain 1d6%",
       "noExperienceCheckTitle": "No Experience Check",
-      "noExperienceCheckExplanation": "This character does not have an experience check in this skill and may not improve from Experience.",
+      "noExperienceCheckExplanation": "This character does not have an experience check in this {typeLocName} and may not improve from Experience.",
       "throughTraining": ". . . through training",
       "afterTraining": "After training:",
-      "trainingGainFixed": "Gain 2%",
-      "trainingGainrandom": "Gain 1d6-1%",
+      "gain": "Gain {gain}%",
+      "gainchar": "Gain {gain}",
+      "throughResearch": ". . . through research",
       "skillOver75Title": "Skill Over 75%",
       "skillOver75Explanation": "You may not train in skills with a value over 75%.",
+      "speciesMaxTitle": "At species maximum for {name}",
+      "speciesMaxExplanation": "You are at or above the species maximum for {name} and may not gain any more.",
       "btnDoImprovement": "Do Improvement",
       "btnCancel": "Cancel",
       "experienceRoll": {
-        "flavor": "{actorName} makes an experience improvement check for {skillName}",
-        "content": "Roll 1d100 and add the skill category modifier ({mod}) and gain if the modified roll is HIGHER than the skill value ({skillChance}%) or 100."
+        "flavor": "{actorName} makes an experience improvement check for {typeLocName} \"{name}\"",
+        "contentSkill": "Roll 1d100 and add the skill category modifier ({mod}) and gain if the modified roll is HIGHER than the {typeLocName} \"{name}\" value {skillChance}% or 100.",
+        "contentOther": "Roll 1d100 and gain if the roll is HIGHER than the {typeLocName} \"{name}\" value of {chance}%",
+        "contentChar": "Roll 1d100 and gain if the roll is LOWER THAN OR EQUAL TO {chanceToGain}%.  This is based on the Species Maximum for the Characteristic of {speciesMax} minus the Characteristic \"{name}\" value of {chance} times five."
       },
       "experienceResultCard": {
-        "flavor": "Experience improvement for {skillName} succeeded",
-        "contentChose3": "Chose fixed gain of 3%.",
-        "contentChose1d6": "Chose gain of 1d6%."
-      },
-      "trainingResultCard": {
-        "flavor": "Training improvement for {skillName}",
-        "contentChose2": "Chose fixed gain of 2%.",
-        "contentChose1d6minus1": "Chose gain of 1d6-1%"
+        "flavor": "Experience improvement for {typeLocName} \"{name}\" succeeded",
+        "contentChoseFixed": "Chose fixed gain of {gain}.",
+        "contentChoseRandom": "Chose gain of {gain}."
       },
       "experienceGainFailed": {
-        "flavor": "Experience improvement for {skillName} failed",
-        "content": "{actorName} failed to learn from experience and the experience check has been cleared from {skillName}."
+        "flavor": "Experience improvement for {typeLocName} \"{name}\" failed",
+        "content": "{actorName} failed to learn from experience and the experience check has been cleared from {typeLocName} \"{name}\"."
+      },
+      "trainingResultCard": {
+        "flavor": "Training improvement for {typeLocName} \"{name}\"",
+        "contentChoseFixed": "Chose fixed gain of {gain}.",
+        "contentChoseRandom": "Chose gain of {gain}."
+      },
+      "researchRoll": {
+        "flavor": "{actorName} makes a research improvement check for {typeLocName} \"{name}\"",
+        "contentChar": "Roll 1d100 and gain if the roll is LOWER THAN OR EQUAL TO {chanceToGain}%.  This is based on the Species Maximum for the Characteristic of {speciesMax} minus the Characteristic \"{name}\" value of {chance} times five."
+      },
+      "researchResultCard": {
+        "flavor": "Research improvement for {typeLocName} \"{name}\"",
+        "contentChoseRandom": "Chose gain of {gain}."
+      },
+      "researchGainFailed": {
+        "flavor": "Research improvement for {typeLocName} \"{name}\" failed",
+        "content": "{actorName} failed to learn from researching {typeLocName} \"{name}\"."
       },
       "notifications": {
-        "noExperience": "{actorName} does not have an experience check in {skillName} and cannot gain from experience now."
+        "noExperience": "{actorName} does not have an experience check in {typeLocName} \"{name}\" and cannot gain from experience now."
       }
     }
   }

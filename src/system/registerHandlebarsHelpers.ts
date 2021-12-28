@@ -106,6 +106,11 @@ export const registerHandlebarsHelpers = function () {
     return Math.floor(nums.reduce((acc, n) => acc * n));
   });
 
+  Handlebars.registerHelper("multiplyfixed2", (...nums) => {
+    nums.pop();
+    return (nums.reduce((acc, n) => acc * n)).toFixed(2);
+  });
+
   Handlebars.registerHelper("sum", (...nums) => {
     nums.pop();
     return nums.reduce((acc, n) => acc + (n ?? 0));

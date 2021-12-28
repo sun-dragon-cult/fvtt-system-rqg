@@ -4,6 +4,7 @@ import { RqgActor } from "../rqgActor";
 import { assertItemType, getGameUser, getRequiredDomDataset, RqgError } from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 
 export const passionMenuOptions = (
   actor: RqgActor,
@@ -63,8 +64,12 @@ export const passionMenuOptions = (
       }
       return !!item.data.data.hasExperience;
     },
-    callback: () => {
-      ui.notifications?.info("TODO Improve");
+    callback: (el: JQuery) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      assertItemType(item?.data.type, ItemTypeEnum.Passion);
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      showImproveAbilityDialog(actor, itemId, item, speakerName);
     },
   },
   {

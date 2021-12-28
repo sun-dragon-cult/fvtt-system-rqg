@@ -10,6 +10,7 @@ import {
 } from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 
 export const runeMenuOptions = (
   actor: RqgActor,
@@ -51,14 +52,13 @@ export const runeMenuOptions = (
   {
     name: "Improve",
     icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
-    condition: (el: JQuery) => {
+    condition: () => true,
+    callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Rune);
-      return !!item.data.data.hasExperience;
-    },
-    callback: () => {
-      ui.notifications?.info("TODO Improve");
+      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      showImproveAbilityDialog(actor, itemId, item, speakerName);
     },
   },
   {

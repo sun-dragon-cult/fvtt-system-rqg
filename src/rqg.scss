@@ -1,4 +1,4 @@
-@use 'variables';
+@use "variables";
 
 //:root {
 //  --main-color: #854906;
@@ -47,6 +47,10 @@
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
   font-variant: small-caps;
   letter-spacing: 1.5px;
+}
+
+.pad-left {
+  padding-left: 10px !important;
 }
 
 .text-left {
@@ -272,6 +276,20 @@
       margin-right: -0.4rem;
     }
 
+    .footer {
+      grid-column: 1/-1;
+      grid-row: auto;
+      margin-top: -1.3rem;
+      background: var(--rqg-color-main-bg);
+      mix-blend-mode: color-burn;
+      text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
+      box-shadow: var(--rqg-box-shadow-grid-header);
+      border: 1px solid grey;
+      border-radius: 40px;
+      margin-left: -0.4rem;
+      margin-right: -0.4rem;
+    }
+
     .head1 {
       grid-row: 1;
       grid-column: 1/2;
@@ -330,6 +348,10 @@
     .head1-4 {
       grid-row: 1;
       grid-column: 1 / span 4;
+    }
+
+    .no-background {
+      background-color: transparent !important;
     }
 
     &.spirit-combat {
@@ -399,6 +421,14 @@
       > *:nth-child(14n + 22) {
         background: var(--rqg-table-alternate-background);
       }
+    }
+
+    .usagecontainer {
+      display: block;
+    }
+
+    .usagecell {
+      padding-top: 4px;
     }
 
     &.weapon {

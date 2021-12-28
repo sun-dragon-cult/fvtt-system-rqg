@@ -35,7 +35,7 @@
       <div class="characteristics">
         {{#each characterData.characteristics as | characteristic key |}}
         <div data-characteristic="{{key}}" class="flex-column {{#if characteristic.hasExperience}}experienced{{/if}}">
-          <label class="resource-label norse characteristic contextmenu" data-characteristic-roll>{{localize (concat 'RQG.characteristic.' key)}}</label>
+          <label class="resource-label norse characteristic contextmenu" data-characteristic-roll data-characteristic-name="{{key}}">{{localize (concat 'RQG.characteristic.' key)}}</label>
           {{#if @root.isGM}}
             <input type="number" min="0" max="99" name="data.characteristics.{{key}}.value" value="{{characteristic.value}}">
             <input type="text" name="data.characteristics.{{key}}.formula" value="{{characteristic.formula}}">
