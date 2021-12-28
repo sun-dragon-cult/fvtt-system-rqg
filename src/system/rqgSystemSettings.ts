@@ -31,18 +31,18 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register("rqg", "hitLocations", {
-    name: "List of hit location names",
-    hint: "The hit location names are used in dropdowns for armor coverage and when naming a new hit location.",
+    name: getGame().i18n.localize("RQG.Settings.Hitlocations.settingName"),
+    hint: getGame().i18n.localize("RQG.Settings.Hitlocations.settingHint"),
     scope: "world",
-    config: false, // TODO create a submenu for configuration
+    config: false,
     type: Object,
     default: hitLocationNamesObject,
   });
 
   getGame().settings.registerMenu("rqg", "hitLocations", {
-    name: "Hit Location Settings",
-    label: "Available Hit Locations",
-    hint: "List the available hit location names used when creating new hit locations and armor items.",
+    name: getGame().i18n.localize("RQG.Settings.Hitlocations.settingName"),
+    label: getGame().i18n.localize("RQG.Settings.Hitlocations.hitLocationNames"),
+    hint: getGame().i18n.localize("RQG.Settings.Hitlocations.settingHint"),
     icon: "fas fa-child",
     type: HitLocationSettings,
     restricted: true,

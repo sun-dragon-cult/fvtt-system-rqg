@@ -12,6 +12,15 @@
     "TypeRunemagic": "Rune Magic Spell"
   },
   "RQG": {
+    "Settings": {
+      "Hitlocations": {
+        "dialogTitle": "Hit Location Settings",
+        "settingName": "List of hit location names",
+        "settingHint": "The hit location names are used in dropdowns for armor coverage and when naming a new hit location.",
+        "hitLocationNames": "Available Hit Location Names",
+        "addLocationPlaceholder": "Add another hitlocation"
+      }
+    },
     "characteristic": {
       "strength": "STR",
       "constitution": "CON",

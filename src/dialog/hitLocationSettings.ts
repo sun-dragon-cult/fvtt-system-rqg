@@ -9,7 +9,7 @@ export class HitLocationSettings extends FormApplication {
   static get defaultOptions(): Options {
     return mergeObject(super.defaultOptions, {
       id: "hit-location-settings-dialog",
-      title: "Hit Location Settings",
+      title: getGame().i18n.localize("RQG.Settings.Hitlocations.dialogTitle"),
       template: "./systems/rqg/dialog/hitLocationSettings.hbs",
       classes: ["form", "hit-location-settings"],
       width: 600,

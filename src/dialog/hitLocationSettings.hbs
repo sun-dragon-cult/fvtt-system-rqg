@@ -1,6 +1,6 @@
 <form>
-  <h2>Available Hit Location Names</h2>
-  <input type="text" name="hitLocationItemNames" placeholder="Add another hitlocation"><br><br>
+  <h2>{{localize 'RQG.Settings.Hitlocations.hitLocationNames'}}</h2>
+  <input type="text" name="hitLocationItemNames" placeholder="{{localize 'RQG.Settings.Hitlocations.addLocationPlaceholder'}}"><br><br>
   <div class="flexrow">
     {{#each hitLocationItemNames}}
         <input type="text" value="{{this}}" name="hitLocationItemNames"><br>
