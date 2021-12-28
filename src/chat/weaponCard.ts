@@ -203,7 +203,7 @@ export class WeaponCard extends ChatMessage {
           projectileItemData.data.quantity <= 0
         ) {
           if (originalAmmoQty > 0) {
-            ui.notifications?.warn(`You just used your last ${projectileItemData.name}!`);
+            ui.notifications?.warn(`You just used the last of your ${projectileItemData.name}!`);
           } else {
             ui.notifications?.warn(`You don't have any ${projectileItemData.name} to ${combatManeuver?.name}!`);
             return false;
