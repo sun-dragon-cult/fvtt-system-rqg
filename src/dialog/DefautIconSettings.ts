@@ -23,7 +23,6 @@ export class DefaultIconSettings extends FormApplication {
   }
 
   async _updateObject(event: Event, formData?: object): Promise<void> {
-    console.log("*** _updateObject", event, formData);
     if (formData != null) {
       const data = expandObject(formData);
       await getGame().settings.set("rqg", "defaultIconSettings", data);

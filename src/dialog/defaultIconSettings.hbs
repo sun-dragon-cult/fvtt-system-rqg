@@ -1,12 +1,25 @@
 <form>
-  <h2>Default Item Icon Settings</h2>
-{{log '*** Default Item Icon Settings'  this}}
+  <h2 class="module-header">{{localize "DIALOG.defaultIconSettings.header"}}</h2>
+
   {{#each this}}
-    <label>
-      <span>{{@key}}</span>
-      <img src="{{this}}">
-      {{filePicker target=@key type="image"}}
-      <input type="text" id="{{@key}}" value="{{this}}" name="{{@key}}">
-    </label><br>
+    <div class="form-group">
+      <label>
+        <span>{{localizeitemtype @key}}</span>
+        <img src="{{this}}" />
+        {{filePicker target=@key type="image"}}
+
+      </label>
+      <div class="form-fields">
+        <input type="text" id="{{@key}}" value="{{this}}" name="{{@key}}" />
+      </div>
+    </div>
+
   {{/each}}
+  <footer class="sheet-footer flexrow">
+    <button type="submit" name="submit">
+      <i class="fa fa-check"></i>
+      OK
+    </button>
+  </footer>
+
 </form>

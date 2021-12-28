@@ -54,9 +54,9 @@ export const registerRqgSystemSettings = function () {
     config: false,
     type: Object,
     default: {
-      [ItemTypeEnum.Armor]: "systems/rqg/assets/images/armor/cuirass.svg",
-      [ItemTypeEnum.Cult]: "systems/rqg/assets/images/items/cult.svg",
-      [ItemTypeEnum.Gear]: "systems/rqg/assets/images/gear/knapsack.svg",
+      [ItemTypeEnum.Armor]: "/systems/rqg/assets/images/armor/cuirass.svg",
+      [ItemTypeEnum.Cult]: "/systems/rqg/assets/images/items/cult.svg",
+      [ItemTypeEnum.Gear]: "/systems/rqg/assets/images/gear/knapsack.svg",
       [ItemTypeEnum.HitLocation]: "/systems/rqg/assets/images/items/hit-location.svg",
       [ItemTypeEnum.Passion]: "/systems/rqg/assets/images/passion/love.svg",
       [ItemTypeEnum.Rune]: "/systems/rqg/assets/runes/chaos.svg",

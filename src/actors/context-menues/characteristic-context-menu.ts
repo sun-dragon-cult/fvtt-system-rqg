@@ -62,12 +62,11 @@ export const characteristicMenuOptions = (
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
       // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
       // You cannot train INT or increase it via experience
-      
+
       const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
-      return !!(trainable.includes(characteristicName));
+      return !!trainable.includes(characteristicName);
     },
     callback: (el: JQuery) => {
-      console.log(el);
       const charName = getDomDataset(el, "characteristic");
       requireValue(charName, "Couldn't find dataset for characteristic");
 
@@ -154,8 +153,10 @@ export async function initializeAllCharacteristics(
 
 /** Sets actor's current hitPoints.value to the hitPoints.max */
 async function initializeCurrentDerivedAttributes(actor: RqgActor) {
-  const hpUpdate = {"data.attributes.hitPoints.value": actor.data.data.attributes.hitPoints.max,
-                    "data.attributes.magicPoints.value": actor.data.data.attributes.magicPoints.max}
+  const hpUpdate = {
+    "data.attributes.hitPoints.value": actor.data.data.attributes.hitPoints.max,
+    "data.attributes.magicPoints.value": actor.data.data.attributes.magicPoints.max,
+  };
   await actor.update(hpUpdate);
 }
 
