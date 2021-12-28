@@ -111,8 +111,8 @@ export class RuneMagicCard {
     for (const [name, value] of formData.entries()) {
       if (name in flags.formData) {
         if (name === "selectedRune") {
-          //@ts-ignore _id TODO: WHY?!
           flags.formData.selectedRune = flags.eligibleRunes.filter(
+            //@ts-ignore _id TODO: WHY?!
             (r) => r.actorRune._id === value
           )[0];
         } else {

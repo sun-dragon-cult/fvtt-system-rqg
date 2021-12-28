@@ -697,7 +697,6 @@ export class RqgActorSheet extends ActorSheet<
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: Event) => {
-        console.log("CLICK RUNE MAGIC");
         if (item.data.type !== ItemTypeEnum.RuneMagic) {
           const msg = "Tried to roll a Rune Magic Roll against some other Item";
           ui.notifications?.error(msg);
