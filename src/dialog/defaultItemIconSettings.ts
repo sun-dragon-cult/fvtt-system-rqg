@@ -1,7 +1,7 @@
 import { getGame } from "../system/util";
 import Options = FormApplication.Options;
 
-export class DefaultIconSettings extends FormApplication {
+export class DefaultItemIconSettings extends FormApplication {
   constructor(object: any, options?: Partial<Options>) {
     super(object, options);
   }
@@ -10,7 +10,7 @@ export class DefaultIconSettings extends FormApplication {
     return mergeObject(super.defaultOptions, {
       id: "default-icons-settings-dialog",
       title: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.title"),
-      template: "./systems/rqg/dialog/defaultIconSettings.hbs",
+      template: "./systems/rqg/dialog/defaultItemIconSettings.hbs",
       classes: ["form", "default-icons"],
       width: 500,
       closeOnSubmit: false,
@@ -24,13 +24,13 @@ export class DefaultIconSettings extends FormApplication {
   }
 
   getData(): any {
-    return getGame().settings.get("rqg", "defaultIconSettings");
+    return getGame().settings.get("rqg", "defaultItemIconSettings");
   }
 
   async _updateObject(event: Event, formData?: object): Promise<void> {
     if (formData != null) {
       const data = expandObject(formData);
-      await getGame().settings.set("rqg", "defaultIconSettings", data);
+      await getGame().settings.set("rqg", "defaultItemIconSettings", data);
       this.render();
     }
   }

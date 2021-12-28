@@ -102,10 +102,10 @@ export class RqgItem extends Item {
     options: DocumentModificationOptions,
     userId: string
   ): void {
-    const defaultIconSettings: any = getGame().settings.get("rqg", "defaultIconSettings");
+    const defaultItemIconSettings: any = getGame().settings.get("rqg", "defaultItemIconSettings");
     const item = data._id ? getGame().items?.get(data._id) : undefined;
     const updateData: any = {
-      img: defaultIconSettings[data.type],
+      img: defaultItemIconSettings[data.type],
       "data.namePrefix": data.name,
     };
 

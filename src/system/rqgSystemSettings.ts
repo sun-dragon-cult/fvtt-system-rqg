@@ -1,6 +1,6 @@
 import { getGame } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
-import { DefaultIconSettings } from "../dialog/defaultIconSettings";
+import { DefaultItemIconSettings } from "../dialog/defaultItemIconSettings";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export const registerRqgSystemSettings = function () {
@@ -40,16 +40,16 @@ export const registerRqgSystemSettings = function () {
     default: hitLocationNamesObject,
   });
 
-  getGame().settings.registerMenu("rqg", "defaultIconSettings", {
+  getGame().settings.registerMenu("rqg", "defaultItemIconSettings", {
     name: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsName"),
     label: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsLabel"),
     hint: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsHint"),
     icon: "fas fa-image",
-    type: DefaultIconSettings,
+    type: DefaultItemIconSettings,
     restricted: true,
   });
 
-  getGame().settings.register("rqg", "defaultIconSettings", {
+  getGame().settings.register("rqg", "defaultItemIconSettings", {
     scope: "world",
     config: false,
     type: Object,
