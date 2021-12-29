@@ -1,11 +1,11 @@
 export const hitLocationNamesObject = {
   hitLocationItemNames: [
+    "Abdomen",
+    "Chest",
     "Head",
     "Left Arm",
-    "Right Arm",
-    "Chest",
-    "Abdomen",
     "Left Leg",
+    "Right Arm",
     "Right Leg",
   ],
 };
