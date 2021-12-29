@@ -13,7 +13,6 @@ import { RqgToken } from "./combat/rqgToken";
 import { setupSimpleCalendar } from "./module-integration/simple-calendar-init";
 import { getGame, RqgError } from "./system/util";
 import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
-import { RqgPause } from "./foundryUi/pause";
 
 Hooks.once("init", async () => {
   console.log(
@@ -56,7 +55,6 @@ Hooks.once("init", async () => {
   RqgToken.init();
   RqgActor.init();
   RqgItem.init();
-  RqgPause.init();
   ChatCardListeners.init();
   registerRqgSystemSettings();
   await loadHandlebarsTemplates();
