@@ -15,9 +15,18 @@
 
     </div>
 
-    <a class="entity-link" data-entity="JournalEntry" data-id="{{itemData.data.journalId}}">
-      <i class="fas fa-book-open"></i> {{formData.journalEntryName}}
-    </a>
+    <div class="card-journal-link">
+      {{#if formData.journalEntryName}}
+      <a class="entity-link" data-entity="JournalEntry" data-id="{{itemData.data.journalId}}">
+        <i class="fas fa-book-open"></i> {{formData.journalEntryName}}
+      </a>
+      {{else}}
+      <a class="entity-link invalid" data-entity="JournalEntry" data-id="{{itemData.data.journalId}}"
+        title="Edit the spell and add a description to have a journal link here!">
+        <i class="fas fa-book-open"></i> {{itemData.name}}
+      </a>
+      {{/if}}
+    </div>
 
     <div class="flexcol card-options">
       <div class="flexcol card-option">
@@ -27,15 +36,13 @@
         <div class="card-option-control">
           {{#each eligibleRunes}}
           <div>
-            <input type="radio" id="select-rune-{{this._id}}" name="selectedRuneId"
-              value="{{this._id}}" 
-              {{#if (eq this._id ../formData.selectedRuneId)}}checked="true"{{/if}}>
+            <label><input type="radio" id="select-rune-{{this._id}}" name="selectedRuneId" value="{{this._id}}" {{#if (eq
+              this._id ../formData.selectedRuneId)}}checked="true" {{/if}}>
             <img class="rune" src="{{runeImg this.name}}" title="{{this.name}}"> {{this.name}}
-            <span {{#if this.data.hasExperience}}class="experienced" title="Has Experience Check"
-              {{/if}}>
+            <span {{#if this.data.hasExperience}}class="experienced" title="Has Experience Check" {{/if}}>
               {{this.data.chance}}%
             </span>
-            </input>
+            </input></label>
           </div>
           {{/each}}
         </div>
@@ -70,27 +77,47 @@
         </div>
         <div class="card-option-control">
           <select name="ritualOrMeditation" class="chat-select-wide">
-            <option value="0" {{#if (eq formData.ritualOrMeditation "0")}}selected="true"{{/if}}>None</option>
-            <option value="5" {{#if (eq formData.ritualOrMeditation "5")}}selected="true"{{/if}}>Meditate: 1 melee round, +5% bonus</option>
-            <option value="10" {{#if (eq formData.ritualOrMeditation "10")}}selected="true"{{/if}}>Meditate: 2 melee rounds, +10% bonus</option>
-            <option value="15" {{#if (eq formData.ritualOrMeditation "15")}}selected="true"{{/if}}>Meditate: 5 melee rounds (1 minute), +15% bonus</option>
-            <option value="20" {{#if (eq formData.ritualOrMeditation "20")}}selected="true"{{/if}}>Meditate: 25 melee rounds (5 minutes), +20% bonus</option>
-            <option value="25" {{#if (eq formData.ritualOrMeditation "25")}}selected="true"{{/if}}>Meditate: 50 melee rounds (10 minutes), +25% bonus</option>
-            <option value="30" {{#if (eq formData.ritualOrMeditation "30")}}selected="true"{{/if}}>Ritual: Half an hour, +30% bonus</option>
-            <option value="35" {{#if (eq formData.ritualOrMeditation "35")}}selected="true"{{/if}}>Ritual: 1 hour, +35% bonus</option>
-            <option value="40" {{#if (eq formData.ritualOrMeditation "40")}}selected="true"{{/if}}>Ritual: 5 hours, +40% bonus</option>
-            <option value="45" {{#if (eq formData.ritualOrMeditation "45")}}selected="true"{{/if}}>Ritual: 10 hours, +45% bonus</option>
-            <option value="50" {{#if (eq formData.ritualOrMeditation "50")}}selected="true"{{/if}}>Ritual: 1 day, +50% bonus</option>
-            <option value="55" {{#if (eq formData.ritualOrMeditation "55")}}selected="true"{{/if}}>Ritual: 2 days, +55% bonus</option>
-            <option value="60" {{#if (eq formData.ritualOrMeditation "60")}}selected="true"{{/if}}>Ritual: 1 week, +60% bonus</option>
-            <option value="65" {{#if (eq formData.ritualOrMeditation "65")}}selected="true"{{/if}}>Ritual: 2 weeks, +65% bonus</option>
-            <option value="70" {{#if (eq formData.ritualOrMeditation "70")}}selected="true"{{/if}}>Ritual: 4 weeks, +70% bonus</option>
-            <option value="75" {{#if (eq formData.ritualOrMeditation "75")}}selected="true"{{/if}}>Ritual: 1 season, +75% bonus</option>
-            <option value="80" {{#if (eq formData.ritualOrMeditation "80")}}selected="true"{{/if}}>Ritual: 1 year, +80% bonus</option>
-            <option value="85" {{#if (eq formData.ritualOrMeditation "85")}}selected="true"{{/if}}>Ritual: 2 years, +85% bonus</option>
-            <option value="90" {{#if (eq formData.ritualOrMeditation "90")}}selected="true"{{/if}}>Ritual: 5 years, +90% bonus</option>
-            <option value="95" {{#if (eq formData.ritualOrMeditation "95")}}selected="true"{{/if}}>Ritual: 10 years, +95% bonus</option>
-            <option value="100" {{#if (eq formData.ritualOrMeditation "100")}}selected="true"{{/if}}>Ritual: 20 years, +100% bonus</option>
+            <option value="0" {{#if (eq formData.ritualOrMeditation "0" )}}selected="true" {{/if}}>None</option>
+            <option value="5" {{#if (eq formData.ritualOrMeditation "5" )}}selected="true" {{/if}}>Meditate: 1 melee
+              round, +5% bonus</option>
+            <option value="10" {{#if (eq formData.ritualOrMeditation "10" )}}selected="true" {{/if}}>Meditate: 2 melee
+              rounds, +10% bonus</option>
+            <option value="15" {{#if (eq formData.ritualOrMeditation "15" )}}selected="true" {{/if}}>Meditate: 5 melee
+              rounds (1 minute), +15% bonus</option>
+            <option value="20" {{#if (eq formData.ritualOrMeditation "20" )}}selected="true" {{/if}}>Meditate: 25 melee
+              rounds (5 minutes), +20% bonus</option>
+            <option value="25" {{#if (eq formData.ritualOrMeditation "25" )}}selected="true" {{/if}}>Meditate: 50 melee
+              rounds (10 minutes), +25% bonus</option>
+            <option value="30" {{#if (eq formData.ritualOrMeditation "30" )}}selected="true" {{/if}}>Ritual: Half an
+              hour, +30% bonus</option>
+            <option value="35" {{#if (eq formData.ritualOrMeditation "35" )}}selected="true" {{/if}}>Ritual: 1 hour,
+              +35% bonus</option>
+            <option value="40" {{#if (eq formData.ritualOrMeditation "40" )}}selected="true" {{/if}}>Ritual: 5 hours,
+              +40% bonus</option>
+            <option value="45" {{#if (eq formData.ritualOrMeditation "45" )}}selected="true" {{/if}}>Ritual: 10 hours,
+              +45% bonus</option>
+            <option value="50" {{#if (eq formData.ritualOrMeditation "50" )}}selected="true" {{/if}}>Ritual: 1 day, +50%
+              bonus</option>
+            <option value="55" {{#if (eq formData.ritualOrMeditation "55" )}}selected="true" {{/if}}>Ritual: 2 days,
+              +55% bonus</option>
+            <option value="60" {{#if (eq formData.ritualOrMeditation "60" )}}selected="true" {{/if}}>Ritual: 1 week,
+              +60% bonus</option>
+            <option value="65" {{#if (eq formData.ritualOrMeditation "65" )}}selected="true" {{/if}}>Ritual: 2 weeks,
+              +65% bonus</option>
+            <option value="70" {{#if (eq formData.ritualOrMeditation "70" )}}selected="true" {{/if}}>Ritual: 4 weeks,
+              +70% bonus</option>
+            <option value="75" {{#if (eq formData.ritualOrMeditation "75" )}}selected="true" {{/if}}>Ritual: 1 season,
+              +75% bonus</option>
+            <option value="80" {{#if (eq formData.ritualOrMeditation "80" )}}selected="true" {{/if}}>Ritual: 1 year,
+              +80% bonus</option>
+            <option value="85" {{#if (eq formData.ritualOrMeditation "85" )}}selected="true" {{/if}}>Ritual: 2 years,
+              +85% bonus</option>
+            <option value="90" {{#if (eq formData.ritualOrMeditation "90" )}}selected="true" {{/if}}>Ritual: 5 years,
+              +90% bonus</option>
+            <option value="95" {{#if (eq formData.ritualOrMeditation "95" )}}selected="true" {{/if}}>Ritual: 10 years,
+              +95% bonus</option>
+            <option value="100" {{#if (eq formData.ritualOrMeditation "100" )}}selected="true" {{/if}}>Ritual: 20 years,
+              +100% bonus</option>
           </select>
         </div>
       </div>
@@ -101,12 +128,17 @@
         </div>
         <div class="card-option-control">
           <select name="skillAugmentation" class="chat-select-wide">
-            <option value="0" {{#if (eq formData.skillAugmentation "0")}}selected="true"{{/if}}>None</option>
-            <option value="50" {{#if (eq formData.skillAugmentation "50")}}selected="true"{{/if}}>Critical Success, +50%</option>
-            <option value="30" {{#if (eq formData.skillAugmentation "30")}}selected="true"{{/if}}>Special Success, +30%</option>
-            <option value="20" {{#if (eq formData.skillAugmentation "20")}}selected="true"{{/if}}>Success, +20%</option>
-            <option value="-20" {{#if (eq formData.skillAugmentation "-20")}}selected="true"{{/if}}>Failure, -20%</option>
-            <option value="-50" {{#if (eq formData.skillAugmentation "-50")}}selected="true"{{/if}}>Fumble Success, -50%</option>
+            <option value="0" {{#if (eq formData.skillAugmentation "0" )}}selected="true" {{/if}}>None</option>
+            <option value="50" {{#if (eq formData.skillAugmentation "50" )}}selected="true" {{/if}}>Critical Success,
+              +50%</option>
+            <option value="30" {{#if (eq formData.skillAugmentation "30" )}}selected="true" {{/if}}>Special Success,
+              +30%</option>
+            <option value="20" {{#if (eq formData.skillAugmentation "20" )}}selected="true" {{/if}}>Success, +20%
+            </option>
+            <option value="-20" {{#if (eq formData.skillAugmentation "-20" )}}selected="true" {{/if}}>Failure, -20%
+            </option>
+            <option value="-50" {{#if (eq formData.skillAugmentation "-50" )}}selected="true" {{/if}}>Fumble Success,
+              -50%</option>
           </select>
         </div>
       </div>

@@ -651,6 +651,12 @@
       padding-right: 5px;
     }
   }
+
+  .card-journal-link{
+    .invalid {
+      color: var(--rqg-color-invalid-joural);
+    }
+  }
 }
 
 .rqg.character {
