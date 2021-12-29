@@ -13,18 +13,36 @@
   },
   "RQG": {
     "Settings": {
-      "DefaultItemIcons": {
-        "title": "Default Item Icon Settings",
-        "settingsName": "Default Item Icons",
-        "settingsLabel": "Configure Default Icons for new Items",
-        "settingsHint": "Set the default icons used when creating new items."
-      },
       "Hitlocations": {
-        "dialogTitle": "Hit Location Settings",
-        "settingName": "List of hit location names",
+        "dialogTitle": "Hit Location Name Settings",
+        "settingName": "Hit Location Names",
+        "settingLabel": "Configure Available Hit Location Names",
         "settingHint": "The hit location names are used in dropdowns for armor coverage and when naming a new hit location.",
-        "hitLocationNames": "Available Hit Location Names",
         "addLocationPlaceholder": "Add another hitlocation"
+      },
+      "DefaultItemIcons": {
+        "dialogTitle": "Default Item Icon Settings",
+        "settingName": "Default Item Icons",
+        "settingLabel": "Configure Default Icons for new Items",
+        "settingHint": "Set the default icons used when creating new items."
+      },
+      "RunesCompendium":{
+        "settingName": "Rune items compendium",
+        "settingHint": "The runes in the specified compendium will be used in the system. Please include all possible runes."
+
+      },
+      "FumbleRollTable":{
+        "settingName": "Fumble Roll Table",
+        "settingHint": "The name of the Fumble roll table - will be used in combat"
+      },
+      "SpecialCrit":{
+        "settingName": "Special & Hyper Critical results",
+        "settingHint": "*** Alpha version - not fully implemented *** Adds the possibility to roll a special critical (skill/100) and hyper critical (skill/500)"
+      },
+      "SystemMigrationVersion":{
+        "settingName": "System Migration Version",
+        "settingHint": "Do not touch this unless you really know what you are doing!"
+
       }
     },
     "characteristic": {

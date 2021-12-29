@@ -9,7 +9,7 @@ export class DefaultItemIconSettings extends FormApplication {
   static get defaultOptions(): Options {
     return mergeObject(super.defaultOptions, {
       id: "default-icons-settings-dialog",
-      title: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.title"),
+      title: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.dialogTitle"),
       template: "./systems/rqg/dialog/defaultItemIconSettings.hbs",
       classes: ["form", "default-icons"],
       width: 500,
