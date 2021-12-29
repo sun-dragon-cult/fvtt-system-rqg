@@ -46,6 +46,9 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/dialog/improveAbilityDialog.hbs",
     "systems/rqg/dialog/hitLocationSettings.hbs",
     "systems/rqg/actors/item-specific/runeMagicCultDialog.hbs",
+
+    // Interface
+    "systems/rqg/foundryUi/pause.hbs",
   ];
 
   return loadTemplates(templatePaths);

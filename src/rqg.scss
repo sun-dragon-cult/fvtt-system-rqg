@@ -974,3 +974,12 @@
   }
 
 }
+
+#pause {
+  background: none;
+
+  h3 {
+    font-size: 3rem;
+    text-shadow: 1px 1px 2px var(--rqg-color-main), 0 0 1em var(--rqg-color-main-bg), 0 0 0.2em var(--rqg-color-main-bg);
+  }
+}
