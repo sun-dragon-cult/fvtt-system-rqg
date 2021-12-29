@@ -5,7 +5,9 @@ import { RqgActor } from "../actors/rqgActor";
 import { RqgActorDataSource } from "../data-model/actor-data/rqgActorData";
 import { CultDataSource } from "../data-model/item-data/cultData";
 import { ItemTypeEnum, RqgItemDataSource } from "../data-model/item-data/itemTypes";
+import { RuneDataSource } from "../data-model/item-data/runeData";
 import { Ability } from "../data-model/shared/ability";
+import { RqgItem } from "../items/rqgItem";
 import {
   assertItemType,
   getActorFromIds,
@@ -16,25 +18,27 @@ import {
   usersThatOwnActor,
 } from "../system/util";
 
+type ShortRune = {
+  name: string;
+  id: string;
+  chance: number;
+};
+
 type RuneMagicCardFlags = {
   actorId: string;
   tokenId: string | null; // Needed to avoid saving a full (possibly syntetic) actor
   itemData: ItemDataSource;
-  eligibleRunes: RuneForCasting[];
+  eligibleRunes: RuneDataSource[];
   formData: {
     runePointCost: number;
     magicPointBoost: number;
     ritualOrMeditation: number;
     skillAugmentation: number;
     otherModifiers: number;
-    selectedRune: Rune;
+    chance: number;
+    selectedRuneId: string;
     journalEntryName: string;
   };
-};
-
-type RuneForCasting = {
-  rune: string;
-  actorRune: Rune;
 };
 
 export class RuneMagicCard {
@@ -45,32 +49,46 @@ export class RuneMagicCard {
   ): Promise<void> {
     const runeMagicItem = actor.items.get(runeMagicItemId);
     assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
+    console.log("INITIAL RUNE MAGIC ITEM: ", runeMagicItem);
     const cult = actor.items.get(runeMagicItem.data.data.cultId);
     assertItemType(cult?.data.type, ItemTypeEnum.Cult);
+    console.log("INITIAL CULT: ", cult);
+
     if (!actor.id) {
       const msg = `Actor without id in rune magic card`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, actor);
     }
-    let usableRunes = [];
-    let runesForCasting: RuneForCasting[] = [];
+
+    let usableRuneNames: string[] = [];
+    let runesForCasting: RuneDataSource[] = [];
     if (runeMagicItem.data.data.runes.includes("Magic (condition)")) {
       // Actor can use any of the cult's runes to cast
       // And some cults have the same rune more than once, so de-dupe them
-      usableRunes = [...new Set(cult.data.data.runes)];
+      usableRuneNames = [...new Set(cult.data.data.runes)];
     } else {
       // Actor can use any of the Rune Magic Spell's runes to cast
-      usableRunes = [...new Set(runeMagicItem.data.data.runes)];
+      usableRuneNames = [...new Set(runeMagicItem.data.data.runes)];
     }
-    usableRunes.forEach((cultRune) => {
-      const actorRune = actor.items.getName(cultRune);
+
+    // Get the actor's versions of the runes, which will have their "chance"
+    usableRuneNames.forEach((rune) => {
+      //@ts-ignore name
+      const actorRune = actor.items.getName(rune);
       assertItemType(actorRune?.data.type, ItemTypeEnum.Rune);
-      const runeForCasting: RuneForCasting = {
-        rune: cultRune,
-        actorRune: actorRune,
-      };
-      runesForCasting.push(runeForCasting);
+      runesForCasting.push(actorRune.data);
     });
+
+    console.log("runesForCasting: ", runesForCasting);
+
+    const strongestRune = runesForCasting.reduce(function (prev, current) {
+      //@ts-ignore data WHY?!
+      return prev.data.chance > current.data.chance ? prev : current;
+    });
+
+    const eligibleShortRunes: ShortRune[] = [];
+
+    console.log("STRONGEST RUNE: ", strongestRune);
 
     const flags: RuneMagicCardFlags = {
       actorId: actor.id,
@@ -83,16 +101,62 @@ export class RuneMagicCard {
         ritualOrMeditation: 0,
         skillAugmentation: 0,
         otherModifiers: 0,
-        selectedRune: runesForCasting[0],
+        chance: strongestRune.data.chance,
+        //@ts-ignore id
+        selectedRuneId: strongestRune._id || "",
         journalEntryName: getJournalEntryName(runeMagicItem.data.data),
       },
     };
+
+    console.log("INITIAL FLAGS: ", flags);
 
     ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName);
     await ChatMessage.create(await this.renderContent(flags));
   }
 
-  public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {}
+  public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
+    console.log("INPUT CHANGE: ", ev);
+    const chatMessage = getGame().messages?.get(messageId);
+    const flags = chatMessage?.data.flags.rqg as RuneMagicCardFlags;
+    console.log("FLAGS", flags);
+
+    const form = (ev.target as HTMLElement).closest("form") as HTMLFormElement;
+    const formData = new FormData(form);
+
+    console.log("FORM DATA", formData);
+
+    //@ts-ignore formData.entries
+    for (const [name, value] of formData.entries()) {
+      if (name in flags.formData) {
+        //@ts-ignore Type 'any' is not assignable to type 'never'.
+        flags.formData[name as keyof typeof flags.formData] = value;
+      }
+    }
+
+    console.log("FLAGS after", flags);
+    // Get use the selectedRuneId to get the actual rune from the eligible runes
+    //@ts-ignore _id
+    const selectedRune: RuneDataSource = flags.eligibleRunes.find(
+      //@ts-ignore id
+      (i) => i._id === flags.formData.selectedRuneId
+    ) as Rune;
+
+    console.log("SELECTED RUNE: ", selectedRune);
+    //@ts-ignore data WHY?!
+    const newChance: number =
+      Number(selectedRune.data.chance) +
+      Number(flags.formData.ritualOrMeditation) +
+      Number(flags.formData.skillAugmentation) +
+      Number(flags.formData.otherModifiers);
+
+    console.log("New Chance: ", newChance);
+
+    flags.formData.chance = newChance;
+
+    const data = await RuneMagicCard.renderContent(flags);
+
+    await chatMessage?.update(data);
+  }
 
   public static async formSubmitHandler(
     ev: JQueryEventObject,
@@ -110,17 +174,17 @@ export class RuneMagicCard {
     // @ts-ignore formData.entries()
     for (const [name, value] of formData.entries()) {
       if (name in flags.formData) {
-        if (name === "selectedRune") {
-          flags.formData.selectedRune = flags.eligibleRunes.filter(
-            //@ts-ignore _id TODO: WHY?!
-            (r) => r.actorRune._id === value
-          )[0];
-        } else {
-          //TODO: This is not type safe, so for instance a value that is supposed to be a number
-          //ends up as a string in the formData property
-          //@ts-ignore TODO: WHY?!
-          flags.formData[name as keyof typeof flags.formData] = value;
-        }
+        // if (name === "selectedRune") {
+        //   flags.formData.selectedRuneId = flags.eligibleRunes.filter(
+        //     //@ts-ignore _id TODO: WHY?!
+        //     (r) => r.actorRune._id === value
+        //   )[0];
+        // } else {
+        //TODO: This is not type safe, so for instance a value that is supposed to be a number
+        //ends up as a string in the formData property
+        //@ts-ignore TODO: WHY?!
+        flags.formData[name as keyof typeof flags.formData] = value;
+        // }
       }
     }
 
@@ -141,28 +205,32 @@ export class RuneMagicCard {
 
   public static async roll(
     itemData: ItemDataSource,
-    formData: RuneMagicCardFlags,
+    flags: RuneMagicCardFlags,
     actor: RqgActor,
     speakerName: string
   ): Promise<void> {
     console.log("RUNE MAGIC CARD ROLL");
-    console.log(formData);
+    console.log(flags);
     assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
     const cult = actor.items.get(itemData.data.cultId);
     assertItemType(cult?.data.type, ItemTypeEnum.Cult);
     const actorData = actor.data;
-    const validationError = RuneMagicCard.validateData(actorData, itemData, formData, cult.data);
+    const validationError = RuneMagicCard.validateData(actorData, itemData, flags, cult.data);
+
+    //@ts-ignore _id
+    const selectedRune: RuneDataSource = flags.eligibleRunes.find((i) => i._id === flags.formData.selectedRuneId);
+
+    console.log("ROLL selectedRune: ", selectedRune);
+
     if (validationError) {
       ui.notifications?.warn(validationError);
     } else {
       const result = await Ability.roll(
         "Cast " + itemData.name,
-        //TODO: neither the chance nor the ritualOrMeditation should be able to be anything but numbers
-        // @ts-ignore actorRune TODO: WHY?!
-        Number(formData.formData.selectedRune.actorRune.data.chance),
-        Number(formData.formData.ritualOrMeditation) +
-          Number(formData.formData.skillAugmentation) +
-          Number(formData.formData.otherModifiers),
+        Number(selectedRune.data.chance),
+        Number(flags.formData.ritualOrMeditation) +
+          Number(flags.formData.skillAugmentation) +
+          Number(flags.formData.otherModifiers),
         speakerName
       );
     }

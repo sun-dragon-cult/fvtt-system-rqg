@@ -603,6 +603,15 @@
   }
 
   &.chat-card {
+    .card-options {
+      margin: 10px 0 0 0;
+      background: url(./assets/images/mainbackground.webp) repeat-y scroll top left/100%;
+    }
+
+    .card-option {
+      margin: 5px;
+    }
+
     &.weapon-card {
       .active {
         box-shadow: 0 0 0.5em red;
@@ -896,6 +905,12 @@
   border: none;
   margin: 0;
   mix-blend-mode: overlay;
+}
+
+.rqg img.rune-dark {
+  height: 20px;
+  border: none;
+  margin: 0;
 }
 
 .rqg img.item {
