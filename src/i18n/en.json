@@ -13,7 +13,7 @@
   },
   "RQG": {
     "Settings": {
-      "Hitlocations": {
+      "HitLocations": {
         "dialogTitle": "Hit Location Name Settings",
         "settingName": "Hit Location Names",
         "settingLabel": "Configure Available Hit Location Names",

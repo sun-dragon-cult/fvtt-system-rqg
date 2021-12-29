@@ -6,9 +6,9 @@ import { HitLocationSettings } from "../dialog/hitLocationSettings";
 
 export const registerRqgSystemSettings = function () {
   getGame().settings.registerMenu("rqg", "hitLocations", {
-    name: getGame().i18n.localize("RQG.Settings.Hitlocations.settingName"),
-    label: getGame().i18n.localize("RQG.Settings.Hitlocations.settingLabel"),
-    hint: getGame().i18n.localize("RQG.Settings.Hitlocations.settingHint"),
+    name: getGame().i18n.localize("RQG.Settings.HitLocations.settingName"),
+    label: getGame().i18n.localize("RQG.Settings.HitLocations.settingLabel"),
+    hint: getGame().i18n.localize("RQG.Settings.HitLocations.settingHint"),
     icon: "fas fa-child",
     type: HitLocationSettings,
     restricted: true,
