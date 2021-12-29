@@ -1,5 +1,7 @@
 import { getGame } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
+import { DefaultItemIconSettings } from "../dialog/defaultItemIconSettings";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationSettings } from "../dialog/hitLocationSettings";
 
 export const registerRqgSystemSettings = function () {
@@ -46,6 +48,33 @@ export const registerRqgSystemSettings = function () {
     icon: "fas fa-child",
     type: HitLocationSettings,
     restricted: true,
+  });
+
+  getGame().settings.registerMenu("rqg", "defaultItemIconSettings", {
+    name: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsName"),
+    label: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsLabel"),
+    hint: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingsHint"),
+    icon: "fas fa-image",
+    type: DefaultItemIconSettings,
+    restricted: true,
+  });
+
+  getGame().settings.register("rqg", "defaultItemIconSettings", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {
+      [ItemTypeEnum.Armor]: "/systems/rqg/assets/images/armor/cuirass.svg",
+      [ItemTypeEnum.Cult]: "/systems/rqg/assets/images/items/cult.svg",
+      [ItemTypeEnum.Gear]: "/systems/rqg/assets/images/gear/knapsack.svg",
+      [ItemTypeEnum.HitLocation]: "/systems/rqg/assets/images/items/hit-location.svg",
+      [ItemTypeEnum.Passion]: "/systems/rqg/assets/images/passion/love.svg",
+      [ItemTypeEnum.Rune]: "/systems/rqg/assets/runes/chaos.svg",
+      [ItemTypeEnum.RuneMagic]: "/systems/rqg/assets/images/items/rune-magic.svg",
+      [ItemTypeEnum.Skill]: "/systems/rqg/assets/images/items/skill.svg",
+      [ItemTypeEnum.SpiritMagic]: "/systems/rqg/assets/images/items/spirit-magic.svg",
+      [ItemTypeEnum.Weapon]: "/systems/rqg/assets/images/items/weapon.svg",
+    },
   });
 
   getGame().settings.register("rqg", "systemMigrationVersion", {

@@ -13,6 +13,12 @@
   },
   "RQG": {
     "Settings": {
+      "DefaultItemIcons": {
+        "title": "Default Item Icon Settings",
+        "settingsName": "Default Item Icons",
+        "settingsLabel": "Configure Default Icons for new Items",
+        "settingsHint": "Set the default icons used when creating new items."
+      },
       "Hitlocations": {
         "dialogTitle": "Hit Location Settings",
         "settingName": "List of hit location names",
