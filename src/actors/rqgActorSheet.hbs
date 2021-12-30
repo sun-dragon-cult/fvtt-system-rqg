@@ -10,11 +10,11 @@
         <div class="flex-row gap1rem">
           {{#unless (eq characterData.attributes.health "healthy")}}<i>{{characterData.attributes.health}}</i>{{/unless}}
           {{#if characterElementRunes}}
-              <div>
-                {{#each characterElementRunes}}
-                  <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
-                {{/each}}
-              </div>
+            <div>
+              {{#each characterElementRunes}}
+                <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
+              {{/each}}
+            </div>
           {{/if}}
           {{#if characterPowerRunes}}
             <div>
@@ -55,6 +55,16 @@
             </div>
           </div>
         {{/if}}
+        <div>
+          <label class="flex-row flex-align-center">
+            <span>Magic Points</span>
+            <span class="nowrap">
+              <input type="number" min="0" max="99" name="data.attributes.magicPoints.value" value="{{characterData.attributes.magicPoints.value}}" size="2"
+              > / {{characterData.attributes.magicPoints.max}}
+            </span>
+          </label>
+          <i class="norse flex-row flex-align-center">{{#each powCrystals}}<span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
+        </div>
         <fieldset class="mov-enc">
           <legend>{{characterData.attributes.move.currentLocomotion}}</legend>
           <div class="flex-column">
@@ -107,14 +117,14 @@
 
         </fieldset>
         {{#if isPC}}
-        <div>
-          <div class="norse">Hero Points</div>
-          {{#if isGM}}
-            <div class="text-center"><input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{characterData.attributes.heroPoints}}" size="2"></div>
-          {{else}}
-            <div class="text-center">{{characterData.attributes.heroPoints}}</div>
-          {{/if}}
-        </div>
+          <div>
+            <div class="norse">Hero Points</div>
+            {{#if isGM}}
+              <div class="text-center"><input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{characterData.attributes.heroPoints}}" size="2"></div>
+            {{else}}
+              <div class="text-center">{{characterData.attributes.heroPoints}}</div>
+            {{/if}}
+          </div>
         {{/if}}
       </div>
     </div>
@@ -136,71 +146,73 @@
 
   <section class="sheet-body">
     <div class="tab combat" data-group="primary" data-tab="combat">
-        <div class="flex-row flex-wrap">
-          {{#if showUiSection.health}}{{> "systems/rqg/actors/sheet-parts/health.hbs" }}{{/if}}
-          <div>
-            {{> "systems/rqg/actors/sheet-parts/spirit-combat.hbs" }}<br>
-            {{#if showUiSection.combat}}{{> "systems/rqg/actors/sheet-parts/combat.hbs" }}{{/if}}
-          </div>
-          <div style="width: 100%">
-            <h2>Allies & Notes</h2>
-            {{editor content=characterData.allies target="data.allies" button=true owner=owner editable=editable}}
-          </div>
+      <div class="flex-row flex-wrap">
+        <div>
+          {{#if showUiSection.health}}{{> "systems/rqg/actors/sheet-parts/health.hbs" }}<br>{{/if}}
+          {{> "systems/rqg/actors/sheet-parts/spirit-combat.hbs" }}
         </div>
+
+        {{#if showUiSection.combat}}<div>{{> "systems/rqg/actors/sheet-parts/combat.hbs" }}</div>{{/if}}
+
+        <div style="width: 100%">
+          <h2>Allies & Notes</h2>
+          {{editor content=characterData.allies target="data.allies" button=true owner=owner editable=editable}}
+        </div>
+      </div>
     </div>
 
     {{#if showUiSection.runes}}
-    <div class="tab runes" data-group="primary" data-tab="runes">
-      {{> "systems/rqg/actors/sheet-parts/runes-tab.hbs" }}
-    </div>
+      <div class="tab runes" data-group="primary" data-tab="runes">
+        {{> "systems/rqg/actors/sheet-parts/runes-tab.hbs" }}
+      </div>
     {{/if}}
 
     {{#if showUiSection.spiritMagic}}
-    <div class="tab spiritmagic" data-group="primary" data-tab="spiritmagic">
-      {{> "systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs" }}
-    </div>
+      <div class="tab spiritmagic" data-group="primary" data-tab="spiritmagic">
+        {{> "systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs" }}
+      </div>
     {{/if}}
 
     {{#if showUiSection.runeMagic}}
-    <div class="tab runemagic" data-group="primary" data-tab="runemagic">
-      {{> "systems/rqg/actors/sheet-parts/rune-magic-tab.hbs" }}
-    </div>
+      <div class="tab runemagic" data-group="primary" data-tab="runemagic">
+        {{> "systems/rqg/actors/sheet-parts/rune-magic-tab.hbs" }}
+      </div>
     {{/if}}
 
     {{#if showUiSection.sorcery}}
-    <div class="tab sorcery" data-group="primary" data-tab="sorcery">
-      {{> "systems/rqg/actors/sheet-parts/sorcery-tab.hbs" }}
-    </div>
+      <div class="tab sorcery" data-group="primary" data-tab="sorcery">
+        {{> "systems/rqg/actors/sheet-parts/sorcery-tab.hbs" }}
+      </div>
     {{/if}}
 
     {{#if showUiSection.skills}}
-    <div class="tab skills" data-group="primary" data-tab="skills">
-      {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs" }}
-    </div>
+      <div class="tab skills" data-group="primary" data-tab="skills">
+        {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs" }}
+      </div>
     {{/if}}
 
     {{#if showUiSection.gear}}
-    <div class="tab gear" data-group="primary" data-tab="gear">
-      {{> "systems/rqg/actors/sheet-parts/gear-tab.hbs" }}
-    </div>
+      <div class="tab gear" data-group="primary" data-tab="gear">
+        {{> "systems/rqg/actors/sheet-parts/gear-tab.hbs" }}
+      </div>
     {{/if}}
 
     {{#if showUiSection.passions}}
-    <div class="tab passions" data-group="primary" data-tab="passions">
-      {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs" }}
-    </div>
+      <div class="tab passions" data-group="primary" data-tab="passions">
+        {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs" }}
+      </div>
     {{/if}}
 
     {{#if showUiSection.background}}
-    <div class="tab background" data-group="primary" data-tab="background">
-      {{> "systems/rqg/actors/sheet-parts/background-tab.hbs" }}
-    </div>
+      <div class="tab background" data-group="primary" data-tab="background">
+        {{> "systems/rqg/actors/sheet-parts/background-tab.hbs" }}
+      </div>
     {{/if}}
 
     {{#if showUiSection.activeEffects}}
-    <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
-      {{> "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs" }}
-    </div>
+      <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
+        {{> "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs" }}
+      </div>
     {{/if}}
   </section>
 </form>
