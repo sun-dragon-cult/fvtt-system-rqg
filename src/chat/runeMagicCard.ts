@@ -37,6 +37,7 @@ type RuneMagicCardFlags = {
     chance: number;
     selectedRuneId: string;
     journalEntryName: string;
+    journalPack: string;
   };
 };
 
@@ -105,6 +106,7 @@ export class RuneMagicCard {
         //@ts-ignore id
         selectedRuneId: strongestRune._id || "",
         journalEntryName: getJournalEntryName(runeMagicItem.data.data),
+        journalPack: runeMagicItem.data.data.journalPack,
       },
     };
 
