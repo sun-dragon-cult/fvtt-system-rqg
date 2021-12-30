@@ -1,11 +1,4 @@
-@use "variables";
-
-//:root {
-//  --main-color: #854906;
-//  --main-bg-color: #f3a71e;
-//  --secondary-color: #5c8322;
-//  --table-alternate-background: rgba(0, 0, 0, 0.08);
-//}
+@use 'variables';
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -173,6 +166,14 @@
       margin: 0 auto -4px;
       border-radius: 50%;
     }
+  }
+
+  .mp-ellipses {
+    text-overflow: ellipsis;
+    max-width: 7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
   }
 
   .masonry {
@@ -355,7 +356,7 @@
     }
 
     &.spirit-combat {
-      grid-template-columns: [col-start] 30px auto [col-end];
+      grid-template-columns: [col-start] auto auto [col-end];
 
       // Alternating row background
       > *:nth-child(4n + 1),
@@ -849,6 +850,7 @@
 
   .thirdline {
     display: flex;
+    gap: 1rem;
     justify-content: space-between;
     align-items: center;
     margin-top: 8px;
