@@ -1,13 +1,11 @@
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { stringify } from "querystring";
 import { Rune } from "../actors/item-specific/rune";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgActorDataSource } from "../data-model/actor-data/rqgActorData";
 import { CultDataSource } from "../data-model/item-data/cultData";
 import { ItemTypeEnum, RqgItemDataSource } from "../data-model/item-data/itemTypes";
 import { RuneDataSource } from "../data-model/item-data/runeData";
-import { Ability } from "../data-model/shared/ability";
-import { RqgItem } from "../items/rqgItem";
+import { Ability, ResultEnum, ResultMessage } from "../data-model/shared/ability";
 import {
   assertItemType,
   getActorFromIds,
@@ -31,6 +29,7 @@ type RuneMagicCardFlags = {
   eligibleRunes: RuneDataSource[];
   formData: {
     runePointCost: number;
+    cultId: string;
     magicPointBoost: number;
     ritualOrMeditation: number;
     skillAugmentation: number;
@@ -97,6 +96,7 @@ export class RuneMagicCard {
       eligibleRunes: runesForCasting,
       formData: {
         runePointCost: runeMagicItem.data.data.points,
+        cultId: cult.id || "",
         magicPointBoost: 0,
         ritualOrMeditation: 0,
         skillAugmentation: 0,
@@ -174,17 +174,10 @@ export class RuneMagicCard {
     // @ts-ignore formData.entries()
     for (const [name, value] of formData.entries()) {
       if (name in flags.formData) {
-        // if (name === "selectedRune") {
-        //   flags.formData.selectedRuneId = flags.eligibleRunes.filter(
-        //     //@ts-ignore _id TODO: WHY?!
-        //     (r) => r.actorRune._id === value
-        //   )[0];
-        // } else {
         //TODO: This is not type safe, so for instance a value that is supposed to be a number
         //ends up as a string in the formData property
         //@ts-ignore TODO: WHY?!
         flags.formData[name as keyof typeof flags.formData] = value;
-        // }
       }
     }
 
@@ -217,23 +210,113 @@ export class RuneMagicCard {
     const actorData = actor.data;
     const validationError = RuneMagicCard.validateData(actorData, itemData, flags, cult.data);
 
-    //@ts-ignore _id
-    const selectedRune: RuneDataSource = flags.eligibleRunes.find((i) => i._id === flags.formData.selectedRuneId);
+    const selectedRune: RuneDataSource | undefined = flags.eligibleRunes.find(
+      //@ts-ignore _id
+      (i) => i._id === flags.formData.selectedRuneId
+    );
+
+    if (!selectedRune) {
+      // the ui should make this impossible
+      console.log("Attempt to roll a Rune Magic Spell with no Rune selected on the card.");
+      return;
+    }
 
     console.log("ROLL selectedRune: ", selectedRune);
 
     if (validationError) {
       ui.notifications?.warn(validationError);
     } else {
+      const resultMessages: ResultMessage[] = [];
+      resultMessages.push({
+        result: ResultEnum.Critical,
+        html: `<div>The spell takes effect and costs no Rune Points and ${flags.formData.magicPointBoost} Magic Points from boosting.</div>`,
+      });
+      resultMessages.push({
+        result: ResultEnum.Special,
+        html: `<div>The spell takes effect and costs ${flags.formData.runePointCost} and ${flags.formData.magicPointBoost} Magic Points from boosting.</div>`,
+      });
+      resultMessages.push({
+        result: ResultEnum.Success,
+        html: `<div>The spell takes effect and costs ${flags.formData.runePointCost} and ${flags.formData.magicPointBoost} Magic Points from boosting.</div>`,
+      });
+      resultMessages.push({
+        result: ResultEnum.Failure,
+        html: `<div>The spell fails to take effect but no Rune Points are lost.  If boosted with Magic Points, one is lost.</div>`,
+      });
+      resultMessages.push({
+        result: ResultEnum.Fumble,
+        html: `<div>The spell fails to take effect and ${flags.formData.runePointCost} Rune Points are lost.  If boosted with Magic Points, one is lost.</div>`,
+      });
       const result = await Ability.roll(
         "Cast " + itemData.name,
         Number(selectedRune.data.chance),
         Number(flags.formData.ritualOrMeditation) +
           Number(flags.formData.skillAugmentation) +
           Number(flags.formData.otherModifiers),
-        speakerName
+        speakerName,
+        resultMessages
       );
+      if (result === ResultEnum.Critical) {
+        // spell takes effect, Rune Points NOT spent, Rune gets xp check, boosting Magic Points spent
+        await RuneMagicCard.SpendRuneAndMagicPoints(
+          0,
+          flags.formData.magicPointBoost,
+          flags.actorId,
+          flags.formData.cultId
+        );
+      } else if (result === ResultEnum.Success || result === ResultEnum.Special) {
+        // spell takes effect, Rune Points spent, Rune gets xp check, boosting Magic Points spent
+        await RuneMagicCard.SpendRuneAndMagicPoints(
+          flags.formData.runePointCost,
+          flags.formData.magicPointBoost,
+          flags.actorId,
+          flags.formData.cultId
+        );
+      } else if (result === ResultEnum.Failure) {
+        // spell fails, no Rune Point Loss, if Magic Point boosted, lose 1 Magic Point if boosted
+        const boosted = flags.formData.magicPointBoost >= 1 ? 1 : 0;
+        await RuneMagicCard.SpendRuneAndMagicPoints(
+          0,
+          boosted,
+          flags.actorId,
+          flags.formData.cultId
+        );
+      } else if (result === ResultEnum.Fumble) {
+        // spell fails, lose Rune Points, if Magic Point boosted, lose 1 Magic Point if boosted
+        const boosted = flags.formData.magicPointBoost >= 1 ? 1 : 0;
+        await RuneMagicCard.SpendRuneAndMagicPoints(
+          flags.formData.runePointCost,
+          boosted,
+          flags.actorId,
+          flags.formData.cultId
+        );
+      }
     }
+  }
+
+  private static async SpendRuneAndMagicPoints(
+    runePoints: number,
+    magicPoints: number,
+    actorId: string,
+    cultId: string
+  ) {
+    const actor = getGame().actors?.get(actorId);
+    const cult = actor?.items.get(cultId);
+    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
+    // At this point if the current Rune Points or Magic Points are zero
+    // it's too late. That validation happened earlier.
+    const newRunePointTotal: number = (cult.data.data.runePoints.value || 0) - runePoints;
+    const newMagicPointTotal: number =
+      (actor?.data.data.attributes.magicPoints.value || 0) - magicPoints;
+    const updateRp: DeepPartial<ItemDataSource> = {
+      _id: cult?.id,
+      data: { runePoints: { value: newRunePointTotal } },
+    };
+    await actor?.updateEmbeddedDocuments("Item", [updateRp]);
+    const updateMp = {
+      "data.attributes.magicPoints.value": newMagicPointTotal,
+    };
+    await actor?.update(updateMp);
   }
 
   public static validateData(
@@ -248,7 +331,11 @@ export class RuneMagicCard {
     if (formData.formData.runePointCost > itemData.data.points) {
       return "Can not cast spell above learned level"; //TODO: Does this apply to Rune Magic?
     } else if (formData.formData.runePointCost > (cultData.data.runePoints.value || 0)) {
-      return "Not enough rune points left";
+      return "Not enough rune points left!";
+    } else if (
+      formData.formData.magicPointBoost > (actorData?.data?.attributes?.magicPoints?.value || 0)
+    ) {
+      return "Not enough magic points left to boost that much!";
     } else {
       return "";
     }

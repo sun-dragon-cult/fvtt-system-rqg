@@ -20,6 +20,11 @@ export enum ResultEnum {
   Fumble,
 }
 
+export class ResultMessage {
+  result!: ResultEnum;
+  html!: string;
+}
+
 export class Ability {
   /** Do a roll against this ability and factor in all modifiers.
    * stat - an object that implements IAbility
@@ -29,18 +34,24 @@ export class Ability {
     flavor: string,
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
-    speakerName: string
+    speakerName: string,
+    resultMessages?: ResultMessage[],
   ): Promise<ResultEnum> {
     const r = new Roll("1d100");
     await r.evaluate({ async: true });
     const modifiedChance: number = chance + chanceMod;
     const useSpecialCriticals = getGame().settings.get("rqg", "specialCrit");
     const result = Ability.evaluateResult(modifiedChance, r.total!, useSpecialCriticals);
+    let resultMsgHtml: string | undefined = "";
+    if (resultMessages) {
+      resultMsgHtml = resultMessages.find(i => i.result === result)?.html;
+    }
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = getGame().i18n.localize(`RQG.ResultEnum.${result}`);
     await r.toMessage({
       flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1>`,
+      content: resultMsgHtml,
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     });
