@@ -50,8 +50,7 @@ export class Ability {
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = getGame().i18n.localize(`RQG.ResultEnum.${result}`);
     await r.toMessage({
-      flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1>`,
-      content: resultMsgHtml,
+      flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1><div>${resultMsgHtml}</div>`,
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     });

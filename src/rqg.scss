@@ -674,10 +674,15 @@
     }
   }
 
-  .card-journal-link{
+  .card-journal-link {
     .invalid {
       color: var(--rqg-color-invalid-joural);
     }
+  }
+
+  .card-number-input {
+    text-align: right;
+    width: 50px;
   }
 }
 

@@ -38,6 +38,8 @@ type RuneMagicCardFlags = {
     selectedRuneId: string;
     journalEntryName: string;
     journalPack: string;
+    ritualOrMeditationOptions: any;
+    skillAugmentationOptions: any;
   };
 };
 
@@ -49,16 +51,8 @@ export class RuneMagicCard {
   ): Promise<void> {
     const runeMagicItem = actor.items.get(runeMagicItemId);
     assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
-    console.log("INITIAL RUNE MAGIC ITEM: ", runeMagicItem);
     const cult = actor.items.get(runeMagicItem.data.data.cultId);
     assertItemType(cult?.data.type, ItemTypeEnum.Cult);
-    console.log("INITIAL CULT: ", cult);
-
-    if (!actor.id) {
-      const msg = `Actor without id in rune magic card`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, actor);
-    }
 
     let usableRuneNames: string[] = [];
     let runesForCasting: RuneDataSource[] = [];
@@ -79,19 +73,27 @@ export class RuneMagicCard {
       runesForCasting.push(actorRune.data);
     });
 
-    console.log("runesForCasting: ", runesForCasting);
-
     const strongestRune = runesForCasting.reduce(function (prev, current) {
       //@ts-ignore data WHY?!
       return prev.data.chance > current.data.chance ? prev : current;
     });
 
-    const eligibleShortRunes: ShortRune[] = [];
+    const ritualOrMeditationOptions: any = {};
+    for (let i = 0; i <= 100; i += 5) {
+      ritualOrMeditationOptions[i] = getGame().i18n.localize(
+        "RQG.RuneMagicCard.MeditationOrRitualValue" + i
+      );
+    }
 
-    console.log("STRONGEST RUNE: ", strongestRune);
+    const skillAugmentationOptions: any = {};
+    [0, 50, 30, 20, -20, -50].forEach((value) => {
+      skillAugmentationOptions[value] = getGame().i18n.localize(
+        "RQG.RuneMagicCard.SkillAugmentationValue" + value
+      );
+    });
 
     const flags: RuneMagicCardFlags = {
-      actorId: actor.id,
+      actorId: actor.id || "",
       tokenId: token?.id ?? null,
       itemData: runeMagicItem.data.toObject(),
       eligibleRunes: runesForCasting,
@@ -103,29 +105,25 @@ export class RuneMagicCard {
         skillAugmentation: 0,
         otherModifiers: 0,
         chance: strongestRune.data.chance,
-        //@ts-ignore id
+        //@ts-ignore _id
         selectedRuneId: strongestRune._id || "",
         journalEntryName: getJournalEntryName(runeMagicItem.data.data),
         journalPack: runeMagicItem.data.data.journalPack,
+        ritualOrMeditationOptions: ritualOrMeditationOptions,
+        skillAugmentationOptions: skillAugmentationOptions,
       },
     };
-
-    console.log("INITIAL FLAGS: ", flags);
 
     ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName);
     await ChatMessage.create(await this.renderContent(flags));
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
-    console.log("INPUT CHANGE: ", ev);
     const chatMessage = getGame().messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as RuneMagicCardFlags;
-    console.log("FLAGS", flags);
 
     const form = (ev.target as HTMLElement).closest("form") as HTMLFormElement;
     const formData = new FormData(form);
-
-    console.log("FORM DATA", formData);
 
     //@ts-ignore formData.entries
     for (const [name, value] of formData.entries()) {
@@ -135,28 +133,20 @@ export class RuneMagicCard {
       }
     }
 
-    console.log("FLAGS after", flags);
-    // Get use the selectedRuneId to get the actual rune from the eligible runes
-    //@ts-ignore _id
+    //@ts-ignore Type 'AbstractEmbeddedItem' is missing the following properties from type 'RuneDataSource'
     const selectedRune: RuneDataSource = flags.eligibleRunes.find(
-      //@ts-ignore id
+      //@ts-ignore _id
       (i) => i._id === flags.formData.selectedRuneId
     ) as Rune;
 
-    console.log("SELECTED RUNE: ", selectedRune);
-    //@ts-ignore data WHY?!
     const newChance: number =
       Number(selectedRune.data.chance) +
       Number(flags.formData.ritualOrMeditation) +
       Number(flags.formData.skillAugmentation) +
       Number(flags.formData.otherModifiers);
 
-    console.log("New Chance: ", newChance);
-
     flags.formData.chance = newChance;
-
     const data = await RuneMagicCard.renderContent(flags);
-
     await chatMessage?.update(data);
   }
 
@@ -166,18 +156,13 @@ export class RuneMagicCard {
   ): Promise<boolean> {
     ev.preventDefault();
 
-    console.log("RUNE MAGIC CARD formSubmithander");
-
     const chatMessage = getGame().messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as RuneMagicCardFlags;
 
     const formData = new FormData(ev.target as HTMLFormElement);
-    console.log(formData);
     // @ts-ignore formData.entries()
     for (const [name, value] of formData.entries()) {
       if (name in flags.formData) {
-        //TODO: This is not type safe, so for instance a value that is supposed to be a number
-        //ends up as a string in the formData property
         //@ts-ignore TODO: WHY?!
         flags.formData[name as keyof typeof flags.formData] = value;
       }
@@ -193,7 +178,7 @@ export class RuneMagicCard {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await RuneMagicCard.roll(flags.itemData, flags, actor, speakerName);
     } else {
-      ui.notifications?.warn("Couldn't find world actor to do rune magic roll");
+      ui.notifications?.warn(getGame().i18n.localize("RQG.RuneMagicCard.getActorFromIdsWarning"));
     }
     return false;
   }
@@ -204,8 +189,6 @@ export class RuneMagicCard {
     actor: RqgActor,
     speakerName: string
   ): Promise<void> {
-    console.log("RUNE MAGIC CARD ROLL");
-    console.log(flags);
     assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
     const cult = actor.items.get(itemData.data.cultId);
     assertItemType(cult?.data.type, ItemTypeEnum.Cult);
@@ -219,11 +202,9 @@ export class RuneMagicCard {
 
     if (!selectedRune) {
       // the ui should make this impossible
-      console.log("Attempt to roll a Rune Magic Spell with no Rune selected on the card.");
+      console.log(getGame().i18n.localize("RQG.RuneMagicCard.noSelectedRuneWarning"));
       return;
     }
-
-    console.log("ROLL selectedRune: ", selectedRune);
 
     if (validationError) {
       ui.notifications?.warn(validationError);
@@ -231,23 +212,33 @@ export class RuneMagicCard {
       const resultMessages: ResultMessage[] = [];
       resultMessages.push({
         result: ResultEnum.Critical,
-        html: `<div>The spell takes effect and costs no Rune Points and ${flags.formData.magicPointBoost} Magic Points from boosting.</div>`,
+        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageCritical", {
+          magicPointBoost: flags.formData.magicPointBoost,
+        }),
       });
       resultMessages.push({
         result: ResultEnum.Special,
-        html: `<div>The spell takes effect and costs ${flags.formData.runePointCost} and ${flags.formData.magicPointBoost} Magic Points from boosting.</div>`,
+        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageSpecial", {
+          runePointCost: flags.formData.runePointCost,
+          magicPointBoost: flags.formData.magicPointBoost,
+        }),
       });
       resultMessages.push({
         result: ResultEnum.Success,
-        html: `<div>The spell takes effect and costs ${flags.formData.runePointCost} and ${flags.formData.magicPointBoost} Magic Points from boosting.</div>`,
+        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageSuccess", {
+          runePointCost: flags.formData.runePointCost,
+          magicPointBoost: flags.formData.magicPointBoost,
+        }),
       });
       resultMessages.push({
         result: ResultEnum.Failure,
-        html: `<div>The spell fails to take effect but no Rune Points are lost.  If boosted with Magic Points, one is lost.</div>`,
+        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageFailure"),
       });
       resultMessages.push({
         result: ResultEnum.Fumble,
-        html: `<div>The spell fails to take effect and ${flags.formData.runePointCost} Rune Points are lost.  If boosted with Magic Points, one is lost.</div>`,
+        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageFumble", {
+          runePointCost: flags.formData.runePointCost,
+        }),
       });
       const result = await Ability.roll(
         "Cast " + itemData.name,
@@ -328,16 +319,12 @@ export class RuneMagicCard {
     cultData: CultDataSource
   ): string {
     assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
-    console.log("RUNE MAGIC CARD VALIDATE DATA");
-    console.log(itemData);
-    if (formData.formData.runePointCost > itemData.data.points) {
-      return "Can not cast spell above learned level"; //TODO: Does this apply to Rune Magic?
-    } else if (formData.formData.runePointCost > (cultData.data.runePoints.value || 0)) {
-      return "Not enough rune points left!";
+    if (formData.formData.runePointCost > (cultData.data.runePoints.value || 0)) {
+      return getGame().i18n.format("RQG.RuneMagicCard.validationNotEnoughRunePoints");
     } else if (
       formData.formData.magicPointBoost > (actorData?.data?.attributes?.magicPoints?.value || 0)
     ) {
-      return "Not enough magic points left to boost that much!";
+      return getGame().i18n.format("RQG.RuneMagicCard.validationNotEnoughMagicPoints");
     } else {
       return "";
     }
@@ -347,7 +334,7 @@ export class RuneMagicCard {
     let html = await renderTemplate("systems/rqg/chat/runeMagicCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: "Rune Magic: " + flags.itemData.name,
+      flavor: getGame().i18n.format("RQG.RuneMagicCard.runeMagicResultFlavor", {name: flags.itemData.name}),
       user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,
