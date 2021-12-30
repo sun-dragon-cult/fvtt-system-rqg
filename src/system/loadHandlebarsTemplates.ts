@@ -24,9 +24,6 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/actors/sheet-parts/condition.hbs",
     "systems/rqg/actors/sheet-parts/physical-item-location.hbs",
 
-    // Dialog template for selecting runeMagic Cult
-    "systems/rqg/actors/item-specific/runeMagicCultDialog.hbs",
-
     // Item sheets
     "systems/rqg/items/passion-item/passionSheet.hbs",
     "systems/rqg/items/skill-item/skillSheet.hbs",
@@ -45,8 +42,13 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/chat/spiritMagicCard.hbs",
     "systems/rqg/chat/weaponCard.hbs",
 
-    // Dialogs
-    "systems/rqg/dialog/improveAbilityDialog.hbs"
+    // Dialogs & Settings
+    "systems/rqg/dialog/improveAbilityDialog.hbs",
+    "systems/rqg/dialog/hitLocationSettings.hbs",
+    "systems/rqg/actors/item-specific/runeMagicCultDialog.hbs",
+
+    // Interface
+    "systems/rqg/foundryUi/pause.hbs",
   ];
 
   return loadTemplates(templatePaths);

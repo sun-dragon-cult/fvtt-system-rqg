@@ -1,0 +1,18 @@
+<form>
+  <h2 class="module-header">{{localize "RQG.Settings.DefaultItemIcons.settingName"}}</h2>
+
+  {{#each this}}
+    <div class="form-group">
+      <label>
+        <span>{{localizeitemtype @key}}</span>
+        <img src="{{this}}" />
+        {{filePicker target=@key type="image"}}
+
+      </label>
+      <div class="form-fields">
+        <input type="text" id="{{@key}}" value="{{this}}" name="{{@key}}" />
+      </div>
+    </div>
+  {{/each}}
+
+</form>

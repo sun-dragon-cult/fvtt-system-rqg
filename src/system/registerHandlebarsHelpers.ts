@@ -1,5 +1,5 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
-import { getActorFromIds, getAllRunesIndex, hasOwnProperty, RqgError } from "./util";
+import { getActorFromIds, getAllRunesIndex, getGame, hasOwnProperty, RqgError } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export const registerHandlebarsHelpers = function () {
@@ -22,6 +22,10 @@ export const registerHandlebarsHelpers = function () {
     const actor = getActorFromIds(actorId, tokenId);
     const item = actor && actor.items.get(itemId);
     return item ? item.data.name : "---";
+  });
+
+  Handlebars.registerHelper("localizeitemtype", (typeName) => {
+    return getGame().i18n.localize("ITEM.Type" + typeName.titleCase());
   });
 
   Handlebars.registerHelper("skillname", (itemId, actorId, tokenId) => {
@@ -104,6 +108,11 @@ export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("multiply", (...nums) => {
     nums.pop();
     return Math.floor(nums.reduce((acc, n) => acc * n));
+  });
+
+  Handlebars.registerHelper("multiplyfixed2", (...nums) => {
+    nums.pop();
+    return nums.reduce((acc, n) => acc * n).toFixed(2);
   });
 
   Handlebars.registerHelper("sum", (...nums) => {

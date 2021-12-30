@@ -99,6 +99,8 @@ interface CharacterSheetData {
 
   locomotionModes: { [a: string]: string };
 
+  currencyTotals: any;
+
   // UI toggles
   isGM: boolean;
   isPC: boolean;
@@ -199,11 +201,45 @@ export class RqgActorSheet extends ActorSheet<
         [LocomotionEnum.Fly]: "Fly",
       },
 
+      currencyTotals: this.calcCurrencyTotals(),
+
       // UI toggles
       isGM: getGameUser().isGM,
       isPC: this.actor.hasPlayerOwner,
       showUiSection: this.getUiSectionVisibility(),
     };
+  }
+
+  private calcCurrencyTotals(): any {
+    const currency: RqgItem[] = this.actor.items.filter(
+      (i: RqgItem) =>
+        i.data.type === ItemTypeEnum.Gear && i.data.data.physicalItemType === "currency"
+    );
+    const result = { quantity: 0, price: { real: 0, estimated: 0 }, encumbrance: 0 };
+    currency.forEach((curr) => {
+      assertItemType(curr.data.type, ItemTypeEnum.Gear);
+      result.quantity += Number(curr.data.data.quantity);
+      result.price.real += curr.data.data.price.real * curr.data.data.quantity;
+      result.price.estimated += curr.data.data.price.estimated * curr.data.data.quantity;
+      result.encumbrance += curr.data.data.encumbrance * curr.data.data.quantity;
+      let conv = "";
+      if (curr.data.data.price.estimated > 1) {
+        conv = getGame().i18n.format("ACTORSHEET.Gear.CurrencyConversionTipOver1", {
+          name: curr.name,
+          value: curr.data.data.price.estimated,
+        });
+      } else if (curr.data.data.price.estimated === 1) {
+        conv = getGame().i18n.format("ACTORSHEET.Gear.CurrencyConversionTipLunar");
+      } else {
+        conv = getGame().i18n.format("ACTORSHEET.Gear.CurrencyConversionTipUnder1", {
+          name: curr.name,
+          value: 1 / curr.data.data.price.estimated,
+        });
+      }
+      //@ts-ignore
+      curr.data.data.price.conversion = conv;
+    });
+    return result;
   }
 
   private getPhysicalItemLocations(): string[] {
@@ -374,6 +410,24 @@ export class RqgActorSheet extends ActorSheet<
     this.actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
     });
+
+    const currency: any = [];
+    this.actor.items.forEach((item) => {
+      if (item.type === ItemTypeEnum.Gear) {
+        //TODO: Assert that this is Gear or something else that has physicalItemType??
+        //@ts-ignore physicalItemType
+        if (item.data.data.physicalItemType === "currency") {
+          currency.push(item);
+        }
+      }
+    });
+
+    currency.sort(
+      (a: any, b: any) =>
+        (Number(a.data.data.price.estimated) < Number(b.data.data.price.estimated) ? 1 : -1) - 1
+    );
+
+    itemTypes.currency = currency;
 
     // Separate skills into skill categories {agility: [RqgItem], communication: [RqgItem], ... }
     const skills: any = {};

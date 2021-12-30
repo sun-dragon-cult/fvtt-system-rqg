@@ -1,4 +1,4 @@
-@use 'variables';
+@use "variables";
 
 //:root {
 //  --main-color: #854906;
@@ -47,6 +47,10 @@
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
   font-variant: small-caps;
   letter-spacing: 1.5px;
+}
+
+.pad-left {
+  padding-left: 10px !important;
 }
 
 .text-left {
@@ -272,6 +276,20 @@
       margin-right: -0.4rem;
     }
 
+    .footer {
+      grid-column: 1/-1;
+      grid-row: auto;
+      margin-top: -1.3rem;
+      background: var(--rqg-color-main-bg);
+      mix-blend-mode: color-burn;
+      text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
+      box-shadow: var(--rqg-box-shadow-grid-header);
+      border: 1px solid grey;
+      border-radius: 40px;
+      margin-left: -0.4rem;
+      margin-right: -0.4rem;
+    }
+
     .head1 {
       grid-row: 1;
       grid-column: 1/2;
@@ -330,6 +348,10 @@
     .head1-4 {
       grid-row: 1;
       grid-column: 1 / span 4;
+    }
+
+    .no-background {
+      background-color: transparent !important;
     }
 
     &.spirit-combat {
@@ -934,11 +956,54 @@
   color: white;
 }
 
-.app.sheet.journal-sheet {
-  font-size: 16px;
+.app {
 
-  h3,
-  h4 {
-    margin: 0 0 -0.5rem;
+  &.sheet.journal-sheet {
+    font-size: 16px;
+
+    h3,
+    h4 {
+      margin: 0 0 -0.5rem;
+    }
+  }
+
+
+  input[name="hitLocationItemNames"] {
+    min-width: 10rem;
+  }
+}
+
+
+.app.default-icons {
+  label {
+    display: flex;
+
+    span {
+      flex: 1;
+    }
+
+    img {
+      height: 26px;
+      border: none;
+      vertical-align: inherit;
+    }
+
+    .file-picker {
+      width: min-content;
+    }
+
+    input {
+      width: 22rem;
+    }
+  }
+
+}
+
+#pause {
+  background: none;
+
+  h3 {
+    font-size: 3rem;
+    text-shadow: 1px 1px 2px var(--rqg-color-main), 0 0 1em var(--rqg-color-main-bg), 0 0 0.2em var(--rqg-color-main-bg);
   }
 }
