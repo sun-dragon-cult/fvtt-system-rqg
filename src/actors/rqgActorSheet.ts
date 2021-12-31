@@ -966,22 +966,56 @@ export class RqgActorSheet extends ActorSheet<
     const item = actor.items.get(itemId);
     requireValue(item, `No itemId [${itemId}] on actor ${actor.name} to show delete item Dialog`);
 
+    const itemTypeLoc: string = RqgItem.localizeItemTypeName(item.type);
+
+    const title = getGame().i18n.format("ACTORSHEET.confirmItemDeleteDialog.title", {
+      itemType: itemTypeLoc,
+      itemName: item.name,
+    });
+
+    let content: string = "";
+    if (item.type === ItemTypeEnum.Cult) {
+      content = getGame().i18n.format("ACTORSHEET.confirmItemDeleteDialog.contentCult", {
+        itemType: itemTypeLoc,
+        itemName: item.name,
+        runeMagicSpell: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
+      });
+    } else {
+      content = getGame().i18n.format("ACTORSHEET.confirmItemDeleteDialog.content", {
+        itemType: itemTypeLoc,
+        itemName: item.name,
+      });
+    }
+
     new Dialog(
       {
-        title: `Delete ${item.type}: ${item.name}`,
-        content: "Do you want to delete this item",
+        title: title,
+        content: content,
         default: "submit",
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
-            label: "Confirm",
+            label: getGame().i18n.format("DIALOG.Common.btnConfirm"),
             callback: async () => {
-              await actor.deleteEmbeddedDocuments("Item", [itemId]);
+              const idsToDelete = [];
+              if (item.type === ItemTypeEnum.Cult) {
+                console.log("CULT", item);
+                const cultId = item.id;
+                //@ts-ignore cultId
+                const runeMagicSpells = actor.items.filter(i => i.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultId);
+                runeMagicSpells.forEach(s => {
+                  idsToDelete.push((s.id));
+                })
+              };
+
+              idsToDelete.push(itemId);
+
+              await actor.deleteEmbeddedDocuments("Item", idsToDelete);
             },
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
+            label: getGame().i18n.format("DIALOG.Common.btnCancel"),
             callback: () => null,
           },
         },

@@ -121,22 +121,26 @@ export class RqgItem extends Item {
     const { parent, pack, ...options } = context;
     if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
-        const document = parent.items.get(u._id);
-        if (!document || document.documentName !== "Item") {
-          const msg = "couldn't find item document from result";
-          ui.notifications?.error(msg);
-          throw new RqgError(msg, updates);
+        if (u && u.length > 0) {
+          const document = parent.items.get(u._id);
+          if (!document || document.documentName !== "Item") {
+            const msg = "couldn't find item document from result";
+            ui.notifications?.error(msg);
+            throw new RqgError(msg, updates);
+          }
+          // Will update "updates" as a side effect
+          ResponsibleItemClass.get(document.data.type)?.preUpdateItem(
+            parent,
+            document,
+            updates,
+            options
+          );
         }
-        // Will update "updates" as a side effect
-        ResponsibleItemClass.get(document.data.type)?.preUpdateItem(
-          parent,
-          document,
-          updates,
-          options
-        );
       });
     }
-    return super.updateDocuments(updates, context);
+    if (updates[0].length > 0) {
+      return super.updateDocuments(updates, context);
+    }
   }
 
   // Validate that embedded items are unique (name + type),
@@ -159,5 +163,11 @@ export class RqgItem extends Item {
     );
     const okToAdd = !isRuneMagic || !(isRuneMagic && !actorHasCult);
     return !okToAdd;
+  }
+
+  //** Localizes Item Type Name using ITEM localization used by Foundry.
+  //** See also  */
+  public static localizeItemTypeName(itemType: ItemTypeEnum): string {
+    return getGame().i18n.localize("ITEM.Type" + itemType.titleCase());
   }
 }
