@@ -138,7 +138,10 @@ export class RqgItem extends Item {
         }
       });
     }
-    if (updates[0].length > 0) {
+    
+    // updates[0] will be an empty array when deleting the cult
+    // and will have a "data" property if there are real updates
+    if ( updates[0].data !== undefined) {
       return super.updateDocuments(updates, context);
     }
   }

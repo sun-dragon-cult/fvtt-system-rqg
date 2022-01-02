@@ -18,8 +18,8 @@ export default {
   optimize: {
     entrypoints: ["rqg.js", "template.js"],
     splitting: false,
-    // bundle: true,
-    // minify: true,
+    bundle: true,
+    minify: true,
     target: "es2020",
   },
   packageOptions: {},
