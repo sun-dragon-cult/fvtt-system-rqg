@@ -250,9 +250,18 @@
       "CurrencyConversionTipOver1": "One {name} is worth {value} Lunars.",
       "CurrencyConversionTipLunar": "Lunars are the standard basis of currency.",
       "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s."
+    },
+    "confirmItemDeleteDialog": {
+      "title": "Delete {itemType}: {itemName}",
+      "content": "Are you sure you want to delete the {itemType} named {itemName}?",
+      "contentCult": "Are you sure you want to delete the {itemType} named {itemName}? This will also delete all of the {runeMagicSpell} items associated with this {itemType}."
     }
   },
   "DIALOG": {
+    "Common": {
+      "btnCancel": "Cancel",
+      "btnConfirm": "Confirm"
+    },
     "improveAbilityDialog": {
       "title": "Improvement for {typeLocName} \"{name}\"",
       "titleChar": "Improvement for Characteristic \"{name}\"",
