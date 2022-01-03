@@ -169,7 +169,6 @@ export class RqgItem extends Item {
   }
 
   //** Localizes Item Type Name using ITEM localization used by Foundry.
-  //** See also  */
   public static localizeItemTypeName(itemType: ItemTypeEnum): string {
     return getGame().i18n.localize("ITEM.Type" + itemType.titleCase());
   }

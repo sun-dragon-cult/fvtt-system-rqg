@@ -26,7 +26,7 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("localizeitemtype", (typeName) => {
-    const itemType: ItemTypeEnum = <ItemTypeEnum>typeName;
+    const itemType: ItemTypeEnum = typeName;
     return RqgItem.localizeItemTypeName(itemType);
   });
 
