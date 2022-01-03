@@ -99,11 +99,14 @@
   <div class="nowrap">
     {{#if isGM}}
     <label>{{localize 'RQG.Reputation'}}
-      <input type="number" min="0" max="999" name="data.background.reputation" value="{{data.data.background.reputation}}">
+      <span class="text-right">
+        <input type="number" min="0" max="999" name="data.background.reputation" value="{{data.data.background.reputation}}">
+      </span>
     </label>%
     {{else if data.data.background.reputation}}
     <b>{{localize 'RQG.Reputation'}}</b> {{data.data.background.reputation}}%
     {{/if}}
+    <span data-reputation-roll>ROLL</span>
   </div>
 
   <div class="nowrap">
