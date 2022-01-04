@@ -6,6 +6,7 @@ import { CultDataSource } from "../data-model/item-data/cultData";
 import { ItemTypeEnum, RqgItemDataSource } from "../data-model/item-data/itemTypes";
 import { RuneDataSource } from "../data-model/item-data/runeData";
 import { Ability, ResultEnum, ResultMessage } from "../data-model/shared/ability";
+import { RqgItem } from "../items/rqgItem";
 import {
   assertItemType,
   getActorFromIds,
@@ -182,6 +183,65 @@ export class RuneMagicCard {
     }
     return false;
   }
+
+  public static async directRoll(
+    runeMagicItem: RqgItem,
+    actor: RqgActor,
+    speakerName: string
+  ): Promise<void> {
+    assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
+    const cult = actor.items.get(runeMagicItem.data.data.cultId);
+    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
+    
+    let usableRuneNames: string[] = [];
+    let runesForCasting: RuneDataSource[] = [];
+    if (runeMagicItem.data.data.runes.includes("Magic (condition)")) {
+      // Actor can use any of the cult's runes to cast
+      // And some cults have the same rune more than once, so de-dupe them
+      usableRuneNames = [...new Set(cult.data.data.runes)];
+    } else {
+      // Actor can use any of the Rune Magic Spell's runes to cast
+      usableRuneNames = [...new Set(runeMagicItem.data.data.runes)];
+    }
+
+    // Get the actor's versions of the runes, which will have their "chance"
+    usableRuneNames.forEach((rune) => {
+      //@ts-ignore name
+      const actorRune = actor.items.getName(rune);
+      assertItemType(actorRune?.data.type, ItemTypeEnum.Rune);
+      runesForCasting.push(actorRune.data);
+    });
+
+    const strongestRune = runesForCasting.reduce(function (prev, current) {
+      //@ts-ignore data WHY?!
+      return prev.data.chance > current.data.chance ? prev : current;
+    });
+
+    const flags: RuneMagicCardFlags = {
+      actorId: actor.id || "",
+      tokenId: actor.token?.id ?? null,
+      itemData: runeMagicItem.data.toObject(),
+      eligibleRunes: runesForCasting, // won't be used
+      formData: {
+        runePointCost: runeMagicItem.data.data.points,
+        cultId: cult.id || "",
+        magicPointBoost: 0,
+        ritualOrMeditation: 0,
+        skillAugmentation: 0,
+        otherModifiers: 0,
+        chance: strongestRune.data.chance,
+        //@ts-ignore _id
+        selectedRuneId: strongestRune._id || "",
+        journalEntryName: getJournalEntryName(runeMagicItem.data.data),
+        journalPack: runeMagicItem.data.data.journalPack,
+        ritualOrMeditationOptions: {}, // won't be used
+        skillAugmentationOptions: {}, // won't be used
+      },
+    };
+    ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName);
+    await RuneMagicCard.roll(flags.itemData, flags, actor, speakerName);
+  }
+
 
   public static async roll(
     itemData: ItemDataSource,
