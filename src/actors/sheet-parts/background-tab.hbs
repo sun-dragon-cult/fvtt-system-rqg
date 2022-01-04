@@ -96,28 +96,25 @@
 <fieldset>
   <legend>{{localize 'RQG.Circumstance'}}</legend>
 
-  <div class="nowrap">
-    {{#if isGM}}
-    <label>{{localize 'RQG.Reputation'}}
-      <span class="text-right">
-        <input type="number" min="0" max="999" name="data.background.reputation" value="{{data.data.background.reputation}}">
+    <div class="nowrap">
+      {{#if isGM}}
+      <span data-reputation-roll>
+        <img src="{{defaultItemIconSrc "Reputation"}}" class="item">
+        <label <img src="{{defaultItemIconSrc " Reputation"}}" class="item">
+          {{localize 'RQG.Reputation'}}
+          <span class="text-right">
+            <input type="number" min="0" max="999" name="data.background.reputation"
+              value="{{data.data.background.reputation}}">
+          </span>
+        </label>%
       </span>
-    </label>%
-    {{else if data.data.background.reputation}}
-    <b>{{localize 'RQG.Reputation'}}</b> {{data.data.background.reputation}}%
-    {{/if}}
-    <span data-reputation-roll>ROLL</span>
-  </div>
-
-  <div class="nowrap">
-    {{#if isGM}}
-      <label>{{localize 'RQG.StandardOfLiving'}}
-      <input type="text" name="data.background.standardOfLiving" value="{{data.data.background.standardOfLiving}}" size="30">
-      </label>
-    {{else if data.data.background.standardOfLiving}}
-      <b>{{localize 'RQG.StandardOfLiving'}}</b> {{data.data.background.standardOfLiving}}
-    {{/if}}
-  </div>
+      {{else if data.data.background.reputation}}
+      <span data-reputation-roll>
+        <img src="{{defaultItemIconSrc "Reputation"}}" class="item">
+        <b>{{localize 'RQG.Reputation'}}</b> {{data.data.background.reputation}}%
+      </span>
+      {{/if}}
+    </div>
 
   <div class="nowrap">
     {{#if isGM}}
