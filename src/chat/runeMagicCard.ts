@@ -68,14 +68,12 @@ export class RuneMagicCard {
 
     // Get the actor's versions of the runes, which will have their "chance"
     usableRuneNames.forEach((rune) => {
-      //@ts-ignore name
       const actorRune = actor.items.getName(rune);
       assertItemType(actorRune?.data.type, ItemTypeEnum.Rune);
       runesForCasting.push(actorRune.data);
     });
 
     const strongestRune = runesForCasting.reduce(function (prev, current) {
-      //@ts-ignore data WHY?!
       return prev.data.chance > current.data.chance ? prev : current;
     });
 
@@ -195,7 +193,7 @@ export class RuneMagicCard {
     
     let usableRuneNames: string[] = [];
     let runesForCasting: RuneDataSource[] = [];
-    if (runeMagicItem.data.data.runes.includes(getGame().settings.get("rqg", "magicRuneName") as string)) {
+    if (runeMagicItem.data.data.runes.includes(getGame().settings.get("rqg", "magicRuneName"))) {
       // Actor can use any of the cult's runes to cast
       // And some cults have the same rune more than once, so de-dupe them
       usableRuneNames = [...new Set(cult.data.data.runes)];
@@ -206,14 +204,12 @@ export class RuneMagicCard {
 
     // Get the actor's versions of the runes, which will have their "chance"
     usableRuneNames.forEach((rune) => {
-      //@ts-ignore name
       const actorRune = actor.items.getName(rune);
       assertItemType(actorRune?.data.type, ItemTypeEnum.Rune);
       runesForCasting.push(actorRune.data);
     });
 
     const strongestRune = runesForCasting.reduce(function (prev, current) {
-      //@ts-ignore data WHY?!
       return prev.data.chance > current.data.chance ? prev : current;
     });
 
