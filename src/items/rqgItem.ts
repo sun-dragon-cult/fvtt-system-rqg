@@ -104,16 +104,18 @@ export class RqgItem extends Item {
   ): void {
     const defaultItemIconSettings: any = getGame().settings.get("rqg", "defaultItemIconSettings");
     const item = data._id ? getGame().items?.get(data._id) : undefined;
-    const updateData: any = {
-      img: defaultItemIconSettings[data.type],
-      "data.namePrefix": data.name,
-    };
+    if (item?.data.img === foundry.data.ItemData.DEFAULT_ICON) {
+      const updateData: any = {
+        img: defaultItemIconSettings[data.type],
+        "data.namePrefix": data.name,
+      };
 
-    if (data.type === ItemTypeEnum.Passion) {
-      updateData.data = { subject: data.name };
+      if (data.type === ItemTypeEnum.Passion) {
+        updateData.data = { subject: data.name };
+      }
+
+      item?.update(updateData);
     }
-
-    item?.update(updateData);
     return super._onCreate(data, options, userId);
   }
 
