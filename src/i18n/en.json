@@ -289,6 +289,13 @@
       "validationNotEnoughRunePoints": "Not enough rune points left!",
       "validationNotEnoughMagicPoints": "Not enough magic points left to boost that much!",
       "runeMagicResultFlavor": "Rune Magic: {name}"
+    },
+    "Actor": {
+      "AwardExperience": {
+        "GainedExperienceInfo": "{actorName} just gained an experience check in {itemName}!",
+        "ItemDoesntHaveExperienceError": "Attempt to AwardExperience to the item named \"{itemName}\" with id \"{itemId}\" that does not have the \"hasExperience\" property.",
+        "ItemNotFoundError": "Attempt to AwardExperience to an item with id \"{itemId}\" that could not be found on the actor named \"{actorName}\" with actor id \"{actorId}\"."
+      }
     }
   },
   "ACTORSHEET": {

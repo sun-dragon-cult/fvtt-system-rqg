@@ -317,7 +317,7 @@ export class RuneMagicCard {
           flags.actorId,
           flags.formData.cultId
         );
-        await RuneMagicCard.GiveExperienceToRune(actor, flags.formData.selectedRuneId);
+        await actor.AwardExperience(flags.formData.selectedRuneId);
       } else if (result === ResultEnum.Success || result === ResultEnum.Special) {
         // spell takes effect, Rune Points spent, Rune gets xp check, boosting Magic Points spent
         await RuneMagicCard.SpendRuneAndMagicPoints(
@@ -326,7 +326,7 @@ export class RuneMagicCard {
           flags.actorId,
           flags.formData.cultId
         );
-        await RuneMagicCard.GiveExperienceToRune(actor, flags.formData.selectedRuneId);
+        await actor.AwardExperience(flags.formData.selectedRuneId);
       } else if (result === ResultEnum.Failure) {
         // spell fails, no Rune Point Loss, if Magic Point boosted, lose 1 Magic Point if boosted
         const boosted = flags.formData.magicPointBoost >= 1 ? 1 : 0;
@@ -347,15 +347,6 @@ export class RuneMagicCard {
         );
       }
     }
-  }
-
-  private static async GiveExperienceToRune(
-    actor: RqgActor,
-    runeId: string
-  ) {
-    await actor.updateEmbeddedDocuments("Item", [
-      { _id: runeId, data: { hasExperience: true } },
-    ]);
   }
 
   private static async SpendRuneAndMagicPoints(

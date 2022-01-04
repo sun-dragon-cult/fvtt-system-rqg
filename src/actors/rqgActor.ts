@@ -259,4 +259,40 @@ export class RqgActor extends Actor {
     const cha = characteristics.charisma.value;
     return { str, con, siz, dex, int, pow, cha };
   }
+
+  public async AwardExperience(itemId: string) {
+    const itemToAward = this.items.get(itemId);
+    if (itemToAward) {
+      if (itemToAward.data?.data?.hasOwnProperty("hasExperience")) {
+        if (itemToAward.data?.data?.hasOwnProperty("canGetExperience")) {
+          //@ts-ignore hasExperience . . . checked for it.
+          if (!itemToAward.data.data.hasExperience) {
+            await this.updateEmbeddedDocuments("Item", [
+              { _id: itemToAward.id, data: { hasExperience: true } },
+            ]);
+            const msg = getGame().i18n.format("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+              actorName: this.name,
+              itemName: itemToAward.name,
+            });
+            ui.notifications?.info(msg);
+          }
+        }
+      } else {
+        const msg = getGame().i18n.format(
+          "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
+          { itemName: itemToAward.name, itemId: itemToAward.id }
+        );
+        console.log(msg);
+        ui.notifications?.error(msg);
+      }
+    } else {
+      const msg = getGame().i18n.format("RQG.Actor.AwardExperience.ItemNotFoundError", {
+        itemId: itemId,
+        actorName: this.name,
+        actorid: this.id,
+      });
+      console.log(msg);
+      ui.notifications?.error(msg);
+    }
+  }
 }
