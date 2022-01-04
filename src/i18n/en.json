@@ -39,6 +39,10 @@
         "settingName": "Special & Hyper Critical results",
         "settingHint": "*** Alpha version - not fully implemented *** Adds the possibility to roll a special critical (skill/100) and hyper critical (skill/500)"
       },
+      "MagicRuneName": {
+        "settingName": "Magic (condition) Rune name",
+        "settingHint": "If a Rune Magic Spell has this rune it is considered \"Common\", and an adventurer can cast it using any of the cult runes associated with the rune point(s) they spend."
+      },
       "SystemMigrationVersion":{
         "settingName": "System Migration Version",
         "settingHint": "Do not touch this unless you really know what you are doing!"

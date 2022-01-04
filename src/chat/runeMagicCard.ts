@@ -57,7 +57,7 @@ export class RuneMagicCard {
 
     let usableRuneNames: string[] = [];
     let runesForCasting: RuneDataSource[] = [];
-    if (runeMagicItem.data.data.runes.includes("Magic (condition)")) {
+    if (runeMagicItem.data.data.runes.includes(getGame().settings.get("rqg", "magicRuneName") as string)) {
       // Actor can use any of the cult's runes to cast
       // And some cults have the same rune more than once, so de-dupe them
       usableRuneNames = [...new Set(cult.data.data.runes)];
@@ -195,7 +195,7 @@ export class RuneMagicCard {
     
     let usableRuneNames: string[] = [];
     let runesForCasting: RuneDataSource[] = [];
-    if (runeMagicItem.data.data.runes.includes("Magic (condition)")) {
+    if (runeMagicItem.data.data.runes.includes(getGame().settings.get("rqg", "magicRuneName") as string)) {
       // Actor can use any of the cult's runes to cast
       // And some cults have the same rune more than once, so de-dupe them
       usableRuneNames = [...new Set(cult.data.data.runes)];
