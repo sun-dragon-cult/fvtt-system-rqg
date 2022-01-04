@@ -263,9 +263,8 @@ export class RqgActor extends Actor {
   public async AwardExperience(itemId: string) {
     const itemToAward = this.items.get(itemId);
     if (itemToAward) {
-      if (itemToAward.data?.data?.hasOwnProperty("hasExperience")) {
-        if (itemToAward.data?.data?.hasOwnProperty("canGetExperience")) {
-          //@ts-ignore hasExperience . . . checked for it.
+      if (hasOwnProperty(itemToAward.data.data, "hasExperience")) {
+        if (hasOwnProperty(itemToAward.data.data, "canGetExperience")) {
           if (!itemToAward.data.data.hasExperience) {
             await this.updateEmbeddedDocuments("Item", [
               { _id: itemToAward.id, data: { hasExperience: true } },
