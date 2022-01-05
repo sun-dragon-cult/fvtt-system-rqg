@@ -69,6 +69,28 @@ export class ReputationCard {
     return false;
   }
 
+  public static async directroll(
+    actor: RqgActor, token: TokenDocument | null
+  ): Promise<void> {
+    const reputationValue = actor.data.data.background.reputation || 0;
+    const iconSettings: any = <ClientSettings>(
+      getGame().settings.get("rqg", "defaultItemIconSettings")
+    );
+    const speakerName = getSpeakerName(actor.id, token?.id || "");
+    const flags: ReputationFlags = {
+      actorId: actor.id || "",
+      tokenId: token?.id ?? "",
+      reputationValue: reputationValue,
+      modifiedValue: reputationValue,
+      reputationIcon: iconSettings.Reputation,
+      formData: {
+        otherModifiers: 0,
+      },
+    };
+    ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
+    await this.roll(flags, actor, speakerName);
+  } 
+
   public static async roll(
     flags: ReputationFlags,
     actor: RqgActor,

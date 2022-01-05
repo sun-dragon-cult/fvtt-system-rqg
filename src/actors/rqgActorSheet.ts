@@ -703,21 +703,23 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
           const speakerName = this.token?.name || this.actor.data.token.name;
-          await CharacteristicCard.roll(
-            "Reputation",
-            this.actor.data.data.background.reputation || 0,
-            0,
-            0,
-            this.actor,
-            speakerName
-          );
-          clickCount = 0;
-        } else if (clickCount === 1) {
-          await ReputationCard.show(
+          await ReputationCard.directroll(
             this.actor,
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             this.token
-          );
+          )
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await ReputationCard.show(
+                this.actor,
+                // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+                this.token
+              );              
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
         }
       });
     });
