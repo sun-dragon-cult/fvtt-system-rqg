@@ -100,14 +100,14 @@
       {{#if isGM}}
       <span data-reputation-roll>
         <img src="{{defaultItemIconSrc "Reputation"}}" class="item">
-        <label <img src="{{defaultItemIconSrc " Reputation"}}" class="item">
+        <label for="data.background.reputation">
           {{localize 'RQG.Reputation'}}
-          <span class="text-right">
-            <input type="number" min="0" max="999" name="data.background.reputation"
-              value="{{data.data.background.reputation}}">
-          </span>
-        </label>%
+        </label>
       </span>
+      <span class="text-right">
+        <input type="number" min="0" max="999" name="data.background.reputation"
+          value="{{data.data.background.reputation}}" />
+      </span>%
       {{else if data.data.background.reputation}}
       <span data-reputation-roll>
         <img src="{{defaultItemIconSrc "Reputation"}}" class="item">
