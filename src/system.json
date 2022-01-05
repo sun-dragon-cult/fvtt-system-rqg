@@ -6,6 +6,7 @@
   "version": "1.12.0",
   "license": "UNLICENSED",
   "author": "Sun Dragon Cult",
+  "background": "assets/images/ui/priestess.webp",
   "authors": [
     {
       "name": "Wake",
