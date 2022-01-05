@@ -75,6 +75,15 @@ export const registerRqgSystemSettings = function () {
     default: false,
   });
 
+  getGame().settings.register("rqg", "magicRuneName", {
+    name: getGame().i18n.localize("RQG.Settings.MagicRuneName.settingName"),
+    hint: getGame().i18n.localize("RQG.Settings.MagicRuneName.settingHint"),
+    scope: "world",
+    config: true,
+    type: String,
+    default: "Magic (condition)",
+  });
+
   getGame().settings.register("rqg", "systemMigrationVersion", {
     name: getGame().i18n.localize("RQG.Settings.SystemMigrationVersion.settingName"),
     hint: getGame().i18n.localize("RQG.Settings.SystemMigrationVersion.settingHint"),

@@ -49,31 +49,31 @@
            {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
         <img class="item" src="{{img}}">
       </div>
-      <div data-item-id="{{id}}" data-item-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         {{name}}&nbsp;
         {{#each data.data.runes}}
           <img class="rune" src="{{runeImg this}}" title="{{this}}">
         {{/each}}
       </div>
-      <div data-item-id="{{id}}" data-item-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         <span class="text-center">{{data.data.points}}</span>
       </div>
-      <div data-item-id="{{id}}" data-item-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         {{#unless data.data.isRitual}}<span class="text-center">{{data.data.castingRange}}</span>{{/unless}}
       </div>
-      <div data-item-id="{{id}}" data-item-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         {{#unless data.data.isRitual}}<span class="text-center">{{data.data.duration}}</span>{{/unless}}
       </div>
-      <div data-item-id="{{id}}" data-item-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isRitual}}</span>
       </div>
-      <div data-item-id="{{id}}" data-item-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isStackable}}</span>
       </div>
-      <div data-item-id="{{id}}" data-item-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isOneUse}}</span>
       </div>
-      <div data-item-id="{{id}}" data-item-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         <span class="text-right">{{data.data.chance}}%</span>
       </div>
     {{/if}}

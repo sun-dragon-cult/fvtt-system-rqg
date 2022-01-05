@@ -2,7 +2,7 @@ import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
-import { assertItemType, RqgError } from "../../system/util";
+import { assertItemType, getGame, RqgError } from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export class RuneMagic extends AbstractEmbeddedItem {
@@ -49,7 +49,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
         (i) =>
           i.type === ItemTypeEnum.Rune &&
           (runeMagicRuneNames.includes(i.name ?? "") ||
-            (runeMagicRuneNames.includes("Magic (condition)") &&
+            (runeMagicRuneNames.includes(getGame().settings.get("rqg", "magicRuneName") as string) &&
               cultRuneNames.includes(i.name ?? "")))
       )
       // @ts-ignore r is a runeItem TODO rewrite as reduce

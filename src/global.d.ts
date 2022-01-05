@@ -33,6 +33,7 @@ declare global {
       "rqg.fumbleRollTable": string;
       "rqg.systemMigrationVersion": string;
       "rqg.hitLocations": Object;
+      "rqg.magicRuneName": string;
     }
   }
 }
