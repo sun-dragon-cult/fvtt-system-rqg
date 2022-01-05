@@ -5,6 +5,7 @@ import { RqgActorDataSource } from "../data-model/actor-data/rqgActorData";
 import { CultDataSource } from "../data-model/item-data/cultData";
 import { ItemTypeEnum, RqgItemDataSource } from "../data-model/item-data/itemTypes";
 import { RuneDataSource } from "../data-model/item-data/runeData";
+import { RuneMagicDataSource } from "../data-model/item-data/runeMagicData";
 import { Ability, ResultEnum, ResultMessage } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import {
@@ -13,7 +14,6 @@ import {
   getGame,
   getJournalEntryName,
   getSpeakerName,
-  RqgError,
   usersThatOwnActor,
 } from "../system/util";
 
@@ -57,7 +57,11 @@ export class RuneMagicCard {
 
     let usableRuneNames: string[] = [];
     let runesForCasting: RuneDataSource[] = [];
-    if (runeMagicItem.data.data.runes.includes(getGame().settings.get("rqg", "magicRuneName") as string)) {
+    if (
+      runeMagicItem.data.data.runes.includes(
+        getGame().settings.get("rqg", "magicRuneName") as string
+      )
+    ) {
       // Actor can use any of the cult's runes to cast
       // And some cults have the same rune more than once, so de-dupe them
       usableRuneNames = [...new Set(cult.data.data.runes)];
@@ -190,7 +194,7 @@ export class RuneMagicCard {
     assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
     const cult = actor.items.get(runeMagicItem.data.data.cultId);
     assertItemType(cult?.data.type, ItemTypeEnum.Cult);
-    
+
     let usableRuneNames: string[] = [];
     let runesForCasting: RuneDataSource[] = [];
     if (runeMagicItem.data.data.runes.includes(getGame().settings.get("rqg", "magicRuneName"))) {
@@ -237,7 +241,6 @@ export class RuneMagicCard {
     ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName);
     await RuneMagicCard.roll(flags.itemData, flags, actor, speakerName);
   }
-
 
   public static async roll(
     itemData: ItemDataSource,
@@ -305,13 +308,15 @@ export class RuneMagicCard {
         speakerName,
         resultMessages
       );
+      const runeMagicSpell = flags.itemData as RuneMagicDataSource;
       if (result === ResultEnum.Critical) {
         // spell takes effect, Rune Points NOT spent, Rune gets xp check, boosting Magic Points spent
         await RuneMagicCard.SpendRuneAndMagicPoints(
           0,
           flags.formData.magicPointBoost,
           flags.actorId,
-          flags.formData.cultId
+          flags.formData.cultId,
+          runeMagicSpell.data.isOneUse
         );
         await actor.AwardExperience(flags.formData.selectedRuneId);
       } else if (result === ResultEnum.Success || result === ResultEnum.Special) {
@@ -320,7 +325,8 @@ export class RuneMagicCard {
           flags.formData.runePointCost,
           flags.formData.magicPointBoost,
           flags.actorId,
-          flags.formData.cultId
+          flags.formData.cultId,
+          runeMagicSpell.data.isOneUse
         );
         await actor.AwardExperience(flags.formData.selectedRuneId);
       } else if (result === ResultEnum.Failure) {
@@ -330,7 +336,8 @@ export class RuneMagicCard {
           0,
           boosted,
           flags.actorId,
-          flags.formData.cultId
+          flags.formData.cultId,
+          runeMagicSpell.data.isOneUse
         );
       } else if (result === ResultEnum.Fumble) {
         // spell fails, lose Rune Points, if Magic Point boosted, lose 1 Magic Point if boosted
@@ -339,7 +346,8 @@ export class RuneMagicCard {
           flags.formData.runePointCost,
           boosted,
           flags.actorId,
-          flags.formData.cultId
+          flags.formData.cultId,
+          runeMagicSpell.data.isOneUse
         );
       }
     }
@@ -349,7 +357,8 @@ export class RuneMagicCard {
     runePoints: number,
     magicPoints: number,
     actorId: string,
-    cultId: string
+    cultId: string,
+    oneUse: boolean
   ) {
     const actor = getGame().actors?.get(actorId);
     const cult = actor?.items.get(cultId);
@@ -359,15 +368,23 @@ export class RuneMagicCard {
     const newRunePointTotal: number = (cult.data.data.runePoints.value || 0) - runePoints;
     const newMagicPointTotal: number =
       (actor?.data.data.attributes.magicPoints.value || 0) - magicPoints;
-    const updateRp: DeepPartial<ItemDataSource> = {
+    let newRunePointMaxTotal: number = cult.data.data.runePoints.max || 0;
+    if (oneUse) {
+      newRunePointMaxTotal -= runePoints;
+      if (newRunePointMaxTotal < (cult.data.data.runePoints.max || 0)) {
+        ui.notifications?.info(getGame().i18n.format("RQG.RuneMagicCard.SpentOneUseRunePoints", {actorName: actor?.name, runePoints: runePoints, cultName: cult.name}));
+      }
+    }
+    const updateCultItemRunePoints: DeepPartial<ItemDataSource> = {
       _id: cult?.id,
-      data: { runePoints: { value: newRunePointTotal } },
+      data: { runePoints: { value: newRunePointTotal, max: newRunePointMaxTotal } },
     };
-    await actor?.updateEmbeddedDocuments("Item", [updateRp]);
-    const updateMp = {
-      "data.attributes.magicPoints.value": newMagicPointTotal,
+    await actor?.updateEmbeddedDocuments("Item", [updateCultItemRunePoints]);
+    const updateActorMagicPoints = {
+      //"data.attributes.magicPoints.value": newMagicPointTotal
+      data: { attributes: { magicPoints: { value: newMagicPointTotal } } },
     };
-    await actor?.update(updateMp);
+    await actor?.update(updateActorMagicPoints);
   }
 
   public static validateData(
@@ -377,10 +394,11 @@ export class RuneMagicCard {
     cultData: CultDataSource
   ): string {
     assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
-    if (formData.formData.runePointCost > (cultData.data.runePoints.value || 0)) {
+    if (Number(formData.formData.runePointCost) > (Number(cultData.data.runePoints.value) || 0)) {
       return getGame().i18n.format("RQG.RuneMagicCard.validationNotEnoughRunePoints");
     } else if (
-      formData.formData.magicPointBoost > (actorData?.data?.attributes?.magicPoints?.value || 0)
+      Number(formData.formData.magicPointBoost) >
+      (Number(actorData?.data?.attributes?.magicPoints?.value) || 0)
     ) {
       return getGame().i18n.format("RQG.RuneMagicCard.validationNotEnoughMagicPoints");
     } else {
@@ -392,7 +410,9 @@ export class RuneMagicCard {
     let html = await renderTemplate("systems/rqg/chat/runeMagicCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: getGame().i18n.format("RQG.RuneMagicCard.runeMagicResultFlavor", {name: flags.itemData.name}),
+      flavor: getGame().i18n.format("RQG.RuneMagicCard.runeMagicResultFlavor", {
+        name: flags.itemData.name,
+      }),
       user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,

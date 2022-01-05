@@ -248,6 +248,8 @@
       "CastUsingRune": "Cast using Rune:",
       "RuneHasExperienceTitle": "Has Experience Check",
       "RunePointCost": "Rune Point Cost:",
+      "OneUseWarning": "One Use!",
+      "OneUseWarningTip": "Casting this spell will reduce both your current and maximum Rune Points for the cult!",
       "MagicPointBoost": "Magic Point Boost:",
       "MeditationOrRitual": "Meditation or Ritual:",
       "MeditationOrRitualValue0": "None",
@@ -286,6 +288,7 @@
       "resultMessageSuccess": "The spell takes effect and costs {runePointCost} Rune Points and {magicPointBoost} Magic Points from boosting.",
       "resultMessageFailure": "The spell fails to take effect but no Rune Points are lost.  If boosted with Magic Points, one is lost.",
       "resultMessageFumble": "The spell fails to take effect and {runePointCost} Rune Points are lost.  If boosted with Magic Points, one is lost.",
+      "SpentOneUseRunePoints": "{actorName} spent {runePoints} One Use Rune Points from the {cultName} cult!",
       "validationNotEnoughRunePoints": "Not enough rune points left!",
       "validationNotEnoughMagicPoints": "Not enough magic points left to boost that much!",
       "runeMagicResultFlavor": "Rune Magic: {name}"

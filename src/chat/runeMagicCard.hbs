@@ -53,13 +53,14 @@
           <label for="runePointCost">{{localize "RQG.RuneMagicCard.RunePointCost"}}</label>
         </div>
         <div class="card-option-control">
-          {{!-- TODO: Rune Magic Spells should have a minimum Rune Point Cost and possibly a maxiumum.
+          {{!-- TODO: Rune Magic Spells should have a minimum Rune Point Cost and possibly an optional maximum.
                 https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/142
                 
                 put this back in: {{#unless itemData.data.isStackable}}readonly="readonly" title="Not Stackable"
             {{/unless}} --}}
-          <input class="card-number-input" type="number" min="1" max="999" value="{{formData.runePointCost}}"
+          <input class="card-number-input{{#if itemData.data.isOneUse}} warning{{/if}}" type="number" min="1" max="999" value="{{formData.runePointCost}}"
             name="runePointCost"  />
+            {{#if itemData.data.isOneUse}}<span title="{{localize "RQG.RuneMagicCard.OneUseWarningTip"}}">{{localize "RQG.RuneMagicCard.OneUseWarning"}}</span>{{/if}}
         </div>
       </div>
       <div class="flexrow card-option">
