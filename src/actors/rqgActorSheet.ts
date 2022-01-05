@@ -44,6 +44,7 @@ import {
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { RuneMagicCard } from "../chat/runeMagicCard";
 
 interface UiSections {
   health: boolean;
@@ -731,6 +732,47 @@ export class RqgActorSheet extends ActorSheet<
             if (clickCount === 1) {
               // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
               await ItemCard.show(itemId, this.actor, this.token);
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
+    // Roll Rune Magic
+    this.form?.querySelectorAll("[data-rune-magic-roll]").forEach((el) => {
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      const item = this.actor.items.get(itemId);
+      if (!item) {
+        const msg = `Couldn't find item [${itemId}] to roll Rune Magic against`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
+      }
+      let clickCount = 0;
+
+      el.addEventListener("click", async (ev: Event) => {
+        if (item.data.type !== ItemTypeEnum.RuneMagic) {
+          const msg = "Tried to roll a Rune Magic Roll against some other Item";
+          ui.notifications?.error(msg);
+          throw new RqgError(msg, item);
+        }
+        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+        if (clickCount >= 2) {
+          if (item.data.data.points > 1) {
+            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+            await RuneMagicCard.show(itemId, this.actor, this.token);
+          } else {
+            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+            const speakerName = this.token?.name || this.actor.data.token.name;
+            await RuneMagicCard.directRoll(item, this.actor, speakerName);
+          }
+
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+              await RuneMagicCard.show(itemId, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
