@@ -1002,11 +1002,13 @@ export class RqgActorSheet extends ActorSheet<
                 console.log("CULT", item);
                 const cultId = item.id;
                 //@ts-ignore cultId
-                const runeMagicSpells = actor.items.filter(i => i.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultId);
-                runeMagicSpells.forEach(s => {
-                  idsToDelete.push((s.id));
-                })
-              };
+                const runeMagicSpells = actor.items.filter(
+                  (i) => i.data.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultId
+                );
+                runeMagicSpells.forEach((s) => {
+                  idsToDelete.push(s.id);
+                });
+              }
 
               idsToDelete.push(itemId);
 
