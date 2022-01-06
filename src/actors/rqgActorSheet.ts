@@ -45,6 +45,7 @@ import {
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ReputationCard } from "../chat/reputationCard";
+import { RuneMagicCard } from "../chat/runeMagicCard";
 
 interface UiSections {
   health: boolean;
@@ -768,6 +769,47 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
+    // Roll Rune Magic
+    this.form?.querySelectorAll("[data-rune-magic-roll]").forEach((el) => {
+      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+      const item = this.actor.items.get(itemId);
+      if (!item) {
+        const msg = `Couldn't find item [${itemId}] to roll Rune Magic against`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, el);
+      }
+      let clickCount = 0;
+
+      el.addEventListener("click", async (ev: Event) => {
+        if (item.data.type !== ItemTypeEnum.RuneMagic) {
+          const msg = "Tried to roll a Rune Magic Roll against some other Item";
+          ui.notifications?.error(msg);
+          throw new RqgError(msg, item);
+        }
+        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+        if (clickCount >= 2) {
+          if (item.data.data.points > 1) {
+            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+            await RuneMagicCard.show(itemId, this.actor, this.token);
+          } else {
+            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+            const speakerName = this.token?.name || this.actor.data.token.name;
+            await RuneMagicCard.directRoll(item, this.actor, speakerName);
+          }
+
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+              await RuneMagicCard.show(itemId, this.actor, this.token);
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
     // Roll Spirit Magic
     this.form?.querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
@@ -996,22 +1038,56 @@ export class RqgActorSheet extends ActorSheet<
     const item = actor.items.get(itemId);
     requireValue(item, `No itemId [${itemId}] on actor ${actor.name} to show delete item Dialog`);
 
+    const itemTypeLoc: string = RqgItem.localizeItemTypeName(item.type);
+
+    const title = getGame().i18n.format("ACTORSHEET.confirmItemDeleteDialog.title", {
+      itemType: itemTypeLoc,
+      itemName: item.name,
+    });
+
+    let content: string = "";
+    if (item.type === ItemTypeEnum.Cult) {
+      content = getGame().i18n.format("ACTORSHEET.confirmItemDeleteDialog.contentCult", {
+        itemType: itemTypeLoc,
+        itemName: item.name,
+        runeMagicSpell: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
+      });
+    } else {
+      content = getGame().i18n.format("ACTORSHEET.confirmItemDeleteDialog.content", {
+        itemType: itemTypeLoc,
+        itemName: item.name,
+      });
+    }
+
     new Dialog(
       {
-        title: `Delete ${item.type}: ${item.name}`,
-        content: "Do you want to delete this item",
+        title: title,
+        content: content,
         default: "submit",
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
-            label: "Confirm",
+            label: getGame().i18n.format("DIALOG.Common.btnConfirm"),
             callback: async () => {
-              await actor.deleteEmbeddedDocuments("Item", [itemId]);
+              const idsToDelete = [];
+              if (item.type === ItemTypeEnum.Cult) {
+                console.log("CULT", item);
+                const cultId = item.id;
+                //@ts-ignore cultId
+                const runeMagicSpells = actor.items.filter(i => i.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultId);
+                runeMagicSpells.forEach(s => {
+                  idsToDelete.push((s.id));
+                })
+              };
+
+              idsToDelete.push(itemId);
+
+              await actor.deleteEmbeddedDocuments("Item", idsToDelete);
             },
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
+            label: getGame().i18n.format("DIALOG.Common.btnCancel"),
             callback: () => null,
           },
         },

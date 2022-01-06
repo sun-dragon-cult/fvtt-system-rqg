@@ -40,6 +40,10 @@
         "settingName": "Special & Hyper Critical results",
         "settingHint": "*** Alpha version - not fully implemented *** Adds the possibility to roll a special critical (skill/100) and hyper critical (skill/500)"
       },
+      "MagicRuneName": {
+        "settingName": "Magic (condition) Rune name",
+        "settingHint": "If a Rune Magic Spell has this rune it is considered \"Common\", and an adventurer can cast it using any of the cult runes associated with the rune point(s) they spend."
+      },
       "SystemMigrationVersion":{
         "settingName": "System Migration Version",
         "settingHint": "Do not touch this unless you really know what you are doing!"
@@ -239,7 +243,64 @@
     "StandardOfLiving": "Standard Of Living",
     "BaseIncome": "Base Income",
     "Ransom": "Ransom",
-    "RansomDetails": "Details"
+    "RansomDetails": "Details",
+    "RuneMagicCard": {
+      "MissingJournalLinkTitle": "Edit the spell and add a description to have a journal link here!",
+      "CastUsingRune": "Cast using Rune:",
+      "RuneHasExperienceTitle": "Has Experience Check",
+      "RunePointCost": "Rune Point Cost:",
+      "OneUseWarning": "One Use!",
+      "OneUseWarningTip": "Casting this spell will reduce both your current and maximum Rune Points for the cult!",
+      "MagicPointBoost": "Magic Point Boost:",
+      "MeditationOrRitual": "Meditation or Ritual:",
+      "MeditationOrRitualValue0": "None",
+      "MeditationOrRitualValue5": "Meditate: 1 melee round, +5% bonus",
+      "MeditationOrRitualValue10": "Meditate: 2 melee rounds, +10% bonus",
+      "MeditationOrRitualValue15": "Meditate: 5 melee rounds (1 minute), +15% bonus",
+      "MeditationOrRitualValue20": "Meditate: 25 melee rounds (5 minutes), +20% bonus",
+      "MeditationOrRitualValue25": "Meditate: 50 melee rounds (10 minutes), +25% bonus",
+      "MeditationOrRitualValue30": "Ritual: Half an hour, +30% bonus",
+      "MeditationOrRitualValue35": "Ritual: 1 hour, +35% bonus",
+      "MeditationOrRitualValue40": "Ritual: 5 hours, +40% bonus",
+      "MeditationOrRitualValue45": "Ritual: 10 hours, +45% bonus",
+      "MeditationOrRitualValue50": "Ritual: 1 day, +50% bonus",
+      "MeditationOrRitualValue55": "Ritual: 2 days, +55% bonus",
+      "MeditationOrRitualValue60": "Ritual: 1 week, +60% bonus",
+      "MeditationOrRitualValue65": "Ritual: 2 weeks, +65% bonus",
+      "MeditationOrRitualValue70": "Ritual: 4 weeks, +70% bonus",
+      "MeditationOrRitualValue75": "Ritual: 1 season, +75% bonus",
+      "MeditationOrRitualValue80": "Ritual: 1 year, +80% bonus",
+      "MeditationOrRitualValue85": "Ritual: 2 years, +85% bonus",
+      "MeditationOrRitualValue90": "Ritual: 5 years, +90% bonus",
+      "MeditationOrRitualValue95": "Ritual: 10 years, +95% bonus",
+      "MeditationOrRitualValue100": "Ritual: 20 years, +100% bonus",
+      "SkillAugmentation": "Skill Augmentation:",
+      "SkillAugmentationValue0": "None",
+      "SkillAugmentationValue50": "Critical Success, +50%",
+      "SkillAugmentationValue30": "Special Success, +30%",
+      "SkillAugmentationValue20": "Success, +20%",
+      "SkillAugmentationValue-20": "Failure, -20%",
+      "SkillAugmentationValue-50": "Fumble, -50%",
+      "OtherModifiers": "Other Modifiers:",
+      "getActorFromIdsWarning": "Couldn't get actor from actor id or token id.",
+      "noSelectedRuneWarning": "Attempt to roll a Rune Magic Spell with no Rune selected on the card.",
+      "resultMessageCritical": "The spell takes effect and costs no Rune Points and {magicPointBoost} Magic Points from boosting.",
+      "resultMessageSpecial": "The spell takes effect and costs {runePointCost} Rune Points and {magicPointBoost} Magic Points from boosting.",
+      "resultMessageSuccess": "The spell takes effect and costs {runePointCost} Rune Points and {magicPointBoost} Magic Points from boosting.",
+      "resultMessageFailure": "The spell fails to take effect but no Rune Points are lost.  If boosted with Magic Points, one is lost.",
+      "resultMessageFumble": "The spell fails to take effect and {runePointCost} Rune Points are lost.  If boosted with Magic Points, one is lost.",
+      "SpentOneUseRunePoints": "{actorName} spent {runePoints} One Use Rune Points from the {cultName} cult!",
+      "validationNotEnoughRunePoints": "Not enough rune points left!",
+      "validationNotEnoughMagicPoints": "Not enough magic points left to boost that much!",
+      "runeMagicResultFlavor": "Rune Magic: {name}"
+    },
+    "Actor": {
+      "AwardExperience": {
+        "GainedExperienceInfo": "{actorName} just gained an experience check in {itemName}!",
+        "ItemDoesntHaveExperienceError": "Attempt to AwardExperience to the item named \"{itemName}\" with id \"{itemId}\" that does not have the \"hasExperience\" property.",
+        "ItemNotFoundError": "Attempt to AwardExperience to an item with id \"{itemId}\" that could not be found on the actor named \"{actorName}\" with actor id \"{actorId}\"."
+      }
+    }
   },
   "ACTORSHEET": {
     "Combat": {
@@ -251,9 +312,18 @@
       "CurrencyConversionTipOver1": "One {name} is worth {value} Lunars.",
       "CurrencyConversionTipLunar": "Lunars are the standard basis of currency.",
       "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s."
+    },
+    "confirmItemDeleteDialog": {
+      "title": "Delete {itemType}: {itemName}",
+      "content": "Are you sure you want to delete the {itemType} named {itemName}?",
+      "contentCult": "Are you sure you want to delete the {itemType} named {itemName}? This will also delete all of the {runeMagicSpell} items associated with this {itemType}."
     }
   },
   "DIALOG": {
+    "Common": {
+      "btnCancel": "Cancel",
+      "btnConfirm": "Confirm"
+    },
     "improveAbilityDialog": {
       "title": "Improvement for {typeLocName} \"{name}\"",
       "titleChar": "Improvement for Characteristic \"{name}\"",

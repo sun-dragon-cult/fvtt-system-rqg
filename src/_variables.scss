@@ -8,7 +8,7 @@
   --rqg-background-tab-active:
     linear-gradient(purple 0%, #e60000 90%),
     linear-gradient(to right, #711771 0%, #d6d63a 90%),
-    url(assets/images/stonetexture2.jpg);
+    url(assets/images/ui/stonetexture2.jpg);
 
   --rqg-box-shadow-tab-active:
     inset 2px 2px 7px 2px black,
@@ -24,6 +24,8 @@
   --rqg-color-enc-warning: #ff640045;
   --rqg-color-enc-legend: #e4cc9d;
 
+
+  --rqg-color-invalid-journal: #e4b5ad; //Regular journal in chat card is: #7a7971
 
   // *** Foundry (9) Defined CSS Parameters ***
   //--color-text-light-highlight: #f0f0e0; // ***

@@ -4,12 +4,14 @@ import { WeaponCard } from "./weaponCard";
 import { SpiritMagicCard } from "./spiritMagicCard";
 import { ReputationCard } from "./reputationCard";
 import { getDomDataset, RqgError } from "../system/util";
+import { RuneMagicCard } from "./runeMagicCard";
 
 export class ChatCardListeners {
   private static card = {
     characteristicCard: CharacteristicCard,
     itemCard: ItemCard,
     spiritMagicCard: SpiritMagicCard,
+    runeMagicCard: RuneMagicCard,
     weaponCard: WeaponCard,
     reputationCard: ReputationCard,
   };

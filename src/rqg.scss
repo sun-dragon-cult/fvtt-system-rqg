@@ -1,5 +1,11 @@
 @use 'variables';
 
+body {
+  background-attachment: fixed !important;
+  background-size: cover !important;
+  background: url("assets/images/ui/sacred-time.webp") no-repeat;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -561,6 +567,7 @@
   [data-journal-id],
   [data-weapon-roll],
   [data-reputation-roll] {
+  [data-rune-magic-roll] {
     &:hover {
       box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25), -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
     }
@@ -626,6 +633,15 @@
   }
 
   &.chat-card {
+    .card-options {
+      margin: 10px 0 0 0;
+      background: url(./assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
+    }
+
+    .card-option {
+      margin: 5px;
+    }
+
     &.weapon-card {
       .active {
         box-shadow: 0 0 0.5em red;
@@ -655,12 +671,26 @@
         vertical-align: text-top;
       }
     }
+    .chat-select-wide {
+      width: 100%;
+    }
   }
 
   &.dialog.heal-wound {
     .woundlist label {
       padding-right: 5px;
     }
+  }
+
+  .card-journal-link {
+    .invalid {
+      color: var(--rqg-color-invalid-journal);
+    }
+  }
+
+  .card-number-input {
+    text-align: right;
+    width: 50px;
   }
 }
 
@@ -679,7 +709,7 @@
 
   .mainbackground {
     grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
-    background: url(./assets/images/mainbackground.webp) repeat-y scroll top left/100%;
+    background: url(./assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
   }
 
   .window-content {
@@ -917,6 +947,12 @@
   border: none;
   margin: 0;
   mix-blend-mode: overlay;
+}
+
+.rqg img.rune-dark {
+  height: 20px;
+  border: none;
+  margin: 0;
 }
 
 .rqg img.item {

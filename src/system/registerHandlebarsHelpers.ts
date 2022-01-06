@@ -1,6 +1,7 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import { getActorFromIds, getAllRunesIndex, getGame, hasOwnProperty, RqgError } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { RqgItem } from "../items/rqgItem";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -25,7 +26,8 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("localizeitemtype", (typeName) => {
-    return getGame().i18n.localize("ITEM.Type" + typeName.titleCase());
+    const itemType: ItemTypeEnum = typeName;
+    return RqgItem.localizeItemTypeName(itemType);
   });
 
   Handlebars.registerHelper("skillname", (itemId, actorId, tokenId) => {

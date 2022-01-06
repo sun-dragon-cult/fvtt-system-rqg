@@ -9,7 +9,7 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ItemCard } from "../../chat/itemCard";
+import { RuneMagicCard } from "../../chat/runeMagicCard";
 
 export const runeMagicMenuOptions = (
   actor: RqgActor,
@@ -21,7 +21,7 @@ export const runeMagicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await ItemCard.show(itemId, actor, token);
+      await RuneMagicCard.show(itemId, actor, token);
     },
   },
   {
@@ -33,7 +33,7 @@ export const runeMagicMenuOptions = (
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.RuneMagic);
       const speakerName = token?.name ?? actor.data.token.name ?? "";
-      await Ability.roll(item.name ?? "", item.data.data.chance, 0, speakerName);
+      await RuneMagicCard.directRoll(item,  actor, speakerName);
     },
   },
   {
