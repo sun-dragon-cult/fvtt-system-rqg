@@ -15,7 +15,6 @@ export interface RuneDataSourceData extends IAbility, JournalEntryLink {
   rune: string;
   runeType: RuneTypeEnum;
   chance: number;
-  experience: boolean;
   /** For Power Runes (+ Form: Man & Beast) ex: "Beast (form)" */
   opposingRune: string;
   /** For Sorcery - Elemental Runes & Techniques ex ["Air (elemental)", "Fire (elemental)"] */
@@ -41,7 +40,7 @@ export const emptyRune: RuneDataSourceData = {
   rune: "",
   chance: 0,
   canGetExperience: true,
-  experience: false,
+  hasExperience: false,
   runeType: RuneTypeEnum.Form,
   opposingRune: "",
   minorRunes: [],
