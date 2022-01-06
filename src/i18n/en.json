@@ -219,9 +219,6 @@
           "noExperience": "{actorName} does not have an experience check in {typeLocName} \"{name}\" and cannot gain from experience now."
         }
       },
-      "itemCard": {
-        "Modifier": "Modifier"
-      },
       "RuneMagicCard": {
         "MissingJournalLinkTitle": "Edit the spell and add a description to have a journal link here!",
         "CastUsingRune": "Cast using Rune:",
