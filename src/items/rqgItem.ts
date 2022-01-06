@@ -142,7 +142,7 @@ export class RqgItem extends Item {
     }
 
     // updates[0] will be an empty array when deleting the cult
-    // and will have a "data" property if there are real updates
+    // and an object if there are real updates
     if (Object.keys(updates[0]).length > 0) {
       return super.updateDocuments(updates, context);
     }
