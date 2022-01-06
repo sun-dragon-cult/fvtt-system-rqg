@@ -2,6 +2,7 @@ import { CharacteristicCard } from "./characteristicCard";
 import { ItemCard } from "./itemCard";
 import { WeaponCard } from "./weaponCard";
 import { SpiritMagicCard } from "./spiritMagicCard";
+import { ReputationCard } from "./reputationCard";
 import { getDomDataset, RqgError } from "../system/util";
 import { RuneMagicCard } from "./runeMagicCard";
 
@@ -12,6 +13,7 @@ export class ChatCardListeners {
     spiritMagicCard: SpiritMagicCard,
     runeMagicCard: RuneMagicCard,
     weaponCard: WeaponCard,
+    reputationCard: ReputationCard,
   };
 
   public static init(): void {
