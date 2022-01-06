@@ -3,82 +3,82 @@
         {{#if adapter.img}}
         <img class="item" src="{{adapter.img}}" title="{{adapter.name}}" style="padding-right: 10px;" />
         {{/if}}
-        {{localize "DIALOG.improveAbilityDialog.header" name=adapter.name}}
+        {{localize "RQG.Dialog.improveAbilityDialog.header" name=adapter.name}}
     </h1>
     <div style="display: flex;">
         {{#if adapter.showExperience}}
         <div class="experience" style="margin-bottom: 10px; padding: 5px; flex: 1;">
-            <h2>{{localize "DIALOG.improveAbilityDialog.fromExperience"}}</h2>
-            <p>{{localize "DIALOG.improveAbilityDialog.chanceToGain" chanceToGain=adapter.chanceToGain}}</p>
+            <h2>{{localize "RQG.Dialog.improveAbilityDialog.fromExperience"}}</h2>
+            <p>{{localize "RQG.Dialog.improveAbilityDialog.chanceToGain" chanceToGain=adapter.chanceToGain}}</p>
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience-gain-fixed">
                 {{#if forChar}}
-                {{localize "DIALOG.improveAbilityDialog.gainchar" gain=adapter.experienceGainFixed}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gainchar" gain=adapter.experienceGainFixed}}
                 {{else}}
-                {{localize "DIALOG.improveAbilityDialog.gain" gain=adapter.experienceGainFixed}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.experienceGainFixed}}
                 {{/if}}
             </label>
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience-gain-random"
                     {{#if adapter.showExperience}}checked="checked"{{/if}}>
                 {{#if forChar}}
-                {{localize "DIALOG.improveAbilityDialog.gainchar" gain=adapter.experienceGainRandom}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gainchar" gain=adapter.experienceGainRandom}}
                 {{else}}
-                {{localize "DIALOG.improveAbilityDialog.gain" gain=adapter.experienceGainRandom}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.experienceGainRandom}}
                 {{/if}}
             </label>
         </div>
         {{else}}
         {{#unless adapter.noExperienceGain}}
         <div class="experience" style="margin-bottom: 10px; padding: 5px; flex: 1;">
-            <h2>{{localize "DIALOG.improveAbilityDialog.noExperienceCheckTitle"}}</h2>
-            <p>{{localize "DIALOG.improveAbilityDialog.noExperienceCheckExplanation" typeLocName=adapter.typeLocName}}</p>
+            <h2>{{localize "RQG.Dialog.improveAbilityDialog.noExperienceCheckTitle"}}</h2>
+            <p>{{localize "RQG.Dialog.improveAbilityDialog.noExperienceCheckExplanation" typeLocName=adapter.typeLocName}}</p>
         </div>
         {{/unless}}
         {{/if}}
         {{#if adapter.showTraining}}
         <div class="training" style="margin-bottom: 10px; padding: 5px; flex: 1;">
-            <h2>{{localize "DIALOG.improveAbilityDialog.throughTraining" }}</h2>
-            <p>{{localize "DIALOG.improveAbilityDialog.afterTraining"}}</p>
+            <h2>{{localize "RQG.Dialog.improveAbilityDialog.throughTraining" }}</h2>
+            <p>{{localize "RQG.Dialog.improveAbilityDialog.afterTraining"}}</p>
             {{#unless adapter.forChar}}
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="training-gain-fixed">
-                {{localize "DIALOG.improveAbilityDialog.gain" gain=adapter.trainingGainFixed}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.trainingGainFixed}}
             </label>
             {{/unless}}
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox"
                     value="training-gain-random" {{#unless adapter.showExperience}}checked="checked"{{/unless}}>
                 {{#if adapter.forChar}}
-                {{localize "DIALOG.improveAbilityDialog.gainchar" gain=adapter.trainingGainRandom}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gainchar" gain=adapter.trainingGainRandom}}
                 {{else}}
-                {{localize "DIALOG.improveAbilityDialog.gain" gain=adapter.trainingGainRandom}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.trainingGainRandom}}
                 {{/if}}
             </label>
         </div>
         {{else}}
         {{#if adapter.skillOver75}}
         <div class="training" style="margin-bottom: 10px; padding: 5px; flex: 1;">
-            <h2>{{localize "DIALOG.improveAbilityDialog.skillOver75Title"}}</h2>
-            <p>{{localize "DIALOG.improveAbilityDialog.skillOver75Explanation"}}</p>
+            <h2>{{localize "RQG.Dialog.improveAbilityDialog.skillOver75Title"}}</h2>
+            <p>{{localize "RQG.Dialog.improveAbilityDialog.skillOver75Explanation"}}</p>
         </div>
         {{/if}}
         {{/if}}
         {{#if adapter.showResearch}}
         <div class="research" style="margin-bottom: 10px; padding: 5px; flex: 1;">
-            <h2>{{localize "DIALOG.improveAbilityDialog.throughResearch" }}</h2>
-            <p>{{localize "DIALOG.improveAbilityDialog.chanceToGain" chanceToGain=adapter.chanceToGain}}</p>
+            <h2>{{localize "RQG.Dialog.improveAbilityDialog.throughResearch" }}</h2>
+            <p>{{localize "RQG.Dialog.improveAbilityDialog.chanceToGain" chanceToGain=adapter.chanceToGain}}</p>
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox"
                     value="research-gain-random" {{#unless adapter.showExperience}}checked="checked"{{/unless}}>
-                {{localize "DIALOG.improveAbilityDialog.gainchar" gain=adapter.researchGainRandom}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gainchar" gain=adapter.researchGainRandom}}
             </label>
         </div>
         {{/if}}
         {{#if adapter.atSpeciesMax}}
         <div class="speciesMax" style="margin-bottom: 10px; padding: 5px; flex: 1;">
-            <h2>{{localize "DIALOG.improveAbilityDialog.speciesMaxTitle" name=adapter.name}}</h2>
-            <p>{{localize "DIALOG.improveAbilityDialog.speciesMaxExplanation" name=adapter.name}}</p>
+            <h2>{{localize "RQG.Dialog.improveAbilityDialog.speciesMaxTitle" name=adapter.name}}</h2>
+            <p>{{localize "RQG.Dialog.improveAbilityDialog.speciesMaxExplanation" name=adapter.name}}</p>
         </div>
         {{/if}}
     </div>

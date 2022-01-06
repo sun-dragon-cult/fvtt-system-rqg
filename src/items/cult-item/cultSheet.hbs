@@ -32,7 +32,7 @@
                                                                               value="{{cultData.runePoints.max}}"></label><br>
       <select name="data.rank">
         {{#select cultData.rank}} {{#each sheetSpecific.ranksEnum}}
-          <option value="{{this}}">{{localize (concat "RQG.CultRank." this)}}</option>
+          <option value="{{this}}">{{localize (concat "RQG.Actor.RuneMagic.CultRank." this)}}</option>
         {{/each}} {{/select}}
       </select><br>
       <label>Actor's Gifts {{editor content=cultData.gifts target="data.gifts" button=true owner=owner editable=editable}}</label><br>

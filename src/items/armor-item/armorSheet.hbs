@@ -12,7 +12,7 @@
     <label>Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{armorData.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
       {{#select armorData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
-        <option value="{{this}}">{{localize (concat "RQG.EquippedStatus." this)}}</option>
+        <option value="{{this}}">{{localize (concat "RQGItems.Armor.EquippedStatus." this)}}</option>
       {{/each}} {{/select}}
     </select>
     <label>Hit Locations</label><br>
