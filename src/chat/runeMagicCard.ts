@@ -84,14 +84,14 @@ export class RuneMagicCard {
     const ritualOrMeditationOptions: any = {};
     for (let i = 0; i <= 100; i += 5) {
       ritualOrMeditationOptions[i] = getGame().i18n.localize(
-        "RQG.RuneMagicCard.MeditationOrRitualValue" + i
+        "RQG.Dialog.RuneMagicCard.MeditationOrRitualValue" + i
       );
     }
 
     const skillAugmentationOptions: any = {};
     [0, 50, 30, 20, -20, -50].forEach((value) => {
       skillAugmentationOptions[value] = getGame().i18n.localize(
-        "RQG.RuneMagicCard.SkillAugmentationValue" + value
+        "RQG.Dialog.RuneMagicCard.SkillAugmentationValue" + value
       );
     });
 
@@ -181,7 +181,7 @@ export class RuneMagicCard {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await RuneMagicCard.roll(flags.itemData, flags, actor, speakerName);
     } else {
-      ui.notifications?.warn(getGame().i18n.localize("RQG.RuneMagicCard.getActorFromIdsWarning"));
+      ui.notifications?.warn(getGame().i18n.localize("RQG.Dialog.RuneMagicCard.getActorFromIdsWarning"));
     }
     return false;
   }
@@ -261,7 +261,7 @@ export class RuneMagicCard {
 
     if (!selectedRune) {
       // the ui should make this impossible
-      console.log(getGame().i18n.localize("RQG.RuneMagicCard.noSelectedRuneWarning"));
+      console.log(getGame().i18n.localize("RQG.Dialog.RuneMagicCard.noSelectedRuneWarning"));
       return;
     }
 
@@ -271,31 +271,31 @@ export class RuneMagicCard {
       const resultMessages: ResultMessage[] = [];
       resultMessages.push({
         result: ResultEnum.Critical,
-        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageCritical", {
+        html: getGame().i18n.format("RQG.Dialog.RuneMagicCard.resultMessageCritical", {
           magicPointBoost: flags.formData.magicPointBoost,
         }),
       });
       resultMessages.push({
         result: ResultEnum.Special,
-        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageSpecial", {
+        html: getGame().i18n.format("RQG.Dialog.RuneMagicCard.resultMessageSpecial", {
           runePointCost: flags.formData.runePointCost,
           magicPointBoost: flags.formData.magicPointBoost,
         }),
       });
       resultMessages.push({
         result: ResultEnum.Success,
-        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageSuccess", {
+        html: getGame().i18n.format("RQG.Dialog.RuneMagicCard.resultMessageSuccess", {
           runePointCost: flags.formData.runePointCost,
           magicPointBoost: flags.formData.magicPointBoost,
         }),
       });
       resultMessages.push({
         result: ResultEnum.Failure,
-        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageFailure"),
+        html: getGame().i18n.format("RQG.Dialog.RuneMagicCard.resultMessageFailure"),
       });
       resultMessages.push({
         result: ResultEnum.Fumble,
-        html: getGame().i18n.format("RQG.RuneMagicCard.resultMessageFumble", {
+        html: getGame().i18n.format("RQG.Dialog.RuneMagicCard.resultMessageFumble", {
           runePointCost: flags.formData.runePointCost,
         }),
       });
@@ -372,7 +372,7 @@ export class RuneMagicCard {
     if (oneUse) {
       newRunePointMaxTotal -= runePoints;
       if (newRunePointMaxTotal < (cult.data.data.runePoints.max || 0)) {
-        ui.notifications?.info(getGame().i18n.format("RQG.RuneMagicCard.SpentOneUseRunePoints", {actorName: actor?.name, runePoints: runePoints, cultName: cult.name}));
+        ui.notifications?.info(getGame().i18n.format("RQG.Dialog.RuneMagicCard.SpentOneUseRunePoints", {actorName: actor?.name, runePoints: runePoints, cultName: cult.name}));
       }
     }
     const updateCultItemRunePoints: DeepPartial<ItemDataSource> = {
@@ -395,12 +395,12 @@ export class RuneMagicCard {
   ): string {
     assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
     if (Number(formData.formData.runePointCost) > (Number(cultData.data.runePoints.value) || 0)) {
-      return getGame().i18n.format("RQG.RuneMagicCard.validationNotEnoughRunePoints");
+      return getGame().i18n.format("RQG.Dialog.RuneMagicCard.validationNotEnoughRunePoints");
     } else if (
       Number(formData.formData.magicPointBoost) >
       (Number(actorData?.data?.attributes?.magicPoints?.value) || 0)
     ) {
-      return getGame().i18n.format("RQG.RuneMagicCard.validationNotEnoughMagicPoints");
+      return getGame().i18n.format("RQG.Dialog.RuneMagicCard.validationNotEnoughMagicPoints");
     } else {
       return "";
     }
@@ -410,7 +410,7 @@ export class RuneMagicCard {
     let html = await renderTemplate("systems/rqg/chat/runeMagicCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: getGame().i18n.format("RQG.RuneMagicCard.runeMagicResultFlavor", {
+      flavor: getGame().i18n.format("RQG.Dialog.RuneMagicCard.runeMagicResultFlavor", {
         name: flags.itemData.name,
       }),
       user: getGame().user?.id,

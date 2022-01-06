@@ -12,7 +12,7 @@
     </select></label><br>
     <label>Act as <select name="data.hitLocationType">
       {{#select hitLocationData.hitLocationType}} {{#each sheetSpecific.hitLocationTypes}}
-      <option value="{{this}}">{{localize (concat 'RQG.HitLocationType.' this)}}</option>
+      <option value="{{this}}">{{localize (concat 'RQG.Items.HitLocationType.' this)}}</option>
       {{/each}} {{/select}}
     </select> for damage calculations.</label><br>
     {{#if (eq hitLocationData.hitLocationType "limb")}}

@@ -170,7 +170,7 @@
             <div data-item-id="{{id}}" class="gear usagecontainer contextmenu nowrap">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                <div class="usagecell {{#if unusable}} warning{{/if}}" {{#if unusable}}title="{{localize "ACTORSHEET.Combat.StrDexMinsNotMetTip"}}"{{/if}}>
+                <div class="usagecell {{#if unusable}} warning{{/if}}" {{#if unusable}}title="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}>
                   {{skillchance skillId @root.data._id @root.tokenId}}%&nbsp; {{skillname skillId @root.data._id @root.tokenId}}
                 </div>
                 {{/if}}
@@ -190,7 +190,7 @@
             <div data-item-id="{{id}}" class="gear usagecontainer contextmenu"><span class="text-right">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                  <div class="usagecell {{#if underMinSTR}} warning{{/if}}" {{#if underMinSTR}}title="{{localize "ACTORSHEET.Combat.StrMinNotMetTip"}}"{{/if}}></span>
+                  <div class="usagecell {{#if underMinSTR}} warning{{/if}}" {{#if underMinSTR}}title="{{localize "RQG.Actor.Combat.StrMinNotMetTip"}}"{{/if}}></span>
                     {{#if minStrength}}{{minStrength}}{{else}}—{{/if}}
                   </div>
                 {{/if}}
@@ -201,7 +201,7 @@
               <span class="text-right">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                  <div class="usagecell {{#if underMinDEX}} warning{{/if}}" {{#if underMinDEX}}title="{{localize "ACTORSHEET.Combat.DexMinNotMetTip"}}"{{/if}}>
+                  <div class="usagecell {{#if underMinDEX}} warning{{/if}}" {{#if underMinDEX}}title="{{localize "RQG.Actor.Combat.DexMinNotMetTip"}}"{{/if}}>
                     {{#if minDexterity}}{{minDexterity}}{{else}}—{{/if}}
                   </div>                                    
                 {{/if}}
