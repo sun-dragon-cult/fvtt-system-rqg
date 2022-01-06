@@ -9,7 +9,8 @@
     "TypeWeapon": "Weapon",
     "TypeSpiritmagic": "Spirit Magic Spell",
     "TypeCult": "Cult",
-    "TypeRunemagic": "Rune Magic Spell"
+    "TypeRunemagic": "Rune Magic Spell",
+    "TypeReputation": "Reputation"
   },
   "RQG": {
     "Actor": {

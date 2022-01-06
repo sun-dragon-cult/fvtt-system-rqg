@@ -44,6 +44,7 @@ import {
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { ReputationCard } from "../chat/reputationCard";
 import { RuneMagicCard } from "../chat/runeMagicCard";
 
 interface UiSections {
@@ -695,6 +696,35 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
+    this.form?.querySelectorAll("[data-reputation-roll]").forEach((el) => {
+      let clickCount = 0;
+      el.addEventListener("click", async (ev: Event) => {
+        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+
+        if (clickCount >= 2) {
+          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+          const speakerName = this.token?.name || this.actor.data.token.name;
+          await ReputationCard.directroll(
+            this.actor,
+            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+            this.token
+          )
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await ReputationCard.show(
+                this.actor,
+                // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+                this.token
+              );              
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
     // Roll against Item Ability Chance
     this.form?.querySelectorAll("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
@@ -1044,11 +1074,13 @@ export class RqgActorSheet extends ActorSheet<
                 console.log("CULT", item);
                 const cultId = item.id;
                 //@ts-ignore cultId
-                const runeMagicSpells = actor.items.filter(i => i.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultId);
-                runeMagicSpells.forEach(s => {
-                  idsToDelete.push((s.id));
-                })
-              };
+                const runeMagicSpells = actor.items.filter(
+                  (i) => i.data.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultId
+                );
+                runeMagicSpells.forEach((s) => {
+                  idsToDelete.push(s.id);
+                });
+              }
 
               idsToDelete.push(itemId);
 

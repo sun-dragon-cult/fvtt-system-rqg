@@ -90,6 +90,11 @@ export const registerHandlebarsHelpers = function () {
     return rune.img;
   });
 
+  Handlebars.registerHelper("defaultItemIconSrc", (itemType: string): string | undefined => {
+    const defaultItemIconSettings: any = getGame().settings.get("rqg", "defaultItemIconSettings");
+    return defaultItemIconSettings[itemType];
+  });
+
   Handlebars.registerHelper("enrichHtml", (content: string): string => {
     return TextEditor.enrichHTML(content);
   });
