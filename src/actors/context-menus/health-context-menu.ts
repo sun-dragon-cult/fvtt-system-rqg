@@ -1,18 +1,18 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { getDomDataset, getGame, getRequiredDomDataset, RqgError } from "../../system/util";
+import { getDomDataset, getGame, getRequiredDomDataset, localize, RqgError } from "../../system/util";
 import { RqgActor } from "../rqgActor";
 import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
-    name: "Edit",
+    name: localize("RQG.ContextMenu.EditHitLocation"),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = itemId && actor.items.get(itemId);
       if (!item || !item.sheet) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit hitLocation item from the health context menu.`;
+        const msg = localize("RQG.ContextMenu.CantEditHitLocationError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -20,7 +20,7 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: "Delete",
+    name: localize("RQG.ContextMenu.DeleteHitLocation"),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
