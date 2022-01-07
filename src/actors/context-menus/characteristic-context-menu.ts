@@ -69,7 +69,7 @@ export const characteristicMenuOptions = (
     },
     callback: (el: JQuery) => {
       const charName = getDomDataset(el, "characteristic");
-      requireValue(charName, localize("RQG.Notification.Error.DatasetNotFound"));
+      requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
       const characteristic = (actor.data.data.characteristics as any)[charName];
       characteristic.name = charName;
@@ -83,7 +83,7 @@ export const characteristicMenuOptions = (
     condition: (): boolean => !!getGame().user?.isGM,
     callback: async (el: JQuery) => {
       const characteristic = getDomDataset(el, "characteristic");
-      requireValue(characteristic, localize("RQG.Notification.Error.DatasetNotFound"));
+      requireValue(characteristic, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
       const confirmed = await confirmInitializeDialog(actor.name ?? "", characteristic);
       if (confirmed) {
         const updateData = await getCharacteristicUpdate(
@@ -173,7 +173,7 @@ function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: 
     };
   } else {
     throw new RqgError(
-      localize("RQG.Notification.Error.CharacteristicNotFound", {characteristicName: characteristicName, actorName: actor.name})
+      localize("RQG.Contextmenu.Notification.CharacteristicNotFound", {characteristicName: characteristicName, actorName: actor.name})
     );
   }
 }

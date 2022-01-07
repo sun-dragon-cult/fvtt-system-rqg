@@ -1,7 +1,7 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { WeaponCard } from "../../chat/weaponCard";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getGame, getRequiredDomDataset, RqgError } from "../../system/util";
+import { getDomDataset, getGame, getRequiredDomDataset, localize, RqgError } from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const combatMenuOptions = (
@@ -9,7 +9,7 @@ export const combatMenuOptions = (
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: "Roll (click)",
+    name: localize("RQG.ContextMenu.RollCard"),
     icon: ContextMenuRunes.RollCard,
     condition: (el) => !!getDomDataset(el, "weapon-roll"),
     callback: async (el: JQuery) => {
@@ -19,21 +19,21 @@ export const combatMenuOptions = (
       if (skillItemId && weaponItemId) {
         await WeaponCard.show(weaponItemId, usage, skillItemId, actor, token);
       } else {
-        const msg = `Couldn't find skillId [${skillItemId}] or weaponId [${weaponItemId}] on actor ${actor.name} to show the weapon chat card from the combat context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponChatCardError", {skillItemId: skillItemId, weaponItemId: weaponItemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
     },
   },
   {
-    name: "Toggle Experience",
+    name: localize("RQG.ContextMenu.ToggleExperience"),
     icon: ContextMenuRunes.ToggleExperience,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "skill-id");
       const item = itemId && actor.items.get(itemId);
       if (!item || !("hasExperience" in item.data.data)) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience from the combat context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantToggleExperienceError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -42,14 +42,14 @@ export const combatMenuOptions = (
     },
   },
   {
-    name: "Edit Skill",
+    name: localize("RQG.ContextMenu.EditSkill"),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const skillItem = skillItemId && actor.items.get(skillItemId);
       if (!skillItem || !skillItem.sheet) {
-        const msg = `Couldn't find itemId [${skillItemId}] on actor ${actor.name} to show skill Item sheet from the combat context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantShowItemSheetError", {skillItemId: skillItemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -58,14 +58,14 @@ export const combatMenuOptions = (
     },
   },
   {
-    name: "Edit Weapon",
+    name: localize("RQG.ContextMenu.EditWeapon"),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");
       const item = weaponItemId && actor.items.get(weaponItemId);
       if (!item || !item.sheet) {
-        const msg = `Couldn't find itemId [${weaponItemId}] on actor ${actor.name} to show weapon item sheet from the combat context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponSheetError", {weaponItemId: weaponItemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -73,7 +73,7 @@ export const combatMenuOptions = (
     },
   },
   {
-    name: "Delete Skill",
+    name: localize("RQG.ContextMenu.DeleteSkill"),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -81,14 +81,14 @@ export const combatMenuOptions = (
       if (skillItemId) {
         RqgActorSheet.confirmItemDelete(actor, skillItemId);
       } else {
-        const msg = `Couldn't find itemId [${skillItemId}] on actor ${actor.name} to delete skill item from the combat context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantDeleteSkillError", {weaponItemId: skillItemId, actorName: actor.name});;
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
     },
   },
   {
-    name: "Delete Weapon",
+    name: localize("RQG.ContextMenu.DeleteWeapon"),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -96,7 +96,7 @@ export const combatMenuOptions = (
       if (weaponItemId) {
         RqgActorSheet.confirmItemDelete(actor, weaponItemId);
       } else {
-        const msg = `Couldn't find itemId [${weaponItemId}] on actor ${actor.name} to delete weapon item from the combat context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantDeleteWeaponError", {weaponItemId: weaponItemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
