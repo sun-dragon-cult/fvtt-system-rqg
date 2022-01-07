@@ -4,7 +4,7 @@ import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgItem } from "../items/rqgItem";
 import { DamageCalculations } from "../system/damageCalculations";
-import { getGame, hasOwnProperty } from "../system/util";
+import { getGame, hasOwnProperty, localize } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
@@ -269,7 +269,7 @@ export class RqgActor extends Actor {
             await this.updateEmbeddedDocuments("Item", [
               { _id: itemToAward.id, data: { hasExperience: true } },
             ]);
-            const msg = getGame().i18n.format("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+            const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
               actorName: this.name,
               itemName: itemToAward.name,
             });
@@ -277,7 +277,7 @@ export class RqgActor extends Actor {
           }
         }
       } else {
-        const msg = getGame().i18n.format(
+        const msg = localize(
           "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
           { itemName: itemToAward.name, itemId: itemToAward.id }
         );
@@ -285,7 +285,7 @@ export class RqgActor extends Actor {
         ui.notifications?.error(msg);
       }
     } else {
-      const msg = getGame().i18n.format("RQG.Actor.AwardExperience.ItemNotFoundError", {
+      const msg = localize("RQG.Actor.AwardExperience.ItemNotFoundError", {
         itemId: itemId,
         actorName: this.name,
         actorid: this.id,

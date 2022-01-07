@@ -1,5 +1,6 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import {
+  activateTab,
   assertItemType,
   getActorFromIds,
   getGame,
@@ -48,7 +49,7 @@ export class SpiritMagicCard {
       },
     };
 
-    ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
+    ui?.sidebar?.tabs.chat && activateTab(ui?.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
     await ChatMessage.create(await this.renderContent(flags));
   }
 

@@ -1,4 +1,4 @@
-import { getGame } from "./util";
+import { getGame, localize } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { DefaultItemIconSettings } from "../dialog/defaultItemIconSettings";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
@@ -6,9 +6,9 @@ import { HitLocationSettings } from "../dialog/hitLocationSettings";
 
 export const registerRqgSystemSettings = function () {
   getGame().settings.registerMenu("rqg", "hitLocations", {
-    name: getGame().i18n.localize("RQG.Settings.HitLocations.settingName"),
-    label: getGame().i18n.localize("RQG.Settings.HitLocations.settingLabel"),
-    hint: getGame().i18n.localize("RQG.Settings.HitLocations.settingHint"),
+    name: localize("RQG.Settings.HitLocations.settingName"),
+    label: localize("RQG.Settings.HitLocations.settingLabel"),
+    hint: localize("RQG.Settings.HitLocations.settingHint"),
     icon: "fas fa-child",
     type: HitLocationSettings,
     restricted: true,
@@ -22,9 +22,9 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.registerMenu("rqg", "defaultItemIconSettings", {
-    name: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingName"),
-    label: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingLabel"),
-    hint: getGame().i18n.localize("RQG.Settings.DefaultItemIcons.settingHint"),
+    name: localize("RQG.Settings.DefaultItemIcons.settingName"),
+    label: localize("RQG.Settings.DefaultItemIcons.settingLabel"),
+    hint: localize("RQG.Settings.DefaultItemIcons.settingHint"),
     icon: "fas fa-image",
     type: DefaultItemIconSettings,
     restricted: true,
@@ -50,8 +50,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register("rqg", "runesCompendium", {
-    name: getGame().i18n.localize("RQG.Settings.RunesCompendium.settingName"),
-    hint: getGame().i18n.localize("RQG.Settings.RunesCompendium.settingHint"),
+    name: localize("RQG.Settings.RunesCompendium.settingName"),
+    hint: localize("RQG.Settings.RunesCompendium.settingHint"),
     scope: "world",
     config: true,
     type: String,
@@ -59,8 +59,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register("rqg", "fumbleRollTable", {
-    name: getGame().i18n.localize("RQG.Settings.FumbleRollTable.settingName"),
-    hint: getGame().i18n.localize("RQG.Settings.FumbleRollTable.settingHint"),
+    name: localize("RQG.Settings.FumbleRollTable.settingName"),
+    hint: localize("RQG.Settings.FumbleRollTable.settingHint"),
     scope: "world",
     config: true,
     type: String,
@@ -68,8 +68,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register("rqg", "specialCrit", {
-    name: getGame().i18n.localize("RQG.Settings.SpecialCrit.settingName"),
-    hint: getGame().i18n.localize("RQG.Settings.SpecialCrit.settingHint"),
+    name: localize("RQG.Settings.SpecialCrit.settingName"),
+    hint: localize("RQG.Settings.SpecialCrit.settingHint"),
     scope: "world",
     config: true,
     type: Boolean,
@@ -77,8 +77,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register("rqg", "magicRuneName", {
-    name: getGame().i18n.localize("RQG.Settings.MagicRuneName.settingName"),
-    hint: getGame().i18n.localize("RQG.Settings.MagicRuneName.settingHint"),
+    name: localize("RQG.Settings.MagicRuneName.settingName"),
+    hint: localize("RQG.Settings.MagicRuneName.settingHint"),
     scope: "world",
     config: true,
     type: String,
@@ -86,8 +86,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register("rqg", "systemMigrationVersion", {
-    name: getGame().i18n.localize("RQG.Settings.SystemMigrationVersion.settingName"),
-    hint: getGame().i18n.localize("RQG.Settings.SystemMigrationVersion.settingHint"),
+    name: localize("RQG.Settings.SystemMigrationVersion.settingName"),
+    hint: localize("RQG.Settings.SystemMigrationVersion.settingHint"),
     scope: "world",
     config: true, // TODO make this false eventually
     type: String,

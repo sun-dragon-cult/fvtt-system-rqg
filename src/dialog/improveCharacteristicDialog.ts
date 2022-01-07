@@ -1,5 +1,5 @@
 import { RqgActor } from "../actors/rqgActor";
-import { getGame } from "../system/util";
+import { localize } from "../system/util";
 
 //**Shows a dialog for improving a Characteristic */
 export async function showImproveCharacteristicDialog(
@@ -29,7 +29,7 @@ export async function showImproveCharacteristicDialog(
       trainingGainFixed: false,
       trainingGainRandom: "1d3-1",
       researchGainRandom: "1d3-1",
-      name: getGame().i18n.localize("RQG.Actor.Characteristics." + char.name + "-full"),
+      name: localize("RQG.Actor.Characteristics." + char.name + "-full"),
       typeLocName: itemId,
       forChar: true,
       speciesMax: speciesMax,
@@ -43,8 +43,8 @@ export async function showImproveCharacteristicDialog(
       adapter.atSpeciesMax = true;
     }
   
-    const btnImprove = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.btnDoImprovement");
-    const btnCancel = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.btnCancel");
+    const btnImprove = localize("RQG.Dialog.improveAbilityDialog.btnDoImprovement");
+    const btnCancel = localize("RQG.Dialog.improveAbilityDialog.btnCancel");
     const buttons: any = {};
     if (adapter.showExperience || adapter.showTraining || adapter.showResearch) {
       // There's at least one thing to do so show the Submit button
@@ -64,7 +64,7 @@ export async function showImproveCharacteristicDialog(
     const content: string = await renderTemplate("systems/rqg/dialog/improveAbilityDialog.hbs", {
       adapter: adapter,
     });
-    const title = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.titleChar", {
+    const title = localize("RQG.Dialog.improveAbilityDialog.titleChar", {
       name: adapter.name,
       typeLocName: adapter.typeLocName,
     });
@@ -97,11 +97,11 @@ export async function showImproveCharacteristicDialog(
   
     if (gaintype === "experience-gain-fixed" || gaintype === "experience-gain-random") {
       if (char.hasExperience) {
-        const rollFlavor = getGame().i18n.format(
+        const rollFlavor = localize(
           "RQG.Dialog.improveAbilityDialog.experienceRoll.flavor",
           { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
         );
-        let rollContent = getGame().i18n.format(
+        let rollContent = localize(
           "RQG.Dialog.improveAbilityDialog.experienceRoll.contentChar",
           {
             chance: adapter.chance,
@@ -122,12 +122,12 @@ export async function showImproveCharacteristicDialog(
         if (expRoll.total !== undefined && expRoll.total <= adapter.chanceToGain) {
           // Increase characteristic, clear experience check
   
-          const resultFlavor = getGame().i18n.format(
+          const resultFlavor = localize(
             "RQG.Dialog.improveAbilityDialog.experienceResultCard.flavor",
             { name: adapter.name, typeLocName: adapter.typeLocName }
           );
           if (gaintype === "experience-gain-fixed") {
-            const resultContentChoseFixed = getGame().i18n.format(
+            const resultContentChoseFixed = localize(
               "RQG.Dialog.improveAbilityDialog.experienceResultCard.contentChoseFixed",
               { gain: adapter.experienceGainFixed }
             );
@@ -140,7 +140,7 @@ export async function showImproveCharacteristicDialog(
             gain = adapter.experienceGainFixed;
           }
           if (gaintype === "experience-gain-random") {
-            const resultContentChoseRandom = getGame().i18n.format(
+            const resultContentChoseRandom = localize(
               "RQG.Dialog.improveAbilityDialog.experienceResultCard.contentChoseRandom",
               { gain: adapter.experienceGainRandom }
             );
@@ -155,11 +155,11 @@ export async function showImproveCharacteristicDialog(
         } else {
           // no increase, clear experience check
           gain = 0;
-          const failedFlavor = getGame().i18n.format(
+          const failedFlavor = localize(
             "RQG.Dialog.improveAbilityDialog.experienceGainFailed.flavor",
             { name: adapter.name, typeLocName: adapter.typeLocName }
           );
-          const failedContent = getGame().i18n.format(
+          const failedContent = localize(
             "RQG.Dialog.improveAbilityDialog.experienceGainFailed.content",
             { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
           );
@@ -172,7 +172,7 @@ export async function showImproveCharacteristicDialog(
           ChatMessage.create(failChat);
         }
       } else {
-        const msg = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
+        const msg = localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
           actorName: actor.name,
           name: adapter.name,
           typeLocName: adapter.typeLocName,
@@ -181,11 +181,11 @@ export async function showImproveCharacteristicDialog(
       }
     }
     if (gaintype === "training-gain-random") {
-      const flavor = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.trainingResultCard.flavor", {
+      const flavor = localize("RQG.Dialog.improveAbilityDialog.trainingResultCard.flavor", {
         name: adapter.name,
         typeLocName: adapter.typeLocName,
       });
-      const content = getGame().i18n.format(
+      const content = localize(
         "RQG.Dialog.improveAbilityDialog.trainingResultCard.contentChoseRandom",
         { gain: adapter.trainingGainRandom }
       );
@@ -198,12 +198,12 @@ export async function showImproveCharacteristicDialog(
       gain = Number(gainRoll.total) || 0;
     }
     if (gaintype === "research-gain-random") {
-      const rollFlavor = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.researchRoll.flavor", {
+      const rollFlavor = localize("RQG.Dialog.improveAbilityDialog.researchRoll.flavor", {
         actorName: actor.name,
         name: adapter.name,
         typeLocName: adapter.typeLocName,
       });
-      let rollContent = getGame().i18n.format(
+      let rollContent = localize(
         "RQG.Dialog.improveAbilityDialog.researchRoll.contentChar",
         {
           chance: adapter.chance,
@@ -222,14 +222,14 @@ export async function showImproveCharacteristicDialog(
       });
   
       if (expRoll.total !== undefined && expRoll.total <= adapter.chanceToGain) {
-        const flavor = getGame().i18n.format(
+        const flavor = localize(
           "RQG.Dialog.improveAbilityDialog.researchResultCard.flavor",
           {
             name: adapter.name,
             typeLocName: adapter.typeLocName,
           }
         );
-        const content = getGame().i18n.format(
+        const content = localize(
           "RQG.Dialog.improveAbilityDialog.researchResultCard.contentChoseRandom",
           { gain: adapter.trainingGainRandom }
         );
@@ -243,11 +243,11 @@ export async function showImproveCharacteristicDialog(
       } else {
         // no increase, clear experience check
         gain = 0;
-        const failedFlavor = getGame().i18n.format(
+        const failedFlavor = localize(
           "RQG.Dialog.improveAbilityDialog.researchGainFailed.flavor",
           { name: adapter.name, typeLocName: adapter.typeLocName }
         );
-        const failedContent = getGame().i18n.format(
+        const failedContent = localize(
           "RQG.Dialog.improveAbilityDialog.researchGainFailed.content",
           { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
         );

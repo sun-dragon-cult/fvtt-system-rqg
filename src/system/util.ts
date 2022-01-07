@@ -288,3 +288,31 @@ export function convertDeleteKeyToFoundrySyntax(obj: object): object {
 }
 
 export const deleteKeyPrefix = "--=";
+
+export function localize(key: string, data?: Record<string, unknown>): string {
+  const result = getGame().i18n.format(key, data);
+  if (result === key) {
+    console.log(`Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en.json).`);
+  }
+  return result;
+}
+
+/**
+ * Formats and localizes a characteristic name.
+ * @param characteristic ie: "strength"
+ * @returns Fully formatted and localized name, ie: "Strength (STR)"
+ */
+export function localizeCharacteristic(characteristic: string): string {
+  const name = localize(`RQG.Actor.Characteristics.${characteristic}-full`);
+  const abbr = localize(`RQG.Actor.Characteristics.${characteristic}`);
+  return localize(`RQG.Actor.Characteristics.format`, {name: name, abbr: abbr})
+}
+
+/**
+ * Sets a certain sidebar tab to active.
+ * @param tabName ie: ui.sidebar.tabs.chat.tabName
+ */
+export function activateTab(tabName: string) {
+  // TODO: add player setting to allow skipping this if they don't like the tab changing
+  ui.sidebar?.activateTab(tabName);
+}

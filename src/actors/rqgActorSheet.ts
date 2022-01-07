@@ -30,6 +30,7 @@ import {
   getGameUser,
   getRequiredDomDataset,
   hasOwnProperty,
+  localize,
   requireValue,
   RqgError,
   usersThatOwnActor,
@@ -225,14 +226,14 @@ export class RqgActorSheet extends ActorSheet<
       result.encumbrance += curr.data.data.encumbrance * curr.data.data.quantity;
       let conv = "";
       if (curr.data.data.price.estimated > 1) {
-        conv = getGame().i18n.format("RQG.Actor.Gear.CurrencyConversionTipOver1", {
+        conv = localize("RQG.Actor.Gear.CurrencyConversionTipOver1", {
           name: curr.name,
           value: curr.data.data.price.estimated,
         });
       } else if (curr.data.data.price.estimated === 1) {
-        conv = getGame().i18n.format("RQG.Actor.Gear.CurrencyConversionTipLunar");
+        conv = localize("RQG.Actor.Gear.CurrencyConversionTipLunar");
       } else {
-        conv = getGame().i18n.format("RQG.Actor.Gear.CurrencyConversionTipUnder1", {
+        conv = localize("RQG.Actor.Gear.CurrencyConversionTipUnder1", {
           name: curr.name,
           value: 1 / curr.data.data.price.estimated,
         });
@@ -1040,20 +1041,20 @@ export class RqgActorSheet extends ActorSheet<
 
     const itemTypeLoc: string = RqgItem.localizeItemTypeName(item.type);
 
-    const title = getGame().i18n.format("RQG.Dialog.confirmItemDeleteDialog.title", {
+    const title = localize("RQG.Dialog.confirmItemDeleteDialog.title", {
       itemType: itemTypeLoc,
       itemName: item.name,
     });
 
     let content: string = "";
     if (item.type === ItemTypeEnum.Cult) {
-      content = getGame().i18n.format("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
+      content = localize("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
         itemType: itemTypeLoc,
         itemName: item.name,
         runeMagicSpell: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
       });
     } else {
-      content = getGame().i18n.format("RQG.Dialog.confirmItemDeleteDialog.content", {
+      content = localize("RQG.Dialog.confirmItemDeleteDialog.content", {
         itemType: itemTypeLoc,
         itemName: item.name,
       });
@@ -1067,7 +1068,7 @@ export class RqgActorSheet extends ActorSheet<
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
-            label: getGame().i18n.format("RQG.Dialog.Common.btnConfirm"),
+            label: localize("RQG.Dialog.Common.btnConfirm"),
             callback: async () => {
               const idsToDelete = [];
               if (item.type === ItemTypeEnum.Cult) {
@@ -1089,7 +1090,7 @@ export class RqgActorSheet extends ActorSheet<
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
-            label: getGame().i18n.format("RQG.Dialog.Common.btnCancel"),
+            label: localize("RQG.Dialog.Common.btnCancel"),
             callback: () => null,
           },
         },

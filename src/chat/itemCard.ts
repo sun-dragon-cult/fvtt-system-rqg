@@ -52,7 +52,7 @@ export class ItemCard {
     flags.itemData.data;
 
     // @ts-ignore 0.8 tabs
-    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
+    activateTab(ui.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
     await ChatMessage.create(await ItemCard.renderContent(flags));
   }
 

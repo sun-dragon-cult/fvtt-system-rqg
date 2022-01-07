@@ -2,6 +2,7 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import {
+  activateTab,
   assertItemType,
   getActorFromIds,
   getGame,
@@ -78,7 +79,7 @@ export class WeaponCard extends ChatMessage {
     };
 
     // @ts-ignore 0.8 tabs
-    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
+    activateTab(ui.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
     await ChatMessage.create(await WeaponCard.renderContent(flags));
   }
 
