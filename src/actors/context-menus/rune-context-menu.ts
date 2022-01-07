@@ -11,6 +11,7 @@ import {
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const runeMenuOptions = (
   actor: RqgActor,
@@ -18,7 +19,7 @@ export const runeMenuOptions = (
 ): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -27,7 +28,7 @@ export const runeMenuOptions = (
   },
   {
     name: "Direct Roll (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollDirect,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -40,7 +41,7 @@ export const runeMenuOptions = (
   },
   {
     name: "Toggle Experience",
-    icon: '<i class="fas fa-lightbulb"></i>',
+    icon: ContextMenuRunes.ToggleExperience,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -51,7 +52,7 @@ export const runeMenuOptions = (
   },
   {
     name: "Improve",
-    icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
+    icon: ContextMenuRunes.Improve,
     condition: () => true,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -63,7 +64,7 @@ export const runeMenuOptions = (
   },
   {
     name: "View Description",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       let firstItemEl = el[0];
@@ -85,7 +86,7 @@ export const runeMenuOptions = (
   },
   {
     name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -101,7 +102,7 @@ export const runeMenuOptions = (
   },
   {
     name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

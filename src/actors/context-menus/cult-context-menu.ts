@@ -1,11 +1,12 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getGame, getRequiredDomDataset, RqgError } from "../../system/util";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "View Description",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
 
@@ -33,7 +34,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -48,7 +49,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

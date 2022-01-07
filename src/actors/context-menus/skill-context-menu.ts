@@ -13,6 +13,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const skillMenuOptions = (
   actor: RqgActor,
@@ -20,7 +21,7 @@ export const skillMenuOptions = (
 ): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollCard,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -36,7 +37,7 @@ export const skillMenuOptions = (
   },
   {
     name: "Direct Roll (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollDirect,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -66,7 +67,7 @@ export const skillMenuOptions = (
   },
   {
     name: "Toggle Experience",
-    icon: '<i class="fas fa-lightbulb"></i>',
+    icon: ContextMenuRunes.ToggleExperience,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -82,7 +83,7 @@ export const skillMenuOptions = (
   },
   {
     name: "Improve",
-    icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
+    icon: ContextMenuRunes.Improve,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = itemId && actor.items.get(itemId);
@@ -98,7 +99,7 @@ export const skillMenuOptions = (
   },
   {
     name: "View Description",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       let firstItemEl = el[0];
@@ -120,7 +121,7 @@ export const skillMenuOptions = (
   },
   {
     name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -136,7 +137,7 @@ export const skillMenuOptions = (
   },
   {
     name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

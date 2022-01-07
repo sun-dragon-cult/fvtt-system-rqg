@@ -36,6 +36,11 @@ body {
   src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
 
+@font-face {
+  font-family: GloranthaCoreRunes;
+  src: url("assets/fonts/GloranthaCoreRunes1.5.ttf") format("truetype");;
+}
+
 //// TODO Testing it out with only the bold version
 //@font-face {
 //  font-family: Norse;
@@ -46,6 +51,10 @@ body {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
   font-variant: small-caps;
   letter-spacing: 1.5px;
+}
+
+.runefont {
+  font-family: "GloranthaCoreRunes";
 }
 
 .pad-left {
@@ -597,9 +606,34 @@ body {
     font-variant: normal;
     letter-spacing: normal;
     font-weight: normal;
-
+    ol {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-right: 5px;
+    }
     li.context-item {
       white-space: nowrap;
+      padding-top: 3px;
+      .context-rune {
+        font-family: "GloranthaCoreRunes";
+        font-size: 22pt;
+        text-align: center;
+        width: 30px;
+        display: inline-block;
+        position: relative;
+        left: -3px;
+      }
+      .context-icon {
+        fill: white;
+        width: 30px;
+        display: inline-block;
+        text-align: center;
+        position: relative;
+        left: -3px;
+      }
+      .context-icon-img {
+        height: 16pt;        
+      }
     }
   }
 

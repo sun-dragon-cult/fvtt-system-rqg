@@ -1,0 +1,15 @@
+export enum ContextMenuRunes {
+    RollCard = '<div class="context-rune">K</div>',
+    RollDirect = '<div class="context-rune">K</div>',
+    ToggleExperience = '<div class="context-rune experienced">W</div>',
+    Improve = '<div class="context-rune">W</div>',
+    InitializeCharacteristics = '<div class="context-rune">x</div>',
+    InitializeAllCharacteristics = '<div class="context-rune">x</div>',
+    Edit = '<div class="context-rune">s</div>',
+    Delete = '<div class="context-rune">t</div>',
+    ViewDescription = '<div class="context-rune">y</div>',
+    SetNotCarried = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/equipped/not_carried_white.svg"></div>',
+    SetCarried = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/equipped/carried_white.svg"></div>',
+    SetEquipped = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/equipped/equipped_white.svg"></div>',
+    Split = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/runes/separate_white.svg"></div>',
+}

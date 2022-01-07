@@ -2,6 +2,7 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { WeaponCard } from "../../chat/weaponCard";
 import { RqgActor } from "../rqgActor";
 import { getDomDataset, getGame, getRequiredDomDataset, RqgError } from "../../system/util";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const combatMenuOptions = (
   actor: RqgActor,
@@ -9,7 +10,7 @@ export const combatMenuOptions = (
 ): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollCard,
     condition: (el) => !!getDomDataset(el, "weapon-roll"),
     callback: async (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
@@ -26,7 +27,7 @@ export const combatMenuOptions = (
   },
   {
     name: "Toggle Experience",
-    icon: '<i class="fas fa-lightbulb"></i>',
+    icon: ContextMenuRunes.ToggleExperience,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "skill-id");
@@ -42,7 +43,7 @@ export const combatMenuOptions = (
   },
   {
     name: "Edit Skill",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
@@ -58,7 +59,7 @@ export const combatMenuOptions = (
   },
   {
     name: "Edit Weapon",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");
@@ -73,7 +74,7 @@ export const combatMenuOptions = (
   },
   {
     name: "Delete Skill",
-    icon: '<i class="fas fa-trash"></i>',
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
@@ -88,7 +89,7 @@ export const combatMenuOptions = (
   },
   {
     name: "Delete Weapon",
-    icon: '<i class="fas fa-trash"></i>',
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");

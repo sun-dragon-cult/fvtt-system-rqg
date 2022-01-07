@@ -4,6 +4,7 @@ import { Characteristic, Characteristics } from "../../data-model/actor-data/cha
 import { getDomDataset, getGame, getGameUser, requireValue, RqgError } from "../../system/util";
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../dialog/improveCharacteristicDialog";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
@@ -11,7 +12,7 @@ export const characteristicMenuOptions = (
 ): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
@@ -27,7 +28,7 @@ export const characteristicMenuOptions = (
   },
   {
     name: "Direct Roll *5 (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollDirect,
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
@@ -44,7 +45,7 @@ export const characteristicMenuOptions = (
   },
   {
     name: "Toggle Experience",
-    icon: '<i class="fas fa-lightbulb"></i>',
+    icon: ContextMenuRunes.ToggleExperience,
     condition: (el: JQuery) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       return characteristicName === "power";
@@ -57,7 +58,7 @@ export const characteristicMenuOptions = (
   },
   {
     name: "Improve",
-    icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
+    icon: ContextMenuRunes.Improve,
     condition: (el: JQuery): boolean => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
       // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
@@ -78,7 +79,7 @@ export const characteristicMenuOptions = (
   },
   {
     name: "Initialize Characteristic",
-    icon: '<i class="fas fa-dice-three"></i>',
+    icon: ContextMenuRunes.InitializeCharacteristics,
     condition: (): boolean => !!getGame().user?.isGM,
     callback: async (el: JQuery) => {
       const characteristic = getDomDataset(el, "characteristic");
@@ -97,7 +98,7 @@ export const characteristicMenuOptions = (
   },
   {
     name: "Initialize All Characteristics",
-    icon: '<i class="fas fa-dice"></i>',
+    icon: ContextMenuRunes.InitializeAllCharacteristics,
     condition: (): boolean => !!getGame().user?.isGM,
     callback: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");

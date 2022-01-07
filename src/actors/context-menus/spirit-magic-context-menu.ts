@@ -9,6 +9,7 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const spiritMagicMenuOptions = (
   actor: RqgActor,
@@ -16,7 +17,7 @@ export const spiritMagicMenuOptions = (
 ): ContextMenu.Item[] => [
   {
     name: "Roll (click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
@@ -27,7 +28,7 @@ export const spiritMagicMenuOptions = (
   },
   {
     name: "Direct Roll (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollDirect,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
@@ -49,7 +50,7 @@ export const spiritMagicMenuOptions = (
   },
   {
     name: "View Description",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       let firstItemEl = el[0];
@@ -71,7 +72,7 @@ export const spiritMagicMenuOptions = (
   },
   {
     name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
@@ -87,7 +88,7 @@ export const spiritMagicMenuOptions = (
   },
   {
     name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

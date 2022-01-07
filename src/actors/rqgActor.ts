@@ -7,7 +7,7 @@ import { DamageCalculations } from "../system/damageCalculations";
 import { getGame, hasOwnProperty } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import { initializeAllCharacteristics } from "./context-menues/characteristic-context-menu";
+import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
 
 export class RqgActor extends Actor {

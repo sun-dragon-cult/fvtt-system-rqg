@@ -1,11 +1,12 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { getDomDataset, getGame, getRequiredDomDataset, RqgError } from "../../system/util";
 import { RqgActor } from "../rqgActor";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
@@ -20,7 +21,7 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

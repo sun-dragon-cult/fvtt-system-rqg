@@ -1,11 +1,12 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import { getGame, getRequiredDomDataset, hasOwnProperty, RqgError } from "../../system/util";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: "Set as not carried",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.SetNotCarried,
     condition: () => true,
     callback: async (): Promise<void> => {
       ui.notifications?.info("TODO set as not carried");
@@ -13,7 +14,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: "Set as carried",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.SetCarried,
     condition: () => true,
     callback: async (): Promise<void> => {
       ui.notifications?.info("TODO set as carried");
@@ -21,7 +22,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: "Set as equipped",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.SetEquipped,
     condition: () => true,
     callback: async (): Promise<void> => {
       ui.notifications?.info("TODO set as equipped");
@@ -29,7 +30,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: "Split into new location",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.Split,
     condition: (el: JQuery): boolean => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -44,7 +45,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: "View Description",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.ViewDescription,
     condition: () => true,
     callback: async (): Promise<void> => {
       ui.notifications?.info("TODO View Description");
@@ -52,7 +53,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -66,8 +67,8 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: "Drop",
-    icon: '<i class="fas fa-trash"></i>',
+    name: "Drop (Delete)",
+    icon: ContextMenuRunes.Delete,
     condition: () => true,
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");

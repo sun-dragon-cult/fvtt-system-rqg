@@ -5,6 +5,7 @@ import { assertItemType, getGameUser, getRequiredDomDataset, RqgError } from "..
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const passionMenuOptions = (
   actor: RqgActor,
@@ -12,7 +13,7 @@ export const passionMenuOptions = (
 ): ContextMenu.Item[] => [
   {
     name: "Roll (click))",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -21,7 +22,7 @@ export const passionMenuOptions = (
   },
   {
     name: "Direct Roll (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    icon: ContextMenuRunes.RollDirect,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -38,7 +39,7 @@ export const passionMenuOptions = (
   },
   {
     name: "Toggle Experience",
-    icon: '<i class="fas fa-lightbulb"></i>',
+    icon: ContextMenuRunes.ToggleExperience,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -53,7 +54,7 @@ export const passionMenuOptions = (
   },
   {
     name: "Improve",
-    icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
+    icon: ContextMenuRunes.Improve,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -74,7 +75,7 @@ export const passionMenuOptions = (
   },
   {
     name: "Edit back story",
-    icon: '<i class="fas fa-book-open"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => true,
     callback: async (el: JQuery) => {
       ui.notifications?.info("TODO Edit Description");
@@ -82,7 +83,7 @@ export const passionMenuOptions = (
   },
   {
     name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    icon: ContextMenuRunes.Edit,
     condition: () => getGameUser().isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -97,7 +98,7 @@ export const passionMenuOptions = (
   },
   {
     name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    icon: ContextMenuRunes.Delete,
     condition: () => getGameUser().isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
