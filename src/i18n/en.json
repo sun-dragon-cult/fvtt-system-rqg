@@ -171,6 +171,12 @@
       "ViewDescription": "View Description",
       "EditCult": "Edit Cult",
       "DeleteCult": "Delete Cult",
+      "SetAsNotCarried": "Set as not carried",
+      "SetAsCarried": "Set as carried",
+      "SetAsEquipped": "Set as equipped",
+      "SplitIntoNewLocation": "Split into new location",
+      "EditGear": "Edit Gear",
+      "DeleteGear": "Drop (Delete) Gear",
       "Notification": {
         "DatasetNotFound": "Couldn't find dataset for characteristic",
         "CharacteristicNotFound": "Couldn't find characteristic name \"{characteristicName}\" on actor {actorName} to do an action from the characteristics context menu.",
@@ -181,7 +187,8 @@
         "CantDeleteSkillError": "Couldn't find itemId [{skillItemId}] on actor {actorName} to delete skill item from the combat context menu.",
         "CantDeleteWeaponError": "Couldn't find itemId [{weaponItemId}] on actor {actorName} to delete weapon item from the combat context menu.",
         "CantShowJournalDescriptionError": "Couldn't find journal Id [{journalId}] on actor {actorName} to show it from the cult context menu.",
-        "CantEditCultError": "`Couldn't find itemId [{itemId}] on actor {actorName} to edit cult item from the cult context menu."
+        "CantEditCultError": "`Couldn't find itemId [{itemId}] on actor {actorName} to edit cult item from the cult context menu.",
+        "CantEditGearError": "Couldn't find gear with itemId [{itemId}] on actor {actorName} to edit item from the gear context menu."
       }
     },
     "Dialog": {
