@@ -1,11 +1,11 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getGame, getRequiredDomDataset, RqgError } from "../../system/util";
+import { getDomDataset, getGame, getRequiredDomDataset, localize, RqgError } from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
-    name: "View Description",
+    name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
@@ -25,7 +25,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const journalId = firstItemEl.dataset.journalId;
       const journalPack = firstItemEl.dataset.journalPack;
       if (!journalId) {
-        const msg = `Couldn't find journal Id [${journalId}] on actor ${actor.name} to show it from the cult context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantShowJournalDescriptionError", {journalId: journalId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -33,14 +33,14 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: "Edit",
+    name: localize("RQG.ContextMenu.EditCult"),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = itemId && actor.items.get(itemId);
       if (!item || !item.sheet) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit cult item from the cult context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantEditCultError", {journalId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -48,7 +48,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: "Delete",
+    name: localize("RQG.ContextMenu.DeleteCult"),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
