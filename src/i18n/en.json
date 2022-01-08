@@ -381,7 +381,10 @@
         "ExpectedCultItemError": "Expected Cult item",
         "CantFindRunesCompendiumError": "Can't find runes Compendium {runesCompendiumName}",
         "CantFindCultRuneError": "Can't find cult rune {newRune} among allRunesIndex",
-        "CantFindRuneInAllRunesCompendiumError": "Can't find rune in all runes compendium"
+        "CantFindRuneInAllRunesCompendiumError": "Can't find rune in all runes compendium",
+        "ItemWasNotHitLocationError": "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
+        "HitLocationDoesNotHaveActorError": "Hit Location item didn't have an actor",
+        "ActorDoesNotHaveMaxHpError": "Actor doesn't have max hitPoints"
       },
       "Skill": {
         "SkillCategory": {}
