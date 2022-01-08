@@ -1,5 +1,5 @@
 import { emptyPrice, IPhysicalItem } from "../../../data-model/item-data/IPhysicalItem";
-import { hasOwnProperty, RqgError } from "../../../system/util";
+import { hasOwnProperty, localize, RqgError } from "../../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
 
@@ -36,7 +36,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       let location = itemLocation === itemData.name ? "" : itemLocation;
       if (hasLoop(itemData, physicalItemDatas)) {
         ui.notifications?.warn(
-          `Circular gear locations (A in B in A) - check your gear locations: ${itemLocation}`
+          localize("RQG.Items.Notification.CircularGearLocationWarning", {itemLocation: itemLocation})
         );
         location = "";
       }
@@ -46,7 +46,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       );
       // @ts-ignore
       if (containingItem && !containingItem.data.isContainer) {
-        ui.notifications?.warn(containingItem.name + " is not a container"); // TODO make a real solution!
+        ui.notifications?.warn(localize("RQG.Items.Notification.ItemIsNotContainerWarning", {itemName: containingItem.name})); // TODO make a real solution!
         location = "";
       }
       return {
@@ -161,7 +161,7 @@ export function getOtherItemIdsInSameLocationTree(
     rootNode = searchTree(itemLocationTree, rootNode.location);
   }
   if (rootNode == null) {
-    const msg = "Couldn't find root location Node";
+    const msg = localize("RQG.Items.Notification.CantFindRootLocationNode");
     ui.notifications?.error(msg);
     throw new RqgError(msg, itemLocationTree);
   }
