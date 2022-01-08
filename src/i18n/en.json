@@ -130,6 +130,9 @@
         "CurrencyConversionTipLunar": "Lunars are the standard basis of currency.",
         "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s."
       },
+      "Rune": {
+        "Condition": "Condition"
+      },
       "RuneMagic": {
         "CultRank": {
           "layMember": "Lay Member",
