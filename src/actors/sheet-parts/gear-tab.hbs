@@ -1,20 +1,18 @@
 <nav class="gear-tabs tabs" data-group="gear-view">
-  <h3 class="item" title="View by Item Type" data-group="gear-view" data-tab="by-item-type"><img src="{{gearViewIcon 'byItemType'}}"> View by Item Type</h3>
-  <h3 class="item" title="View by Location" data-group="gear-view" data-tab="by-location"><img src="{{gearViewIcon 'byLocation'}}"> View by location</h3>
+  <h3 class="item" title="{{localize "RQG.Actor.Gear.ViewByItemType"}}" data-group="gear-view" data-tab="by-item-type"><img src="{{gearViewIcon 'byItemType'}}"> View by Item Type</h3>
+  <h3 class="item" title="{{localize "RQG.Actor.Gear.ViewByLocation"}}" data-group="gear-view" data-tab="by-location"><img src="{{gearViewIcon 'byLocation'}}"> View by location</h3>
 </nav>
-
 
 <section class="gear-body">
   <div class="tab by-location" data-group="gear-view" data-tab="by-location">
-
     <article>
-      <h2>Gear</h2>
+      <h2>{{localize "RQG.Actor.Gear.Gear"}}</h2>
       <div class="grid location-row">
         <div class="headings"></div>
-        <div class="head1">Name</div>
-        <div class="head2" style="width:45px">ENC</div>
+        <div class="head1">{{localize "RQG.Actor.Gear.Name"}}</div>
+        <div class="head2" style="width:45px">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</div>
         <div class="head3"></div>
-        <div class="head4" style="width:85px">Location</div>
+        <div class="head4" style="width:85px">{{localize "RQG.Actor.Gear.Location"}}</div>
       </div>
       <ul class="location virtual">
         {{#each itemLocationTree.contains}}
@@ -26,17 +24,18 @@
 
   <div class="tab by-item-type" data-group="gear-view" data-tab="by-item-type">
     <div class="gear-wrapper flex-row">
+      <!--Gear-->
       <article class="flex-1">
-        <h2>Gear</h2>
+        <h2>{{localize "RQG.Actor.Gear.Gear"}}</h2>
         <div class="grid gear">
           <div class="headings"></div>
           <div class="head1"></div>
-          <div class="head2">Name</div>
+          <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
           <div class="head3"></div>
-          <div class="head4"><span class="text-right">Price</span></div>
-          <div class="head5"><span class="text-right">ENC</span></div>
+          <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+          <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
           <div class="head6"></div>
-          <div class="head7">Location</div>
+          <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
           {{#each ownedItems.gear}}
           {{#if (eq data.data.physicalItemType "unique")}}
           <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
@@ -61,19 +60,20 @@
         </div>
       </article>
 
+      <!--Currency-->
       <div class="flex-1">
         <article>
-          <h2>Currency</h2>
+          <h2>{{localize "RQG.Actor.Gear.Currency"}}</h2>
           <div class="grid gear">
             <div class="headings"></div>
             <div class="head1"></div>
-            <div class="head2">Name</div>
-            <div class="head3"><span class="text-right">Qty</span></div>
+            <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+            <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.QuantityAbbr"}}</span></div>
             {{!-- <div class="head4"><span class="text-right">Price</span></div> --}}
-            <div class="head4"><span class="text-right">Ext</span></div>
-            <div class="head5"><span class="text-right">ENC</span></div>
+            <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.ExtendedAbbr"}}</span></div>
+            <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
             <div class="head6"></div>
-            <div class="head7">Location</div>
+            <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
             {{#each ownedItems.currency}}
             <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{id}}" class="gear contextmenu" title="{{data.data.price.conversion}}">{{name}}</div>
@@ -106,17 +106,18 @@
           </div>
         </article>
 
+        <!--Consumables-->
         <article>
-          <h2>Consumables</h2>
+          <h2>{{localize "RQG.Actor.Gear.Consumables"}}</h2>
           <div class="grid gear">
             <div class="headings"></div>
             <div class="head1"></div>
-            <div class="head2">Name</div>
-            <div class="head3"><span class="text-right">Qty</span></div>
-            <div class="head4"><span class="text-right">Price</span></div>
-            <div class="head5"><span class="text-right">ENC</span></div>
+            <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+            <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.QuantityAbbr"}}</span></div>
+            <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+            <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
             <div class="head6"></div>
-            <div class="head7">Location</div>
+            <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
             {{#each ownedItems.gear}}
             {{#if (eq data.data.physicalItemType "consumable")}}
             <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
@@ -145,21 +146,22 @@
       </div>
     </div>
 
+    <!-- Weapons & Shields-->
     <article>
-      <h2>Weapons & Shields</h2>
+      <h2>{{localize "RQG.Actor.Gear.WeaponsAndShields"}}</h2>
       <div class="grid weapon">
         <div class="headings"></div>
         <div class="head1"></div>
-        <div class="head2">Name</div>
-        <div class="head3">Skill</div>
-        <div class="head4"><span class="text-center">Damage</span></div>
-        <div class="head5"><span class="text-right">STR</span></div>
-        <div class="head6"><span class="text-right">DEX</span></div>
-        <div class="head7"><span class="text-right">HP</span></div>
-        <div class="head8"><span class="text-right">Price</span></div>
-        <div class="head9"><span class="text-right">ENC</span></div>
+        <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+        <div class="head3">{{localize "RQG.Actor.Gear.Skill"}}</div>
+        <div class="head4"><span class="text-center">{{localize "RQG.Actor.Gear.Damage"}}</span></div>
+        <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.MinimumStrength"}}</span></div>
+        <div class="head6"><span class="text-right">{{localize "RQG.Actor.Gear.MinimumDexterity"}}</span></div>
+        <div class="head7"><span class="text-right">{{localize "RQG.Actor.Gear.HitPointsAbbr"}}</span></div>
+        <div class="head8"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+        <div class="head9"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
         <div class="head10"></div>
-        <div class="head11">Location</div>
+        <div class="head11">{{localize "RQG.Actor.Gear.Location"}}</div>
 
         {{#each ownedItems.weapon}}
           {{#unless data.data.isNatural}}
@@ -229,19 +231,20 @@
       </div>
     </article>
 
+    <!--Armor-->
     <article>
-      <h2>Armor</h2>
+      <h2>{{localize "RQG.Actor.Gear.Armor"}}</h2>
       <div class="grid armor">
         <div class="headings"></div>
         <div class="head1"></div>
-        <div class="head2">Name</div>
-        <div class="head3"><span class="text-right">Absorbs</span></div>
-        <div class="head4">Hitlocations</div>
-        <div class="head5"><span class="text-right">moveQuietly</span></div>
-        <div class="head6"><span class="text-right">Price</span></div>
-        <div class="head7"><span class="text-right">ENC</span></div>
+        <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+        <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.Absorbs"}}</span></div>
+        <div class="head4">{{localize "RQG.Actor.Gear.HitLocations"}}</div>
+        <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.MoveQuietlyPenalty"}}</span></div>
+        <div class="head6"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+        <div class="head7"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
         <div class="head8"></div>
-        <div class="head9">Location</div>
+        <div class="head9">{{localize "RQG.Actor.Gear.Location"}}</div>
         {{#each ownedItems.armor}}
           <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
           <div data-item-id="{{id}}" class="gear contextmenu">{{name}}</div>

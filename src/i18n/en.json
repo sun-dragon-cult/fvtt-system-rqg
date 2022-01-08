@@ -126,9 +126,30 @@
         "Dodge": "Dodge"
       },
       "Gear": {
+        "ViewByItemType": "View by Item Type",
+        "ViewByLocation": "View by Locaion",
+        "Gear": "Gear",
+        "Armor": "Armor",
+        "Consumables": "Consumables",
+        "Currency": "Currency",
+        "WeaponsAndShields": "Weapons & Shields",
         "CurrencyConversionTipOver1": "One {name} is worth {value} Lunars.",
         "CurrencyConversionTipLunar": "Lunars are the standard basis of currency.",
-        "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s."
+        "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s.",
+        "Name": "Name",
+        "EncumbranceAbbr": "ENC",
+        "Location": "Location",
+        "Price": "Price",
+        "QuantityAbbr": "Qty",
+        "ExtendedAbbr": "Ext",
+        "Skill": "Skill",
+        "Damage": "Damage",
+        "MinimumStrength": "STR",
+        "MinimumDexterity": "DEX",
+        "HitPointsAbbr": "HP",
+        "Absorbs": "Absorbs",
+        "HitLocations": "Hit Locations",
+        "MoveQuietlyPenalty": "- Move Quietly"
       },
       "Rune": {
         "Condition": "Condition",
