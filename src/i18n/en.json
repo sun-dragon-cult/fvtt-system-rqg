@@ -325,7 +325,7 @@
         "Modifier": "Modifier"
       }
     },
-    "Items": {
+    "Item": {
       "Armor": {
         "ArmorType": {
           "Hood": "Hood",
@@ -376,7 +376,8 @@
       "Notification": {
         "CircularGearLocationWarning": "Circular gear locations (A in B in A) - check your gear locations: {itemLocation}",
         "ItemIsNotContainerWarning": "{itemName} is not a container",
-        "CantFindRootLocationNode": "Can't find root location Node"
+        "CantFindRootLocationNode": "Can't find root location Node",
+        "LocationDidntFindItem": "location didn't find item"
       },
       "Skill": {
         "SkillCategory": {}

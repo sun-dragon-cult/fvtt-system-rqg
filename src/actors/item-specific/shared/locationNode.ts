@@ -36,7 +36,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       let location = itemLocation === itemData.name ? "" : itemLocation;
       if (hasLoop(itemData, physicalItemDatas)) {
         ui.notifications?.warn(
-          localize("RQG.Items.Notification.CircularGearLocationWarning", {itemLocation: itemLocation})
+          localize("RQG.Item.Notification.CircularGearLocationWarning", {itemLocation: itemLocation})
         );
         location = "";
       }
@@ -46,7 +46,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       );
       // @ts-ignore
       if (containingItem && !containingItem.data.isContainer) {
-        ui.notifications?.warn(localize("RQG.Items.Notification.ItemIsNotContainerWarning", {itemName: containingItem.name})); // TODO make a real solution!
+        ui.notifications?.warn(localize("RQG.Item.Notification.ItemIsNotContainerWarning", {itemName: containingItem.name})); // TODO make a real solution!
         location = "";
       }
       return {
@@ -161,7 +161,7 @@ export function getOtherItemIdsInSameLocationTree(
     rootNode = searchTree(itemLocationTree, rootNode.location);
   }
   if (rootNode == null) {
-    const msg = localize("RQG.Items.Notification.CantFindRootLocationNode");
+    const msg = localize("RQG.Item.Notification.CantFindRootLocationNode");
     ui.notifications?.error(msg);
     throw new RqgError(msg, itemLocationTree);
   }
