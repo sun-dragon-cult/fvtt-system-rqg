@@ -2,7 +2,7 @@ import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
-import { assertItemType, getGame, RqgError } from "../../system/util";
+import { assertItemType, getGame, localize, RqgError } from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 
 export class RuneMagic extends AbstractEmbeddedItem {
@@ -15,7 +15,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
   static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.data.type !== ItemTypeEnum.RuneMagic || !item.actor) {
-      const msg = `RQG | Wrong itemtype or not embedded item in Actor PrepareEmbeddedEntities`;
+      const msg = localize("RQG.Item.Notification.WrongItemTypeRuneMagicError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
@@ -23,7 +23,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     if (item.data.data.cultId) {
       const runeMagicCult = actor.items.get(item.data.data.cultId);
       if (!runeMagicCult || runeMagicCult.data.type !== ItemTypeEnum.Cult) {
-        const msg = `RQG | Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}`;
+        const msg = localize("RQG.Item.Notification.ActorDoesNotHaveCultOnRuneMagicWarning");
         ui.notifications?.warn(msg);
         console.warn(msg, item, actor);
         item.data.data.cultId = ""; // remove the mismatched link to make it appear in the GUI
@@ -108,13 +108,13 @@ export class RuneMagic extends AbstractEmbeddedItem {
     );
     return await new Promise(async (resolve, reject) => {
       const dialog = new Dialog({
-        title: "Select the cult where the rune magic is learned",
+        title: localize("RQG.Item.RuneMagic.runeMagicCultDialogTitle"),
         content: htmlContent,
         default: "submit",
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
-            label: "Add Rune Magic",
+            label: localize("RQG.Item.RuneMagic.runeMagicCultDialogbtnAddRuneMagic"),
 
             callback: (html: JQuery | HTMLElement) => {
               const selectedCultId = (html as JQuery).find("[name=cultId]").val() as string;
@@ -122,7 +122,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
             },
           },
           cancel: {
-            label: "Cancel",
+            label: localize("RQG.Dialog.Common.btnCancel"),
             icon: '<i class="fas fa-times"></i>',
             callback: () => {
               reject();

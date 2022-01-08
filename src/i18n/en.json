@@ -385,7 +385,13 @@
         "ItemWasNotHitLocationError": "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
         "HitLocationDoesNotHaveActorError": "Hit Location item didn't have an actor",
         "ActorDoesNotHaveMaxHpError": "Actor doesn't have max hitPoints",
-        "OpposingRuneDoesNotExistWarning": "Opposing Rune doesn't exist"
+        "OpposingRuneDoesNotExistWarning": "Opposing Rune doesn't exist",
+        "WrongItemTypeRuneMagicError": "RQG | Wrong itemtype or not embedded item in Actor PrepareEmbeddedEntities",
+        "ActorDoesNotHaveCultOnRuneMagicWarning": "RQG | Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}"
+      },
+      "RuneMagic": {
+        "runeMagicCultDialogTitle": "Which cult provides this Rune Magic?",
+        "runeMagicCultDialogbtnAddRuneMagic": "Add Rune Magic"
       },
       "Skill": {
         "SkillCategory": {}
