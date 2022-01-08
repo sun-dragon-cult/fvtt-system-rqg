@@ -18,7 +18,7 @@ export const spiritMagicMenuOptions = (
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: localize("RQG.ContextMenu.RollCard"),
+    name: localize("RQG.Game.RollCard"),
     icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
@@ -29,8 +29,8 @@ export const spiritMagicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.RollDirect"),
-    icon: ContextMenuRunes.RollDirect,
+    name: localize("RQG.Game.RollQuick"),
+    icon: ContextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");

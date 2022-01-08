@@ -11,7 +11,7 @@ export const characteristicMenuOptions = (
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: localize("RQG.ContextMenu.RollCard"),
+    name: localize("RQG.Game.RollCard"),
     icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
@@ -27,8 +27,8 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.RollCharacteristicDirect"),
-    icon: ContextMenuRunes.RollDirect,
+    name: localize("RQG.Game.RollCharacteristicQuick"),
+    icon: ContextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);

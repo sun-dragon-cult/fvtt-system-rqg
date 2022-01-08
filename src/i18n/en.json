@@ -132,7 +132,8 @@
       },
       "Rune": {
         "Condition": "Condition",
-        "Elemental": "Elemental"
+        "Elemental": "Elemental",
+        "Form": "Form"
       },
       "RuneMagic": {
         "CultRank": {
@@ -176,9 +177,6 @@
       "ImproveItem": "Improve {itemType}",
       "EditItem": "Edit {itemType}",
       "DeleteItem": "Delete {itemType}",
-      "RollCard": "Roll (click)",
-      "RollDirect": "Direct Roll (dbl click)",
-      "RollCharacteristicDirect": "Direct Roll *5 (dbl click)",
       "ToggleExperience": "Toggle Experience",
       "InitializeCharacteristic": "Initialize Characteristic",
       "InitializeAllCharacteristics": "Initialize All Characteristics",
@@ -211,7 +209,7 @@
         "CantImprovePassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to improve passion item from the passion context menu.",
         "CantEditPassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to edit a passion item from the passion context menu.",
         "CantEditRuneError": "Couldn't find itemsheet [{itemId}] on actor {actorName} to edit the rune item from the rune context menu.",
-        "CantRollDirectSkillError": "Item [{itemId}] on actor {actorName} didn't have chance to do a direct roll on a skill item from the skill context menu.",
+        "CantRollQuickSkillError": "Item [{itemId}] on actor {actorName} didn't have chance to do a direct roll on a skill item from the skill context menu.",
         "CantEditSpiritMagicError": "Couldn't find itemSheet for [{itemId}] on actor {actorName} to edit the spirit magic item from the spirit magic context menu."
       }
     },
@@ -440,6 +438,7 @@
     "Game": {
       "ComabatManeuver": {},
       "DamageRollType": {},
+      "MeleeRoundAbbr": "MR",
       "ResultEnum": {
         "0": "Hyper Critical",
         "1": "Special Critical",
@@ -449,6 +448,10 @@
         "5": "Failure",
         "6": "Fumble"
       },
+      "RollCard": "Roll with Card (click)",
+      "RollQuick": "Quick Roll (dbl click)",
+      "RollCharacteristicQuick": "Quick Roll *5 (dbl click)",
+      "RollTitle": "Roll with Card (click), Quick Roll (dbl click)",
       "WeaponUsage": {
         "oneHand": "1H",
         "offHand": "offH",

@@ -1,6 +1,6 @@
 export enum ContextMenuRunes {
     RollCard = '<div class="context-rune">K</div>',
-    RollDirect = '<div class="context-rune">K</div>',
+    RollQuick = '<div class="context-rune">K</div>',
     ToggleExperience = '<div class="context-rune experienced">W</div>',
     Improve = '<div class="context-rune">W</div>',
     InitializeCharacteristics = '<div class="context-rune">x</div>',

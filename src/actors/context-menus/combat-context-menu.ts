@@ -11,7 +11,7 @@ export const combatMenuOptions = (
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: localize("RQG.ContextMenu.RollCard"),
+    name: localize("RQG.Game.RollCard"),
     icon: ContextMenuRunes.RollCard,
     condition: (el) => !!getDomDataset(el, "weapon-roll"),
     callback: async (el: JQuery) => {

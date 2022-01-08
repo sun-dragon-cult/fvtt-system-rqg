@@ -22,7 +22,7 @@ export const skillMenuOptions = (
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: localize("RQG.ContextMenu.RollCard"),
+    name: localize("RQG.Game.RollCard"),
     icon: ContextMenuRunes.RollCard,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -38,8 +38,8 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.RollDirect"),
-    icon: ContextMenuRunes.RollDirect,
+    name: localize("RQG.Game.RollQuick"),
+    icon: ContextMenuRunes.RollQuick,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -54,7 +54,7 @@ export const skillMenuOptions = (
       assertItemType(item?.data.type, ItemTypeEnum.Skill);
       const itemChance = item.data.data.chance;
       if (!itemChance) {
-        const msg = localize("RQG.ContextMenu.Notification.CantRollDirectSkillError", {itemId: itemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantRollQuickSkillError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
