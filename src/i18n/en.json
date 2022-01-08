@@ -153,6 +153,15 @@
       },
       "Occupation": {}
     },
+    "ActiveEffect": {
+      "DebugTab": {
+        "Header": "🐛Active Effects🧪",
+        "Label": "Label",
+        "Disabled": "Disabled",
+        "StartTime": "Start Time",
+        "KeyValueMode": "Key - Value - Mode"
+      }
+    },
     "ContextMenu": {
       "ImproveItem": "Improve {itemType}",
       "EditItem": "Edit {itemType}",
