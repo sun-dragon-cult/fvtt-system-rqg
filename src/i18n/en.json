@@ -131,7 +131,8 @@
         "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s."
       },
       "Rune": {
-        "Condition": "Condition"
+        "Condition": "Condition",
+        "Elemental": "Elemental"
       },
       "RuneMagic": {
         "CultRank": {
