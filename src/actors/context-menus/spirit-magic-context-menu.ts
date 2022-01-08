@@ -6,17 +6,19 @@ import {
   getDomDataset,
   getGame,
   getRequiredDomDataset,
+  localize,
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
 
 export const spiritMagicMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: "Roll (click)",
+    name: localize("RQG.ContextMenu.RollCard"),
     icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
@@ -27,7 +29,7 @@ export const spiritMagicMenuOptions = (
     },
   },
   {
-    name: "Direct Roll (dbl click)",
+    name: localize("RQG.ContextMenu.RollDirect"),
     icon: ContextMenuRunes.RollDirect,
     condition: () => true,
     callback: async (el: JQuery) => {
@@ -49,7 +51,7 @@ export const spiritMagicMenuOptions = (
     },
   },
   {
-    name: "View Description",
+    name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
@@ -71,7 +73,7 @@ export const spiritMagicMenuOptions = (
     },
   },
   {
-    name: "Edit",
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.SpiritMagic)}),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -79,7 +81,7 @@ export const spiritMagicMenuOptions = (
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.data.type, ItemTypeEnum.SpiritMagic);
       if (!item.sheet) {
-        const msg = `Couldn't find itemSheet for [${item.name}] on actor ${actor.name} to edit the spirit magic item from the spirit magic context menu.`;
+        const msg = localize("RQG.ContextMenu.Notifications.CantEditSpiritMagicError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
@@ -87,7 +89,7 @@ export const spiritMagicMenuOptions = (
     },
   },
   {
-    name: "Delete",
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.SpiritMagic)}),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {

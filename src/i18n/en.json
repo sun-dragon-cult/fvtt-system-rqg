@@ -192,7 +192,8 @@
         "CantImprovePassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to improve passion item from the passion context menu.",
         "CantEditPassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to edit a passion item from the passion context menu.",
         "CantEditRuneError": "Couldn't find itemsheet [{itemId}] on actor {actorName} to edit the rune item from the rune context menu.",
-        "CantRollDirectSkillError": "Item [{itemId}] on actor {actorName} didn't have chance to do a direct roll on a skill item from the skill context menu."
+        "CantRollDirectSkillError": "Item [{itemId}] on actor {actorName} didn't have chance to do a direct roll on a skill item from the skill context menu.",
+        "CantEditSpiritMagicError": "Couldn't find itemSheet for [{itemId}] on actor {actorName} to edit the spirit magic item from the spirit magic context menu."
       }
     },
     "Dialog": {
