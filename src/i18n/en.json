@@ -97,6 +97,7 @@
         }
       },
       "Characteristics": {
+        "Characteristic": "Characteristic",
         "format": "{name} ({abbr})",
         "strength": "STR",
         "constitution": "CON",
@@ -153,11 +154,13 @@
       "Occupation": {}
     },
     "ContextMenu": {
+      "ImproveItem": "Improve {itemType}",
+      "EditItem": "Edit {itemType}",
+      "DeleteItem": "Delete {itemType}",
       "RollCard": "Roll (click)",
       "RollDirect": "Direct Roll (dbl click)",
       "RollCharacteristicDirect": "Direct Roll *5 (dbl click)",
       "ToggleExperience": "Toggle Experience",
-      "Improve": "Improve",
       "InitializeCharacteristic": "Initialize Characteristic",
       "InitializeAllCharacteristics": "Initialize All Characteristics",
       "InitializeResultCard": "Initialize {char}",
@@ -171,8 +174,6 @@
       "SetAsEquipped": "Set as equipped",
       "SplitIntoNewLocation": "Split into new location",
       "EditPassionBackstory": "Edit Passion Backstory",
-      "EditItem": "Edit {itemType}",
-      "DeleteItem": "Delete {itemType}",
       "Notification": {
         "DatasetNotFound": "Couldn't find dataset for characteristic",
         "CharacteristicNotFound": "Couldn't find characteristic name \"{characteristicName}\" on actor {actorName} to do an action from the characteristics context menu.",
@@ -190,7 +191,8 @@
         "CantToggleExperiencePassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to toggle experience on passion item from the passion context menu.",
         "CantImprovePassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to improve passion item from the passion context menu.",
         "CantEditPassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to edit a passion item from the passion context menu.",
-        "CantEditRuneError": "Couldn't find itemsheet [{itemId}] on actor {actorName} to edit the rune item from the rune context menu."
+        "CantEditRuneError": "Couldn't find itemsheet [{itemId}] on actor {actorName} to edit the rune item from the rune context menu.",
+        "CantRollDirectSkillError": "Item [{itemId}] on actor {actorName} didn't have chance to do a direct roll on a skill item from the skill context menu."
       }
     },
     "Dialog": {

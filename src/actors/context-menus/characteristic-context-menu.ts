@@ -57,7 +57,7 @@ export const characteristicMenuOptions = (
       }),
   },
   {
-    name: localize("RQG.ContextMenu.Improve"),
+    name: localize("RQG.ContextMenu.ImproveItem", {itemType: localize("RQG.Actor.Characteristics.Characteristic")}),
     icon: ContextMenuRunes.Improve,
     condition: (el: JQuery): boolean => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);

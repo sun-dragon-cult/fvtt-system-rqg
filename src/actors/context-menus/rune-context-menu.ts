@@ -55,7 +55,7 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.Improve"),
+    name: localize("RQG.ContextMenu.ImproveItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
     icon: ContextMenuRunes.Improve,
     condition: () => true,
     callback: (el: JQuery) => {

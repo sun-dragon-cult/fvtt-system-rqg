@@ -54,7 +54,7 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.Improve"),
+    name: localize("RQG.ContextMenu.ImproveItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion)}),
     icon: ContextMenuRunes.Improve,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
