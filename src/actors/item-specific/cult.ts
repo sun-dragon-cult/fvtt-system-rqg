@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../rqgActor";
-import { getAllRunesIndex, getGame, RqgError } from "../../system/util";
+import { getAllRunesIndex, getGame, localize, RqgError } from "../../system/util";
 import { RqgItem } from "../../items/rqgItem";
 
 export class Cult extends AbstractEmbeddedItem {
@@ -22,7 +22,7 @@ export class Cult extends AbstractEmbeddedItem {
     userId: string
   ): Promise<any> {
     if (cultItem.data.type !== ItemTypeEnum.Cult) {
-      const msg = "Expected Cult item";
+      const msg = localize("RQG.Item.Notification.ExpectedCultItemError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, cultItem, actor);
     }
@@ -35,7 +35,7 @@ export class Cult extends AbstractEmbeddedItem {
       const runesCompendiumName = getGame().settings.get("rqg", "runesCompendium");
       const runePack = getGame().packs?.get(runesCompendiumName);
       if (!runePack) {
-        const msg = `Couldn't find runes Compendium ${runesCompendiumName}`;
+        const msg = localize("RQG.Item.Notification.CantFindRunesCompendiumError", {runesCompendiumName: runesCompendiumName});
         ui.notifications?.error(msg);
         throw new RqgError(msg, runesCompendiumName);
       }
@@ -43,7 +43,7 @@ export class Cult extends AbstractEmbeddedItem {
       const newRuneIds = newRuneNames.map((newRune) => {
         const newRuneIndex = allRunesIndex.getName(newRune);
         if (newRuneIndex == null) {
-          const msg = `Couldn't find cult rune ${newRune} among allRunesIndex`;
+          const msg = localize("RQG.Item.Notification.CantFindCultRuneError", {newRune: newRune});
           ui.notifications?.error(msg);
           throw new RqgError(msg, actor, cultItem);
         }
@@ -54,7 +54,7 @@ export class Cult extends AbstractEmbeddedItem {
         (newRuneEntities) => {
           newRuneEntities.map(async (rune: StoredDocument<any>) => {
             if (rune == null || rune.data.type !== ItemTypeEnum.Rune) {
-              const msg = "Couldn't find rune in all runes compendium";
+              const msg = localize("RQG.Item.Notification.CantFindRuneInAllRunesCompendiumError");
               ui.notifications?.error(msg);
               throw new RqgError(msg, newRuneIds, runePack);
             }
