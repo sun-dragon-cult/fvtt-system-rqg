@@ -6,6 +6,7 @@ import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
 
 export const passionMenuOptions = (
   actor: RqgActor,
@@ -82,7 +83,7 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditPassion"),
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion)}),
     icon: ContextMenuRunes.Edit,
     condition: () => getGameUser().isGM,
     callback: (el: JQuery) => {
@@ -97,7 +98,7 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeletePassion"),
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion)}),
     icon: ContextMenuRunes.Delete,
     condition: () => getGameUser().isGM,
     callback: (el: JQuery) => {

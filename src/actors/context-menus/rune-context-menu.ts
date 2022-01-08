@@ -14,6 +14,7 @@ import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
 
 export const runeMenuOptions = (
   actor: RqgActor,
@@ -88,7 +89,7 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditRune"),
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -104,7 +105,7 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteRune"),
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {

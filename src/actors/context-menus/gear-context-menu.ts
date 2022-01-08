@@ -2,6 +2,8 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import { getGame, getRequiredDomDataset, hasOwnProperty, localize, RqgError } from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -52,7 +54,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditGear"),
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear)}),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery): void => {
@@ -67,7 +69,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteGear"),
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear)}),
     icon: ContextMenuRunes.Delete,
     condition: () => true,
     callback: (el: JQuery): void => {

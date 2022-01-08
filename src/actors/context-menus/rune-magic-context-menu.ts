@@ -1,4 +1,3 @@
-import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
@@ -6,18 +5,20 @@ import {
   getDomDataset,
   getGame,
   getRequiredDomDataset,
+  localize,
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneMagicCard } from "../../chat/runeMagicCard";
 import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
 
 export const runeMagicMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: "Roll (click)",
+    name: localize("RQG.ContextMenu.RollCard"),
     icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
@@ -26,7 +27,7 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: "Direct Roll (dbl click)",
+    name: localize("RQG.ContextMenu.RollDirect"),
     icon: ContextMenuRunes.RollDirect,
     condition: () => true,
     callback: async (el: JQuery) => {
@@ -38,7 +39,7 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: "View Description",
+    name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
@@ -61,7 +62,7 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: "Edit",
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic)}),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -77,7 +78,7 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: "Delete",
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic)}),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {

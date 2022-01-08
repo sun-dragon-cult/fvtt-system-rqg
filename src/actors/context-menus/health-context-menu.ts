@@ -2,10 +2,12 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { getDomDataset, getGame, getRequiredDomDataset, localize, RqgError } from "../../system/util";
 import { RqgActor } from "../rqgActor";
 import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
-    name: localize("RQG.ContextMenu.EditHitLocation"),
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.HitLocation)}),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -20,7 +22,7 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteHitLocation"),
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.HitLocation)}),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
