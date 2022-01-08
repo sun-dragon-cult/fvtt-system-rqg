@@ -389,7 +389,10 @@
         "WrongItemTypeRuneMagicError": "RQG | Wrong itemtype or not embedded item in Actor PrepareEmbeddedEntities",
         "ActorDoesNotHaveCultOnRuneMagicWarning": "RQG | Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}",
         "PrepareDerivedDataNotSkillError": "Calling Skill#onActorPrepareDerivedData with something else than a skill",
-        "ActorNotCharacterError": "Actor is not of type character"
+        "ActorNotCharacterError": "Actor is not of type character",
+        "CantFindWeaponSkillWarning": "Can't find weapon skill",
+        "NoWeaponSkillFromSkillOriginWarning": "No weapon skill with from skillOrigin \"{skillOrigin}\".",
+        "CantFindSkillAssociatedWithWeaponWarning": "Can't find the Skill associated with this weapon."
       },
       "RuneMagic": {
         "runeMagicCultDialog": {

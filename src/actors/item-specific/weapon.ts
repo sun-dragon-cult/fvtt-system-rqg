@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgItem } from "../../items/rqgItem";
 import { RqgActor } from "../rqgActor";
-import { assertItemType, logMisconfiguration } from "../../system/util";
+import { assertItemType, localize, logMisconfiguration } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { getSameLocationUpdates } from "./shared/physicalItemUtil";
 
@@ -86,10 +86,10 @@ export class Weapon extends AbstractEmbeddedItem {
       try {
         // Add the specified skill if found
         const skill = await fromUuid(skillOrigin).catch((e) => {
-          logMisconfiguration(`Couldn't find weapon skill`, true, embeddedSkillId, e);
+          logMisconfiguration(localize("RQG.Item.Notification.CantFindWeaponSkillWarning"), true, embeddedSkillId, e);
         });
         if (!skill) {
-          logMisconfiguration(`No weapon skill with from skillOrigin ${skillOrigin}`, true);
+          logMisconfiguration(localize("RQG.Item.Notification.NoWeaponSkillFromSkillOriginWarning", {skillOrigin: skillOrigin}), true);
         } else {
           const sameSkillAlreadyOnActor = actor.items.find((i: RqgItem) => i.name === skill.name);
           const embeddedWeaponSkill = sameSkillAlreadyOnActor
@@ -98,7 +98,7 @@ export class Weapon extends AbstractEmbeddedItem {
           embeddedSkillId = embeddedWeaponSkill[0].id ?? "";
         }
       } catch (e) {
-        logMisconfiguration(`Couldn't find the Skill associated with this weapon.`, true, e);
+        logMisconfiguration(localize("RQG.Item.Notification.CantFindSkillAssociatedWithWeaponWarning"), true, e);
       }
     }
     return embeddedSkillId;
