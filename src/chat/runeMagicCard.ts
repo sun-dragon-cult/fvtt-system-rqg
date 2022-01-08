@@ -9,7 +9,7 @@ import { RuneMagicDataSource } from "../data-model/item-data/runeMagicData";
 import { Ability, ResultEnum, ResultMessage } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import {
-  activateTab,
+  activateChatTab,
   assertItemType,
   getActorFromIds,
   getGame,
@@ -118,9 +118,9 @@ export class RuneMagicCard {
         skillAugmentationOptions: skillAugmentationOptions,
       },
     };
-
-    ui?.sidebar?.tabs.chat && activateTab(ui?.sidebar.tabs.chat.tabName);
+    
     await ChatMessage.create(await this.renderContent(flags));
+    activateChatTab()
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
@@ -240,8 +240,9 @@ export class RuneMagicCard {
         skillAugmentationOptions: {}, // won't be used
       },
     };
-    ui?.sidebar?.tabs.chat && activateTab(ui?.sidebar.tabs.chat.tabName);
+    
     await RuneMagicCard.roll(flags.itemData, flags, actor, speakerName);
+    activateChatTab();
   }
 
   public static async roll(

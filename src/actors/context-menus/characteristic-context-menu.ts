@@ -1,7 +1,7 @@
 import { CharacteristicCard } from "../../chat/characteristicCard";
 import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
-import { activateTab, getDomDataset, getGame, getGameUser, localize, localizeCharacteristic, requireValue, RqgError } from "../../system/util";
+import { activateChatTab, getDomDataset, getGame, getGameUser, localize, localizeCharacteristic, requireValue, RqgError } from "../../system/util";
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../dialog/improveCharacteristicDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
@@ -128,8 +128,7 @@ async function getCharacteristicUpdate(
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flavor: localize("RQG.ContextMenu.InitializeResultCard", {char: localizeCharacteristic(characteristic)}),
     });
-    //@ts-ignore
-    activateTab(ui.sidebar.tabs.chat.tabName);
+    activateChatTab();
   }
   return {
     data: { characteristics: { [characteristic]: { value: Number(r.total) } } },

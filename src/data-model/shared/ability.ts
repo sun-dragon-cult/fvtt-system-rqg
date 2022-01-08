@@ -1,4 +1,4 @@
-import { getGame, localize } from "../../system/util";
+import { activateChatTab, getGame, localize } from "../../system/util";
 
 export interface IAbility {
   /** The effective % chance of this ability with all modifiers added in */
@@ -54,6 +54,7 @@ export class Ability {
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     });
+    activateChatTab();
     return result;
   }
 

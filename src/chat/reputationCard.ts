@@ -1,7 +1,7 @@
 import { RqgActor } from "../actors/rqgActor";
 import { getCombatantsSharingToken } from "../combat/combatant-utils";
 import { Ability } from "../data-model/shared/ability";
-import { activateTab, getActorFromIds, getGame, getSpeakerName, usersThatOwnActor } from "../system/util";
+import { activateChatTab, getActorFromIds, getGame, getSpeakerName, usersThatOwnActor } from "../system/util";
 
 type ReputationFlags = {
   actorId: string;
@@ -31,8 +31,8 @@ export class ReputationCard {
         otherModifiers: 0,
       },
     };
-    ui?.sidebar?.tabs.chat && activateTab(ui?.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
     await ChatMessage.create(await this.renderContent(flags));
+    activateChatTab(); 
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {}
@@ -87,8 +87,9 @@ export class ReputationCard {
         otherModifiers: 0,
       },
     };
-    ui?.sidebar?.tabs.chat && activateTab(ui?.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
+    
     await this.roll(flags, actor, speakerName);
+    activateChatTab()
   } 
 
   public static async roll(

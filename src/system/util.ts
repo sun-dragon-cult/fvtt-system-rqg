@@ -309,10 +309,11 @@ export function localizeCharacteristic(characteristic: string): string {
 }
 
 /**
- * Sets a certain sidebar tab to active.
+ * Sets a the Chat sidebar tab to active.
  * @param tabName ie: ui.sidebar.tabs.chat.tabName
  */
-export function activateTab(tabName: string) {
+export function activateChatTab() {
   // TODO: add player setting to allow skipping this if they don't like the tab changing
-  ui.sidebar?.activateTab(tabName);
+  // @ts-ignore 0.8 tabs
+  ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
 }
