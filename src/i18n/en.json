@@ -387,7 +387,9 @@
         "ActorDoesNotHaveMaxHpError": "Actor doesn't have max hitPoints",
         "OpposingRuneDoesNotExistWarning": "Opposing Rune doesn't exist",
         "WrongItemTypeRuneMagicError": "RQG | Wrong itemtype or not embedded item in Actor PrepareEmbeddedEntities",
-        "ActorDoesNotHaveCultOnRuneMagicWarning": "RQG | Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}"
+        "ActorDoesNotHaveCultOnRuneMagicWarning": "RQG | Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}",
+        "PrepareDerivedDataNotSkillError": "Calling Skill#onActorPrepareDerivedData with something else than a skill",
+        "ActorNotCharacterError": "Actor is not of type character"
       },
       "RuneMagic": {
         "runeMagicCultDialog": {

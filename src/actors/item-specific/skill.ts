@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgError } from "../../system/util";
+import { localize, RqgError } from "../../system/util";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { SkillDataPropertiesData } from "../../data-model/item-data/skillData";
 
@@ -15,14 +15,14 @@ export class Skill extends AbstractEmbeddedItem {
 
   public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
     if (skillItem.data.type !== ItemTypeEnum.Skill) {
-      const msg = `Calling Skill#onActorPrepareDerivedData with something else than a skill`;
+      const msg = localize("RQG.Item.Notification.PrepareDerivedDataNotSkillError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, skillItem);
     }
     const skillData = skillItem.data.data;
     const actor = skillItem.actor!;
     if (actor.data.type !== ActorTypeEnum.Character) {
-      const msg = `Actor is not of type character`;
+      const msg = localize("RQG.Item.Notification.ActorNotCharacterError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, actor);
     }
