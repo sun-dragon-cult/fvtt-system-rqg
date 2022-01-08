@@ -108,13 +108,13 @@ export class RuneMagic extends AbstractEmbeddedItem {
     );
     return await new Promise(async (resolve, reject) => {
       const dialog = new Dialog({
-        title: localize("RQG.Item.RuneMagic.runeMagicCultDialogTitle"),
+        title: localize("RQG.Item.RuneMagic.runeMagicCultDialog.title"),
         content: htmlContent,
         default: "submit",
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
-            label: localize("RQG.Item.RuneMagic.runeMagicCultDialogbtnAddRuneMagic"),
+            label: localize("RQG.Item.RuneMagic.runeMagicCultDialog.btnAddRuneMagic"),
 
             callback: (html: JQuery | HTMLElement) => {
               const selectedCultId = (html as JQuery).find("[name=cultId]").val() as string;

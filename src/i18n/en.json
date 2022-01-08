@@ -390,8 +390,12 @@
         "ActorDoesNotHaveCultOnRuneMagicWarning": "RQG | Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}"
       },
       "RuneMagic": {
-        "runeMagicCultDialogTitle": "Which cult provides this Rune Magic?",
-        "runeMagicCultDialogbtnAddRuneMagic": "Add Rune Magic"
+        "runeMagicCultDialog": {
+          "title": "Which cult provides this Rune Magic?",
+          "btnAddRuneMagic": "Add Rune Magic",
+          "Actor": "Actor:",
+          "RuneMagic": "RuneMagic:"
+        }
       },
       "Skill": {
         "SkillCategory": {}
