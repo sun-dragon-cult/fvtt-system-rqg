@@ -5,11 +5,11 @@
 <div class="grid combat">
   <div class="headings"></div>
   <div class="head1"></div>
-  <div class="head2">Weapon</div>
-  <div class="head3">HP</div>
-  <div class="head4 text-right">Chance</div>
-  <div class="head5">Damage</div>
-  <div class="head6">SR</div>
+  <div class="head2">{{localize "RQG.Actor.Combat.Weapon"}}</div>
+  <div class="head3">{{localize "RQG.Actor.Combat.HP"}}</div>
+  <div class="head4 text-right">{{localize "RQG.Actor.Combat.Chance"}}</div>
+  <div class="head5">{{localize "RQG.Actor.Combat.Damage"}}</div>
+  <div class="head6">{{localize "RQG.Actor.Combat.SR"}}</div>
 
   {{#each ownedItems.weapon}}
     {{#if (eq data.data.equippedStatus "equipped")}}
@@ -156,7 +156,7 @@
 
   {{#if dodgeSkillData}}
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill contextmenu"> <img class="item" src="{{dodgeSkillData.img}}"></div>
-    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill contextmenu">Dodge</div>
+    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill contextmenu">{{localize "RQG.Actor.Combat.Dodge"}}</div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill contextmenu"></div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="Roll" class="skill contextmenu {{experiencedclass dodgeSkillData._id @root.data._id @root.tokenId}}">
       <span class="text-right">{{skillchance dodgeSkillData._id @root.data._id @root.tokenId}}%</span>
