@@ -27,7 +27,7 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.RollDirect"),
+    name: localize("RQG.ContextMenu.RollCharacteristicDirect"),
     icon: ContextMenuRunes.RollDirect,
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {

@@ -1,5 +1,6 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import {
+  activateTab,
   getActorFromIds,
   getGame,
   getSpeakerName,
