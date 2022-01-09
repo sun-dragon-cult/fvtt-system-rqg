@@ -162,6 +162,10 @@
         "HealWound": "Heal Wound",
         "AddWound": "Add Wound"
       },
+      "Passion": {
+        "Passions": "Passions",
+        "BackStory": "Back Story"
+      },
       "Rune": {
         "Condition": "Condition",
         "Elemental": "Elemental",
