@@ -151,6 +151,17 @@
         "HitLocations": "Hit Locations",
         "MoveQuietlyPenalty": "- Move Quietly"
       },
+      "Health": {
+        "Health": "Health",
+        "TotalHitPoints": "Total Hit Points",
+        "HealingRatePerWeek": "Healing rate {healingRate}/week",
+        "HitLocation": "Hit Location",
+        "HitPointsAbbr": "HP",
+        "ArmorPointsAbbr": "AP",
+        "Wounds": "Wounds",
+        "HealWound": "Heal Wound",
+        "AddWound": "Add Wound"
+      },
       "Rune": {
         "Condition": "Condition",
         "Elemental": "Elemental",
