@@ -173,6 +173,22 @@
         "Power": "Power"
       },
       "RuneMagic": {
+        "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
+        "DeleteRuneMagicSpellTitle": "Delete Rune Magic Spell",
+        "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
+        "Cult Rank": "Cult Rank:",
+        "RunePoints": "Rune Points:",
+        "Gifts": "Gifts:",
+        "Geases": "Geases:",
+        "SubCults": "Sub Cults:",
+        "RuneSpell": "Rune Spell",
+        "Points": "Points",
+        "Range": "Range",
+        "Duration": "Duration",
+        "Ritual": "Ritual",
+        "Stackable": "Stackable",
+        "OneUse": "One Use",
+        "Chance": "Chance",
         "CultRank": {
           "layMember": "Lay Member",
           "initiate": "Initiate",
