@@ -2,11 +2,11 @@
   {{#each ownedItems.skill}}
   {{#if this}}
   <div class="masonry-item">
-    <h2>{{localize (concat 'RQG.Actor.Skills.SkillCategory.' @key)}} ({{#with @root.characterData.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
+    <h2>{{localize (concat 'RQG.Actor.Skill.SkillCategory.' @key)}} ({{#with @root.characterData.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
     <div class="grid skill">
       {{#each this}}
         {{#unless data.data.runes}}
-        <div data-item-id="{{id}}" title="Description" class="skill contextmenu"
+        <div data-item-id="{{id}}" title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}" class="skill contextmenu"
           {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
           <img class="item" src="{{img}}">
         </div>

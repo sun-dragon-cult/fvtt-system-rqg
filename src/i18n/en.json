@@ -199,7 +199,8 @@
           "highPriest": "High Priest"
         }
       },
-      "Skills": {
+      "Skill": {
+        "SkillDescriptionTitle": "Skill Description",
         "SkillCategory": {
           "agility": "Agility",
           "communication": "Communication",
