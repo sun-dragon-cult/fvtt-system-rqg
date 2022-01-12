@@ -474,6 +474,10 @@
         }
       },
       "Skill": {
+        "Notification": {
+          "CantFindSkillJournalEntryError": "Can't find Journal Entry you are trying to link to the Skill Item Sheet for {skillName}",
+          "CanOnlyDropJournalEntryWarning": "You can only drop a Journal Entry onto the Skill Sheet"
+        },
         "SkillCategory": {}
       },
       "Weapon": {
