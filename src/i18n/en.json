@@ -169,7 +169,8 @@
       "Rune": {
         "Condition": "Condition",
         "Elemental": "Elemental",
-        "Form": "Form"
+        "Form": "Form",
+        "Power": "Power"
       },
       "RuneMagic": {
         "CultRank": {
