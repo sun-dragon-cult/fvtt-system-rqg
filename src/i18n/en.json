@@ -526,6 +526,14 @@
         }
       },
       "RuneMagic": {
+        "Range": "Range",
+        "Duration": "Duration",
+        "RitualQ": "Ritual?",
+        "StackableQ": "Stackable?",
+        "OneUseQ":"One Use?",
+        "Cult": "Cult",
+        "Runes": "Runes:",
+
         "runeMagicCultDialog": {
           "title": "Which cult provides this Rune Magic?",
           "btnAddRuneMagic": "Add Rune Magic",
