@@ -509,6 +509,22 @@
         "Experience": "Experience",
         "BackStory": "Back Story"
       },
+      "Rune": {
+        "Name": "Name",
+        "Rune": "Rune",
+        "Type": "Type",
+        "HasExperienceQ": "Has Experience?",
+        "OpposingRune": "Opposing Rune",
+        "MinorRunes": "Minor Runes",
+        "MasteredSorceryQ": "Mastered (Sorcery)?",
+        "RuneType": {
+          "element": "Element",
+          "power": "Power",
+          "form": "Form",
+          "condition": "Condition",
+          "technique": "Technique"
+        }
+      },
       "RuneMagic": {
         "runeMagicCultDialog": {
           "title": "Which cult provides this Rune Magic?",

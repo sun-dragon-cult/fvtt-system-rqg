@@ -8,28 +8,28 @@
     />
 
     <fieldset>
-      <legend>Name</legend>
-      <label>Rune<br><input type="text" name="data.rune" value="{{runeData.rune}}"></label>
-      <label class="paren-head">Type<br>( <select name="data.runeType">
+      <legend>{{localize "RQG.Item.Rune.Name"}}</legend>
+      <label>{{localize "RQG.Item.Rune.Rune"}}<br><input type="text" name="data.rune" value="{{runeData.rune}}"></label>
+      <label class="paren-head">{{localize "RQG.Item.Rune.Type"}}<br>( <select name="data.runeType">
         {{#select runeData.runeType}} {{#each sheetSpecific.runeTypes}}
-        <option value="{{this}}">{{this}}</option>
+        <option value="{{this}}">{{localize (concat "RQG.Item.Rune.RuneType." this)}}</option>
         {{/each}} {{/select}}
       </select> )</label>
     </fieldset>
   </header>
   <section class="sheet-body">
     <label><input type="number" min="0" max="999" name="data.chance" value="{{runeData.chance}}"/>%</label>
-    <label><input type="checkbox" name="data.hasExperience" {{checked runeData.hasExperience}} />Exp</label>
+    <label><input type="checkbox" name="data.hasExperience" {{checked runeData.hasExperience}} />{{localize "RQG.Item.Rune.HasExperienceQ"}}</label>
 
     <div class="wide-section">
-      <label>Opposing Rune <img class="rune" src="{{runeImg runeData.opposingRune}}" title="{{runeData.opposingRune}}"><input type="text" name="data.opposingRune" value="{{runeData.opposingRune}}" list="allRunes"/></label>
-      <div>Minor Runes<br>
+      <label>{{localize "RQG.Item.Rune.OpposingRune"}} <img class="rune" src="{{runeImg runeData.opposingRune}}" title="{{runeData.opposingRune}}"><input type="text" name="data.opposingRune" value="{{runeData.opposingRune}}" list="allRunes"/></label>
+      <div>{{localize "RQG.Item.Rune.MinorRunes"}}<br>
         {{#each runeData.minorRunes}}
         <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.minorRunes" type="text" value="{{this}}"> </span>
         {{/each}}
         <input name="data.minorRunes" type="text" list="allRunes" placeholder="Add new minor rune"><br>
       </div>
-      <label><input type="checkbox" name="data.isMastered" {{checked runeData.isMastered}}>Mastered (Sorcery)</label><br>
+      <label><input type="checkbox" name="data.isMastered" {{checked runeData.isMastered}}>{{localize "RQG.Item.Rune.MasteredSorceryQ"}}</label><br>
     </div>
     <div class="item-sheet-journal-link">
       {{#if runeData.journalPack}}
