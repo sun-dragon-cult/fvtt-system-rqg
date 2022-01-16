@@ -30,15 +30,28 @@
         <input name="data.minorRunes" type="text" list="allRunes" placeholder="Add new minor rune"><br>
       </div>
       <label><input type="checkbox" name="data.isMastered" {{checked runeData.isMastered}}>Mastered (Sorcery)</label><br>
-      <br>
-      {{#if runeData.journalPack}}
-        <a data-journal-pack="{{runeData.journalPack}}" data-journal-id="{{runeData.journalId}}">Linked to compendium [{{runeData.journalPack}}] journal Entry [{{sheetSpecific.journalEntryName}}]</a>
-      {{else if runeData.journalId}}
-        <a data-journal-pack="{{runeData.journalPack}}" data-journal-id="{{runeData.journalId}}">Linked to journal Entry [{{sheetSpecific.journalEntryName}}]</a>
-      {{/if}}
-
-      <br><i>Drop a journal on this item to connect a description.</i>
     </div>
+    <div class="item-sheet-journal-link">
+      {{#if runeData.journalPack}}
+          <a class="entity-link content-link"
+            data-pack="{{runeData.journalPack}}" 
+            data-id="{{runeData.journalId}}"
+            title="{{localize "RQG.Foundry.ContentLink.CompendiumNameTitle" compendiumName=runeData.journalPack}}">
+            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
+          </a>
+          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+      {{else if runeData.journalId}}
+          <a class="entity-link content-link" 
+            data-type="JournalEntry" 
+            data-id="{{runeData.journalId}}"
+            title="{{localize "RQG.Foundry.ContentLink.WorldJournalEntry"}}">
+            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
+          </a>
+          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+      {{else}}
+          <p><i>{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}</i></p>
+      {{/if}}   
+    </div>    
   </section>
   <datalist id="allRunes">
     {{#each sheetSpecific.allRunes}}

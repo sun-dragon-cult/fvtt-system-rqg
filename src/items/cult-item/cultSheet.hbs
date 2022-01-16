@@ -14,15 +14,28 @@
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
 
     <label>Holy Days {{editor content=cultData.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
-
-    {{#if cultData.journalPack}}
-      <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to compendium [{{cultData.journalPack}}] journal
-        Entry [{{sheetSpecific.journalEntryName}}]</a>
-    {{else if cultData.journalId}}
-      <a data-journal-pack="{{cultData.journalPack}}" data-journal-id="{{cultData.journalId}}">Linked to journal Entry [{{sheetSpecific.journalEntryName}}]</a>
-    {{/if}}
-
-    <p><i>Drop a journal on this item to connect a description.</i></p>
+    
+    <div class="item-sheet-journal-link">
+      {{#if cultData.journalPack}}
+          <a class="entity-link content-link"
+            data-pack="{{cultData.journalPack}}" 
+            data-id="{{cultData.journalId}}"
+            title="{{localize "RQG.Foundry.ContentLink.CompendiumNameTitle" compendiumName=cultData.journalPack}}">
+            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
+          </a>
+          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+      {{else if cultData.journalId}}
+          <a class="entity-link content-link" 
+            data-type="JournalEntry" 
+            data-id="{{cultData.journalId}}"
+            title="{{localize "RQG.Foundry.ContentLink.WorldJournalEntry"}}">
+            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
+          </a>
+          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+      {{else}}
+          <p><i>{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}</i></p>
+      {{/if}}   
+    </div>
 
     {{#if isEmbedded}}
       <hr>

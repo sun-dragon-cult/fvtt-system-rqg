@@ -162,6 +162,7 @@
         "HealWound": "Heal Wound",
         "AddWound": "Add Wound"
       },
+      "Occupation": {},
       "Passion": {
         "Passions": "Passions",
         "BackStory": "Back Story"
@@ -215,8 +216,7 @@
           "shields": "Shields",
           "naturalWeapons": "Natural Weapons"
         }
-      },
-      "Occupation": {}
+      }
     },
     "ActiveEffect": {
       "DebugTab": {
@@ -480,6 +480,14 @@
         },
         "SkillCategory": {}
       },
+      "SpiritMagic": {
+        "Range": "Range",
+        "Duration": "Duration",
+        "Concentration": "Concentration",
+        "SpellFocus": "Spell Focus:",
+        "IsMatrixQ": "Is Matrix?",
+        "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
+      },
       "Weapon": {
         "combatManeuver": {
           "Throw": "Throw",
@@ -491,6 +499,14 @@
           "Grapple": "Grapple",
           "Knockback": "Knockback"
         }
+      }
+    },
+    "Foundry": {
+      "ContentLink": {
+        "CompendiumNameTitle": "Compendium [{compendiumName}]",
+        "WorldJournalEntry": "World Journal Entry",
+        "DropToConnectJournal": "Drop a journal entry on this item to connect a description.",
+        "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."        
       }
     },
     "Game": {
