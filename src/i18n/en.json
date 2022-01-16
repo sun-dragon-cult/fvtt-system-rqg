@@ -501,6 +501,14 @@
         "NoWeaponSkillFromSkillOriginWarning": "No weapon skill with from skillOrigin \"{skillOrigin}\".",
         "CantFindSkillAssociatedWithWeaponWarning": "Can't find the Skill associated with this weapon."
       },
+      "Passion": {
+        "Name": "Name",
+        "Passion": "Passion",
+        "Subject": "Subject",
+        "Chance": "Chance",
+        "Experience": "Experience",
+        "BackStory": "Back Story"
+      },
       "RuneMagic": {
         "runeMagicCultDialog": {
           "title": "Which cult provides this Rune Magic?",
