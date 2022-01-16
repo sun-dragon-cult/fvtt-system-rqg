@@ -447,7 +447,13 @@
           "Linen": "Linen"
         }
       },
-      "Cult": {},
+      "Cult": {
+        "HolyDays": "Holy Days",
+        "RunePoints": "Rune Points",
+        "ActorsGifts": "Actor's Gifts",
+        "ActorsGeases": "Actor's Geases",
+        "ActorsSubCults": "Actor's Sub-Cults"
+      },
       "EquippedStatus": {
         "notCarried": "Not Carried",
         "carried": "Carried",

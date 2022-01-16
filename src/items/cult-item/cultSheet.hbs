@@ -13,7 +13,7 @@
     {{/each}}
     <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
 
-    <label>Holy Days {{editor content=cultData.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
+    <label>{{localize "RQG.Item.Cult.HolyDays"}} {{editor content=cultData.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
     
     <div class="item-sheet-journal-link">
       {{#if cultData.journalPack}}
@@ -39,7 +39,7 @@
 
     {{#if isEmbedded}}
       <hr>
-      <label>Rune Points <input type="number" min="0" max="99" name="data.runePoints.value"
+      <label>{{localize "RQG.Item.Cult.RunePoints"}} <input type="number" min="0" max="99" name="data.runePoints.value"
                                 value="{{cultData.runePoints.value}}">/<input type="number" min="0" max="99"
                                                                               name="data.runePoints.max"
                                                                               value="{{cultData.runePoints.max}}"></label><br>
@@ -48,9 +48,9 @@
           <option value="{{this}}">{{localize (concat "RQG.Actor.RuneMagic.CultRank." this)}}</option>
         {{/each}} {{/select}}
       </select><br>
-      <label>Actor's Gifts {{editor content=cultData.gifts target="data.gifts" button=true owner=owner editable=editable}}</label><br>
-      <label>Actor's Geases {{editor content=cultData.geases target="data.geases" button=true owner=owner editable=editable}}</label><br>
-      <label>Actor's Sub Cults {{editor content=cultData.subCults target="data.subCults" button=true owner=owner editable=editable}}</label>
+      <label>{{localize "RQG.Item.Cult.ActorsGifts"}} {{editor content=cultData.gifts target="data.gifts" button=true owner=owner editable=editable}}</label><br>
+      <label>{{localize "RQG.Item.Cult.ActorsGeases"}} {{editor content=cultData.geases target="data.geases" button=true owner=owner editable=editable}}</label><br>
+      <label>{{localize "RQG.Item.Cult.ActorsSubCults"}} {{editor content=cultData.subCults target="data.subCults" button=true owner=owner editable=editable}}</label>
     {{/if}}
   </main>
   <datalist id="allRunes">
