@@ -398,21 +398,13 @@
     },
     "Item": {
       "Armor": {
-        "Name": "Name",
         "NamePrefix": "Name Prefix",
         "ArmorTypeLabel": "Armor Type",
         "Material": "Material",
-        "EncumbranceAbbr": "ENC",
         "HitLocations": "Hit Locations",
         "Absorbs": "Absorbs",
         "MoveQuietlyPenalty": "Move Quietly Penalty",
         "FitsSIZ": "Fits SIZ",
-        "PriceReal": "Price (real)",
-        "PriceEstimated": "Price (estimated)",
-        "Location": "Location",
-        "AttunedTo": "Attuned to",
-        "Description": "Description",
-        "GMNotes": "GM Notes",
         "ArmorType": {
           "Hood": "Hood",
           "BroadBrimmedHat": "Broad-brimmed Hat",
@@ -458,6 +450,19 @@
         "notCarried": "Not Carried",
         "carried": "Carried",
         "equipped": "Equipped"
+      },
+      "Gear": {
+        "Name": "Name",
+        "EncumbranceAbbr": "ENC",
+        "PriceReal": "Price (real)",
+        "PriceEstimated": "Price (estimated)",
+        "Location": "Location",
+        "AttunedTo": "Attuned to",
+        "Quantity": "Quantity",
+        "Description": "Description",
+        "GMNotes": "GM Notes",
+        "IsContainerQ": "Is Container?",
+        "LunarsAbbr": "L"
       },
       "HitLocationType": {
         "limb": "Limb",

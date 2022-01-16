@@ -2,14 +2,14 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     <fieldset>
-      <legend>{{localize "RQG.Item.Armor.Name"}}</legend>
+      <legend>{{localize "RQG.Item.Gear.Name"}}</legend>
       <label>{{localize "RQG.Item.Armor.NamePrefix"}}<br><input type="text" name="data.namePrefix" value="{{armorData.namePrefix}}"></label><br>
       <label>{{localize "RQG.Item.Armor.ArmorTypeLabel"}}<br><input type="text" name="data.armorType" value="{{armorData.armorType}}" list="armorTypeNames"></label><br>
       <label><span class="paren-head">{{localize "RQG.Item.Armor.Material"}}</span><br>( <input type="text" name="data.material" value="{{armorData.material}}" list="materialNames"> )</label><br>
     </fieldset>
   </header>
   <main>
-    <label>{{localize "RQG.Item.Armor.EncumbranceAbbr"}} <input type="number" min="0" max="999999" name="data.encumbrance" value="{{armorData.encumbrance}}"></label><br>
+    <label>{{localize "RQG.Item.Gear.EncumbranceAbbr"}} <input type="number" min="0" max="999999" name="data.encumbrance" value="{{armorData.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
       {{#select armorData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
         <option value="{{this}}">{{localize (concat "RQG.Item.EquippedStatus." this)}}</option>
@@ -26,14 +26,14 @@
     <label>{{localize "RQG.Item.Armor.MoveQuietlyPenalty"}} <input type="number" min="0" max="99" name="data.moveQuietlyPenalty"
                                        value="{{armorData.moveQuietlyPenalty}}"></label><br>
     <label>{{localize "RQG.Item.Armor.FitsSIZ"}} <input type="number" min="1" max="99" name="data.size" value="{{armorData.size}}"></label><br>
-    <label>{{localize "RQG.Item.Armor.PriceReal"}} <input type="number" min="0" max="99999999" name="data.price.real" value="{{armorData.price.real}}">(L)</label><br>
-    <label>{{localize "RQG.Item.Armor.PriceEstimated"}} <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{armorData.price.estimated}}">(L)</label><br>
-    <label>{{localize "RQG.Item.Armor.Location"}} <input type="text" name="data.location" value="{{armorData.location}}"></label><br>
-    <label>{{localize "RQG.Item.Armor.AttunedTo"}} <input type="text" name="data.attunedTo" value="{{armorData.attunedTo}}"></label><br>
-    <label>{{localize "RQG.Item.Armor.Description"}} {{editor content=armorData.description target="data.description"
+    <label>{{localize "RQG.Item.Gear.PriceReal"}} <input type="number" min="0" max="99999999" name="data.price.real" value="{{armorData.price.real}}">{{localize "RQG.Item.Gear.LunarsAbbr"}}</label><br>
+    <label>{{localize "RQG.Item.Gear.PriceEstimated"}} <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{armorData.price.estimated}}">{{localize "RQG.Item.Gear.LunarsAbbr"}}</label><br>
+    <label>{{localize "RQG.Item.Gear.Location"}} <input type="text" name="data.location" value="{{armorData.location}}"></label><br>
+    <label>{{localize "RQG.Item.Gear.AttunedTo"}} <input type="text" name="data.attunedTo" value="{{armorData.attunedTo}}"></label><br>
+    <label>{{localize "RQG.Item.Gear.Description"}} {{editor content=armorData.description target="data.description"
       button=true owner=owner editable=editable}}
     </label><br>
-    <label>{{localize "RQG.Item.Armor.GMNotes"}} {{editor content=armorData.gmNotes target="data.gmNotes"
+    <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=armorData.gmNotes target="data.gmNotes"
       button=true owner=owner editable=editable}}
     </label>
     <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
