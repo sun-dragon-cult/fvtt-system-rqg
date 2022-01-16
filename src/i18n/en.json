@@ -464,6 +464,16 @@
         "IsContainerQ": "Is Container?",
         "LunarsAbbr": "L"
       },
+      "HitLocation": {
+        "Name": "Name",
+        "HealthStatus": "Health Status",
+        "ActAs": "Act as",
+        "ForDamageCalculations": "for damage calculations.",
+        "ConnectedTo": "Connected to",
+        "HitLocationOn": "Hit Location on",
+        "NaturalArmorPoints": "Natural AP",
+        "BaseHPDelta": "Base HP Delta (+/- from base location HP)"
+      },
       "HitLocationType": {
         "limb": "Limb",
         "head": "Head",

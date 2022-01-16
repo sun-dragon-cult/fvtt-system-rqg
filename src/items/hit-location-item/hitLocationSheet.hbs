@@ -1,29 +1,29 @@
 <form class="{{cssClass}}" autocomplete="off">
   <main>
-    <label>Name <select name="name">
+    <label>{{localize "RQG.Item.HitLocation.Name"}} <select name="name">
       {{#select data.name}} {{#each sheetSpecific.allHitLocations}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
-    <label>Hit Location Health Status <select name="data.hitLocationHealthState">
+    <label>{{localize "RQG.Item.HitLocation.HealthStatus"}} <select name="data.hitLocationHealthState">
       {{#select hitLocationData.hitLocationHealthState}} {{#each sheetSpecific.hitLocationHealthStatuses}}
       <option value="{{this}}">{{this}}</option>
       {{/each}} {{/select}}
     </select></label><br>
-    <label>Act as <select name="data.hitLocationType">
+    <label>{{localize "RQG.Item.HitLocation.ActAs"}} <select name="data.hitLocationType">
       {{#select hitLocationData.hitLocationType}} {{#each sheetSpecific.hitLocationTypes}}
       <option value="{{this}}">{{localize (concat 'RQG.Item.HitLocationType.' this)}}</option>
       {{/each}} {{/select}}
-    </select> for damage calculations.</label><br>
+    </select> {{localize "RQG.Item.HitLocation.ForDamageCalculations"}}</label><br>
     {{#if (eq hitLocationData.hitLocationType "limb")}}
-      <label>Connected to <select name="data.connectedTo">
+      <label>{{localize "RQG.Item.HitLocation.ConnectedTo"}} <select name="data.connectedTo">
         {{#select hitLocationData.connectedTo}} {{#each sheetSpecific.allHitLocations}}
         <option value="{{this}}">{{this}}</option>
         {{/each}} {{/select}}
       </select></label><br>
     {{/if}}
-    <label>Die from-to <input type="number" min="1" max="20" name="data.dieFrom" value="{{hitLocationData.dieFrom}}"></label> - <input type="number" min="1" max="20" name="data.dieTo" value="{{hitLocationData.dieTo}}"><br>
-    <label>Natural AP <input type="number" min="0" max="99" name="data.naturalAp" value="{{hitLocationData.naturalAp}}"></label><br>
-    <label>Base HP Delta (+/- from base location HP) <input type="number" min="-9" max="9" name="data.baseHpDelta" value="{{hitLocationData.baseHpDelta}}"></label><br>
+    <label>{{localize "RQG.Item.HitLocation.HitLocationOn"}}  <input type="number" min="1" max="20" name="data.dieFrom" value="{{hitLocationData.dieFrom}}"></label> - <input type="number" min="1" max="20" name="data.dieTo" value="{{hitLocationData.dieTo}}"><br>
+    <label>{{localize "RQG.Item.HitLocation.NaturalArmorPoints"}} <input type="number" min="0" max="99" name="data.naturalAp" value="{{hitLocationData.naturalAp}}"></label><br>
+    <label>{{localize "RQG.Item.HitLocation.BaseHPDelta"}} <input type="number" min="-9" max="9" name="data.baseHpDelta" value="{{hitLocationData.baseHpDelta}}"></label><br>
   </main>
 </form>
