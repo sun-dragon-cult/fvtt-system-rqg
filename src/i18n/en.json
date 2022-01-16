@@ -533,6 +533,17 @@
         }
       },
       "Skill": {
+        "Name": "Name",
+        "SkillName": "Skill Name",
+        "Specialization": "Specialization",
+        "Category": "Category",
+        "CategoryModifier": "CategoryModifier",
+        "BaseChance": "Base Chance",
+        "LearnedChance": "Learned Chance",
+        "Chance": "Chance",
+        "CanGainExperienceQ": "Can Gain Experience?",
+        "HasExperienceQ": "Has Experience?",
+        "SorceryRunes": "Sorcery Runes:",
         "Notification": {
           "CantFindSkillJournalEntryError": "Can't find Journal Entry you are trying to link to the Skill Item Sheet for {skillName}",
           "CanOnlyDropJournalEntryWarning": "You can only drop a Journal Entry onto the Skill Sheet"

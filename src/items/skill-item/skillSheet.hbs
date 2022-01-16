@@ -2,10 +2,10 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}"/>
     <fieldset>
-      <legend>Name</legend>
-      <label>Skill Name<br><input type="text" name="data.skillName" value="{{skillData.skillName}}"></label>
-      <label><span class="paren-head">Specialization</span><br>( <input type="text" name="data.specialization" value="{{skillData.specialization}}"> )&nbsp;&nbsp;&nbsp;- </label>
-      <label>Category<br><select name="data.category" >
+      <legend>{{localize "RQG.Item.Skill.Name"}}</legend>
+      <label>{{localize "RQG.Item.Skill.SkillName"}}<br><input type="text" name="data.skillName" value="{{skillData.skillName}}"></label>
+      <label><span class="paren-head">{{localize "RQG.Item.Skill.Specialization"}}</span><br>( <input type="text" name="data.specialization" value="{{skillData.specialization}}"> )&nbsp;&nbsp;&nbsp;- </label>
+      <label>{{localize "RQG.Item.Skill.Category"}}<br><select name="data.category" >
         {{#select skillData.category}}
         {{#each sheetSpecific.skillCategories}}
           <option value="{{this}}">{{localize (concat 'RQG.Actor.Skill.SkillCategory.' this)}}</option>
@@ -16,13 +16,13 @@
   </header>
   <main>
 
-    <label>Category Modifier {{skillData.categoryMod}}</label><br>
-    <label>Base Chance <input type="number" min="0" max="999" name="data.baseChance" value="{{skillData.baseChance}}"></label><br>
-    <label>Learned Chance <input type="number" min="0" max="999" name="data.learnedChance" value="{{skillData.learnedChance}}"></label>
-    <label>Chance {{skillData.chance}}</label><br>
-    <label><input type="checkbox" name="data.canGetExperience" {{checked skillData.canGetExperience}}> Can get experience</label><br>
-    <label><input type="checkbox" name="data.hasExperience" {{checked skillData.hasExperience}}> Has experience</label><br>
-    Sorcery Runes:<br>
+    <label>{{localize "RQG.Item.Skill.CategoryModifier"}} {{skillData.categoryMod}}</label><br>
+    <label>{{localize "RQG.Item.Skill.BaseChance"}} <input type="number" min="0" max="999" name="data.baseChance" value="{{skillData.baseChance}}"></label><br>
+    <label>{{localize "RQG.Item.Skill.LearnedChance"}} <input type="number" min="0" max="999" name="data.learnedChance" value="{{skillData.learnedChance}}"></label>
+    <label>{{localize "RQG.Item.Skill.Chance"}} {{skillData.chance}}</label><br>
+    <label><input type="checkbox" name="data.canGetExperience" {{checked skillData.canGetExperience}}> {{localize "RQG.Item.Skill.CanGainExperienceQ"}}</label><br>
+    <label><input type="checkbox" name="data.hasExperience" {{checked skillData.hasExperience}}> {{localize "RQG.Item.Skill.HasExperienceQ"}}</label><br>
+    {{localize "RQG.Item.Skill.SorceryRunes"}}<br>
     {{#each skillData.runes}}
     <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
     {{/each}}
