@@ -123,7 +123,9 @@
         "Chance": "Chance",
         "Damage": "Damage",
         "SR": "SR",
-        "Dodge": "Dodge"
+        "Dodge": "Dodge",
+        "SpiritCombat": "Spirit Combat",
+        "SpiritCombatDamage": "Spirit Combat Damage"
       },
       "Gear": {
         "ViewByItemType": "View by Item Type",
