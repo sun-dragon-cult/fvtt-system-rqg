@@ -453,7 +453,10 @@
         "Description": "Description",
         "GMNotes": "GM Notes",
         "IsContainerQ": "Is Container?",
-        "LunarsAbbr": "L"
+        "LunarsAbbr": "L",
+        "HitPointsAbbr": "HP",
+        "CurrentHitPoints": "Current Hit Points",
+        "HitPointLocation": "Hit Point Location"
       },
       "HitLocation": {
         "Name": "Name",
@@ -559,6 +562,24 @@
         "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
       },
       "Weapon": {
+        "UsesOfWeaponHeader": "Uses of Weapon",
+        "DropSkillToChange": "(Drop a different weapon skill on this weapon to change)",
+        "DropSkillToAdd": "Drop a weapon skill on this weapon!",
+        "Damage": "Damage",
+        "MinimumStrengthAbbr": "Min STR",
+        "MinimumDexterityAbbr": "Min DEX",
+        "StrikeRankAbbr": "SR",
+        "CombatManeuversHeader": "Combat Manuevers",
+        "ActionLabel": "Action Label",
+        "DamageType": "Damage Type",
+        "ThrownWeaponQ": "Thrown Weapon? (half damage bonus)",
+        "ProjectileWeaponQ": "Projectile Weapon? (no damage bonus, use linked projectile)",
+        "RangedWeaponQ": "Ranged Weapon? (no damage bonus, no projectile)",
+        "ProjectileQ": "Projectile? (ammunition)",
+        "Projectile": "Projectile",
+        "Range": "Range",
+        "Rate": "Rate",
+        "SameDataAsOneHand": "Same Data as One Hand",
         "combatManeuver": {
           "Throw": "Throw",
           "Shoot": "Shoot",
