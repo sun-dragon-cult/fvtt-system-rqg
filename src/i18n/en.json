@@ -493,7 +493,8 @@
         "ActorNotCharacterError": "Actor is not of type character",
         "CantFindWeaponSkillWarning": "Can't find weapon skill",
         "NoWeaponSkillFromSkillOriginWarning": "No weapon skill with from skillOrigin \"{skillOrigin}\".",
-        "CantFindSkillAssociatedWithWeaponWarning": "Can't find the Skill associated with this weapon."
+        "CantFindSkillAssociatedWithWeaponWarning": "Can't find the Skill associated with this weapon.",
+        "CantCreateActiveEffect": "Can't create Active Effect"
       },
       "Passion": {
         "Name": "Name",
@@ -599,7 +600,8 @@
           "Label": "Label",
           "Disabled": "Disabled",
           "StartTime": "Start Time",
-          "KeyValueMode": "Key - Value - Mode"
+          "KeyValueMode": "Key - Value - Mode",
+          "NewActiveEffectName": "New Active Effect"
       },
       "ContentLink": {
         "CompendiumNameTitle": "Compendium [{compendiumName}]",
