@@ -1,6 +1,6 @@
 <div class="power flex-row">
   <div>
-    <div class="small-size">Free INT {{freeInt}}</div>
+    <div class="small-size">{{localize "RQG.Actor.Sorcery.FreeINT"}} {{freeInt}}</div>
     <div class="grid skill">
     {{#each ownedItems.skill.magic}}
     {{#if data.data.runes}}
@@ -25,7 +25,7 @@
   </div>
 
   <div>
-    <h2>Techniques</h2>
+    <h2>{{localize "RQG.Actor.Sorcery.Techniques"}}</h2>
     <div class="grid rune">
     {{#each ownedItems.rune.technique}}
       <div data-item-id="{{id}}" class="rune contextmenu"
@@ -39,7 +39,7 @@
   </div>
 
   <div>
-    <h2>Mastered Runes</h2>
+    <h2>{{localize "RQG.Actor.Sorcery.MasteredRunes"}}</h2>
     <div class="grid rune">
       {{#each ownedItems.rune.element}}
         {{#if data.data.isMastered}}

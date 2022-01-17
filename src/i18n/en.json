@@ -177,7 +177,7 @@
         "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
         "DeleteRuneMagicSpellTitle": "Delete Rune Magic Spell",
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
-        "Cult Rank": "Cult Rank:",
+        "CultRankLabel": "Cult Rank:",
         "RunePoints": "Rune Points:",
         "Gifts": "Gifts:",
         "Geases": "Geases:",
@@ -216,6 +216,11 @@
           "shields": "Shields",
           "naturalWeapons": "Natural Weapons"
         }
+      },
+      "Sorcery": {
+        "FreeINT": "Free INT",
+        "Techniques": "Techniques",
+        "MasteredRunes": "Mastered Runes"
       }
     },
     "ContextMenu": {
