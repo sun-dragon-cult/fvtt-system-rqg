@@ -279,7 +279,16 @@
       "Common": {
         "btnCancel": "Cancel",
         "btnConfirm": "Confirm",
-        "OtherModifiers": "Other Modifiers:"
+        "OtherModifiers": "Other Modifiers:",
+        "RollFormat": "Roll ({chance}%)",
+        "CantFindChatMessageError": "CantFindChatMessageError",
+        "CantFindActorToDoRollFromChatCardWarn": "Can't find actor to do a roll from this chat card!"
+      },
+      "characteristicCard": {
+        "CardWithoutActorIdError": "Called show characteristic Card with actor without id",
+        "CardFlavor": "Characteristic: {name} ({value})",
+        "RollFlavor": "{difficulty} {name} Check",
+        "RollFlavorModifier": "<br/>With {modifier} other modifiers"
       },
       "confirmItemDeleteDialog": {
         "title": "Delete {itemType}: {itemName}",
@@ -649,6 +658,14 @@
         "offHand": "offH",
         "twoHand": "2H",
         "missile": "Missile"
+      },
+      "RollDifficulty": {
+        "0": "Nearly Impossible (*0.5)",
+        "1": "Very Hard (*1)",
+        "2": "Hard (*2)",
+        "3": "Moderate (*3)",
+        "4": "Easy (*4)",
+        "5": "Simple Action (*5)"
       }
     },
     "Notification": {
