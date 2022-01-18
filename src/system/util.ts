@@ -298,6 +298,19 @@ export function localize(key: string, data?: Record<string, unknown>): string {
 }
 
 /**
+ * Formats the value as a modifier, ie negative numbers have a "-" and zero or positive numbers have a "+"
+ * @param value The value to format
+ * @returns A string with the value formatted as a modifier.
+ */
+export function formatModifier(value: number): string {
+  if (value < 0) {
+    return String(value);
+  } else {
+    return "+" + String(value);
+  }
+}
+
+/**
  * Formats and localizes a characteristic name.
  * @param characteristic ie: "strength"
  * @returns Fully formatted and localized name, ie: "Strength (STR)"

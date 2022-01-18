@@ -264,7 +264,7 @@ export class RqgActor extends Actor {
     const itemToAward = this.items.get(itemId);
     if (itemToAward) {
       if (hasOwnProperty(itemToAward.data.data, "hasExperience")) {
-        if (hasOwnProperty(itemToAward.data.data, "canGetExperience")) {
+        if (hasOwnProperty(itemToAward.data.data, "canGetExperience") && itemToAward.data.data.canGetExperience) {
           if (!itemToAward.data.data.hasExperience) {
             await this.updateEmbeddedDocuments("Item", [
               { _id: itemToAward.id, data: { hasExperience: true } },
