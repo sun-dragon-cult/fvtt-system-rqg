@@ -298,6 +298,13 @@
         "CheckReputationFlavor": "Check Reputation",
         "Reputation": "Reputation"
       },
+      "spiritMagicCard": {
+        "CardWithoutActorIdError": "Called show spirit magic Card with actor without id",
+        "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
+        "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
+        "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points.",
+        "CardFlavor": "Spirit Magic: {name}"
+      },
       "confirmItemDeleteDialog": {
         "title": "Delete {itemType}: {itemName}",
         "content": "Are you sure you want to delete the {itemType} named {itemName}?",
