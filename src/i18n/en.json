@@ -294,6 +294,10 @@
         "RollFlavor": "{name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"
       },
+      "reputationCard": {
+        "CheckReputationFlavor": "Check Reputation",
+        "Reputation": "Reputation"
+      },
       "confirmItemDeleteDialog": {
         "title": "Delete {itemType}: {itemName}",
         "content": "Are you sure you want to delete the {itemType} named {itemName}?",

@@ -1,7 +1,7 @@
 import { RqgActor } from "../actors/rqgActor";
 import { getCombatantsSharingToken } from "../combat/combatant-utils";
 import { Ability } from "../data-model/shared/ability";
-import { activateChatTab, getActorFromIds, getGame, getSpeakerName, usersThatOwnActor } from "../system/util";
+import { activateChatTab, getActorFromIds, getGame, getSpeakerName, localize, usersThatOwnActor } from "../system/util";
 
 type ReputationFlags = {
   actorId: string;
@@ -64,7 +64,7 @@ export class ReputationCard {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await ReputationCard.roll(flags, actor, speakerName);
     } else {
-      ui.notifications?.warn("Couldn't find world actor to do reputation roll");
+      ui.notifications?.warn(localize("RQG.Item.Notifications.CouldNotFindActorByIdsWarn", {actorId: flags.actorId, tokenId: flags.tokenId}));
     }
     return false;
   }
@@ -98,7 +98,7 @@ export class ReputationCard {
     speakerName: string
   ): Promise<void> {
     const result = await Ability.roll(
-      "Check Reputation",
+      localize("RQG.Dialog.reputationCard.CheckReputationFlavor"),
       Number(flags.reputationValue),
       Number(flags.formData.otherModifiers),
       speakerName
@@ -109,7 +109,7 @@ export class ReputationCard {
     let html = await renderTemplate("systems/rqg/chat/reputationCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: "Reputation",
+      flavor: localize("RQG.Dialog.reputationCard.Reputation"),
       user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,
