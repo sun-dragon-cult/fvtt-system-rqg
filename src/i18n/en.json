@@ -425,7 +425,27 @@
         },
         "fumbleRoll": "Roll Fumble",
         "hitLocationRoll": "Roll Hit location",
-        "Modifier": "Modifier"
+        "Modifier": "Modifier",
+        "CantFindSkillError": "Can't find skill with itemId [{skillId}] on actor {actorName} to show a weapon chat card.",
+        "CantFindActorWarn": "Can't find world actor to do action",
+        "UsedLastOfAmmoWarn": "You just used the last of your {projectileName}!",
+        "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
+        "CantFindChatMessageError": "Can't find chat message",
+        "HitLocationRollFlavor": "Hit Location Roll",
+        "UnkownButtonInCardError": "Unknown button \"{actionButton}\" in weapon chat card",
+        "WeaponCardFlavor": "Weapon: {weaponName}",
+        "NoCombatManeuverInDamageRollError": "No combat maneuver in Damage Roll.",
+        "CantFindActorToDoDamageRollWarn": "Can't find world actor do do damage roll.",
+        "WeaponDoesNotHaveCombatManeuverError": "Weapon doesn't have a combat maneuver.",
+        "WeaponDoesNotHaveAttachManeuverError": "The weapon named \"{weaponName}\" does not have an attack Combat Maneuver.",
+        "WeaponDamageTag": "weapon",
+        "DamageBonusDamageTag": "damage bonus",
+        "CrushSpecialDamageTag": "crushing special",
+        "ImpaleSpecialDamageTag": "impale special",
+        "FumbleTableMissingWarn": "The fumble table \"{fumbleTableName}\" is missing.",
+        "PluralResults": "{numberOfResults} results",
+        "SingularResult": "a result",
+        "FumbleResultFlavor": "Draws {numberOfResults} from the {fumbleTableName} table."
       }
     },
     "Item": {

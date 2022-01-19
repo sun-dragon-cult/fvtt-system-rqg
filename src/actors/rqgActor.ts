@@ -1,10 +1,10 @@
 import { RqgCalculations } from "../system/rqgCalculations";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgItem } from "../items/rqgItem";
 import { DamageCalculations } from "../system/damageCalculations";
-import { getGame, hasOwnProperty, localize } from "../system/util";
+import { assertItemType, getGame, hasOwnProperty, localize } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
@@ -260,38 +260,46 @@ export class RqgActor extends Actor {
     return { str, con, siz, dex, int, pow, cha };
   }
 
-  public async AwardExperience(itemId: string) {
-    const itemToAward = this.items.get(itemId);
-    if (itemToAward) {
-      if (hasOwnProperty(itemToAward.data.data, "hasExperience")) {
-        if (hasOwnProperty(itemToAward.data.data, "canGetExperience") && itemToAward.data.data.canGetExperience) {
-          if (!itemToAward.data.data.hasExperience) {
-            await this.updateEmbeddedDocuments("Item", [
-              { _id: itemToAward.id, data: { hasExperience: true } },
-            ]);
-            const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
-              actorName: this.name,
+  public async AwardExperience(itemId: string | null) {
+    if (itemId !== null) {
+      const itemToAward = this.items.get(itemId);
+      if (itemToAward !== undefined) {
+        assertItemType(itemToAward.type, ItemTypeEnum.Skill);
+        if (itemToAward) {
+          if (hasOwnProperty(itemToAward.data.data, "hasExperience")) {
+            if (
+              hasOwnProperty(itemToAward.data.data, "canGetExperience") &&
+              itemToAward.data.data.canGetExperience
+            ) {
+              if (!itemToAward.data.data.hasExperience) {
+                await this.updateEmbeddedDocuments("Item", [
+                  { _id: itemToAward.id, data: { hasExperience: true } },
+                ]);
+                const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+                  actorName: this.name,
+                  itemName: itemToAward.name,
+                });
+                ui.notifications?.info(msg);
+              }
+            }
+          } else {
+            const msg = localize("RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError", {
               itemName: itemToAward.name,
+              itemId: itemToAward.id,
             });
-            ui.notifications?.info(msg);
+            console.log(msg);
+            ui.notifications?.error(msg);
           }
+        } else {
+          const msg = localize("RQG.Actor.AwardExperience.ItemNotFoundError", {
+            itemId: itemId,
+            actorName: this.name,
+            actorid: this.id,
+          });
+          console.log(msg);
+          ui.notifications?.error(msg);
         }
-      } else {
-        const msg = localize(
-          "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
-          { itemName: itemToAward.name, itemId: itemToAward.id }
-        );
-        console.log(msg);
-        ui.notifications?.error(msg);
       }
-    } else {
-      const msg = localize("RQG.Actor.AwardExperience.ItemNotFoundError", {
-        itemId: itemId,
-        actorName: this.name,
-        actorid: this.id,
-      });
-      console.log(msg);
-      ui.notifications?.error(msg);
     }
   }
 }
