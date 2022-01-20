@@ -1,5 +1,5 @@
 import { getCombatantsSharingToken } from "./combatant-utils";
-import { getRequiredDomDataset } from "../system/util";
+import { getRequiredDomDataset, localize } from "../system/util";
 
 export class RqgCombatTracker extends CombatTracker {
   static init() {
@@ -19,7 +19,7 @@ export class RqgCombatTracker extends CombatTracker {
   _getEntryContextOptions(): ContextMenu.Item[] {
     return [
       {
-        name: "Duplicate Combatant",
+        name: localize("RQG.Foundry.CombatTracker.DuplicateCombatant"),
         icon: '<i class="far fa-copy fa-fw"></i>',
         callback: async (li: JQuery) => {
           const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
@@ -30,12 +30,12 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
       {
-        name: "COMBAT.CombatantUpdate",
+        name: localize("RQG.Foundry.CombatTracker.UpdateCombatant"),
         icon: '<i class="fas fa-edit fa-fw"></i>',
         callback: this._onConfigureCombatant.bind(this),
       },
       {
-        name: "COMBAT.CombatantRemove",
+        name: localize("RQG.Foundry.CombatTracker.RemoveCombatant"),
         icon: '<i class="fas fa-trash fa-fw"></i>',
         callback: (li: JQuery) => {
           const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
@@ -45,7 +45,7 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
       {
-        name: "Remove All Duplicates",
+        name: localize("RQG.Foundry.CombatTracker.RemoveAllDuplicates"),
         icon: '<i class="fas fa-trash fa-fw"></i>',
         callback: (li: JQuery) => {
           const combatant = this.viewed?.combatants.get(li.data("combatant-id"));

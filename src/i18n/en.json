@@ -668,6 +668,12 @@
           "KeyValueMode": "Key - Value - Mode",
           "NewActiveEffectName": "New Active Effect"
       },
+      "CombatTracker": {
+        "DuplicateCombatant": "Duplicate Combatant",
+        "UpdateCombatant": "Update Combatant",
+        "RemoveCombatant": "Remove Combatant",
+        "RemoveAllDuplicates": "Remove All Duplicates"
+      },
       "ContentLink": {
         "CompendiumNameTitle": "Compendium [{compendiumName}]",
         "WorldJournalEntry": "World Journal Entry",
