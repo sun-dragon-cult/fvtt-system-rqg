@@ -19,7 +19,7 @@
 
     <select name="data.physicalItemType">
       {{#select gearData.physicalItemType}} {{#each sheetSpecific.physicalItemTypes}}
-      <option value="{{this}}">{{this}}</option>
+      <option value="{{this}}">{{localize (concat "RQG.Item.Gear.PhysicalItemType." this)}}</option>
       {{/each}} {{/select}}
     </select>
     {{#unless (eq gearData.physicalItemType "unique")}}

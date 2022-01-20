@@ -517,7 +517,12 @@
         "LunarsAbbr": "L",
         "HitPointsAbbr": "HP",
         "CurrentHitPoints": "Current Hit Points",
-        "HitPointLocation": "Hit Point Location"
+        "HitPointLocation": "Hit Point Location",
+        "PhysicalItemType": {
+          "unique": "Unique",
+          "currency": "Currency",
+          "consumable": "Consumable"
+        }
       },
       "HitLocation": {
         "Name": "Name",
