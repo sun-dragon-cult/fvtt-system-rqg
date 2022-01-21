@@ -8,7 +8,7 @@
       <div class="topheaderline">
         <h1 class="charname"><input name="name" type="text" value="{{data.name}}"></h1>
         <div class="flex-row gap1rem">
-          {{#unless (eq characterData.attributes.health "healthy")}}<i>{{characterData.attributes.health}}</i>{{/unless}}
+          {{#unless (eq characterData.attributes.health "healthy")}}<i>{{localize (concat "RQG.Actor.Attributes.Health." characterData.attributes.health)}}</i>{{/unless}}
           {{#if characterElementRunes}}
             <div>
               {{#each characterElementRunes}}
@@ -48,16 +48,16 @@
       <div class="thirdline">
         {{#if baseStrikeRank includeZero=true}}
           <div>
-            <div class="norse text-center">Strike Rank <span class="large-font">{{baseStrikeRank}}</span></div>
+            <div class="norse text-center">{{localize "RQG.Actor.Attributes.StrikeRank"}} <span class="large-font">{{baseStrikeRank}}</span></div>
             <div class="flex-row">
-              {{#if characterData.attributes.sizStrikeRank includeZero=true}}<span class="norse text-center">SIZ {{characterData.attributes.sizStrikeRank}}</span>{{/if}}
-              {{#if characterData.attributes.dexStrikeRank includeZero=true}}<span class="norse text-center">DEX {{characterData.attributes.dexStrikeRank}}</span>{{/if}}
+              {{#if characterData.attributes.sizStrikeRank includeZero=true}}<span class="norse text-center">{{localize "RQG.Actor.Attributes.SizeAbbr"}} {{characterData.attributes.sizStrikeRank}}</span>{{/if}}
+              {{#if characterData.attributes.dexStrikeRank includeZero=true}}<span class="norse text-center">{{localize "RQG.Actor.Attributes.DexterityAbbr"}} {{characterData.attributes.dexStrikeRank}}</span>{{/if}}
             </div>
           </div>
         {{/if}}
         <div>
           <label class="flex-row flex-align-center">
-            <span>Magic Points</span>
+            <span>{{localize "RQG.Actor.Attributes.MagicPoints"}}</span>
             <span class="nowrap">
               <input type="number" min="0" max="99" name="data.attributes.magicPoints.value" value="{{characterData.attributes.magicPoints.value}}" size="2"
               > / {{characterData.attributes.magicPoints.max}}
@@ -66,7 +66,7 @@
           <i class="norse flex-row flex-align-center">{{#each powCrystals}}<span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
         </div>
         <fieldset class="mov-enc">
-          <legend>{{characterData.attributes.move.currentLocomotion}}</legend>
+          <legend>{{localize (concat "RQG.Actor.Attributes.MoveMode." characterData.attributes.move.currentLocomotion)}}</legend>
           <div class="flex-column">
             {{#if (or isGM characterData.attributes.move.walk.value)}}
               <label class="nowrap"><input type="radio" name="data.attributes.move.currentLocomotion" value="walk" {{checked (eq "walk" characterData.attributes.move.currentLocomotion)}}> <i class="fas fa-walking "></i></label>
@@ -80,7 +80,7 @@
           </div>
         {{#if characterData.attributes.encumbrance.max}}
           <div>
-            <div class="norse nowrap">MOV <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg"> ENC</div>
+            <div class="norse nowrap">{{localize "RQG.Actor.Attributes.MovementAbbr"}} <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg"> {{localize "RQG.Actor.Attributes.EncumbranceAbbr"}}</div>
             <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.equipped characterData.attributes.encumbrance.max)}}warning{{/if}}">
               <span>{{characterData.attributes.move.equipped}}</span> • <span>{{characterData.attributes.encumbrance.equipped}} / {{characterData.attributes.encumbrance.max}}</span>
             </div>
@@ -88,14 +88,14 @@
         {{/if}}
         {{#if characterData.attributes.encumbrance.max}}
           <div>
-            <div class="norse nowrap">MOV <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg"> ENC</div>
+            <div class="norse nowrap">{{localize "RQG.Actor.Attributes.MovementAbbr"}} <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg"> ENC</div>
             <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.travel characterData.attributes.encumbrance.max)}}warning{{/if}}">
               <span>{{characterData.attributes.move.travel}}</span> • <span>{{characterData.attributes.encumbrance.travel}} / {{characterData.attributes.encumbrance.max}}</span>
             </div>
           </div>
         {{/if}}
         <div>
-        <div class="norse">MOV</div>
+        <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}</div>
         {{#if isGM}}
           {{#with (lookup characterData.attributes.move characterData.attributes.move.currentLocomotion) }}
             <div class="text-center"><input type="number" min="0" max="99" name="{{concat 'data.attributes.move.' @root.characterData.attributes.move.currentLocomotion '.value'}}" value="{{value}}" size="2"></div>
@@ -107,7 +107,7 @@
         {{#if characterData.attributes.encumbrance.max}}
         {{#if isGM}}
           <div>
-            <div class="norse">ENC factor</div>
+            <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
               {{#with (lookup characterData.attributes.move characterData.attributes.move.currentLocomotion) }}
                 <div class="text-center"><input type="number" min="0" max="99" name="{{concat 'data.attributes.move.' @root.characterData.attributes.move.currentLocomotion '.carryingFactor'}}" value="{{carryingFactor}}" size="2"></div>
               {{/with}}
@@ -118,7 +118,7 @@
         </fieldset>
         {{#if isPC}}
           <div>
-            <div class="norse">Hero Points</div>
+            <div class="norse">{{localize "RQG.Actor.Attributes.HeroPoints"}}</div>
             {{#if isGM}}
               <div class="text-center"><input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{characterData.attributes.heroPoints}}" size="2"></div>
             {{else}}
@@ -132,16 +132,16 @@
 
   <div class="navbackground"></div>
   <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item norse" data-group="primary" data-tab="combat">Combat</a>
-    {{#if showUiSection.runes}}<a class="item norse" data-group="primary" data-tab="runes">Runes</a>{{/if}}
-    {{#if showUiSection.spiritMagic}}<a class="item norse" data-group="primary" data-tab="spiritmagic">Spirit Magic</a>{{/if}}
-    {{#if showUiSection.runeMagic}}<a class="item norse" data-group="primary" data-tab="runemagic">Rune Magic</a>{{/if}}
-    {{#if showUiSection.sorcery}}<a class="item norse" data-group="primary" data-tab="sorcery">Sorcery</a>{{/if}}
-    {{#if showUiSection.skills}}<a class="item norse" data-group="primary" data-tab="skills">Skills</a>{{/if}}
-    {{#if showUiSection.gear}}<a class="item norse" data-group="primary" data-tab="gear">Gear</a>{{/if}}
-    {{#if showUiSection.passions}}<a class="item norse" data-group="primary" data-tab="passions">Passions</a>{{/if}}
-    {{#if showUiSection.background}}<a class="item norse" data-group="primary" data-tab="background">Background</a>{{/if}}
-    {{#if showUiSection.activeEffects}}<a class="item norse" data-group="primary" data-tab="activeeffectstesting">AE 🧪</a>{{/if}}
+    <a class="item norse" data-group="primary" data-tab="combat">{{localize "RQG.Actor.Nav.Combat"}}</a>
+    {{#if showUiSection.runes}}<a class="item norse" data-group="primary" data-tab="runes">{{localize "RQG.Actor.Nav.Runes"}}</a>{{/if}}
+    {{#if showUiSection.spiritMagic}}<a class="item norse" data-group="primary" data-tab="spiritmagic">{{localize "RQG.Actor.Nav.SpiritMagic"}}</a>{{/if}}
+    {{#if showUiSection.runeMagic}}<a class="item norse" data-group="primary" data-tab="runemagic">{{localize "RQG.Actor.Nav.RuneMagic"}}</a>{{/if}}
+    {{#if showUiSection.sorcery}}<a class="item norse" data-group="primary" data-tab="sorcery">{{localize "RQG.Actor.Nav.Sorcery"}}</a>{{/if}}
+    {{#if showUiSection.skills}}<a class="item norse" data-group="primary" data-tab="skills">{{localize "RQG.Actor.Nav.Skills"}}</a>{{/if}}
+    {{#if showUiSection.gear}}<a class="item norse" data-group="primary" data-tab="gear">{{localize "RQG.Actor.Nav.Gear"}}</a>{{/if}}
+    {{#if showUiSection.passions}}<a class="item norse" data-group="primary" data-tab="passions">{{localize "RQG.Actor.Nav.Passions"}}</a>{{/if}}
+    {{#if showUiSection.background}}<a class="item norse" data-group="primary" data-tab="background">{{localize "RQG.Actor.Nav.Background"}}</a>{{/if}}
+    {{#if showUiSection.activeEffects}}<a class="item norse" data-group="primary" data-tab="activeeffectstesting">{{localize "RQG.Actor.Nav.ActiveEffects"}}</a>{{/if}}
   </nav>
 
   <section class="sheet-body">
@@ -155,7 +155,7 @@
         {{#if showUiSection.combat}}<div>{{> "systems/rqg/actors/sheet-parts/combat.hbs" }}</div>{{/if}}
 
         <div style="width: 100%">
-          <h2>Allies & Notes</h2>
+          <h2>{{localize "RQG.Actor.Attributes.AlliesAndNotes"}}</h2>
           {{editor content=characterData.allies target="data.allies" button=true owner=owner editable=editable}}
         </div>
       </div>

@@ -14,6 +14,29 @@
   },
   "RQG": {
     "Actor": {
+      "Attributes": {
+        "AlliesAndNotes": "Allies & Notes",
+        "StrikeRank": "Strike Rank",
+        "SizeAbbr": "SIZ",
+        "DexterityAbbr": "DEX",
+        "MagicPoints": "Magic Points",
+        "MovementAbbr": "MOV",
+        "EncumbranceAbbr": "ENC",
+        "EncumbranceFactor": "ENC Factor",
+        "HeroPoints": "Hero Points",
+        "Health": {
+          "healthy": "Healthy",
+          "wounded": "Wounded",
+          "shock": "Shock",
+          "unconcious": "Unconcious",
+          "dead": "dead"
+        },
+        "MoveMode": {
+          "walk": "Walk",
+          "swim": "Swim",
+          "fly": "Fly"
+        }
+      },
       "AwardExperience": {
         "GainedExperienceInfo": "{actorName} just gained an experience check in {itemName}!",
         "ItemDoesntHaveExperienceError": "Attempt to AwardExperience to the item named \"{itemName}\" with id \"{itemId}\" that does not have the \"hasExperience\" property.",
@@ -164,7 +187,18 @@
         "HealWound": "Heal Wound",
         "AddWound": "Add Wound"
       },
-      "Occupation": {},
+      "Nav": {
+        "Combat": "Combat",
+        "Runes": "Runes",
+        "SpiritMagic": "Spirit Magic",
+        "RuneMagic": "Rune Magic",
+        "Sorcery": "Sorcery",
+        "Skills": "Skills",
+        "Gear": "Gear",
+        "Passions": "Passions",
+        "Background": "Background",
+        "ActiveEffects": "AE 🧪"
+      },
       "Passion": {
         "Passions": "Passions",
         "BackStory": "Back Story"
@@ -687,8 +721,6 @@
       }
     },
     "Game": {
-      "ComabatManeuver": {},
-      "DamageRollType": {},
       "MeleeRoundAbbr": "MR",
       "ResultEnum": {
         "0": "Hyper Critical",
