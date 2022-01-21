@@ -264,7 +264,6 @@ export class RqgActor extends Actor {
     if (itemId !== null) {
       const itemToAward = this.items.get(itemId);
       if (itemToAward !== undefined) {
-        assertItemType(itemToAward.type, ItemTypeEnum.Skill);
         if (itemToAward) {
           if (hasOwnProperty(itemToAward.data.data, "hasExperience")) {
             if (

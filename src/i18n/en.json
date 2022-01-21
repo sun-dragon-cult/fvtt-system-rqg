@@ -337,7 +337,8 @@
         "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
         "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
         "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points.",
-        "CardFlavor": "Spirit Magic: {name}"
+        "CardFlavor": "Spirit Magic: {name}",
+        "Cast": "Cast {spellName}"
       },
       "confirmItemDeleteDialog": {
         "title": "Delete {itemType}: {itemName}",
@@ -401,7 +402,7 @@
           "noExperience": "{actorName} does not have an experience check in {typeLocName} \"{name}\" and cannot gain from experience now."
         }
       },
-      "RuneMagicCard": {
+      "runeMagicCard": {
         "MissingJournalLinkTitle": "Edit the spell and add a description to have a journal link here!",
         "CastUsingRune": "Cast using Rune:",
         "RuneHasExperienceTitle": "Has Experience Check",
@@ -448,7 +449,8 @@
         "SpentOneUseRunePoints": "{actorName} spent {runePoints} One Use Rune Points from the {cultName} cult!",
         "validationNotEnoughRunePoints": "Not enough rune points left!",
         "validationNotEnoughMagicPoints": "Not enough magic points left to boost that much!",
-        "runeMagicResultFlavor": "Rune Magic: {name}"
+        "runeMagicResultFlavor": "Rune Magic: {name}",
+        "Cast": "Cast {spellName}"
       },
       "weaponCard": {
         "Damage": "Damage",

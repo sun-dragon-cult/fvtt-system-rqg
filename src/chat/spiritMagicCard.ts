@@ -110,7 +110,7 @@ export class SpiritMagicCard {
       ui.notifications?.warn(validationError);
     } else {
       const result = await Ability.roll(
-        "Cast " + itemData.name,
+        localize("RQG.Dialog.spiritMagicCard.Cast", {spellName: itemData.name}),
         actorData.data.characteristics.power.value * 5,
         0,
         speakerName
