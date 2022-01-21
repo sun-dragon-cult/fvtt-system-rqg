@@ -338,7 +338,9 @@
         "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
         "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points.",
         "CardFlavor": "Spirit Magic: {name}",
-        "Cast": "Cast {spellName}"
+        "Cast": "Cast {spellName}",
+        "Level": "Level",
+        "Boost": "Boost"
       },
       "confirmItemDeleteDialog": {
         "title": "Delete {itemType}: {itemName}",
