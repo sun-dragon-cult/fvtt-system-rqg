@@ -391,7 +391,7 @@ export class WeaponCard extends ChatMessage {
     await roll.toMessage({
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: `damage: ${WeaponCard.getDamageTypeString(damageType, weaponUsage.combatManeuvers)}`,
+      flavor: `${localize("RQG.Dialog.weaponCard.Damage")}: ${WeaponCard.getDamageTypeString(damageType, weaponUsage.combatManeuvers)}`,
     });
   }
 
