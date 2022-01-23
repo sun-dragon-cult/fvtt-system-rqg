@@ -124,6 +124,6 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("sum", (...nums) => {
     nums.pop();
-    return nums.reduce((acc, n) => acc + (n ?? 0));
+    return nums.reduce((acc, n) => acc + (n ?? 0), 0);
   });
 };
