@@ -18,6 +18,9 @@ export class RqgCalculations {
   }
 
   public static damageBonus(str: number, siz: number): string {
+    if (str == null && siz == null) {
+      return "0";
+    }
     const combined = str + siz;
     if (combined <= 40) {
       return this.lookup<string>(str + siz, damageBonusTable);
