@@ -50,8 +50,26 @@ export class RqgCalculations {
     dex: number,
     int: number,
     pow: number,
-    cha: number
+    cha: number,
+    isCreature: boolean
   ) {
+    if (isCreature) {
+      return {
+        agility: 0,
+        communication: 0,
+        knowledge: 0,
+        magic: 0,
+        manipulation: 0,
+        perception: 0,
+        stealth: 0,
+        meleeWeapons: 0,
+        missileWeapons: 0,
+        naturalWeapons: 0,
+        shields: 0,
+        otherSkills: 0,
+      };
+    }
+
     const agilityMod =
       RqgCalculations.flattenedMod(str) -
       RqgCalculations.flattenedMod(siz) +
@@ -77,17 +95,17 @@ export class RqgCalculations {
       RqgCalculations.flattenedMod(pow);
 
     return {
-      agility: RqgCalculations.limitExtremeModifiers(agilityMod),
-      communication: RqgCalculations.limitExtremeModifiers(communicationMod),
-      knowledge: RqgCalculations.limitExtremeModifiers(knowledgeMod),
-      magic: RqgCalculations.limitExtremeModifiers(magicMod),
-      manipulation: RqgCalculations.limitExtremeModifiers(manipulationMod),
-      perception: RqgCalculations.limitExtremeModifiers(perceptionMod),
-      stealth: RqgCalculations.limitExtremeModifiers(stealthMod),
-      meleeWeapons: RqgCalculations.limitExtremeModifiers(manipulationMod),
-      missileWeapons: RqgCalculations.limitExtremeModifiers(manipulationMod),
-      naturalWeapons: RqgCalculations.limitExtremeModifiers(manipulationMod),
-      shields: RqgCalculations.limitExtremeModifiers(manipulationMod),
+      agility: agilityMod,
+      communication: communicationMod,
+      knowledge: knowledgeMod,
+      magic: magicMod,
+      manipulation: manipulationMod,
+      perception: perceptionMod,
+      stealth: stealthMod,
+      meleeWeapons: manipulationMod,
+      missileWeapons: manipulationMod,
+      naturalWeapons: manipulationMod,
+      shields: manipulationMod,
       otherSkills: 0,
     };
   }
@@ -105,18 +123,6 @@ export class RqgCalculations {
       (te) => v >= te.from && v <= te.to
     );
     return tableEntry?.result as T;
-  }
-
-  /**
-   * Limit extreme modifiers so that beasts like dinosaurs don't get ridiculously good dodge etc
-   * After 30% modifier it only increases in 1% steps instead of 5%
-   * Note, this is not in the RQG rules, but a necessary tweak to make dinosaurs etc work.
-   */
-  private static limitExtremeModifiers(modifier: number): number {
-    const limitBreakpoint = 30;
-    return modifier <= limitBreakpoint
-      ? modifier
-      : Math.ceil((modifier - limitBreakpoint) / 5) + limitBreakpoint;
   }
 }
 

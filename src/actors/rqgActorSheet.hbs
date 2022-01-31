@@ -64,6 +64,9 @@
             </span>
           </label>
           <i class="norse flex-row flex-align-center">{{#each powCrystals}}<span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
+          {{#if isGM}}
+            <label><input type="checkbox" name="data.attributes.isCreature" {{checked characterData.attributes.isCreature}}>Is Creature</label>
+          {{/if}}
         </div>
         <fieldset class="mov-enc">
           <legend>{{characterData.attributes.move.currentLocomotion}}</legend>
@@ -117,14 +120,16 @@
 
         </fieldset>
         {{#if isPC}}
-          <div>
-            <div class="norse">Hero Points</div>
-            {{#if isGM}}
-              <div class="text-center"><input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{characterData.attributes.heroPoints}}" size="2"></div>
-            {{else}}
-              <div class="text-center">{{characterData.attributes.heroPoints}}</div>
-            {{/if}}
-          </div>
+          {{#unless characterData.attributes.isCreature}}
+            <div>
+              <div class="norse">Hero Points</div>
+              {{#if isGM}}
+                <div class="text-center"><input type="number" min="0" max="99" name="data.attributes.heroPoints" value="{{characterData.attributes.heroPoints}}" size="2"></div>
+              {{else}}
+                <div class="text-center">{{characterData.attributes.heroPoints}}</div>
+              {{/if}}
+            </div>
+          {{/unless}}
         {{/if}}
       </div>
     </div>
