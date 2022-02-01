@@ -10,7 +10,6 @@
   </header>
   <main>
     <div class="flex-row-start">
-      {{#unless runeMagicData.isRitual}}
         <label class="mp">Range<br>
           <select name="data.castingRange">
             {{#select runeMagicData.castingRange}} {{#each sheetSpecific.ranges}}
@@ -25,11 +24,11 @@
             {{/each}} {{/select}}
           </select>
         </label>
-      {{/unless}}
       <div>
-      <label><input type="checkbox" name="data.isRitual" {{checked runeMagicData.isRitual}}>Ritual</label><br>
-      <label><input type="checkbox" name="data.isStackable" {{checked runeMagicData.isStackable}}>Stackable</label><br>
-      <label><input type="checkbox" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>One Use</label>
+        <label><input type="checkbox" name="data.isRitual" {{checked runeMagicData.isRitual}}>Ritual</label><br>
+        <label><input type="checkbox" name="data.isEnchantment" {{checked runeMagicData.isEnchantment}}>Enchantment</label><br>
+        <label><input type="checkbox" name="data.isStackable" {{checked runeMagicData.isStackable}}>Stackable</label><br>
+        <label><input type="checkbox" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>One Use</label>
       </div>
     </div>
     {{#if isEmbedded}}

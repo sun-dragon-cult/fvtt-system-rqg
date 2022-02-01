@@ -40,9 +40,10 @@
     <div class="head4"><span class="text-center">Range</span></div>
     <div class="head5"><span class="text-center">Duration</span></div>
     <div class="head6">Ritual</div>
-    <div class="head7">Stackable</div>
-    <div class="head8">One Use</div>
-    <div class="head9">Chance</div>
+    <div class="head7">Enchantment</div>
+    <div class="head8">Stackable</div>
+    <div class="head9">One Use</div>
+    <div class="head10">Chance</div>
     {{#each @root.ownedItems.runeMagic}}
     {{#if (eq ../id data.data.cultId)}}
       <div data-item-id="{{id}}" class="rune-magic contextmenu"
@@ -59,13 +60,16 @@
         <span class="text-center">{{data.data.points}}</span>
       </div>
       <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
-        {{#unless data.data.isRitual}}<span class="text-center">{{data.data.castingRange}}</span>{{/unless}}
+        <span class="text-center">{{data.data.castingRange}}</span>
       </div>
       <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
-        {{#unless data.data.isRitual}}<span class="text-center">{{data.data.duration}}</span>{{/unless}}
+        <span class="text-center">{{data.data.duration}}</span>
       </div>
       <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isRitual}}</span>
+      </div>
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
+        <span class="text-center">{{yes-no data.data.isEnchantment}}</span>
       </div>
       <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isStackable}}</span>
