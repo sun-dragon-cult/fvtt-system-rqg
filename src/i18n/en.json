@@ -651,12 +651,24 @@
       "RuneMagic": {
         "Range": "Range",
         "Duration": "Duration",
+        "DurationEnum": {
+          "instant": "Instant",
+          "temporal": "Temporal",
+          "duration": "Duration",
+          "focused": "Focused",
+          "permanent": "Permanent"
+        },
+        "RangeEnum": {
+          "self": "Self",
+          "touch": "Touch",
+          "ranged": "Ranged"
+        },
         "RitualQ": "Ritual?",
         "StackableQ": "Stackable?",
         "OneUseQ": "One Use?",
         "Cult": "Cult",
         "Runes": "Runes:",
-
+        "AddNewRunePlaceholder": "Add new rune",
         "runeMagicCultDialog": {
           "title": "Which cult provides this Rune Magic?",
           "btnAddRuneMagic": "Add Rune Magic",
