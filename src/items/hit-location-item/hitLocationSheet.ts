@@ -7,9 +7,11 @@ import {
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
 import {
+  activateChatTab,
   assertItemType,
   getGame,
   getHitLocations,
+  localize,
   requireValue,
   RqgError,
   usersThatOwnActor,
@@ -66,20 +68,31 @@ export class HitLocationSheet extends RqgItemSheet<
     };
   }
 
-  static showAddWoundDialog(actor: RqgActor, hitLocationItemId: string, speakerName: string): void {
+  static async showAddWoundDialog(
+    actor: RqgActor,
+    hitLocationItemId: string,
+    speakerName: string
+  ): Promise<void> {
     const hitLocation = actor.items.get(hitLocationItemId);
     if (!hitLocation || hitLocation.data.type !== ItemTypeEnum.HitLocation) {
-      const msg = `Couldn't find hitlocation with itemId [${hitLocationItemId}] on actor ${actor.name} to show add wound dialog.`;
+      const msg = localize("RQG.Item.HitLocation.Notification.CantFindHitLocation", {
+        hitLocationItemId: hitLocationItemId,
+        actorName: actor.name,
+      });
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
 
-    const dialogContent =
-      '<form><input type="number" id="inflictDamagePoints" name="damage"><br><label><input type="checkbox" name="toTotalHp" checked> Apply to total HP</label><br><label><input type="checkbox" name="subtractAP" checked> Subtract AP</label><br></form>';
+    const dialogContentHtml = await renderTemplate(
+      "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
+      {}
+    );
     new Dialog(
       {
-        title: `Add damage to ${hitLocation.name}`,
-        content: dialogContent,
+        title: localize("RQG.Item.HitLocation.AddWound.Title", {
+          hitLocationName: hitLocation.name,
+        }),
+        content: dialogContentHtml,
         default: "submit",
         render: () => {
           $("#inflictDamagePoints").focus();
@@ -87,7 +100,7 @@ export class HitLocationSheet extends RqgItemSheet<
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
-            label: "Add wound",
+            label: localize("RQG.Item.HitLocation.AddWound.btnAddWound"),
             callback: async (html: JQuery | HTMLElement) =>
               await HitLocationSheet.submitAddWoundDialog(
                 html as JQuery,
@@ -98,7 +111,7 @@ export class HitLocationSheet extends RqgItemSheet<
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
+            label: localize("RQG.Dialog.Common.btnCancel"),
             callback: () => null,
           },
         },
@@ -125,7 +138,12 @@ export class HitLocationSheet extends RqgItemSheet<
     if (subtractAP) {
       const armorPoints = hitLocation.data.data.armorPoints;
       if (armorPoints == null) {
-        const msg = `Hit location ${hitLocation.name} doesn't have a calculated total armor point`;
+        const msg = localize(
+          "RQG.Item.HitLocation.Notification.HitLocationDoesNotHaveCalculatedArmor",
+          {
+            hitLocationName: hitLocation.name,
+          }
+        );
         ui.notifications?.error(msg);
         throw new RqgError(msg, hitLocation);
       }
@@ -141,14 +159,19 @@ export class HitLocationSheet extends RqgItemSheet<
         speakerName
       );
 
+    hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
+    actorUpdates && (await actor.update(actorUpdates as any)); // TODO fix type
     await ChatMessage.create({
       user: getGame().user?.id,
       speaker: { alias: speakerName },
-      content: `${speakerName} takes a hit to ${hitLocation.name}. ${notification}`,
+      content: localize("RQG.Item.HitLocation.AddWoundChatContent", {
+        actorName: speakerName,
+        hitLocationName: hitLocation.name,
+        notification: notification,
+      }),
       whisper: usersThatOwnActor(actor),
     });
-    hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
-    actorUpdates && (await actor.update(actorUpdates as any)); // TODO fix type
+    activateChatTab();
 
     if (actor.isToken && actor.token) {
       await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken, actorHealthBefore);
@@ -170,25 +193,21 @@ export class HitLocationSheet extends RqgItemSheet<
     }
   }
 
-  static showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
+  static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
     const hitLocation = actor.items.get(hitLocationItemId);
     assertItemType(hitLocation?.data.type, ItemTypeEnum.HitLocation);
 
-    let dialogContent = "<form><label>Select which wound to heal</label><div class='woundlist'>";
-
-    hitLocation.data.data.wounds.forEach(
-      (wound, i) =>
-        (dialogContent += `<label><input type="radio" name="wound" value="${i}" ${
-          !i && "checked"
-        }> ${wound}</label> &nbsp;`)
+    const dialogContentHtml = await renderTemplate(
+      "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
+      { hitLocationName: hitLocation.name, wounds: hitLocation.data.data.wounds }
     );
-    dialogContent +=
-      '</div><br><label>Heal <input id="healWoundPoints" type="number" name="heal" min=0 max=99> points</label><br><br></form>';
 
     new Dialog(
       {
-        title: `Heal wound in ${hitLocation.name}`,
-        content: dialogContent,
+        title: localize("RQG.Item.HitLocation.HealWound.Title", {
+          hitLocationName: hitLocation.name,
+        }),
+        content: dialogContentHtml,
         default: "submit",
         render: () => {
           $("#healWoundPoints").focus();
@@ -196,13 +215,13 @@ export class HitLocationSheet extends RqgItemSheet<
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
-            label: "Heal wound",
+            label: localize("RQG.Item.HitLocation.HealWound.btnHealWound"),
             callback: async (html: JQuery | HTMLElement) =>
               await HitLocationSheet.submitHealWoundDialog(html as JQuery, actor, hitLocation),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
+            label: localize("RQG.Dialog.Common.btnCancel"),
             callback: () => null,
           },
         },
@@ -224,9 +243,16 @@ export class HitLocationSheet extends RqgItemSheet<
     const data = Object.fromEntries(formData.entries());
     requireValue(
       hitLocation.data.data.hitPoints.value,
-      `No value on hitlocation ${hitLocation.name}`
+      localize("RQG.Item.HitLocation.Notification.NoValueOnHitLocation", {
+        hitLocationName: hitLocation.name,
+      })
     );
-    requireValue(hitLocation.data.data.hitPoints.max, `No max on hitlocation ${hitLocation.name}`);
+    requireValue(
+      hitLocation.data.data.hitPoints.max,
+      localize("RQG.Item.HitLocation.Notification.NoMaxOnHitLocation", {
+        hitLocationName: hitLocation.name,
+      })
+    );
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
     const actorHealthBefore = actor.data.data.attributes.health;
@@ -282,7 +308,7 @@ export class HitLocationSheet extends RqgItemSheet<
     // TODO create a CONFIG.RQG.statusEffects that contain AE ?
 
     if (!token.actor) {
-      ui.notifications?.warn("no actor on token???");
+      ui.notifications?.warn(localize("RQG.Item.HitLocation.Notification.NoActorOnTokenWarn"));
       return;
     }
 

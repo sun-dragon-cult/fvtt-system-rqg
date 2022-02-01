@@ -86,8 +86,13 @@ export class SpiritMagicCard {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await SpiritMagicCard.roll(flags.itemData, level, boost, actor, speakerName);
     } else {
-      ui.notifications?.warn(localize("RQG.Dialog.Notifications.CouldNotFindActorByIdsWarn", {actorId: flags.actorId, tokenId: flags.tokenId}));
-     }
+      ui.notifications?.warn(
+        localize("RQG.Dialog.Notification.CouldNotFindActorByIdsWarn", {
+          actorId: flags.actorId,
+          tokenId: flags.tokenId,
+        })
+      );
+    }
     return false;
   }
 
@@ -110,7 +115,7 @@ export class SpiritMagicCard {
       ui.notifications?.warn(validationError);
     } else {
       const result = await Ability.roll(
-        localize("RQG.Dialog.spiritMagicCard.Cast", {spellName: itemData.name}),
+        localize("RQG.Dialog.spiritMagicCard.Cast", { spellName: itemData.name }),
         actorData.data.characteristics.power.value * 5,
         0,
         speakerName
@@ -143,7 +148,9 @@ export class SpiritMagicCard {
     if (result <= ResultEnum.Success) {
       const newMp = (actor.data.data.attributes.magicPoints.value || 0) - amount;
       await actor.update({ "data.attributes.magicPoints.value": newMp });
-      ui.notifications?.info(localize("RQG.Dialog.spiritMagicCard.SuccessfullyCastInfo", {amount: amount}));
+      ui.notifications?.info(
+        localize("RQG.Dialog.spiritMagicCard.SuccessfullyCastInfo", { amount: amount })
+      );
     }
   }
 
@@ -151,7 +158,7 @@ export class SpiritMagicCard {
     let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: localize("RQG.Dialog.spiritMagicCard.CardFlavor", {name: flags.itemData.name}),
+      flavor: localize("RQG.Dialog.spiritMagicCard.CardFlavor", { name: flags.itemData.name }),
       user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,

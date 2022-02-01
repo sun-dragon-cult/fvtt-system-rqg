@@ -73,7 +73,9 @@ export const spiritMagicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.SpiritMagic)}),
+    name: localize("RQG.ContextMenu.EditItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.SpiritMagic),
+    }),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -81,7 +83,10 @@ export const spiritMagicMenuOptions = (
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.data.type, ItemTypeEnum.SpiritMagic);
       if (!item.sheet) {
-        const msg = localize("RQG.ContextMenu.Notifications.CantEditSpiritMagicError", {itemId: itemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantEditSpiritMagicError", {
+          itemId: itemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
@@ -89,7 +94,9 @@ export const spiritMagicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.SpiritMagic)}),
+    name: localize("RQG.ContextMenu.DeleteItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.SpiritMagic),
+    }),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {

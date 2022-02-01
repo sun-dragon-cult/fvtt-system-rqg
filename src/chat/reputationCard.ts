@@ -1,7 +1,14 @@
 import { RqgActor } from "../actors/rqgActor";
 import { getCombatantsSharingToken } from "../combat/combatant-utils";
 import { Ability } from "../data-model/shared/ability";
-import { activateChatTab, getActorFromIds, getGame, getSpeakerName, localize, usersThatOwnActor } from "../system/util";
+import {
+  activateChatTab,
+  getActorFromIds,
+  getGame,
+  getSpeakerName,
+  localize,
+  usersThatOwnActor,
+} from "../system/util";
 
 type ReputationFlags = {
   actorId: string;
@@ -10,8 +17,8 @@ type ReputationFlags = {
   modifiedValue: number;
   reputationIcon: string;
   formData: {
-      otherModifiers: number,
-  }
+    otherModifiers: number;
+  };
 };
 
 export class ReputationCard {
@@ -32,7 +39,7 @@ export class ReputationCard {
       },
     };
     await ChatMessage.create(await this.renderContent(flags));
-    activateChatTab(); 
+    activateChatTab();
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {}
@@ -64,14 +71,17 @@ export class ReputationCard {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await ReputationCard.roll(flags, actor, speakerName);
     } else {
-      ui.notifications?.warn(localize("RQG.Item.Notifications.CouldNotFindActorByIdsWarn", {actorId: flags.actorId, tokenId: flags.tokenId}));
+      ui.notifications?.warn(
+        localize("RQG.Item.Notification.CouldNotFindActorByIdsWarn", {
+          actorId: flags.actorId,
+          tokenId: flags.tokenId,
+        })
+      );
     }
     return false;
   }
 
-  public static async directroll(
-    actor: RqgActor, token: TokenDocument | null
-  ): Promise<void> {
+  public static async directroll(actor: RqgActor, token: TokenDocument | null): Promise<void> {
     const reputationValue = actor.data.data.background.reputation || 0;
     const iconSettings: any = <ClientSettings>(
       getGame().settings.get("rqg", "defaultItemIconSettings")
@@ -87,10 +97,10 @@ export class ReputationCard {
         otherModifiers: 0,
       },
     };
-    
+
     await this.roll(flags, actor, speakerName);
-    activateChatTab()
-  } 
+    activateChatTab();
+  }
 
   public static async roll(
     flags: ReputationFlags,
@@ -122,5 +132,3 @@ export class ReputationCard {
     };
   }
 }
-
-

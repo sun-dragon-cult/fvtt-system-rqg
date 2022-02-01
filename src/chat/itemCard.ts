@@ -37,7 +37,10 @@ export class ItemCard {
     const defaultModifier = 0;
     const item = actor.items.get(itemId);
     if (!item || !("chance" in item.data.data) || item.data.data.chance == null) {
-      const msg = localize("RQG.Item.Notification.ItemWithIdDoesNotHaveChanceError", {itemId: itemId, actorName: actor.name});
+      const msg = localize("RQG.Item.Notification.ItemWithIdDoesNotHaveChanceError", {
+        itemId: itemId,
+        actorName: actor.name,
+      });
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
@@ -55,7 +58,7 @@ export class ItemCard {
     flags.itemData.data;
 
     await ChatMessage.create(await ItemCard.renderContent(flags));
-    activateChatTab(); 
+    activateChatTab();
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
@@ -122,7 +125,12 @@ export class ItemCard {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await ItemCard.roll(flags.itemData, modifier, actor, speakerName);
     } else {
-      ui.notifications?.warn(localize("RQG.Item.Notifications.CouldNotFindActorByIdsWarn", {actorId: flags.actorId, tokenId: flags.tokenId}));
+      ui.notifications?.warn(
+        localize("RQG.Item.Notification.CouldNotFindActorByIdsWarn", {
+          actorId: flags.actorId,
+          tokenId: flags.tokenId,
+        })
+      );
     }
     return false;
   }
@@ -135,9 +143,11 @@ export class ItemCard {
   ): Promise<void> {
     // @ts-ignore TODO handle chance
     const chance: number = Number(itemData.data.chance) || 0;
-    let flavor = localize("RQG.Dialog.itemCard.RollFlavor", {name: itemData.name});
+    let flavor = localize("RQG.Dialog.itemCard.RollFlavor", { name: itemData.name });
     if (modifier !== 0) {
-      flavor += localize("RQG.Dialog.itemCard.RollFlavorModifier", {modifier: formatModifier(modifier)});
+      flavor += localize("RQG.Dialog.itemCard.RollFlavorModifier", {
+        modifier: formatModifier(modifier),
+      });
     }
     const result = await Ability.roll(flavor, chance, modifier, speakerName);
     await ItemCard.checkExperience(actor, itemData, result);

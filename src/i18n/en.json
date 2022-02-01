@@ -28,7 +28,7 @@
           "healthy": "Healthy",
           "wounded": "Wounded",
           "shock": "Shock",
-          "unconcious": "Unconcious",
+          "unconscious": "Unconscious",
           "dead": "dead"
         },
         "MoveMode": {
@@ -295,7 +295,7 @@
         "CantShowItemSheetError": "Couldn't find itemId [{skillItemId}] on actor {actorName} to show skill Item sheet from the combat context menu.",
         "CantShowWeaponSheetError": "Couldn't find itemId [{weaponItemId}] on actor {actorName} to show weapon item sheet from the combat context menu.",
         "CantDeleteSkillError": "Couldn't find itemId [{skillItemId}] on actor {actorName} to delete skill item from the combat context menu.",
-        "CantDeleteWeaponError" : "Couldn't find itemId [{weaponItemId}] on actor {actorName} to delete weapon item from the combat context menu.",
+        "CantDeleteWeaponError": "Couldn't find itemId [{weaponItemId}] on actor {actorName} to delete weapon item from the combat context menu.",
         "CantShowJournalDescriptionError": "Couldn't find journal Id [{journalId}] on actor {actorName} to show it from the cult context menu.",
         "CantEditCultError": "`Couldn't find itemId [{itemId}] on actor {actorName} to edit cult item from the cult context menu.",
         "CantEditGearError": "Couldn't find gear with itemId [{itemId}] on actor {actorName} to edit item from the gear context menu.",
@@ -570,7 +570,27 @@
         "ConnectedTo": "Connected to",
         "HitLocationOn": "Hit Location on",
         "NaturalArmorPoints": "Natural AP",
-        "BaseHPDelta": "Base HP Delta (+/- from base location HP)"
+        "BaseHPDelta": "Base HP Delta (+/- from base location HP)",
+        "AddWound": {
+          "Title": "Apply Wound to {hitLocationName}",
+          "ApplyToTotalHitPointsQ": "Apply to total HP?",
+          "SubtractArmorPointsQ": "Subtract AP?",
+          "btnAddWound": "Add Wound"
+        },
+        "AddWoundChatContent": "{actorName} takes a wound to the {hitLocationName}. {notification}",
+        "HealWound": {
+          "Title": "Heal Wound to {hitLocationName}",
+          "SelectWoundToHeal": "Select Wound to Heal on {hitLocationName}",
+          "HitPointsToHeal": "Hit Points to Heal: ",
+          "btnHealWound": "Heal Wound"
+        },
+        "Notification": {
+          "CantFindHitLocation": "Couldn't find hitlocation with itemId [{hitLocationItemId}] on actor ${actorName} to show add wound dialog.",
+          "HitLocationDoesNotHaveCalculatedArmor": "Hit location {hitLocationName} doesn't have a calculated total armor point",
+          "NoValueOnHitLocation": "No value on hit location ${hitLocationName}",
+          "NoMaxOnHitLocation": "No max on hit location ${hitLocationName}",
+          "NoActorOnTokenWarn": "No Actor on Token"
+        }
       },
       "HitLocationType": {
         "limb": "Limb",
@@ -633,7 +653,7 @@
         "Duration": "Duration",
         "RitualQ": "Ritual?",
         "StackableQ": "Stackable?",
-        "OneUseQ":"One Use?",
+        "OneUseQ": "One Use?",
         "Cult": "Cult",
         "Runes": "Runes:",
 
@@ -703,13 +723,13 @@
     },
     "Foundry": {
       "ActiveEffect": {
-          "Header": "🐛Active Effects🧪",
-          "AddEffectTitle": "Add Effect",
-          "Label": "Label",
-          "Disabled": "Disabled",
-          "StartTime": "Start Time",
-          "KeyValueMode": "Key - Value - Mode",
-          "NewActiveEffectName": "New Active Effect"
+        "Header": "🐛Active Effects🧪",
+        "AddEffectTitle": "Add Effect",
+        "Label": "Label",
+        "Disabled": "Disabled",
+        "StartTime": "Start Time",
+        "KeyValueMode": "Key - Value - Mode",
+        "NewActiveEffectName": "New Active Effect"
       },
       "CombatTracker": {
         "DuplicateCombatant": "Duplicate Combatant",
@@ -721,7 +741,7 @@
         "CompendiumNameTitle": "Compendium [{compendiumName}]",
         "WorldJournalEntry": "World Journal Entry",
         "DropToConnectJournal": "Drop a journal entry on this item to connect a description.",
-        "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."        
+        "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."
       }
     },
     "Game": {
@@ -755,8 +775,7 @@
       }
     },
     "Notification": {
-      "Error": {
-      }
+      "Error": {}
     },
     "Settings": {
       "HitLocations": {
