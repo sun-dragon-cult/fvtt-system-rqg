@@ -7,21 +7,21 @@
       title="{{data.name}}"
     />
     <input type="text" name="name" value="{{data.name}}"> (<input type="number" name="data.points" value="{{spiritMagicData.points}}">)
-    <label><input type="checkbox" name="data.isVariable" {{checked spiritMagicData.isVariable}}>Variable</label>
+    <label><input type="checkbox" name="data.isVariable" {{checked spiritMagicData.isVariable}}>{{localize "RQG.Item.SpiritMagic.VariableQ"}}</label>
   </header>
   <main>
     <div class="flex-row-start">
       <span>{{localize "RQG.Item.SpiritMagic.Range"}}<br>
         <select name="data.castingRange">
           {{#select spiritMagicData.castingRange}} {{#each sheetSpecific.ranges}}
-          <option value="{{this}}">{{this}}</option>
+          <option value="{{this}}">{{localize (concat "RQG.Item.SpiritMagic.RangeEnum." this)}}</option>
           {{/each}} {{/select}}
         </select>
       </span>
       <span>{{localize "RQG.Item.SpiritMagic.Duration"}}<br>
         <select name="data.duration">
           {{#select spiritMagicData.duration}} {{#each sheetSpecific.durations}}
-          <option value="{{this}}">{{this}}</option>
+          <option value="{{this}}">{{localize (concat "RQG.Item.SpiritMagic.DurationEnum." this)}}</option>
           {{/each}} {{/select}}
         </select>
       </span>
@@ -29,7 +29,7 @@
       <span>{{localize "RQG.Item.SpiritMagic.Concentration"}}<br>
         <select name="data.concentration">
           {{#select spiritMagicData.concentration}} {{#each sheetSpecific.types}}
-          <option value="{{this}}">{{this}}</option>
+          <option value="{{this}}">{{localize (concat "RQG.Item.SpiritMagic.ConcentrationEnum." this)}}</option>
           {{/each}} {{/select}}
         </select>
       </span>

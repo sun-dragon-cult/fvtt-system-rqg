@@ -695,9 +695,25 @@
         "SkillCategory": {}
       },
       "SpiritMagic": {
+        "VariableQ": "Variable?",
         "Range": "Range",
+        "RangeEnum": {
+          "self": "Self",
+          "touch": "Touch",
+          "ranged": "Ranged"
+        },
         "Duration": "Duration",
+        "DurationEnum": {
+          "instant": "Instant",
+          "temporal": "Temporal",
+          "focused": "Focused",
+          "permanent": "Permanent"
+        },
         "Concentration": "Concentration",
+        "ConcentrationEnum": {
+          "active": "Active",
+          "passive": "Passive"
+        },
         "SpellFocus": "Spell Focus:",
         "IsMatrixQ": "Is Matrix?",
         "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
