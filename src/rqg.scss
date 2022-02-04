@@ -401,16 +401,18 @@ body {
     }
 
     &.spiritmagic {
-      grid-template-columns: [col-start] 30px auto repeat(5, min-content) [col-end];
+      grid-template-columns: [col-start] 30px auto repeat(7, min-content) [col-end];
 
-      // Alternating row background for 7 columns
-      > *:nth-child(14n + 16),
-      > *:nth-child(14n + 17),
-      > *:nth-child(14n + 18),
-      > *:nth-child(14n + 19),
-      > *:nth-child(14n + 20),
-      > *:nth-child(14n + 21),
-      > *:nth-child(14n + 22) {
+      // Alternating row background for 9 columns
+      > *:nth-child(18n + 20),
+      > *:nth-child(18n + 21),
+      > *:nth-child(18n + 22),
+      > *:nth-child(18n + 23),
+      > *:nth-child(18n + 24),
+      > *:nth-child(18n + 25),
+      > *:nth-child(18n + 26),
+      > *:nth-child(18n + 27),
+      > *:nth-child(18n + 28) {
         background: var(--rqg-table-alternate-background);
       }
     }
@@ -474,17 +476,18 @@ body {
     }
 
     &.rune-magic {
-      grid-template-columns: [col-start] 30px auto repeat(7, max-content) [col-end];
+      grid-template-columns: [col-start] 30px auto repeat(8, max-content) [col-end];
 
-      > *:nth-child(18n + 20),
-      > *:nth-child(18n + 21),
-      > *:nth-child(18n + 22),
-      > *:nth-child(18n + 23),
-      > *:nth-child(18n + 24),
-      > *:nth-child(18n + 25),
-      > *:nth-child(18n + 26),
-      > *:nth-child(18n + 27),
-      > *:nth-child(18n + 28) {
+      > *:nth-child(20n + 22),
+      > *:nth-child(20n + 23),
+      > *:nth-child(20n + 24),
+      > *:nth-child(20n + 25),
+      > *:nth-child(20n + 26),
+      > *:nth-child(20n + 27),
+      > *:nth-child(20n + 28),
+      > *:nth-child(20n + 29),
+      > *:nth-child(20n + 30),
+      > *:nth-child(20n + 31) {
         background: var(--rqg-table-alternate-background);
       }
     }
@@ -561,12 +564,13 @@ body {
   [data-characteristic-roll],
   [data-damage-roll],
   [data-item-roll],
-  [data-melee-roll],
   [data-item-equipped-toggle],
   [data-item-heal-wound],
   [data-item-add-wound],
   [data-journal-id],
-  [data-weapon-roll] {
+  [data-weapon-roll],
+  [data-reputation-roll],
+  [data-rune-magic-roll] {
     &:hover {
       box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25), -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
     }
@@ -632,6 +636,15 @@ body {
   }
 
   &.chat-card {
+    .card-options {
+      margin: 10px 0 0 0;
+      background: url(./assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
+    }
+
+    .card-option {
+      margin: 5px;
+    }
+
     &.weapon-card {
       .active {
         box-shadow: 0 0 0.5em red;
@@ -661,12 +674,26 @@ body {
         vertical-align: text-top;
       }
     }
+    .chat-select-wide {
+      width: 100%;
+    }
   }
 
   &.dialog.heal-wound {
     .woundlist label {
       padding-right: 5px;
     }
+  }
+
+  .card-journal-link {
+    .invalid {
+      color: var(--rqg-color-invalid-journal);
+    }
+  }
+
+  .card-number-input {
+    text-align: right;
+    width: 50px;
   }
 }
 
@@ -923,6 +950,12 @@ body {
   border: none;
   margin: 0;
   mix-blend-mode: overlay;
+}
+
+.rqg img.rune-dark {
+  height: 20px;
+  border: none;
+  margin: 0;
 }
 
 .rqg img.item {

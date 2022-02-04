@@ -11,6 +11,8 @@
   <div class="head5">Range</div>
   <div class="head6">Duration</div>
   <div class="head7">Concentration</div>
+  <div class="head8">Ritual</div>
+  <div class="head9">Enchantment</div>
   {{#each ownedItems.spiritMagic}}
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="item" src="{{img}}">
@@ -30,6 +32,12 @@
     </div>
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
       <span class="text-center">{{data.data.concentration}}</span>
+    </div>
+    <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
+      <span class="text-center">{{yes-no this.data.data.isRitual}}</span>
+    </div>
+    <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
+      <span class="text-center">{{yes-no this.data.data.isEnchantment}}</span>
     </div>
   {{/each}}
 </div>

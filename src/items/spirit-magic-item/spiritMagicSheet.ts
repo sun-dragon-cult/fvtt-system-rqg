@@ -1,23 +1,25 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  SpiritMagicCastingRangeEnum,
-  SpiritMagicDurationEnum,
-  SpiritMagicConcentrationEnum,
   SpiritMagicDataProperties,
   SpiritMagicDataPropertiesData,
 } from "../../data-model/item-data/spiritMagicData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { assertItemType, getJournalEntryName, RqgError } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
+import {
+  SpellConcentrationEnum,
+  SpellDurationEnum,
+  SpellRangeEnum,
+} from "../../data-model/item-data/spell";
 
 interface SpiritMagicSheetData {
   isEmbedded: boolean;
   data: SpiritMagicDataProperties; // Actually contains more...complete with effects, flags etc
   spiritMagicData: SpiritMagicDataPropertiesData;
   sheetSpecific: {
-    ranges: SpiritMagicCastingRangeEnum[];
-    durations: SpiritMagicDurationEnum[];
-    types: SpiritMagicConcentrationEnum[];
+    ranges: SpellRangeEnum[];
+    durations: SpellDurationEnum[];
+    types: SpellConcentrationEnum[];
     journalEntryName: string;
   };
 }
@@ -50,9 +52,9 @@ export class SpiritMagicSheet extends RqgItemSheet<
       data: itemData,
       spiritMagicData: itemData.data,
       sheetSpecific: {
-        ranges: Object.values(SpiritMagicCastingRangeEnum),
-        durations: Object.values(SpiritMagicDurationEnum),
-        types: Object.values(SpiritMagicConcentrationEnum),
+        ranges: Object.values(SpellRangeEnum),
+        durations: Object.values(SpellDurationEnum),
+        types: Object.values(SpellConcentrationEnum),
         journalEntryName: getJournalEntryName(spiritMagicData),
       },
     };

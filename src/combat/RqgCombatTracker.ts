@@ -66,14 +66,12 @@ export function renderCombatTracker(app: any, html: any, data: any): void {
     html.find(".combatant").each(async (i: number, el: HTMLElement) => {
       const combId = getRequiredDomDataset($(el as HTMLElement), "combatant-id");
       const combatant = currentCombat.data.combatants.find((c: Combatant) => c.id === combId);
-      // if (!combatant.initiative) {
-      // const attributes = combatant.actor.data.data.attributes;
-      // await currentCombat.setInitiative(
-      //   combId,
-      //   attributes.dexStrikeRank + attributes.sizStrikeRank
-      // );
-      // }
-      const readOnly = combatant.actor.isOwner ? "" : "readonly";
+      if (!combatant.actor) {
+        ui.notifications?.warn(
+          `The combatant [${combatant.name}] references an actor that no longer exists within the world`
+        );
+      }
+      const readOnly = combatant.actor?.isOwner ? "" : "readonly";
       const initDiv = el.getElementsByClassName("token-initiative")[0];
       initDiv.innerHTML = `<input type="number" min="1" max="12" value="${combatant.initiative}" ${readOnly}>`;
 

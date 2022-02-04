@@ -28,6 +28,8 @@ export class Attributes {
       value?: number;
     },
     public heroPoints: number,
+    /** If true then skill category modifiers are all 0. Useful for dinosaurs etc. to set reasonable skill values. */
+    public isCreature: boolean,
     public health: ActorHealthState,
     public encumbrance?: {
       max: number; // Math.round(Math.min(str, (str + con) / 2)) * move[move.currentLocomotion].carryingFactor
@@ -61,5 +63,6 @@ export const emptyAttributes = new Attributes(
     },
   },
   0,
+  false,
   "healthy"
 );

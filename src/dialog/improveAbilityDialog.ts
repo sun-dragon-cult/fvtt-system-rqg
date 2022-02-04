@@ -60,8 +60,8 @@ export async function showImproveAbilityDialog(
     adapter.typeLocName = getGame().i18n.localize("ITEM.TypeSkill");
   }
 
-  const btnImprove = getGame().i18n.format("DIALOG.improveAbilityDialog.btnDoImprovement");
-  const btnCancel = getGame().i18n.format("DIALOG.improveAbilityDialog.btnCancel");
+  const btnImprove = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.btnDoImprovement");
+  const btnCancel = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.btnCancel");
   const buttons: any = {};
   if (adapter.showExperience || adapter.showTraining) {
     // There's at least one thing to do so show the Submit button
@@ -81,7 +81,7 @@ export async function showImproveAbilityDialog(
   const content: string = await renderTemplate("systems/rqg/dialog/improveAbilityDialog.hbs", {
     adapter: adapter,
   });
-  const title = getGame().i18n.format("DIALOG.improveAbilityDialog.title", {
+  const title = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.title", {
     name: adapter.name,
     typeLocName: adapter.typeLocName,
   });
@@ -131,13 +131,13 @@ export async function submitImproveAbilityDialog(
     if (abilityData.hasExperience) {
       let categoryMod: number = adapter.categoryMod || 0;
       const rollFlavor = getGame().i18n.format(
-        "DIALOG.improveAbilityDialog.experienceRoll.flavor",
+        "RQG.Dialog.improveAbilityDialog.experienceRoll.flavor",
         { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
       );
       let rollContent = "";
       if (adapter.isSkill) {
         rollContent = getGame().i18n.format(
-          "DIALOG.improveAbilityDialog.experienceRoll.contentSkill",
+          "RQG.Dialog.improveAbilityDialog.experienceRoll.contentSkill",
           {
             mod: categoryMod,
             skillChance: abilityData.chance,
@@ -147,7 +147,7 @@ export async function submitImproveAbilityDialog(
         );
       } else {
         rollContent = getGame().i18n.format(
-          "DIALOG.improveAbilityDialog.experienceRoll.contentOther",
+          "RQG.Dialog.improveAbilityDialog.experienceRoll.contentOther",
           { chance: abilityData.chance, name: adapter.name, typeLocName: adapter.typeLocName }
         );
       }
@@ -171,12 +171,12 @@ export async function submitImproveAbilityDialog(
       ) {
         // increase ability learnedChance, clear experience check
         const resultFlavor = getGame().i18n.format(
-          "DIALOG.improveAbilityDialog.experienceResultCard.flavor",
+          "RQG.Dialog.improveAbilityDialog.experienceResultCard.flavor",
           { name: adapter.name, typeLocName: adapter.typeLocName }
         );
         if (gaintype === "experience-gain-fixed") {
           const resultContentChoseFixed = getGame().i18n.format(
-            "DIALOG.improveAbilityDialog.experienceResultCard.contentChoseFixed",
+            "RQG.Dialog.improveAbilityDialog.experienceResultCard.contentChoseFixed",
             { gain: adapter.experienceGainFixed + "%" }
           );
           const gainRoll = new Roll(String(adapter.experienceGainFixed));
@@ -189,7 +189,7 @@ export async function submitImproveAbilityDialog(
         }
         if (gaintype === "experience-gain-random") {
           const resultContentChoseRandom = getGame().i18n.format(
-            "DIALOG.improveAbilityDialog.experienceResultCard.contentChoseRandom",
+            "RQG.Dialog.improveAbilityDialog.experienceResultCard.contentChoseRandom",
             { gain: adapter.experienceGainRandom + "%" }
           );
           const gainRoll = new Roll(adapter.experienceGainRandom);
@@ -204,11 +204,11 @@ export async function submitImproveAbilityDialog(
         // no increase, clear experience check
         gain = 0;
         const failedFlavor = getGame().i18n.format(
-          "DIALOG.improveAbilityDialog.experienceGainFailed.flavor",
+          "RQG.Dialog.improveAbilityDialog.experienceGainFailed.flavor",
           { name: adapter.name, typeLocName: adapter.typeLocName }
         );
         const failedContent = getGame().i18n.format(
-          "DIALOG.improveAbilityDialog.experienceGainFailed.content",
+          "RQG.Dialog.improveAbilityDialog.experienceGainFailed.content",
           { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
         );
         const failChat = {
@@ -220,7 +220,7 @@ export async function submitImproveAbilityDialog(
         ChatMessage.create(failChat);
       }
     } else {
-      const msg = getGame().i18n.format("DIALOG.improveAbilityDialog.notifications.noExperience", {
+      const msg = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
         actorName: actor.name,
         name: adapter.name,
         typeLocName: adapter.typeLocName,
@@ -229,12 +229,12 @@ export async function submitImproveAbilityDialog(
     }
   }
   if (gaintype === "training-gain-fixed") {
-    const flavor = getGame().i18n.format("DIALOG.improveAbilityDialog.trainingResultCard.flavor", {
+    const flavor = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.trainingResultCard.flavor", {
       name: adapter.name,
       typeLocName: adapter.typeLocName,
     });
     const content = getGame().i18n.format(
-      "DIALOG.improveAbilityDialog.trainingResultCard.contentChoseFixed",
+      "RQG.Dialog.improveAbilityDialog.trainingResultCard.contentChoseFixed",
       { gain: adapter.trainingGainFixed + "%" }
     );
     const roll = new Roll(String(adapter.trainingGainFixed));
@@ -246,12 +246,12 @@ export async function submitImproveAbilityDialog(
     gain = adapter.trainingGainFixed;
   }
   if (gaintype === "training-gain-random") {
-    const flavor = getGame().i18n.format("DIALOG.improveAbilityDialog.trainingResultCard.flavor", {
+    const flavor = getGame().i18n.format("RQG.Dialog.improveAbilityDialog.trainingResultCard.flavor", {
       name: adapter.name,
       typeLocName: adapter.typeLocName,
     });
     const content = getGame().i18n.format(
-      "DIALOG.improveAbilityDialog.trainingResultCard.contentChoseRandom",
+      "RQG.Dialog.improveAbilityDialog.trainingResultCard.contentChoseRandom",
       { gain: adapter.trainingGainRandom + "%" }
     );
     const gainRoll = new Roll(adapter.trainingGainRandom);

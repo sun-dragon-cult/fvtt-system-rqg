@@ -6,7 +6,7 @@
     <label> Enc <input type="number" min="0" max="999999" name="data.encumbrance" value="{{gearData.encumbrance}}"></label><br>
     <select name="data.equippedStatus">
       {{#select gearData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
-      <option value="{{this}}">{{localize (concat "RQG.EquippedStatus." this)}}</option>
+      <option value="{{this}}">{{localize (concat "RQG.Items.EquippedStatus." this)}}</option>
       {{/each}} {{/select}}
     </select>
   </header>

@@ -182,12 +182,12 @@ async function confirmInitializeDialog(
   return await new Promise(async (resolve) => {
     const title = !!characteristic
       ? `Overwrite ${getGame().i18n.localize(
-          "RQG.characteristic." + characteristic
+          "RQG.Actor.Characteristics." + characteristic
         )} on ${actorName}`
       : `Overwrite all characteristics on ${actorName}`;
     const content = !!characteristic
       ? `Do you want to overwrite the current value of ${getGame().i18n.localize(
-          "RQG.characteristic." + characteristic
+          "RQG.Actor.Characteristics." + characteristic
         )}? This may also set current Hit Points to the new maximum Hit Points and set current Magic Points to the new maximum Magic Points.`
       : `Do you want to overwrite the current value of all characteristics? This may also set current Hit Points to the new maximum Hit Points and set current Magic Points to the new maximum Magic Points.`;
     const dialog = new Dialog({

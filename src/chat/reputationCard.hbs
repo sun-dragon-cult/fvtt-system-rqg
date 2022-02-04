@@ -1,0 +1,24 @@
+<form class="card-form" data-chat-card="reputationCard">
+  <div class="rqg chat-card reputation-card">
+
+    <h1><img class="item" src="{{reputationIcon}}" />
+      {{localize 'RQG.Actor.Background.Reputation'}} {{reputationValue}}%
+    </h1>
+
+    <div class="flexcol card-options">
+      <div class="flexrow card-option">
+        <div class="card-option-label">
+          <label for="otherModifiers">{{localize "RQG.Dialog.Common.OtherModifiers"}}</label>
+        </div>
+        <div class="card-option-control">
+          <span class="text-right">
+            <input class="card-number-input" type="number" min="-999" max="999" value="{{modifier}}"
+              name="otherModifiers" />
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" data-chat-roll>Roll ({{modifiedValue}}%)</button>
+</form>

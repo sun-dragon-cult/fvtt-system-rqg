@@ -71,7 +71,15 @@ export class RqgActor extends Actor {
     const attributes = this.data.data.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
     const skillCategoryModifiers = (this.data.data.skillCategoryModifiers =
-      RqgCalculations.skillCategoryModifiers(str, siz, dex, int, pow, cha));
+      RqgCalculations.skillCategoryModifiers(
+        str,
+        siz,
+        dex,
+        int,
+        pow,
+        cha,
+        this.data.data.attributes.isCreature
+      ));
 
     attributes.encumbrance = {
       max: this.calcMaxEncumbrance(
@@ -258,5 +266,40 @@ export class RqgActor extends Actor {
     const pow = characteristics.power.value;
     const cha = characteristics.charisma.value;
     return { str, con, siz, dex, int, pow, cha };
+  }
+
+  public async AwardExperience(itemId: string) {
+    const itemToAward = this.items.get(itemId);
+    if (itemToAward) {
+      if (hasOwnProperty(itemToAward.data.data, "hasExperience")) {
+        if (hasOwnProperty(itemToAward.data.data, "canGetExperience")) {
+          if (!itemToAward.data.data.hasExperience) {
+            await this.updateEmbeddedDocuments("Item", [
+              { _id: itemToAward.id, data: { hasExperience: true } },
+            ]);
+            const msg = getGame().i18n.format("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+              actorName: this.name,
+              itemName: itemToAward.name,
+            });
+            ui.notifications?.info(msg);
+          }
+        }
+      } else {
+        const msg = getGame().i18n.format(
+          "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
+          { itemName: itemToAward.name, itemId: itemToAward.id }
+        );
+        console.log(msg);
+        ui.notifications?.error(msg);
+      }
+    } else {
+      const msg = getGame().i18n.format("RQG.Actor.AwardExperience.ItemNotFoundError", {
+        itemId: itemId,
+        actorName: this.name,
+        actorid: this.id,
+      });
+      console.log(msg);
+      ui.notifications?.error(msg);
+    }
   }
 }

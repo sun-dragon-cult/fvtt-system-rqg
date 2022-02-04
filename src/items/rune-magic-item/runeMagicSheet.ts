@@ -1,9 +1,7 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  RuneMagicCastingRangeEnum,
   RuneMagicDataProperties,
   RuneMagicDataPropertiesData,
-  RuneMagicDurationEnum,
 } from "../../data-model/item-data/runeMagicData";
 
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
@@ -16,14 +14,15 @@ import {
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
+import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 
 type RuneMagicSheetData = {
   isEmbedded: boolean;
   data: RuneMagicDataProperties; // Actually contains more...complete with effects, flags etc
   runeMagicData: RuneMagicDataPropertiesData;
   sheetSpecific: {
-    ranges: RuneMagicCastingRangeEnum[];
-    durations: RuneMagicDurationEnum[];
+    ranges: SpellRangeEnum[];
+    durations: SpellDurationEnum[];
     actorCults: any[];
     allRunes: IndexTypeForMetadata<CompendiumCollection.Metadata>;
     journalEntryName: string | undefined;
@@ -62,8 +61,8 @@ export class RuneMagicSheet extends RqgItemSheet<
       data: itemData,
       runeMagicData: itemData.data,
       sheetSpecific: {
-        ranges: Object.values(RuneMagicCastingRangeEnum),
-        durations: Object.values(RuneMagicDurationEnum),
+        ranges: Object.values(SpellRangeEnum),
+        durations: Object.values(SpellDurationEnum),
         actorCults: this.getActorCults(),
         allRunes: getAllRunesIndex(),
         journalEntryName: getJournalEntryName(runeMagicData),

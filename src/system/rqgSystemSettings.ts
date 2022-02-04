@@ -35,16 +35,17 @@ export const registerRqgSystemSettings = function () {
     config: false,
     type: Object,
     default: {
-      [ItemTypeEnum.Armor]: "/systems/rqg/assets/images/armor/cuirass.svg",
-      [ItemTypeEnum.Cult]: "/systems/rqg/assets/images/items/cult.svg",
-      [ItemTypeEnum.Gear]: "/systems/rqg/assets/images/gear/knapsack.svg",
-      [ItemTypeEnum.HitLocation]: "/systems/rqg/assets/images/items/hit-location.svg",
-      [ItemTypeEnum.Passion]: "/systems/rqg/assets/images/passion/love.svg",
-      [ItemTypeEnum.Rune]: "/systems/rqg/assets/images/runes/chaos.svg",
-      [ItemTypeEnum.RuneMagic]: "/systems/rqg/assets/images/items/rune-magic.svg",
-      [ItemTypeEnum.Skill]: "/systems/rqg/assets/images/items/skill.svg",
-      [ItemTypeEnum.SpiritMagic]: "/systems/rqg/assets/images/items/spirit-magic.svg",
-      [ItemTypeEnum.Weapon]: "/systems/rqg/assets/images/items/weapon.svg",
+      [ItemTypeEnum.Armor]: "systems/rqg/assets/images/armor/cuirass.svg",
+      [ItemTypeEnum.Cult]: "systems/rqg/assets/images/items/cult.svg",
+      [ItemTypeEnum.Gear]: "systems/rqg/assets/images/gear/knapsack.svg",
+      [ItemTypeEnum.HitLocation]: "systems/rqg/assets/images/items/hit-location.svg",
+      [ItemTypeEnum.Passion]: "systems/rqg/assets/images/passion/love.svg",
+      [ItemTypeEnum.Rune]: "systems/rqg/assets/images/runes/chaos.svg",
+      [ItemTypeEnum.RuneMagic]: "systems/rqg/assets/images/items/rune-magic.svg",
+      [ItemTypeEnum.Skill]: "systems/rqg/assets/images/items/skill.svg",
+      [ItemTypeEnum.SpiritMagic]: "systems/rqg/assets/images/items/spirit-magic.svg",
+      [ItemTypeEnum.Weapon]: "systems/rqg/assets/images/items/weapon.svg",
+      Reputation: "systems/rqg/assets/images/other/reputation.svg",
     },
   });
 
@@ -73,6 +74,15 @@ export const registerRqgSystemSettings = function () {
     config: true,
     type: Boolean,
     default: false,
+  });
+
+  getGame().settings.register("rqg", "magicRuneName", {
+    name: getGame().i18n.localize("RQG.Settings.MagicRuneName.settingName"),
+    hint: getGame().i18n.localize("RQG.Settings.MagicRuneName.settingHint"),
+    scope: "world",
+    config: true,
+    type: String,
+    default: "Magic (condition)",
   });
 
   getGame().settings.register("rqg", "systemMigrationVersion", {
