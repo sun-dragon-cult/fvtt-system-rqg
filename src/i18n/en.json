@@ -223,6 +223,7 @@
         "Range": "Range",
         "Duration": "Duration",
         "Ritual": "Ritual",
+        "Enchantment": "Enchantment",
         "Stackable": "Stackable",
         "OneUse": "One Use",
         "Chance": "Chance",
@@ -674,18 +675,23 @@
         "Range": "Range",
         "Duration": "Duration",
         "DurationEnum": {
+          "": "None",
           "instant": "Instant",
           "temporal": "Temporal",
           "duration": "Duration",
           "focused": "Focused",
-          "permanent": "Permanent"
+          "permanent": "Permanent",
+          "special": "Special"
         },
         "RangeEnum": {
+          "": "None",
           "self": "Self",
           "touch": "Touch",
-          "ranged": "Ranged"
+          "ranged": "Ranged",
+          "special": "Special"
         },
         "RitualQ": "Ritual?",
+        "EnchantmentQ": "Enchantment?",
         "StackableQ": "Stackable?",
         "OneUseQ": "One Use?",
         "Cult": "Cult",
@@ -720,16 +726,20 @@
         "VariableQ": "Variable?",
         "Range": "Range",
         "RangeEnum": {
+          "": "None",
           "self": "Self",
           "touch": "Touch",
-          "ranged": "Ranged"
+          "ranged": "Ranged",
+          "special": "Special"
         },
         "Duration": "Duration",
         "DurationEnum": {
+          "": "None",
           "instant": "Instant",
           "temporal": "Temporal",
           "focused": "Focused",
-          "permanent": "Permanent"
+          "permanent": "Permanent",
+          "special": "Special"
         },
         "Concentration": "Concentration",
         "ConcentrationEnum": {

@@ -11,27 +11,30 @@
   <main>
     <div class="flex-row-start">
       {{#unless runeMagicData.isRitual}}
-        <label class="mp">{{localize "RQG.Item.RuneMagic.Range"}}<br>
-          <select name="data.castingRange">
-            {{#select runeMagicData.castingRange}} {{#each sheetSpecific.ranges}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.RuneMagic.RangeEnum." this)}}</option>
-            {{/each}} {{/select}}
-          </select>
-        </label>
-        <label class="mp">{{localize "RQG.Item.RuneMagic.Duration"}}<br>
-          <select name="data.duration">
-            {{#select runeMagicData.duration}} {{#each sheetSpecific.durations}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.RuneMagic.DurationEnum." this)}}</option>
-            {{/each}} {{/select}}
-          </select>
-        </label>
+        <div>
+          <label class="mp">{{localize "RQG.Item.RuneMagic.Range"}}<br>
+            <select name="data.castingRange">
+              {{#select runeMagicData.castingRange}} {{#each sheetSpecific.ranges}}
+              <option value="{{this}}">{{localize (concat "RQG.Item.RuneMagic.RangeEnum." this)}}</option>
+              {{/each}} {{/select}}
+            </select>
+          </label><br>
+          <label class="mp">{{localize "RQG.Item.RuneMagic.Duration"}}<br>
+            <select name="data.duration">
+              {{#select runeMagicData.duration}} {{#each sheetSpecific.durations}}
+              <option value="{{this}}">{{localize (concat "RQG.Item.RuneMagic.DurationEnum." this)}}</option>
+              {{/each}} {{/select}}
+            </select>
+          </label>          
+        </div>
+      {{/unless}}
+    </div>
       <div>
       <label><input type="checkbox" name="data.isRitual" {{checked runeMagicData.isRitual}}>{{localize "RQG.Item.RuneMagic.RitualQ"}}</label><br>
-        <label><input type="checkbox" name="data.isEnchantment" {{checked runeMagicData.isEnchantment}}>{{localize "RQG.Item.RuneMagic.EnchantmentQ"}}</label><br>
+      <label><input type="checkbox" name="data.isEnchantment" {{checked runeMagicData.isEnchantment}}>{{localize "RQG.Item.RuneMagic.EnchantmentQ"}}</label><br>
       <label><input type="checkbox" name="data.isStackable" {{checked runeMagicData.isStackable}}>{{localize "RQG.Item.RuneMagic.StackableQ"}}</label><br>
       <label><input type="checkbox" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>{{localize "RQG.Item.RuneMagic.OneUseQ"}}</label>
       </div>
-    </div>
     {{#if isEmbedded}}
     <label class="mp">{{localize "RQG.Item.RuneMagic.Cult"}}
       <select name="data.cultId">

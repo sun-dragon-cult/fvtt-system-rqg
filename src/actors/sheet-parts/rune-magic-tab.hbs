@@ -40,9 +40,10 @@
     <div class="head4"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Range"}}</span></div>
     <div class="head5"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Duration"}}</span></div>
     <div class="head6">{{localize "RQG.Actor.RuneMagic.Ritual"}}</div>
-    <div class="head7">{{localize "RQG.Actor.RuneMagic.Stackable"}}</div>
-    <div class="head8">{{localize "RQG.Actor.RuneMagic.OneUse"}}</div>
-    <div class="head9">{{localize "RQG.Actor.RuneMagic.Chance"}}</div>
+    <div class="head7">{{localize "RQG.Actor.RuneMagic.Enchantment"}}</div>
+    <div class="head8">{{localize "RQG.Actor.RuneMagic.Stackable"}}</div>
+    <div class="head9">{{localize "RQG.Actor.RuneMagic.OneUse"}}</div>
+    <div class="head10">{{localize "RQG.Actor.RuneMagic.Chance"}}</div>
     {{#each @root.ownedItems.runeMagic}}
     {{#if (eq ../id data.data.cultId)}}
       <div data-item-id="{{id}}" class="rune-magic contextmenu"
