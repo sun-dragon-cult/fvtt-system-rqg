@@ -588,6 +588,12 @@
           "HitPointsToHeal": "Hit Points to Heal: ",
           "btnHealWound": "Heal Wound"
         },
+        "HealthStatusEnum": {
+          "healthy": "Healthy",
+          "wounded": "Wounded",
+          "useless": "Useless",
+          "severed": "Severed"
+        },
         "Notification": {
           "CantFindHitLocation": "Couldn't find hitlocation with itemId [{hitLocationItemId}] on actor ${actorName} to show add wound dialog.",
           "HitLocationDoesNotHaveCalculatedArmor": "Hit location {hitLocationName} doesn't have a calculated total armor point",
