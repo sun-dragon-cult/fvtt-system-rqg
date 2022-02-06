@@ -1,5 +1,4 @@
 import { RqgCombatTracker } from "./RqgCombatTracker";
-import { requireValue } from "../system/util";
 
 export class RqgCombat extends Combat {
   public static init() {
@@ -12,25 +11,34 @@ export class RqgCombat extends Combat {
   }
 
   _sortCombatants(a: Combatant, b: Combatant): number {
-    requireValue(a.token, "Sort (a) missing token");
-    requireValue(a.token.name, "Sort (a) missing token name", a, b);
-    requireValue(b.token, "Sort (b) missing token");
-    requireValue(b.token.name, "Sort (b) missing token name", a, b);
-
     const ia = Number.isNumeric(a.initiative) ? a.initiative : 9999;
     const ib = Number.isNumeric(b.initiative) ? b.initiative : 9999;
     const ci = ia - ib;
     if (ci !== 0) {
-      return ci; // Sort on lowest initiative
+      return ci; // Sort on lowest Strike Rank (initiative)
     }
 
-    requireValue(a.actor, "Sort (a) missing actor (for DEX tie break)");
-    requireValue(b.actor, "Sort (b) missing actor (for DEX tie break)");
+    if (!a.actor || !b.actor) {
+      const a2 = a?.actor ?? { id: "zzz" };
+      const b2 = b?.actor ?? { id: "zzz" };
+      // If either of the combatants are not linked to an actor, put them last
+      // TODO Need to somehow mark / show that the combatant doesn't have an actor
+      return a2.id!.localeCompare(b2.id!);
+    }
+
     const actorADex = a.actor.data.data.characteristics.dexterity.value;
     const actorBDex = b.actor.data.data.characteristics.dexterity.value;
     const cDex = actorBDex - actorADex;
     if (cDex !== 0) {
       return cDex; // Sort on highest DEX
+    }
+
+    if (!a.token || !b.token) {
+      const a2 = a?.token ?? { id: "zzz" };
+      const b2 = b?.token ?? { id: "zzz" };
+      // If either of the combatants are not linked to a token, put them last
+      // TODO Need to somehow mark / show that the combatant doesn't have a token
+      return a2.id!.localeCompare(b2.id!);
     }
 
     const [an, bn] = [a.token.name || "", b.token.name || ""];

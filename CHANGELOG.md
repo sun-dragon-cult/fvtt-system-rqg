@@ -1,3 +1,39 @@
+# [1.13.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.12.0...v1.13.0) (2022-02-01)
+
+
+### Bug Fixes
+
+* combatants without linked token crash [#175](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/175) ([27dfdf1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/27dfdf1))
+* combatants without linked token crash [#175](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/175) ([7b74373](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7b74373))
+* correct runes ([9af18ec](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/9af18ec))
+* editing chance of rune with opposing missing rune throws an error ([dad6817](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/dad6817))
+* importing items from compendiums clears item image to default ([#147](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/147)) ([1400dec](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1400dec))
+* Not having SIZ or DEX makes weapon SR calc fail [#173](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/173) ([ef99be5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ef99be5))
+* Roll button on Characteristic card should update the chance value [#167](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/167) ([83d3850](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/83d3850))
+* runeMagic chat card background is missing ([fc01aea](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fc01aea))
+* Spirits without SIZ or DEX should not get -1d4 damage bonus [#174](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/174) ([a23e06e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a23e06e))
+
+
+### Features
+
+* Add a "creature" toggle on the actorsheet [#103](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/103) If the checkbox is set, then all skill category modifiers will be 0 to allow setting arbitrary skill values. This is mostly useful for creatures with characteristics outside human values. For example dinosaurs otherwise gets unreasonably large agility modifiers etc. ([f1bd955](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f1bd955))
+* add a setting for available hitlocation ([#137](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/137)) ([cc75a72](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/cc75a72))
+* add background images to login page & "no scene page" ([7ae2875](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7ae2875))
+* add net weapon icon ([baab3d9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/baab3d9))
+* change foundry pause icon to movement rune ([d389d4d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d389d4d))
+* change foundry pause icon to movement rune - again ([cf8dac5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/cf8dac5))
+* Expand RuneMagicItem datamodel [#148](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/148) ([db9d8a5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/db9d8a5))
+* show magic points above character sheet tabs so it's always visible ([#144](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/144)) ([3580179](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3580179))
+* Swap order of SIZ - DEX SR display to match starter set stat blocks [#168](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/168) ([255e003](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/255e003))
+
+
+### Reverts
+
+* Revert "feat: change foundry pause icon to movement rune" ([fc95e52](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fc95e52))
+
+
+
+
 # [1.12.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.11.0...v1.12.0) (2021-12-21)
 
 

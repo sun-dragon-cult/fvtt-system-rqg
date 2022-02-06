@@ -25,9 +25,9 @@
             {{/each}} {{/select}}
           </select>
         </label>
-      {{/unless}}
       <div>
       <label><input type="checkbox" name="data.isRitual" {{checked runeMagicData.isRitual}}>{{localize "RQG.Item.RuneMagic.RitualQ"}}</label><br>
+        <label><input type="checkbox" name="data.isEnchantment" {{checked runeMagicData.isEnchantment}}>{{localize "RQG.Item.RuneMagic.EnchantmentQ"}}</label><br>
       <label><input type="checkbox" name="data.isStackable" {{checked runeMagicData.isStackable}}>{{localize "RQG.Item.RuneMagic.StackableQ"}}</label><br>
       <label><input type="checkbox" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>{{localize "RQG.Item.RuneMagic.OneUseQ"}}</label>
       </div>

@@ -2,7 +2,15 @@ import { RqgCalculations } from "./rqgCalculations";
 
 describe("Skill Category Modifiers are correct for", () => {
   it("average character with normal rules", () => {
-    const skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(13, 11, 15, 12, 15, 11);
+    const skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
+      13,
+      11,
+      15,
+      12,
+      15,
+      11,
+      false
+    );
     expect(skillCategoryModifiers).toStrictEqual({
       agility: 5,
       communication: 0,
@@ -19,20 +27,28 @@ describe("Skill Category Modifiers are correct for", () => {
     });
   });
 
-  it("extreme beast with house rule dampened increase", () => {
-    const skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(170, 65, 13, 19, 26, 21);
+  it("creature", () => {
+    const skillCategoryModifiers = RqgCalculations.skillCategoryModifiers(
+      170,
+      65,
+      13,
+      19,
+      26,
+      21,
+      true
+    );
     expect(skillCategoryModifiers).toStrictEqual({
-      agility: 54,
-      communication: 31,
-      knowledge: 25,
-      magic: 30,
-      manipulation: 69,
-      perception: 25,
-      stealth: -70,
-      meleeWeapons: 69,
-      missileWeapons: 69,
-      naturalWeapons: 69,
-      shields: 69,
+      agility: 0,
+      communication: 0,
+      knowledge: 0,
+      magic: 0,
+      manipulation: 0,
+      perception: 0,
+      stealth: 0,
+      meleeWeapons: 0,
+      missileWeapons: 0,
+      naturalWeapons: 0,
+      shields: 0,
       otherSkills: 0,
     });
   });

@@ -64,6 +64,9 @@
             </span>
           </label>
           <i class="norse flex-row flex-align-center">{{#each powCrystals}}<span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
+          {{#if isGM}}
+            <label><input type="checkbox" name="data.attributes.isCreature" {{checked characterData.attributes.isCreature}}>Is Creature</label>
+          {{/if}}
         </div>
         <fieldset class="mov-enc">
           <legend>{{localize (concat "RQG.Actor.Attributes.MoveMode." characterData.attributes.move.currentLocomotion)}}</legend>

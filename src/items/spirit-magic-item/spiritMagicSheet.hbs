@@ -44,6 +44,11 @@
         <input type="text" name="data.concentration" value="" hidden>
       {{/unless}}
       {{/unless}}
+      <span>
+        <label><input type="checkbox" name="data.isRitual" {{checked spiritMagicData.isRitual}}>Ritual</label><br>
+        <label><input type="checkbox" name="data.isEnchantment" {{checked spiritMagicData.isEnchantment}}>Enchantment</label><br>
+        <label><input type="checkbox" name="data.isMatrix" {{checked spiritMagicData.isMatrix}}>Is Matrix</label>
+      </span>
     </div>
   </main>
   <label>{{localize "RQG.Item.SpiritMagic.SpellFocus"}} <input type="text" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}"></label><br>
@@ -69,6 +74,7 @@
         <p><i>{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}</i></p>
     {{/if}}   
   </div>
+
 
   <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 </form>

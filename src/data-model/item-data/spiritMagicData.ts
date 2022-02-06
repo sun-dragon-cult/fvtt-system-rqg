@@ -1,31 +1,13 @@
 import { JournalEntryLink } from "../shared/journalentrylink";
 import { ItemTypeEnum } from "./itemTypes";
+import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
 
-export enum SpiritMagicCastingRangeEnum {
-  Self = "self",
-  Touch = "touch",
-  Ranged = "ranged", // 50 meters
-}
-
-export enum SpiritMagicDurationEnum {
-  Instant = "instant",
-  Temporal = "temporal", // 2 minutes (10 melee rounds)
-  Focused = "focused", // Active for as long as the caster focuses
-  Permanent = "permanent", // Ritual (Enchantment)
-}
-
-export enum SpiritMagicConcentrationEnum {
-  Passive = "passive",
-  Active = "active",
-}
-
-export interface SpiritMagicDataSourceData extends JournalEntryLink {
-  points: number; // Learned strength
-  isVariable: boolean; // Can the caster decide the number of magic points used
-  castingRange: SpiritMagicCastingRangeEnum;
-  duration: SpiritMagicDurationEnum;
-  concentration: SpiritMagicConcentrationEnum;
-  incompatibleWith: string[]; // Can't be cast if one of the listed spells are already active
+export interface SpiritMagicDataSourceData extends JournalEntryLink, Spell {
+  /** Can the caster decide the number of magic points used */
+  isVariable: boolean;
+  /** Can't be cast if one of the listed spells are already active (not yet implemented) */
+  incompatibleWith: string[];
+  /** Textual representation of what the spell focus is */
   spellFocus: string;
   /** Should this spell be included for CHA limit calculations */
   isMatrix: boolean;
@@ -47,9 +29,11 @@ export interface SpiritMagicDataProperties {
 export const emptySpiritMagic: SpiritMagicDataSourceData = {
   points: 0,
   isVariable: false,
-  castingRange: SpiritMagicCastingRangeEnum.Ranged,
-  duration: SpiritMagicDurationEnum.Instant,
-  concentration: SpiritMagicConcentrationEnum.Passive,
+  isRitual: false,
+  isEnchantment: false,
+  castingRange: SpellRangeEnum.Ranged,
+  duration: SpellDurationEnum.Instant,
+  concentration: SpellConcentrationEnum.Passive,
   incompatibleWith: [],
   spellFocus: "",
   journalId: "",

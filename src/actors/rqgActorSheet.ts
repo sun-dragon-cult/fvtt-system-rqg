@@ -224,7 +224,7 @@ export class RqgActorSheet extends ActorSheet<
       result.price.real += curr.data.data.price.real * curr.data.data.quantity;
       result.price.estimated += curr.data.data.price.estimated * curr.data.data.quantity;
       result.encumbrance += curr.data.data.encumbrance * curr.data.data.quantity;
-      let conv = "";
+      let conv;
       if (curr.data.data.price.estimated > 1) {
         conv = localize("RQG.Actor.Gear.CurrencyConversionTipOver1", {
           name: curr.name,
@@ -549,8 +549,10 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Skill),
       gear:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) =>
-          [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(i.type)
+        this.actor.items.some(
+          (i: RqgItem) =>
+            [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(i.type) &&
+            !(i.data.data as any).isNatural // Don't show gear tab for natural weapons
         ),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -709,7 +711,7 @@ export class RqgActorSheet extends ActorSheet<
             this.actor,
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             this.token
-          )
+          );
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
@@ -718,7 +720,7 @@ export class RqgActorSheet extends ActorSheet<
                 this.actor,
                 // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
                 this.token
-              );              
+              );
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1046,7 +1048,7 @@ export class RqgActorSheet extends ActorSheet<
       itemName: item.name,
     });
 
-    let content: string = "";
+    let content: string;
     if (item.type === ItemTypeEnum.Cult) {
       content = localize("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
         itemType: itemTypeLoc,

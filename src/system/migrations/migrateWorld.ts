@@ -2,6 +2,7 @@ import { getGame } from "../util";
 import { migrateActorDummy } from "./migrations-actor/migrateActorDummy";
 import { ActorMigration, applyMigrations, ItemMigration } from "./applyMigrations";
 import { changeRuneExperienceFieldName } from "./migrations-item/changeRuneExperienceFieldName";
+import { renameRuneMagicDurationSpecial } from "./migrations-item/renameRuneMagicDurationSpecial";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -31,7 +32,10 @@ export async function migrateWorld(): Promise<void> {
 }
 
 export async function applyDefaultWorldMigrations(): Promise<void> {
-  const worldItemMigrations: ItemMigration[] = [changeRuneExperienceFieldName];
+  const worldItemMigrations: ItemMigration[] = [
+    changeRuneExperienceFieldName,
+    renameRuneMagicDurationSpecial,
+  ];
   const worldActorMigrations: ActorMigration[] = [migrateActorDummy];
 
   await applyMigrations(worldItemMigrations, worldActorMigrations);

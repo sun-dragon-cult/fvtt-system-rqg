@@ -71,7 +71,15 @@ export class RqgActor extends Actor {
     const attributes = this.data.data.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
     const skillCategoryModifiers = (this.data.data.skillCategoryModifiers =
-      RqgCalculations.skillCategoryModifiers(str, siz, dex, int, pow, cha));
+      RqgCalculations.skillCategoryModifiers(
+        str,
+        siz,
+        dex,
+        int,
+        pow,
+        cha,
+        this.data.data.attributes.isCreature
+      ));
 
     attributes.encumbrance = {
       max: this.calcMaxEncumbrance(
