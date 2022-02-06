@@ -751,6 +751,7 @@
         "CombatManeuversHeader": "Combat Manuevers",
         "ActionLabel": "Action Label",
         "DamageType": "Damage Type",
+        "NaturalWeaponQ": "Natural Weapon?",
         "ThrownWeaponQ": "Thrown Weapon? (half damage bonus)",
         "ProjectileWeaponQ": "Projectile Weapon? (no damage bonus, use linked projectile)",
         "RangedWeaponQ": "Ranged Weapon? (no damage bonus, no projectile)",
