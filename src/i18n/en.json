@@ -530,6 +530,9 @@
         }
       },
       "Cult": {
+        "CultNamePlaceholder": "Cult Name",
+        "CultTaglinePlaceholder": "Cult Tagline",
+        "AddNewRunePlaceholder": "Add new rune",
         "HolyDays": "Holy Days",
         "RunePoints": "Rune Points",
         "ActorsGifts": "Actor's Gifts",

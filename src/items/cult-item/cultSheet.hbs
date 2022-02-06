@@ -2,55 +2,126 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     <div>
-      <input type="text" name="name" value="{{data.name}}" placeholder="Cult Name"><br>
-      <input type="text" name="data.tagline" value="{{cultData.tagline}}" placeholder="Cult Tagline">
+      <input
+        type="text"
+        name="name"
+        value="{{data.name}}"
+        placeholder="{{localize 'RQG.Item.Cult.CultNamePlaceholder'}}"
+      /><br />
+      <input
+        type="text"
+        name="data.tagline"
+        value="{{cultData.tagline}}"
+        placeholder="{{localize 'RQG.Item.Cult.CultTaglinePlaceholder'}}"
+      />
     </div>
   </header>
   <main>
 
     {{#each cultData.runes}}
-      <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
+      <span><img class="rune" src="{{runeImg this}}" title="{{this}}" /><input
+          name="data.runes"
+          type="text"
+          value="{{this}}"
+        />
+      </span>
     {{/each}}
-    <input name="data.runes" type="text" list="allRunes" placeholder="Add new rune"><br>
+    <input
+      name="data.runes"
+      type="text"
+      list="allRunes"
+      placeholder="{{localize 'RQG.Item.Cult.AddNewRunePlaceholder'}}"
+    /><br />
 
-    <label>{{localize "RQG.Item.Cult.HolyDays"}} {{editor content=cultData.holyDays target="data.holyDays" button=true owner=owner editable=editable}}</label><br>
-    
+    <label>{{localize "RQG.Item.Cult.HolyDays"}}
+      {{editor
+        content=cultData.holyDays
+        target="data.holyDays"
+        button=true
+        owner=owner
+        editable=editable
+      }}</label><br />
+
     <div class="item-sheet-journal-link">
       {{#if cultData.journalPack}}
-          <a class="entity-link content-link"
-            data-pack="{{cultData.journalPack}}" 
-            data-id="{{cultData.journalId}}"
-            title="{{localize "RQG.Foundry.ContentLink.CompendiumNameTitle" compendiumName=cultData.journalPack}}">
-            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-          </a>
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+        <a
+          class="entity-link content-link"
+          data-pack="{{cultData.journalPack}}"
+          data-id="{{cultData.journalId}}"
+          title="{{localize
+            'RQG.Foundry.ContentLink.CompendiumNameTitle'
+            compendiumName=cultData.journalPack
+          }}"
+        >
+          <i class="fas fa-book-open"></i>
+          {{sheetSpecific.journalEntryName}}
+        </a>
+        <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
       {{else if cultData.journalId}}
-          <a class="entity-link content-link" 
-            data-type="JournalEntry" 
-            data-id="{{cultData.journalId}}"
-            title="{{localize "RQG.Foundry.ContentLink.WorldJournalEntry"}}">
-            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-          </a>
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+        <a
+          class="entity-link content-link"
+          data-type="JournalEntry"
+          data-id="{{cultData.journalId}}"
+          title="{{localize 'RQG.Foundry.ContentLink.WorldJournalEntry'}}"
+        >
+          <i class="fas fa-book-open"></i>
+          {{sheetSpecific.journalEntryName}}
+        </a>
+        <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
       {{else}}
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}</i></p>
-      {{/if}}   
+        <p><i>{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}</i></p>
+      {{/if}}
     </div>
 
     {{#if isEmbedded}}
-      <hr>
-      <label>{{localize "RQG.Item.Cult.RunePoints"}} <input type="number" min="0" max="99" name="data.runePoints.value"
-                                value="{{cultData.runePoints.value}}">/<input type="number" min="0" max="99"
-                                                                              name="data.runePoints.max"
-                                                                              value="{{cultData.runePoints.max}}"></label><br>
+      <hr />
+      <label>{{localize "RQG.Item.Cult.RunePoints"}}
+        <input
+          type="number"
+          min="0"
+          max="99"
+          name="data.runePoints.value"
+          value="{{cultData.runePoints.value}}"
+        />/<input
+          type="number"
+          min="0"
+          max="99"
+          name="data.runePoints.max"
+          value="{{cultData.runePoints.max}}"
+        /></label><br />
       <select name="data.rank">
-        {{#select cultData.rank}} {{#each sheetSpecific.ranksEnum}}
-          <option value="{{this}}">{{localize (concat "RQG.Actor.RuneMagic.CultRank." this)}}</option>
-        {{/each}} {{/select}}
-      </select><br>
-      <label>{{localize "RQG.Item.Cult.ActorsGifts"}} {{editor content=cultData.gifts target="data.gifts" button=true owner=owner editable=editable}}</label><br>
-      <label>{{localize "RQG.Item.Cult.ActorsGeases"}} {{editor content=cultData.geases target="data.geases" button=true owner=owner editable=editable}}</label><br>
-      <label>{{localize "RQG.Item.Cult.ActorsSubCults"}} {{editor content=cultData.subCults target="data.subCults" button=true owner=owner editable=editable}}</label>
+        {{#select cultData.rank}}
+          {{#each sheetSpecific.ranksEnum}}
+            <option value="{{this}}">{{localize
+                (concat "RQG.Actor.RuneMagic.CultRank." this)
+              }}</option>
+          {{/each}}
+        {{/select}}
+      </select><br />
+      <label>{{localize "RQG.Item.Cult.ActorsGifts"}}
+        {{editor
+          content=cultData.gifts
+          target="data.gifts"
+          button=true
+          owner=owner
+          editable=editable
+        }}</label><br />
+      <label>{{localize "RQG.Item.Cult.ActorsGeases"}}
+        {{editor
+          content=cultData.geases
+          target="data.geases"
+          button=true
+          owner=owner
+          editable=editable
+        }}</label><br />
+      <label>{{localize "RQG.Item.Cult.ActorsSubCults"}}
+        {{editor
+          content=cultData.subCults
+          target="data.subCults"
+          button=true
+          owner=owner
+          editable=editable
+        }}</label>
     {{/if}}
   </main>
   <datalist id="allRunes">
