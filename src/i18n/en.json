@@ -492,6 +492,7 @@
         "ArmorTypeLabel": "Armor Type",
         "Material": "Material",
         "HitLocations": "Hit Locations",
+        "AddNewCoveredHitLocationPlaceholder": "Add new covered hit location",
         "Absorbs": "Absorbs",
         "MoveQuietlyPenalty": "Move Quietly Penalty",
         "FitsSIZ": "Fits SIZ",

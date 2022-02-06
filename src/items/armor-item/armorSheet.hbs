@@ -19,7 +19,8 @@
     {{#each armorData.hitLocations}}
     <span><input name="data.hitLocations" type="text" value="{{this}}"></span>
     {{/each}}
-    <input name="data.hitLocations" type="text" list="allHitLocations" placeholder="Add new covered hit location"><br>
+    <input name="data.hitLocations" type="text" style="width:50%" list="allHitLocations" 
+      placeholder="{{localize "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder"}}"><br>
 
     <label>{{localize "RQG.Item.Armor.Absorbs"}} <input type="number" min="0" max="99" name="data.absorbs" value="{{armorData.absorbs}}"></label><br>
 
