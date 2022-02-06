@@ -640,7 +640,19 @@
         "Subject": "Subject",
         "Chance": "Chance",
         "Experience": "Experience",
-        "BackStory": "Back Story"
+        "BackStory": "Back Story",
+        "PassionEnum": {
+          "Ambition": "Ambition",
+          "Cowardly": "Cowardly",
+          "Devotion": "Devotion",
+          "Fear": "Fear",
+          "Hate": "Hate",
+          "Honor": "Honor",
+          "Loyalty": "Loyalty",
+          "Love": "Love",
+          "Gluttony": "Gluttony",
+          "Vanity": "Vanity"
+        }
       },
       "Rune": {
         "Name": "Name",
