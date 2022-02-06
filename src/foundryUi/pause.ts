@@ -15,7 +15,7 @@ export class RqgPause extends Pause {
     return {
       // @ts-ignore paused
       paused: game.paused,
-      pauseImage: "systems/rqg/assets/runes/movement_change.svg",
+      pauseImage: "systems/rqg/assets/images/runes/movement_change.svg",
     };
   }
 }

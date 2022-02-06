@@ -40,7 +40,7 @@ export const registerRqgSystemSettings = function () {
       [ItemTypeEnum.Gear]: "systems/rqg/assets/images/gear/knapsack.svg",
       [ItemTypeEnum.HitLocation]: "systems/rqg/assets/images/items/hit-location.svg",
       [ItemTypeEnum.Passion]: "systems/rqg/assets/images/passion/love.svg",
-      [ItemTypeEnum.Rune]: "systems/rqg/assets/runes/chaos.svg",
+      [ItemTypeEnum.Rune]: "systems/rqg/assets/images/runes/chaos.svg",
       [ItemTypeEnum.RuneMagic]: "systems/rqg/assets/images/items/rune-magic.svg",
       [ItemTypeEnum.Skill]: "systems/rqg/assets/images/items/skill.svg",
       [ItemTypeEnum.SpiritMagic]: "systems/rqg/assets/images/items/spirit-magic.svg",
