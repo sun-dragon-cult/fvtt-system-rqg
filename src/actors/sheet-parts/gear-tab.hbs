@@ -122,7 +122,7 @@
             <div data-item-id="{{id}}" class="gear contextmenu"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{id}}" class="gear contextmenu">{{name}}</div>
             <div data-item-id="{{id}}" class="gear contextmenu">
-              <span class="text-right">{{data.data.quantity}}</span>
+              <span class="text-right"><input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}"></span>
             </div>
             <div data-item-id="{{id}}" class="gear contextmenu">
               <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
@@ -190,7 +190,7 @@
             <div data-item-id="{{id}}" class="gear usagecontainer contextmenu"><span class="text-right">
               {{#each data.data.usage}}
                 {{#if skillId}}
-                  <div class="usagecell {{#if underMinSTR}} warning{{/if}}" {{#if underMinSTR}}title="{{localize "RQG.Actor.Combat.StrMinNotMetTip"}}"{{/if}}></span>
+                  <div class="usagecell {{#if underMinSTR}} warning{{/if}}" {{#if underMinSTR}}title="{{localize "RQG.Actor.Combat.StrMinNotMetTip"}}"{{/if}}>
                     {{#if minStrength}}{{minStrength}}{{else}}—{{/if}}
                   </div>
                 {{/if}}
@@ -203,7 +203,7 @@
                 {{#if skillId}}
                   <div class="usagecell {{#if underMinDEX}} warning{{/if}}" {{#if underMinDEX}}title="{{localize "RQG.Actor.Combat.DexMinNotMetTip"}}"{{/if}}>
                     {{#if minDexterity}}{{minDexterity}}{{else}}—{{/if}}
-                  </div>                                    
+                  </div>
                 {{/if}}
               {{/each}}
               </span>
