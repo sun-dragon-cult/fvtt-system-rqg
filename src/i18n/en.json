@@ -167,6 +167,7 @@
         "EncumbranceAbbr": "ENC",
         "Location": "Location",
         "Price": "Price",
+        "Total": "Total",
         "QuantityAbbr": "Qty",
         "ExtendedAbbr": "Ext",
         "Skill": "Skill",
