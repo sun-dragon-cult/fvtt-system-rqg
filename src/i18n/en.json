@@ -754,7 +754,10 @@
           "passive": "Passive"
         },
         "SpellFocus": "Spell Focus:",
-        "IsMatrixQ": "Is Matrix?",
+        "RitualQ": "Ritual?",
+        "EnchantmentQ": "Enchantment?",
+        "MatrixIndicator": "(as matrix)",
+        "MatrixQ": "Matrix?",
         "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
       },
       "Weapon": {

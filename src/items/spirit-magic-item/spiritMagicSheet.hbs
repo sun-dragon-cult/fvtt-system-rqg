@@ -45,14 +45,13 @@
       {{/unless}}
       {{/unless}}
       <span>
-        <label><input type="checkbox" name="data.isRitual" {{checked spiritMagicData.isRitual}}>Ritual</label><br>
-        <label><input type="checkbox" name="data.isEnchantment" {{checked spiritMagicData.isEnchantment}}>Enchantment</label><br>
-        <label><input type="checkbox" name="data.isMatrix" {{checked spiritMagicData.isMatrix}}>Is Matrix</label>
+        <label><input type="checkbox" name="data.isRitual" {{checked spiritMagicData.isRitual}}>{{localize "RQG.Item.SpiritMagic.RitualQ"}}</label><br>
+        <label><input type="checkbox" name="data.isEnchantment" {{checked spiritMagicData.isEnchantment}}>{{localize "RQG.Item.SpiritMagic.EnchantmentQ"}}</label><br>
+        <label><input type="checkbox" name="data.isMatrix" {{checked spiritMagicData.isMatrix}}>{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
       </span>
     </div>
   </main>
   <label>{{localize "RQG.Item.SpiritMagic.SpellFocus"}} <input type="text" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}"></label><br>
-  <label><input type="checkbox" name="data.isMatrix" {{checked spiritMagicData.isMatrix}}>{{localize "RQG.Item.SpiritMagic.IsMatrixQ"}}</label><br>
   <div class="item-sheet-journal-link">
     {{#if spiritMagicData.journalPack}}
         <a class="entity-link content-link"

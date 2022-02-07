@@ -17,7 +17,9 @@
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="item" src="{{img}}">
     </div>
-    <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>{{name}}{{#if data.data.isMatrix}} (Matrix){{/if}}</div>
+    <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
+      {{name}}{{#if data.data.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
+    </div>
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
       <span class="text-center">{{data.data.points}}</span>
     </div>
