@@ -60,10 +60,10 @@
         <span class="text-center">{{data.data.points}}</span>
       </div>
       <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
-        {{#unless data.data.isRitual}}<span class="text-center">{{data.data.castingRange}}</span>{{/unless}}
+        {{#unless data.data.isRitual}}<span class="text-center">{{localize (concat "RQG.Item.RuneMagic.RangeEnum." data.data.castingRange)}}</span>{{/unless}}
       </div>
       <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
-        {{#unless data.data.isRitual}}<span class="text-center">{{data.data.duration}}</span>{{/unless}}
+        {{#unless data.data.isRitual}}<span class="text-center">{{localize (concat "RQG.Item.SpiritMagic.DurationEnum." data.data.duration)}}</span>{{/unless}}
       </div>
       <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
         <span class="text-center">{{yes-no data.data.isRitual}}</span>

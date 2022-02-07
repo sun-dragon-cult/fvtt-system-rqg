@@ -11,6 +11,8 @@
   <div class="head5">{{localize "RQG.Actor.SpiritMagic.Range"}}</div>
   <div class="head6">{{localize "RQG.Actor.SpiritMagic.Duration"}}</div>
   <div class="head7">{{localize "RQG.Actor.SpiritMagic.Concentration"}}</div>
+  <div class="head8">{{localize "RQG.Actor.SpiritMagic.Ritual"}}</div>
+  <div class="head9">{{localize "RQG.Actor.SpiritMagic.Enchantment"}}</div>
   {{#each ownedItems.spiritMagic}}
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="item" src="{{img}}">
@@ -23,13 +25,13 @@
       <span class="text-center">{{yes-no this.data.data.isVariable}}</span>
     </div>
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
-      <span class="text-center">{{data.data.castingRange}}</span>
+      <span class="text-center">{{localize (concat "RQG.Item.SpiritMagic.RangeEnum." data.data.castingRange)}}</span>
     </div>
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
-      <span class="text-center">{{data.data.duration}}</span>
+      <span class="text-center">{{localize (concat "RQG.Item.SpiritMagic.DurationEnum." data.data.duration)}}</span>
     </div>
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
-      <span class="text-center">{{data.data.concentration}}</span>
+      <span class="text-center">{{localize (concat "RQG.Item.SpiritMagic.ConcentrationEnum." data.data.concentration)}}</span>
     </div>
     <div data-item-id="{{id}}" class="spirit-magic contextmenu" data-spirit-magic-roll>
       <span class="text-center">{{yes-no this.data.data.isRitual}}</span>

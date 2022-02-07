@@ -1,5 +1,12 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
-import { getActorFromIds, getAllRunesIndex, getGame, hasOwnProperty, RqgError } from "./util";
+import {
+  getActorFromIds,
+  getAllRunesIndex,
+  getGame,
+  hasOwnProperty,
+  localize,
+  RqgError,
+} from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
 
@@ -109,7 +116,7 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("yes-no", (bool: boolean): string => {
-    return bool ? "yes" : "no";
+    return bool ? localize("RQG.Dialog.Common.yes") : localize("RQG.Dialog.Common.no");
   });
 
   Handlebars.registerHelper("multiply", (...nums) => {

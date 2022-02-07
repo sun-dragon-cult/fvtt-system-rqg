@@ -269,7 +269,9 @@
         "Variable": "Variable",
         "Range": "Range",
         "Duration": "Duration",
-        "Concentration": "Concentration"
+        "Concentration": "Concentration",
+        "Ritual": "Ritual",
+        "Enchantment": "Enchantment"
       }
     },
     "ContextMenu": {
@@ -314,6 +316,8 @@
     },
     "Dialog": {
       "Common": {
+        "yes": "yes",
+        "no": "no",
         "btnCancel": "Cancel",
         "btnConfirm": "Confirm",
         "OtherModifiers": "Other Modifiers:",
@@ -745,6 +749,7 @@
         },
         "Concentration": "Concentration",
         "ConcentrationEnum": {
+          "": "",
           "active": "Active",
           "passive": "Passive"
         },
