@@ -9,8 +9,10 @@
     <div class="flex-row flex-wrap gap03rem">
       {{#with (lookup weaponItemData.data.usage usage)}}
       {{#each combatManeuvers}}
-            <button name="combatManeuver" value="{{name}}" {{#if (eq name ../../formData.combatManeuver)}}class="active"{{/if}}
-                    >{{name}}</button>
+            <button name="combatManeuver" value="{{name}}" 
+                {{#if (eq name ../../formData.combatManeuver)}}class="active"{{/if}}>
+                {{localize (concat "RQG.Item.Weapon.combatManeuver." name)}}
+            </button>
       {{/each}}
       {{/with}}
     </div>

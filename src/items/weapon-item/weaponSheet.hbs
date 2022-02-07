@@ -81,7 +81,7 @@
                       {{#if name}}
                         <select name="data.usage.{{../usage}}.combatManeuvers.damageTypes">
                           {{#select damageType}} {{#each @root.sheetSpecific.damageTypes}}
-                            <option value="{{this}}">{{this}}</option>
+                            <option value="{{this}}">{{localize (concat "RQG.Item.Weapon.DamageTypeEnum." this)}}</option>
                           {{/each}} {{/select}}
                         </select>
                       {{/if}}

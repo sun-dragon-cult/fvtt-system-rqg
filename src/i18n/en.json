@@ -771,6 +771,13 @@
         "CombatManeuversHeader": "Combat Manuevers",
         "ActionLabel": "Action Label",
         "DamageType": "Damage Type",
+        "DamageTypeEnum": {
+          "impale": "Impale",
+          "slash": "Slash",
+          "crush": "Crush",
+          "parry": "Parry",
+          "special": "Special"
+        },
         "NaturalWeaponQ": "Natural Weapon?",
         "ThrownWeaponQ": "Thrown Weapon? (half damage bonus)",
         "ProjectileWeaponQ": "Projectile Weapon? (no damage bonus, use linked projectile)",
