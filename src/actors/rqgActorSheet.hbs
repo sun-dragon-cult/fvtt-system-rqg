@@ -65,7 +65,7 @@
           </label>
           <i class="norse flex-row flex-align-center">{{#each powCrystals}}<span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
           {{#if isGM}}
-            <label><input type="checkbox" name="data.attributes.isCreature" {{checked characterData.attributes.isCreature}}>Is Creature</label>
+            <label><input type="checkbox" name="data.attributes.isCreature" {{checked characterData.attributes.isCreature}}>{{localize "RQG.Actor.Attributes.CreatureQ"}}</label>
           {{/if}}
         </div>
         <fieldset class="mov-enc">
