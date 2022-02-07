@@ -126,4 +126,12 @@ export const registerHandlebarsHelpers = function () {
     nums.pop();
     return nums.reduce((acc, n) => acc + (n ?? 0), 0);
   });
+
+  Handlebars.registerHelper("toLowerCase", function (value) {
+    if (value) {
+      return new Handlebars.SafeString(value.toLowerCase());
+    } else {
+      return "";
+    }
+  });
 };
