@@ -36,12 +36,6 @@ body {
   src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
 
-//// TODO Testing it out with only the bold version
-//@font-face {
-//  font-family: Norse;
-//  src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
-//}
-
 .norse {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
   font-variant: small-caps;
@@ -717,7 +711,7 @@ body {
 
   .window-content {
     padding: 0;
-    background-image: none;
+    background: none;
 
     form {
       display: grid;
@@ -725,18 +719,18 @@ body {
       grid-template-areas:
         "nav header"
         "nav main";
-      grid-template-rows: min-content;
+      grid-template-rows: min-content 1fr;
     }
 
     .sheet-header {
       grid-area: header;
-      //background-color: var(--main-bg-color);
       padding: 8px 4%;
+      align-items: start;
+      height: fit-content;
     }
 
     .navbackground {
       grid-area: nav;
-      //background-color: var(--main-bg-color);
       height: 100%;
       width: 100%;
     }
@@ -748,6 +742,7 @@ body {
       padding: 8px 0;
       margin: 0;
       display: block;
+      line-height: 20px;
 
       .item {
         white-space: nowrap;
@@ -759,13 +754,23 @@ body {
         font-variant-caps: normal;
 
         &.active {
-          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
-          box-shadow: var(--rqg-box-shadow-tab-active);
           text-shadow: 0 0 3px black, -2px -2px 3px black;
-          background: var(--rqg-background-tab-active);
-          background-blend-mode: screen, difference;
           color: white;
           font-weight: bold;
+        }
+
+        &.active::before {
+          content: '';
+          position: absolute;
+          top:  0;
+          bottom: 0;
+          left: -6px;
+          right: -6px;
+          z-index: -1;
+          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
+          box-shadow: var(--rqg-box-shadow-tab-active);
+          background: var(--rqg-background-tab-active);
+          background-blend-mode: screen, difference;
         }
       }
     }
