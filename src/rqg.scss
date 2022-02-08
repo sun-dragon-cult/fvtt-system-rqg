@@ -1,4 +1,4 @@
-@use 'variables';
+@use "variables";
 
 body {
   background-attachment: fixed !important;
@@ -36,11 +36,6 @@ body {
   src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
 
-@font-face {
-  font-family: GloranthaCoreRunes;
-  src: url("assets/fonts/GloranthaCoreRunes1.5.ttf") format("truetype");;
-}
-
 //// TODO Testing it out with only the bold version
 //@font-face {
 //  font-family: Norse;
@@ -51,10 +46,6 @@ body {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
   font-variant: small-caps;
   letter-spacing: 1.5px;
-}
-
-.runefont {
-  font-family: "GloranthaCoreRunes";
 }
 
 .pad-left {
@@ -617,15 +608,6 @@ body {
     li.context-item {
       white-space: nowrap;
       padding-top: 3px;
-      .context-rune {
-        font-family: "GloranthaCoreRunes";
-        font-size: 22pt;
-        text-align: center;
-        width: 30px;
-        display: inline-block;
-        position: relative;
-        left: -3px;
-      }
       .context-icon {
         fill: white;
         width: 30px;
@@ -633,9 +615,11 @@ body {
         text-align: center;
         position: relative;
         left: -3px;
+        bottom: -4px;
+        filter: invert(1);
       }
       .context-icon-img {
-        height: 16pt;        
+        height: 16pt;
       }
     }
   }
@@ -1008,7 +992,6 @@ body {
 }
 
 .app {
-
   &.sheet.journal-sheet {
     font-size: 16px;
 
@@ -1018,12 +1001,10 @@ body {
     }
   }
 
-
   input[name="hitLocationItemNames"] {
     min-width: 10rem;
   }
 }
-
 
 .app.default-icons {
   label {
@@ -1047,7 +1028,6 @@ body {
       width: 22rem;
     }
   }
-
 }
 
 #pause {
@@ -1055,6 +1035,7 @@ body {
 
   h3 {
     font-size: 3rem;
-    text-shadow: 1px 1px 2px var(--rqg-color-main), 0 0 1em var(--rqg-color-main-bg), 0 0 0.2em var(--rqg-color-main-bg);
+    text-shadow: 1px 1px 2px var(--rqg-color-main), 0 0 1em var(--rqg-color-main-bg),
+      0 0 0.2em var(--rqg-color-main-bg);
   }
 }
