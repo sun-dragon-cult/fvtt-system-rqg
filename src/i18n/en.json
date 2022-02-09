@@ -478,7 +478,7 @@
         "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
         "CantFindChatMessageError": "Can't find chat message",
         "HitLocationRollFlavor": "Hit Location Roll",
-        "UnkownButtonInCardError": "Unknown button \"{actionButton}\" in weapon chat card",
+        "UnknownButtonInCardError": "Unknown button \"{actionButton}\" in weapon chat card",
         "WeaponCardFlavor": "Weapon: {weaponName}",
         "NoCombatManeuverInDamageRollError": "No combat maneuver in Damage Roll.",
         "CantFindActorToDoDamageRollWarn": "Can't find world actor do do damage roll.",

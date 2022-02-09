@@ -241,7 +241,7 @@ export class WeaponCard extends ChatMessage {
         return false;
 
       default:
-        const msg = localize("RQG.Dialog.weaponCard.HitLocationRollFlavor", {actionButton: actionButton});
+        const msg = localize("RQG.Dialog.weaponCard.UnknownButtonInCardError", {actionButton: actionButton});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
     }
