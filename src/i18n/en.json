@@ -741,8 +741,6 @@
         "Duration": "Duration",
         "Concentration": "Concentration",
         "SpellFocus": "Spell Focus:",
-        "RitualQ": "Ritual?",
-        "EnchantmentQ": "Enchantment?",
         "MatrixIndicator": "(held in matrix)",
         "MatrixQ": "Held in Matrix?",
         "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
