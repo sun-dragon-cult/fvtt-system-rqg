@@ -681,8 +681,6 @@
       "RuneMagic": {
         "Range": "Range",
         "Duration": "Duration",
-        "RitualQ": "Ritual?",
-        "EnchantmentQ": "Enchantment?",
         "StackableQ": "Stackable?",
         "OneUseQ": "One Use?",
         "Cult": "Cult",
@@ -714,6 +712,8 @@
         "SkillCategory": {}
       },
       "Spell": {
+        "RitualQ": "Ritual?",
+        "EnchantmentQ": "Enchantment?",
         "DurationEnum": {
           "": "None",
           "instant": "Instant",
