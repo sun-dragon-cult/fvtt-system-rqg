@@ -685,7 +685,6 @@
           "": "None",
           "instant": "Instant",
           "temporal": "Temporal",
-          "duration": "Duration",
           "focused": "Focused",
           "permanent": "Permanent",
           "special": "Special"
