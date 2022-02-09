@@ -4,6 +4,7 @@ import { ActorMigration, applyMigrations, ItemMigration } from "./applyMigration
 import { changeRuneExperienceFieldName } from "./migrations-item/changeRuneExperienceFieldName";
 import { renameRuneMagicDurationSpecial } from "./migrations-item/renameRuneMagicDurationSpecial";
 import { moveRuneIcons } from "./migrations-item/moveRuneIcon";
+import { renameSkillIcons } from "./migrations-item/renameSkillIcons";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -37,6 +38,7 @@ export async function applyDefaultWorldMigrations(): Promise<void> {
     changeRuneExperienceFieldName,
     renameRuneMagicDurationSpecial,
     moveRuneIcons,
+    renameSkillIcons,
   ];
   const worldActorMigrations: ActorMigration[] = [migrateActorDummy];
 
