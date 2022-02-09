@@ -11,14 +11,14 @@
     {
       "name": "Wake",
       "email": "ake+rqg@wivange.se"
+    },
+    {
+      "name": "Moonpile",
+      "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "packs": [
     {
       "name": "pc-runes",

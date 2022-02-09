@@ -13,7 +13,7 @@
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience-gain-fixed">
                 {{#if forChar}}
-                {{localize "RQG.Dialog.improveAbilityDialog.gainchar" gain=adapter.experienceGainFixed}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=adapter.experienceGainFixed}}
                 {{else}}
                 {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.experienceGainFixed}}
                 {{/if}}
@@ -22,7 +22,7 @@
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience-gain-random"
                     {{#if adapter.showExperience}}checked="checked"{{/if}}>
                 {{#if forChar}}
-                {{localize "RQG.Dialog.improveAbilityDialog.gainchar" gain=adapter.experienceGainRandom}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=adapter.experienceGainRandom}}
                 {{else}}
                 {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.experienceGainRandom}}
                 {{/if}}
@@ -50,7 +50,7 @@
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox"
                     value="training-gain-random" {{#unless adapter.showExperience}}checked="checked"{{/unless}}>
                 {{#if adapter.forChar}}
-                {{localize "RQG.Dialog.improveAbilityDialog.gainchar" gain=adapter.trainingGainRandom}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=adapter.trainingGainRandom}}
                 {{else}}
                 {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.trainingGainRandom}}
                 {{/if}}
@@ -71,7 +71,7 @@
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox"
                     value="research-gain-random" {{#unless adapter.showExperience}}checked="checked"{{/unless}}>
-                {{localize "RQG.Dialog.improveAbilityDialog.gainchar" gain=adapter.researchGainRandom}}
+                {{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=adapter.researchGainRandom}}
             </label>
         </div>
         {{/if}}

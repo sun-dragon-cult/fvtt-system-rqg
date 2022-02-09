@@ -1,11 +1,11 @@
-import { getGame, getRequiredDomDataset } from "../system/util";
+import { getGame, getRequiredDomDataset, localize } from "../system/util";
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
   Data extends object = ItemSheet.Data<Options>
 > extends ItemSheet<Options, Data> {
   get title(): string {
-    return `${getGame().i18n.localize("ITEM.Type" + this.object.type.titleCase())}: ${
+    return `${localize("ITEM.Type" + this.object.type.titleCase())}: ${
       this.object.name
     }`;
   }
@@ -45,7 +45,7 @@ export class RqgItemSheet<
             {
               icon: "icons/svg/aura.svg",
               changes: [],
-              label: "New Active Effect",
+              label: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
               transfer: true,
               disabled: false,
             },
@@ -55,7 +55,7 @@ export class RqgItemSheet<
           const e = await item
             .createEmbeddedDocuments("ActiveEffect", [effect.toObject()])
             .catch((reason: any) => {
-              ui.notifications?.error("Couldn't create Active Effect");
+              ui.notifications?.error(localize("RQG.Item.Notification.CantCreateActiveEffect"));
               throw reason;
             });
           e[0].id && new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);

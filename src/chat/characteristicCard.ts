@@ -2,9 +2,12 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { Characteristic } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "../actors/rqgActor";
 import {
+  activateChatTab,
   getActorFromIds,
   getGame,
   getSpeakerName,
+  localize,
+  localizeCharacteristic,
   moveCursorToEnd,
   requireValue,
   RqgError,
@@ -37,12 +40,13 @@ type CharacteristicCardFlags = {
 };
 
 export class CharacteristicCard {
+  
   public static async show(
     characteristic: CharacteristicData,
     actor: RqgActor,
     token: TokenDocument | null | undefined
   ): Promise<void> {
-    requireValue(actor.id, "Called show characteristic Card with actor without id");
+    requireValue(actor.id, localize("RQG.Dialog.characteristicCard.CardWithoutActorIdError"));
     const defaultDifficulty = 5;
     const defaultModifier = 0;
     const flags: CharacteristicCardFlags = {
@@ -58,26 +62,29 @@ export class CharacteristicCard {
           defaultModifier
         ),
       },
-      difficultyOptions: {
-        0: "Nearly impossible (*0.5)",
-        1: "Very Hard (*1)",
-        2: "Hard (*2)",
-        3: "Moderate (*3)",
-        4: "Easy (*4)",
-        5: "Simple Action (*5)",
-      },
+      difficultyOptions: CharacteristicCard.getDifficultyOptions(),
     };
-
-    // @ts-ignore 0.8 tabs
-    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
+    
     await ChatMessage.create(await CharacteristicCard.renderContent(flags));
+    activateChatTab(); 
+  }
+
+  private static getDifficultyOptions(){
+    return {
+      0: localize("RQG.Game.RollDifficulty.0"),
+      1: localize("RQG.Game.RollDifficulty.1"),
+      2: localize("RQG.Game.RollDifficulty.2"),
+      3: localize("RQG.Game.RollDifficulty.3"),
+      4: localize("RQG.Game.RollDifficulty.4"),
+      5: localize("RQG.Game.RollDifficulty.5"),
+    }
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
     const chatMessage = getGame().messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
     if (!flags || !chatMessage) {
-      const msg = "couldn't find chatmessage";
+      const msg = localize("RQG.Dialog.Common.CantFindChatMessageError");
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
@@ -124,7 +131,7 @@ export class CharacteristicCard {
     const chatMessage = getGame().messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg as CharacteristicCardFlags;
     if (!flags || !chatMessage) {
-      const msg = "couldn't find chatmessage";
+      const msg = localize("RQG.Dialog.Common.CantFindChatMessageError");
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
@@ -147,7 +154,7 @@ export class CharacteristicCard {
         speakerName
       );
     } else {
-      ui.notifications?.warn("Couldn't find actor to do roll");
+      ui.notifications?.warn(localize("RQG.Dialog.Common.CantFindActorToDoRollFromChatCardWarn"));
     }
 
     // Enabling the form again after DsN animation is finished TODO doesn't wait
@@ -163,8 +170,17 @@ export class CharacteristicCard {
     actor: RqgActor,
     speakerName: string
   ): Promise<void> {
+    let tempDifficulty = difficulty;
+    if (difficulty === 0.5) {
+      tempDifficulty = 0;
+    }
+    const localizedDifficulty = localize(`RQG.Game.RollDifficulty.${tempDifficulty}`);
+    let flavor = localize("RQG.Dialog.characteristicCard.RollFlavor", {difficulty: localizedDifficulty, name: localizeCharacteristic(characteristicName)});
+    if (modifier !== 0) {
+      flavor += localize("RQG.Dialog.characteristicCard.RollFlavorModifier", {modifier: modifier});
+    }
     const result = await Ability.roll(
-      characteristicName + " check",
+      flavor,
       characteristicValue * difficulty,
       modifier,
       speakerName
@@ -183,7 +199,11 @@ export class CharacteristicCard {
       !actor.data.data.characteristics.power.hasExperience
     ) {
       await actor.update({ "data.characteristics.power.hasExperience": true });
-      ui.notifications?.info("🎉 Yey, you got an experience check on power!");
+      const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+        actorName: actor.name,
+        itemName: localizeCharacteristic("power"),
+      });
+      ui.notifications?.info(msg);
     }
   }
 
@@ -217,12 +237,7 @@ export class CharacteristicCard {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor:
-        "Characteristic: " +
-        flags.characteristic.name +
-        " (" +
-        flags.characteristic.data.value +
-        ")",
+      flavor: localize("RQG.Dialog.characteristicCard.CardFlavor", {name: localizeCharacteristic(flags.characteristic.name), value: flags.characteristic.data.value}),
       user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,

@@ -1,0 +1,20 @@
+<form>
+  <label>
+    {{localize "RQG.Item.HitLocation.HealWound.SelectWoundToHeal" hitLocationName=hitLocationName}}
+  </label>
+  <div class="woundlist">
+    {{#each wounds}}
+      <label>
+        <input type="radio" name="wound" value="{{@index}}" />
+        {{this}}
+      </label>
+      &nbsp;
+    {{/each}}
+  </div>
+  <br />
+  <label>{{localize "RQG.Item.HitLocation.HealWound.HitPointsToHeal"}}
+    <input id="healWoundPoints" type="number" name="heal" min="0" max="99" />
+  </label>
+  <br />
+  <br />
+</form>

@@ -6,7 +6,7 @@ import {
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { assertItemType, getAllRunesIndex, getJournalEntryName, RqgError } from "../../system/util";
+import { assertItemType, getAllRunesIndex, getJournalEntryName, localize, RqgError } from "../../system/util";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "../../actors/rqgActor";
@@ -84,7 +84,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       const pack = elem.dataset.journalPack;
       const id = elem.dataset.journalId;
       if (!id) {
-        const msg = "couldn't find linked journal entry from Skill Item Sheet";
+        const msg = localize("RQG.Item.Skill.Notification.CantFindSkillJournalEntryError", {skillName: this.item.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg, elem, pack, id);
       }
@@ -108,7 +108,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
         {}
       );
     } else {
-      ui.notifications?.warn("You can only drop a journalEntry");
+      ui.notifications?.warn(localize("RQG.Item.Skill.Notification.CanOnlyDropJournalEntryWarning"));
     }
   }
 }

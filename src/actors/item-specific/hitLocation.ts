@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgError } from "../../system/util";
+import { localize, RqgError } from "../../system/util";
 
 export class HitLocation extends AbstractEmbeddedItem {
   // public static init() {
@@ -14,13 +14,13 @@ export class HitLocation extends AbstractEmbeddedItem {
   public static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.data.type !== ItemTypeEnum.HitLocation) {
       const msg =
-        "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation";
+        localize("RQG.Item.Notification.ItemWasNotHitLocationError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
     const actor = item.actor;
     if (!actor) {
-      const msg = "hitlocation item didn't have an actor";
+      const msg = localize("RQG.Item.Notification.HitLocationDoesNotHaveActorError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
@@ -43,7 +43,7 @@ export class HitLocation extends AbstractEmbeddedItem {
     // Calc HP
     const totalHp = actorData.attributes.hitPoints.max;
     if (totalHp == null) {
-      const msg = "Actor doesn't have max hitPoints";
+      const msg = localize("RQG.Item.Notification.ActorDoesNotHaveMaxHpError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, actor);
     }

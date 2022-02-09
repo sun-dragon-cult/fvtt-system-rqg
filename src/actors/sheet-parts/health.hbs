@@ -1,7 +1,7 @@
 <div class="health">
-  <h2 class="flex-col">Health</h2>
+  <h2 class="flex-col">{{localize "RQG.Actor.Health.Health"}}</h2>
   <div class="flex-row nowrap flex-align-center">
-    <label>Total Hit Points
+    <label>{{localize "RQG.Actor.Health.TotalHitPoints"}}
       <input
         type="number"
         min="-99"
@@ -10,28 +10,33 @@
         value="{{characterData.attributes.hitPoints.value}}"
       > / {{characterData.attributes.hitPoints.max}}
     </label>
-    <label class="text-right"> Healing rate {{characterData.attributes.healingRate}}/week</label>
+    <label class="text-right">{{localize "RQG.Actor.Health.HealingRatePerWeek" healingRate=characterData.attributes.healingRate }}</label>
   </div>
   <div class="grid hit-location">
     <div class="headings"></div>
-    <div class="head1-4">Hit Location</div>
-    <div class="head5"><span class="text-center">HP</span></div>
-    <div class="head6"><span class="text-right">AP</span></div>
-    <div class="head7">Wounds</div>
+    <div class="head1-4">{{localize "RQG.Actor.Health.HitLocation"}}</div>
+    <div class="head5"><span class="text-center">{{localize "RQG.Actor.Health.HitPointsAbbr"}}</span></div>
+    <div class="head6"><span class="text-right">{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span></div>
+    <div class="head7">{{localize "RQG.Actor.Health.Wounds"}}</div>
     {{#each ownedItems.hitLocation}}
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}}  data-item-id="{{id}}"><span class="text-right">{{data.data.dieFrom}}</span></div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">-</div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right">{{data.data.dieTo}}</span></div>
-      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">{{name}} {{#unless (eq data.data.hitLocationHealthState "healthy")}}<i>&nbsp;{{data.data.hitLocationHealthState}}</i>{{/unless}}</div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">
+        {{name}}
+        {{#unless (eq data.data.hitLocationHealthState "healthy")}}
+          <i>&nbsp;{{toLowerCase (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." data.data.hitLocationHealthState))}}</i>
+        {{/unless}}
+      </div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right nowrap">{{data.data.hitPoints.value}} / {{this.data.data.hitPoints.max}}</span></div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}"><span class="text-right">{{data.data.armorPoints}}</span></div>
       <div {{#if @root.isGM}}class="hit-location contextmenu"{{/if}} data-item-id="{{id}}">
-        <div data-item-heal-wound title="Heal wound" class="text-right nowrap">
+        <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}" class="text-right nowrap">
           {{#each data.data.wounds}}
           <i class="fas fa-notes-medical"></i> {{this}}
           {{/each}}
         </div>
-        <div class="ml-5 text-right" title="Add wound" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></div>
+        <div class="ml-5 text-right" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></div>
       </div>
     {{/each}}
   </div>

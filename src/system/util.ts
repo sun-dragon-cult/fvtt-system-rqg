@@ -288,3 +288,45 @@ export function convertDeleteKeyToFoundrySyntax(obj: object): object {
 }
 
 export const deleteKeyPrefix = "--=";
+
+export function localize(key: string, data?: Record<string, unknown>): string {
+  const result = getGame().i18n.format(key, data);
+  if (result === key) {
+    console.log(`Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en.json).`);
+  }
+  return result;
+}
+
+/**
+ * Formats the value as a modifier, ie negative numbers have a "-" and zero or positive numbers have a "+"
+ * @param value The value to format
+ * @returns A string with the value formatted as a modifier.
+ */
+export function formatModifier(value: number): string {
+  if (value < 0) {
+    return String(value);
+  } else {
+    return "+" + String(value);
+  }
+}
+
+/**
+ * Formats and localizes a characteristic name.
+ * @param characteristic ie: "strength"
+ * @returns Fully formatted and localized name, ie: "Strength (STR)"
+ */
+export function localizeCharacteristic(characteristic: string): string {
+  const name = localize(`RQG.Actor.Characteristics.${characteristic}-full`);
+  const abbr = localize(`RQG.Actor.Characteristics.${characteristic}`);
+  return localize(`RQG.Actor.Characteristics.format`, {name: name, abbr: abbr})
+}
+
+/**
+ * Sets a the Chat sidebar tab to active.
+ * @param tabName ie: ui.sidebar.tabs.chat.tabName
+ */
+export function activateChatTab() {
+  // TODO: add player setting to allow skipping this if they don't like the tab changing
+  // @ts-ignore 0.8 tabs
+  ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
+}

@@ -1,16 +1,15 @@
 <div>
-  <h2>Spirit Combat</h2>
+  <h2>{{localize "RQG.Actor.Combat.SpiritCombat"}}</h2>
   <div class="flex-row nowrap flex-align-center">
-    <label data-damage-roll="{{characterData.attributes.spiritCombatDamage}}">Spirit Combat Damage
+    <label data-damage-roll="{{characterData.attributes.spiritCombatDamage}}">{{localize "RQG.Actor.Combat.SpiritCombatDamage"}}
       {{characterData.attributes.spiritCombatDamage}}</label>
   </div>
   {{#if spiritCombatSkillData}}
   <div class="grid spirit-combat">
-    <div data-item-id="{{spiritCombatSkillData._id}}" class="skill contextmenu" data-item-roll title="Roll">
-      <img class="item" src="{{spiritCombatSkillData.img}}">
-      Spirit Combat
+    <div data-item-id="{{spiritCombatSkillData._id}}" class="skill contextmenu" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
+      {{localize "RQG.Actor.Combat.SpiritCombat"}}
     </div>
-    <div data-item-id="{{spiritCombatSkillData._id}}" class="skill contextmenu" data-item-roll title="Roll"><span
+    <div data-item-id="{{spiritCombatSkillData._id}}" class="skill contextmenu" data-item-roll title="{{localize "RQG.Game.RollTitle"}}"><span
       class="text-right {{#if spiritCombatSkillData.data.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData._id @root.data._id @root.tokenId}}%</span>
     </div>
   </div>

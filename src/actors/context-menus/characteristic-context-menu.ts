@@ -1,17 +1,18 @@
 import { CharacteristicCard } from "../../chat/characteristicCard";
 import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
-import { getDomDataset, getGame, getGameUser, requireValue, RqgError } from "../../system/util";
+import { activateChatTab, getDomDataset, getGame, getGameUser, localize, localizeCharacteristic, requireValue, RqgError } from "../../system/util";
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../dialog/improveCharacteristicDialog";
+import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: "Roll (click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    name: localize("RQG.Game.RollCard"),
+    icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
@@ -26,8 +27,8 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: "Direct Roll *5 (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    name: localize("RQG.Game.RollCharacteristicQuick"),
+    icon: ContextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
@@ -43,8 +44,8 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: "Toggle Experience",
-    icon: '<i class="fas fa-lightbulb"></i>',
+    name: localize("RQG.ContextMenu.ToggleExperience"),
+    icon: ContextMenuRunes.ToggleExperience,
     condition: (el: JQuery) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       return characteristicName === "power";
@@ -56,8 +57,8 @@ export const characteristicMenuOptions = (
       }),
   },
   {
-    name: "Improve",
-    icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
+    name: localize("RQG.ContextMenu.ImproveItem", {itemType: localize("RQG.Actor.Characteristics.Characteristic")}),
+    icon: ContextMenuRunes.Improve,
     condition: (el: JQuery): boolean => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
       // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
@@ -68,7 +69,7 @@ export const characteristicMenuOptions = (
     },
     callback: (el: JQuery) => {
       const charName = getDomDataset(el, "characteristic");
-      requireValue(charName, "Couldn't find dataset for characteristic");
+      requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
       const characteristic = (actor.data.data.characteristics as any)[charName];
       characteristic.name = charName;
@@ -77,12 +78,12 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: "Initialize Characteristic",
-    icon: '<i class="fas fa-dice-three"></i>',
+    name: localize("RQG.ContextMenu.InitializeCharacteristic"),
+    icon: ContextMenuRunes.InitializeCharacteristics,
     condition: (): boolean => !!getGame().user?.isGM,
     callback: async (el: JQuery) => {
       const characteristic = getDomDataset(el, "characteristic");
-      requireValue(characteristic, "Couldn't find dataset for characteristic");
+      requireValue(characteristic, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
       const confirmed = await confirmInitializeDialog(actor.name ?? "", characteristic);
       if (confirmed) {
         const updateData = await getCharacteristicUpdate(
@@ -96,8 +97,8 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: "Initialize All Characteristics",
-    icon: '<i class="fas fa-dice"></i>',
+    name: localize("RQG.ContextMenu.InitializeAllCharacteristics"),
+    icon: ContextMenuRunes.InitializeAllCharacteristics,
     condition: (): boolean => !!getGame().user?.isGM,
     callback: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
@@ -125,8 +126,9 @@ async function getCharacteristicUpdate(
     await r.toMessage({
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: `Initialize ${characteristic}`,
+      flavor: localize("RQG.ContextMenu.InitializeResultCard", {char: localizeCharacteristic(characteristic)}),
     });
+    activateChatTab();
   }
   return {
     data: { characteristics: { [characteristic]: { value: Number(r.total) } } },
@@ -170,7 +172,7 @@ function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: 
     };
   } else {
     throw new RqgError(
-      `Couldn't find characteristic name [${characteristicName}] on actor ${actor.name} to do an action from the characteristics context menu.`
+      localize("RQG.Contextmenu.Notification.CharacteristicNotFound", {characteristicName: characteristicName, actorName: actor.name})
     );
   }
 }
@@ -181,15 +183,11 @@ async function confirmInitializeDialog(
 ): Promise<boolean> {
   return await new Promise(async (resolve) => {
     const title = !!characteristic
-      ? `Overwrite ${getGame().i18n.localize(
-          "RQG.Actor.Characteristics." + characteristic
-        )} on ${actorName}`
-      : `Overwrite all characteristics on ${actorName}`;
+      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialogTitle", {characteristicName: localizeCharacteristic(characteristic), actorName:  actorName})
+      : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialogTitle", {actorName:  actorName});
     const content = !!characteristic
-      ? `Do you want to overwrite the current value of ${getGame().i18n.localize(
-          "RQG.Actor.Characteristics." + characteristic
-        )}? This may also set current Hit Points to the new maximum Hit Points and set current Magic Points to the new maximum Magic Points.`
-      : `Do you want to overwrite the current value of all characteristics? This may also set current Hit Points to the new maximum Hit Points and set current Magic Points to the new maximum Magic Points.`;
+      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialog", {characteristicName: localizeCharacteristic(characteristic)})
+      : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialog");
     const dialog = new Dialog({
       title: title,
       content: content,
@@ -197,14 +195,14 @@ async function confirmInitializeDialog(
       buttons: {
         submit: {
           icon: '<i class="fas fa-check"></i>',
-          label: "Confirm",
+          label: localize("RQG.Dialog.Common.btnConfirm"),
 
           callback: () => {
             resolve(true);
           },
         },
         cancel: {
-          label: "Cancel",
+          label: localize("RQG.Dialog.Common.btnCancel"),
           icon: '<i class="fas fa-times"></i>',
           callback: () => {
             resolve(false);

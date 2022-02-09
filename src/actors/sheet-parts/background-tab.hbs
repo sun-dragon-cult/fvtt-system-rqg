@@ -1,171 +1,253 @@
-<h2>{{localize 'RQG.Actor.Background.Background'}}</h2>
+<h2>{{localize "RQG.Actor.Background.Background"}}</h2>
 <div class="flex-row flex-wrap">
   <fieldset>
-    <legend>{{localize 'RQG.Actor.Background.BaseData'}}</legend>
+    <legend>{{localize "RQG.Actor.Background.BaseData"}}</legend>
 
     <div class="nowrap">
       {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.BirthYear'}}
-        <input type="number" min="0" max="9999" name="data.background.birthyear"
-          value="{{characterData.background.birthyear}}">
-      </label>
-      {{else if characterData.background.birthyear}}
-      <b>{{localize 'RQG.Actor.Background.BirthYear'}}</b> {{characterData.background.birthyear}}
-      {{/if}}
-    </div>
-
-    <div class="nowrap">
-      {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.Age'}}
-        <input type="number" min="0" max="999" name="data.background.age" value="{{characterData.background.age}}">
-      </label>
-      {{else if characterData.background.age}}
-      <b>{{localize 'RQG.Actor.Background.Age'}}</b> {{characterData.background.age}}
-      {{/if}}
-    </div>
-
-    <div class="nowrap">
-      {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.Gender'}}
-        <input type="text" name="data.background.gender" value="{{characterData.background.gender}}" size="10">
-      </label>
-      {{else if data.data.background.gender}}
-      <b>{{localize 'RQG.Actor.Background.Gender'}}</b> {{data.data.background.gender}}
-      {{/if}}
-    </div>
-
-    <div class="nowrap">
-      {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.Species'}}
-        <input type="text" name="data.background.species" value="{{data.data.background.species}}" size="20">
-      </label>
-      {{else if data.data.background.species}}
-      <b>{{localize 'RQG.Actor.Background.Species'}}</b> {{data.data.background.species}}
-      {{/if}}
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>{{localize 'RQG.Actor.Background.Origin'}}</legend>
-
-    <div class="nowrap">
-      {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.Homeland.Heading'}}
-        <select name="data.background.homeland">
-          {{#select data.data.background.homeland}} {{#each homelands}}
-          <option value="{{this}}">{{localize (concat 'RQG.Actor.Background.Homeland.' this)}}</option>
-          {{/each}} {{/select}}
-        </select>
-      </label>
-      {{else if data.data.background.homeland}}
-      <b>{{localize 'RQG.Actor.Background.Homeland.Heading'}}</b> {{localize (concat 'RQG.Actor.Background.Homeland.'
-      data.data.background.homeland)}}
-      {{/if}}
-    </div>
-
-    <div class="nowrap">
-      {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.TownHomeArea'}}
-        <input type="text" name="data.background.town" value="{{data.data.background.town}}" size="30">
-      </label>
-      {{else if data.data.background.town}}
-      <b>{{localize 'RQG.Actor.Background.TownHomeArea'}}</b> {{data.data.background.town}}
-      {{/if}}
-    </div>
-
-    <div class="nowrap">
-      {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.Tribe'}}
-        <input type="text" name="data.background.tribe" value="{{data.data.background.tribe}}" size="30">
-      </label>
-      {{else if data.data.background.tribe}}
-      <b>{{localize 'RQG.Actor.Background.Tribe'}}</b> {{data.data.background.tribe}}
-      {{/if}}
-    </div>
-
-    <div class="nowrap">
-      {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.Clan'}}
-        <input type="text" name="data.background.clan" value="{{data.data.background.clan}}" size="30">
-      </label>
-      {{else if data.data.background.clan}}
-      <b>{{localize 'RQG.Actor.Background.Clan'}}</b> {{data.data.background.clan}}
-      {{/if}}
-    </div>
-
-  </fieldset>
-
-  <fieldset>
-    <legend>{{localize 'RQG.Actor.Background.Circumstance'}}</legend>
-
-    <div class="nowrap">
-      {{#if isGM}}
-      <span data-reputation-roll>
-        <img src="{{defaultItemIconSrc "Reputation"}}" class="item">
-        <label for="data.background.reputation">
-          {{localize 'RQG.Actor.Background.Reputation'}}
+        <label>{{localize "RQG.Actor.Background.BirthYear"}}
+          <input
+            type="number"
+            min="0"
+            max="9999"
+            name="data.background.birthyear"
+            value="{{characterData.background.birthyear}}"
+          />
         </label>
-      </span>
-      <span class="text-right">
-        <input type="number" min="0" max="999" name="data.background.reputation"
-          value="{{data.data.background.reputation}}" />
-      </span>%
+      {{else if characterData.background.birthyear}}
+        <b>{{localize "RQG.Actor.Background.BirthYear"}}</b>
+        {{characterData.background.birthyear}}
+      {{/if}}
+    </div>
+
+    <div class="nowrap">
+      {{#if isGM}}
+        <label>{{localize "RQG.Actor.Background.Age"}}
+          <input
+            type="number"
+            min="0"
+            max="999"
+            name="data.background.age"
+            value="{{characterData.background.age}}"
+          />
+        </label>
+      {{else if characterData.background.age}}
+        <b>{{localize "RQG.Actor.Background.Age"}}</b>
+        {{characterData.background.age}}
+      {{/if}}
+    </div>
+
+    <div class="nowrap">
+      {{#if isGM}}
+        <label>{{localize "RQG.Actor.Background.Gender"}}
+          <input
+            type="text"
+            name="data.background.gender"
+            value="{{characterData.background.gender}}"
+            size="10"
+          />
+        </label>
+      {{else if data.data.background.gender}}
+        <b>{{localize "RQG.Actor.Background.Gender"}}</b>
+        {{data.data.background.gender}}
+      {{/if}}
+    </div>
+
+    <div class="nowrap">
+      {{#if isGM}}
+        <label>{{localize "RQG.Actor.Background.Species"}}
+          <input
+            type="text"
+            name="data.background.species"
+            value="{{data.data.background.species}}"
+            size="20"
+          />
+        </label>
+      {{else if data.data.background.species}}
+        <b>{{localize "RQG.Actor.Background.Species"}}</b>
+        {{data.data.background.species}}
+      {{/if}}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
+
+    <div class="nowrap">
+      {{#if isGM}}
+        <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}
+          <select name="data.background.homeland">
+            {{#select data.data.background.homeland}}
+              {{#each homelands}}
+                <option value="{{this}}">{{localize
+                    (concat "RQG.Actor.Background.Homeland." this)
+                  }}</option>
+              {{/each}}
+            {{/select}}
+          </select>
+        </label>
+      {{else if data.data.background.homeland}}
+        <b>{{localize "RQG.Actor.Background.Homeland.Heading"}}</b>
+        {{localize (concat "RQG.Actor.Background.Homeland." data.data.background.homeland)}}
+      {{/if}}
+    </div>
+
+    <div class="nowrap">
+      {{#if isGM}}
+        <label>{{localize "RQG.Actor.Background.TownHomeArea"}}
+          <input
+            type="text"
+            name="data.background.town"
+            value="{{data.data.background.town}}"
+            size="30"
+          />
+        </label>
+      {{else if data.data.background.town}}
+        <b>{{localize "RQG.Actor.Background.TownHomeArea"}}</b>
+        {{data.data.background.town}}
+      {{/if}}
+    </div>
+
+    <div class="nowrap">
+      {{#if isGM}}
+        <label>{{localize "RQG.Actor.Background.Tribe"}}
+          <input
+            type="text"
+            name="data.background.tribe"
+            value="{{data.data.background.tribe}}"
+            size="30"
+          />
+        </label>
+      {{else if data.data.background.tribe}}
+        <b>{{localize "RQG.Actor.Background.Tribe"}}</b>
+        {{data.data.background.tribe}}
+      {{/if}}
+    </div>
+
+    <div class="nowrap">
+      {{#if isGM}}
+        <label>{{localize "RQG.Actor.Background.Clan"}}
+          <input
+            type="text"
+            name="data.background.clan"
+            value="{{data.data.background.clan}}"
+            size="30"
+          />
+        </label>
+      {{else if data.data.background.clan}}
+        <b>{{localize "RQG.Actor.Background.Clan"}}</b>
+        {{data.data.background.clan}}
+      {{/if}}
+    </div>
+
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "RQG.Actor.Background.Circumstance"}}</legend>
+
+    <div class="nowrap">
+      {{#if isGM}}
+        <span data-reputation-roll>
+          <img src="{{defaultItemIconSrc 'Reputation'}}" class="item" />
+          <label for="data.background.reputation">
+            {{localize "RQG.Actor.Background.Reputation"}}
+          </label>
+        </span>
+        <span class="text-right">
+          <input
+            type="number"
+            min="0"
+            max="999"
+            name="data.background.reputation"
+            value="{{data.data.background.reputation}}"
+          />
+        </span>%
       {{else if data.data.background.reputation}}
-      <span data-reputation-roll>
-        <img src="{{defaultItemIconSrc "Reputation"}}" class="item">
-        <b>{{localize 'RQG.Actor.Background.Reputation'}}</b> {{data.data.background.reputation}}%
-      </span>
+        <span data-reputation-roll>
+          <img src="{{defaultItemIconSrc 'Reputation'}}" class="item" />
+          <b>{{localize "RQG.Actor.Background.Reputation"}}</b>
+          {{data.data.background.reputation}}%
+        </span>
       {{/if}}
     </div>
 
-
     <div class="nowrap">
       {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.StandardOfLiving'}}
-        <input type="text" name="data.background.standardOfLiving" value="{{data.data.background.standardOfLiving}}"
-          size="30">
-      </label>
+        <label>{{localize "RQG.Actor.Background.StandardOfLiving"}}
+          <input
+            type="text"
+            name="data.background.standardOfLiving"
+            value="{{data.data.background.standardOfLiving}}"
+            size="30"
+          />
+        </label>
       {{else if data.data.background.standardOfLiving}}
-      <b>{{localize 'RQG.Actor.Background.StandardOfLiving'}}</b> {{data.data.background.standardOfLiving}}
+        <b>{{localize "RQG.Actor.Background.StandardOfLiving"}}</b>
+        {{data.data.background.standardOfLiving}}
       {{/if}}
     </div>
 
     <div class="nowrap">
       {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.Occupation.Heading'}}
-        <select name="data.background.occupation">
-          {{#select data.data.background.occupation}} {{#each occupations}}
-          <option value="{{this}}">{{localize (concat 'RQG.Actor.Background.Occupation.' this)}}</option>
-          {{/each}} {{/select}}
-        </select>
-      </label>
+        <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}
+          <select name="data.background.occupation">
+            {{#select data.data.background.occupation}}
+              {{#each occupations}}
+                <option value="{{this}}">{{localize
+                    (concat "RQG.Actor.Background.Occupation." this)
+                  }}</option>
+              {{/each}}
+            {{/select}}
+          </select>
+        </label>
       {{else if data.data.background.occupation}}
-      <b>{{localize 'RQG.Actor.Background.Occupation.Heading'}}</b> {{localize (concat
-      'RQG.Actor.Background.Occupation.' data.data.background.occupation)}}
+        <b>{{localize "RQG.Actor.Background.Occupation.Heading"}}</b>
+        {{localize (concat "RQG.Actor.Background.Occupation." data.data.background.occupation)}}
       {{/if}}
     </div>
 
     <div class="nowrap">
       {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.BaseIncome'}}
-        <input type="number" min="0" max="99999999" name="data.background.baseIncome"
-          value="{{data.data.background.baseIncome}}">
-      </label>(L)
+        <label>{{localize "RQG.Actor.Background.BaseIncome"}}
+          <input
+            type="number"
+            min="0"
+            max="99999999"
+            name="data.background.baseIncome"
+            value="{{data.data.background.baseIncome}}"
+          />
+        </label>(L)
       {{else if data.data.background.baseIncome}}
-      <b>{{localize 'RQG.Actor.Background.BaseIncome'}}</b> {{data.data.background.baseIncome}} (L)
+        <b>{{localize "RQG.Actor.Background.BaseIncome"}}</b>
+        {{data.data.background.baseIncome}}
+        ({{localize "RQG.Item.Gear.LunarsAbbr"}})
       {{/if}}
     </div>
 
     <div class="nowrap">
       {{#if isGM}}
-      <label>{{localize 'RQG.Actor.Background.Ransom'}}
-        <input type="number" min="0" max="99999999" name="data.background.ransom"
-          value="{{data.data.background.ransom}}">
-      </label>(L) <label> {{localize 'RQG.Actor.Background.RansomDetails'}} <input type="text"
-          name="data.background.ransomDetails" value="{{data.data.background.ransomDetails}}" size="30"></label>
+        <label>{{localize "RQG.Actor.Background.Ransom"}}
+          <input
+            type="number"
+            min="0"
+            max="99999999"
+            name="data.background.ransom"
+            value="{{data.data.background.ransom}}"
+          />
+        </label>(L)
+        <label>
+          {{localize "RQG.Actor.Background.RansomDetails"}}
+          <input
+            type="text"
+            name="data.background.ransomDetails"
+            value="{{data.data.background.ransomDetails}}"
+            size="30"
+          /></label>
       {{else if data.data.background.ransom}}
-      <b>{{localize 'RQG.Actor.Background.Ransom'}}</b> {{data.data.background.ransom}} (L)
-      {{data.data.background.ransomDetails}}
+        <b>{{localize "RQG.Actor.Background.Ransom"}}</b>
+        {{data.data.background.ransom}}
+        ({{localize "RQG.Item.Gear.LunarsAbbr"}})
+        {{data.data.background.ransomDetails}}
       {{/if}}
     </div>
 
@@ -173,8 +255,13 @@
 </div>
 
 {{#if isGM}}
-{{editor content=data.data.background.biography target="data.background.biography" button=true owner=owner
-editable=editable}}
+  {{editor
+    content=data.data.background.biography
+    target="data.background.biography"
+    button=true
+    owner=owner
+    editable=editable
+  }}
 {{else if data.data.background.biography}}
-{{{enrichHtml data.data.background.biography}}}
+  {{{enrichHtml data.data.background.biography}}}
 {{/if}}

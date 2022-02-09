@@ -1,18 +1,20 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { assertItemType, getGameUser, getRequiredDomDataset, RqgError } from "../../system/util";
+import { assertItemType, getGameUser, getRequiredDomDataset, localize, RqgError } from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
+import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
 
 export const passionMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: "Roll (click))",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    name: localize("RQG.Game.RollCard"),
+    icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -20,15 +22,15 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: "Direct Roll (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    name: localize("RQG.Game.RollQuick"),
+    icon: ContextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Passion);
       if (item.data.data.chance == null) {
-        const msg = `Couldn't find itemId [${itemId}] or item Chance (item.data.data.chance) on actor ${actor.name} to do a direct roll for passion item from the passion context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantDirectRollPassionError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -37,14 +39,14 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: "Toggle Experience",
-    icon: '<i class="fas fa-lightbulb"></i>',
+    name: localize("RQG.ContextMenu.ToggleExperience"),
+    icon: ContextMenuRunes.ToggleExperience,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       if (!item || item.data.type !== ItemTypeEnum.Passion) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to toggle experience on passion item from the passion context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantToggleExperiencePassionError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -52,13 +54,13 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: "Improve",
-    icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
+    name: localize("RQG.ContextMenu.ImproveItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion)}),
+    icon: ContextMenuRunes.Improve,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       if (!item || item.data.type !== ItemTypeEnum.Passion) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to improve passion item from the passion context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantImprovePassionError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -73,22 +75,22 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: "Edit back story",
-    icon: '<i class="fas fa-book-open"></i>',
+    name: localize("RQG.ContextMenu.EditPassionBackstory"),
+    icon: ContextMenuRunes.Edit,
     condition: () => true,
     callback: async (el: JQuery) => {
       ui.notifications?.info("TODO Edit Description");
     },
   },
   {
-    name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion)}),
+    icon: ContextMenuRunes.Edit,
     condition: () => getGameUser().isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       if (!item || !item.sheet) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit a passion item from the passion context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantEditPassionError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -96,8 +98,8 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion)}),
+    icon: ContextMenuRunes.Delete,
     condition: () => getGameUser().isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

@@ -23,7 +23,7 @@
       </a>
       {{else}}
       <a class="entity-link invalid" data-entity="JournalEntry" data-id="{{itemData.data.journalId}}"
-        title="{{localize "RQG.Dialog.RuneMagicCard.MissingJournalLinkTitle"}}">
+        title="{{localize "RQG.Dialog.runeMagicCard.MissingJournalLinkTitle"}}">
         <i class="fas fa-book-open"></i> {{itemData.name}}
       </a>
       {{/if}}
@@ -32,7 +32,7 @@
     <div class="flexcol card-options">
       <div class="flexcol card-option">
         <div class="card-option-label">
-          <label for="selectedRune">{{localize "RQG.Dialog.RuneMagicCard.CastUsingRune"}}</label>
+          <label for="selectedRune">{{localize "RQG.Dialog.runeMagicCard.CastUsingRune"}}</label>
         </div>
         <div class="card-option-control">
           {{#each eligibleRunes}}
@@ -40,7 +40,7 @@
             <label><input type="radio" id="select-rune-{{this._id}}" name="selectedRuneId" value="{{this._id}}" {{#if (eq
               this._id ../formData.selectedRuneId)}}checked="true" {{/if}}>
             <img class="rune" src="{{runeImg this.name}}" title="{{this.name}}"> {{this.name}}
-            <span {{#if this.data.hasExperience}}class="experienced" title="{{localize "RQG.Dialog.RuneMagicCard.RuneHasExperienceTitle"}}" {{/if}}>
+            <span {{#if this.data.hasExperience}}class="experienced" title="{{localize "RQG.Dialog.runeMagicCard.RuneHasExperienceTitle"}}" {{/if}}>
               {{this.data.chance}}%
             </span>
             </input></label>
@@ -50,7 +50,7 @@
       </div>
       <div class="flexrow card-option">
         <div class="card-option-label">
-          <label for="runePointCost">{{localize "RQG.Dialog.RuneMagicCard.RunePointCost"}}</label>
+          <label for="runePointCost">{{localize "RQG.Dialog.runeMagicCard.RunePointCost"}}</label>
         </div>
         <div class="card-option-control">
           {{!-- TODO: Rune Magic Spells should have a minimum Rune Point Cost and possibly an optional maximum.
@@ -60,12 +60,12 @@
             {{/unless}} --}}
           <input class="card-number-input{{#if itemData.data.isOneUse}} warning{{/if}}" type="number" min="1" max="999" value="{{formData.runePointCost}}"
             name="runePointCost"  />
-            {{#if itemData.data.isOneUse}}<span title="{{localize "RQG.Dialog.RuneMagicCard.OneUseWarningTip"}}">{{localize "RQG.Dialog.RuneMagicCard.OneUseWarning"}}</span>{{/if}}
+            {{#if itemData.data.isOneUse}}<span title="{{localize "RQG.Dialog.runeMagicCard.OneUseWarningTip"}}">{{localize "RQG.Dialog.runeMagicCard.OneUseWarning"}}</span>{{/if}}
         </div>
       </div>
       <div class="flexrow card-option">
         <div class="card-option-label">
-          <label for="magicPointBoost">{{localize "RQG.Dialog.RuneMagicCard.MagicPointBoost"}}</label>
+          <label for="magicPointBoost">{{localize "RQG.Dialog.runeMagicCard.MagicPointBoost"}}</label>
         </div>
         <div class="card-option-control">
           <input class="card-number-input" type="number" min="0" max="999" value="{{formData.magicPointBoost}}" name="magicPointBoost" />
@@ -78,7 +78,7 @@
 
       <div class="flexcol card-option">
         <div class="card-option-label">
-          <label for="ritualOrMeditation">{{localize "RQG.Dialog.RuneMagicCard.MeditationOrRitual"}}</label>
+          <label for="ritualOrMeditation">{{localize "RQG.Dialog.runeMagicCard.MeditationOrRitual"}}</label>
         </div>
         <div class="card-option-control">
           <select name="ritualOrMeditation" class="chat-select-wide">
@@ -89,7 +89,7 @@
 
       <div class="flexcol card-option">
         <div class="card-option-label">
-          <label for="skillAugmentation">{{localize "RQG.Dialog.RuneMagicCard.SkillAugmentation"}}</label>
+          <label for="skillAugmentation">{{localize "RQG.Dialog.runeMagicCard.SkillAugmentation"}}</label>
         </div>
         <div class="card-option-control">
           <select name="skillAugmentation" class="chat-select-wide">
@@ -110,5 +110,5 @@
     </div>
   </div>
 
-  <button type="submit" data-chat-roll>Roll ({{formData.chance}}%)</button>
+  <button type="submit" data-chat-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=formData.chance}}</button>
 </form>

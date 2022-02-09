@@ -1,8 +1,8 @@
 {{#each ownedItems.runeMagic}}
 {{#unless data.data.cultId}}
 <div data-item-id="{{id}}">
-  <a title="Edit Rune Spell" data-item-edit><i class="fas fa-edit"></i>Choose cult for Rune Spell {{name}}</a>
-  <a title="Delete Rune Spell" data-item-delete><i class="fas fa-trash"></i></a>
+  <a title="{{localize "RQG.Actor.RuneMagic.EditRuneMagicSpellTitle"}}" data-item-edit><i class="fas fa-edit"></i>{{localize "RQG.Actor.RuneMagic.ChooseCultForRuneSpell" name=name }}</a>
+  <a title="{{localize "RQG.Actor.RuneMagic.DeleteRuneMagicSpellTitle"}}" data-item-delete><i class="fas fa-trash"></i></a>
 </div>
 {{/unless}}
 {{/each}}
@@ -18,66 +18,66 @@
   </h2>
   <div class="flex-row flex-wrap gap1rem cult contextmenu">
     <span>
-      <b>Rank:</b> {{localize (concat "RQG.Actor.RuneMagic.CultRank." data.data.rank)}}<br>
-      <b>Rune Points:</b> <input type="number" min="0" max="99" data-item-edit-value="data.runePoints.value" value="{{data.data.runePoints.value}}">/{{data.data.runePoints.max}}
+      <b>{{localize "RQG.Actor.RuneMagic.CultRankLabel"}}</b> {{localize (concat "RQG.Actor.RuneMagic.CultRank." data.data.rank)}}<br>
+      <b>{{localize "RQG.Actor.RuneMagic.RunePoints"}}</b> <input type="number" min="0" max="99" data-item-edit-value="data.runePoints.value" value="{{data.data.runePoints.value}}">/{{data.data.runePoints.max}}
     </span>
     <span>{{{enrichHtml data.data.holyDays}}}</span>
     {{#if data.data.gifts}}
-      <span><b>Gifts:</b>{{{enrichHtml data.data.gifts}}}</span>
+      <span><b>{{localize "RQG.Actor.RuneMagic.Gifts"}}</b>{{{enrichHtml data.data.gifts}}}</span>
     {{/if}}
     {{#if data.data.geases}}
-      <span><b>Geases:</b>{{{enrichHtml data.data.geases}}}</span>
+      <span><b>{{localize "RQG.Actor.RuneMagic.Geases"}}</b>{{{enrichHtml data.data.geases}}}</span>
     {{/if}}
     {{#if data.data.subCults}}
-      <span><b>Sub Cults:</b>{{{enrichHtml data.data.subCults}}}</span>
+      <span><b>{{localize "RQG.Actor.RuneMagic.SubCults"}}</b>{{{enrichHtml data.data.subCults}}}</span>
     {{/if}}
   </div>
   <div class="grid rune-magic">
     <div class="headings"></div>
     <div class="head1"></div>
-    <div class="head2">Rune Spell</div>
-    <div class="head3">Points</div>
-    <div class="head4"><span class="text-center">Range</span></div>
-    <div class="head5"><span class="text-center">Duration</span></div>
-    <div class="head6">Ritual</div>
-    <div class="head7">Enchantment</div>
-    <div class="head8">Stackable</div>
-    <div class="head9">One Use</div>
-    <div class="head10">Chance</div>
+    <div class="head2">{{localize "RQG.Actor.RuneMagic.RuneSpell"}}</div>
+    <div class="head3">{{localize "RQG.Actor.RuneMagic.Points"}}</div>
+    <div class="head4"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Range"}}</span></div>
+    <div class="head5"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Duration"}}</span></div>
+    <div class="head6">{{localize "RQG.Actor.RuneMagic.Ritual"}}</div>
+    <div class="head7">{{localize "RQG.Actor.RuneMagic.Enchantment"}}</div>
+    <div class="head8">{{localize "RQG.Actor.RuneMagic.Stackable"}}</div>
+    <div class="head9">{{localize "RQG.Actor.RuneMagic.OneUse"}}</div>
+    <div class="head10">{{localize "RQG.Actor.RuneMagic.Chance"}}</div>
     {{#each @root.ownedItems.runeMagic}}
     {{#if (eq ../id data.data.cultId)}}
       <div data-item-id="{{id}}" class="rune-magic contextmenu"
            {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
         <img class="item" src="{{img}}">
       </div>
-      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
         {{name}}&nbsp;
         {{#each data.data.runes}}
           <img class="rune" src="{{runeImg this}}" title="{{this}}">
         {{/each}}
       </div>
-      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
         <span class="text-center">{{data.data.points}}</span>
       </div>
-      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
-        <span class="text-center">{{data.data.castingRange}}</span>
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
+        {{#unless data.data.isRitual}}<span class="text-center">{{localize (concat "RQG.Item.Spell.RangeEnum." data.data.castingRange)}}</span>{{/unless}}
       </div>
-      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
-        <span class="text-center">{{data.data.duration}}</span>
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
+        {{#unless data.data.isRitual}}<span class="text-center">{{localize (concat "RQG.Item.Spell.DurationEnum." data.data.duration)}}</span>{{/unless}}
       </div>
-      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
         <span class="text-center">{{yes-no data.data.isRitual}}</span>
       </div>
       <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
         <span class="text-center">{{yes-no data.data.isEnchantment}}</span>
       </div>
-      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
         <span class="text-center">{{yes-no data.data.isStackable}}</span>
       </div>
-      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
         <span class="text-center">{{yes-no data.data.isOneUse}}</span>
       </div>
-      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="Roll">
+      <div data-item-id="{{id}}" data-rune-magic-roll class="rune-magic contextmenu" title="{{localize "RQG.Game.RollTitle"}}">
         <span class="text-right">{{data.data.chance}}%</span>
       </div>
     {{/if}}

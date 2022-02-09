@@ -1,9 +1,12 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import {
+  activateChatTab,
+  formatModifier,
   getActorFromIds,
   getGame,
   getSpeakerName,
   hasOwnProperty,
+  localize,
   moveCursorToEnd,
   requireValue,
   RqgError,
@@ -29,12 +32,15 @@ export class ItemCard {
     actor: RqgActor,
     token: TokenDocument | null
   ): Promise<void> {
-    token && requireValue(token.id, "No id on token");
-    requireValue(actor.id, "No id on actor");
+    token && requireValue(token.id, localize("RQG.Item.Notification.NoIdOnTokenError"));
+    requireValue(actor.id, localize("RQG.Item.Notification.NoIdOnActorError"));
     const defaultModifier = 0;
     const item = actor.items.get(itemId);
     if (!item || !("chance" in item.data.data) || item.data.data.chance == null) {
-      const msg = `Couldn't find item with chance and itemId [${itemId}] on actor ${actor.name} to show item chat card.`;
+      const msg = localize("RQG.Item.Notification.ItemWithIdDoesNotHaveChanceError", {
+        itemId: itemId,
+        actorName: actor.name,
+      });
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
@@ -51,9 +57,8 @@ export class ItemCard {
     };
     flags.itemData.data;
 
-    // @ts-ignore 0.8 tabs
-    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
     await ChatMessage.create(await ItemCard.renderContent(flags));
+    activateChatTab();
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
@@ -120,7 +125,12 @@ export class ItemCard {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await ItemCard.roll(flags.itemData, modifier, actor, speakerName);
     } else {
-      ui.notifications?.warn("Could not find world actor to do ability roll");
+      ui.notifications?.warn(
+        localize("RQG.Item.Notification.CouldNotFindActorByIdsWarn", {
+          actorId: flags.actorId,
+          tokenId: flags.tokenId,
+        })
+      );
     }
     return false;
   }
@@ -133,7 +143,13 @@ export class ItemCard {
   ): Promise<void> {
     // @ts-ignore TODO handle chance
     const chance: number = Number(itemData.data.chance) || 0;
-    const result = await Ability.roll(itemData.name + " check", chance, modifier, speakerName);
+    let flavor = localize("RQG.Dialog.itemCard.RollFlavor", { name: itemData.name });
+    if (modifier !== 0) {
+      flavor += localize("RQG.Dialog.itemCard.RollFlavorModifier", {
+        modifier: formatModifier(modifier),
+      });
+    }
+    const result = await Ability.roll(flavor, chance, modifier, speakerName);
     await ItemCard.checkExperience(actor, itemData, result);
   }
 
@@ -143,10 +159,7 @@ export class ItemCard {
     result: ResultEnum
   ): Promise<void> {
     if (result <= ResultEnum.Success && !itemData.data.hasExperience) {
-      await actor.updateEmbeddedDocuments("Item", [
-        { _id: itemData._id, data: { hasExperience: true } },
-      ]);
-      ui.notifications?.info("Yey, you got an experience check on " + itemData.name + "!");
+      actor.AwardExperience(itemData._id);
     }
   }
 
@@ -154,7 +167,7 @@ export class ItemCard {
     let html = await renderTemplate("systems/rqg/chat/itemCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: flags.itemData.type + ": " + flags.itemData.name,
+      flavor: localize("ITEM.Type" + flags.itemData.type.titleCase()) + ": " + flags.itemData.name,
       user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,

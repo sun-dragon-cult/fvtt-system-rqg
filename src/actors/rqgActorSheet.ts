@@ -3,17 +3,17 @@ import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/backgroun
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { RqgItem } from "../items/rqgItem";
-import { skillMenuOptions } from "./context-menues/skill-context-menu";
-import { combatMenuOptions } from "./context-menues/combat-context-menu";
-import { hitLocationMenuOptions } from "./context-menues/health-context-menu";
-import { passionMenuOptions } from "./context-menues/passion-context-menu";
-import { gearMenuOptions } from "./context-menues/gear-context-menu";
-import { spiritMagicMenuOptions } from "./context-menues/spirit-magic-context-menu";
-import { cultMenuOptions } from "./context-menues/cult-context-menu";
-import { runeMagicMenuOptions } from "./context-menues/rune-magic-context-menu";
-import { runeMenuOptions } from "./context-menues/rune-context-menu";
+import { skillMenuOptions } from "./context-menus/skill-context-menu";
+import { combatMenuOptions } from "./context-menus/combat-context-menu";
+import { hitLocationMenuOptions } from "./context-menus/health-context-menu";
+import { passionMenuOptions } from "./context-menus/passion-context-menu";
+import { gearMenuOptions } from "./context-menus/gear-context-menu";
+import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-menu";
+import { cultMenuOptions } from "./context-menus/cult-context-menu";
+import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
+import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
-import { characteristicMenuOptions } from "./context-menues/characteristic-context-menu";
+import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { createItemLocationTree, LocationNode } from "./item-specific/shared/locationNode";
 import { CharacteristicCard } from "../chat/characteristicCard";
 import { WeaponCard } from "../chat/weaponCard";
@@ -30,6 +30,7 @@ import {
   getGameUser,
   getRequiredDomDataset,
   hasOwnProperty,
+  localize,
   requireValue,
   RqgError,
   usersThatOwnActor,
@@ -225,14 +226,14 @@ export class RqgActorSheet extends ActorSheet<
       result.encumbrance += curr.data.data.encumbrance * curr.data.data.quantity;
       let conv;
       if (curr.data.data.price.estimated > 1) {
-        conv = getGame().i18n.format("RQG.Actor.Gear.CurrencyConversionTipOver1", {
+        conv = localize("RQG.Actor.Gear.CurrencyConversionTipOver1", {
           name: curr.name,
           value: curr.data.data.price.estimated,
         });
       } else if (curr.data.data.price.estimated === 1) {
-        conv = getGame().i18n.format("RQG.Actor.Gear.CurrencyConversionTipLunar");
+        conv = localize("RQG.Actor.Gear.CurrencyConversionTipLunar");
       } else {
-        conv = getGame().i18n.format("RQG.Actor.Gear.CurrencyConversionTipUnder1", {
+        conv = localize("RQG.Actor.Gear.CurrencyConversionTipUnder1", {
           name: curr.name,
           value: 1 / curr.data.data.price.estimated,
         });
@@ -1042,20 +1043,20 @@ export class RqgActorSheet extends ActorSheet<
 
     const itemTypeLoc: string = RqgItem.localizeItemTypeName(item.type);
 
-    const title = getGame().i18n.format("RQG.Dialog.confirmItemDeleteDialog.title", {
+    const title = localize("RQG.Dialog.confirmItemDeleteDialog.title", {
       itemType: itemTypeLoc,
       itemName: item.name,
     });
 
     let content: string;
     if (item.type === ItemTypeEnum.Cult) {
-      content = getGame().i18n.format("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
+      content = localize("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
         itemType: itemTypeLoc,
         itemName: item.name,
         runeMagicSpell: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
       });
     } else {
-      content = getGame().i18n.format("RQG.Dialog.confirmItemDeleteDialog.content", {
+      content = localize("RQG.Dialog.confirmItemDeleteDialog.content", {
         itemType: itemTypeLoc,
         itemName: item.name,
       });
@@ -1069,7 +1070,7 @@ export class RqgActorSheet extends ActorSheet<
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
-            label: getGame().i18n.format("RQG.Dialog.Common.btnConfirm"),
+            label: localize("RQG.Dialog.Common.btnConfirm"),
             callback: async () => {
               const idsToDelete = [];
               if (item.type === ItemTypeEnum.Cult) {
@@ -1091,7 +1092,7 @@ export class RqgActorSheet extends ActorSheet<
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
-            label: getGame().i18n.format("RQG.Dialog.Common.btnCancel"),
+            label: localize("RQG.Dialog.Common.btnCancel"),
             callback: () => null,
           },
         },

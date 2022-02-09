@@ -9,7 +9,7 @@ import { WeaponSheet } from "./weapon-item/weaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
-import { getGame, RqgError } from "../system/util";
+import { getGame, localize, RqgError } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 export class RqgItem extends Item {
@@ -172,6 +172,6 @@ export class RqgItem extends Item {
 
   //** Localizes Item Type Name using ITEM localization used by Foundry.
   public static localizeItemTypeName(itemType: ItemTypeEnum): string {
-    return getGame().i18n.localize("ITEM.Type" + itemType.titleCase());
+    return localize("ITEM.Type" + itemType.titleCase());
   }
 }

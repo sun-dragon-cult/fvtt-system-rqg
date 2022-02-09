@@ -1,4 +1,3 @@
-import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
@@ -6,18 +5,21 @@ import {
   getDomDataset,
   getGame,
   getRequiredDomDataset,
+  localize,
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneMagicCard } from "../../chat/runeMagicCard";
+import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
 
 export const runeMagicMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: "Roll (click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    name: localize("RQG.Game.RollCard"),
+    icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -25,8 +27,8 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: "Direct Roll (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    name: localize("RQG.Game.RollQuick"),
+    icon: ContextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -37,8 +39,8 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: "View Description",
-    icon: '<i class="fas fa-book-open"></i>',
+    name: localize("RQG.ContextMenu.ViewDescription"),
+    icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       let firstItemEl = el[0];
@@ -60,8 +62,8 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic)}),
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -76,8 +78,8 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic)}),
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

@@ -2,12 +2,14 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import {
+  activateChatTab,
   assertItemType,
   getActorFromIds,
   getGame,
   getGameUser,
   getSpeakerName,
   hasOwnProperty,
+  localize,
   logMisconfiguration,
   moveCursorToEnd,
   requireValue,
@@ -55,7 +57,7 @@ export class WeaponCard extends ChatMessage {
     requireValue(actor.id, "No id on actor");
     const skillItem = actor.items.get(skillId);
     if (!skillItem || skillItem.data.type !== ItemTypeEnum.Skill) {
-      const msg = `Couldn't find skill with itemId [${skillItem}] on actor ${actor.name} to show a weapon chat card.`;
+      const msg = localize("RQG.Dialog.weaponCard.CantFindSkillError", {skillId: skillItem, actorName: actor.name});
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
@@ -77,9 +79,8 @@ export class WeaponCard extends ChatMessage {
       },
     };
 
-    // @ts-ignore 0.8 tabs
-    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
     await ChatMessage.create(await WeaponCard.renderContent(flags));
+    activateChatTab();
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
@@ -146,7 +147,7 @@ export class WeaponCard extends ChatMessage {
     }
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
     if (!actor) {
-      ui.notifications?.warn("Couldn't find world actor to do action");
+      ui.notifications?.warn(localize("RQG.Dialog.weaponCard.CantFindActorWarn"));
       return false;
     }
 
@@ -203,15 +204,15 @@ export class WeaponCard extends ChatMessage {
           projectileItemData.data.quantity <= 0
         ) {
           if (originalAmmoQty > 0) {
-            ui.notifications?.warn(`You just used the last of your ${projectileItemData.name}!`);
+            ui.notifications?.warn(localize("RQG.Dialog.weaponCard.UsedLastOfAmmoWarn", {projectileName: projectileItemData.name}));
           } else {
-            ui.notifications?.warn(`You don't have any ${projectileItemData.name} to ${combatManeuver?.name}!`);
+            ui.notifications?.warn(localize("RQG.Dialog.weaponCard.OutOfAmmoWarn", {projectileName: projectileItemData.name, combatManeuverName: combatManeuver?.name}));
             return false;
           }
         }
 
         if (!chatMessage) {
-          const msg = "Couldn't find Chatmessage";
+          const msg = localize("RQG.Dialog.weaponCard.CantFindChatMessageError");
           ui.notifications?.error(msg);
           throw new RqgError(msg);
         }
@@ -231,7 +232,7 @@ export class WeaponCard extends ChatMessage {
         await roll.toMessage({
           speaker: { alias: speakerName },
           type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-          flavor: `Hitlocation`,
+          flavor: localize("RQG.Dialog.weaponCard.HitLocationRollFlavor"),
         });
         return false;
 
@@ -240,7 +241,7 @@ export class WeaponCard extends ChatMessage {
         return false;
 
       default:
-        const msg = `Unknown button "${actionButton}" in weapon chat card`;
+        const msg = localize("RQG.Dialog.weaponCard.UnknownButtonInCardError", {actionButton: actionButton});
         ui.notifications?.error(msg);
         throw new RqgError(msg);
     }
@@ -280,16 +281,8 @@ export class WeaponCard extends ChatMessage {
     result: ResultEnum
   ): Promise<void> {
     assertItemType(skillItemData.type, ItemTypeEnum.Skill);
-    if (result <= ResultEnum.Success && !skillItemData.data.hasExperience) {
-      await actor.updateEmbeddedDocuments("Item", [
-        { _id: skillItemData._id, data: { hasExperience: true } },
-      ]);
-      const specialization = skillItemData.data.specialization
-        ? ` (${skillItemData.data.specialization})`
-        : "";
-      ui.notifications?.info(
-        `Yey, you got an experience check on ${skillItemData.data.skillName}${specialization}!`
-      );
+    if (result <= ResultEnum.Success) {
+      actor.AwardExperience(skillItemData._id);
     }
   }
 
@@ -297,7 +290,7 @@ export class WeaponCard extends ChatMessage {
     let html = await renderTemplate("systems/rqg/chat/weaponCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: "Weapon: " + flags.weaponItemData.name,
+      flavor: localize("RQG.Dialog.weaponCard.WeaponCardFlavor", {weaponName: flags.weaponItemData.name}),
       user: getGameUser().id,
       speaker: { alias: speakerName },
       content: html,
@@ -320,14 +313,14 @@ export class WeaponCard extends ChatMessage {
   ): Promise<void> {
     requireValue(
       flags.formData.combatManeuver,
-      `No combat maneuver in Damage Roll`,
+      localize("RQG.Dialog.weaponCard.NoCombatManeuverInDamageRollError"),
       flags,
       damageRollType
     );
 
     const actor = getActorFromIds(flags.actorId, flags.tokenId);
     if (!actor) {
-      ui.notifications?.warn("Could not find world actor to do damage roll");
+      ui.notifications?.warn(localize("RQG.Dialog.weaponCard.CantFindActorToDoDamageRollWarn"));
       return;
     }
     let damageBonusFormula: string =
@@ -337,8 +330,9 @@ export class WeaponCard extends ChatMessage {
 
     assertItemType(flags.weaponItemData.type, ItemTypeEnum.Weapon);
     const weaponUsage: Usage = (flags.weaponItemData.data.usage as any)[flags.usage];
+    const weaponDamageTag = localize("RQG.Dialog.weaponCard.WeaponDamageTag");
     const weaponDamage = hasOwnProperty(weaponUsage, "damage")
-      ? Roll.parse(`(${weaponUsage.damage})[weapon]`, {})
+      ? Roll.parse(`(${weaponUsage.damage})[${weaponDamageTag}]`, {})
       : [];
 
     if (flags.usage === "missile") {
@@ -357,7 +351,7 @@ export class WeaponCard extends ChatMessage {
     const damageType = weaponUsage.combatManeuvers.find(
       (m) => m.name === flags.formData.combatManeuver
     )?.damageType;
-    requireValue(damageType, "weapon didn't have a combatManeuver");
+    requireValue(damageType, localize("RQG.Dialog.weaponCard.WeaponDoesNotHaveCombatManeuverError"));
 
     if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageRollType)) {
       if (["slash", "impale"].includes(damageType)) {
@@ -377,14 +371,15 @@ export class WeaponCard extends ChatMessage {
           damageRollTerms.push(...WeaponCard.slashImpaleSpecialDamage(weaponUsage.damage));
         } else {
           logMisconfiguration(
-            `This weapon (${flags.weaponItemData.name}) does not have an attack Combat Manuever`,
+            localize("RQG.Dialog.weaponCard.WeaponDoesNotHaveCombatManeuverError", {weaponName: flags.weaponItemData.name}),
             true
           );
         }
       }
     }
     if (damageBonusFormula.length) {
-      damageRollTerms.push(...Roll.parse(`+ ${damageBonusFormula}[dmg bonus]`, {}));
+      const damageBonusDamageTag = localize("RQG.Dialog.weaponCard.DamageBonusDamageTag");
+      damageRollTerms.push(...Roll.parse(`+ ${damageBonusFormula}[${damageBonusDamageTag}]`, {}));
     }
     const maximise = damageRollType === DamageRollTypeEnum.MaxSpecial;
     const roll = Roll.fromTerms(damageRollTerms);
@@ -396,7 +391,7 @@ export class WeaponCard extends ChatMessage {
     await roll.toMessage({
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: `damage: ${WeaponCard.getDamageTypeString(damageType, weaponUsage.combatManeuvers)}`,
+      flavor: `${localize("RQG.Dialog.weaponCard.Damage")}: ${WeaponCard.getDamageTypeString(damageType, weaponUsage.combatManeuvers)}`,
     });
   }
 
@@ -420,16 +415,18 @@ export class WeaponCard extends ChatMessage {
     const fumbleTableName = getGame().settings.get("rqg", "fumbleRollTable");
     const fumbleTable = getGame().tables?.getName(fumbleTableName);
     if (!fumbleTable) {
-      logMisconfiguration(`The fumble table "${fumbleTableName}" is missing`, true);
+      logMisconfiguration(localize("RQG.Dialog.weaponCard.FumbleTableMissingWarn", {fumbleTableName: fumbleTableName}), true);
       return;
     }
     // @ts-ignore TODO draw StoredDocument<RollTable>
     const draw = await fumbleTable.draw({ displayChat: false });
     // Construct chat data
-    const nr = draw.results.length > 1 ? `${draw.results.length} results` : "a result";
+    const numberOfResults = draw.results.length > 1 ? 
+        localize("RQG.Dialog.weaponCard.PluralResults", {numberOfResults: draw.results.length}) 
+        : localize("RQG.Dialog.weaponCard.SingularResult");
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     const messageData: ChatMessageDataConstructorData = {
-      flavor: `Draws ${nr} from the ${fumbleTable.name} table.`,
+      flavor: localize("RQG.Dialog.weaponCard.DamageBonusDamageTag", {numberOfResults: numberOfResults, fumbleTableName: fumbleTableName}),
       user: getGameUser().id,
       speaker: { alias: speakerName },
       whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),
@@ -461,12 +458,14 @@ export class WeaponCard extends ChatMessage {
       const specialDamage = Roll.parse(damageBonus, {});
       const roll = Roll.fromTerms(specialDamage);
       await roll.evaluate({ maximize: true, async: true });
-      return Roll.parse(`+ ${roll.result}[special]`, {});
+      const crushSpecialDamageTag = localize("RQG.Dialog.weaponCard.CrushSpecialDamageTag");
+      return Roll.parse(`+ ${roll.result}[${crushSpecialDamageTag}]`, {});
     }
     return [];
   }
 
   private static slashImpaleSpecialDamage(weaponDamage: string): any[] {
-    return Roll.parse(`+ (${weaponDamage})[special]`, {});
+    const impaleSpecialDamageTag = localize("RQG.Dialog.weaponCard.ImpaleSpecialDamageTag");
+    return Roll.parse(`+ (${weaponDamage})[${impaleSpecialDamageTag}]`, {});
   }
 }

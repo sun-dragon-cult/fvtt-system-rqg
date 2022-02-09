@@ -2,32 +2,37 @@ import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
+  activateChatTab,
   assertItemType,
   getDomDataset,
   getGame,
   getRequiredDomDataset,
+  localize,
   RqgError,
 } from "../../system/util";
 import { ItemCard } from "../../chat/itemCard";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
+import { ContextMenuRunes } from "./contextMenuRunes";
+import { RqgItem } from "../../items/rqgItem";
 
 export const runeMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | null
 ): ContextMenu.Item[] => [
   {
-    name: "Roll (click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    name: localize("RQG.Game.RollCard"),
+    icon: ContextMenuRunes.RollCard,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       await ItemCard.show(itemId, actor, token);
+      activateChatTab();
     },
   },
   {
-    name: "Direct Roll (dbl click)",
-    icon: '<i class="fas fa-dice-d20"></i>',
+    name: localize("RQG.Game.RollQuick"),
+    icon: ContextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -39,8 +44,8 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: "Toggle Experience",
-    icon: '<i class="fas fa-lightbulb"></i>',
+    name: localize("RQG.ContextMenu.ToggleExperience"),
+    icon: ContextMenuRunes.ToggleExperience,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -50,8 +55,8 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: "Improve",
-    icon: '<i class="fas fa-arrow-alt-circle-up"></i>',
+    name: localize("RQG.ContextMenu.ImproveItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
+    icon: ContextMenuRunes.Improve,
     condition: () => true,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -62,8 +67,8 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: "View Description",
-    icon: '<i class="fas fa-book-open"></i>',
+    name: localize("RQG.ContextMenu.ViewDescription"),
+    icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       let firstItemEl = el[0];
@@ -84,15 +89,15 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: "Edit",
-    icon: '<i class="fas fa-edit"></i>',
+    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
+    icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Rune);
       if (!item.sheet) {
-        const msg = `Couldn't find itemsheet [${item?.name}] on actor ${actor.name} to edit the rune item from the rune context menu.`;
+        const msg = localize("RQG.ContextMenu.Notification.CantEditRuneError", {itemId: itemId, actorName: actor.name});
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
@@ -100,8 +105,8 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: "Delete",
-    icon: '<i class="fas fa-trash"></i>',
+    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
+    icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

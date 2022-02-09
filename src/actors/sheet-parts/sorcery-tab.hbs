@@ -1,6 +1,6 @@
 <div class="power flex-row">
   <div>
-    <div class="small-size">Free INT {{freeInt}}</div>
+    <div class="small-size">{{localize "RQG.Actor.Sorcery.FreeINT"}} {{freeInt}}</div>
     <div class="grid skill">
     {{#each ownedItems.skill.magic}}
     {{#if data.data.runes}}
@@ -9,13 +9,13 @@
           {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
           <img class="item" src="{{img}}">
         </div>
-        <div data-item-id="{{id}}" class="skill contextmenu" data-item-roll title="Roll" title="Roll">
+        <div data-item-id="{{id}}" class="skill contextmenu" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" title="{{localize "RQG.Game.RollTitle"}}">
           {{data.data.skillName}}{{#if data.data.specialization}} ({{data.data.specialization}}){{/if}}
           {{#each data.data.runes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
           {{/each}}
         </div>
-        <div data-item-id="{{id}}" class="skill contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="Roll">
+        <div data-item-id="{{id}}" class="skill contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
           <span class="text-right nowrap">{{data.data.chance}}%</span>
         </div>
 
@@ -25,7 +25,7 @@
   </div>
 
   <div>
-    <h2>Techniques</h2>
+    <h2>{{localize "RQG.Actor.Sorcery.Techniques"}}</h2>
     <div class="grid rune">
     {{#each ownedItems.rune.technique}}
       <div data-item-id="{{id}}" class="rune contextmenu"
@@ -39,7 +39,7 @@
   </div>
 
   <div>
-    <h2>Mastered Runes</h2>
+    <h2>{{localize "RQG.Actor.Sorcery.MasteredRunes"}}</h2>
     <div class="grid rune">
       {{#each ownedItems.rune.element}}
         {{#if data.data.isMastered}}

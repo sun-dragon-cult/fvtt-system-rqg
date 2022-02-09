@@ -1,7 +1,14 @@
 import { RqgActor } from "../actors/rqgActor";
 import { getCombatantsSharingToken } from "../combat/combatant-utils";
 import { Ability } from "../data-model/shared/ability";
-import { getActorFromIds, getGame, getSpeakerName, usersThatOwnActor } from "../system/util";
+import {
+  activateChatTab,
+  getActorFromIds,
+  getGame,
+  getSpeakerName,
+  localize,
+  usersThatOwnActor,
+} from "../system/util";
 
 type ReputationFlags = {
   actorId: string;
@@ -10,8 +17,8 @@ type ReputationFlags = {
   modifiedValue: number;
   reputationIcon: string;
   formData: {
-      otherModifiers: number,
-  }
+    otherModifiers: number;
+  };
 };
 
 export class ReputationCard {
@@ -31,8 +38,8 @@ export class ReputationCard {
         otherModifiers: 0,
       },
     };
-    ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
     await ChatMessage.create(await this.renderContent(flags));
+    activateChatTab();
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {}
@@ -64,14 +71,17 @@ export class ReputationCard {
       const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
       await ReputationCard.roll(flags, actor, speakerName);
     } else {
-      ui.notifications?.warn("Couldn't find world actor to do reputation roll");
+      ui.notifications?.warn(
+        localize("RQG.Item.Notification.CouldNotFindActorByIdsWarn", {
+          actorId: flags.actorId,
+          tokenId: flags.tokenId,
+        })
+      );
     }
     return false;
   }
 
-  public static async directroll(
-    actor: RqgActor, token: TokenDocument | null
-  ): Promise<void> {
+  public static async directroll(actor: RqgActor, token: TokenDocument | null): Promise<void> {
     const reputationValue = actor.data.data.background.reputation || 0;
     const iconSettings: any = <ClientSettings>(
       getGame().settings.get("rqg", "defaultItemIconSettings")
@@ -87,9 +97,10 @@ export class ReputationCard {
         otherModifiers: 0,
       },
     };
-    ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui?.sidebar.tabs.chat.tabName); // Switch to chat to make sure the user doesn't miss the chat card
+
     await this.roll(flags, actor, speakerName);
-  } 
+    activateChatTab();
+  }
 
   public static async roll(
     flags: ReputationFlags,
@@ -97,7 +108,7 @@ export class ReputationCard {
     speakerName: string
   ): Promise<void> {
     const result = await Ability.roll(
-      "Check Reputation",
+      localize("RQG.Dialog.reputationCard.CheckReputationFlavor"),
       Number(flags.reputationValue),
       Number(flags.formData.otherModifiers),
       speakerName
@@ -108,7 +119,7 @@ export class ReputationCard {
     let html = await renderTemplate("systems/rqg/chat/reputationCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: "Reputation",
+      flavor: localize("RQG.Dialog.reputationCard.Reputation"),
       user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,
@@ -121,5 +132,3 @@ export class ReputationCard {
     };
   }
 }
-
-
