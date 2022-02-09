@@ -68,7 +68,9 @@ export function renderCombatTracker(app: any, html: any, data: any): void {
       const combatant = currentCombat.data.combatants.find((c: Combatant) => c.id === combId);
       if (!combatant.actor) {
         ui.notifications?.warn(
-          `The combatant [${combatant.name}] references an actor that no longer exists within the world`
+          localize("RQG.Foundry.CombatTracker.CombatantWithoutActor", {
+            combatantName: combatant.name,
+          })
         );
       }
       const readOnly = combatant.actor?.isOwner ? "" : "readonly";
