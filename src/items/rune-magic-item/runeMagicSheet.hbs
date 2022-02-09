@@ -15,14 +15,14 @@
           <label class="mp">{{localize "RQG.Item.RuneMagic.Range"}}<br>
             <select name="data.castingRange">
               {{#select runeMagicData.castingRange}} {{#each sheetSpecific.ranges}}
-              <option value="{{this}}">{{localize (concat "RQG.Item.RuneMagic.RangeEnum." this)}}</option>
+              <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
               {{/each}} {{/select}}
             </select>
           </label><br>
           <label class="mp">{{localize "RQG.Item.RuneMagic.Duration"}}<br>
             <select name="data.duration">
               {{#select runeMagicData.duration}} {{#each sheetSpecific.durations}}
-              <option value="{{this}}">{{localize (concat "RQG.Item.RuneMagic.DurationEnum." this)}}</option>
+              <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
               {{/each}} {{/select}}
             </select>
           </label>          

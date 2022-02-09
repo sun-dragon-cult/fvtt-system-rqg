@@ -681,21 +681,6 @@
       "RuneMagic": {
         "Range": "Range",
         "Duration": "Duration",
-        "DurationEnum": {
-          "": "None",
-          "instant": "Instant",
-          "temporal": "Temporal",
-          "focused": "Focused",
-          "permanent": "Permanent",
-          "special": "Special"
-        },
-        "RangeEnum": {
-          "": "None",
-          "self": "Self",
-          "touch": "Touch",
-          "ranged": "Ranged",
-          "special": "Special"
-        },
         "RitualQ": "Ritual?",
         "EnchantmentQ": "Enchantment?",
         "StackableQ": "Stackable?",
@@ -728,17 +713,7 @@
         },
         "SkillCategory": {}
       },
-      "SpiritMagic": {
-        "VariableQ": "Variable?",
-        "Range": "Range",
-        "RangeEnum": {
-          "": "None",
-          "self": "Self",
-          "touch": "Touch",
-          "ranged": "Ranged",
-          "special": "Special"
-        },
-        "Duration": "Duration",
+      "Spell": {
         "DurationEnum": {
           "": "None",
           "instant": "Instant",
@@ -747,12 +722,24 @@
           "permanent": "Permanent",
           "special": "Special"
         },
-        "Concentration": "Concentration",
+        "RangeEnum": {
+          "": "None",
+          "self": "Self",
+          "touch": "Touch",
+          "ranged": "Ranged",
+          "special": "Special"
+        },
         "ConcentrationEnum": {
           "": "",
           "active": "Active",
           "passive": "Passive"
-        },
+        }
+      },
+      "SpiritMagic": {
+        "VariableQ": "Variable?",
+        "Range": "Range",
+        "Duration": "Duration",
+        "Concentration": "Concentration",
         "SpellFocus": "Spell Focus:",
         "RitualQ": "Ritual?",
         "EnchantmentQ": "Enchantment?",

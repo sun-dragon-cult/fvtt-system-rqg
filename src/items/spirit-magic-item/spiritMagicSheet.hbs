@@ -14,14 +14,14 @@
       <span>{{localize "RQG.Item.SpiritMagic.Range"}}<br>
         <select name="data.castingRange">
           {{#select spiritMagicData.castingRange}} {{#each sheetSpecific.ranges}}
-          <option value="{{this}}">{{localize (concat "RQG.Item.SpiritMagic.RangeEnum." this)}}</option>
+          <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
           {{/each}} {{/select}}
         </select>
       </span>
       <span>{{localize "RQG.Item.SpiritMagic.Duration"}}<br>
         <select name="data.duration">
           {{#select spiritMagicData.duration}} {{#each sheetSpecific.durations}}
-          <option value="{{this}}">{{localize (concat "RQG.Item.SpiritMagic.DurationEnum." this)}}</option>
+          <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
           {{/each}} {{/select}}
         </select>
       </span>
@@ -29,7 +29,7 @@
       <span>{{localize "RQG.Item.SpiritMagic.Concentration"}}<br>
         <select name="data.concentration">
           {{#select spiritMagicData.concentration}} {{#each sheetSpecific.types}}
-          <option value="{{this}}">{{localize (concat "RQG.Item.SpiritMagic.ConcentrationEnum." this)}}</option>
+          <option value="{{this}}">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." this)}}</option>
           {{/each}} {{/select}}
         </select>
       </span>
