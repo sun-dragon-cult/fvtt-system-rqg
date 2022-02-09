@@ -743,8 +743,8 @@
         "SpellFocus": "Spell Focus:",
         "RitualQ": "Ritual?",
         "EnchantmentQ": "Enchantment?",
-        "MatrixIndicator": "(as matrix)",
-        "MatrixQ": "Matrix?",
+        "MatrixIndicator": "(held in matrix)",
+        "MatrixQ": "Held in Matrix?",
         "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
       },
       "Weapon": {
