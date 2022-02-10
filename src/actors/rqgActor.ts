@@ -1,10 +1,10 @@
 import { RqgCalculations } from "../system/rqgCalculations";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
+import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgItem } from "../items/rqgItem";
 import { DamageCalculations } from "../system/damageCalculations";
-import { assertItemType, getGame, hasOwnProperty, localize } from "../system/util";
+import { getGame, hasOwnProperty, localize } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
@@ -240,7 +240,9 @@ export class RqgActor extends Actor {
           options,
           userId
         );
-        updateData && this.updateEmbeddedDocuments("Item", [updateData]);
+        if (updateData?.length) {
+          this.updateEmbeddedDocuments("Item", updateData);
+        }
       });
     }
 

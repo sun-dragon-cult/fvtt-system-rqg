@@ -35,7 +35,9 @@ export class Cult extends AbstractEmbeddedItem {
       const runesCompendiumName = getGame().settings.get("rqg", "runesCompendium");
       const runePack = getGame().packs?.get(runesCompendiumName);
       if (!runePack) {
-        const msg = localize("RQG.Item.Notification.CantFindRunesCompendiumError", {runesCompendiumName: runesCompendiumName});
+        const msg = localize("RQG.Item.Notification.CantFindRunesCompendiumError", {
+          runesCompendiumName: runesCompendiumName,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg, runesCompendiumName);
       }
@@ -43,7 +45,7 @@ export class Cult extends AbstractEmbeddedItem {
       const newRuneIds = newRuneNames.map((newRune) => {
         const newRuneIndex = allRunesIndex.getName(newRune);
         if (newRuneIndex == null) {
-          const msg = localize("RQG.Item.Notification.CantFindCultRuneError", {newRune: newRune});
+          const msg = localize("RQG.Item.Notification.CantFindCultRuneError", { newRune: newRune });
           ui.notifications?.error(msg);
           throw new RqgError(msg, actor, cultItem);
         }
@@ -69,7 +71,7 @@ export class Cult extends AbstractEmbeddedItem {
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
-  static onDeleteItem(actor: RqgActor, cultItem: RqgItem, options: any, userId: string): any {
+  static onDeleteItem(actor: RqgActor, cultItem: RqgItem, options: any, userId: string): any[] {
     const cultRuneMagicItems = actor.items.filter(
       (i) => i.data.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultItem._id
     );

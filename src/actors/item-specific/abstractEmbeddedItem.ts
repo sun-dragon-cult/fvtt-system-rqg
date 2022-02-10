@@ -25,7 +25,12 @@ export abstract class AbstractEmbeddedItem {
    */
   static preUpdateItem(actor: RqgActor, item: RqgItem, result: any[], options: any): void {}
 
-  static onDeleteItem(actor: RqgActor, itemData: RqgItem, options: any, userId: string): any {}
+  /**
+   * Will be called after a set of embedded items are deleted.
+   */
+  static onDeleteItem(actor: RqgActor, itemData: RqgItem, options: any, userId: string): any[] {
+    return [];
+  }
 
   /**
    * Allows each embedded item to prepare its data.

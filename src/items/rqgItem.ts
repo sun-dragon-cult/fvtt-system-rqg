@@ -123,7 +123,7 @@ export class RqgItem extends Item {
     const { parent, pack, ...options } = context;
     if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
-        if (u && u.length > 0) {
+        if (u) {
           const document = parent.items.get(u._id);
           if (!document || document.documentName !== "Item") {
             const msg = "couldn't find item document from result";
@@ -140,12 +140,7 @@ export class RqgItem extends Item {
         }
       });
     }
-
-    // updates[0] will be an empty array when deleting the cult
-    // and an object if there are real updates
-    if (Object.keys(updates[0]).length > 0) {
-      return super.updateDocuments(updates, context);
-    }
+    return super.updateDocuments(updates, context);
   }
 
   // Validate that embedded items are unique (name + type),
