@@ -292,9 +292,15 @@ export const deleteKeyPrefix = "--=";
 export function localize(key: string, data?: Record<string, unknown>): string {
   const result = getGame().i18n.format(key, data);
   if (result === key) {
-    console.log(`Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en.json).`);
+    console.log(
+      `Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en.json).`
+    );
   }
   return result;
+}
+
+export function localizeItemType(itemType: ItemTypeEnum): string {
+  return localize("ITEM.Type" + itemType.titleCase());
 }
 
 /**
@@ -318,7 +324,7 @@ export function formatModifier(value: number): string {
 export function localizeCharacteristic(characteristic: string): string {
   const name = localize(`RQG.Actor.Characteristics.${characteristic}-full`);
   const abbr = localize(`RQG.Actor.Characteristics.${characteristic}`);
-  return localize(`RQG.Actor.Characteristics.format`, {name: name, abbr: abbr})
+  return localize(`RQG.Actor.Characteristics.format`, { name: name, abbr: abbr });
 }
 
 /**

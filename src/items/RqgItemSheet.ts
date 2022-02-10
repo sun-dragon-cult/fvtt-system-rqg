@@ -1,13 +1,12 @@
-import { getGame, getRequiredDomDataset, localize } from "../system/util";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
   Data extends object = ItemSheet.Data<Options>
 > extends ItemSheet<Options, Data> {
   get title(): string {
-    return `${localize("ITEM.Type" + this.object.type.titleCase())}: ${
-      this.object.name
-    }`;
+    return `${localizeItemType(this.object.type)}: ${this.object.name}`;
   }
 
   public activateListeners(html: JQuery): void {
@@ -55,7 +54,11 @@ export class RqgItemSheet<
           const e = await item
             .createEmbeddedDocuments("ActiveEffect", [effect.toObject()])
             .catch((reason: any) => {
-              ui.notifications?.error(localize("RQG.Item.Notification.CantCreateActiveEffect"));
+              ui.notifications?.error(
+                localize("RQG.Item.Notification.CantCreateActiveEffect", {
+                  itemType: localizeItemType(item.data.type),
+                })
+              );
               throw reason;
             });
           e[0].id && new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);
@@ -69,5 +72,47 @@ export class RqgItemSheet<
         this.item.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
       });
     });
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<void> {
+    super._onDrop(event);
+    // Try to extract the data
+
+    if (
+      this.item.data.type === ItemTypeEnum.Cult ||
+      this.item.data.type === ItemTypeEnum.Rune ||
+      this.item.data.type === ItemTypeEnum.RuneMagic ||
+      this.item.data.type === ItemTypeEnum.Skill ||
+      this.item.data.type === ItemTypeEnum.SpiritMagic
+    ) {
+      let droppedItemData;
+      try {
+        droppedItemData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+      } catch (err) {
+        ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
+        return;
+      }
+      if (droppedItemData.type !== "JournalEntry") {
+        ui.notifications?.warn(
+          localize("RQG.Item.Notification.CanOnlyDropJournalEntryWarning", {
+            itemType: localizeItemType(this.item.data.type),
+          })
+        );
+        return;
+      }
+      const pack = droppedItemData.pack ? droppedItemData.pack : "";
+
+      if (this.item.isEmbedded) {
+        await this.item.actor?.updateEmbeddedDocuments("Item", [
+          {
+            _id: this.item.id,
+            "data.journalId": droppedItemData.id,
+            "data.journalPack": pack,
+          },
+        ]);
+      } else {
+        await this.item.update({ "data.journalId": droppedItemData.id, "data.journalPack": pack });
+      }
+    }
   }
 }

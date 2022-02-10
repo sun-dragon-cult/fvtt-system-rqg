@@ -2,7 +2,7 @@ import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
-import { assertItemType, localize } from "../system/util";
+import { assertItemType, localize, localizeItemType } from "../system/util";
 
 //**Shows a dialog for improving a Passion, Rune, or Skill */
 export async function showImproveAbilityDialog(
@@ -29,7 +29,7 @@ export async function showImproveAbilityDialog(
     adapter.isPassion = true;
     // Cannot train passions
     adapter.showTraining = false;
-    adapter.typeLocName = localize("ITEM.TypePassion");
+    adapter.typeLocName = localizeItemType(item.data.type);
     assertItemType(item?.data.type, ItemTypeEnum.Passion);
     if (item.data.data.subject) {
       adapter.name = `${item.data.data.passion} (${item.data.data.subject})`;
@@ -39,7 +39,7 @@ export async function showImproveAbilityDialog(
   }
   if (item.data.type === ItemTypeEnum.Rune) {
     adapter.isRune = true;
-    adapter.typeLocName = localize("ITEM.TypeRune");
+    adapter.typeLocName = localizeItemType(item.data.type);
     assertItemType(item?.data.type, ItemTypeEnum.Rune);
     adapter.name = item.data.data.rune;
   }
@@ -130,26 +130,25 @@ export async function submitImproveAbilityDialog(
   if (gaintype === "experience-gain-fixed" || gaintype === "experience-gain-random") {
     if (abilityData.hasExperience) {
       let categoryMod: number = adapter.categoryMod || 0;
-      const rollFlavor = localize(
-        "RQG.Dialog.improveAbilityDialog.experienceRoll.flavor",
-        { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName }
-      );
+      const rollFlavor = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.flavor", {
+        actorName: actor.name,
+        name: adapter.name,
+        typeLocName: adapter.typeLocName,
+      });
       let rollContent = "";
       if (adapter.isSkill) {
-        rollContent = localize(
-          "RQG.Dialog.improveAbilityDialog.experienceRoll.contentSkill",
-          {
-            mod: categoryMod,
-            skillChance: abilityData.chance,
-            name: adapter.name,
-            typeLocName: adapter.typeLocName,
-          }
-        );
+        rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentSkill", {
+          mod: categoryMod,
+          skillChance: abilityData.chance,
+          name: adapter.name,
+          typeLocName: adapter.typeLocName,
+        });
       } else {
-        rollContent = localize(
-          "RQG.Dialog.improveAbilityDialog.experienceRoll.contentOther",
-          { chance: abilityData.chance, name: adapter.name, typeLocName: adapter.typeLocName }
-        );
+        rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentOther", {
+          chance: abilityData.chance,
+          name: adapter.name,
+          typeLocName: adapter.typeLocName,
+        });
       }
 
       // roll 1d100 and add the category mod
