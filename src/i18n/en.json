@@ -1,15 +1,17 @@
 {
   "ITEM": {
-    "TypeSkill": "Skill",
+    "TypeArmor": "Armor",
+    "TypeCult": "Cult",
+    "TypeGear": "Gear",
+    "TypeHitlocation": "Hit Location",
     "TypePassion": "Passion",
     "TypeRune": "Rune",
-    "TypeHitlocation": "Hit Location",
-    "TypeGear": "Gear",
-    "TypeArmor": "Armor",
-    "TypeWeapon": "Weapon",
-    "TypeSpiritmagic": "Spirit Magic Spell",
-    "TypeCult": "Cult",
     "TypeRunemagic": "Rune Magic Spell",
+    "TypeShamanicability": "Shamanic Ability",
+    "TypeSkill": "Skill",
+    "TypeSorcerymagic": "Sorcery Magic Spell",
+    "TypeSpiritmagic": "Spirit Magic Spell",
+    "TypeWeapon": "Weapon",
     "TypeReputation": "Reputation"
   },
   "RQG": {
@@ -640,7 +642,9 @@
         "NoIdOnTokenError": "No ID on Token",
         "NoIdOnActorError": "No ID on Actor",
         "ItemWithIdDoesNotHaveChanceError": "Can't find an item with ID {itemId} on actor named {actorName} to show item chat card.",
-        "CouldNotFindActorByIdsWarn": "Could not find actor by actor ID {actorId} or tokenID {tokenId} to do ability roll."
+        "CouldNotFindActorByIdsWarn": "Could not find actor by actor ID {actorId} or tokenID {tokenId} to do ability roll.",
+        "CanOnlyDropJournalEntryWarning": "You can only drop a Journal Entry onto a {itemType} Sheet",
+        "ErrorParsingItemData": "Error parsing Item Data"
       },
       "Passion": {
         "Name": "Name",
@@ -706,8 +710,7 @@
         "HasExperienceQ": "Has Experience?",
         "SorceryRunes": "Sorcery Runes:",
         "Notification": {
-          "CantFindSkillJournalEntryError": "Can't find Journal Entry you are trying to link to the Skill Item Sheet for {skillName}",
-          "CanOnlyDropJournalEntryWarning": "You can only drop a Journal Entry onto the Skill Sheet"
+          "CantFindSkillJournalEntryError": "Can't find Journal Entry you are trying to link to the Skill Item Sheet for {skillName}"
         },
         "SkillCategory": {}
       },

@@ -77,24 +77,4 @@ export class SpiritMagicSheet extends RqgItemSheet<
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
   }
-
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
-    // Try to extract the data
-    let droppedItemData;
-    try {
-      droppedItemData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-    } catch (err) {
-      return;
-    }
-    if (droppedItemData.type === "JournalEntry") {
-      const pack = droppedItemData.pack ? droppedItemData.pack : "";
-      await this.item.update(
-        { "data.journalId": droppedItemData.id, "data.journalPack": pack },
-        {}
-      );
-    } else {
-      ui.notifications?.warn("You can only drop a journalEntry");
-    }
-  }
 }
