@@ -321,6 +321,8 @@
       "Common": {
         "yes": "yes",
         "no": "no",
+        "btnYes": "Yes",
+        "btnNo": "No",
         "btnCancel": "Cancel",
         "btnConfirm": "Confirm",
         "OtherModifiers": "Other Modifiers:",
@@ -333,6 +335,13 @@
         "CardFlavor": "Characteristic: {name} ({value})",
         "RollFlavor": "{difficulty} {name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"
+      },
+      "confirmTransferPhysicalItem": {
+        "title": "Really give {itemName} to {targetActor}?",
+        "header": "Really give {itemName} to {targetActor}?",
+        "ReallyGiveItemSingle": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory.",
+        "ReallyGiveItemQuantity": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory, or {sourceActor}'s inventory quantity will be reduced.",
+        "GiveHowMany": "Give how many {itemName} to {targetActor}?  {sourceActor}'s inventory of this item will be reduced by the amount chosen, or the item will be deleted if you choose to give the maximum amount of {maxQty}."
       },
       "itemCard": {
         "RollFlavor": "{name} Check",
