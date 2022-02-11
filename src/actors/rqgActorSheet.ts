@@ -1195,7 +1195,9 @@ export class RqgActorSheet extends ActorSheet<
       // removed from the giver's inventory
       await this.confirmTransferPhysicalItem(itemData, sourceActor);
     } else {
-      // Prompt to ensure copy
+      // Prompt to ensure copy of non-physical items
+      // TODO: create dialog
+      // TODO: maybe a setting to enable/disable copying non-physical items?
       return this._onDropItemCreate(itemData);
     }
   }
