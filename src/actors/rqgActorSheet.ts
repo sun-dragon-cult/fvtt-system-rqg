@@ -1138,14 +1138,19 @@ export class RqgActorSheet extends ActorSheet<
     // data is technically "ActorSheet.DropData.Item", but that doesn't expose ".actorId",
     // and it didn't seem useful to have it typed that way
 
+    // It seems a player will not be able to copy an item to an Actor sheet
+    // unless they are the owner.  It will error gracefully after this, but
+    // this gives a better error.
     if (!this.actor.isOwner) {
-      console.log("This actor is not owner");
+      ui.notifications?.warn(
+        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name })
+      );
       return false;
     }
     const item = await Item.fromDropData(data);
 
     if (!item) {
-      console.log("Dragged Item not found using data:", data);
+      ui.notifications?.error(localize("RQG.Actor.Notification.DraggedItemNotFoundError"));
       return false;
     }
 
@@ -1161,19 +1166,17 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     if (!itemData) {
-      console.log("Unable to make ItemDataSource from dragged item.", item);
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.CantMakeItemDataSourceError", { itemId: item.id })
+      );
       return false;
     }
-    console.log("ITEM", item);
-    console.log("ITEMDATA", itemData);
 
     // Check if the actor is the owner of the item
     // If so change the sort order
     const targetActor = this.actor;
 
     if (!targetActor) return false;
-
-    console.log("TARGET ACTOR: ", targetActor.name);
 
     let sameActor =
       data.actorId === targetActor.id ||
@@ -1184,13 +1187,6 @@ export class RqgActorSheet extends ActorSheet<
 
     const sourceActor = getActorFromIds(data.actorId, data.tokenId);
     if (!sourceActor) return false;
-
-    console.log("SOURCE ACTOR", sourceActor?.name);
-
-    if (itemData.data.hasOwnProperty("quantity")) {
-      // @ts-ignore quantity
-      console.log("ITEM QTY", itemData.data.quantity);
-    }
 
     if (
       itemData.type === ItemTypeEnum.Armor ||
@@ -1321,9 +1317,6 @@ export class RqgActorSheet extends ActorSheet<
     if (data.numtotransfer) {
       quantityToTransfer = Number(data.numtotransfer);
     }
-
-    console.log("CHOSE TO TRANSFER: ", quantityToTransfer);
-
     await this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
   }
 
@@ -1333,21 +1326,26 @@ export class RqgActorSheet extends ActorSheet<
     sourceActor: RqgActor
   ) {
     if (!incomingItemDataSource) {
-      console.log("No incoming Item Data Source!");
+      ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
       return false;
     }
     if (!incomingItemDataSource.data.hasOwnProperty("quantity")) {
-      console.log("Incoming Item Data Source does not represent a physical item with a quantity.");
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError")
+      );
       return false;
     }
     if (quantityToTransfer < 1) {
-      console.log("Cannot transfer less than one item.");
+      ui.notifications?.error(localize("RQG.Actor.Notification.CantTransferLessThanOneItemError"));
       return false;
     }
     // @ts-ignore quantity
     if (quantityToTransfer > incomingItemDataSource.data.quantity) {
-      console.log(
-        `Cannot transfer more ${incomingItemDataSource.name} than ${sourceActor.name} has in inventory.`
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.CantTransferMoreThanSourceOwnsError", {
+          itemName: incomingItemDataSource.name,
+          sourceActorName: sourceActor.name,
+        })
       );
       return false;
     }
@@ -1356,7 +1354,6 @@ export class RqgActorSheet extends ActorSheet<
       (i: RqgItem) =>
         i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type
     );
-    console.log("EXISTING ITEMS", existingItem);
 
     // @ts-ignore quantity
     let newTargetQty = quantityToTransfer;

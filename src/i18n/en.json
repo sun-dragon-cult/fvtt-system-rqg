@@ -204,6 +204,15 @@
         "Background": "Background",
         "ActiveEffects": "AE 🧪"
       },
+      "Notification": {
+        "NotActorOwnerWarn": "You are not the owner of {actorName}, and cannot drop this item onto this actor sheet",
+        "DraggedItemNotFoundError": "Dragged item not found from source!",
+        "CantMakeItemDataSourceError": "Unable to make ItemDataSource from dragged item from item with id [{itemId}]",
+        "NoIncomingItemDataSourceError": "No incoming Item Data Source!",
+        "IncomingItemDataSourceNotPhysicalItemError": "Incoming Item Data Source does not represent a physical item with a quantity!",
+        "CantTransferLessThanOneItemError": "Can't transfer less than one item!",
+        "CantTransferMoreThanSourceOwnsError": "Cannot transfer more {itemName} than ${sourceActorName} has in inventory."
+      },
       "Passion": {
         "Passions": "Passions",
         "BackStory": "Back Story"
