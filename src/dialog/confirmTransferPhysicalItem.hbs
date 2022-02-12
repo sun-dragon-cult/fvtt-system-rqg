@@ -1,34 +1,52 @@
 <form>
-    <h1>
-        {{#if adapter.incomingItemDataSource.img}}
-        <img class="item" src="{{adapter.incomingItemDataSource.img}}" title="{{adapter.incomingItemDataSource.name}}" style="padding-right: 10px;" />
-        {{/if}}
-        {{localize "RQG.Dialog.confirmTransferPhysicalItem.header" 
-                itemName=adapter.incomingItemDataSource.name
-                targetActor=adapter.targetActor.name}}
-    </h1>
-    <div>
-        
+  <h1>
+    {{#if adapter.incomingItemDataSource.img}}
+      <img
+        class="item"
+        src="{{adapter.incomingItemDataSource.img}}"
+        title="{{adapter.incomingItemDataSource.name}}"
+        style="padding-right: 10px;"
+      />
+    {{/if}}
+    {{localize
+      "RQG.Dialog.confirmTransferPhysicalItem.header"
+      itemName=adapter.incomingItemDataSource.name
+      targetActor=adapter.targetActor.name
+    }}
+  </h1>
+  <div>
 
-        {{#if adapter.showQuantity}}
-        <p>{{localize "RQG.Dialog.confirmTransferPhysicalItem.ReallyGiveItemQuantity" 
-                itemName=adapter.incomingItemDataSource.name
-                targetActor=adapter.targetActor.name
-                sourceActor=adapter.sourceActor.name}}
-        </p>
-        <p>{{localize "RQG.Dialog.confirmTransferPhysicalItem.GiveHowMany" 
-                itemName=adapter.incomingItemDataSource.name
-                targetActor=adapter.targetActor.name
-                sourceActor=adapter.sourceActor.name
-                maxQty=adapter.incomingItemDataSource.data.quantity}}</p>
-        <input name="numtotransfer" type="number" min="0" max="{{adapter.incomingItemDataSource.data.quantity}}" value="{{adapter.incomingItemDataSource.data.quantity}}">
-        {{else}}
-        <p>{{localize "RQG.Dialog.confirmTransferPhysicalItem.ReallyGiveItemSingle" 
-                itemName=adapter.incomingItemDataSource.name
-                targetActor=adapter.targetActor.name
-                sourceActor=adapter.sourceActor.name}}
-        </p>
-        {{/if}}
-    </div>
+    {{#if adapter.showQuantity}}
+      <p>{{localize
+          "RQG.Dialog.confirmTransferPhysicalItem.ReallyGiveItemQuantity"
+          itemName=adapter.incomingItemDataSource.name
+          targetActor=adapter.targetActor.name
+          sourceActor=adapter.sourceActor.name
+        }}
+      </p>
+      <p>{{localize
+          "RQG.Dialog.confirmTransferPhysicalItem.GiveHowMany"
+          itemName=adapter.incomingItemDataSource.name
+          targetActor=adapter.targetActor.name
+          sourceActor=adapter.sourceActor.name
+          maxQty=adapter.incomingItemDataSource.data.quantity
+        }}</p>
+      <input
+        name="numtotransfer"
+        type="number"
+        min="0"
+        max="{{adapter.incomingItemDataSource.data.quantity}}"
+        value="{{adapter.incomingItemDataSource.data.quantity}}"
+      />
+    {{else}}
+      <p>{{localize
+          "RQG.Dialog.confirmTransferPhysicalItem.ReallyGiveItemSingle"
+          itemName=adapter.incomingItemDataSource.name
+          targetActor=adapter.targetActor.name
+          sourceActor=adapter.sourceActor.name
+        }}
+      </p>
+    {{/if}}
+  </div>
 
 </form>

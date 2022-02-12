@@ -1,12 +1,12 @@
-<div class="grid rune">
+<div class="grid rune item-list">
   <h2 class="fullrow">{{localize "RQG.Actor.Rune.Elemental"}}</h2>
   {{#each ownedItems.rune.element}}
-    <div data-item-id="{{id}}" class="rune contextmenu"
+    <div data-item-id="{{id}}" class="rune contextmenu item"
       {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="rune" src="{{img}}">
     </div>
-    <div data-item-id="{{id}}" class="rune contextmenu" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
+    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
+    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
       <span class="text-right">{{data.data.chance}}%</span>
     </div>
   {{/each}}

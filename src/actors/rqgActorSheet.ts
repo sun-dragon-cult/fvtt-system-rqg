@@ -1138,9 +1138,6 @@ export class RqgActorSheet extends ActorSheet<
     // data is technically "ActorSheet.DropData.Item", but that doesn't expose ".actorId",
     // and it didn't seem useful to have it typed that way
 
-    console.log("DROPPED EVENT", event);
-    console.log("DROPPED DATA", data);
-
     if (!this.actor.isOwner) {
       console.log("This actor is not owner");
       return false;
@@ -1153,6 +1150,15 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     const itemData = item?.toObject();
+
+    if (!data.actorId) {
+      // Dropped from Sidebar
+      // if (itemData.type === ItemTypeEnum.RuneMagic) {
+      //   assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
+      //   itemData.data.cultId = ""; // clear cult id to avoid errors, player will have to associate this spell with a cult
+      // }
+      return this._onDropItemCreate(itemData);
+    }
 
     if (!itemData) {
       console.log("Unable to make ItemDataSource from dragged item.", item);
@@ -1191,15 +1197,63 @@ export class RqgActorSheet extends ActorSheet<
       itemData.type === ItemTypeEnum.Gear ||
       itemData.type === ItemTypeEnum.Weapon
     ) {
-      // Physical items that can be given, meaning that they need to be
-      // removed from the giver's inventory
+      // Prompt to confirm giving physical item from one Actor to another,
+      // and ask how many if it has a quantity of more than one.
       await this.confirmTransferPhysicalItem(itemData, sourceActor);
     } else {
-      // Prompt to ensure copy of non-physical items
-      // TODO: create dialog
-      // TODO: maybe a setting to enable/disable copying non-physical items?
-      return this._onDropItemCreate(itemData);
+      // Prompt to ensure user wants to copy intangible items
+      //(runes, skills, passions, etc) from one Actor to another
+      await this.confirmCopyIntangibleItem(itemData, sourceActor);
     }
+  }
+
+  private async confirmCopyIntangibleItem(
+    incomingItemDataSource: ItemDataSource,
+    sourceActor: RqgActor
+  ) {
+    const adapter: any = {
+      incomingItemDataSource: incomingItemDataSource,
+      sourceActor: sourceActor,
+      targetActor: this.actor,
+    };
+    const content: string = await renderTemplate(
+      "systems/rqg/dialog/confirmCopyIntangibleItem.hbs",
+      {
+        adapter: adapter,
+      }
+    );
+
+    const title = localize("RQG.Dialog.confirmCopyIntangibleItem.title", {
+      itemName: incomingItemDataSource.name,
+      targetActor: this.actor.name,
+    });
+
+    const buttons: any = {};
+    buttons.submit = {
+      icon: '<i class="fas fa-check"></i>',
+      label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+      callback: async (html: JQuery | HTMLElement) =>
+        await this.submitConfirmCopyIntangibleItem(incomingItemDataSource),
+    };
+    buttons.cancel = {
+      icon: '<i class="fas fa-times"></i>',
+      label: localize("RQG.Dialog.Common.btnCancel"),
+      callback: () => null,
+    };
+
+    new Dialog(
+      {
+        title: title,
+        content: content,
+        default: "submit",
+        buttons: buttons,
+      },
+      { classes: ["rqg", "dialog"] }
+    ).render(true);
+  }
+
+  private async submitConfirmCopyIntangibleItem(incomingItemDataSource: ItemDataSource) {
+    return this._onDropItemCreate(incomingItemDataSource);
   }
 
   private async confirmTransferPhysicalItem(
@@ -1229,7 +1283,7 @@ export class RqgActorSheet extends ActorSheet<
     const buttons: any = {};
     buttons.submit = {
       icon: '<i class="fas fa-check"></i>',
-      label: localize("RQG.Dialog.Common.btnYes"),
+      label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
       callback: async (html: JQuery | HTMLElement) =>
         await this.submitConfirmTransferPhysicalItem(
           html as JQuery,
@@ -1311,8 +1365,9 @@ export class RqgActorSheet extends ActorSheet<
 
     if (existingItem) {
       // Target actor has an item of this type with the same name
+
       // @ts-ignore quantity
-      newTargetQty += Number(existingItem.data.quantity);
+      newTargetQty += Number(existingItem.data.data.quantity);
       const targetUpdate = await this.actor.updateEmbeddedDocuments("Item", [
         { _id: existingItem.id, data: { quantity: newTargetQty } },
       ]);
