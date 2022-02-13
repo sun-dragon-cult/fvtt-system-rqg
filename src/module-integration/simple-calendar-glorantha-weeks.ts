@@ -1,4 +1,4 @@
-export const calendar = {
+export const calendarWeeks = {
   generalSettings: {
     gameWorldTimeIntegration: "mixed",
     showClock: true,

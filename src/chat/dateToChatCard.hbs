@@ -1,0 +1,63 @@
+<form class="card-form" data-chat-card="dateToChatCard">
+  <div style="display: grid; grid-template-columns: 3fr 1fr;">
+    <div>
+      <h1>{{localize
+          "RQG.Dialog.dateToChatCard.CurrentDayInYearHeader"
+          year=year.numericRepresentation
+        }}
+      </h1>
+    </div>
+    <div>
+      <img
+        class="rune"
+        style="border: none; margin: 0; padding: 0 2px; position: relative; top: 2px; filter: drop-shadow(0px 0px 20px rgb(168, 0, 0));"
+        src="{{moonimg.img}}"
+        title="{{redmoon.name}}: {{moonimg.name}}"
+      />
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 6fr;">
+    <div>
+      <img
+        class="rune"
+        style="height: 16px; border: none; margin: 0; padding: 0 2px; position: relative; top: 2px;"
+        src="{{dayofweekrune.img}}"
+        title="{{dayofweekrune.name}}"
+      />
+    </div>
+    <div>
+      {{dayofweek.name}}
+    </div>
+    <div>
+      <img
+        class="rune"
+        style="height: 16px; border: none; margin: 0; padding: 0 2px; position: relative; top: 2px;"
+        src="{{weekrune.img}}"
+        title="{{weekrune.name}}"
+      />
+
+    </div>
+    <div>
+      {{weekrune.name}}
+      {{localize "RQG.Dialog.dateToChatCard.Week"}}
+    </div>
+    <div>
+      <img
+        class="rune"
+        style="height: 16px; border: none; margin: 0; padding: 0 2px; position: relative; top: 2px;"
+        src="{{seasonrune.img}}"
+        title="{{seasonrune.name}}"
+      />
+    </div>
+    <div>
+      {{month.name}}
+    </div>
+  </div>
+  <div>{{localize
+      "RQG.Dialog.dateToChatCard.DayOfYearAndRemaining"
+      dayofyear=dayofyear
+      daysinyear=daysinyear
+      daysleftinyear=daysleftinyear
+    }}</div>
+</form>
