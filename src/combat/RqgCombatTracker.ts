@@ -75,7 +75,8 @@ export function renderCombatTracker(app: any, html: any, data: any): void {
       }
       const readOnly = combatant.actor?.isOwner ? "" : "readonly";
       const initDiv = el.getElementsByClassName("token-initiative")[0];
-      initDiv.innerHTML = `<input type="number" min="1" max="12" value="${combatant.initiative}" ${readOnly}>`;
+      const valueString = combatant.initiative ? `value=${combatant.initiative}` : "";
+      initDiv.innerHTML = `<input type="number" min="1" max="12" ${valueString} ${readOnly}>`;
 
       initDiv.addEventListener("change", async (e) => {
         const inputElement = e.target as HTMLInputElement;
