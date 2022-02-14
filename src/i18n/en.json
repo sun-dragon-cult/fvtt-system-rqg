@@ -334,11 +334,6 @@
         "RollFlavor": "{difficulty} {name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"
       },
-      "dateToChatCard": {
-        "CurrentDayInYearHeader": "Current day in {year}",
-        "Week": "Week",
-        "DayOfYearAndRemaining": "Day {dayofyear} of {daysinyear}, {daysleftinyear} days remaining this year."
-      },
       "itemCard": {
         "RollFlavor": "{name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"

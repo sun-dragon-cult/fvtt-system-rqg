@@ -169,7 +169,6 @@ async function chooseCurrentCompendiumItems(sortedPacks: any[]): Promise<void> {
 
         compendiumJournals.set(`${item.data.type}.${itemName}`, {
           img: item.data.img ?? "",
-
           journalId: item.data.data.journalId,
           journalPack: item.data.data.journalPack,
         });

@@ -13,7 +13,6 @@ import { RqgToken } from "./combat/rqgToken";
 import { getGame, RqgError } from "./system/util";
 import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
 import { RqgPause } from "./foundryUi/pause";
-import { ModuleSupport } from "./module-integration/moduleSupport.js";
 
 Hooks.once("init", async () => {
   console.log(
@@ -67,7 +66,6 @@ Hooks.once("init", async () => {
     // installModules: installModules,
     migrate: applyDefaultWorldMigrations,
     consolidate: consolidateCompendiumItems,
-    module: new ModuleSupport(),
   };
 });
 
