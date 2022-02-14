@@ -14,6 +14,7 @@ import {
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
+import { droppableJournalDescription } from "../isDroppable";
 
 interface RuneSheetData {
   isEmbedded: boolean;
@@ -88,5 +89,10 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       const id = getRequiredDomDataset($(el), "journal-id");
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<void> {
+    super._onDrop(event);
+    await droppableJournalDescription(this.item, event);
   }
 }

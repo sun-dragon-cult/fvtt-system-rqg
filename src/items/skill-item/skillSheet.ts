@@ -15,9 +15,7 @@ import {
 } from "../../system/util";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
-import { RqgActor } from "../../actors/rqgActor";
-import { Ability, ResultEnum } from "../../data-model/shared/ability";
-import { getGame } from "../../system/util";
+import { droppableJournalDescription } from "../isDroppable";
 
 interface SkillSheetData {
   isEmbedded: boolean;
@@ -98,5 +96,10 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       }
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<void> {
+    super._onDrop(event);
+    await droppableJournalDescription(this.item, event);
   }
 }
