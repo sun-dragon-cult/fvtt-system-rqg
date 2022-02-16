@@ -82,14 +82,27 @@ export class Weapon extends AbstractEmbeddedItem {
     skillOrigin: string, // Linked skill item origin (uuid)
     actor: RqgActor // The actor that should have the skill
   ): Promise<string> {
-    if (!embeddedSkillId && skillOrigin) {
+    // If the weapon has the aspect (ie one hand, or missile):
+    // embeddedSkillId will be null when dragging from sidebar or directly from compendium
+    // embeddedSkillId will have a value when dragged from one actor to another
+    if (skillOrigin) {
       try {
         // Add the specified skill if found
         const skill = await fromUuid(skillOrigin).catch((e) => {
-          logMisconfiguration(localize("RQG.Item.Notification.CantFindWeaponSkillWarning"), true, embeddedSkillId, e);
+          logMisconfiguration(
+            localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
+            true,
+            embeddedSkillId,
+            e
+          );
         });
         if (!skill) {
-          logMisconfiguration(localize("RQG.Item.Notification.NoWeaponSkillFromSkillOriginWarning", {skillOrigin: skillOrigin}), true);
+          logMisconfiguration(
+            localize("RQG.Item.Notification.NoWeaponSkillFromSkillOriginWarning", {
+              skillOrigin: skillOrigin,
+            }),
+            true
+          );
         } else {
           const sameSkillAlreadyOnActor = actor.items.find((i: RqgItem) => i.name === skill.name);
           const embeddedWeaponSkill = sameSkillAlreadyOnActor
@@ -98,7 +111,11 @@ export class Weapon extends AbstractEmbeddedItem {
           embeddedSkillId = embeddedWeaponSkill[0].id ?? "";
         }
       } catch (e) {
-        logMisconfiguration(localize("RQG.Item.Notification.CantFindSkillAssociatedWithWeaponWarning"), true, e);
+        logMisconfiguration(
+          localize("RQG.Item.Notification.CantFindSkillAssociatedWithWeaponWarning"),
+          true,
+          e
+        );
       }
     }
     return embeddedSkillId;
