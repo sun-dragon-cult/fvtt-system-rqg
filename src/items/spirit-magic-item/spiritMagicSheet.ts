@@ -11,6 +11,7 @@ import {
   SpellDurationEnum,
   SpellRangeEnum,
 } from "../../data-model/item-data/spell";
+import { droppableJournalDescription } from "../isDroppable";
 
 interface SpiritMagicSheetData {
   isEmbedded: boolean;
@@ -76,5 +77,10 @@ export class SpiritMagicSheet extends RqgItemSheet<
       }
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<void> {
+    super._onDrop(event);
+    await droppableJournalDescription(this.item, event);
   }
 }

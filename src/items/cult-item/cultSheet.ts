@@ -15,6 +15,7 @@ import {
 import { RqgItemSheet } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
+import { droppableJournalDescription } from "../isDroppable";
 
 interface CultSheetData {
   isEmbedded: boolean;
@@ -80,5 +81,10 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       const id = getRequiredDomDataset($(elem), "journal-id");
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<void> {
+    super._onDrop(event);
+    await droppableJournalDescription(this.item, event);
   }
 }
