@@ -75,8 +75,10 @@ export class RuneMagicCard {
     // Get the actor's versions of the runes, which will have their "chance"
     usableRuneNames.forEach((rune) => {
       const actorRune = actor.items.getName(rune);
-      assertItemType(actorRune?.data.type, ItemTypeEnum.Rune);
-      runesForCasting.push(actorRune.data);
+      if (actorRune !== undefined) {
+        assertItemType(actorRune?.data.type, ItemTypeEnum.Rune);
+        runesForCasting.push(actorRune.data);
+      }
     });
 
     const strongestRune = runesForCasting.reduce(function (prev, current) {
@@ -118,9 +120,9 @@ export class RuneMagicCard {
         skillAugmentationOptions: skillAugmentationOptions,
       },
     };
-    
+
     await ChatMessage.create(await this.renderContent(flags));
-    activateChatTab()
+    activateChatTab();
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
@@ -240,7 +242,7 @@ export class RuneMagicCard {
         skillAugmentationOptions: {}, // won't be used
       },
     };
-    
+
     await RuneMagicCard.roll(flags.itemData, flags, actor, speakerName);
     activateChatTab();
   }
@@ -303,7 +305,7 @@ export class RuneMagicCard {
         }),
       });
       const result = await Ability.roll(
-        localize("RQG.Dialog.runeMagicCard.Cast", {spellName: itemData.name}),
+        localize("RQG.Dialog.runeMagicCard.Cast", { spellName: itemData.name }),
         Number(selectedRune.data.chance),
         Number(flags.formData.ritualOrMeditation) +
           Number(flags.formData.skillAugmentation) +
@@ -375,7 +377,13 @@ export class RuneMagicCard {
     if (oneUse) {
       newRunePointMaxTotal -= runePoints;
       if (newRunePointMaxTotal < (cult.data.data.runePoints.max || 0)) {
-        ui.notifications?.info(localize("RQG.Dialog.runeMagicCard.SpentOneUseRunePoints", {actorName: actor?.name, runePoints: runePoints, cultName: cult.name}));
+        ui.notifications?.info(
+          localize("RQG.Dialog.runeMagicCard.SpentOneUseRunePoints", {
+            actorName: actor?.name,
+            runePoints: runePoints,
+            cultName: cult.name,
+          })
+        );
       }
     }
     const updateCultItemRunePoints: DeepPartial<ItemDataSource> = {
