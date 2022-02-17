@@ -1,7 +1,16 @@
 import { CharacteristicCard } from "../../chat/characteristicCard";
 import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
-import { activateChatTab, getDomDataset, getGame, getGameUser, localize, localizeCharacteristic, requireValue, RqgError } from "../../system/util";
+import {
+  activateChatTab,
+  getDomDataset,
+  getGame,
+  getGameUser,
+  localize,
+  localizeCharacteristic,
+  requireValue,
+  RqgError,
+} from "../../system/util";
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../dialog/improveCharacteristicDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
@@ -57,7 +66,9 @@ export const characteristicMenuOptions = (
       }),
   },
   {
-    name: localize("RQG.ContextMenu.ImproveItem", {itemType: localize("RQG.Actor.Characteristics.Characteristic")}),
+    name: localize("RQG.ContextMenu.ImproveItem", {
+      itemType: localize("RQG.Actor.Characteristics.Characteristic"),
+    }),
     icon: ContextMenuRunes.Improve,
     condition: (el: JQuery): boolean => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
@@ -126,7 +137,9 @@ async function getCharacteristicUpdate(
     await r.toMessage({
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: localize("RQG.ContextMenu.InitializeResultCard", {char: localizeCharacteristic(characteristic)}),
+      flavor: localize("RQG.ContextMenu.InitializeResultCard", {
+        char: localizeCharacteristic(characteristic),
+      }),
     });
     activateChatTab();
   }
@@ -172,7 +185,10 @@ function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: 
     };
   } else {
     throw new RqgError(
-      localize("RQG.Contextmenu.Notification.CharacteristicNotFound", {characteristicName: characteristicName, actorName: actor.name})
+      localize("RQG.Contextmenu.Notification.CharacteristicNotFound", {
+        characteristicName: characteristicName,
+        actorName: actor.name,
+      })
     );
   }
 }
@@ -183,10 +199,17 @@ async function confirmInitializeDialog(
 ): Promise<boolean> {
   return await new Promise(async (resolve) => {
     const title = !!characteristic
-      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialogTitle", {characteristicName: localizeCharacteristic(characteristic), actorName:  actorName})
-      : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialogTitle", {actorName:  actorName});
+      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialogTitle", {
+          characteristicName: localizeCharacteristic(characteristic),
+          actorName: actorName,
+        })
+      : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialogTitle", {
+          actorName: actorName,
+        });
     const content = !!characteristic
-      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialog", {characteristicName: localizeCharacteristic(characteristic)})
+      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialog", {
+          characteristicName: localizeCharacteristic(characteristic),
+        })
       : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialog");
     const dialog = new Dialog({
       title: title,
@@ -196,7 +219,6 @@ async function confirmInitializeDialog(
         submit: {
           icon: '<i class="fas fa-check"></i>',
           label: localize("RQG.Dialog.Common.btnConfirm"),
-
           callback: () => {
             resolve(true);
           },

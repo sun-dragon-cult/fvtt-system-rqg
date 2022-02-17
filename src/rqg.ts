@@ -10,7 +10,6 @@ import { ChatCardListeners } from "./chat/chatCardListeners";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
-import { setupSimpleCalendar } from "./module-integration/simple-calendar-init";
 import { getGame, RqgError } from "./system/util";
 import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
 import { RqgPause } from "./foundryUi/pause";
@@ -73,7 +72,7 @@ Hooks.once("init", async () => {
 Hooks.once("ready", async () => {
   if (getGame().user?.isGM) {
     await migrateWorld();
-    await setupSimpleCalendar();
+    // await setupSimpleCalendar();
   }
   const runeCompendium = getGame().settings.get("rqg", "runesCompendium");
   // Make sure the index for runes is preloaded

@@ -49,7 +49,9 @@ export class RuneMagic extends AbstractEmbeddedItem {
         (i) =>
           i.type === ItemTypeEnum.Rune &&
           (runeMagicRuneNames.includes(i.name ?? "") ||
-            (runeMagicRuneNames.includes(getGame().settings.get("rqg", "magicRuneName") as string) &&
+            (runeMagicRuneNames.includes(
+              getGame().settings.get("rqg", "magicRuneName") as string
+            ) &&
               cultRuneNames.includes(i.name ?? "")))
       )
       // @ts-ignore r is a runeItem TODO rewrite as reduce
@@ -115,7 +117,6 @@ export class RuneMagic extends AbstractEmbeddedItem {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: localize("RQG.Item.RuneMagic.runeMagicCultDialog.btnAddRuneMagic"),
-
             callback: (html: JQuery | HTMLElement) => {
               const selectedCultId = (html as JQuery).find("[name=cultId]").val() as string;
               resolve(selectedCultId);
