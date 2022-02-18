@@ -2,7 +2,7 @@
 <div class="flex-row flex-align-center">
   <label data-damage-roll="{{characterData.attributes.damageBonus}}">{{localize "RQG.Actor.Combat.DamageBonus"}} {{characterData.attributes.damageBonus}}</label>
 </div>
-<div class="grid combat">
+<div class="grid combat item-list">
   <div class="headings"></div>
   <div class="head1"></div>
   <div class="head2">{{localize "RQG.Actor.Combat.Weapon"}}</div>
@@ -14,8 +14,8 @@
   {{#each ownedItems.weapon}}
     {{#if (eq data.data.equippedStatus "equipped")}}
       {{#unless data.data.isNatural}}
-        <div data-item-id="{{data._id}}" class="combat contextmenu"><img class="item" src="{{img}}"></div>
-        <div data-item-id="{{data._id}}" class="combat contextmenu">{{name}}
+        <div data-item-id="{{data._id}}" class="combat contextmenu item"><img class="item" src="{{img}}"></div>
+        <div data-item-id="{{data._id}}" class="combat contextmenu item">{{name}}
           {{#if data.data.isProjectileWeapon}}
             ({{quantity data.data.projectileId @root.data._id @root.tokenId}})
           {{else if data.data.isThrownWeapon}}
@@ -24,7 +24,7 @@
             [{{data.data.quantity}}]
           {{/if}}
         </div>
-        <div data-item-id="{{data._id}}" class="combat contextmenu">
+        <div data-item-id="{{data._id}}" class="combat contextmenu item">
           {{#if data.data.hitPointLocation}}
             {{data.data.hitPointLocation}}
           {{else}}
@@ -32,7 +32,7 @@
                         value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</label>
           {{/if}}
         </div>
-        <div>
+        <div class="item">
           <span class="flex-column text-right">
             {{#each data.data.usage}}
               {{#if skillId}}
@@ -46,7 +46,7 @@
             {{/each}}
           </span>
         </div>
-        <div>
+        <div class="item">
           <span class="flex-column">
             {{#each data.data.usage}}
               {{#if skillId}}
@@ -57,7 +57,7 @@
             {{/each}}
           </span>
         </div>
-        <div>
+        <div class="item">
           <span class="flex-column">
             {{#each data.data.usage}}
               {{#if skillId}}

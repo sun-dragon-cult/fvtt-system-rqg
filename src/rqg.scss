@@ -644,7 +644,6 @@ body {
     list-style: none;
     margin: 7px 0;
     padding: 0;
-    overflow-y: auto;
   }
 
   &.chat-card {
@@ -778,9 +777,9 @@ body {
         }
 
         &.active::before {
-          content: '';
+          content: "";
           position: absolute;
-          top:  0;
+          top: 0;
           bottom: 0;
           left: -6px;
           right: -6px;

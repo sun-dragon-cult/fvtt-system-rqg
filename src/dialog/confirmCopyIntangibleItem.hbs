@@ -1,0 +1,28 @@
+<form>
+  <h1>
+    {{#if adapter.incomingItemDataSource.img}}
+      <img
+        class="item"
+        src="{{adapter.incomingItemDataSource.img}}"
+        title="{{adapter.incomingItemDataSource.name}}"
+        style="padding-right: 10px;"
+      />
+    {{/if}}
+    {{localize
+      "RQG.Dialog.confirmCopyIntangibleItem.header"
+      itemName=adapter.incomingItemDataSource.name
+      targetActor=adapter.targetActor.name
+    }}
+  </h1>
+  <div>
+
+    <p>{{localize
+        "RQG.Dialog.confirmCopyIntangibleItem.ReallyCopyIntangibleItem"
+        itemName=adapter.incomingItemDataSource.name
+        targetActor=adapter.targetActor.name
+        sourceActor=adapter.sourceActor.name
+      }}
+    </p>
+  </div>
+
+</form>

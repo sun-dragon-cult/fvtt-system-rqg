@@ -24,6 +24,7 @@ import { RqgActor } from "./rqgActor";
 import {
   assertActorType,
   assertItemType,
+  getActorFromIds,
   getDocumentTypes,
   getDomDataset,
   getGame,
@@ -44,7 +45,10 @@ import {
   CharacterDataProperties,
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
-import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import {
+  ItemDataProperties,
+  ItemDataSource,
+} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ReputationCard } from "../chat/reputationCard";
 import { RuneMagicCard } from "../chat/runeMagicCard";
 
@@ -1128,5 +1132,271 @@ export class RqgActorSheet extends ActorSheet<
     }
     requireValue(entity.sheet, "journal entry entity.sheet not present");
     entity.sheet.render(true);
+  }
+
+  protected async _onDropItem(event: DragEvent, data: any): Promise<unknown> {
+    // data is technically "ActorSheet.DropData.Item", but that doesn't expose ".actorId",
+    // and it didn't seem useful to have it typed that way
+
+    // It seems a player will not be able to copy an item to an Actor sheet
+    // unless they are the owner.  It will error gracefully after this, but
+    // this gives a better error.
+    if (!this.actor.isOwner) {
+      ui.notifications?.warn(
+        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name })
+      );
+      return false;
+    }
+    const item = await Item.fromDropData(data);
+
+    if (!item) {
+      ui.notifications?.error(localize("RQG.Actor.Notification.DraggedItemNotFoundError"));
+      return false;
+    }
+
+    const itemData = item?.toObject();
+
+    if (!data.actorId) {
+      // Dropped from Sidebar
+      // if (itemData.type === ItemTypeEnum.RuneMagic) {
+      //   assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
+      //   itemData.data.cultId = ""; // clear cult id to avoid errors, player will have to associate this spell with a cult
+      // }
+      return this._onDropItemCreate(itemData);
+    }
+
+    if (!itemData) {
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.CantMakeItemDataSourceError", { itemId: item.id })
+      );
+      return false;
+    }
+
+    // Check if the actor is the owner of the item
+    // If so change the sort order
+    const targetActor = this.actor;
+
+    if (!targetActor) return false;
+
+    let sameActor =
+      data.actorId === targetActor.id ||
+      (targetActor.isToken && data.tokenId === targetActor.token?.id);
+
+    // This is probably not working because of the itemLocationTree
+    if (sameActor) return this._onSortItem(event, itemData);
+
+    const sourceActor = getActorFromIds(data.actorId, data.tokenId);
+    if (!sourceActor) return false;
+
+    if (
+      itemData.type === ItemTypeEnum.Armor ||
+      itemData.type === ItemTypeEnum.Gear ||
+      itemData.type === ItemTypeEnum.Weapon
+    ) {
+      // Prompt to confirm giving physical item from one Actor to another,
+      // and ask how many if it has a quantity of more than one.
+      await this.confirmTransferPhysicalItem(itemData, sourceActor);
+    } else {
+      // Prompt to ensure user wants to copy intangible items
+      //(runes, skills, passions, etc) from one Actor to another
+      await this.confirmCopyIntangibleItem(itemData, sourceActor);
+    }
+  }
+
+  private async confirmCopyIntangibleItem(
+    incomingItemDataSource: ItemDataSource,
+    sourceActor: RqgActor
+  ) {
+    const adapter: any = {
+      incomingItemDataSource: incomingItemDataSource,
+      sourceActor: sourceActor,
+      targetActor: this.actor,
+    };
+    const content: string = await renderTemplate(
+      "systems/rqg/dialog/confirmCopyIntangibleItem.hbs",
+      {
+        adapter: adapter,
+      }
+    );
+
+    const title = localize("RQG.Dialog.confirmCopyIntangibleItem.title", {
+      itemName: incomingItemDataSource.name,
+      targetActor: this.actor.name,
+    });
+
+    const buttons: any = {};
+    buttons.submit = {
+      icon: '<i class="fas fa-check"></i>',
+      label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+      callback: async (html: JQuery | HTMLElement) =>
+        await this.submitConfirmCopyIntangibleItem(incomingItemDataSource),
+    };
+    buttons.cancel = {
+      icon: '<i class="fas fa-times"></i>',
+      label: localize("RQG.Dialog.Common.btnCancel"),
+      callback: () => null,
+    };
+
+    new Dialog(
+      {
+        title: title,
+        content: content,
+        default: "submit",
+        buttons: buttons,
+      },
+      { classes: ["rqg", "dialog"] }
+    ).render(true);
+  }
+
+  private async submitConfirmCopyIntangibleItem(incomingItemDataSource: ItemDataSource) {
+    return this._onDropItemCreate(incomingItemDataSource);
+  }
+
+  private async confirmTransferPhysicalItem(
+    incomingItemDataSource: ItemDataSource,
+    sourceActor: RqgActor
+  ) {
+    const adapter: any = {
+      incomingItemDataSource: incomingItemDataSource,
+      sourceActor: sourceActor,
+      targetActor: this.actor,
+      // @ts-ignore quantity
+      showQuantity: incomingItemDataSource.data.quantity > 1,
+    };
+
+    const content: string = await renderTemplate(
+      "systems/rqg/dialog/confirmTransferPhysicalItem.hbs",
+      {
+        adapter: adapter,
+      }
+    );
+
+    const title = localize("RQG.Dialog.confirmTransferPhysicalItem.title", {
+      itemName: incomingItemDataSource.name,
+      targetActor: this.actor.name,
+    });
+
+    const buttons: any = {};
+    buttons.submit = {
+      icon: '<i class="fas fa-check"></i>',
+      label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+      callback: async (html: JQuery | HTMLElement) =>
+        await this.submitConfirmTransferPhysicalItem(
+          html as JQuery,
+          incomingItemDataSource,
+          sourceActor
+        ),
+    };
+    buttons.cancel = {
+      icon: '<i class="fas fa-times"></i>',
+      label: localize("RQG.Dialog.Common.btnCancel"),
+      callback: () => null,
+    };
+
+    new Dialog(
+      {
+        title: title,
+        content: content,
+        default: "submit",
+        buttons: buttons,
+      },
+      { classes: ["rqg", "dialog"] }
+    ).render(true);
+  }
+
+  private async submitConfirmTransferPhysicalItem(
+    html: JQuery,
+    incomingItemDataSource: ItemDataSource,
+    sourceActor: RqgActor
+  ) {
+    const formData = new FormData(html.find("form")[0]);
+    // @ts-ignore entries
+    const data = Object.fromEntries(formData.entries());
+
+    let quantityToTransfer: number = 1;
+    if (data.numtotransfer) {
+      quantityToTransfer = Number(data.numtotransfer);
+    }
+    await this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
+  }
+
+  private async transferPhysicalItem(
+    incomingItemDataSource: ItemDataSource,
+    quantityToTransfer: number,
+    sourceActor: RqgActor
+  ) {
+    if (!incomingItemDataSource) {
+      ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
+      return false;
+    }
+    if (!incomingItemDataSource.data.hasOwnProperty("quantity")) {
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError")
+      );
+      return false;
+    }
+    if (quantityToTransfer < 1) {
+      ui.notifications?.error(localize("RQG.Actor.Notification.CantTransferLessThanOneItemError"));
+      return false;
+    }
+    // @ts-ignore quantity
+    if (quantityToTransfer > incomingItemDataSource.data.quantity) {
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.CantTransferMoreThanSourceOwnsError", {
+          itemName: incomingItemDataSource.name,
+          sourceActorName: sourceActor.name,
+        })
+      );
+      return false;
+    }
+
+    const existingItem = this.actor.items.find(
+      (i: RqgItem) =>
+        i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type
+    );
+
+    // @ts-ignore quantity
+    let newTargetQty = quantityToTransfer;
+    // @ts-ignore quantity
+    const newSourceQty = Number(incomingItemDataSource.data.quantity) - quantityToTransfer;
+
+    if (existingItem) {
+      // Target actor has an item of this type with the same name
+
+      // @ts-ignore quantity
+      newTargetQty += Number(existingItem.data.data.quantity);
+      const targetUpdate = await this.actor.updateEmbeddedDocuments("Item", [
+        { _id: existingItem.id, data: { quantity: newTargetQty } },
+      ]);
+      if (targetUpdate) {
+        if (newSourceQty > 0) {
+          // udate with new source quantity
+          return sourceActor.updateEmbeddedDocuments("Item", [
+            { _id: incomingItemDataSource._id, data: { quantity: newSourceQty } },
+          ]);
+        } else {
+          // delete source item
+          // @ts-ignore _id
+          return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+        }
+      }
+    } else {
+      // Target actor does not have an item of this type with the same name
+      // @ts-ignore quantity
+      incomingItemDataSource.data.quantity = newTargetQty;
+      const targetCreate = await this._onDropItemCreate(incomingItemDataSource);
+      if (targetCreate) {
+        if (newSourceQty > 0) {
+          // udate with new source quantity
+          return sourceActor.updateEmbeddedDocuments("Item", [
+            { _id: incomingItemDataSource._id, data: { quantity: newSourceQty } },
+          ]);
+        } else {
+          // delete source item
+          // @ts-ignore _id
+          return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+        }
+      }
+    }
   }
 }

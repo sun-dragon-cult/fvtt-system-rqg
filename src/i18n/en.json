@@ -204,6 +204,15 @@
         "Background": "Background",
         "ActiveEffects": "AE 🧪"
       },
+      "Notification": {
+        "NotActorOwnerWarn": "You are not the owner of {actorName}, and cannot drop this item onto this actor sheet",
+        "DraggedItemNotFoundError": "Dragged item not found from source!",
+        "CantMakeItemDataSourceError": "Unable to make ItemDataSource from dragged item from item with id [{itemId}]",
+        "NoIncomingItemDataSourceError": "No incoming Item Data Source!",
+        "IncomingItemDataSourceNotPhysicalItemError": "Incoming Item Data Source does not represent a physical item with a quantity!",
+        "CantTransferLessThanOneItemError": "Can't transfer less than one item!",
+        "CantTransferMoreThanSourceOwnsError": "Cannot transfer more {itemName} than ${sourceActorName} has in inventory."
+      },
       "Passion": {
         "Passions": "Passions",
         "BackStory": "Back Story"
@@ -321,6 +330,8 @@
       "Common": {
         "yes": "yes",
         "no": "no",
+        "btnYes": "Yes",
+        "btnNo": "No",
         "btnCancel": "Cancel",
         "btnConfirm": "Confirm",
         "OtherModifiers": "Other Modifiers:",
@@ -333,6 +344,20 @@
         "CardFlavor": "Characteristic: {name} ({value})",
         "RollFlavor": "{difficulty} {name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"
+      },
+      "confirmCopyIntangibleItem": {
+        "title": "Really give {itemName} to {targetActor}?",
+        "header": "Really give {itemName} to {targetActor}?",
+        "btnCopy": "Copy",
+        "ReallyCopyIntangibleItem": "Really copy {itemName} from {sourceActor} to {targetActor}?"
+      },
+      "confirmTransferPhysicalItem": {
+        "title": "Really give {itemName} to {targetActor}?",
+        "header": "Really give {itemName} to {targetActor}?",
+        "btnGive": "Give",
+        "ReallyGiveItemSingle": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory.",
+        "ReallyGiveItemQuantity": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory, or {sourceActor}'s inventory quantity will be reduced.",
+        "GiveHowMany": "Give how many {itemName} to {targetActor}?  {sourceActor}'s inventory of this item will be reduced by the amount chosen, or the item will be deleted if you choose to give the maximum amount of {maxQty}."
       },
       "itemCard": {
         "RollFlavor": "{name} Check",

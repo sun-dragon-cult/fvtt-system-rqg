@@ -23,9 +23,14 @@ export class RuneMagic extends AbstractEmbeddedItem {
     if (item.data.data.cultId) {
       const runeMagicCult = actor.items.get(item.data.data.cultId);
       if (!runeMagicCult || runeMagicCult.data.type !== ItemTypeEnum.Cult) {
-        const msg = localize("RQG.Item.Notification.ActorDoesNotHaveCultOnRuneMagicWarning");
-        ui.notifications?.warn(msg);
-        console.warn(msg, item, actor);
+        // This warning can happen when drag-dropping a rune spell from one Actor to another,
+        // but the notification happens a lot of times and doesn't really matter since the system immediately,
+        // displays the "Which cult provides this Rune Magic?" dialog allowing the player to fix it.
+
+        // const msg = localize("RQG.Item.Notification.ActorDoesNotHaveCultOnRuneMagicWarning");
+        // ui.notifications?.warn(msg);
+        // console.warn(msg, item, actor);
+
         item.data.data.cultId = ""; // remove the mismatched link to make it appear in the GUI
       }
       if (runeMagicCult && runeMagicCult.data.type === ItemTypeEnum.Cult) {
