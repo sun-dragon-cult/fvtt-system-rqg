@@ -297,6 +297,13 @@ export class HitLocationSheet extends RqgItemSheet<
 
   static async setTokenEffect(token: RqgToken, actorHealthBefore: ActorHealthState): Promise<void> {
     // // TODO testing testing - lägg i nån CONFIG?
+
+    const woundStatuses = [
+      CONFIG.statusEffects[14],
+      CONFIG.statusEffects[1],
+      CONFIG.statusEffects[0],
+    ];
+
     const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
       new Map([
         ["shock", CONFIG.statusEffects[14]],
@@ -312,28 +319,27 @@ export class HitLocationSheet extends RqgItemSheet<
       return;
     }
 
-    const previousEffect = health2Effect.get(actorHealthBefore);
     const newEffect = health2Effect.get(token.actor.data.data.attributes.health);
 
-    if (newEffect?.label !== previousEffect?.label) {
-      const asOverlay = newEffect?.id === "dead";
-      const newEffectIsOn = !!token.actor.effects.find(
-        (e: ActiveEffect) => e.getFlag("core", "statusId") === newEffect?.id
+    for (const status of woundStatuses) {
+      const thisEffectOn = !!token.actor.effects.find(
+        (e: ActiveEffect) => e.getFlag("core", "statusId") === status?.id
       );
-      const previousEffectIsOn = !!token.actor.effects.find(
-        (e: ActiveEffect) => e.getFlag("core", "statusId") === previousEffect?.id
-      );
-
-      const shouldToggleNewEffect = !!newEffect && !newEffectIsOn;
-      const shouldTogglePreviousEffect = !!previousEffect && previousEffectIsOn;
-
-      shouldToggleNewEffect &&
-        (await token.toggleEffect(newEffect, { overlay: asOverlay, active: true }));
-      shouldTogglePreviousEffect &&
-        (await token.toggleEffect(previousEffect, {
+      if (newEffect?.id === status.id && !thisEffectOn) {
+        const asOverlay = status.id === "dead";
+        // Turn on the new effect
+        await token.toggleEffect(status, {
           overlay: asOverlay,
-          active: true,
-        }));
+          active: true
+        });
+      } else if (newEffect?.id !== status.id && thisEffectOn) {
+        // This is not the effect we're applying but it is on
+        // so we need to turn it off
+        await token.toggleEffect(status, {
+          overlay: false,
+          active: false
+        });
+      }
     }
   }
 }
