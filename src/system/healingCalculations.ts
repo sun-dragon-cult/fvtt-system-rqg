@@ -35,7 +35,7 @@ export class HealingCalculations {
       actorUpdates: {},
       usefulLegs: [], // Not used yet
     };
-    if (hitLocationData.data.wounds.length <= healWoundIndex) {
+    if (!Number.isInteger(healWoundIndex) || hitLocationData.data.wounds.length <= healWoundIndex) {
       const msg = `Trying to heal a wound that doesn't exist.`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, healWoundIndex, hitLocationData);

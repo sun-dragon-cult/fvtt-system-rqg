@@ -5,7 +5,7 @@
   <div class="woundlist">
     {{#each wounds}}
       <label>
-        <input type="radio" name="wound" value="{{@index}}" />
+        <input type="radio" name="wound" value="{{@index}}" {{#unless @index}}checked{{/unless}} />
         {{this}}
       </label>
       &nbsp;
