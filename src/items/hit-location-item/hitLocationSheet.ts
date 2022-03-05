@@ -149,7 +149,6 @@ export class HitLocationSheet extends RqgItemSheet<
       }
       damage = Math.max(0, damage - armorPoints);
     }
-    const actorHealthBefore = actor.data.data.attributes.health;
     const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
       DamageCalculations.addWound(
         damage,
@@ -174,14 +173,14 @@ export class HitLocationSheet extends RqgItemSheet<
     activateChatTab();
 
     if (actor.isToken && actor.token) {
-      await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken, actorHealthBefore);
+      await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken);
     } else {
       const activeTokens = actor.getActiveTokens(true);
       const sceneTokens = getGame().scenes?.active?.data.tokens;
       if (activeTokens.length && sceneTokens) {
         const token = sceneTokens.find((t) => t.id === activeTokens[0].id);
         token &&
-          (await HitLocationSheet.setTokenEffect(token.object as RqgToken, actorHealthBefore));
+          (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
       }
     }
 
@@ -255,7 +254,6 @@ export class HitLocationSheet extends RqgItemSheet<
     );
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
-    const actorHealthBefore = actor.data.data.attributes.health;
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,
@@ -268,7 +266,7 @@ export class HitLocationSheet extends RqgItemSheet<
 
     if (actor.isToken) {
       actor.token &&
-        (await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken, actorHealthBefore));
+        (await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken));
     } else {
       const activeTokens = actor.getActiveTokens(true, false);
       const activeScene = getGame().scenes?.active;
@@ -277,7 +275,7 @@ export class HitLocationSheet extends RqgItemSheet<
           | TokenDocument
           | undefined; // TODO Hardcoded "first" token
         token &&
-          (await HitLocationSheet.setTokenEffect(token.object as RqgToken, actorHealthBefore));
+          (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
       }
     }
 
@@ -295,14 +293,8 @@ export class HitLocationSheet extends RqgItemSheet<
     }
   }
 
-  static async setTokenEffect(token: RqgToken, actorHealthBefore: ActorHealthState): Promise<void> {
+  static async setTokenEffect(token: RqgToken): Promise<void> {
     // // TODO testing testing - lägg i nån CONFIG?
-
-    const woundStatuses = [
-      CONFIG.statusEffects[14],
-      CONFIG.statusEffects[1],
-      CONFIG.statusEffects[0],
-    ];
 
     const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
       new Map([
@@ -321,7 +313,7 @@ export class HitLocationSheet extends RqgItemSheet<
 
     const newEffect = health2Effect.get(token.actor.data.data.attributes.health);
 
-    for (const status of woundStatuses) {
+    for (const status of health2Effect.values()) {
       const thisEffectOn = !!token.actor.effects.find(
         (e: ActiveEffect) => e.getFlag("core", "statusId") === status?.id
       );
