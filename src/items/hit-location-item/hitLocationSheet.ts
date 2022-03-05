@@ -149,7 +149,6 @@ export class HitLocationSheet extends RqgItemSheet<
       }
       damage = Math.max(0, damage - armorPoints);
     }
-    const actorHealthBefore = actor.data.data.attributes.health;
     const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
       DamageCalculations.addWound(
         damage,
@@ -174,14 +173,14 @@ export class HitLocationSheet extends RqgItemSheet<
     activateChatTab();
 
     if (actor.isToken && actor.token) {
-      await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken, actorHealthBefore);
+      await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken);
     } else {
       const activeTokens = actor.getActiveTokens(true);
       const sceneTokens = getGame().scenes?.active?.data.tokens;
       if (activeTokens.length && sceneTokens) {
         const token = sceneTokens.find((t) => t.id === activeTokens[0].id);
         token &&
-          (await HitLocationSheet.setTokenEffect(token.object as RqgToken, actorHealthBefore));
+          (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
       }
     }
 
@@ -255,7 +254,6 @@ export class HitLocationSheet extends RqgItemSheet<
     );
     const healWoundIndex: number = Number(data.wound);
     let healPoints: number = Number(data.heal);
-    const actorHealthBefore = actor.data.data.attributes.health;
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,
@@ -268,7 +266,7 @@ export class HitLocationSheet extends RqgItemSheet<
 
     if (actor.isToken) {
       actor.token &&
-        (await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken, actorHealthBefore));
+        (await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken));
     } else {
       const activeTokens = actor.getActiveTokens(true, false);
       const activeScene = getGame().scenes?.active;
@@ -277,7 +275,7 @@ export class HitLocationSheet extends RqgItemSheet<
           | TokenDocument
           | undefined; // TODO Hardcoded "first" token
         token &&
-          (await HitLocationSheet.setTokenEffect(token.object as RqgToken, actorHealthBefore));
+          (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
       }
     }
 
@@ -295,8 +293,9 @@ export class HitLocationSheet extends RqgItemSheet<
     }
   }
 
-  static async setTokenEffect(token: RqgToken, actorHealthBefore: ActorHealthState): Promise<void> {
+  static async setTokenEffect(token: RqgToken): Promise<void> {
     // // TODO testing testing - lägg i nån CONFIG?
+
     const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
       new Map([
         ["shock", CONFIG.statusEffects[14]],
@@ -312,28 +311,27 @@ export class HitLocationSheet extends RqgItemSheet<
       return;
     }
 
-    const previousEffect = health2Effect.get(actorHealthBefore);
     const newEffect = health2Effect.get(token.actor.data.data.attributes.health);
 
-    if (newEffect?.label !== previousEffect?.label) {
-      const asOverlay = newEffect?.id === "dead";
-      const newEffectIsOn = !!token.actor.effects.find(
-        (e: ActiveEffect) => e.getFlag("core", "statusId") === newEffect?.id
+    for (const status of health2Effect.values()) {
+      const thisEffectOn = !!token.actor.effects.find(
+        (e: ActiveEffect) => e.getFlag("core", "statusId") === status?.id
       );
-      const previousEffectIsOn = !!token.actor.effects.find(
-        (e: ActiveEffect) => e.getFlag("core", "statusId") === previousEffect?.id
-      );
-
-      const shouldToggleNewEffect = !!newEffect && !newEffectIsOn;
-      const shouldTogglePreviousEffect = !!previousEffect && previousEffectIsOn;
-
-      shouldToggleNewEffect &&
-        (await token.toggleEffect(newEffect, { overlay: asOverlay, active: true }));
-      shouldTogglePreviousEffect &&
-        (await token.toggleEffect(previousEffect, {
+      if (newEffect?.id === status.id && !thisEffectOn) {
+        const asOverlay = status.id === "dead";
+        // Turn on the new effect
+        await token.toggleEffect(status, {
           overlay: asOverlay,
-          active: true,
-        }));
+          active: true
+        });
+      } else if (newEffect?.id !== status.id && thisEffectOn) {
+        // This is not the effect we're applying but it is on
+        // so we need to turn it off
+        await token.toggleEffect(status, {
+          overlay: false,
+          active: false
+        });
+      }
     }
   }
 }
