@@ -1,3 +1,32 @@
+# [1.14.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.13.0...v1.14.0) (2022-03-06)
+
+
+### Bug Fixes
+
+* add missing translation ([c66c260](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c66c260))
+* gear tab is shown even if actor only has natural weapons ([a6ebb5d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a6ebb5d))
+* handle combatants that references actors that are deleted ([0bb5f6c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0bb5f6c))
+* Healing Dialog can break actor [#198](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/198) ([3720af0](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3720af0))
+* Opposing rune update not working[#182](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/182) ([95d19d5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/95d19d5))
+* prevent warning about setting value of input to null ([3f3bba5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3f3bba5))
+* re swap order of DEX & SIZ SR on actorsheet ([e2083f4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e2083f4))
+* readd spirit combat icon in combat tab ([b591df4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b591df4))
+* rename skill icons ([1b2aca7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1b2aca7))
+* update default items icon path ([fa7ac16](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fa7ac16))
+* various actorsheet layout fixes ([47ff0ae](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/47ff0ae))
+
+
+### Features
+
+* add icons for bolts & sling stones ([a34943f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a34943f))
+* add icons for bolts & sling stones etc ([a85f78f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a85f78f))
+* add more icons ([8a94eb5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8a94eb5))
+* make consumables quantity editable [#178](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/178) ([0f839c0](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0f839c0))
+* show spirit combat icon on combat tab ([7168d70](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7168d70))
+
+
+
+
 # [1.13.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.12.0...v1.13.0) (2022-02-01)
 
 
