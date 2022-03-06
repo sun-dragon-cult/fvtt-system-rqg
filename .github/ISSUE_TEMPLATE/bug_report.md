@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: 'state: to triage'
+labels: 'state: to triage, type: bug'
 assignees: ''
 
 ---
