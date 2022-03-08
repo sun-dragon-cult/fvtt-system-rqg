@@ -46,6 +46,9 @@ export interface SkillDataProperties {
 }
 
 export const emptySkill: SkillDataSourceData = {
+  rqid: "",
+  rqidpriority: 0,
+  rqidlocale: "",
   category: SkillCategoryEnum.Magic,
   skillName: "",
   specialization: "",

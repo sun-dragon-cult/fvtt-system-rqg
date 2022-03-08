@@ -30,6 +30,9 @@ export interface RuneMagicDataProperties {
 }
 
 export const emptyRuneMagic: RuneMagicDataSourceData = {
+  rqid: "",
+  rqidpriority: 0,
+  rqidlocale: "",
   cultId: "",
   runes: [],
   points: 0,

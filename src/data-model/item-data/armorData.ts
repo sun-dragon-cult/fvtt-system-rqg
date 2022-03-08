@@ -61,6 +61,9 @@ export interface ArmorDataProperties {
 }
 
 export const emptyArmor: ArmorDataSourceData = {
+  rqid: "",
+  rqidpriority: 0,
+  rqidlocale: "",
   description: "",
   gmNotes: "",
   size: 0,

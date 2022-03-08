@@ -1,6 +1,7 @@
 import { Resource } from "../shared/resource";
 import { JournalEntryLink } from "../shared/journalentrylink";
 import { ItemTypeEnum } from "./itemTypes";
+import { IRqgItem } from "./IRqgItem";
 
 export enum CultRankEnum {
   LayMember = "layMember",
@@ -12,7 +13,11 @@ export enum CultRankEnum {
   HighPriest = "highPriest",
 }
 
-export interface CultDataSourceData extends JournalEntryLink {
+export interface CultDataSourceData 
+    extends JournalEntryLink, IRqgItem {
+  rqid: string,
+  rqidpriority: number,
+  rqidlocale: string,
   rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
   runePoints: Resource;
   tagline: string;
@@ -43,6 +48,9 @@ export interface CultDataProperties {
 }
 
 export const emptyCult: CultDataSourceData = {
+  rqid: "",
+  rqidpriority: 0,
+  rqidlocale: "",
   rank: CultRankEnum.LayMember,
   runePoints: { value: 0, max: 0 },
   tagline: "",

@@ -79,6 +79,9 @@ export interface WeaponDataProperties {
 }
 
 export const emptyWeapon: WeaponDataSourceData = {
+  rqid: "",
+  rqidpriority: 0,
+  rqidlocale: "",
   usage: {
     oneHand: {
       skillId: "",

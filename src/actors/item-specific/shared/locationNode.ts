@@ -12,6 +12,9 @@ export type LocationNode = IPhysicalItem & {
 
 export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNode {
   let locationTree: LocationNode = {
+    rqid: "",
+    rqidpriority: 0,
+    rqidlocale: "",
     name: "",
     id: "",
     description: "",
@@ -49,7 +52,10 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
         ui.notifications?.warn(localize("RQG.Item.Notification.ItemIsNotContainerWarning", {itemName: containingItem.name})); // TODO make a real solution!
         location = "";
       }
-      return {
+      return {  
+        rqid: (itemData.data as any).rqid,
+        rqidpriority: (itemData.data as any).rqidpriority,
+        rqidlocale: (itemData.data as any).rqidlocale,
         name: itemData.name,
         id: itemData._id,
         location: location,
@@ -82,6 +88,9 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
 
   const virtualNodes: LocationNode[] = [...virtualNodesMap].map(([i, node]) => {
     return {
+      rqid: "",
+      rqidpriority: 0,
+      rqidlocale: "",
       name: node.location,
       id: "",
       quantity: 1,
