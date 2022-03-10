@@ -1,6 +1,5 @@
-
 export interface IRqgItem {
-    rqid: string,
-    rqidpriority: number,
-    rqidlocale: string
+  rqid: string;
+  rqidpriority: number;
+  rqidlang: string;
 }

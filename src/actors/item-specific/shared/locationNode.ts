@@ -14,7 +14,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
   let locationTree: LocationNode = {
     rqid: "",
     rqidpriority: 0,
-    rqidlocale: "",
+    rqidlang: "",
     name: "",
     id: "",
     description: "",
@@ -39,7 +39,9 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       let location = itemLocation === itemData.name ? "" : itemLocation;
       if (hasLoop(itemData, physicalItemDatas)) {
         ui.notifications?.warn(
-          localize("RQG.Item.Notification.CircularGearLocationWarning", {itemLocation: itemLocation})
+          localize("RQG.Item.Notification.CircularGearLocationWarning", {
+            itemLocation: itemLocation,
+          })
         );
         location = "";
       }
@@ -49,13 +51,17 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       );
       // @ts-ignore
       if (containingItem && !containingItem.data.isContainer) {
-        ui.notifications?.warn(localize("RQG.Item.Notification.ItemIsNotContainerWarning", {itemName: containingItem.name})); // TODO make a real solution!
+        ui.notifications?.warn(
+          localize("RQG.Item.Notification.ItemIsNotContainerWarning", {
+            itemName: containingItem.name,
+          })
+        ); // TODO make a real solution!
         location = "";
       }
-      return {  
+      return {
         rqid: (itemData.data as any).rqid,
         rqidpriority: (itemData.data as any).rqidpriority,
-        rqidlocale: (itemData.data as any).rqidlocale,
+        rqidlang: (itemData.data as any).rqidlang,
         name: itemData.name,
         id: itemData._id,
         location: location,
@@ -90,7 +96,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
     return {
       rqid: "",
       rqidpriority: 0,
-      rqidlocale: "",
+      rqidlang: "",
       name: node.location,
       id: "",
       quantity: 1,

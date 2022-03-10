@@ -6,11 +6,11 @@ import {
   materialTranslationKeys,
 } from "../../data-model/item-data/armorData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
-import { RqgItemSheet } from "../RqgItemSheet";
-import { assertItemType, getHitLocations, localize } from "../../system/util";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { assertItemType, getGameUser, getHitLocations, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 
-interface ArmorSheetData {
+interface ArmorSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: ArmorDataProperties; // Actually contains more...complete with effects, flags etc
   armorData: ArmorDataPropertiesData;
@@ -29,6 +29,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       template: "systems/rqg/items/armor-item/armorSheet.hbs",
       width: 580,
       height: 725,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "armor" }],
     });
   }
 
@@ -50,6 +51,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
         armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
         materialNames: materialTranslationKeys.map((key) => localize(key)),
       },
+      isGM: getGameUser().isGM,
     };
   }
 

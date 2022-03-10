@@ -36,7 +36,7 @@ export interface PassionDataProperties {
 export const emptyPassion: PassionDataSourceData = {
   rqid: "",
   rqidpriority: 0,
-  rqidlocale: "",
+  rqidlang: "",
   passion: PassionsEnum.Love,
   subject: "",
   description: "",

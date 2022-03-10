@@ -14,11 +14,10 @@ export enum HitLocationTypesEnum {
   Abdomen = "abdomen",
 }
 
-export interface HitLocationDataSourceData
-    extends IRqgItem {
-  rqid: string,
-  rqidpriority: number,
-  rqidlocale: string,
+export interface HitLocationDataSourceData extends IRqgItem {
+  rqid: string;
+  rqidpriority: number;
+  rqidlang: string;
   dieFrom: number;
   dieTo: number;
   /** Max and value added by ActorSheet.prepareData */
@@ -55,7 +54,7 @@ export interface HitLocationDataProperties {
 export const emptyHitLocation: HitLocationDataSourceData = {
   rqid: "",
   rqidpriority: 0,
-  rqidlocale: "",
+  rqidlang: "",
   dieFrom: 0,
   dieTo: 0,
   hitPoints: emptyResource,

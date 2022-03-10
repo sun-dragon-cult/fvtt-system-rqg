@@ -19,7 +19,7 @@ export interface GearDataProperties {
 export const emptyGear: GearDataSourceData = {
   rqid: "",
   rqidpriority: 0,
-  rqidlocale: "",
+  rqidlang: "",
   description: "",
   gmNotes: "",
   quantity: 1,

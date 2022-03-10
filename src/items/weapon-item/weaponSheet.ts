@@ -2,8 +2,8 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
-import { RqgItemSheet } from "../RqgItemSheet";
-import { assertItemType, getRequiredDomDataset, uuid2Name } from "../../system/util";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { assertItemType, getGameUser, getRequiredDomDataset, uuid2Name } from "../../system/util";
 import {
   damageType,
   WeaponDataProperties,
@@ -11,7 +11,7 @@ import {
 } from "../../data-model/item-data/weaponData";
 import { Weapon } from "../../actors/item-specific/weapon";
 
-interface WeaponSheetData {
+interface WeaponSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: WeaponDataProperties; // Actually contains more...complete with effects, flags etc
   weaponData: WeaponDataPropertiesData;
@@ -34,6 +34,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       template: "systems/rqg/items/weapon-item/weaponSheet.hbs",
       width: 960,
       height: 800,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "weapon" }],
     });
   }
 
@@ -70,6 +71,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
           "1/5MR": 5,
         },
       },
+      isGM: getGameUser().isGM,
     };
   }
 

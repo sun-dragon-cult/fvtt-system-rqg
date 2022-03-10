@@ -1,6 +1,12 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getGame, getRequiredDomDataset, hasOwnProperty, localize, RqgError } from "../../system/util";
+import {
+  getGame,
+  getRequiredDomDataset,
+  hasOwnProperty,
+  localize,
+  RqgError,
+} from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
@@ -54,14 +60,19 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear)}),
+    name: localize("RQG.ContextMenu.EditItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear),
+    }),
     icon: ContextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => true,
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       if (!item) {
-        const msg = localize("RQG.ContextMenu.Notification.CantEditGearError", {itemId: itemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantEditGearError", {
+          itemId: itemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -69,7 +80,9 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear)}),
+    name: localize("RQG.ContextMenu.DeleteItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear),
+    }),
     icon: ContextMenuRunes.Delete,
     condition: () => true,
     callback: (el: JQuery): void => {

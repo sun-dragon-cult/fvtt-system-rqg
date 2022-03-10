@@ -2,36 +2,81 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}">
     <input type="text" name="name" value="{{data.name}}">
-
-    <label>{{localize "RQG.Item.Gear.EncumbranceAbbr"}} <input type="number" min="0" max="999999" name="data.encumbrance" value="{{gearData.encumbrance}}"></label><br>
-    <select name="data.equippedStatus">
-      {{#select gearData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
-      <option value="{{this}}">{{localize (concat "RQG.Item.EquippedStatus." this)}}</option>
-      {{/each}} {{/select}}
-    </select>
   </header>
-  <main>
-    <label>{{localize "RQG.Item.Gear.PriceReal"}} <input type="number" min="0" max="99999999" name="data.price.real" value="{{gearData.price.real}}">{{localize "RQG.Item.Gear.LunarsAbbr"}}</label><br>
-    <label>{{localize "RQG.Item.Gear.PriceEstimated"}} <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{gearData.price.estimated}}">{{localize "RQG.Item.Gear.LunarsAbbr"}}</label><br>
-    <label>{{localize "RQG.Item.Gear.Location"}} <input type="text" name="data.location" value="{{gearData.location}}"></label><br>
-    <label>{{localize "RQG.Item.Gear.AttunedTo"}} <input type="text" name="data.attunedTo" value="{{gearData.attunedTo}}"></label><br>
-    <label><input type="checkbox" name="data.isContainer" {{checked gearData.isContainer}}>{{localize "RQG.Item.Gear.IsContainerQ"}}</label><br>
 
-    <select name="data.physicalItemType">
-      {{#select gearData.physicalItemType}} {{#each sheetSpecific.physicalItemTypes}}
-      <option value="{{this}}">{{localize (concat "RQG.Item.Gear.PhysicalItemType." this)}}</option>
-      {{/each}} {{/select}}
-    </select>
-    {{#unless (eq gearData.physicalItemType "unique")}}
-      <label>{{localize "RQG.Item.Gear.Quantity"}} <input type="number" min="0" max="9999999" name="data.quantity" value="{{gearData.quantity}}"></label>
-    {{/unless}}
-    <br>
-    <label>{{localize "RQG.Item.Gear.Description"}} {{editor content=gearData.description target="data.description"
-      button=true owner=owner editable=editable}}
-    </label><br>
-    <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=gearData.gmNotes target="data.gmNotes"
-      button=true owner=owner editable=editable}}
-    </label>
-    <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+  <main>
+
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="gear">{{localize "RQG.Item.SheetTab.Gear"}}</a>
+      <a class="item" data-tab="description">{{localize "RQG.Item.SheetTab.Description"}}</a>
+      {{#if isGM}}
+      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
+      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
+      {{/if}}
+    </nav>
+
+    <section class="sheet-body">
+      {{!-- Gear Tab --}}
+      <div class="tab" data-group="primary" data-tab="gear">
+        <div class="item-sheet-properties">
+
+          <label for="data.isContainer">{{localize "RQG.Item.Gear.IsContainerQ"}}</label>
+          <input type="checkbox" name="data.isContainer" {{checked gearData.isContainer}}>
+
+          <label for="data.physicalItemType">{{localize "RQG.Item.Gear.PhysicalItemType"}}</label>
+          <select name="data.physicalItemType">
+            {{#select gearData.physicalItemType}} {{#each sheetSpecific.physicalItemTypes}}
+            <option value="{{this}}">{{localize (concat "RQG.Item.Gear.PhysicalItemTypeEnum." this)}}</option>
+            {{/each}} {{/select}}
+          </select>
+          
+          {{#unless (eq gearData.physicalItemType "unique")}}
+          <label for="data.quantity">{{localize "RQG.Item.Gear.Quantity"}}</label>
+          <input name="data.quantity" type="number" min="0" max="9999999" value="{{gearData.quantity}}">
+          {{/unless}}
+
+        </div>
+
+        
+        {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"
+          itemData=gearData
+        }}
+
+      </div>
+
+      
+      {{!-- Description Tab --}}
+      <div class="tab" data-group="primary" data-tab="description">
+
+        <label>{{localize "RQG.Item.Gear.Description"}} {{editor content=gearData.description target="data.description"
+          button=true owner=owner editable=editable}}
+        </label><br>
+      </div>
+
+      {{!-- GM Tab --}}
+      <div class="tab" data-group="primary" data-tab="gm">
+
+        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=gearData.gmNotes target="data.gmNotes"
+          button=true owner=owner editable=editable}}
+        </label>
+      </div>
+
+      {{!-- Active Effects Tab --}}
+      <div class="tab" data-group="primary" data-tab="active-effects">
+        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+      </div>
+
+
+      {{!-- RQG System Tab --}}
+      <div class="tab" data-group="primary" data-tab="rqgsystem">
+        {{> "systems/rqg/items/sheet-parts/itemRqId.hbs"
+          itemData=gearData
+        }}
+      </div>
+    </section>
+
   </main>
 </form>

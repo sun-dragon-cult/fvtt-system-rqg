@@ -9,15 +9,16 @@ import {
   assertItemType,
   getAllRunesIndex,
   getDomDataset,
+  getGameUser,
   getJournalEntryName,
   getRequiredDomDataset,
 } from "../../system/util";
-import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 import { droppableJournalDescription } from "../isDroppable";
 
-type RuneMagicSheetData = {
+interface RuneMagicSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: RuneMagicDataProperties; // Actually contains more...complete with effects, flags etc
   runeMagicData: RuneMagicDataPropertiesData;
@@ -28,7 +29,7 @@ type RuneMagicSheetData = {
     allRunes: IndexTypeForMetadata<CompendiumCollection.Metadata>;
     journalEntryName: string | undefined;
   };
-};
+}
 
 export class RuneMagicSheet extends RqgItemSheet<
   ItemSheet.Options,
@@ -39,7 +40,8 @@ export class RuneMagicSheet extends RqgItemSheet<
       classes: ["rqg", "sheet", ItemTypeEnum.RuneMagic],
       template: "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
       width: 425,
-      height: 350,
+      height: 500,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "rune-magic" }],
     });
   }
 
@@ -68,6 +70,7 @@ export class RuneMagicSheet extends RqgItemSheet<
         allRunes: getAllRunesIndex(),
         journalEntryName: getJournalEntryName(runeMagicData),
       },
+      isGM: getGameUser().isGM,
     };
   }
 

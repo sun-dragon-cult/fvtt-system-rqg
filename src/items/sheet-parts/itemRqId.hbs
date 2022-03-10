@@ -1,0 +1,21 @@
+<div class="item-sheet-properties">
+  <label for="rqid-{{data._id}}">{{localize "RQG.RQGSystem.rqid"}}</label>
+  <input type="text" id="rqid-{{data._id}}" name="data.rqid" value="{{itemData.rqid}}" />
+
+  <label for="rqidpriority-{{data._id}}">{{localize "RQG.RQGSystem.rqidpriority"}}</label>
+  <input
+    type="number"
+    id="rqidpriority-{{data._id}}"
+    name="data.rqidpriority"
+    value="{{itemData.rqidpriority}}"
+  />
+
+  <label for="rqidlang-{{data._id}}">{{localize "RQG.RQGSystem.rqidlang"}}</label>
+  <input
+    type="text"
+    id="rqidlang-{{data._id}}"
+    class="short"
+    name="data.rqidlang"
+    value="{{itemData.rqidlang}}"
+  />
+</div>

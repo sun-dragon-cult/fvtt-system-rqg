@@ -39,7 +39,7 @@ export interface RuneDataProperties {
 export const emptyRune: RuneDataSourceData = {
   rqid: "",
   rqidpriority: 0,
-  rqidlocale: "",
+  rqidlang: "",
   rune: "",
   chance: 0,
   canGetExperience: true,

@@ -1,5 +1,9 @@
 import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 
+export interface RqgItemSheetData {
+  isGM: boolean;
+}
+
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
   Data extends object = ItemSheet.Data<Options>

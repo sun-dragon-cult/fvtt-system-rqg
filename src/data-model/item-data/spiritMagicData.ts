@@ -29,7 +29,7 @@ export interface SpiritMagicDataProperties {
 export const emptySpiritMagic: SpiritMagicDataSourceData = {
   rqid: "",
   rqidpriority: 0,
-  rqidlocale: "",
+  rqidlang: "",
   points: 0,
   isVariable: false,
   isRitual: false,
