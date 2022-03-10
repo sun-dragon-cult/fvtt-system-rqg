@@ -53,7 +53,7 @@
     </nav>
 
     <section class="sheet-body">
-      {{! Armor Tab }}
+      {{! Rune Magic Tab }}
       <div class="tab" data-group="primary" data-tab="rune-magic">
 
         <div class="item-sheet-properties">
@@ -97,7 +97,7 @@
           {{/if}}
 
           <label for="runes-{{data._id}}">{{localize "RQG.Item.RuneMagic.Runes"}}</label>
-          <div style="display: grid; grid-template-columns: 1fr 5fr; grid-gap: 0.5em;">
+          <div class="rune-property">
             {{#each runeMagicData.runes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
             <input type="text" name="data.runes" value="{{this}}">
@@ -110,14 +110,6 @@
         </div>
       </div>
 
-      {{!-- Description Tab --}}
-      <div class="tab" data-group="primary" data-tab="description">
-
-        <label>{{localize "RQG.Item.Gear.Description"}} {{editor content=runeMagicData.description
-          target="data.description"
-          button=true owner=owner editable=editable}}
-        </label><br>
-      </div>
 
       {{!-- GM Tab --}}
       <div class="tab" data-group="primary" data-tab="gm">

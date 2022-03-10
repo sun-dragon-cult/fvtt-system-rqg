@@ -1,61 +1,146 @@
 <form class="{{cssClass}}" autocomplete="off">
-  <header class="sheet-header">
-    <img
-            class="profile-img"
-            src="{{data.img}}"
-            data-edit="img"
-            title="{{data.name}}"
-    />
+  <header class="item-sheet-header">
 
-    <fieldset>
-      <legend>{{localize "RQG.Item.Rune.Name"}}</legend>
-      <label>{{localize "RQG.Item.Rune.Rune"}}<br><input type="text" name="data.rune" value="{{runeData.rune}}"></label>
-      <label class="paren-head">{{localize "RQG.Item.Rune.Type"}}<br>( <select name="data.runeType">
-        {{#select runeData.runeType}} {{#each sheetSpecific.runeTypes}}
-        <option value="{{this}}">{{localize (concat "RQG.Item.Rune.RuneType." this)}}</option>
-        {{/each}} {{/select}}
-      </select> )</label>
-    </fieldset>
-  </header>
-  <section class="sheet-body">
-    <label><input type="number" min="0" max="999" name="data.chance" value="{{runeData.chance}}"/>%</label>
-    <label><input type="checkbox" name="data.hasExperience" {{checked runeData.hasExperience}} />{{localize "RQG.Item.Rune.HasExperienceQ"}}</label>
-
-    <div class="wide-section">
-      <label>{{localize "RQG.Item.Rune.OpposingRune"}} <img class="rune" src="{{runeImg runeData.opposingRune}}" title="{{runeData.opposingRune}}"><input type="text" name="data.opposingRune" value="{{runeData.opposingRune}}" list="allRunes"/></label>
-      <div>{{localize "RQG.Item.Rune.MinorRunes"}}<br>
-        {{#each runeData.minorRunes}}
-        <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.minorRunes" type="text" value="{{this}}"> </span>
-        {{/each}}
-        <input name="data.minorRunes" type="text" list="allRunes" placeholder="Add new minor rune"><br>
-      </div>
-      <label><input type="checkbox" name="data.isMastered" {{checked runeData.isMastered}}>{{localize "RQG.Item.Rune.MasteredSorceryQ"}}</label><br>
+    <div class="item-sheet-header-img">
+      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
+
+    <div class="name-parts-2">
+      <div>
+        <label for="rune-{{data._id}}">{{localize "RQG.Item.Rune.Name"}}</label>
+        <input type="text" id="rune-{{data._id}}" name="data.rune" value="{{runeData.rune}}" />
+      </div>
+
+      <div class="paren-head">
+        <label for="rune-type-{{data._id}}">{{localize "RQG.Item.Rune.Type"}}</label>
+        <div>
+          (
+          <select id="rune-type-{{data._id}}" name="data.runeType">
+            {{#select runeData.runeType}}
+              {{#each sheetSpecific.runeTypes}}
+                <option value="{{this}}">{{localize
+                    (concat "RQG.Item.Rune.RuneType." this)
+                  }}</option>
+              {{/each}}
+            {{/select}}
+          </select>
+          )
+        </div>
+      </div>
+    </div>
+
     <div class="item-sheet-journal-link">
       {{#if runeData.journalPack}}
-          <a class="entity-link content-link"
-            data-pack="{{runeData.journalPack}}" 
-            data-id="{{runeData.journalId}}"
-            title="{{localize "RQG.Foundry.ContentLink.CompendiumNameTitle" compendiumName=runeData.journalPack}}">
-            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-          </a>
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+        <a
+          class="entity-link content-link"
+          data-pack="{{runeData.journalPack}}"
+          data-id="{{runeData.journalId}}"
+          title="{{localize
+            'RQG.Foundry.ContentLink.CompendiumNameTitle'
+            compendiumName=runeData.journalPack
+          }}"
+        >
+          <i class="fas fa-book-open"></i>
+          {{sheetSpecific.journalEntryName}}
+        </a>
+        <i
+          class="fas fa-info-circle"
+          title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+        ></i>
       {{else if runeData.journalId}}
-          <a class="entity-link content-link" 
-            data-type="JournalEntry" 
-            data-id="{{runeData.journalId}}"
-            title="{{localize "RQG.Foundry.ContentLink.WorldJournalEntry"}}">
-            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-          </a>
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+        <a
+          class="entity-link content-link"
+          data-type="JournalEntry"
+          data-id="{{runeData.journalId}}"
+          title="{{localize 'RQG.Foundry.ContentLink.WorldJournalEntry'}}"
+        >
+          <i class="fas fa-book-open"></i>
+          {{sheetSpecific.journalEntryName}}
+        </a>
+        <i
+          class="fas fa-info-circle"
+          title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+        ></i>
       {{else}}
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}</i></p>
-      {{/if}}   
-    </div>    
-  </section>
+        <i
+          class="fas fa-info-circle"
+          title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
+        ></i>
+      {{/if}}
+    </div>
+
+  </header>
+
+  <main>
+
+    {{! Sheet Tab Navigation }}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="rune">{{localize "RQG.Item.SheetTab.Rune"}}</a>
+      {{#if isGM}}
+        <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+        <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
+      {{/if}}
+    </nav>
+
+    <section class="sheet-body">
+      {{! Rune Tab }}
+      <div class="tab" data-group="primary" data-tab="rune">
+
+        <div class="item-sheet-properties">
+
+          <label for="chance-{{data._id}}">{{localize "RQG.Item.Rune.PercentageChance"}}</label>
+          <input type="number" id="chance-{{data._id}}" name="data.chance" min="0" max="999" value="{{runeData.chance}}">
+
+          <label for="has-experience-{{data._id}}">{{localize "RQG.Item.Rune.HasExperienceQ"}}</label>
+          <input type="checkbox" id="has-experience-{{data._id}}" name="data.hasExperience" {{checked runeData.hasExperience}}>
+
+          <label for="opposing-rune-{{data._id}}">{{localize "RQG.Item.Rune.OpposingRune"}}</label>
+          <div class="rune-property">
+            <img class="rune" src="{{runeImg runeData.opposingRune}}" title="{{runeData.opposingRune}}"/>
+            <input type="text" id="opposing-rune-{{data._id}}" 
+              name="data.opposingRune" 
+              value="{{runeData.opposingRune}}" 
+              list="allRunes">
+          </div>
+
+          <label for="is-mastered-{{data._id}}">{{localize "RQG.Item.Rune.MasteredSorceryQ"}}</label>
+          <input type="checkbox" id="is-mastered-{{data._id}}" name="data.hasExperience" {{checked runeData.isMastered}}>
+
+          <label for="minor-runes-{{data._id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
+          <div class="rune-property">
+            {{#each runeData.minorRunes}}
+            <img class="rune" src="{{runeImg this}}" title="{{this}}">
+            <input type="text" name="data.minorRunes" value="{{this}}">
+            {{/each}}
+            <input type="text" id="minor-runes-{{data._id}}" name="data.minorRunes" list="allRunes" 
+              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" style="grid-column: 1 / span 2;">
+          </div>
+
+          
+        </div>
+      </div>
+
+
+      {{!-- Active Effects Tab --}}
+      <div class="tab" data-group="primary" data-tab="active-effects">
+        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+
+      </div>
+
+
+      {{!-- RQG System Tab --}}
+      <div class="tab" data-group="primary" data-tab="rqgsystem">
+        {{> "systems/rqg/items/sheet-parts/itemRqId.hbs"
+        itemData=runeData
+        }}
+      </div>
+      
+    </section>
+  </main>
+
   <datalist id="allRunes">
     {{#each sheetSpecific.allRunes}}
-    <option value="{{this}}">{{this}}</option>
+      <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>
 </form>
