@@ -809,7 +809,8 @@
           "Bash": "Bash",
           "Parry": "Parry",
           "Grapple": "Grapple",
-          "Knockback": "Knockback"
+          "Knockback": "Knockback",
+          "Punch": "Punch"
         }
       }
     },
