@@ -566,11 +566,13 @@
         }
       },
       "Cult": {
-        "CultNamePlaceholder": "Cult Name",
-        "CultTaglinePlaceholder": "Cult Tagline",
+        "Name": "Cult Name",
+        "CultTagline": "Cult Tagline",
         "AddNewRunePlaceholder": "Add new rune",
+        "Runes": "Runes",
         "HolyDays": "Holy Days",
         "RunePoints": "Rune Points",
+        "CultRank": "Cult Rank",
         "ActorsGifts": "Actor's Gifts",
         "ActorsGeases": "Actor's Geases",
         "ActorsSubCults": "Actor's Sub-Cults"
@@ -732,6 +734,8 @@
       },
       "SheetTab": {
         "Armor": "Armor",
+        "Cult": "Cult",
+        "CultStanding": "Cult Standing",
         "Gear": "Gear",
         "Weapon": "Weapon",
         "WeaponUsage": "Usage",

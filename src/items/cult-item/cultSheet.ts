@@ -9,15 +9,16 @@ import {
   assertItemType,
   getAllRunesIndex,
   getDomDataset,
+  getGameUser,
   getJournalEntryName,
   getRequiredDomDataset,
 } from "../../system/util";
-import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
 import { droppableJournalDescription } from "../isDroppable";
 
-interface CultSheetData {
+interface CultSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: CultDataProperties; // Actually contains more...complete with effects, flags etc
   cultData: CultDataPropertiesData;
@@ -33,8 +34,9 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Cult],
       template: "systems/rqg/items/cult-item/cultSheet.hbs",
-      width: 390,
-      height: 530,
+      width: 450,
+      height: 650,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "cult" }],
     });
   }
 
@@ -59,6 +61,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
         journalEntryName: getJournalEntryName(cultData),
         ranksEnum: Object.values(CultRankEnum),
       },
+      isGM: getGameUser().isGM,
     };
   }
 

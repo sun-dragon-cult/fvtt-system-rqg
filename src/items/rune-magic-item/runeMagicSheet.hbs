@@ -108,8 +108,12 @@
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
             <input type="text" name="data.runes" value="{{this}}">
             {{/each}}
-            <input type="text" id="runes-{{data._id}}" name="data.runes" list="allRunes" 
-              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" style="grid-column: 1 / span 2;">
+            <input 
+              type="text" 
+              id="runes-{{data._id}}" 
+              name="data.runes" list="allRunes" 
+              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" 
+              style="grid-column: 1 / span 2;">
           </div>
 
 
