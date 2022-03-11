@@ -5,10 +5,11 @@ import {
 } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import {
   assertItemType,
   getAllRunesIndex,
+  getGameUser,
   getJournalEntryName,
   localize,
   RqgError,
@@ -17,7 +18,7 @@ import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-
 import { RqgItem } from "../rqgItem";
 import { droppableJournalDescription } from "../isDroppable";
 
-interface SkillSheetData {
+interface SkillSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: SkillDataProperties; // Actually contains more...complete with effects, flags etc
   skillData: SkillDataPropertiesData;
@@ -33,8 +34,9 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Skill],
       template: "systems/rqg/items/skill-item/skillSheet.hbs",
-      width: 505,
-      height: 405,
+      width: 450,
+      height: 500,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "skill" }],
     });
   }
 
@@ -61,6 +63,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
         journalEntryName: getJournalEntryName(skillData),
         allRunes: getAllRunesIndex(),
       },
+      isGM: getGameUser().isGM,
     };
   }
 
