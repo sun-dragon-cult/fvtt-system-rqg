@@ -1165,7 +1165,9 @@ body {
 
 .name-number input[type="text"],
 .name-parts-3 input[type="text"],
-.name-parts-2 input[type="text"] {
+.name-parts-2 input[type="text"],
+.name-parts-2 select,
+.name-parts-3 select {
   width: -webkit-fill-available;
 }
 

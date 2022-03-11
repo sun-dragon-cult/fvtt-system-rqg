@@ -3,11 +3,11 @@ import {
   PassionDataPropertiesData,
   PassionsEnum,
 } from "../../data-model/item-data/passionData";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgItemSheet } from "../RqgItemSheet";
-import { assertItemType } from "../../system/util";
+import { ItemTypeEnum, RqgItemDataSource } from "../../data-model/item-data/itemTypes";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { assertItemType, getGameUser } from "../../system/util";
 
-export interface PassionSheetData {
+export interface PassionSheetData extends RqgItemSheetData{
   isEmbedded: boolean;
   data: PassionDataProperties; // Actually contains more...complete with effects, flags etc
   passionData: PassionDataPropertiesData;
@@ -38,8 +38,11 @@ export class PassionSheet extends RqgItemSheet<
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Passion],
       template: "systems/rqg/items/passion-item/passionSheet.hbs",
-      width: 490,
-      height: 310,
+      width: 450,
+      height: 500,
+      tabs: [
+        { navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "passion" },
+      ],
     });
   }
 
@@ -59,6 +62,7 @@ export class PassionSheet extends RqgItemSheet<
       sheetSpecific: {
         passionTypes: Object.values(PassionsEnum),
       },
+      isGM: getGameUser().isGM,
     };
   }
 

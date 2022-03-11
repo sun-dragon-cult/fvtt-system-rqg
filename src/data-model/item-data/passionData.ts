@@ -18,6 +18,7 @@ export interface PassionDataSourceData extends IAbility {
   passion: PassionsEnum;
   subject: string; // The subject of Fear etc
   description: string; // How did the character get this passion
+  gmNotes: string;
 }
 
 // --- Derived Data ---
@@ -40,6 +41,7 @@ export const emptyPassion: PassionDataSourceData = {
   passion: PassionsEnum.Love,
   subject: "",
   description: "",
+  gmNotes: "",
   chance: 0,
   canGetExperience: true,
   hasExperience: false,
