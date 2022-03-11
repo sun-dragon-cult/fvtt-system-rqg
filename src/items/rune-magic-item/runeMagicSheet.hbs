@@ -14,7 +14,10 @@
       <div class="paren-head">    
         <label for="points-{{data._id}}">{{localize "RQG.Item.RuneMagic.Points"}}</label>
         <div>
-         ( <input type="number" id="points-{{data._id}}" name="data.points" value="{{runeMagicData.points}}" /> )
+         ( <input type="number" 
+                  id="points-{{data._id}}" 
+                  name="data.points" 
+                  value="{{runeMagicData.points}}" /> )
         </div>
       </div>
     </div>
@@ -46,7 +49,6 @@
     <nav class="sheet-tabs tabs" data-group="primary">
       <a class="item" data-tab="rune-magic">{{localize "RQG.Item.SheetTab.RuneMagic"}}</a>
       {{#if isGM}}
-      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
@@ -61,16 +63,20 @@
 
           <label for="range-{{data._id}}" class="mp">{{localize "RQG.Item.RuneMagic.Range"}}</label>
           <select id="range-{{data._id}}" name="data.castingRange">
-            {{#select runeMagicData.castingRange}} {{#each sheetSpecific.ranges}}
+            {{#select runeMagicData.castingRange}} 
+            {{#each sheetSpecific.ranges}}
             <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
-            {{/each}} {{/select}}
+            {{/each}} 
+            {{/select}}
           </select>
 
           <label for="duration-{{data._id}}" class="mp">{{localize "RQG.Item.RuneMagic.Duration"}} </label>
           <select id="duration-{{data._id}}" name="data.duration">
-            {{#select runeMagicData.duration}} {{#each sheetSpecific.durations}}
+            {{#select runeMagicData.duration}} 
+            {{#each sheetSpecific.durations}}
             <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
-            {{/each}} {{/select}}
+            {{/each}} 
+            {{/select}}
           </select>
 
           {{/unless}}
@@ -108,15 +114,6 @@
 
 
         </div>
-      </div>
-
-
-      {{!-- GM Tab --}}
-      <div class="tab" data-group="primary" data-tab="gm">
-
-        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=runeMagicData.gmNotes target="data.gmNotes"
-          button=true owner=owner editable=editable}}
-        </label>
       </div>
 
       {{!-- Active Effects Tab --}}

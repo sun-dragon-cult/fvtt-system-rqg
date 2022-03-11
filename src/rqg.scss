@@ -1105,6 +1105,10 @@ body {
   display: grid;
   grid-template-columns: 1fr 5fr;
   grid-gap: 0.5em;
+
+  & img {
+    mix-blend-mode: normal;
+  }
 }
 
 .item-sheet-journal-link {

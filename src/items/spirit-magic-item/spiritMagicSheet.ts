@@ -4,8 +4,8 @@ import {
   SpiritMagicDataPropertiesData,
 } from "../../data-model/item-data/spiritMagicData";
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { assertItemType, getJournalEntryName, RqgError } from "../../system/util";
-import { RqgItemSheet } from "../RqgItemSheet";
+import { assertItemType, getGameUser, getJournalEntryName, RqgError } from "../../system/util";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import {
   SpellConcentrationEnum,
   SpellDurationEnum,
@@ -13,7 +13,7 @@ import {
 } from "../../data-model/item-data/spell";
 import { droppableJournalDescription } from "../isDroppable";
 
-interface SpiritMagicSheetData {
+interface SpiritMagicSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: SpiritMagicDataProperties; // Actually contains more...complete with effects, flags etc
   spiritMagicData: SpiritMagicDataPropertiesData;
@@ -34,7 +34,10 @@ export class SpiritMagicSheet extends RqgItemSheet<
       classes: ["rqg", "sheet", ItemTypeEnum.SpiritMagic],
       template: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
       width: 520,
-      height: 250,
+      height: 450,
+      tabs: [
+        { navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "spirit-magic" },
+      ],
     });
   }
 
@@ -58,6 +61,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
         types: Object.values(SpellConcentrationEnum),
         journalEntryName: getJournalEntryName(spiritMagicData),
       },
+      isGM: getGameUser().isGM,
     };
   }
 

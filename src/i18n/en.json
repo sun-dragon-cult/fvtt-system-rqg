@@ -784,6 +784,8 @@
         }
       },
       "SpiritMagic": {
+        "Name": "Name",
+        "Points": "Points",
         "VariableQ": "Variable?",
         "Range": "Range",
         "Duration": "Duration",
