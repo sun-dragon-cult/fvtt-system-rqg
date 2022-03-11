@@ -33,7 +33,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Rune],
       template: "systems/rqg/items/rune-item/runeSheet.hbs",
-      width: 530,
+      width: 450,
       height: 400,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "rune" }],
     });
