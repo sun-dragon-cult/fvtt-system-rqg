@@ -1,68 +1,149 @@
 <form class="{{cssClass}}" autocomplete="off">
+  <header class="item-sheet-header">
+    <h1>{{data.name}}</h1>
+  </header>
   <main>
-    <label>{{localize "RQG.Item.HitLocation.Name"}}
-      <select name="name">
-        {{#select data.name}}
-          {{#each sheetSpecific.allHitLocations}}
-            <option value="{{this}}">{{this}}</option>
+
+    {{! Sheet Tab Navigation }}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="hit-location">{{localize "RQG.Item.SheetTab.HitLocation"}}</a>
+      {{#if isGM}}
+      <a class="item" data-tab="hit-location-definition">{{localize "RQG.Item.SheetTab.HitLocationDefinition"}}</a>
+      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
+      {{/if}}
+    </nav>
+
+    <section class="sheet-body">
+      {{!-- Hit Location Tab --}}
+      <div class="tab" data-group="primary" data-tab="hit-location">
+        
+          <div class="item-sheet-properties">
+
+            <label for="health-status-{{data._id}}">{{localize "RQG.Item.HitLocation.HealthStatus"}}</label>
+            <select id="health-status-{{data._id}}" name="data.hitLocationHealthState">
+              {{#select hitLocationData.hitLocationHealthState}}
+                {{#each sheetSpecific.hitLocationHealthStatuses}}
+                  <option value="{{this}}">{{localize
+                      (concat "RQG.Item.HitLocation.HealthStatusEnum." this)
+                    }}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+
+          <label for="hit-points-value-{{data._id}}">{{localize "RQG.Item.HitLocation.HitPoints"}}</label>
+          <div>
+            <input  type="number" id="hit-points-value-{{data._id}}" name="data.hitPointsVaue" min="0" max="99" value="{{hitLocationData.hitPoints.value}}">
+            /
+            {{hitLocationData.hitPoints.max}}
+          </div>
+
+          <label>{{localize "RQG.Item.HitLocation.ArmorPoints"}}</label>
+          {{hitLocationData.armorPoints}}
+          
+          <label>{{localize "RQG.Item.HitLocation.Wounds"}}</label>
+          <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}">
+          {{#each hitLocationData.wounds}}
+            <i class="fas fa-notes-medical"></i> {{this}}
           {{/each}}
-        {{/select}}
-      </select></label><br />
-    <label>{{localize "RQG.Item.HitLocation.HealthStatus"}}
-      <select name="data.hitLocationHealthState">
-        {{#select hitLocationData.hitLocationHealthState}}
-          {{#each sheetSpecific.hitLocationHealthStatuses}}
-            <option value="{{this}}">{{localize
-                (concat "RQG.Item.HitLocation.HealthStatusEnum." this)
-              }}</option>
-          {{/each}}
-        {{/select}}
-      </select></label><br />
-    <label>{{localize "RQG.Item.HitLocation.ActAs"}}
-      <select name="data.hitLocationType">
-        {{#select hitLocationData.hitLocationType}}
-          {{#each sheetSpecific.hitLocationTypes}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.HitLocationType." this)}}</option>
-          {{/each}}
-        {{/select}}
-      </select>
-      {{localize "RQG.Item.HitLocation.ForDamageCalculations"}}</label><br />
-    {{#if (eq hitLocationData.hitLocationType "limb")}}
-      <label>{{localize "RQG.Item.HitLocation.ConnectedTo"}}
-        <select name="data.connectedTo">
-          {{#select hitLocationData.connectedTo}}
-            {{#each sheetSpecific.allHitLocations}}
-              <option value="{{this}}">{{this}}</option>
-            {{/each}}
-          {{/select}}
-        </select></label><br />
-    {{/if}}
-    <label>{{localize "RQG.Item.HitLocation.HitLocationOn"}}
-      <input
-        type="number"
-        min="1"
-        max="20"
-        name="data.dieFrom"
-        value="{{hitLocationData.dieFrom}}"
-      /></label>
-    -
-    <input type="number" min="1" max="20" name="data.dieTo" value="{{hitLocationData.dieTo}}" /><br
-    />
-    <label>{{localize "RQG.Item.HitLocation.NaturalArmorPoints"}}
-      <input
-        type="number"
-        min="0"
-        max="99"
-        name="data.naturalAp"
-        value="{{hitLocationData.naturalAp}}"
-      /></label><br />
-    <label>{{localize "RQG.Item.HitLocation.BaseHPDelta"}}
-      <input
-        type="number"
-        min="-9"
-        max="9"
-        name="data.baseHpDelta"
-        value="{{hitLocationData.baseHpDelta}}"
-      /></label><br />
+          </div>
+
+        </div>
+      </div>
+
+      {{!-- Hit Location Definition Tab --}}
+      <div class="tab" data-group="primary" data-tab="hit-location-definition">
+        
+        <div class="item-sheet-properties">
+
+          <label for="hit-points-value-{{data._id}}">{{localize "RQG.Item.HitLocation.Name"}}</label>
+          <select name="name">
+            {{#select data.name}}
+              {{#each sheetSpecific.allHitLocations}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            {{/select}}
+          </select>
+
+          <label for="act-as-{{data._id}}">{{localize "RQG.Item.HitLocation.ActAs"}}</label>
+          <select id="act-as-{{data._id}}" name="data.hitLocationType">
+            {{#select hitLocationData.hitLocationType}}
+              {{#each sheetSpecific.hitLocationTypes}}
+                <option value="{{this}}">{{localize (concat "RQG.Item.HitLocationType." this)}}</option>
+              {{/each}}
+            {{/select}}
+          </select>
+
+          {{#if (eq hitLocationData.hitLocationType "limb")}}
+          <label for="connected-to-{{data._id}}">{{localize "RQG.Item.HitLocation.ConnectedTo"}}</label>
+          <select id="connected-to-{{data._id}}" name="data.connectedTo">
+            {{#select hitLocationData.connectedTo}}
+              {{#each sheetSpecific.allHitLocations}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+            {{/select}}
+          </select>
+          {{/if}}
+            
+          <label for="hit-location-on-from-{{data._id}}">{{localize "RQG.Item.HitLocation.HitLocationOn"}}</label>
+          <div>
+            <input
+              type="number"
+              id="hit-location-on-from-{{data._id}}"
+              min="1"
+              max="20"
+              name="data.dieFrom"
+              value="{{hitLocationData.dieFrom}}">
+            -
+            <input 
+              type="number" 
+              name="data.dieTo" 
+              min="1" 
+              max="20" 
+              value="{{hitLocationData.dieTo}}">
+          </div>
+            
+
+          <label for="natural-armor-points-{{data._id}}">{{localize "RQG.Item.HitLocation.NaturalArmorPoints"}}</label>
+          <input
+            type="number"
+            id="natural-armor-points-{{data._id}}"
+            name="data.naturalAp"
+            min="0"
+            max="99"
+            value="{{hitLocationData.naturalAp}}"
+          />
+
+          <label for="base-hp-delta-{{data._id}}">{{localize "RQG.Item.HitLocation.BaseHPDelta"}}</label>
+          <input
+            type="number"
+            id="base-hp-delta-{{data._id}}"
+            name="data.baseHpDelta"
+            min="-9"
+            max="9"
+            value="{{hitLocationData.baseHpDelta}}"
+          />
+
+        </div>  
+
+      </div>
+
+
+      {{!-- Active Effects Tab --}}
+      <div class="tab" data-group="primary" data-tab="active-effects">
+        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+
+      </div>
+
+
+      {{!-- RQG System Tab --}}
+      <div class="tab" data-group="primary" data-tab="rqgsystem">
+        {{> "systems/rqg/items/sheet-parts/itemRqId.hbs"
+          itemData=hitLocationData
+        }}
+      </div>
+
+    </section>
+
   </main>
 </form>

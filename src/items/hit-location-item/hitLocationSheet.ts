@@ -10,20 +10,21 @@ import {
   activateChatTab,
   assertItemType,
   getGame,
+  getGameUser,
   getHitLocations,
   localize,
   requireValue,
   RqgError,
   usersThatOwnActor,
 } from "../../system/util";
-import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
 import { ActorHealthState } from "../../data-model/actor-data/attributes";
 import { RqgItem } from "../rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
 
-interface HitLocationSheetData {
+interface HitLocationSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: HitLocationDataProperties; // Actually contains more...complete with effects, flags etc
   hitLocationData: HitLocationDataPropertiesData;
@@ -42,8 +43,9 @@ export class HitLocationSheet extends RqgItemSheet<
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
-      width: 320,
-      height: 250,
+      width: 450,
+      height: 500,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "hit-location" }],
     });
   }
 
@@ -65,6 +67,7 @@ export class HitLocationSheet extends RqgItemSheet<
         hitLocationTypes: Object.values(HitLocationTypesEnum),
         hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
       },
+      isGM: getGameUser().isGM,
     };
   }
 
