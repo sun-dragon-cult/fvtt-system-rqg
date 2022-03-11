@@ -810,7 +810,8 @@
           "Parry": "Parry",
           "Grapple": "Grapple",
           "Knockback": "Knockback",
-          "Punch": "Punch"
+          "Punch": "Punch",
+          "Kick": "Kick"
         }
       }
     },
