@@ -9,7 +9,9 @@
       <a class="item" data-tab="hit-location">{{localize "RQG.Item.SheetTab.HitLocation"}}</a>
       {{#if isGM}}
       <a class="item" data-tab="hit-location-definition">{{localize "RQG.Item.SheetTab.HitLocationDefinition"}}</a>
+      {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      {{/unless}}
       <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>

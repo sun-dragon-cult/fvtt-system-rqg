@@ -77,8 +77,10 @@
     <nav class="sheet-tabs tabs" data-group="primary">
       <a class="item" data-tab="rune">{{localize "RQG.Item.SheetTab.Rune"}}</a>
       {{#if isGM}}
-        <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-        <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
+      {{#unless isEmbedded}}
+      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      {{/unless}}
+      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 

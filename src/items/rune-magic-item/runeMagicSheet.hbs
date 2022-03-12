@@ -49,7 +49,9 @@
     <nav class="sheet-tabs tabs" data-group="primary">
       <a class="item" data-tab="rune-magic">{{localize "RQG.Item.SheetTab.RuneMagic"}}</a>
       {{#if isGM}}
+      {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      {{/unless}}
       <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>

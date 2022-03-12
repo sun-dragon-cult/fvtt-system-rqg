@@ -34,7 +34,9 @@
       <a class="item" data-tab="description">{{localize "RQG.Item.SheetTab.Description"}}</a>
       {{#if isGM}}
       <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
+      {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      {{/unless}}
       <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
