@@ -121,7 +121,7 @@
           
 
           <label for="runes-{{data._id}}">{{localize "RQG.Item.Skill.SorceryRunes"}}</label>
-          <div class="rune-property">
+          <div class="rune-property rune-group">
             {{#each skillData.runes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
             <input type="text" name="data.runes" value="{{this}}">

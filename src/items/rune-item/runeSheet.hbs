@@ -129,7 +129,7 @@
           <input type="checkbox" id="is-mastered-{{data._id}}" name="data.hasExperience" {{checked runeData.isMastered}}>
 
           <label for="minor-runes-{{data._id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
-          <div class="rune-property">
+          <div class="rune-property rune-group">
             {{#each runeData.minorRunes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
             <input type="text" name="data.minorRunes" value="{{this}}">

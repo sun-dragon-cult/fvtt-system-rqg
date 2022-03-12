@@ -1112,6 +1112,11 @@ body {
   grid-template-columns: 1fr 5fr;
   grid-gap: 0.5em;
 
+  &.rune-group {
+    border: 1px black solid;
+    padding: 0.5rem;    
+  }
+
   & img {
     mix-blend-mode: normal;
   }

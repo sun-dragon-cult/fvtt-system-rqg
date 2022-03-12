@@ -105,7 +105,7 @@
           {{/if}}
 
           <label for="runes-{{data._id}}">{{localize "RQG.Item.RuneMagic.Runes"}}</label>
-          <div class="rune-property">
+          <div class="rune-property rune-group">
             {{#each runeMagicData.runes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
             <input type="text" name="data.runes" value="{{this}}">
