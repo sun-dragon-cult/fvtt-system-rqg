@@ -52,14 +52,6 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     },
   },
   {
-    name: localize("RQG.ContextMenu.ViewDescription"),
-    icon: ContextMenuRunes.ViewDescription,
-    condition: () => true,
-    callback: async (): Promise<void> => {
-      ui.notifications?.info("TODO View Description");
-    },
-  },
-  {
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear),
     }),
