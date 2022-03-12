@@ -685,7 +685,7 @@
         "Passion": "Passion",
         "Subject": "Subject",
         "Chance": "Chance",
-        "Experience": "Experience",
+        "HasExperienceQ": "Has Experience?",
         "BackStory": "Back Story",
         "PassionEnum": {
           "Ambition": "Ambition",
@@ -704,7 +704,7 @@
         "Name": "Name",
         "Rune": "Rune",
         "Type": "Type",
-        "PercentageChance": "% Chance",
+        "PercentageChance": "Chance",
         "HasExperienceQ": "Has Experience?",
         "OpposingRune": "Opposing Rune",
         "MinorRunes": "Minor Runes",
