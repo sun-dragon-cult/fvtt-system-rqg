@@ -64,6 +64,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
         journalEntryName: getJournalEntryName(runeData),
       },
       isGM: getGameUser().isGM,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 

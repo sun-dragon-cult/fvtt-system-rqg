@@ -68,6 +68,7 @@ export class HitLocationSheet extends RqgItemSheet<
         hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
       },
       isGM: getGameUser().isGM,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 

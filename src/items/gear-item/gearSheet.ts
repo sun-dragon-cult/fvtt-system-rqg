@@ -43,6 +43,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
         physicalItemTypes: [...physicalItemTypes],
       },
       isGM: getGameUser().isGM,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 

@@ -2,6 +2,9 @@ import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../s
 
 export interface RqgItemSheetData {
   isGM: boolean;
+  supportedLanguages: {
+    en: string;
+  } & Partial<Record<string, string>>;
 }
 
 export class RqgItemSheet<

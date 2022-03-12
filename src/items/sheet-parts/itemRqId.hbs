@@ -11,11 +11,14 @@
   />
 
   <label for="rqidlang-{{data._id}}">{{localize "RQG.RQGSystem.rqidlang"}}</label>
-  <input
-    type="text"
+  <select 
     id="rqidlang-{{data._id}}"
-    class="short"
-    name="data.rqidlang"
-    value="{{itemData.rqidlang}}"
-  />
+    name="data.rqidlang">
+  {{#select itemData.rqidlang}}
+    {{#each supportedLanguages}}
+      <option value="{{@key}}">{{@key}}: {{this}}</option>
+    {{/each}}
+  {{/select}}
+  </select>
+
 </div>

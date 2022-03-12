@@ -62,6 +62,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
         journalEntryName: getJournalEntryName(spiritMagicData),
       },
       isGM: getGameUser().isGM,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 

@@ -64,6 +64,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
         allRunes: getAllRunesIndex(),
       },
       isGM: getGameUser().isGM,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 

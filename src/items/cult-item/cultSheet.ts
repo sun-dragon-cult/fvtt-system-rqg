@@ -62,6 +62,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
         ranksEnum: Object.values(CultRankEnum),
       },
       isGM: getGameUser().isGM,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 

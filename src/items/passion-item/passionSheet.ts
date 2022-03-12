@@ -63,6 +63,7 @@ export class PassionSheet extends RqgItemSheet<
         passionTypes: Object.values(PassionsEnum),
       },
       isGM: getGameUser().isGM,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 
