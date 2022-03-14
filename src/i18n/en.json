@@ -700,6 +700,12 @@
           "Vanity": "Vanity"
         }
       },
+      "RqgItem": {
+        "Error": {
+          "MoreThanOneRqidMatchInWorld": "More than one RQG Item in the world (not in Compendia) matched the rqid \"{rqid}\", rqidlang \"{rqidlang}\", and rqidpriority \"{rqidpriority}\". Please review your RQG System settings.  See console log for item ids.",
+          "MoreThanOneRqidMatchInCompendia": "More than one RQG Item in installed Compendia matched the rqid \"{rqid}\", rqidlang \"{rqidlang}\", and rqidpriority \"{rqidpriority}\". Please review your RQG System settings.  See console log for item ids."
+        }
+      },
       "Rune": {
         "Name": "Name",
         "Rune": "Rune",

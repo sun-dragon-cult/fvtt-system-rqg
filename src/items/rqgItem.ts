@@ -169,4 +169,117 @@ export class RqgItem extends Item {
   public static localizeItemTypeName(itemType: ItemTypeEnum): string {
     return localize("ITEM.Type" + itemType.titleCase());
   }
+
+  /**
+   * Return the highest priority item matching the supplied rqid and lang from the items in the World.  If not
+   * found return the highest priority item matching the supplied rqid and lang from the installed Compendia.
+   * eg CONFIG.Item.documentClass.getItemByRqid("someid", "es")
+   * @param rqid eg "humanoid-left-arm", "throwing-axe", or "spirit-lore"
+   * @param lang default value is "en", eg "en" or "pl"
+   * @returns
+   */
+  public static async getItemByRqid(
+    rqid: string,
+    lang: string = "en"
+  ): Promise<RqgItem | undefined> {
+    console.log("You're in getItemByRqId");
+
+    console.log(lang);
+
+    const worldItem = await this.getItemFromWorldByRqid(rqid, lang);
+
+    if (worldItem !== undefined) {
+      return worldItem;
+    }
+
+    const comendiumItem = await this.getItemFromAllCompendiaByRqid(rqid, lang);
+
+    return comendiumItem;
+  }
+
+  private static async getItemFromWorldByRqid(
+    rqid: string,
+    lang: string = "en"
+  ): Promise<RqgItem | undefined> {
+    const candidates = getGame().items?.contents.filter(
+      (i) => i.data.data.rqid === rqid && i.data.data.rqidlang === lang
+    );
+
+    if (candidates === undefined) {
+      return undefined;
+    }
+
+    console.log(`world candidates.length: ${candidates.length}`);
+
+    if (candidates.length > 0) {
+      let result = candidates.reduce((max, obj) =>
+        max.data.data.rqidpriority > obj.data.data.rqidpriority ? max : obj
+      );
+      
+      // Detect more than one item that could be the match
+      let duplicates = candidates.filter(i => i.data.data.rqidpriority === result.data.data.rqidpriority);
+      if (duplicates.length > 1) {
+          const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
+            rqid: rqid,
+            rqidlang: lang,
+            rqidpriority: result.data.data.rqidpriority,
+          });
+          ui.notifications?.error(msg);
+          console.log(msg + "  Duplicate items: ", duplicates)
+          // throw new RqgError(msg);  //TODO: Throwing this breaks it, not throwing it at least returns the first one found.  Which do we want?
+      }
+      return result as RqgItem;
+    } else {
+      return undefined;
+    }
+  }
+
+  private static async getItemFromAllCompendiaByRqid(
+    rqid: string,
+    lang: string = "en"
+  ): Promise<RqgItem | undefined> {
+    const candidates: RqgItem[] = [];
+
+    for (const pack of getGame().packs) {
+      console.log("pack", pack);
+      if (pack.documentClass.name === "RqgItem") {
+        for (const item of await pack.getDocuments()) {
+          if (item.data.data.rqid === rqid && item.data.data.rqidlang === lang) {
+            console.log(item);
+            candidates.push(item as RqgItem);
+          }
+        }
+      }
+    }
+
+    console.log(`compendia candidates.length: ${candidates.length}`);
+    if (candidates.length === 0) {
+      return undefined;
+    }
+
+    if (candidates.length > 0) {
+      let result = candidates.reduce((max, obj) =>
+        max.data.data.rqidpriority > obj.data.data.rqidpriority ? max : obj
+      );
+
+      // Detect more than one item that could be the match
+      let duplicates = candidates.filter(
+        (i) => i.data.data.rqidpriority === result.data.data.rqidpriority
+      );
+      if (duplicates.length > 1) {
+        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
+          rqid: rqid,
+          rqidlang: lang,
+          rqidpriority: result.data.data.rqidpriority,
+        });
+        ui.notifications?.error(msg);
+        console.log(msg + "  Duplicate items: ", duplicates);
+        // throw new RqgError(msg);  //TODO: Throwing this breaks it, not throwing it at least returns the first one found.  Which do we want?
+      }
+
+      return result;
+    } else {
+      return undefined;
+    }
+  }
 }
