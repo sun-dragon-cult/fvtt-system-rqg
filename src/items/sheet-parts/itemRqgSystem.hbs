@@ -1,6 +1,9 @@
 <div class="item-sheet-properties">
   <label for="rqid-{{data._id}}">{{localize "RQG.RQGSystem.rqid"}}</label>
-  <input type="text" id="rqid-{{data._id}}" name="data.rqid" value="{{itemData.rqid}}" />
+  <div class="input-button">
+    <input type="text" id="rqid-{{data._id}}" name="data.rqid" value="{{itemData.rqid}}" />
+    <a title="{{localize "RQG.RQGSystem.QuickRqid"}}" data-item-id="{{data._id}}" data-item-rqid-quick><i class="fas fa-plus"></i></a>
+  </div>
 
   <label for="rqidpriority-{{data._id}}">{{localize "RQG.RQGSystem.rqidpriority"}}</label>
   <input
@@ -9,7 +12,7 @@
     name="data.rqidpriority"
     value="{{itemData.rqidpriority}}"
   />
-
+ 
   <label for="rqidlang-{{data._id}}">{{localize "RQG.RQGSystem.rqidlang"}}</label>
   <select 
     id="rqidlang-{{data._id}}"

@@ -1085,6 +1085,18 @@ body {
     text-align: start;
     grid-column: 1 / 3;
   }  
+
+  & .input-button {
+    display: flex;
+
+    & input {
+      width: -webkit-fill-available;
+    }
+
+    & a {
+      padding: 5px;
+    }
+  }
 }
 
 .item-sheet-properties label {

@@ -908,7 +908,8 @@
     "RQGSystem": {
       "rqid": "Rune Quest System ID",
       "rqidpriority": "System ID Priority",
-      "rqidlang": "System ID Language"
+      "rqidlang": "System ID Language",
+      "QuickRqid": "Create Rune Quest System ID (rqid) based on current item. Item should be localized in English."
     },
     "Notification": {
       "Error": {}

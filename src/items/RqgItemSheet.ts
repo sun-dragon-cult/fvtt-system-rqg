@@ -1,4 +1,5 @@
-import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import { getGame, getRequiredDomDataset, localize, localizeItemType, toKebabCase } from "../system/util";
+import { RqgItem } from "./rqgItem";
 
 export interface RqgItemSheetData {
   isGM: boolean;
@@ -78,5 +79,20 @@ export class RqgItemSheet<
         this.item.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
       });
     });
+
+    // RQG System Tab 
+    $(this.form!)
+      .find("[data-item-rqid-quick]")
+      .each((i: number, el: HTMLElement) => {
+        const itemId = getRequiredDomDataset($(el), "item-id");
+        el.addEventListener("click", async () => {
+          const item = getGame().items?.get(itemId) as RqgItem;
+          if (!item) {
+            return;
+          }
+          const rqidInput = document.getElementById("rqid-" + itemId) as HTMLInputElement;
+          rqidInput.value = toKebabCase(`${item.type}-${item.name}`);
+        });
+      });
   }
 }
