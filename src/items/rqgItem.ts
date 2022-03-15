@@ -182,10 +182,6 @@ export class RqgItem extends Item {
     rqid: string,
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
-    console.log("You're in getItemByRqId");
-
-    console.log(lang);
-
     const worldItem = await this.getItemFromWorldByRqid(rqid, lang);
 
     if (worldItem !== undefined) {
@@ -209,8 +205,6 @@ export class RqgItem extends Item {
       return undefined;
     }
 
-    console.log(`world candidates.length: ${candidates.length}`);
-
     if (candidates.length > 0) {
       let result = candidates.reduce((max, obj) =>
         max.data.data.rqidpriority > obj.data.data.rqidpriority ? max : obj
@@ -229,6 +223,12 @@ export class RqgItem extends Item {
       }
       return result as RqgItem;
     } else {
+      const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
+        rqid: rqid,
+        rqidlang: lang,
+      });
+      ui.notifications?.warn(msg);
+      console.log(msg);
       return undefined;
     }
   }
@@ -240,7 +240,6 @@ export class RqgItem extends Item {
     const candidates: RqgItem[] = [];
 
     for (const pack of getGame().packs) {
-      console.log("pack", pack);
       if (pack.documentClass.name === "RqgItem") {
         for (const item of await pack.getDocuments()) {
           if (item.data.data.rqid === rqid && item.data.data.rqidlang === lang) {
@@ -250,8 +249,6 @@ export class RqgItem extends Item {
         }
       }
     }
-
-    console.log(`compendia candidates.length: ${candidates.length}`);
     if (candidates.length === 0) {
       return undefined;
     }

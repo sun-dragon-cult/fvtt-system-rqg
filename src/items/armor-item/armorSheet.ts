@@ -52,6 +52,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
         materialNames: materialTranslationKeys.map((key) => localize(key)),
       },
       isGM: getGameUser().isGM,
+      ownerId: this.document.actor?.id,
       supportedLanguages: CONFIG.supportedLanguages,
     };
   }

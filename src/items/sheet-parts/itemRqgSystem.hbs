@@ -2,7 +2,7 @@
   <label for="rqid-{{data._id}}">{{localize "RQG.RQGSystem.rqid"}}</label>
   <div class="input-button">
     <input type="text" id="rqid-{{data._id}}" name="data.rqid" value="{{itemData.rqid}}" />
-    <a title="{{localize "RQG.RQGSystem.QuickRqid"}}" data-item-id="{{data._id}}" data-item-rqid-quick><i class="fas fa-plus"></i></a>
+    <a title="{{localize "RQG.RQGSystem.QuickRqid"}}" data-item-id="{{data._id}}" {{#if isEmbedded}}data-owner-id="{{ownerId}}"{{/if}} data-item-rqid-quick><i class="fas fa-plus"></i></a>
   </div>
 
   <label for="rqidpriority-{{data._id}}">{{localize "RQG.RQGSystem.rqidpriority"}}</label>
@@ -23,5 +23,95 @@
     {{/each}}
   {{/select}}
   </select>
+
+</div>
+
+<div class="item-sheet-properties">
+  <label for="item-foundryid-{{data._id}}">{{localize "RQG.RQGSystem.ItemFoundryId"}}</label>
+  <div class="input-button">
+    <input
+      type="text"
+      id="item-foundryid-{{data._id}}"
+      name="data.item-foundryid"
+      value="{{data._id}}"
+      readonly
+    />
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
+        data-item-id="{{data._id}}" 
+        data-item-copy-input>
+      <i class="fas fa-copy"></i>
+    </a>
+  </div>
+
+  {{#if isEmbedded}}
+  <label for="owner-foundryid-{{data._id}}">{{localize "RQG.RQGSystem.OwnerFoundryId"}}</label>
+  <div class="input-button">
+    <input
+      type="text"
+      id="owner-foundryid-{{data._id}}"
+      name="data.owner-foundryid"
+      value="{{ownerId}}"
+      readonly
+    />
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
+        data-item-id="{{data._id}}" 
+        data-item-copy-input>
+      <i class="fas fa-copy"></i>
+    </a>
+  </div>
+
+  <label for="get-owned-item-macro-{{data._id}}">{{localize "RQG.RQGSystem.GetOwnedItemMacro"}}</label>
+  <div class="input-button">
+    <input
+      type="text"
+      id="get-owned-item-macro-{{data._id}}"
+      name="data.get-owned-item-macro"
+      value='game.actors.get("{{ownerId}}").items.get("{{data._id}}")'
+      readonly
+    />
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
+        data-item-id="{{data._id}}" 
+        data-item-copy-input>
+      <i class="fas fa-copy"></i>
+    </a>
+  </div>
+
+  {{/if}}
+
+  {{#unless isEmbedded}}
+  <label for="get-unowned-item-macro-{{data._id}}">{{localize "RQG.RQGSystem.GetUnownedItemMacro"}}</label>
+  <div class="input-button">
+    <input
+      type="text"
+      id="get-unowned-item-macro-{{data._id}}"
+      name="data.get-unowned-item-macro"
+      value='game.items.get("{{data._id}}")'
+      readonly
+    />
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
+        data-item-id="{{data._id}}" 
+        data-item-copy-input>
+      <i class="fas fa-copy"></i>
+    </a>
+  </div>
+
+  {{/unless}}
+
+  
+  <label for="get-item-like-this-macro-{{data._id}}">{{localize "RQG.RQGSystem.GetItemLikeThis"}}</label>
+  <div class="input-button">
+    <input
+      type="text"
+      id="get-item-like-this-macro-{{data._id}}"
+      name="data.get-item-like-this-macro"
+      value='CONFIG.Item.documentClass.getItemByRqid("{{itemData.rqid}},{{itemData.rqidlang}}")'
+      readonly
+    />
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
+        data-item-id="{{data._id}}" 
+        data-item-copy-input>
+      <i class="fas fa-copy"></i>
+    </a>
+  </div>
 
 </div>

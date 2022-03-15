@@ -703,7 +703,8 @@
       "RqgItem": {
         "Error": {
           "MoreThanOneRqidMatchInWorld": "More than one RQG Item in the world (not in Compendia) matched the rqid \"{rqid}\", rqidlang \"{rqidlang}\", and rqidpriority \"{rqidpriority}\". Please review your RQG System settings.  See console log for item ids.",
-          "MoreThanOneRqidMatchInCompendia": "More than one RQG Item in installed Compendia matched the rqid \"{rqid}\", rqidlang \"{rqidlang}\", and rqidpriority \"{rqidpriority}\". Please review your RQG System settings.  See console log for item ids."
+          "MoreThanOneRqidMatchInCompendia": "More than one RQG Item in installed Compendia matched the rqid \"{rqid}\", rqidlang \"{rqidlang}\", and rqidpriority \"{rqidpriority}\". Please review your RQG System settings.  See console log for item ids.",
+          "ItemNotFoundByRqid": "Item not found in world or Compendia matching the rqid \"{rqid}\", and rqidlang \"{rqidlang}\". See console log."
         }
       },
       "Rune": {
@@ -907,9 +908,15 @@
     },
     "RQGSystem": {
       "rqid": "Rune Quest System ID",
+      "QuickRqid": "Create Rune Quest System ID (rqid) based on current item. Item should be localized in English.",
       "rqidpriority": "System ID Priority",
       "rqidlang": "System ID Language",
-      "QuickRqid": "Create Rune Quest System ID (rqid) based on current item. Item should be localized in English."
+      "ItemFoundryId": "Item Foundry ID",
+      "OwnerFoundryId": "Owner Foundry ID",
+      "GetOwnedItemMacro": "Get This Owned Item",
+      "GetUnownedItemMacro": "Get This Unowned Item",
+      "GetItemLikeThis": "Get Item Like This",
+      "CopyInputValue": "Copy this value to the clipboard"
     },
     "Notification": {
       "Error": {}

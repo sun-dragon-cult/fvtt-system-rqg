@@ -71,6 +71,7 @@ export class RuneMagicSheet extends RqgItemSheet<
         journalEntryName: getJournalEntryName(runeMagicData),
       },
       isGM: getGameUser().isGM,
+      ownerId: this.document.actor?.id,
       supportedLanguages: CONFIG.supportedLanguages,
     };
   }
