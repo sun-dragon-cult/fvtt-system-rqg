@@ -219,14 +219,13 @@ export class RqgItem extends Item {
       // Detect more than one item that could be the match
       let duplicates = candidates.filter(i => i.data.data.rqidpriority === result.data.data.rqidpriority);
       if (duplicates.length > 1) {
-          const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
-            rqid: rqid,
-            rqidlang: lang,
-            rqidpriority: result.data.data.rqidpriority,
-          });
-          ui.notifications?.error(msg);
-          console.log(msg + "  Duplicate items: ", duplicates)
-          // throw new RqgError(msg);  //TODO: Throwing this breaks it, not throwing it at least returns the first one found.  Which do we want?
+        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
+          rqid: rqid,
+          rqidlang: lang,
+          rqidpriority: result.data.data.rqidpriority,
+        });
+        ui.notifications?.error(msg);
+        console.log(msg + "  Duplicate items: ", duplicates);
       }
       return result as RqgItem;
     } else {
@@ -273,10 +272,8 @@ export class RqgItem extends Item {
           rqidpriority: result.data.data.rqidpriority,
         });
         ui.notifications?.error(msg);
-        console.log(msg + "  Duplicate items: ", duplicates);
-        // throw new RqgError(msg);  //TODO: Throwing this breaks it, not throwing it at least returns the first one found.  Which do we want?
+        console.log(msg + "  Duplicate items: ", duplicates);      
       }
-
       return result;
     } else {
       return undefined;
