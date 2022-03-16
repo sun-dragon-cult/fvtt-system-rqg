@@ -102,8 +102,6 @@ export class RqgItemSheet<
           if (!item) {
             return;
           }
-          const rqidInput = document.getElementById("rqid-" + itemId) as HTMLInputElement;
-
             const newRqid = toKebabCase(`${item.type}-${item.name}`);
 
             if (ownerId) {
@@ -116,7 +114,6 @@ export class RqgItemSheet<
             } else {
               await item.update({ data: { rqid: newRqid } });
             }
-
         });
       });
 
