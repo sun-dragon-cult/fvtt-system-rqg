@@ -103,8 +103,20 @@ export class RqgItemSheet<
             return;
           }
           const rqidInput = document.getElementById("rqid-" + itemId) as HTMLInputElement;
-          rqidInput.value = toKebabCase(`${item.type}-${item.name}`);
-          rqidInput.dispatchEvent(new Event('change')); //TODO: This is not causing the value to update elsewhere on the form, like in the "Get Item Like this" macro
+
+            const newRqid = toKebabCase(`${item.type}-${item.name}`);
+
+            if (ownerId) {
+              const actor = getGame().actors?.get(ownerId);
+              if (actor) {
+                await actor.updateEmbeddedDocuments("Item", [
+                  { _id: item.id, data: { rqid: newRqid } },
+                ]);
+              }
+            } else {
+              await item.update({ data: { rqid: newRqid } });
+            }
+
         });
       });
 
