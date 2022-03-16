@@ -9,14 +9,15 @@ import {
   assertItemType,
   getAllRunesIndex,
   getDomDataset,
+  getGameUser,
   getJournalEntryName,
   getRequiredDomDataset,
 } from "../../system/util";
-import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { droppableJournalDescription } from "../isDroppable";
 
-interface RuneSheetData {
+interface RuneSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: RuneDataProperties; // Actually contains more...complete with effects, flags etc
   runeData: RuneDataPropertiesData;
@@ -32,8 +33,9 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Rune],
       template: "systems/rqg/items/rune-item/runeSheet.hbs",
-      width: 530,
-      height: 300,
+      width: 450,
+      height: 400,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "rune" }],
     });
   }
 
@@ -61,6 +63,10 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
         runeTypes: Object.values(RuneTypeEnum),
         journalEntryName: getJournalEntryName(runeData),
       },
+      isGM: getGameUser().isGM,
+      ownerId: this.document.actor?.id,
+      uuid: this.document.uuid,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 

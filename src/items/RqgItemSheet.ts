@@ -1,4 +1,14 @@
-import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import { getDomDataset, getGame, getRequiredDomDataset, localize, localizeItemType, toKebabCase } from "../system/util";
+import { RqgItem } from "./rqgItem";
+
+export interface RqgItemSheetData {
+  isGM: boolean;
+  ownerId: string | null | undefined;
+  uuid: string | undefined;
+  supportedLanguages: {
+    en: string;
+  } & Partial<Record<string, string>>;
+}
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
@@ -71,5 +81,51 @@ export class RqgItemSheet<
         this.item.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
       });
     });
+
+    // RQG System Tab
+
+    // Create a quick rqid based on the item
+    $(this.form!)
+      .find("[data-item-rqid-quick]")
+      .each((i: number, el: HTMLElement) => {
+        const itemId = getRequiredDomDataset($(el), "item-id");
+        const ownerId = getDomDataset($(el), "owner-id") // may or may not be there
+        el.addEventListener("click", async () => {
+          let item: RqgItem | undefined = undefined;
+          if (ownerId) {
+            // Get the item from the owner
+            item = getGame().actors?.get(ownerId)?.items.get(itemId);
+          } else {
+            // Get the item from the world
+            item = getGame().items?.get(itemId) as RqgItem;
+          }
+          if (!item) {
+            return;
+          }
+            const newRqid = toKebabCase(`${item.type}-${item.name}`);
+
+            if (ownerId) {
+              const actor = getGame().actors?.get(ownerId);
+              if (actor) {
+                await actor.updateEmbeddedDocuments("Item", [
+                  { _id: item.id, data: { rqid: newRqid } },
+                ]);
+              }
+            } else {
+              await item.update({ data: { rqid: newRqid } });
+            }
+        });
+      });
+
+    // Copy associated input value to clipboard
+    $(this.form!)
+      .find("[data-item-copy-input]")
+      .each((i: number, el: HTMLElement) => {
+        const itemId = getRequiredDomDataset($(el), "item-id");
+        el.addEventListener("click", async () => {
+          const input = el.previousElementSibling as HTMLInputElement;
+          navigator.clipboard.writeText(input.value);
+        });
+      });
   }
 }

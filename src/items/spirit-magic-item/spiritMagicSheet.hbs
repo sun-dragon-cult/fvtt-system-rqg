@@ -1,79 +1,170 @@
 <form class="{{cssClass}}" autocomplete="off">
-  <header class="sheet-header">
-    <img
-      class="profile-img"
-      src="{{data.img}}"
-      data-edit="img"
-      title="{{data.name}}"
-    />
-    <input type="text" name="name" value="{{data.name}}"> (<input type="number" name="data.points" value="{{spiritMagicData.points}}">)
-    <label><input type="checkbox" name="data.isVariable" {{checked spiritMagicData.isVariable}}>{{localize "RQG.Item.SpiritMagic.VariableQ"}}</label>
+  <header class="item-sheet-header">
+
+    <div class="item-sheet-header-img">
+      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+    </div>
+
+    <div class="name-number">
+      <div>
+        <label for="name-{{data._id}}">{{localize "RQG.Item.SpiritMagic.Name"}}</label>
+        <input type="text" id="name-{{data._id}}" name="data.name" value="{{data.name}}" />
+      </div>
+
+      <div class="paren-head">
+        <label for="material-{{data._id}}">{{localize "RQG.Item.SpiritMagic.Points"}}</label>
+        <div>
+          (
+          <input type="number"
+                 id="material-{{data._id}}"
+                 name="data.points"
+                 value="{{spiritMagicData.points}}"
+          />
+          )
+        </div>
+      </div>
+    </div>
+
+    <div class="item-sheet-journal-link">
+      {{#if spiritMagicData.journalPack}}
+        <a
+          class="entity-link content-link"
+          data-pack="{{spiritMagicData.journalPack}}"
+          data-id="{{spiritMagicData.journalId}}"
+          title="{{localize
+            'RQG.Foundry.ContentLink.CompendiumNameTitle'
+            compendiumName=spiritMagicData.journalPack
+          }}"
+        >
+          <i class="fas fa-book-open"></i>
+          {{sheetSpecific.journalEntryName}}
+        </a>
+        <i
+          class="fas fa-info-circle"
+          title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+        ></i>
+      {{else if spiritMagicData.journalId}}
+        <a
+          class="entity-link content-link"
+          data-type="JournalEntry"
+          data-id="{{spiritMagicData.journalId}}"
+          title="{{localize 'RQG.Foundry.ContentLink.WorldJournalEntry'}}"
+        >
+          <i class="fas fa-book-open"></i>
+          {{sheetSpecific.journalEntryName}}
+        </a>
+        <i
+          class="fas fa-info-circle"
+          title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+        ></i>
+      {{else}}
+        <i
+          class="fas fa-info-circle"
+          title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
+        ></i>
+      {{/if}}
+    </div>
+
   </header>
   <main>
-    <div class="flex-row-start">
-      <span>{{localize "RQG.Item.SpiritMagic.Range"}}<br>
-        <select name="data.castingRange">
-          {{#select spiritMagicData.castingRange}} {{#each sheetSpecific.ranges}}
-          <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
-          {{/each}} {{/select}}
-        </select>
-      </span>
-      <span>{{localize "RQG.Item.SpiritMagic.Duration"}}<br>
-        <select name="data.duration">
-          {{#select spiritMagicData.duration}} {{#each sheetSpecific.durations}}
-          <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
-          {{/each}} {{/select}}
-        </select>
-      </span>
-      {{#if (eq spiritMagicData.duration "temporal")}}
-      <span>{{localize "RQG.Item.SpiritMagic.Concentration"}}<br>
-        <select name="data.concentration">
-          {{#select spiritMagicData.concentration}} {{#each sheetSpecific.types}}
-          <option value="{{this}}">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." this)}}</option>
-          {{/each}} {{/select}}
-        </select>
-      </span>
-      {{/if}}
-      {{#if (eq spiritMagicData.duration "focused")}}
-      <span>{{localize "RQG.Item.SpiritMagic.Concentration"}}<br>
-        <input type="text" name="data.concentration" value="active" readonly>
-      </span>
-      {{/if}}
-      {{#unless (eq spiritMagicData.duration "temporal")}}
-      {{#unless (eq item.data.duration "focused")}}
-        <input type="text" name="data.concentration" value="" hidden>
+
+    {{! Sheet Tab Navigation }}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="spirit-magic">{{localize "RQG.Item.SheetTab.RuneMagic"}}</a>
+      {{#if isGM}}
+      {{#unless isEmbedded}}
+      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      {{/unless}}
-      <span>
-        <label><input type="checkbox" name="data.isRitual" {{checked spiritMagicData.isRitual}}>{{localize "RQG.Item.Spell.RitualQ"}}</label><br>
-        <label><input type="checkbox" name="data.isEnchantment" {{checked spiritMagicData.isEnchantment}}>{{localize "RQG.Item.Spell.EnchantmentQ"}}</label><br>
-        <label><input type="checkbox" name="data.isMatrix" {{checked spiritMagicData.isMatrix}}>{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
-      </span>
-    </div>
+      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
+      {{/if}}
+    </nav>
+
+
+    <section class="sheet-body">
+      {{! Spirit Magic Tab }}
+      <div class="tab" data-group="primary" data-tab="spirit-magic">
+
+        <div class="item-sheet-properties">
+
+          <label for="is-variable-{{data._id}}">{{localize "RQG.Item.SpiritMagic.VariableQ"}}</label>
+          <input type="checkbox" id="is-variable-{{data._id}}" name="data.isVariable" {{checked spiritMagicData.isVariable}}>
+
+          <label for="range-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Range"}}</label>
+          <select id="range-{{data._id}}" name="data.castingRange">
+            {{#select spiritMagicData.castingRange}}
+            {{#each sheetSpecific.ranges}}
+            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
+            {{/each}}
+            {{/select}}
+          </select>
+
+          <label for="duration-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Duration"}}</label>
+          <select id="duration-{{data._id}}" name="data.duration">
+            {{#select spiritMagicData.duration}} 
+            {{#each sheetSpecific.durations}}
+            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
+            {{/each}} 
+            {{/select}}
+          </select>
+
+          {{#if (eq spiritMagicData.duration "temporal")}}
+          <label for="concentration-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Concentration"}}</label>
+          <select id="concentration-{{data._id}}" name="data.concentration">
+            {{#select spiritMagicData.concentration}} 
+            {{#each sheetSpecific.types}}
+            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." this)}}</option>
+            {{/each}} 
+            {{/select}}
+          </select>
+          {{/if}}
+
+          {{!-- TODO: If this is supposed to set the concentration to "Active" when "Duration" is "Focused"
+                it's not working.  The select "looks best" at least so I'm leaving that for now. --}}
+          {{#if (eq spiritMagicData.duration "focused")}}
+          <label for="concentration-focused-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Concentration"}}</label>
+          {{!-- <input type="text" id="concentration-focused-{{data._id}}" name="data.concentration" value="active" readonly> --}}
+          <select id="concentration-{{data._id}}" name="data.concentration" >
+            <option value="active">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." "active")}}</option>
+          </select>          
+          {{/if}}
+
+          {{#unless (eq spiritMagicData.duration "temporal")}}
+            {{#unless (eq item.data.duration "focused")}}
+            <input type="text" id="concentration-none-{{data._id}}" name="data.concentration" value="" hidden>
+            {{/unless}}
+          {{/unless}}
+
+          <label for="is-ritual-{{data._id}}">{{localize "RQG.Item.Spell.RitualQ"}}</label>
+          <input type="checkbox" id="is-ritual-{{data._id}}" name="data.isRitual" {{checked spiritMagicData.isRitual}}>
+
+          <label for="is-enchantment-{{data._id}}">{{localize "RQG.Item.Spell.EnchantmentQ"}}</label>
+          <input type="checkbox" id="is-enchantment-{{data._id}}" name="data.isEnchantment" {{checked spiritMagicData.isEnchantment}}>
+
+          <label for="is-matrix-{{data._id}}">{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
+          <input type="checkbox" id="is-matrix-{{data._id}}" name="data.isMatrix" {{checked spiritMagicData.isMatrix}}>
+
+
+          <label for="spell-focus={{data._id}}">{{localize "RQG.Item.SpiritMagic.SpellFocus"}}</label>
+          <input type="text" id="spell-focus={{data._id}}" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}">
+          
+
+
+        </div>
+      </div>
+
+      {{!-- Active Effects Tab --}}
+      <div class="tab" data-group="primary" data-tab="active-effects">
+        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+      </div>
+
+
+      {{!-- RQG System Tab --}}
+      <div class="tab" data-group="primary" data-tab="rqgsystem">
+        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
+        itemData=spiritMagicData
+        }}
+      </div>
+    </section>
   </main>
-  <label>{{localize "RQG.Item.SpiritMagic.SpellFocus"}} <input type="text" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}"></label><br>
-  <div class="item-sheet-journal-link">
-    {{#if spiritMagicData.journalPack}}
-        <a class="entity-link content-link"
-          data-pack="{{spiritMagicData.journalPack}}" 
-          data-id="{{spiritMagicData.journalId}}"
-          title="{{localize "RQG.Foundry.ContentLink.CompendiumNameTitle" compendiumName=spiritMagicData.journalPack}}">
-          <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-        </a>
-        <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
-    {{else if spiritMagicData.journalId}}
-        <a class="entity-link content-link" 
-          data-type="JournalEntry" 
-          data-id="{{spiritMagicData.journalId}}"
-          title="{{localize "RQG.Foundry.ContentLink.WorldJournalEntry"}}">
-          <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-        </a>
-        <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
-    {{else}}
-        <p><i>{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}</i></p>
-    {{/if}}   
-  </div>
 
-
-  <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 </form>

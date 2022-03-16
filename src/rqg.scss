@@ -949,22 +949,6 @@ body {
   input {
     width: inherit;
   }
-
-  &.skill,
-  &.armor,
-  &.passion,
-  &.rune {
-    fieldset {
-      display: flex;
-    }
-    .paren-head {
-      margin-left: 0.5rem;
-    }
-    label {
-      white-space: nowrap;
-      margin-right: 0.6rem;
-    }
-  }
 }
 
 .rqg img.rune {
@@ -1041,5 +1025,189 @@ body {
     font-size: 3rem;
     text-shadow: 1px 1px 2px var(--rqg-color-main), 0 0 1em var(--rqg-color-main-bg),
       0 0 0.2em var(--rqg-color-main-bg);
+  }
+}
+
+// Tabbed Navigation for Item Sheets
+
+.tabs {
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+
+  .item {
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .item.active {
+    background-color: black;
+    color: white;
+  }
+
+  .item.wider {
+    flex: 1.3 1 0;
+  }
+
+  .item.narrower {
+    flex: 0.7 1 0;
+  }
+}
+
+.item-sheet-properties {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 0.5em;
+  align-items: center;
+  padding: 0 0 0.5em 0;
+
+  & .editor-label,
+  & .editor-container {
+    text-align: start;
+    grid-column: 1 / 3;
+  }  
+
+  & .input-button {
+    display: flex;
+
+    & input {
+      width: -webkit-fill-available;
+    }
+
+    & a {
+      padding: 5px;
+    }
+  }
+}
+
+.item-sheet-properties label {
+  font-weight: bold;
+  display: block;
+  text-align: right;
+}
+
+.item-sheet-properties input[type="number"] {
+  text-align: right;
+  width: 75px;
+}
+
+.item-sheet-properties input.short {
+  width: 75px;
+}
+
+.item-sheet-properties span.number {
+  text-align: right;
+  width: 75px;
+}
+
+.item-sheet-properties div.rune-property {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  grid-gap: 0.5em;
+
+  &.rune-group {
+    border: 1px black solid;
+    padding: 0.5rem;    
+  }
+
+  & img {
+    mix-blend-mode: normal;
+  }
+}
+
+.item-sheet-journal-link {
+  display: block;
+}
+
+.item-sheet-journal-link i.fa-info-circle {
+  padding: 0 0 0 7px;
+}
+
+.item-sheet-header {
+  display: grid;
+  grid-template-columns: 6rem auto;
+  grid-gap: 0.5em;
+  align-items: center;
+  padding: 0 0 0.5em 0;
+}
+
+.item-sheet-header-img {
+  // width: 6rem;
+  grid-row: 1 / 3;
+}
+
+.item-sheet-header .name-number {
+  display: grid;
+  grid-template-columns: auto 75px;
+  align-items: center;
+  grid-gap: 0.5em;
+}
+
+.item-sheet-header .name-parts-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  grid-gap: 0.5em;
+}
+
+.item-sheet-header .name-parts-2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  align-items: center;
+  grid-gap: 0.5em;
+}
+
+// .item-sheet-header-name label {
+//   display: block;
+// }
+
+.name-number input[type="text"],
+.name-parts-3 input[type="text"],
+.name-parts-2 input[type="text"],
+.name-parts-2 select,
+.name-parts-3 select {
+  width: -webkit-fill-available;
+}
+
+.paren-head {
+  align-items: center;
+}
+
+.paren-head label {
+  margin-left: 0.5rem;
+}
+
+.paren-head div {
+  display: inline-flex;
+  align-items: center;
+}
+
+.paren-head input[type="text"],
+.paren-head select {
+  text-align: center;
+  width: 90%;
+  margin: 0.25rem;
+}
+
+.paren-head input[type="number"] {
+  text-align: center;
+  width: 50px;
+  margin: 0.25rem;
+}
+
+.skill-sheet-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.25fr 1fr 1fr 1fr;
+  grid-gap: 0.5rem;
+  align-items: center;
+  text-align: center;
+  padding: 0 0 0.5em 0;
+
+  & label {
+    font-weight: bold;
+  }
+
+  & .skill {
+    font-weight: bold;
+    font-size: xx-large;
   }
 }

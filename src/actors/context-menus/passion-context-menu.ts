@@ -75,17 +75,9 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditPassionBackstory"),
-    icon: ContextMenuRunes.Edit,
-    condition: () => true,
-    callback: async (el: JQuery) => {
-      ui.notifications?.info("TODO Edit Description");
-    },
-  },
-  {
     name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion)}),
     icon: ContextMenuRunes.Edit,
-    condition: () => getGameUser().isGM,
+    condition: () => true,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);

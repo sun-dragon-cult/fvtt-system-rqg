@@ -527,7 +527,7 @@
         "ArmorTypeLabel": "Armor Type",
         "Material": "Material",
         "HitLocations": "Hit Locations",
-        "AddNewCoveredHitLocationPlaceholder": "Add new covered hit location",
+        "AddNewCoveredHitLocationPlaceholder": "Add armor hit location",
         "Absorbs": "Absorbs",
         "MoveQuietlyPenalty": "Move Quietly Penalty",
         "FitsSIZ": "Fits SIZ",
@@ -566,11 +566,13 @@
         }
       },
       "Cult": {
-        "CultNamePlaceholder": "Cult Name",
-        "CultTaglinePlaceholder": "Cult Tagline",
+        "Name": "Cult Name",
+        "CultTagline": "Cult Tagline",
         "AddNewRunePlaceholder": "Add new rune",
+        "Runes": "Runes",
         "HolyDays": "Holy Days",
         "RunePoints": "Rune Points",
+        "CultRank": "Cult Rank",
         "ActorsGifts": "Actor's Gifts",
         "ActorsGeases": "Actor's Geases",
         "ActorsSubCults": "Actor's Sub-Cults"
@@ -583,6 +585,9 @@
       "Gear": {
         "Name": "Name",
         "EncumbranceAbbr": "ENC",
+        "EncumbranceAbbrEach": "ENC Each",
+        "EncumbranceAbbrTotal": "ENC Total",
+        "EquippedStatus": "Equipped?",
         "PriceReal": "Price (real)",
         "PriceEstimated": "Price (estimated)",
         "Location": "Location",
@@ -595,7 +600,8 @@
         "HitPointsAbbr": "HP",
         "CurrentHitPoints": "Current Hit Points",
         "HitPointLocation": "Hit Point Location",
-        "PhysicalItemType": {
+        "PhysicalItemType": "Item Type",
+        "PhysicalItemTypeEnum": {
           "unique": "Unique",
           "currency": "Currency",
           "consumable": "Consumable"
@@ -604,12 +610,14 @@
       "HitLocation": {
         "Name": "Name",
         "HealthStatus": "Health Status",
-        "ActAs": "Act as",
-        "ForDamageCalculations": "for damage calculations.",
+        "HitPoints": "Hit Points",
+        "ActAs": "For damage calculations, act as",
         "ConnectedTo": "Connected to",
         "HitLocationOn": "Hit Location on",
         "NaturalArmorPoints": "Natural AP",
         "BaseHPDelta": "Base HP Delta (+/- from base location HP)",
+        "ArmorPoints": "Armor Points",
+        "Wounds": "Wounds",
         "AddWound": {
           "Title": "Apply Wound to {hitLocationName}",
           "ApplyToTotalHitPointsQ": "Apply to total HP?",
@@ -677,7 +685,7 @@
         "Passion": "Passion",
         "Subject": "Subject",
         "Chance": "Chance",
-        "Experience": "Experience",
+        "HasExperienceQ": "Has Experience?",
         "BackStory": "Back Story",
         "PassionEnum": {
           "Ambition": "Ambition",
@@ -692,10 +700,18 @@
           "Vanity": "Vanity"
         }
       },
+      "RqgItem": {
+        "Error": {
+          "MoreThanOneRqidMatchInWorld": "More than one RQG Item in the world (not in Compendia) matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",
+          "MoreThanOneRqidMatchInCompendia": "More than one RQG Item in installed Compendia matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",
+          "ItemNotFoundByRqid": "Item not found in world or Compendia matching the rqid \"{rqid}\", and rqidLang \"{rqidLang}\". See console log."
+        }
+      },
       "Rune": {
         "Name": "Name",
         "Rune": "Rune",
         "Type": "Type",
+        "PercentageChance": "Chance",
         "HasExperienceQ": "Has Experience?",
         "OpposingRune": "Opposing Rune",
         "MinorRunes": "Minor Runes",
@@ -709,11 +725,13 @@
         }
       },
       "RuneMagic": {
+        "Name": "Name",
+        "Points": "Points",
         "Range": "Range",
         "Duration": "Duration",
         "StackableQ": "Stackable?",
         "OneUseQ": "One Use?",
-        "Cult": "Cult",
+        "GrantedByCult": "Granted by Cult",
         "Runes": "Runes:",
         "AddNewRunePlaceholder": "Add new rune",
         "runeMagicCultDialog": {
@@ -723,12 +741,31 @@
           "RuneMagic": "RuneMagic:"
         }
       },
+      "SheetTab": {
+        "Armor": "Armor",
+        "Cult": "Cult",
+        "CultStanding": "Cult Standing",
+        "Gear": "Gear",
+        "HitLocation":"Hit Location",
+        "HitLocationDefinition": "Hit Location Definition",
+        "Passion": "Passion",
+        "Rune": "Rune",
+        "RuneMagic": "Rune Magic",
+        "Skill": "Skill",
+        "SkillDefinition": "Skill Definition",
+        "Weapon": "Weapon",
+        "WeaponUsage": "Usage",
+        "Description": "Description",
+        "GM": "GM",
+        "ActiveEffects": "Active Effects",
+        "RQGSystem": "RQG System"
+      },
       "Skill": {
         "Name": "Name",
         "SkillName": "Skill Name",
         "Specialization": "Specialization",
         "Category": "Category",
-        "CategoryModifier": "CategoryModifier",
+        "CategoryModifier": "{category} Modifier",
         "BaseChance": "Base Chance",
         "LearnedChance": "Learned Chance",
         "Chance": "Chance",
@@ -765,6 +802,8 @@
         }
       },
       "SpiritMagic": {
+        "Name": "Name",
+        "Points": "Points",
         "VariableQ": "Variable?",
         "Range": "Range",
         "Duration": "Duration",
@@ -868,6 +907,18 @@
         "4": "Easy (*4)",
         "5": "Simple Action (*5)"
       }
+    },
+    "RQGSystem": {
+      "rqid": "RuneQuest System ID",
+      "QuickRqid": "Create Rune Quest System ID (rqid) based on current item. Item should be localized in English.",
+      "rqidPriority": "System ID Priority",
+      "rqidLang": "This Item Localized to",
+      "ItemFoundryId": "Item Foundry ID",
+      "ItemFoundryUuid": "Item Foundry UUID",
+      "OwnerFoundryId": "Owner Foundry ID",
+      "GetItemMacro": "Get This Item",
+      "GetItemLikeThis": "Get Item Like This",
+      "CopyInputValue": "Copy this value to the clipboard"
     },
     "Notification": {
       "Error": {}

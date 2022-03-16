@@ -1,4 +1,5 @@
 import { JournalEntryLink } from "../shared/journalentrylink";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
 
@@ -30,6 +31,9 @@ export interface RuneMagicDataProperties {
 }
 
 export const emptyRuneMagic: RuneMagicDataSourceData = {
+  rqid: "",
+  rqidPriority: DEFAULT_RQIDPRIORITY,
+  rqidLang: DEFAULT_RQIDLANG,
   cultId: "",
   runes: [],
   points: 0,

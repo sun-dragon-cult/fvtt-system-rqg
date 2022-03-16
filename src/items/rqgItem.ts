@@ -169,4 +169,104 @@ export class RqgItem extends Item {
   public static localizeItemTypeName(itemType: ItemTypeEnum): string {
     return localize("ITEM.Type" + itemType.titleCase());
   }
+
+  public static async getItemByRqid(
+    rqid: string,
+    lang: string = "en"
+  ): Promise<RqgItem | undefined> {
+    const worldItem = await this.getItemFromWorldByRqid(rqid, lang);
+
+    if (worldItem !== undefined) {
+      return worldItem;
+    }
+
+    const compendiumItem = await this.getItemFromAllCompendiaByRqid(rqid, lang);
+
+    return compendiumItem;
+  }
+
+  private static async getItemFromWorldByRqid(
+    rqid: string,
+    lang: string = "en"
+  ): Promise<RqgItem | undefined> {
+    const candidates = getGame().items?.contents.filter(
+      (i) => i.data.data.rqid === rqid && i.data.data.rqidLang === lang
+    );
+
+    if (candidates === undefined) {
+      return undefined;
+    }
+
+    if (candidates.length > 0) {
+      let result = candidates.reduce((max, obj) =>
+        max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
+      );
+      
+      // Detect more than one item that could be the match
+      let duplicates = candidates.filter(i => i.data.data.rqidPriority === result.data.data.rqidPriority);
+      if (duplicates.length > 1) {
+        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
+          rqid: rqid,
+          rqidLang: lang,
+          rqidPriority: result.data.data.rqidPriority,
+        });
+        ui.notifications?.error(msg);
+        console.log(msg + "  Duplicate items: ", duplicates);
+      }
+      return result as RqgItem;
+    } else {
+      const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
+        rqid: rqid,
+        rqidLang: lang,
+      });
+      ui.notifications?.warn(msg);
+      console.log(msg);
+      return undefined;
+    }
+  }
+
+  private static async getItemFromAllCompendiaByRqid(
+    rqid: string,
+    lang: string = "en"
+  ): Promise<RqgItem | undefined> {
+    const candidates: RqgItem[] = [];
+
+    for (const pack of getGame().packs) {
+      if (pack.documentClass.name === "RqgItem") {
+        for (const item of await pack.getDocuments()) {
+          if (item.data.data.rqid === rqid && item.data.data.rqidLang === lang) {
+            console.log(item);
+            candidates.push(item as RqgItem);
+          }
+        }
+      }
+    }
+    if (candidates.length === 0) {
+      return undefined;
+    }
+
+
+    if (candidates.length > 0) {
+      let result = candidates.reduce((max, obj) =>
+        max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
+      );
+
+      // Detect more than one item that could be the match
+      let duplicates = candidates.filter(
+        (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
+      );
+      if (duplicates.length > 1) {
+        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
+          rqid: rqid,
+          rqidLang: lang,
+          rqidPriority: result.data.data.rqidPriority,
+        });
+        ui.notifications?.error(msg);
+        console.log(msg + "  Duplicate items: ", duplicates);      
+      }
+      return result;
+    } else {
+      return undefined;
+    }
+  }
 }

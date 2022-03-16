@@ -13,6 +13,8 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs",
 
     "systems/rqg/items/sheet-parts/itemActiveEffects.hbs",
+    "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs",
+    "systems/rqg/items/sheet-parts/itemRqgSystem.hbs",
 
     // ActorSheet parts
     "systems/rqg/actors/sheet-parts/health.hbs",

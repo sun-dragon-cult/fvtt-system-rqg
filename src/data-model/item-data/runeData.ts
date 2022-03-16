@@ -1,5 +1,6 @@
 import { IAbility } from "../shared/ability";
 import { JournalEntryLink } from "../shared/journalentrylink";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 
 export enum RuneTypeEnum {
@@ -37,6 +38,9 @@ export interface RuneDataProperties {
 }
 
 export const emptyRune: RuneDataSourceData = {
+  rqid: "",
+  rqidPriority: DEFAULT_RQIDPRIORITY,
+  rqidLang: DEFAULT_RQIDLANG,
   rune: "",
   chance: 0,
   canGetExperience: true,

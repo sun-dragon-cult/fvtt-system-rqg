@@ -3,66 +3,90 @@
   <header class="sheet-header">
     <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     <input type="text" name="name" value="{{data.name}}" />
-    <label>{{localize "RQG.Item.Gear.EncumbranceAbbr"}} <input type="number" min="0" max="999999" name="data.encumbrance" value="{{weaponData.encumbrance}}"></label><br>
-    <select name="data.equippedStatus">
-      {{#select weaponData.equippedStatus}} {{#each sheetSpecific.equippedStatuses}}
-      <option value="{{this}}">{{localize (concat "RQG.Item.EquippedStatus." this)}}</option>
-      {{/each}} {{/select}}
-    </select>
   </header>
   <main>
-    <div>
-      {{#unless weaponData.hitPointLocation}}
-        <label>{{localize "RQG.Item.Gear.HitPointsAbbr"}} <input type="number" min="0" max="99" name="data.hitPoints.max" value="{{weaponData.hitPoints.max}}"></label>
-        <label>{{localize "RQG.Item.Gear.CurrentHitPoints"}} <input type="number" min="0" max="99" name="data.hitPoints.value" value="{{weaponData.hitPoints.value}}"></label>
+
+    {{! Sheet Tab Navigation }}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="weapon">{{localize "RQG.Item.SheetTab.Weapon"}}</a>
+      <a class="item" data-tab="usage">{{localize "RQG.Item.SheetTab.WeaponUsage"}}</a>
+      <a class="item" data-tab="description">{{localize "RQG.Item.SheetTab.Description"}}</a>
+      {{#if isGM}}
+      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
+      {{#unless isEmbedded}}
+      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <label>{{localize "RQG.Item.Gear.HitPointLocation"}} <input type="text" name="data.hitPointLocation" value="{{weaponData.hitPointLocation}}"></label><br>
-      <label><input type="checkbox" name="data.isNatural" {{checked weaponData.isNatural}}/>{{localize "RQG.Item.Weapon.NaturalWeaponQ"}}</label><br>
-      <label>{{localize "RQG.Item.Gear.PriceReal"}} <input type="number" min="0" max="99999999" name="data.price.real" value="{{weaponData.price.real}}">(L)</label>
-      <label>{{localize "RQG.Item.Gear.PriceEstimated"}} <input type="number" min="0" max="99999999" name="data.price.estimated" value="{{weaponData.price.estimated}}">(L)</label><br>
-      <label>{{localize "RQG.Item.Gear.Location"}} <input type="text" name="data.location" value="{{weaponData.location}}"></label><br>
-      <label>{{localize "RQG.Item.Gear.AttunedTo"}} <input type="text" name="data.attunedTo" value="{{weaponData.attunedTo}}"></label><br>
+      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
+      {{/if}}
+    </nav>
 
 
+    <section class="sheet-body">
+      {{!-- Weapon Tab --}}
+      <div class="tab" data-group="primary" data-tab="weapon">
 
-    </div>
-    <br>
-    <h3>{{localize "RQG.Item.Weapon.UsesOfWeaponHeader"}}</h3>
-    <div class="flex-row flex-wrap">
-      {{#each weaponData.usage}}
-        <fieldset data-dropzone="{{@key}}">
+          <div class="item-sheet-properties">
+            {{#unless weaponData.hitPointLocation}}
+            <label for="data.hitPoints.max">{{localize "RQG.Item.Gear.HitPointsAbbr"}}</label>
+            <input name="data.hitPoints.max" type="number" min="0" max="99" value="{{weaponData.hitPoints.max}}">
+
+            <label for="data.hitPoints.value">{{localize "RQG.Item.Gear.CurrentHitPoints"}}</label>
+            <input name="data.hitPoints.value" type="number" min="0" max="99" value="{{weaponData.hitPoints.value}}">
+            {{/unless}}
+
+            <label for="data.hitPointLocation">{{localize "RQG.Item.Gear.HitPointLocation"}}</label>
+            <input type="text" name="data.hitPointLocation" value="{{weaponData.hitPointLocation}}">
+
+            <label for="data.isNatural">{{localize "RQG.Item.Weapon.NaturalWeaponQ"}}</label>
+            <input type="checkbox" name="data.isNatural" {{checked weaponData.isNatural}}>
+          </div>
+
+          {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"
+          itemData=weaponData
+          }}
+
+      </div>
+
+
+      {{!-- Weapon Usage Tab --}}
+      <div class="tab" data-group="primary" data-tab="usage">
+
+        <div class="flex-row flex-wrap">
+          {{#each weaponData.usage}}
+          <fieldset data-dropzone="{{@key}}">
 
             <legend>{{@key}}</legend>
             {{#if combatManeuvers}}
-              {{#if isEmbedded}}
-                <select name="data.skillId">
-                  {{#select skillId}} {{#each weaponSkills}}
-                    <option value="{{id}}">{{name}}</option>
-                  {{/each}} {{/select}}
-                </select>
-              {{else}}
-                <label class="mp">Skill</label><br>
-                {{#if @root.sheetSpecific.skillNames}}
-                  {{lookup @root.sheetSpecific.skillNames @key}}
-                  {{#if skillOrigin}}<i data-delete-skill="{{@key}}" class="fas fa-trash"></i>{{/if}}<br>
-                  <i>{{localize "RQG.Item.Weapon.DropSkillToChange"}}</i>
-                {{else}}
-                  <i>{{localize "RQG.Item.Weapon.DropSkilltoAdd"}}</i>
-                {{/if}}<br>
-              {{/if}}<br>
-              {{#unless (eq @key "offHand")}}
-              <div class="flex-row">
-                <label>{{localize "RQG.Item.Weapon.Damage"}} <input type="text" name="data.usage.{{@key}}.damage" value="{{damage}}"></label>
-                <label>{{localize "RQG.Item.Weapon.MinimumStrengthAbbr"}} <input type="number" min="0" max="99" name="data.usage.{{@key}}.minStrength"
-                                      value="{{minStrength}}"></label>
-                <label>{{localize "RQG.Item.Weapon.MinimumDexterityAbbr"}} <input type="number" min="0" max="99" name="data.usage.{{@key}}.minDexterity"
-                                      value="{{minDexterity}}"></label>
-                {{#unless (eq @key "missile")}}
-                  <label>{{localize "RQG.Item.Weapon.StrikeRankAbbr"}} <input type="number" min="0" max="99" name="data.usage.{{@key}}.strikeRank"
-                                   value="{{strikeRank}}"></label>{{/unless}}
-              </div>
-              <br>
-              {{/unless}}
+            {{#if isEmbedded}}
+            <select name="data.skillId">
+              {{#select skillId}} {{#each weaponSkills}}
+              <option value="{{id}}">{{name}}</option>
+              {{/each}} {{/select}}
+            </select>
+            {{else}}
+            <label class="mp">Skill</label><br>
+            {{#if @root.sheetSpecific.skillNames}}
+            {{lookup @root.sheetSpecific.skillNames @key}}
+            {{#if skillOrigin}}<i data-delete-skill="{{@key}}" class="fas fa-trash"></i>{{/if}}<br>
+            <i>{{localize "RQG.Item.Weapon.DropSkillToChange"}}</i>
+            {{else}}
+            <i>{{localize "RQG.Item.Weapon.DropSkilltoAdd"}}</i>
+            {{/if}}<br>
+            {{/if}}<br>
+            {{#unless (eq @key "offHand")}}
+            <div class="flex-row">
+              <label>{{localize "RQG.Item.Weapon.Damage"}} <input type="text" name="data.usage.{{@key}}.damage"
+                  value="{{damage}}"></label>
+              <label>{{localize "RQG.Item.Weapon.MinimumStrengthAbbr"}} <input type="number" min="0" max="99"
+                  name="data.usage.{{@key}}.minStrength" value="{{minStrength}}"></label>
+              <label>{{localize "RQG.Item.Weapon.MinimumDexterityAbbr"}} <input type="number" min="0" max="99"
+                  name="data.usage.{{@key}}.minDexterity" value="{{minDexterity}}"></label>
+              {{#unless (eq @key "missile")}}
+              <label>{{localize "RQG.Item.Weapon.StrikeRankAbbr"}} <input type="number" min="0" max="99"
+                  name="data.usage.{{@key}}.strikeRank" value="{{strikeRank}}"></label>{{/unless}}
+            </div>
+            <br>
+            {{/unless}}
             {{/if}}
             {{#unless (eq @key "offHand")}}
             <div>
@@ -74,101 +98,128 @@
                 </tr>
                 {{setVar 'usage' @key this}}
                 {{#each combatManeuvers}}
-                  <tr>
-                    <td><input type="text" list="defaultCombatManeuverNames"
-                               name="data.usage.{{../usage}}.combatManeuvers.name" value="{{name}}"></td>
-                    <td>
-                      {{#if name}}
-                        <select name="data.usage.{{../usage}}.combatManeuvers.damageTypes">
-                          {{#select damageType}} {{#each @root.sheetSpecific.damageTypes}}
-                            <option value="{{this}}">{{localize (concat "RQG.Item.Weapon.DamageTypeEnum." this)}}</option>
-                          {{/each}} {{/select}}
-                        </select>
-                      {{/if}}
-                    </td>
-                    <td>
-                      <textarea{{#unless (eq damageType "special")}} class="no-display"{{/unless}} rows="1"
-                               name="data.usage.{{../usage}}.combatManeuvers.description"
-                               placeholder="{{placeholder}}">{{description}}</textarea>
-                    </td>
-                  </tr>
+                <tr>
+                  <td><input type="text" list="defaultCombatManeuverNames"
+                      name="data.usage.{{../usage}}.combatManeuvers.name" value="{{name}}"></td>
+                  <td>
+                    {{#if name}}
+                    <select name="data.usage.{{../usage}}.combatManeuvers.damageTypes">
+                      {{#select damageType}} {{#each @root.sheetSpecific.damageTypes}}
+                      <option value="{{this}}">{{localize (concat "RQG.Item.Weapon.DamageTypeEnum." this)}}</option>
+                      {{/each}} {{/select}}
+                    </select>
+                    {{/if}}
+                  </td>
+                  <td>
+                    <textarea{{#unless (eq damageType "special" )}} class="no-display" {{/unless}} rows="1"
+                      name="data.usage.{{../usage}}.combatManeuvers.description" placeholder="{{placeholder}}">
+                      {{description}}</textarea>
+                  </td>
+                </tr>
                 {{/each}}
                 <tr>
                   <td><input type="text" list="defaultCombatManeuverNames"
-                             name="data.usage.{{usage}}.combatManeuvers.name"></td>
+                      name="data.usage.{{usage}}.combatManeuvers.name"></td>
                 </tr>
               </table>
             </div>
 
             {{#if (eq @key "missile")}}
-              {{#with @root}}
-                <label><input type="checkbox" name="data.isThrownWeapon" {{checked weaponData.isThrownWeapon}}>
-                  {{localize "RQG.Item.Weapon.ThrownWeaponQ"}}
+            {{#with @root}}
+            <label><input type="checkbox" name="data.isThrownWeapon" {{checked weaponData.isThrownWeapon}}>
+              {{localize "RQG.Item.Weapon.ThrownWeaponQ"}}
+            </label><br>
+            <label><input type="checkbox" name="data.isProjectileWeapon" {{checked weaponData.isProjectileWeapon}}>
+              {{localize "RQG.Item.Weapon.ProjectileWeaponQ"}}
+            </label><br>
+            <label><input type="checkbox" name="data.isRangedWeapon" {{checked weaponData.isRangedWeapon}}>
+              {{localize "RQG.Item.Weapon.RangedWeaponQ"}}
+            </label><br>
+            <label><input type="checkbox" name="data.isProjectile" {{checked weaponData.isProjectile}}>
+              {{localize "RQG.Item.Weapon.ProjectileQ"}}
+            </label><br>
+            <hr>
+            <div class="flex-row">
+              {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon weaponData.isRangedWeapon)}}
+              <div>
+                {{#if weaponData.isProjectileWeapon}}
+                {{#if @root.isEmbedded}}
+                <label class="mp">{{localize "RQG.Item.Weapon.Projectile"}}
+                  <select name="data.projectileId">
+                    {{#select weaponData.projectileId}} {{#each sheetSpecific.ownedProjectiles}}
+                    <option value="{{id}}">{{name}}</option>
+                    {{/each}} {{/select}}
+                  </select>
                 </label><br>
-                <label><input type="checkbox" name="data.isProjectileWeapon" {{checked weaponData.isProjectileWeapon}}>
-                  {{localize "RQG.Item.Weapon.ProjectileWeaponQ"}}
+                {{/if}}
+                {{/if}}
+                <label>{{localize "RQG.Item.Weapon.Range"}} <input type="number" min="0" max="999" name="data.range"
+                    value="{{weaponData.range}}"></label><br>
+                {{!-- <label>Rate <input type="number" min="0" max="99" name="data.rate"
+                    value="{{weaponData.rate}}"></label><br>--}}
+                <label>{{localize "RQG.Item.Weapon.Rate"}}
+                  <select name="data.rate">
+                    {{#select weaponData.rate}} {{#each sheetSpecific.rateOfFire}}
+                    <option value="{{this}}">{{@key}}</option>
+                    {{/each}} {{/select}}
+                  </select>
                 </label><br>
-                <label><input type="checkbox" name="data.isRangedWeapon" {{checked weaponData.isRangedWeapon}}>
-                  {{localize "RQG.Item.Weapon.RangedWeaponQ"}}
-                </label><br>
-                <label><input type="checkbox" name="data.isProjectile" {{checked weaponData.isProjectile}}>
-                  {{localize "RQG.Item.Weapon.ProjectileQ"}}
-                </label><br>
-                <hr>
-                <div class="flex-row">
-                  {{#if (or weaponData.isThrownWeapon weaponData.isProjectileWeapon weaponData.isRangedWeapon)}}
-                    <div>
-                      {{#if weaponData.isProjectileWeapon}}
-                      {{#if @root.isEmbedded}}
-                        <label class="mp">{{localize "RQG.Item.Weapon.Projectile"}}
-                          <select name="data.projectileId">
-                            {{#select weaponData.projectileId}} {{#each sheetSpecific.ownedProjectiles}}
-                              <option value="{{id}}">{{name}}</option>
-                            {{/each}} {{/select}}
-                          </select>
-                        </label><br>
-                      {{/if}}
-                      {{/if}}
-                      <label>{{localize "RQG.Item.Weapon.Range"}} <input type="number" min="0" max="999" name="data.range"
-                                          value="{{weaponData.range}}"></label><br>
-                      {{!--              <label>Rate <input type="number" min="0" max="99" name="data.rate" value="{{weaponData.rate}}"></label><br>--}}
-                      <label>{{localize "RQG.Item.Weapon.Rate"}}
-                        <select name="data.rate">
-                          {{#select weaponData.rate}} {{#each sheetSpecific.rateOfFire}}
-                            <option value="{{this}}">{{@key}}</option>
-                          {{/each}} {{/select}}
-                        </select>
-                      </label><br>
-                    </div>
-                  {{/if}}
-                  {{#unless (eq weaponData.physicalItemType "unique")}}
-                    <label>{{localize "RQG.Item.Gear.Quantity"}}<br><input type="number" name="data.quantity"
-                                              value="{{weaponData.quantity}}"></label>
-                  {{/unless}}
-                </div>
-              {{/with}}
+              </div>
+              {{/if}}
+              {{#unless (eq weaponData.physicalItemType "unique")}}
+              <label>{{localize "RQG.Item.Gear.Quantity"}}<br><input type="number" name="data.quantity"
+                  value="{{weaponData.quantity}}"></label>
+              {{/unless}}
+            </div>
+            {{/with}}
             {{/if}}
             {{/unless}}
-          {{#if (eq @key "offHand")}}
+            {{#if (eq @key "offHand")}}
             <p>{{localize "RQG.Item.Weapon.SameDataAsOneHand"}}</p>
 
-          {{/if}}
-        </fieldset>
-      {{/each}}
+            {{/if}}
+          </fieldset>
+          {{/each}}
 
-    </div>
+        </div>
 
-    <label>{{localize "RQG.Item.Gear.Description"}} {{editor content=weaponData.description target="data.description"
-      button=true owner=owner editable=editable}}
-    </label><br>
-    <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=weaponData.gmNotes target="data.gmNotes"
-      button=true owner=owner editable=editable}}
-    </label>
-    <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+
+      </div>
+
+
+      {{!-- Description Tab --}}
+      <div class="tab" data-group="primary" data-tab="description">
+
+        <label>{{localize "RQG.Item.Gear.Description"}} {{editor content=weaponData.description target="data.description"
+          button=true owner=owner editable=editable}}
+        </label><br>
+      </div>
+
+      {{!-- GM Tab --}}
+      <div class="tab" data-group="primary" data-tab="gm">
+        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=weaponData.gmNotes target="data.gmNotes"
+          button=true owner=owner editable=editable}}
+        </label>
+      </div>
+
+      {{!-- Active Effects Tab --}}
+      <div class="tab" data-group="primary" data-tab="active-effects">
+        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+      </div>
+
+
+      {{!-- RQG System Tab --}}
+      <div class="tab" data-group="primary" data-tab="rqgsystem">
+        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
+        itemData=weaponData
+        }}
+      </div>
+    </section>
+
   </main>
   <datalist id="defaultCombatManeuverNames">
     {{#each sheetSpecific.defaultCombatManeuverNames}}
-      <option value="{{this}}">{{this}}</option>
+    <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>
 </form>

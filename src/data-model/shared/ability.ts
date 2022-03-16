@@ -1,6 +1,8 @@
 import { activateChatTab, getGame, localize } from "../../system/util";
+import { IRqid } from "../item-data/IRqid";
 
-export interface IAbility {
+export interface IAbility
+    extends IRqid {
   /** The effective % chance of this ability with all modifiers added in */
   chance?: number;
   /** Is it possible to learn this ability by doing (setting hasExperience=true)? Otherwise the only way to increase the learned chance is by study */

@@ -2,6 +2,7 @@ import { emptyPrice, IPhysicalItem } from "../../../data-model/item-data/IPhysic
 import { hasOwnProperty, localize, RqgError } from "../../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "../../../data-model/item-data/IRqid";
 
 export type LocationNode = IPhysicalItem & {
   // For the grouping of physical items in a tree structure
@@ -12,6 +13,9 @@ export type LocationNode = IPhysicalItem & {
 
 export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNode {
   let locationTree: LocationNode = {
+    rqid: "",
+    rqidPriority: DEFAULT_RQIDPRIORITY,
+    rqidLang: DEFAULT_RQIDLANG,
     name: "",
     id: "",
     description: "",
@@ -36,7 +40,9 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       let location = itemLocation === itemData.name ? "" : itemLocation;
       if (hasLoop(itemData, physicalItemDatas)) {
         ui.notifications?.warn(
-          localize("RQG.Item.Notification.CircularGearLocationWarning", {itemLocation: itemLocation})
+          localize("RQG.Item.Notification.CircularGearLocationWarning", {
+            itemLocation: itemLocation,
+          })
         );
         location = "";
       }
@@ -46,10 +52,17 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       );
       // @ts-ignore
       if (containingItem && !containingItem.data.isContainer) {
-        ui.notifications?.warn(localize("RQG.Item.Notification.ItemIsNotContainerWarning", {itemName: containingItem.name})); // TODO make a real solution!
+        ui.notifications?.warn(
+          localize("RQG.Item.Notification.ItemIsNotContainerWarning", {
+            itemName: containingItem.name,
+          })
+        ); // TODO make a real solution!
         location = "";
       }
       return {
+        rqid: (itemData.data as any).rqid,
+        rqidPriority: (itemData.data as any).rqidPriority,
+        rqidLang: (itemData.data as any).rqidLang,
         name: itemData.name,
         id: itemData._id,
         location: location,
@@ -82,6 +95,9 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
 
   const virtualNodes: LocationNode[] = [...virtualNodesMap].map(([i, node]) => {
     return {
+      rqid: "",
+      rqidPriority: DEFAULT_RQIDPRIORITY,
+      rqidLang: DEFAULT_RQIDLANG,
       name: node.location,
       id: "",
       quantity: 1,

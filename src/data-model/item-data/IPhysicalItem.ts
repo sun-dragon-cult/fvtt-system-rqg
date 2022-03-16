@@ -1,3 +1,5 @@
+import { IRqid } from "./IRqid";
+
 export const equippedStatuses = ["notCarried", "carried", "equipped"] as const;
 export type EquippedStatus = typeof equippedStatuses[number];
 
@@ -9,7 +11,8 @@ interface Price {
   estimated: number;
 }
 
-export interface IPhysicalItem {
+export interface IPhysicalItem 
+  extends IRqid {
   physicalItemType: PhysicalItemType;
   quantity: number; // Used for currency & consumables like arrows, torches, food rations. 1 for others
   description: string;

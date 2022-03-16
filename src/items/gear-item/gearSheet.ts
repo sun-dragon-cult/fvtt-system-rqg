@@ -1,10 +1,10 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { GearDataProperties, GearDataPropertiesData } from "../../data-model/item-data/gearData";
 import { equippedStatuses, physicalItemTypes } from "../../data-model/item-data/IPhysicalItem";
-import { RqgItemSheet } from "../RqgItemSheet";
-import { assertItemType } from "../../system/util";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { assertItemType, getGameUser } from "../../system/util";
 
-interface GearSheetData {
+interface GearSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
   data: GearDataProperties; // Actually contains more...complete with effects, flags etc
   gearData: GearDataPropertiesData;
@@ -22,6 +22,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       template: "systems/rqg/items/gear-item/gearSheet.hbs",
       width: 420,
       height: 580,
+      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "gear" }],
     });
   }
 
@@ -41,6 +42,10 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
         equippedStatuses: [...equippedStatuses],
         physicalItemTypes: [...physicalItemTypes],
       },
+      isGM: getGameUser().isGM,
+      ownerId: this.document.actor?.id,
+      uuid: this.document.uuid,
+      supportedLanguages: CONFIG.supportedLanguages,
     };
   }
 

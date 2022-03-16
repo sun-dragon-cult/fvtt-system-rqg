@@ -1,78 +1,142 @@
 <form class="{{cssClass}}" autocomplete="off">
-  <header class="sheet-header">
-    <img
-      class="profile-img"
-      src="{{data.img}}"
-      data-edit="img"
-      title="{{data.name}}"
-    />
-    <input type="text" name="name" value="{{data.name}}"> (<input type="number" name="data.points" value="{{runeMagicData.points}}">)
-  </header>
-  <main>
-    <div class="flex-row-start">
-      {{#unless runeMagicData.isRitual}}
-        <div>
-          <label class="mp">{{localize "RQG.Item.RuneMagic.Range"}}<br>
-            <select name="data.castingRange">
-              {{#select runeMagicData.castingRange}} {{#each sheetSpecific.ranges}}
-              <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
-              {{/each}} {{/select}}
-            </select>
-          </label><br>
-          <label class="mp">{{localize "RQG.Item.RuneMagic.Duration"}}<br>
-            <select name="data.duration">
-              {{#select runeMagicData.duration}} {{#each sheetSpecific.durations}}
-              <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
-              {{/each}} {{/select}}
-            </select>
-          </label>          
-        </div>
-      {{/unless}}
+  <header class="item-sheet-header">
+  
+    <div class="item-sheet-header-img">
+      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
+   
+    <div class="name-number">
       <div>
-      <label><input type="checkbox" name="data.isRitual" {{checked runeMagicData.isRitual}}>{{localize "RQG.Item.Spell.RitualQ"}}</label><br>
-      <label><input type="checkbox" name="data.isEnchantment" {{checked runeMagicData.isEnchantment}}>{{localize "RQG.Item.Spell.EnchantmentQ"}}</label><br>
-      <label><input type="checkbox" name="data.isStackable" {{checked runeMagicData.isStackable}}>{{localize "RQG.Item.RuneMagic.StackableQ"}}</label><br>
-      <label><input type="checkbox" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>{{localize "RQG.Item.RuneMagic.OneUseQ"}}</label>
+        <label for="name-{{data._id}}">{{localize "RQG.Item.RuneMagic.Name"}}</label>
+        <input type="text" id="name-{{data._id}}" name="name" value="{{data.name}}" />
       </div>
-    {{#if isEmbedded}}
-    <label class="mp">{{localize "RQG.Item.RuneMagic.Cult"}}
-      <select name="data.cultId">
-        {{#select runeMagicData.cultId}} {{#each sheetSpecific.actorCults}}
-        <option value="{{id}}">{{name}}</option>
-        {{/each}} {{/select}}
-      </select>
-    </label><br>
-    {{/if}}
-    {{localize "RQG.Item.RuneMagic.Runes"}}<br>
-    {{#each runeMagicData.runes}}
-    <span><img class="rune" src="{{runeImg this}}" title="{{this}}"><input name="data.runes" type="text" value="{{this}}"> </span>
-    {{/each}}
-    <input name="data.runes" type="text" list="allRunes" placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}">
 
+      <div class="paren-head">    
+        <label for="points-{{data._id}}">{{localize "RQG.Item.RuneMagic.Points"}}</label>
+        <div>
+         ( <input type="number" 
+                  id="points-{{data._id}}" 
+                  name="data.points" 
+                  value="{{runeMagicData.points}}" /> )
+        </div>
+      </div>
+    </div>
+  
     <div class="item-sheet-journal-link">
       {{#if runeMagicData.journalPack}}
-          <a class="entity-link content-link"
-            data-pack="{{runeMagicData.journalPack}}" 
-            data-id="{{runeMagicData.journalId}}"
-            title="{{localize "RQG.Foundry.ContentLink.CompendiumNameTitle" compendiumName=runeMagicData.journalPack}}">
-            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-          </a>
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+      <a class="entity-link content-link" data-pack="{{runeMagicData.journalPack}}"
+        data-id="{{runeMagicData.journalId}}" 
+        title="{{localize "RQG.Foundry.ContentLink.CompendiumNameTitle" compendiumName=runeMagicData.journalPack}}">
+        <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
+      </a>
+      <i class="fas fa-info-circle" title="{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}"></i>
       {{else if runeMagicData.journalId}}
-          <a class="entity-link content-link" 
-            data-type="JournalEntry" 
-            data-id="{{runeMagicData.journalId}}"
-            title="{{localize "RQG.Foundry.ContentLink.WorldJournalEntry"}}">
-            <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-          </a>
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}</i></p>
+      <a class="entity-link content-link" data-type="JournalEntry" data-id="{{runeMagicData.journalId}}"
+        title="{{localize "RQG.Foundry.ContentLink.WorldJournalEntry"}}">
+        <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
+      </a>
+      <i class="fas fa-info-circle" title="{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}"></i>
       {{else}}
-          <p><i>{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}</i></p>
-      {{/if}}   
-    </div>   
+      <i class="fas fa-info-circle" title="{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}"></i>
+      {{/if}}
+    </div>
 
-    <br>{{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+  </header>
+
+  <main>
+
+    {{! Sheet Tab Navigation }}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="rune-magic">{{localize "RQG.Item.SheetTab.RuneMagic"}}</a>
+      {{#if isGM}}
+      {{#unless isEmbedded}}
+      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      {{/unless}}
+      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
+      {{/if}}
+    </nav>
+
+    <section class="sheet-body">
+      {{! Rune Magic Tab }}
+      <div class="tab" data-group="primary" data-tab="rune-magic">
+
+        <div class="item-sheet-properties">
+          {{#unless runeMagicData.isRitual}}
+
+          <label for="range-{{data._id}}" class="mp">{{localize "RQG.Item.RuneMagic.Range"}}</label>
+          <select id="range-{{data._id}}" name="data.castingRange">
+            {{#select runeMagicData.castingRange}} 
+            {{#each sheetSpecific.ranges}}
+            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
+            {{/each}} 
+            {{/select}}
+          </select>
+
+          <label for="duration-{{data._id}}" class="mp">{{localize "RQG.Item.RuneMagic.Duration"}} </label>
+          <select id="duration-{{data._id}}" name="data.duration">
+            {{#select runeMagicData.duration}} 
+            {{#each sheetSpecific.durations}}
+            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
+            {{/each}} 
+            {{/select}}
+          </select>
+
+          {{/unless}}
+
+          <label for="is-ritual-{{data._id}}">{{localize "RQG.Item.Spell.RitualQ"}}</label>
+          <input type="checkbox" id="is-ritual-{{data._id}}" name="data.isRitual" {{checked runeMagicData.isRitual}}>
+
+          <label for="is-enchantment-{{data._id}}">{{localize "RQG.Item.Spell.EnchantmentQ"}}</label>
+          <input type="checkbox" id="is-enchantment-{{data._id}}" name="data.isEnchantment" {{checked runeMagicData.isEnchantment}}>
+
+          <label for="is-stackable-{{data._id}}">{{localize "RQG.Item.RuneMagic.StackableQ"}}</label>
+          <input type="checkbox" id="is-stackable-{{data._id}}" name="data.isStackable" {{checked runeMagicData.isStackable}}>
+
+          <label for="is-one-use-{{data._id}}">{{localize "RQG.Item.RuneMagic.OneUseQ"}}</label>
+          <input type="checkbox" id="is-one-use-{{data._id}}" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>
+
+          {{#if isEmbedded}}
+          <label for="cult-id-{{data._id}}" class="mp">{{localize "RQG.Item.RuneMagic.GrantedByCult"}}</label>
+          <select id="cult-id-{{data._id}}" name="data.cultId">
+            {{#select runeMagicData.cultId}} {{#each sheetSpecific.actorCults}}
+            <option value="{{id}}">{{name}}</option>
+            {{/each}} {{/select}}
+          </select>
+          {{/if}}
+
+          <label for="runes-{{data._id}}">{{localize "RQG.Item.RuneMagic.Runes"}}</label>
+          <div class="rune-property rune-group">
+            {{#each runeMagicData.runes}}
+            <img class="rune" src="{{runeImg this}}" title="{{this}}">
+            <input type="text" name="data.runes" value="{{this}}">
+            {{/each}}
+            <input 
+              type="text" 
+              id="runes-{{data._id}}" 
+              name="data.runes" list="allRunes" 
+              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" 
+              style="grid-column: 1 / span 2;">
+          </div>
+
+
+        </div>
+      </div>
+
+      {{!-- Active Effects Tab --}}
+      <div class="tab" data-group="primary" data-tab="active-effects">
+        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+
+      </div>
+
+
+      {{!-- RQG System Tab --}}
+      <div class="tab" data-group="primary" data-tab="rqgsystem">
+        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
+        itemData=runeMagicData
+        }}
+      </div>
+    </section>
+
   </main>
   <datalist id="allRunes">
     {{#each sheetSpecific.allRunes}}

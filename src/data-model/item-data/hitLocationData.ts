@@ -1,6 +1,7 @@
 import { emptyResource, Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
 import { ActorHealthState } from "../actor-data/attributes";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY, IRqid } from "./IRqid";
 
 // TODO differentiate between severed & maimed? slash / crush or impale
 export const hitLocationHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
@@ -13,7 +14,7 @@ export enum HitLocationTypesEnum {
   Abdomen = "abdomen",
 }
 
-export interface HitLocationDataSourceData {
+export interface HitLocationDataSourceData extends IRqid {
   dieFrom: number;
   dieTo: number;
   /** Max and value added by ActorSheet.prepareData */
@@ -48,6 +49,9 @@ export interface HitLocationDataProperties {
 }
 
 export const emptyHitLocation: HitLocationDataSourceData = {
+  rqid: "",
+  rqidPriority: DEFAULT_RQIDPRIORITY,
+  rqidLang: DEFAULT_RQIDLANG,
   dieFrom: 0,
   dieTo: 0,
   hitPoints: emptyResource,

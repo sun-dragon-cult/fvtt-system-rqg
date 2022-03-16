@@ -81,6 +81,19 @@ export function toCamelCase(s: string): string {
   });
 }
 
+export function toKebabCase(s: string): string {
+  if (!s) {
+    return "";
+  }
+  const match = s.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g);
+
+  if (!match) {
+    return "";
+  }
+
+  return match.join("-").toLowerCase();
+}
+
 export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
   // TODO only for GM? getGame().user.isGM &&
   console.warn(`RQG | ${msg}`, debugData);

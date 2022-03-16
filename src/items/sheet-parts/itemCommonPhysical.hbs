@@ -1,0 +1,70 @@
+<div class="item-sheet-properties">
+
+  <label for="encumbrance-{{data._id}}">
+    {{localize "RQG.Item.Gear.EncumbranceAbbrEach"}}
+  </label>
+  <input
+    type="number"
+    id="encumbrance-{{data._id}}"
+    name="data.encumbrance"
+    min="0"
+    max="999999"
+    value="{{itemData.encumbrance}}"
+  />
+
+  <label for="encumbrance-total-{{data._id}}">
+    {{localize "RQG.Item.Gear.EncumbranceAbbrTotal"}}
+  </label>
+  <span id="encumbrance-total-{{data._id}}" class="number">
+    {{multiplyfixed2 data.data.quantity data.data.encumbrance}}
+  </span>
+
+  <label for="equipped-status-{{data._id}}">{{localize "RQG.Item.Gear.EquippedStatus"}}</label>
+  <select id="equipped-status-{{data._id}}" name="data.equippedStatus">
+    {{#select itemData.equippedStatus}}
+      {{#each sheetSpecific.equippedStatuses}}
+        <option value="{{this}}">{{localize (concat "RQG.Item.EquippedStatus." this)}}</option>
+      {{/each}}
+    {{/select}}
+  </select>
+
+  {{#if isGM}}
+    <label for="price-real-{{data._id}}">{{localize "RQG.Item.Gear.PriceReal"}}</label>
+    <div>
+      <input
+        id="price-real-{{data._id}}"
+        name="data.price.real"
+        type="number"
+        min="0"
+        max="99999999"
+        value="{{itemData.price.real}}"
+      />{{localize "RQG.Item.Gear.LunarsAbbr"}}
+    </div>
+  {{/if}}
+
+  <label for="price-estimated-{{data._id}}">{{localize "RQG.Item.Gear.PriceEstimated"}}</label>
+  <div>
+    <input
+      id="price-estimated-{{data._id}}"
+      name="data.price.estimated"
+      type="number"
+      min="0"
+      max="99999999"
+      value="{{itemData.price.estimated}}"
+    />{{localize "RQG.Item.Gear.LunarsAbbr"}}
+  </div>
+
+  <label for="location-{{data._id}}">{{localize "RQG.Item.Gear.Location"}}</label>
+  <input
+    id="location-{{data._id}}"
+    name="data.location"
+    type="text"
+    value="{{itemData.location}}"
+  />
+
+  {{#if isGM}}
+    <label for="attuned-to-{{data._id}}">{{localize "RQG.Item.Gear.AttunedTo"}}</label>
+    <input id="attuned-to-{{data._id}}" type="text" value="{{itemData.attunedTo}}" />
+  {{/if}}
+
+</div>
