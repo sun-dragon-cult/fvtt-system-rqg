@@ -4,6 +4,7 @@ import { RqgItem } from "./rqgItem";
 export interface RqgItemSheetData {
   isGM: boolean;
   ownerId: string | null | undefined;
+  uuid: string | undefined;
   supportedLanguages: {
     en: string;
   } & Partial<Record<string, string>>;
@@ -103,6 +104,7 @@ export class RqgItemSheet<
           }
           const rqidInput = document.getElementById("rqid-" + itemId) as HTMLInputElement;
           rqidInput.value = toKebabCase(`${item.type}-${item.name}`);
+          rqidInput.dispatchEvent(new Event('change')); //TODO: This is not causing the value to update elsewhere on the form, like in the "Get Item Like this" macro
         });
       });
 

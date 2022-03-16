@@ -1,5 +1,6 @@
 import { IAbility } from "../shared/ability";
 import { JournalEntryLink } from "../shared/journalentrylink";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 
 export enum SkillCategoryEnum {
@@ -47,8 +48,8 @@ export interface SkillDataProperties {
 
 export const emptySkill: SkillDataSourceData = {
   rqid: "",
-  rqidpriority: 0,
-  rqidlang: "",
+  rqidPriority: DEFAULT_RQIDPRIORITY,
+  rqidLang: DEFAULT_RQIDLANG,
   category: SkillCategoryEnum.Magic,
   skillName: "",
   specialization: "",

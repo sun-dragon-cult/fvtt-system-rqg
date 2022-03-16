@@ -44,6 +44,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
+      uuid: this.document.uuid,
       supportedLanguages: CONFIG.supportedLanguages,
     };
   }

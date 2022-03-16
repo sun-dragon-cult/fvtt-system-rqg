@@ -1,5 +1,5 @@
 import { activateChatTab, getGame, localize } from "../../system/util";
-import { IRqgItem } from "../item-data/IRqgItem";
+import { IRqgItem } from "../item-data/IRqid";
 
 export interface IAbility
     extends IRqgItem {

@@ -1,4 +1,5 @@
 import { JournalEntryLink } from "../shared/journalentrylink";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
 
@@ -28,8 +29,8 @@ export interface SpiritMagicDataProperties {
 
 export const emptySpiritMagic: SpiritMagicDataSourceData = {
   rqid: "",
-  rqidpriority: 0,
-  rqidlang: "",
+  rqidPriority: DEFAULT_RQIDPRIORITY,
+  rqidLang: DEFAULT_RQIDLANG,
   points: 0,
   isVariable: false,
   isRitual: false,

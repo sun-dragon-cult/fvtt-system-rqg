@@ -63,6 +63,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
+      uuid: this.document.uuid,
       supportedLanguages: CONFIG.supportedLanguages,
     };
   }

@@ -170,14 +170,6 @@ export class RqgItem extends Item {
     return localize("ITEM.Type" + itemType.titleCase());
   }
 
-  /**
-   * Return the highest priority item matching the supplied rqid and lang from the items in the World.  If not
-   * found return the highest priority item matching the supplied rqid and lang from the installed Compendia.
-   * eg CONFIG.Item.documentClass.getItemByRqid("someid", "es")
-   * @param rqid eg "humanoid-left-arm", "throwing-axe", or "spirit-lore"
-   * @param lang default value is "en", eg "en" or "pl"
-   * @returns
-   */
   public static async getItemByRqid(
     rqid: string,
     lang: string = "en"
@@ -188,9 +180,9 @@ export class RqgItem extends Item {
       return worldItem;
     }
 
-    const comendiumItem = await this.getItemFromAllCompendiaByRqid(rqid, lang);
+    const compendiumItem = await this.getItemFromAllCompendiaByRqid(rqid, lang);
 
-    return comendiumItem;
+    return compendiumItem;
   }
 
   private static async getItemFromWorldByRqid(
@@ -198,7 +190,7 @@ export class RqgItem extends Item {
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
     const candidates = getGame().items?.contents.filter(
-      (i) => i.data.data.rqid === rqid && i.data.data.rqidlang === lang
+      (i) => i.data.data.rqid === rqid && i.data.data.rqidLang === lang
     );
 
     if (candidates === undefined) {
@@ -207,16 +199,16 @@ export class RqgItem extends Item {
 
     if (candidates.length > 0) {
       let result = candidates.reduce((max, obj) =>
-        max.data.data.rqidpriority > obj.data.data.rqidpriority ? max : obj
+        max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
       );
       
       // Detect more than one item that could be the match
-      let duplicates = candidates.filter(i => i.data.data.rqidpriority === result.data.data.rqidpriority);
+      let duplicates = candidates.filter(i => i.data.data.rqidPriority === result.data.data.rqidPriority);
       if (duplicates.length > 1) {
         const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
           rqid: rqid,
-          rqidlang: lang,
-          rqidpriority: result.data.data.rqidpriority,
+          rqidLang: lang,
+          rqidPriority: result.data.data.rqidPriority,
         });
         ui.notifications?.error(msg);
         console.log(msg + "  Duplicate items: ", duplicates);
@@ -225,7 +217,7 @@ export class RqgItem extends Item {
     } else {
       const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
         rqid: rqid,
-        rqidlang: lang,
+        rqidLang: lang,
       });
       ui.notifications?.warn(msg);
       console.log(msg);
@@ -242,7 +234,7 @@ export class RqgItem extends Item {
     for (const pack of getGame().packs) {
       if (pack.documentClass.name === "RqgItem") {
         for (const item of await pack.getDocuments()) {
-          if (item.data.data.rqid === rqid && item.data.data.rqidlang === lang) {
+          if (item.data.data.rqid === rqid && item.data.data.rqidLang === lang) {
             console.log(item);
             candidates.push(item as RqgItem);
           }
@@ -253,20 +245,21 @@ export class RqgItem extends Item {
       return undefined;
     }
 
+
     if (candidates.length > 0) {
       let result = candidates.reduce((max, obj) =>
-        max.data.data.rqidpriority > obj.data.data.rqidpriority ? max : obj
+        max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
       );
 
       // Detect more than one item that could be the match
       let duplicates = candidates.filter(
-        (i) => i.data.data.rqidpriority === result.data.data.rqidpriority
+        (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
       );
       if (duplicates.length > 1) {
         const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
           rqid: rqid,
-          rqidlang: lang,
-          rqidpriority: result.data.data.rqidpriority,
+          rqidLang: lang,
+          rqidPriority: result.data.data.rqidPriority,
         });
         ui.notifications?.error(msg);
         console.log(msg + "  Duplicate items: ", duplicates);      

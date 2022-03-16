@@ -1,4 +1,4 @@
-import { IRqgItem } from "./IRqgItem";
+import { IRqgItem } from "./IRqid";
 
 export const equippedStatuses = ["notCarried", "carried", "equipped"] as const;
 export type EquippedStatus = typeof equippedStatuses[number];

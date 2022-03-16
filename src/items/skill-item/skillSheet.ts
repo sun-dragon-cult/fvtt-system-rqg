@@ -65,6 +65,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
+      uuid: this.document.uuid,
       supportedLanguages: CONFIG.supportedLanguages,
     };
   }

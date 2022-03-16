@@ -65,6 +65,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
+      uuid: this.document.uuid,
       supportedLanguages: CONFIG.supportedLanguages,
     };
   }

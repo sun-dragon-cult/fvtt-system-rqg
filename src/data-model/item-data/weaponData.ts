@@ -1,6 +1,7 @@
 import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
 import { emptyResource, Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 
 export const damageType = {
   Crush: "crush",
@@ -80,8 +81,8 @@ export interface WeaponDataProperties {
 
 export const emptyWeapon: WeaponDataSourceData = {
   rqid: "",
-  rqidpriority: 0,
-  rqidlang: "",
+  rqidPriority: DEFAULT_RQIDPRIORITY,
+  rqidLang: DEFAULT_RQIDLANG,
   usage: {
     oneHand: {
       skillId: "",

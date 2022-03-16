@@ -5,19 +5,19 @@
     <a title="{{localize "RQG.RQGSystem.QuickRqid"}}" data-item-id="{{data._id}}" {{#if isEmbedded}}data-owner-id="{{ownerId}}"{{/if}} data-item-rqid-quick><i class="fas fa-plus"></i></a>
   </div>
 
-  <label for="rqidpriority-{{data._id}}">{{localize "RQG.RQGSystem.rqidpriority"}}</label>
+  <label for="rqidPriority-{{data._id}}">{{localize "RQG.RQGSystem.rqidPriority"}}</label>
   <input
     type="number"
-    id="rqidpriority-{{data._id}}"
-    name="data.rqidpriority"
-    value="{{itemData.rqidpriority}}"
+    id="rqidPriority-{{data._id}}"
+    name="data.rqidPriority"
+    value="{{itemData.rqidPriority}}"
   />
  
-  <label for="rqidlang-{{data._id}}">{{localize "RQG.RQGSystem.rqidlang"}}</label>
+  <label for="rqidLang-{{data._id}}">{{localize "RQG.RQGSystem.rqidLang"}}</label>
   <select 
-    id="rqidlang-{{data._id}}"
-    name="data.rqidlang">
-  {{#select itemData.rqidlang}}
+    id="rqidLang-{{data._id}}"
+    name="data.rqidLang">
+  {{#select itemData.rqidLang}}
     {{#each supportedLanguages}}
       <option value="{{@key}}">{{@key}}: {{this}}</option>
     {{/each}}
@@ -25,7 +25,7 @@
   </select>
 
 </div>
-
+<hr>
 <div class="item-sheet-properties">
   <label for="item-foundryid-{{data._id}}">{{localize "RQG.RQGSystem.ItemFoundryId"}}</label>
   <div class="input-button">
@@ -34,6 +34,22 @@
       id="item-foundryid-{{data._id}}"
       name="data.item-foundryid"
       value="{{data._id}}"
+      readonly
+    />
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
+        data-item-id="{{data._id}}" 
+        data-item-copy-input>
+      <i class="fas fa-copy"></i>
+    </a>
+  </div>
+  
+  <label for="item-foundryuuid-{{data._id}}">{{localize "RQG.RQGSystem.ItemFoundryUuid"}}</label>
+  <div class="input-button">
+    <input
+      type="text"
+      id="item-foundryuuid-{{data._id}}"
+      name="data.item-foundryuuid"
+      value="{{uuid}}"
       readonly
     />
     <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
@@ -59,33 +75,15 @@
       <i class="fas fa-copy"></i>
     </a>
   </div>
-
-  <label for="get-owned-item-macro-{{data._id}}">{{localize "RQG.RQGSystem.GetOwnedItemMacro"}}</label>
-  <div class="input-button">
-    <input
-      type="text"
-      id="get-owned-item-macro-{{data._id}}"
-      name="data.get-owned-item-macro"
-      value='game.actors.get("{{ownerId}}").items.get("{{data._id}}")'
-      readonly
-    />
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
-        data-item-id="{{data._id}}" 
-        data-item-copy-input>
-      <i class="fas fa-copy"></i>
-    </a>
-  </div>
-
   {{/if}}
 
-  {{#unless isEmbedded}}
-  <label for="get-unowned-item-macro-{{data._id}}">{{localize "RQG.RQGSystem.GetUnownedItemMacro"}}</label>
+  <label for="get-item-macro-{{data._id}}">{{localize "RQG.RQGSystem.GetItemMacro"}}</label>
   <div class="input-button">
     <input
       type="text"
-      id="get-unowned-item-macro-{{data._id}}"
-      name="data.get-unowned-item-macro"
-      value='game.items.get("{{data._id}}")'
+      id="get-item-macro-{{data._id}}"
+      name="data.get-item-macro"
+      value='await fromUuid("{{uuid}}")'
       readonly
     />
     <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
@@ -94,9 +92,6 @@
       <i class="fas fa-copy"></i>
     </a>
   </div>
-
-  {{/unless}}
-
   
   <label for="get-item-like-this-macro-{{data._id}}">{{localize "RQG.RQGSystem.GetItemLikeThis"}}</label>
   <div class="input-button">
@@ -104,7 +99,7 @@
       type="text"
       id="get-item-like-this-macro-{{data._id}}"
       name="data.get-item-like-this-macro"
-      value='CONFIG.Item.documentClass.getItemByRqid("{{itemData.rqid}},{{itemData.rqidlang}}")'
+      value='await CONFIG.Item.documentClass.getItemByRqid("{{itemData.rqid}}","{{itemData.rqidLang}}")'
       readonly
     />
     <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 

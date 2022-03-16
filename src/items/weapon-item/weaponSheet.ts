@@ -73,6 +73,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
+      uuid: this.document.uuid,
       supportedLanguages: CONFIG.supportedLanguages,
     };
   }

@@ -1,4 +1,4 @@
-import { IRqgItem } from "./IRqgItem";
+import { IRqgItem } from "./IRqid";
 
 export enum SpellRangeEnum {
   None = "",
