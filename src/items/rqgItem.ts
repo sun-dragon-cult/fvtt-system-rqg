@@ -174,6 +174,11 @@ export class RqgItem extends Item {
     rqid: string,
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
+
+    if (!rqid || rqid === "") {
+      return undefined;
+    }
+
     const worldItem = await this.getItemFromWorldByRqid(rqid, lang);
 
     if (worldItem !== undefined) {
@@ -182,13 +187,28 @@ export class RqgItem extends Item {
 
     const compendiumItem = await this.getItemFromAllCompendiaByRqid(rqid, lang);
 
-    return compendiumItem;
+    if (compendiumItem !== undefined) {
+      return compendiumItem;
+    } else {
+      const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
+        rqid: rqid,
+        rqidLang: lang,
+      });
+      ui.notifications?.warn(msg);
+      console.log(msg);
+    }
+
   }
 
   private static async getItemFromWorldByRqid(
     rqid: string,
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
+
+    if (!rqid || rqid === "") {
+      return undefined;
+    }
+
     const candidates = getGame().items?.contents.filter(
       (i) => i.data.data.rqid === rqid && i.data.data.rqidLang === lang
     );
@@ -215,12 +235,6 @@ export class RqgItem extends Item {
       }
       return result as RqgItem;
     } else {
-      const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
-        rqid: rqid,
-        rqidLang: lang,
-      });
-      ui.notifications?.warn(msg);
-      console.log(msg);
       return undefined;
     }
   }
@@ -229,13 +243,17 @@ export class RqgItem extends Item {
     rqid: string,
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
+    
+    if (!rqid || rqid === "") {
+      return undefined;
+    }
+    
     const candidates: RqgItem[] = [];
 
     for (const pack of getGame().packs) {
       if (pack.documentClass.name === "RqgItem") {
         for (const item of await pack.getDocuments()) {
           if (item.data.data.rqid === rqid && item.data.data.rqidLang === lang) {
-            console.log(item);
             candidates.push(item as RqgItem);
           }
         }
