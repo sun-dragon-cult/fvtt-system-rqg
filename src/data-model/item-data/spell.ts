@@ -1,4 +1,4 @@
-import { IRqgItem } from "./IRqid";
+import { IRqid } from "./IRqid";
 
 export enum SpellRangeEnum {
   None = "",
@@ -24,7 +24,7 @@ export enum SpellConcentrationEnum {
 
 // Se core book p247
 export interface Spell
-    extends IRqgItem {
+    extends IRqid {
   /** Learned strength */
   points: number;
   castingRange: SpellRangeEnum;

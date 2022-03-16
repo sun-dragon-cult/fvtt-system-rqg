@@ -1,4 +1,4 @@
-export interface IRqgItem {
+export interface IRqid {
   rqid: string;
   rqidPriority: number;
   rqidLang: string;

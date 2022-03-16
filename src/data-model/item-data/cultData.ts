@@ -1,7 +1,7 @@
 import { Resource } from "../shared/resource";
 import { JournalEntryLink } from "../shared/journalentrylink";
 import { ItemTypeEnum } from "./itemTypes";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY, IRqgItem } from "./IRqid";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY, IRqid } from "./IRqid";
 
 export enum CultRankEnum {
   LayMember = "layMember",
@@ -13,7 +13,7 @@ export enum CultRankEnum {
   HighPriest = "highPriest",
 }
 
-export interface CultDataSourceData extends JournalEntryLink, IRqgItem {
+export interface CultDataSourceData extends JournalEntryLink, IRqid {
   rqid: string;
   rqidPriority: number;
   rqidLang: string;
