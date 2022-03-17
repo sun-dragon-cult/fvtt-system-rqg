@@ -170,6 +170,15 @@ export class RqgItem extends Item {
     return localize("ITEM.Type" + itemType.titleCase());
   }
 
+  /**
+   * Return the highest priority item matching the supplied rqid and lang from the items in the World. If not
+   * found return the highest priority item matching the supplied rqid and lang from the installed Compendia.
+   *
+   * Example:
+   * ```
+   * CONFIG.Item.documentClass.getItemByRqid("someid", "es")
+   * ```
+   */
   public static async getItemByRqid(
     rqid: string,
     lang: string = "en"
@@ -201,9 +210,11 @@ export class RqgItem extends Item {
       let result = candidates.reduce((max, obj) =>
         max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
       );
-      
+
       // Detect more than one item that could be the match
-      let duplicates = candidates.filter(i => i.data.data.rqidPriority === result.data.data.rqidPriority);
+      let duplicates = candidates.filter(
+        (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
+      );
       if (duplicates.length > 1) {
         const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
           rqid: rqid,
@@ -245,7 +256,6 @@ export class RqgItem extends Item {
       return undefined;
     }
 
-
     if (candidates.length > 0) {
       let result = candidates.reduce((max, obj) =>
         max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
@@ -262,7 +272,7 @@ export class RqgItem extends Item {
           rqidPriority: result.data.data.rqidPriority,
         });
         ui.notifications?.error(msg);
-        console.log(msg + "  Duplicate items: ", duplicates);      
+        console.log(msg + "  Duplicate items: ", duplicates);
       }
       return result;
     } else {
