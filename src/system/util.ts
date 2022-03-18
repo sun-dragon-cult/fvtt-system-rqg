@@ -354,27 +354,25 @@ export function activateChatTab() {
 }
 
 
-export function getDefaultRqid(Item: RqgItem): string {
-  if (Item.type === ItemTypeEnum.Skill) {
-    assertItemType(Item.data.type, ItemTypeEnum.Skill);
-    const skill = Item.data as SkillDataSource
+export function getDefaultRqid(item: RqgItem): string {
+  if (item.type === ItemTypeEnum.Skill) {
+    const skill = item.data as SkillDataSource
     if (skill.data.specialization) {
-      return toKebabCase(`${Item.type}-${skill.data.skillName}-${skill.data.specialization}`);
+      return toKebabCase(`${item.type}-${skill.data.skillName}-${skill.data.specialization}`);
     } else {
-      return toKebabCase(`${Item.type}-${skill.data.skillName}`);
+      return toKebabCase(`${item.type}-${skill.data.skillName}`);
     }
   }
-  if (Item.type === ItemTypeEnum.Armor) {
-    assertItemType(Item.data.type, ItemTypeEnum.Armor);
-    const armor = Item.data as ArmorDataSource;
+  if (item.type === ItemTypeEnum.Armor) {
+    const armor = item.data as ArmorDataSource;
     if (armor.data.namePrefix) {
-      return toKebabCase(`${Item.type}-${armor.data.namePrefix}-${armor.data.armorType}-${armor.data.material}`);
+      return toKebabCase(`${item.type}-${armor.data.namePrefix}-${armor.data.armorType}-${armor.data.material}`);
     } else {
       return toKebabCase(
-        `${Item.type}-${armor.data.armorType}-${armor.data.material}`
+        `${item.type}-${armor.data.armorType}-${armor.data.material}`
       );
     }
   }
 
-  return toKebabCase(`${Item.type}-${Item.name}`);
+  return toKebabCase(`${item.type}-${item.name}`);
 }
