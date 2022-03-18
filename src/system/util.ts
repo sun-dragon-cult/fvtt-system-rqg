@@ -3,6 +3,9 @@ import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
+import { RqgItem } from "../items/rqgItem";
+import { SkillDataSource } from "../data-model/item-data/skillData";
+import { ArmorDataSource } from "../data-model/item-data/armorData";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
@@ -348,4 +351,30 @@ export function activateChatTab() {
   // TODO: add player setting to allow skipping this if they don't like the tab changing
   // @ts-ignore 0.8 tabs
   ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
+}
+
+
+export function getDefaultRqid(Item: RqgItem): string {
+  if (Item.type === ItemTypeEnum.Skill) {
+    assertItemType(Item.data.type, ItemTypeEnum.Skill);
+    const skill = Item.data as SkillDataSource
+    if (skill.data.specialization) {
+      return toKebabCase(`${Item.type}-${skill.data.skillName}-${skill.data.specialization}`);
+    } else {
+      return toKebabCase(`${Item.type}-${skill.data.skillName}`);
+    }
+  }
+  if (Item.type === ItemTypeEnum.Armor) {
+    assertItemType(Item.data.type, ItemTypeEnum.Armor);
+    const armor = Item.data as ArmorDataSource;
+    if (armor.data.namePrefix) {
+      return toKebabCase(`${Item.type}-${armor.data.namePrefix}-${armor.data.armorType}-${armor.data.material}`);
+    } else {
+      return toKebabCase(
+        `${Item.type}-${armor.data.armorType}-${armor.data.material}`
+      );
+    }
+  }
+
+  return toKebabCase(`${Item.type}-${Item.name}`);
 }

@@ -174,7 +174,6 @@ export class RqgItem extends Item {
     rqid: string,
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
-
     if (!rqid || rqid === "") {
       return undefined;
     }
@@ -197,14 +196,12 @@ export class RqgItem extends Item {
       ui.notifications?.warn(msg);
       console.log(msg);
     }
-
   }
 
   private static async getItemFromWorldByRqid(
     rqid: string,
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
-
     if (!rqid) {
       return undefined;
     }
@@ -221,9 +218,11 @@ export class RqgItem extends Item {
       let result = candidates.reduce((max, obj) =>
         max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
       );
-      
+
       // Detect more than one item that could be the match
-      let duplicates = candidates.filter(i => i.data.data.rqidPriority === result.data.data.rqidPriority);
+      let duplicates = candidates.filter(
+        (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
+      );
       if (duplicates.length > 1) {
         const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
           rqid: rqid,
@@ -243,11 +242,10 @@ export class RqgItem extends Item {
     rqid: string,
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
-    
     if (!rqid) {
       return undefined;
     }
-    
+
     const candidates: RqgItem[] = [];
 
     for (const pack of getGame().packs) {
@@ -262,7 +260,6 @@ export class RqgItem extends Item {
     if (candidates.length === 0) {
       return undefined;
     }
-
 
     if (candidates.length > 0) {
       let result = candidates.reduce((max, obj) =>
@@ -280,11 +277,13 @@ export class RqgItem extends Item {
           rqidPriority: result.data.data.rqidPriority,
         });
         ui.notifications?.error(msg);
-        console.log(msg + "  Duplicate items: ", duplicates);      
+        console.log(msg + "  Duplicate items: ", duplicates);
       }
       return result;
     } else {
       return undefined;
     }
   }
+
+
 }
