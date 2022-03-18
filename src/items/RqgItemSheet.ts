@@ -1,4 +1,4 @@
-import { getDomDataset, getGame, getRequiredDomDataset, localize, localizeItemType, toKebabCase } from "../system/util";
+import { getDefaultRqid, getDomDataset, getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { RqgItem } from "./rqgItem";
 
 export interface RqgItemSheetData {
@@ -102,7 +102,7 @@ export class RqgItemSheet<
           if (!item) {
             return;
           }
-            const newRqid = toKebabCase(`${item.type}-${item.name}`);
+            const newRqid = getDefaultRqid(item);
 
             if (ownerId) {
               const actor = getGame().actors?.get(ownerId);
