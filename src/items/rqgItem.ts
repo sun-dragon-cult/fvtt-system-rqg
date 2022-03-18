@@ -205,7 +205,7 @@ export class RqgItem extends Item {
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
 
-    if (!rqid || rqid === "") {
+    if (!rqid) {
       return undefined;
     }
 
@@ -244,7 +244,7 @@ export class RqgItem extends Item {
     lang: string = "en"
   ): Promise<RqgItem | undefined> {
     
-    if (!rqid || rqid === "") {
+    if (!rqid) {
       return undefined;
     }
     
