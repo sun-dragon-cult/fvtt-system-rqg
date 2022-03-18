@@ -33,21 +33,10 @@ export class RqgActor extends Actor {
     data.attributes.magicPoints.max = data.characteristics.power.value;
   }
 
-  // Foundry 9 renamed entities to documents, duplicate the code to make it work in both 0.8 & 9
+  // Foundry 9 renamed entities to documents.
   prepareEmbeddedDocuments(): void {
     // @ts-ignore Foundry 9
     super.prepareEmbeddedDocuments();
-    const actorData = this.data.data;
-    const { con, siz, pow } = this.actorCharacteristics();
-    actorData.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
-    this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
-    );
-  }
-
-  // Foundry 0.8 version, duplicate the code to make it work in both 0.8 & 9
-  prepareEmbeddedEntities(): void {
-    super.prepareEmbeddedEntities();
     const actorData = this.data.data;
     const { con, siz, pow } = this.actorCharacteristics();
     actorData.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
