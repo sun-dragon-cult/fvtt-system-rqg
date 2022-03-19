@@ -5,10 +5,15 @@
       <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
 
-    <div class="name-parts-2">
+    <div class="name-parts-2-equal">
       <div>
-        <label for="homeland-{{data._id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
-        <input type="text" id="homeland-{{data._id}}" name="data.homeland" value="{{homelandData.homeland}}">
+        <label for="homeland-{{data._id}}" 
+            data-journal-target="homelandJournalLink">{{localize "RQG.Item.Homeland.Homeland"}}</label>
+        <input type="text" 
+            id="homeland-{{data._id}}" 
+            name="data.homeland"  
+            data-journal-target="homelandJournalLink" 
+            value="{{homelandData.homeland}}">
       </div>
 
       <div class="paren-head">
@@ -16,6 +21,87 @@
         <div>
           ( <input type="text" id="region-{{data._id}}" name="data.region" value="{{homelandData.region}}"> )
         </div>
+      </div>
+    </div>
+
+    <div class="name-parts-2-equal">
+      <div class="journal-drop-target item-sheet-journal-link" data-journal-target="homelandJournalLink">
+        {{#if homelandData.homelandJournalLink.journalPack}}
+          <a
+            class="entity-link content-link"
+            data-pack="{{homelandData.homelandJournalLink.journalPack}}"
+            data-id="{{homelandData.homelandJournalLink.journalId}}"
+            title="{{localize
+              'RQG.Foundry.ContentLink.CompendiumNameTitle'
+              compendiumName=homelandData.homelandJournalLink.journalPack
+            }}"
+          >
+            <i class="fas fa-book-open"></i>
+            {{homelandData.homelandJournalLink.journalName}}
+          </a>
+          <i
+            class="fas fa-info-circle"
+            title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+          ></i>
+        {{else if homelandData.homelandJournalLink.journalId}}
+          <a
+            class="entity-link content-link"
+            data-type="JournalEntry"
+            data-id="{{homelandData.homelandJournalLink.journalId}}"
+            title="{{localize 'RQG.Foundry.ContentLink.WorldJournalEntry'}}"
+          >
+            <i class="fas fa-book-open"></i>
+            {{homelandData.homelandJournalLink.journalName}}
+          </a>
+          <i
+            class="fas fa-info-circle"
+            title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+          ></i>
+        {{else}}
+          <i
+            class="fas fa-info-circle"
+            title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
+          ></i>
+        {{/if}}
+      </div>
+      <div class="journal-drop-target item-sheet-journal-link" data-journal-target="regionJournalLink">
+        {{#if homelandData.regionJournalLink.journalPack}}
+          <a
+            class="entity-link content-link"
+            data-pack="{{homelandData.regionJournalLink.journalPack}}"
+            data-id="{{homelandData.regionJournalLink.journalId}}"
+            title="{{localize
+              'RQG.Foundry.ContentLink.CompendiumNameTitle'
+              compendiumName=homelandData.regionJournalLink.journalPack
+            }}"
+          >
+            <i class="fas fa-book-open"></i>
+            {{homelandData.regionJournalLink.journalName}}
+          </a>
+          <i
+            class="fas fa-info-circle"
+            title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+          ></i>
+        {{else if homelandData.regionJournalLink.journalId}}
+          <a
+            class="entity-link content-link"
+            data-type="JournalEntry"
+            data-id="{{homelandData.regionJournalLink.journalId}}"
+            title="{{localize 'RQG.Foundry.ContentLink.WorldJournalEntry'}}"
+          >
+            <i class="fas fa-book-open"></i>
+            {{homelandData.regionJournalLink.journalName}}
+          </a>
+          <i
+            class="fas fa-info-circle"
+            title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+          ></i>
+        {{else}}
+          <i
+            class="fas fa-info-circle"
+            title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
+          ></i>
+        {{/if}}
       </div>
     </div>
 
@@ -40,40 +126,57 @@
       {{!-- Passion Tab --}}
       <div class="tab" data-group="primary" data-tab="homeland">
         
-        {{!-- <div class="item-sheet-properties">
+        <div class="item-sheet-properties">
 
-          <label for="chance-{{data._id}}">{{localize "RQG.Item.Passion.Chance"}}</label>
-          <div>
-            <input
-              type="number"
-              id="chance-{{data._id}}"              
-              name="data.chance"
-              min="0"
-              max="999"
-              {{#if passionData.hasExperience}}class="experienced"{{/if}}
-              value="{{passionData.chance}}">
-            %
+          <label for="culture-names-{{data._id}}">{{localize "RQG.Item.Homeland.CultureNames"}}</label>
+          <span>{{sheetSpecific.cultureNamesFormatted}}</span>
+
+          <label>{{localize "RQG.Item.Homeland.CultureJournalEntries"}}</label>
+          <div class="journal-drop-target item-sheet-journal-link" data-journal-target="cultureJournalLinks">
+            {{#each homelandData.cultureJournalLinks}}
+            {{#if this.journalPack}}
+              <a
+                class="entity-link content-link"
+                data-pack="{{this.journalPack}}"
+                data-id="{{this.journalId}}"
+                title="{{localize
+                  'RQG.Foundry.ContentLink.CompendiumNameTitle'
+                  compendiumName=this.journalPack
+                }}"
+              >
+                <i class="fas fa-book-open"></i>
+                {{this.journalName}}
+              </a>
+            {{else if this.journalId}}
+              <a
+                class="entity-link content-link"
+                data-type="JournalEntry"
+                data-id="{{this.journalId}}"
+                title="{{localize 'RQG.Foundry.ContentLink.WorldJournalEntry'}}"
+              >
+                <i class="fas fa-book-open"></i>
+                {{this.journalName}}
+              </a>
+            {{else}}
+              <i
+                class="fas fa-info-circle"
+                title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
+              ></i>
+            {{/if}}
+            {{/each}}
+            {{#unless homelandData.cultureJournalLinks.length}}
+            <i
+              class="fas fa-info-circle"
+              style="width: 50px;"
+              title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
+            ></i>
+            {{/unless}}
           </div>
 
-          <label for="has-experience-{{data._id}}">{{localize "RQG.Item.Passion.HasExperienceQ"}}</label>
-          <input
-            type="checkbox"
-            name="data.hasExperience"
-            id="has-experience-{{data._id}}"
-            {{checked passionData.hasExperience}}>
-
-          <label class="editor-label">{{localize "RQG.Item.Passion.BackStory"}}</label>
-          <div class="editor-container">
-            {{editor
-              content=passionData.description
-              target="data.description"
-              button=true
-              owner=owner
-              editable=editable
-            }}
-          </div>
-
-        </div>  --}}
+          <label>{{localize "RQG.Item.Homeland.Cults"}}</label>
+          <div class="journal-drop-target item-sheet-journal-link" data-journal-target="cultRqids">
+          </div>  
+        </div> 
 
       </div>
 

@@ -1077,6 +1077,10 @@ body {
       padding: 5px;
     }
   }
+
+  & .journal-drop-target {
+    display: inline-grid;
+  }
 }
 
 .item-sheet-properties label {
@@ -1156,6 +1160,13 @@ body {
   grid-gap: 0.5em;
 }
 
+.item-sheet-header .name-parts-2-equal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  grid-gap: 0.5em;
+}
+
 // .item-sheet-header-name label {
 //   display: block;
 // }
@@ -1164,6 +1175,8 @@ body {
 .name-parts-3 input[type="text"],
 .name-parts-2 input[type="text"],
 .name-parts-2 select,
+.name-parts-2-equal input[type="text"],
+.name-parts-2-equal select,
 .name-parts-3 select {
   width: -webkit-fill-available;
 }
@@ -1209,5 +1222,15 @@ body {
   & .skill {
     font-weight: bold;
     font-size: xx-large;
+  }
+}
+
+.journal-drop-target {
+  border: 1px dotted black;
+  padding: 0.5rem;
+
+  & a {
+    margin: 0.25rem;
+    width: fit-content;
   }
 }

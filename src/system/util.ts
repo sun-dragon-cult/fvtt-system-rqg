@@ -6,6 +6,7 @@ import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { RqgItem } from "../items/rqgItem";
 import { SkillDataSource } from "../data-model/item-data/skillData";
 import { ArmorDataSource } from "../data-model/item-data/armorData";
+import { JournalEntryLink } from "../data-model/shared/journalentrylink";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
@@ -213,6 +214,19 @@ export function getJournalEntryName(itemData: any): string {
     return pack?.index.get(itemData.journalId)?.name;
   } else {
     return getGame().journal?.get(itemData.journalId)?.name ?? "";
+  }
+}
+
+export function getJournalEntryNameByJournalEntryLink(link: JournalEntryLink): string {
+  if (!link.journalId) {
+    return "";
+  }
+  if (link.journalPack) {
+    const pack = getGame().packs.get(link.journalPack);
+    // @ts-ignore name
+    return pack?.index.get(link.journalId)?.name;
+  } else {
+    return getGame().journal?.get(link.journalId)?.name ?? "";
   }
 }
 

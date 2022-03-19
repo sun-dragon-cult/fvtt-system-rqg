@@ -3,4 +3,5 @@ export class JournalEntryLink {
   journalId: string = "";
   /** compendium pack (if it's in a compendium) */
   journalPack: string = "";
+  journalName: string = "";
 }
