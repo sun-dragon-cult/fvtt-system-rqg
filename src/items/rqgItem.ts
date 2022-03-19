@@ -11,6 +11,7 @@ import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import { getGame, localize, RqgError } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import { HomelandSheet } from "./homeland-item/homelandSheet";
 
 export class RqgItem extends Item {
   public static init() {
@@ -36,6 +37,11 @@ export class RqgItem extends Item {
     Items.registerSheet("rqg", HitLocationSheet as any, {
       label: "GM Hit Location Item Sheet",
       types: [ItemTypeEnum.HitLocation],
+      makeDefault: true,
+    });
+    Items.registerSheet("rqg", HomelandSheet as any, {
+      label: "GM Homeland Item Sheet",
+      types: [ItemTypeEnum.Homeland],
       makeDefault: true,
     });
     Items.registerSheet("rqg", GearSheet as any, {

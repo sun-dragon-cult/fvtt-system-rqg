@@ -4,6 +4,7 @@
     "TypeCult": "Cult",
     "TypeGear": "Gear",
     "TypeHitlocation": "Hit Location",
+    "TypeHomeland": "Homeland",
     "TypePassion": "Passion",
     "TypeRune": "Rune",
     "TypeRunemagic": "Rune Magic Spell",
@@ -651,6 +652,10 @@
         "chest": "Chest",
         "abdomen": "Abdomen"
       },
+      "Homeland": {
+        "Homeland": "Homeland",
+        "Region": "Region or City"
+      },
       "Notification": {
         "CircularGearLocationWarning": "Circular gear locations (A in B in A) - check your gear locations: {itemLocation}",
         "ItemIsNotContainerWarning": "{itemName} is not a container",
@@ -748,6 +753,7 @@
         "Gear": "Gear",
         "HitLocation":"Hit Location",
         "HitLocationDefinition": "Hit Location Definition",
+        "Homeland": "Homeland",
         "Passion": "Passion",
         "Rune": "Rune",
         "RuneMagic": "Rune Magic",

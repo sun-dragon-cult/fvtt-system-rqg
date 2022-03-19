@@ -10,6 +10,7 @@ import { emptyCult } from "./data-model/item-data/cultData";
 import { emptyRuneMagic } from "./data-model/item-data/runeMagicData";
 import { emptyHitLocation } from "./data-model/item-data/hitLocationData";
 import { emptyWeapon } from "./data-model/item-data/weaponData";
+import { emptyHomeland } from "./data-model/item-data/homelandData";
 
 // Instantiated Actor types
 export const Actors = {
@@ -21,6 +22,7 @@ export const Items = {
   [ItemTypeEnum.Cult]: emptyCult,
   [ItemTypeEnum.Gear]: emptyGear,
   [ItemTypeEnum.HitLocation]: emptyHitLocation,
+  [ItemTypeEnum.Homeland]: emptyHomeland,
   [ItemTypeEnum.Passion]: emptyPassion,
   [ItemTypeEnum.Rune]: emptyRune,
   [ItemTypeEnum.RuneMagic]: emptyRuneMagic,

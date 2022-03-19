@@ -1,0 +1,106 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="item-sheet-header">
+  
+    <div class="item-sheet-header-img">
+      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
+    </div>
+
+    <div class="name-parts-2">
+      <div>
+        <label for="homeland-{{data._id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
+        <input type="text" id="homeland-{{data._id}}" name="data.homeland" value="{{homelandData.homeland}}">
+      </div>
+
+      <div class="paren-head">
+        <label for="region-{{data._id}}">{{localize "RQG.Item.Homeland.Region"}}</label>
+        <div>
+          ( <input type="text" id="region-{{data._id}}" name="data.region" value="{{homelandData.region}}"> )
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <main>
+
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="homeland">{{localize "RQG.Item.SheetTab.Homeland"}}</a>
+      {{#if isGM}}
+      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
+      {{#unless isEmbedded}}
+      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      {{/unless}}
+      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
+      {{/if}}
+    </nav>
+
+    <section class="sheet-body">
+      {{!-- Passion Tab --}}
+      <div class="tab" data-group="primary" data-tab="homeland">
+        
+        {{!-- <div class="item-sheet-properties">
+
+          <label for="chance-{{data._id}}">{{localize "RQG.Item.Passion.Chance"}}</label>
+          <div>
+            <input
+              type="number"
+              id="chance-{{data._id}}"              
+              name="data.chance"
+              min="0"
+              max="999"
+              {{#if passionData.hasExperience}}class="experienced"{{/if}}
+              value="{{passionData.chance}}">
+            %
+          </div>
+
+          <label for="has-experience-{{data._id}}">{{localize "RQG.Item.Passion.HasExperienceQ"}}</label>
+          <input
+            type="checkbox"
+            name="data.hasExperience"
+            id="has-experience-{{data._id}}"
+            {{checked passionData.hasExperience}}>
+
+          <label class="editor-label">{{localize "RQG.Item.Passion.BackStory"}}</label>
+          <div class="editor-container">
+            {{editor
+              content=passionData.description
+              target="data.description"
+              button=true
+              owner=owner
+              editable=editable
+            }}
+          </div>
+
+        </div>  --}}
+
+      </div>
+
+      {{!-- GM Tab --}}
+      <div class="tab" data-group="primary" data-tab="gm">
+
+        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=passionData.gmNotes target="data.gmNotes"
+          button=true owner=owner editable=editable}}
+        </label>
+      </div>
+
+      {{!-- Active Effects Tab --}}
+      <div class="tab" data-group="primary" data-tab="active-effects">
+        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+
+      </div>
+
+
+      {{!-- RQG System Tab --}}
+      <div class="tab" data-group="primary" data-tab="rqgsystem">
+        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
+          itemData=homelandData
+        }}
+      </div>
+
+    </section>
+
+  </main>
+
+</form>
