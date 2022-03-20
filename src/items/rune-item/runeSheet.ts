@@ -35,7 +35,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       template: "systems/rqg/items/rune-item/runeSheet.hbs",
       width: 450,
       height: 400,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "rune" }],
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "rune" }],
     });
   }
 

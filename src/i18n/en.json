@@ -655,12 +655,15 @@
       "Homeland": {
         "Homeland": "Homeland",
         "Region": "Region or City",
-        "CultureNames": "Cultures",
         "CultureJournalEntries": "Culture Journal Entries",
+        "TribeJournalEntries": "Tribe Journal Entries",
+        "ClanJournalEntries": "Clan Journal Entries",
         "homelandJournalLink": "Homeland",
         "regionJournalLink": "Region",
         "cultureJournalLinks": "Culture",
-        "Cults": "Cults"
+        "CultLinks": "Cult Links",
+        "PassionLinks": "Passion Links",
+        "RuneLinks": "Rune Links"
       },
       "Notification": {
         "CircularGearLocationWarning": "Circular gear locations (A in B in A) - check your gear locations: {itemLocation}",
@@ -691,7 +694,9 @@
         "CanOnlyDropJournalEntryOnThisTargetWarning": "You can only drop a Journal Entry onto the {target} Journal target.",
         "PleaseDropOnTarget": "You can't drop that here.  Look for an appropriate target.",
         "ErrorParsingItemData": "Error parsing Item Data",
-        "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module."
+        "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
+        "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
+        "RqidFromLinkNotFound": "No item found for linked RQG System ID (rqid) \"{rqid\". Check the \"RQG System\" tab of the Item sheet."
       },
       "Passion": {
         "Name": "Name",
@@ -714,6 +719,7 @@
         }
       },
       "RqgItem": {
+        "RqidLinkTitle": "RQG System ID (rqid) link to \"{rqid}\"",
         "Error": {
           "MoreThanOneRqidMatchInWorld": "More than one RQG Item in the world (not in Compendia) matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",
           "MoreThanOneRqidMatchInCompendia": "More than one RQG Item in installed Compendia matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",

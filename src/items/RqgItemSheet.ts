@@ -1,4 +1,4 @@
-import { getDefaultRqid, getDomDataset, getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import { getDefaultRqid, getDomDataset, getGame, getItemByRqid, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { RqgItem } from "./rqgItem";
 
 export interface RqgItemSheetData {
@@ -125,6 +125,25 @@ export class RqgItemSheet<
         el.addEventListener("click", async () => {
           const input = el.previousElementSibling as HTMLInputElement;
           navigator.clipboard.writeText(input.value);
+        });
+      });
+
+    // Handle rqid links
+    $(this.form!)
+      .find("[data-rqid-link]")
+      .each((i: number, el: HTMLElement) => {
+        const rqid = getRequiredDomDataset($(el), "rqid");
+        el.addEventListener("click", async () => {
+          console.log("CLICK: " + rqid);
+          const rqidItem = await getItemByRqid(rqid);
+          if (rqidItem) {
+            rqidItem.sheet?.render(true);
+            console.log("This is where we should be rendering");
+          } else {
+            ui.notifications?.warn(
+              localize("RQG.Item.Notification.RqidFromLinkNotFound", {rqid: rqid})
+            );
+          }
         });
       });
   }

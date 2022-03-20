@@ -2,7 +2,9 @@ import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import { HomelandDataProperties, HomelandDataPropertiesData, HomelandDataSourceData } from "../../data-model/item-data/homelandData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { JournalEntryLink } from "../../data-model/shared/journalentrylink";
-import { assertItemType, getDomDataset, getGame, getGameUser, getJournalEntryName, getJournalEntryNameByJournalEntryLink, getRequiredDomDataset, localize, localizeItemType } from "../../system/util";
+import { RqidLink } from "../../data-model/shared/rqidLink";
+import { assertItemType, findDatasetValueInSelfOrAncestors, getDomDataset, getGame, getGameUser, getJournalEntryName, getJournalEntryNameByJournalEntryLink, getRequiredDomDataset, localize, localizeItemType } from "../../system/util";
+import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 
 
@@ -18,9 +20,9 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Homeland],
       template: "systems/rqg/items/homeland-item/homelandSheet.hbs",
-      width: 450,
-      height: 500,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "homeland" }],
+      width: 550,
+      height: 650,
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "homeland" }],
     });
   }
 
@@ -37,9 +39,7 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
       options: this.options,
       data: itemData,
       homelandData: itemData.data,
-      sheetSpecific: {
-        cultureNamesFormatted: itemData.data.cultures.join(", "),
-      },
+      sheetSpecific: {},
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
       uuid: this.document.uuid,
@@ -89,10 +89,9 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
       }
 
       const pack = droppedEntityData.pack ? droppedEntityData.pack : "";
+      const homelandData = this.item.data.data as HomelandDataSourceData;
 
-      // TODO: see if any of the ancestors of the event.target have the journalTarget
-      // in case the user dragged something onto whatever might be already inside the journalTarget
-      const target = (event.target as HTMLElement).dataset.journalTarget;
+      const target = findDatasetValueInSelfOrAncestors((event.target as HTMLElement), "journalTarget");
 
       console.log("TARGET: " + target);
 
@@ -100,9 +99,86 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
 
       if (droppedEntityData.type === "Item") {
         // You can drop items anywhere on this form
-        const droppedItem = getGame().items?.get(droppedEntityData.id);
+        //const droppedItem = getGame().items?.get(droppedEntityData.id);
+
+        const droppedItem = (await Item.fromDropData(droppedEntityData)) as RqgItem;
 
         console.log("DROPPED ITEM: ", droppedItem);
+
+        if (droppedItem === undefined) {
+          return;
+        }
+
+        if (!droppedItem.data.data.rqid) {
+          ui.notifications?.warn(localize("RQG.Item.Notification.MustHaveRqidToDrop"));
+          return;
+        }
+
+        const rqid = droppedItem.data.data.rqid;
+
+        const newRqidLink = new RqidLink();
+        newRqidLink.rqid = rqid;
+        newRqidLink.itemType = droppedItem.type;
+        newRqidLink.name = droppedItem.name || "";
+
+        if (droppedItem.type === "cult") {
+          const cults = homelandData.cultRqidLinks;
+          if (!cults.map(c => c.rqid).includes(rqid)) {
+
+            cults.push(newRqidLink); 
+            if (this.item.isEmbedded) {
+              await this.item.actor?.updateEmbeddedDocuments("Item", [
+                {
+                  _id: this.item.id,
+                  "data.cultRqidLinks": cults,
+                },
+              ]);
+            } else {
+              await this.item.update({
+                "data.cultRqidLinks": cults,
+              });
+            }
+          }
+        }
+
+        if (droppedItem.type === "passion") {
+          const passions = homelandData.passionRqidLinks;
+          if (!passions.map((p) => p.rqid).includes(rqid)) {
+            passions.push(newRqidLink);
+            if (this.item.isEmbedded) {
+              await this.item.actor?.updateEmbeddedDocuments("Item", [
+                {
+                  _id: this.item.id,
+                  "data.passionRqidLinks": passions,
+                },
+              ]);
+            } else {
+              await this.item.update({
+                "data.passionRqidLinks": passions,
+              });
+            }
+          }
+        }
+
+        if (droppedItem.type === "rune") {
+          const runes = homelandData.runeRqidLinks;
+          if (!runes.map((r) => r.rqid).includes(rqid)) {
+            runes.push(newRqidLink);
+            if (this.item.isEmbedded) {
+              await this.item.actor?.updateEmbeddedDocuments("Item", [
+                {
+                  _id: this.item.id,
+                  "data.runeRqidLinks": runes,
+                },
+              ]);
+            } else {
+              await this.item.update({
+                "data.runeRqidLinks": runes,
+              });
+            }
+          }
+        }
+
         return;
       }
 
@@ -112,13 +188,12 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
       newLink.journalName = getJournalEntryNameByJournalEntryLink(newLink);
 
       if (target) {
-        
-        // NOTE: I tried to use interpolated strings to like `data.${target}.journalid` but that doesn't appear
-        // to work for property names
+        // NOTE: I tried to use interpolated strings to set properties like `data.${target}.journalid` but
+        // that doesn't appear to work for property names
 
         if (target === "homelandJournalLink") {
           if (!ensureJournal(droppedEntityData, target)) {
-            return
+            return;
           }
           if (this.item.isEmbedded) {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
@@ -133,7 +208,7 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
               "data.homelandJournalLink": newLink,
               "data.homeland": newLink.journalName,
             });
-          }          
+          }
         }
 
         if (target === "regionJournalLink") {
@@ -161,20 +236,64 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
             return;
           }
           const cultureLinks = (this.item.data.data as HomelandDataSourceData).cultureJournalLinks;
+          if (!cultureLinks.map(j => j.journalId).includes(newLink.journalId)) {
           cultureLinks.push(newLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
+            if (this.item.isEmbedded) {
+              await this.item.actor?.updateEmbeddedDocuments("Item", [
+                {
+                  _id: this.item.id,
+                  "data.cultureJournalLinks": cultureLinks,
+                },
+              ]);
+            } else {
+              await this.item.update({
                 "data.cultureJournalLinks": cultureLinks,
-                "data.cultures": cultureLinks.map(c => c.journalName),
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.cultureJournalLinks": cultureLinks,
-              "data.cultures": cultureLinks.map((c) => c.journalName),
-            });
+              });
+            }            
+          }
+        }
+
+        if (target === "tribeJournalLinks") {
+          if (!ensureJournal(droppedEntityData, target)) {
+            return;
+          }
+          const tribeLinks = (this.item.data.data as HomelandDataSourceData).tribeJournalLinks;
+          if (!tribeLinks.map((j) => j.journalId).includes(newLink.journalId)) {
+            tribeLinks.push(newLink);
+            if (this.item.isEmbedded) {
+              await this.item.actor?.updateEmbeddedDocuments("Item", [
+                {
+                  _id: this.item.id,
+                  "data.tribeJournalLinks": tribeLinks,
+                },
+              ]);
+            } else {
+              await this.item.update({
+                "data.tribeJournalLinks": tribeLinks,
+              });
+            }
+          }
+        }
+
+        if (target === "clanJournalLinks") {
+          if (!ensureJournal(droppedEntityData, target)) {
+            return;
+          }
+          const clanLinks = (this.item.data.data as HomelandDataSourceData).clanJournalLinks;
+          if (!clanLinks.map((j) => j.journalId).includes(newLink.journalId)) {
+            clanLinks.push(newLink);
+            if (this.item.isEmbedded) {
+              await this.item.actor?.updateEmbeddedDocuments("Item", [
+                {
+                  _id: this.item.id,
+                  "data.clanJournalLinks": clanLinks,
+                },
+              ]);
+            } else {
+              await this.item.update({
+                "data.clanJournalLinks": clanLinks,
+              });
+            }
           }
         }
 
@@ -184,6 +303,7 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
 
   }
 }
+
 
 function ensureJournal(droppedItemData: any, target: string): boolean {
   if (droppedItemData.type !== "JournalEntry") {

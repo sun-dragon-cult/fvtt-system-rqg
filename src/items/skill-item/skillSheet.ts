@@ -36,7 +36,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       template: "systems/rqg/items/skill-item/skillSheet.hbs",
       width: 450,
       height: 500,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "skill" }],
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "skill" }],
     });
   }
 

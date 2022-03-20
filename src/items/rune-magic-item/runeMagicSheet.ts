@@ -41,7 +41,7 @@ export class RuneMagicSheet extends RqgItemSheet<
       template: "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
       width: 450,
       height: 500,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "rune-magic" }],
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "rune-magic" }],
     });
   }
 

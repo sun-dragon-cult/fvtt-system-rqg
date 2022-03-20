@@ -1030,13 +1030,18 @@ body {
 
 // Tabbed Navigation for Item Sheets
 
-.tabs {
+.item-sheet-nav-tabs {
   border-top: 1px solid #aaa;
   border-bottom: 1px solid #aaa;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-bottom: 0.25rem;
 
   .item {
     font-weight: bold;
     white-space: nowrap;
+    padding: 0.25rem;
   }
 
   .item.active {
@@ -1078,7 +1083,7 @@ body {
     }
   }
 
-  & .journal-drop-target {
+  & .drop-target {
     display: inline-grid;
   }
 }
@@ -1225,7 +1230,7 @@ body {
   }
 }
 
-.journal-drop-target {
+.drop-target {
   border: 1px dotted black;
   padding: 0.5rem;
 

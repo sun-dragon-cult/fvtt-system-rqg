@@ -45,7 +45,7 @@ export class HitLocationSheet extends RqgItemSheet<
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
       width: 450,
       height: 500,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "hit-location" }],
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "hit-location" }],
     });
   }
 

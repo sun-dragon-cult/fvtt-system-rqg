@@ -29,7 +29,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       template: "systems/rqg/items/armor-item/armorSheet.hbs",
       width: 580,
       height: 725,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "armor" }],
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "armor" }],
     });
   }
 

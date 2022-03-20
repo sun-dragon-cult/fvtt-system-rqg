@@ -36,7 +36,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
       width: 450,
       height: 450,
       tabs: [
-        { navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "spirit-magic" },
+        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "spirit-magic" },
       ],
     });
   }
