@@ -367,10 +367,9 @@ export function activateChatTab() {
   ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
 }
 
-
 export function getDefaultRqid(item: RqgItem): string {
   if (item.type === ItemTypeEnum.Skill) {
-    const skill = item.data as SkillDataSource
+    const skill = item.data as SkillDataSource;
     if (skill.data.specialization) {
       return toKebabCase(`${item.type}-${skill.data.skillName}-${skill.data.specialization}`);
     } else {
@@ -380,144 +379,141 @@ export function getDefaultRqid(item: RqgItem): string {
   if (item.type === ItemTypeEnum.Armor) {
     const armor = item.data as ArmorDataSource;
     if (armor.data.namePrefix) {
-      return toKebabCase(`${item.type}-${armor.data.namePrefix}-${armor.data.armorType}-${armor.data.material}`);
-    } else {
       return toKebabCase(
-        `${item.type}-${armor.data.armorType}-${armor.data.material}`
+        `${item.type}-${armor.data.namePrefix}-${armor.data.armorType}-${armor.data.material}`
       );
+    } else {
+      return toKebabCase(`${item.type}-${armor.data.armorType}-${armor.data.material}`);
     }
   }
 
   return toKebabCase(`${item.type}-${item.name}`);
 }
 
-
-
-  /**
-   * Return the highest priority item matching the supplied rqid and lang from the items in the World. If not
-   * found return the highest priority item matching the supplied rqid and lang from the installed Compendia.
-   *
-   * Example:
-   * ```
-   * CONFIG.Item.documentClass.getItemByRqid("someid", "es")
-   * ```
-   */
-  export async function  getItemByRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<RqgItem | undefined> {
-    if (!rqid) {
-      return undefined;
-    }
-
-    const worldItem = await getItemFromWorldByRqid(rqid, lang);
-
-    if (worldItem !== undefined) {
-      return worldItem;
-    }
-
-    const compendiumItem = await getItemFromAllCompendiaByRqid(rqid, lang);
-
-    if (compendiumItem !== undefined) {
-      return compendiumItem;
-    } else {
-      const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
-        rqid: rqid,
-        rqidLang: lang,
-      });
-      ui.notifications?.warn(msg);
-      console.log(msg);
-    }
+/**
+ * Return the highest priority item matching the supplied rqid and lang from the items in the World. If not
+ * found return the highest priority item matching the supplied rqid and lang from the installed Compendia.
+ *
+ * Example:
+ * ```
+ * CONFIG.Item.documentClass.getItemByRqid("someid", "es")
+ * ```
+ */
+export async function getItemByRqid(
+  rqid: string,
+  lang: string = "en"
+): Promise<RqgItem | undefined> {
+  if (!rqid) {
+    return undefined;
   }
 
-  async function getItemFromWorldByRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<RqgItem | undefined> {
-    if (!rqid) {
-      return undefined;
-    }
+  const worldItem = await getItemFromWorldByRqid(rqid, lang);
 
-    const candidates = getGame().items?.contents.filter(
-      (i) => i.data.data.rqid === rqid && i.data.data.rqidLang === lang
+  if (worldItem !== undefined) {
+    return worldItem;
+  }
+
+  const compendiumItem = await getItemFromAllCompendiaByRqid(rqid, lang);
+
+  if (compendiumItem !== undefined) {
+    return compendiumItem;
+  } else {
+    const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
+      rqid: rqid,
+      rqidLang: lang,
+    });
+    ui.notifications?.warn(msg);
+    console.log(msg);
+  }
+}
+
+async function getItemFromWorldByRqid(
+  rqid: string,
+  lang: string = "en"
+): Promise<RqgItem | undefined> {
+  if (!rqid) {
+    return undefined;
+  }
+
+  const candidates = getGame().items?.contents.filter(
+    (i) => i.data.data.rqid === rqid && i.data.data.rqidLang === lang
+  );
+
+  if (candidates === undefined) {
+    return undefined;
+  }
+
+  if (candidates.length > 0) {
+    let result = candidates.reduce((max, obj) =>
+      max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
     );
 
-    if (candidates === undefined) {
-      return undefined;
+    // Detect more than one item that could be the match
+    let duplicates = candidates.filter(
+      (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
+    );
+    if (duplicates.length > 1) {
+      const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
+        rqid: rqid,
+        rqidLang: lang,
+        rqidPriority: result.data.data.rqidPriority,
+      });
+      ui.notifications?.error(msg);
+      console.log(msg + "  Duplicate items: ", duplicates);
     }
+    return result as RqgItem;
+  } else {
+    return undefined;
+  }
+}
 
-    if (candidates.length > 0) {
-      let result = candidates.reduce((max, obj) =>
-        max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
-      );
-
-      // Detect more than one item that could be the match
-      let duplicates = candidates.filter(
-        (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
-      );
-      if (duplicates.length > 1) {
-        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
-          rqid: rqid,
-          rqidLang: lang,
-          rqidPriority: result.data.data.rqidPriority,
-        });
-        ui.notifications?.error(msg);
-        console.log(msg + "  Duplicate items: ", duplicates);
-      }
-      return result as RqgItem;
-    } else {
-      return undefined;
-    }
+async function getItemFromAllCompendiaByRqid(
+  rqid: string,
+  lang: string = "en"
+): Promise<RqgItem | undefined> {
+  if (!rqid) {
+    return undefined;
   }
 
-  async function getItemFromAllCompendiaByRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<RqgItem | undefined> {
-    if (!rqid) {
-      return undefined;
-    }
+  const candidates: RqgItem[] = [];
 
-    const candidates: RqgItem[] = [];
-
-    for (const pack of getGame().packs) {
-      if (pack.documentClass.name === "RqgItem") {
-        for (const item of await pack.getDocuments()) {
-          if (item.data.data.rqid === rqid && item.data.data.rqidLang === lang) {
-            candidates.push(item as RqgItem);
-          }
+  for (const pack of getGame().packs) {
+    if (pack.documentClass.name === "RqgItem") {
+      for (const item of await pack.getDocuments()) {
+        if (item.data.data.rqid === rqid && item.data.data.rqidLang === lang) {
+          candidates.push(item as RqgItem);
         }
       }
     }
-    if (candidates.length === 0) {
-      return undefined;
-    }
-
-    if (candidates.length > 0) {
-      let result = candidates.reduce((max, obj) =>
-        max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
-      );
-
-      // Detect more than one item that could be the match
-      let duplicates = candidates.filter(
-        (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
-      );
-      if (duplicates.length > 1) {
-        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
-          rqid: rqid,
-          rqidLang: lang,
-          rqidPriority: result.data.data.rqidPriority,
-        });
-        ui.notifications?.error(msg);
-        console.log(msg + "  Duplicate items: ", duplicates);
-      }
-      return result;
-    } else {
-      return undefined;
-    }
+  }
+  if (candidates.length === 0) {
+    return undefined;
   }
 
-  
+  if (candidates.length > 0) {
+    let result = candidates.reduce((max, obj) =>
+      max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
+    );
+
+    // Detect more than one item that could be the match
+    let duplicates = candidates.filter(
+      (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
+    );
+    if (duplicates.length > 1) {
+      const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
+        rqid: rqid,
+        rqidLang: lang,
+        rqidPriority: result.data.data.rqidPriority,
+      });
+      ui.notifications?.error(msg);
+      console.log(msg + "  Duplicate items: ", duplicates);
+    }
+    return result;
+  } else {
+    return undefined;
+  }
+}
+
 export function findDatasetValueInSelfOrAncestors(
   el: HTMLElement,
   datasetname: string

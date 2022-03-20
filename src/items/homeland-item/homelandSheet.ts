@@ -1,28 +1,48 @@
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import { HomelandDataProperties, HomelandDataPropertiesData, HomelandDataSourceData } from "../../data-model/item-data/homelandData";
+import {
+  HomelandDataProperties,
+  HomelandDataPropertiesData,
+  HomelandDataSourceData,
+} from "../../data-model/item-data/homelandData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { JournalEntryLink } from "../../data-model/shared/journalentrylink";
 import { RqidLink } from "../../data-model/shared/rqidLink";
-import { assertItemType, findDatasetValueInSelfOrAncestors, getDomDataset, getGame, getGameUser, getJournalEntryName, getJournalEntryNameByJournalEntryLink, getRequiredDomDataset, localize, localizeItemType } from "../../system/util";
+import {
+  assertItemType,
+  findDatasetValueInSelfOrAncestors,
+  getDomDataset,
+  getGameUser,
+  getJournalEntryNameByJournalEntryLink,
+  getRequiredDomDataset,
+  localize,
+} from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 
-
 export interface HomelandSheetData extends RqgItemSheetData {
-    isEmbedded: boolean;  // There might be no reason to actually embed Homeland items!
-    data: HomelandDataProperties;
-    homelandData: HomelandDataPropertiesData;
-    sheetSpecific: {}
+  isEmbedded: boolean; // There might be no reason to actually embed Homeland items!
+  data: HomelandDataProperties;
+  homelandData: HomelandDataPropertiesData;
+  sheetSpecific: {};
 }
 
-export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheetData | ItemSheet.Data> {
+export class HomelandSheet extends RqgItemSheet<
+  ItemSheet.Options,
+  HomelandSheetData | ItemSheet.Data
+> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: ["rqg", "sheet", ItemTypeEnum.Homeland],
       template: "systems/rqg/items/homeland-item/homelandSheet.hbs",
       width: 550,
       height: 650,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "homeland" }],
+      tabs: [
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "homeland",
+        },
+      ],
     });
   }
 
@@ -57,8 +77,6 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
     return super._updateObject(event, formData);
   }
 
-  // TODO: I copy pasted this exactly from runeSheet.ts.  Should it be abstracted?
-  // TODO: Why is showJournalEntry on RqgActorSheet?
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
     const form = this.form as HTMLFormElement;
@@ -78,232 +96,219 @@ export class HomelandSheet extends RqgItemSheet<ItemSheet.Options, HomelandSheet
     super._onDrop(event);
     console.log("DROP:", event);
 
-    // TODO: a lot of this is copied form isDroppabpe.droppableJournalDescription with slight modification.  Abstract?
+    let droppedEntityData;
+    try {
+      droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+    } catch (err) {
+      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
+      return;
+    }
 
-      let droppedEntityData;
-      try {
-        droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-      } catch (err) {
-        ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
+    const homelandData = this.item.data.data as HomelandDataSourceData;
+
+    if (droppedEntityData.type === "Item") {
+      // You can drop items anywhere on this form because we know what they are
+      // and where to put them.
+      const droppedItem = (await Item.fromDropData(droppedEntityData)) as RqgItem;
+
+      console.log("DROPPED ITEM: ", droppedItem);
+
+      if (droppedItem === undefined) {
         return;
       }
 
-      const pack = droppedEntityData.pack ? droppedEntityData.pack : "";
-      const homelandData = this.item.data.data as HomelandDataSourceData;
-
-      const target = findDatasetValueInSelfOrAncestors((event.target as HTMLElement), "journalTarget");
-
-      console.log("TARGET: " + target);
-
-      console.log("DROPPED ENTITY: " , droppedEntityData);
-
-      if (droppedEntityData.type === "Item") {
-        // You can drop items anywhere on this form
-        //const droppedItem = getGame().items?.get(droppedEntityData.id);
-
-        const droppedItem = (await Item.fromDropData(droppedEntityData)) as RqgItem;
-
-        console.log("DROPPED ITEM: ", droppedItem);
-
-        if (droppedItem === undefined) {
-          return;
-        }
-
-        if (!droppedItem.data.data.rqid) {
-          ui.notifications?.warn(localize("RQG.Item.Notification.MustHaveRqidToDrop"));
-          return;
-        }
-
-        const rqid = droppedItem.data.data.rqid;
-
-        const newRqidLink = new RqidLink();
-        newRqidLink.rqid = rqid;
-        newRqidLink.itemType = droppedItem.type;
-        newRqidLink.name = droppedItem.name || "";
-
-        if (droppedItem.type === "cult") {
-          const cults = homelandData.cultRqidLinks;
-          if (!cults.map(c => c.rqid).includes(rqid)) {
-
-            cults.push(newRqidLink); 
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                {
-                  _id: this.item.id,
-                  "data.cultRqidLinks": cults,
-                },
-              ]);
-            } else {
-              await this.item.update({
-                "data.cultRqidLinks": cults,
-              });
-            }
-          }
-        }
-
-        if (droppedItem.type === "passion") {
-          const passions = homelandData.passionRqidLinks;
-          if (!passions.map((p) => p.rqid).includes(rqid)) {
-            passions.push(newRqidLink);
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                {
-                  _id: this.item.id,
-                  "data.passionRqidLinks": passions,
-                },
-              ]);
-            } else {
-              await this.item.update({
-                "data.passionRqidLinks": passions,
-              });
-            }
-          }
-        }
-
-        if (droppedItem.type === "rune") {
-          const runes = homelandData.runeRqidLinks;
-          if (!runes.map((r) => r.rqid).includes(rqid)) {
-            runes.push(newRqidLink);
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                {
-                  _id: this.item.id,
-                  "data.runeRqidLinks": runes,
-                },
-              ]);
-            } else {
-              await this.item.update({
-                "data.runeRqidLinks": runes,
-              });
-            }
-          }
-        }
-
+      if (!droppedItem.data.data.rqid) {
+        ui.notifications?.warn(localize("RQG.Item.Notification.MustHaveRqidToDrop"));
         return;
       }
 
-      const newLink = new JournalEntryLink;
-      newLink.journalId = droppedEntityData.id;
-      newLink.journalPack = pack;
-      newLink.journalName = getJournalEntryNameByJournalEntryLink(newLink);
+      const rqid = droppedItem.data.data.rqid;
 
-      if (target) {
-        // NOTE: I tried to use interpolated strings to set properties like `data.${target}.journalid` but
-        // that doesn't appear to work for property names
+      const newRqidLink = new RqidLink();
+      newRqidLink.rqid = rqid;
+      newRqidLink.itemType = droppedItem.type;
+      newRqidLink.name = droppedItem.name || "";
 
-        if (target === "homelandJournalLink") {
-          if (!ensureJournal(droppedEntityData, target)) {
-            return;
-          }
+      if (droppedItem.type === "cult") {
+        const cults = homelandData.cultRqidLinks;
+        if (!cults.map((c) => c.rqid).includes(rqid)) {
+          cults.push(newRqidLink);
           if (this.item.isEmbedded) {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
               {
                 _id: this.item.id,
-                "data.homelandJournalLink": newLink,
-                "data.homeland": newLink.journalName,
+                "data.cultRqidLinks": cults,
               },
             ]);
           } else {
             await this.item.update({
+              "data.cultRqidLinks": cults,
+            });
+          }
+        }
+      }
+
+      if (droppedItem.type === "passion") {
+        const passions = homelandData.passionRqidLinks;
+        if (!passions.map((p) => p.rqid).includes(rqid)) {
+          passions.push(newRqidLink);
+          if (this.item.isEmbedded) {
+            await this.item.actor?.updateEmbeddedDocuments("Item", [
+              {
+                _id: this.item.id,
+                "data.passionRqidLinks": passions,
+              },
+            ]);
+          } else {
+            await this.item.update({
+              "data.passionRqidLinks": passions,
+            });
+          }
+        }
+      }
+
+      if (droppedItem.type === "rune") {
+        const runes = homelandData.runeRqidLinks;
+        if (!runes.map((r) => r.rqid).includes(rqid)) {
+          runes.push(newRqidLink);
+          if (this.item.isEmbedded) {
+            await this.item.actor?.updateEmbeddedDocuments("Item", [
+              {
+                _id: this.item.id,
+                "data.runeRqidLinks": runes,
+              },
+            ]);
+          } else {
+            await this.item.update({
+              "data.runeRqidLinks": runes,
+            });
+          }
+        }
+      }
+
+      return;
+    }
+
+    const pack = droppedEntityData.pack ? droppedEntityData.pack : "";
+    const newLink = new JournalEntryLink();
+    newLink.journalId = droppedEntityData.id;
+    newLink.journalPack = pack;
+    newLink.journalName = getJournalEntryNameByJournalEntryLink(newLink);
+
+    const target = findDatasetValueInSelfOrAncestors(event.target as HTMLElement, "journalTarget");
+    if (target) {
+
+      if (target === "homelandJournalLink") {
+        if (!ensureJournal(droppedEntityData, target)) {
+          return;
+        }
+        if (this.item.isEmbedded) {
+          await this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
               "data.homelandJournalLink": newLink,
               "data.homeland": newLink.journalName,
-            });
-          }
+            },
+          ]);
+        } else {
+          await this.item.update({
+            "data.homelandJournalLink": newLink,
+            "data.homeland": newLink.journalName,
+          });
         }
+      }
 
-        if (target === "regionJournalLink") {
-          if (!ensureJournal(droppedEntityData, target)) {
-            return;
-          }
+      if (target === "regionJournalLink") {
+        if (!ensureJournal(droppedEntityData, target)) {
+          return;
+        }
+        if (this.item.isEmbedded) {
+          await this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
+              "data.regionJournalLink": newLink,
+              "data.region": newLink.journalName,
+            },
+          ]);
+        } else {
+          await this.item.update({
+            "data.regionJournalLink": newLink,
+            "data.region": newLink.journalName,
+          });
+        }
+      }
+
+      if (target === "cultureJournalLinks") {
+        if (!ensureJournal(droppedEntityData, target)) {
+          return;
+        }
+        const cultureLinks = (this.item.data.data as HomelandDataSourceData).cultureJournalLinks;
+        if (!cultureLinks.map((j) => j.journalId).includes(newLink.journalId)) {
+          cultureLinks.push(newLink);
           if (this.item.isEmbedded) {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
               {
                 _id: this.item.id,
-                "data.regionJournalLink": newLink,
-                "data.region": newLink.journalName,
+                "data.cultureJournalLinks": cultureLinks,
               },
             ]);
           } else {
             await this.item.update({
-              "data.regionJournalLink": newLink,
-              "data.region": newLink.journalName,
+              "data.cultureJournalLinks": cultureLinks,
             });
           }
         }
-
-        if (target === "cultureJournalLinks") {
-          if (!ensureJournal(droppedEntityData, target)) {
-            return;
-          }
-          const cultureLinks = (this.item.data.data as HomelandDataSourceData).cultureJournalLinks;
-          if (!cultureLinks.map(j => j.journalId).includes(newLink.journalId)) {
-          cultureLinks.push(newLink);
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                {
-                  _id: this.item.id,
-                  "data.cultureJournalLinks": cultureLinks,
-                },
-              ]);
-            } else {
-              await this.item.update({
-                "data.cultureJournalLinks": cultureLinks,
-              });
-            }            
-          }
-        }
-
-        if (target === "tribeJournalLinks") {
-          if (!ensureJournal(droppedEntityData, target)) {
-            return;
-          }
-          const tribeLinks = (this.item.data.data as HomelandDataSourceData).tribeJournalLinks;
-          if (!tribeLinks.map((j) => j.journalId).includes(newLink.journalId)) {
-            tribeLinks.push(newLink);
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                {
-                  _id: this.item.id,
-                  "data.tribeJournalLinks": tribeLinks,
-                },
-              ]);
-            } else {
-              await this.item.update({
-                "data.tribeJournalLinks": tribeLinks,
-              });
-            }
-          }
-        }
-
-        if (target === "clanJournalLinks") {
-          if (!ensureJournal(droppedEntityData, target)) {
-            return;
-          }
-          const clanLinks = (this.item.data.data as HomelandDataSourceData).clanJournalLinks;
-          if (!clanLinks.map((j) => j.journalId).includes(newLink.journalId)) {
-            clanLinks.push(newLink);
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                {
-                  _id: this.item.id,
-                  "data.clanJournalLinks": clanLinks,
-                },
-              ]);
-            } else {
-              await this.item.update({
-                "data.clanJournalLinks": clanLinks,
-              });
-            }
-          }
-        }
-
-      } else {
-        ui.notifications?.warn(localize("RQG.Item.Notification.PleaseDropOnTarget"));
       }
 
+      if (target === "tribeJournalLinks") {
+        if (!ensureJournal(droppedEntityData, target)) {
+          return;
+        }
+        const tribeLinks = (this.item.data.data as HomelandDataSourceData).tribeJournalLinks;
+        if (!tribeLinks.map((j) => j.journalId).includes(newLink.journalId)) {
+          tribeLinks.push(newLink);
+          if (this.item.isEmbedded) {
+            await this.item.actor?.updateEmbeddedDocuments("Item", [
+              {
+                _id: this.item.id,
+                "data.tribeJournalLinks": tribeLinks,
+              },
+            ]);
+          } else {
+            await this.item.update({
+              "data.tribeJournalLinks": tribeLinks,
+            });
+          }
+        }
+      }
+
+      if (target === "clanJournalLinks") {
+        if (!ensureJournal(droppedEntityData, target)) {
+          return;
+        }
+        const clanLinks = (this.item.data.data as HomelandDataSourceData).clanJournalLinks;
+        if (!clanLinks.map((j) => j.journalId).includes(newLink.journalId)) {
+          clanLinks.push(newLink);
+          if (this.item.isEmbedded) {
+            await this.item.actor?.updateEmbeddedDocuments("Item", [
+              {
+                _id: this.item.id,
+                "data.clanJournalLinks": clanLinks,
+              },
+            ]);
+          } else {
+            await this.item.update({
+              "data.clanJournalLinks": clanLinks,
+            });
+          }
+        }
+      }
+      
+    } else {
+      ui.notifications?.warn(localize("RQG.Item.Notification.PleaseDropOnTarget"));
+    }
   }
 }
-
 
 function ensureJournal(droppedItemData: any, target: string): boolean {
   if (droppedItemData.type !== "JournalEntry") {
