@@ -91,7 +91,7 @@
         {{/if}}
         {{#if characterData.attributes.encumbrance.max}}
           <div>
-            <div class="norse nowrap">{{localize "RQG.Actor.Attributes.MovementAbbr"}} <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg"> ENC</div>
+            <div class="norse nowrap">{{localize "RQG.Actor.Attributes.MovementAbbr"}} <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg"> {{localize "RQG.Actor.Attributes.EncumbranceAbbr"}}</div>
             <div class="flex-row nowrap {{#if (gt characterData.attributes.encumbrance.travel characterData.attributes.encumbrance.max)}}warning{{/if}}">
               <span>{{characterData.attributes.move.travel}}</span> • <span>{{characterData.attributes.encumbrance.travel}} / {{characterData.attributes.encumbrance.max}}</span>
             </div>
