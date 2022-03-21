@@ -72,7 +72,7 @@ export class HomelandSheet extends RqgItemSheet<
     const newName = formData["data.homeland"] + region;
     if (newName) {
       // If there's nothing in the homeland or region, don't rename
-      formData["name"] = formData["data.homeland"] + region;
+      formData["name"] = newName;
     }
     return super._updateObject(event, formData);
   }
@@ -94,7 +94,6 @@ export class HomelandSheet extends RqgItemSheet<
 
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
-    console.log("DROP:", event);
 
     let droppedEntityData;
     try {
@@ -202,18 +201,23 @@ export class HomelandSheet extends RqgItemSheet<
         if (!ensureJournal(droppedEntityData, target)) {
           return;
         }
+        const regionNameFormatted = homelandData.region ? ` (${homelandData.region})` : "";
+        // update the homeland portion of the homeland name
+        const updatedName = newLink.journalName + regionNameFormatted;
         if (this.item.isEmbedded) {
           await this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
               "data.homelandJournalLink": newLink,
               "data.homeland": newLink.journalName,
+              name: updatedName,
             },
           ]);
         } else {
           await this.item.update({
             "data.homelandJournalLink": newLink,
             "data.homeland": newLink.journalName,
+            name: updatedName,
           });
         }
       }
@@ -222,18 +226,23 @@ export class HomelandSheet extends RqgItemSheet<
         if (!ensureJournal(droppedEntityData, target)) {
           return;
         }
+        // update the region portion of the Homeland name
+        const regionNameFormatted = newLink.journalName ? ` (${newLink.journalName})` : "";
+        const updatedName = homelandData.homeland + regionNameFormatted;
         if (this.item.isEmbedded) {
           await this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
               "data.regionJournalLink": newLink,
               "data.region": newLink.journalName,
+              name: updatedName,
             },
           ]);
         } else {
           await this.item.update({
             "data.regionJournalLink": newLink,
             "data.region": newLink.journalName,
+            name: updatedName,
           });
         }
       }
