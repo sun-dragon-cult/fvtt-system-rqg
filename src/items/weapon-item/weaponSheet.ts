@@ -34,7 +34,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       template: "systems/rqg/items/weapon-item/weaponSheet.hbs",
       width: 960,
       height: 800,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "weapon" }],
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "weapon" }],
     });
   }
 

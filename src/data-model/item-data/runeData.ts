@@ -51,4 +51,5 @@ export const emptyRune: RuneDataSourceData = {
   isMastered: false,
   journalId: "",
   journalPack: "",
+  journalName: "",
 };

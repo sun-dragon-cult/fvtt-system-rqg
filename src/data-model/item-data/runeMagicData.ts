@@ -46,4 +46,5 @@ export const emptyRuneMagic: RuneMagicDataSourceData = {
   isEnchantment: false,
   journalId: "",
   journalPack: "",
+  journalName: "",
 };

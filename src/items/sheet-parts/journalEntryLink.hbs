@@ -1,0 +1,43 @@
+{{#if journalEntryLink.journalPack}}
+  <a
+    class="entity-link content-link"
+    data-pack="{{journalEntryLink.journalPack}}"
+    data-id="{{journalEntryLink.journalId}}"
+    title="{{localize
+      'RQG.Foundry.ContentLink.CompendiumNameTitle'
+      compendiumName=journalEntryLink.journalPack
+    }}"
+  >
+    <i class="fas fa-book-open"></i>
+    {{journalEntryLink.journalName}}
+  </a>
+  {{#if showInfoCircle}}
+  <i
+    class="fas fa-info-circle"
+    title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+  ></i>
+  {{/if}}
+{{else if journalEntryLink.journalId}}
+  <a
+    class="entity-link content-link"
+    data-type="JournalEntry"
+    data-id="{{journalEntryLink.journalId}}"
+    title="{{localize 'RQG.Foundry.ContentLink.WorldJournalEntry'}}"
+  >
+    <i class="fas fa-book-open"></i>
+    {{journalEntryLink.journalName}}
+  </a>
+  {{#if showInfoCircle}}
+  <i
+    class="fas fa-info-circle"
+    title="{{localize 'RQG.Foundry.ContentLink.DropToReplaceJournal'}}"
+  ></i>
+  {{/if}}
+{{else}}
+  {{#if showInfoCircle}}
+  <i
+    class="fas fa-info-circle"
+    title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
+  ></i>
+  {{/if}}
+{{/if}}

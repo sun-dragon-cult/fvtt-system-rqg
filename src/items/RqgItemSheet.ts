@@ -1,4 +1,12 @@
-import { getDefaultRqid, getDomDataset, getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import {
+  getDefaultRqid,
+  getDomDataset,
+  getGame,
+  getItemByRqid,
+  getRequiredDomDataset,
+  localize,
+  localizeItemType,
+} from "../system/util";
 import { RqgItem } from "./rqgItem";
 
 export interface RqgItemSheetData {
@@ -89,7 +97,7 @@ export class RqgItemSheet<
       .find("[data-item-rqid-quick]")
       .each((i: number, el: HTMLElement) => {
         const itemId = getRequiredDomDataset($(el), "item-id");
-        const ownerId = getDomDataset($(el), "owner-id") // may or may not be there
+        const ownerId = getDomDataset($(el), "owner-id"); // may or may not be there
         el.addEventListener("click", async () => {
           let item: RqgItem | undefined = undefined;
           if (ownerId) {
@@ -102,18 +110,18 @@ export class RqgItemSheet<
           if (!item) {
             return;
           }
-            const newRqid = getDefaultRqid(item);
+          const newRqid = getDefaultRqid(item);
 
-            if (ownerId) {
-              const actor = getGame().actors?.get(ownerId);
-              if (actor) {
-                await actor.updateEmbeddedDocuments("Item", [
-                  { _id: item.id, data: { rqid: newRqid } },
-                ]);
-              }
-            } else {
-              await item.update({ data: { rqid: newRqid } });
+          if (ownerId) {
+            const actor = getGame().actors?.get(ownerId);
+            if (actor) {
+              await actor.updateEmbeddedDocuments("Item", [
+                { _id: item.id, data: { rqid: newRqid } },
+              ]);
             }
+          } else {
+            await item.update({ data: { rqid: newRqid } });
+          }
         });
       });
 
@@ -125,6 +133,23 @@ export class RqgItemSheet<
         el.addEventListener("click", async () => {
           const input = el.previousElementSibling as HTMLInputElement;
           navigator.clipboard.writeText(input.value);
+        });
+      });
+
+    // Handle rqid links
+    $(this.form!)
+      .find("[data-rqid-link]")
+      .each((i: number, el: HTMLElement) => {
+        const rqid = getRequiredDomDataset($(el), "rqid");
+        el.addEventListener("click", async () => {
+          const rqidItem = await getItemByRqid(rqid);
+          if (rqidItem) {
+            rqidItem.sheet?.render(true);
+          } else {
+            ui.notifications?.warn(
+              localize("RQG.Item.Notification.RqidFromLinkNotFound", { rqid: rqid })
+            );
+          }
         });
       });
   }

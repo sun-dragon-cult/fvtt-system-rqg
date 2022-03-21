@@ -22,7 +22,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       template: "systems/rqg/items/gear-item/gearSheet.hbs",
       width: 420,
       height: 580,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "gear" }],
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "gear" }],
     });
   }
 

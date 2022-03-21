@@ -42,5 +42,6 @@ export const emptySpiritMagic: SpiritMagicDataSourceData = {
   spellFocus: "",
   journalId: "",
   journalPack: "",
+  journalName: "",
   isMatrix: false,
 };

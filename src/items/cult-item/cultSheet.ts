@@ -36,7 +36,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       template: "systems/rqg/items/cult-item/cultSheet.hbs",
       width: 450,
       height: 650,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "cult-standing" }],
+      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "cult-standing" }],
     });
   }
 

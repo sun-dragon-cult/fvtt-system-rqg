@@ -60,4 +60,5 @@ export const emptySkill: SkillDataSourceData = {
   runes: [],
   journalId: "",
   journalPack: "",
+  journalName: "",
 };
