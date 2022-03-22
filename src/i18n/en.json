@@ -5,6 +5,7 @@
     "TypeGear": "Gear",
     "TypeHitlocation": "Hit Location",
     "TypeHomeland": "Homeland",
+    "TypeOccupation": "Occupation",
     "TypePassion": "Passion",
     "TypeRune": "Rune",
     "TypeRunemagic": "Rune Magic Spell",
@@ -698,6 +699,26 @@
         "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
         "RqidFromLinkNotFound": "No item found for linked RQG System ID (rqid) \"{rqid\". Check the \"RQG System\" tab of the Item sheet."
       },
+      "Occupation": {
+        "Occupation": "Occupation",
+        "Specialization": "Specialization",
+        "Homelands": "Homelands",
+        "IncomeSkillLinks": "Income Skill Links",
+        "OccupationalSkillLinks": "Occupational Skill Links",
+        "StandardOfLiving": "Standard Of Living",
+        "StandardOfLivingEnum": {
+          "destitute": "Destitute",
+          "poor": "Poor",
+          "free": "Free",
+          "noble": "Noble",
+          "petty-king": "Petty King"
+        },
+        "BaseIncome": "Base Income",
+        "BaseIncomeNotes": "Base Income Notes",
+        "CultLinks": "Cult Links",
+        "Ransom": "Ransom",
+        "StartingEquipmentLinks": "Starting Equipment Links"
+      },
       "Passion": {
         "Name": "Name",
         "Passion": "Passion",
@@ -768,6 +789,7 @@
         "HitLocation":"Hit Location",
         "HitLocationDefinition": "Hit Location Definition",
         "Homeland": "Homeland",
+        "Occupation": "Occupation",
         "Passion": "Passion",
         "Rune": "Rune",
         "RuneMagic": "Rune Magic",

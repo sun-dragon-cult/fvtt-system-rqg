@@ -12,6 +12,7 @@ import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import { getGame, localize, RqgError } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
+import { OccupationSheet } from "./occupation-item/occupationSheet";
 
 export class RqgItem extends Item {
   public static init() {
@@ -42,6 +43,11 @@ export class RqgItem extends Item {
     Items.registerSheet("rqg", HomelandSheet as any, {
       label: "GM Homeland Item Sheet",
       types: [ItemTypeEnum.Homeland],
+      makeDefault: true,
+    });
+    Items.registerSheet("rqg", OccupationSheet as any, {
+      label: "GM Occupation Item Sheet",
+      types: [ItemTypeEnum.Occupation],
       makeDefault: true,
     });
     Items.registerSheet("rqg", GearSheet as any, {
