@@ -60,24 +60,29 @@
             </div>
           </div>
 
-          <label>{{localize "RQG.Item.Occupation.IncomeSkillLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="incomeSkillRqidLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-            {{#each occupationData.incomeSkillRqidLinks}}
-              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this
-              }}
-            {{/each}}
-            </div>
-          </div>
-
           <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="occupationalSkillRqidLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-            {{#each occupationData.occupationalSkillRqidLinks}}
+          <div class="drop-target" data-target-drop-property="occupationalSkillRqidLinks">
+            <div style="display: flex; flex-wrap: wrap;" name="incomeSkill" id="income-skill-{{data._id}}">
+            {{#each occupationData.occupationalSkills}}
+              <span class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
               {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this
+                rqidLink=this.skillRqidLink
               }}
+              <input
+                type="checkbox"
+                id="income-skill-{{@index}}"
+                data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                title="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
+                {{checked this.incomeSkill}}>
+              <input
+                type="number"
+                min="-100"
+                max="100"
+                id="bonus-{{@index}}"
+                data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
+                value="{{this.bonus}}">%
+              </span> 
             {{/each}}
             </div>
           </div>

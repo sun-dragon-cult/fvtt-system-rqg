@@ -1,3 +1,4 @@
+import { RqgItem } from "../../items/rqgItem";
 import { JournalEntryLink } from "../shared/journalentrylink";
 import { RqidLink } from "../shared/rqidLink";
 import { IRqid } from "./IRqid";
@@ -11,13 +12,18 @@ export enum StandardOfLivingEnum{
   PettyKing = "petty-king",
 }
 
+export class occupationalSkill {
+  incomeSkill: boolean = false;
+  bonus: number = 0;
+  skillRqidLink: RqidLink | undefined = undefined;
+}
+
 export interface OccupationDataSourceData extends IRqid {
   occupation: string,
   occupationJournalLink: JournalEntryLink;
   specialization: string,
   homelands: string[]; // The user can drop Homeland items on here but it will just save the data.homeland in this string array
-  incomeSkillRqidLinks: RqidLink[];
-  occupationalSkillRqidLinks: RqidLink[];
+  occupationalSkills: occupationalSkill[];
   standardOfLiving: StandardOfLivingEnum;
   baseIncome: number;
   baseIncomeNotes: string;
@@ -44,8 +50,7 @@ export const emptyOccupation: OccupationDataSourceData = {
   occupationJournalLink: new JournalEntryLink(),
   specialization: "",
   homelands: [],
-  incomeSkillRqidLinks: [],
-  occupationalSkillRqidLinks: [],
+  occupationalSkills: [],
   standardOfLiving: StandardOfLivingEnum.Destitute,
   baseIncome: 0,
   baseIncomeNotes: "",

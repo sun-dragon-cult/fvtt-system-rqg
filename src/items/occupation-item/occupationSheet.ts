@@ -1,5 +1,6 @@
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import {
+  occupationalSkill,
   OccupationDataProperties,
   OccupationDataPropertiesData,
   OccupationDataSourceData,
@@ -19,8 +20,7 @@ import {
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { HomelandDataSource, HomelandDataSourceData } from "../../data-model/item-data/homelandData";
-import { HomelandSheetData } from "../homeland-item/homelandSheet";
+import { HomelandDataSource } from "../../data-model/item-data/homelandData";
 
 export interface OccupationSheetData extends RqgItemSheetData {
   isEmbedded: boolean; // There might be no reason to actually embed Occupation items!
@@ -74,7 +74,63 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    const specializationFormatted = formData["data.specialization"] ? ` (${formData["data.specialization"]})` : "";
+    //@ts-ignore name
+    if (event?.currentTarget?.id.startsWith("bonus-")) {
+      //@ts-ignore dataset
+      const targetRqid = event.currentTarget.dataset.skillRqid;
+      if (targetRqid) {
+        const occSkills = (this.item.data.data as OccupationDataSourceData).occupationalSkills;
+        for (const skill of occSkills) {
+          if (skill.skillRqidLink?.rqid === targetRqid) {
+            //@ts-ignore value
+            skill.bonus = Number(event.currentTarget.value);
+          }
+        }
+        if (this.item.isEmbedded) {
+          this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
+              "data.occupationalSkills": occSkills,
+            },
+          ]);
+        } else {
+          this.item.update({
+            "data.occupationalSkills": occSkills,
+          });
+        }
+      }
+    }
+
+    //@ts-ignore name
+    if (event?.currentTarget?.id.startsWith("income-skill-")) {
+      //@ts-ignore dataset
+      const targetRqid = event.currentTarget.dataset.skillRqid;
+      if (targetRqid) {
+        const occSkills = (this.item.data.data as OccupationDataSourceData).occupationalSkills;
+        for (const skill of occSkills) {
+          if (skill.skillRqidLink?.rqid === targetRqid) {
+            //@ts-ignore checked
+            skill.incomeSkill = event.currentTarget?.checked;
+          }
+        }
+        if (this.item.isEmbedded) {
+          this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
+              "data.occupationalSkills": occSkills,
+            },
+          ]);
+        } else {
+          this.item.update({
+            "data.occupationalSkills": occSkills,
+          });
+        }
+      }
+    }
+
+    const specializationFormatted = formData["data.specialization"]
+      ? ` (${formData["data.specialization"]})`
+      : "";
     const newName = formData["data.occupation"] + specializationFormatted;
     if (newName) {
       // If there's nothing in the occupation or region, don't rename
@@ -127,10 +183,10 @@ export class OccupationSheet extends RqgItemSheet<
         return;
       }
 
-      const rqid = droppedItem.data.data.rqid;
+      const droppedRqid = droppedItem.data.data.rqid;
 
       const newRqidLink = new RqidLink();
-      newRqidLink.rqid = rqid;
+      newRqidLink.rqid = droppedRqid;
       newRqidLink.itemType = droppedItem.type;
       newRqidLink.name = droppedItem.name || "";
 
@@ -158,7 +214,7 @@ export class OccupationSheet extends RqgItemSheet<
 
       if (droppedItem.type === "cult") {
         const cults = occupationData.cultRqidLinks;
-        if (!cults.map((c) => c.rqid).includes(rqid)) {
+        if (!cults.map((c) => c.rqid).includes(droppedRqid)) {
           cults.push(newRqidLink);
           if (this.item.isEmbedded) {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
@@ -179,7 +235,7 @@ export class OccupationSheet extends RqgItemSheet<
 
       if (startingEquipemntTypes.includes(droppedItem.type)) {
         const equipment = occupationData.startingEquipmentRqidLinks;
-        if (!equipment.map((e) => e.rqid).includes(rqid)) {
+        if (!equipment.map((e) => e.rqid).includes(droppedRqid)) {
           equipment.push(newRqidLink);
           if (this.item.isEmbedded) {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
@@ -197,41 +253,22 @@ export class OccupationSheet extends RqgItemSheet<
       }
 
       if (droppedItem.type === "skill") {
-        if (target === "incomeSkillRqidLinks") {
-          const incomeSkills = occupationData.incomeSkillRqidLinks;
-          if (!incomeSkills.map((s) => s.rqid).includes(rqid)) {
-            incomeSkills.push(newRqidLink);
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                {
-                  _id: this.item.id,
-                  "data.incomeSkillRqidLinks": incomeSkills,
-                },
-              ]);
-            } else {
-              await this.item.update({
-                "data.incomeSkillRqidLinks": incomeSkills,
-              });
-            }
-          }
-        }
-        
-        if (target == "occupationalSkillRqidLinks") {
-          const occupationalSkills = occupationData.occupationalSkillRqidLinks;
-          if (!occupationalSkills.map((s) => s.rqid).includes(rqid)) {
-            occupationalSkills.push(newRqidLink);
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                {
-                  _id: this.item.id,
-                  "data.occupationalSkillRqidLinks": occupationalSkills,
-                },
-              ]);
-            } else {
-              await this.item.update({
-                "data.occupationalSkillRqidLinks": occupationalSkills,
-              });
-            }
+        const occupationalSkills = occupationData.occupationalSkills;
+        if (!occupationalSkills.map((s) => s.skillRqidLink?.rqid).includes(droppedRqid)) {
+          const occSkill = new occupationalSkill();
+          occSkill.skillRqidLink = newRqidLink;
+          occupationalSkills.push(occSkill);
+          if (this.item.isEmbedded) {
+            await this.item.actor?.updateEmbeddedDocuments("Item", [
+              {
+                _id: this.item.id,
+                "data.occupationalSkills": occupationalSkills,
+              },
+            ]);
+          } else {
+            await this.item.update({
+              "data.occupationalSkills": occupationalSkills,
+            });
           }
         }
       }

@@ -703,8 +703,9 @@
         "Occupation": "Occupation",
         "Specialization": "Specialization",
         "Homelands": "Homelands",
-        "IncomeSkillLinks": "Income Skill Links",
         "OccupationalSkillLinks": "Occupational Skill Links",
+        "IncomeSkillQ": "Income Skill?",
+        "OccupationalSkillBonus": "Occupational Skill Bonus",
         "StandardOfLiving": "Standard Of Living",
         "StandardOfLivingEnum": {
           "destitute": "Destitute",
