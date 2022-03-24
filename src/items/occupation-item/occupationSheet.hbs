@@ -56,36 +56,46 @@
           <label>{{localize "RQG.Item.Occupation.Homelands"}}</label>
           <div class="drop-target" data-target-drop-property="homelandRqidLinks">
             <div style="display: flex; flex-wrap: wrap;">
+              {{#if sheetSpecific.homelandsJoined}}
               {{sheetSpecific.homelandsJoined}}
+              {{else}}
+              {{localize "RQG.Item.Occupation.AllHomelands"}}
+              {{/if}}
             </div>
           </div>
 
-          <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}}</label>
-          <div class="drop-target" data-target-drop-property="occupationalSkillRqidLinks">
-            <div style="display: flex; flex-wrap: wrap;" name="incomeSkill" id="income-skill-{{data._id}}">
-            {{#each occupationData.occupationalSkills}}
-              <span class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
-              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this.skillRqidLink
-              }}
-              <input
-                type="checkbox"
-                id="income-skill-{{@index}}"
-                data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                title="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
-                {{checked this.incomeSkill}}>
-              <input
-                type="number"
-                min="-100"
-                max="100"
-                id="bonus-{{@index}}"
-                data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
-                value="{{this.bonus}}">%
-              </span> 
-            {{/each}}
+          <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}} <i id="btn-edit-occupational-skills-{{data._id}}" class="fas fa-edit"></i></label>
+          <div>
+            <div id="occupational-skill-display-{{data._id}}" style="display: block;">
+              {{{sheetSpecific.skillsJoined}}}
             </div>
+            <div class="drop-target" data-target-drop-property="occupationalSkillRqidLinks" style="display: none;" id="occupational-skill-edit-{{data._id}}">
+              <div style="display: flex; flex-wrap: wrap;" name="occupationalSkill">
+              {{#each occupationData.occupationalSkills}}
+                <span class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
+                {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                  rqidLink=this.skillRqidLink
+                }}
+                <input
+                  type="checkbox"
+                  id="income-skill-{{@index}}"
+                  data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                  title="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
+                  {{checked this.incomeSkill}}>
+                <input
+                  type="number"
+                  min="-100"
+                  max="100"
+                  id="bonus-{{@index}}"
+                  data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                  title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
+                  value="{{this.bonus}}">%
+                </span> 
+              {{/each}}
+              </div>
+            </div>            
           </div>
+
 
           <label for="standard-of-living-{{data._id}}">{{localize "RQG.Item.Occupation.StandardOfLiving"}}</label>
           <select id="standard-of-living-{{data._id}}" name="data.standardOfLiving">

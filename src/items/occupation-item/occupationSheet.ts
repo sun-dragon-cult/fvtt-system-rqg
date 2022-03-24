@@ -21,6 +21,7 @@ import {
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { HomelandDataSource } from "../../data-model/item-data/homelandData";
+import { SkillDataSource } from "../../data-model/item-data/skillData";
 
 export interface OccupationSheetData extends RqgItemSheetData {
   isEmbedded: boolean; // There might be no reason to actually embed Occupation items!
@@ -65,6 +66,15 @@ export class OccupationSheet extends RqgItemSheet<
       sheetSpecific: {
         homelandsJoined: itemData.data.homelands.join(", "),
         standardsOfLiving: Object.values(StandardOfLivingEnum),
+        skillsJoined: itemData.data.occupationalSkills.map(skill => {
+          const bonus = `${skill.bonus > 0 ? "+" : "-"}${skill.bonus}%`;
+          if (skill.incomeSkill) {
+            return `<span class="incomeSkillText">${skill.skillRqidLink?.name} ${bonus}</span>`;
+          }
+          else {
+            return `<span>${skill.skillRqidLink?.name} ${bonus}</span>`;
+          }
+        }).join(", "),
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
@@ -152,7 +162,33 @@ export class OccupationSheet extends RqgItemSheet<
       const id = getRequiredDomDataset($(el), "journal-id");
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
+
+    form.querySelector("#btn-edit-occupational-skills-" + this.item.id)?.addEventListener("click", () => {
+      this.toggleSkillEdit(false);
+    });
   }
+
+  private toggleSkillEdit( forceEdit = false) {
+      const form = this.form as HTMLFormElement;
+      const displaySkills = form.querySelector(
+        "#occupational-skill-display-" + this.item.id
+      ) as HTMLElement;
+      const editSkills = form.querySelector(
+        "#occupational-skill-edit-" + this.item.id
+      ) as HTMLElement;
+      const btnEdit = form.querySelector("#btn-edit-occupational-skills-" + this.item.id) as HTMLElement;
+      if ( displaySkills?.style.display === "block" || forceEdit) {
+        displaySkills.style.display = "none";
+        editSkills.style.display = "block";
+        btnEdit.style.color = "gray";
+      }
+      else {
+        displaySkills.style.display = "block";
+        editSkills.style.display = "none";
+        btnEdit.style.color = "black";
+      }
+  }
+
 
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
@@ -256,6 +292,8 @@ export class OccupationSheet extends RqgItemSheet<
         const occupationalSkills = occupationData.occupationalSkills;
         if (!occupationalSkills.map((s) => s.skillRqidLink?.rqid).includes(droppedRqid)) {
           const occSkill = new OccupationalSkill();
+          // Replace the name so we don't have something like "- stealth" in the name
+          newRqidLink.name = (droppedItem.data as SkillDataSource).data.skillName;
           occSkill.skillRqidLink = newRqidLink;
           occupationalSkills.push(occSkill);
           if (this.item.isEmbedded) {
@@ -270,6 +308,7 @@ export class OccupationSheet extends RqgItemSheet<
               "data.occupationalSkills": occupationalSkills,
             });
           }
+          this.toggleSkillEdit(true);
         }
       }
 

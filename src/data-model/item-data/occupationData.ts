@@ -51,7 +51,7 @@ export const emptyOccupation: OccupationDataSourceData = {
   specialization: "",
   homelands: [],
   occupationalSkills: [],
-  standardOfLiving: StandardOfLivingEnum.Destitute,
+  standardOfLiving: StandardOfLivingEnum.Free,
   baseIncome: 0,
   baseIncomeNotes: "",
   cultRqidLinks: [],
