@@ -153,7 +153,8 @@ export function requireValue(val: unknown, errorMessage: string, ...debugData: a
 export function usersThatOwnActor(actor: RqgActor | null): StoredDocument<User>[] {
   if (actor) {
     return getGameUsers().filter((user: User) =>
-      actor.testUserPermission(user, CONST.ENTITY_PERMISSIONS.OWNER)
+      // @ts-ignore foundry 9
+      actor.testUserPermission(user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
     );
   }
   return [];
@@ -358,8 +359,7 @@ export function localizeCharacteristic(characteristic: string): string {
 }
 
 /**
- * Sets a the Chat sidebar tab to active.
- * @param tabName ie: ui.sidebar.tabs.chat.tabName
+ * Sets the Chat sidebar tab to active.
  */
 export function activateChatTab() {
   // TODO: add player setting to allow skipping this if they don't like the tab changing
