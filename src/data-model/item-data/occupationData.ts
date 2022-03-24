@@ -3,7 +3,6 @@ import { RqidLink } from "../shared/rqidLink";
 import { IRqid } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 
-// TODO: Does this belong in a file of its own?  If so where?
 export enum StandardOfLivingEnum{
   Destitute = "destitute",
   Poor = "poor",
