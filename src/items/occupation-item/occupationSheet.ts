@@ -1,6 +1,6 @@
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import {
-  occupationalSkill,
+  OccupationalSkill,
   OccupationDataProperties,
   OccupationDataPropertiesData,
   OccupationDataSourceData,
@@ -255,7 +255,7 @@ export class OccupationSheet extends RqgItemSheet<
       if (droppedItem.type === "skill") {
         const occupationalSkills = occupationData.occupationalSkills;
         if (!occupationalSkills.map((s) => s.skillRqidLink?.rqid).includes(droppedRqid)) {
-          const occSkill = new occupationalSkill();
+          const occSkill = new OccupationalSkill();
           occSkill.skillRqidLink = newRqidLink;
           occupationalSkills.push(occSkill);
           if (this.item.isEmbedded) {

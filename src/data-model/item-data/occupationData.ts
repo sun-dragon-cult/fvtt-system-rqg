@@ -23,7 +23,7 @@ export interface OccupationDataSourceData extends IRqid {
   occupationJournalLink: JournalEntryLink;
   specialization: string,
   homelands: string[]; // The user can drop Homeland items on here but it will just save the data.homeland in this string array
-  occupationalSkills: occupationalSkill[];
+  occupationalSkills: OccupationalSkill[];
   standardOfLiving: StandardOfLivingEnum;
   baseIncome: number;
   baseIncomeNotes: string;
