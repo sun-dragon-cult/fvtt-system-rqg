@@ -12,7 +12,7 @@ export enum StandardOfLivingEnum{
   PettyKing = "petty-king",
 }
 
-export class occupationalSkill {
+export class OccupationalSkill {
   incomeSkill: boolean = false;
   bonus: number = 0;
   skillRqidLink: RqidLink | undefined = undefined;
