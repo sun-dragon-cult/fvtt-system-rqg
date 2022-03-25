@@ -7,7 +7,7 @@ import { getGame, localize } from "../util";
  *
  * Example:
  * ```
- * CONFIG.Item.documentClass.getItemByRqid("someid", "es")
+ * game.system.api.fromRqid("someid", "es")
  * ```
  */
 export async function fromRqid(
