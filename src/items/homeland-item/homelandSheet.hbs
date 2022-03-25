@@ -5,7 +5,7 @@
       <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
 
-    <div class="name-parts-2-equal" data-journal-target="homelandJournalLink">
+    <div class="name-parts-2-equal" data-target-drop-property="homelandJournalLink">
       <div>
         <label for="homeland-{{data._id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
         <input type="text" 
@@ -14,7 +14,7 @@
             value="{{homelandData.homeland}}">
       </div>
 
-      <div class="paren-head" data-journal-target="regionJournalLink">
+      <div class="paren-head" data-target-drop-property="regionJournalLink">
         <label for="region-{{data._id}}">{{localize "RQG.Item.Homeland.Region"}}</label>
         <div>
           ( <input type="text" id="region-{{data._id}}" name="data.region" value="{{homelandData.region}}"> )
@@ -23,13 +23,13 @@
     </div>
 
     <div class="name-parts-2-equal">
-      <div class="drop-target item-sheet-journal-link" data-journal-target="homelandJournalLink">
+      <div class="drop-target item-sheet-journal-link" data-target-drop-property="homelandJournalLink">
         {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
           journalEntryLink=homelandData.homelandJournalLink
           showInfoCircle=true
         }}
       </div>
-      <div class="drop-target item-sheet-journal-link" data-journal-target="regionJournalLink">
+      <div class="drop-target item-sheet-journal-link" data-target-drop-property="regionJournalLink">
         {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
           journalEntryLink=homelandData.regionJournalLink
           showInfoCircle=true
@@ -60,7 +60,7 @@
         <div class="item-sheet-properties">
 
           <label>{{localize "RQG.Item.Homeland.CultureJournalEntries"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-journal-target="cultureJournalLinks">
+          <div class="drop-target item-sheet-journal-link" data-target-drop-property="cultureJournalLinks">
             <div style="display: flex; flex-wrap: wrap;">
               {{#each homelandData.cultureJournalLinks}}
                 {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
@@ -79,7 +79,7 @@
           </div>
 
           <label>{{localize "RQG.Item.Homeland.TribeJournalEntries"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-journal-target="tribeJournalLinks">
+          <div class="drop-target item-sheet-journal-link" data-target-drop-property="tribeJournalLinks">
             <div style="display: flex; flex-wrap: wrap;">
               {{#each homelandData.tribeJournalLinks}}
                 {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
@@ -98,7 +98,7 @@
           </div>
 
           <label>{{localize "RQG.Item.Homeland.ClanJournalEntries"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-journal-target="clanJournalLinks">
+          <div class="drop-target item-sheet-journal-link" data-target-drop-property="clanJournalLinks">
             <div style="display: flex; flex-wrap: wrap;">
               {{#each homelandData.clanJournalLinks}}
                 {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
@@ -117,7 +117,7 @@
           </div>
 
           <label>{{localize "RQG.Item.Homeland.CultLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-journal-target="cultRqidLinks">
+          <div class="drop-target item-sheet-journal-link" data-target-drop-property="cultRqidLinks">
             <div style="display: flex; flex-wrap: wrap;">
             {{#each homelandData.cultRqidLinks}}
               {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
@@ -128,7 +128,7 @@
           </div>
 
           <label>{{localize "RQG.Item.Homeland.PassionLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-journal-target="passionRqidLinks">
+          <div class="drop-target item-sheet-journal-link" data-target-drop-property="passionRqidLinks">
             <div style="display: flex; flex-wrap: wrap;">
             {{#each homelandData.passionRqidLinks}}
               {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
@@ -139,7 +139,7 @@
           </div>
 
           <label>{{localize "RQG.Item.Homeland.RuneLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-journal-target="runeRqidLinks">
+          <div class="drop-target item-sheet-journal-link" data-target-drop-property="runeRqidLinks">
             <div style="display: flex; flex-wrap: wrap;">
             {{#each homelandData.runeRqidLinks}}
               {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"

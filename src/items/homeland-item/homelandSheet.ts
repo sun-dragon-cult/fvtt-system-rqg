@@ -194,7 +194,7 @@ export class HomelandSheet extends RqgItemSheet<
     newLink.journalPack = pack;
     newLink.journalName = getJournalEntryNameByJournalEntryLink(newLink);
 
-    const target = findDatasetValueInSelfOrAncestors(event.target as HTMLElement, "journalTarget");
+    const target = findDatasetValueInSelfOrAncestors(event.target as HTMLElement, "targetDropProperty");
     if (target) {
 
       if (target === "homelandJournalLink") {

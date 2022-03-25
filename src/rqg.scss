@@ -1239,3 +1239,24 @@ body {
     width: fit-content;
   }
 }
+
+.occupationalSkill {
+  border: 1px green dashed;
+  padding: 0.25rem;
+  margin: 0.25rem;
+
+  & input[type="number"] {
+    width: 45px;
+  }
+}
+
+.incomeSkill {
+  font-weight: bold;
+  font-style: italic;
+  background-image: linear-gradient( to bottom right, #bcc6cc, #eee, #bcc6cc);
+}
+
+.incomeSkillText {
+  font-weight: bold;
+  font-style: italic;
+}

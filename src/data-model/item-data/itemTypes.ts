@@ -20,6 +20,10 @@ import { RuneDataProperties, RuneDataSource } from "./runeData";
 import { WeaponDataProperties, WeaponDataSource } from "./weaponData";
 import { Weapon } from "../../actors/item-specific/weapon";
 import { HomelandDataProperties as HomelandDataProperties, HomelandDataSource } from "./homelandData";
+import {
+  OccupationDataProperties as OccupationDataProperties,
+  OccupationDataSource,
+} from "./occupationData";
 
 export enum ItemTypeEnum {
   Armor = "armor",
@@ -27,6 +31,7 @@ export enum ItemTypeEnum {
   Gear = "gear",
   HitLocation = "hitLocation",
   Homeland = "homeland",
+  Occupation = "occupation",
   Passion = "passion",
   Rune = "rune",
   RuneMagic = "runeMagic",
@@ -59,6 +64,7 @@ export type RqgItemDataSource =
   | GearDataSource
   | HitLocationDataSource
   | HomelandDataSource
+  | OccupationDataSource
   | PassionDataSource
   | RuneDataSource
   | RuneMagicDataSource
@@ -72,6 +78,7 @@ export type RqgItemDataProperties =
   | GearDataProperties
   | HitLocationDataProperties
   | HomelandDataProperties
+  | OccupationDataProperties
   | PassionDataProperties
   | RuneDataProperties
   | RuneMagicDataProperties
