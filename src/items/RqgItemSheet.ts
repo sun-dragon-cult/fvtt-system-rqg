@@ -1,8 +1,8 @@
+import { fromRqid } from "../system/api/rqidApi";
 import {
   getDefaultRqid,
   getDomDataset,
   getGame,
-  getItemByRqid,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -142,7 +142,7 @@ export class RqgItemSheet<
       .each((i: number, el: HTMLElement) => {
         const rqid = getRequiredDomDataset($(el), "rqid");
         el.addEventListener("click", async () => {
-          const rqidItem = await getItemByRqid(rqid);
+          const rqidItem = await fromRqid(rqid);
           if (rqidItem) {
             rqidItem.sheet?.render(true);
           } else {
