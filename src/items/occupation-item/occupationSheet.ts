@@ -67,7 +67,7 @@ export class OccupationSheet extends RqgItemSheet<
         homelandsJoined: itemData.data.homelands.join(", "),
         standardsOfLiving: Object.values(StandardOfLivingEnum),
         skillsJoined: itemData.data.occupationalSkills.map(skill => {
-          const bonus = `${skill.bonus > 0 ? "+" : "-"}${skill.bonus}%`;
+          const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;
           if (skill.incomeSkill) {
             return `<span class="incomeSkillText">${skill.skillRqidLink?.name} ${bonus}</span>`;
           }
