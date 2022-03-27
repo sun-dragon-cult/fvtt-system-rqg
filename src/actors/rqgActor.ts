@@ -9,6 +9,7 @@ import { DocumentModificationOptions } from "@league-of-foundry-developers/found
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
+import { RqgActorCreationSheet } from "./rqgActorCreationSheet";
 
 export class RqgActor extends Actor {
   static init() {
@@ -17,6 +18,11 @@ export class RqgActor extends Actor {
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("rqg", RqgActorSheet as any, {
       label: "Character Sheet",
+      types: [ActorTypeEnum.Character],
+      makeDefault: true,
+    });
+    Actors.registerSheet("rqg", RqgActorCreationSheet as any, {
+      label: "Character Creation Sheet",
       types: [ActorTypeEnum.Character],
       makeDefault: true,
     });
