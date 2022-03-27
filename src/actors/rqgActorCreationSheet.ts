@@ -1,8 +1,18 @@
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { RqgActorSheet } from "./rqgActorSheet";
+import { ActorTypeEnum, CharacterDataProperties } from "../data-model/actor-data/rqgActorData";
+import { getActorTemplates } from "../system/api/actorTemplateApi";
+import { getGame } from "../system/util";
+import { RqgActor } from "./rqgActor";
 
+interface CreationSheetData {
+  data: CharacterDataProperties;
+  speciesTemplates: StoredDocument<RqgActor>[] | undefined;
+  selectedSpeciesTemplate: RqgActor | undefined;
+}
 
-export class RqgActorCreationSheet extends RqgActorSheet {
+export class RqgActorCreationSheet extends ActorSheet<
+  ActorSheet.Options,
+  CreationSheetData | ActorSheet.Data
+> {
   get title(): string {
     const linked = this.actor.data.token.actorLink;
     const isToken = this.actor.isToken;
@@ -32,5 +42,22 @@ export class RqgActorCreationSheet extends RqgActorSheet {
       ],
       dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
     });
+  }
+
+  async getData(): Promise<CreationSheetData | ActorSheet.Data<ActorSheet.Options>> {
+    const actorData = this.document.data.toObject(false);
+    const speciesTemplates = await getActorTemplates();
+    let selectedSpeciesTemplate
+    if (speciesTemplates?.map((s) => s.name).includes(this.actor.data.data.background.species)) {
+      selectedSpeciesTemplate = speciesTemplates.find(t => t.name === this.actor.data.data.background.species)
+    } else {
+      selectedSpeciesTemplate = undefined;
+    }
+
+      return {
+        data: actorData,
+        speciesTemplates: speciesTemplates,
+        selectedSpeciesTemplate: selectedSpeciesTemplate,
+      };
   }
 }

@@ -18,6 +18,7 @@
   },
   "RQG": {
     "ActorCreation": {
+      "AventurerCreationWizard": "Adventurer Creation Wizard",
       "Nav": {
         "0-Species": "Step 0: Species",
         "1-Homeland": "Step 1: Homeland",

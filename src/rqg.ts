@@ -14,6 +14,7 @@ import { getGame, RqgError } from "./system/util";
 import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
 import { RqgPause } from "./foundryUi/pause";
 import { fromRqid } from "./system/api/rqidApi";
+import { getActorTemplates } from "./system/api/actorTemplateApi.js";
 
 Hooks.once("init", async () => {
   console.log(
@@ -68,6 +69,7 @@ Hooks.once("init", async () => {
     migrate: applyDefaultWorldMigrations,
     consolidate: consolidateCompendiumItems,
     fromRqid: fromRqid,
+    getActorTemplates: getActorTemplates,
   };
 });
 

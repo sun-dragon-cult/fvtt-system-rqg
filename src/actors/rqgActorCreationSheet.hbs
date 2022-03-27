@@ -4,8 +4,8 @@
 
   <header class="sheet-header">
     <div class="topheaderline">
-      <h1>Adventurer Creation Wizard</h1>
-      <h1 class="charname"><input name="name" type="text" value="{{data.name}}" /></h1>
+      <h1 style="flex-basis: 0;">{{localize "RQG.ActorCreation.AventurerCreationWizard"}}</h1>
+      <h1 style="flex-basis: auto;" class="charname"><input name="name" type="text" value="{{data.name}}" /></h1>
     </div>
   </header>
 
@@ -33,7 +33,7 @@
 
   <section class="sheet-body">
     <div class="tab species" data-group="primary" data-tab="0-species">
-      <h1>{{{localize "RQG.ActorCreation.Nav.0-Species"}}}</h1>
+      {{> "systems/rqg/actors/creation-sheet-parts/creation-species.hbs" }}
     </div>
     <div class="tab species" data-group="primary" data-tab="1-homeland">
       <h1>{{{localize "RQG.ActorCreation.Nav.1-Homeland"}}}</h1>
@@ -60,4 +60,5 @@
       <h1>{{{localize "RQG.ActorCreation.Nav.8-OtherInformation"}}}</h1>
     </div>
   </section>
+
 </form>
