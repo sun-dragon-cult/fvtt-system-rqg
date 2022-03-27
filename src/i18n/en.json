@@ -17,6 +17,19 @@
     "TypeReputation": "Reputation"
   },
   "RQG": {
+    "ActorCreation": {
+      "Nav": {
+        "0-Species": "Step 0: Species",
+        "1-Homeland": "Step 1: Homeland",
+        "2-FamilyHistory": "Step 2: Family History",
+        "3-RuneAffinities": "Step 3: Rune Affinities",
+        "4-Characteristics": "Step 4: Characteristics",
+        "5-Occupation": "Step 5: Occupation",
+        "6-Cult": "Step 6: Cult",
+        "7-PersonalSkillBonuses": "Step 7: Personal Skill Bonuses",
+        "8-OtherInformation": "Step 8: Other Information"
+      }
+    },
     "Actor": {
       "Attributes": {
         "AlliesAndNotes": "Allies & Notes",
