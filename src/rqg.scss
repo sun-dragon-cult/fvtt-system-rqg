@@ -1290,3 +1290,25 @@ body {
   font-weight: bold;
   font-style: italic;
 }
+
+.creation-controls {
+  display: flex;
+  font-size: x-large;
+  font-weight: bold;
+
+  & div {
+    flex-grow: 1;
+  }
+
+  & div.pad {
+     flex-grow: 0.25;
+   }
+
+  & div.right-align {
+    text-align: right;
+  }
+
+  & div.disabled {
+    color: lightslategray;
+  }
+}
