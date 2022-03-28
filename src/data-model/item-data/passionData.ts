@@ -43,7 +43,7 @@ export const emptyPassion: PassionDataSourceData = {
   subject: "",
   description: "",
   gmNotes: "",
-  chance: 0,
+  chance: 60,
   canGetExperience: true,
   hasExperience: false,
 };
