@@ -791,36 +791,6 @@ body {
         }
       }
     }
-  
-    nav.creation-sheet-tabs {
-      grid-area: nav;
-      flex-direction: column;
-      padding: 0 0.5rem;
-      min-width: 125px;
-      
-      .item {
-        flex-basis: 1fr;
-        color: white;
-        padding: 0.5rem 0;
-        font-size: 13px;
-        font-variant-caps: normal;
-
-        &.active {
-          text-shadow: 0 0 3px black, -2px -2px 3px black;
-          color: white;
-          font-weight: bold;
-          top: 0;
-          bottom: 0;
-          left: -6px;
-          right: -6px;
-          z-index: -1;
-          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
-          box-shadow: var(--rqg-box-shadow-tab-active);
-          background: var(--rqg-background-tab-active);
-          background-blend-mode: screen, difference;
-        }
-      }
-    }
 
     nav.gear-tabs {
       flex: none;
