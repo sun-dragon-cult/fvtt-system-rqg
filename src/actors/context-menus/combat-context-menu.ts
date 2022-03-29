@@ -1,7 +1,13 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { WeaponCard } from "../../chat/weaponCard";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getGame, getRequiredDomDataset, localize, RqgError } from "../../system/util";
+import {
+  getDomDataset,
+  getGame,
+  getRequiredDomDataset,
+  localize,
+  RqgError,
+} from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
@@ -21,7 +27,11 @@ export const combatMenuOptions = (
       if (skillItemId && weaponItemId) {
         await WeaponCard.show(weaponItemId, usage, skillItemId, actor, token);
       } else {
-        const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponChatCardError", {skillItemId: skillItemId, weaponItemId: weaponItemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponChatCardError", {
+          skillItemId: skillItemId,
+          weaponItemId: weaponItemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -30,12 +40,15 @@ export const combatMenuOptions = (
   {
     name: localize("RQG.ContextMenu.ToggleExperience"),
     icon: ContextMenuRunes.ToggleExperience,
-    condition: () => true,
+    condition: (el: JQuery) => !!getDomDataset(el, "skill-id"),
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "skill-id");
       const item = itemId && actor.items.get(itemId);
       if (!item || !("hasExperience" in item.data.data)) {
-        const msg = localize("RQG.ContextMenu.Notification.CantToggleExperienceError", {itemId: itemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantToggleExperienceError", {
+          itemId: itemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -44,14 +57,19 @@ export const combatMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill)}),
+    name: localize("RQG.ContextMenu.EditItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
+    }),
     icon: ContextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const skillItem = skillItemId && actor.items.get(skillItemId);
       if (!skillItem || !skillItem.sheet) {
-        const msg = localize("RQG.ContextMenu.Notification.CantShowItemSheetError", {skillItemId: skillItemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantShowItemSheetError", {
+          skillItemId: skillItemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -60,14 +78,19 @@ export const combatMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Weapon)}),
+    name: localize("RQG.ContextMenu.EditItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Weapon),
+    }),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");
       const item = weaponItemId && actor.items.get(weaponItemId);
       if (!item || !item.sheet) {
-        const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponSheetError", {weaponItemId: weaponItemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponSheetError", {
+          weaponItemId: weaponItemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
@@ -75,22 +98,29 @@ export const combatMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill)}),
+    name: localize("RQG.ContextMenu.DeleteItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
+    }),
     icon: ContextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       if (skillItemId) {
         RqgActorSheet.confirmItemDelete(actor, skillItemId);
       } else {
-        const msg = localize("RQG.ContextMenu.Notification.CantDeleteSkillError", {weaponItemId: skillItemId, actorName: actor.name});;
+        const msg = localize("RQG.ContextMenu.Notification.CantDeleteSkillError", {
+          weaponItemId: skillItemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Weapon)}),
+    name: localize("RQG.ContextMenu.DeleteItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Weapon),
+    }),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -98,7 +128,10 @@ export const combatMenuOptions = (
       if (weaponItemId) {
         RqgActorSheet.confirmItemDelete(actor, weaponItemId);
       } else {
-        const msg = localize("RQG.ContextMenu.Notification.CantDeleteWeaponError", {weaponItemId: weaponItemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantDeleteWeaponError", {
+          weaponItemId: weaponItemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
