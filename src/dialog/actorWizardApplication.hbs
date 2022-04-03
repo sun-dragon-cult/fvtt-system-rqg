@@ -1,0 +1,70 @@
+{{log "*** actorWizard" this}}
+<form class="{{cssClass}}" autocomplete="off">
+  <div class="mainbackground"></div>
+
+  <header class="sheet-header">
+    <div class="topheaderline">
+      <h1>{{localize "RQG.ActorCreation.AdventurerCreationWizardTitle"}}</h1>
+      <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" /></h1>
+    </div>
+  </header>
+
+  <div class="navbackground"></div>
+  <nav class="creation-sheet-tabs tabs" data-group="primary">
+    <a class="item norse" data-group="primary" data-tab="0-species">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.0-Species")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="1-homeland">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.1-Homeland")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="2-family-history">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.2-FamilyHistory")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="3-rune-affinities">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.3-RuneAffinities")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="4-characteristics">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.4-Characteristics")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="5-occupation">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.5-Occupation")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="6-cult">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.6-Cult")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="7-personal-skill-bonuses">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.7-PersonalSkillBonuses")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="8-other-information">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.8-OtherInformation")}}}</a>
+    <a class="item norse" data-group="primary" data-tab="9-complete-creation">
+      {{{colonBreak (localize "RQG.ActorCreation.Nav.9-complete-creation")}}}</a>
+  </nav>
+
+  <section class="sheet-body">
+    <div class="tab species" data-group="primary" data-tab="0-species">
+      <h1>{{{localize "RQG.ActorCreation.Nav.0-Species"}}}</h1>
+    </div>
+    <div class="tab homeland" data-group="primary" data-tab="1-homeland">
+      <h1>{{{localize "RQG.ActorCreation.Nav.1-Homeland"}}}</h1>
+    </div>
+    <div class="tab family-history" data-group="primary" data-tab="2-family-history">
+      <h1>{{{localize "RQG.ActorCreation.Nav.2-FamilyHistory"}}}</h1>
+    </div>
+    <div class="tab rune-affinities" data-group="primary" data-tab="3-rune-affinities">
+      <h1>{{{localize "RQG.ActorCreation.Nav.3-RuneAffinities"}}}</h1>
+    </div>
+    <div class="tab characteristics-tab" data-group="primary" data-tab="4-characteristics">
+      <h1>{{{localize "RQG.ActorCreation.Nav.4-Characteristics"}}}</h1>
+    </div>
+    <div class="tab occupation" data-group="primary" data-tab="5-occupation">
+      <h1>{{{localize "RQG.ActorCreation.Nav.5-Occupation"}}}</h1>
+    </div>
+    <div class="tab cult" data-group="primary" data-tab="6-cult">
+      <h1>{{{localize "RQG.ActorCreation.Nav.6-Cult"}}}</h1>
+    </div>
+    <div class="tab personal-skill-bonuses" data-group="primary" data-tab="7-personal-skill-bonuses">
+      <h1>{{{localize "RQG.ActorCreation.Nav.7-PersonalSkillBonuses"}}}</h1>
+    </div>
+    <div class="tab other-information" data-group="primary" data-tab="8-other-information">
+      <h1>{{{localize "RQG.ActorCreation.Nav.8-OtherInformation"}}}</h1>
+    </div>
+    <div class="tab complete-creation" data-group="primary" data-tab="9-complete-creation">
+      <h1>{{{localize "RQG.ActorCreation.Nav.9-complete-creation"}}}</h1>
+      {{{localize "RQG.ActorCreation.Step9.Prompt"}}}
+      <a data-actor-creation-complete class="sheet-button">{{localize "RQG.ActorCreation.Step9.SetAdventurerCreationCompleteButton"}}</a>
+    </div>
+  </section>
+</form>

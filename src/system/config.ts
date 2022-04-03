@@ -115,6 +115,11 @@ export const RQG_CONFIG = {
   dsnColorSets: {},
 
   dsnTextureList: {},
+
+  flagScope: "rqg",
+  actorWizardFlags: {
+    actorWizardComplete: "actor-wizard-complete"
+  }
 };
 
 export type RqgConfig = typeof RQG_CONFIG;
