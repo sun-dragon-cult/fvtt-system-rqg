@@ -1413,7 +1413,7 @@ export class RqgActorSheet extends ActorSheet<
       {
         class: "actor-wizard-button",
         label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
-        icon: "fas fa-edit",
+        icon: "fas fa-user-edit",
         onclick: (e) => this._openActorWizard(),
       },
       ...super._getHeaderButtons(),

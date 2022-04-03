@@ -1,4 +1,3 @@
-import { SystemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/packages.mjs";
 import { RqgActor } from "../actors/rqgActor";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { RQG_CONFIG } from "../system/config";
@@ -42,12 +41,13 @@ export class ActorWizard extends FormApplication {
     super.activateListeners(html);
 
     this.form?.querySelectorAll("[data-actor-creation-complete]").forEach((el) => {
-      el.addEventListener("click", this._setActorCreationComplete);
+      el.addEventListener("click", (ev) => {
+        this._setActorCreationComplete();
+      });
     });
   }
 
   _setActorCreationComplete() {
-      // TODO: I don't understand why this.actor is undefined when it gets here
     this.actor.setFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete, true);
     this.close();
   }
@@ -56,4 +56,5 @@ export class ActorWizard extends FormApplication {
     console.log("Update Object", formData);
     return;
   }
+
 }
