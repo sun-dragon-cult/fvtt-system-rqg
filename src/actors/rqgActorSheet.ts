@@ -1404,14 +1404,12 @@ export class RqgActorSheet extends ActorSheet<
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
 
-     if (this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete)) {
+      if (this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete)) {
       return super._getHeaderButtons();
     }
-
-
     return [
       {
-        class: "actor-wizard-button",
+        class: `actor-wizard-button-${this.actor.id}`,
         label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
         icon: "fas fa-user-edit",
         onclick: (e) => this._openActorWizard(),

@@ -49,6 +49,9 @@ export class ActorWizard extends FormApplication {
 
   _setActorCreationComplete() {
     this.actor.setFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete, true);
+    document.querySelectorAll(`.actor-wizard-button-${this.actor.id}`).forEach((el) => {
+      el.remove();
+    });
     this.close();
   }
 
