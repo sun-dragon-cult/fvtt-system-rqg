@@ -59,5 +59,4 @@ export class ActorWizard extends FormApplication {
     console.log("Update Object", formData);
     return;
   }
-
 }

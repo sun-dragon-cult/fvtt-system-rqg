@@ -1403,8 +1403,7 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
-
-      if (this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete)) {
+    if (this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete)) {
       return super._getHeaderButtons();
     }
     return [
