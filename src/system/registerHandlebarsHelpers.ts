@@ -142,8 +142,4 @@ export const registerHandlebarsHelpers = function () {
     }
   });
   
-  Handlebars.registerHelper("colonBreak", function (value: string) {
-    return value.replace(":", ":<br>");
-  });
-
 };

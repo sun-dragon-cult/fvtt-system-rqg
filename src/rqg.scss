@@ -191,6 +191,10 @@ body {
     white-space: nowrap;
   }
 
+  .preserve-wrap {
+    white-space: pre-wrap;
+  }
+
   input[type="number"] {
     width: auto;
   }
