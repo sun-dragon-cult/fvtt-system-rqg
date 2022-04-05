@@ -1,4 +1,5 @@
-import { fromRqid } from "../system/api/rqidApi";
+
+import { Rqid } from "../system/api/rqidApi";
 import {
   getDefaultRqid,
   getDomDataset,
@@ -142,7 +143,7 @@ export class RqgItemSheet<
       .each((i: number, el: HTMLElement) => {
         const rqid = getRequiredDomDataset($(el), "rqid");
         el.addEventListener("click", async () => {
-          const rqidItem = await fromRqid(rqid);
+          const rqidItem = await Rqid.itemFromRqid(rqid);
           if (rqidItem) {
             rqidItem.sheet?.render(true);
           } else {

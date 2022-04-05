@@ -115,6 +115,14 @@ export const RQG_CONFIG = {
   dsnColorSets: {},
 
   dsnTextureList: {},
+
+  rqidPrefixes: {
+    actor: "a.",
+    item: "i.",
+    journalEntry: "je.",
+    rollTable: "rt.",
+    scene: "s."
+  }
 };
 
 export type RqgConfig = typeof RQG_CONFIG;

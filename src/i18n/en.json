@@ -965,7 +965,12 @@
       "CopyInputValue": "Copy this value to the clipboard"
     },
     "Notification": {
-      "Error": {}
+      "Error": {},
+      "Warn": {
+        "NameGenRqidNotSupported": "Name Generation: The RQG System ID \"{rqid}\" is not supported for name generation.",
+        "NameGenRqidNotFound": "Name Generation: The RQG System ID \"{rqid}\" was not found as a Roll Table or Journal Entry or the Journal Entry was not formatted properly as a Name Base.",
+        "NameBaseNotLongEnough": "Name Generation: The RQG System ID \"{rqid}\" references a Name Base Journal Entry that was not long enough to generate a name after {attempts} attempts.  Consider adding more entries."
+      }
     },
     "Settings": {
       "HitLocations": {
