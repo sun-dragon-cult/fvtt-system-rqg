@@ -17,6 +17,26 @@
     "TypeReputation": "Reputation"
   },
   "RQG": {
+    "ActorCreation": {
+      "AdventurerCreationWizardTitle": "Adventurer Creation Wizard",
+      "AdventurerCreationHeaderButton": "Adventurer Creation",
+      "Nav": {
+        "0-Species": "Step 0:\n Species",
+        "1-Homeland": "Step 1:\n Homeland",
+        "2-FamilyHistory": "Step 2:\n Family History",
+        "3-RuneAffinities": "Step 3:\n Rune Affinities",
+        "4-Characteristics": "Step 4:\n Characteristics",
+        "5-Occupation": "Step 5:\n Occupation",
+        "6-Cult": "Step 6:\n Cult",
+        "7-PersonalSkillBonuses": "Step 7:\n Personal Skill Bonuses",
+        "8-OtherInformation": "Step 8:\n Other Information",
+        "9-complete-creation": "Step 9:\n Complete Creation"
+      },
+      "Step9": {
+        "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
+        "SetAdventurerCreationCompleteButton": "Adventurer Creation Complete"
+      }
+    },
     "Actor": {
       "Attributes": {
         "AlliesAndNotes": "Allies & Notes",
@@ -788,7 +808,7 @@
         "Cult": "Cult",
         "CultStanding": "Cult Standing",
         "Gear": "Gear",
-        "HitLocation":"Hit Location",
+        "HitLocation": "Hit Location",
         "HitLocationDefinition": "Hit Location Definition",
         "Homeland": "Homeland",
         "Occupation": "Occupation",

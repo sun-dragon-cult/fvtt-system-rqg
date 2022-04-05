@@ -115,6 +115,11 @@ export const RQG_CONFIG = {
   dsnColorSets: {},
 
   dsnTextureList: {},
+
+  flagScope: "rqg", //This is the same as getGame().system.id except this gets run before game is initialized
+  actorWizardFlags: {
+    actorWizardComplete: "actor-wizard-complete"
+  }
 };
 
 export type RqgConfig = typeof RQG_CONFIG;
