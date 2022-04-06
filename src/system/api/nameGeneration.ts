@@ -33,6 +33,9 @@ export class nameGeneration {
    * ```
    *
    * RollTable Examples:
+   * ```
+   * await game.system.api.names.Generate("rt.names-sartarite-male", 20)
+   * ```
    */
   static async Generate(
     rqid: string,
