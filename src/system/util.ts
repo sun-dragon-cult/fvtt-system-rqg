@@ -368,35 +368,6 @@ export function activateChatTab() {
   ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
 }
 
-// TODO: Have this handle things other than RqgItem
-export function getDefaultRqid(item: RqgItem): string {
-  let result = "";
-  if (item.type === ItemTypeEnum.Skill) {
-    const skill = item.data as SkillDataSource;
-    if (skill.data.specialization) {
-      result = toKebabCase(`${item.type}-${skill.data.skillName}-${skill.data.specialization}`);
-    } else {
-      result = toKebabCase(`${item.type}-${skill.data.skillName}`);
-    }
-  }
-  if (item.type === ItemTypeEnum.Armor) {
-    const armor = item.data as ArmorDataSource;
-    if (armor.data.namePrefix) {
-      result = toKebabCase(
-        `${item.type}-${armor.data.namePrefix}-${armor.data.armorType}-${armor.data.material}`
-      );
-    } else {
-      result = toKebabCase(`${item.type}-${armor.data.armorType}-${armor.data.material}`);
-    }
-  }
-
-  if (result) {
-    return RQG_CONFIG.rqidPrefixes.item + result;
-  }
-
-  return RQG_CONFIG.rqidPrefixes.item + toKebabCase(`${item.type}-${item.name}`);
-}
-
 export function findDatasetValueInSelfOrAncestors(
   el: HTMLElement,
   datasetname: string

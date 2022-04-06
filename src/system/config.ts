@@ -120,6 +120,7 @@ export const RQG_CONFIG = {
     actor: "a.",
     item: "i.",
     journalEntry: "je.",
+    macro: "m.",
     rollTable: "rt.",
     scene: "s."
   }

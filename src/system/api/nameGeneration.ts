@@ -1,7 +1,4 @@
-import { SystemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/packages.mjs";
-import { match } from "assert";
 import Foswig from "foswig";
-import { stringify } from "querystring";
 import { RQG_CONFIG } from "../config";
 import { getGame, localize } from "../util";
 import { Rqid } from "./rqidApi";

@@ -1,7 +1,5 @@
-
 import { Rqid } from "../system/api/rqidApi";
 import {
-  getDefaultRqid,
   getDomDataset,
   getGame,
   getRequiredDomDataset,
@@ -111,7 +109,7 @@ export class RqgItemSheet<
           if (!item) {
             return;
           }
-          const newRqid = getDefaultRqid(item);
+          const newRqid = Rqid.getDefaultRqid(item);
 
           if (ownerId) {
             const actor = getGame().actors?.get(ownerId);

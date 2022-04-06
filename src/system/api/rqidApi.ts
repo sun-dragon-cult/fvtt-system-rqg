@@ -1,11 +1,14 @@
+import { ArmorDataSource } from "../../data-model/item-data/armorData";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { SkillDataSource } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../../items/rqgItem";
 import { RQG_CONFIG } from "../config";
-import { getGame, localize } from "../util";
+import { getGame, localize, toKebabCase } from "../util";
 
 export class Rqid {
   /**
-   * Return the highest priority item matching the supplied rqid and lang from the items in the World. If not
-   * found return the highest priority item matching the supplied rqid and lang from the installed Compendia.
+   * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
+   * found return the highest priority Document matching the supplied rqid and lang from the installed Compendia.
    *
    * Example:
    * ```
@@ -399,5 +402,65 @@ export class Rqid {
     } else {
       return undefined;
     }
+  }
+
+  static getDefaultRqid(document: Actor | Item | JournalEntry | Macro | RollTable | Scene): string {
+
+    if (!document.name) {
+      return "";
+    }
+
+    let result = "";
+
+    if (document instanceof Actor ) {
+      return RQG_CONFIG.rqidPrefixes.actor + toKebabCase(document.name);
+    }
+
+    if (document instanceof Item) {
+      const item = document as Item;
+      if (item.type === ItemTypeEnum.Skill) {
+        const skill = item.data as SkillDataSource;
+        if (skill.data.specialization) {
+          result = toKebabCase(`${item.type}-${skill.data.skillName}-${skill.data.specialization}`);
+        } else {
+          result = toKebabCase(`${item.type}-${skill.data.skillName}`);
+        }
+      }
+      if (item.type === ItemTypeEnum.Armor) {
+        const armor = item.data as ArmorDataSource;
+        if (armor.data.namePrefix) {
+          result = toKebabCase(
+            `${item.type}-${armor.data.namePrefix}-${armor.data.armorType}-${armor.data.material}`
+          );
+        } else {
+          result = toKebabCase(`${item.type}-${armor.data.armorType}-${armor.data.material}`);
+        }
+      }
+
+      if (result) {
+        return RQG_CONFIG.rqidPrefixes.item + result;
+      }
+
+      return RQG_CONFIG.rqidPrefixes.item + toKebabCase(`${item.type}-${item.name}`);
+    }
+
+    if (document instanceof JournalEntry) {
+      return RQG_CONFIG.rqidPrefixes.journalEntry + toKebabCase(document.name);
+    }
+
+    if (document instanceof Macro) {
+      return RQG_CONFIG.rqidPrefixes.macro + toKebabCase(document.name);
+    }
+
+    if (document instanceof RollTable) {
+      return RQG_CONFIG.rqidPrefixes.rollTable + toKebabCase(document.name);
+    }
+
+    if (document instanceof Scene) {
+      return RQG_CONFIG.rqidPrefixes.scene + toKebabCase(document.name);
+    }
+
+    return "";
+
   }
 }
