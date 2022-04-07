@@ -9,11 +9,6 @@ export class Rqid {
   /**
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
    * found return the highest priority Document matching the supplied rqid and lang from the installed Compendia.
-   *
-   * Example:
-   * ```
-   * game.system.api.fromRqid("someid", "es")
-   * ```
    */
   static async fromRqid(
     rqid: string,
