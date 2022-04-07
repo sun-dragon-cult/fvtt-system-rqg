@@ -1,0 +1,66 @@
+{{!-- <div class="creation-controls">
+  <div class="right-align disabled">
+    {{localize "RQG.ActorCreation.Nav.Back"}}
+    <i class="fas fa-angle-double-left"></i>
+  </div>
+  <div class="pad">
+    &nbsp;
+  </div>
+  <div data-selected-species-template-name>
+    <i class="fas fa-angle-double-right"></i>
+    {{localize "RQG.ActorCreation.Nav.AcceptChanges" changes=selectedSpeciesTemplateName}}
+
+  </div>
+</div> --}}
+
+<h1 class="norse">
+  {{localize "RQG.ActorCreation.Nav.0-Species"}}
+</h1>
+
+<div class="item-sheet-properties">
+  <label>Choose Species:</label>
+  <select name="selectedSpeciesTemplateId">
+    {{#select species.selectedSpeciesTemplate.id}}
+      {{#each species.speciesTemplates}}
+        <option value="{{this.id}}">{{this.name}}</option>
+      {{/each}}
+    {{/select}}
+  </select>
+</div>
+
+<div>
+  <h2 class="norse">{{species.selectedSpeciesTemplate.name}}</h2>
+  <div class="characteristics">
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.strength"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.strength.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.constitution"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.constitution.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.size"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.size.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.dexterity"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.dexterity.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.intelligence"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.intelligence.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.power"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.power.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.charisma"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.charisma.formula}}
+    </div>
+  </div>
+  <div>
+    {{{enrichHtml species.selectedSpeciesTemplate.data.data.background.biography}}}
+  </div>
+</div>

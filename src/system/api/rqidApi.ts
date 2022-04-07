@@ -1,3 +1,4 @@
+import { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { getGame, localize } from "../util";
 
@@ -10,10 +11,7 @@ import { getGame, localize } from "../util";
  * game.system.api.fromRqid("someid", "es")
  * ```
  */
-export async function fromRqid(
-  rqid: string,
-  lang: string = "en"
-): Promise<RqgItem | undefined> {
+export async function fromRqid(rqid: string, lang: string = "en"): Promise<RqgItem | undefined> {
   if (!rqid) {
     return undefined;
   }
@@ -38,10 +36,7 @@ export async function fromRqid(
   }
 }
 
-async function fromWorldRqid(
-  rqid: string,
-  lang: string = "en"
-): Promise<RqgItem | undefined> {
+async function fromWorldRqid(rqid: string, lang: string = "en"): Promise<RqgItem | undefined> {
   if (!rqid) {
     return undefined;
   }
@@ -120,6 +115,18 @@ async function fromAllCompendiaRqid(
       console.log(msg + "  Duplicate items: ", duplicates);
     }
     return result;
+  } else {
+    return undefined;
+  }
+}
+
+export async function getActorTemplates(): Promise<RqgActor[] | undefined> {
+  // TODO: Option 1: Find by rqid with "-template" in the rqid and of type Actor?
+  // TODO: Option 2: Make a configurable world folder, and look there first, otherwise look in configurable compendium
+  const speciesTemplatesCompendium = getGame().packs.get("rqg.species-templates");
+  const templates = await speciesTemplatesCompendium?.getDocuments();
+  if (templates) {
+    return templates as RqgActor[];
   } else {
     return undefined;
   }
