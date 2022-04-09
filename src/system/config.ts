@@ -122,13 +122,13 @@ export const RQG_CONFIG = {
     journalEntry: "je.",
     macro: "m.",
     rollTable: "rt.",
-    scene: "s."
-}
+    scene: "s.",
+  },
 
   flagScope: "rqg", //This is the same as getGame().system.id except this gets run before game is initialized
   actorWizardFlags: {
-    actorWizardComplete: "actor-wizard-complete"
-  }
+    actorWizardComplete: "actor-wizard-complete",
+  },
 };
 
 export type RqgConfig = typeof RQG_CONFIG;
