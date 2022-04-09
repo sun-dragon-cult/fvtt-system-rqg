@@ -154,6 +154,10 @@ export async function initializeAllCharacteristics(
 ): Promise<void> {
   let updateData = {};
 
+  if (!actor.isOwner) {
+    return;
+  }
+
   for (const characteristic of Object.keys(actor.data.data.characteristics)) {
     const update = await getCharacteristicUpdate(
       characteristic,
