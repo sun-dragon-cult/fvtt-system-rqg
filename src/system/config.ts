@@ -116,6 +116,15 @@ export const RQG_CONFIG = {
 
   dsnTextureList: {},
 
+  rqidPrefixes: {
+    actor: "a.",
+    item: "i.",
+    journalEntry: "je.",
+    macro: "m.",
+    rollTable: "rt.",
+    scene: "s.",
+  },
+
   flagScope: "rqg", //This is the same as getGame().system.id except this gets run before game is initialized
   actorWizardFlags: {
     actorWizardComplete: "actor-wizard-complete",

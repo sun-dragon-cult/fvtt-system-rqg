@@ -86,6 +86,20 @@
       "system": "rqg",
       "path": "assets/packs/species-descriptions.db",
       "type": "JournalEntry"
+    },
+    {
+      "name": "name-bases",
+      "label": "Name Bases",
+      "system": "rqg",
+      "path": "assets/packs/name-bases.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "name-tables",
+      "label": "Name Tables",
+      "system": "rqg",
+      "path": "assets/packs/name-tables.db",
+      "type": "RollTable"
     }
   ],
   "languages": [
