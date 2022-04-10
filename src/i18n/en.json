@@ -20,6 +20,10 @@
     "ActorCreation": {
       "AdventurerCreationWizardTitle": "Adventurer Creation Wizard",
       "AdventurerCreationHeaderButton": "Adventurer Creation",
+      "AdvancedOptions": "Advanced Options",
+      "SkillsTab": "Skills",
+      "RunesTab": "Runes",
+      "PassionsTab": "Passions",
       "Nav": {
         "0-Species": "Step 0:\n Species",
         "1-Homeland": "Step 1:\n Homeland",
@@ -31,6 +35,13 @@
         "7-PersonalSkillBonuses": "Step 7:\n Personal Skill Bonuses",
         "8-OtherInformation": "Step 8:\n Other Information",
         "9-complete-creation": "Step 9:\n Complete Creation"
+      },
+      "Step0": {
+        "ChooseSpecies": "Choose Species:",
+        "BackgroundAndNotes": "Background and Notes",
+        "SelectSpeciesSkills": "Select Species Skills",
+        "SelectSpeciesRunes": "Select Species Runes",
+        "SelectSpeciesPassions": "Select Species Passions"
       },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
@@ -178,7 +189,7 @@
       },
       "Gear": {
         "ViewByItemType": "View by Item Type",
-        "ViewByLocation": "View by Locaion",
+        "ViewByLocation": "View by Location",
         "Gear": "Gear",
         "Armor": "Armor",
         "Consumables": "Consumables",

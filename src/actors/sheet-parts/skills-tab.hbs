@@ -2,15 +2,30 @@
   {{#each ownedItems.skill}}
   {{#if this}}
   <div class="masonry-item">
-    <h2>{{localize (concat 'RQG.Actor.Skill.SkillCategory.' @key)}} ({{#with @root.characterData.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</h2>
-    <div class="grid skill item-list">
+    <h2>{{localize (concat 'RQG.Actor.Skill.SkillCategory.' @key)}} 
+      {{#unless ../wizard}}
+        ({{#with @root.characterData.skillCategoryModifiers}}{{lookup this @key}}{{/with}})
+      {{/unless}}
+    </h2>
+    <div class="grid {{#if ../wizard}}skill-select{{else}}skill{{/if}} item-list">
       {{#each this}}
-        {{#unless data.data.runes}}
-        <div data-item-id="{{id}}" title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}" class="skill contextmenu item"
-          {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
+      {{#unless data.data.runes}}
+        {{#if ../../wizard}}
+        <div>
+          <input name="import-skill-{{data.id}}" type="checkbox" checked="true" title="Import Skill: {{data.name}}"/>
+        </div>
+        {{/if}}
+        <div data-item-id="{{id}}" 
+             title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}" 
+             class="skill contextmenu item"
+             {{#if data.data.journalId}}
+             data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"
+             {{/if}}>
           <img class="item" src="{{img}}">
         </div>
-        <div data-item-id="{{id}}" class="skill contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" title="{{localize "RQG.Game.RollTitle"}}">
+        <div data-item-id="{{id}}" 
+              class="skill contextmenu item" data-item-roll 
+              title="{{localize "RQG.Game.RollTitle"}}">
           {{data.data.skillName}}{{#if data.data.specialization}} ({{data.data.specialization}}){{/if}}
           {{#each data.data.runes}}
             <img class="rune" src="{{runeImg this}}" title="{{this}}">

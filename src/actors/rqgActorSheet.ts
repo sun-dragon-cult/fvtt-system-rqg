@@ -179,7 +179,7 @@ export class RqgActorSheet extends ActorSheet<
 
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
-      ownedItems: this.organizeOwnedItems(),
+      ownedItems: RqgActorSheet.organizeOwnedItems(this.actor),
 
       spiritCombatSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.spiritCombat),
       dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
@@ -413,14 +413,14 @@ export class RqgActorSheet extends ActorSheet<
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
    * TODO Fix the typing
    */
-  private organizeOwnedItems(): any {
+  public static organizeOwnedItems(actor: RqgActor): any {
     const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
-    this.actor.items.forEach((item) => {
+    actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
     });
 
     const currency: any = [];
-    this.actor.items.forEach((item) => {
+    actor.items.forEach((item) => {
       if (item.type === ItemTypeEnum.Gear) {
         //TODO: Assert that this is Gear or something else that has physicalItemType??
         //@ts-ignore physicalItemType
@@ -485,8 +485,8 @@ export class RqgActorSheet extends ActorSheet<
       assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
 
       let usages = weapon.data.data.usage;
-      let actorStr = this.actor.data.data.characteristics.strength.value;
-      let actorDex = this.actor.data.data.characteristics.dexterity.value;
+      let actorStr = actor.data.data.characteristics.strength.value;
+      let actorDex = actor.data.data.characteristics.dexterity.value;
       for (const key in usages) {
         let usage = usages[key];
         if (usage.skillId) {
@@ -1403,7 +1403,8 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
-    if (this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete)) {
+    if (this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete) ||
+        this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.isActorTemplate)) {
       return super._getHeaderButtons();
     }
     return [

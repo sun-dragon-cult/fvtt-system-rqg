@@ -12,25 +12,25 @@
 
   </div>
 </div> --}}
-
+{{json collapsibleOpenStates}}
 <h1 class="norse">
   {{localize "RQG.ActorCreation.Nav.0-Species"}}
 </h1>
 
 <div class="item-sheet-properties">
-  <label>Choose Species:</label>
+  <label>{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}</label>
   <select name="selectedSpeciesTemplateId">
     {{#select species.selectedSpeciesTemplate.id}}
-      {{#each species.speciesTemplates}}
-        <option value="{{this.id}}">{{this.name}}</option>
-      {{/each}}
+    {{#each species.speciesTemplates}}
+    <option value="{{this.id}}">{{this.name}}</option>
+    {{/each}}
     {{/select}}
   </select>
 </div>
 
 <div>
   <h2 class="norse">{{species.selectedSpeciesTemplate.name}}</h2>
-  <div class="characteristics">
+  <div class="characteristics" style="margin-bottom: 0.75rem;">
     <div class="flex-column">
       <label class="norse">{{localize "RQG.Actor.Characteristics.strength"}}</label>
       {{species.selectedSpeciesTemplate.data.data.characteristics.strength.formula}}
@@ -60,7 +60,82 @@
       {{species.selectedSpeciesTemplate.data.data.characteristics.charisma.formula}}
     </div>
   </div>
-  <div>
-    {{{enrichHtml species.selectedSpeciesTemplate.data.data.background.biography}}}
-  </div>
+
+  <article class="collabsible-wrapper" data-collabsible-name="speciesBackground">
+    <h2 class="collabsible-header">
+      <span class="toggle-icon">
+        <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesBackground}}no-display{{/if}}"></i>
+        <i class="far fa-minus-square {{#unless collapsibleOpenStates.speciesBackground}}no-display{{/unless}}"></i>
+        {{localize "RQG.ActorCreation.Step0.BackgroundAndNotes"}}
+      </span>
+    </h2>
+    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.speciesBackground}}style="display: none;"{{/unless}}>
+      {{{enrichHtml species.selectedSpeciesTemplate.data.data.background.biography}}}
+    </section>
+  </article>
+
+
+  <article class="collabsible-wrapper" data-collabsible-name="speciesAdvanced">
+    <h2 class="collabsible-header">
+      <span class="toggle-icon">
+        <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesAdvanced}}no-display{{/if}}"></i>
+        <i class="far fa-minus-square {{#unless collapsibleOpenStates.speciesAdvanced}}no-display{{/unless}}"></i>
+        {{localize "RQG.ActorCreation.AdvancedOptions"}}
+      </span>
+    </h2>
+    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.speciesAdvanced}}style="display: none;"{{/unless}} >
+
+      <nav class="item-sheet-nav-tabs tabs" data-group="species-item-selection">
+        <a class="item" data-group="species-item-selection" data-tab="skills">
+          {{localize "RQG.ActorCreation.SkillsTab"}}
+        </a>
+        <a class="item" data-group="species-item-selection" data-tab="runes">
+          {{localize "RQG.ActorCreation.RunesTab"}}
+        </a>
+        <a class="item" data-group="species-item-selection" data-tab="passions">
+          {{localize "RQG.ActorCreation.PassionsTab"}}
+        </a>
+      </nav>
+
+      <section class="species-body">
+
+        <div class="tab skills" data-group="species-item-selection" data-tab="skills">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesSkills"}}</h2>
+          {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs"
+          ownedItems=speciesOwnedItems
+          wizard="true"
+          }}
+        </div>
+        <div class="tab runes" data-group="species-item-selection" data-tab="runes">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesRunes"}}</h2>
+          <div class="flex-row flex-wrap">
+            {{>"systems/rqg/actors/sheet-parts/elemental.hbs"
+            ownedItems=speciesOwnedItems
+            wizard="true"
+            }}
+            {{>"systems/rqg/actors/sheet-parts/power.hbs"
+            ownedItems=speciesOwnedItems
+            wizard="true"
+            }}
+            {{>"systems/rqg/actors/sheet-parts/form.hbs"
+            ownedItems=speciesOwnedItems
+            wizard="true"
+            }}
+            {{>"systems/rqg/actors/sheet-parts/condition.hbs"
+            ownedItems=speciesOwnedItems
+            wizard="true"
+            }}
+          </div>
+
+        </div>
+        <div class="tab passions" data-group="species-item-selection" data-tab="passions">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesPassions"}}</h2>
+          {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
+          ownedItems=speciesOwnedItems
+          wizard="true"
+          }}
+        </div>
+      </section>
+    </section>
+  </article>
 </div>

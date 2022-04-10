@@ -1,7 +1,12 @@
 {{#if ownedItems.rune.condition}}
-<div class="grid rune item-list">
+<div class="grid {{#if wizard}}rune-select{{else}}rune{{/if}} item-list">
   <h2 class="fullrow">{{localize "RQG.Actor.Rune.Condition"}}</h2>
   {{#each ownedItems.rune.condition}}
+    {{#if ../wizard}}
+    <div>
+      <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+    </div>
+    {{/if}}
     <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
       <img class="rune" src="{{img}}">
     </div>

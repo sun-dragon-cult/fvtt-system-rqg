@@ -1,83 +1,150 @@
-<div class="grid opposed-rune item-list">
-  <h2 class="fullrow">{{localize "RQG.Actor.Rune.Power"}}</h2>
+<div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} item-list">
+  <h2 class="fullrow">{{localize 'RQG.Actor.Rune.Power'}}</h2>
 
   {{#with ownedItems.rune.power.Fertility}}
-    <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-        <img class="rune" src="{{img}}">
-    </div>
-    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-      <span class="text-right">{{this.data.data.chance}}%</span>
-    </div>
+  {{#if ../wizard}}
+  <div>
+    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+  </div>
+  {{/if}}
+  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
+    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
+    <img class="rune" src="{{img}}">
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    {{data.data.rune}}
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    <span class="text-right">
+      {{this.data.data.chance}}%
+    </span>
+  </div>
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with ownedItems.rune.power.Death}}
-    <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-      <img class="rune" src="{{img}}">
-    </div>
-    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-      <span class="text-right">{{this.data.data.chance}}%</span>
-    </div>
+  {{#if ../wizard}}
+  <div>
+    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+  </div>
+  {{/if}}
+  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
+    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
+    <img class="rune" src="{{img}}">
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    {{data.data.rune}}</div>
+  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    <span class="text-right">{{this.data.data.chance}}%</span>
+  </div>
   {{/with}}
 
   {{#with ownedItems.rune.power.Harmony}}
-    <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-      <img class="rune" src="{{img}}">
-    </div>
-    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-      <span class="text-right">{{this.data.data.chance}}%</span>
-    </div>
+  {{#if ../wizard}}
+  <div>
+    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+  </div>
+  {{/if}}
+  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
+    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
+    <img class="rune" src="{{img}}">
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    {{data.data.rune}}</div>
+  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    <span class="text-right">{{this.data.data.chance}}%</span>
+  </div>
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with ownedItems.rune.power.Disorder}}
-    <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-      <img class="rune" src="{{img}}">
-    </div>
-    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-      <span class="text-right">{{this.data.data.chance}}%</span>
-    </div>
+  {{#if ../wizard}}
+  <div>
+    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+  </div>
+  {{/if}}
+  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
+    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
+    <img class="rune" src="{{img}}">
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    {{data.data.rune}}</div>
+  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    <span class="text-right">{{this.data.data.chance}}%</span>
+  </div>
   {{/with}}
 
   {{#with ownedItems.rune.power.Truth}}
-    <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-      <img class="rune" src="{{img}}">
-    </div>
-    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-      <span class="text-right">{{this.data.data.chance}}%</span>
-    </div>
+  {{#if ../wizard}}
+  <div>
+    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+  </div>
+  {{/if}}
+  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
+    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
+    <img class="rune" src="{{img}}">
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    {{data.data.rune}}</div>
+  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    <span class="text-right">{{this.data.data.chance}}%</span>
+  </div>
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with ownedItems.rune.power.Illusion}}
-    <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-      <img class="rune" src="{{img}}">
-    </div>
-    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-      <span class="text-right">{{this.data.data.chance}}%</span>
-    </div>
+  {{#if ../wizard}}
+  <div>
+    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+  </div>
+  {{/if}}
+  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
+    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
+    <img class="rune" src="{{img}}">
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    {{data.data.rune}}</div>
+  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    <span class="text-right">{{this.data.data.chance}}%</span>
+  </div>
   {{/with}}
 
   {{#with ownedItems.rune.power.Stasis}}
-    <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-      <img class="rune" src="{{img}}">
-    </div>
-    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-      <span class="text-right">{{this.data.data.chance}}%</span>
-    </div>
+  {{#if ../wizard}}
+  <div>
+    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+  </div>
+  {{/if}}
+  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
+    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
+    <img class="rune" src="{{img}}">
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    {{data.data.rune}}</div>
+  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    <span class="text-right">{{this.data.data.chance}}%</span>
+  </div>
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with ownedItems.rune.power.Movement}}
-    <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>
-      <img class="rune" src="{{img}}">
-    </div>
-    <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">{{data.data.rune}}</div>
-    <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-      <span class="text-right">{{this.data.data.chance}}%</span>
-    </div>
+  {{#if ../wizard}}
+  <div>
+    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+  </div>
+  {{/if}}
+  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
+    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
+    <img class="rune" src="{{img}}">
+  </div>
+  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    {{data.data.rune}}</div>
+  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
+    <span class="text-right">{{this.data.data.chance}}%</span>
+  </div>
   {{/with}}
 </div>

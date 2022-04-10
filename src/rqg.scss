@@ -515,6 +515,18 @@ body {
       }
     }
 
+    &.skill-select {
+      grid-template-columns: [col-start] 30px 30px auto min-content [col-end];
+    
+      // Alternating row background
+      >*:nth-child(8n + 1),
+      >*:nth-child(8n + 2),
+      >*:nth-child(8n + 3),
+      >*:nth-child(8n + 4) {
+        background: var(--rqg-table-alternate-background);
+      }
+    }
+
     &.passions {
       display: grid;
       grid-template-rows: [row-start] auto [row-end];
@@ -533,6 +545,16 @@ body {
         grid-template-columns: [col-start] 45px [description-start] auto min-content [description-end col-end];
         grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
       }
+      
+      .grid.passion-select {
+        display: grid;
+        grid-template-columns: [col-start] 75px [description-start] auto min-content [description-end col-end];
+        grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+
+        .img {
+          width: 41px;
+        }
+      }
 
       .description {
         grid-area: description;
@@ -549,9 +571,17 @@ body {
     &.rune {
       grid-template-columns: [col-start] max-content auto max-content [col-end];
     }
+    
+    &.rune-select {
+      grid-template-columns: [col-start] max-content max-content auto max-content [col-end];
+    }
 
     &.opposed-rune {
       grid-template-columns: [col-start] max-content auto max-content min-content max-content auto max-content [col-end];
+    }
+    
+    &.opposed-rune-select {
+      grid-template-columns: [col-start] max-content max-content auto max-content min-content max-content max-content auto max-content [col-end];
     }
   }
 
@@ -801,6 +831,7 @@ body {
       flex-direction: column;
       padding: 0 0.5rem;
       min-width: 125px;
+      height: 600px;
     
       .item {
         flex-basis: 1fr;
