@@ -37,8 +37,8 @@ export class ActorWizard extends FormApplication {
       ui.notifications?.warn(msg);
     }
 
-    this.collapsibleOpenStates["speciesBackground"] = true;
-    this.collapsibleOpenStates["speciesAdvanced"] = false;
+    // this.collapsibleOpenStates["speciesBackground"] = true;
+    // this.collapsibleOpenStates["speciesAdvanced"] = false;
   }
 
   static get defaultOptions(): FormApplication.Options {
@@ -72,6 +72,11 @@ export class ActorWizard extends FormApplication {
 
   async getData(): Promise<any> {
     //TODO: this should probably have a specific class
+
+    // Set any collapsible sections that need to be open by default
+    if (this.collapsibleOpenStates["speciesBackground"] === undefined) {
+      this.collapsibleOpenStates["speciesBackground"] = true;
+    }
 
     if (!this.species.speciesTemplates) {
       // Don't get these every time.
@@ -118,10 +123,10 @@ export class ActorWizard extends FormApplication {
     this.form?.querySelectorAll(".collabsible-header").forEach((el) => {
       el.addEventListener("click", (ev) => {
         const wrapper = (ev.target as HTMLElement).closest(".collabsible-wrapper") as HTMLElement;
-        const open = wrapper?.classList.toggle("open");
+        const wasOpen = wrapper.dataset.open === "true" ? true : false;
         const wrapperName = wrapper.dataset.collabsibleName;
         if (wrapperName) {
-          this.collapsibleOpenStates[wrapperName] = open;
+          this.collapsibleOpenStates[wrapperName] = !wasOpen;
         }
         const body = $(wrapper as HTMLElement).find(".collabsible-wrapper-body")[0];
         $(body).slideToggle(300);
@@ -129,6 +134,8 @@ export class ActorWizard extends FormApplication {
         plus?.classList.toggle("no-display");
         const minus = $(wrapper as HTMLElement).find(".fa-minus-square")[0];
         minus?.classList.toggle("no-display");
+
+        this.render();
       });
     });
 
@@ -148,20 +155,32 @@ export class ActorWizard extends FormApplication {
   }
 
   async _updateObject(event: Event, formData?: object): Promise<unknown> {
-    console.log("Update Object", formData);
+    console.log("Update Object", formData, event);
 
-    console.log(formData);
+    const target = event.target as HTMLElement;
 
-    //@ts-ignore selectedSpeciesTemplateId
-    const selectedTemplateId = formData?.selectedSpeciesTemplateId;
+    console.log("TARGET", target);
 
+    if (target instanceof HTMLSelectElement) {
+      const select = target as HTMLSelectElement;
+      if (select.name === "selectedSpeciesTemplateId") {
+        //@ts-ignore selectedSpeciesTemplateId
+        const selectedTemplateId = formData?.selectedSpeciesTemplateId;
+        await this.setSpeciesTemplate(selectedTemplateId);
+      }
+    }
+
+    this.render();
+
+    return;
+  }
+
+  async setSpeciesTemplate(selectedTemplateId: string) {
     this.species.selectedSpeciesTemplate = this.species.speciesTemplates?.find(
       (t) => t.id === selectedTemplateId
     );
 
     await this.actor.unsetFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.selectedSpeciesId);
-
-    const foo = { foo: "glorp", bar: "florp" };
 
     await this.actor.setFlag(
       RQG_CONFIG.flagScope,
@@ -205,9 +224,5 @@ export class ActorWizard extends FormApplication {
 
       await this.actor.update(update);
     }
-
-    this.render();
-
-    return;
   }
 }

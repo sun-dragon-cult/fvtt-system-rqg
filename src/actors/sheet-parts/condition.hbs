@@ -4,7 +4,11 @@
   {{#each ownedItems.rune.condition}}
     {{#if ../wizard}}
     <div>
-      <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+      <input type="checkbox" 
+        data-import-id="{{data.id}}"
+        data-import-type="rune"
+        checked="true" 
+        title="Import Rune: {{data.name}}" />
     </div>
     {{/if}}
     <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}} data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"{{/if}}>

@@ -1,18 +1,3 @@
-{{!-- <div class="creation-controls">
-  <div class="right-align disabled">
-    {{localize "RQG.ActorCreation.Nav.Back"}}
-    <i class="fas fa-angle-double-left"></i>
-  </div>
-  <div class="pad">
-    &nbsp;
-  </div>
-  <div data-selected-species-template-name>
-    <i class="fas fa-angle-double-right"></i>
-    {{localize "RQG.ActorCreation.Nav.AcceptChanges" changes=selectedSpeciesTemplateName}}
-
-  </div>
-</div> --}}
-{{json collapsibleOpenStates}}
 <h1 class="norse">
   {{localize "RQG.ActorCreation.Nav.0-Species"}}
 </h1>
@@ -61,7 +46,7 @@
     </div>
   </div>
 
-  <article class="collabsible-wrapper" data-collabsible-name="speciesBackground">
+  <article class="collabsible-wrapper" data-collabsible-name="speciesBackground" data-open="{{collapsibleOpenStates.speciesBackground}}">
     <h2 class="collabsible-header">
       <span class="toggle-icon">
         <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesBackground}}no-display{{/if}}"></i>
@@ -74,8 +59,7 @@
     </section>
   </article>
 
-
-  <article class="collabsible-wrapper" data-collabsible-name="speciesAdvanced">
+  <article class="collabsible-wrapper" data-collabsible-name="speciesAdvanced" data-open="{{collapsibleOpenStates.speciesBackground}}">
     <h2 class="collabsible-header">
       <span class="toggle-icon">
         <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesAdvanced}}no-display{{/if}}"></i>

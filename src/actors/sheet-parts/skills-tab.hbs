@@ -12,7 +12,11 @@
       {{#unless data.data.runes}}
         {{#if ../../wizard}}
         <div>
-          <input name="import-skill-{{data.id}}" type="checkbox" checked="true" title="Import Skill: {{data.name}}"/>
+          <input type="checkbox" 
+              data-import-id="{{this.id}}"
+              data-import-type="skill"
+              checked="true" 
+              title="Import Skill: {{data.name}}"/>
         </div>
         {{/if}}
         <div data-item-id="{{id}}" 
