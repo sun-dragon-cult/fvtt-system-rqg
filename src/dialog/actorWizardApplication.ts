@@ -1,10 +1,11 @@
-import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { getActorTemplates } from "../system/api/rqidApi";
 import { RQG_CONFIG } from "../system/config";
-import { getGame, localize } from "../system/util";
+import { assertItemType, getGame, localize } from "../system/util";
+import { SkillDataSource } from "../data-model/item-data/skillData";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -13,6 +14,7 @@ export class ActorWizard extends FormApplication {
     speciesTemplates: RqgActor[] | undefined;
   } = { selectedSpeciesTemplate: undefined, speciesTemplates: undefined };
   collapsibleOpenStates: Record<string, boolean> = {};
+  choices: Record<string, CreationChoice> = {};
 
   constructor(object: RqgActor, options: any) {
     super(object, options);
@@ -224,5 +226,82 @@ export class ActorWizard extends FormApplication {
 
       await this.actor.update(update);
     }
+
+    for (const key in this.choices) {
+      this.choices[key].speciesPresent = false;
+    }
+
+    this.species.selectedSpeciesTemplate?.data.items.forEach((i) => {
+      if (i.type === ItemTypeEnum.Skill) {
+        const skill = i.data as SkillDataSource;
+        if (this.choices[skill.data.rqid] === undefined) {
+          this.choices[skill.data.rqid] = new CreationChoice();
+          this.choices[skill.data.rqid].rqid = skill.data.rqid;
+          this.choices[skill.data.rqid].speciesValue = skill.data.baseChance;
+          this.choices[skill.data.rqid].speciesPresent = true;
+        } else {
+          this.choices[skill.data.rqid].speciesValue = skill.data.baseChance;
+          this.choices[skill.data.rqid].speciesPresent = true;
+        }
+      }
+    });
+
+    await this.updateChoices();
   }
+
+  async updateChoices() {
+    const updates = [];
+    const adds = [];
+    const deletes = [];
+    for (const key in this.choices) {
+      let existingItems = this.actor.getItemsByRqid(key);
+      if (existingItems.length > 0) {
+        for (const i of existingItems) {
+          if (this.choices[key].present()) {
+            if (i.type === ItemTypeEnum.Skill) {
+              assertItemType(i.type, ItemTypeEnum.Skill);
+              updates.push({
+                _id: i.id,
+                data: { baseChance: this.choices[key].totalValue() },
+              });
+            }
+          } else {
+            deletes.push(i);
+          }
+        }
+      } else {
+        const itemsToAdd = this.species.selectedSpeciesTemplate?.getItemsByRqid(key);
+        if (itemsToAdd) {
+          for (const i of itemsToAdd) {
+            if (i.type === ItemTypeEnum.Skill) {
+              assertItemType(i.type, ItemTypeEnum.Skill);
+              //@ts-ignore baseChance
+              i.data.data.baseChance = this.choices[key].totalValue();
+            }
+            adds.push(i.data);
+          }
+        }
+      }
+    }
+    //@ts-ignore adds
+    await this.actor.createEmbeddedDocuments("Item", adds);
+    await this.actor.updateEmbeddedDocuments("Item", updates);
+    for (const d of deletes) {
+      await d.delete();
+    }
+  }
+}
+
+class CreationChoice {
+  rqid: string = "";
+  speciesValue: number = 0;
+  speciesPresent: boolean = false;
+  homelandValue: number = 0;
+  homelandPresent: boolean = false;
+  totalValue = () => {
+    return this.speciesValue + this.homelandValue;
+  };
+  present = () => {
+    return this.speciesPresent || this.homelandPresent;
+  };
 }
