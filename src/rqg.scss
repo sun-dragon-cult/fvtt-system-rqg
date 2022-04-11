@@ -673,7 +673,7 @@ body {
       .damage {
         writing-mode: tb;
         transform: rotate(180deg);
-        height: min-content;
+        height: fit-content;
         margin-right: 3px;
         margin-left: -4px;
       }
@@ -795,20 +795,20 @@ body {
         }
       }
     }
-    
+
     nav.creation-sheet-tabs {
       grid-area: nav;
       flex-direction: column;
       padding: 0 0.5rem;
       min-width: 125px;
-    
+
       .item {
         flex-basis: 1fr;
         color: white;
         padding: 0.5rem 0;
         font-size: 13px;
         font-variant-caps: normal;
-    
+
         &.active {
           text-shadow: 0 0 3px black, -2px -2px 3px black;
           color: white;
@@ -1103,7 +1103,7 @@ body {
   & .editor-container {
     text-align: start;
     grid-column: 1 / 3;
-  }  
+  }
 
   & .input-button {
     display: flex;
@@ -1149,7 +1149,7 @@ body {
 
   &.rune-group {
     border: 1px black solid;
-    padding: 0.5rem;    
+    padding: 0.5rem;
   }
 
   & img {
