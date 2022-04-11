@@ -229,7 +229,9 @@ export class RqgActorSheet extends ActorSheet<
       result.quantity += Number(curr.data.data.quantity);
       result.price.real += curr.data.data.price.real * curr.data.data.quantity;
       result.price.estimated += curr.data.data.price.estimated * curr.data.data.quantity;
-      result.encumbrance += curr.data.data.encumbrance * curr.data.data.quantity;
+      if (curr.data.data.equippedStatus !== "notCarried") {
+        result.encumbrance += curr.data.data.encumbrance * curr.data.data.quantity;
+      }
       let conv;
       if (curr.data.data.price.estimated > 1) {
         conv = localize("RQG.Actor.Gear.CurrencyConversionTipOver1", {
