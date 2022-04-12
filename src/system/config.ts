@@ -130,6 +130,7 @@ export const RQG_CONFIG = {
     actorWizardComplete: "actor-wizard-complete",
     selectedSpeciesId: "selected-species-id",
     isActorTemplate: "is-actor-template",
+    wizardChoices: "wizard-choices",
   },
 };
 

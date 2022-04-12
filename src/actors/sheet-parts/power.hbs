@@ -4,10 +4,11 @@
   {{#with ownedItems.rune.power.Fertility}}
   {{#if ../wizard}}
   <div>
-    <input type="checkbox" 
-      data-import-id="{{data.id}}"
-      data-import-type="rune"
-      checked="true" 
+    <input type="checkbox"
+      class="wizard-choice-input"
+      data-rqid="{{this.data.data.rqid}}"
+      data-for-choice="{{../forChoice}}"
+      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
       title="Import Rune: {{data.name}}" />
   </div>
   {{/if}}
@@ -29,7 +30,12 @@
   {{#with ownedItems.rune.power.Death}}
   {{#if ../wizard}}
   <div>
-    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+    <input type="checkbox"
+      class="wizard-choice-input"
+      data-rqid="{{this.data.data.rqid}}"
+      data-for-choice="{{../forChoice}}"
+      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+      title="Import Rune: {{data.name}}" />
   </div>
   {{/if}}
   <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
@@ -47,7 +53,12 @@
   {{#with ownedItems.rune.power.Harmony}}
   {{#if ../wizard}}
   <div>
-    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+    <input type="checkbox"
+      class="wizard-choice-input"
+      data-rqid="{{this.data.data.rqid}}"
+      data-for-choice="{{../forChoice}}"
+      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+      title="Import Rune: {{data.name}}" />
   </div>
   {{/if}}
   <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
@@ -65,7 +76,12 @@
   {{#with ownedItems.rune.power.Disorder}}
   {{#if ../wizard}}
   <div>
-    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+    <input type="checkbox"
+      class="wizard-choice-input"
+      data-rqid="{{this.data.data.rqid}}"
+      data-for-choice="{{../forChoice}}"
+      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+      title="Import Rune: {{data.name}}" />
   </div>
   {{/if}}
   <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
@@ -83,7 +99,12 @@
   {{#with ownedItems.rune.power.Truth}}
   {{#if ../wizard}}
   <div>
-    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+    <input type="checkbox"
+      class="wizard-choice-input"
+      data-rqid="{{this.data.data.rqid}}"
+      data-for-choice="{{../forChoice}}"
+      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+      title="Import Rune: {{data.name}}" />
   </div>
   {{/if}}
   <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
@@ -101,7 +122,12 @@
   {{#with ownedItems.rune.power.Illusion}}
   {{#if ../wizard}}
   <div>
-    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+    <input type="checkbox"
+      class="wizard-choice-input"
+      data-rqid="{{this.data.data.rqid}}"
+      data-for-choice="{{../forChoice}}"
+      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+      title="Import Rune: {{data.name}}" />
   </div>
   {{/if}}
   <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
@@ -119,7 +145,12 @@
   {{#with ownedItems.rune.power.Stasis}}
   {{#if ../wizard}}
   <div>
-    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+    <input type="checkbox"
+      class="wizard-choice-input"
+      data-rqid="{{this.data.data.rqid}}"
+      data-for-choice="{{../forChoice}}"
+      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+      title="Import Rune: {{data.name}}" />
   </div>
   {{/if}}
   <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
@@ -137,7 +168,12 @@
   {{#with ownedItems.rune.power.Movement}}
   {{#if ../wizard}}
   <div>
-    <input name="import-rune-{{id}}" type="checkbox" checked="true" title="Import Rune: {{data.name}}" />
+    <input type="checkbox"
+      class="wizard-choice-input"
+      data-rqid="{{this.data.data.rqid}}"
+      data-for-choice="{{../forChoice}}"
+      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+      title="Import Rune: {{data.name}}" />
   </div>
   {{/if}}
   <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}

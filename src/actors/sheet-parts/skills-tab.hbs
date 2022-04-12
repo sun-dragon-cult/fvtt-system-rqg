@@ -13,10 +13,12 @@
         {{#if ../../wizard}}
         <div>
           <input type="checkbox" 
-              data-import-id="{{this.id}}"
-              data-import-type="skill"
-              checked="true" 
-              title="Import Skill: {{data.name}}"/>
+              class="wizard-choice-input"
+              data-rqid="{{this.data.data.rqid}}"
+              data-for-choice="{{../../forChoice}}"
+              {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+              title="Import Skill: {{data.name}}"
+              />
         </div>
         {{/if}}
         <div data-item-id="{{id}}" 

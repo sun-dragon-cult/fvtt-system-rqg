@@ -7,10 +7,11 @@
       title="{{localize 'RQG.Game.RollTitle'}}">
       {{#if ../wizard}}
       <div>
-        <input type="checkbox" 
-          data-import-id="{{data.id}}"
-          data-import-type="passsion"
-          checked="true" 
+        <input type="checkbox"
+          class="wizard-choice-input"
+          data-rqid="{{this.data.data.rqid}}"
+          data-for-choice="{{../forChoice}}"
+          {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
           title="Import Rune: {{data.name}}" />
       </div>
       {{/if}}

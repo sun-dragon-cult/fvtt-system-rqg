@@ -3,9 +3,10 @@
 </h1>
 
 <div class="item-sheet-properties">
-  <label>{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}</label>
+  <label>{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}:</label>
   <select name="selectedSpeciesTemplateId">
     {{#select species.selectedSpeciesTemplate.id}}
+    <option value="">{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}</option>
     {{#each species.speciesTemplates}}
     <option value="{{this.id}}">{{this.name}}</option>
     {{/each}}
@@ -59,7 +60,7 @@
     </section>
   </article>
 
-  <article class="collabsible-wrapper" data-collabsible-name="speciesAdvanced" data-open="{{collapsibleOpenStates.speciesBackground}}">
+  <article class="collabsible-wrapper" data-collabsible-name="speciesAdvanced" data-open="{{collapsibleOpenStates.speciesAdvanced}}">
     <h2 class="collabsible-header">
       <span class="toggle-icon">
         <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesAdvanced}}no-display{{/if}}"></i>
@@ -86,28 +87,33 @@
         <div class="tab skills" data-group="species-item-selection" data-tab="skills">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesSkills"}}</h2>
           {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs"
-          ownedItems=speciesOwnedItems
+          ownedItems=speciesTemplateItems
           wizard="true"
+          forChoice="species"
           }}
         </div>
         <div class="tab runes" data-group="species-item-selection" data-tab="runes">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesRunes"}}</h2>
           <div class="flex-row flex-wrap">
             {{>"systems/rqg/actors/sheet-parts/elemental.hbs"
-            ownedItems=speciesOwnedItems
+            ownedItems=speciesTemplateItems
             wizard="true"
+            forChoice="species"
             }}
             {{>"systems/rqg/actors/sheet-parts/power.hbs"
-            ownedItems=speciesOwnedItems
+            ownedItems=speciesTemplateItems
             wizard="true"
+            forChoice="species"
             }}
             {{>"systems/rqg/actors/sheet-parts/form.hbs"
-            ownedItems=speciesOwnedItems
+            ownedItems=speciesTemplateItems
             wizard="true"
+            forChoice="species"
             }}
             {{>"systems/rqg/actors/sheet-parts/condition.hbs"
-            ownedItems=speciesOwnedItems
+            ownedItems=speciesTemplateItems
             wizard="true"
+            forChoice="species"
             }}
           </div>
 
@@ -115,8 +121,9 @@
         <div class="tab passions" data-group="species-item-selection" data-tab="passions">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesPassions"}}</h2>
           {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
-          ownedItems=speciesOwnedItems
+          ownedItems=speciesTemplateItems
           wizard="true"
+          forChoice="species"
           }}
         </div>
       </section>
