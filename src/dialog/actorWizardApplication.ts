@@ -6,9 +6,7 @@ import { RQG_CONFIG } from "../system/config";
 import { assertItemType, getGame, localize } from "../system/util";
 import { SkillDataSource } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { stringify } from "querystring";
-import { Ability, IAbility } from "../data-model/shared/ability";
-import { RuneDataSource } from "../data-model/item-data/runeData";
+import { IAbility } from "../data-model/shared/ability";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -224,6 +222,12 @@ export class ActorWizard extends FormApplication {
     if (templateChars) {
       const update = {
         data: {
+          attributes: {
+            move: this.species.selectedSpeciesTemplate?.data.data.attributes.move,
+          },
+          background: {
+            species: this.species.selectedSpeciesTemplate?.data.data.background.species,
+          },
           characteristics: {
             strength: {
               formula: templateChars.strength.formula,
@@ -247,13 +251,26 @@ export class ActorWizard extends FormApplication {
               formula: templateChars.charisma.formula,
             },
           },
-          background: {
-            species: this.species.selectedSpeciesTemplate?.data.data.background.species,
-          },
         },
       };
 
       await this.actor.update(update);
+    }
+
+    // Delete existing hit locations from actor
+    const existingHitLocationIds = this.actor.items
+      .filter((h) => h.type === ItemTypeEnum.HitLocation)
+      .map((h) => h.id)
+      .filter((h): h is string => h !== null);
+    await this.actor.deleteEmbeddedDocuments("Item", existingHitLocationIds);
+
+    // add hit locations from template to actor
+    const addHitLocations = this.species.selectedSpeciesTemplate?.items
+      .filter((h) => h.type === ItemTypeEnum.HitLocation)
+      .map((h) => h.data);
+    if (addHitLocations) {
+      //@ts-ignore addHitLocations
+      await this.actor.createEmbeddedDocuments("Item", addHitLocations);
     }
 
     this.species.selectedSpeciesTemplate?.data.items.forEach((i) => {
@@ -268,7 +285,7 @@ export class ActorWizard extends FormApplication {
         } else {
           // The old template and the new template both have the same item
           this.choices[skill.data.rqid].speciesValue = skill.data.baseChance;
-          if (checkAll){
+          if (checkAll) {
             this.choices[skill.data.rqid].speciesPresent = true;
           }
         }
@@ -294,13 +311,12 @@ export class ActorWizard extends FormApplication {
 
     // Find any rqids that are in the choices but not on the species template
     // and mark them not present on the species
-    const speciesRqids = this.species.selectedSpeciesTemplate?.items.map(i => i.data.data.rqid);
+    const speciesRqids = this.species.selectedSpeciesTemplate?.items.map((i) => i.data.data.rqid);
     for (const choiceKey in this.choices) {
       if (!speciesRqids?.includes(choiceKey)) {
         this.choices[choiceKey].speciesPresent = false;
       }
     }
-
   }
 
   async updateChoices() {
