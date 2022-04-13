@@ -15,7 +15,7 @@
           />
         </label>
       {{else if characterData.background.birthyear}}
-        <b>{{localize "RQG.Actor.Background.BirthYear"}}</b>
+        <label>{{localize "RQG.Actor.Background.BirthYear"}}</label>
         {{characterData.background.birthyear}}
       {{/if}}
     </div>
@@ -32,7 +32,7 @@
           />
         </label>
       {{else if characterData.background.age}}
-        <b>{{localize "RQG.Actor.Background.Age"}}</b>
+        <label>{{localize "RQG.Actor.Background.Age"}}</label>
         {{characterData.background.age}}
       {{/if}}
     </div>
@@ -48,12 +48,12 @@
           />
         </label>
       {{else if data.data.background.gender}}
-        <b>{{localize "RQG.Actor.Background.Gender"}}</b>
+        <label>{{localize "RQG.Actor.Background.Gender"}}</label>
         {{data.data.background.gender}}
       {{/if}}
     </div>
 
-    <div class="nowrap">
+    <div class="nowrap" data-target-drop-property="speciesRqidLink">
       {{#if isGM}}
         <label>{{localize "RQG.Actor.Background.Species"}}
           <input
@@ -64,9 +64,24 @@
           />
         </label>
       {{else if data.data.background.species}}
-        <b>{{localize "RQG.Actor.Background.Species"}}</b>
+        <label>{{localize "RQG.Actor.Background.Species"}}</label>
         {{data.data.background.species}}
       {{/if}}
+    </div>
+
+    <div class="nowrap" data-target-drop-property="speciesRqidLink">
+        <label>{{localize "RQG.Actor.Background.Species"}}</label>
+        {{#if data.data.background.speciesRqidLink}}
+        {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+          rqidLink=data.data.background.speciesRqidLink
+        }}
+        {{else}}
+          {{#if isGM}}
+          {{localize "RQG.Actor.Background.DropSpeciesJournalEntryGM"}}
+          {{else}}
+          {{localize "RQG.Actor.Background.DropSpeciesJournalEntryPlayer"}}
+          {{/if}}
+        {{/if}}
     </div>
   </fieldset>
 
@@ -87,7 +102,7 @@
           </select>
         </label>
       {{else if data.data.background.homeland}}
-        <b>{{localize "RQG.Actor.Background.Homeland.Heading"}}</b>
+        <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
         {{localize (concat "RQG.Actor.Background.Homeland." data.data.background.homeland)}}
       {{/if}}
     </div>
@@ -103,7 +118,7 @@
           />
         </label>
       {{else if data.data.background.town}}
-        <b>{{localize "RQG.Actor.Background.TownHomeArea"}}</b>
+        <label>{{localize "RQG.Actor.Background.TownHomeArea"}}</label>
         {{data.data.background.town}}
       {{/if}}
     </div>
@@ -119,7 +134,7 @@
           />
         </label>
       {{else if data.data.background.tribe}}
-        <b>{{localize "RQG.Actor.Background.Tribe"}}</b>
+        <label>{{localize "RQG.Actor.Background.Tribe"}}</label>
         {{data.data.background.tribe}}
       {{/if}}
     </div>
@@ -135,7 +150,7 @@
           />
         </label>
       {{else if data.data.background.clan}}
-        <b>{{localize "RQG.Actor.Background.Clan"}}</b>
+        <label>{{localize "RQG.Actor.Background.Clan"}}</label>
         {{data.data.background.clan}}
       {{/if}}
     </div>
@@ -165,7 +180,7 @@
       {{else if data.data.background.reputation}}
         <span data-reputation-roll>
           <img src="{{defaultItemIconSrc 'Reputation'}}" class="item" />
-          <b>{{localize "RQG.Actor.Background.Reputation"}}</b>
+          <label>{{localize "RQG.Actor.Background.Reputation"}}</label>
           {{data.data.background.reputation}}%
         </span>
       {{/if}}
@@ -182,7 +197,7 @@
           />
         </label>
       {{else if data.data.background.standardOfLiving}}
-        <b>{{localize "RQG.Actor.Background.StandardOfLiving"}}</b>
+        <label>{{localize "RQG.Actor.Background.StandardOfLiving"}}</label>
         {{data.data.background.standardOfLiving}}
       {{/if}}
     </div>
@@ -201,7 +216,7 @@
           </select>
         </label>
       {{else if data.data.background.occupation}}
-        <b>{{localize "RQG.Actor.Background.Occupation.Heading"}}</b>
+        <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
         {{localize (concat "RQG.Actor.Background.Occupation." data.data.background.occupation)}}
       {{/if}}
     </div>
@@ -218,7 +233,7 @@
           />
         </label>(L)
       {{else if data.data.background.baseIncome}}
-        <b>{{localize "RQG.Actor.Background.BaseIncome"}}</b>
+        <label>{{localize "RQG.Actor.Background.BaseIncome"}}</label>
         {{data.data.background.baseIncome}}
         ({{localize "RQG.Item.Gear.LunarsAbbr"}})
       {{/if}}
@@ -244,7 +259,7 @@
             size="30"
           /></label>
       {{else if data.data.background.ransom}}
-        <b>{{localize "RQG.Actor.Background.Ransom"}}</b>
+        <label>{{localize "RQG.Actor.Background.Ransom"}}</label>
         {{data.data.background.ransom}}
         ({{localize "RQG.Item.Gear.LunarsAbbr"}})
         {{data.data.background.ransomDetails}}

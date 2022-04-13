@@ -1,3 +1,5 @@
+import { RqidLink } from "../shared/rqidLink";
+
 export enum OccupationEnum {
   NoOccupation = "",
   AssistantShaman = "assistantShaman",
@@ -59,6 +61,7 @@ export enum HomeLandEnum {
 
 export interface Background {
   species: string;
+  speciesRqidLink: RqidLink | undefined;
   occupation: OccupationEnum;
   homeland: HomeLandEnum;
   town?: string;
@@ -77,6 +80,7 @@ export interface Background {
 
 export const emptyBackground: Background = {
   species: "Human",
+  speciesRqidLink: undefined,
   occupation: OccupationEnum.NoOccupation,
   homeland: HomeLandEnum.Sartar,
 };

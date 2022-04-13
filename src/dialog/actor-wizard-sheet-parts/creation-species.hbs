@@ -12,6 +12,15 @@
     {{/each}}
     {{/select}}
   </select>
+  <label>{{localize "RQG.ActorCreation.Step0.SpeciesDescription"}}:</label>
+  <div>
+    {{#if species.selectedSpeciesTemplate.data.data.background.speciesRqidLink}}
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+      rqidLink=species.selectedSpeciesTemplate.data.data.background.speciesRqidLink
+    }}
+    {{/if}}    
+  </div>
+
 </div>
 
 <div>

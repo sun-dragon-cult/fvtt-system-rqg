@@ -38,6 +38,7 @@
       },
       "Step0": {
         "ChooseSpecies": "Choose a Species",
+        "SpeciesDescription": "Species Description",
         "BackgroundAndNotes": "Background and Notes",
         "SelectSpeciesSkills": "Select Species Skills",
         "SelectSpeciesRunes": "Select Species Runes",
@@ -86,6 +87,8 @@
         "Age": "Age",
         "Gender": "Gender",
         "Species": "Species",
+        "DropSpeciesJournalEntryGM": "Drop a Journal Entry here, or use the Adventurer Creation Wizard",
+        "DropSpeciesJournalEntryPlayer": "This will be filled in by your GM or by the Adventurer Creation Wizard.",
         "TownHomeArea": "Town / Home Area",
         "Tribe": "Tribe",
         "Clan": "Clan",

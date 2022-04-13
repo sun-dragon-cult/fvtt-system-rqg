@@ -126,6 +126,13 @@ export const RQG_CONFIG = {
   },
 
   flagScope: "rqg", //This is the same as getGame().system.id except this gets run before game is initialized
+
+  rqidFlags: {
+    rqid: "rqid",
+    rqidLang: "rqidLang",
+    rqidPriority: "rqidPriority"
+  },
+  
   actorWizardFlags: {
     actorWizardComplete: "actor-wizard-complete",
     selectedSpeciesId: "selected-species-id",

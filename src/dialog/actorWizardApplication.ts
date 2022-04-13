@@ -1,9 +1,9 @@
 import { RqgActor } from "../actors/rqgActor";
 import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { getActorTemplates } from "../system/api/rqidApi";
+import { getActorTemplates, Rqid } from "../system/api/rqidApi";
 import { RQG_CONFIG } from "../system/config";
-import { assertItemType, getGame, localize } from "../system/util";
+import { assertItemType, getGame, getRequiredDomDataset, localize } from "../system/util";
 import { SkillDataSource } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
@@ -179,6 +179,23 @@ export class ActorWizard extends FormApplication {
         this._setActorCreationComplete();
       });
     });
+
+    // Handle rqid links
+    $(this.form!)
+      .find("[data-rqid-link]")
+      .each((i: number, el: HTMLElement) => {
+        const rqid = getRequiredDomDataset($(el), "rqid");
+        el.addEventListener("click", async () => {
+          const rqidItem = await Rqid.fromRqid(rqid);
+          if (rqidItem) {
+            rqidItem.sheet?.render(true);
+          } else {
+            ui.notifications?.warn(
+              localize("RQG.Item.Notification.RqidFromLinkNotFound", { rqid: rqid }) // TODO More generic notification
+            );
+          }
+        });
+      });
   }
 
   _setActorCreationComplete() {
@@ -227,6 +244,8 @@ export class ActorWizard extends FormApplication {
           },
           background: {
             species: this.species.selectedSpeciesTemplate?.data.data.background.species,
+            speciesRqidLink:
+              this.species.selectedSpeciesTemplate?.data.data.background.speciesRqidLink,
           },
           characteristics: {
             strength: {
