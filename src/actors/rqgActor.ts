@@ -301,7 +301,7 @@ export class RqgActor extends Actor {
     }
   }
 
-  public getItemsByRqid(rqid: string): RqgItem[] {
+  public getEmbeddedItemsByRqid(rqid: string): RqgItem[] {
     let results = this.items.filter(i => i.data.data.rqid === rqid);
     return results;
   }

@@ -308,15 +308,15 @@ export class ActorWizard extends FormApplication {
     const adds = [];
     const deletes: string[] = [];
     for (const key in this.choices) {
-      let existingItems = this.actor.getItemsByRqid(key);
+      let existingItems = this.actor.getEmbeddedItemsByRqid(key);
       if (existingItems.length > 0) {
         for (const actorItem of existingItems) {
           if (this.choices[key].present()) {
             if (actorItem.type === ItemTypeEnum.Skill) {
               assertItemType(actorItem.type, ItemTypeEnum.Skill);
               const existingSkill = actorItem.data as SkillDataSource;
-              const newBaseChance = this.choices[key].totalValue;
-              if (existingSkill.data.baseChance !== newBaseChance())
+              const newBaseChance = this.choices[key].totalValue();
+              if (existingSkill.data.baseChance !== newBaseChance)
                 // Item exists on the actor and has a different baseChance, so update it.
                 updates.push({
                   _id: actorItem.id,
@@ -325,8 +325,8 @@ export class ActorWizard extends FormApplication {
             }
             if (actorItem.type === ItemTypeEnum.Rune || actorItem.type === ItemTypeEnum.Passion) {
               const existingAbility = actorItem.data.data as IAbility;
-              const newChance = this.choices[key].totalValue;
-              if (existingAbility.chance !== newChance()) {
+              const newChance = this.choices[key].totalValue();
+              if (existingAbility.chance !== newChance) {
                 updates.push({
                   _id: actorItem.id,
                   data: { chance: newChance },
@@ -341,7 +341,7 @@ export class ActorWizard extends FormApplication {
           }
         }
       } else {
-        const itemsToAdd = this.species.selectedSpeciesTemplate?.getItemsByRqid(key);
+        const itemsToAdd = this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key);
         if (itemsToAdd) {
           for (const templateItem of itemsToAdd) {
             if (this.choices[key].present()) {
