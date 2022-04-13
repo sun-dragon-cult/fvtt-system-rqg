@@ -1,0 +1,141 @@
+<h1 class="norse">
+  {{localize "RQG.ActorCreation.Nav.0-Species"}}
+</h1>
+
+<div class="item-sheet-properties">
+  <label>{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}:</label>
+  <select name="selectedSpeciesTemplateId">
+    {{#select species.selectedSpeciesTemplate.id}}
+    <option value="">{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}</option>
+    {{#each species.speciesTemplates}}
+    <option value="{{this.id}}">{{this.name}}</option>
+    {{/each}}
+    {{/select}}
+  </select>
+  <label>{{localize "RQG.ActorCreation.Step0.SpeciesDescription"}}:</label>
+  <div>
+    {{#if species.selectedSpeciesTemplate.data.data.background.speciesRqidLink}}
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+      rqidLink=species.selectedSpeciesTemplate.data.data.background.speciesRqidLink
+    }}
+    {{/if}}    
+  </div>
+
+</div>
+
+<div>
+  <h2 class="norse">{{species.selectedSpeciesTemplate.name}}</h2>
+  <div class="characteristics" style="margin-bottom: 0.75rem;">
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.strength"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.strength.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.constitution"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.constitution.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.size"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.size.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.dexterity"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.dexterity.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.intelligence"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.intelligence.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.power"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.power.formula}}
+    </div>
+    <div class="flex-column">
+      <label class="norse">{{localize "RQG.Actor.Characteristics.charisma"}}</label>
+      {{species.selectedSpeciesTemplate.data.data.characteristics.charisma.formula}}
+    </div>
+  </div>
+
+  <article class="collabsible-wrapper" data-collabsible-name="speciesBackground" data-open="{{collapsibleOpenStates.speciesBackground}}">
+    <h2 class="collabsible-header">
+      <span class="toggle-icon">
+        <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesBackground}}no-display{{/if}}"></i>
+        <i class="far fa-minus-square {{#unless collapsibleOpenStates.speciesBackground}}no-display{{/unless}}"></i>
+        {{localize "RQG.ActorCreation.Step0.BackgroundAndNotes"}}
+      </span>
+    </h2>
+    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.speciesBackground}}style="display: none;"{{/unless}}>
+      {{{enrichHtml species.selectedSpeciesTemplate.data.data.background.biography}}}
+    </section>
+  </article>
+
+  <article class="collabsible-wrapper" data-collabsible-name="speciesAdvanced" data-open="{{collapsibleOpenStates.speciesAdvanced}}">
+    <h2 class="collabsible-header">
+      <span class="toggle-icon">
+        <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesAdvanced}}no-display{{/if}}"></i>
+        <i class="far fa-minus-square {{#unless collapsibleOpenStates.speciesAdvanced}}no-display{{/unless}}"></i>
+        {{localize "RQG.ActorCreation.AdvancedOptions"}}
+      </span>
+    </h2>
+    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.speciesAdvanced}}style="display: none;"{{/unless}} >
+
+      <nav class="item-sheet-nav-tabs tabs" data-group="species-item-selection">
+        <a class="item" data-group="species-item-selection" data-tab="skills">
+          {{localize "RQG.ActorCreation.SkillsTab"}}
+        </a>
+        <a class="item" data-group="species-item-selection" data-tab="runes">
+          {{localize "RQG.ActorCreation.RunesTab"}}
+        </a>
+        <a class="item" data-group="species-item-selection" data-tab="passions">
+          {{localize "RQG.ActorCreation.PassionsTab"}}
+        </a>
+      </nav>
+
+      <section class="species-body">
+
+        <div class="tab skills" data-group="species-item-selection" data-tab="skills">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesSkills"}}</h2>
+          {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs"
+          ownedItems=speciesTemplateItems
+          wizard="true"
+          forChoice="species"
+          }}
+        </div>
+        <div class="tab runes" data-group="species-item-selection" data-tab="runes">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesRunes"}}</h2>
+          <div class="flex-row flex-wrap">
+            {{>"systems/rqg/actors/sheet-parts/elemental.hbs"
+            ownedItems=speciesTemplateItems
+            wizard="true"
+            forChoice="species"
+            }}
+            {{>"systems/rqg/actors/sheet-parts/power.hbs"
+            ownedItems=speciesTemplateItems
+            wizard="true"
+            forChoice="species"
+            }}
+            {{>"systems/rqg/actors/sheet-parts/form.hbs"
+            ownedItems=speciesTemplateItems
+            wizard="true"
+            forChoice="species"
+            }}
+            {{>"systems/rqg/actors/sheet-parts/condition.hbs"
+            ownedItems=speciesTemplateItems
+            wizard="true"
+            forChoice="species"
+            }}
+          </div>
+
+        </div>
+        <div class="tab passions" data-group="species-item-selection" data-tab="passions">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesPassions"}}</h2>
+          {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
+          ownedItems=speciesTemplateItems
+          wizard="true"
+          forChoice="species"
+          }}
+        </div>
+      </section>
+    </section>
+  </article>
+</div>

@@ -24,6 +24,7 @@ import { RqgActor } from "./rqgActor";
 import {
   assertActorType,
   assertItemType,
+  findDatasetValueInSelfOrAncestors,
   getActorFromIds,
   getDocumentTypes,
   getDomDataset,
@@ -53,6 +54,8 @@ import { ReputationCard } from "../chat/reputationCard";
 import { RuneMagicCard } from "../chat/runeMagicCard";
 import { ActorWizard } from "../dialog/actorWizardApplication";
 import { RQG_CONFIG } from "../system/config";
+import { RqidLink } from "../data-model/shared/rqidLink";
+import { Rqid } from "../system/api/rqidApi";
 
 interface UiSections {
   health: boolean;
@@ -179,7 +182,7 @@ export class RqgActorSheet extends ActorSheet<
 
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
-      ownedItems: this.organizeOwnedItems(),
+      ownedItems: RqgActorSheet.organizeOwnedItems(this.actor),
 
       spiritCombatSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.spiritCombat),
       dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
@@ -415,14 +418,14 @@ export class RqgActorSheet extends ActorSheet<
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
    * TODO Fix the typing
    */
-  private organizeOwnedItems(): any {
+  public static organizeOwnedItems(actor: RqgActor): any {
     const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
-    this.actor.items.forEach((item) => {
+    actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
     });
 
     const currency: any = [];
-    this.actor.items.forEach((item) => {
+    actor.items.forEach((item) => {
       if (item.type === ItemTypeEnum.Gear) {
         //TODO: Assert that this is Gear or something else that has physicalItemType??
         //@ts-ignore physicalItemType
@@ -487,8 +490,8 @@ export class RqgActorSheet extends ActorSheet<
       assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
 
       let usages = weapon.data.data.usage;
-      let actorStr = this.actor.data.data.characteristics.strength.value;
-      let actorDex = this.actor.data.data.characteristics.dexterity.value;
+      let actorStr = actor.data.data.characteristics.strength.value;
+      let actorDex = actor.data.data.characteristics.dexterity.value;
       for (const key in usages) {
         let usage = usages[key];
         if (usage.skillId) {
@@ -1043,6 +1046,23 @@ export class RqgActorSheet extends ActorSheet<
         });
       });
     });
+
+    // Handle rqid links
+    $(this.form!)
+      .find("[data-rqid-link]")
+      .each((i: number, el: HTMLElement) => {
+        const rqid = getRequiredDomDataset($(el), "rqid");
+        el.addEventListener("click", async () => {
+          const rqidItem = await Rqid.fromRqid(rqid);
+          if (rqidItem) {
+            rqidItem.sheet?.render(true);
+          } else {
+            ui.notifications?.warn(
+              localize("RQG.Item.Notification.RqidFromLinkNotFound", { rqid: rqid }) // TODO More generic notification
+            );
+          }
+        });
+      });
   }
 
   static confirmItemDelete(actor: RqgActor, itemId: string): void {
@@ -1138,6 +1158,48 @@ export class RqgActorSheet extends ActorSheet<
     entity.sheet.render(true);
   }
 
+  protected async _onDrop(event: DragEvent): Promise<void> {
+    super._onDrop(event);
+
+    let droppedEntityData;
+    try {
+      droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+    } catch (err) {
+      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData")); // TODO generic notification for all actors, items,  etc
+      return;
+    }
+
+    const target = findDatasetValueInSelfOrAncestors(
+      event.target as HTMLElement,
+      "targetDropProperty"
+    );
+
+    if (droppedEntityData.type === "JournalEntry") {
+      const droppedJournal = getGame().journal?.get(droppedEntityData.id);
+
+      if (droppedJournal) {
+        const rqid = droppedJournal.getFlag(
+          RQG_CONFIG.flagScope,
+          RQG_CONFIG.rqidFlags.rqid
+        ) as string;
+
+        const link: RqidLink = {
+          rqid: rqid,
+          name: droppedJournal.name || "",
+          itemType: droppedEntityData.type,
+        };
+
+        if (target) {
+          if (target === "speciesRqidLink") {
+            await this.actor.update({
+              "data.background.speciesRqidLink": link,
+            });
+          }
+        }
+      }
+    }
+  }
+
   protected async _onDropItem(event: DragEvent, data: any): Promise<unknown> {
     // data is technically "ActorSheet.DropData.Item", but that doesn't expose ".actorId",
     // and it didn't seem useful to have it typed that way
@@ -1151,6 +1213,8 @@ export class RqgActorSheet extends ActorSheet<
       );
       return false;
     }
+
+    // You can drop Items anywhere because we know what to do with them.
     const item = await Item.fromDropData(data);
 
     if (!item) {
@@ -1405,7 +1469,10 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
-    if (this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete)) {
+    if (
+      this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete) ||
+      this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.isActorTemplate)
+    ) {
       return super._getHeaderButtons();
     }
     return [

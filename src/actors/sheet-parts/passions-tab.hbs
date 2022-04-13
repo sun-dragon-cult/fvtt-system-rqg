@@ -1,11 +1,34 @@
-<h2 class="flex-row">{{localize "RQG.Actor.Passion.Passions"}}</h2>
+{{!-- {{json ownedItems}} --}}
+<h2 class="flex-row">{{localize 'RQG.Actor.Passion.Passions'}}</h2>
 <div class="grid passions item-list">
   {{#each ownedItems.passion}}
-  <div class="grid passion item">
-    <div data-item-id="{{id}}" data-item-roll class="passion contextmenu img item" title="{{localize "RQG.Game.RollTitle"}}"><img src="{{img}}"></div>
-    <div data-item-id="{{id}}" data-item-roll class="passion contextmenu item" title="{{localize "RQG.Game.RollTitle"}}">{{name}}</div>
-    <div data-item-id="{{id}}" data-item-roll class="passion contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" title="{{localize "RQG.Game.RollTitle"}}">{{this.data.data.chance}}%</div>
-    <details data-item-id="{{id}}" class="description passion contextmenu item"><summary>{{localize "RQG.Actor.Passion.BackStory"}}</summary>{{{enrichHtml this.data.data.description}}}</details>
+  <div class="grid {{#if ../wizard}}passion-select{{else}}passion{{/if}} item">
+    <div data-item-id="{{id}}" data-item-roll class="passion contextmenu img item"
+      title="{{localize 'RQG.Game.RollTitle'}}">
+      {{#if ../wizard}}
+      <div>
+        <input type="checkbox"
+          class="wizard-choice-input"
+          data-rqid="{{this.data.data.rqid}}"
+          data-for-choice="{{../forChoice}}"
+          {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+          title="Import Rune: {{data.name}}" />
+      </div>
+      {{/if}}
+      <img src="{{img}}">
+    </div>
+    <div data-item-id="{{id}}" data-item-roll class="passion contextmenu item"
+      title="{{localize 'RQG.Game.RollTitle'}}">
+      {{name}}
+    </div>
+    <div data-item-id="{{id}}" data-item-roll
+      class="passion contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+      title="{{localize 'RQG.Game.RollTitle'}}">
+      {{this.data.data.chance}}%
+    </div>
+    <details data-item-id="{{id}}" class="description passion contextmenu item">
+      <summary>{{localize "RQG.Actor.Passion.BackStory"}}</summary>{{{enrichHtml this.data.data.description}}}
+    </details>
   </div>
-    {{/each}}
+  {{/each}}
 </div>

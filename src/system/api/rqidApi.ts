@@ -1,3 +1,4 @@
+import { RqgActor } from "../../actors/rqgActor";
 import { ArmorDataSource } from "../../data-model/item-data/armorData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillDataSource } from "../../data-model/item-data/skillData";
@@ -457,5 +458,17 @@ export class Rqid {
 
     return "";
 
+  }
+}
+
+export async function getActorTemplates(): Promise<RqgActor[] | undefined> {
+  // TODO: Option 1: Find by rqid with "-template" in the rqid and of type Actor?
+  // TODO: Option 2: Make a configurable world folder, and look there first, otherwise look in configurable compendium
+  const speciesTemplatesCompendium = getGame().packs.get("rqg.species-templates");
+  const templates = await speciesTemplatesCompendium?.getDocuments();
+  if (templates) {
+    return templates as RqgActor[];
+  } else {
+    return undefined;
   }
 }

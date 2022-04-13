@@ -110,8 +110,6 @@ export class HomelandSheet extends RqgItemSheet<
       // and where to put them.
       const droppedItem = (await Item.fromDropData(droppedEntityData)) as RqgItem;
 
-      console.log("DROPPED ITEM: ", droppedItem);
-
       if (droppedItem === undefined) {
         return;
       }

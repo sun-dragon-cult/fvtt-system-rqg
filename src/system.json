@@ -74,6 +74,20 @@
       "type": "Actor"
     },
     {
+      "name": "species-templates",
+      "label": "Species Templates",
+      "system": "rqg",
+      "path": "assets/packs/species-templates.db",
+      "type": "Actor"
+    },
+    {
+      "name": "species-descriptions",
+      "label": "Species Descriptions",
+      "system": "rqg",
+      "path": "assets/packs/species-descriptions.db",
+      "type": "JournalEntry"
+    },
+    {
       "name": "name-bases",
       "label": "Name Bases",
       "system": "rqg",
