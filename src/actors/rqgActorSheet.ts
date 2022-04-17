@@ -1161,9 +1161,9 @@ export class RqgActorSheet extends ActorSheet<
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
 
-    let droppedEntityData;
+    let droppedDocumentData;
     try {
-      droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
       ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData")); // TODO generic notification for all actors, items,  etc
       return;
@@ -1174,8 +1174,8 @@ export class RqgActorSheet extends ActorSheet<
       "targetDropProperty"
     );
 
-    if (droppedEntityData.type === "JournalEntry") {
-      const droppedJournal = getGame().journal?.get(droppedEntityData.id);
+    if (droppedDocumentData.type === "JournalEntry") {
+      const droppedJournal = getGame().journal?.get(droppedDocumentData.id);
 
       if (droppedJournal) {
         const rqid = droppedJournal.getFlag(
@@ -1186,7 +1186,7 @@ export class RqgActorSheet extends ActorSheet<
         const link: RqidLink = {
           rqid: rqid,
           name: droppedJournal.name || "",
-          documentType: droppedEntityData.type,
+          documentType: droppedDocumentData.type,
         };
 
         if (target) {

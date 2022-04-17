@@ -189,15 +189,15 @@ export class RqgItemSheet<
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
 
-    let droppedEntityData;
+    let droppedDocumentData;
     try {
-      droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
       ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
       return;
     }
 
-    console.log("RQG ITEM DROP!", event, droppedEntityData);
+    console.log("RQG ITEM DROP!", event, droppedDocumentData);
 
     const targetPropertyName = findDatasetValueInSelfOrAncestors(
       event.target as HTMLElement,
@@ -208,22 +208,22 @@ export class RqgItemSheet<
 
     let droppedDocument: Item | JournalEntry | undefined = undefined;
 
-    if (droppedEntityData.type === "Item") {
-      droppedDocument = await Item.fromDropData(droppedEntityData);
+    if (droppedDocumentData.type === "Item") {
+      droppedDocument = await Item.fromDropData(droppedDocumentData);
     }
 
-    if (droppedEntityData.type === "JournalEntry") {
-      droppedDocument = await JournalEntry.fromDropData(droppedEntityData);
+    if (droppedDocumentData.type === "JournalEntry") {
+      droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
     }
 
     if (dropTypes && dropTypes.length > 0) {
       if (
         !(
-          dropTypes.includes(droppedEntityData.type) ||
+          dropTypes.includes(droppedDocumentData.type) ||
           dropTypes.includes((droppedDocument as Item).type)
         )
       ) {
-        const msg = `This field expects an item of type ${dropTypes.join(", ")} and the dropped item was ${droppedEntityData.type}`;
+        const msg = `This field expects an item of type ${dropTypes.join(", ")} and the dropped item was ${droppedDocumentData.type}`;
         ui.notifications?.warn(msg);
         console.warn(msg, event);
         return;
@@ -237,7 +237,7 @@ export class RqgItemSheet<
         RQG_CONFIG.rqidFlags.rqid
       ) as string;
       newLink.name = droppedDocument.name || "";
-      newLink.documentType = droppedEntityData.type;
+      newLink.documentType = droppedDocumentData.type;
       if (droppedDocument instanceof Item) {
         newLink.itemType = droppedDocument.type;
       }

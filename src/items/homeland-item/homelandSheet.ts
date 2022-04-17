@@ -92,9 +92,9 @@ export class HomelandSheet extends RqgItemSheet<
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
 
-    let droppedEntityData;
+    let droppedDocumentData;
     try {
-      droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
       ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
       return;
@@ -105,7 +105,7 @@ export class HomelandSheet extends RqgItemSheet<
       "targetDropProperty"
     );
 
-    const droppedDocument = await JournalEntry.fromDropData(droppedEntityData);
+    const droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
 
     if (droppedDocument) {
       const thisHomeland = this.item.data.data as HomelandDataSourceData;

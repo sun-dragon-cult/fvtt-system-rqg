@@ -193,9 +193,9 @@ export class OccupationSheet extends RqgItemSheet<
 
     const thisOccupation = this.item.data.data as OccupationDataSourceData;
 
-    let droppedEntityData;
+    let droppedDocumentData;
     try {
-      droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
       ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
       return;
@@ -206,7 +206,7 @@ export class OccupationSheet extends RqgItemSheet<
       "targetDropProperty"
     );
 
-    const droppedDocument = await JournalEntry.fromDropData(droppedEntityData);
+    const droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
 
     if (droppedDocument) {
       if (targetPropertyName === "occupationRqidLink") {
@@ -232,8 +232,8 @@ export class OccupationSheet extends RqgItemSheet<
       }
     }
 
-    if (droppedEntityData.type === "Item") {
-      const droppedItem = (await Item.fromDropData(droppedEntityData)) as RqgItem;
+    if (droppedDocumentData.type === "Item") {
+      const droppedItem = (await Item.fromDropData(droppedDocumentData)) as RqgItem;
 
       if (droppedItem === undefined) {
         return;
