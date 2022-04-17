@@ -67,7 +67,6 @@ Hooks.once("init", async () => {
   (getGame().system as any).api = {
     // installModules: installModules,
     migrate: applyDefaultWorldMigrations,
-    // consolidate: consolidateCompendiumItems,
     rqid: Rqid,
     names: nameGeneration,
   };
