@@ -1,9 +1,9 @@
-import { JournalEntryLink } from "../shared/journalentrylink";
+import { RqidLink } from "../shared/rqidLink";
 import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
 
-export interface RuneMagicDataSourceData extends JournalEntryLink, Spell {
+export interface RuneMagicDataSourceData extends Spell {
   /** The cult this rune magic is learned from and where to draw rune points */
   cultId: string;
   /** Array of rune names like "Man (form)" */
@@ -34,6 +34,7 @@ export const emptyRuneMagic: RuneMagicDataSourceData = {
   rqid: "",
   rqidPriority: DEFAULT_RQIDPRIORITY,
   rqidLang: DEFAULT_RQIDLANG,
+  descriptionRqidLink: new RqidLink(),
   cultId: "",
   runes: [],
   points: 0,
@@ -44,7 +45,4 @@ export const emptyRuneMagic: RuneMagicDataSourceData = {
   isStackable: false,
   isOneUse: false,
   isEnchantment: false,
-  journalId: "",
-  journalPack: "",
-  journalName: "",
 };

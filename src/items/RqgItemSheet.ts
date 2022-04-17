@@ -1,5 +1,8 @@
+import { RqidLink } from "../data-model/shared/rqidLink";
 import { Rqid } from "../system/api/rqidApi";
+import { RQG_CONFIG } from "../system/config";
 import {
+  findDatasetValueInSelfOrAncestors,
   getDomDataset,
   getGame,
   getRequiredDomDataset,
@@ -141,7 +144,7 @@ export class RqgItemSheet<
       .each((i: number, el: HTMLElement) => {
         const rqid = getRequiredDomDataset($(el), "rqid");
         el.addEventListener("click", async () => {
-          const rqidItem = await Rqid.itemFromRqid(rqid);
+          const rqidItem = await Rqid.fromRqid(rqid);
           if (rqidItem) {
             rqidItem.sheet?.render(true);
           } else {
@@ -151,5 +154,136 @@ export class RqgItemSheet<
           }
         });
       });
+
+    $(this.form!)
+      .find("[data-delete-from-property]")
+      .each((i: number, el: HTMLElement) => {
+        const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
+        const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
+        el.addEventListener("click", async () => {
+          let deleteFromProperty = getProperty(this.item.data.data, deleteFromPropertyName);
+          if (Array.isArray(deleteFromProperty)) {
+            const newValueArray = (deleteFromProperty as RqidLink[]).filter(
+              (r) => r.rqid !== deleteRqid
+            );
+            if (this.item.isEmbedded) {
+              await this.item.actor?.updateEmbeddedDocuments("Item", [
+                { _id: this.item.id, data: { [deleteFromPropertyName]: newValueArray } },
+              ]);
+            } else {
+              await this.item.update({ data: { [deleteFromPropertyName]: newValueArray } });
+            }
+          } else {
+            if (this.item.isEmbedded) {
+              await this.actor?.updateEmbeddedDocuments("Item", [
+                { _id: this.item.id, data: { [deleteFromPropertyName]: new RqidLink() } },
+              ]);
+            } else {
+              await this.item.update({ data: { [deleteFromPropertyName]: new RqidLink() } });
+            }
+          }
+        });
+      });
   }
+
+  protected async _onDrop(event: DragEvent): Promise<void> {
+    super._onDrop(event);
+
+    let droppedEntityData;
+    try {
+      droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+    } catch (err) {
+      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
+      return;
+    }
+
+    console.log("RQG ITEM DROP!", event, droppedEntityData);
+
+    const targetPropertyName = findDatasetValueInSelfOrAncestors(
+      event.target as HTMLElement,
+      "targetDropProperty"
+    );
+
+    const dropTypes = findDatasetValueInSelfOrAncestors(event.target as HTMLElement, "expectedDropTypes")?.split(",");
+
+    let droppedDocument: Item | JournalEntry | undefined = undefined;
+
+    if (droppedEntityData.type === "Item") {
+      droppedDocument = await Item.fromDropData(droppedEntityData);
+    }
+
+    if (droppedEntityData.type === "JournalEntry") {
+      droppedDocument = await JournalEntry.fromDropData(droppedEntityData);
+    }
+
+    if (dropTypes && dropTypes.length > 0) {
+      if (
+        !(
+          dropTypes.includes(droppedEntityData.type) ||
+          dropTypes.includes((droppedDocument as Item).type)
+        )
+      ) {
+        const msg = `This field expects an item of type ${dropTypes.join(", ")} and the dropped item was ${droppedEntityData.type}`;
+        ui.notifications?.warn(msg);
+        console.warn(msg, event);
+        return;
+      }
+    }
+
+    if (droppedDocument && targetPropertyName) {
+      const newLink = new RqidLink();
+      newLink.rqid = droppedDocument.getFlag(
+        RQG_CONFIG.flagScope,
+        RQG_CONFIG.rqidFlags.rqid
+      ) as string;
+      newLink.name = droppedDocument.name || "";
+      newLink.documentType = droppedEntityData.type;
+      if (droppedDocument instanceof Item) {
+        newLink.itemType = droppedDocument.type;
+      }
+
+      const targetProperty = getProperty(this.item.data.data, targetPropertyName);
+
+      if (targetProperty) {
+        (event as RqidLinkDragEvent).TargetPropertyName = targetPropertyName;
+        if (Array.isArray(targetProperty)) {
+          const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
+          if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
+            targetPropertyRqidLinkArray.push(newLink);
+            targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
+            if (this.item.isEmbedded) {
+              (event as RqidLinkDragEvent).RqidLinkDropResult =
+                await this.item.actor?.updateEmbeddedDocuments("Item", [
+                  {
+                    _id: this.item.id,
+                    data: { [targetPropertyName]: targetPropertyRqidLinkArray },
+                  },
+                ]);
+            } else {
+              (event as RqidLinkDragEvent).RqidLinkDropResult = await this.item.update({
+                data: { [targetPropertyName]: targetPropertyRqidLinkArray },
+              });
+            }
+          }
+        } else {
+          // Property is a single RqidLink, not an array
+          if (this.item.isEmbedded) {
+            (event as RqidLinkDragEvent).RqidLinkDropResult =
+              await this.actor?.updateEmbeddedDocuments("Item", [
+                { _id: this.item.id, data: { [targetPropertyName]: newLink } },
+              ]);
+          } else {
+            (event as RqidLinkDragEvent).RqidLinkDropResult = await this.item.update({
+              data: { [targetPropertyName]: newLink },
+            });
+          }
+        }
+      }
+    }
+  }
+}
+
+export class RqidLinkDragEvent extends DragEvent {
+  RqidLinkDropResult: any;
+  TargetPropertyName: string = "";
 }

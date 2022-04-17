@@ -68,21 +68,16 @@
         {{data.data.background.species}}
       {{/if}}
     </div>
+        
+    {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        rqidLink=data.data.background.speciesRqidLink
+        parentField="speciesRqidLink"
+        dropTypes="JournalEntry"
+        showDeleteFromPropertyName="speciesRqidLink"
+        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+        showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+    }}
 
-    <div class="nowrap" data-target-drop-property="speciesRqidLink">
-        <label>{{localize "RQG.Actor.Background.Species"}}</label>
-        {{#if data.data.background.speciesRqidLink}}
-        {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-          rqidLink=data.data.background.speciesRqidLink
-        }}
-        {{else}}
-          {{#if isGM}}
-          {{localize "RQG.Actor.Background.DropSpeciesJournalEntryGM"}}
-          {{else}}
-          {{localize "RQG.Actor.Background.DropSpeciesJournalEntryPlayer"}}
-          {{/if}}
-        {{/if}}
-    </div>
   </fieldset>
 
   <fieldset>

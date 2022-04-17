@@ -9,6 +9,7 @@ import {
 } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
+import { RqidLink } from "../data-model/shared/rqidLink";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -141,5 +142,26 @@ export const registerHandlebarsHelpers = function () {
       return "";
     }
   });
-  
+
+  Handlebars.registerHelper("rqidLinkImage", function (rqidLink: RqidLink) {
+    if (rqidLink.documentType === "JournalEntry") {
+      return `<i class="fas fa-book-open"></i>`;
+    }
+    
+    const iconSettings: any = <ClientSettings>(
+      getGame().settings.get("rqg", "defaultItemIconSettings")
+    );
+
+    // if (rqidLink.itemType === "cult") {
+    //   return `<img src="${iconSettings.cult}">`;
+    // }
+
+if (rqidLink.documentType === "Item" && rqidLink.itemType) {
+  if (iconSettings[rqidLink.itemType]) {
+    return `<img src="${iconSettings[rqidLink.itemType]}">`;
+  }
+}
+
+    return `<i class="fas fa-suitcase"></i>`;
+  });
 };

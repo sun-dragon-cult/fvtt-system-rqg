@@ -16,7 +16,6 @@ import {
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
-import { droppableJournalDescription } from "../isDroppable";
 
 interface RuneMagicSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -106,6 +105,5 @@ export class RuneMagicSheet extends RqgItemSheet<
 
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
-    await droppableJournalDescription(this.item, event);
   }
 }

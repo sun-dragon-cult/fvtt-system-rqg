@@ -1,9 +1,9 @@
-import { JournalEntryLink } from "../shared/journalentrylink";
+import { RqidLink } from "../shared/rqidLink";
 import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
 
-export interface SpiritMagicDataSourceData extends JournalEntryLink, Spell {
+export interface SpiritMagicDataSourceData extends Spell {
   /** Can the caster decide the number of magic points used */
   isVariable: boolean;
   /** Can't be cast if one of the listed spells are already active (not yet implemented) */
@@ -31,6 +31,7 @@ export const emptySpiritMagic: SpiritMagicDataSourceData = {
   rqid: "",
   rqidPriority: DEFAULT_RQIDPRIORITY,
   rqidLang: DEFAULT_RQIDLANG,
+  descriptionRqidLink: new RqidLink(),
   points: 0,
   isVariable: false,
   isRitual: false,
@@ -40,8 +41,5 @@ export const emptySpiritMagic: SpiritMagicDataSourceData = {
   concentration: SpellConcentrationEnum.Passive,
   incompatibleWith: [],
   spellFocus: "",
-  journalId: "",
-  journalPack: "",
-  journalName: "",
   isMatrix: false,
 };

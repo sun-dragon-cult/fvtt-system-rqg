@@ -1186,7 +1186,7 @@ export class RqgActorSheet extends ActorSheet<
         const link: RqidLink = {
           rqid: rqid,
           name: droppedJournal.name || "",
-          itemType: droppedEntityData.type,
+          documentType: droppedEntityData.type,
         };
 
         if (target) {

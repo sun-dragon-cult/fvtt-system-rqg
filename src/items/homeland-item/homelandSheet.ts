@@ -5,8 +5,6 @@ import {
   HomelandDataSourceData,
 } from "../../data-model/item-data/homelandData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { JournalEntryLink } from "../../data-model/shared/journalentrylink";
-import { RqidLink } from "../../data-model/shared/rqidLink";
 import {
   assertItemType,
   findDatasetValueInSelfOrAncestors,
@@ -16,8 +14,7 @@ import {
   getRequiredDomDataset,
   localize,
 } from "../../system/util";
-import { RqgItem } from "../rqgItem";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { RqgItemSheet, RqgItemSheetData, RqidLinkDragEvent } from "../RqgItemSheet";
 
 export interface HomelandSheetData extends RqgItemSheetData {
   isEmbedded: boolean; // There might be no reason to actually embed Homeland items!
@@ -103,216 +100,55 @@ export class HomelandSheet extends RqgItemSheet<
       return;
     }
 
-    const homelandData = this.item.data.data as HomelandDataSourceData;
+    const targetPropertyName = findDatasetValueInSelfOrAncestors(
+      event.target as HTMLElement,
+      "targetDropProperty"
+    );
 
-    if (droppedEntityData.type === "Item") {
-      // You can drop items anywhere on this form because we know what they are
-      // and where to put them.
-      const droppedItem = (await Item.fromDropData(droppedEntityData)) as RqgItem;
+    const droppedDocument = await JournalEntry.fromDropData(droppedEntityData);
 
-      if (droppedItem === undefined) {
-        return;
-      }
+    if (droppedDocument) {
+      const thisHomeland = this.item.data.data as HomelandDataSourceData;
 
-      if (!droppedItem.data.data.rqid) {
-        ui.notifications?.warn(localize("RQG.Item.Notification.MustHaveRqidToDrop"));
-        return;
-      }
-
-      const rqid = droppedItem.data.data.rqid;
-
-      const newRqidLink = new RqidLink();
-      newRqidLink.rqid = rqid;
-      newRqidLink.itemType = droppedItem.type;
-      newRqidLink.name = droppedItem.name || "";
-
-      if (droppedItem.type === "cult") {
-        const cults = homelandData.cultRqidLinks;
-        if (!cults.map((c) => c.rqid).includes(rqid)) {
-          cults.push(newRqidLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.cultRqidLinks": cults,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.cultRqidLinks": cults,
-            });
-          }
-        }
-      }
-
-      if (droppedItem.type === "passion") {
-        const passions = homelandData.passionRqidLinks;
-        if (!passions.map((p) => p.rqid).includes(rqid)) {
-          passions.push(newRqidLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.passionRqidLinks": passions,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.passionRqidLinks": passions,
-            });
-          }
-        }
-      }
-
-      if (droppedItem.type === "rune") {
-        const runes = homelandData.runeRqidLinks;
-        if (!runes.map((r) => r.rqid).includes(rqid)) {
-          runes.push(newRqidLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.runeRqidLinks": runes,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.runeRqidLinks": runes,
-            });
-          }
-        }
-      }
-
-      return;
-    }
-
-    const pack = droppedEntityData.pack ? droppedEntityData.pack : "";
-    const newLink = new JournalEntryLink();
-    newLink.journalId = droppedEntityData.id;
-    newLink.journalPack = pack;
-    newLink.journalName = getJournalEntryNameByJournalEntryLink(newLink);
-
-    const target = findDatasetValueInSelfOrAncestors(event.target as HTMLElement, "targetDropProperty");
-    if (target) {
-
-      if (target === "homelandJournalLink") {
-        if (!ensureJournal(droppedEntityData, target)) {
-          return;
-        }
-        const regionNameFormatted = homelandData.region ? ` (${homelandData.region})` : "";
+      if (targetPropertyName === "homelandJournalRqidLink") {
+        const regionNameFormatted = thisHomeland.region ? ` (${thisHomeland.region})` : "";
         // update the homeland portion of the homeland name
-        const updatedName = newLink.journalName + regionNameFormatted;
+        const updatedName = droppedDocument.name + regionNameFormatted;
         if (this.item.isEmbedded) {
           await this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
-              "data.homelandJournalLink": newLink,
-              "data.homeland": newLink.journalName,
+              "data.homeland": droppedDocument.name,
               name: updatedName,
             },
           ]);
         } else {
           await this.item.update({
-            "data.homelandJournalLink": newLink,
-            "data.homeland": newLink.journalName,
+            "data.homeland": droppedDocument.name,
             name: updatedName,
           });
         }
       }
 
-      if (target === "regionJournalLink") {
-        if (!ensureJournal(droppedEntityData, target)) {
-          return;
-        }
-        // update the region portion of the Homeland name
-        const regionNameFormatted = newLink.journalName ? ` (${newLink.journalName})` : "";
-        const updatedName = homelandData.homeland + regionNameFormatted;
+      if (targetPropertyName === "regionJournalRqidLink") {
+        // update the region portion of the homeland name
+              const regionNameFormatted = droppedDocument.name ? ` (${droppedDocument.name})` : "";
+              const updatedName =thisHomeland.homeland + regionNameFormatted;
         if (this.item.isEmbedded) {
           await this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
-              "data.regionJournalLink": newLink,
-              "data.region": newLink.journalName,
+              "data.region": droppedDocument.name,
               name: updatedName,
             },
           ]);
         } else {
           await this.item.update({
-            "data.regionJournalLink": newLink,
-            "data.region": newLink.journalName,
+            "data.region": droppedDocument.name,
             name: updatedName,
           });
         }
       }
-
-      if (target === "cultureJournalLinks") {
-        if (!ensureJournal(droppedEntityData, target)) {
-          return;
-        }
-        const cultureLinks = (this.item.data.data as HomelandDataSourceData).cultureJournalLinks;
-        if (!cultureLinks.map((j) => j.journalId).includes(newLink.journalId)) {
-          cultureLinks.push(newLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.cultureJournalLinks": cultureLinks,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.cultureJournalLinks": cultureLinks,
-            });
-          }
-        }
-      }
-
-      if (target === "tribeJournalLinks") {
-        if (!ensureJournal(droppedEntityData, target)) {
-          return;
-        }
-        const tribeLinks = (this.item.data.data as HomelandDataSourceData).tribeJournalLinks;
-        if (!tribeLinks.map((j) => j.journalId).includes(newLink.journalId)) {
-          tribeLinks.push(newLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.tribeJournalLinks": tribeLinks,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.tribeJournalLinks": tribeLinks,
-            });
-          }
-        }
-      }
-
-      if (target === "clanJournalLinks") {
-        if (!ensureJournal(droppedEntityData, target)) {
-          return;
-        }
-        const clanLinks = (this.item.data.data as HomelandDataSourceData).clanJournalLinks;
-        if (!clanLinks.map((j) => j.journalId).includes(newLink.journalId)) {
-          clanLinks.push(newLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.clanJournalLinks": clanLinks,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.clanJournalLinks": clanLinks,
-            });
-          }
-        }
-      }
-      
-    } else {
-      ui.notifications?.warn(localize("RQG.Item.Notification.PleaseDropOnTarget"));
     }
   }
 }

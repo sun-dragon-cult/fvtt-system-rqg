@@ -1,5 +1,3 @@
-import { RqgItem } from "../../items/rqgItem";
-import { JournalEntryLink } from "../shared/journalentrylink";
 import { RqidLink } from "../shared/rqidLink";
 import { IRqid } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
@@ -20,7 +18,7 @@ export class OccupationalSkill {
 
 export interface OccupationDataSourceData extends IRqid {
   occupation: string,
-  occupationJournalLink: JournalEntryLink;
+  occupationRqidLink: RqidLink;
   specialization: string,
   homelands: string[]; // The user can drop Homeland items on here but it will just save the data.homeland in this string array
   occupationalSkills: OccupationalSkill[];
@@ -47,7 +45,7 @@ export interface OccupationDataProperties {
 
 export const emptyOccupation: OccupationDataSourceData = {
   occupation: "",
-  occupationJournalLink: new JournalEntryLink(),
+  occupationRqidLink: new RqidLink(),
   specialization: "",
   homelands: [],
   occupationalSkills: [],

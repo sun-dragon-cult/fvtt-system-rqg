@@ -44,6 +44,10 @@
         "SelectSpeciesRunes": "Select Species Runes",
         "SelectSpeciesPassions": "Select Species Passions"
       },
+      "Step1": {
+        "ChooseHomeland": "Choose a Homeland",
+        "HomelandDescription": "Homeland Description"
+      },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
         "SetAdventurerCreationCompleteButton": "Adventurer Creation Complete"
@@ -693,9 +697,9 @@
         "CultureJournalEntries": "Culture Journal Entries",
         "TribeJournalEntries": "Tribe Journal Entries",
         "ClanJournalEntries": "Clan Journal Entries",
-        "homelandJournalLink": "Homeland",
-        "regionJournalLink": "Region",
-        "cultureJournalLinks": "Culture",
+        "homelandJournalRqidLink": "Homeland",
+        "regionJournalRqidLink": "Region",
+        "cultureJournalRqidLinks": "Culture",
         "CultLinks": "Cult Links",
         "PassionLinks": "Passion Links",
         "RuneLinks": "Rune Links"
@@ -777,6 +781,17 @@
       },
       "RqgItem": {
         "RqidLinkTitle": "RQG System ID (rqid) link to \"{rqid}\"",
+        "RqidLinkDelete": "Delete RQG System ID (rqid) link to \"{name}\" (\"{rqid}\")",
+        "ShowInfoCircle": {
+          "DropToConnectJournal": "Drop a Journal Entry on this field to connect.",
+          "DropToReplaceJournal": "Drop a Journal Entry on this field to replace.",
+          "DropToConnectCult": "Drop a Cult Item on this field to connect.",
+          "DropToReplaceCult": "Drop a Cult Item on this field to replace.",
+          "DropToConnectPassion": "Drop a Passion Item on this field to connect.",
+          "DropToReplacePassion": "Drop a Passion Item on this field to replace.",
+          "DropToConnectRune": "Drop a Rune Item on this field to connect.",
+          "DropToReplaceRune": "Drop a Rune Item on this field to replace."
+        },
         "Error": {
           "MoreThanOneRqidMatchInWorld": "More than one RQG Item in the world (not in Compendia) matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",
           "MoreThanOneRqidMatchInCompendia": "More than one RQG Item in installed Compendia matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",

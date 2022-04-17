@@ -5,7 +5,7 @@
       <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
 
-    <div class="name-parts-2-equal" data-target-drop-property="homelandJournalLink">
+    <div class="name-parts-2-equal" data-target-drop-property="homelandJournalRqidLink">
       <div>
         <label for="homeland-{{data._id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
         <input type="text" 
@@ -14,7 +14,7 @@
             value="{{homelandData.homeland}}">
       </div>
 
-      <div class="paren-head" data-target-drop-property="regionJournalLink">
+      <div class="paren-head" data-target-drop-property="regionJournalRqidLink">
         <label for="region-{{data._id}}">{{localize "RQG.Item.Homeland.Region"}}</label>
         <div>
           ( <input type="text" id="region-{{data._id}}" name="data.region" value="{{homelandData.region}}"> )
@@ -23,17 +23,23 @@
     </div>
 
     <div class="name-parts-2-equal">
-      <div class="drop-target item-sheet-journal-link" data-target-drop-property="homelandJournalLink">
-        {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
-          journalEntryLink=homelandData.homelandJournalLink
-          showInfoCircle=true
-        }}
-      </div>
-      <div class="drop-target item-sheet-journal-link" data-target-drop-property="regionJournalLink">
-        {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
-          journalEntryLink=homelandData.regionJournalLink
-          showInfoCircle=true
-        }}
+      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+          rqidLink=homelandData.homelandJournalRqidLink
+          parentField="homelandJournalRqidLink"
+          dropTypes="JournalEntry"
+          showDeleteFromPropertyName="homelandJournalRqidLink"
+          showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+          showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+      }}
+
+      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+          rqidLink=homelandData.regionJournalRqidLink
+          parentField="regionJournalRqidLink"
+          dropTypes="JournalEntry"
+          showDeleteFromPropertyName="regionJournalRqidLink"
+          showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+          showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+      }}
       </div>
     </div>
 
@@ -60,94 +66,58 @@
         <div class="item-sheet-properties">
 
           <label>{{localize "RQG.Item.Homeland.CultureJournalEntries"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="cultureJournalLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-              {{#each homelandData.cultureJournalLinks}}
-                {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
-                  journalEntryLink=this
-                  showInfoCircle=false
-                }}
-              {{/each}}
-              {{#unless homelandData.cultureJournalLinks.length}}
-              <i
-                class="fas fa-info-circle"
-                style="width: 50px;"
-                title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
-              ></i>
-              {{/unless}}              
-            </div>
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=homelandData.cultureJournalRqidLinks
+            parentField="cultureJournalRqidLinks"
+            dropTypes="JournalEntry"
+            showDeleteFromPropertyName="cultureJournalRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+          }}
 
           <label>{{localize "RQG.Item.Homeland.TribeJournalEntries"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="tribeJournalLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-              {{#each homelandData.tribeJournalLinks}}
-                {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
-                  journalEntryLink=this
-                  showInfoCircle=false
-                }}
-              {{/each}}
-              {{#unless homelandData.tribeJournalLinks.length}}
-              <i
-                class="fas fa-info-circle"
-                style="width: 50px;"
-                title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
-              ></i>
-              {{/unless}}              
-            </div>
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=homelandData.tribeJournalRqidLinks
+            parentField="tribeJournalRqidLinks"
+            dropTypes="JournalEntry"
+            showDeleteFromPropertyName="tribeJournalRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+          }}
 
           <label>{{localize "RQG.Item.Homeland.ClanJournalEntries"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="clanJournalLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-              {{#each homelandData.clanJournalLinks}}
-                {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
-                  journalEntryLink=this
-                  showInfoCircle=false
-                }}
-              {{/each}}
-              {{#unless homelandData.clanJournalLinks.length}}
-              <i
-                class="fas fa-info-circle"
-                style="width: 50px;"
-                title="{{localize 'RQG.Foundry.ContentLink.DropToConnectJournal'}}"
-              ></i>
-              {{/unless}}              
-            </div>
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=homelandData.clanJournalRqidLinks
+            parentField="clanJournalRqidLinks"
+            dropTypes="JournalEntry"
+            showDeleteFromPropertyName="clanJournalRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+          }}
 
           <label>{{localize "RQG.Item.Homeland.CultLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="cultRqidLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-            {{#each homelandData.cultRqidLinks}}
-              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this
-              }}
-            {{/each}}
-            </div>
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=homelandData.cultRqidLinks
+            parentField="cultRqidLinks"
+            dropTypes="cult"
+            showDeleteFromPropertyName="cultRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+          }}
 
           <label>{{localize "RQG.Item.Homeland.PassionLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="passionRqidLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-            {{#each homelandData.passionRqidLinks}}
-              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this
-              }}
-            {{/each}}
-            </div>
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=homelandData.passionRqidLinks
+            parentField="passionRqidLinks"
+            dropTypes="passion"
+            showDeleteFromPropertyName="passionRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectPassion"
+          }}
 
           <label>{{localize "RQG.Item.Homeland.RuneLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="runeRqidLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-            {{#each homelandData.runeRqidLinks}}
-              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this
-              }}
-            {{/each}}
-            </div>
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=homelandData.runeRqidLinks
+            parentField="runeRqidLinks"
+            dropTypes="rune"
+            showDeleteFromPropertyName="runeRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+          }}
         </div> 
 
       </div>

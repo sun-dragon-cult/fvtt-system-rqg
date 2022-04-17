@@ -27,26 +27,16 @@
         />
       </div>
     </div>
-  
-    <div class="item-sheet-journal-link">
-      {{#if cultData.journalPack}}
-      <a class="entity-link content-link" data-pack="{{cultData.journalPack}}"
-        data-id="{{cultData.journalId}}" 
-        title="{{localize "RQG.Foundry.ContentLink.CompendiumNameTitle" compendiumName=cultData.journalPack}}">
-        <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-      </a>
-      <i class="fas fa-info-circle" title="{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}"></i>
-      {{else if cultData.journalId}}
-      <a class="entity-link content-link" data-type="JournalEntry" data-id="{{cultData.journalId}}"
-        title="{{localize "RQG.Foundry.ContentLink.WorldJournalEntry"}}">
-        <i class="fas fa-book-open"></i> {{sheetSpecific.journalEntryName}}
-      </a>
-      <i class="fas fa-info-circle" title="{{localize "RQG.Foundry.ContentLink.DropToReplaceJournal"}}"></i>
-      {{else}}
-      <i class="fas fa-info-circle" title="{{localize "RQG.Foundry.ContentLink.DropToConnectJournal"}}"></i>
-      {{/if}}
-    </div>
     
+    {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        rqidLink=cultData.descriptionRqidLink
+        parentField="descriptionRqidLink"
+        dropTypes="JournalEntry"
+        showDeleteFromPropertyName="descriptionRqidLink"
+        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+        showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+    }}
+      
   </header>
   <main>
 
