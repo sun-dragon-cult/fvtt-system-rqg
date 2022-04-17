@@ -6,6 +6,7 @@ import { ReputationCard } from "./reputationCard";
 import { getDomDataset, getRequiredDomDataset, localize, RqgError } from "../system/util";
 import { RuneMagicCard } from "./runeMagicCard";
 import { Rqid } from "../system/api/rqidApi";
+import { RqidLink } from "../data-model/shared/rqidLink";
 
 export class ChatCardListeners {
   private static card = {
@@ -30,19 +31,7 @@ export class ChatCardListeners {
       }
     });
     Hooks.on("renderChatMessage", (chatItem, html) => {
-      html.find("[data-rqid-link]").each((i: number, el: HTMLElement) => {
-        const rqid = getRequiredDomDataset($(el), "rqid");
-        el.addEventListener("click", async () => {
-          const rqidItem = await Rqid.fromRqid(rqid);
-          if (rqidItem) {
-            rqidItem.sheet?.render(true);
-          } else {
-            ui.notifications?.warn(
-              localize("RQG.Item.Notification.RqidFromLinkNotFound", { rqid: rqid })
-            );
-          }
-        });
-      });
+      RqidLink.addRqidLinkClickHandlers(html);
     });
   }
 

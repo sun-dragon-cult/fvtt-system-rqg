@@ -7,6 +7,7 @@ import { assertItemType, getGame, getRequiredDomDataset, localize } from "../sys
 import { SkillDataSource } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
+import { RqidLink } from "../data-model/shared/rqidLink";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -181,21 +182,7 @@ export class ActorWizard extends FormApplication {
     });
 
     // Handle rqid links
-    $(this.form!)
-      .find("[data-rqid-link]")
-      .each((i: number, el: HTMLElement) => {
-        const rqid = getRequiredDomDataset($(el), "rqid");
-        el.addEventListener("click", async () => {
-          const rqidItem = await Rqid.fromRqid(rqid);
-          if (rqidItem) {
-            rqidItem.sheet?.render(true);
-          } else {
-            ui.notifications?.warn(
-              localize("RQG.Item.Notification.RqidFromLinkNotFound", { rqid: rqid }) // TODO More generic notification
-            );
-          }
-        });
-      });
+    RqidLink.addRqidLinkClickHandlers($(this.form!));
   }
 
   _setActorCreationComplete() {
