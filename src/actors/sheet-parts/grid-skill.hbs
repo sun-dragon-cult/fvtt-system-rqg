@@ -1,39 +1,39 @@
-{{#if ../../wizard}}
+{{#if wizard}}
 <div>
     <input type="checkbox" 
         class="wizard-choice-input"
-        data-rqid="{{this.data.data.rqid}}"
-        data-for-choice="{{../../forChoice}}"
-        {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
-        title="Import Skill: {{data.name}}"
+        data-rqid="{{skill.data.data.rqid}}"
+        data-for-choice="{{forChoice}}"
+        {{#if skill.data.data.choice.speciesPresent}}checked{{/if}}
+        title="Import Skill: {{skill.name}}"
         />
 </div>
 {{/if}}
-<div data-item-id="{{id}}" 
+<div data-item-id="{{skill.id}}" 
     title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}" 
     class="skill contextmenu item"
-    {{#if data.data.descriptionRqidLink.rqid}}
-        data-skill-rqid="{{data.data.descriptionRqidLink.rqid}}"
+    {{#if skill.data.data.descriptionRqidLink.rqid}}
+        data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
     {{/if}}>
-    <img class="item" src="{{img}}">
+    <img class="item" src="{{skill.img}}">
 </div>
-<div data-item-id="{{id}}" 
+<div data-item-id="{{skill.id}}" 
         class="skill contextmenu item" data-item-roll 
         title="{{localize "RQG.Game.RollTitle"}}"
-        {{#if data.data.descriptionRqidLink.rqid}}
-            data-skill-rqid="{{data.data.descriptionRqidLink.rqid}}"
+        {{#if skill.data.data.descriptionRqidLink.rqid}}
+            data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
         {{/if}}>
-        {{data.data.skillName}}{{#if data.data.specialization}} ({{data.data.specialization}}){{/if}}
-    {{#each data.data.runes}}
+        {{skill.data.data.skillName}}{{#if skill.data.data.specialization}} ({{skill.data.data.specialization}}){{/if}}
+    {{#each skill.data.data.runes}}
     <img class="rune" src="{{runeImg this}}" title="{{this}}">
     {{/each}}
 </div>
-<div data-item-id="{{id}}" 
-    class="skill contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" 
+<div data-item-id="{{skill.id}}" 
+    class="skill contextmenu item {{#if skill.data.data.hasExperience}}experienced{{/if}}" 
     data-item-roll 
     title="{{localize "RQG.Game.RollTitle"}}"
-    {{#if data.data.descriptionRqidLink.rqid}}
-        data-skill-rqid="{{data.data.descriptionRqidLink.rqid}}"
+    {{#if skill.data.data.descriptionRqidLink.rqid}}
+        data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
     {{/if}}>
-<span class="text-right nowrap">{{data.data.chance}}%</span>
+<span class="text-right nowrap">{{skill.data.data.chance}}%</span>
 </div>

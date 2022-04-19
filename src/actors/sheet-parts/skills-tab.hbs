@@ -10,7 +10,10 @@
     <div class="grid {{#if ../wizard}}skill-select{{else}}skill{{/if}} item-list">
       {{#each this}}
       {{#unless data.data.runes}}
-      {{>"systems/rqg/actors/sheet-parts/grid-skill.hbs" }}
+      {{>"systems/rqg/actors/sheet-parts/grid-skill.hbs"
+        skill=this
+        wizard=../../wizard 
+        forChoice=../../forChoice}}
       {{/unless}}
       {{/each}}
     </div>
