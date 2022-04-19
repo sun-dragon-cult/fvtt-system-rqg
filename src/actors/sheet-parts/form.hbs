@@ -2,75 +2,18 @@
   <h2 class="fullrow">{{localize "RQG.Actor.Rune.Form"}}</h2>
 
   {{#with ownedItems.rune.form.Man}}
-  {{#if ../wizard}}
-  <div>
-    <input type="checkbox"
-      class="wizard-choice-input"
-      data-rqid="{{this.data.data.rqid}}"
-      data-for-choice="{{../forChoice}}"
-      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
-      title="Import Rune: {{data.name}}" />
-  </div>
-  {{/if}}
-  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
-    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
-    <img class="rune" src="{{img}}">
-  </div>
-  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
-    {{data.data.rune}}</div>
-  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
-    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
-    <span class="text-right">{{data.data.chance}}%</span>
-  </div>
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with ownedItems.rune.form.Beast}}
-  {{#if ../wizard}}
-  <div>
-    <input type="checkbox"
-      class="wizard-choice-input"
-      data-rqid="{{this.data.data.rqid}}"
-      data-for-choice="{{../forChoice}}"
-      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
-      title="Import Rune: {{data.name}}" />
-  </div>
-  {{/if}}
-  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
-    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
-    <img class="rune" src="{{img}}">
-  </div>
-  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
-    {{data.data.rune}}</div>
-  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
-    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
-    <span class="text-right">{{data.data.chance}}%</span>
-  </div>
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
   {{/with}}
 
   {{#each ownedItems.rune.form}}
   {{#unless (eq @key "Man")}}
   {{#unless (eq @key "Beast")}}
   {{#with this}}
-  {{#if ../wizard}}
-  <div>
-    <input type="checkbox"
-      class="wizard-choice-input"
-      data-rqid="{{this.data.data.rqid}}"
-      data-for-choice="{{../forChoice}}"
-      {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
-      title="Import Rune: {{data.name}}" />
-  </div>
-  {{/if}}
-  <div data-item-id="{{id}}" class="rune contextmenu item" {{#if data.data.journalId}}
-    data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}" {{/if}}>
-    <img class="rune" src="{{img}}">
-  </div>
-  <div data-item-id="{{id}}" class="rune contextmenu item" data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
-    {{data.data.rune}}</div>
-  <div data-item-id="{{id}}" class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
-    data-item-roll title="{{localize 'RQG.Game.RollTitle'}}">
-    <span class="text-right">{{data.data.chance}}%</span>
-  </div>
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
   <div></div>
   <div></div>
   <div></div>

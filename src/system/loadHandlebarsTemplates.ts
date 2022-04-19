@@ -8,6 +8,8 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/actors/sheet-parts/sorcery-tab.hbs",
     "systems/rqg/actors/sheet-parts/skills-tab.hbs",
     "systems/rqg/actors/sheet-parts/gear-tab.hbs",
+    "systems/rqg/actors/sheet-parts/grid-rune.hbs",
+    "systems/rqg/actors/sheet-parts/grid-skill.hbs",
     "systems/rqg/actors/sheet-parts/passions-tab.hbs",
     "systems/rqg/actors/sheet-parts/background-tab.hbs",
     "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs",

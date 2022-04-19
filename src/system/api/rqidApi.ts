@@ -401,14 +401,13 @@ export class Rqid {
   }
 
   static getDefaultRqid(document: Actor | Item | JournalEntry | Macro | RollTable | Scene): string {
-
     if (!document.name) {
       return "";
     }
 
     let result = "";
 
-    if (document instanceof Actor ) {
+    if (document instanceof Actor) {
       return RQG_CONFIG.rqidPrefixes.actor + toKebabCase(document.name);
     }
 
@@ -457,7 +456,11 @@ export class Rqid {
     }
 
     return "";
+  }
 
+  static async renderRqidDocument(rqid: string) {
+    const document = await Rqid.fromRqid(rqid);
+    document?.sheet?.render(true);
   }
 }
 
