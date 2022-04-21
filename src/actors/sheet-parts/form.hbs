@@ -2,18 +2,27 @@
   <h2 class="fullrow">{{localize "RQG.Actor.Rune.Form"}}</h2>
 
   {{#with ownedItems.rune.form.Man}}
-    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
+        rune=this
+        wizard=../wizard 
+        forChoice=../forChoice}}
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with ownedItems.rune.form.Beast}}
-    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
+        rune=this
+        wizard=../wizard 
+        forChoice=../forChoice}}
   {{/with}}
 
   {{#each ownedItems.rune.form}}
   {{#unless (eq @key "Man")}}
   {{#unless (eq @key "Beast")}}
   {{#with this}}
-    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
+        rune=this
+        wizard=../wizard 
+        forChoice=../forChoice}}
   <div></div>
   <div></div>
   <div></div>

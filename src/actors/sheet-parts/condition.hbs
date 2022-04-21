@@ -2,7 +2,10 @@
 <div class="grid {{#if wizard}}rune-select{{else}}rune{{/if}} item-list">
   <h2 class="fullrow">{{localize "RQG.Actor.Rune.Condition"}}</h2>
   {{#each ownedItems.rune.condition}}
-    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
+        rune=this
+        wizard=../wizard 
+        forChoice=../forChoice}}
   {{/each}}
 </div>
 {{/if}}

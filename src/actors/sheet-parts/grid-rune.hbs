@@ -1,36 +1,36 @@
-{{#if ../wizard}}
+{{#if wizard}}
 <div>
     <input type="checkbox"
         class="wizard-choice-input"
-        data-rqid="{{this.data.data.rqid}}"
-        data-for-choice="{{../forChoice}}"
-        {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
-        title="Import Rune: {{data.name}}" />
+        data-rqid="{{rune.data.data.rqid}}"
+        data-for-choice="{{forChoice}}"
+        {{#if rune.data.data.choice.speciesPresent}}checked{{/if}}
+        title="Import Rune: {{rune.data.name}}" />
 </div>
 {{/if}}
 <div title="{{localize "RQG.Game.RollTitle"}}"
         class="rune contextmenu item"
-        data-item-id="{{id}}"
-        {{#if data.data.descriptionRqidLink.rqid}}
-            data-rune-rqid="{{data.data.descriptionRqidLink.rqid}}"
+        data-item-id="{{rune.id}}"
+        {{#if rune.data.data.descriptionRqidLink.rqid}}
+            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
         {{/if}}>
-    <img class="rune" src="{{img}}">
+    <img class="rune" src="{{rune.img}}">
 </div>
 <div title="{{localize "RQG.Game.RollTitle"}}" 
         class="rune contextmenu item"
-        data-item-id="{{id}}"
-        {{#if data.data.descriptionRqidLink.rqid}}
-            data-rune-rqid="{{data.data.descriptionRqidLink.rqid}}"
+        data-item-id="{{rune.id}}"
+        {{#if rune.data.data.descriptionRqidLink.rqid}}
+            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
         {{/if}}
         data-item-roll>
-    {{data.data.rune}}
+    {{rune.data.data.rune}}
 </div>
 <div title="{{localize "RQG.Game.RollTitle"}}" 
-        class="rune contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
-        data-item-id="{{id}}"
-        {{#if data.data.descriptionRqidLink.rqid}}
-            data-rune-rqid="{{data.data.descriptionRqidLink.rqid}}"
+        class="rune contextmenu item {{#if rune.data.data.hasExperience}}experienced{{/if}}"
+        data-item-id="{{rune.id}}"
+        {{#if rune.data.data.descriptionRqidLink.rqid}}
+            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
         {{/if}}
         data-item-roll>
-    <span class="text-right">{{data.data.chance}}%</span>
+    <span class="text-right">{{rune.data.data.chance}}%</span>
 </div>
