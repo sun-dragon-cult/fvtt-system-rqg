@@ -46,7 +46,9 @@
       },
       "Step1": {
         "ChooseHomeland": "Choose a Homeland",
-        "HomelandDescription": "Homeland Description"
+        "HomelandDescription": "Homeland Description",
+        "RegionDescription": "Region Description",
+        "HomelandWizardInstructions": "Homeland Instructions"
       },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
@@ -702,7 +704,8 @@
         "cultureJournalRqidLinks": "Culture",
         "CultLinks": "Cult Links",
         "PassionLinks": "Passion Links",
-        "RuneLinks": "Rune Links"
+        "RuneLinks": "Rune Links",
+        "WizardInstructions": "Wizard Instructions"
       },
       "Notification": {
         "CircularGearLocationWarning": "Circular gear locations (A in B in A) - check your gear locations: {itemLocation}",

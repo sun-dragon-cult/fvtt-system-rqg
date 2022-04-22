@@ -1,13 +1,15 @@
 import { RqgActor } from "../actors/rqgActor";
 import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { getActorTemplates, Rqid } from "../system/api/rqidApi";
+import { getActorTemplates, getHomelands, Rqid } from "../system/api/rqidApi";
 import { RQG_CONFIG } from "../system/config";
 import { assertItemType, getGame, getRequiredDomDataset, localize } from "../system/util";
 import { SkillDataSource } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqidLink } from "../data-model/shared/rqidLink";
+import { Homeland } from "../actors/item-specific/homeland";
+import { RqgItem } from "../items/rqgItem";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -15,18 +17,22 @@ export class ActorWizard extends FormApplication {
     selectedSpeciesTemplate: RqgActor | undefined;
     speciesTemplates: RqgActor[] | undefined;
   } = { selectedSpeciesTemplate: undefined, speciesTemplates: undefined };
+  homeland: {
+    selectedHomeland: RqgItem | undefined;
+    homelands: RqgItem[] | undefined;
+  } = { selectedHomeland: undefined, homelands: undefined };
   collapsibleOpenStates: Record<string, boolean> = {};
   choices: Record<string, CreationChoice> = {};
 
   constructor(object: RqgActor, options: any) {
     super(object, options);
     this.actor = object;
-    const templateId = this.actor.getFlag(
+    const previouslySelectedTemplateId = this.actor.getFlag(
       RQG_CONFIG.flagScope,
       RQG_CONFIG.actorWizardFlags.selectedSpeciesId
     );
 
-    const template = getGame().actors?.get(templateId as string) as RqgActor;
+    const template = getGame().actors?.get(previouslySelectedTemplateId as string) as RqgActor;
 
     if (!template) {
       this.species.selectedSpeciesTemplate = undefined;
@@ -40,6 +46,11 @@ export class ActorWizard extends FormApplication {
       console.warn(msg);
       ui.notifications?.warn(msg);
     }
+
+    const previouslySelectedHomelandId = this.actor.getFlag(
+      RQG_CONFIG.flagScope,
+      RQG_CONFIG.actorWizardFlags.selectedHomelandId
+    );
 
     const savedChoices = this.actor.getFlag(
       RQG_CONFIG.flagScope,
@@ -89,11 +100,17 @@ export class ActorWizard extends FormApplication {
     // Set any collapsible sections that need to be open by default
     if (this.collapsibleOpenStates["speciesBackground"] === undefined) {
       this.collapsibleOpenStates["speciesBackground"] = true;
+      this.collapsibleOpenStates["homelandWizardInstructions"] = true;
     }
 
     if (!this.species.speciesTemplates) {
       // Don't get these every time.
       this.species.speciesTemplates = await getActorTemplates();
+    }
+
+    if (!this.homeland.homelands) {
+      // Don't get these every time
+      this.homeland.homelands = await getHomelands();
     }
 
     if (this.actor) {
@@ -131,6 +148,7 @@ export class ActorWizard extends FormApplication {
       speciesTemplateItems: this.species.selectedSpeciesTemplate
         ? RqgActorSheet.organizeOwnedItems(this.species.selectedSpeciesTemplate)
         : undefined,
+      homeland: this.homeland,
       choices: this.choices,
       collapsibleOpenStates: this.collapsibleOpenStates,
     };
@@ -202,6 +220,11 @@ export class ActorWizard extends FormApplication {
         // @ts-ignore selectedSpeciesTemplateId
         const selectedTemplateId = formData?.selectedSpeciesTemplateId;
         await this.setSpeciesTemplate(selectedTemplateId, true);
+      }
+      if (select.name === "selectedHomelandId") {
+        // @ts-ignore selectedHomelandId
+        const selectedHomelandId = formData?.selectedHomelandId;
+        await this.setHomeland(selectedHomelandId);
       }
     }
     this.render();
@@ -323,6 +346,23 @@ export class ActorWizard extends FormApplication {
         this.choices[choiceKey].speciesPresent = false;
       }
     }
+  }
+
+  async setHomeland(selectedHomelandId: string) {
+    this.homeland.selectedHomeland = this.homeland.homelands?.find(
+      (h) => (h as RqgItem).id === selectedHomelandId
+    );
+
+    await this.actor.unsetFlag(
+      RQG_CONFIG.flagScope,
+      RQG_CONFIG.actorWizardFlags.selectedHomelandId
+    );
+
+    await this.actor.setFlag(
+      RQG_CONFIG.flagScope,
+      RQG_CONFIG.actorWizardFlags.selectedHomelandId,
+      this.homeland.selectedHomeland?.id
+    );
   }
 
   async updateChoices() {

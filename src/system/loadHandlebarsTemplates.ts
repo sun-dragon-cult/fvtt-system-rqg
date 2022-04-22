@@ -36,7 +36,7 @@ export const loadHandlebarsTemplates = async function () {
 
     // Actor Wizard Sheet Parts
     "systems/rqg/dialog/actor-wizard-sheet-parts/creation-species.hbs",
-    // "systems/rqg/dialog/actor-wizard-sheet-parts/creation-homeland.hbs",
+    "systems/rqg/dialog/actor-wizard-sheet-parts/creation-homeland.hbs",
 
     // Item sheets
     "systems/rqg/items/passion-item/passionSheet.hbs",

@@ -1,0 +1,34 @@
+<h1 class="norse">
+  {{localize "RQG.ActorCreation.Nav.1-Homeland"}}
+</h1>
+
+<div class="item-sheet-properties">
+  <label>{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}:</label>
+  <select name="selectedHomelandId">
+    {{#select homeland.selectedHomeland.id}}
+    <option value="">{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}</option>
+    {{#each homeland.homelands}}
+    <option value="{{this.id}}">{{this.name}}</option>
+    {{/each}}
+    {{/select}}
+  </select>
+
+  <label>{{localize "RQG.ActorCreation.Step1.HomelandDescription"}}:</label>
+  <div>
+    {{#if homeland.selectedHomeland.data.data.homelandJournalRqidLink}}
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+      rqidLink=homeland.selectedHomeland.data.data.homelandJournalRqidLink
+    }}
+    {{/if}}    
+  </div>
+
+  <label>{{localize "RQG.ActorCreation.Step1.RegionDescription"}}:</label>
+  <div>
+    {{#if homeland.selectedHomeland.data.data.regionJournalRqidLink}}
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+      rqidLink=homeland.selectedHomeland.data.data.regionJournalRqidLink
+    }}
+    {{/if}}    
+  </div>
+
+</div>

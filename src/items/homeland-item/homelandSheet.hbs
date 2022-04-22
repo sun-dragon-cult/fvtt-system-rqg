@@ -118,14 +118,21 @@
             showDeleteFromPropertyName="runeRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
           }}
-        </div> 
 
+          <label class="editor-label">{{localize "RQG.Item.Homeland.WizardInstructions"}}</label>
+          <div class="editor-container">
+            {{editor content=homelandData.wizardInstructions target="data.wizardInstructions"
+              button=true owner=owner editable=editable}}          
+          </div>
+
+        </div> 
+        
       </div>
 
       {{!-- GM Tab --}}
       <div class="tab" data-group="primary" data-tab="gm">
 
-        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=passionData.gmNotes target="data.gmNotes"
+        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=homelandData.gmNotes target="data.gmNotes"
           button=true owner=owner editable=editable}}
         </label>
       </div>

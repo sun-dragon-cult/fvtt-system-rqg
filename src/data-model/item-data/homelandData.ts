@@ -13,6 +13,7 @@ export interface HomelandDataSourceData extends IRqid {
   runeRqidLinks: RqidLink[];
   tribeJournalRqidLinks: RqidLink[];
   clanJournalRqidLinks: RqidLink[];
+  wizardInstructions: string;
 }
 
 // --- Derived Data ---
@@ -39,6 +40,7 @@ export const emptyHomeland: HomelandDataSourceData = {
   runeRqidLinks: [],
   tribeJournalRqidLinks: [],
   clanJournalRqidLinks: [],
+  wizardInstructions: "",
   rqid: "",
   rqidPriority: 0,
   rqidLang: "",
