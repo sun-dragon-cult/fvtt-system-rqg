@@ -268,13 +268,15 @@
       },
       "Passion": {
         "Passions": "Passions",
-        "BackStory": "Back Story"
+        "BackStory": "Back Story",
+        "ImportPassionCheckboxTitle": "Import Passion: \"{passionName}\""
       },
       "Rune": {
         "Condition": "Condition",
         "Elemental": "Elemental",
         "Form": "Form",
-        "Power": "Power"
+        "Power": "Power",
+        "ImportRuneCheckboxTitle": "Import Rune: \"{runeName}\""
       },
       "RuneMagic": {
         "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
@@ -306,6 +308,7 @@
       },
       "Skill": {
         "SkillDescriptionTitle": "Skill Description",
+        "ImportSkillCheckboxTitle": "Import Skill: \"{skillName}\"",
         "SkillCategory": {
           "agility": "Agility",
           "communication": "Communication",

@@ -12,7 +12,7 @@
           data-rqid="{{this.data.data.rqid}}"
           data-for-choice="{{../forChoice}}"
           {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
-          title="Import Rune: {{data.name}}" />
+          title="{{localize "RQG.Actor.Passion.ImportPassionCheckboxTitle" passionName=this.name}}" />
       </div>
       {{/if}}
       <img src="{{img}}">

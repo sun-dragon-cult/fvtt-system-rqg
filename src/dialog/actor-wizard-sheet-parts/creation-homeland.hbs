@@ -81,7 +81,9 @@
       <section class="homeland-body">
         <div class="tab cultures" data-group="homeland-item-selection" data-tab="cultures">
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCulture"}}</h2>
-            Culture!
+                {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+                    rqidLinkArray=homeland.selectedHomeland.data.data.cultureJournalRqidLinks
+                }}
         </div>
         <div class="tab tribes" data-group="homeland-item-selection" data-tab="tribes">
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandTribe"}}</h2>

@@ -23,6 +23,7 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/items/sheet-parts/rqidLink.hbs",
     "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs",
     "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs",
+    "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs",
 
     // ActorSheet parts
     "systems/rqg/actors/sheet-parts/health.hbs",

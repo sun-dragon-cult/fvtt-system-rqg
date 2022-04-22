@@ -1347,3 +1347,12 @@ body {
     filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
   }
 }
+
+.rqid-link-selector {
+  display: inline-flex;
+
+  .wizard-choice-input {
+    align-self: center;
+  }
+
+}

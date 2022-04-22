@@ -1,0 +1,14 @@
+{{#each rqidLinkArray}}
+    <div class="rqid-link-selector">
+        <input type="checkbox" 
+            class="wizard-choice-input"
+            data-rqid="{{this.rqid}}"
+            data-for-choice="homeland"
+            {{#if this.choice.forChoice}}checked{{/if}}
+            title="Import Culture: {{this.name}}"
+            />
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+        rqidLink=this
+    }}
+    </div>
+{{/each}}

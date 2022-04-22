@@ -5,7 +5,7 @@
         data-rqid="{{skill.data.data.rqid}}"
         data-for-choice="{{forChoice}}"
         {{#if skill.data.data.choice.speciesPresent}}checked{{/if}}
-        title="Import Skill: {{skill.name}}"
+        title="{{localize "RQG.Actor.Skill.ImportSkillCheckboxTitle" skillName=skill.name}}"
         />
 </div>
 {{/if}}
