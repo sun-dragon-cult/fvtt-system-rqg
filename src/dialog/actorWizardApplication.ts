@@ -47,11 +47,6 @@ export class ActorWizard extends FormApplication {
       ui.notifications?.warn(msg);
     }
 
-    const previouslySelectedHomelandId = this.actor.getFlag(
-      RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.selectedHomelandId
-    );
-
     const savedChoices = this.actor.getFlag(
       RQG_CONFIG.flagScope,
       RQG_CONFIG.actorWizardFlags.wizardChoices
@@ -115,12 +110,12 @@ export class ActorWizard extends FormApplication {
 
     if (this.actor) {
       // See if the user has already chosen a species template that is stored in flags
-      const speciesId = this.actor.getFlag(
+      const previouslySelectedSpeciesId = this.actor.getFlag(
         RQG_CONFIG.flagScope,
         RQG_CONFIG.actorWizardFlags.selectedSpeciesId
       );
-      if (speciesId) {
-        const flaggedSpecies = this.species.speciesTemplates?.find((s) => s.id === speciesId);
+      if (previouslySelectedSpeciesId) {
+        const flaggedSpecies = this.species.speciesTemplates?.find((s) => s.id === previouslySelectedSpeciesId);
         if (
           flaggedSpecies &&
           flaggedSpecies.id &&
@@ -130,6 +125,16 @@ export class ActorWizard extends FormApplication {
           await this.setSpeciesTemplate(flaggedSpecies.id, false);
         }
       }
+
+      // Has the user already chosen a Homeland stored in flags?
+      const previouslySelectedHomelandRqid = this.actor.getFlag(
+        RQG_CONFIG.flagScope,
+        RQG_CONFIG.actorWizardFlags.selectedHomelandRqid
+      ) as string;
+      if (previouslySelectedHomelandRqid) {
+          await this.setHomeland(previouslySelectedHomelandRqid);
+      }
+
     }
 
     await this.updateChoices();
@@ -221,10 +226,10 @@ export class ActorWizard extends FormApplication {
         const selectedTemplateId = formData?.selectedSpeciesTemplateId;
         await this.setSpeciesTemplate(selectedTemplateId, true);
       }
-      if (select.name === "selectedHomelandId") {
-        // @ts-ignore selectedHomelandId
-        const selectedHomelandId = formData?.selectedHomelandId;
-        await this.setHomeland(selectedHomelandId);
+      if (select.name === "selectedHomelandRqid") {
+        // @ts-ignore selectedHomelandRqid
+        const selectedHomelandRqid = formData?.selectedHomelandRqid;
+        await this.setHomeland(selectedHomelandRqid);
       }
     }
     this.render();
@@ -348,20 +353,20 @@ export class ActorWizard extends FormApplication {
     }
   }
 
-  async setHomeland(selectedHomelandId: string) {
+  async setHomeland(selectedHomelandRqid: string) {
     this.homeland.selectedHomeland = this.homeland.homelands?.find(
-      (h) => (h as RqgItem).id === selectedHomelandId
+      (h) => (h as RqgItem).data.data.rqid === selectedHomelandRqid
     );
 
     await this.actor.unsetFlag(
       RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.selectedHomelandId
+      RQG_CONFIG.actorWizardFlags.selectedHomelandRqid
     );
 
     await this.actor.setFlag(
       RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.selectedHomelandId,
-      this.homeland.selectedHomeland?.id
+      RQG_CONFIG.actorWizardFlags.selectedHomelandRqid,
+      this.homeland.selectedHomeland?.data.data.rqid
     );
   }
 

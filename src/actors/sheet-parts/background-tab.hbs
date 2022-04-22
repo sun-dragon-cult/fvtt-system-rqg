@@ -262,6 +262,20 @@
     </div>
 
   </fieldset>
+  {{!-- <fieldset>
+    <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
+    <div class="item-sheet-properties">
+
+          <label>{{localize "RQG.Actor.Background.HomelandItem"}}</label>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=data.data.background.homelandItemRqidLink
+            parentField="homelandItemRqidLink"
+            dropTypes="homeland"
+            showDeleteFromPropertyName="homelandItemRqidLink"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectHomeland"
+          }}
+    </div>
+  </fieldset> --}}
 </div>
 
 {{#if isGM}}

@@ -136,7 +136,7 @@ export const RQG_CONFIG = {
   actorWizardFlags: {
     actorWizardComplete: "actor-wizard-complete",
     selectedSpeciesId: "selected-species-id",
-    selectedHomelandId: "selected-homeland-id",
+    selectedHomelandRqid: "selected-homeland-rqid",
     isActorTemplate: "is-actor-template",
     wizardChoices: "wizard-choices",
   },

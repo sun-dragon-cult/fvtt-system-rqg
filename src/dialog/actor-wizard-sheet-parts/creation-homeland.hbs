@@ -4,11 +4,11 @@
 
 <div class="item-sheet-properties">
   <label>{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}:</label>
-  <select name="selectedHomelandId">
-    {{#select homeland.selectedHomeland.id}}
+  <select name="selectedHomelandRqid">
+    {{#select homeland.selectedHomeland.data.data.rqid}}
     <option value="">{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}</option>
     {{#each homeland.homelands}}
-    <option value="{{this.id}}">{{this.name}}</option>
+    <option value="{{this.data.data.rqid}}">{{this.name}}</option>
     {{/each}}
     {{/select}}
   </select>
