@@ -30,5 +30,18 @@
     }}
     {{/if}}    
   </div>
-
+  
 </div>
+
+<article class="collabsible-wrapper" data-collabsible-name="homelandWizardInstructions" data-open="{{collapsibleOpenStates.homelandWizardInstructions}}">
+    <h2 class="collabsible-header">
+        <span class="toggle-icon">
+        <i class="far fa-plus-square {{#if collapsibleOpenStates.homelandWizardInstructions}}no-display{{/if}}"></i>
+        <i class="far fa-minus-square {{#unless collapsibleOpenStates.homelandWizardInstructions}}no-display{{/unless}}"></i>
+        {{localize "RQG.ActorCreation.Step1.HomelandWizardInstructions"}}
+        </span>
+    </h2>
+    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.homelandWizardInstructions}}style="display: none;"{{/unless}}>
+        {{{enrichHtml homeland.selectedHomeland.data.data.wizardInstructions}}}
+    </section>
+</article>
