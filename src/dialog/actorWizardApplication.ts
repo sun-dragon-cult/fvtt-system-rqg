@@ -82,9 +82,14 @@ export class ActorWizard extends FormApplication {
           initial: "0-species",
         },
         {
-          navSelector: ".item-sheet-nav-tabs",
+          navSelector: ".species-tabs",
           contentSelector: ".species-body",
           initial: "skills",
+        },
+        {
+          navSelector: ".homeland-tabs",
+          contentSelector: ".homeland-body",
+          initial: "cultures",
         },
       ],
       dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
@@ -96,6 +101,7 @@ export class ActorWizard extends FormApplication {
     if (this.collapsibleOpenStates["speciesBackground"] === undefined) {
       this.collapsibleOpenStates["speciesBackground"] = true;
       this.collapsibleOpenStates["homelandWizardInstructions"] = true;
+      this.collapsibleOpenStates["homelandAdvanced"] = true;
     }
 
     if (!this.species.speciesTemplates) {

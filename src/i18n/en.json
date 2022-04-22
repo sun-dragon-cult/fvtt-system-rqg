@@ -24,6 +24,11 @@
       "SkillsTab": "Skills",
       "RunesTab": "Runes",
       "PassionsTab": "Passions",
+      "CultureTab": "Culture",
+      "TribeTab": "Tribe",
+      "ClanTab": "Clan",
+      "CultTab": "Cult",
+      "PassionTab": "Passions",
       "Nav": {
         "0-Species": "Step 0:\n Species",
         "1-Homeland": "Step 1:\n Homeland",
@@ -48,7 +53,13 @@
         "ChooseHomeland": "Choose a Homeland",
         "HomelandDescription": "Homeland Description",
         "RegionDescription": "Region Description",
-        "HomelandWizardInstructions": "Homeland Instructions"
+        "HomelandWizardInstructions": "Homeland Instructions",
+        "SelectHomelandCulture": "Select Homeland Culture",
+        "SelectHomelandTribe": "Select Homeland Tribe",
+        "SelectHomelandClan": "Select Homeland CLan",
+        "SelectHomelandCult": "Select Homeand Cult",
+        "SelectHomelandPassions": "Select Homeland Passions",
+        "SelectHomelandRunes": "Select Homeland Runes"
       },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",

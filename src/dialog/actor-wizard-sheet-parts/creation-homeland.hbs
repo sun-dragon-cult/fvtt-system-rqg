@@ -45,3 +45,64 @@
         {{{enrichHtml homeland.selectedHomeland.data.data.wizardInstructions}}}
     </section>
 </article>
+
+
+  <article class="collabsible-wrapper" data-collabsible-name="homelandAdvanced" data-open="{{collapsibleOpenStates.homelandAdvanced}}">
+    <h2 class="collabsible-header">
+      <span class="toggle-icon">
+        <i class="far fa-plus-square {{#if collapsibleOpenStates.homelandAdvanced}}no-display{{/if}}"></i>
+        <i class="far fa-minus-square {{#unless collapsibleOpenStates.homelandAdvanced}}no-display{{/unless}}"></i>
+        {{localize "RQG.ActorCreation.AdvancedOptions"}}
+      </span>
+    </h2>
+    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.homelandAdvanced}}style="display: none;"{{/unless}} >
+
+      <nav class="homeland-tabs item-sheet-nav-tabs tabs" data-group="homeland-item-selection">
+        <a class="item" data-group="homeland-item-selection" data-tab="cultures">
+          {{localize "RQG.ActorCreation.CultureTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="tribes">
+          {{localize "RQG.ActorCreation.TribeTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="clans">
+          {{localize "RQG.ActorCreation.ClanTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="cults">
+          {{localize "RQG.ActorCreation.CultTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="passions">
+          {{localize "RQG.ActorCreation.PassionTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="runes">
+          {{localize "RQG.ActorCreation.RunesTab"}}
+        </a>
+      </nav>
+
+      <section class="homeland-body">
+        <div class="tab cultures" data-group="homeland-item-selection" data-tab="cultures">
+            <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCulture"}}</h2>
+            Culture!
+        </div>
+        <div class="tab tribes" data-group="homeland-item-selection" data-tab="tribes">
+            <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandTribe"}}</h2>
+            Tribe!
+        </div>
+        <div class="tab clans" data-group="homeland-item-selection" data-tab="clans">
+            <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandClan"}}</h2>
+            Clan!
+        </div>
+        <div class="tab cults" data-group="homeland-item-selection" data-tab="cults">
+            <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCult"}}</h2>
+            Cult!
+        </div>
+        <div class="tab passions" data-group="homeland-item-selection" data-tab="passions">
+            <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandPassions"}}</h2>
+            Passions!
+        </div>
+        <div class="tab runes" data-group="homeland-item-selection" data-tab="runes">
+            <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandRunes"}}</h2>
+            Runes!
+        </div>
+      </section>
+    </section>
+  </article>
