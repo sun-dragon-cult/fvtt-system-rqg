@@ -122,7 +122,9 @@ export class ActorWizard extends FormApplication {
         RQG_CONFIG.actorWizardFlags.selectedSpeciesId
       );
       if (previouslySelectedSpeciesId) {
-        const flaggedSpecies = this.species.speciesTemplates?.find((s) => s.id === previouslySelectedSpeciesId);
+        const flaggedSpecies = this.species.speciesTemplates?.find(
+          (s) => s.id === previouslySelectedSpeciesId
+        );
         if (
           flaggedSpecies &&
           flaggedSpecies.id &&
@@ -139,9 +141,8 @@ export class ActorWizard extends FormApplication {
         RQG_CONFIG.actorWizardFlags.selectedHomelandRqid
       ) as string;
       if (previouslySelectedHomelandRqid) {
-          await this.setHomeland(previouslySelectedHomelandRqid);
+        await this.setHomeland(previouslySelectedHomelandRqid);
       }
-
     }
 
     await this.updateChoices();
@@ -157,7 +158,11 @@ export class ActorWizard extends FormApplication {
 
     // put choices on selected homeland journal rqidLinks for purposes of sheet
     const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
-    selectedHomeland.data.cultureJournalRqidLinks.forEach((rqidLink) => {
+    const homelandJournalRqidLinks = selectedHomeland.data.cultureJournalRqidLinks.concat(
+      ...selectedHomeland.data.tribeJournalRqidLinks,
+      ...selectedHomeland.data.clanJournalRqidLinks
+    );
+    homelandJournalRqidLinks.forEach((rqidLink) => {
       const associatedChoice = this.choices[rqidLink.rqid];
       if (associatedChoice) {
         //@ts-ignore choice
@@ -191,8 +196,14 @@ export class ActorWizard extends FormApplication {
             if (forChoice === "species") {
               changedChoice.speciesPresent = inputTarget.checked;
             }
-            if (forChoice === "homelandCulture") {
+            if (forChoice === "homelandCultures") {
               changedChoice.homelandCultureChosen = inputTarget.checked;
+            }
+            if (forChoice === "homelandTribes") {
+              changedChoice.homelandTribeChosen = inputTarget.checked;
+            }
+            if (forChoice === "homelandClans") {
+              changedChoice.homelandClanChosen = inputTarget.checked;
             }
           }
         }
@@ -400,6 +411,24 @@ export class ActorWizard extends FormApplication {
         this.choices[journalRqidLink.rqid].homelandCultureChosen = false;
       }
     });
+
+    selectedHomeland.data.tribeJournalRqidLinks.forEach((journalRqidLink) => {
+      if (this.choices[journalRqidLink.rqid] === undefined) {
+        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        this.choices[journalRqidLink.rqid] = new CreationChoice();
+        this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
+        this.choices[journalRqidLink.rqid].homelandTribeChosen = false;
+      }
+    });
+
+    selectedHomeland.data.clanJournalRqidLinks.forEach((journalRqidLink) => {
+      if (this.choices[journalRqidLink.rqid] === undefined) {
+        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        this.choices[journalRqidLink.rqid] = new CreationChoice();
+        this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
+        this.choices[journalRqidLink.rqid].homelandClanChosen = false;
+      }
+    });
   }
 
   async updateChoices() {
@@ -457,10 +486,25 @@ export class ActorWizard extends FormApplication {
     await this.actor.deleteEmbeddedDocuments("Item", deletes);
 
     const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
-    const selectedHomelandRqidLinks: RqidLink[] = [];
-    selectedHomeland.data.cultureJournalRqidLinks.forEach(rqidLink => {
+
+    const selectedCultureRqidLinks: RqidLink[] = [];
+    selectedHomeland.data.cultureJournalRqidLinks.forEach((rqidLink) => {
       if (this.choices[rqidLink.rqid].homelandCultureChosen) {
-        selectedHomelandRqidLinks.push(rqidLink);
+        selectedCultureRqidLinks.push(rqidLink);
+      }
+    });
+
+    const selectedTribeRqidLinks: RqidLink[] = [];
+    selectedHomeland.data.tribeJournalRqidLinks.forEach((rqidLink) => {
+      if (this.choices[rqidLink.rqid].homelandTribeChosen) {
+        selectedTribeRqidLinks.push(rqidLink);
+      }
+    });
+
+    const selectedClanRqidLinks: RqidLink[] = [];
+    selectedHomeland.data.clanJournalRqidLinks.forEach((rqidLink) => {
+      if (this.choices[rqidLink.rqid].homelandClanChosen) {
+        selectedClanRqidLinks.push(rqidLink);
       }
     });
 
@@ -470,7 +514,9 @@ export class ActorWizard extends FormApplication {
         background: {
           homelandJournalRqidLink: selectedHomeland.data.homelandJournalRqidLink,
           regionJournalRqidLink: selectedHomeland.data.regionJournalRqidLink,
-          cultureJournalRqidLinks: selectedHomelandRqidLinks,
+          cultureJournalRqidLinks: selectedCultureRqidLinks,
+          tribeJournalRqidLinks: selectedTribeRqidLinks,
+          clanJournalRqidLinks: selectedClanRqidLinks,
         },
       },
     });
@@ -490,6 +536,8 @@ class CreationChoice {
   homelandValue: number = 0;
   homelandPresent: boolean = false;
   homelandCultureChosen: boolean = false;
+  homelandTribeChosen: boolean = false;
+  homelandClanChosen: boolean = false;
 
   totalValue = () => {
     // TODO: one instance of a passion should be 60% and each additional intance adds +10%

@@ -83,15 +83,28 @@
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCulture"}}</h2>
                 {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
                     rqidLinkArray=homeland.selectedHomeland.data.data.cultureJournalRqidLinks
+                    checkedProperty="homelandCultureChosen"
+                    forChoice="homelandCultures"
+                    title="RQG.ActorCreation.Step1.ImportCultureTitle"
                 }}
         </div>
         <div class="tab tribes" data-group="homeland-item-selection" data-tab="tribes">
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandTribe"}}</h2>
-            Tribe!
+                {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+                    rqidLinkArray=homeland.selectedHomeland.data.data.tribeJournalRqidLinks
+                    checkedProperty="homelandTribeChosen"
+                    forChoice="homelandTribes"
+                    title="RQG.ActorCreation.Step1.ImportTribeTitle"
+                }}
         </div>
         <div class="tab clans" data-group="homeland-item-selection" data-tab="clans">
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandClan"}}</h2>
-            Clan!
+                {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+                    rqidLinkArray=homeland.selectedHomeland.data.data.clanJournalRqidLinks
+                    checkedProperty="homelandClanChosen"
+                    forChoice="homelandClans"
+                    title="RQG.ActorCreation.Step1.ImportClanTitle"
+                }}
         </div>
         <div class="tab cults" data-group="homeland-item-selection" data-tab="cults">
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCult"}}</h2>
