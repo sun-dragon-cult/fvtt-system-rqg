@@ -4,5 +4,7 @@
 /dist/
 /node_modules/
 
+/src/assets/compendiums/packs/*
+
 package-lock.json
 yarn-error.log
