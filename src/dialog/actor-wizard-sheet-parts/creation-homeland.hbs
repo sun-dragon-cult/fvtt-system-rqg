@@ -108,7 +108,12 @@
         </div>
         <div class="tab cults" data-group="homeland-item-selection" data-tab="cults">
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCult"}}</h2>
-            Cult!
+                {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+                    rqidLinkArray=homeland.selectedHomeland.data.data.cultRqidLinks
+                    checkedProperty="homelandCultChosen"
+                    forChoice="homelandCult"
+                    title="RQG.ActorCreation.Step1.ImportCultTitle"
+                }}
         </div>
         <div class="tab passions" data-group="homeland-item-selection" data-tab="passions">
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandPassions"}}</h2>

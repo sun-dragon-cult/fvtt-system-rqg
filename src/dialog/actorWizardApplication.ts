@@ -158,11 +158,12 @@ export class ActorWizard extends FormApplication {
 
     // put choices on selected homeland journal rqidLinks for purposes of sheet
     const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
-    const homelandJournalRqidLinks = selectedHomeland.data.cultureJournalRqidLinks.concat(
+    const homelandRqidLinks = selectedHomeland.data.cultureJournalRqidLinks.concat(
       ...selectedHomeland.data.tribeJournalRqidLinks,
-      ...selectedHomeland.data.clanJournalRqidLinks
+      ...selectedHomeland.data.clanJournalRqidLinks,
+      ...selectedHomeland.data.cultRqidLinks
     );
-    homelandJournalRqidLinks.forEach((rqidLink) => {
+    homelandRqidLinks.forEach((rqidLink) => {
       const associatedChoice = this.choices[rqidLink.rqid];
       if (associatedChoice) {
         //@ts-ignore choice
@@ -204,6 +205,9 @@ export class ActorWizard extends FormApplication {
             }
             if (forChoice === "homelandClans") {
               changedChoice.homelandClanChosen = inputTarget.checked;
+            }
+            if (forChoice === "homelandCult") {
+              changedChoice.homelandCultChosen = inputTarget.checked;
             }
           }
         }
@@ -429,6 +433,15 @@ export class ActorWizard extends FormApplication {
         this.choices[journalRqidLink.rqid].homelandClanChosen = false;
       }
     });
+
+    selectedHomeland.data.cultRqidLinks.forEach((cultRqidLink) => {
+      if (this.choices[cultRqidLink.rqid] === undefined) {
+        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        this.choices[cultRqidLink.rqid] = new CreationChoice();
+        this.choices[cultRqidLink.rqid].rqid = cultRqidLink.rqid;
+        this.choices[cultRqidLink.rqid].homelandCultChosen = false;
+      }
+    });
   }
 
   async updateChoices() {
@@ -439,42 +452,78 @@ export class ActorWizard extends FormApplication {
       let existingItems = this.actor.getEmbeddedItemsByRqid(key);
       if (existingItems.length > 0) {
         for (const actorItem of existingItems) {
-          if (this.choices[key].present()) {
-            if (actorItem.type === ItemTypeEnum.Skill) {
-              assertItemType(actorItem.type, ItemTypeEnum.Skill);
-              const existingSkill = actorItem.data as SkillDataSource;
-              const newBaseChance = this.choices[key].totalValue();
-              if (existingSkill.data.baseChance !== newBaseChance)
-                // Item exists on the actor and has a different baseChance, so update it.
-                updates.push({
-                  _id: actorItem.id,
-                  data: { baseChance: newBaseChance },
-                });
-            }
-            if (actorItem.type === ItemTypeEnum.Rune || actorItem.type === ItemTypeEnum.Passion) {
-              const existingAbility = actorItem.data.data as IAbility;
-              const newChance = this.choices[key].totalValue();
-              if (existingAbility.chance !== newChance) {
-                updates.push({
-                  _id: actorItem.id,
-                  data: { chance: newChance },
-                });
+          // Handle Skills, Runes, and Passions, which use the .present property of the choice
+          if (
+            actorItem.type === ItemTypeEnum.Skill ||
+            actorItem.type === ItemTypeEnum.Rune ||
+            actorItem.type === ItemTypeEnum.Passion
+          ) {
+            if (this.choices[key].present()) {
+              if (actorItem.type === ItemTypeEnum.Skill) {
+                assertItemType(actorItem.type, ItemTypeEnum.Skill);
+                const existingSkill = actorItem.data as SkillDataSource;
+                const newBaseChance = this.choices[key].totalValue();
+                if (existingSkill.data.baseChance !== newBaseChance)
+                  // Item exists on the actor and has a different baseChance, so update it.
+                  updates.push({
+                    _id: actorItem.id,
+                    data: { baseChance: newBaseChance },
+                  });
               }
-            }
-          } else {
-            // Item exists on the actor but doesn't exist on the template or hasn't been chosen
-            if (actorItem.id) {
+              if (actorItem.type === ItemTypeEnum.Rune || actorItem.type === ItemTypeEnum.Passion) {
+                const existingAbility = actorItem.data.data as IAbility;
+                const newChance = this.choices[key].totalValue();
+                if (existingAbility.chance !== newChance) {
+                  updates.push({
+                    _id: actorItem.id,
+                    data: { chance: newChance },
+                  });
+                }
+              }
+            } else {
+              // Item exists on the actor but doesn't exist on the template or hasn't been chosen
+              if (actorItem.id && !deletes.includes(actorItem.id)) {
+              }
+              //@ts-ignore actorItem.id
               deletes.push(actorItem.id);
+            }
+          }
+          // Handle Cults which use .homelandCultChosen and don't need to get "added up"
+          if (actorItem.type === ItemTypeEnum.Cult) {
+            if (this.choices[key].homelandCultChosen === true) {
+              // Cult already exists on actor
+              // Do nothing
+            } else {
+              // Cult exists on actor but hasn't been chosen (maybe has been de-selected)
+              if (actorItem.id) {
+                deletes.push(actorItem.id);
+              }
             }
           }
         }
       } else {
+        // did not find an existing item on the actor corresponding to rqid "key"
+
+        // Copy Skills, Runes, and Passions from the Actor template
         const itemsToAdd = this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key);
         if (itemsToAdd) {
           for (const templateItem of itemsToAdd) {
             if (this.choices[key].present()) {
               // Item exists on the template and has been chosen but does not exist on the actor, so add it
               adds.push(templateItem.data);
+            }
+          }
+        }
+
+        // Get Cults by rqid and add to actor
+        const cultsEligibleToAdd = (this.homeland.selectedHomeland?.data as HomelandDataSource).data
+          .cultRqidLinks;
+
+        if (cultsEligibleToAdd.map((c) => c.rqid).includes(key)) {
+          if (this.choices[key].homelandCultChosen === true) {
+            const cult = await Rqid.itemFromRqid(key);
+            if (cult) {
+              adds.push(cult.data);
             }
           }
         }
@@ -504,6 +553,13 @@ export class ActorWizard extends FormApplication {
     const selectedClanRqidLinks: RqidLink[] = [];
     selectedHomeland.data.clanJournalRqidLinks.forEach((rqidLink) => {
       if (this.choices[rqidLink.rqid].homelandClanChosen) {
+        selectedClanRqidLinks.push(rqidLink);
+      }
+    });
+
+    const selectedCultRqidLinks: RqidLink[] = [];
+    selectedHomeland.data.cultRqidLinks.forEach((rqidLink) => {
+      if (this.choices[rqidLink.rqid].homelandCultChosen) {
         selectedClanRqidLinks.push(rqidLink);
       }
     });
@@ -538,6 +594,7 @@ class CreationChoice {
   homelandCultureChosen: boolean = false;
   homelandTribeChosen: boolean = false;
   homelandClanChosen: boolean = false;
+  homelandCultChosen: boolean = false;
 
   totalValue = () => {
     // TODO: one instance of a passion should be 60% and each additional intance adds +10%
