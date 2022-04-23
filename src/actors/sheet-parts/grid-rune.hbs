@@ -4,8 +4,8 @@
         class="wizard-choice-input"
         data-rqid="{{rune.data.data.rqid}}"
         data-for-choice="{{forChoice}}"
-        {{#if rune.data.data.choice.speciesPresent}}checked{{/if}}
-        title="{{localize "RQG.Actor.Rune.ImportRuneCheckboxTitle" runeName=rune.name}}" />
+        {{#if (lookup rune.data.data.choice checkedProperty)}}checked{{/if}}
+        title="{{localize "RQG.ActorCreation.Step1.ImportRuneTitle" runeName=rune.name}}" />
 </div>
 {{/if}}
 <div title="{{localize "RQG.Game.RollTitle"}}"

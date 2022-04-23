@@ -11,6 +11,8 @@ import { RqidLink } from "../data-model/shared/rqidLink";
 import { Homeland } from "../actors/item-specific/homeland";
 import { RqgItem } from "../items/rqgItem";
 import { HomelandDataSource } from "../data-model/item-data/homelandData";
+import { RuneDataSource } from "../data-model/item-data/runeData";
+import { PassionDataSource } from "../data-model/item-data/passionData";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -171,6 +173,26 @@ export class ActorWizard extends FormApplication {
       }
     });
 
+    const homelandRunes: RqgItem[] = [];
+    for (const runeRqidLink of selectedHomeland.data.runeRqidLinks) {
+      const rune = await Rqid.itemFromRqid(runeRqidLink.rqid);
+      if (rune && rune.type === ItemTypeEnum.Rune) {
+        (rune.data as RuneDataSource).data.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
+        (rune.data as RuneDataSource).data.hasExperience = false;
+        const associatedChoice = this.choices[rune.data.data.rqid];
+        if (associatedChoice) {
+          // put choice on homeland runes for purposes of sheet
+          //@ts-ignore choice
+          rune.data.data.choice = associatedChoice;
+        }
+        homelandRunes.push(rune);
+      }
+    }
+
+    // put runes on homeland for purposes of sheet
+    //@ts-ignore runes
+    this.homeland.selectedHomeland.runes = homelandRunes;
+
     return {
       actor: this.actor,
       species: this.species,
@@ -196,6 +218,9 @@ export class ActorWizard extends FormApplication {
           if (changedChoice) {
             if (forChoice === "species") {
               changedChoice.speciesPresent = inputTarget.checked;
+            }
+            if (forChoice === "homeland") {
+              changedChoice.homelandPresent = inputTarget.checked;
             }
             if (forChoice === "homelandCultures") {
               changedChoice.homelandCultureChosen = inputTarget.checked;
@@ -442,6 +467,17 @@ export class ActorWizard extends FormApplication {
         this.choices[cultRqidLink.rqid].homelandCultChosen = false;
       }
     });
+
+    selectedHomeland.data.runeRqidLinks.forEach((cultRqidLink) => {
+      if (this.choices[cultRqidLink.rqid] === undefined) {
+        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        this.choices[cultRqidLink.rqid] = new CreationChoice();
+        this.choices[cultRqidLink.rqid].rqid = cultRqidLink.rqid;
+        this.choices[cultRqidLink.rqid].homelandPresent = false;
+      }
+      // Homeland always adds +10% to runes.  This is the the real value that gets added.
+      this.choices[cultRqidLink.rqid].homelandValue = 10;
+    });
   }
 
   async updateChoices() {
@@ -505,13 +541,52 @@ export class ActorWizard extends FormApplication {
         // did not find an existing item on the actor corresponding to rqid "key"
 
         // Copy Skills, Runes, and Passions from the Actor template
-        const itemsToAdd = this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key);
-        if (itemsToAdd) {
-          for (const templateItem of itemsToAdd) {
-            if (this.choices[key].present()) {
+        if (this.choices[key].speciesPresent) {
+          const itemsToAddFromTemplate =
+            this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key);
+          if (itemsToAddFromTemplate) {
+            for (const templateItem of itemsToAddFromTemplate) {
               // Item exists on the template and has been chosen but does not exist on the actor, so add it
+              if (templateItem.type === ItemTypeEnum.Skill) {
+                (templateItem.data as SkillDataSource).data.baseChance =
+                  this.choices[key].totalValue();
+              }
+              if (templateItem.type === ItemTypeEnum.Rune) {
+                (templateItem.data as RuneDataSource).data.chance = this.choices[key].totalValue();
+              }
+              if (templateItem.type === ItemTypeEnum.Passion) {
+                (templateItem.data as PassionDataSource).data.chance =
+                  this.choices[key].totalValue();
+              }
               adds.push(templateItem.data);
             }
+          }
+        }
+
+        // Copy Skills, Runes, and Passions from the Homeland using rqid
+        if (this.choices[key].homelandPresent) {
+          const itemToAddFromHomeland = await Rqid.fromRqid(key);
+          if (itemToAddFromHomeland instanceof RqgItem) {
+            if (
+              itemToAddFromHomeland.type === ItemTypeEnum.Skill ||
+              itemToAddFromHomeland.type === ItemTypeEnum.Rune ||
+              itemToAddFromHomeland.type === ItemTypeEnum.Passion
+            ) {
+            }
+            // Item exists on the template and has been chosen but does not exist on the actor, so add it
+            if (itemToAddFromHomeland.type === ItemTypeEnum.Skill) {
+              (itemToAddFromHomeland.data as SkillDataSource).data.baseChance =
+                this.choices[key].totalValue();
+            }
+            if (itemToAddFromHomeland.type === ItemTypeEnum.Rune) {
+              (itemToAddFromHomeland.data as RuneDataSource).data.chance =
+                this.choices[key].totalValue();
+            }
+            if (itemToAddFromHomeland.type === ItemTypeEnum.Passion) {
+              (itemToAddFromHomeland.data as PassionDataSource).data.chance =
+                this.choices[key].totalValue();
+            }
+            adds.push(itemToAddFromHomeland.data);
           }
         }
 
@@ -597,8 +672,14 @@ class CreationChoice {
   homelandCultChosen: boolean = false;
 
   totalValue = () => {
-    // TODO: one instance of a passion should be 60% and each additional intance adds +10%
-    return this.speciesValue + this.homelandValue;
+    let result: number = 0;
+    if (this.speciesPresent) {
+      result += this.speciesValue;
+    }
+    if (this.homelandPresent) {
+      result += this.homelandValue
+    }
+    return result;
   };
   present = () => {
     return this.speciesPresent || this.homelandPresent;

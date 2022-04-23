@@ -70,11 +70,11 @@
         <a class="item" data-group="homeland-item-selection" data-tab="cults">
           {{localize "RQG.ActorCreation.CultTab"}}
         </a>
-        <a class="item" data-group="homeland-item-selection" data-tab="passions">
-          {{localize "RQG.ActorCreation.PassionTab"}}
-        </a>
         <a class="item" data-group="homeland-item-selection" data-tab="runes">
           {{localize "RQG.ActorCreation.RunesTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="passions">
+          {{localize "RQG.ActorCreation.PassionTab"}}
         </a>
       </nav>
 
@@ -115,13 +115,24 @@
                     title="RQG.ActorCreation.Step1.ImportCultTitle"
                 }}
         </div>
+        <div class="tab runes" data-group="homeland-item-selection" data-tab="runes">
+            <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandRunes"}}</h2>
+
+              {{#each homeland.selectedHomeland.runes}}
+              <div class="rune-selector">
+                {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
+                  rune=this
+                  wizard=true
+                  checkedProperty="homelandPresent"
+                  forChoice="homeland"}}                
+              </div>
+              {{/each}}  
+
+
+        </div>
         <div class="tab passions" data-group="homeland-item-selection" data-tab="passions">
             <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandPassions"}}</h2>
             Passions!
-        </div>
-        <div class="tab runes" data-group="homeland-item-selection" data-tab="runes">
-            <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandRunes"}}</h2>
-            Runes!
         </div>
       </section>
     </section>

@@ -63,7 +63,8 @@
         "ImportCultureTitle": "Import Culture: \"{name}\"",
         "ImportTribeTitle": "Import Tribe: \"{name}\"",
         "ImportClanTitle": "Import Clan: \"{name}\"",
-        "ImportCultTitle": "Import Cult: \"{name}\""
+        "ImportCultTitle": "Import Cult: \"{name}\"",
+        "ImportRuneTitle": "Import Rune: \"{name}\""
       },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
@@ -283,8 +284,7 @@
         "Condition": "Condition",
         "Elemental": "Elemental",
         "Form": "Form",
-        "Power": "Power",
-        "ImportRuneCheckboxTitle": "Import Rune: \"{runeName}\""
+        "Power": "Power"
       },
       "RuneMagic": {
         "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",

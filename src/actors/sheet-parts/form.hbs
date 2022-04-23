@@ -5,14 +5,16 @@
     {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
         rune=this
         wizard=../wizard 
-        forChoice=../forChoice}}
+        forChoice=../forChoice
+        checkedProperty=../checkedProperty}}
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
   {{#with ownedItems.rune.form.Beast}}
     {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
         rune=this
         wizard=../wizard 
-        forChoice=../forChoice}}
+        forChoice=../forChoice
+        checkedProperty=../checkedProperty}}
   {{/with}}
 
   {{#each ownedItems.rune.form}}
@@ -22,7 +24,8 @@
     {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
         rune=this
         wizard=../wizard 
-        forChoice=../forChoice}}
+        forChoice=../forChoice
+        checkedProperty=../checkedProperty}}
   <div></div>
   <div></div>
   <div></div>
