@@ -7,7 +7,6 @@ const packDirPaths = fs.readdirSync(packsDataPath).map((dirName) => path.resolve
 
 // Loads all packs into memory for the sake of making all entity name/id mappings available
 const packs = packDirPaths.map((dirPath) => CompendiumPack.loadYAML(dirPath));
-// const packs = packDirPaths.map((dirPath) => CompendiumPack.loadJSON(dirPath));
 const entityCounts = packs.map((pack) => pack.save());
 const total = entityCounts.reduce((runningTotal, entityCount) => runningTotal + entityCount, 0);
 
