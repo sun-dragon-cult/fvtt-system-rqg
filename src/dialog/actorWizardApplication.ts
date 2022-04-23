@@ -10,6 +10,7 @@ import { IAbility } from "../data-model/shared/ability";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { Homeland } from "../actors/item-specific/homeland";
 import { RqgItem } from "../items/rqgItem";
+import { HomelandDataSource } from "../data-model/item-data/homelandData";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -145,11 +146,22 @@ export class ActorWizard extends FormApplication {
 
     await this.updateChoices();
 
+    // put choices on selected species items for purposes of sheet
     this.species.selectedSpeciesTemplate?.items.forEach((i) => {
-      let associatedChoice = this.choices[i.data.data.rqid];
+      const associatedChoice = this.choices[i.data.data.rqid];
       if (associatedChoice) {
         //@ts-ignore choice
         i.data.data.choice = associatedChoice;
+      }
+    });
+
+    // put choices on selected homeland journal rqidLinks for purposes of sheet
+    const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
+    selectedHomeland.data.cultureJournalRqidLinks.forEach((rqidLink) => {
+      const associatedChoice = this.choices[rqidLink.rqid];
+      if (associatedChoice) {
+        //@ts-ignore choice
+        rqidLink.choice = associatedChoice;
       }
     });
 
@@ -178,6 +190,9 @@ export class ActorWizard extends FormApplication {
           if (changedChoice) {
             if (forChoice === "species") {
               changedChoice.speciesPresent = inputTarget.checked;
+            }
+            if (forChoice === "homelandCulture") {
+              changedChoice.homelandCultureChosen = inputTarget.checked;
             }
           }
         }
@@ -374,6 +389,17 @@ export class ActorWizard extends FormApplication {
       RQG_CONFIG.actorWizardFlags.selectedHomelandRqid,
       this.homeland.selectedHomeland?.data.data.rqid
     );
+
+    const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
+
+    selectedHomeland.data.cultureJournalRqidLinks.forEach((journalRqidLink) => {
+      if (this.choices[journalRqidLink.rqid] === undefined) {
+        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        this.choices[journalRqidLink.rqid] = new CreationChoice();
+        this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
+        this.choices[journalRqidLink.rqid].homelandCultureChosen = false;
+      }
+    });
   }
 
   async updateChoices() {
@@ -430,6 +456,25 @@ export class ActorWizard extends FormApplication {
     await this.actor.updateEmbeddedDocuments("Item", updates);
     await this.actor.deleteEmbeddedDocuments("Item", deletes);
 
+    const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
+    const selectedHomelandRqidLinks: RqidLink[] = [];
+    selectedHomeland.data.cultureJournalRqidLinks.forEach(rqidLink => {
+      if (this.choices[rqidLink.rqid].homelandCultureChosen) {
+        selectedHomelandRqidLinks.push(rqidLink);
+      }
+    });
+
+    // This is just always going to replace the Culture RqidLinks
+    await this.actor.update({
+      data: {
+        background: {
+          homelandJournalRqidLink: selectedHomeland.data.homelandJournalRqidLink,
+          regionJournalRqidLink: selectedHomeland.data.regionJournalRqidLink,
+          cultureJournalRqidLinks: selectedHomelandRqidLinks,
+        },
+      },
+    });
+
     this.actor.setFlag(
       RQG_CONFIG.flagScope,
       RQG_CONFIG.actorWizardFlags.wizardChoices,
@@ -444,6 +489,7 @@ class CreationChoice {
   speciesPresent: boolean = false;
   homelandValue: number = 0;
   homelandPresent: boolean = false;
+  homelandCultureChosen: boolean = false;
 
   totalValue = () => {
     // TODO: one instance of a passion should be 60% and each additional intance adds +10%

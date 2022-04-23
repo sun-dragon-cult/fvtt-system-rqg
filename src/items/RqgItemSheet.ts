@@ -141,6 +141,7 @@ export class RqgItemSheet<
     // Handle rqid links
     RqidLink.addRqidLinkClickHandlers($(this.form!));
 
+    // Handle deleting RqidLinks from RqidLink Array Properties
     $(this.form!)
       .find("[data-delete-from-property]")
       .each((i: number, el: HTMLElement) => {
@@ -182,8 +183,6 @@ export class RqgItemSheet<
       ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
       return;
     }
-
-    console.log("RQG ITEM DROP!", event, droppedDocumentData);
 
     const targetPropertyName = findDatasetValueInSelfOrAncestors(
       event.target as HTMLElement,

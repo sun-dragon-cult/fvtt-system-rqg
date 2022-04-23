@@ -115,6 +115,10 @@
         "BaseIncome": "Base Income",
         "Ransom": "Ransom",
         "RansomDetails": "Details",
+        "Cultures": "Culture(s)",
+        "Tribes": "Tribe(s)",
+        "Clans": "Clan(s)",
+        "Region": "Region",
         "Homeland": {
           "Heading": "Homeland",
           "aggar": "Aggar",

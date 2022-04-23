@@ -3,8 +3,8 @@
         <input type="checkbox" 
             class="wizard-choice-input"
             data-rqid="{{this.rqid}}"
-            data-for-choice="homeland"
-            {{#if this.choice.forChoice}}checked{{/if}}
+            data-for-choice="homelandCulture"
+            {{#if this.choice.homelandCultureChosen}}checked{{/if}}
             title="Import Culture: {{this.name}}"
             />
     {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"

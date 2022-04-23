@@ -56,6 +56,7 @@ import { ActorWizard } from "../dialog/actorWizardApplication";
 import { RQG_CONFIG } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { Rqid } from "../system/api/rqidApi";
+import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 
 interface UiSections {
   health: boolean;
@@ -1049,6 +1050,25 @@ export class RqgActorSheet extends ActorSheet<
 
     // Handle rqid links
     RqidLink.addRqidLinkClickHandlers($(this.form!));
+
+    // Handle deleting RqidLinks from RqidLink Array Properties
+    $(this.form!)
+      .find("[data-delete-from-property]")
+      .each((i: number, el: HTMLElement) => {
+        const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
+        const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
+        el.addEventListener("click", async () => {
+          let deleteFromProperty = getProperty(this.actor.data.data, deleteFromPropertyName);
+          if (Array.isArray(deleteFromProperty)) {
+            const newValueArray = (deleteFromProperty as RqidLink[]).filter(
+              (r) => r.rqid !== deleteRqid
+            );
+            await this.actor.update({ data: { [deleteFromPropertyName]: newValueArray } });
+          } else {
+            await this.actor.update({ data: { [deleteFromPropertyName]: "" } });
+          }
+        });
+      });
   }
 
   static confirmItemDelete(actor: RqgActor, itemId: string): void {
@@ -1155,32 +1175,54 @@ export class RqgActorSheet extends ActorSheet<
       return;
     }
 
-    const target = findDatasetValueInSelfOrAncestors(
+    const targetPropertyName = findDatasetValueInSelfOrAncestors(
       event.target as HTMLElement,
       "targetDropProperty"
     );
 
+    const dropTypes = findDatasetValueInSelfOrAncestors(
+      event.target as HTMLElement,
+      "expectedDropTypes"
+    )?.split(",");
+
+    let droppedDocument: Item | JournalEntry | undefined = undefined;
+
+    if (droppedDocumentData.type === "Item") {
+      droppedDocument = await Item.fromDropData(droppedDocumentData);
+    }
+
     if (droppedDocumentData.type === "JournalEntry") {
-      const droppedJournal = getGame().journal?.get(droppedDocumentData.id);
+      droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
+    }
 
-      if (droppedJournal) {
-        const rqid = droppedJournal.getFlag(
-          RQG_CONFIG.flagScope,
-          RQG_CONFIG.rqidFlags.rqid
-        ) as string;
+    if (droppedDocument && targetPropertyName) {
+      const newLink = new RqidLink();
+      newLink.rqid = droppedDocument.getFlag(
+        RQG_CONFIG.flagScope,
+        RQG_CONFIG.rqidFlags.rqid
+      ) as string;
+      newLink.name = droppedDocument.name || "";
+      newLink.documentType = droppedDocumentData.type;
+      if (droppedDocument instanceof Item) {
+        newLink.itemType = droppedDocument.type;
+      }
 
-        const link: RqidLink = {
-          rqid: rqid,
-          name: droppedJournal.name || "",
-          documentType: droppedDocumentData.type,
-        };
+      const targetProperty = getProperty(this.actor.data.data, targetPropertyName);
 
-        if (target) {
-          if (target === "speciesRqidLink") {
+      if (targetProperty) {
+        (event as RqidLinkDragEvent).TargetPropertyName = targetPropertyName;
+        if (Array.isArray(targetProperty)) {
+          const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
+          if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
+            targetPropertyRqidLinkArray.push(newLink);
+            targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
             await this.actor.update({
-              "data.background.speciesRqidLink": link,
+              data: { [targetPropertyName]: targetPropertyRqidLinkArray },
             });
           }
+        } else {
+          // Property is a single RqidLink, not an array
+          await this.actor.update({ data: { [targetPropertyName]: newLink } });
         }
       }
     }
