@@ -4,7 +4,6 @@ import * as yaml from "js-yaml";
 
 import * as crypto from 'crypto'
 
-// import *
 export interface PackMetadata {
     system: string;
     name: string;
