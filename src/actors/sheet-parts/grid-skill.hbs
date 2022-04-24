@@ -4,7 +4,7 @@
         class="wizard-choice-input"
         data-rqid="{{skill.data.data.rqid}}"
         data-for-choice="{{forChoice}}"
-        {{#if skill.data.data.choice.speciesPresent}}checked{{/if}} {{!-- TODO this needs to be made generic.  See rune-selector --}}
+        {{#if (lookup skill.data.data.choice checkedProperty)}}checked{{/if}} {{!-- TODO this needs to be made generic.  See rune-selector --}}
         title="{{localize "RQG.Actor.Skill.ImportSkillCheckboxTitle" skillName=skill.name}}"
         />
 </div>

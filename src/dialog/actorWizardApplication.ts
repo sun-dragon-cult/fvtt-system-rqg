@@ -210,7 +210,7 @@ export class ActorWizard extends FormApplication {
           skillDataSource.data.hasExperience = false;
           skillDataSource.data.chance = skillRqidLink.bonus;
         }
-        homelandSkills.push(skill); //TODO: Do we really need this for skills?
+        homelandSkills.push(skill); 
       }
     }
     // Create an object similar to the one from ActorSheet organizeOwnedItems
@@ -472,7 +472,7 @@ export class ActorWizard extends FormApplication {
 
     selectedHomeland.data.cultureJournalRqidLinks.forEach((journalRqidLink) => {
       if (this.choices[journalRqidLink.rqid] === undefined) {
-        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        // adding a new choice that hasn't existed before, but Culture JournalEntries shouldn't be checked by default
         this.choices[journalRqidLink.rqid] = new CreationChoice();
         this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
         this.choices[journalRqidLink.rqid].homelandCultureChosen = false;
@@ -481,7 +481,7 @@ export class ActorWizard extends FormApplication {
 
     selectedHomeland.data.tribeJournalRqidLinks.forEach((journalRqidLink) => {
       if (this.choices[journalRqidLink.rqid] === undefined) {
-        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        // adding a new choice that hasn't existed before, but Tribe JournalEntries shouldn't be checked by default
         this.choices[journalRqidLink.rqid] = new CreationChoice();
         this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
         this.choices[journalRqidLink.rqid].homelandTribeChosen = false;
@@ -490,7 +490,7 @@ export class ActorWizard extends FormApplication {
 
     selectedHomeland.data.clanJournalRqidLinks.forEach((journalRqidLink) => {
       if (this.choices[journalRqidLink.rqid] === undefined) {
-        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        // adding a new choice that hasn't existed before, but Clan JournalEntries shouldn't be checked by default
         this.choices[journalRqidLink.rqid] = new CreationChoice();
         this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
         this.choices[journalRqidLink.rqid].homelandClanChosen = false;
@@ -499,19 +499,30 @@ export class ActorWizard extends FormApplication {
 
     selectedHomeland.data.cultRqidLinks.forEach((cultRqidLink) => {
       if (this.choices[cultRqidLink.rqid] === undefined) {
-        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        // adding a new choice that hasn't existed before, but Cult Items shouldn't be checked by default
         this.choices[cultRqidLink.rqid] = new CreationChoice();
         this.choices[cultRqidLink.rqid].rqid = cultRqidLink.rqid;
         this.choices[cultRqidLink.rqid].homelandCultChosen = false;
       }
     });
 
+    selectedHomeland.data.skillRqidLinks.forEach((skillRqidLink) => {
+      if (this.choices[skillRqidLink.rqid] === undefined) {
+        // adding a new choice that hasn't existed before, check Skill Items by default since MOST of them will be used
+        this.choices[skillRqidLink.rqid] = new CreationChoice();
+        this.choices[skillRqidLink.rqid].rqid = skillRqidLink.rqid;
+        this.choices[skillRqidLink.rqid].homelandPresent = true;
+      }
+      // Homeland always adds +10% to runes.  This is the the real value that gets added.
+      this.choices[skillRqidLink.rqid].homelandValue = skillRqidLink.bonus || 0;
+    });
+
     selectedHomeland.data.runeRqidLinks.forEach((cultRqidLink) => {
       if (this.choices[cultRqidLink.rqid] === undefined) {
-        // adding a new choice that hasn't existed before, but journal items shouldn't be checked by default
+        // adding a new choice that hasn't existed before, check Rune Items by default since there's usually only ONE
         this.choices[cultRqidLink.rqid] = new CreationChoice();
         this.choices[cultRqidLink.rqid].rqid = cultRqidLink.rqid;
-        this.choices[cultRqidLink.rqid].homelandPresent = false;
+        this.choices[cultRqidLink.rqid].homelandPresent = true;
       }
       // Homeland always adds +10% to runes.  This is the the real value that gets added.
       this.choices[cultRqidLink.rqid].homelandValue = 10;
