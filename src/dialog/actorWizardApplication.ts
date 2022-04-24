@@ -3,8 +3,8 @@ import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { getActorTemplates, getHomelands, Rqid } from "../system/api/rqidApi";
 import { RQG_CONFIG } from "../system/config";
-import { assertItemType, getGame, getRequiredDomDataset, localize } from "../system/util";
-import { SkillDataSource } from "../data-model/item-data/skillData";
+import { assertItemType, getDocumentTypes, getGame, getRequiredDomDataset, localize } from "../system/util";
+import { SkillCategoryEnum, SkillDataSource } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqidLink } from "../data-model/shared/rqidLink";
@@ -13,6 +13,7 @@ import { RqgItem } from "../items/rqgItem";
 import { HomelandDataSource } from "../data-model/item-data/homelandData";
 import { RuneDataSource } from "../data-model/item-data/runeData";
 import { PassionDataSource } from "../data-model/item-data/passionData";
+import { Skill } from "../actors/item-specific/skill";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -179,7 +180,7 @@ export class ActorWizard extends FormApplication {
       if (rune && rune.type === ItemTypeEnum.Rune) {
         (rune.data as RuneDataSource).data.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
         (rune.data as RuneDataSource).data.hasExperience = false;
-        const associatedChoice = this.choices[rune.data.data.rqid];
+        const associatedChoice = this.choices[runeRqidLink.rqid];
         if (associatedChoice) {
           // put choice on homeland runes for purposes of sheet
           //@ts-ignore choice
@@ -188,10 +189,47 @@ export class ActorWizard extends FormApplication {
         homelandRunes.push(rune);
       }
     }
-
     // put runes on homeland for purposes of sheet
     //@ts-ignore runes
     this.homeland.selectedHomeland.runes = homelandRunes;
+
+    const homelandSkills: RqgItem[] = [];
+    for (const skillRqidLink of selectedHomeland.data.skillRqidLinks) {
+      const skill = await Rqid.itemFromRqid(skillRqidLink.rqid);
+      if (skill && skill.type === ItemTypeEnum.Skill) {
+        const associatedChoice = this.choices[skillRqidLink.rqid];
+        if (associatedChoice) {
+          // put choice on homeland skills for purposes of sheet
+          //@ts-ignore choice
+          skill.data.data.choice = associatedChoice;
+        }
+        if (skillRqidLink.bonus) {
+          const skillDataSource = skill.data as SkillDataSource
+          skillDataSource.data.baseChance = 0;
+          skillDataSource.data.learnedChance = 0;
+          skillDataSource.data.hasExperience = false;
+          skillDataSource.data.chance = skillRqidLink.bonus;
+        }
+        homelandSkills.push(skill); //TODO: Do we really need this for skills?
+      }
+    }
+    // Create an object similar to the one from ActorSheet organizeOwnedItems
+    const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
+    const skills: any = {};
+    Object.values(SkillCategoryEnum).forEach((cat: string) => {
+      skills[cat] = homelandSkills.filter((s: any) => cat === s.data.data.category);
+    });
+    // Sort the skills inside each category
+    Object.values(skills).forEach((skillList) =>
+      (skillList as RqgItem[]).sort((a: RqgItem, b: RqgItem) =>
+        ("" + a.data.name).localeCompare(b.data.name)
+      )
+    );
+    itemTypes[ItemTypeEnum.Skill] = skills;
+
+    // put skills on homeland for purposes of sheet
+    //@ts-ignore skills
+    this.homeland.selectedHomeland.skillsSorted = itemTypes; //TODO Sort this by category and use the skill tab
 
     return {
       actor: this.actor,

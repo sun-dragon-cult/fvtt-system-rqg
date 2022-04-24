@@ -35,5 +35,5 @@
     {{#if skill.data.data.descriptionRqidLink.rqid}}
         data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
     {{/if}}>
-<span class="text-right nowrap">{{skill.data.data.chance}}%</span>
+<span class="text-right nowrap">{{#if asBonus}}+{{/if}}{{skill.data.data.chance}}%</span>
 </div>
