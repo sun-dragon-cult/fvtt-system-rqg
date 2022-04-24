@@ -1,5 +1,5 @@
-<div class="rqidlink">
-  {{#if rqidLink.rqid}}
+{{#if rqidLink.rqid}}
+  <div class="rqidlink">
     <a
       class="rqid-content-link"
       data-rqid-link
@@ -10,16 +10,16 @@
       {{{rqidLinkImage rqidLink}}}
       {{rqidLink.name}}
     </a>
-  {{/if}}
 
   {{#if showBonus}}
     {{#if editBonusPropertyName}}
+      +
       <input type="number" value="{{rqidLink.bonus}}"
           style="text-align: right; width: 25px;"
           data-edit-bonus-property-name="{{editBonusPropertyName}}"
           data-rqid="{{rqidLink.rqid}}">%
     {{else}}
-      <span>{{rqidLink.bonus}}%</span>
+      <span>+{{rqidLink.bonus}}%</span>
     {{/if}}
   {{/if}}
 
@@ -34,15 +34,6 @@
     {{/if}}
   {{/if}}
 
-  {{#unless rqidLink.rqid}}
-    {{#if showInfoCircleConnect}}
-      <i
-        class="fas fa-info-circle icon"
-        title="{{localize showInfoCircleConnect}}"
-      ></i>
-    {{/if}}
-  {{/unless}}
-
   {{#if rqidLink.rqid}}
     {{#if showInfoCircleReplace}}
       <i
@@ -51,4 +42,16 @@
       ></i>
     {{/if}}
   {{/if}}
-</div>
+
+  </div>
+
+{{else}}
+
+  {{#if showInfoCircleConnect}}
+    <i
+      class="fas fa-info-circle icon"
+      title="{{localize showInfoCircleConnect}}"
+    ></i>
+  {{/if}}
+
+{{/if}}
