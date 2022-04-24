@@ -8,11 +8,12 @@ export interface HomelandDataSourceData extends IRqid {
   region: string;
   regionJournalRqidLink: RqidLink;
   cultureJournalRqidLinks: RqidLink[];
-  cultRqidLinks: RqidLink[];
-  passionRqidLinks: RqidLink[];
-  runeRqidLinks: RqidLink[];
   tribeJournalRqidLinks: RqidLink[];
   clanJournalRqidLinks: RqidLink[];
+  cultRqidLinks: RqidLink[];
+  skillRqidLinks: RqidLink[];
+  runeRqidLinks: RqidLink[];
+  passionRqidLinks: RqidLink[];
   wizardInstructions: string;
 }
 
@@ -35,11 +36,12 @@ export const emptyHomeland: HomelandDataSourceData = {
   region: "",
   regionJournalRqidLink: new RqidLink(),
   cultureJournalRqidLinks: [],
-  cultRqidLinks: [],
-  passionRqidLinks: [],
-  runeRqidLinks: [],
   tribeJournalRqidLinks: [],
   clanJournalRqidLinks: [],
+  cultRqidLinks: [],
+  skillRqidLinks: [],
+  runeRqidLinks: [],
+  passionRqidLinks: [],
   wizardInstructions: "",
   rqid: "",
   rqidPriority: 0,

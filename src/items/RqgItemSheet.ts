@@ -171,6 +171,39 @@ export class RqgItemSheet<
           }
         });
       });
+
+    $(this.form!)
+      .find("[data-edit-bonus-property-name]")
+      .each((i: number, el: HTMLElement) => {
+        const editRqid = getRequiredDomDataset($(el), "rqid");
+        const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
+        el.addEventListener("change",async () => {
+          console.log("CHANGE!", editRqid, editPropertyName);
+          let updateProperty = getProperty(this.item.data.data, editPropertyName);
+          if (Array.isArray(updateProperty)) {
+            const updateRqidLink = (updateProperty as RqidLink[]).find(rqidLink => rqidLink.rqid === editRqid );
+            if (updateRqidLink) {
+              updateRqidLink.bonus = Number((el as HTMLInputElement).value);
+            }
+            if (this.item.isEmbedded) {
+              await this.item.actor?.updateEmbeddedDocuments("Item", [
+                { _id: this.item.id, data: { [editPropertyName]: updateProperty } },
+              ]);
+            } else {
+              await this.item.update({ data: { [editPropertyName]: updateProperty } });
+            }
+          } else {
+            (updateProperty as RqidLink).bonus = Number((el as HTMLInputElement).value);
+            if (this.item.isEmbedded) {
+              await this.actor?.updateEmbeddedDocuments("Item", [
+                { _id: this.item.id, data: { [editPropertyName]: updateProperty } },
+              ]);
+            } else {
+              await this.item.update({ data: { [editPropertyName]: updateProperty } });
+            }            
+          }
+        });
+      });
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {

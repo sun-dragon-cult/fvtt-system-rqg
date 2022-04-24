@@ -6,6 +6,7 @@ export class RqidLink {
   name: string = "";
   documentType: string = "";
   itemType?: string;
+  bonus: number | undefined;
 
   // Handle rqid links
   static async addRqidLinkClickHandlers(html: JQuery): Promise<void> {

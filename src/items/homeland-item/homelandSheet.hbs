@@ -101,13 +101,15 @@
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
           }}
 
-          <label>{{localize "RQG.Item.Homeland.PassionLinks"}}</label>
+          <label>{{localize "RQG.Item.Homeland.SkillLinks"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=homelandData.passionRqidLinks
-            parentField="passionRqidLinks"
-            dropTypes="passion"
-            showDeleteFromPropertyName="passionRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectPassion"
+            rqidLinkArray=homelandData.skillRqidLinks
+            parentField="skillRqidLinks"
+            dropTypes="skill"
+            showDeleteFromPropertyName="skillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showBonus=true
+            editBonusPropertyName="skillRqidLinks"
           }}
 
           <label>{{localize "RQG.Item.Homeland.RuneLinks"}}</label>
@@ -117,6 +119,15 @@
             dropTypes="rune"
             showDeleteFromPropertyName="runeRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+          }}
+
+          <label>{{localize "RQG.Item.Homeland.PassionLinks"}}</label>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=homelandData.passionRqidLinks
+            parentField="passionRqidLinks"
+            dropTypes="passion"
+            showDeleteFromPropertyName="passionRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectPassion"
           }}
 
           <label class="editor-label">{{localize "RQG.Item.Homeland.WizardInstructions"}}</label>

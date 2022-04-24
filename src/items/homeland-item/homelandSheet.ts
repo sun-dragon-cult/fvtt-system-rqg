@@ -32,7 +32,7 @@ export class HomelandSheet extends RqgItemSheet<
       classes: ["rqg", "sheet", ItemTypeEnum.Homeland],
       template: "systems/rqg/items/homeland-item/homelandSheet.hbs",
       width: 550,
-      height: 650,
+      height: 850,
       tabs: [
         {
           navSelector: ".item-sheet-nav-tabs",

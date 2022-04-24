@@ -815,7 +815,9 @@
           "DropToConnectPassion": "Drop a Passion Item on this field to connect.",
           "DropToReplacePassion": "Drop a Passion Item on this field to replace.",
           "DropToConnectRune": "Drop a Rune Item on this field to connect.",
-          "DropToReplaceRune": "Drop a Rune Item on this field to replace."
+          "DropToReplaceRune": "Drop a Rune Item on this field to replace.",
+          "DropToConnectSkill": "Drop a Skill Item on this field to connect.",
+          "DropToReplaceSkill": "Drop a Skill Item on this field to replace."
         },
         "Error": {
           "MoreThanOneRqidMatchInWorld": "More than one RQG Item in the world (not in Compendia) matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",
