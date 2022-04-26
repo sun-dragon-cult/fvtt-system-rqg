@@ -11,7 +11,7 @@
           class="wizard-choice-input"
           data-rqid="{{this.data.data.rqid}}"
           data-for-choice="{{../forChoice}}"
-          {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
+          {{#if (lookup this.data.data.choice ../checkedProperty)}}checked{{/if}}
           title="{{localize "RQG.Actor.Passion.ImportPassionCheckboxTitle" passionName=this.name}}" />
       </div>
       {{/if}}

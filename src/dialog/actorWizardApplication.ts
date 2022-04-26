@@ -227,9 +227,31 @@ export class ActorWizard extends FormApplication {
     );
     itemTypes[ItemTypeEnum.Skill] = skills;
 
-    // put skills on homeland for purposes of sheet
-    //@ts-ignore skills
-    this.homeland.selectedHomeland.skillsSorted = itemTypes; //TODO Sort this by category and use the skill tab
+    const homelandPassions: RqgItem[] = [];
+    for (const passionRqidLink of selectedHomeland.data.passionRqidLinks) {
+      const passion = await Rqid.itemFromRqid(passionRqidLink.rqid);
+      if (passion && passion.type === ItemTypeEnum.Passion) {
+        const associatedChoice = this.choices[passionRqidLink.rqid];
+        (passion.data as PassionDataSource).data.hasExperience = false;
+        if (associatedChoice) {
+          // put choice on homeland passions for purposes of sheet
+          //@ts-ignore choice
+          passion.data.data.choice = associatedChoice
+        }
+        homelandPassions.push(passion);
+      }
+    }
+
+    const passions: any = [];
+    homelandPassions.forEach(passion => {
+      passions.push(passion);
+    })
+    itemTypes[ItemTypeEnum.Passion] = passions;
+
+    // put skills and passions on homeland for purposes of sheet
+    //@ts-ignore ownedItems
+    this.homeland.selectedHomeland.ownedItems = itemTypes; //TODO Sort this by category and use the skill tab
+
 
     return {
       actor: this.actor,
@@ -475,6 +497,7 @@ export class ActorWizard extends FormApplication {
         // adding a new choice that hasn't existed before, but Culture JournalEntries shouldn't be checked by default
         this.choices[journalRqidLink.rqid] = new CreationChoice();
         this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
+        this.choices[journalRqidLink.rqid].type = "journal-culture";
         this.choices[journalRqidLink.rqid].homelandCultureChosen = false;
       }
     });
@@ -484,6 +507,7 @@ export class ActorWizard extends FormApplication {
         // adding a new choice that hasn't existed before, but Tribe JournalEntries shouldn't be checked by default
         this.choices[journalRqidLink.rqid] = new CreationChoice();
         this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
+        this.choices[journalRqidLink.rqid].type = "journal-tribe";
         this.choices[journalRqidLink.rqid].homelandTribeChosen = false;
       }
     });
@@ -493,6 +517,7 @@ export class ActorWizard extends FormApplication {
         // adding a new choice that hasn't existed before, but Clan JournalEntries shouldn't be checked by default
         this.choices[journalRqidLink.rqid] = new CreationChoice();
         this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
+        this.choices[journalRqidLink.rqid].type = "journal-clan";
         this.choices[journalRqidLink.rqid].homelandClanChosen = false;
       }
     });
@@ -502,6 +527,7 @@ export class ActorWizard extends FormApplication {
         // adding a new choice that hasn't existed before, but Cult Items shouldn't be checked by default
         this.choices[cultRqidLink.rqid] = new CreationChoice();
         this.choices[cultRqidLink.rqid].rqid = cultRqidLink.rqid;
+        this.choices[cultRqidLink.rqid].type = ItemTypeEnum.Cult;
         this.choices[cultRqidLink.rqid].homelandCultChosen = false;
       }
     });
@@ -511,22 +537,35 @@ export class ActorWizard extends FormApplication {
         // adding a new choice that hasn't existed before, check Skill Items by default since MOST of them will be used
         this.choices[skillRqidLink.rqid] = new CreationChoice();
         this.choices[skillRqidLink.rqid].rqid = skillRqidLink.rqid;
+        this.choices[skillRqidLink.rqid].type = ItemTypeEnum.Skill;
         this.choices[skillRqidLink.rqid].homelandPresent = true;
       }
       // Homeland always adds +10% to runes.  This is the the real value that gets added.
       this.choices[skillRqidLink.rqid].homelandValue = skillRqidLink.bonus || 0;
     });
 
-    selectedHomeland.data.runeRqidLinks.forEach((cultRqidLink) => {
-      if (this.choices[cultRqidLink.rqid] === undefined) {
+    selectedHomeland.data.runeRqidLinks.forEach((runeRqidLink) => {
+      if (this.choices[runeRqidLink.rqid] === undefined) {
         // adding a new choice that hasn't existed before, check Rune Items by default since there's usually only ONE
-        this.choices[cultRqidLink.rqid] = new CreationChoice();
-        this.choices[cultRqidLink.rqid].rqid = cultRqidLink.rqid;
-        this.choices[cultRqidLink.rqid].homelandPresent = true;
+        this.choices[runeRqidLink.rqid] = new CreationChoice();
+        this.choices[runeRqidLink.rqid].rqid = runeRqidLink.rqid;
+        this.choices[runeRqidLink.rqid].type = ItemTypeEnum.Rune;
+        this.choices[runeRqidLink.rqid].homelandPresent = true;
       }
       // Homeland always adds +10% to runes.  This is the the real value that gets added.
-      this.choices[cultRqidLink.rqid].homelandValue = 10;
+      this.choices[runeRqidLink.rqid].homelandValue = 10;
     });
+
+    selectedHomeland.data.passionRqidLinks.forEach((passionRqidLink) => {
+      if (this.choices[passionRqidLink.rqid] === undefined) {
+        // adding a new choice that hasn't existed before, check Passion Items by default
+        this.choices[passionRqidLink.rqid] = new CreationChoice();
+        this.choices[passionRqidLink.rqid].rqid = passionRqidLink.rqid;
+        this.choices[passionRqidLink.rqid].type = ItemTypeEnum.Passion;
+        this.choices[passionRqidLink.rqid].homelandPresent = true;
+      }
+      this.choices[passionRqidLink.rqid].homelandValue = 10;
+    })
   }
 
   async updateChoices() {
@@ -599,13 +638,16 @@ export class ActorWizard extends FormApplication {
               if (templateItem.type === ItemTypeEnum.Skill) {
                 (templateItem.data as SkillDataSource).data.baseChance =
                   this.choices[key].totalValue();
+                (templateItem.data as SkillDataSource).data.hasExperience = false;  
               }
               if (templateItem.type === ItemTypeEnum.Rune) {
                 (templateItem.data as RuneDataSource).data.chance = this.choices[key].totalValue();
+                (templateItem.data as RuneDataSource).data.hasExperience = false;
               }
               if (templateItem.type === ItemTypeEnum.Passion) {
                 (templateItem.data as PassionDataSource).data.chance =
                   this.choices[key].totalValue();
+                (templateItem.data as PassionDataSource).data.hasExperience = false;
               }
               adds.push(templateItem.data);
             }
@@ -616,24 +658,21 @@ export class ActorWizard extends FormApplication {
         if (this.choices[key].homelandPresent) {
           const itemToAddFromHomeland = await Rqid.fromRqid(key);
           if (itemToAddFromHomeland instanceof RqgItem) {
-            if (
-              itemToAddFromHomeland.type === ItemTypeEnum.Skill ||
-              itemToAddFromHomeland.type === ItemTypeEnum.Rune ||
-              itemToAddFromHomeland.type === ItemTypeEnum.Passion
-            ) {
-            }
             // Item exists on the template and has been chosen but does not exist on the actor, so add it
             if (itemToAddFromHomeland.type === ItemTypeEnum.Skill) {
               (itemToAddFromHomeland.data as SkillDataSource).data.baseChance =
                 this.choices[key].totalValue();
+              (itemToAddFromHomeland.data as SkillDataSource).data.hasExperience = false;
             }
             if (itemToAddFromHomeland.type === ItemTypeEnum.Rune) {
               (itemToAddFromHomeland.data as RuneDataSource).data.chance =
                 this.choices[key].totalValue();
+              (itemToAddFromHomeland.data as RuneDataSource).data.hasExperience = false;
             }
             if (itemToAddFromHomeland.type === ItemTypeEnum.Passion) {
               (itemToAddFromHomeland.data as PassionDataSource).data.chance =
                 this.choices[key].totalValue();
+              (itemToAddFromHomeland.data as PassionDataSource).data.hasExperience = false;
             }
             adds.push(itemToAddFromHomeland.data);
           }
@@ -711,6 +750,7 @@ export class ActorWizard extends FormApplication {
 
 class CreationChoice {
   rqid: string = "";
+  type: string = "";
   speciesValue: number = 0;
   speciesPresent: boolean = false;
   homelandValue: number = 0;
@@ -722,6 +762,19 @@ class CreationChoice {
 
   totalValue = () => {
     let result: number = 0;
+    if (this.type === ItemTypeEnum.Passion) {
+      // The first instance of a Passion is worth 60% and each additional one is worth +10%
+      if (this.speciesPresent) {
+        result += 10;
+      }
+      if (this.homelandPresent) {
+        result += 10;
+      }
+      if (result > 0) {
+        result += 50;
+      }
+      return result;
+    }
     if (this.speciesPresent) {
       result += this.speciesValue;
     }
