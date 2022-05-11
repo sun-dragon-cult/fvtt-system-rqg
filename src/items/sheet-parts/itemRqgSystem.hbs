@@ -1,3 +1,4 @@
+{{log 'itemRqgSystem' this}}
 <div class="item-sheet-properties">
   <label for="rqid-{{data._id}}">{{localize "RQG.RQGSystem.rqid"}}</label>
   <div class="input-button">
@@ -12,9 +13,9 @@
     name="data.rqidPriority"
     value="{{itemData.rqidPriority}}"
   />
- 
+
   <label for="rqidLang-{{data._id}}">{{localize "RQG.RQGSystem.rqidLang"}}</label>
-  <select 
+  <select
     id="rqidLang-{{data._id}}"
     name="data.rqidLang">
   {{#select itemData.rqidLang}}
@@ -36,13 +37,13 @@
       value="{{data._id}}"
       readonly
     />
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
-        data-item-id="{{data._id}}" 
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-id="{{data._id}}"
         data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>
   </div>
-  
+
   <label for="item-foundryuuid-{{data._id}}">{{localize "RQG.RQGSystem.ItemFoundryUuid"}}</label>
   <div class="input-button">
     <input
@@ -52,8 +53,8 @@
       value="{{uuid}}"
       readonly
     />
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
-        data-item-id="{{data._id}}" 
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-id="{{data._id}}"
         data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>
@@ -69,8 +70,8 @@
       value="{{ownerId}}"
       readonly
     />
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
-        data-item-id="{{data._id}}" 
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-id="{{data._id}}"
         data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>
@@ -86,13 +87,13 @@
       value='await fromUuid("{{uuid}}")'
       readonly
     />
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
-        data-item-id="{{data._id}}" 
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-id="{{data._id}}"
         data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>
   </div>
-  
+
   <label for="get-item-like-this-macro-{{data._id}}">{{localize "RQG.RQGSystem.GetItemLikeThis"}}</label>
   <div class="input-button">
     <input
@@ -102,8 +103,8 @@
       value='await game.system.api.rqid.fromRqid("{{itemData.rqid}}","{{itemData.rqidLang}}")'
       readonly
     />
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" 
-        data-item-id="{{data._id}}" 
+    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-id="{{data._id}}"
         data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>

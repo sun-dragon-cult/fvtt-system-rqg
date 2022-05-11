@@ -50,7 +50,7 @@ export class Rqid {
     } else {
       const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
         rqid: rqid,
-        rqidLang: lang,
+        rqidLang: lang
       });
       ui.notifications?.warn(msg);
       console.log(msg);
@@ -68,7 +68,8 @@ export class Rqid {
     }
 
     const candidates = getGame().items?.contents.filter(
-      (i) => i.data.data.rqid === rqid && i.data.data.rqidLang === lang
+      // @ts-expect-error flags are not typed
+      (i) => i.data.flags?.rqg?.rqid === rqid && i.data.flags?.rqg.rqidLang === lang
     );
 
     if (candidates === undefined) {
@@ -77,18 +78,21 @@ export class Rqid {
 
     if (candidates.length > 0) {
       let result = candidates.reduce((max, obj) =>
-        max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
+        // @ts-expect-error flags are not typed
+        max.data.flags?.rqg?.rqidPriority > obj.data.flags?.rqg?.rqidPriority ? max : obj
       );
 
       // Detect more than one item that could be the match
       let duplicates = candidates.filter(
-        (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
+        // @ts-expect-error flags are not typed
+        (i) => i.data.flags?.rqg?.rqidPriority === result.data.flags?.rqg?.rqidPriority
       );
       if (duplicates.length > 1) {
         const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
           rqid: rqid,
           rqidLang: lang,
-          rqidPriority: result.data.data.rqidPriority,
+          // @ts-expect-error flags are not typed
+          rqidPriority: result.data.flags?.rqg?.rqidPriority
         });
         ui.notifications?.error(msg);
         console.log(msg + "  Duplicate items: ", duplicates);
@@ -112,7 +116,7 @@ export class Rqid {
     for (const pack of getGame().packs) {
       if (pack.documentClass.name === "RqgItem") {
         for (const item of await pack.getDocuments()) {
-          if (item.data.data.rqid === rqid && item.data.data.rqidLang === lang) {
+          if (item.data.flags?.rqg?.rqid === rqid && item.data.flags?.rqg?.rqidLang === lang) {
             candidates.push(item as RqgItem);
           }
         }
@@ -124,18 +128,21 @@ export class Rqid {
 
     if (candidates.length > 0) {
       let result = candidates.reduce((max, obj) =>
-        max.data.data.rqidPriority > obj.data.data.rqidPriority ? max : obj
+        // @ts-expect-error flags are not typed
+        max.data.flags?.rqg?.rqidPriority > obj.data.flags?.rqg?.rqidPriority ? max : obj
       );
 
       // Detect more than one item that could be the match
       let duplicates = candidates.filter(
-        (i) => i.data.data.rqidPriority === result.data.data.rqidPriority
+        // @ts-expect-error flags are not typed
+        (i) => i.data.flags?.rqg?.rqidPriority === result.data.flags?.rqg?.rqidPriority
       );
       if (duplicates.length > 1) {
         const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
           rqid: rqid,
           rqidLang: lang,
-          rqidPriority: result.data.data.rqidPriority,
+          // @ts-expect-error flags are not typed
+          rqidPriority: result.data.flags?.rqg?.rqidPriority
         });
         ui.notifications?.error(msg);
         console.log(msg + "  Duplicate items: ", duplicates);
@@ -167,7 +174,7 @@ export class Rqid {
     } else {
       const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
         rqid: rqid,
-        rqidLang: lang,
+        rqidLang: lang
       });
       ui.notifications?.warn(msg);
       console.log(msg);
@@ -209,7 +216,7 @@ export class Rqid {
           rqid: rqid,
           rqidLang: lang,
           //@ts-ignore flags.rqg
-          rqidPriority: result.data.flags?.rqg?.rqidPriority,
+          rqidPriority: result.data.flags?.rqg?.rqidPriority
         });
         ui.notifications?.error(msg);
         console.log(msg + "  Duplicate items: ", duplicates);
@@ -248,7 +255,7 @@ export class Rqid {
 
     if (candidates.length > 0) {
       let result = candidates.reduce((max, obj) =>
-        //@ts-ignore flags.rqg
+        // @ts-expect-error flags are not typed
         max.data.flags?.rqg?.rqidPriority > obj.data.flags?.rqg?.rqidPriority ? max : obj
       );
 
@@ -261,8 +268,8 @@ export class Rqid {
         const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
           rqid: rqid,
           rqidLang: lang,
-          //@ts-ignore flags.rqg
-          rqidPriority: result.data.flags?.rqg?.rqidPriority,
+          // @ts-expect-error flags are not typed
+          rqidPriority: result.data.flags?.rqg?.rqidPriority
         });
         ui.notifications?.error(msg);
         console.log(msg + "  Duplicate items: ", duplicates);
@@ -294,7 +301,7 @@ export class Rqid {
     } else {
       const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
         rqid: rqid,
-        rqidLang: lang,
+        rqidLang: lang
       });
       ui.notifications?.warn(msg);
       console.log(msg);
@@ -336,7 +343,7 @@ export class Rqid {
           rqid: rqid,
           rqidLang: lang,
           //@ts-ignore flags.rqg
-          rqidPriority: result.data.flags?.rqg?.rqidPriority,
+          rqidPriority: result.data.flags?.rqg?.rqidPriority
         });
         ui.notifications?.error(msg);
         console.log(msg + "  Duplicate items: ", duplicates);
@@ -389,7 +396,7 @@ export class Rqid {
           rqid: rqid,
           rqidLang: lang,
           //@ts-ignore flags.rqg
-          rqidPriority: result.data.flags?.rqg?.rqidPriority,
+          rqidPriority: result.data.flags?.rqg?.rqidPriority
         });
         ui.notifications?.error(msg);
         console.log(msg + "  Duplicate items: ", duplicates);
@@ -408,7 +415,7 @@ export class Rqid {
 
     let result = "";
 
-    if (document instanceof Actor ) {
+    if (document instanceof Actor) {
       return RQG_CONFIG.rqidPrefixes.actor + toKebabCase(document.name);
     }
 
