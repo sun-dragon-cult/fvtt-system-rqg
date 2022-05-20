@@ -743,11 +743,6 @@ export class ActorWizard extends FormApplication {
           selectedClanRqidLinks.push(rqidLink);
         }
       });
-      selectedHomeland.data.cultRqidLinks.forEach((rqidLink) => {
-        if (this.choices[rqidLink.rqid].homelandCultChosen) {
-          selectedClanRqidLinks.push(rqidLink);
-        }
-      });
     }
 
     // This is just always going to replace the Culture RqidLinks
