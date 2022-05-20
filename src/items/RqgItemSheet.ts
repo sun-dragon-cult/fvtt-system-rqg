@@ -241,11 +241,19 @@ export class RqgItemSheet<
           dropTypes.includes((droppedDocument as Item).type)
         )
       ) {
-        const msg = `This field expects an item of type ${dropTypes.join(", ")} and the dropped item was ${droppedDocumentData.type}`;
+        const msg = localize("RQG.Item.Notification.DroppedItemWrongType", { allowedDropTypes: dropTypes.join(", "), type: droppedDocumentData.type});
         ui.notifications?.warn(msg);
         console.warn(msg, event);
         return;
       }
+    }
+
+    //@ts-ignore rqg
+    if (!droppedDocument?.data?.flags?.rqg?.rqid) {
+      const msg = localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {type: droppedDocumentData.type, name: droppedDocument?.name, id: droppedDocumentData.id});
+      ui.notifications?.warn(msg);
+      console.warn(msg,event);
+      return;
     }
 
     if (droppedDocument && targetPropertyName) {
