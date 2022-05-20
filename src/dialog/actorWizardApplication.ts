@@ -697,8 +697,12 @@ export class ActorWizard extends FormApplication {
         }
 
         // Get Cults by rqid and add to actor
-        const cultsEligibleToAdd = (this.homeland.selectedHomeland?.data as HomelandDataSource).data
-          .cultRqidLinks;
+        let cultsEligibleToAdd: RqidLink[] = [];
+
+        if (this.homeland.selectedHomeland) {
+          cultsEligibleToAdd = (this.homeland.selectedHomeland?.data as HomelandDataSource).data
+            .cultRqidLinks;
+        }
 
         if (cultsEligibleToAdd.map((c) => c.rqid).includes(key)) {
           if (this.choices[key].homelandCultChosen === true) {
