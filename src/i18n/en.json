@@ -24,6 +24,11 @@
       "SkillsTab": "Skills",
       "RunesTab": "Runes",
       "PassionsTab": "Passions",
+      "CultureTab": "Culture",
+      "TribeTab": "Tribe",
+      "ClanTab": "Clan",
+      "CultTab": "Cult",
+      "PassionTab": "Passions",
       "Nav": {
         "0-Species": "Step 0:\n Species",
         "1-Homeland": "Step 1:\n Homeland",
@@ -43,6 +48,24 @@
         "SelectSpeciesSkills": "Select Species Skills",
         "SelectSpeciesRunes": "Select Species Runes",
         "SelectSpeciesPassions": "Select Species Passions"
+      },
+      "Step1": {
+        "ChooseHomeland": "Choose a Homeland",
+        "HomelandDescription": "Homeland Description",
+        "RegionDescription": "Region Description",
+        "HomelandWizardInstructions": "Homeland Instructions",
+        "SelectHomelandCulture": "Select Homeland Culture",
+        "SelectHomelandTribe": "Select Homeland Tribe",
+        "SelectHomelandClan": "Select Homeland Clan",
+        "SelectHomelandSkills": "Select Homeland Skills",
+        "SelectHomelandCult": "Select Homeand Cult",
+        "SelectHomelandPassions": "Select Homeland Passions",
+        "SelectHomelandRunes": "Select Homeland Runes",
+        "ImportCultureTitle": "Import Culture: \"{name}\"",
+        "ImportTribeTitle": "Import Tribe: \"{name}\"",
+        "ImportClanTitle": "Import Clan: \"{name}\"",
+        "ImportCultTitle": "Import Cult: \"{name}\"",
+        "ImportRuneTitle": "Import Rune: \"{name}\""
       },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
@@ -98,6 +121,10 @@
         "BaseIncome": "Base Income",
         "Ransom": "Ransom",
         "RansomDetails": "Details",
+        "Cultures": "Culture(s)",
+        "Tribes": "Tribe(s)",
+        "Clans": "Clan(s)",
+        "Region": "Region",
         "Homeland": {
           "Heading": "Homeland",
           "aggar": "Aggar",
@@ -251,7 +278,8 @@
       },
       "Passion": {
         "Passions": "Passions",
-        "BackStory": "Back Story"
+        "BackStory": "Back Story",
+        "ImportPassionCheckboxTitle": "Import Passion: \"{passionName}\""
       },
       "Rune": {
         "Condition": "Condition",
@@ -289,6 +317,7 @@
       },
       "Skill": {
         "SkillDescriptionTitle": "Skill Description",
+        "ImportSkillCheckboxTitle": "Import Skill: \"{skillName}\"",
         "SkillCategory": {
           "agility": "Agility",
           "communication": "Communication",
@@ -693,12 +722,14 @@
         "CultureJournalEntries": "Culture Journal Entries",
         "TribeJournalEntries": "Tribe Journal Entries",
         "ClanJournalEntries": "Clan Journal Entries",
-        "homelandJournalLink": "Homeland",
-        "regionJournalLink": "Region",
-        "cultureJournalLinks": "Culture",
+        "homelandJournalRqidLink": "Homeland",
+        "regionJournalRqidLink": "Region",
+        "cultureJournalRqidLinks": "Culture",
         "CultLinks": "Cult Links",
+        "SkillLinks": "Skill Links",
         "PassionLinks": "Passion Links",
-        "RuneLinks": "Rune Links"
+        "RuneLinks": "Rune Links",
+        "WizardInstructions": "Wizard Instructions"
       },
       "Notification": {
         "CircularGearLocationWarning": "Circular gear locations (A in B in A) - check your gear locations: {itemLocation}",
@@ -731,7 +762,9 @@
         "ErrorParsingItemData": "Error parsing Item Data",
         "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
         "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
-        "RqidFromLinkNotFound": "No item found for linked RQG System ID (rqid) \"{rqid\". Check the \"RQG System\" tab of the Item sheet."
+        "RqidFromLinkNotFound": "No item found for linked RQG System ID (rqid) \"{rqid\". Check the \"RQG System\" tab of the Item sheet.",
+        "DroppedItemWrongType": "This field expects an item of type(s) {allowedDropTypes} and the dropped item was {type}",
+        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with id ${id} does not have an RQID and cannot be dropped onto this sheet."
       },
       "Occupation": {
         "Occupation": "Occupation",
@@ -777,6 +810,19 @@
       },
       "RqgItem": {
         "RqidLinkTitle": "RQG System ID (rqid) link to \"{rqid}\"",
+        "RqidLinkDelete": "Delete RQG System ID (rqid) link to \"{name}\" (\"{rqid}\")",
+        "ShowInfoCircle": {
+          "DropToConnectJournal": "Drop a Journal Entry on this field to connect.",
+          "DropToReplaceJournal": "Drop a Journal Entry on this field to replace.",
+          "DropToConnectCult": "Drop a Cult Item on this field to connect.",
+          "DropToReplaceCult": "Drop a Cult Item on this field to replace.",
+          "DropToConnectPassion": "Drop a Passion Item on this field to connect.",
+          "DropToReplacePassion": "Drop a Passion Item on this field to replace.",
+          "DropToConnectRune": "Drop a Rune Item on this field to connect.",
+          "DropToReplaceRune": "Drop a Rune Item on this field to replace.",
+          "DropToConnectSkill": "Drop a Skill Item on this field to connect.",
+          "DropToReplaceSkill": "Drop a Skill Item on this field to replace."
+        },
         "Error": {
           "MoreThanOneRqidMatchInWorld": "More than one RQG Item in the world (not in Compendia) matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",
           "MoreThanOneRqidMatchInCompendia": "More than one RQG Item in installed Compendia matched the rqid \"{rqid}\", rqidLang \"{rqidLang}\", and rqidPriority \"{rqidPriority}\". Please review your RQG System settings.  See console log for item ids.",

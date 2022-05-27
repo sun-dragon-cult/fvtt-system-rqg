@@ -1,3 +1,4 @@
+import { Homeland } from "../../actors/item-specific/homeland";
 import { RqgActor } from "../../actors/rqgActor";
 import { ArmorDataSource } from "../../data-model/item-data/armorData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
@@ -401,14 +402,13 @@ export class Rqid {
   }
 
   static getDefaultRqid(document: Actor | Item | JournalEntry | Macro | RollTable | Scene): string {
-
     if (!document.name) {
       return "";
     }
 
     let result = "";
 
-    if (document instanceof Actor ) {
+    if (document instanceof Actor) {
       return RQG_CONFIG.rqidPrefixes.actor + toKebabCase(document.name);
     }
 
@@ -457,7 +457,11 @@ export class Rqid {
     }
 
     return "";
+  }
 
+  static async renderRqidDocument(rqid: string) {
+    const document = await Rqid.fromRqid(rqid);
+    document?.sheet?.render(true);
   }
 }
 
@@ -471,4 +475,41 @@ export async function getActorTemplates(): Promise<RqgActor[] | undefined> {
   } else {
     return undefined;
   }
+}
+
+export async function getHomelands(): Promise<RqgItem[] | undefined> {
+
+  // get all rqids of homelands
+  let homelandRqids: string[]= [];
+
+  const worldHomelandRqids = getGame().items?.filter(h => h.type === ItemTypeEnum.Homeland)
+                  .map(h => h.data.data.rqid);
+
+  
+  getGame().packs.forEach(p => {
+    p.forEach(h => {
+      if (h instanceof Homeland) {
+        homelandRqids.push(h.data.data.rqid);
+      }
+    });
+  });
+
+  worldHomelandRqids?.forEach(h => homelandRqids.push(h));
+
+  // get distinct rqids
+  homelandRqids = [...new Set(homelandRqids)];
+
+  // get the best version of each homeland by rqid
+  const result: RqgItem[] = [];
+
+  for (const rqid of homelandRqids) {
+    const homeland = await Rqid.fromRqid(rqid);
+        if (homeland && hasProperty(homeland, "type")) {
+          if ((homeland as RqgItem).type === ItemTypeEnum.Homeland) {
+            result.push(homeland as RqgItem);
+          }
+        }
+  }
+
+  return result;
 }

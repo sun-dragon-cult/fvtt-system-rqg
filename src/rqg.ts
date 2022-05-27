@@ -11,7 +11,7 @@ import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/m
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
 import { getGame, RqgError } from "./system/util";
-import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
+// import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
 import { RqgPause } from "./foundryUi/pause";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
@@ -67,7 +67,6 @@ Hooks.once("init", async () => {
   (getGame().system as any).api = {
     // installModules: installModules,
     migrate: applyDefaultWorldMigrations,
-    consolidate: consolidateCompendiumItems,
     rqid: Rqid,
     names: nameGeneration,
   };

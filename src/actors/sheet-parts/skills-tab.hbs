@@ -10,37 +10,13 @@
     <div class="grid {{#if ../wizard}}skill-select{{else}}skill{{/if}} item-list">
       {{#each this}}
       {{#unless data.data.runes}}
-        {{#if ../../wizard}}
-        <div>
-          <input type="checkbox" 
-              class="wizard-choice-input"
-              data-rqid="{{this.data.data.rqid}}"
-              data-for-choice="{{../../forChoice}}"
-              {{#if this.data.data.choice.speciesPresent}}checked{{/if}}
-              title="Import Skill: {{data.name}}"
-              />
-        </div>
-        {{/if}}
-        <div data-item-id="{{id}}" 
-             title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}" 
-             class="skill contextmenu item"
-             {{#if data.data.journalId}}
-             data-journal-pack="{{data.data.journalPack}}" data-journal-id="{{data.data.journalId}}"
-             {{/if}}>
-          <img class="item" src="{{img}}">
-        </div>
-        <div data-item-id="{{id}}" 
-              class="skill contextmenu item" data-item-roll 
-              title="{{localize "RQG.Game.RollTitle"}}">
-          {{data.data.skillName}}{{#if data.data.specialization}} ({{data.data.specialization}}){{/if}}
-          {{#each data.data.runes}}
-            <img class="rune" src="{{runeImg this}}" title="{{this}}">
-          {{/each}}
-        </div>
-      <div data-item-id="{{id}}" class="skill contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
-        <span class="text-right nowrap">{{data.data.chance}}%</span>
-      </div>
-        {{/unless}}
+      {{>"systems/rqg/actors/sheet-parts/grid-skill.hbs"
+        skill=this
+        wizard=../../wizard 
+        forChoice=../../forChoice
+        checkedProperty=../../checkedProperty
+        asBonus=../../asBonus}}
+      {{/unless}}
       {{/each}}
     </div>
   </div>

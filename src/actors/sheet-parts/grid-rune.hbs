@@ -1,0 +1,36 @@
+{{#if wizard}}
+<div>
+    <input type="checkbox"
+        class="wizard-choice-input"
+        data-rqid="{{rune.data.data.rqid}}"
+        data-for-choice="{{forChoice}}"
+        {{#if (lookup rune.data.data.choice checkedProperty)}}checked{{/if}}
+        title="{{localize "RQG.ActorCreation.Step1.ImportRuneTitle" runeName=rune.name}}" />
+</div>
+{{/if}}
+<div title="{{localize "RQG.Game.RollTitle"}}"
+        class="rune contextmenu item"
+        data-item-id="{{rune.id}}"
+        {{#if rune.data.data.descriptionRqidLink.rqid}}
+            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
+        {{/if}}>
+    <img class="rune" src="{{rune.img}}">
+</div>
+<div title="{{localize "RQG.Game.RollTitle"}}" 
+        class="rune contextmenu item"
+        data-item-id="{{rune.id}}"
+        {{#if rune.data.data.descriptionRqidLink.rqid}}
+            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
+        {{/if}}
+        data-item-roll>
+    {{rune.data.data.rune}}
+</div>
+<div title="{{localize "RQG.Game.RollTitle"}}" 
+        class="rune contextmenu item {{#if rune.data.data.hasExperience}}experienced{{/if}}"
+        data-item-id="{{rune.id}}"
+        {{#if rune.data.data.descriptionRqidLink.rqid}}
+            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
+        {{/if}}
+        data-item-roll>
+    <span class="text-right">{{rune.data.data.chance}}%</span>
+</div>

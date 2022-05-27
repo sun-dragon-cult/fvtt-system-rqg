@@ -1,0 +1,162 @@
+<h1 class="norse">
+  {{localize "RQG.ActorCreation.Nav.1-Homeland"}}
+</h1>
+
+<div class="item-sheet-properties">
+  <label>{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}:</label>
+  <select name="selectedHomelandRqid">
+    {{#select homeland.selectedHomeland.data.data.rqid}}
+    <option value="">{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}</option>
+    {{#each homeland.homelands}}
+    <option value="{{this.data.data.rqid}}">{{this.name}}</option>
+    {{/each}}
+    {{/select}}
+  </select>
+
+  <label>{{localize "RQG.ActorCreation.Step1.HomelandDescription"}}:</label>
+  <div>
+    {{#if homeland.selectedHomeland.data.data.homelandJournalRqidLink}}
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+      rqidLink=homeland.selectedHomeland.data.data.homelandJournalRqidLink
+    }}
+    {{/if}}    
+  </div>
+
+  <label>{{localize "RQG.ActorCreation.Step1.RegionDescription"}}:</label>
+  <div>
+    {{#if homeland.selectedHomeland.data.data.regionJournalRqidLink}}
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+      rqidLink=homeland.selectedHomeland.data.data.regionJournalRqidLink
+    }}
+    {{/if}}    
+  </div>
+  
+</div>
+
+<article class="collabsible-wrapper" data-collabsible-name="homelandWizardInstructions" data-open="{{collapsibleOpenStates.homelandWizardInstructions}}">
+    <h2 class="collabsible-header">
+        <span class="toggle-icon">
+        <i class="far fa-plus-square {{#if collapsibleOpenStates.homelandWizardInstructions}}no-display{{/if}}"></i>
+        <i class="far fa-minus-square {{#unless collapsibleOpenStates.homelandWizardInstructions}}no-display{{/unless}}"></i>
+        {{localize "RQG.ActorCreation.Step1.HomelandWizardInstructions"}}
+        </span>
+    </h2>
+    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.homelandWizardInstructions}}style="display: none;"{{/unless}}>
+        {{{enrichHtml homeland.selectedHomeland.data.data.wizardInstructions}}}
+    </section>
+</article>
+
+
+  <article class="collabsible-wrapper" data-collabsible-name="homelandAdvanced" data-open="{{collapsibleOpenStates.homelandAdvanced}}">
+    <h2 class="collabsible-header">
+      <span class="toggle-icon">
+        <i class="far fa-plus-square {{#if collapsibleOpenStates.homelandAdvanced}}no-display{{/if}}"></i>
+        <i class="far fa-minus-square {{#unless collapsibleOpenStates.homelandAdvanced}}no-display{{/unless}}"></i>
+        {{localize "RQG.ActorCreation.AdvancedOptions"}}
+      </span>
+    </h2>
+    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.homelandAdvanced}}style="display: none;"{{/unless}} >
+
+      <nav class="homeland-tabs item-sheet-nav-tabs tabs" data-group="homeland-item-selection">
+        <a class="item" data-group="homeland-item-selection" data-tab="cultures">
+          {{localize "RQG.ActorCreation.CultureTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="tribes">
+          {{localize "RQG.ActorCreation.TribeTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="clans">
+          {{localize "RQG.ActorCreation.ClanTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="cults">
+          {{localize "RQG.ActorCreation.CultTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="skills">
+          {{localize "RQG.ActorCreation.SkillsTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="runes">
+          {{localize "RQG.ActorCreation.RunesTab"}}
+        </a>
+        <a class="item" data-group="homeland-item-selection" data-tab="passions">
+          {{localize "RQG.ActorCreation.PassionTab"}}
+        </a>
+      </nav>
+
+      <section class="homeland-body">
+
+        <div class="tab cultures" data-group="homeland-item-selection" data-tab="cultures">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCulture"}}</h2>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+                rqidLinkArray=homeland.selectedHomeland.data.data.cultureJournalRqidLinks
+                checkedProperty="homelandCultureChosen"
+                forChoice="homelandCultures"
+                title="RQG.ActorCreation.Step1.ImportCultureTitle"
+            }}
+        </div>
+        
+        <div class="tab tribes" data-group="homeland-item-selection" data-tab="tribes">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandTribe"}}</h2>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+                rqidLinkArray=homeland.selectedHomeland.data.data.tribeJournalRqidLinks
+                checkedProperty="homelandTribeChosen"
+                forChoice="homelandTribes"
+                title="RQG.ActorCreation.Step1.ImportTribeTitle"
+            }}
+        </div>
+        
+        <div class="tab clans" data-group="homeland-item-selection" data-tab="clans">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandClan"}}</h2>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+                rqidLinkArray=homeland.selectedHomeland.data.data.clanJournalRqidLinks
+                checkedProperty="homelandClanChosen"
+                forChoice="homelandClans"
+                title="RQG.ActorCreation.Step1.ImportClanTitle"
+            }}
+        </div>
+        
+        <div class="tab cults" data-group="homeland-item-selection" data-tab="cults">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCult"}}</h2>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+                rqidLinkArray=homeland.selectedHomeland.data.data.cultRqidLinks
+                checkedProperty="homelandCultChosen"
+                forChoice="homelandCult"
+                title="RQG.ActorCreation.Step1.ImportCultTitle"
+            }}
+        </div>
+        
+        <div class="tab skills" data-group="homeland-item-selection" data-tab="skills">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandSkills"}}</h2>
+            {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs"
+              ownedItems=homeland.selectedHomeland.ownedItems
+              wizard="true"
+              forChoice="homeland"
+              checkedProperty="homelandPresent"
+              asBonus="true"
+            }}              
+        </div>
+        
+        <div class="tab runes" data-group="homeland-item-selection" data-tab="runes">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandRunes"}}</h2>
+            {{#each homeland.selectedHomeland.runes}}
+            <div class="rune-selector">
+              {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
+                rune=this
+                wizard=true
+                checkedProperty="homelandPresent"
+                forChoice="homeland"}}                
+            </div>
+            {{/each}}  
+        </div>
+
+        <div class="tab passions" data-group="homeland-item-selection" data-tab="passions">
+          <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandPassions"}}</h2>
+            {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
+            ownedItems=homeland.selectedHomeland.ownedItems
+            wizard="true"
+            checkedProperty="homelandPresent"
+            forChoice="homeland"
+            }}
+        </div>
+
+      </section>
+    </section>
+  </article>

@@ -1,19 +1,20 @@
-import { JournalEntryLink } from "../shared/journalentrylink";
 import { RqidLink } from "../shared/rqidLink";
 import { IRqid } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 
 export interface HomelandDataSourceData extends IRqid {
-  homeland: string; 
-  homelandJournalLink: JournalEntryLink;
+  homeland: string;
+  homelandJournalRqidLink: RqidLink;
   region: string;
-  regionJournalLink: JournalEntryLink; 
-  cultureJournalLinks: JournalEntryLink[];
-  cultRqidLinks: RqidLink[]; 
-  passionRqidLinks: RqidLink[]; 
-  runeRqidLinks: RqidLink[]; 
-  tribeJournalLinks: JournalEntryLink[];
-  clanJournalLinks: JournalEntryLink[]; 
+  regionJournalRqidLink: RqidLink;
+  cultureJournalRqidLinks: RqidLink[];
+  tribeJournalRqidLinks: RqidLink[];
+  clanJournalRqidLinks: RqidLink[];
+  cultRqidLinks: RqidLink[];
+  skillRqidLinks: RqidLink[];
+  runeRqidLinks: RqidLink[];
+  passionRqidLinks: RqidLink[];
+  wizardInstructions: string;
 }
 
 // --- Derived Data ---
@@ -31,15 +32,17 @@ export interface HomelandDataProperties {
 
 export const emptyHomeland: HomelandDataSourceData = {
   homeland: "",
-  homelandJournalLink: new JournalEntryLink(),
+  homelandJournalRqidLink: new RqidLink(),
   region: "",
-  regionJournalLink: new JournalEntryLink(),
-  cultureJournalLinks: [],
+  regionJournalRqidLink: new RqidLink(),
+  cultureJournalRqidLinks: [],
+  tribeJournalRqidLinks: [],
+  clanJournalRqidLinks: [],
   cultRqidLinks: [],
-  passionRqidLinks: [],
+  skillRqidLinks: [],
   runeRqidLinks: [],
-  tribeJournalLinks: [],
-  clanJournalLinks: [],
+  passionRqidLinks: [],
+  wizardInstructions: "",
   rqid: "",
   rqidPriority: 0,
   rqidLang: "",

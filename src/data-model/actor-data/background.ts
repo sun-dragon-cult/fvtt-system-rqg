@@ -76,6 +76,11 @@ export interface Background {
   ransomDetails?: string;
   baseIncome?: number;
   biography?: string;
+  homelandJournalRqidLink: RqidLink | undefined;
+  regionJournalRqidLink: RqidLink | undefined;
+  cultureJournalRqidLinks: RqidLink[];
+  tribeJournalRqidLinks: RqidLink[];
+  clanJournalRqidLinks: RqidLink[];
 }
 
 export const emptyBackground: Background = {
@@ -83,4 +88,9 @@ export const emptyBackground: Background = {
   speciesRqidLink: undefined,
   occupation: OccupationEnum.NoOccupation,
   homeland: HomeLandEnum.Sartar,
+  homelandJournalRqidLink: undefined,
+  regionJournalRqidLink: undefined,
+  cultureJournalRqidLinks: [],
+  tribeJournalRqidLinks: [],
+  clanJournalRqidLinks: [],
 };

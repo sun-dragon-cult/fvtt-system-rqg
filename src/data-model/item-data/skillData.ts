@@ -1,5 +1,5 @@
 import { IAbility } from "../shared/ability";
-import { JournalEntryLink } from "../shared/journalentrylink";
+import { RqidLink } from "../shared/rqidLink";
 import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 
@@ -18,7 +18,8 @@ export enum SkillCategoryEnum {
   OtherSkills = "otherSkills",
 }
 
-export interface SkillDataSourceData extends IAbility, JournalEntryLink {
+export interface SkillDataSourceData extends IAbility {
+  descriptionRqidLink: RqidLink;
   category: SkillCategoryEnum;
   skillName: string;
   specialization: string;
@@ -50,6 +51,7 @@ export const emptySkill: SkillDataSourceData = {
   rqid: "",
   rqidPriority: DEFAULT_RQIDPRIORITY,
   rqidLang: DEFAULT_RQIDLANG,
+  descriptionRqidLink: new RqidLink(),
   category: SkillCategoryEnum.Magic,
   skillName: "",
   specialization: "",
@@ -58,7 +60,4 @@ export const emptySkill: SkillDataSourceData = {
   canGetExperience: true,
   hasExperience: false,
   runes: [],
-  journalId: "",
-  journalPack: "",
-  journalName: "",
 };

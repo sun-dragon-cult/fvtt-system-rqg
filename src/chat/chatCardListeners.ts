@@ -3,8 +3,10 @@ import { ItemCard } from "./itemCard";
 import { WeaponCard } from "./weaponCard";
 import { SpiritMagicCard } from "./spiritMagicCard";
 import { ReputationCard } from "./reputationCard";
-import { getDomDataset, RqgError } from "../system/util";
+import { getDomDataset, getRequiredDomDataset, localize, RqgError } from "../system/util";
 import { RuneMagicCard } from "./runeMagicCard";
+import { Rqid } from "../system/api/rqidApi";
+import { RqidLink } from "../data-model/shared/rqidLink";
 
 export class ChatCardListeners {
   private static card = {
@@ -27,6 +29,9 @@ export class ChatCardListeners {
         // chatPopout.element (which always is div.chat-popout)
         ChatCardListeners.addChatListeners(html);
       }
+    });
+    Hooks.on("renderChatMessage", (chatItem, html) => {
+      RqidLink.addRqidLinkClickHandlers(html);
     });
   }
 

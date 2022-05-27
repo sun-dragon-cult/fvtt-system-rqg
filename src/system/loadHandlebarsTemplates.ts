@@ -8,6 +8,8 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/actors/sheet-parts/sorcery-tab.hbs",
     "systems/rqg/actors/sheet-parts/skills-tab.hbs",
     "systems/rqg/actors/sheet-parts/gear-tab.hbs",
+    "systems/rqg/actors/sheet-parts/grid-rune.hbs",
+    "systems/rqg/actors/sheet-parts/grid-skill.hbs",
     "systems/rqg/actors/sheet-parts/passions-tab.hbs",
     "systems/rqg/actors/sheet-parts/background-tab.hbs",
     "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs",
@@ -16,7 +18,12 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs",
     "systems/rqg/items/sheet-parts/itemRqgSystem.hbs",
     "systems/rqg/items/sheet-parts/journalEntryLink.hbs",
+
+    // RqidLink parts
     "systems/rqg/items/sheet-parts/rqidLink.hbs",
+    "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs",
+    "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs",
+    "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs",
 
     // ActorSheet parts
     "systems/rqg/actors/sheet-parts/health.hbs",
@@ -30,6 +37,7 @@ export const loadHandlebarsTemplates = async function () {
 
     // Actor Wizard Sheet Parts
     "systems/rqg/dialog/actor-wizard-sheet-parts/creation-species.hbs",
+    "systems/rqg/dialog/actor-wizard-sheet-parts/creation-homeland.hbs",
 
     // Item sheets
     "systems/rqg/items/passion-item/passionSheet.hbs",

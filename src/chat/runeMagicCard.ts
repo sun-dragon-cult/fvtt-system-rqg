@@ -7,13 +7,16 @@ import { ItemTypeEnum, RqgItemDataSource } from "../data-model/item-data/itemTyp
 import { RuneDataSource } from "../data-model/item-data/runeData";
 import { RuneMagicDataSource } from "../data-model/item-data/runeMagicData";
 import { Ability, ResultEnum, ResultMessage } from "../data-model/shared/ability";
+import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqgItem } from "../items/rqgItem";
+import { Rqid } from "../system/api/rqidApi";
 import {
   activateChatTab,
   assertItemType,
   getActorFromIds,
   getGame,
   getJournalEntryName,
+  getRequiredDomDataset,
   getSpeakerName,
   localize,
   usersThatOwnActor,
@@ -39,8 +42,6 @@ type RuneMagicCardFlags = {
     otherModifiers: number;
     chance: number;
     selectedRuneId: string;
-    journalEntryName: string;
-    journalPack: string;
     ritualOrMeditationOptions: any;
     skillAugmentationOptions: any;
   };
@@ -114,8 +115,6 @@ export class RuneMagicCard {
         chance: strongestRune.data.chance,
         //@ts-ignore _id
         selectedRuneId: strongestRune._id || "",
-        journalEntryName: getJournalEntryName(runeMagicItem.data.data),
-        journalPack: runeMagicItem.data.data.journalPack,
         ritualOrMeditationOptions: ritualOrMeditationOptions,
         skillAugmentationOptions: skillAugmentationOptions,
       },
@@ -236,8 +235,6 @@ export class RuneMagicCard {
         chance: strongestRune.data.chance,
         //@ts-ignore _id
         selectedRuneId: strongestRune._id || "",
-        journalEntryName: getJournalEntryName(runeMagicItem.data.data),
-        journalPack: runeMagicItem.data.data.journalPack,
         ritualOrMeditationOptions: {}, // won't be used
         skillAugmentationOptions: {}, // won't be used
       },

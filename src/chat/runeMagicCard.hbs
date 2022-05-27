@@ -15,19 +15,9 @@
 
     </div>
 
-    <div class="card-journal-link">
-      {{#if formData.journalEntryName}}
-      <a class="entity-link content-link" data-entity="JournalEntry" data-id="{{itemData.data.journalId}}"
-        {{#if formData.journalPack}}data-pack="{{formData.journalPack}}"{{/if}}>
-        <i class="fas fa-book-open"></i> {{formData.journalEntryName}}
-      </a>
-      {{else}}
-      <a class="entity-link invalid" data-entity="JournalEntry" data-id="{{itemData.data.journalId}}"
-        title="{{localize "RQG.Dialog.runeMagicCard.MissingJournalLinkTitle"}}">
-        <i class="fas fa-book-open"></i> {{itemData.name}}
-      </a>
-      {{/if}}
-    </div>
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+        rqidLink=itemData.data.descriptionRqidLink
+    }}
 
     <div class="flexcol card-options">
       <div class="flexcol card-option">

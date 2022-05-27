@@ -88,6 +88,5 @@ export class SpiritMagicSheet extends RqgItemSheet<
 
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
-    await droppableJournalDescription(this.item, event);
   }
 }
