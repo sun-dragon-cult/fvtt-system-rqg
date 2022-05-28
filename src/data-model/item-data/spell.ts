@@ -1,3 +1,4 @@
+import { RqidLink } from "../shared/rqidLink";
 import { IRqid } from "./IRqid";
 
 export enum SpellRangeEnum {
@@ -23,8 +24,7 @@ export enum SpellConcentrationEnum {
 }
 
 // Se core book p247
-export interface Spell
-    extends IRqid {
+export interface Spell extends IRqid {
   /** Learned strength */
   points: number;
   castingRange: SpellRangeEnum;
@@ -33,4 +33,5 @@ export interface Spell
   isRitual: boolean;
   /** Requires POW sacrifice by caster (possibly from others see core book p249) */
   isEnchantment: boolean;
+  descriptionRqidLink: RqidLink;
 }

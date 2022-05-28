@@ -730,12 +730,6 @@ body {
     }
   }
 
-  .card-journal-link {
-    .invalid {
-      color: var(--rqg-color-invalid-journal);
-    }
-  }
-
   .card-number-input {
     text-align: right;
     width: 50px;
@@ -1150,6 +1144,7 @@ body {
 
   & .drop-target {
     display: inline-grid;
+    align-content: center;
   }
 }
 
@@ -1188,11 +1183,11 @@ body {
   }
 }
 
-.item-sheet-journal-link {
+.item-sheet-rqid-link {
   display: block;
 }
 
-.item-sheet-journal-link i.fa-info-circle {
+.item-sheet-rqid-link i.fa-info-circle {
   padding: 0 0 0 7px;
 }
 
@@ -1297,7 +1292,7 @@ body {
 
 .drop-target {
   border: 1px dotted black;
-  padding: 0.5rem;
+  min-height: 2rem;
 
   & a {
     margin: 0.25rem;
@@ -1324,4 +1319,50 @@ body {
 .incomeSkillText {
   font-weight: bold;
   font-style: italic;
+}
+
+.rqidlink {
+  vertical-align: middle;
+  margin: 0.5rem;
+
+  & .icon {
+    color: var(--color-text-dark-inactive);
+  }
+}
+
+.rqid-content-link {
+  background: #DDD;
+  padding: 1px 4px;
+  border: 1px solid var(--color-border-dark-tertiary);
+  color: var(--color-text-dark-inactive);
+  border-radius: 2px;
+  white-space: nowrap;
+  word-break: break-all;
+
+  img {
+    border: none;
+    height: 0.8rem;
+    position: relative;
+    top: 0.15rem;
+    filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
+  }
+}
+
+.rqid-link-selector {
+  display: inline-flex;
+
+  .wizard-choice-input {
+    align-self: center;
+  }
+
+}
+
+.rune-selector {
+  display: inline-flex;
+  padding: 0.5rem;
+  column-gap: 0.5rem;
+}
+
+.skill-selector {
+  display: grid;
 }

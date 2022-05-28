@@ -1,0 +1,18 @@
+{{#each rqidLinkArray}}
+    <div class="rqid-link-selector">
+        <input type="checkbox" 
+            class="wizard-choice-input"
+            data-rqid="{{this.rqid}}"
+            data-for-choice="{{../forChoice}}"
+            {{#if this.choice}}
+            {{#if (lookup this.choice ../checkedProperty)}}checked{{/if}}
+            {{/if}}
+            title="{{localize ../title name=this.name}}"
+            />
+    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+        rqidLink=this
+        showBonus=../showBonus
+        editBonusPropertyName=../editBonusPropertyName
+    }}
+    </div>
+{{/each}}

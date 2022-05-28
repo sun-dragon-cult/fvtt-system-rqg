@@ -3,6 +3,7 @@ import { SpiritMagicCard } from "../../chat/spiritMagicCard";
 import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
+  findDatasetValueInSelfOrAncestors,
   getDomDataset,
   getGame,
   getRequiredDomDataset,
@@ -12,6 +13,7 @@ import {
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
+import { Rqid } from "../../system/api/rqidApi";
 
 export const spiritMagicMenuOptions = (
   actor: RqgActor,
@@ -54,22 +56,14 @@ export const spiritMagicMenuOptions = (
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      let firstItemEl = el[0];
-      while ((firstItemEl?.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
-        firstItemEl = firstItemEl?.previousElementSibling as HTMLElement;
-      }
-      return !!firstItemEl?.dataset.journalId;
+      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "spiritMagicSpellRqid");
+      return rqid ? true : false;
     },
     callback: async (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      let firstItemEl = el[0];
-      while ((firstItemEl?.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
-        firstItemEl = firstItemEl.previousElementSibling as HTMLElement;
+      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "spiritMagicSpellRqid");
+      if (rqid) {
+        await Rqid.renderRqidDocument(rqid);
       }
-      const journalId = getRequiredDomDataset($(firstItemEl), "journal-id");
-      const journalPack = getDomDataset($(firstItemEl), "journal-pack");
-      await RqgActorSheet.showJournalEntry(journalId, journalPack);
     },
   },
   {

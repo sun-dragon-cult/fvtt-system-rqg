@@ -1,27 +1,22 @@
 import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import {
-  OccupationalSkill,
   OccupationDataProperties,
   OccupationDataPropertiesData,
   OccupationDataSourceData,
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { JournalEntryLink } from "../../data-model/shared/journalentrylink";
-import { RqidLink } from "../../data-model/shared/rqidLink";
 import {
   assertItemType,
   findDatasetValueInSelfOrAncestors,
   getDomDataset,
   getGameUser,
-  getJournalEntryNameByJournalEntryLink,
   getRequiredDomDataset,
   localize,
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { HomelandDataSource } from "../../data-model/item-data/homelandData";
-import { SkillDataSource } from "../../data-model/item-data/skillData";
 
 export interface OccupationSheetData extends RqgItemSheetData {
   isEmbedded: boolean; // There might be no reason to actually embed Occupation items!
@@ -66,15 +61,16 @@ export class OccupationSheet extends RqgItemSheet<
       sheetSpecific: {
         homelandsJoined: itemData.data.homelands.join(", "),
         standardsOfLiving: Object.values(StandardOfLivingEnum),
-        skillsJoined: itemData.data.occupationalSkills.map(skill => {
-          const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;
-          if (skill.incomeSkill) {
-            return `<span class="incomeSkillText">${skill.skillRqidLink?.name} ${bonus}</span>`;
-          }
-          else {
-            return `<span>${skill.skillRqidLink?.name} ${bonus}</span>`;
-          }
-        }).join(", "),
+        skillsJoined: itemData.data.occupationalSkills
+          .map((skill) => {
+            const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;
+            if (skill.incomeSkill) {
+              return `<span class="incomeSkillText">${skill.skillRqidLink?.name} ${bonus}</span>`;
+            } else {
+              return `<span>${skill.skillRqidLink?.name} ${bonus}</span>`;
+            }
+          })
+          .join(", "),
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
@@ -163,73 +159,90 @@ export class OccupationSheet extends RqgItemSheet<
       el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
     });
 
-    form.querySelector("#btn-edit-occupational-skills-" + this.item.id)?.addEventListener("click", () => {
-      this.toggleSkillEdit(false);
-    });
+    form
+      .querySelector("#btn-edit-occupational-skills-" + this.item.id)
+      ?.addEventListener("click", () => {
+        this.toggleSkillEdit(false);
+      });
   }
 
-  private toggleSkillEdit( forceEdit = false) {
-      const form = this.form as HTMLFormElement;
-      const displaySkills = form.querySelector(
-        "#occupational-skill-display-" + this.item.id
-      ) as HTMLElement;
-      const editSkills = form.querySelector(
-        "#occupational-skill-edit-" + this.item.id
-      ) as HTMLElement;
-      const btnEdit = form.querySelector("#btn-edit-occupational-skills-" + this.item.id) as HTMLElement;
-      if ( displaySkills?.style.display === "block" || forceEdit) {
-        displaySkills.style.display = "none";
-        editSkills.style.display = "block";
-        btnEdit.style.color = "gray";
-      }
-      else {
-        displaySkills.style.display = "block";
-        editSkills.style.display = "none";
-        btnEdit.style.color = "black";
-      }
+  private toggleSkillEdit(forceEdit = false) {
+    const form = this.form as HTMLFormElement;
+    const displaySkills = form.querySelector(
+      "#occupational-skill-display-" + this.item.id
+    ) as HTMLElement;
+    const editSkills = form.querySelector(
+      "#occupational-skill-edit-" + this.item.id
+    ) as HTMLElement;
+    const btnEdit = form.querySelector(
+      "#btn-edit-occupational-skills-" + this.item.id
+    ) as HTMLElement;
+    if (displaySkills?.style.display === "block" || forceEdit) {
+      displaySkills.style.display = "none";
+      editSkills.style.display = "block";
+      btnEdit.style.color = "gray";
+    } else {
+      displaySkills.style.display = "block";
+      editSkills.style.display = "none";
+      btnEdit.style.color = "black";
+    }
   }
-
 
   protected async _onDrop(event: DragEvent): Promise<void> {
     super._onDrop(event);
 
-    let droppedEntityData;
+    const thisOccupation = this.item.data.data as OccupationDataSourceData;
+
+    let droppedDocumentData;
     try {
-      droppedEntityData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
     } catch (err) {
       ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
       return;
     }
 
-    const target = findDatasetValueInSelfOrAncestors(event.target as HTMLElement, "targetDropProperty");
-    const occupationData = this.item.data.data as OccupationDataSourceData;
+    const targetPropertyName = findDatasetValueInSelfOrAncestors(
+      event.target as HTMLElement,
+      "targetDropProperty"
+    );
 
-    if (droppedEntityData.type === "Item") {
-      // You must drop skills to two different targets, income and occupationa
-      // but you can drop cult or equipment to anywhere because we know where to put them.
+    const droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
 
-      const droppedItem = (await Item.fromDropData(droppedEntityData)) as RqgItem;
+    if (droppedDocument) {
+      if (targetPropertyName === "occupationRqidLink") {
+        const specializationFormatted = thisOccupation.specialization
+          ? ` (${thisOccupation.specialization})`
+          : "";
+        // update the occupation portion of the occupation name
+        const updatedName = droppedDocument.name + specializationFormatted;
+        if (this.item.isEmbedded) {
+          await this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
+              "data.occupation": droppedDocument.name,
+              name: updatedName,
+            },
+          ]);
+        } else {
+          await this.item.update({
+            "data.occupation": droppedDocument.name,
+            name: updatedName,
+          });
+        }
+      }
+    }
+
+    if (droppedDocumentData.type === "Item") {
+      const droppedItem = (await Item.fromDropData(droppedDocumentData)) as RqgItem;
 
       if (droppedItem === undefined) {
         return;
       }
 
-      if (!droppedItem.data.data.rqid) {
-        ui.notifications?.warn(localize("RQG.Item.Notification.MustHaveRqidToDrop"));
-        return;
-      }
-
-      const droppedRqid = droppedItem.data.data.rqid;
-
-      const newRqidLink = new RqidLink();
-      newRqidLink.rqid = droppedRqid;
-      newRqidLink.itemType = droppedItem.type;
-      newRqidLink.name = droppedItem.name || "";
-
       if (droppedItem.type === "homeland") {
         // For this one we're just saving the name of the homeland, without the region
         // to an array of strings.
-        const homelands = occupationData.homelands;
+        const homelands = thisOccupation.homelands;
         const newHomeland = (droppedItem.data as HomelandDataSource).data.homeland;
         if (!homelands.includes(newHomeland)) {
           homelands.push(newHomeland);
@@ -247,111 +260,6 @@ export class OccupationSheet extends RqgItemSheet<
           }
         }
       }
-
-      if (droppedItem.type === "cult") {
-        const cults = occupationData.cultRqidLinks;
-        if (!cults.map((c) => c.rqid).includes(droppedRqid)) {
-          cults.push(newRqidLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.cultRqidLinks": cults,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.cultRqidLinks": cults,
-            });
-          }
-        }
-      }
-
-      const startingEquipemntTypes = ["armor", "gear", "weapon"];
-
-      if (startingEquipemntTypes.includes(droppedItem.type)) {
-        const equipment = occupationData.startingEquipmentRqidLinks;
-        if (!equipment.map((e) => e.rqid).includes(droppedRqid)) {
-          equipment.push(newRqidLink);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.startingEquipmentRqidLinks": equipment,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.startingEquipmentRqidLinks": equipment,
-            });
-          }
-        }
-      }
-
-      if (droppedItem.type === "skill") {
-        const occupationalSkills = occupationData.occupationalSkills;
-        if (!occupationalSkills.map((s) => s.skillRqidLink?.rqid).includes(droppedRqid)) {
-          const occSkill = new OccupationalSkill();
-          // Replace the name so we don't have something like "- stealth" in the name
-          newRqidLink.name = (droppedItem.data as SkillDataSource).data.skillName;
-          occSkill.skillRqidLink = newRqidLink;
-          occupationalSkills.push(occSkill);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "data.occupationalSkills": occupationalSkills,
-              },
-            ]);
-          } else {
-            await this.item.update({
-              "data.occupationalSkills": occupationalSkills,
-            });
-          }
-          this.toggleSkillEdit(true);
-        }
-      }
-
-      return;
-    }
-
-    const pack = droppedEntityData.pack ? droppedEntityData.pack : "";
-    const newLink = new JournalEntryLink();
-    newLink.journalId = droppedEntityData.id;
-    newLink.journalPack = pack;
-    newLink.journalName = getJournalEntryNameByJournalEntryLink(newLink);
-
-    if (target) {
-
-      if (target === "occupationJournalLink") {
-        if (!ensureJournal(droppedEntityData, target)) {
-          return;
-        }
-        const specializationFormatted = occupationData.specialization
-          ? ` (${occupationData.specialization})`
-          : "";
-        // update the occupation portion of the occupation name
-        const updatedName = newLink.journalName + specializationFormatted;
-        if (this.item.isEmbedded) {
-          await this.item.actor?.updateEmbeddedDocuments("Item", [
-            {
-              _id: this.item.id,
-              "data.occupationJournalLink": newLink,
-              "data.occupation": newLink.journalName,
-              name: updatedName,
-            },
-          ]);
-        } else {
-          await this.item.update({
-            "data.occupationJournalLink": newLink,
-            "data.occupation": newLink.journalName,
-            name: updatedName,
-          });
-        }
-      }
-
-    } else {
-      ui.notifications?.warn(localize("RQG.Item.Notification.PleaseDropOnTarget"));
     }
   }
 }

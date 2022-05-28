@@ -79,7 +79,7 @@
     </h2>
     <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.speciesAdvanced}}style="display: none;"{{/unless}} >
 
-      <nav class="item-sheet-nav-tabs tabs" data-group="species-item-selection">
+      <nav class="species-tabs item-sheet-nav-tabs tabs" data-group="species-item-selection">
         <a class="item" data-group="species-item-selection" data-tab="skills">
           {{localize "RQG.ActorCreation.SkillsTab"}}
         </a>
@@ -98,6 +98,7 @@
           {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs"
           ownedItems=speciesTemplateItems
           wizard="true"
+          checkedProperty="speciesPresent"
           forChoice="species"
           }}
         </div>
@@ -108,21 +109,25 @@
             ownedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
+            checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/power.hbs"
             ownedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
+            checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/form.hbs"
             ownedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
+            checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/condition.hbs"
             ownedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
+            checkedProperty="speciesPresent"
             }}
           </div>
 
@@ -132,6 +137,7 @@
           {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
           ownedItems=speciesTemplateItems
           wizard="true"
+          checkedProperty="speciesPresent"
           forChoice="species"
           }}
         </div>

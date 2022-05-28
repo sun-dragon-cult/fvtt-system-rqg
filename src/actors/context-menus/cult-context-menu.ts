@@ -1,37 +1,24 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getGame, getRequiredDomDataset, localize, RqgError } from "../../system/util";
+import { findDatasetValueInSelfOrAncestors, getDomDataset, getGame, getRequiredDomDataset, localize, RqgError } from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { Rqid } from "../../system/api/rqidApi";
 
 export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-
-      let firstItemEl = el[0];
-      while ((firstItemEl?.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
-        firstItemEl = firstItemEl.previousElementSibling as HTMLElement;
-      }
-      return !!firstItemEl.dataset.journalId;
+      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "cultRqid");
+      return rqid ? true: false;
     },
     callback: async (el: JQuery) => {
-      const itemId = getDomDataset(el, "item-id");
-      let firstItemEl = el[0];
-      while ((firstItemEl.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
-        firstItemEl = firstItemEl.previousElementSibling as HTMLElement;
+      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "cultRqid");
+      if (rqid) {
+        await Rqid.renderRqidDocument(rqid);
       }
-      const journalId = firstItemEl.dataset.journalId;
-      const journalPack = firstItemEl.dataset.journalPack;
-      if (!journalId) {
-        const msg = localize("RQG.ContextMenu.Notification.CantShowJournalDescriptionError", {journalId: journalId, actorName: actor.name});
-        ui.notifications?.error(msg);
-        throw new RqgError(msg);
-      }
-      await RqgActorSheet.showJournalEntry(journalId, journalPack);
     },
   },
   {

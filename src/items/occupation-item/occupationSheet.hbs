@@ -23,12 +23,14 @@
     </div>
 
     <div class="name-parts-2-equal">
-      <div class="drop-target item-sheet-journal-link" data-target-drop-property="occupationJournalLink">
-        {{> "systems/rqg/items/sheet-parts/journalEntryLink.hbs"
-          journalEntryLink=occupationData.occupationJournalLink
-          showInfoCircle=true
-        }}
-      </div>
+      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+          rqidLink=occupationData.occupationRqidLink
+          parentField="occupationRqidLink"
+          dropTypes="JournalEntry"
+          showDeleteFromPropertyName="occupationRqidLink"
+          showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+          showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+      }}
     </div>
 
   </header>
@@ -117,15 +119,13 @@
           <input type="text" id="base-income-notes-{{data._id}}" name="data.baseIncomeNotes" value="{{occupationData.baseIncomeNotes}}">
 
           <label>{{localize "RQG.Item.Occupation.CultLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="cultRqidLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-            {{#each occupationData.cultRqidLinks}}
-              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this
-              }}
-            {{/each}}
-            </div>
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=occupationData.cultRqidLinks
+            parentField="cultRqidLinks"
+            dropTypes="cult"
+            showDeleteFromPropertyName="cultRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+          }}
           
           <label for="ransom-{{data._id}}">{{localize "RQG.Item.Occupation.Ransom"}}</label>
           <div>
@@ -135,16 +135,13 @@
           </div>
           
           <label>{{localize "RQG.Item.Occupation.StartingEquipmentLinks"}}</label>
-          <div class="drop-target item-sheet-journal-link" data-target-drop-property="startingEquipmentRqidLinks">
-            <div style="display: flex; flex-wrap: wrap;">
-            {{#each occupationData.startingEquipmentRqidLinks}}
-              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this
-              }}
-            {{/each}}
-            </div>
-          </div>
-
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+            rqidLinkArray=occupationData.startingEquipmentRqidLinks
+            parentField="startingEquipmentRqidLinks"
+            dropTypes="armor,gear,weapon"
+            showDeleteFromPropertyName="startingEquipmentRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+          }}
         </div>
       </div>
 

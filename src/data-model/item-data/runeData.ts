@@ -1,6 +1,6 @@
 import { IAbility } from "../shared/ability";
-import { JournalEntryLink } from "../shared/journalentrylink";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
+import { RqidLink } from "../shared/rqidLink";
+import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY, IRqid } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 
 export enum RuneTypeEnum {
@@ -11,8 +11,9 @@ export enum RuneTypeEnum {
   Technique = "technique",
 }
 
-export interface RuneDataSourceData extends IAbility, JournalEntryLink {
+export interface RuneDataSourceData extends IAbility, IRqid {
   /** The name of the rune Fire for example */
+  descriptionRqidLink: RqidLink;
   rune: string;
   runeType: RuneTypeEnum;
   chance: number;
@@ -41,6 +42,7 @@ export const emptyRune: RuneDataSourceData = {
   rqid: "",
   rqidPriority: DEFAULT_RQIDPRIORITY,
   rqidLang: DEFAULT_RQIDLANG,
+  descriptionRqidLink: new RqidLink(),
   rune: "",
   chance: 0,
   canGetExperience: true,
@@ -49,7 +51,4 @@ export const emptyRune: RuneDataSourceData = {
   opposingRune: "",
   minorRunes: [],
   isMastered: false,
-  journalId: "",
-  journalPack: "",
-  journalName: "",
 };

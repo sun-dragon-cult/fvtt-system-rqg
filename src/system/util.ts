@@ -3,11 +3,7 @@ import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
-import { RqgItem } from "../items/rqgItem";
-import { SkillDataSource } from "../data-model/item-data/skillData";
-import { ArmorDataSource } from "../data-model/item-data/armorData";
 import { JournalEntryLink } from "../data-model/shared/journalentrylink";
-import { RQG_CONFIG } from "./config";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);

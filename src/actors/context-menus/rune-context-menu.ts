@@ -4,6 +4,7 @@ import { RqgActor } from "../rqgActor";
 import {
   activateChatTab,
   assertItemType,
+  findDatasetValueInSelfOrAncestors,
   getDomDataset,
   getGame,
   getRequiredDomDataset,
@@ -15,6 +16,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
+import { Rqid } from "../../system/api/rqidApi";
 
 export const runeMenuOptions = (
   actor: RqgActor,
@@ -70,22 +72,14 @@ export const runeMenuOptions = (
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      let firstItemEl = el[0];
-      while ((firstItemEl?.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
-        firstItemEl = firstItemEl.previousElementSibling as HTMLElement;
-      }
-      return !!getDomDataset($(firstItemEl), "journal-id");
+      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeRqid");
+      return rqid ? true : false;
     },
     callback: async (el: JQuery) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      let firstItemEl = el[0];
-      while ((firstItemEl?.previousElementSibling as HTMLElement)?.dataset?.itemId === itemId) {
-        firstItemEl = firstItemEl?.previousElementSibling as HTMLElement;
+      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeRqid");
+      if (rqid) {
+        await Rqid.renderRqidDocument(rqid);
       }
-      const journalId = getRequiredDomDataset($(firstItemEl), "journal-id");
-      const journalPack = getDomDataset($(firstItemEl), "journal-pack");
-      await RqgActorSheet.showJournalEntry(journalId, journalPack);
     },
   },
   {

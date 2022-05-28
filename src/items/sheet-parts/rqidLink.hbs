@@ -1,11 +1,57 @@
-<a
-  class="entity-link content-link"
-  data-rqid-link
-  data-type="Item"
-  data-item-type="{{rqidLink.itemType}}"
-  data-rqid="{{rqidLink.rqid}}"
-  title="{{localize 'RQG.Item.RqgItem.RqidLinkTitle' rqid=rqidLink.rqid}}"
->
-  <i class="fas fa-suitcase"></i>
-  {{rqidLink.name}}
-</a>
+{{#if rqidLink.rqid}}
+  <div class="rqidlink">
+    <a
+      class="rqid-content-link"
+      data-rqid-link
+      data-document-type="{{rqidLink.documentType}}"
+      data-rqid="{{rqidLink.rqid}}"
+      title="{{localize 'RQG.Item.RqgItem.RqidLinkTitle' rqid=rqidLink.rqid}}"
+    >
+      {{{rqidLinkImage rqidLink}}}
+      {{rqidLink.name}}
+    </a>
+
+  {{#if showBonus}}
+    {{#if editBonusPropertyName}}
+      +
+      <input type="number" value="{{rqidLink.bonus}}"
+          style="text-align: right; width: 25px;"
+          data-edit-bonus-property-name="{{editBonusPropertyName}}"
+          data-rqid="{{rqidLink.rqid}}">%
+    {{else}}
+      <span>+{{rqidLink.bonus}}%</span>
+    {{/if}}
+  {{/if}}
+
+  {{#if rqidLink.rqid}}
+    {{#if showDeleteFromPropertyName}}
+      <i
+        class="fas fa-times icon"
+        data-delete-rqid="{{rqidLink.rqid}}"
+        data-delete-from-property="{{showDeleteFromPropertyName}}"
+        title="{{localize 'RQG.Item.RqgItem.RqidLinkDelete' rqid=this.rqid name=this.name}}"
+      ></i>
+    {{/if}}
+  {{/if}}
+
+  {{#if rqidLink.rqid}}
+    {{#if showInfoCircleReplace}}
+      <i
+        class="fas fa-info-circle icon"
+        title="{{localize showInfoCircleReplace}}"
+      ></i>
+    {{/if}}
+  {{/if}}
+
+  </div>
+
+{{else}}
+
+  {{#if showInfoCircleConnect}}
+    <i
+      class="fas fa-info-circle icon"
+      title="{{localize showInfoCircleConnect}}"
+    ></i>
+  {{/if}}
+
+{{/if}}
