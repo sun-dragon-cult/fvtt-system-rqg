@@ -4,6 +4,7 @@ import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { assertItemType, getGame, localize, RqgError } from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { systemId } from "../../system/config";
 
 export class RuneMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -55,7 +56,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
           i.type === ItemTypeEnum.Rune &&
           (runeMagicRuneNames.includes(i.name ?? "") ||
             (runeMagicRuneNames.includes(
-              getGame().settings.get("rqg", "magicRuneName") as string
+              getGame().settings.get(systemId, "magicRuneName") as string
             ) &&
               cultRuneNames.includes(i.name ?? "")))
       )

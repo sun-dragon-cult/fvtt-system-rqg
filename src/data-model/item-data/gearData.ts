@@ -1,5 +1,4 @@
-import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
+import { defaultPriceData, IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 
 export interface GearDataSourceData extends IPhysicalItem {}
@@ -17,14 +16,11 @@ export interface GearDataProperties {
   data: GearDataPropertiesData;
 }
 
-export const emptyGear: GearDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultGearData: GearDataSourceData = {
   description: "",
   gmNotes: "",
   quantity: 1,
-  price: emptyPrice,
+  price: defaultPriceData,
   encumbrance: 1,
   equippedStatus: "carried",
   location: "",

@@ -3,9 +3,10 @@ import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { DefaultItemIconSettings } from "../dialog/defaultItemIconSettings";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationSettings } from "../dialog/hitLocationSettings";
+import { systemId } from "./config";
 
 export const registerRqgSystemSettings = function () {
-  getGame().settings.registerMenu("rqg", "hitLocations", {
+  getGame().settings.registerMenu(systemId, "hitLocations", {
     name: localize("RQG.Settings.HitLocations.settingName"),
     label: localize("RQG.Settings.HitLocations.settingLabel"),
     hint: localize("RQG.Settings.HitLocations.settingHint"),
@@ -14,14 +15,14 @@ export const registerRqgSystemSettings = function () {
     restricted: true,
   });
 
-  getGame().settings.register("rqg", "hitLocations", {
+  getGame().settings.register(systemId, "hitLocations", {
     scope: "world",
     config: false,
     type: Object,
     default: hitLocationNamesObject,
   });
 
-  getGame().settings.registerMenu("rqg", "defaultItemIconSettings", {
+  getGame().settings.registerMenu(systemId, "defaultItemIconSettings", {
     name: localize("RQG.Settings.DefaultItemIcons.settingName"),
     label: localize("RQG.Settings.DefaultItemIcons.settingLabel"),
     hint: localize("RQG.Settings.DefaultItemIcons.settingHint"),
@@ -30,7 +31,7 @@ export const registerRqgSystemSettings = function () {
     restricted: true,
   });
 
-  getGame().settings.register("rqg", "defaultItemIconSettings", {
+  getGame().settings.register(systemId, "defaultItemIconSettings", {
     scope: "world",
     config: false,
     type: Object,
@@ -51,7 +52,7 @@ export const registerRqgSystemSettings = function () {
     },
   });
 
-  getGame().settings.register("rqg", "runesCompendium", {
+  getGame().settings.register(systemId, "runesCompendium", {
     name: localize("RQG.Settings.RunesCompendium.settingName"),
     hint: localize("RQG.Settings.RunesCompendium.settingHint"),
     scope: "world",
@@ -60,7 +61,7 @@ export const registerRqgSystemSettings = function () {
     default: "rqg.runes",
   });
 
-  getGame().settings.register("rqg", "fumbleRollTable", {
+  getGame().settings.register(systemId, "fumbleRollTable", {
     name: localize("RQG.Settings.FumbleRollTable.settingName"),
     hint: localize("RQG.Settings.FumbleRollTable.settingHint"),
     scope: "world",
@@ -69,7 +70,7 @@ export const registerRqgSystemSettings = function () {
     default: "Fumble",
   });
 
-  getGame().settings.register("rqg", "specialCrit", {
+  getGame().settings.register(systemId, "specialCrit", {
     name: localize("RQG.Settings.SpecialCrit.settingName"),
     hint: localize("RQG.Settings.SpecialCrit.settingHint"),
     scope: "world",
@@ -78,7 +79,7 @@ export const registerRqgSystemSettings = function () {
     default: false,
   });
 
-  getGame().settings.register("rqg", "magicRuneName", {
+  getGame().settings.register(systemId, "magicRuneName", {
     name: localize("RQG.Settings.MagicRuneName.settingName"),
     hint: localize("RQG.Settings.MagicRuneName.settingHint"),
     scope: "world",
@@ -87,7 +88,7 @@ export const registerRqgSystemSettings = function () {
     default: "Magic (condition)",
   });
 
-  getGame().settings.register("rqg", "systemMigrationVersion", {
+  getGame().settings.register(systemId, "systemMigrationVersion", {
     name: localize("RQG.Settings.SystemMigrationVersion.settingName"),
     hint: localize("RQG.Settings.SystemMigrationVersion.settingHint"),
     scope: "world",

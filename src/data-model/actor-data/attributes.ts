@@ -1,4 +1,4 @@
-import { emptyResource, Resource } from "../shared/resource";
+import { defaultResource, Resource } from "../shared/resource";
 
 export const actorHealthStatuses = ["healthy", "wounded", "shock", "unconscious", "dead"] as const;
 export type ActorHealthState = typeof actorHealthStatuses[number];
@@ -44,9 +44,9 @@ export class Attributes {
   ) {}
 }
 
-export const emptyAttributes = new Attributes(
-  emptyResource,
-  emptyResource,
+export const defaultAttributes = new Attributes(
+  defaultResource,
+  defaultResource,
   {
     currentLocomotion: LocomotionEnum.Walk,
     [LocomotionEnum.Walk]: {

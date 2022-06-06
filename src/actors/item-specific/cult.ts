@@ -3,6 +3,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../rqgActor";
 import { getAllRunesIndex, getGame, localize, RqgError } from "../../system/util";
 import { RqgItem } from "../../items/rqgItem";
+import { systemId } from "../../system/config";
 
 export class Cult extends AbstractEmbeddedItem {
   // public static init() {
@@ -32,7 +33,7 @@ export class Cult extends AbstractEmbeddedItem {
       .map((r: RqgItem) => r.name);
     const newRuneNames = cultRuneNames.filter((r: string) => !actorRuneNames.includes(r));
     if (newRuneNames.length > 0) {
-      const runesCompendiumName = getGame().settings.get("rqg", "runesCompendium");
+      const runesCompendiumName = getGame().settings.get(systemId, "runesCompendium");
       const runePack = getGame().packs?.get(runesCompendiumName);
       if (!runePack) {
         const msg = localize("RQG.Item.Notification.CantFindRunesCompendiumError", {

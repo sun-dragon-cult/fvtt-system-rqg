@@ -16,6 +16,7 @@ import {
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
+import { systemId } from "../../system/config";
 
 interface RuneMagicSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -36,11 +37,17 @@ export class RuneMagicSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.RuneMagic],
+      classes: [systemId, "sheet", ItemTypeEnum.RuneMagic],
       template: "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
       width: 450,
       height: 500,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "rune-magic" }],
+      tabs: [
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "rune-magic",
+        },
+      ],
     });
   }
 
@@ -104,6 +111,6 @@ export class RuneMagicSheet extends RqgItemSheet<
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+    return super._onDrop(event);
   }
 }

@@ -2,24 +2,17 @@ import { RqgActor } from "../actors/rqgActor";
 import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { getActorTemplates, getHomelands, Rqid } from "../system/api/rqidApi";
-import { RQG_CONFIG } from "../system/config";
-import {
-  assertItemType,
-  getDocumentTypes,
-  getGame,
-  getRequiredDomDataset,
-  localize,
-} from "../system/util";
+import { systemId } from "../system/config";
+import { assertItemType, getDocumentTypes, getGame, localize } from "../system/util";
 import { SkillCategoryEnum, SkillDataSource } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { Homeland } from "../actors/item-specific/homeland";
 import { RqgItem } from "../items/rqgItem";
 import { HomelandDataSource } from "../data-model/item-data/homelandData";
 import { RuneDataSource } from "../data-model/item-data/runeData";
 import { PassionDataSource } from "../data-model/item-data/passionData";
-import { Skill } from "../actors/item-specific/skill";
+import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -38,32 +31,30 @@ export class ActorWizard extends FormApplication {
     super(object, options);
     this.actor = object;
     const previouslySelectedTemplateId = this.actor.getFlag(
-      RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.selectedSpeciesId
-    );
+      systemId,
+      actorWizardFlags
+    )?.selectedSpeciesId;
 
-    const template = getGame().actors?.get(previouslySelectedTemplateId as string) as RqgActor;
+    const template = previouslySelectedTemplateId
+      ? getGame().actors?.get(previouslySelectedTemplateId)
+      : undefined;
 
     if (!template) {
       this.species.selectedSpeciesTemplate = undefined;
-    }
-    //@ts-ignore
-    else if (template?.type === ActorTypeEnum.Character) {
-      this.species.selectedSpeciesTemplate = template as RqgActor;
+    } else if (template?.type === ActorTypeEnum.Character) {
+      this.species.selectedSpeciesTemplate = template;
     } else {
       this.species.selectedSpeciesTemplate = undefined;
-      const msg = `The Actor named ${this.actor.name} has a \n${RQG_CONFIG.actorWizardFlags.selectedSpeciesId}\n flag with a value that is not an RqgActor.`;
+      const msg = `The Actor named ${this.actor.name} has a \n[rqg.actorWizardFlags.selectedSpeciesId]\n flag with a value that is not an RqgActor.`;
       console.warn(msg);
       ui.notifications?.warn(msg);
     }
 
-    const savedChoices = this.actor.getFlag(
-      RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.wizardChoices
-    );
+    const savedChoices = this.actor.getFlag(systemId, actorWizardFlags)?.wizardChoices;
+
     if (savedChoices) {
       // Get saved choices from flag
-      const parsed = JSON.parse(savedChoices as string) as Record<string, CreationChoice>;
+      const parsed = JSON.parse(savedChoices) as Record<string, CreationChoice>;
       this.choices = {};
       for (const c in parsed) {
         // Reconstitute them as CreationChoice objects so that the functions exist.
@@ -74,7 +65,7 @@ export class ActorWizard extends FormApplication {
 
   static get defaultOptions(): FormApplication.Options {
     return mergeObject(FormApplication.defaultOptions, {
-      classes: ["rqg", "sheet", ActorTypeEnum.Character],
+      classes: [systemId, "sheet", ActorTypeEnum.Character],
       popOut: true,
       template: "systems/rqg/dialog/actorWizardApplication.hbs",
       id: "actor-wizard-application",
@@ -127,9 +118,10 @@ export class ActorWizard extends FormApplication {
     if (this.actor) {
       // See if the user has already chosen a species template that is stored in flags
       const previouslySelectedSpeciesId = this.actor.getFlag(
-        RQG_CONFIG.flagScope,
-        RQG_CONFIG.actorWizardFlags.selectedSpeciesId
-      );
+        systemId,
+        actorWizardFlags
+      )?.selectedSpeciesId;
+
       if (previouslySelectedSpeciesId) {
         const flaggedSpecies = this.species.speciesTemplates?.find(
           (s) => s.id === previouslySelectedSpeciesId
@@ -146,9 +138,9 @@ export class ActorWizard extends FormApplication {
 
       // Has the user already chosen a Homeland stored in flags?
       const previouslySelectedHomelandRqid = this.actor.getFlag(
-        RQG_CONFIG.flagScope,
-        RQG_CONFIG.actorWizardFlags.selectedHomelandRqid
-      ) as string;
+        systemId,
+        actorWizardFlags
+      )?.selectedHomelandRqid;
       if (previouslySelectedHomelandRqid) {
         await this.setHomeland(previouslySelectedHomelandRqid);
       }
@@ -158,9 +150,10 @@ export class ActorWizard extends FormApplication {
 
     // put choices on selected species items for purposes of sheet
     this.species.selectedSpeciesTemplate?.items.forEach((i) => {
-      const associatedChoice = this.choices[i.data.data.rqid];
+      const rqid = i.getFlag(systemId, documentRqidFlags)?.id;
+      const associatedChoice = rqid && this.choices[rqid];
       if (associatedChoice) {
-        //@ts-ignore choice
+        // @ts-ignore choice TODO Is choice a temporary property?
         i.data.data.choice = associatedChoice;
       }
     });
@@ -173,10 +166,10 @@ export class ActorWizard extends FormApplication {
       ...selectedHomeland?.data?.cultRqidLinks
     );
     if (homelandRqidLinks) {
-      homelandRqidLinks.forEach((rqidLink) => {
+      homelandRqidLinks.forEach((rqidLink: RqidLink | CreationChoice) => {
         const associatedChoice = this.choices[rqidLink.rqid];
         if (associatedChoice) {
-          //@ts-ignore choice
+          //@ts-ignore choice TODO Is choice a temporary property?
           rqidLink.choice = associatedChoice;
         }
       });
@@ -192,7 +185,7 @@ export class ActorWizard extends FormApplication {
           const associatedChoice = this.choices[runeRqidLink.rqid];
           if (associatedChoice) {
             // put choice on homeland runes for purposes of sheet
-            //@ts-ignore choice
+            //@ts-ignore choice TODO Is choice a temporary property?
             rune.data.data.choice = associatedChoice;
           }
           homelandRunes.push(rune);
@@ -281,7 +274,7 @@ export class ActorWizard extends FormApplication {
     };
   }
 
-  activateListeners(html: JQuery<HTMLElement>): void {
+  activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
     this.form?.querySelectorAll(".wizard-choice-input").forEach((el) => {
@@ -319,7 +312,7 @@ export class ActorWizard extends FormApplication {
     this.form?.querySelectorAll(".collabsible-header").forEach((el) => {
       el.addEventListener("click", (ev) => {
         const wrapper = (ev.target as HTMLElement).closest(".collabsible-wrapper") as HTMLElement;
-        const wasOpen = wrapper.dataset.open === "true" ? true : false;
+        const wasOpen = wrapper.dataset.open === "true";
         const wrapperName = wrapper.dataset.collabsibleName;
         if (wrapperName) {
           this.collapsibleOpenStates[wrapperName] = !wasOpen;
@@ -336,7 +329,7 @@ export class ActorWizard extends FormApplication {
     });
 
     this.form?.querySelectorAll("[data-actor-creation-complete]").forEach((el) => {
-      el.addEventListener("click", (ev) => {
+      el.addEventListener("click", () => {
         this._setActorCreationComplete();
       });
     });
@@ -346,7 +339,7 @@ export class ActorWizard extends FormApplication {
   }
 
   _setActorCreationComplete() {
-    this.actor.setFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete, true);
+    this.actor.setFlag(systemId, actorWizardFlags, { actorWizardComplete: true });
     document.querySelectorAll(`.actor-wizard-button-${this.actor.id}`).forEach((el) => {
       el.remove();
     });
@@ -378,13 +371,11 @@ export class ActorWizard extends FormApplication {
       (t) => t.id === selectedTemplateId
     );
 
-    await this.actor.unsetFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.selectedSpeciesId);
+    await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedSpeciesId");
 
-    await this.actor.setFlag(
-      RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.selectedSpeciesId,
-      this.species.selectedSpeciesTemplate?.id
-    );
+    await this.actor.setFlag(systemId, actorWizardFlags, {
+      selectedSpeciesId: this.species.selectedSpeciesTemplate?.id ?? undefined,
+    });
 
     const templateChars = this.species.selectedSpeciesTemplate?.data.data.characteristics;
 
@@ -445,36 +436,42 @@ export class ActorWizard extends FormApplication {
     }
 
     this.species.selectedSpeciesTemplate?.data.items.forEach((i) => {
+      const rqidFlags = i.getFlag(systemId, documentRqidFlags);
+      if (!rqidFlags?.id) {
+        console.warn("NO RQID!", i);
+        return; // TODO How should this be handled?
+      }
+
       if (i.type === ItemTypeEnum.Skill) {
         const skill = i.data as SkillDataSource;
-        if (this.choices[skill.data.rqid] === undefined) {
+        if (!this.choices[rqidFlags.id]) {
           // Adding a new choice that hasn't existed before so it should be checked.
-          this.choices[skill.data.rqid] = new CreationChoice();
-          this.choices[skill.data.rqid].rqid = skill.data.rqid;
-          this.choices[skill.data.rqid].speciesValue = skill.data.baseChance;
-          this.choices[skill.data.rqid].speciesPresent = true;
+          this.choices[rqidFlags.id] = new CreationChoice();
+          this.choices[rqidFlags.id].rqid = rqidFlags.id;
+          this.choices[rqidFlags.id].speciesValue = skill.data.baseChance;
+          this.choices[rqidFlags.id].speciesPresent = true;
         } else {
           // The old template and the new template both have the same item
-          this.choices[skill.data.rqid].speciesValue = skill.data.baseChance;
+          this.choices[rqidFlags.id].speciesValue = skill.data.baseChance;
           if (checkAll) {
-            this.choices[skill.data.rqid].speciesPresent = true;
+            this.choices[rqidFlags.id].speciesPresent = true;
           }
         }
       }
       if (i.type === ItemTypeEnum.Rune || i.type === ItemTypeEnum.Passion) {
         // Rune or Passion
         const ability = i.data.data as IAbility;
-        if (this.choices[ability.rqid] === undefined) {
+        if (this.choices[rqidFlags.id] === undefined) {
           // Adding a new choice that hasn't existed before so it should be checked.
-          this.choices[ability.rqid] = new CreationChoice();
-          this.choices[ability.rqid].rqid = ability.rqid;
-          this.choices[ability.rqid].speciesValue = ability.chance || 0;
-          this.choices[ability.rqid].speciesPresent = true;
+          this.choices[rqidFlags.id] = new CreationChoice();
+          this.choices[rqidFlags.id].rqid = rqidFlags.id;
+          this.choices[rqidFlags.id].speciesValue = ability.chance || 0;
+          this.choices[rqidFlags.id].speciesPresent = true;
         } else {
           // The old template and the new template both have the same item
-          this.choices[ability.rqid].speciesValue = ability.chance || 0;
+          this.choices[rqidFlags.id].speciesValue = ability.chance || 0;
           if (checkAll) {
-            this.choices[ability.rqid].speciesPresent = true;
+            this.choices[rqidFlags.id].speciesPresent = true;
           }
         }
       }
@@ -482,7 +479,9 @@ export class ActorWizard extends FormApplication {
 
     // Find any rqids that are in the choices but not on the species template
     // and mark them not present on the species
-    const speciesRqids = this.species.selectedSpeciesTemplate?.items.map((i) => i.data.data.rqid);
+    const speciesRqids = this.species.selectedSpeciesTemplate?.items.map(
+      (i) => i.getFlag(systemId, documentRqidFlags)?.id
+    );
     for (const choiceKey in this.choices) {
       if (!speciesRqids?.includes(choiceKey)) {
         this.choices[choiceKey].speciesPresent = false;
@@ -492,19 +491,15 @@ export class ActorWizard extends FormApplication {
 
   async setHomeland(selectedHomelandRqid: string) {
     this.homeland.selectedHomeland = this.homeland.homelands?.find(
-      (h) => (h as RqgItem).data.data.rqid === selectedHomelandRqid
+      (h) => h.getFlag(systemId, documentRqidFlags)?.id === selectedHomelandRqid
     );
 
-    await this.actor.unsetFlag(
-      RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.selectedHomelandRqid
-    );
+    await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedHomelandRqid");
 
-    await this.actor.setFlag(
-      RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.selectedHomelandRqid,
-      this.homeland.selectedHomeland?.data.data.rqid
-    );
+    await this.actor.setFlag(systemId, actorWizardFlags, {
+      selectedHomelandRqid: this.homeland.selectedHomeland?.getFlag(systemId, documentRqidFlags)
+        ?.id,
+    });
 
     const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
 
@@ -632,7 +627,7 @@ export class ActorWizard extends FormApplication {
           }
           // Handle Cults which use .homelandCultChosen and don't need to get "added up"
           if (actorItem.type === ItemTypeEnum.Cult) {
-            if (this.choices[key].homelandCultChosen === true) {
+            if (this.choices[key].homelandCultChosen) {
               // Cult already exists on actor
               // Do nothing
             } else {
@@ -705,7 +700,7 @@ export class ActorWizard extends FormApplication {
         }
 
         if (cultsEligibleToAdd.map((c) => c.rqid).includes(key)) {
-          if (this.choices[key].homelandCultChosen === true) {
+          if (this.choices[key].homelandCultChosen) {
             const cult = await Rqid.itemFromRqid(key);
             if (cult) {
               adds.push(cult.data);
@@ -714,7 +709,7 @@ export class ActorWizard extends FormApplication {
         }
       }
     }
-    //@ts-ignore adds
+    //@ts-ignore adds // TODO fix "adds" typing
     await this.actor.createEmbeddedDocuments("Item", adds);
     await this.actor.updateEmbeddedDocuments("Item", updates);
     await this.actor.deleteEmbeddedDocuments("Item", deletes);
@@ -758,11 +753,9 @@ export class ActorWizard extends FormApplication {
       },
     });
 
-    this.actor.setFlag(
-      RQG_CONFIG.flagScope,
-      RQG_CONFIG.actorWizardFlags.wizardChoices,
-      JSON.stringify(this.choices)
-    );
+    await this.actor.setFlag(systemId, actorWizardFlags, {
+      wizardChoices: JSON.stringify(this.choices),
+    });
   }
 }
 

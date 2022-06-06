@@ -1,5 +1,4 @@
-import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
+import { defaultPriceData, IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 
 export const armorTypeTranslationKeys = [
@@ -61,14 +60,11 @@ export interface ArmorDataProperties {
   data: ArmorDataPropertiesData;
 }
 
-export const emptyArmor: ArmorDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultArmorData: ArmorDataSourceData = {
   description: "",
   gmNotes: "",
   size: 0,
-  price: emptyPrice,
+  price: defaultPriceData,
   encumbrance: 1,
   equippedStatus: "carried",
   hitLocations: [],

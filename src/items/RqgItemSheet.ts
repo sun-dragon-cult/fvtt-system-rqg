@@ -1,6 +1,6 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { Rqid } from "../system/api/rqidApi";
-import { RQG_CONFIG } from "../system/config";
+import { systemId } from "../system/config";
 import {
   findDatasetValueInSelfOrAncestors,
   getDomDataset,
@@ -10,6 +10,7 @@ import {
   localizeItemType,
 } from "../system/util";
 import { RqgItem } from "./rqgItem";
+import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 
 export interface RqgItemSheetData {
   isGM: boolean;
@@ -99,9 +100,9 @@ export class RqgItemSheet<
       .find("[data-item-rqid-quick]")
       .each((i: number, el: HTMLElement) => {
         const itemId = getRequiredDomDataset($(el), "item-id");
-        const ownerId = getDomDataset($(el), "owner-id"); // may or may not be there
+        const ownerId = getDomDataset($(el), "owner-id");
         el.addEventListener("click", async () => {
-          let item: RqgItem | undefined = undefined;
+          let item: RqgItem | undefined;
           if (ownerId) {
             // Get the item from the owner
             item = getGame().actors?.get(ownerId)?.items.get(itemId);
@@ -110,6 +111,7 @@ export class RqgItemSheet<
             item = getGame().items?.get(itemId) as RqgItem;
           }
           if (!item) {
+            ui.notifications?.warn("Couldn't find item");
             return;
           }
           const newRqid = Rqid.getDefaultRqid(item);
@@ -118,11 +120,11 @@ export class RqgItemSheet<
             const actor = getGame().actors?.get(ownerId);
             if (actor) {
               await actor.updateEmbeddedDocuments("Item", [
-                { _id: item.id, data: { rqid: newRqid } },
+                { _id: item.id, flags: { [systemId]: { [documentRqidFlags]: newRqid } } },
               ]);
             }
           } else {
-            await item.update({ data: { rqid: newRqid } });
+            await item.setFlag(systemId, documentRqidFlags, { id: newRqid });
           }
         });
       });
@@ -134,7 +136,7 @@ export class RqgItemSheet<
         const itemId = getRequiredDomDataset($(el), "item-id");
         el.addEventListener("click", async () => {
           const input = el.previousElementSibling as HTMLInputElement;
-          navigator.clipboard.writeText(input.value);
+          await navigator.clipboard.writeText(input.value);
         });
       });
 
@@ -177,11 +179,13 @@ export class RqgItemSheet<
       .each((i: number, el: HTMLElement) => {
         const editRqid = getRequiredDomDataset($(el), "rqid");
         const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
-        el.addEventListener("change",async () => {
+        el.addEventListener("change", async () => {
           console.log("CHANGE!", editRqid, editPropertyName);
           let updateProperty = getProperty(this.item.data.data, editPropertyName);
           if (Array.isArray(updateProperty)) {
-            const updateRqidLink = (updateProperty as RqidLink[]).find(rqidLink => rqidLink.rqid === editRqid );
+            const updateRqidLink = (updateProperty as RqidLink[]).find(
+              (rqidLink) => rqidLink.rqid === editRqid
+            );
             if (updateRqidLink) {
               updateRqidLink.bonus = Number((el as HTMLInputElement).value);
             }
@@ -200,7 +204,7 @@ export class RqgItemSheet<
               ]);
             } else {
               await this.item.update({ data: { [editPropertyName]: updateProperty } });
-            }            
+            }
           }
         });
       });
@@ -222,7 +226,10 @@ export class RqgItemSheet<
       "targetDropProperty"
     );
 
-    const dropTypes = findDatasetValueInSelfOrAncestors(event.target as HTMLElement, "expectedDropTypes")?.split(",");
+    const dropTypes = findDatasetValueInSelfOrAncestors(
+      event.target as HTMLElement,
+      "expectedDropTypes"
+    )?.split(",");
 
     let droppedDocument: Item | JournalEntry | undefined = undefined;
 
@@ -241,28 +248,33 @@ export class RqgItemSheet<
           dropTypes.includes((droppedDocument as Item).type)
         )
       ) {
-        const msg = localize("RQG.Item.Notification.DroppedItemWrongType", { allowedDropTypes: dropTypes.join(", "), type: droppedDocumentData.type});
+        const msg = localize("RQG.Item.Notification.DroppedItemWrongType", {
+          allowedDropTypes: dropTypes.join(", "),
+          type: droppedDocumentData.type,
+        });
         ui.notifications?.warn(msg);
         console.warn(msg, event);
         return;
       }
     }
 
-    //@ts-ignore rqg
-    if (!droppedDocument?.data?.flags?.rqg?.rqid) {
-      const msg = localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {type: droppedDocumentData.type, name: droppedDocument?.name, id: droppedDocumentData.id});
+    const droppedItemRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id;
+
+    if (!droppedItemRqid) {
+      const msg = localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
+        type: droppedDocumentData.type,
+        name: droppedDocument?.name,
+        id: droppedDocumentData.id,
+      });
       ui.notifications?.warn(msg);
-      console.warn(msg,event);
+      console.warn(msg, event);
       return;
     }
 
     if (droppedDocument && targetPropertyName) {
       const newLink = new RqidLink();
-      newLink.rqid = droppedDocument.getFlag(
-        RQG_CONFIG.flagScope,
-        RQG_CONFIG.rqidFlags.rqid
-      ) as string;
-      newLink.name = droppedDocument.name || "";
+      newLink.rqid = droppedItemRqid;
+      newLink.name = droppedDocument.name ?? "";
       newLink.documentType = droppedDocumentData.type;
       if (droppedDocument instanceof Item) {
         newLink.itemType = droppedDocument.type;

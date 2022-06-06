@@ -1,36 +1,36 @@
 import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
-import { emptyCharacterData } from "./data-model/actor-data/rqgActorData";
-import { emptySkill } from "./data-model/item-data/skillData";
-import { emptyPassion } from "./data-model/item-data/passionData";
-import { emptyRune } from "./data-model/item-data/runeData";
-import { emptyGear } from "./data-model/item-data/gearData";
-import { emptyArmor } from "./data-model/item-data/armorData";
-import { emptySpiritMagic } from "./data-model/item-data/spiritMagicData";
-import { emptyCult } from "./data-model/item-data/cultData";
-import { emptyRuneMagic } from "./data-model/item-data/runeMagicData";
-import { emptyHitLocation } from "./data-model/item-data/hitLocationData";
-import { emptyWeapon } from "./data-model/item-data/weaponData";
-import { emptyHomeland } from "./data-model/item-data/homelandData";
-import { emptyOccupation } from "./data-model/item-data/occupationData";
+import { defaultCharacterData } from "./data-model/actor-data/rqgActorData";
+import { defaultSkillData } from "./data-model/item-data/skillData";
+import { defaultPassionData } from "./data-model/item-data/passionData";
+import { defaultRuneData } from "./data-model/item-data/runeData";
+import { defaultGearData } from "./data-model/item-data/gearData";
+import { defaultArmorData } from "./data-model/item-data/armorData";
+import { defaultSpiritMagicData } from "./data-model/item-data/spiritMagicData";
+import { defaultCultData } from "./data-model/item-data/cultData";
+import { defaultRuneMagicData } from "./data-model/item-data/runeMagicData";
+import { defaultHitLocationData } from "./data-model/item-data/hitLocationData";
+import { defaultWeaponData } from "./data-model/item-data/weaponData";
+import { defaultHomelandData } from "./data-model/item-data/homelandData";
+import { defaultOccupationData } from "./data-model/item-data/occupationData";
 
 // Instantiated Actor types
 export const Actors = {
-  character: emptyCharacterData,
+  character: defaultCharacterData,
 };
 
 export const Items = {
-  [ItemTypeEnum.Armor]: emptyArmor,
-  [ItemTypeEnum.Cult]: emptyCult,
-  [ItemTypeEnum.Gear]: emptyGear,
-  [ItemTypeEnum.HitLocation]: emptyHitLocation,
-  [ItemTypeEnum.Homeland]: emptyHomeland,
-  [ItemTypeEnum.Occupation]: emptyOccupation,
-  [ItemTypeEnum.Passion]: emptyPassion,
-  [ItemTypeEnum.Rune]: emptyRune,
-  [ItemTypeEnum.RuneMagic]: emptyRuneMagic,
-  [ItemTypeEnum.Skill]: emptySkill,
+  [ItemTypeEnum.Armor]: defaultArmorData,
+  [ItemTypeEnum.Cult]: defaultCultData,
+  [ItemTypeEnum.Gear]: defaultGearData,
+  [ItemTypeEnum.HitLocation]: defaultHitLocationData,
+  [ItemTypeEnum.Homeland]: defaultHomelandData,
+  [ItemTypeEnum.Occupation]: defaultOccupationData,
+  [ItemTypeEnum.Passion]: defaultPassionData,
+  [ItemTypeEnum.Rune]: defaultRuneData,
+  [ItemTypeEnum.RuneMagic]: defaultRuneMagicData,
+  [ItemTypeEnum.Skill]: defaultSkillData,
   // [ItemTypeEnum.ShamanicAbility]: emptyShamanicAbility,
-  [ItemTypeEnum.SpiritMagic]: emptySpiritMagic,
+  [ItemTypeEnum.SpiritMagic]: defaultSpiritMagicData,
   // [ItemTypeEnum.SorceryMagic]: emptySorceryMagic,
-  [ItemTypeEnum.Weapon]: emptyWeapon,
+  [ItemTypeEnum.Weapon]: defaultWeaponData,
 };

@@ -116,30 +116,20 @@ export const RQG_CONFIG = {
 
   dsnTextureList: {},
 
-  rqidPrefixes: {
-    actor: "a.",
-    item: "i.",
-    journalEntry: "je.",
-    macro: "m.",
-    rollTable: "rt.",
-    scene: "s.",
-  },
-
-  flagScope: "rqg", //This is the same as getGame().system.id except this gets run before game is initialized
-
-  rqidFlags: {
-    rqid: "rqid",
-    rqidLang: "rqidLang",
-    rqidPriority: "rqidPriority"
-  },
-  
-  actorWizardFlags: {
-    actorWizardComplete: "actor-wizard-complete",
-    selectedSpeciesId: "selected-species-id",
-    selectedHomelandRqid: "selected-homeland-rqid",
-    isActorTemplate: "is-actor-template",
-    wizardChoices: "wizard-choices",
+  rqid: {
+    prefixes: {
+      actor: "a.",
+      item: "i.",
+      journalEntry: "je.",
+      macro: "m.",
+      rollTable: "rt.",
+      scene: "s.",
+    },
+    defaultPriority: 999999,
+    defaultLang: "en",
   },
 };
 
 export type RqgConfig = typeof RQG_CONFIG;
+
+export const systemId = "rqg";

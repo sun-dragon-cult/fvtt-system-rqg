@@ -7,20 +7,17 @@ import { ItemTypeEnum, RqgItemDataSource } from "../data-model/item-data/itemTyp
 import { RuneDataSource } from "../data-model/item-data/runeData";
 import { RuneMagicDataSource } from "../data-model/item-data/runeMagicData";
 import { Ability, ResultEnum, ResultMessage } from "../data-model/shared/ability";
-import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqgItem } from "../items/rqgItem";
-import { Rqid } from "../system/api/rqidApi";
 import {
   activateChatTab,
   assertItemType,
   getActorFromIds,
   getGame,
-  getJournalEntryName,
-  getRequiredDomDataset,
   getSpeakerName,
   localize,
   usersThatOwnActor,
 } from "../system/util";
+import { systemId } from "../system/config";
 
 type ShortRune = {
   name: string;
@@ -62,7 +59,7 @@ export class RuneMagicCard {
     let runesForCasting: RuneDataSource[] = [];
     if (
       runeMagicItem.data.data.runes.includes(
-        getGame().settings.get("rqg", "magicRuneName") as string
+        getGame().settings.get(systemId, "magicRuneName") as string
       )
     ) {
       // Actor can use any of the cult's runes to cast
@@ -200,7 +197,7 @@ export class RuneMagicCard {
 
     let usableRuneNames: string[] = [];
     let runesForCasting: RuneDataSource[] = [];
-    if (runeMagicItem.data.data.runes.includes(getGame().settings.get("rqg", "magicRuneName"))) {
+    if (runeMagicItem.data.data.runes.includes(getGame().settings.get(systemId, "magicRuneName"))) {
       // Actor can use any of the cult's runes to cast
       // And some cults have the same rune more than once, so de-dupe them
       usableRuneNames = [...new Set(cult.data.data.runes)];

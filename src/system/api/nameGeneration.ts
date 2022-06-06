@@ -1,7 +1,8 @@
 import Foswig from "foswig";
-import { RQG_CONFIG } from "../config";
+import { RQG_CONFIG, systemId } from "../config";
 import { getGame, localize } from "../util";
 import { Rqid } from "./rqidApi";
+import { DocumentRqidFlags, documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 
 export class nameGeneration {
   static defaultConstraints = {
@@ -43,11 +44,11 @@ export class nameGeneration {
       return undefined;
     }
 
-    if (rqid.startsWith(RQG_CONFIG.rqidPrefixes.journalEntry)) {
+    if (rqid.startsWith(RQG_CONFIG.rqid.prefixes.journalEntry)) {
       return this.GenerateFromNameBase(rqid, num, constraints);
     }
 
-    if (rqid.startsWith(RQG_CONFIG.rqidPrefixes.rollTable)) {
+    if (rqid.startsWith(RQG_CONFIG.rqid.prefixes.rollTable)) {
       // Generate a name from a Roll Table
       return this.GenerateFromRollTable(rqid, num, constraints);
     }
@@ -69,7 +70,7 @@ export class nameGeneration {
     }
 
     // Generate a name using Foswig
-    const nameBase = await this.GetNameBase(rqid);
+    const nameBase = await this.GetNameBase({ id: rqid });
 
     if (!nameBase) {
       const msg = localize("RQG.Notification.Warn.NameGenRqidNotFound", { rqid: rqid });
@@ -108,21 +109,21 @@ export class nameGeneration {
   }
 
   static async GetNameBases(): Promise<Map<string, NameBase> | undefined> {
-    const worldRqids = getGame().journal?.map((j) => {
-      //@ts-ignore flags.rqg
-      if (j.data.flags?.rqg?.rqid.startsWith("names-")) {
-        //@ts-ignore flags.rqg
-        return j.data.flags?.rqg?.rqid;
+    const worldRqids = getGame().journal!.reduce((acc: DocumentRqidFlags[], j: JournalEntry) => {
+      const rqidFlags = j.getFlag(systemId, documentRqidFlags);
+      if (rqidFlags?.id?.startsWith("names-")) {
+        acc.push(rqidFlags);
       }
-    });
+      return acc;
+    }, []);
 
-    const compendiumRqids: string[] = [];
+    const compendiumRqids: DocumentRqidFlags[] = [];
     for (const pack of getGame().packs) {
       if (pack.documentClass.name === "JournalEntry") {
-        for (const journal of await pack.getDocuments()) {
-          if (journal.data.flags?.rqg?.rqid.startsWith("names-")) {
-            //@ts-ignore flags.rqg
-            compendiumRqids.push(journal.data.flags?.rqg?.rqid);
+        for (const journal of (await pack.getDocuments()) as StoredDocument<JournalEntry>[]) {
+          const rqid = journal.getFlag(systemId, documentRqidFlags);
+          if (rqid?.id?.startsWith("names-")) {
+            compendiumRqids.push(rqid);
           }
         }
       }
@@ -134,24 +135,22 @@ export class nameGeneration {
 
     if (allRqids !== undefined && allRqids.length > 0) {
       const result = new Map<string, NameBase>();
-      allRqids.forEach(async (rqid) => {
+      for (const rqid of allRqids) {
         const nameBase = await this.GetNameBase(rqid);
         if (nameBase !== undefined) {
           result.set(nameBase.rqid, nameBase);
         }
-      });
-
+      }
       return result;
     }
-
     return undefined;
   }
 
-  static async GetNameBase(rqid: string, lang: string = "en"): Promise<NameBase | undefined> {
-    const nameJournal = await Rqid.journalFromRqid(rqid, lang);
+  static async GetNameBase(rqid: DocumentRqidFlags): Promise<NameBase | undefined> {
+    const nameJournal = await Rqid.journalFromRqid(rqid.id, rqid.lang);
 
-    if (nameJournal === undefined) {
-      return undefined;
+    if (!nameJournal) {
+      return;
     }
 
     let names = nameJournal?.data.content;
@@ -159,12 +158,10 @@ export class nameGeneration {
     names = names?.replace("<pre>", "").replace("</pre>", "");
     const nameArray = names?.split("<br />");
 
-    const result = new NameBase({
-      rqid: rqid,
+    return new NameBase({
+      rqid: rqid.id,
       names: nameArray,
     });
-
-    return result;
   }
 
   static async GenerateFromRollTable(
@@ -192,7 +189,7 @@ export class nameGeneration {
     const result: string[] = [];
 
     for (let i = 0; i < numRolls; i++) {
-      //@ts-ignore roll
+      // @ts-expect-error roll
       const tableResult = await nameTable.roll();
       result.push(await this.ResolveTableResult(tableResult, constraints));
     }
@@ -217,9 +214,9 @@ export class nameGeneration {
       const generatedValue = await this.Generate(match[0], 1, constraints);
       if (generatedValue) {
         resultString = resultString.replace(match[0], generatedValue[0]);
-      } 
-      // If it couldn't generate a message, just leave the token. 
-      //Error message will have already been displayed.
+      }
+      // If it couldn't generate a message, just leave the token.
+      // Error message will have already been displayed.
     }
     return resultString.replaceAll("{{", "").replaceAll("}}", "");
   }
@@ -228,6 +225,7 @@ export class nameGeneration {
 class NameBase {
   rqid: string = "";
   names: string[] = [];
+
   public constructor(init?: Partial<NameBase>) {
     Object.assign(this, init);
   }

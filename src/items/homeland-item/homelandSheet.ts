@@ -10,11 +10,11 @@ import {
   findDatasetValueInSelfOrAncestors,
   getDomDataset,
   getGameUser,
-  getJournalEntryNameByJournalEntryLink,
   getRequiredDomDataset,
   localize,
 } from "../../system/util";
-import { RqgItemSheet, RqgItemSheetData, RqidLinkDragEvent } from "../RqgItemSheet";
+import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { systemId } from "../../system/config";
 
 export interface HomelandSheetData extends RqgItemSheetData {
   isEmbedded: boolean; // There might be no reason to actually embed Homeland items!
@@ -29,7 +29,7 @@ export class HomelandSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Homeland],
+      classes: [systemId, "sheet", ItemTypeEnum.Homeland],
       template: "systems/rqg/items/homeland-item/homelandSheet.hbs",
       width: 550,
       height: 850,
@@ -132,8 +132,8 @@ export class HomelandSheet extends RqgItemSheet<
 
       if (targetPropertyName === "regionJournalRqidLink") {
         // update the region portion of the homeland name
-              const regionNameFormatted = droppedDocument.name ? ` (${droppedDocument.name})` : "";
-              const updatedName =thisHomeland.homeland + regionNameFormatted;
+        const regionNameFormatted = droppedDocument.name ? ` (${droppedDocument.name})` : "";
+        const updatedName = thisHomeland.homeland + regionNameFormatted;
         if (this.item.isEmbedded) {
           await this.item.actor?.updateEmbeddedDocuments("Item", [
             {

@@ -3,6 +3,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import { assertItemType, localize, localizeItemType } from "../system/util";
+import { systemId } from "../system/config";
 
 //**Shows a dialog for improving a Passion, Rune, or Skill */
 export async function showImproveAbilityDialog(
@@ -94,7 +95,7 @@ export async function showImproveAbilityDialog(
       buttons: buttons,
     },
     {
-      classes: ["rqg", "dialog"],
+      classes: [systemId, "dialog"],
     }
   ).render(true);
 }

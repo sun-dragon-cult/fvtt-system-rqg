@@ -1,8 +1,7 @@
-import { emptyPrice, IPhysicalItem } from "../../../data-model/item-data/IPhysicalItem";
+import { defaultPriceData, IPhysicalItem } from "../../../data-model/item-data/IPhysicalItem";
 import { hasOwnProperty, localize, RqgError } from "../../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "../../../data-model/item-data/IRqid";
 
 export type LocationNode = IPhysicalItem & {
   // For the grouping of physical items in a tree structure
@@ -13,9 +12,6 @@ export type LocationNode = IPhysicalItem & {
 
 export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNode {
   let locationTree: LocationNode = {
-    rqid: "",
-    rqidPriority: DEFAULT_RQIDPRIORITY,
-    rqidLang: DEFAULT_RQIDLANG,
     name: "",
     id: "",
     description: "",
@@ -28,7 +24,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
     attunedTo: "",
     encumbrance: 0,
     equippedStatus: "notCarried",
-    price: emptyPrice,
+    price: defaultPriceData,
   };
   const physicalItemDatas = itemDatas.filter((i) => hasOwnProperty(i.data, "physicalItemType"));
   let physicalItemNodes: LocationNode[] = physicalItemDatas
@@ -60,9 +56,6 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
         location = "";
       }
       return {
-        rqid: (itemData.data as any).rqid,
-        rqidPriority: (itemData.data as any).rqidPriority,
-        rqidLang: (itemData.data as any).rqidLang,
         name: itemData.name,
         id: itemData._id,
         location: location,
@@ -95,9 +88,6 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
 
   const virtualNodes: LocationNode[] = [...virtualNodesMap].map(([i, node]) => {
     return {
-      rqid: "",
-      rqidPriority: DEFAULT_RQIDPRIORITY,
-      rqidLang: DEFAULT_RQIDLANG,
       name: node.location,
       id: "",
       quantity: 1,
@@ -110,7 +100,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       attunedTo: "",
       encumbrance: 0,
       equippedStatus: "notCarried",
-      price: emptyPrice,
+      price: defaultPriceData,
     };
   });
   locationTree.contains = locationTree.contains.concat(virtualNodes);

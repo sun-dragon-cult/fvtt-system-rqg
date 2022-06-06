@@ -3,4 +3,4 @@ export class Resource {
   max?: number;
 }
 
-export const emptyResource = new Resource();
+export const defaultResource = new Resource();

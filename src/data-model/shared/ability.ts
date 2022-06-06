@@ -1,8 +1,7 @@
 import { activateChatTab, getGame, localize } from "../../system/util";
-import { IRqid } from "../item-data/IRqid";
+import { systemId } from "../../system/config";
 
-export interface IAbility
-    extends IRqid {
+export interface IAbility {
   /** The effective % chance of this ability with all modifiers added in */
   chance?: number;
   /** Is it possible to learn this ability by doing (setting hasExperience=true)? Otherwise the only way to increase the learned chance is by study */
@@ -37,16 +36,16 @@ export class Ability {
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     speakerName: string,
-    resultMessages?: ResultMessage[],
+    resultMessages?: ResultMessage[]
   ): Promise<ResultEnum> {
     const r = new Roll("1d100");
     await r.evaluate({ async: true });
     const modifiedChance: number = chance + chanceMod;
-    const useSpecialCriticals = getGame().settings.get("rqg", "specialCrit");
+    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
     const result = Ability.evaluateResult(modifiedChance, r.total!, useSpecialCriticals);
     let resultMsgHtml: string | undefined = "";
     if (resultMessages) {
-      resultMsgHtml = resultMessages.find(i => i.result === result)?.html;
+      resultMsgHtml = resultMessages.find((i) => i.result === result)?.html;
     }
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";

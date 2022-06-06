@@ -9,13 +9,14 @@ import { DocumentModificationOptions } from "@league-of-foundry-developers/found
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
+import { systemId } from "../system/config";
 
 export class RqgActor extends Actor {
   static init() {
     CONFIG.Actor.documentClass = RqgActor;
 
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("rqg", RqgActorSheet as any, {
+    Actors.registerSheet(systemId, RqgActorSheet as any, {
       label: "Character Sheet",
       types: [ActorTypeEnum.Character],
       makeDefault: true,
@@ -302,7 +303,6 @@ export class RqgActor extends Actor {
   }
 
   public getEmbeddedItemsByRqid(rqid: string): RqgItem[] {
-    let results = this.items.filter(i => i.data.data.rqid === rqid);
-    return results;
+    return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
   }
 }

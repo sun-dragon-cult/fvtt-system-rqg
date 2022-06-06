@@ -40,7 +40,6 @@ type CharacteristicCardFlags = {
 };
 
 export class CharacteristicCard {
-  
   public static async show(
     characteristic: CharacteristicData,
     actor: RqgActor,
@@ -64,12 +63,12 @@ export class CharacteristicCard {
       },
       difficultyOptions: CharacteristicCard.getDifficultyOptions(),
     };
-    
+
     await ChatMessage.create(await CharacteristicCard.renderContent(flags));
-    activateChatTab(); 
+    activateChatTab();
   }
 
-  private static getDifficultyOptions(){
+  private static getDifficultyOptions() {
     return {
       0: localize("RQG.Game.RollDifficulty.0"),
       1: localize("RQG.Game.RollDifficulty.1"),
@@ -77,7 +76,7 @@ export class CharacteristicCard {
       3: localize("RQG.Game.RollDifficulty.3"),
       4: localize("RQG.Game.RollDifficulty.4"),
       5: localize("RQG.Game.RollDifficulty.5"),
-    }
+    };
   }
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
@@ -175,9 +174,14 @@ export class CharacteristicCard {
       tempDifficulty = 0;
     }
     const localizedDifficulty = localize(`RQG.Game.RollDifficulty.${tempDifficulty}`);
-    let flavor = localize("RQG.Dialog.characteristicCard.RollFlavor", {difficulty: localizedDifficulty, name: localizeCharacteristic(characteristicName)});
+    let flavor = localize("RQG.Dialog.characteristicCard.RollFlavor", {
+      difficulty: localizedDifficulty,
+      name: localizeCharacteristic(characteristicName),
+    });
     if (modifier !== 0) {
-      flavor += localize("RQG.Dialog.characteristicCard.RollFlavorModifier", {modifier: modifier});
+      flavor += localize("RQG.Dialog.characteristicCard.RollFlavorModifier", {
+        modifier: modifier,
+      });
     }
     const result = await Ability.roll(
       flavor,
@@ -237,7 +241,10 @@ export class CharacteristicCard {
     let html = await renderTemplate("systems/rqg/chat/characteristicCard.hbs", flags);
     const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     return {
-      flavor: localize("RQG.Dialog.characteristicCard.CardFlavor", {name: localizeCharacteristic(flags.characteristic.name), value: flags.characteristic.data.value}),
+      flavor: localize("RQG.Dialog.characteristicCard.CardFlavor", {
+        name: localizeCharacteristic(flags.characteristic.name),
+        value: flags.characteristic.data.value,
+      }),
       user: getGame().user?.id,
       speaker: { alias: speakerName },
       content: html,

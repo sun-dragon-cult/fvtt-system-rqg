@@ -17,6 +17,7 @@ import {
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { HomelandDataSource } from "../../data-model/item-data/homelandData";
+import { systemId } from "../../system/config";
 
 export interface OccupationSheetData extends RqgItemSheetData {
   isEmbedded: boolean; // There might be no reason to actually embed Occupation items!
@@ -31,7 +32,7 @@ export class OccupationSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Occupation],
+      classes: [systemId, "sheet", ItemTypeEnum.Occupation],
       template: "systems/rqg/items/occupation-item/occupationSheet.hbs",
       width: 550,
       height: 650,
@@ -80,7 +81,7 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    //@ts-ignore name
+    //@ts-ignore id
     if (event?.currentTarget?.id.startsWith("bonus-")) {
       //@ts-ignore dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;

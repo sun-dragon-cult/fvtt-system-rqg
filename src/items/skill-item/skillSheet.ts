@@ -16,6 +16,7 @@ import {
 } from "../../system/util";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
+import { systemId } from "../../system/config";
 
 interface SkillSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -31,11 +32,13 @@ interface SkillSheetData extends RqgItemSheetData {
 export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Skill],
+      classes: [systemId, "sheet", ItemTypeEnum.Skill],
       template: "systems/rqg/items/skill-item/skillSheet.hbs",
       width: 450,
       height: 500,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "skill" }],
+      tabs: [
+        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "skill" },
+      ],
     });
   }
 
@@ -104,6 +107,6 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+    return super._onDrop(event);
   }
 }

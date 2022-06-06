@@ -1,6 +1,6 @@
-import { Attributes, emptyAttributes } from "./attributes";
-import { Characteristics, emptyCharacteristics } from "./characteristics";
-import { Background, emptyBackground } from "./background";
+import { Attributes, defaultAttributes } from "./attributes";
+import { Characteristics, defaultCharacteristics } from "./characteristics";
+import { Background, defaultBackground } from "./background";
 import { SkillCategories } from "./skillCategories";
 
 export enum ActorTypeEnum {
@@ -34,9 +34,9 @@ export type RqgActorDataSource = CharacterDataSource;
 
 export type RqgActorDataProperties = CharacterDataProperties;
 
-export const emptyCharacterData: CharacterDataSourceData = {
-  characteristics: emptyCharacteristics,
-  background: emptyBackground,
+export const defaultCharacterData: CharacterDataSourceData = {
+  characteristics: defaultCharacteristics,
+  background: defaultBackground,
   allies: "",
-  attributes: emptyAttributes, // Needs to be persisted?
+  attributes: defaultAttributes, // Needs to be persisted?
 };

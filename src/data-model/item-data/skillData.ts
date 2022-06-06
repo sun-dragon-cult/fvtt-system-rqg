@@ -1,7 +1,6 @@
 import { IAbility } from "../shared/ability";
-import { RqidLink } from "../shared/rqidLink";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
+import { RqidLink } from "../shared/rqidLink";
 
 export enum SkillCategoryEnum {
   Agility = "agility",
@@ -47,10 +46,7 @@ export interface SkillDataProperties {
   data: SkillDataPropertiesData;
 }
 
-export const emptySkill: SkillDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultSkillData: SkillDataSourceData = {
   descriptionRqidLink: new RqidLink(),
   category: SkillCategoryEnum.Magic,
   skillName: "",

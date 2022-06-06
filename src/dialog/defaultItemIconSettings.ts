@@ -1,5 +1,6 @@
 import { getGame, localize } from "../system/util";
 import Options = FormApplication.Options;
+import { systemId } from "../system/config";
 
 export class DefaultItemIconSettings extends FormApplication {
   constructor(object: any, options?: Partial<Options>) {
@@ -24,13 +25,13 @@ export class DefaultItemIconSettings extends FormApplication {
   }
 
   getData(): any {
-    return getGame().settings.get("rqg", "defaultItemIconSettings");
+    return getGame().settings.get(systemId, "defaultItemIconSettings");
   }
 
   async _updateObject(event: Event, formData?: object): Promise<void> {
     if (formData != null) {
       const data = expandObject(formData);
-      await getGame().settings.set("rqg", "defaultItemIconSettings", data);
+      await getGame().settings.set(systemId, "defaultItemIconSettings", data);
       this.render();
     }
   }

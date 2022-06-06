@@ -10,6 +10,7 @@ import {
   WeaponDataPropertiesData,
 } from "../../data-model/item-data/weaponData";
 import { Weapon } from "../../actors/item-specific/weapon";
+import { systemId } from "../../system/config";
 
 interface WeaponSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -30,11 +31,13 @@ interface WeaponSheetData extends RqgItemSheetData {
 export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Weapon],
+      classes: [systemId, "sheet", ItemTypeEnum.Weapon],
       template: "systems/rqg/items/weapon-item/weaponSheet.hbs",
       width: 960,
       height: 800,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "weapon" }],
+      tabs: [
+        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "weapon" },
+      ],
     });
   }
 

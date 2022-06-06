@@ -1,5 +1,4 @@
 import { RqgActor } from "../actors/rqgActor";
-import { getCombatantsSharingToken } from "../combat/combatant-utils";
 import { Ability } from "../data-model/shared/ability";
 import {
   activateChatTab,
@@ -9,6 +8,7 @@ import {
   localize,
   usersThatOwnActor,
 } from "../system/util";
+import { systemId } from "../system/config";
 
 type ReputationFlags = {
   actorId: string;
@@ -25,7 +25,7 @@ export class ReputationCard {
   public static async show(actor: RqgActor, token: TokenDocument | null): Promise<void> {
     const reputationValue = actor.data.data.background.reputation || 0;
     const iconSettings: any = <ClientSettings>(
-      getGame().settings.get("rqg", "defaultItemIconSettings")
+      getGame().settings.get(systemId, "defaultItemIconSettings")
     );
 
     const flags: ReputationFlags = {
@@ -84,7 +84,7 @@ export class ReputationCard {
   public static async directroll(actor: RqgActor, token: TokenDocument | null): Promise<void> {
     const reputationValue = actor.data.data.background.reputation || 0;
     const iconSettings: any = <ClientSettings>(
-      getGame().settings.get("rqg", "defaultItemIconSettings")
+      getGame().settings.get(systemId, "defaultItemIconSettings")
     );
     const speakerName = getSpeakerName(actor.id, token?.id || "");
     const flags: ReputationFlags = {

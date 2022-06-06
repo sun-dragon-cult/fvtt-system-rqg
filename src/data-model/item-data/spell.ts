@@ -1,5 +1,4 @@
 import { RqidLink } from "../shared/rqidLink";
-import { IRqid } from "./IRqid";
 
 export enum SpellRangeEnum {
   None = "",
@@ -24,7 +23,7 @@ export enum SpellConcentrationEnum {
 }
 
 // Se core book p247
-export interface Spell extends IRqid {
+export interface Spell {
   /** Learned strength */
   points: number;
   castingRange: SpellRangeEnum;

@@ -1,5 +1,6 @@
 import { getGame, localize } from "../system/util";
 import Options = FormApplication.Options;
+import { systemId } from "../system/config";
 
 export class HitLocationSettings extends FormApplication {
   constructor(object: any, options?: Partial<Options>) {
@@ -19,7 +20,7 @@ export class HitLocationSettings extends FormApplication {
   }
 
   getData(): any {
-    return getGame().settings.get("rqg", "hitLocations");
+    return getGame().settings.get(systemId, "hitLocations");
   }
 
   async _updateObject(event: Event, formData?: object): Promise<void> {
@@ -33,7 +34,7 @@ export class HitLocationSettings extends FormApplication {
           ),
         ].sort((a: unknown, b: unknown) => ("" + a).localeCompare("" + b)),
       };
-      await getGame().settings.set("rqg", "hitLocations", data);
+      await getGame().settings.set(systemId, "hitLocations", data);
       this.render();
     }
   }

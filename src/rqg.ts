@@ -5,7 +5,7 @@ import { RqgItem } from "./items/rqgItem";
 import { registerHandlebarsHelpers } from "./system/registerHandlebarsHelpers";
 import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./combat/rqgCombat";
-import { RQG_CONFIG } from "./system/config";
+import { RQG_CONFIG, systemId } from "./system/config";
 import { ChatCardListeners } from "./chat/chatCardListeners";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
@@ -77,7 +77,7 @@ Hooks.once("ready", async () => {
     await migrateWorld();
     // await setupSimpleCalendar();
   }
-  const runeCompendium = getGame().settings.get("rqg", "runesCompendium");
+  const runeCompendium = getGame().settings.get(systemId, "runesCompendium");
   // Make sure the index for runes is preloaded
   try {
     await getGame().packs!.get(runeCompendium)!.getIndex();
