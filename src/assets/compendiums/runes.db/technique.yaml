@@ -1,0 +1,119 @@
+name: Combine (technique)
+type: rune
+img: systems/rqg/assets/images/runes/combine.svg
+data:
+  rune: Combine
+  chance: 0
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - Separate (technique)
+  isMastered: true
+  opposingRune: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.combine-technique
+      lang: en
+      priority: 0
+---
+name: Tap (technique)
+type: rune
+img: systems/rqg/assets/images/runes/tap.svg
+data:
+  rune: Tap
+  chance: 0
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - Combine (technique)
+    - Separate (technique)
+    - Summon (technique)
+    - Dispel (technique)
+  isMastered: true
+  opposingRune: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.tap-technique
+      lang: en
+      priority: 0
+---
+name: Dispel (technique)
+type: rune
+img: systems/rqg/assets/images/runes/dispel.svg
+data:
+  rune: Dispel
+  chance: 0
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - Summon (technique)
+  isMastered: true
+  opposingRune: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.dispel-technique
+      lang: en
+      priority: 0
+---
+name: Separate (technique)
+type: rune
+img: systems/rqg/assets/images/runes/separate.svg
+data:
+  rune: Separate
+  chance: 0
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - Combine (technique)
+  isMastered: true
+  opposingRune: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.separate-technique
+      lang: en
+      priority: 0
+---
+name: Summon (technique)
+type: rune
+img: systems/rqg/assets/images/runes/summon.svg
+data:
+  rune: Summon
+  chance: 0
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - Dispel (technique)
+  isMastered: true
+  opposingRune: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.summon-technique
+      lang: en
+      priority: 0
+---
+name: Command (technique)
+type: rune
+img: systems/rqg/assets/images/runes/command.svg
+data:
+  rune: Command
+  chance: 0
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - Combine (technique)
+    - Separate (technique)
+    - Summon (technique)
+    - Dispel (technique)
+  isMastered: true
+  opposingRune: null
+  flags:
+    rqg:
+      documentRqidFlags:
+        id: i.rune.command-technique
+        lang: en
+        priority: 0

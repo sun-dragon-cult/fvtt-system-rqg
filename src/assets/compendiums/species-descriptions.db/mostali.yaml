@@ -19,3 +19,9 @@ content: >-
 
   <p>The Mostali were the first to discover iron and were the first to learn to work it. They have created many other constructs to aid
   them, from gargoyles and the stone giants called jolanti, to even more exotic constructs like the Alchemical Transformer and the Cannon Cult.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..species-description-mostali-iron
+      lang: en
+      priority: 0

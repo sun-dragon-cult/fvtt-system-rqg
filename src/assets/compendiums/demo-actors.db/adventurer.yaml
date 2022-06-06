@@ -1670,3 +1670,9 @@ items:
       runes: []
       journalId: null
       journalPack: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: actor.character.demo-adventurer
+      lang: en
+      priority: 0

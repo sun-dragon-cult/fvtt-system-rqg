@@ -12,6 +12,12 @@ data:
   runes: []
   journalId: null
   journalPack: null
+flags:
+    rqg:
+      documentRqidFlags:
+        id: i.skill.demo-sword-skill
+        lang: en
+        priority: 0
 ---
 name: Demo Arrows
 type: weapon

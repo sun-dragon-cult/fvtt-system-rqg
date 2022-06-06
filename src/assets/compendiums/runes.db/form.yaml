@@ -1,0 +1,107 @@
+name: Beast (form)
+type: rune
+img: systems/rqg/assets/images/runes/beast.svg
+data:
+  rune: Beast
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: Man (form)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.beast-form
+      lang: en
+      priority: 0
+---
+name: Chaos (form)
+type: rune
+img: systems/rqg/assets/images/runes/chaos.svg
+data:
+  rune: Chaos
+  chance: 0
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.chaos-form
+      lang: en
+      priority: 0
+---
+name: Plant (form)
+type: rune
+img: systems/rqg/assets/images/runes/plant.svg
+data:
+  rune: Plant
+  chance: 0
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.plant-form
+      lang: en
+      priority: 0
+---
+name: Spirit (form)
+type: rune
+img: systems/rqg/assets/images/runes/spirit.svg
+data:
+  rune: Spirit
+  chance: 0
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.spirit-form
+      lang: en
+      priority: 0
+---
+name: Dragonnewt (form)
+type: rune
+img: systems/rqg/assets/images/runes/dragonnewt.svg
+data:
+  rune: Dragonnewt
+  chance: 0
+  hasExperience: false
+  runeType: form
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.dragonnewt-form
+      lang: en
+      priority: 0
+---
+name: Man (form)
+type: rune
+img: systems/rqg/assets/images/runes/man.svg
+data:
+  rune: Man
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: Beast (form)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.man-form
+      lang: en
+      priority: 0

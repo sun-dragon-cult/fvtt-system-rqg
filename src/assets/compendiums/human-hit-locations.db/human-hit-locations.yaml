@@ -1,9 +1,7 @@
 name: Head
 type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  rqid: hit-location-head-human
-  rqidPriority: "0"
-  rqidLang: en
   dieFrom: 19
   dieTo: 20
   baseHpDelta: 0
@@ -13,13 +11,17 @@ data:
   connectedTo: null
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.head-human
+      lang: en
+      priority: 0
 ---
 name: Chest
 type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  rqid: hit-location-chest-human
-  rqidPriority: "0"
-  rqidLang: en
   dieFrom: 12
   dieTo: 12
   baseHpDelta: 1
@@ -29,13 +31,17 @@ data:
   connectedTo: null
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.chest-human
+      lang: en
+      priority: 0
 ---
 name: Abdomen
 type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  rqid: hit-location-abdomen-human
-  rqidPriority: "0"
-  rqidLang: en
   dieFrom: 9
   dieTo: 11
   baseHpDelta: 0
@@ -45,13 +51,17 @@ data:
   connectedTo: null
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.abdomen-human
+      lang: en
+      priority: 0
 ---
 name: Left Arm
 type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  rqid: hit-location-left-arm-human
-  rqidPriority: "0"
-  rqidLang: en
   dieFrom: 16
   dieTo: 18
   baseHpDelta: -1
@@ -61,13 +71,17 @@ data:
   connectedTo: Chest
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.left-arm-human
+      lang: en
+      priority: 0
 ---
 name: Right Arm
 type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  rqid: hit-location-right-arm-human
-  rqidPriority: "0"
-  rqidLang: en
   dieFrom: 13
   dieTo: 15
   baseHpDelta: -1
@@ -77,13 +91,17 @@ data:
   connectedTo: Chest
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.right-arm-human
+      lang: en
+      priority: 0
 ---
 name: Left Leg
 type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  rqid: hit-location-left-leg-human
-  rqidPriority: "0"
-  rqidLang: en
   dieFrom: 5
   dieTo: 8
   baseHpDelta: 0
@@ -93,13 +111,17 @@ data:
   connectedTo: Abdomen
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.left-leg-human
+      lang: en
+      priority: 0
 ---
 name: Right Leg
 type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  rqid: hit-location-right-leg-human
-  rqidPriority: "0"
-  rqidLang: en
   dieFrom: 1
   dieTo: 4
   baseHpDelta: 0
@@ -109,3 +131,9 @@ data:
   connectedTo: Abdomen
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.right-leg-human
+      lang: en
+      priority: 0
