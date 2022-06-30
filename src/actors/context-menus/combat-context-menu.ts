@@ -11,10 +11,11 @@ import {
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { UsageType } from "../../data-model/item-data/weaponData";
 
 export const combatMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | null
+  token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollCard"),
@@ -23,7 +24,7 @@ export const combatMenuOptions = (
     callback: async (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const weaponItemId = getDomDataset(el, "item-id");
-      const usage = getRequiredDomDataset(el, "weapon-roll");
+      const usage = getRequiredDomDataset(el, "weapon-roll") as UsageType;
       if (skillItemId && weaponItemId) {
         await WeaponCard.show(weaponItemId, usage, skillItemId, actor, token);
       } else {

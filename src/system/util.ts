@@ -4,6 +4,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { JournalEntryLink } from "../data-model/shared/journalentrylink";
+import { ChatCardTypes } from "../data-model/shared/rqgDocumentFlags";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
@@ -140,6 +141,20 @@ export function assertActorType<T extends ActorTypeEnum>(
   }
 }
 
+/**
+ * Check if a flags of a chatmessage card has the specified type and narrow the flag data to that type.
+ */
+export function assertChatMessageFlagType<T extends ChatCardTypes>(
+  chatCardType: ChatCardTypes | undefined,
+  type: T
+): asserts chatCardType is T {
+  if (!chatCardType || chatCardType !== type) {
+    const msg = `Got unexpected chat card type in assert, ${chatCardType} ≠ ${type}`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg);
+  }
+}
+
 export function requireValue(val: unknown, errorMessage: string, ...debugData: any): asserts val {
   if (val == null) {
     ui.notifications?.error(errorMessage);
@@ -158,7 +173,54 @@ export function usersThatOwnActor(actor: RqgActor | null): StoredDocument<User>[
 }
 
 /**
+ * Interprets the form parameter string as a string, defaulting to empty string if undefined.
+ * @throws {@link RqgError} if parameter is not a string or null/undefined.
+ */
+export function convertFormValueToString(rawFormValue: FormDataEntryValue | null): string {
+  if (rawFormValue == null) {
+    return "";
+  }
+  if (typeof rawFormValue !== "string") {
+    const msg = "Programming error: user cleanIntegerString with a non string argument";
+    ui.notifications?.error(msg);
+    throw new RqgError(msg, rawFormValue);
+  }
+  return rawFormValue;
+}
+
+/**
+ * Interprets the parameter string as a possibly negative integer number.
+ * @throws {@link RqgError} if parameter is not a string or null/undefined.
+ */
+export function convertFormValueToInteger(
+  rawFormValue: FormDataEntryValue,
+  defaultValue: number = 0
+): number {
+  const formValue = Number(cleanIntegerString(rawFormValue));
+  return Number.isFinite(formValue) ? formValue : defaultValue;
+}
+
+/**
+ * Removes any characters that are not possible in a potentially negative integer
+ * @throws {@link RqgError} if parameter is not a string or null/undefined.
+ */
+export function cleanIntegerString(value: FormDataEntryValue | null): string {
+  if (value == null) {
+    return "";
+  }
+  if (typeof value !== "string") {
+    const msg = "Programming error: user cleanIntegerString with a non string argument";
+    ui.notifications?.error(msg);
+    throw new RqgError(msg, value);
+  }
+
+  const nonIntegerRegEx = /(?!^[+-])[^0-9]/g;
+  return value.replaceAll(nonIntegerRegEx, "");
+}
+
+/**
  * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
+ * @deprecated use uuid instead
  */
 export function getActorFromIds(actorId: string | null, tokenId: string | null): RqgActor | null {
   // @ts-ignore for foundry 9
@@ -170,18 +232,22 @@ export function getActorFromIds(actorId: string | null, tokenId: string | null):
   return token ? token.document.getActor() : actor;
 }
 
-export function getSpeakerName(actorId: string | null, tokenId: string | null): string {
-  // @ts-ignore for foundry 9
-  const token = canvas.layers
-    .find((l) => l.name === "TokenLayer")
-    // @ts-ignore for foundry 9
-    ?.ownedTokens.find((t: Token) => t.id === tokenId);
-  if (token) {
-    return token.name;
-  }
+// A convenience getter that calls fromUuid and types the Document to what is requested.
+export async function getDocumentFromUuid<T>(
+  documentUuid: string | undefined
+): Promise<T | undefined> {
+  return documentUuid ? ((await fromUuid(documentUuid)) as T | null) ?? undefined : undefined;
+}
 
-  const actor = actorId ? getGame().actors?.get(actorId) : null;
-  return actor?.data.token.name ?? ""; // TODO What to do if token name is undefined
+// A convenience getter that calls fromUuid and trows error if no result.
+export async function getRequiredDocumentFromUuid<T>(documentUuid: string | undefined): Promise<T> {
+  const document = await getDocumentFromUuid<T>(documentUuid);
+  if (!document) {
+    const msg = "TODO FIXME some text about no actor found!!!!";
+    console.warn(msg);
+    throw new RqgError(msg, documentUuid);
+  }
+  return document;
 }
 
 export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Metadata> {
@@ -251,11 +317,14 @@ export function uuid2Name(uuid: string | undefined): string | null {
   return name || null;
 }
 
+/**
+ * An system specific Error that can encapsulate extra debugging information (in `debugData`)
+ */
 export class RqgError implements Error {
   public name: string = "RqgError";
   public debugData: any[];
   constructor(public message: string, ...debugData: any[]) {
-    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    // Maintains proper stack trace for where our error was thrown.
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, RqgError);
     }

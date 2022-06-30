@@ -1,12 +1,11 @@
+{{log this}}
 <form class="card-form" data-chat-card="runeMagicCard">
   <div class="rqg chat-card rune-magic-card">
 
-    <h1><img class="item" src="{{itemData.img}}" />
-      {{itemData.name}}
-      {{#each itemData.data.runes}}
-      <img class="rune-dark" src="{{runeImg this}}" title="{{this}}" />
-      {{/each}}
-    </h1>
+    <h2>
+      <img class="item" src="{{card.chatImage}}" />
+      {{cardHeading}}
+    </h2>
 
     <div class="spell-descriptors">
 
@@ -16,7 +15,7 @@
     </div>
 
     {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-        rqidLink=itemData.data.descriptionRqidLink
+        rqidLink=descriptionRqidLink
     }}
 
     <div class="flexcol card-options">
@@ -26,15 +25,16 @@
         </div>
         <div class="card-option-control">
           {{#each eligibleRunes}}
-          <div>
-            <label><input type="radio" id="select-rune-{{this._id}}" name="selectedRuneId" value="{{this._id}}" {{#if (eq
-              this._id ../formData.selectedRuneId)}}checked="true" {{/if}}>
-            <img class="rune" src="{{runeImg this.name}}" title="{{this.name}}"> {{this.name}}
-            <span {{#if this.data.hasExperience}}class="experienced" title="{{localize "RQG.Dialog.runeMagicCard.RuneHasExperienceTitle"}}" {{/if}}>
-              {{this.data.chance}}%
-            </span>
-            </input></label>
-          </div>
+            <label class="nowrap rune-option">
+              <input type="radio" id="select-rune-{{this._id}}" name="selectedRuneId" value="{{this.id}}" {{#if (eq
+              this.id ../formData.selectedRuneId)}}checked{{/if}}>
+
+              <span title="{{this.name}}"><img class="rune" src="{{runeImg this.name}}"> {{this.data.data.rune}}</span>
+
+              <span {{#if this.data.data.hasExperience}}class="experienced" title="{{localize "RQG.Dialog.runeMagicCard.RuneHasExperienceTitle"}}"{{/if}}>
+                {{this.data.data.chance}}%
+              </span>
+            </label>
           {{/each}}
         </div>
       </div>
@@ -45,12 +45,12 @@
         <div class="card-option-control">
           {{!-- TODO: Rune Magic Spells should have a minimum Rune Point Cost and possibly an optional maximum.
                 https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/142
-                
+
                 put this back in: {{#unless itemData.data.isStackable}}readonly="readonly" title="Not Stackable"
             {{/unless}} --}}
-          <input class="card-number-input{{#if itemData.data.isOneUse}} warning{{/if}}" type="number" min="1" max="999" value="{{formData.runePointCost}}"
+          <input class="card-number-input{{#if isOneUse}} warning{{/if}}" type="text" value="{{formData.runePointCost}}"
             name="runePointCost"  />
-            {{#if itemData.data.isOneUse}}<span title="{{localize "RQG.Dialog.runeMagicCard.OneUseWarningTip"}}">{{localize "RQG.Dialog.runeMagicCard.OneUseWarning"}}</span>{{/if}}
+            {{#if isOneUse}}<span title="{{localize "RQG.Dialog.runeMagicCard.OneUseWarningTip"}}">{{localize "RQG.Dialog.runeMagicCard.OneUseWarning"}}</span>{{/if}}
         </div>
       </div>
       <div class="flexrow card-option">
@@ -58,7 +58,7 @@
           <label for="magicPointBoost">{{localize "RQG.Dialog.runeMagicCard.MagicPointBoost"}}</label>
         </div>
         <div class="card-option-control">
-          <input class="card-number-input" type="number" min="0" max="999" value="{{formData.magicPointBoost}}" name="magicPointBoost" />
+          <input class="card-number-input" type="text" value="{{formData.magicPointBoost}}" name="magicPointBoost" />
         </div>
       </div>
 
@@ -68,37 +68,37 @@
 
       <div class="flexcol card-option">
         <div class="card-option-label">
-          <label for="ritualOrMeditation">{{localize "RQG.Dialog.runeMagicCard.MeditationOrRitual"}}</label>
+          <label>{{localize "RQG.Dialog.runeMagicCard.MeditationOrRitual"}}</label>
         </div>
         <div class="card-option-control">
           <select name="ritualOrMeditation" class="chat-select-wide">
-            {{selectOptions formData.ritualOrMeditationOptions selected=formData.ritualOrMeditation}}
+            {{selectOptions ritualOrMeditationOptions selected=formData.ritualOrMeditation}}
           </select>
         </div>
       </div>
 
       <div class="flexcol card-option">
         <div class="card-option-label">
-          <label for="skillAugmentation">{{localize "RQG.Dialog.runeMagicCard.SkillAugmentation"}}</label>
+          <label>{{localize "RQG.Dialog.runeMagicCard.SkillAugmentation"}}</label>
         </div>
         <div class="card-option-control">
           <select name="skillAugmentation" class="chat-select-wide">
-            {{selectOptions formData.skillAugmentationOptions selected=formData.skillAugmentation}}
+            {{selectOptions skillAugmentationOptions selected=formData.skillAugmentation}}
           </select>
         </div>
       </div>
 
       <div class="flexrow card-option">
         <div class="card-option-label">
-          <label for="otherModifiers">{{localize "RQG.Dialog.Common.OtherModifiers"}}</label>
+          <label>{{localize "RQG.Dialog.Common.OtherModifiers"}}</label>
         </div>
         <div class="card-option-control">
-          <input class="card-number-input" type="number" min="-999" max="999" value="{{formData.otherModifiers}}" name="otherModifiers" />
+          <input class="card-number-input" type="text" min="-999" max="999" value="{{formData.otherModifiers}}" name="otherModifiers" />
         </div>
       </div>
 
     </div>
   </div>
 
-  <button type="submit" data-chat-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=formData.chance}}</button>
+  <button type="submit" data-chat-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=chance}}</button>
 </form>

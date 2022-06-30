@@ -2,7 +2,12 @@ import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
-import { assertItemType, localize, localizeItemType } from "../system/util";
+import {
+  assertItemType,
+  convertFormValueToString,
+  localize,
+  localizeItemType,
+} from "../system/util";
 
 //**Shows a dialog for improving a Passion, Rune, or Skill */
 export async function showImproveAbilityDialog(
@@ -122,9 +127,7 @@ export async function submitImproveAbilityDialog(
   const abilityData = item.data.data;
 
   const formData = new FormData(html.find("form")[0]);
-  // @ts-ignore entries
-  const data = Object.fromEntries(formData.entries());
-  const gaintype: string = data.experiencegaintype;
+  const gaintype = convertFormValueToString(formData.get("experiencegaintype"));
   let gain: number = 0;
 
   if (gaintype === "experience-gain-fixed" || gaintype === "experience-gain-random") {
@@ -135,7 +138,7 @@ export async function submitImproveAbilityDialog(
         name: adapter.name,
         typeLocName: adapter.typeLocName,
       });
-      let rollContent = "";
+      let rollContent;
       if (adapter.isSkill) {
         rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentSkill", {
           mod: categoryMod,

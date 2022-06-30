@@ -5,7 +5,6 @@ import {
   activateChatTab,
   assertItemType,
   findDatasetValueInSelfOrAncestors,
-  getDomDataset,
   getGame,
   getRequiredDomDataset,
   localize,
@@ -20,7 +19,7 @@ import { Rqid } from "../../system/api/rqidApi";
 
 export const runeMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | null
+  token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollCard"),
@@ -41,8 +40,12 @@ export const runeMenuOptions = (
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Rune);
       const itemChance = item.data.data.chance;
-      const speakerName = token?.name ?? actor.data.token.name ?? "";
-      await Ability.roll(item.name ?? "", itemChance, 0, speakerName);
+      await Ability.roll(
+        item.name ?? "",
+        itemChance,
+        0,
+        ChatMessage.getSpeaker({ actor: actor, token: token })
+      );
     },
   },
   {
@@ -57,7 +60,9 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ImproveItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
+    name: localize("RQG.ContextMenu.ImproveItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune),
+    }),
     icon: ContextMenuRunes.Improve,
     condition: () => true,
     callback: (el: JQuery) => {
@@ -73,7 +78,7 @@ export const runeMenuOptions = (
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeRqid");
-      return rqid ? true : false;
+      return !!rqid;
     },
     callback: async (el: JQuery) => {
       const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeRqid");
@@ -83,7 +88,9 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
+    name: localize("RQG.ContextMenu.EditItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune),
+    }),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -91,7 +98,10 @@ export const runeMenuOptions = (
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Rune);
       if (!item.sheet) {
-        const msg = localize("RQG.ContextMenu.Notification.CantEditRuneError", {itemId: itemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantEditRuneError", {
+          itemId: itemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
@@ -99,7 +109,9 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune)}),
+    name: localize("RQG.ContextMenu.DeleteItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Rune),
+    }),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {

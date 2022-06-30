@@ -3,12 +3,12 @@ import { ItemCard } from "./itemCard";
 import { WeaponCard } from "./weaponCard";
 import { SpiritMagicCard } from "./spiritMagicCard";
 import { ReputationCard } from "./reputationCard";
-import { getDomDataset, getRequiredDomDataset, localize, RqgError } from "../system/util";
+import { getDomDataset, RqgError } from "../system/util";
 import { RuneMagicCard } from "./runeMagicCard";
-import { Rqid } from "../system/api/rqidApi";
 import { RqidLink } from "../data-model/shared/rqidLink";
 
 export class ChatCardListeners {
+  // TODO Move ChatCardListeners to RqgChatMessage and merge card naming with {@link ChatCardTypes}
   private static card = {
     characteristicCard: CharacteristicCard,
     itemCard: ItemCard,
@@ -31,7 +31,7 @@ export class ChatCardListeners {
       }
     });
     Hooks.on("renderChatMessage", (chatItem, html) => {
-      RqidLink.addRqidLinkClickHandlers(html);
+      RqidLink.addRqidLinkClickHandlers(html); // TODO this might not work if rqid points to compendium (async)
     });
   }
 

@@ -401,11 +401,9 @@
         "btnConfirm": "Confirm",
         "OtherModifiers": "Other Modifiers:",
         "RollFormat": "Roll ({chance}%)",
-        "CantFindChatMessageError": "CantFindChatMessageError",
-        "CantFindActorToDoRollFromChatCardWarn": "Can't find actor to do a roll from this chat card!"
+        "CantFindChatMessageError": "CantFindChatMessageError"
       },
       "characteristicCard": {
-        "CardWithoutActorIdError": "Called show characteristic Card with actor without id",
         "CardFlavor": "Characteristic: {name} ({value})",
         "RollFlavor": "{difficulty} {name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"
@@ -433,7 +431,6 @@
         "Reputation": "Reputation"
       },
       "spiritMagicCard": {
-        "CardWithoutActorIdError": "Called show spirit magic Card with actor without id",
         "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
         "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
         "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points.",
@@ -541,7 +538,6 @@
         "SkillAugmentationValue20": "Success, +20%",
         "SkillAugmentationValue-20": "Failure, -20%",
         "SkillAugmentationValue-50": "Fumble, -50%",
-        "getActorFromIdsWarning": "Couldn't get actor from actor id or token id.",
         "noSelectedRuneWarning": "Attempt to roll a Rune Magic Spell with no Rune selected on the card.",
         "resultMessageCritical": "The spell takes effect and costs no Rune Points and {magicPointBoost} Magic Points from boosting.",
         "resultMessageSpecial": "The spell takes effect and costs {runePointCost} Rune Points and {magicPointBoost} Magic Points from boosting.",
@@ -564,11 +560,9 @@
         "fumbleRoll": "Roll Fumble",
         "hitLocationRoll": "Roll Hit location",
         "Modifier": "Modifier",
-        "CantFindSkillError": "Can't find skill with itemId [{skillId}] on actor {actorName} to show a weapon chat card.",
         "CantFindActorWarn": "Can't find world actor to do action",
         "UsedLastOfAmmoWarn": "You just used the last of your {projectileName}!",
         "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
-        "CantFindChatMessageError": "Can't find chat message",
         "HitLocationRollFlavor": "Hit Location Roll",
         "UnknownButtonInCardError": "Unknown button \"{actionButton}\" in weapon chat card",
         "WeaponCardFlavor": "Weapon: {weaponName}",
@@ -754,8 +748,7 @@
         "CantCreateActiveEffect": "Can't create Active Effect",
         "NoIdOnTokenError": "No ID on Token",
         "NoIdOnActorError": "No ID on Actor",
-        "ItemWithIdDoesNotHaveChanceError": "Can't find an item with ID {itemId} on actor named {actorName} to show item chat card.",
-        "CouldNotFindActorByIdsWarn": "Could not find actor by actor ID {actorId} or tokenID {tokenId} to do ability roll.",
+        "ItemWithIdDoesNotHaveChanceError": "Can't find an item that has a chance and ID {itemId} on actor named {actorName} to show item chat card.",
         "CanOnlyDropJournalEntryWarning": "You can only drop a Journal Entry onto a {itemType} Sheet",
         "CanOnlyDropJournalEntryOnThisTargetWarning": "You can only drop a Journal Entry onto the {target} Journal target.",
         "PleaseDropOnTarget": "You can't drop that here.  Look for an appropriate target.",

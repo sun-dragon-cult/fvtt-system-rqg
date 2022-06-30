@@ -3,11 +3,16 @@ import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import {
   activateChatTab,
+  assertActorType,
+  assertChatMessageFlagType,
   assertItemType,
-  getActorFromIds,
+  cleanIntegerString,
+  convertFormValueToInteger,
+  convertFormValueToString,
+  getDocumentFromUuid,
   getGame,
   getGameUser,
-  getSpeakerName,
+  getRequiredDocumentFromUuid,
   hasOwnProperty,
   localize,
   logMisconfiguration,
@@ -16,28 +21,15 @@ import {
   RqgError,
   usersThatOwnActor,
 } from "../system/util";
-import { DeepPartial } from "snowpack";
-import {
-  ItemDataProperties,
-  ItemDataSource,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
-import { CombatManeuver, DamageType, Usage } from "../data-model/item-data/weaponData";
 
-type WeaponCardFlags = {
-  actorId: string;
-  tokenId: string | null;
-  skillItemData: ItemDataProperties;
-  weaponItemData: ItemDataProperties;
-  usage: string; // oneHand | twoHand | offhand | missile
-  result: ResultEnum | undefined;
-  specialDamageTypeText: string | undefined;
-  formData: {
-    modifier: number | null; // Null is a placeholder instead of 0 to keep modifier in the object
-    chance: number;
-    combatManeuver: string | undefined;
-  };
-};
+import { DeepPartial } from "snowpack";
+import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { CombatManeuver, DamageType, UsageType } from "../data-model/item-data/weaponData";
+import { WeaponCardFlags } from "../data-model/shared/rqgDocumentFlags";
+import { RqgItem } from "../items/rqgItem";
+import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 
 enum DamageRollTypeEnum {
   Normal = "normal",
@@ -45,37 +37,35 @@ enum DamageRollTypeEnum {
   MaxSpecial = "maxSpecial",
 }
 
-export class WeaponCard extends ChatMessage {
-  // TODO Should it extend ChatMessage?
+export class WeaponCard {
   public static async show(
     weaponId: string,
-    usage: string,
+    usage: UsageType,
     skillId: string,
     actor: RqgActor,
-    token: TokenDocument | null
+    token: TokenDocument | undefined
   ): Promise<void> {
     requireValue(actor.id, "No id on actor");
     const skillItem = actor.items.get(skillId);
-    if (!skillItem || skillItem.data.type !== ItemTypeEnum.Skill) {
-      const msg = localize("RQG.Dialog.weaponCard.CantFindSkillError", {skillId: skillItem, actorName: actor.name});
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
-    }
+    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
     const weaponItem = actor.items.get(weaponId);
     assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
 
     const flags: WeaponCardFlags = {
-      actorId: actor.id,
-      tokenId: token?.id ?? null,
-      skillItemData: skillItem.data.toObject(false) as unknown as ItemDataProperties,
-      weaponItemData: weaponItem.data.toObject(false) as unknown as ItemDataProperties,
-      usage: usage,
-      specialDamageTypeText: undefined,
-      result: undefined,
+      type: "weapon",
+      card: {
+        actorUuid: actor.uuid,
+        tokenUuid: token?.uuid,
+        chatImage: weaponItem.img ?? undefined,
+        skillUuid: skillItem.uuid,
+        weaponUuid: weaponItem.uuid,
+        usage: usage,
+        specialDamageTypeText: undefined,
+        result: undefined,
+      },
       formData: {
-        modifier: null,
-        chance: skillItem.data.data.chance || 0,
-        combatManeuver: undefined,
+        otherModifiers: "",
+        combatManeuverName: "",
       },
     };
 
@@ -83,44 +73,43 @@ export class WeaponCard extends ChatMessage {
     activateChatTab();
   }
 
-  public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
+  public static async inputChangeHandler(ev: JQueryEventObject, messageId: string): Promise<void> {
     const chatMessage = getGame().messages?.get(messageId);
-    const flags = chatMessage?.data.flags.rqg as WeaponCardFlags;
-    const form = (ev.target as HTMLElement).closest("form") as HTMLFormElement;
-    const formData = new FormData(form);
-    // @ts-ignore formData.entries
-    for (const [name, value] of formData.entries()) {
-      if (name in flags.formData) {
-        // @ts-ignore number/string mismatch
-        flags.formData[name as keyof typeof flags.formData] = value;
-      }
-    }
-    const chance: number =
-      (hasOwnProperty(flags.skillItemData.data, "chance") &&
-        Number(flags.skillItemData.data.chance)) ||
-      0;
-    const modifier: number = Number(flags.formData.modifier) || 0;
-    flags.formData.chance = WeaponCard.calcRollChance(chance, modifier);
+    requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
+
+    const flags = chatMessage?.data.flags.rqg;
+    assertChatMessageFlagType(flags?.type, "weapon");
+    WeaponCard.updateFlagsFromForm(flags, ev);
 
     const data = await WeaponCard.renderContent(flags);
-    if (!chatMessage || !data || !flags.formData.modifier) {
-      return; // Not ready to update chatmessages
-    }
-    const domChatMessages = document.querySelectorAll(`[data-message-id="${chatMessage.id}"]`);
+    const domChatMessages = document.querySelectorAll<HTMLElement>(
+      `[data-message-id="${chatMessage.id}"]`
+    );
     const domChatMessage = Array.from(domChatMessages).find((m) =>
       m.contains(ev.currentTarget as Node)
     );
     const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
     await chatMessage.update(data); // Rerenders the dom chatmessages
 
-    const newDomChatMessages = document.querySelectorAll(`[data-message-id="${chatMessage.id}"]`);
+    const newDomChatMessages = document.querySelectorAll<HTMLElement>(
+      `[data-message-id="${chatMessage.id}"]`
+    );
     const newDomChatMessage = Array.from(newDomChatMessages).find(
       (m) => !!m.closest(".chat-popout") === isFromPopoutChat
     );
-    const inputElement = newDomChatMessage?.querySelector("input");
-    inputElement && moveCursorToEnd(inputElement);
+
+    // Find the input element that inititated the change and move the cursor there.
+    const inputElement = ev.target;
+    if (inputElement instanceof HTMLInputElement && inputElement.type === "text") {
+      const elementName = inputElement?.name;
+      const newInputElement = newDomChatMessage?.querySelector<HTMLInputElement>(
+        `[name=${elementName}]`
+      );
+      newInputElement && moveCursorToEnd(newInputElement);
+    }
+
     // @ts-ignore is marked as private!?
-    ui.chat?.scrollBottom(); // Fix that he weapon card gets bigger and pushes the rest of the chatlog down
+    ui.chat?.scrollBottom(); // Fix that the weapon card gets bigger and pushes the rest of the chatlog down
   }
 
   public static async formSubmitHandler(
@@ -129,70 +118,69 @@ export class WeaponCard extends ChatMessage {
   ): Promise<boolean> {
     ev.preventDefault();
 
-    // @ts-ignore submitter
-    const actionButton = ev.originalEvent.submitter as HTMLButtonElement;
+    const actionButton = (ev.originalEvent as SubmitEvent).submitter as HTMLButtonElement;
     actionButton.disabled = true;
     setTimeout(() => (actionButton.disabled = false), 1000); // Prevent double clicks
 
     const chatMessage = getGame().messages?.get(messageId);
-    const flags = chatMessage?.data.flags.rqg as WeaponCardFlags;
+    requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
 
-    const formData = new FormData(ev.target as HTMLFormElement);
-    // @ts-ignore formData.entries
-    for (const [name, value] of formData.entries()) {
-      if (name in flags.formData) {
-        // @ts-ignore number/string mismatch
-        flags.formData[name as keyof typeof flags.formData] = value;
-      }
-    }
-    const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    if (!actor) {
-      ui.notifications?.warn(localize("RQG.Dialog.weaponCard.CantFindActorWarn"));
-      return false;
-    }
+    const flags = chatMessage.data.flags.rqg;
+    assertChatMessageFlagType(flags?.type, "weapon");
+
+    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    const weaponItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.weaponUuid);
+    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
+
+    await WeaponCard.updateFlagsFromForm(flags, ev);
+    const { combatManeuverName, otherModifiers } = await WeaponCard.getFormDataFromFlags(flags);
+
+    // const weaponItemData = weaponItem.data;
+
+    // const {combatManeuver, otherModifiers} = await WeaponCard.getFormDataFromFlags()
 
     switch (actionButton.name) {
-      case "combatManeuver":
-        flags.formData.combatManeuver = (ev as any).originalEvent.submitter.value;
+      case "combatManeuverName":
+        flags.formData.combatManeuverName = combatManeuverName;
 
-        const weaponUsage: Usage = (flags.weaponItemData.data as any).usage[flags.usage];
+        const weaponUsage = weaponItem.data.data.usage[flags.card.usage];
         const combatManeuver = weaponUsage.combatManeuvers.find(
-          (m) => m.name === flags.formData.combatManeuver
+          (m) => m.name === combatManeuverName
         );
         const damageType = combatManeuver?.damageType;
         const specialDamageTypeDescription =
           damageType === "special" ? combatManeuver?.description || undefined : undefined;
 
-        flags.specialDamageTypeText =
+        flags.card.specialDamageTypeText =
           specialDamageTypeDescription ??
           CONFIG.RQG.combatManeuvers.get(combatManeuver?.name ?? "")?.specialDescriptionHtml;
 
         const projectileItemData =
-          hasOwnProperty(flags.weaponItemData.data, "isProjectileWeapon") &&
-          flags.weaponItemData.data.isProjectileWeapon
-            ? actor.items.get(flags.weaponItemData.data.projectileId)?.data
-            : flags.weaponItemData; // Thrown (or melee)
+          hasOwnProperty(weaponItem.data.data, "isProjectileWeapon") &&
+          weaponItem.data.data.isProjectileWeapon
+            ? actor.items.get(weaponItem.data.data.projectileId)?.data
+            : weaponItem.data; // Thrown (or melee)
 
-        let originalAmmoQty: number = 0;    
+        let originalAmmoQty: number = 0;
 
         // Decrease quantity of linked projectile if shooting
         if (
           projectileItemData?.type === ItemTypeEnum.Weapon &&
           projectileItemData.data.quantity &&
           projectileItemData.data.quantity > 0 &&
-          flags.usage === "missile" &&
+          flags.card.usage === "missile" &&
           !["parry", "special"].includes(damageType ?? "")
         ) {
           originalAmmoQty = projectileItemData.data.quantity;
           const updateData: DeepPartial<ItemDataSource> = {
             _id: projectileItemData._id,
-            // TODO Update chatcard data as well !!!!! ***************
             data: { quantity: --projectileItemData.data.quantity },
           };
           await actor.updateEmbeddedDocuments("Item", [updateData]);
         }
 
-        if (flags.usage === "missile" && !projectileItemData) {
+        if (flags.card.usage === "missile" && !projectileItemData) {
           ui.notifications?.warn("Out of ammo!");
           return false;
         }
@@ -204,72 +192,99 @@ export class WeaponCard extends ChatMessage {
           projectileItemData.data.quantity <= 0
         ) {
           if (originalAmmoQty > 0) {
-            ui.notifications?.warn(localize("RQG.Dialog.weaponCard.UsedLastOfAmmoWarn", {projectileName: projectileItemData.name}));
+            ui.notifications?.warn(
+              localize("RQG.Dialog.weaponCard.UsedLastOfAmmoWarn", {
+                projectileName: projectileItemData.name,
+              })
+            );
           } else {
-            ui.notifications?.warn(localize("RQG.Dialog.weaponCard.OutOfAmmoWarn", {projectileName: projectileItemData.name, combatManeuverName: combatManeuver?.name}));
+            ui.notifications?.warn(
+              localize("RQG.Dialog.weaponCard.OutOfAmmoWarn", {
+                projectileName: projectileItemData.name,
+                combatManeuverName: combatManeuver?.name,
+              })
+            );
             return false;
           }
         }
 
-        if (!chatMessage) {
-          const msg = localize("RQG.Dialog.weaponCard.CantFindChatMessageError");
-          ui.notifications?.error(msg);
-          throw new RqgError(msg);
-        }
-        await WeaponCard.roll(flags, chatMessage);
+        await WeaponCard.roll(
+          weaponItem,
+          flags.card.usage,
+          actor,
+          otherModifiers,
+          ChatMessage.getSpeaker({ actor: actor, token: token }),
+          chatMessage
+        );
         return false;
 
       case "damageRoll":
-        // @ts-ignore submitter
-        const damageRollType: DamageRollTypeEnum = ev.originalEvent.submitter.value;
-        await WeaponCard.damageRoll(flags, damageRollType);
+        const damageRollType = ((ev.originalEvent as SubmitEvent).submitter as HTMLButtonElement)
+          .value as DamageRollTypeEnum | undefined;
+        requireValue(damageRollType, "No damageRollType in event");
+        const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
+        await WeaponCard.damageRoll(
+          actor,
+          weaponItem,
+          flags.card.usage,
+          combatManeuverName,
+          damageRollType,
+          speaker
+        );
         return false;
 
       case "hitLocationRoll":
         const roll = new Roll("1d20");
         await roll.evaluate({ async: true });
-        const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
         await roll.toMessage({
-          speaker: { alias: speakerName },
+          speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
           type: CONST.CHAT_MESSAGE_TYPES.ROLL,
           flavor: localize("RQG.Dialog.weaponCard.HitLocationRollFlavor"),
         });
         return false;
 
       case "fumble":
-        await WeaponCard.fumbleRoll(flags);
+        await WeaponCard.fumbleRoll(actor, ChatMessage.getSpeaker({ actor: actor, token: token }));
         return false;
 
       default:
-        const msg = localize("RQG.Dialog.weaponCard.UnknownButtonInCardError", {actionButton: actionButton});
+        const msg = localize("RQG.Dialog.weaponCard.UnknownButtonInCardError", {
+          actionButton: actionButton,
+        });
         ui.notifications?.error(msg);
-        throw new RqgError(msg);
+        throw new RqgError(msg, actionButton);
     }
   }
 
-  public static async roll(flags: WeaponCardFlags, chatMessage: ChatMessage) {
-    const modifier: number = Number(flags.formData.modifier) || 0;
-    const chance: number =
-      (hasOwnProperty(flags.skillItemData.data, "chance") &&
-        Number(flags.skillItemData.data.chance)) ||
-      0;
-    const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    if (actor) {
-      const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
-      const skillSpecialization = (flags.skillItemData.data as any).specialization
-        ? ` (${(flags.skillItemData.data as any).specialization})`
-        : "";
-      const skillName = (flags.skillItemData.data as any).skillName + skillSpecialization;
-      flags.result = await Ability.roll(
-        flags.skillItemData.name + " " + flags.formData.combatManeuver,
-        chance,
-        modifier,
-        speakerName
-      );
-      await WeaponCard.checkExperience(actor, flags.skillItemData, flags.result);
-    } else {
-      ui.notifications?.warn("Couldn't find world actor to do weapon roll");
-    }
+  public static async roll(
+    weaponItem: RqgItem,
+    usage: UsageType,
+    actor: RqgActor,
+    otherModifiers: number,
+    speaker: ChatSpeakerDataProperties,
+    chatMessage: ChatMessage // TODO how to get rid of this???
+  ) {
+    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
+    assertActorType(actor?.data.type, ActorTypeEnum.Character);
+
+    const skillItem = actor.getEmbeddedDocument(
+      "Item",
+      weaponItem.data.data.usage[usage].skillId
+    ) as RqgItem | undefined;
+    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
+
+    const chance: number = Number(skillItem.data.data.chance) || 0;
+
+    const flags = chatMessage.data.flags.rqg;
+    assertChatMessageFlagType(flags?.type, "weapon");
+
+    flags.card.result = await Ability.roll(
+      skillItem.name + " " + flags.formData.combatManeuverName,
+      chance,
+      otherModifiers,
+      speaker
+    );
+    await WeaponCard.checkExperience(actor, skillItem, flags.card.result);
 
     const data = await WeaponCard.renderContent(flags);
     await chatMessage.update(data);
@@ -277,24 +292,46 @@ export class WeaponCard extends ChatMessage {
 
   public static async checkExperience(
     actor: RqgActor,
-    skillItemData: ItemDataProperties,
+    skillItem: RqgItem,
     result: ResultEnum
   ): Promise<void> {
-    assertItemType(skillItemData.type, ItemTypeEnum.Skill);
+    assertItemType(skillItem.data.type, ItemTypeEnum.Skill);
     if (result <= ResultEnum.Success) {
-      actor.AwardExperience(skillItemData._id);
+      actor.AwardExperience(skillItem.id);
     }
   }
 
   private static async renderContent(flags: WeaponCardFlags): Promise<object> {
-    let html = await renderTemplate("systems/rqg/chat/weaponCard.hbs", flags);
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    const skillItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.skillUuid);
+    const weaponItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.weaponUuid);
+    assertItemType(skillItem.data.type, ItemTypeEnum.Skill);
+
+    const specialization = skillItem.data.data.specialization
+      ? ` (${skillItem.data.data.specialization})`
+      : "";
+    const cardHeading = localize("RQG.Dialog.weaponCard.WeaponCardFlavor", {
+      weaponName: weaponItem.name,
+    });
+
+    const { otherModifiers } = await WeaponCard.getFormDataFromFlags(flags);
+
+    const templateData = {
+      ...flags,
+      skillItemData: skillItem.data.data,
+      weaponItemData: weaponItem.data.data,
+      cardHeading: cardHeading,
+      chance: skillItem.data.data.chance + otherModifiers,
+    };
+    const html = await renderTemplate("systems/rqg/chat/weaponCard.hbs", templateData);
+
     return {
-      flavor: localize("RQG.Dialog.weaponCard.WeaponCardFlavor", {weaponName: flags.weaponItemData.name}),
+      flavor: "Skill:" + skillItem.data.data.skillName + specialization, // TODO Translate (or rethink)
       user: getGameUser().id,
-      speaker: { alias: speakerName },
+      speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
       content: html,
-      whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),
+      whisper: usersThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },
@@ -303,42 +340,62 @@ export class WeaponCard extends ChatMessage {
     };
   }
 
-  private static calcRollChance(value: number, modifier: number): number {
-    return value + modifier;
+  private static async getFormDataFromFlags(
+    flags: WeaponCardFlags
+  ): Promise<{ combatManeuverName: string; otherModifiers: number }> {
+    const combatManeuverName = convertFormValueToString(flags.formData.combatManeuverName);
+    const otherModifiers = convertFormValueToInteger(flags.formData.otherModifiers);
+    return {
+      otherModifiers: otherModifiers,
+      combatManeuverName: combatManeuverName,
+    };
+  }
+
+  // Store the current raw string (FormDataEntryValue) form values to the flags
+  private static updateFlagsFromForm(flags: WeaponCardFlags, ev: JQueryEventObject): void {
+    const form =
+      (ev.originalEvent.target as HTMLElement)?.closest<HTMLFormElement>("form") ?? undefined;
+    const formData = new FormData(form);
+
+    // combatManeuverName (on the buttons) is not included in the formdata. Get it from what button caused the form to be submitted instead.
+    const pushedButton = (ev.originalEvent as SubmitEvent).submitter as
+      | HTMLButtonElement
+      | undefined;
+    if (pushedButton?.name === "combatManeuverName") {
+      flags.formData.combatManeuverName = (
+        (ev.originalEvent as SubmitEvent).submitter as HTMLButtonElement
+      )?.value;
+    }
+
+    flags.formData.otherModifiers = cleanIntegerString(formData.get("otherModifiers"));
   }
 
   private static async damageRoll(
-    flags: WeaponCardFlags,
-    damageRollType: DamageRollTypeEnum
+    actor: RqgActor,
+    weaponItem: RqgItem,
+    usageType: UsageType,
+    combatManeuverName: string | undefined,
+    damageRollType: DamageRollTypeEnum,
+    speaker: ChatSpeakerDataProperties
   ): Promise<void> {
     requireValue(
-      flags.formData.combatManeuver,
-      localize("RQG.Dialog.weaponCard.NoCombatManeuverInDamageRollError"),
-      flags,
-      damageRollType
+      combatManeuverName,
+      localize("RQG.Dialog.weaponCard.NoCombatManeuverInDamageRollError")
     );
-
-    const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    if (!actor) {
-      ui.notifications?.warn(localize("RQG.Dialog.weaponCard.CantFindActorToDoDamageRollWarn"));
-      return;
-    }
+    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
     let damageBonusFormula: string =
       actor.data.data.attributes.damageBonus !== "0"
         ? `${actor.data.data.attributes.damageBonus}`
         : "";
 
-    assertItemType(flags.weaponItemData.type, ItemTypeEnum.Weapon);
-    const weaponUsage: Usage = (flags.weaponItemData.data.usage as any)[flags.usage];
+    const weaponUsage = weaponItem.data.data.usage[usageType];
     const weaponDamageTag = localize("RQG.Dialog.weaponCard.WeaponDamageTag");
     const weaponDamage = hasOwnProperty(weaponUsage, "damage")
       ? Roll.parse(`(${weaponUsage.damage})[${weaponDamageTag}]`, {})
       : [];
 
-    if (flags.usage === "missile") {
-      const missileWeaponData = flags.weaponItemData;
-
-      if (missileWeaponData.data.isThrownWeapon) {
+    if (usageType === "missile") {
+      if (weaponItem.data.data.isThrownWeapon) {
         damageBonusFormula = "ceil(" + actor.data.data.attributes.damageBonus + "/2)";
       } else {
         damageBonusFormula = "";
@@ -349,9 +406,12 @@ export class WeaponCard extends ChatMessage {
       hasOwnProperty(weaponUsage, "damage") && weaponUsage.damage ? weaponDamage : []; // Don't add 0 damage rollTerm
 
     const damageType = weaponUsage.combatManeuvers.find(
-      (m) => m.name === flags.formData.combatManeuver
+      (m) => m.name === combatManeuverName
     )?.damageType;
-    requireValue(damageType, localize("RQG.Dialog.weaponCard.WeaponDoesNotHaveCombatManeuverError"));
+    requireValue(
+      damageType,
+      localize("RQG.Dialog.weaponCard.WeaponDoesNotHaveCombatManeuverError")
+    );
 
     if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageRollType)) {
       if (["slash", "impale"].includes(damageType)) {
@@ -371,7 +431,9 @@ export class WeaponCard extends ChatMessage {
           damageRollTerms.push(...WeaponCard.slashImpaleSpecialDamage(weaponUsage.damage));
         } else {
           logMisconfiguration(
-            localize("RQG.Dialog.weaponCard.WeaponDoesNotHaveCombatManeuverError", {weaponName: flags.weaponItemData.name}),
+            localize("RQG.Dialog.weaponCard.WeaponDoesNotHaveCombatManeuverError", {
+              weaponName: weaponItem.name,
+            }),
             true
           );
         }
@@ -387,11 +449,13 @@ export class WeaponCard extends ChatMessage {
       maximize: maximise,
       async: true,
     });
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     await roll.toMessage({
-      speaker: { alias: speakerName },
+      speaker: speaker,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: `${localize("RQG.Dialog.weaponCard.Damage")}: ${WeaponCard.getDamageTypeString(damageType, weaponUsage.combatManeuvers)}`,
+      flavor: `${localize("RQG.Dialog.weaponCard.Damage")}: ${WeaponCard.getDamageTypeString(
+        damageType,
+        weaponUsage.combatManeuvers
+      )}`,
     });
   }
 
@@ -411,25 +475,33 @@ export class WeaponCard extends ChatMessage {
     return damageType;
   }
 
-  private static async fumbleRoll(flags: WeaponCardFlags) {
+  private static async fumbleRoll(actor: RqgActor, speaker: ChatSpeakerDataProperties) {
     const fumbleTableName = getGame().settings.get("rqg", "fumbleRollTable");
     const fumbleTable = getGame().tables?.getName(fumbleTableName);
     if (!fumbleTable) {
-      logMisconfiguration(localize("RQG.Dialog.weaponCard.FumbleTableMissingWarn", {fumbleTableName: fumbleTableName}), true);
+      logMisconfiguration(
+        localize("RQG.Dialog.weaponCard.FumbleTableMissingWarn", {
+          fumbleTableName: fumbleTableName,
+        }),
+        true
+      );
       return;
     }
     // @ts-ignore TODO draw StoredDocument<RollTable>
     const draw = await fumbleTable.draw({ displayChat: false });
     // Construct chat data
-    const numberOfResults = draw.results.length > 1 ? 
-        localize("RQG.Dialog.weaponCard.PluralResults", {numberOfResults: draw.results.length}) 
+    const numberOfResults =
+      draw.results.length > 1
+        ? localize("RQG.Dialog.weaponCard.PluralResults", { numberOfResults: draw.results.length })
         : localize("RQG.Dialog.weaponCard.SingularResult");
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
     const messageData: ChatMessageDataConstructorData = {
-      flavor: localize("RQG.Dialog.weaponCard.DamageBonusDamageTag", {numberOfResults: numberOfResults, fumbleTableName: fumbleTableName}),
+      flavor: localize("RQG.Dialog.weaponCard.DamageBonusDamageTag", {
+        numberOfResults: numberOfResults,
+        fumbleTableName: fumbleTableName,
+      }),
       user: getGameUser().id,
-      speaker: { alias: speakerName },
-      whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),
+      speaker: speaker,
+      whisper: usersThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       roll: draw.roll,
       sound: draw.roll ? CONFIG.sounds.dice : null,

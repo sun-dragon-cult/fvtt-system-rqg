@@ -25,11 +25,12 @@ import {
   assertActorType,
   assertItemType,
   findDatasetValueInSelfOrAncestors,
-  getActorFromIds,
+  getDocumentFromUuid,
   getDocumentTypes,
   getDomDataset,
   getGame,
   getGameUser,
+  getRequiredDocumentFromUuid,
   getRequiredDomDataset,
   hasOwnProperty,
   localize,
@@ -46,16 +47,12 @@ import {
   CharacterDataProperties,
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
-import {
-  ItemDataProperties,
-  ItemDataSource,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ReputationCard } from "../chat/reputationCard";
 import { RuneMagicCard } from "../chat/runeMagicCard";
 import { ActorWizard } from "../dialog/actorWizardApplication";
 import { RQG_CONFIG } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { Rqid } from "../system/api/rqidApi";
 import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 
 interface UiSections {
@@ -365,7 +362,7 @@ export class RqgActorSheet extends ActorSheet<
           i.data.data.runeType === RuneTypeEnum.Element &&
           !!i.data.data.chance
         ) {
-          acc.push(i.data);
+          acc.push(i.data as RuneDataSource);
         }
         return acc;
       }, [])
@@ -380,7 +377,7 @@ export class RqgActorSheet extends ActorSheet<
           i.data.data.runeType === RuneTypeEnum.Power &&
           i.data.data.chance > 50
         ) {
-          acc.push(i.data);
+          acc.push(i.data as RuneDataSource);
         }
         return acc;
       }, [])
@@ -395,7 +392,7 @@ export class RqgActorSheet extends ActorSheet<
           i.data.data.runeType === RuneTypeEnum.Form &&
           (!i.data.data.opposingRune || i.data.data.chance > 50)
         ) {
-          acc.push(i.data);
+          acc.push(i.data as RuneDataSource);
         }
         return acc;
       }, [])
@@ -607,7 +604,7 @@ export class RqgActorSheet extends ActorSheet<
           user: getGameUser().id,
           speaker: { alias: speakerName },
           content: message,
-          whisper: usersThatOwnActor(this.actor).map((u) => u.id),
+          whisper: usersThatOwnActor(this.actor),
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
         });
     }
@@ -679,15 +676,14 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
 
         if (clickCount >= 2) {
-          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          const speakerName = this.token?.name || this.actor.data.token.name;
           await CharacteristicCard.roll(
             characteristicName,
             actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
             5,
             0,
             this.actor,
-            speakerName
+            // @ts-ignore token TODO vad ska det vara?
+            ChatMessage.getSpeaker({ actor: this.actor, token: this.token })
           );
           clickCount = 0;
         } else if (clickCount === 1) {
@@ -718,12 +714,8 @@ export class RqgActorSheet extends ActorSheet<
 
         if (clickCount >= 2) {
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          const speakerName = this.token?.name || this.actor.data.token.name;
-          await ReputationCard.directroll(
-            this.actor,
-            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            this.token
-          );
+          const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
+          await ReputationCard.roll(this.actor.data.data.background.reputation ?? 0, 0, speaker);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
@@ -765,12 +757,7 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
           const speakerName = this.token?.name || this.actor.data.token.name;
-          await ItemCard.roll(
-            item.data.toObject(false) as unknown as ItemDataProperties,
-            0,
-            this.actor,
-            speakerName
-          );
+          await ItemCard.roll(item, 0, this.actor, speakerName);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
@@ -787,29 +774,29 @@ export class RqgActorSheet extends ActorSheet<
     // Roll Rune Magic
     this.form?.querySelectorAll("[data-rune-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.items.get(itemId);
-      if (!item) {
-        const msg = `Couldn't find item [${itemId}] to roll Rune Magic against`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, el);
-      }
+      const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId) as RqgItem | undefined;
+      assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: Event) => {
-        if (item.data.type !== ItemTypeEnum.RuneMagic) {
-          const msg = "Tried to roll a Rune Magic Roll against some other Item";
-          ui.notifications?.error(msg);
-          throw new RqgError(msg, item);
-        }
+        assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
         clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
         if (clickCount >= 2) {
-          if (item.data.data.points > 1) {
+          if (runeMagicItem.data.data.points > 1) {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             await RuneMagicCard.show(itemId, this.actor, this.token);
           } else {
-            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            const speakerName = this.token?.name || this.actor.data.token.name;
-            await RuneMagicCard.directRoll(item, this.actor, speakerName);
+            await RuneMagicCard.roll(
+              runeMagicItem,
+              runeMagicItem.data.data.points,
+              0,
+              0,
+              0,
+              0,
+              this.actor,
+              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+              ChatMessage.getSpeaker({ actor: this.actor, token: this.token })
+            );
           }
 
           clickCount = 0;
@@ -850,13 +837,7 @@ export class RqgActorSheet extends ActorSheet<
           } else {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             const speakerName = this.token?.name || this.actor.data.token.name;
-            await SpiritMagicCard.roll(
-              item.data.toObject(),
-              item.data.data.points,
-              0,
-              this.actor,
-              speakerName
-            );
+            await SpiritMagicCard.roll(item, item.data.data.points, 0, this.actor, speakerName);
           }
 
           clickCount = 0;
@@ -1281,7 +1262,9 @@ export class RqgActorSheet extends ActorSheet<
     // This is probably not working because of the itemLocationTree
     if (sameActor) return this._onSortItem(event, itemData);
 
-    const sourceActor = getActorFromIds(data.actorId, data.tokenId);
+    const sourceActor = await getRequiredDocumentFromUuid<RqgActor>(data.actorId);
+    const token = await getDocumentFromUuid<TokenDocument>(data.tokenId);
+
     if (!sourceActor) return false;
 
     if (

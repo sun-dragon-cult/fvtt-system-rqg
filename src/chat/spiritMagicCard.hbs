@@ -1,10 +1,17 @@
 <form class="card-form" data-chat-card="spiritMagicCard">
   <div class="rqg chat-card spirit-magic-card">
 
-    <h3><img class="item" src="{{itemData.img}}"> {{itemData.name}}</h3>
+    <h2>
+      <img class="item" src="{{card.chatImage}}"> {{cardHeading}}
+    </h2>
 
-    <label>{{localize "RQG.Dialog.spiritMagicCard.Level"}} <input type="number" min="1" max="{{itemData.data.points}}" value="{{formData.level}}" name="level"></label><br>
-    <label>{{localize "RQG.Dialog.spiritMagicCard.Boost"}} <input type="number" min="0" max="999" value="{{formData.boost}}" name="boost"></label>
-    <button type="submit" data-chat-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=formData.chance}}</button>
+    <label>{{localize "RQG.Dialog.spiritMagicCard.Level"}}
+      <input class="card-number-input" type="text" value="{{formData.level}}" name="level">
+    </label><br>
+
+    <label>{{localize "RQG.Dialog.spiritMagicCard.Boost"}}
+      <input class="card-number-input" type="text" value="{{formData.boost}}" name="boost">
+    </label>
+    <button type="submit" data-chat-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=chance}}</button>
   </div>
 </form>

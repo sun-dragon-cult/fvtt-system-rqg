@@ -2,39 +2,29 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import {
   activateChatTab,
   formatModifier,
-  getActorFromIds,
   getGame,
-  getSpeakerName,
-  hasOwnProperty,
   localize,
   moveCursorToEnd,
-  requireValue,
   RqgError,
   usersThatOwnActor,
+  assertChatMessageFlagType,
+  getDocumentFromUuid,
+  getRequiredDocumentFromUuid,
+  convertFormValueToInteger,
+  cleanIntegerString,
+  requireValue,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
-import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-
-type ItemCardFlags = {
-  actorId: string;
-  tokenId: string | null;
-  itemData: ItemDataProperties;
-  result: ResultEnum | undefined;
-  formData: {
-    modifier: number;
-    chance: number;
-  };
-};
+import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { ItemCardFlags } from "../data-model/shared/rqgDocumentFlags";
+import { RqgItem } from "../items/rqgItem";
 
 export class ItemCard {
   public static async show(
     itemId: string,
     actor: RqgActor,
-    token: TokenDocument | null
+    token: TokenDocument | undefined
   ): Promise<void> {
-    token && requireValue(token.id, localize("RQG.Item.Notification.NoIdOnTokenError"));
-    requireValue(actor.id, localize("RQG.Item.Notification.NoIdOnActorError"));
-    const defaultModifier = 0;
     const item = actor.items.get(itemId);
     if (!item || !("chance" in item.data.data) || item.data.data.chance == null) {
       const msg = localize("RQG.Item.Notification.ItemWithIdDoesNotHaveChanceError", {
@@ -44,18 +34,19 @@ export class ItemCard {
       ui.notifications?.error(msg);
       throw new RqgError(msg);
     }
+
     const flags: ItemCardFlags = {
-      actorId: actor.id,
-      tokenId: token?.id ?? null,
-      // Need false to get derived chance TODO type of toObject(false) ??
-      itemData: item.data.toObject(false) as unknown as ItemDataProperties,
-      result: undefined,
+      type: "item",
+      card: {
+        actorUuid: actor.uuid,
+        tokenUuid: token?.uuid,
+        chatImage: item.data.img ?? "",
+        itemUuid: item.uuid,
+      },
       formData: {
-        modifier: defaultModifier,
-        chance: item.data.data.chance,
+        modifier: "",
       },
     };
-    flags.itemData.data;
 
     await ChatMessage.create(await ItemCard.renderContent(flags));
     activateChatTab();
@@ -63,40 +54,38 @@ export class ItemCard {
 
   public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
     const chatMessage = getGame().messages?.get(messageId);
-    const flags = chatMessage?.data.flags.rqg as ItemCardFlags;
-    const form = (ev.target as HTMLElement).closest("form") as HTMLFormElement;
-    const formData = new FormData(form);
-    // @ts-ignore formData.entries
-    for (const [name, value] of formData.entries()) {
-      if (name in flags.formData) {
-        flags.formData[name as keyof typeof flags.formData] = value;
-      }
-    }
+    requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
 
-    const chance: number =
-      (hasOwnProperty(flags.itemData.data, "chance") && Number(flags.itemData.data.chance)) || 0;
-    const modifier: number = Number(flags.formData.modifier) || 0;
-    flags.formData.chance = ItemCard.calcRollChance(chance, modifier);
+    const flags = chatMessage?.data.flags.rqg;
+    assertChatMessageFlagType(flags?.type, "item");
+    ItemCard.updateFlagsFromForm(flags, ev);
 
     const data = await ItemCard.renderContent(flags);
-    if (!chatMessage || !data || !flags.formData.modifier) {
-      return; // Not ready to update chatmessages
-    }
-    const domChatMessages = document.querySelectorAll(`[data-message-id="${chatMessage.id}"]`);
+    const domChatMessages = document.querySelectorAll<HTMLElement>(
+      `[data-message-id="${chatMessage.id}"]`
+    );
     const domChatMessage = Array.from(domChatMessages).find((m) =>
       m.contains(ev.currentTarget as Node)
     );
     const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
+    await chatMessage.update(data); // Rerenders the dom chatmessages
 
-    await chatMessage.update(data);
     const newDomChatMessages = document.querySelectorAll<HTMLElement>(
       `[data-message-id="${chatMessage.id}"]`
     );
     const newDomChatMessage = Array.from(newDomChatMessages).find(
-      (m) => !!m.closest<HTMLElement>(".chat-popout") === isFromPopoutChat
+      (m) => !!m.closest(".chat-popout") === isFromPopoutChat
     );
-    const inputElement = newDomChatMessage?.querySelector("input");
-    inputElement && moveCursorToEnd(inputElement);
+
+    // Find the input element that inititated the change and move the cursor there.
+    const inputElement = ev.target;
+    if (inputElement instanceof HTMLInputElement && inputElement.type === "text") {
+      const elementName = inputElement?.name;
+      const newInputElement = newDomChatMessage?.querySelector<HTMLInputElement>(
+        `[name=${elementName}]`
+      );
+      newInputElement && moveCursorToEnd(newInputElement);
+    }
   }
 
   public static async formSubmitHandler(
@@ -104,74 +93,78 @@ export class ItemCard {
     messageId: string
   ): Promise<boolean> {
     ev.preventDefault();
-    // @ts-ignore submitter
-    const button = ev.originalEvent.submitter as HTMLButtonElement;
+
+    const button = (ev.originalEvent as SubmitEvent).submitter as HTMLButtonElement;
     button.disabled = true;
     setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
 
     const chatMessage = getGame().messages?.get(messageId);
-    const flags = chatMessage?.data.flags.rqg as ItemCardFlags;
-    const formData = new FormData(ev.target as HTMLFormElement);
-    // @ts-ignore formData.entries
-    for (const [name, value] of formData.entries()) {
-      if (name in flags.formData) {
-        flags.formData[name as keyof typeof flags.formData] = value;
-      }
-    }
+    const flags = chatMessage?.data.flags.rqg;
+    assertChatMessageFlagType(flags?.type, "item");
+    ItemCard.updateFlagsFromForm(flags, ev);
 
-    const modifier = Number(flags.formData.modifier) || 0;
-    const actor = getActorFromIds(flags.actorId, flags.tokenId);
-    if (actor) {
-      const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
-      await ItemCard.roll(flags.itemData, modifier, actor, speakerName);
-    } else {
-      ui.notifications?.warn(
-        localize("RQG.Item.Notification.CouldNotFindActorByIdsWarn", {
-          actorId: flags.actorId,
-          tokenId: flags.tokenId,
-        })
-      );
-    }
+    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    const item = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
+
+    const { modifier } = await ItemCard.getFormDataFromFlags(flags);
+
+    await ItemCard.roll(
+      item,
+      modifier,
+      actor,
+      ChatMessage.getSpeaker({ actor: actor, token: token })
+    );
     return false;
   }
 
   public static async roll(
-    itemData: ItemDataProperties,
+    item: RqgItem,
     modifier: number,
     actor: RqgActor,
-    speakerName: string
+    speaker: ChatSpeakerDataProperties
   ): Promise<void> {
-    // @ts-ignore TODO handle chance
-    const chance: number = Number(itemData.data.chance) || 0;
-    let flavor = localize("RQG.Dialog.itemCard.RollFlavor", { name: itemData.name });
+    const chance: number = Number((item?.data.data as any).chance) || 0;
+    let flavor = localize("RQG.Dialog.itemCard.RollFlavor", { name: item.name });
     if (modifier !== 0) {
       flavor += localize("RQG.Dialog.itemCard.RollFlavorModifier", {
         modifier: formatModifier(modifier),
       });
     }
-    const result = await Ability.roll(flavor, chance, modifier, speakerName);
-    await ItemCard.checkExperience(actor, itemData, result);
+    const result = await Ability.roll(flavor, chance, modifier, speaker);
+    await ItemCard.checkExperience(actor, item, result);
   }
 
   public static async checkExperience(
     actor: RqgActor,
-    itemData: any,
+    item: RqgItem,
     result: ResultEnum
   ): Promise<void> {
-    if (result <= ResultEnum.Success && !itemData.data.hasExperience) {
-      actor.AwardExperience(itemData._id);
+    if (result <= ResultEnum.Success && !(item.data.data as any).hasExperience) {
+      await actor.AwardExperience(item.id);
     }
   }
 
   private static async renderContent(flags: ItemCardFlags): Promise<object> {
-    let html = await renderTemplate("systems/rqg/chat/itemCard.hbs", flags);
-    const speakerName = getSpeakerName(flags.actorId, flags.tokenId);
+    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    const item = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
+
+    const { itemChance, modifier } = await this.getFormDataFromFlags(flags);
+
+    const templateData = {
+      ...flags,
+      chance: itemChance + modifier,
+      cardHeading: localize("ITEM.Type" + item?.data.type.titleCase()) + ": " + item?.name,
+    };
+
+    let html = await renderTemplate("systems/rqg/chat/itemCard.hbs", templateData);
+
     return {
-      flavor: localize("ITEM.Type" + flags.itemData.type.titleCase()) + ": " + flags.itemData.name,
       user: getGame().user?.id,
-      speaker: { alias: speakerName },
+      speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
       content: html,
-      whisper: usersThatOwnActor(getActorFromIds(flags.actorId, flags.tokenId)),
+      whisper: usersThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },
@@ -180,7 +173,29 @@ export class ItemCard {
     };
   }
 
-  private static calcRollChance(value: number, modifier: number): number {
-    return value + modifier;
+  private static async getFormDataFromFlags(
+    flags: ItemCardFlags
+  ): Promise<{ modifier: number; itemChance: number }> {
+    const item = await getDocumentFromUuid<RqgItem>(flags.card.itemUuid);
+
+    if (!item || !("chance" in item.data.data) || item.data.data.chance == null) {
+      const msg = localize("RQG.Item.Notification.ItemWithIdDoesNotHaveChanceError", {
+        itemId: item?.id,
+        actorName: item?.parent?.name,
+      });
+      throw new RqgError(msg, item);
+    }
+
+    const itemChance = item?.data.data.chance ?? 0;
+    const modifier = convertFormValueToInteger(flags.formData.modifier);
+    return { itemChance: itemChance, modifier: modifier };
+  }
+
+  // Store the current raw string (FormDataEntryValue) form values to the flags
+  private static updateFlagsFromForm(flags: ItemCardFlags, ev: Event): void {
+    const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
+    const formData = new FormData(form);
+
+    flags.formData.modifier = cleanIntegerString(formData.get("modifier"));
   }
 }

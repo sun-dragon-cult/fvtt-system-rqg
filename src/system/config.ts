@@ -1,3 +1,10 @@
+import { ItemCard } from "../chat/itemCard";
+import { CharacteristicCard } from "../chat/characteristicCard";
+import { ReputationCard } from "../chat/reputationCard";
+import { RuneMagicCard } from "../chat/runeMagicCard";
+import { SpiritMagicCard } from "../chat/spiritMagicCard";
+import { WeaponCard } from "../chat/weaponCard";
+
 export const RQG_CONFIG = {
   debug: {
     showActorActiveEffectsTab: false,
@@ -130,15 +137,24 @@ export const RQG_CONFIG = {
   rqidFlags: {
     rqid: "rqid",
     rqidLang: "rqidLang",
-    rqidPriority: "rqidPriority"
+    rqidPriority: "rqidPriority",
   },
-  
+
   actorWizardFlags: {
     actorWizardComplete: "actor-wizard-complete",
     selectedSpeciesId: "selected-species-id",
     selectedHomelandRqid: "selected-homeland-rqid",
     isActorTemplate: "is-actor-template",
     wizardChoices: "wizard-choices",
+  },
+
+  chatMessages: {
+    characteristic: CharacteristicCard,
+    item: ItemCard,
+    reputation: ReputationCard,
+    runeMagic: RuneMagicCard,
+    spiritMagic: SpiritMagicCard,
+    weapon: WeaponCard,
   },
 };
 

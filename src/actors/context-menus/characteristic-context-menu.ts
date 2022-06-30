@@ -17,7 +17,7 @@ import { ContextMenuRunes } from "./contextMenuRunes";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | null
+  token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollCard"),
@@ -41,14 +41,13 @@ export const characteristicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      const speakerName = token?.name ?? actor.data.token.name ?? "";
       await CharacteristicCard.roll(
         characteristicName,
         characteristic.value,
         5,
         0,
         actor,
-        speakerName
+        ChatMessage.getSpeaker({ actor: actor, token: token })
       );
     },
   },
@@ -71,12 +70,12 @@ export const characteristicMenuOptions = (
     }),
     icon: ContextMenuRunes.Improve,
     condition: (el: JQuery): boolean => {
-      const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
+      const { name: characteristicName } = getCharacteristic(actor, el);
       // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
       // You cannot train INT or increase it via experience
 
       const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
-      return !!trainable.includes(characteristicName);
+      return trainable.includes(characteristicName);
     },
     callback: (el: JQuery) => {
       const charName = getDomDataset(el, "characteristic");

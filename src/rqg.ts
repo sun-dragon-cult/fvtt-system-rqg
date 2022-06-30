@@ -13,6 +13,7 @@ import { RqgToken } from "./combat/rqgToken";
 import { getGame, RqgError } from "./system/util";
 // import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
 import { RqgPause } from "./foundryUi/pause";
+import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
 
@@ -51,6 +52,7 @@ Hooks.once("init", async () => {
     turnTime: 0, // Don't advance time per combatant
     roundTime: 12, // Melee round
   };
+  RqgChatMessage.init();
   RqgActiveEffect.init();
   RqgCombat.init();
   RqgCombatTracker.init();
