@@ -65,7 +65,7 @@ _id: 5w2C65OLBhN66E8j
 name: Dragonewt (form)
 img: systems/rqg/assets/images/runes/dragonewt.svg
 content: >
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/dragonnewt.svg" height="175">
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/dragonewt.svg" height="175">
   As exotic as the race it represents, it is found only in the Dragon Pass area. Unlike most of
   the other Form Runes, it is never used with an Elemental Rune.</p>
 flags:
