@@ -41,6 +41,13 @@
       "type": "Item"
     },
     {
+      "name": "rune-descriptions",
+      "label": "Rune Descriptions",
+      "system": "rqg",
+      "path": "assets/packs/rune-descriptions.db",
+      "type": "JournalEntry"
+    },
+    {
       "name": "skills-basic",
       "label": "Skills - Basic ",
       "system": "rqg",

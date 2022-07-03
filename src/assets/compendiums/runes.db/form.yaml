@@ -1,0 +1,101 @@
+name: Beast (form)
+type: rune
+data:
+  rqid: rune-beast-form
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Beast
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: Man (form)
+  journalId: twWC6a757e2jSQpB
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/beast.svg
+---
+name: Chaos (form)
+type: rune
+data:
+  rqid: rune-chaos-form
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Chaos
+  chance: 0
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+  journalId: Z0LqQPc2Gvv5jJ8G
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/chaos.svg
+---
+name: Plant (form)
+type: rune
+data:
+  rqid: rune-plant-form
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Plant
+  chance: 0
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+  journalId: I10Ugj9qY3vl27e5
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/plant.svg
+---
+name: Spirit (form)
+type: rune
+data:
+  rqid: rune-spirit-form
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Spirit
+  chance: 0
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+  journalId: zDF14GWcThdD6TMC
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/spirit.svg
+---
+name: Dragonewt (form)
+type: rune
+data:
+  rqid: rune-dragnnewt-form
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Dragonewt
+  chance: 0
+  hasExperience: false
+  runeType: form
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+  journalId: 5w2C65OLBhN66E8j
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/dragonewt.svg
+---
+name: Man (form)
+type: rune
+data:
+  rqid: rune-man-form
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Man
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: Beast (form)
+  journalId: Y5rHARO63TIb6K7C
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/man.svg
