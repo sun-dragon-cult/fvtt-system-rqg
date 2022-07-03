@@ -1,0 +1,133 @@
+name: Movement (power)
+type: rune
+data:
+  rqid: rune-movement-power
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Movement
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: Stasis (power)
+img: systems/rqg/assets/images/runes/movement_change.svg
+---
+name: Harmony (power)
+type: rune
+data:
+  rqid: rune-harmony-power
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Harmony
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: Disorder (power)
+  journalId: aDRLDO48F826i6vr
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/harmony.svg
+---
+name: Fertility (power)
+type: rune
+data:
+  rqid: rune-fertility-power
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Fertility
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: Death (power)
+  journalId: Vnkl9a3Wlh3hCnXV
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/fertility.svg
+---
+name: Truth (power)
+type: rune
+data:
+  rqid: rune-truth-power
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Truth
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: Illusion (power)
+  journalId: 65WD7NrMeQbd60XS
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/truth.svg
+---
+name: Stasis (power)
+type: rune
+data:
+  rqid: rune-stasis-power
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Stasis
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: Movement (power)
+  journalId: k9aDS2B4r4Kw4jy6
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/stasis.svg
+---
+name: Illusion (power)
+type: rune
+data:
+  rqid: rune-illusion-power
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Illusion
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: Truth (power)
+  journalId: 5IjM967nFDMlwidI
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/illusion.svg
+---
+name: Death (power)
+type: rune
+data:
+  rqid: rune-death-power
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Death
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: Fertility (power)
+  journalId: u1eUcT63yjYZG103
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/death.svg
+---
+name: Disorder (power)
+type: rune
+data:
+  rqid: rune-disorder-power
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Disorder
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: Harmony (power)
+  journalId: wRsskyTp7uZxvJJg
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/disorder.svg
