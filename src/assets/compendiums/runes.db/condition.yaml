@@ -1,0 +1,201 @@
+name: Eternal Battle (condition)
+type: rune
+data:
+  rqid: rune-eternal-battle-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Eternal Battle
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+img: systems/rqg/assets/images/runes/eternal_battle.svg
+---
+name: Law (condition)
+type: rune
+data:
+  rqid: rune-law-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Law
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+  journalId: 2Wl6rzY5f5myk8W6
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/law.svg
+---
+name: Mastery (condition)
+type: rune
+data:
+  rqid: rune-mastery-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Mastery
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+img: systems/rqg/assets/images/runes/mastery.svg
+---
+name: Magic (condition)
+type: rune
+data:
+  rqid: rune-magic-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Magic
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+  journalId: UgDSldMq035lVqwR
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/magic.svg
+---
+name: Light (condition)
+type: rune
+data:
+  rqid: rune-light-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Light
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+img: systems/rqg/assets/images/runes/light.svg
+---
+name: Infinity (condition)
+type: rune
+data:
+  rqid: rune-infinity-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Infinity
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+  journalId: eefIf11AEJgk13pD
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/infinity.svg
+---
+name: Power (condition)
+type: rune
+data:
+  rqid: rune-power-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Power
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+img: systems/rqg/assets/images/runes/pamalt.svg
+---
+name: Luck (condition)
+type: rune
+data:
+  rqid: rune-luck-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Luck
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+  journalId: OjpMkpX21Qa0qKGN
+  journalPack: "luck.rune-descriptions"
+img: systems/rqg/assets/images/runes/luck.svg
+---
+name: Communication (condition)
+type: rune
+data:
+  rqid: rune-communication-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Communication
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+img: systems/rqg/assets/images/runes/communication_trade.svg
+---
+name: Fate (condition)
+type: rune
+data:
+  rqid: rune-fate-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Fate
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  minorRunes: []
+  isMastered: false
+  opposingRune: null
+  journalId: Gsl5fSY7vMvW9p4a
+  journalPack: "rqg.rune-descriptions"
+img: systems/rqg/assets/images/runes/fate.svg
+---
+name: Unlife (condition)
+type: rune
+data:
+  rqid: rune-unlife-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Unlife
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+img: systems/rqg/assets/images/runes/undeath.svg
+---
+name: Dragon (condition)
+type: rune
+data:
+  rune: Dragon
+  chance: 0
+  hasExperience: false
+  runeType: condition
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+img: systems/rqg/assets/images/runes/dragon.svg
+---
+name: Odalya (condition)
+type: rune
+data:
+  rqid: rune-odalya-condition
+  rqidPriority: "0"
+  rqidLang: en
+  rune: Odalya
+  chance: 0
+  hasExperience: false
+  runeType: Dragonewt
+  opposingRune: null
+  minorRunes: []
+  isMastered: false
+img: systems/rqg/assets/images/runes/odayla.svg
