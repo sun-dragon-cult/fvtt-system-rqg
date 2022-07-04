@@ -16,17 +16,16 @@ import {
   hasOwnProperty,
   localize,
   logMisconfiguration,
-  moveCursorToEnd,
   requireValue,
   RqgError,
-  usersThatOwnActor,
+  usersIdsThatOwnActor,
 } from "../system/util";
 
 import { DeepPartial } from "snowpack";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import { CombatManeuver, DamageType, UsageType } from "../data-model/item-data/weaponData";
-import { WeaponCardFlags } from "../data-model/shared/rqgDocumentFlags";
+import { RqgChatMessageFlags, WeaponCardFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
@@ -52,7 +51,7 @@ export class WeaponCard {
     assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
 
     const flags: WeaponCardFlags = {
-      type: "weapon",
+      type: "weaponCard",
       card: {
         actorUuid: actor.uuid,
         tokenUuid: token?.uuid,
@@ -73,52 +72,10 @@ export class WeaponCard {
     activateChatTab();
   }
 
-  public static async inputChangeHandler(ev: JQueryEventObject, messageId: string): Promise<void> {
-    const chatMessage = getGame().messages?.get(messageId);
-    requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
-
-    const flags = chatMessage?.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "weapon");
-    WeaponCard.updateFlagsFromForm(flags, ev);
-
-    const data = await WeaponCard.renderContent(flags);
-    const domChatMessages = document.querySelectorAll<HTMLElement>(
-      `[data-message-id="${chatMessage.id}"]`
-    );
-    const domChatMessage = Array.from(domChatMessages).find((m) =>
-      m.contains(ev.currentTarget as Node)
-    );
-    const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
-    await chatMessage.update(data); // Rerenders the dom chatmessages
-
-    const newDomChatMessages = document.querySelectorAll<HTMLElement>(
-      `[data-message-id="${chatMessage.id}"]`
-    );
-    const newDomChatMessage = Array.from(newDomChatMessages).find(
-      (m) => !!m.closest(".chat-popout") === isFromPopoutChat
-    );
-
-    // Find the input element that inititated the change and move the cursor there.
-    const inputElement = ev.target;
-    if (inputElement instanceof HTMLInputElement && inputElement.type === "text") {
-      const elementName = inputElement?.name;
-      const newInputElement = newDomChatMessage?.querySelector<HTMLInputElement>(
-        `[name=${elementName}]`
-      );
-      newInputElement && moveCursorToEnd(newInputElement);
-    }
-
-    // @ts-ignore is marked as private!?
-    ui.chat?.scrollBottom(); // Fix that the weapon card gets bigger and pushes the rest of the chatlog down
-  }
-
-  public static async formSubmitHandler(
-    ev: JQueryEventObject,
-    messageId: string
-  ): Promise<boolean> {
+  public static async formSubmitHandler(ev: SubmitEvent, messageId: string): Promise<boolean> {
     ev.preventDefault();
 
-    const actionButton = (ev.originalEvent as SubmitEvent).submitter as HTMLButtonElement;
+    const actionButton = ev.submitter as HTMLButtonElement;
     actionButton.disabled = true;
     setTimeout(() => (actionButton.disabled = false), 1000); // Prevent double clicks
 
@@ -126,7 +83,7 @@ export class WeaponCard {
     requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
 
     const flags = chatMessage.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "weapon");
+    assertChatMessageFlagType(flags?.type, "weaponCard");
 
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
@@ -135,10 +92,6 @@ export class WeaponCard {
 
     await WeaponCard.updateFlagsFromForm(flags, ev);
     const { combatManeuverName, otherModifiers } = await WeaponCard.getFormDataFromFlags(flags);
-
-    // const weaponItemData = weaponItem.data;
-
-    // const {combatManeuver, otherModifiers} = await WeaponCard.getFormDataFromFlags()
 
     switch (actionButton.name) {
       case "combatManeuverName":
@@ -219,8 +172,9 @@ export class WeaponCard {
         return false;
 
       case "damageRoll":
-        const damageRollType = ((ev.originalEvent as SubmitEvent).submitter as HTMLButtonElement)
-          .value as DamageRollTypeEnum | undefined;
+        const damageRollType = (ev.submitter as HTMLButtonElement).value as
+          | DamageRollTypeEnum
+          | undefined;
         requireValue(damageRollType, "No damageRollType in event");
         const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
         await WeaponCard.damageRoll(
@@ -276,7 +230,7 @@ export class WeaponCard {
     const chance: number = Number(skillItem.data.data.chance) || 0;
 
     const flags = chatMessage.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "weapon");
+    assertChatMessageFlagType(flags?.type, "weaponCard");
 
     flags.card.result = await Ability.roll(
       skillItem.name + " " + flags.formData.combatManeuverName,
@@ -301,7 +255,8 @@ export class WeaponCard {
     }
   }
 
-  private static async renderContent(flags: WeaponCardFlags): Promise<object> {
+  public static async renderContent(flags: RqgChatMessageFlags): Promise<object> {
+    assertChatMessageFlagType(flags.type, "weaponCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const skillItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.skillUuid);
@@ -331,7 +286,7 @@ export class WeaponCard {
       user: getGameUser().id,
       speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
       content: html,
-      whisper: usersThatOwnActor(actor),
+      whisper: usersIdsThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },
@@ -340,9 +295,10 @@ export class WeaponCard {
     };
   }
 
-  private static async getFormDataFromFlags(
-    flags: WeaponCardFlags
+  public static async getFormDataFromFlags(
+    flags: RqgChatMessageFlags
   ): Promise<{ combatManeuverName: string; otherModifiers: number }> {
+    assertChatMessageFlagType(flags.type, "weaponCard");
     const combatManeuverName = convertFormValueToString(flags.formData.combatManeuverName);
     const otherModifiers = convertFormValueToInteger(flags.formData.otherModifiers);
     return {
@@ -352,19 +308,20 @@ export class WeaponCard {
   }
 
   // Store the current raw string (FormDataEntryValue) form values to the flags
-  private static updateFlagsFromForm(flags: WeaponCardFlags, ev: JQueryEventObject): void {
-    const form =
-      (ev.originalEvent.target as HTMLElement)?.closest<HTMLFormElement>("form") ?? undefined;
+  public static updateFlagsFromForm(
+    flags: RqgChatMessageFlags,
+    ev: SubmitEvent | InputEvent | Event
+  ): void {
+    assertChatMessageFlagType(flags.type, "weaponCard");
+    const form = (ev.target as HTMLElement)?.closest<HTMLFormElement>("form") ?? undefined;
     const formData = new FormData(form);
 
     // combatManeuverName (on the buttons) is not included in the formdata. Get it from what button caused the form to be submitted instead.
-    const pushedButton = (ev.originalEvent as SubmitEvent).submitter as
-      | HTMLButtonElement
-      | undefined;
-    if (pushedButton?.name === "combatManeuverName") {
-      flags.formData.combatManeuverName = (
-        (ev.originalEvent as SubmitEvent).submitter as HTMLButtonElement
-      )?.value;
+    if (ev instanceof SubmitEvent) {
+      const pushedButton = ev.submitter as HTMLButtonElement | undefined;
+      if (pushedButton?.name === "combatManeuverName") {
+        flags.formData.combatManeuverName = (ev.submitter as HTMLButtonElement)?.value;
+      }
     }
 
     flags.formData.otherModifiers = cleanIntegerString(formData.get("otherModifiers"));
@@ -501,7 +458,7 @@ export class WeaponCard {
       }),
       user: getGameUser().id,
       speaker: speaker,
-      whisper: usersThatOwnActor(actor),
+      whisper: usersIdsThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       roll: draw.roll,
       sound: draw.roll ? CONFIG.sounds.dice : null,

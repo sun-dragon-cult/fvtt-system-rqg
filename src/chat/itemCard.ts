@@ -4,20 +4,22 @@ import {
   formatModifier,
   getGame,
   localize,
-  moveCursorToEnd,
   RqgError,
-  usersThatOwnActor,
+  usersIdsThatOwnActor,
   assertChatMessageFlagType,
   getDocumentFromUuid,
   getRequiredDocumentFromUuid,
   convertFormValueToInteger,
   cleanIntegerString,
-  requireValue,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
-import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
-import { ItemCardFlags } from "../data-model/shared/rqgDocumentFlags";
+import {
+  ChatSpeakerData,
+  ChatSpeakerDataProperties,
+} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { ItemCardFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
+import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 export class ItemCard {
   public static async show(
@@ -36,7 +38,7 @@ export class ItemCard {
     }
 
     const flags: ItemCardFlags = {
-      type: "item",
+      type: "itemCard",
       card: {
         actorUuid: actor.uuid,
         tokenUuid: token?.uuid,
@@ -52,55 +54,16 @@ export class ItemCard {
     activateChatTab();
   }
 
-  public static async inputChangeHandler(ev: Event, messageId: string): Promise<void> {
-    const chatMessage = getGame().messages?.get(messageId);
-    requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
-
-    const flags = chatMessage?.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "item");
-    ItemCard.updateFlagsFromForm(flags, ev);
-
-    const data = await ItemCard.renderContent(flags);
-    const domChatMessages = document.querySelectorAll<HTMLElement>(
-      `[data-message-id="${chatMessage.id}"]`
-    );
-    const domChatMessage = Array.from(domChatMessages).find((m) =>
-      m.contains(ev.currentTarget as Node)
-    );
-    const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
-    await chatMessage.update(data); // Rerenders the dom chatmessages
-
-    const newDomChatMessages = document.querySelectorAll<HTMLElement>(
-      `[data-message-id="${chatMessage.id}"]`
-    );
-    const newDomChatMessage = Array.from(newDomChatMessages).find(
-      (m) => !!m.closest(".chat-popout") === isFromPopoutChat
-    );
-
-    // Find the input element that inititated the change and move the cursor there.
-    const inputElement = ev.target;
-    if (inputElement instanceof HTMLInputElement && inputElement.type === "text") {
-      const elementName = inputElement?.name;
-      const newInputElement = newDomChatMessage?.querySelector<HTMLInputElement>(
-        `[name=${elementName}]`
-      );
-      newInputElement && moveCursorToEnd(newInputElement);
-    }
-  }
-
-  public static async formSubmitHandler(
-    ev: JQueryEventObject,
-    messageId: string
-  ): Promise<boolean> {
+  public static async formSubmitHandler(ev: SubmitEvent, messageId: string): Promise<boolean> {
     ev.preventDefault();
 
-    const button = (ev.originalEvent as SubmitEvent).submitter as HTMLButtonElement;
+    const button = ev.submitter as HTMLButtonElement;
     button.disabled = true;
     setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
 
     const chatMessage = getGame().messages?.get(messageId);
     const flags = chatMessage?.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "item");
+    assertChatMessageFlagType(flags?.type, "itemCard");
     ItemCard.updateFlagsFromForm(flags, ev);
 
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
@@ -145,7 +108,10 @@ export class ItemCard {
     }
   }
 
-  private static async renderContent(flags: ItemCardFlags): Promise<object> {
+  public static async renderContent(
+    flags: RqgChatMessageFlags
+  ): Promise<ChatMessageDataConstructorData> {
+    assertChatMessageFlagType(flags.type, "itemCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const item = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
@@ -159,12 +125,13 @@ export class ItemCard {
     };
 
     let html = await renderTemplate("systems/rqg/chat/itemCard.hbs", templateData);
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
 
     return {
-      user: getGame().user?.id,
-      speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
+      user: getGame().user?.id ?? null,
+      speaker: speaker,
       content: html,
-      whisper: usersThatOwnActor(actor),
+      whisper: usersIdsThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
       flags: {
         core: { canPopout: true },
@@ -173,9 +140,10 @@ export class ItemCard {
     };
   }
 
-  private static async getFormDataFromFlags(
-    flags: ItemCardFlags
+  public static async getFormDataFromFlags(
+    flags: RqgChatMessageFlags
   ): Promise<{ modifier: number; itemChance: number }> {
+    assertChatMessageFlagType(flags.type, "itemCard");
     const item = await getDocumentFromUuid<RqgItem>(flags.card.itemUuid);
 
     if (!item || !("chance" in item.data.data) || item.data.data.chance == null) {
@@ -192,7 +160,8 @@ export class ItemCard {
   }
 
   // Store the current raw string (FormDataEntryValue) form values to the flags
-  private static updateFlagsFromForm(flags: ItemCardFlags, ev: Event): void {
+  public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
+    assertChatMessageFlagType(flags.type, "itemCard");
     const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
     const formData = new FormData(form);
 

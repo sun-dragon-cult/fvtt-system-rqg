@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { JournalEntryLink } from "../data-model/shared/journalentrylink";
-import { ChatCardTypes } from "../data-model/shared/rqgDocumentFlags";
+import { ChatCardType } from "../chat/RqgChatMessage";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
@@ -144,8 +144,8 @@ export function assertActorType<T extends ActorTypeEnum>(
 /**
  * Check if a flags of a chatmessage card has the specified type and narrow the flag data to that type.
  */
-export function assertChatMessageFlagType<T extends ChatCardTypes>(
-  chatCardType: ChatCardTypes | undefined,
+export function assertChatMessageFlagType<T extends ChatCardType>(
+  chatCardType: ChatCardType | undefined,
   type: T
 ): asserts chatCardType is T {
   if (!chatCardType || chatCardType !== type) {
@@ -162,12 +162,14 @@ export function requireValue(val: unknown, errorMessage: string, ...debugData: a
   }
 }
 
-export function usersThatOwnActor(actor: RqgActor | null): StoredDocument<User>[] {
+export function usersIdsThatOwnActor(actor: RqgActor | null): string[] {
   if (actor) {
-    return getGameUsers().filter((user: User) =>
-      // @ts-ignore foundry 9
-      actor.testUserPermission(user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
-    );
+    return getGameUsers()
+      .filter((user: User) =>
+        // @ts-ignore foundry 9
+        actor.testUserPermission(user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+      )
+      .map((user) => user.id);
   }
   return [];
 }

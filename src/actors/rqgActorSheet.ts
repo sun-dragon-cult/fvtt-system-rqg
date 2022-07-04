@@ -36,7 +36,7 @@ import {
   localize,
   requireValue,
   RqgError,
-  usersThatOwnActor,
+  usersIdsThatOwnActor,
 } from "../system/util";
 import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
@@ -604,7 +604,7 @@ export class RqgActorSheet extends ActorSheet<
           user: getGameUser().id,
           speaker: { alias: speakerName },
           content: message,
-          whisper: usersThatOwnActor(this.actor),
+          whisper: usersIdsThatOwnActor(this.actor),
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
         });
     }

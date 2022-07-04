@@ -1,19 +1,20 @@
 import { ResultEnum } from "./ability";
 import { CharacteristicData } from "../../chat/characteristicCard";
 import { UsageType } from "../item-data/weaponData";
+import { ChatCardType } from "../../chat/RqgChatMessage";
 
-export type ChatCardTypes =
-  | "characteristic"
-  | "item"
-  | "reputation"
-  | "runeMagic"
-  | "spiritMagic"
-  | "weapon";
+// export type ChatCardTypes =
+//   | "characteristic"
+//   | "item"
+//   | "reputation"
+//   | "runeMagic"
+//   | "spiritMagic"
+//   | "weapon";
 
 // Base chat card flag structure
 export type BaseRqgChatCard = {
   /** The different types of chatmessages. Used for type narrowing, see {@link assertChatMessageFlagType} */
-  type: ChatCardTypes;
+  type: ChatCardType;
   /** Data that needs to be persisted. Should include {@link CommonRqgCardFlags} */
   card: {};
   /** Data from inputs in the form only */
@@ -31,7 +32,7 @@ export type CommonRqgCardFlags = {
 };
 
 export interface CharacteristicCardFlags extends BaseRqgChatCard {
-  type: "characteristic";
+  type: "characteristicCard";
   card: CommonRqgCardFlags & {
     characteristic: CharacteristicData;
   };
@@ -42,7 +43,7 @@ export interface CharacteristicCardFlags extends BaseRqgChatCard {
 }
 
 export interface ItemCardFlags extends BaseRqgChatCard {
-  type: "item";
+  type: "itemCard";
   card: CommonRqgCardFlags & {
     itemUuid: string;
   };
@@ -52,14 +53,14 @@ export interface ItemCardFlags extends BaseRqgChatCard {
 }
 
 export interface ReputationCardFlags extends BaseRqgChatCard {
-  type: "reputation";
+  type: "reputationCard";
   card: CommonRqgCardFlags & {};
   formData: {
     modifier: FormDataEntryValue;
   };
 }
 export interface RuneMagicCardFlags extends BaseRqgChatCard {
-  type: "runeMagic";
+  type: "runeMagicCard";
   card: CommonRqgCardFlags & {
     itemUuid: string;
   };
@@ -74,7 +75,7 @@ export interface RuneMagicCardFlags extends BaseRqgChatCard {
 }
 
 export interface SpiritMagicCardFlags extends BaseRqgChatCard {
-  type: "spiritMagic";
+  type: "spiritMagicCard";
   card: CommonRqgCardFlags & {
     itemUuid: string;
   };
@@ -85,7 +86,7 @@ export interface SpiritMagicCardFlags extends BaseRqgChatCard {
 }
 
 export interface WeaponCardFlags extends BaseRqgChatCard {
-  type: "weapon";
+  type: "weaponCard";
   card: CommonRqgCardFlags & {
     skillUuid: string;
     weaponUuid: string;

@@ -6,7 +6,6 @@ import { registerHandlebarsHelpers } from "./system/registerHandlebarsHelpers";
 import { RqgActiveEffect } from "./actors/rqgActiveEffect";
 import { RqgCombat } from "./combat/rqgCombat";
 import { RQG_CONFIG } from "./system/config";
-import { ChatCardListeners } from "./chat/chatCardListeners";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
@@ -60,7 +59,6 @@ Hooks.once("init", async () => {
   RqgActor.init();
   RqgItem.init();
   RqgPause.init();
-  ChatCardListeners.init();
   registerRqgSystemSettings();
   await loadHandlebarsTemplates();
   registerHandlebarsHelpers();
