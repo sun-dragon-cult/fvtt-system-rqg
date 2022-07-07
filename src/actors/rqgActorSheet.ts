@@ -682,7 +682,7 @@ export class RqgActorSheet extends ActorSheet<
             5,
             0,
             this.actor,
-            // @ts-ignore token TODO vad ska det vara?
+            // @ts-expect-error this.token should be TokenDocument, but is typed as Token
             ChatMessage.getSpeaker({ actor: this.actor, token: this.token })
           );
           clickCount = 0;

@@ -22,8 +22,12 @@ import {
 } from "../system/util";
 import { RqgChatMessageFlags, RuneMagicCardFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import {
+  ChatSpeakerData,
+  ChatSpeakerDataProperties,
+} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
+import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 export class RuneMagicCard {
   public static async show(
@@ -292,7 +296,9 @@ export class RuneMagicCard {
     }
   }
 
-  public static async renderContent(flags: RqgChatMessageFlags): Promise<object> {
+  public static async renderContent(
+    flags: RqgChatMessageFlags
+  ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "runeMagicCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
@@ -339,11 +345,11 @@ export class RuneMagicCard {
     };
 
     let html = await renderTemplate("systems/rqg/chat/runeMagicCard.hbs", templateData);
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
 
     return {
       user: getGame().user?.id,
-      speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
-      actorImg: actor.img,
+      speaker: speaker,
       content: html,
       whisper: usersIdsThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

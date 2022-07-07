@@ -14,8 +14,12 @@ import {
 } from "../system/util";
 import { ReputationCardFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import {
+  ChatSpeakerData,
+  ChatSpeakerDataProperties,
+} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
+import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 export class ReputationCard {
   public static async show(actor: RqgActor, token: TokenDocument | null): Promise<void> {
@@ -68,7 +72,9 @@ export class ReputationCard {
     activateChatTab();
   }
 
-  public static async renderContent(flags: RqgChatMessageFlags): Promise<object> {
+  public static async renderContent(
+    flags: RqgChatMessageFlags
+  ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "reputationCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
@@ -80,9 +86,11 @@ export class ReputationCard {
       cardHeading: localize("RQG.Dialog.reputationCard.Reputation"),
     };
     let html = await renderTemplate("systems/rqg/chat/reputationCard.hbs", templateData);
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
+
     return {
       user: getGame().user?.id,
-      speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
+      speaker: speaker,
       content: html,
       whisper: usersIdsThatOwnActor(actor),
       type: CONST.CHAT_MESSAGE_TYPES.WHISPER,

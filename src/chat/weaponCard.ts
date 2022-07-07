@@ -151,7 +151,9 @@ export class WeaponCard {
     }
   }
 
-  public static async renderContent(flags: RqgChatMessageFlags): Promise<object> {
+  public static async renderContent(
+    flags: RqgChatMessageFlags
+  ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "weaponCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);

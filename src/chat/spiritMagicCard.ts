@@ -17,6 +17,7 @@ import { RqgChatMessageFlags, SpiritMagicCardFlags } from "../data-model/shared/
 import { RqgItem } from "../items/rqgItem";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
+import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 export class SpiritMagicCard {
   public static async show(
@@ -120,7 +121,9 @@ export class SpiritMagicCard {
     }
   }
 
-  public static async renderContent(flags: RqgChatMessageFlags): Promise<object> {
+  public static async renderContent(
+    flags: RqgChatMessageFlags
+  ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "spiritMagicCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
@@ -135,7 +138,6 @@ export class SpiritMagicCard {
     let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.hbs", templateData);
 
     return {
-      // flavor: localize("RQG.Dialog.spiritMagicCard.CardFlavor", { name: spiritMagicItem?.name }),
       user: getGame().user?.id,
       speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
       content: html,

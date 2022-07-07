@@ -120,7 +120,7 @@ export class ItemCard {
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
 
     return {
-      user: getGame().user?.id ?? null,
+      user: getGame().user?.id,
       speaker: speaker,
       content: html,
       whisper: usersIdsThatOwnActor(actor),

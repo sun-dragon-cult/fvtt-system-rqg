@@ -19,6 +19,7 @@ import {
 } from "../data-model/shared/rqgDocumentFlags";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
+import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 export type CharacteristicData = {
   name: string;
@@ -114,7 +115,9 @@ export class CharacteristicCard {
     }
   }
 
-  public static async renderContent(flags: RqgChatMessageFlags): Promise<object> {
+  public static async renderContent(
+    flags: RqgChatMessageFlags
+  ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "characteristicCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
