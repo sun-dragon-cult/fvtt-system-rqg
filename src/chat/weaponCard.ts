@@ -71,6 +71,10 @@ export class WeaponCard {
     activateChatTab();
   }
 
+  /**
+   * Do a roll from the Weapon Chat card. Use the flags on the chatMessage to get the required data.
+   * Called from {@link RqgChatMessage.doRoll}
+   */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "weaponCard");
@@ -202,7 +206,10 @@ export class WeaponCard {
     };
   }
 
-  // Store the current raw string (FormDataEntryValue) form values to the flags
+  /**
+   * Store the current raw string (FormDataEntryValue) form values to the flags
+   * Called from {@link RqgChatMessage.formSubmitHandler} and {@link RqgChatMessage.inputChangeHandler}
+   */
   public static updateFlagsFromForm(
     flags: RqgChatMessageFlags,
     ev: SubmitEvent | InputEvent | Event

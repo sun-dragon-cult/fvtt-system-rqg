@@ -45,6 +45,10 @@ export class SpiritMagicCard {
     activateChatTab();
   }
 
+  /**
+   * Do a roll from the Spirit Magic Chat card. Use the flags on the chatMessage to get the required data.
+   * Called from {@link RqgChatMessage.doRoll}
+   */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "spiritMagicCard");
@@ -63,8 +67,6 @@ export class SpiritMagicCard {
       actor,
       ChatMessage.getSpeaker({ actor: actor, token: token })
     );
-
-    return false;
   }
 
   public static async roll(
@@ -155,7 +157,10 @@ export class SpiritMagicCard {
     return { level: level, boost: boost };
   }
 
-  // Store the current raw string (FormDataEntryValue) form values to the flags
+  /**
+   * Store the current raw string (FormDataEntryValue) form values to the flags
+   * Called from {@link RqgChatMessage.formSubmitHandler} and {@link RqgChatMessage.inputChangeHandler}
+   */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
     assertChatMessageFlagType(flags.type, "spiritMagicCard");
     const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;

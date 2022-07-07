@@ -61,6 +61,10 @@ export class RuneMagicCard {
     activateChatTab();
   }
 
+  /**
+   * Do a roll from the Rune Magic Chat card. Use the flags on the chatMessage to get the required data.
+   * Called from {@link RqgChatMessage.doRoll}
+   */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "runeMagicCard");
@@ -90,7 +94,6 @@ export class RuneMagicCard {
       speaker,
       selectedRuneId
     );
-    return false;
   }
 
   public static async roll(
@@ -376,7 +379,10 @@ export class RuneMagicCard {
     };
   }
 
-  // Store the current raw string (FormDataEntryValue) form values to the flags
+  /**
+   * Store the current raw string (FormDataEntryValue) form values to the flags
+   * Called from {@link RqgChatMessage.formSubmitHandler} and {@link RqgChatMessage.inputChangeHandler}
+   */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
     assertChatMessageFlagType(flags.type, "runeMagicCard");
     const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
