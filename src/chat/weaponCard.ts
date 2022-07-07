@@ -88,7 +88,7 @@ export class WeaponCard {
     );
 
     switch (actionName) {
-      case "combatManeuverName":
+      case "combatManeuverRoll":
         const weaponUsage = weaponItem.data.data.usage[usageType];
         const combatManeuver = weaponUsage.combatManeuvers.find((m) => m.name === actionValue);
         requireValue(
@@ -123,7 +123,7 @@ export class WeaponCard {
         await WeaponCard.hitLocationRoll(speaker);
         return;
 
-      case "fumble":
+      case "fumbleRoll":
         await WeaponCard.fumbleRoll(actor, speaker);
         return;
 
@@ -216,7 +216,7 @@ export class WeaponCard {
       const pushedButton = ev.submitter;
       flags.formData.actionName = pushedButton.name;
       flags.formData.actionValue = pushedButton.value;
-      if (pushedButton.name === "combatManeuverName") {
+      if (pushedButton.name === "combatManeuverRoll") {
         flags.formData.combatManeuverName = pushedButton.value;
       }
     }
