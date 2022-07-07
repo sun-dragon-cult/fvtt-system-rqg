@@ -137,16 +137,4 @@ export class RqgChatMessage extends ChatMessage {
     const chatMessageId = getRequiredDomDataset(event, "message-id");
     return { chatMessageId: chatMessageId };
   }
-
-  // TODO Implement via getHTML in each chatcard and move away from static functions?
-  // TODO How to get templateData then?
-  // getHTML(): Promise<JQuery> {
-  //   const flags = this.data.flags;
-  //   const chatMessageType = flags.rqg?.type;
-  //   if (chatMessageType) {
-  //     return CONFIG.RQG.chatMessages[chatMessageType].getHTML();
-  //   }
-  //   const msg = "Unexpected Chat Message type when generating Chat Message HTML";
-  //   throw new RqgError(msg, this);
-  // }
 }
