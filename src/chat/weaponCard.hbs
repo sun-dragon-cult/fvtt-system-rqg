@@ -22,10 +22,10 @@
       {{/with}}
     </div>
 
-    {{#if formData.combatManeuverName}}
+    {{#if formData.actionName}}
       <hr>
 
-      {{#if (eq formData.combatManeuverName "parry")}}
+      {{#if (eq formData.actionName "parry")}}
         {{#if (eq card.result 0)}}
           <h3>TODO Hyper Critical Not yet implemented</h3>
         {{/if}}

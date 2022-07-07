@@ -18,6 +18,7 @@ import {
   RqgChatMessageFlags,
 } from "../data-model/shared/rqgDocumentFlags";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { RqgChatMessage } from "./RqgChatMessage";
 
 export type CharacteristicData = {
   name: string;
@@ -48,35 +49,22 @@ export class CharacteristicCard {
     activateChatTab();
   }
 
-  public static async formSubmitHandler(ev: SubmitEvent, messageId: string): Promise<boolean> {
-    ev.preventDefault();
-
-    const button = ev.submitter as HTMLButtonElement;
-    button.disabled = true;
-    setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
-
-    const chatMessage = getGame().messages?.get(messageId);
-    const flags = chatMessage?.data.flags.rqg;
+  public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
+    const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "characteristicCard");
-    CharacteristicCard.updateFlagsFromForm(flags, ev);
-
-    const form = ev.target as HTMLFormElement;
-    // Disable form until completed
-    form.style.pointerEvents = "none";
-
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
-    const { characteristicValue, difficulty, modifier } =
+    const { characteristicName, characteristicValue, difficulty, modifier } =
       await CharacteristicCard.getFormDataFromFlags(flags);
-
     await CharacteristicCard.roll(
-      flags.card.characteristic.name,
+      characteristicName,
       characteristicValue,
       difficulty,
       modifier,
       actor,
-      ChatMessage.getSpeaker({ actor: actor, token: token })
+      speaker
     );
 
     // Enabling the form again after DsN animation is finished TODO doesn't wait
@@ -159,10 +147,14 @@ export class CharacteristicCard {
     };
   }
 
-  public static async getFormDataFromFlags(
-    flags: RqgChatMessageFlags
-  ): Promise<{ difficulty: number; modifier: number; characteristicValue: number }> {
+  public static async getFormDataFromFlags(flags: RqgChatMessageFlags): Promise<{
+    characteristicName: string;
+    difficulty: number;
+    modifier: number;
+    characteristicValue: number;
+  }> {
     assertChatMessageFlagType(flags.type, "characteristicCard");
+    const characteristicName = flags.card.characteristic.name;
     const characteristicValue: number = Number(flags.card.characteristic.data.value) || 0;
 
     // The dropdown value is a (string) integer - let 0 be a stand in for 0.5 to make the corresponding translation key work.
@@ -170,7 +162,12 @@ export class CharacteristicCard {
       flags.formData.difficulty === "0" ? 0.5 : Number(flags.formData.difficulty) || 5;
 
     const modifier = convertFormValueToInteger(flags.formData.modifier);
-    return { characteristicValue: characteristicValue, difficulty: difficulty, modifier: modifier };
+    return {
+      characteristicName: characteristicName,
+      characteristicValue: characteristicValue,
+      difficulty: difficulty,
+      modifier: modifier,
+    };
   }
 
   // Store the current raw string (FormDataEntryValue) form values to the flags

@@ -15,6 +15,7 @@ import {
 import { ReputationCardFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { RqgChatMessage } from "./RqgChatMessage";
 
 export class ReputationCard {
   public static async show(actor: RqgActor, token: TokenDocument | null): Promise<void> {
@@ -35,24 +36,15 @@ export class ReputationCard {
     activateChatTab();
   }
 
-  public static async formSubmitHandler(ev: SubmitEvent, messageId: string): Promise<boolean> {
-    ev.preventDefault();
-
-    const button = ev.submitter as HTMLButtonElement;
-    button.disabled = true;
-    setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
-
-    const chatMessage = getGame().messages?.get(messageId);
-    const flags = chatMessage?.data.flags.rqg;
+  public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
+    const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "reputationCard");
-    ReputationCard.updateFlagsFromForm(flags, ev);
-
-    const form = ev.target as HTMLFormElement;
-    // Disable form until completed
-    form.style.pointerEvents = "none";
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
+
     const { reputationValue, modifier } = await ReputationCard.getFormDataFromFlags(flags);
+    await ReputationCard.roll(reputationValue, modifier, speaker);
 
     await ReputationCard.roll(
       reputationValue,

@@ -16,6 +16,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RqgChatMessageFlags, SpiritMagicCardFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { RqgChatMessage } from "./RqgChatMessage";
 
 export class SpiritMagicCard {
   public static async show(
@@ -44,21 +45,16 @@ export class SpiritMagicCard {
     activateChatTab();
   }
 
-  public static async formSubmitHandler(ev: SubmitEvent, messageId: string): Promise<boolean> {
-    ev.preventDefault();
-
-    const button = ev.submitter as HTMLButtonElement;
-    button.disabled = true;
-    setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
-
-    const chatMessage = getGame().messages?.get(messageId);
-    const flags = chatMessage?.data.flags.rqg as SpiritMagicCardFlags;
-    assertChatMessageFlagType(flags.type, "spiritMagicCard");
-
+  public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
+    const flags = chatMessage.data.flags.rqg;
+    assertChatMessageFlagType(flags?.type, "spiritMagicCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
-    const spiritMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
+    const spiritMagicItem = (await getRequiredDocumentFromUuid(flags.card.itemUuid)) as RqgItem;
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
+
     const { level, boost } = await SpiritMagicCard.getFormDataFromFlags(flags);
+    await SpiritMagicCard.roll(spiritMagicItem, level, boost, actor, speaker);
 
     await SpiritMagicCard.roll(
       spiritMagicItem,

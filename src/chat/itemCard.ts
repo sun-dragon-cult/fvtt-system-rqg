@@ -11,6 +11,7 @@ import {
   getRequiredDocumentFromUuid,
   convertFormValueToInteger,
   cleanIntegerString,
+  requireValue,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import {
@@ -20,6 +21,7 @@ import {
 import { ItemCardFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { RqgChatMessage } from "./RqgChatMessage";
 
 export class ItemCard {
   public static async show(
@@ -54,31 +56,17 @@ export class ItemCard {
     activateChatTab();
   }
 
-  public static async formSubmitHandler(ev: SubmitEvent, messageId: string): Promise<boolean> {
-    ev.preventDefault();
-
-    const button = ev.submitter as HTMLButtonElement;
-    button.disabled = true;
-    setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
-
-    const chatMessage = getGame().messages?.get(messageId);
-    const flags = chatMessage?.data.flags.rqg;
+  public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
+    const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "itemCard");
-    ItemCard.updateFlagsFromForm(flags, ev);
-
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
-    const item = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
-
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
+    const item = (await getRequiredDocumentFromUuid(flags.card.itemUuid)) as RqgItem | undefined;
+    requireValue(item, "Couldn't find item on item chat message");
     const { modifier } = await ItemCard.getFormDataFromFlags(flags);
 
-    await ItemCard.roll(
-      item,
-      modifier,
-      actor,
-      ChatMessage.getSpeaker({ actor: actor, token: token })
-    );
-    return false;
+    await ItemCard.roll(item, modifier, actor, speaker);
   }
 
   public static async roll(

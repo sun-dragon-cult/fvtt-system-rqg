@@ -3,14 +3,6 @@ import { CharacteristicData } from "../../chat/characteristicCard";
 import { UsageType } from "../item-data/weaponData";
 import { ChatCardType } from "../../chat/RqgChatMessage";
 
-// export type ChatCardTypes =
-//   | "characteristic"
-//   | "item"
-//   | "reputation"
-//   | "runeMagic"
-//   | "spiritMagic"
-//   | "weapon";
-
 // Base chat card flag structure
 export type BaseRqgChatCard = {
   /** The different types of chatmessages. Used for type narrowing, see {@link assertChatMessageFlagType} */
@@ -88,7 +80,7 @@ export interface SpiritMagicCardFlags extends BaseRqgChatCard {
 export interface WeaponCardFlags extends BaseRqgChatCard {
   type: "weaponCard";
   card: CommonRqgCardFlags & {
-    skillUuid: string;
+    skillUuid: string; // TODO Not needed with weaponUuid + usage ?
     weaponUuid: string;
     usage: UsageType;
     result: ResultEnum | undefined;
@@ -97,6 +89,8 @@ export interface WeaponCardFlags extends BaseRqgChatCard {
   formData: {
     otherModifiers: FormDataEntryValue;
     combatManeuverName: FormDataEntryValue;
+    actionName: string; // the clicked buttons name (like "combatManeuver" or "damageRoll")
+    actionValue: string; // the clicked buttons value (like "slash" or "special")
   };
 }
 

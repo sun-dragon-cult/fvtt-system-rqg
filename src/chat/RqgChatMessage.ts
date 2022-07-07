@@ -1,15 +1,12 @@
 import { ReputationCard } from "./reputationCard";
 import { CharacteristicCard } from "./characteristicCard";
 import {
-  getDocumentFromUuid,
   getGame,
-  getRequiredDocumentFromUuid,
   getRequiredDomDataset,
   localize,
   moveCursorToEnd,
   requireValue,
 } from "../system/util";
-import { RqgActor } from "../actors/rqgActor";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { ItemCard } from "./itemCard";
 import { SpiritMagicCard } from "./spiritMagicCard";
@@ -49,38 +46,27 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   private static addChatListeners(html: HTMLElement): void {
-    html.addEventListener("submit", RqgChatMessage.initialFormSubmitHandler);
+    html.addEventListener("submit", RqgChatMessage.formSubmitHandler);
     html.addEventListener("input", RqgChatMessage.inputChangeHandler);
     html.addEventListener("change", RqgChatMessage.inputChangeHandler);
-  }
-
-  private static async initialFormSubmitHandler(submitEvent: SubmitEvent): Promise<void> {
-    const { chatCardType, chatMessageId } = RqgChatMessage.getChatCardInfo(submitEvent);
-
-    await cardMap[chatCardType].formSubmitHandler(submitEvent, chatMessageId);
   }
 
   private static async inputChangeHandler(inputEvent: Event): Promise<void> {
     if ((inputEvent.target as Element)?.classList.contains("roll-type-select")) {
       return; // Don't handle foundry roll type select dropdown
     }
-    // if (!(inputEvent instanceof InputEvent || inputEvent instanceof Event)) {
-    //   return; // TODO Throw error
-    // }
-    const { chatCardType, chatMessageId } = RqgChatMessage.getChatCardInfo(inputEvent);
+    const { chatMessageId } = RqgChatMessage.getChatCardInfo(inputEvent);
     const chatMessage = getGame().messages?.get(chatMessageId);
     requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
 
     const flags = chatMessage.data.flags.rqg;
     requireValue(flags, "No rqg flags found on chat card");
-    // const chatCardType = flags?.type;
+    const chatCardType = flags?.type;
     requireValue(chatCardType, "Found chatmessage without chatCardType");
 
-    // TODO call right method
     cardMap[chatCardType].updateFlagsFromForm(flags, inputEvent);
     const data = await cardMap[chatCardType].renderContent(flags);
 
-    // const data = await ReputationCard.renderContent(flags);
     const domChatMessages = document.querySelectorAll<HTMLElement>(
       `[data-message-id="${chatMessage.id}"]`
     );
@@ -110,50 +96,46 @@ export class RqgChatMessage extends ChatMessage {
     ui.chat?.scrollBottom(); // Fix that the weapon card gets bigger and pushes the rest of the chatlog down
   }
 
-  public async doRoll(): Promise<void> {
-    requireValue(this.data.flags.rqg?.type, "Got a chatcard without a type");
-    // cardMap[this.data.flags.rqg?.type].roll("");
-    // TODO how to generalise the roll parameters???
-  }
+  public static async formSubmitHandler(submitEvent: SubmitEvent): Promise<boolean> {
+    submitEvent.preventDefault();
 
-  public static async formSubmitHandler(ev: SubmitEvent, messageId: string): Promise<boolean> {
-    ev.preventDefault();
+    const { chatMessageId } = RqgChatMessage.getChatCardInfo(submitEvent);
 
-    const button = ev.submitter as HTMLButtonElement;
-    button.disabled = true;
-    setTimeout(() => (button.disabled = false), 1000); // Prevent double clicks
+    const clickedButton = submitEvent.submitter as HTMLButtonElement;
+    clickedButton.disabled = true;
+    setTimeout(() => (clickedButton.disabled = false), 1000); // Prevent double clicks
 
-    const chatMessage = getGame().messages?.get(messageId);
+    const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
     const flags = chatMessage?.data.flags.rqg;
     requireValue(flags, "Couldn't find flags on chatmessage");
 
-    const cardType = flags.type;
+    const chatCardType = flags.type;
 
-    cardMap[cardType].updateFlagsFromForm(flags, ev);
+    cardMap[chatCardType].updateFlagsFromForm(flags, submitEvent);
 
-    const form = ev.target as HTMLFormElement;
+    const form = submitEvent.target as HTMLFormElement;
     // Disable form until completed
     form.style.pointerEvents = "none";
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
-    // TODO *** Is this actually rollData and is there a rollData method on ChatMessage already (or is that only for rolls)
-    const rollData = await cardMap[cardType].getFormDataFromFlags(flags);
-    // const { reputationValue, modifier } = await ReputationCard.getFormDataFromFlags(flags);
 
-    // TODO encapsulating parameters into an object could work?
-    await cardMap[cardType].roll(rollData, ChatMessage.getSpeaker({ actor: actor, token: token }));
-    // Enabling the form again after DsN animation is finished TODO doesn't wait
+    await chatMessage.doRoll();
+
+    // Enabling the form again after DsN animation is finished TODO doesn't wait?
     form.style.pointerEvents = "auto";
     return false;
   }
 
+  public async doRoll(): Promise<void> {
+    const flags = this.data.flags.rqg;
+    requireValue(flags, "No rqg flags found on chat card");
+    const chatCardType = flags.type;
+    await cardMap[chatCardType].rollFromChat(this);
+  }
+
   private static getChatCardInfo(event: Event): {
-    chatCardType: ChatCardType;
     chatMessageId: string;
   } {
-    const chatCardType = getRequiredDomDataset(event, "chat-card") as ChatCardType;
     const chatMessageId = getRequiredDomDataset(event, "message-id");
-    return { chatCardType: chatCardType, chatMessageId: chatMessageId };
+    return { chatMessageId: chatMessageId };
   }
 
   // TODO Implement via getHTML in each chatcard and move away from static functions?
