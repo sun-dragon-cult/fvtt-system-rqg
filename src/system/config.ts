@@ -1,10 +1,3 @@
-import { ItemCard } from "../chat/itemCard";
-import { CharacteristicCard } from "../chat/characteristicCard";
-import { ReputationCard } from "../chat/reputationCard";
-import { RuneMagicCard } from "../chat/runeMagicCard";
-import { SpiritMagicCard } from "../chat/spiritMagicCard";
-import { WeaponCard } from "../chat/weaponCard";
-
 export const RQG_CONFIG = {
   debug: {
     showActorActiveEffectsTab: false,
@@ -146,15 +139,6 @@ export const RQG_CONFIG = {
     selectedHomelandRqid: "selected-homeland-rqid",
     isActorTemplate: "is-actor-template",
     wizardChoices: "wizard-choices",
-  },
-
-  chatMessages: {
-    characteristic: CharacteristicCard,
-    item: ItemCard,
-    reputation: ReputationCard,
-    runeMagic: RuneMagicCard,
-    spiritMagic: SpiritMagicCard,
-    weapon: WeaponCard,
   },
 };
 
