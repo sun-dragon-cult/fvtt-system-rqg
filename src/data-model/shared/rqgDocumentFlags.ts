@@ -80,7 +80,6 @@ export interface SpiritMagicCardFlags extends BaseRqgChatCard {
 export interface WeaponCardFlags extends BaseRqgChatCard {
   type: "weaponCard";
   card: CommonRqgCardFlags & {
-    skillUuid: string; // TODO Not needed with weaponUuid + usage ?
     weaponUuid: string;
     usage: UsageType;
     result: ResultEnum | undefined;

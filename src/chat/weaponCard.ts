@@ -39,15 +39,14 @@ export class WeaponCard {
   public static async show(
     weaponId: string,
     usage: UsageType,
-    skillId: string,
     actor: RqgActor,
     token: TokenDocument | undefined
   ): Promise<void> {
     requireValue(actor.id, "No id on actor");
-    const skillItem = actor.items.get(skillId);
-    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
     const weaponItem = actor.items.get(weaponId);
     assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
+    const skillItem = WeaponCard.getUsedSkillItem(actor, weaponItem, usage);
+    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
 
     const flags: WeaponCardFlags = {
       type: "weaponCard",
@@ -55,7 +54,6 @@ export class WeaponCard {
         actorUuid: actor.uuid,
         tokenUuid: token?.uuid,
         chatImage: weaponItem.img ?? undefined,
-        skillUuid: skillItem.uuid,
         weaponUuid: weaponItem.uuid,
         usage: usage,
         specialDamageTypeText: undefined,
@@ -153,9 +151,10 @@ export class WeaponCard {
     assertChatMessageFlagType(flags.type, "weaponCard");
     const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
-    const skillItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.skillUuid);
     const weaponItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.weaponUuid);
-    assertItemType(skillItem.data.type, ItemTypeEnum.Skill);
+    const usage = convertFormValueToString(flags.card.usage) as UsageType;
+    const skillItem = WeaponCard.getUsedSkillItem(actor, weaponItem, usage);
+    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
 
     const specialization = skillItem.data.data.specialization
       ? ` (${skillItem.data.data.specialization})`
@@ -301,10 +300,7 @@ export class WeaponCard {
       }
     }
 
-    const skillItem = actor.getEmbeddedDocument(
-      "Item",
-      weaponItem.data.data.usage[usage].skillId
-    ) as RqgItem | undefined;
+    const skillItem = WeaponCard.getUsedSkillItem(actor, weaponItem, usage);
     assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
 
     const chance: number = Number(skillItem.data.data.chance) || 0;
@@ -500,5 +496,17 @@ export class WeaponCard {
   private static slashImpaleSpecialDamage(weaponDamage: string): any[] {
     const impaleSpecialDamageTag = localize("RQG.Dialog.weaponCard.ImpaleSpecialDamageTag");
     return Roll.parse(`+ (${weaponDamage})[${impaleSpecialDamageTag}]`, {});
+  }
+
+  private static getUsedSkillItem(
+    actor: RqgActor,
+    weaponItem: RqgItem,
+    usage: UsageType
+  ): RqgItem | undefined {
+    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
+
+    return actor.getEmbeddedDocument("Item", weaponItem.data.data.usage[usage].skillId) as
+      | RqgItem
+      | undefined;
   }
 }

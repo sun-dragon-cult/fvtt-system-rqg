@@ -26,7 +26,7 @@ export const combatMenuOptions = (
       const weaponItemId = getDomDataset(el, "item-id");
       const usage = getRequiredDomDataset(el, "weapon-roll") as UsageType;
       if (skillItemId && weaponItemId) {
-        await WeaponCard.show(weaponItemId, usage, skillItemId, actor, token);
+        await WeaponCard.show(weaponItemId, usage, actor, token);
       } else {
         const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponChatCardError", {
           skillItemId: skillItemId,

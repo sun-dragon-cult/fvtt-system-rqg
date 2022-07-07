@@ -870,13 +870,13 @@ export class RqgActorSheet extends ActorSheet<
         if (skillItemId && clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          await WeaponCard.show(weaponItemId, weaponUsage, skillItemId, this.actor, this.token);
+          await WeaponCard.show(weaponItemId, weaponUsage, this.actor, this.token);
           clickCount = 0;
         } else if (skillItemId && clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
               // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await WeaponCard.show(weaponItemId, weaponUsage, skillItemId, this.actor, this.token);
+              await WeaponCard.show(weaponItemId, weaponUsage, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1491,7 +1491,7 @@ export class RqgActorSheet extends ActorSheet<
         class: `actor-wizard-button-${this.actor.id}`,
         label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
         icon: "fas fa-user-edit",
-        onclick: (e) => this._openActorWizard(),
+        onclick: () => this._openActorWizard(),
       },
       ...super._getHeaderButtons(),
     ];
