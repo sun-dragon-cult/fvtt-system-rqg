@@ -476,8 +476,8 @@ export class WeaponCard {
 
     // Render the chat card which combines the dice roll with the drawn results
     messageData.content = await renderTemplate(CONFIG.RollTable.resultTemplate, {
-      // @ts-ignore entities TODO check definitions
-      description: TextEditor.enrichHTML(fumbleTable.data.description, { entities: true }),
+      // @ts-expect-error is "documents" in current foundry versions
+      description: TextEditor.enrichHTML(fumbleTable.data.description, { documents: true }),
       results: draw.results.map((r: any) => {
         // TODO fix typing
         r.text = r.getChatText();

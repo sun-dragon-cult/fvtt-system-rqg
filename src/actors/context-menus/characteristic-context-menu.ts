@@ -78,11 +78,11 @@ export const characteristicMenuOptions = (
       return trainable.includes(characteristicName);
     },
     callback: (el: JQuery) => {
-      const charName = getDomDataset(el, "characteristic");
+      const charName = getDomDataset(el, "characteristic") as keyof Characteristics | undefined;
       requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
-      const characteristic = (actor.data.data.characteristics as any)[charName];
-      characteristic.name = charName;
+      const characteristic = actor.data.data.characteristics[charName];
+      (characteristic as any).name = charName; // TODO adding extra properties that's not on type Characteristic
       const speakerName = token?.name ?? actor.data.token.name ?? "";
       showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
     },
@@ -92,13 +92,15 @@ export const characteristicMenuOptions = (
     icon: ContextMenuRunes.InitializeCharacteristics,
     condition: (): boolean => !!getGame().user?.isGM,
     callback: async (el: JQuery) => {
-      const characteristic = getDomDataset(el, "characteristic");
+      const characteristic = getDomDataset(el, "characteristic") as
+        | keyof Characteristics
+        | undefined;
       requireValue(characteristic, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
       const confirmed = await confirmInitializeDialog(actor.name ?? "", characteristic);
       if (confirmed) {
         const updateData = await getCharacteristicUpdate(
           characteristic,
-          (actor.data.data.characteristics as any)[characteristic].formula,
+          actor.data.data.characteristics[characteristic].formula,
           actor.name ?? getGameUser().name ?? ""
         );
         await actor.update(updateData);
@@ -160,7 +162,7 @@ export async function initializeAllCharacteristics(
   for (const characteristic of Object.keys(actor.data.data.characteristics)) {
     const update = await getCharacteristicUpdate(
       characteristic,
-      (actor.data.data.characteristics as any)[characteristic].formula,
+      actor.data.data.characteristics[characteristic as keyof Characteristics].formula,
       silent ? undefined : actor.name ?? getGameUser().name ?? ""
     );
     mergeObject(updateData, update);

@@ -14,10 +14,7 @@ import {
 } from "../system/util";
 import { ReputationCardFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import {
-  ChatSpeakerData,
-  ChatSpeakerDataProperties,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
@@ -86,7 +83,7 @@ export class ReputationCard {
       cardHeading: localize("RQG.Dialog.reputationCard.Reputation"),
     };
     let html = await renderTemplate("systems/rqg/chat/reputationCard.hbs", templateData);
-    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
     return {
       user: getGame().user?.id,

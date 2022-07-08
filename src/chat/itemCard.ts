@@ -14,10 +14,7 @@ import {
   requireValue,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
-import {
-  ChatSpeakerData,
-  ChatSpeakerDataProperties,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { ItemCardFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
@@ -117,7 +114,7 @@ export class ItemCard {
     };
 
     let html = await renderTemplate("systems/rqg/chat/itemCard.hbs", templateData);
-    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
+    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
     return {
       user: getGame().user?.id,
