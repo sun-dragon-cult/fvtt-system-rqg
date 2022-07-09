@@ -41,6 +41,27 @@
       "type": "Item"
     },
     {
+      "name": "rune-descriptions",
+      "label": "Rune Descriptions",
+      "system": "rqg",
+      "path": "assets/packs/rune-descriptions.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "fumble-roll-table",
+      "label": "Fumble Rolltable",
+      "system": "rqg",
+      "path": "assets/packs/rune-descriptions.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "fumble",
+      "label": "Fumble",
+      "system": "rqg",
+      "path": "assets/packs/fumble-roll-table.db",
+      "type": "RollTable"
+    },
+    {
       "name": "skills-basic",
       "label": "Skills - Basic ",
       "system": "rqg",

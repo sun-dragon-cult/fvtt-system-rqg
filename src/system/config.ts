@@ -128,6 +128,14 @@ export const RQG_CONFIG = {
     defaultPriority: 999999,
     defaultLang: "en",
   },
+
+  actorWizardFlags: { // TODO remove ??
+    actorWizardComplete: "actor-wizard-complete",
+    selectedSpeciesId: "selected-species-id",
+    selectedHomelandRqid: "selected-homeland-rqid",
+    isActorTemplate: "is-actor-template",
+    wizardChoices: "wizard-choices",
+  },
 };
 
 export type RqgConfig = typeof RQG_CONFIG;

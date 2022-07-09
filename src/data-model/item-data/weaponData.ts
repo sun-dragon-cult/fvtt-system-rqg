@@ -11,6 +11,8 @@ export const damageType = {
 } as const;
 export type DamageType = typeof damageType[keyof typeof damageType];
 
+export type UsageType = "oneHand" | "twoHand" | "offHand" | "missile";
+
 export type CombatManeuver = {
   //** name used to identify this maneuver */
   name: string;
@@ -35,10 +37,7 @@ export type Usage = {
 export interface WeaponDataSourceData extends IPhysicalItem {
   /** This weapon can be used with different skills etc depending on usage */
   usage: {
-    oneHand: Usage;
-    twoHand: Usage;
-    offHand: Usage;
-    missile: Usage;
+    [K in UsageType]: Usage;
   };
   hitPoints: Resource;
   /** E.g. arm or --- instead of a number */

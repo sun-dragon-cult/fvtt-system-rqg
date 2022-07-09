@@ -19,23 +19,23 @@ import { CharacteristicCard } from "../chat/characteristicCard";
 import { WeaponCard } from "../chat/weaponCard";
 import { SpiritMagicCard } from "../chat/spiritMagicCard";
 import { ItemCard } from "../chat/itemCard";
-import { Characteristics } from "../data-model/actor-data/characteristics";
 import { RqgActor } from "./rqgActor";
 import {
   assertActorType,
   assertItemType,
   findDatasetValueInSelfOrAncestors,
-  getActorFromIds,
+  getDocumentFromUuid,
   getDocumentTypes,
   getDomDataset,
   getGame,
   getGameUser,
+  getRequiredDocumentFromUuid,
   getRequiredDomDataset,
   hasOwnProperty,
   localize,
   requireValue,
   RqgError,
-  usersThatOwnActor,
+  usersIdsThatOwnActor,
 } from "../system/util";
 import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
@@ -46,10 +46,7 @@ import {
   CharacterDataProperties,
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
-import {
-  ItemDataProperties,
-  ItemDataSource,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ReputationCard } from "../chat/reputationCard";
 import { RuneMagicCard } from "../chat/runeMagicCard";
 import { ActorWizard } from "../dialog/actorWizardApplication";
@@ -365,7 +362,7 @@ export class RqgActorSheet extends ActorSheet<
           i.data.data.runeType === RuneTypeEnum.Element &&
           !!i.data.data.chance
         ) {
-          acc.push(i.data);
+          acc.push(i.data as RuneDataSource);
         }
         return acc;
       }, [])
@@ -380,7 +377,7 @@ export class RqgActorSheet extends ActorSheet<
           i.data.data.runeType === RuneTypeEnum.Power &&
           i.data.data.chance > 50
         ) {
-          acc.push(i.data);
+          acc.push(i.data as RuneDataSource);
         }
         return acc;
       }, [])
@@ -395,7 +392,7 @@ export class RqgActorSheet extends ActorSheet<
           i.data.data.runeType === RuneTypeEnum.Form &&
           (!i.data.data.opposingRune || i.data.data.chance > 50)
         ) {
-          acc.push(i.data);
+          acc.push(i.data as RuneDataSource);
         }
         return acc;
       }, [])
@@ -512,14 +509,9 @@ export class RqgActorSheet extends ActorSheet<
             // STR can compensate for being under DEX min on 2 for 1 basis
             let deficiency = usage.minDexterity - actorDex;
             let strover = Math.floor((actorStr - usage.minStrength) / 2);
-            if (usage.minStrength === null) {
+            if (usage.minStrength == null) {
               usage.unusable = true;
-            } else if (deficiency > strover) {
-              usage.unusable = true;
-            } else {
-              // Character has enough STR to compensate for being below DEX min
-              usage.unusable = false;
-            }
+            } else usage.unusable = deficiency > strover;
           }
         }
       }
@@ -607,7 +599,7 @@ export class RqgActorSheet extends ActorSheet<
           user: getGameUser().id,
           speaker: { alias: speakerName },
           content: message,
-          whisper: usersThatOwnActor(this.actor).map((u) => u.id),
+          whisper: usersIdsThatOwnActor(this.actor),
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
         });
     }
@@ -664,30 +656,29 @@ export class RqgActorSheet extends ActorSheet<
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
 
     // Roll Characteristic
-    this.form?.querySelectorAll("[data-characteristic-roll]").forEach((el) => {
-      const characteristicName = (el.closest("[data-characteristic]") as HTMLElement).dataset
+    this.form?.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
+      const characteristicName = (el.closest("[data-characteristic]") as HTMLElement)?.dataset
         .characteristic;
 
       let clickCount = 0;
-      const actorCharacteristics: Characteristics = this.actor.data.data.characteristics;
+      const actorCharacteristics = this.actor.data.data.characteristics;
       if (!characteristicName || !(characteristicName in actorCharacteristics)) {
         const msg = `Characteristic [${characteristicName}] isn't found on actor [${this.actor.name}].`;
         ui.notifications?.error(msg);
         throw new RqgError(msg, this.actor);
       }
-      el.addEventListener("click", async (ev: Event) => {
-        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          const speakerName = this.token?.name || this.actor.data.token.name;
           await CharacteristicCard.roll(
             characteristicName,
             actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
             5,
             0,
             this.actor,
-            speakerName
+            // @ts-expect-error this.token should be TokenDocument, but is typed as Token
+            ChatMessage.getSpeaker({ actor: this.actor, token: this.token })
           );
           clickCount = 0;
         } else if (clickCount === 1) {
@@ -711,19 +702,15 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    this.form?.querySelectorAll("[data-reputation-roll]").forEach((el) => {
+    this.form?.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
       let clickCount = 0;
-      el.addEventListener("click", async (ev: Event) => {
-        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          const speakerName = this.token?.name || this.actor.data.token.name;
-          await ReputationCard.directroll(
-            this.actor,
-            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            this.token
-          );
+          const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
+          await ReputationCard.roll(this.actor.data.data.background.reputation ?? 0, 0, speaker);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
@@ -741,13 +728,13 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll against Item Ability Chance
-    this.form?.querySelectorAll("[data-item-roll]").forEach((el) => {
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    this.form?.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId);
       requireValue(item, "AbilityChance roll couldn't find skillItem");
       let clickCount = 0;
 
-      el.addEventListener("click", async (ev: Event) => {
+      el.addEventListener("click", async (ev: MouseEvent) => {
         if (
           hasOwnProperty(item.data.data, "category") &&
           [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
@@ -760,17 +747,11 @@ export class RqgActorSheet extends ActorSheet<
           return;
         }
 
-        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
-
+        clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          const speakerName = this.token?.name || this.actor.data.token.name;
-          await ItemCard.roll(
-            item.data.toObject(false) as unknown as ItemDataProperties,
-            0,
-            this.actor,
-            speakerName
-          );
+          // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+          const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
+          await ItemCard.roll(item, 0, this.actor, speaker);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
@@ -785,31 +766,31 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll Rune Magic
-    this.form?.querySelectorAll("[data-rune-magic-roll]").forEach((el) => {
+    this.form?.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
-      const item = this.actor.items.get(itemId);
-      if (!item) {
-        const msg = `Couldn't find item [${itemId}] to roll Rune Magic against`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, el);
-      }
+      const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId) as RqgItem | undefined;
+      assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
       let clickCount = 0;
 
-      el.addEventListener("click", async (ev: Event) => {
-        if (item.data.type !== ItemTypeEnum.RuneMagic) {
-          const msg = "Tried to roll a Rune Magic Roll against some other Item";
-          ui.notifications?.error(msg);
-          throw new RqgError(msg, item);
-        }
-        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
+        clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          if (item.data.data.points > 1) {
+          if (runeMagicItem.data.data.points > 1) {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             await RuneMagicCard.show(itemId, this.actor, this.token);
           } else {
-            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            const speakerName = this.token?.name || this.actor.data.token.name;
-            await RuneMagicCard.directRoll(item, this.actor, speakerName);
+            await RuneMagicCard.roll(
+              runeMagicItem,
+              runeMagicItem.data.data.points,
+              0,
+              0,
+              0,
+              0,
+              this.actor,
+              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+              ChatMessage.getSpeaker({ actor: this.actor, token: this.token })
+            );
           }
 
           clickCount = 0;
@@ -826,7 +807,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll Spirit Magic
-    this.form?.querySelectorAll("[data-spirit-magic-roll]").forEach((el) => {
+    this.form?.querySelectorAll<HTMLElement>("[data-spirit-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
       const item = this.actor.items.get(itemId);
       if (!item) {
@@ -836,27 +817,21 @@ export class RqgActorSheet extends ActorSheet<
       }
       let clickCount = 0;
 
-      el.addEventListener("click", async (ev: Event) => {
+      el.addEventListener("click", async (ev: MouseEvent) => {
         if (item.data.type !== ItemTypeEnum.SpiritMagic) {
           const msg = "Tried to roll a Spirit Magic Roll against some other Item";
           ui.notifications?.error(msg);
           throw new RqgError(msg, item);
         }
-        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+        clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (item.data.data.isVariable && item.data.data.points > 1) {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             await SpiritMagicCard.show(itemId, this.actor, this.token);
           } else {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            const speakerName = this.token?.name || this.actor.data.token.name;
-            await SpiritMagicCard.roll(
-              item.data.toObject(),
-              item.data.data.points,
-              0,
-              this.actor,
-              speakerName
-            );
+            const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
+            await SpiritMagicCard.roll(item, item.data.data.points, 0, this.actor, speaker);
           }
 
           clickCount = 0;
@@ -884,18 +859,18 @@ export class RqgActorSheet extends ActorSheet<
       }
 
       let clickCount = 0;
-      el.addEventListener("click", async (ev: Event) => {
-        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
         if (skillItemId && clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          await WeaponCard.show(weaponItemId, weaponUsage, skillItemId, this.actor, this.token);
+          await WeaponCard.show(weaponItemId, weaponUsage, this.actor, this.token);
           clickCount = 0;
         } else if (skillItemId && clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
               // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await WeaponCard.show(weaponItemId, weaponUsage, skillItemId, this.actor, this.token);
+              await WeaponCard.show(weaponItemId, weaponUsage, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -904,15 +879,13 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Set Token SR in Combat Tracker
-    this.form?.querySelectorAll("[data-set-sr]").forEach((el: Element) => {
+    this.form?.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el: HTMLElement) => {
       const sr = getRequiredDomDataset($(el as HTMLElement), "set-sr");
       let token = this.token as TokenDocument | null;
       if (!token && this.actor.data.token.actorLink) {
         const activeTokens = this.actor.getActiveTokens();
         token = activeTokens ? activeTokens[0] : null; // TODO Just picks the first token found
       }
-
-      let clickCount = 0;
 
       function setTokenCombatSr() {
         getGame().combats?.forEach(async (combat) => {
@@ -927,8 +900,9 @@ export class RqgActorSheet extends ActorSheet<
         });
       }
 
-      el.addEventListener("click", async (ev: Event) => {
-        clickCount = Math.max(clickCount, (ev as MouseEvent).detail);
+      let clickCount = 0;
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
           setTokenCombatSr();
@@ -1279,7 +1253,9 @@ export class RqgActorSheet extends ActorSheet<
     // This is probably not working because of the itemLocationTree
     if (sameActor) return this._onSortItem(event, itemData);
 
-    const sourceActor = getActorFromIds(data.actorId, data.tokenId);
+    const sourceActor = await getRequiredDocumentFromUuid<RqgActor>(data.actorId);
+    const token = await getDocumentFromUuid<TokenDocument>(data.tokenId);
+
     if (!sourceActor) return false;
 
     if (
@@ -1322,8 +1298,7 @@ export class RqgActorSheet extends ActorSheet<
     buttons.submit = {
       icon: '<i class="fas fa-check"></i>',
       label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
-      callback: async (html: JQuery | HTMLElement) =>
-        await this.submitConfirmCopyIntangibleItem(incomingItemDataSource),
+      callback: async () => await this.submitConfirmCopyIntangibleItem(incomingItemDataSource),
     };
     buttons.cancel = {
       icon: '<i class="fas fa-times"></i>',
@@ -1506,7 +1481,7 @@ export class RqgActorSheet extends ActorSheet<
         class: `actor-wizard-button-${this.actor.id}`,
         label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
         icon: "fas fa-user-edit",
-        onclick: (e) => this._openActorWizard(),
+        onclick: () => this._openActorWizard(),
       },
       ...super._getHeaderButtons(),
     ];

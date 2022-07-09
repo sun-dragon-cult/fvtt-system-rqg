@@ -17,7 +17,7 @@ import { Rqid } from "../../system/api/rqidApi";
 
 export const spiritMagicMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | null
+  token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollCard"),
@@ -41,13 +41,12 @@ export const spiritMagicMenuOptions = (
       if (item.data.data.isVariable && item.data.data.points > 1) {
         item.id && (await SpiritMagicCard.show(item.id, actor, token));
       } else {
-        const speakerName = token?.name ?? actor.data.token.name ?? "";
         await SpiritMagicCard.roll(
-          item.data.toObject(),
+          item,
           item.data.data.points,
           0,
           actor,
-          speakerName
+          ChatMessage.getSpeaker({ actor: actor, token: token })
         );
       }
     },
@@ -57,7 +56,7 @@ export const spiritMagicMenuOptions = (
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "spiritMagicSpellRqid");
-      return rqid ? true : false;
+      return !!rqid;
     },
     callback: async (el: JQuery) => {
       const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "spiritMagicSpellRqid");

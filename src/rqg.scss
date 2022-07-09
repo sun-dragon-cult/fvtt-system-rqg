@@ -517,7 +517,7 @@ body {
 
     &.skill-select {
       grid-template-columns: [col-start] 30px 30px auto min-content [col-end];
-    
+
       // Alternating row background
       >*:nth-child(8n + 1),
       >*:nth-child(8n + 2),
@@ -545,7 +545,7 @@ body {
         grid-template-columns: [col-start] 45px [description-start] auto min-content [description-end col-end];
         grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
       }
-      
+
       .grid.passion-select {
         display: grid;
         grid-template-columns: [col-start] 75px [description-start] auto min-content [description-end col-end];
@@ -571,7 +571,7 @@ body {
     &.rune {
       grid-template-columns: [col-start] max-content auto max-content [col-end];
     }
-    
+
     &.rune-select {
       grid-template-columns: [col-start] max-content max-content auto max-content [col-end];
     }
@@ -579,7 +579,7 @@ body {
     &.opposed-rune {
       grid-template-columns: [col-start] max-content auto max-content min-content max-content auto max-content [col-end];
     }
-    
+
     &.opposed-rune-select {
       grid-template-columns: [col-start] max-content max-content auto max-content min-content max-content max-content auto max-content [col-end];
     }
@@ -708,17 +708,25 @@ body {
         margin-left: -4px;
       }
 
-      [name="combatManeuver"] {
+      [name="combatManeuverRoll"] {
         width: min-content;
         flex: 1 1 auto;
       }
     }
+
     &.characteristic-card {
       .multiplier {
         font-size: 80%;
         vertical-align: text-top;
       }
     }
+
+    &.rune-magic-card{
+      .rune-option {
+        margin-right: 5px;
+      }
+    }
+
     .chat-select-wide {
       width: 100%;
     }

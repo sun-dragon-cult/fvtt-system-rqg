@@ -15,7 +15,7 @@ import {
   localize,
   requireValue,
   RqgError,
-  usersThatOwnActor,
+  usersIdsThatOwnActor,
 } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
@@ -181,7 +181,7 @@ export class HitLocationSheet extends RqgItemSheet<
         hitLocationName: hitLocation.name,
         notification: notification,
       }),
-      whisper: usersThatOwnActor(actor),
+      whisper: usersIdsThatOwnActor(actor),
     });
     activateChatTab();
 

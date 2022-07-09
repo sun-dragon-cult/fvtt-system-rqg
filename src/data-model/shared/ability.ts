@@ -1,3 +1,4 @@
+import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { activateChatTab, getGame, localize } from "../../system/util";
 import { systemId } from "../../system/config";
 
@@ -35,7 +36,7 @@ export class Ability {
     flavor: string,
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
-    speakerName: string,
+    speaker: ChatSpeakerDataProperties,
     resultMessages?: ResultMessage[]
   ): Promise<ResultEnum> {
     const r = new Roll("1d100");
@@ -52,7 +53,7 @@ export class Ability {
     const resultText = localize(`RQG.Game.ResultEnum.${result}`);
     await r.toMessage({
       flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1><div>${resultMsgHtml}</div>`,
-      speaker: { alias: speakerName },
+      speaker: speaker,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     });
     activateChatTab();

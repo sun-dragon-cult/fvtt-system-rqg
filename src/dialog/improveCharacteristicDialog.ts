@@ -1,5 +1,5 @@
 import { RqgActor } from "../actors/rqgActor";
-import { localize } from "../system/util";
+import { convertFormValueToString, localize } from "../system/util";
 import { systemId } from "../system/config";
 
 //**Shows a dialog for improving a Characteristic */
@@ -91,9 +91,7 @@ export async function submitImproveCharacteristicDialog(
   adapter: any
 ): Promise<void> {
   const formData = new FormData(html.find("form")[0]);
-  // @ts-ignore entries
-  const data = Object.fromEntries(formData.entries());
-  const gaintype: string = data.experiencegaintype;
+  const gaintype = convertFormValueToString(formData.get("experiencegaintype"));
   let gain: number = 0;
 
   if (gaintype === "experience-gain-fixed" || gaintype === "experience-gain-random") {
