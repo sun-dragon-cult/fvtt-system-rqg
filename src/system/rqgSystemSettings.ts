@@ -96,4 +96,13 @@ export const registerRqgSystemSettings = function () {
     type: String,
     default: "",
   });
+
+  getGame().settings.register(systemId, "actor-wizard-feature-flag", {
+    name: "Feature Flag: Enable Actor Wizard",
+    hint: "For RnD use only",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+  });
 };
