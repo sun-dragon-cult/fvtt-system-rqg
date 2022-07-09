@@ -443,7 +443,7 @@ export class WeaponCard {
   }
 
   private static async fumbleRoll(actor: RqgActor, speaker: ChatSpeakerDataProperties) {
-    const fumbleTableName = getGame().settings.get("rqg", "fumbleRollTable");
+    const fumbleTableName = getGame().settings.get(systemId, "fumbleRollTable");
     const fumbleTable = getGame().tables?.getName(fumbleTableName);
     if (!fumbleTable) {
       logMisconfiguration(

@@ -128,7 +128,7 @@ export class RqgItem extends Item {
       };
 
       // Set default rqid data for new items
-      const rqidFlags = item?.getFlag("rqg", "documentRqidFlags");
+      const rqidFlags = item?.getFlag(systemId, "documentRqidFlags");
       updateData.flags = updateData.flags ?? {};
       updateData.flags.rqg = {
         documentRqidFlags: {

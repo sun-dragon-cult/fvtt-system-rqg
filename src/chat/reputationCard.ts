@@ -21,7 +21,7 @@ import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/fo
 
 export class ReputationCard {
   public static async show(actor: RqgActor, token: TokenDocument | null): Promise<void> {
-    const iconSettings = getGame().settings.get("rqg", "defaultItemIconSettings");
+    const iconSettings = getGame().settings.get(systemId, "defaultItemIconSettings");
 
     const flags: ReputationCardFlags = {
       type: "reputationCard",

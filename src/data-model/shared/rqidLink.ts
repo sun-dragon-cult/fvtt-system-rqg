@@ -2,11 +2,13 @@ import { Rqid } from "../../system/api/rqidApi";
 import { getRequiredDomDataset, localize } from "../../system/util";
 
 export class RqidLink {
+  /** The rqid to link to */
   rqid: string = "";
+  /** Display name of the link */
   name: string = "";
-  documentType: string = "";
-  itemType?: string;
-  bonus: number | undefined;
+  documentType: string = ""; // TODO not necessary - part of the rqid
+  itemType?: string; // TODO not necessary - part of the rqid
+  bonus: number | undefined; // TODO Should not be here.
 
   // Handle rqid links
   static async addRqidLinkClickHandlers(html: JQuery): Promise<void> {
