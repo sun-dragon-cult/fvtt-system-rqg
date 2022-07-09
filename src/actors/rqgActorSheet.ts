@@ -1471,6 +1471,7 @@ export class RqgActorSheet extends ActorSheet<
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
     if (
+      !getGame().settings.get(systemId, "actor-wizard-feature-flag") || // TODO remove when wizard is released
       this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete ||
       this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
     ) {
