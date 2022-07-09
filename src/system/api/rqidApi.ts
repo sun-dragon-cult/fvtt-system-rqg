@@ -241,10 +241,10 @@ export class Rqid {
     for (const pack of getGame().packs) {
       if (pack.documentClass.name === "JournalEntry") {
         for (const journal of await pack.getDocuments()) {
-          if (
-            journal.data.flags?.rqg?.rqid === rqid &&
-            journal.data.flags?.rqg?.rqidLang === lang
-          ) {
+          const rqidFlags = journal.getFlag(systemId, "documentRqidFlags") as
+            | DocumentRqidFlags
+            | undefined;
+          if (rqidFlags?.id === rqid && rqidFlags?.lang === lang) {
             candidates.push(journal as JournalEntry);
           }
         }

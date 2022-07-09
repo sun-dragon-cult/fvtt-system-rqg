@@ -112,10 +112,6 @@ export const RQG_CONFIG = {
 
   dblClickTimeout: 250, // Timeout for differentiating between single & double clicks
 
-  dsnColorSets: {},
-
-  dsnTextureList: {},
-
   rqid: {
     prefixes: {
       actor: "a.",
@@ -127,14 +123,6 @@ export const RQG_CONFIG = {
     },
     defaultPriority: 999999,
     defaultLang: "en",
-  },
-
-  actorWizardFlags: { // TODO remove ??
-    actorWizardComplete: "actor-wizard-complete",
-    selectedSpeciesId: "selected-species-id",
-    selectedHomelandRqid: "selected-homeland-rqid",
-    isActorTemplate: "is-actor-template",
-    wizardChoices: "wizard-choices",
   },
 };
 
