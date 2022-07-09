@@ -1,9 +1,6 @@
 name: Air (element)
 type: rune
 data:
-  rqid: rune-air-element
-  rqidPriority: "0"
-  rqidLang: en
   rune: Air
   chance: 0
   hasExperience: false
@@ -17,13 +14,16 @@ data:
   journalPack: rqg.rune-descriptions
   journalName: "Air (element)"
 img: systems/rqg/assets/images/runes/air.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.air-element
+      lang: en
+      priority: 0
 ---
 name: Water (element)
 type: rune
 data:
-  rqid: rune-water-element
-  rqidPriority: "0"
-  rqidLang: en
   rune: Water
   chance: 0
   hasExperience: false
@@ -37,13 +37,16 @@ data:
   journalPack: "rqg.rune-descriptions"
   journalName: "Water (element)"
 img: systems/rqg/assets/images/runes/water.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.water-element
+      lang: en
+      priority: 0
 ---
 name: Darkness (element)
 type: rune
 data:
-  rqid: rune-darkness-element
-  rqidPriority: "0"
-  rqidLang: en
   rune: Darkness
   chance: 0
   hasExperience: false
@@ -56,13 +59,16 @@ data:
   journalId: a0vmiA1kUR98lb50
   journalPack: "rqg.rune-descriptions"
 img: systems/rqg/assets/images/runes/darkness.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.darkness-element
+      lang: en
+      priority: 0
 ---
 name: Cold (element)
 type: rune
 data:
-  rqid: rune-cold-element
-  rqidPriority: "0"
-  rqidLang: en
   rune: Cold
   chance: 0
   hasExperience: false
@@ -71,13 +77,16 @@ data:
   minorRunes: []
   isMastered: false
 img: systems/rqg/assets/images/runes/cold.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.cold-element
+      lang: en
+      priority: 0
 ---
 name: Fire (element)
 type: rune
 data:
-  rqid: rune-fire-element
-  rqidPriority: "0"
-  rqidLang: en
   rune: Fire
   chance: 0
   hasExperience: false
@@ -90,13 +99,16 @@ data:
   journalId: BIEK7wfJsaXm9Zmq
   journalPack: "rqg.rune-descriptions"
 img: systems/rqg/assets/images/runes/fire_sky.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.fire-element
+      lang: en
+      priority: 0
 ---
 name: Moon (element)
 type: rune
 data:
-  rqid: rune-moon-element
-  rqidPriority: "0"
-  rqidLang: en
   rune: Moon
   chance: 0
   hasExperience: false
@@ -107,13 +119,16 @@ data:
   journalId: LMZp22OStRRxL93Z
   journalPack: "rqg.rune-descriptions"
 img: systems/rqg/assets/images/runes/moon_full.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.moon-element
+      lang: en
+      priority: 0
 ---
 name: Earth (element)
 type: rune
 data:
-  rqid: rune-earth-element
-  rqidPriority: "0"
-  rqidLang: en
   rune: Earth
   chance: 0
   hasExperience: false
@@ -126,3 +141,9 @@ data:
   journalId: CLkwxZ9y7j9VX00v
   journalPack: "rqg.rune-descriptions"
 img: systems/rqg/assets/images/runes/earth.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.earth-element
+      lang: en
+      priority: 0

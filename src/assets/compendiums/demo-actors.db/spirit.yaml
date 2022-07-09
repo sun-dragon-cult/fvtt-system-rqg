@@ -105,6 +105,6 @@ items:
 flags:
   rqg:
     documentRqidFlags:
-      id: actor.character.demo-spirit
+      id: a.character.demo-spirit
       lang: en
       priority: 0
