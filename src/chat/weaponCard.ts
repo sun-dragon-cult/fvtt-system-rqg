@@ -28,6 +28,7 @@ import { RqgChatMessageFlags, WeaponCardFlags } from "../data-model/shared/rqgDo
 import { RqgItem } from "../items/rqgItem";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
+import { systemId } from "../system/config";
 
 export enum DamageRollTypeEnum {
   Normal = "normal",
@@ -442,7 +443,7 @@ export class WeaponCard {
   }
 
   private static async fumbleRoll(actor: RqgActor, speaker: ChatSpeakerDataProperties) {
-    const fumbleTableName = getGame().settings.get("rqg", "fumbleRollTable");
+    const fumbleTableName = getGame().settings.get(systemId, "fumbleRollTable");
     const fumbleTable = getGame().tables?.getName(fumbleTableName);
     if (!fumbleTable) {
       logMisconfiguration(

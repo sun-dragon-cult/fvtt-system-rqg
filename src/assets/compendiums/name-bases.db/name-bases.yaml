@@ -2,6 +2,12 @@ name: 'Names: Sartarite, Female'
 content: "<pre><span class=\"fontstyle0\">Andrasta<br />Beneva<br />Berra<br />Dorasa<br />Esrolvula<br />Ferenasa<br />Ivarne<br />Jareen<br />Kallyr<br />Leika<br />Onelisen<br />Vareena<br />Vasana<br />Yanioth</span> \n<br style=\"font-variant-numeric:normal;font-variant-east-asian:normal;line-height:normal;text-align:-webkit-auto;white-space:normal;text-size-adjust:auto\" />\n</pre>"
 folder: null
 sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..names-sartarite-female
+      lang: en
+      priority: 0
 ---
 name: 'Help: Name Generation'
 content: |-
@@ -70,8 +76,20 @@ content: |-
   <p> </p>
 folder: null
 sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..help-name-generation
+      lang: en
+      priority: 0
 ---
 name: 'Names: Sartarite, Male'
 content: <pre>Andrin<br />Argrath<br />Broyan<br />Farnan<br />Garadangian<br />Harmast<br />Jarang<br />Saronil<br />Tarkalor<br />Vargast<br />Venharl</pre>
 folder: null
 sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..names-sartarite-male
+      lang: en
+      priority: 0

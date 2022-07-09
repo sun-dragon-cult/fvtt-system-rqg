@@ -83,7 +83,7 @@ export interface Background {
   clanJournalRqidLinks: RqidLink[];
 }
 
-export const emptyBackground: Background = {
+export const defaultBackground: Background = {
   species: "Human",
   speciesRqidLink: undefined,
   occupation: OccupationEnum.NoOccupation,

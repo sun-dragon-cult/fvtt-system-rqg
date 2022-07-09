@@ -23,6 +23,7 @@ import { HealingCalculations } from "../../system/healingCalculations";
 import { ActorHealthState } from "../../data-model/actor-data/attributes";
 import { RqgItem } from "../rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
+import { systemId } from "../../system/config";
 
 interface HitLocationSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -41,7 +42,7 @@ export class HitLocationSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.HitLocation],
+      classes: [systemId, "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
       width: 450,
       height: 500,
@@ -129,7 +130,7 @@ export class HitLocationSheet extends RqgItemSheet<
         },
       },
       {
-        classes: ["rqg", "dialog"],
+        classes: [systemId, "dialog"],
       }
     ).render(true);
   }
@@ -237,7 +238,7 @@ export class HitLocationSheet extends RqgItemSheet<
         },
       },
       {
-        classes: ["rqg", "dialog", "heal-wound"],
+        classes: [systemId, "dialog", "heal-wound"],
       }
     ).render(true);
   }

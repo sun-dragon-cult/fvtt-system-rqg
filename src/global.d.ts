@@ -4,6 +4,12 @@ import { RqgActor } from "./actors/rqgActor";
 import { RqgActorDataProperties, RqgActorDataSource } from "./data-model/actor-data/rqgActorData";
 import { RqgConfig } from "./system/config";
 import { RqgChatMessageFlags } from "./data-model/shared/rqgDocumentFlags";
+import {
+  RqgActorFlags,
+  RqgItemFlags,
+  RqgJournalEntryFlags,
+  RqgRollTableFlags,
+} from "./data-model/shared/rqgDocumentFlags";
 
 declare global {
   interface DocumentClassConfig {
@@ -27,6 +33,16 @@ declare global {
 }
 
 declare global {
+  interface FlagConfig {
+    Item: { rqg?: RqgItemFlags };
+    Actor: { rqg?: RqgActorFlags };
+    JournalEntry: { rqg?: RqgJournalEntryFlags };
+    RollTable: { rqg?: RqgRollTableFlags };
+    ChatMessage: { rqg?: RqgChatMessageFlags };
+  }
+}
+
+declare global {
   namespace ClientSettings {
     interface Values {
       "rqg.specialCrit": boolean;
@@ -37,12 +53,6 @@ declare global {
       "rqg.magicRuneName": string;
       "rqg.defaultItemIconSettings": any; // TODO type the setting
     }
-  }
-}
-
-declare global {
-  interface FlagConfig {
-    ChatMessage: { rqg?: RqgChatMessageFlags };
   }
 }
 

@@ -13,6 +13,7 @@ import { getGame, localize, RqgError } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
+import { systemId } from "../system/config";
 
 export class RqgItem extends Item {
   public static init() {
@@ -20,62 +21,62 @@ export class RqgItem extends Item {
 
     Items.unregisterSheet("core", ItemSheet);
 
-    Items.registerSheet("rqg", PassionSheet as any, {
+    Items.registerSheet(systemId, PassionSheet as any, {
       label: "GM Passion Item Sheet",
       types: [ItemTypeEnum.Passion],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", RuneSheet as any, {
+    Items.registerSheet(systemId, RuneSheet as any, {
       label: "GM Rune Item Sheet",
       types: [ItemTypeEnum.Rune],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", SkillSheet as any, {
+    Items.registerSheet(systemId, SkillSheet as any, {
       label: "GM Skill Item Sheet",
       types: [ItemTypeEnum.Skill],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", HitLocationSheet as any, {
+    Items.registerSheet(systemId, HitLocationSheet as any, {
       label: "GM Hit Location Item Sheet",
       types: [ItemTypeEnum.HitLocation],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", HomelandSheet as any, {
+    Items.registerSheet(systemId, HomelandSheet as any, {
       label: "GM Homeland Item Sheet",
       types: [ItemTypeEnum.Homeland],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", OccupationSheet as any, {
+    Items.registerSheet(systemId, OccupationSheet as any, {
       label: "GM Occupation Item Sheet",
       types: [ItemTypeEnum.Occupation],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", GearSheet as any, {
+    Items.registerSheet(systemId, GearSheet as any, {
       label: "GM Gear Item Sheet",
       types: [ItemTypeEnum.Gear],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", ArmorSheet as any, {
+    Items.registerSheet(systemId, ArmorSheet as any, {
       label: "GM Armor Item Sheet",
       types: [ItemTypeEnum.Armor],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", WeaponSheet as any, {
+    Items.registerSheet(systemId, WeaponSheet as any, {
       label: "GM Weapon Item Sheet",
       types: [ItemTypeEnum.Weapon],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", SpiritMagicSheet as any, {
+    Items.registerSheet(systemId, SpiritMagicSheet as any, {
       label: "GM Spirit Magic Item Sheet",
       types: [ItemTypeEnum.SpiritMagic],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", CultSheet as any, {
+    Items.registerSheet(systemId, CultSheet as any, {
       label: "GM Cult Item Sheet",
       types: [ItemTypeEnum.Cult],
       makeDefault: true,
     });
-    Items.registerSheet("rqg", RuneMagicSheet as any, {
+    Items.registerSheet(systemId, RuneMagicSheet as any, {
       label: "GM Rune Magic Item Sheet",
       types: [ItemTypeEnum.RuneMagic],
       makeDefault: true,
@@ -114,12 +115,26 @@ export class RqgItem extends Item {
     options: DocumentModificationOptions,
     userId: string
   ): void {
-    const defaultItemIconSettings: any = getGame().settings.get("rqg", "defaultItemIconSettings");
+    const defaultItemIconSettings: any = getGame().settings.get(
+      systemId,
+      "defaultItemIconSettings"
+    );
     const item = data._id ? getGame().items?.get(data._id) : undefined;
+
     if (item?.data.img === foundry.data.ItemData.DEFAULT_ICON) {
       const updateData: any = {
         img: defaultItemIconSettings[data.type],
         "data.namePrefix": data.name,
+      };
+
+      // Set default rqid data for new items
+      const rqidFlags = item?.getFlag(systemId, "documentRqidFlags");
+      updateData.flags = updateData.flags ?? {};
+      updateData.flags.rqg = {
+        documentRqidFlags: {
+          lang: rqidFlags?.lang ?? CONFIG.RQG.rqid.defaultLang,
+          priority: rqidFlags?.priority ?? CONFIG.RQG.rqid.defaultPriority,
+        },
       };
 
       if (data.type === ItemTypeEnum.Passion) {

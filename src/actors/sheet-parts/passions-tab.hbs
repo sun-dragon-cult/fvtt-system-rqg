@@ -9,7 +9,7 @@
       <div>
         <input type="checkbox"
           class="wizard-choice-input"
-          data-rqid="{{this.data.data.rqid}}"
+          data-rqid="{{this.data.flags.rqg.documentRqidFlags.id}}"
           data-for-choice="{{../forChoice}}"
           {{#if (lookup this.data.data.choice ../checkedProperty)}}checked{{/if}}
           title="{{localize "RQG.Actor.Passion.ImportPassionCheckboxTitle" passionName=this.name}}" />

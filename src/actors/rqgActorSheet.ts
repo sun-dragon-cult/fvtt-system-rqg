@@ -50,9 +50,10 @@ import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/
 import { ReputationCard } from "../chat/reputationCard";
 import { RuneMagicCard } from "../chat/runeMagicCard";
 import { ActorWizard } from "../dialog/actorWizardApplication";
-import { RQG_CONFIG } from "../system/config";
+import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqidLinkDragEvent } from "../items/RqgItemSheet";
+import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 
 interface UiSections {
   health: boolean;
@@ -136,7 +137,7 @@ export class RqgActorSheet extends ActorSheet<
 
   static get defaultOptions(): ActorSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ActorTypeEnum.Character],
+      classes: [systemId, "sheet", ActorTypeEnum.Character],
       template: "systems/rqg/actors/rqgActorSheet.hbs",
       width: 850,
       height: 650,
@@ -1105,7 +1106,7 @@ export class RqgActorSheet extends ActorSheet<
         },
       },
       {
-        classes: ["rqg", "dialog"],
+        classes: [systemId, "dialog"],
       }
     ).render(true);
   }
@@ -1137,7 +1138,7 @@ export class RqgActorSheet extends ActorSheet<
     entity.sheet.render(true);
   }
 
-  protected async _onDrop(event: DragEvent): Promise<void> {
+  protected async _onDrop(event: RqidLinkDragEvent): Promise<void> {
     super._onDrop(event);
 
     let droppedDocumentData;
@@ -1154,6 +1155,7 @@ export class RqgActorSheet extends ActorSheet<
     );
 
     const dropTypes = findDatasetValueInSelfOrAncestors(
+      // TODO is not used ???
       event.target as HTMLElement,
       "expectedDropTypes"
     )?.split(",");
@@ -1170,11 +1172,8 @@ export class RqgActorSheet extends ActorSheet<
 
     if (droppedDocument && targetPropertyName) {
       const newLink = new RqidLink();
-      newLink.rqid = droppedDocument.getFlag(
-        RQG_CONFIG.flagScope,
-        RQG_CONFIG.rqidFlags.rqid
-      ) as string;
-      newLink.name = droppedDocument.name || "";
+      newLink.rqid = droppedDocument.getFlag(systemId, documentRqidFlags)?.id ?? "";
+      newLink.name = droppedDocument.name ?? "";
       newLink.documentType = droppedDocumentData.type;
       if (droppedDocument instanceof Item) {
         newLink.itemType = droppedDocument.type;
@@ -1183,7 +1182,7 @@ export class RqgActorSheet extends ActorSheet<
       const targetProperty = getProperty(this.actor.data.data, targetPropertyName);
 
       if (targetProperty) {
-        (event as RqidLinkDragEvent).TargetPropertyName = targetPropertyName;
+        event.TargetPropertyName = targetPropertyName;
         if (Array.isArray(targetProperty)) {
           const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
           if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
@@ -1314,7 +1313,7 @@ export class RqgActorSheet extends ActorSheet<
         default: "submit",
         buttons: buttons,
       },
-      { classes: ["rqg", "dialog"] }
+      { classes: [systemId, "dialog"] }
     ).render(true);
   }
 
@@ -1370,7 +1369,7 @@ export class RqgActorSheet extends ActorSheet<
         default: "submit",
         buttons: buttons,
       },
-      { classes: ["rqg", "dialog"] }
+      { classes: [systemId, "dialog"] }
     ).render(true);
   }
 
@@ -1472,8 +1471,8 @@ export class RqgActorSheet extends ActorSheet<
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
     if (
-      this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.actorWizardComplete) ||
-      this.actor.getFlag(RQG_CONFIG.flagScope, RQG_CONFIG.actorWizardFlags.isActorTemplate)
+      this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete ||
+      this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
     ) {
       return super._getHeaderButtons();
     }

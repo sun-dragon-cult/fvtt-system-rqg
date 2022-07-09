@@ -1,7 +1,6 @@
-import { RqidLink } from "../shared/rqidLink";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
+import { RqidLink } from "../shared/rqidLink";
 
 export interface RuneMagicDataSourceData extends Spell {
   /** The cult this rune magic is learned from and where to draw rune points */
@@ -30,10 +29,7 @@ export interface RuneMagicDataProperties {
   data: RuneMagicDataPropertiesData;
 }
 
-export const emptyRuneMagic: RuneMagicDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultRuneMagicData: RuneMagicDataSourceData = {
   descriptionRqidLink: new RqidLink(),
   cultId: "",
   runes: [],

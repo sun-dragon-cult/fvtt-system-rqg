@@ -1,5 +1,4 @@
 import { IAbility } from "../shared/ability";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 
 export enum PassionsEnum {
@@ -35,10 +34,7 @@ export interface PassionDataProperties {
   data: PassionDataPropertiesData;
 }
 
-export const emptyPassion: PassionDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultPassionData: PassionDataSourceData = {
   passion: PassionsEnum.Love,
   subject: "",
   description: "",

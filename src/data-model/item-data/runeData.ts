@@ -1,7 +1,7 @@
 import { IAbility } from "../shared/ability";
-import { RqidLink } from "../shared/rqidLink";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY, IRqid } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
+
+import { RqidLink } from "../shared/rqidLink";
 
 export enum RuneTypeEnum {
   Element = "element",
@@ -11,9 +11,9 @@ export enum RuneTypeEnum {
   Technique = "technique",
 }
 
-export interface RuneDataSourceData extends IAbility, IRqid {
+export interface RuneDataSourceData extends IAbility {
   descriptionRqidLink: RqidLink;
-  /** The name of the rune Fire for example */
+  /** The name of the rune, Fire for example */
   rune: string;
   runeType: RuneTypeEnum;
   chance: number;
@@ -38,10 +38,7 @@ export interface RuneDataProperties {
   data: RuneDataPropertiesData;
 }
 
-export const emptyRune: RuneDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultRuneData: RuneDataSourceData = {
   descriptionRqidLink: new RqidLink(),
   rune: "",
   chance: 0,

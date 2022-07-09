@@ -1,5 +1,6 @@
 import { RqgActor } from "../actors/rqgActor";
 import { convertFormValueToString, localize } from "../system/util";
+import { systemId } from "../system/config";
 
 //**Shows a dialog for improving a Characteristic */
 export async function showImproveCharacteristicDialog(
@@ -77,7 +78,7 @@ export async function showImproveCharacteristicDialog(
       buttons: buttons,
     },
     {
-      classes: ["rqg", "dialog"],
+      classes: [systemId, "dialog"],
     }
   ).render(true);
 }

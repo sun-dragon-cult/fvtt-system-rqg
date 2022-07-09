@@ -2,6 +2,7 @@ import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
+import { systemId } from "../system/config";
 import {
   assertItemType,
   convertFormValueToString,
@@ -99,7 +100,7 @@ export async function showImproveAbilityDialog(
       buttons: buttons,
     },
     {
-      classes: ["rqg", "dialog"],
+      classes: [systemId, "dialog"],
     }
   ).render(true);
 }

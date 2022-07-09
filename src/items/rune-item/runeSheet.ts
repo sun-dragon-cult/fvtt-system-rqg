@@ -15,7 +15,7 @@ import {
 } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
-import { droppableJournalDescription } from "../isDroppable";
+import { systemId } from "../../system/config";
 
 interface RuneSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -31,11 +31,13 @@ interface RuneSheetData extends RqgItemSheetData {
 export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Rune],
+      classes: [systemId, "sheet", ItemTypeEnum.Rune],
       template: "systems/rqg/items/rune-item/runeSheet.hbs",
       width: 450,
       height: 400,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "rune" }],
+      tabs: [
+        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "rune" },
+      ],
     });
   }
 
@@ -98,6 +100,6 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+    return super._onDrop(event);
   }
 }

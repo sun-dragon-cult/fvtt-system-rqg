@@ -1,24 +1,24 @@
 {{#if wizard}}
 <div>
-    <input type="checkbox" 
+    <input type="checkbox"
         class="wizard-choice-input"
-        data-rqid="{{skill.data.data.rqid}}"
+        data-rqid="{{skill.data.flags.rqg.documentRqidFlags.id}}"
         data-for-choice="{{forChoice}}"
         {{#if (lookup skill.data.data.choice checkedProperty)}}checked{{/if}} {{!-- TODO this needs to be made generic.  See rune-selector --}}
         title="{{localize "RQG.Actor.Skill.ImportSkillCheckboxTitle" skillName=skill.name}}"
         />
 </div>
 {{/if}}
-<div data-item-id="{{skill.id}}" 
-    title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}" 
+<div data-item-id="{{skill.id}}"
+    title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}"
     class="skill contextmenu item"
     {{#if skill.data.data.descriptionRqidLink.rqid}}
         data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
     {{/if}}>
     <img class="item" src="{{skill.img}}">
 </div>
-<div data-item-id="{{skill.id}}" 
-        class="skill contextmenu item" data-item-roll 
+<div data-item-id="{{skill.id}}"
+        class="skill contextmenu item" data-item-roll
         title="{{localize "RQG.Game.RollTitle"}}"
         {{#if skill.data.data.descriptionRqidLink.rqid}}
             data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
@@ -28,9 +28,9 @@
     <img class="rune" src="{{runeImg this}}" title="{{this}}">
     {{/each}}
 </div>
-<div data-item-id="{{skill.id}}" 
-    class="skill contextmenu item {{#if skill.data.data.hasExperience}}experienced{{/if}}" 
-    data-item-roll 
+<div data-item-id="{{skill.id}}"
+    class="skill contextmenu item {{#if skill.data.data.hasExperience}}experienced{{/if}}"
+    data-item-roll
     title="{{localize "RQG.Game.RollTitle"}}"
     {{#if skill.data.data.descriptionRqidLink.rqid}}
         data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"

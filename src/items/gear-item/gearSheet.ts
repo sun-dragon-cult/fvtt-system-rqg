@@ -3,6 +3,7 @@ import { GearDataProperties, GearDataPropertiesData } from "../../data-model/ite
 import { equippedStatuses, physicalItemTypes } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { assertItemType, getGameUser } from "../../system/util";
+import { systemId } from "../../system/config";
 
 interface GearSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -18,11 +19,13 @@ interface GearSheetData extends RqgItemSheetData {
 export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Gear],
+      classes: [systemId, "sheet", ItemTypeEnum.Gear],
       template: "systems/rqg/items/gear-item/gearSheet.hbs",
       width: 420,
       height: 580,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "gear" }],
+      tabs: [
+        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "gear" },
+      ],
     });
   }
 

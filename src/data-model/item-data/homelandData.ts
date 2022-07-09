@@ -1,8 +1,7 @@
-import { RqidLink } from "../shared/rqidLink";
-import { IRqid } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
+import { RqidLink } from "../shared/rqidLink";
 
-export interface HomelandDataSourceData extends IRqid {
+export interface HomelandDataSourceData {
   homeland: string;
   homelandJournalRqidLink: RqidLink;
   region: string;
@@ -21,8 +20,8 @@ export interface HomelandDataSourceData extends IRqid {
 export interface HomelandDataPropertiesData extends HomelandDataSourceData {}
 
 export interface HomelandDataSource {
-    type: ItemTypeEnum.Homeland;
-    data: HomelandDataSourceData;
+  type: ItemTypeEnum.Homeland;
+  data: HomelandDataSourceData;
 }
 
 export interface HomelandDataProperties {
@@ -30,7 +29,7 @@ export interface HomelandDataProperties {
   data: HomelandDataSourceData;
 }
 
-export const emptyHomeland: HomelandDataSourceData = {
+export const defaultHomelandData: HomelandDataSourceData = {
   homeland: "",
   homelandJournalRqidLink: new RqidLink(),
   region: "",
@@ -43,7 +42,4 @@ export const emptyHomeland: HomelandDataSourceData = {
   runeRqidLinks: [],
   passionRqidLinks: [],
   wizardInstructions: "",
-  rqid: "",
-  rqidPriority: 0,
-  rqidLang: "",
 };

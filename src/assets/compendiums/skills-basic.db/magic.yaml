@@ -1,0 +1,67 @@
+name: Prepare Corpse - magic
+type: skill
+img: systems/rqg/assets/images/skills/prepare-corpse.svg
+data:
+  category: magic
+  skillName: Prepare Corpse
+  specialization: null
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.prepare-corpse
+      lang: en
+      priority: 0
+---
+name: Spirit Combat - magic
+type: skill
+img: systems/rqg/assets/images/skills/spirit-combat.svg
+data:
+  category: magic
+  skillName: Spirit Combat
+  specialization: null
+  baseChance: 20
+  learnedChance: 20
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.spirit-combat
+      lang: en
+      priority: 0
+---
+name: Spirit Travel - magic
+type: skill
+img: systems/rqg/assets/images/skills/spirit-travel.svg
+data:
+  category: magic
+  skillName: Spirit Travel
+  specialization: null
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.spirit-travel
+      lang: en
+      priority: 0
+---
+name: Worship (...) - magic
+type: skill
+img: systems/rqg/assets/images/skills/worship.svg
+data:
+  category: magic
+  skillName: Worship
+  specialization: '...'
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.worship
+      lang: en
+      priority: 0

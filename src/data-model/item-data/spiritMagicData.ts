@@ -1,7 +1,6 @@
-import { RqidLink } from "../shared/rqidLink";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
+import { RqidLink } from "../shared/rqidLink";
 
 export interface SpiritMagicDataSourceData extends Spell {
   /** Can the caster decide the number of magic points used */
@@ -27,10 +26,7 @@ export interface SpiritMagicDataProperties {
   data: SpiritMagicDataPropertiesData;
 }
 
-export const emptySpiritMagic: SpiritMagicDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultSpiritMagicData: SpiritMagicDataSourceData = {
   descriptionRqidLink: new RqidLink(),
   points: 0,
   isVariable: false,

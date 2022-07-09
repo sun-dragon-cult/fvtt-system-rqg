@@ -12,6 +12,7 @@ import {
   localize,
   usersIdsThatOwnActor,
 } from "../system/util";
+import { systemId } from "../system/config";
 import { ReputationCardFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
@@ -20,7 +21,7 @@ import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/fo
 
 export class ReputationCard {
   public static async show(actor: RqgActor, token: TokenDocument | null): Promise<void> {
-    const iconSettings = getGame().settings.get("rqg", "defaultItemIconSettings");
+    const iconSettings = getGame().settings.get(systemId, "defaultItemIconSettings");
 
     const flags: ReputationCardFlags = {
       type: "reputationCard",

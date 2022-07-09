@@ -1,9 +1,7 @@
 name: Air (element)
 type: rune
+img: systems/rqg/assets/images/runes/air.svg
 data:
-  rqid: rune-air-element
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Air
   chance: 0
   hasExperience: false
@@ -13,14 +11,17 @@ data:
     - Water (element)
   isMastered: false
   opposingRune: null
-img: systems/rqg/assets/images/runes/air.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.air-element
+      lang: en
+      priority: -1
 ---
 name: Water (element)
 type: rune
+img: systems/rqg/assets/images/runes/water.svg
 data:
-  rqid: rune-water-element
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Water
   chance: 0
   hasExperience: false
@@ -30,14 +31,17 @@ data:
     - Fire (element)
   isMastered: false
   opposingRune: null
-img: systems/rqg/assets/images/runes/water.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.water-element
+      lang: en
+      priority: -1
 ---
 name: Darkness (element)
 type: rune
+img: systems/rqg/assets/images/runes/darkness.svg
 data:
-  rqid: rune-darkness-element
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Darkness
   chance: 0
   hasExperience: false
@@ -47,14 +51,17 @@ data:
     - Air (element)
   isMastered: false
   opposingRune: null
-img: systems/rqg/assets/images/runes/darkness.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.darkness-element
+      lang: en
+      priority: -1
 ---
 name: Fire (element)
 type: rune
+img: systems/rqg/assets/images/runes/fire_sky.svg
 data:
-  rqid: rune-fire-element
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Fire
   chance: 0
   hasExperience: false
@@ -63,15 +70,18 @@ data:
     - Water (element)
     - Earth (element)
   isMastered: false
-  opposingRune: null
-img: systems/rqg/assets/images/runes/fire_sky.svg
+  opposingRune: nul
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.fire-element
+      lang: en
+      priority: -1
 ---
 name: Moon (element)
 type: rune
+img: systems/rqg/assets/images/runes/moon_full.svg
 data:
-  rqid: rune-moon-element
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Moon
   chance: 0
   hasExperience: false
@@ -79,14 +89,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: null
-img: systems/rqg/assets/images/runes/moon_full.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.moon-element
+      lang: en
+      priority: -1
 ---
 name: Earth (element)
 type: rune
+img: systems/rqg/assets/images/runes/earth.svg
 data:
-  rqid: rune-earth-element
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Earth
   chance: 0
   hasExperience: false
@@ -96,14 +109,17 @@ data:
     - Darkness (element)
   isMastered: false
   opposingRune: null
-img: systems/rqg/assets/images/runes/earth.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.earth-element
+      lang: en
+      priority: -1
 ---
 name: Beast (form)
 type: rune
+img: systems/rqg/assets/images/runes/beast.svg
 data:
-  rqid: rune-beast-form
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Beast
   chance: 50
   hasExperience: false
@@ -111,14 +127,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Man (form)
-img: systems/rqg/assets/images/runes/beast.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.beast-form
+      lang: en
+      priority: -1
 ---
 name: Man (form)
 type: rune
+img: systems/rqg/assets/images/runes/man.svg
 data:
-  rqid: rune-man-form
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Man
   chance: 50
   hasExperience: false
@@ -126,14 +145,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Beast (form)
-img: systems/rqg/assets/images/runes/man.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.man-form
+      lang: en
+      priority: -1
 ---
 name: Movement (power)
 type: rune
+img: systems/rqg/assets/images/runes/movement_change.svg
 data:
-  rqid: rune-movement-power
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Movement
   chance: 50
   hasExperience: false
@@ -141,14 +163,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Stasis (power)
-img: systems/rqg/assets/images/runes/movement_change.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.movement-power
+      lang: en
+      priority: -1
 ---
 name: Harmony (power)
 type: rune
+img: systems/rqg/assets/images/runes/harmony.svg
 data:
-  rqid: rune-harmony-power
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Harmony
   chance: 50
   hasExperience: false
@@ -156,14 +181,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Disorder (power)
-img: systems/rqg/assets/images/runes/harmony.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.harmony-power
+      lang: en
+      priority: -1
 ---
 name: Fertility (power)
 type: rune
+img: systems/rqg/assets/images/runes/fertility.svg
 data:
-  rqid: rune-fertility-power
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Fertility
   chance: 50
   hasExperience: false
@@ -171,14 +199,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Death (power)
-img: systems/rqg/assets/images/runes/fertility.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.fertility-power
+      lang: en
+      priority: -1
 ---
 name: Truth (power)
 type: rune
+img: systems/rqg/assets/images/runes/truth.svg
 data:
-  rqid: rune-truth-power
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Truth
   chance: 50
   hasExperience: false
@@ -186,14 +217,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Illusion (power)
-img: systems/rqg/assets/images/runes/truth.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.truth-power
+      lang: en
+      priority: -1
 ---
 name: Stasis (power)
 type: rune
+img: systems/rqg/assets/images/runes/stasis.svg
 data:
-  rqid: rune-stasis-power
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Stasis
   chance: 50
   hasExperience: false
@@ -201,14 +235,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Movement (power)
-img: systems/rqg/assets/images/runes/stasis.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.stasis-power
+      lang: en
+      priority: -1
 ---
 name: Illusion (power)
 type: rune
+img: systems/rqg/assets/images/runes/illusion.svg
 data:
-  rqid: rune-illusion-power
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Illusion
   chance: 50
   hasExperience: false
@@ -216,14 +253,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Truth (power)
-img: systems/rqg/assets/images/runes/illusion.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.illusion-power
+      lang: en
+      priority: -1
 ---
 name: Death (power)
 type: rune
+img: systems/rqg/assets/images/runes/death.svg
 data:
-  rqid: rune-death-power
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Death
   chance: 50
   hasExperience: false
@@ -231,14 +271,17 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Fertility (power)
-img: systems/rqg/assets/images/runes/death.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.death-power
+      lang: en
+      priority: -1
 ---
 name: Disorder (power)
 type: rune
+img: systems/rqg/assets/images/runes/disorder.svg
 data:
-  rqid: rune-disorder-power
-  rqidPriority: "-1"
-  rqidLang: en
   rune: Disorder
   chance: 50
   hasExperience: false
@@ -246,4 +289,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Harmony (power)
-img: systems/rqg/assets/images/runes/disorder.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.disorder-power
+      lang: en
+      priority: -1

@@ -114,6 +114,12 @@ replacement: true
 displayRoll: true
 folder: null
 sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: rt..names-parts-colymar
+      lang: en
+      priority: 0
 ---
 name: 'Name Parts: Epithet'
 img: icons/svg/d20-grey.svg
@@ -243,6 +249,12 @@ replacement: true
 displayRoll: true
 folder: null
 sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: rt..names-parts-epithet
+      lang: en
+      priority: 0
 ---
 name: 'Names: Sartarite, Male'
 img: icons/svg/d20-grey.svg
@@ -312,6 +324,12 @@ replacement: true
 displayRoll: true
 folder: null
 sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: rt..names-sartarite-male
+      lang: en
+      priority: 0
 ---
 name: 'Name Parts: Descriptor'
 img: icons/svg/d20-grey.svg
@@ -465,3 +483,9 @@ replacement: true
 displayRoll: true
 folder: null
 sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: rt..names-parts-descriptor
+      lang: en
+      priority: 0

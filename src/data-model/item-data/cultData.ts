@@ -1,6 +1,5 @@
 import { Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY, IRqid } from "./IRqid";
 import { RqidLink } from "../shared/rqidLink";
 
 export enum CultRankEnum {
@@ -13,10 +12,7 @@ export enum CultRankEnum {
   HighPriest = "highPriest",
 }
 
-export interface CultDataSourceData extends IRqid {
-  rqid: string;
-  rqidPriority: number;
-  rqidLang: string;
+export interface CultDataSourceData {
   descriptionRqidLink: RqidLink;
   rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
   runePoints: Resource;
@@ -47,10 +43,7 @@ export interface CultDataProperties {
   data: CultDataPropertiesData;
 }
 
-export const emptyCult: CultDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultCultData: CultDataSourceData = {
   descriptionRqidLink: new RqidLink(),
   rank: CultRankEnum.LayMember,
   runePoints: { value: 0, max: 0 },

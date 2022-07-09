@@ -11,7 +11,7 @@ import {
   SpellDurationEnum,
   SpellRangeEnum,
 } from "../../data-model/item-data/spell";
-import { droppableJournalDescription } from "../isDroppable";
+import { systemId } from "../../system/config";
 
 interface SpiritMagicSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -31,12 +31,16 @@ export class SpiritMagicSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.SpiritMagic],
+      classes: [systemId, "sheet", ItemTypeEnum.SpiritMagic],
       template: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
       width: 450,
       height: 450,
       tabs: [
-        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "spirit-magic" },
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "spirit-magic",
+        },
       ],
     });
   }

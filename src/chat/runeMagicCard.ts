@@ -20,6 +20,7 @@ import {
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
+import { systemId } from "../system/config";
 import { RqgChatMessageFlags, RuneMagicCardFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import {
@@ -416,7 +417,7 @@ export class RuneMagicCard {
     assertItemType(cult?.data.type, ItemTypeEnum.Cult);
 
     // Get the name of the "magic" rune.
-    const magicRuneName = getGame().settings.get("rqg", "magicRuneName");
+    const magicRuneName = getGame().settings.get(systemId, "magicRuneName");
 
     let usableRuneNames: string[];
     if (runeMagicItem.data.data.runes.includes(magicRuneName)) {

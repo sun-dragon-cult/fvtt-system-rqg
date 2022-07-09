@@ -12,6 +12,12 @@ data:
   runes: []
   journalId: null
   journalPack: null
+flags:
+    rqg:
+      documentRqidFlags:
+        id: i.skill.demo-sword-skill
+        lang: en
+        priority: 0
 ---
 name: Demo Arrows
 type: weapon
@@ -73,6 +79,12 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
   projectileId: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.demo-arrows
+      lang: en
+      priority: 0
 ---
 name: Demo Rune Spell
 type: runeMagic
@@ -90,6 +102,12 @@ data:
   isOneUse: false
   journalId: null
   journalPack: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.runeMagic.demo-rune-spell
+      lang: en
+      priority: 0
 ---
 name: Demo Cult
 type: cult
@@ -109,6 +127,12 @@ data:
   subCults: null
   journalId: null
   journalPack: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.demo-cult
+      lang: en
+      priority: 0
 ---
 name: Demo Food Rations
 type: gear
@@ -126,6 +150,12 @@ data:
   isContainer: false
   attunedTo: null
   physicalItemType: consumable
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.demo-food-rations
+      lang: en
+      priority: 0
 ---
 name: Demo Coins
 type: gear
@@ -143,6 +173,12 @@ data:
   isContainer: false
   attunedTo: null
   physicalItemType: currency
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.demo-coins
+      lang: en
+      priority: 0
 ---
 name: Demo Sword
 type: weapon
@@ -256,6 +292,12 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
   projectileId: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.demo-sword
+      lang: en
+      priority: 0
 ---
 name: Demo Armor Pants (Leather)
 type: armor
@@ -282,6 +324,12 @@ data:
   attunedTo: null
   physicalItemType: unique
   quantity: 1
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.demo-armor-pants-leather
+      lang: en
+      priority: 0
 ---
 name: Demo Bow Skill - missileWeapons
 type: skill
@@ -297,6 +345,12 @@ data:
   runes: []
   journalId: null
   journalPack: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.demo-bow-skill
+      lang: en
+      priority: 0
 ---
 name: Demo Bow
 type: weapon
@@ -362,6 +416,12 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
   projectileId: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.demo-bow
+      lang: en
+      priority: 0
 ---
 name: Demo Spirit Magic
 type: spiritMagic
@@ -377,6 +437,12 @@ data:
   journalId: null
   journalPack: null
   isMatrix: false
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.demo-spirit-magic
+      lang: en
+      priority: 0
 ---
 name: Demo Bag
 type: gear
@@ -394,6 +460,12 @@ data:
   isContainer: true
   attunedTo: null
   physicalItemType: unique
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.demo-bag
+      lang: en
+      priority: 0
 ---
 name: Love (RQG)
 type: passion
@@ -405,3 +477,9 @@ data:
   chance: 83
   canGetExperience: true
   hasExperience: false
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.passion.demo-passion
+      lang: en
+      priority: 0

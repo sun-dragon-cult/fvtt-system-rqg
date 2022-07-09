@@ -1,0 +1,101 @@
+name: Meditate - magic
+type: skill
+img: systems/rqg/assets/images/skills/meditate.svg
+data:
+  category: magic
+  skillName: Meditate
+  specialization: null
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.meditate
+      lang: en
+      priority: 0
+---
+name: Sense Assassin - magic
+type: skill
+img: systems/rqg/assets/images/skills/sense-assassin.svg
+data:
+  category: magic
+  skillName: Sense Assassin
+  specialization: null
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.sense-assasin
+      lang: en
+      priority: 0
+---
+name: Sense Chaos - magic
+type: skill
+img: systems/rqg/assets/images/skills/sense-chaos.svg
+data:
+  category: magic
+  skillName: Sense Chaos
+  specialization: null
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.sense-chaos
+      lang: en
+      priority: 0
+---
+name: Spirit Dance - magic
+type: skill
+img: systems/rqg/assets/images/skills/spirit-dance.svg
+data:
+  category: magic
+  skillName: Spirit Dance
+  specialization: null
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.spirit-dance
+      lang: en
+      priority: 0
+---
+name: Spirit Lore - magic
+type: skill
+img: systems/rqg/assets/images/skills/spirit-lore.svg
+data:
+  category: magic
+  skillName: Spirit Lore
+  specialization: null
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.spirit-lore
+      lang: en
+      priority: 0
+---
+name: Understand Herd Beast - magic
+type: skill
+img: systems/rqg/assets/images/skills/understand-herd-beast.svg
+data:
+  category: magic
+  skillName: Understand Herd Beast
+  specialization: null
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.understand-herd-beast
+      lang: en
+      priority: 0

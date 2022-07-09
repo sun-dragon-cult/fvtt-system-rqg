@@ -5,6 +5,7 @@ import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { JournalEntryLink } from "../data-model/shared/journalentrylink";
 import { ChatCardType } from "../chat/RqgChatMessage";
+import { systemId } from "./config";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
@@ -57,7 +58,7 @@ export function getGameUsers(): Users {
 }
 
 export function getHitLocations(): string[] {
-  return (getGame().settings.get("rqg", "hitLocations") as typeof hitLocationNamesObject)
+  return (getGame().settings.get(systemId, "hitLocations") as typeof hitLocationNamesObject)
     .hitLocationItemNames;
 }
 
@@ -94,6 +95,14 @@ export function toKebabCase(s: string): string {
   }
 
   return match.join("-").toLowerCase();
+}
+
+/**
+ * Returns a new string where the characters in `charsToTrim` are removed from the front and end
+ * of the `inputString`. Can for example be used to remove trailing commas in a string.
+ */
+export function trimChars(inputString: string, charsToTrim: string): string {
+  return inputString.replace(new RegExp(`^[${charsToTrim}]+|[${charsToTrim}]+$`, "g"), "");
 }
 
 export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
@@ -253,7 +262,7 @@ export async function getRequiredDocumentFromUuid<T>(documentUuid: string | unde
 }
 
 export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Metadata> {
-  const runeCompendiumName = getGame().settings.get("rqg", "runesCompendium");
+  const runeCompendiumName = getGame().settings.get(systemId, "runesCompendium");
   const pack = getGame().packs.get(runeCompendiumName);
   if (!pack) {
     const msg = `Couldn't find Compendium of runes named ${runeCompendiumName}`;

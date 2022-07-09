@@ -102,3 +102,9 @@ items:
       runes: []
       journalId: null
       journalPack: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: a.character.demo-spirit
+      lang: en
+      priority: 0

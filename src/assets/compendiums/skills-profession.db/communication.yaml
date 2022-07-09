@@ -1,0 +1,16 @@
+name: Speak Language (...) - communication
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: Speak Language
+  specialization: '...'
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language
+      lang: en
+      priority: 0

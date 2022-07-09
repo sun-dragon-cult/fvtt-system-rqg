@@ -1,7 +1,6 @@
-import { emptyPrice, IPhysicalItem } from "./IPhysicalItem";
-import { emptyResource, Resource } from "../shared/resource";
+import { defaultPriceData, IPhysicalItem } from "./IPhysicalItem";
+import { defaultResource, Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
-import { DEFAULT_RQIDLANG, DEFAULT_RQIDPRIORITY } from "./IRqid";
 
 export const damageType = {
   Crush: "crush",
@@ -78,10 +77,7 @@ export interface WeaponDataProperties {
   data: WeaponDataPropertiesData;
 }
 
-export const emptyWeapon: WeaponDataSourceData = {
-  rqid: "",
-  rqidPriority: DEFAULT_RQIDPRIORITY,
-  rqidLang: DEFAULT_RQIDLANG,
+export const defaultWeaponData: WeaponDataSourceData = {
   usage: {
     oneHand: {
       skillId: "",
@@ -123,7 +119,7 @@ export const emptyWeapon: WeaponDataSourceData = {
   },
   description: "",
   gmNotes: "",
-  hitPoints: emptyResource,
+  hitPoints: defaultResource,
   hitPointLocation: "",
   encumbrance: 0,
   location: "",
@@ -131,7 +127,7 @@ export const emptyWeapon: WeaponDataSourceData = {
   physicalItemType: "unique",
   quantity: 1,
   isContainer: false,
-  price: emptyPrice,
+  price: defaultPriceData,
   isNatural: false,
   equippedStatus: "carried",
   rate: 0,

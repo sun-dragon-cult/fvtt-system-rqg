@@ -1,8 +1,7 @@
 import { RqidLink } from "../shared/rqidLink";
-import { IRqid } from "./IRqid";
 import { ItemTypeEnum } from "./itemTypes";
 
-export enum StandardOfLivingEnum{
+export enum StandardOfLivingEnum {
   Destitute = "destitute",
   Poor = "poor",
   Free = "free",
@@ -16,10 +15,10 @@ export class OccupationalSkill {
   skillRqidLink: RqidLink | undefined = undefined;
 }
 
-export interface OccupationDataSourceData extends IRqid {
-  occupation: string,
+export interface OccupationDataSourceData {
+  occupation: string;
   occupationRqidLink: RqidLink;
-  specialization: string,
+  specialization: string;
   homelands: string[]; // The user can drop Homeland items on here but it will just save the data.homeland in this string array
   occupationalSkills: OccupationalSkill[];
   standardOfLiving: StandardOfLivingEnum;
@@ -43,7 +42,7 @@ export interface OccupationDataProperties {
   data: OccupationDataSourceData;
 }
 
-export const emptyOccupation: OccupationDataSourceData = {
+export const defaultOccupationData: OccupationDataSourceData = {
   occupation: "",
   occupationRqidLink: new RqidLink(),
   specialization: "",
@@ -55,7 +54,4 @@ export const emptyOccupation: OccupationDataSourceData = {
   cultRqidLinks: [],
   ransom: 0,
   startingEquipmentRqidLinks: [],
-  rqid: "",
-  rqidPriority: 0,
-  rqidLang: "",
 };

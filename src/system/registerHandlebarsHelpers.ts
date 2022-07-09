@@ -10,6 +10,7 @@ import {
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
 import { RqidLink } from "../data-model/shared/rqidLink";
+import { systemId } from "./config";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -99,7 +100,10 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("defaultItemIconSrc", (itemType: string): string | undefined => {
-    const defaultItemIconSettings: any = getGame().settings.get("rqg", "defaultItemIconSettings");
+    const defaultItemIconSettings: any = getGame().settings.get(
+      systemId,
+      "defaultItemIconSettings"
+    );
     return defaultItemIconSettings[itemType];
   });
 
@@ -147,20 +151,20 @@ export const registerHandlebarsHelpers = function () {
     if (rqidLink.documentType === "JournalEntry") {
       return `<i class="fas fa-book-open"></i>`;
     }
-    
+
     const iconSettings: any = <ClientSettings>(
-      getGame().settings.get("rqg", "defaultItemIconSettings")
+      getGame().settings.get(systemId, "defaultItemIconSettings")
     );
 
     // if (rqidLink.itemType === "cult") {
     //   return `<img src="${iconSettings.cult}">`;
     // }
 
-if (rqidLink.documentType === "Item" && rqidLink.itemType) {
-  if (iconSettings[rqidLink.itemType]) {
-    return `<img src="${iconSettings[rqidLink.itemType]}">`;
-  }
-}
+    if (rqidLink.documentType === "Item" && rqidLink.itemType) {
+      if (iconSettings[rqidLink.itemType]) {
+        return `<img src="${iconSettings[rqidLink.itemType]}">`;
+      }
+    }
 
     return `<i class="fas fa-suitcase"></i>`;
   });

@@ -16,7 +16,7 @@ import {
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
-import { droppableJournalDescription } from "../isDroppable";
+import { systemId } from "../../system/config";
 
 interface CultSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -32,11 +32,17 @@ interface CultSheetData extends RqgItemSheetData {
 export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Cult],
+      classes: [systemId, "sheet", ItemTypeEnum.Cult],
       template: "systems/rqg/items/cult-item/cultSheet.hbs",
       width: 450,
       height: 650,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "cult-standing" }],
+      tabs: [
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "cult-standing",
+        },
+      ],
     });
   }
 

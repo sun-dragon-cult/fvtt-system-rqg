@@ -1,0 +1,118 @@
+name: Boat - agility
+type: skill
+img: systems/rqg/assets/images/skills/boat.svg
+data:
+  category: agility
+  skillName: Boat
+  specialization: null
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.boat
+      lang: en
+      priority: 0
+---
+name: Climb - agility
+type: skill
+img: systems/rqg/assets/images/skills/climb.svg
+data:
+  category: agility
+  skillName: Climb
+  specialization: null
+  baseChance: 40
+  learnedChance: 40
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.climb
+      lang: en
+      priority: 0
+---
+name: Dodge - agility
+type: skill
+img: systems/rqg/assets/images/skills/dodge.svg
+data:
+  category: agility
+  skillName: Dodge
+  specialization: null
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.dodge
+      lang: en
+      priority: 0
+---
+name: Drive (Chariot) - agility
+type: skill
+img: systems/rqg/assets/images/skills/drive.svg
+data:
+  category: agility
+  skillName: Drive
+  specialization: Chariot
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.drive-chariot
+      lang: en
+      priority: 0
+---
+name: Jump - agility
+type: skill
+img: systems/rqg/assets/images/skills/jump.svg
+data:
+  category: agility
+  skillName: Jump
+  specialization: null
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.jump
+      lang: en
+      priority: 0
+---
+name: Ride (...) - agility
+type: skill
+img: systems/rqg/assets/images/skills/ride.svg
+data:
+  category: agility
+  skillName: Ride
+  specialization: '...'
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.ride
+      lang: en
+      priority: 0
+---
+name: Swim - agility
+type: skill
+img: systems/rqg/assets/images/skills/swim.svg
+data:
+  category: agility
+  skillName: Swim
+  specialization: null
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.swim
+      lang: en
+      priority: 0

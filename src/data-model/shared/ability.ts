@@ -1,8 +1,8 @@
-import { activateChatTab, getGame, localize } from "../../system/util";
-import { IRqid } from "../item-data/IRqid";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { activateChatTab, getGame, localize } from "../../system/util";
+import { systemId } from "../../system/config";
 
-export interface IAbility extends IRqid {
+export interface IAbility {
   /** The effective % chance of this ability with all modifiers added in */
   chance?: number;
   /** Is it possible to learn this ability by doing (setting hasExperience=true)? Otherwise the only way to increase the learned chance is by study */
@@ -42,7 +42,7 @@ export class Ability {
     const r = new Roll("1d100");
     await r.evaluate({ async: true });
     const modifiedChance: number = chance + chanceMod;
-    const useSpecialCriticals = getGame().settings.get("rqg", "specialCrit");
+    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
     const result = Ability.evaluateResult(modifiedChance, r.total!, useSpecialCriticals);
     let resultMsgHtml: string | undefined = "";
     if (resultMessages) {

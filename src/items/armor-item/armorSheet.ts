@@ -9,6 +9,7 @@ import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { assertItemType, getGameUser, getHitLocations, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
+import { systemId } from "../../system/config";
 
 interface ArmorSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -25,11 +26,13 @@ interface ArmorSheetData extends RqgItemSheetData {
 export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: ["rqg", "sheet", ItemTypeEnum.Armor],
+      classes: [systemId, "sheet", ItemTypeEnum.Armor],
       template: "systems/rqg/items/armor-item/armorSheet.hbs",
       width: 580,
       height: 725,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "armor" }],
+      tabs: [
+        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "armor" },
+      ],
     });
   }
 
