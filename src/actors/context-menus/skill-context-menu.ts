@@ -1,4 +1,3 @@
-import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { ItemCard } from "../../chat/itemCard";
 import { RqgActor } from "../rqgActor";
@@ -13,7 +12,6 @@ import {
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
-import { ItemDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
@@ -21,7 +19,7 @@ import { Rqid } from "../../system/api/rqidApi";
 
 export const skillMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | null
+  token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollCard"),
@@ -56,17 +54,14 @@ export const skillMenuOptions = (
       assertItemType(item?.data.type, ItemTypeEnum.Skill);
       const itemChance = item.data.data.chance;
       if (!itemChance) {
-        const msg = localize("RQG.ContextMenu.Notification.CantRollQuickSkillError", {itemId: itemId, actorName: actor.name});
+        const msg = localize("RQG.ContextMenu.Notification.CantRollQuickSkillError", {
+          itemId: itemId,
+          actorName: actor.name,
+        });
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      const speakerName = token?.name ?? actor.data.token.name ?? "";
-      await ItemCard.roll(
-        item.data.toObject(false) as unknown as ItemDataProperties,
-        0,
-        actor,
-        speakerName
-      );
+      await ItemCard.roll(item, 0, actor, ChatMessage.getSpeaker({ actor: actor, token: token }));
     },
   },
   {
@@ -86,7 +81,9 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ImproveItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill)}),
+    name: localize("RQG.ContextMenu.ImproveItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
+    }),
     icon: ContextMenuRunes.Improve,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
@@ -106,7 +103,7 @@ export const skillMenuOptions = (
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "skillRqid");
-      return rqid ? true : false;
+      return !!rqid;
     },
     callback: async (el: JQuery) => {
       const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "skillRqid");
@@ -116,7 +113,9 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill)}),
+    name: localize("RQG.ContextMenu.EditItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
+    }),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -132,7 +131,9 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill)}),
+    name: localize("RQG.ContextMenu.DeleteItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
+    }),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {

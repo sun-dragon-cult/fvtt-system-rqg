@@ -3,7 +3,6 @@ import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
   findDatasetValueInSelfOrAncestors,
-  getDomDataset,
   getGame,
   getRequiredDomDataset,
   localize,
@@ -17,7 +16,7 @@ import { Rqid } from "../../system/api/rqidApi";
 
 export const runeMagicMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | null
+  token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollCard"),
@@ -36,8 +35,16 @@ export const runeMagicMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.RuneMagic);
-      const speakerName = token?.name ?? actor.data.token.name ?? "";
-      await RuneMagicCard.directRoll(item,  actor, speakerName);
+      await RuneMagicCard.roll(
+        item,
+        item?.data.data.points,
+        0,
+        0,
+        0,
+        0,
+        actor,
+        ChatMessage.getSpeaker({ actor: actor, token: token })
+      );
     },
   },
   {
@@ -45,7 +52,7 @@ export const runeMagicMenuOptions = (
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeMagicSpellRqid");
-      return rqid ? true : false;
+      return !!rqid;
     },
     callback: async (el: JQuery) => {
       const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeMagicSpellRqid");
@@ -55,7 +62,9 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic)}),
+    name: localize("RQG.ContextMenu.EditItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
+    }),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
@@ -71,7 +80,9 @@ export const runeMagicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic)}),
+    name: localize("RQG.ContextMenu.DeleteItem", {
+      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
+    }),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {

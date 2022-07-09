@@ -1,35 +1,39 @@
-{{log "weaponcard" this}}
-<form class="card-form" data-chat-card="weaponCard" method="post">
+<form class="card-form" data-chat-card="weaponCard">
   <div class="rqg chat-card weapon-card">
+    <h2>
+      <img class="item" src="{{card.chatImage}}">
+      <i>{{cardHeading}}</i>
+    </h2>
 
-    <img class="item" src="{{weaponItemData.img}}">
-    <i>{{skillItemData.data.skillName}}{{#if skillItemData.data.specialization}} ({{skillItemData.data.specialization}}){{/if}}</i><br>
+    <label>{{localize 'RQG.Dialog.Common.OtherModifiers'}}
+      <input class="card-number-input" type="text" value="{{formData.otherModifiers}}" name="otherModifiers">
+    </label>
+    <i class="fas fa-arrow-right"></i> <span>{{chance}}%</span>
 
-    <label>{{localize 'RQG.Dialog.Common.OtherModifiers'}} <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label> <i class="fas fa-arrow-right"></i> <span>{{formData.chance}}%</span>
     <div class="flex-row flex-wrap gap03rem">
-      {{#with (lookup weaponItemData.data.usage usage)}}
+      {{#with (lookup weaponItemData.usage card.usage)}}
       {{#each combatManeuvers}}
-            <button name="combatManeuver" value="{{name}}" 
-                {{#if (eq name ../../formData.combatManeuver)}}class="active"{{/if}}>
+            <button name="combatManeuverRoll" value="{{name}}"
+                {{#if (eq name ../../formData.combatManeuverName)}}class="active"{{/if}}>
                 {{localize (concat "RQG.Item.Weapon.combatManeuver." name)}}
             </button>
       {{/each}}
       {{/with}}
     </div>
 
-    {{#if formData.combatManeuver}}
+    {{#if formData.actionName}}
       <hr>
 
-      {{#if (eq formData.combatManeuver "parry")}}
-        {{#if (eq result 0)}}
+      {{#if (eq formData.actionName "parry")}}
+        {{#if (eq card.result 0)}}
           <h3>TODO Hyper Critical Not yet implemented</h3>
         {{/if}}
 
-        {{#if (eq result 1)}}
+        {{#if (eq card.result 1)}}
           <h3>TODO Special Critical Not yet implemented</h3>
         {{/if}}
 
-        {{#if (eq result 2)}}
+        {{#if (eq card.result 2)}}
           <div class="flex-row">
             <div class="damage">{{localize 'RQG.Dialog.weaponCard.Damage'}}</div>
             <button name="damageRoll" value="normal">{{localize 'RQG.Dialog.weaponCard.damageRollType.normal'}}</button>
@@ -37,7 +41,7 @@
           </div>
         {{/if}}
 
-        {{#if (eq result 3)}}
+        {{#if (eq card.result 3)}}
           <div class="flex-row">
             <div class="damage">{{localize 'RQG.Dialog.weaponCard.Damage'}}</div>
             <button name="damageRoll" value="normal">{{localize 'RQG.Dialog.weaponCard.damageRollType.normal'}}</button>
@@ -45,31 +49,31 @@
           </div>
         {{/if}}
 
-        {{#if (eq result 4)}}
+        {{#if (eq card.result 4)}}
           <div class="flex-row">
             <div class="damage">{{localize 'RQG.Dialog.weaponCard.Damage'}}</div>
             <button name="damageRoll" value="normal">{{localize 'RQG.Dialog.weaponCard.damageRollType.normal'}}</button>
           </div>
         {{/if}}
 
-        {{#if (eq result 5)}}
+        {{#if (eq card.result 5)}}
         {{/if}}
 
-        {{#if (eq result 6)}}
-          <button name="fumble">{{localize 'RQG.Dialog.weaponCard.fumbleRoll'}}</button>
+        {{#if (eq card.result 6)}}
+          <button name="fumbleRoll">{{localize 'RQG.Dialog.weaponCard.fumbleRoll'}}</button>
         {{/if}}
       {{else}} {{!-- not parry => (slash / impale / grapple / ...) --}}
-        {{#if (eq result 0)}}
+        {{#if (eq card.result 0)}}
           <h3>TODO Hyper Critical Not yet implemented</h3>
         {{/if}}
 
-        {{#if (eq result 1)}}
+        {{#if (eq card.result 1)}}
           <h3>TODO Special Critical Not yet implemented</h3>
         {{/if}}
 
-        {{#if (eq result 2)}}
-          {{#if specialDamageTypeText}}
-            <p>{{{specialDamageTypeText}}}</p>
+        {{#if (eq card.result 2)}}
+          {{#if card.specialDamageTypeText}}
+            <p>{{{card.specialDamageTypeText}}}</p>
           {{else}}
             <div class="flex-row">
               <div class="damage">{{localize 'RQG.Dialog.weaponCard.Damage'}}</div>
@@ -80,10 +84,9 @@
             <button name="hitLocationRoll">{{localize 'RQG.Dialog.weaponCard.hitLocationRoll'}}</button>
           {{/if}}
         {{/if}}
-
-        {{#if (eq result 3)}}
-          {{#if specialDamageTypeText}}
-            <p>{{{specialDamageTypeText}}}</p>
+        {{#if (eq card.result 3)}}
+          {{#if card.specialDamageTypeText}}
+            <p>{{{card.specialDamageTypeText}}}</p>
           {{else}}
             <div class="flex-row">
               <div class="damage">{{localize 'RQG.Dialog.weaponCard.Damage'}}</div>
@@ -94,9 +97,9 @@
           {{/if}}
         {{/if}}
 
-        {{#if (eq result 4)}}
-          {{#if specialDamageTypeText}}
-            <p>{{{specialDamageTypeText}}}</p>
+        {{#if (eq card.result 4)}}
+          {{#if card.specialDamageTypeText}}
+            <p>{{{card.specialDamageTypeText}}}</p>
           {{else}}
             <div class="flex-row">
               <div class="damage">{{localize 'RQG.Dialog.weaponCard.Damage'}}</div>
@@ -106,9 +109,9 @@
           {{/if}}
         {{/if}}
 
-        {{#if (eq result 5)}}
-          {{#if specialDamageTypeText}}
-            <p>{{{specialDamageTypeText}}}</p>
+        {{#if (eq card.result 5)}}
+          {{#if card.specialDamageTypeText}}
+            <p>{{{card.specialDamageTypeText}}}</p>
           {{else}}
             <div class="flex-row">
               <div class="damage">{{localize 'RQG.Dialog.weaponCard.Damage'}}</div>
@@ -118,8 +121,8 @@
           {{/if}}
         {{/if}}
 
-        {{#if (eq result 6)}}
-          <button name="fumble">{{localize 'RQG.Dialog.weaponCard.fumbleRoll'}}</button>
+        {{#if (eq card.result 6)}}
+          <button name="fumbleRoll">{{localize 'RQG.Dialog.weaponCard.fumbleRoll'}}</button>
         {{/if}}
       {{/if}}
     {{/if}}

@@ -3,6 +3,7 @@ import { RqgItemDataProperties, RqgItemDataSource } from "./data-model/item-data
 import { RqgActor } from "./actors/rqgActor";
 import { RqgActorDataProperties, RqgActorDataSource } from "./data-model/actor-data/rqgActorData";
 import { RqgConfig } from "./system/config";
+import { RqgChatMessageFlags } from "./data-model/shared/rqgDocumentFlags";
 
 declare global {
   interface DocumentClassConfig {
@@ -34,7 +35,14 @@ declare global {
       "rqg.systemMigrationVersion": string;
       "rqg.hitLocations": Object;
       "rqg.magicRuneName": string;
+      "rqg.defaultItemIconSettings": any; // TODO type the setting
     }
+  }
+}
+
+declare global {
+  interface FlagConfig {
+    ChatMessage: { rqg?: RqgChatMessageFlags };
   }
 }
 

@@ -12,8 +12,8 @@ export enum RuneTypeEnum {
 }
 
 export interface RuneDataSourceData extends IAbility, IRqid {
-  /** The name of the rune Fire for example */
   descriptionRqidLink: RqidLink;
+  /** The name of the rune Fire for example */
   rune: string;
   runeType: RuneTypeEnum;
   chance: number;

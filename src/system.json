@@ -48,6 +48,13 @@
       "type": "JournalEntry"
     },
     {
+      "name": "fumble-roll-table",
+      "label": "Fumble Rolltable",
+      "system": "rqg",
+      "path": "assets/packs/rune-descriptions.db",
+      "type": "JournalEntry"
+    },
+    {
       "name": "fumble",
       "label": "Fumble",
       "system": "rqg",

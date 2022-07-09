@@ -15,7 +15,7 @@ import {
   localize,
   requireValue,
   RqgError,
-  usersThatOwnActor,
+  usersIdsThatOwnActor,
 } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
@@ -45,7 +45,13 @@ export class HitLocationSheet extends RqgItemSheet<
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
       width: 450,
       height: 500,
-      tabs: [{ navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "hit-location" }],
+      tabs: [
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "hit-location",
+        },
+      ],
     });
   }
 
@@ -174,7 +180,7 @@ export class HitLocationSheet extends RqgItemSheet<
         hitLocationName: hitLocation.name,
         notification: notification,
       }),
-      whisper: usersThatOwnActor(actor),
+      whisper: usersIdsThatOwnActor(actor),
     });
     activateChatTab();
 
@@ -185,8 +191,7 @@ export class HitLocationSheet extends RqgItemSheet<
       const sceneTokens = getGame().scenes?.active?.data.tokens;
       if (activeTokens.length && sceneTokens) {
         const token = sceneTokens.find((t) => t.id === activeTokens[0].id);
-        token &&
-          (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
+        token && (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
       }
     }
 
@@ -271,8 +276,7 @@ export class HitLocationSheet extends RqgItemSheet<
     actorUpdates && (await actor.update(actorUpdates));
 
     if (actor.isToken) {
-      actor.token &&
-        (await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken));
+      actor.token && (await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken));
     } else {
       const activeTokens = actor.getActiveTokens(true, false);
       const activeScene = getGame().scenes?.active;
@@ -280,8 +284,7 @@ export class HitLocationSheet extends RqgItemSheet<
         const token = activeScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as
           | TokenDocument
           | undefined; // TODO Hardcoded "first" token
-        token &&
-          (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
+        token && (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
       }
     }
 
@@ -328,14 +331,14 @@ export class HitLocationSheet extends RqgItemSheet<
         // Turn on the new effect
         await token.toggleEffect(status, {
           overlay: asOverlay,
-          active: true
+          active: true,
         });
       } else if (newEffect?.id !== status.id && thisEffectOn) {
         // This is not the effect we're applying but it is on
         // so we need to turn it off
         await token.toggleEffect(status, {
           overlay: false,
-          active: false
+          active: false,
         });
       }
     }

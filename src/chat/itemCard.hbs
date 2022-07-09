@@ -1,9 +1,9 @@
-<form class="card-form" data-chat-card="itemCard">
+<form class="card-form">
   <div class="rqg chat-card item-card">
-
-    <h3><img class="item" src="{{itemData.img}}"> {{itemData.name}}</h3>
-
-    <label>{{localize 'RQG.Dialog.Common.OtherModifiers'}} <input type="number" min="-999" max="999" value="{{formData.modifier}}" name="modifier"></label>
-    <button data-chat-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=formData.chance}}</button>
+    <h2><img class="item" src="{{card.chatImage}}"> {{cardHeading}}</h2>
+    <label>{{localize 'RQG.Dialog.Common.OtherModifiers'}}
+      <input class="card-number-input" type="text" value="{{formData.modifier}}" name="modifier">
+    </label>
+    <button data-chat-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=chance}}</button>
   </div>
 </form>

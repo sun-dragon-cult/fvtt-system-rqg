@@ -130,9 +130,9 @@ export const RQG_CONFIG = {
   rqidFlags: {
     rqid: "rqid",
     rqidLang: "rqidLang",
-    rqidPriority: "rqidPriority"
+    rqidPriority: "rqidPriority",
   },
-  
+
   actorWizardFlags: {
     actorWizardComplete: "actor-wizard-complete",
     selectedSpeciesId: "selected-species-id",

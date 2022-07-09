@@ -1,8 +1,8 @@
 import { activateChatTab, getGame, localize } from "../../system/util";
 import { IRqid } from "../item-data/IRqid";
+import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 
-export interface IAbility
-    extends IRqid {
+export interface IAbility extends IRqid {
   /** The effective % chance of this ability with all modifiers added in */
   chance?: number;
   /** Is it possible to learn this ability by doing (setting hasExperience=true)? Otherwise the only way to increase the learned chance is by study */
@@ -36,8 +36,8 @@ export class Ability {
     flavor: string,
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
-    speakerName: string,
-    resultMessages?: ResultMessage[],
+    speaker: ChatSpeakerDataProperties,
+    resultMessages?: ResultMessage[]
   ): Promise<ResultEnum> {
     const r = new Roll("1d100");
     await r.evaluate({ async: true });
@@ -46,14 +46,14 @@ export class Ability {
     const result = Ability.evaluateResult(modifiedChance, r.total!, useSpecialCriticals);
     let resultMsgHtml: string | undefined = "";
     if (resultMessages) {
-      resultMsgHtml = resultMessages.find(i => i.result === result)?.html;
+      resultMsgHtml = resultMessages.find((i) => i.result === result)?.html;
     }
     const sign = chanceMod > 0 ? "+" : "";
     const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
     const resultText = localize(`RQG.Game.ResultEnum.${result}`);
     await r.toMessage({
       flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1><div>${resultMsgHtml}</div>`,
-      speaker: { alias: speakerName },
+      speaker: speaker,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     });
     activateChatTab();

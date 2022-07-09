@@ -3,23 +3,15 @@ import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { getActorTemplates, getHomelands, Rqid } from "../system/api/rqidApi";
 import { RQG_CONFIG } from "../system/config";
-import {
-  assertItemType,
-  getDocumentTypes,
-  getGame,
-  getRequiredDomDataset,
-  localize,
-} from "../system/util";
+import { assertItemType, getDocumentTypes, getGame, localize } from "../system/util";
 import { SkillCategoryEnum, SkillDataSource } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { Homeland } from "../actors/item-specific/homeland";
 import { RqgItem } from "../items/rqgItem";
 import { HomelandDataSource } from "../data-model/item-data/homelandData";
 import { RuneDataSource } from "../data-model/item-data/runeData";
 import { PassionDataSource } from "../data-model/item-data/passionData";
-import { Skill } from "../actors/item-specific/skill";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -42,14 +34,16 @@ export class ActorWizard extends FormApplication {
       RQG_CONFIG.actorWizardFlags.selectedSpeciesId
     );
 
-    const template = getGame().actors?.get(previouslySelectedTemplateId as string) as RqgActor;
+    const template = getGame().actors?.get(previouslySelectedTemplateId as string) as
+      | RqgActor
+      | undefined;
 
     if (!template) {
       this.species.selectedSpeciesTemplate = undefined;
     }
     //@ts-ignore
     else if (template?.type === ActorTypeEnum.Character) {
-      this.species.selectedSpeciesTemplate = template as RqgActor;
+      this.species.selectedSpeciesTemplate = template;
     } else {
       this.species.selectedSpeciesTemplate = undefined;
       const msg = `The Actor named ${this.actor.name} has a \n${RQG_CONFIG.actorWizardFlags.selectedSpeciesId}\n flag with a value that is not an RqgActor.`;
@@ -319,7 +313,7 @@ export class ActorWizard extends FormApplication {
     this.form?.querySelectorAll(".collabsible-header").forEach((el) => {
       el.addEventListener("click", (ev) => {
         const wrapper = (ev.target as HTMLElement).closest(".collabsible-wrapper") as HTMLElement;
-        const wasOpen = wrapper.dataset.open === "true" ? true : false;
+        const wasOpen = wrapper.dataset.open === "true";
         const wrapperName = wrapper.dataset.collabsibleName;
         if (wrapperName) {
           this.collapsibleOpenStates[wrapperName] = !wasOpen;
@@ -336,7 +330,7 @@ export class ActorWizard extends FormApplication {
     });
 
     this.form?.querySelectorAll("[data-actor-creation-complete]").forEach((el) => {
-      el.addEventListener("click", (ev) => {
+      el.addEventListener("click", () => {
         this._setActorCreationComplete();
       });
     });
@@ -632,7 +626,7 @@ export class ActorWizard extends FormApplication {
           }
           // Handle Cults which use .homelandCultChosen and don't need to get "added up"
           if (actorItem.type === ItemTypeEnum.Cult) {
-            if (this.choices[key].homelandCultChosen === true) {
+            if (this.choices[key].homelandCultChosen) {
               // Cult already exists on actor
               // Do nothing
             } else {
@@ -705,7 +699,7 @@ export class ActorWizard extends FormApplication {
         }
 
         if (cultsEligibleToAdd.map((c) => c.rqid).includes(key)) {
-          if (this.choices[key].homelandCultChosen === true) {
+          if (this.choices[key].homelandCultChosen) {
             const cult = await Rqid.itemFromRqid(key);
             if (cult) {
               adds.push(cult.data);
