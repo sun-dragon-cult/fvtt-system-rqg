@@ -3,14 +3,7 @@ import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { getActorTemplates, getHomelands, Rqid } from "../system/api/rqidApi";
 import { systemId } from "../system/config";
-import { RQG_CONFIG } from "../system/config";
-import {
-  assertItemType,
-  getDocumentTypes,
-  getGame,
-  getRequiredDomDataset,
-  localize,
-} from "../system/util";
+import { assertItemType, getDocumentTypes, getGame, localize } from "../system/util";
 import { SkillCategoryEnum, SkillDataSource } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
@@ -48,8 +41,7 @@ export class ActorWizard extends FormApplication {
 
     if (!template) {
       this.species.selectedSpeciesTemplate = undefined;
-    }
-    else if (template?.type === ActorTypeEnum.Character) {
+    } else if (template?.type === ActorTypeEnum.Character) {
       this.species.selectedSpeciesTemplate = template;
     } else {
       this.species.selectedSpeciesTemplate = undefined;

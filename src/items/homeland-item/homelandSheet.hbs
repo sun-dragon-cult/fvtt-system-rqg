@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="item-sheet-header">
-  
+
     <div class="item-sheet-header-img">
       <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
@@ -8,8 +8,8 @@
     <div class="name-parts-2-equal" data-target-drop-property="homelandJournalRqidLink">
       <div>
         <label for="homeland-{{data._id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
-        <input type="text" 
-            id="homeland-{{data._id}}" 
+        <input type="text"
+            id="homeland-{{data._id}}"
             name="data.homeland"
             value="{{homelandData.homeland}}">
       </div>
@@ -40,7 +40,6 @@
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
       }}
-      </div>
     </div>
 
   </header>
@@ -62,7 +61,7 @@
     <section class="sheet-body">
       {{!-- Homeland Tab --}}
       <div class="tab" data-group="primary" data-tab="homeland">
-        
+
         <div class="item-sheet-properties">
 
           <label>{{localize "RQG.Item.Homeland.CultureJournalEntries"}}</label>
@@ -133,11 +132,11 @@
           <label class="editor-label">{{localize "RQG.Item.Homeland.WizardInstructions"}}</label>
           <div class="editor-container">
             {{editor content=homelandData.wizardInstructions target="data.wizardInstructions"
-              button=true owner=owner editable=editable}}          
+              button=true owner=owner editable=editable}}
           </div>
 
-        </div> 
-        
+        </div>
+
       </div>
 
       {{!-- GM Tab --}}
