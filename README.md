@@ -26,6 +26,30 @@ These commands builds the pack db files to `src/assets/packs/` from the yaml fil
 
 If you like to remove the system from foundry then remove the file system softlink.
 
+### Editing compendium Yaml files
+To make it easier to edit the yaml files that is used to create to compendium packs, you can
+use the supplied json schema for Rqg Items located here: `src/data-model/jsonSchemas/rqg-item-schema.json`.
+
+#### Visual Studio Code
+To enable yaml validation in vs code, you first need to install this [YAML plugin](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
+and then configure it to use the RqgItem schema, use the setting below.
+```json
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/jsonSchemas/rqg-item-schema.json": ".yaml"
+  }
+}
+```
+For details see this article: https://dev.to/brpaz/how-to-create-your-own-auto-completion-for-json-and-yaml-files-on-vs-code-with-the-help-of-json-schema-k1i
+
+#### Jetbrains Idea
+Open a yaml file and click "No JSON Schema" at the bottom left. Choose "+ New Schema Mapping" and paste `https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/jsonSchemas/rqg-item-schema.json`
+into the "Schema file or URL" input field. Name the schema  to for example Rqg Item and set the schema 
+version to 7.
+
+
+
+
 ## Project Status
 
 Still very much work in progress. 🚧 But closing in on a release version...
