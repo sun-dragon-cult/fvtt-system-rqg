@@ -1,0 +1,1039 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://wivange.se/schemas/items",
+  "title": "Rqg Item",
+  "description": "A Rqg Foundry Item. Does not check occupation, homeland or passion items",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "armor",
+        "cult",
+        "gear",
+        "hitLocation",
+        "homeland",
+        "occupation",
+        "passion",
+        "rune",
+        "runeMagic",
+        "skill",
+        "spiritMagic",
+        "weapon"
+      ]
+    },
+    "img": {
+      "type": "string"
+    },
+    "flags": {
+      "$ref": "#/$defs/flags"
+    },
+    "data": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "armor"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/armorItem"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "cult"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/cultItem"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "gear"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/gearItem"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "hitLocation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/hitLocationItem"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "rune"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/runeItem"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "runeMagic"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/runeMagicItem"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "skill"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/skillItem"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "spiritMagic"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/spiritMagicItem"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "weapon"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/weaponItem"
+          }
+        }
+      }
+    }
+  ],
+  "required": [
+    "name",
+    "type",
+    "data",
+    "flags"
+  ],
+  "additionalProperties": false,
+
+  "$defs": {
+
+    "rqidDef": {
+      "type": "string",
+      "pattern": "^a\\.character\\.[a-z\\d-]+$|^i\\.(armor|cult|gear|hit-location|homeland|occupation|passion|rune|rune-magic|skill|spirit-magic|weapon)\\.[a-z\\d-]+$|^je\\.\\.[a-z\\d-]+$|^rt\\.\\.[a-z\\d-]+$",
+      "description": "A valid rqid"
+    },
+
+
+    "rqidLinkDef": {
+      "type": "object",
+      "properties": {
+        "rqid": {
+          "$ref": "#/$defs/rqidDef"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rqid"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "resourceDef": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer"
+        },
+        "max": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "flags": {
+      "type": "object",
+      "properties": {
+        "rqg": {
+          "type": "object",
+          "properties": {
+            "documentRqidFlags": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/rqidDef"
+                },
+                "lang": {
+                  "type": "string",
+                  "default": "en",
+                  "description": "A two letter language code"
+                },
+                "priority": {
+                  "oneOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "\\$\\{\\{SS.prio\\}\\}\\$",
+                      "description": "An integer rqid priority for the item"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "lang",
+                "priority"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "documentRqidFlags"
+          ]
+        }
+      },
+      "required": [
+        "rqg"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "physicalItemProperties": {
+      "type": "object",
+      "properties": {
+        "physicalItemType": {
+          "type": "string",
+          "enum": [
+            "unique",
+            "currency",
+            "consumable"
+          ]
+        },
+        "quantity": {
+          "type": "number",
+          "default": 1
+        },
+        "description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gmNotes": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "location": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "isContainer": {
+          "type": "boolean"
+        },
+        "attunedTo": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "encumbrance": {
+          "type": "number"
+        },
+        "equippedStatus": {
+          "type": "string",
+          "enum": [
+            "notCarried",
+            "carried",
+            "equipped"
+          ],
+          "default": "carried"
+        },
+        "price": {
+          "type": "object",
+          "properties": {
+            "real": {
+              "type": "number"
+            },
+            "estimated": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "required": [
+        "equippedStatus",
+        "encumbrance"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "spellItemProperties": {
+      "type": "object",
+      "properties": {
+        "points": {
+          "type": "integer"
+        },
+        "castingRange": {
+          "type": "string",
+          "enum": [
+            "null",
+            "self",
+            "touch",
+            "ranged",
+            "special"
+          ]
+        },
+        "duration": {
+          "type": "string",
+          "enum": [
+            "null",
+            "instant",
+            "temporal",
+            "focused",
+            "permanent",
+            "special"
+          ]
+        },
+        "concentration": {
+          "type": "string",
+          "enum": [
+            "passive",
+            "active"
+          ]
+        },
+        "isRitual": {
+          "type": "boolean"
+        },
+        "isEnchantment": {
+          "type": "boolean"
+        },
+        "descriptionRqidLink": {
+          "$ref": "#/$defs/rqidLinkDef"
+        }
+      },
+      "required": [
+        "points",
+        "isRitual",
+        "isEnchantment",
+        "concentration"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "combatManeuverDef": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "damageType": {
+          "type": "string",
+          "enum": [
+            "crush",
+            "slash",
+            "impale",
+            "parry",
+            "special"
+          ]
+        },
+        "description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "damageType"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "usageDef": {
+      "type": "object",
+      "properties": {
+        "skillOrigin": {
+          "type": "string",
+          "description": "A uuid to a skill item"
+        },
+        "combatManeuvers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/combatManeuverDef"
+          }
+        },
+        "damage": {
+          "type": "string"
+        },
+        "minStrength": {
+          "type": "integer"
+        },
+        "minDexterity": {
+          "type": "integer"
+        },
+        "strikeRank": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "skillOrigin",
+        "combatManeuvers",
+        "damage",
+        "minStrength",
+        "minDexterity",
+        "strikeRank"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "armorItem": {
+      "properties": {
+        "size": {
+          "type": "integer"
+        },
+        "hitLocations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "namePrefix": {
+          "type": "string"
+        },
+        "armorType": {
+          "type": "string"
+        },
+        "material": {
+          "type": "string"
+        },
+        "absorbs": {
+          "type": "integer"
+        },
+        "moveQuietlyPenalty": {
+          "type": "number",
+          "default": 0
+        }
+      },
+      "required": [
+        "material",
+        "absorbs",
+        "moveQuietlyPenalty"
+      ],
+      "additionalProperties": "#/$defs/physicalItemProperties"
+    },
+
+
+    "cultItem": {
+      "properties": {
+        "descriptionRqidLink": {
+          "$ref": "#/$defs/rqidLinkDef"
+        },
+        "rank": {
+          "type": "string",
+          "enum": [
+            "layMember",
+            "initiate",
+            "godTalker",
+            "runePriest",
+            "runeLord",
+            "chiefPriest",
+            "highPriest"
+          ]
+        },
+        "runePoints": {
+          "$ref": "#/$defs/resourceDef"
+        },
+        "tagline": {
+          "type": "string"
+        },
+        "holyDays": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gifts": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "geases": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subCults": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "tagline"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "gearItem": {
+      "properties": {},
+      "additionalProperties": "#/$defs/physicalItemProperties"
+    },
+
+
+    "hitLocationItem": {
+      "properties": {
+        "dieFrom": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dieTo": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hitPoints": {
+          "$ref": "#/$defs/resourceDef"
+        },
+        "baseHpDelta": {
+          "type": "integer"
+        },
+        "naturalAp": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wounds": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "hitLocationHealthState": {
+          "type": "string",
+          "enum": [
+            "healthy",
+            "wounded",
+            "useless",
+            "severed"
+          ],
+          "default": "healthy"
+        },
+        "actorHealthImpact": {
+          "type": "string",
+          "enum": [
+            "healthy",
+            "wounded",
+            "shock",
+            "unconscious",
+            "dead"
+          ],
+          "default": "healthy"
+        },
+        "hitLocationType": {
+          "type": "string",
+          "enum": [
+            "limb",
+            "head",
+            "chest",
+            "abdomen"
+          ]
+        },
+        "connectedTo": {
+          "type": "null"
+        }
+      },
+      "if": {
+        "properties": {
+          "hitLocationType": {
+            "const": "limb"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "connectedTo"
+        ],
+        "properties": {
+          "connectedTo": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "dieFrom",
+        "dieTo",
+        "baseHpDelta",
+        "naturalAp",
+        "hitLocationHealthState",
+        "actorHealthImpact",
+        "hitLocationType"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "runeItem": {
+      "properties": {
+        "descriptionRqidLink": {
+          "type": "object",
+          "properties": {
+            "rqid": {
+              "$ref": "#/$defs/rqidDef"
+            },
+            "name": {
+              "type": "string"
+            },
+            "documentType": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "rqid",
+            "name"
+          ]
+        },
+        "rune": {
+          "type": "string"
+        },
+        "chance": {
+          "type": "integer",
+          "default": 0
+        },
+        "canGetExperience": {
+          "type": "boolean",
+          "default": false
+        },
+        "hasExperience": {
+          "type": "boolean",
+          "default": false
+        },
+        "runeType": {
+          "type": "string",
+          "enum": [
+            "element",
+            "power",
+            "form",
+            "condition",
+            "technique"
+          ]
+        },
+        "opposingRune": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "minorRunes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isMastered": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "rune",
+        "chance",
+        "runeType"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "runeMagicItem": {
+      "properties": {
+        "runes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isStackable": {
+          "type": "boolean"
+        },
+        "isOneUse": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "runes",
+        "isStackable",
+        "isOneUse"
+      ],
+      "additionalProperties": "#/$defs/spellItemProperties"
+    },
+
+
+    "skillItem": {
+      "properties": {
+        "descriptionRqidLink": {
+          "type": "object",
+          "properties": {
+            "rqid": {
+              "$ref": "#/$defs/rqidDef"
+            },
+            "name": {
+              "type": "string"
+            },
+            "documentType": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "rqid",
+            "name"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "agility",
+            "communication",
+            "knowledge",
+            "magic",
+            "manipulation",
+            "perception",
+            "stealth",
+            "meleeWeapons",
+            "missileWeapons",
+            "shields",
+            "naturalWeapons",
+            "otherSkills"
+          ]
+        },
+        "skillName": {
+          "type": "string"
+        },
+        "specialization": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "baseChance": {
+          "type": "integer",
+          "default": 0
+        },
+        "learnedChance": {
+          "type": "integer",
+          "default": 0
+        },
+        "canGetExperience": {
+          "type": "boolean",
+          "default": true
+        },
+        "hasExperience": {
+          "type": "boolean",
+          "default": false
+        },
+        "runes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "category",
+        "skillName",
+        "specialization",
+        "baseChance",
+        "learnedChance",
+        "canGetExperience"
+      ],
+      "additionalProperties": false
+    },
+
+
+    "spiritMagicItem": {
+      "properties": {
+        "isVariable": {
+          "type": "boolean"
+        },
+        "incompatibleWith": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "spellFocus": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "isMatrix": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "isVariable"
+      ],
+      "additionalProperties": "#/$defs/spellItemProperties"
+    },
+
+
+    "weaponItem": {
+      "type": "object",
+      "properties": {
+        "usage": {
+          "type": "object",
+          "properties": {
+            "oneHand": {
+              "$ref": "#/$defs/usageDef"
+            },
+            "offHand": {
+              "$ref": "#/$defs/usageDef"
+            },
+            "twoHand": {
+              "$ref": "#/$defs/usageDef"
+            },
+            "missile": {
+              "$ref": "#/$defs/usageDef"
+            }
+          }
+        },
+        "hitPoints": {
+          "$ref": "#/$defs/resourceDef"
+        },
+        "hitPointLocation": {
+          "type": "string",
+          "default": "---"
+        },
+        "isNatural": {
+          "type": "boolean"
+        },
+        "rate": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Use only for missile weapons"
+        },
+        "range": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "comment": "Use only for missile weapons"
+        },
+        "isProjectile": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "comment": "Use only for missile weapons"
+        },
+        "isProjectileWeapon": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "comment": "Use only for missile weapons"
+        },
+        "isThrownWeapon": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "comment": "Use only for missile weapons"
+        },
+        "isRangedWeapon": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "comment": "Use only for missile weapons"
+        }
+      },
+      "required": [
+        "usage",
+        "hitPoints",
+        "hitPointLocation",
+        "isNatural"
+      ],
+      "additionalProperties": "#/$defs/physicalItemProperties"
+    }
+  }
+}
