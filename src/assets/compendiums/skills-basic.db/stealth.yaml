@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/move-quietly.svg
 data:
   category: stealth
   skillName: Move Quietly
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -21,7 +21,7 @@ img: systems/rqg/assets/images/skills/hide.svg
 data:
   category: stealth
   skillName: Hide
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true

@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/insight.svg
 data:
   category: perception
   skillName: Insight
-  specialization: '...'
+  specialization: ...
   baseChance: 20
   learnedChance: 20
   canGetExperience: true
@@ -21,7 +21,7 @@ img: systems/rqg/assets/images/skills/listen.svg
 data:
   category: perception
   skillName: Listen
-  specialization: null
+  specialization:
   baseChance: 25
   learnedChance: 25
   canGetExperience: true
@@ -38,7 +38,7 @@ img: systems/rqg/assets/images/skills/scan.svg
 data:
   category: perception
   skillName: Scan
-  specialization: null
+  specialization:
   baseChance: 25
   learnedChance: 25
   canGetExperience: true
@@ -55,7 +55,7 @@ img: systems/rqg/assets/images/skills/search.svg
 data:
   category: perception
   skillName: Search
-  specialization: null
+  specialization:
   baseChance: 25
   learnedChance: 25
   canGetExperience: true
@@ -72,7 +72,7 @@ img: systems/rqg/assets/images/skills/track.svg
 data:
   category: perception
   skillName: Track
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true

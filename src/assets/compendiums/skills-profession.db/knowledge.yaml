@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/alchemy.svg
 data:
   category: knowledge
   skillName: Alchemy
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
@@ -21,7 +21,7 @@ img: systems/rqg/assets/images/skills/bureaucracy.svg
 data:
   category: knowledge
   skillName: Bureaucracy
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true
@@ -38,7 +38,7 @@ img: systems/rqg/assets/images/skills/customs.svg
 data:
   category: knowledge
   skillName: Customs
-  specialization: '...'
+  specialization: ...
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
@@ -72,7 +72,7 @@ img: systems/rqg/assets/images/skills/library-use.svg
 data:
   category: knowledge
   skillName: Library Use
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
@@ -89,7 +89,7 @@ img: systems/rqg/assets/images/skills/read-write.svg
 data:
   category: knowledge
   skillName: Read/Write
-  specialization: '...'
+  specialization: ...
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
@@ -106,7 +106,7 @@ img: systems/rqg/assets/images/skills/shiphandling.svg
 data:
   category: knowledge
   skillName: Shiphandling
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true

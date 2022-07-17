@@ -120,6 +120,7 @@ export const RQG_CONFIG = {
       macro: "m.",
       rollTable: "rt.",
       scene: "s.",
+      card: "c.",
     },
     defaultPriority: 999999,
     defaultLang: "en",

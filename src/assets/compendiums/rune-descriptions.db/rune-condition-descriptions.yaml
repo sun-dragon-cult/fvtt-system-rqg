@@ -1,4 +1,3 @@
-_id: Tl494003V9FXWvOD
 name: Mastery (condition)
 img: systems/rqg/assets/images/runes/mastery.svg
 content: >
@@ -16,7 +15,6 @@ flags:
       priority: 0
 
 ---
-_id: UgDSldMq035lVqwR
 name: Magic (condition)
 img: systems/rqg/assets/images/runes/magic.svg
 content: >
@@ -31,7 +29,6 @@ flags:
       lang: en
       priority: 0
 ---
-_id: eefIf11AEJgk13pD
 name: Infinity (condition)
 img: systems/rqg/assets/images/runes/infinity.svg
 content: >
@@ -47,7 +44,6 @@ flags:
       priority: 0
 
 ---
-_id: OjpMkpX21Qa0qKGN
 name: Luck (condition)
 img: systems/rqg/assets/images/runes/luck.svg
 content: >
@@ -63,7 +59,6 @@ flags:
       priority: 0
 
 ---
-_id: Gsl5fSY7vMvW9p4a
 name: Fate (condition)
 img: systems/rqg/assets/images/runes/fate.svg
 content: >
@@ -79,7 +74,6 @@ flags:
       priority: 0
 
 ---
-_id: 2Wl6rzY5f5myk8W6
 name: Law (condition)
 img: systems/rqg/assets/images/runes/law.svg
 content: >

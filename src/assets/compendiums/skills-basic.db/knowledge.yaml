@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/animal-lore.svg
 data:
   category: knowledge
   skillName: Animal Lore
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: false
@@ -21,7 +21,7 @@ img: systems/rqg/assets/images/skills/battle.svg
 data:
   category: knowledge
   skillName: Battle
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -38,7 +38,7 @@ img: systems/rqg/assets/images/skills/celestial-lore.svg
 data:
   category: knowledge
   skillName: Celestial Lore
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: false
@@ -55,7 +55,7 @@ img: systems/rqg/assets/images/passion/devotion.svg
 data:
   category: knowledge
   skillName: Cult Lore
-  specialization: '...'
+  specialization: ...
   baseChance: 5
   learnedChance: 5
   canGetExperience: false
@@ -72,7 +72,7 @@ img: systems/rqg/assets/images/skills/customs.svg
 data:
   category: knowledge
   skillName: Customs, own
-  specialization: '...'
+  specialization: ...
   baseChance: 25
   learnedChance: 25
   canGetExperience: false
@@ -89,7 +89,7 @@ img: systems/rqg/assets/images/skills/elder-race-lore.svg
 data:
   category: knowledge
   skillName: Elder Race Lore
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: false
@@ -106,7 +106,7 @@ img: systems/rqg/assets/images/skills/evaluate.svg
 data:
   category: knowledge
   skillName: Evaluate
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -123,7 +123,7 @@ img: systems/rqg/assets/images/skills/farm.svg
 data:
   category: knowledge
   skillName: Farm
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -140,7 +140,7 @@ img: systems/rqg/assets/images/skills/first-aid.svg
 data:
   category: knowledge
   skillName: First Aid
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -157,7 +157,7 @@ img: systems/rqg/assets/images/skills/game.svg
 data:
   category: knowledge
   skillName: Game
-  specialization: null
+  specialization:
   baseChance: 15
   learnedChance: 15
   canGetExperience: true
@@ -174,7 +174,7 @@ img: systems/rqg/assets/images/skills/herd.svg
 data:
   category: knowledge
   skillName: Herd
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -191,7 +191,7 @@ img: systems/rqg/assets/images/skills/homeland-lore.svg
 data:
   category: knowledge
   skillName: Homeland Lore, own
-  specialization: '...'
+  specialization: ...
   baseChance: 30
   learnedChance: 30
   canGetExperience: false
@@ -208,7 +208,7 @@ img: systems/rqg/assets/images/skills/manage-household.svg
 data:
   category: knowledge
   skillName: Manage Household
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -225,7 +225,7 @@ img: systems/rqg/assets/images/skills/mineral-lore.svg
 data:
   category: knowledge
   skillName: Mineral Lore
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: false
@@ -242,7 +242,7 @@ img: systems/rqg/assets/images/skills/peaceful-cut.svg
 data:
   category: knowledge
   skillName: Peaceful Cut
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -259,7 +259,7 @@ img: systems/rqg/assets/images/skills/plant-lore.svg
 data:
   category: knowledge
   skillName: Plant Lore
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: false
@@ -276,7 +276,7 @@ img: systems/rqg/assets/images/skills/survival.svg
 data:
   category: knowledge
   skillName: Survival
-  specialization: null
+  specialization:
   baseChance: 15
   learnedChance: 15
   canGetExperience: true
@@ -293,7 +293,7 @@ img: systems/rqg/assets/images/skills/treat-disease.svg
 data:
   category: knowledge
   skillName: Treat Disease
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -310,7 +310,7 @@ img: systems/rqg/assets/images/skills/treat-poison.svg
 data:
   category: knowledge
   skillName: Treat Poison
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true

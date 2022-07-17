@@ -1,4 +1,3 @@
-_id: l6On1MA7MnW7qWrA
 name: Air (element)
 img: systems/rqg/assets/images/runes/air.svg
 content: >
@@ -28,7 +27,6 @@ flags:
       priority: 0
 
 ---
-_id: j93VzaD9qOZILORZ
 name: Water (element)
 img: systems/rqg/assets/images/runes/water.svg
 content: >
@@ -56,7 +54,6 @@ flags:
       priority: 0
 
 ---
-_id: CLkwxZ9y7j9VX00v
 name: Earth (element)
 img: systems/rqg/assets/images/runes/earth.svg
 content: >
@@ -86,7 +83,6 @@ flags:
       lang: en
       priority: 0
 ---
-_id: a0vmiA1kUR98lb50
 name: Darkness (element)
 img: systems/rqg/assets/images/runes/darkness.svg
 content: >
@@ -116,7 +112,6 @@ flags:
       lang: en
       priority: 0
 ---
-_id: BIEK7wfJsaXm9Zmq
 name: Fire/Sky (element)
 img: systems/rqg/assets/images/runes/fire_sky.svg
 content: >
@@ -146,7 +141,6 @@ flags:
       lang: en
       priority: 0
 ---
-_id: LMZp22OStRRxL93Z
 name: Moon (element)
 img: systems/rqg/assets/images/runes/moon_full.svg
 content: >

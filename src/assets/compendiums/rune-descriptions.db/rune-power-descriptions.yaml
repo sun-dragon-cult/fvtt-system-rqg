@@ -1,4 +1,3 @@
-_id: n7w04Ejk7K5WxZVu
 name: Movement (power)
 img: systems/rqg/assets/images/runes/movement_change.svg
 content: >
@@ -16,7 +15,6 @@ flags:
       priority: 0
 
 ---
-_id: aDRLDO48F826i6vr
 name: Harmony (power)
 img: systems/rqg/assets/images/runes/harmony.svg
 content: >
@@ -35,7 +33,6 @@ flags:
       priority: 0
 
 ---
-_id: Vnkl9a3Wlh3hCnXV
 name: Fertility (power)
 img: systems/rqg/assets/images/runes/fertility.svg
 content: >
@@ -52,7 +49,6 @@ flags:
       priority: 0
 
 ---
-_id: 65WD7NrMeQbd60XS
 name: Truth (power)
 img: systems/rqg/assets/images/runes/truth.svg
 content: >
@@ -71,7 +67,6 @@ flags:
       priority: 0
 
 ---
-_id: k9aDS2B4r4Kw4jy6
 name: Stasis (power)
 img: systems/rqg/assets/images/runes/stasis.svg
 content: >
@@ -88,7 +83,6 @@ flags:
       priority: 0
 
 ---
-_id: 5IjM967nFDMlwidI
 name: Illusion (power)
 img: systems/rqg/assets/images/runes/illusion.svg
 content: >
@@ -107,7 +101,6 @@ flags:
       priority: 0
 
 ---
-_id: u1eUcT63yjYZG103
 name: Death (power)
 img: systems/rqg/assets/images/runes/death.svg
 content: >
@@ -125,7 +118,6 @@ flags:
       priority: 0
 
 ---
-_id: wRsskyTp7uZxvJJg
 name: Disorder (power)
 img: systems/rqg/assets/images/runes/disorder.svg
 content: >

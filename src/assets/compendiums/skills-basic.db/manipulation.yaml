@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/devise.svg
 data:
   category: manipulation
   skillName: Devise
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -21,7 +21,7 @@ img: systems/rqg/assets/images/skills/play-instrument.svg
 data:
   category: manipulation
   skillName: Play Instrument
-  specialization: '...'
+  specialization: ...
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -38,7 +38,7 @@ img: systems/rqg/assets/images/skills/sleight.svg
 data:
   category: manipulation
   skillName: Sleight
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -55,7 +55,7 @@ img: systems/rqg/assets/images/skills/conceal.svg
 data:
   category: manipulation
   skillName: Conceal
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -72,7 +72,7 @@ img: systems/rqg/assets/images/skills/craft.svg
 data:
   category: manipulation
   skillName: Craft
-  specialization: '...'
+  specialization: ...
   baseChance: 10
   learnedChance: 0
   canGetExperience: true

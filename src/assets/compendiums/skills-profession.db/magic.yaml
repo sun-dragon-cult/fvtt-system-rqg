@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/meditate.svg
 data:
   category: magic
   skillName: Meditate
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true
@@ -21,7 +21,7 @@ img: systems/rqg/assets/images/skills/sense-assassin.svg
 data:
   category: magic
   skillName: Sense Assassin
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true
@@ -38,7 +38,7 @@ img: systems/rqg/assets/images/skills/sense-chaos.svg
 data:
   category: magic
   skillName: Sense Chaos
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true
@@ -55,7 +55,7 @@ img: systems/rqg/assets/images/skills/spirit-dance.svg
 data:
   category: magic
   skillName: Spirit Dance
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true
@@ -72,7 +72,7 @@ img: systems/rqg/assets/images/skills/spirit-lore.svg
 data:
   category: magic
   skillName: Spirit Lore
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true
@@ -89,7 +89,7 @@ img: systems/rqg/assets/images/skills/understand-herd-beast.svg
 data:
   category: magic
   skillName: Understand Herd Beast
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true

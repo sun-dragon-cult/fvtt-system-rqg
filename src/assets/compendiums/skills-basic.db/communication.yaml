@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/act.svg
 data:
   category: communication
   skillName: Act
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -21,7 +21,7 @@ img: systems/rqg/assets/images/skills/art.svg
 data:
   category: communication
   skillName: Art
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -38,7 +38,7 @@ img: systems/rqg/assets/images/skills/bargain.svg
 data:
   category: communication
   skillName: Bargain
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -55,7 +55,7 @@ img: systems/rqg/assets/images/skills/charm.svg
 data:
   category: communication
   skillName: Charm
-  specialization: null
+  specialization:
   baseChance: 15
   learnedChance: 15
   canGetExperience: true
@@ -72,7 +72,7 @@ img: systems/rqg/assets/images/skills/dance.svg
 data:
   category: communication
   skillName: Dance
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -89,7 +89,7 @@ img: systems/rqg/assets/images/skills/disguise.svg
 data:
   category: communication
   skillName: Disguise
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -106,7 +106,7 @@ img: systems/rqg/assets/images/skills/speak.svg
 data:
   category: communication
   skillName: Fast Talk
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -123,7 +123,7 @@ img: systems/rqg/assets/images/skills/intimidate.svg
 data:
   category: communication
   skillName: Intimidate
-  specialization: null
+  specialization:
   baseChance: 15
   learnedChance: 15
   canGetExperience: true
@@ -140,7 +140,7 @@ img: systems/rqg/assets/images/skills/intrigue.svg
 data:
   category: communication
   skillName: Intrigue
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -157,7 +157,7 @@ img: systems/rqg/assets/images/skills/orate.svg
 data:
   category: communication
   skillName: Orate
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -174,7 +174,7 @@ img: systems/rqg/assets/images/skills/sing.svg
 data:
   category: communication
   skillName: Sing
-  specialization: null
+  specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
@@ -191,10 +191,10 @@ img: systems/rqg/assets/images/skills/speak.svg
 data:
   category: communication
   skillName: Speak Own Language
-  specialization: '...'
+  specialization: ...
   baseChance: 50
   learnedChance: 0
-  canGetExperience: true]
+  canGetExperience: true
 flags:
   rqg:
     documentRqidFlags:

@@ -1,24 +1,7 @@
-name: Eternal Battle (condition)
-type: rune
-data:
-  rqid: rune-eternal-battle-condition
-  rqidPriority: "0"
-  rqidLang: en
-  rune: Eternal Battle
-  chance: 0
-  hasExperience: false
-  runeType: condition
-  opposingRune: null
-  minorRunes: []
-  isMastered: false
-img: systems/rqg/assets/images/runes/eternal_battle.svg
----
 name: Law (condition)
 type: rune
+img: systems/rqg/assets/images/runes/law.svg
 data:
-  rqid: rune-law-condition
-  rqidPriority: "0"
-  rqidLang: en
   rune: Law
   chance: 0
   hasExperience: false
@@ -26,16 +9,20 @@ data:
   opposingRune: null
   minorRunes: []
   isMastered: false
-  journalId: 2Wl6rzY5f5myk8W6
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/law.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-law
+    name: Law (condition)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.law-condition
+      lang: en
+      priority: 0
 ---
 name: Mastery (condition)
 type: rune
+img: systems/rqg/assets/images/runes/mastery.svg
 data:
-  rqid: rune-mastery-condition
-  rqidPriority: "0"
-  rqidLang: en
   rune: Mastery
   chance: 0
   hasExperience: false
@@ -43,14 +30,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: null
-img: systems/rqg/assets/images/runes/mastery.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-mastery
+    name: Mastery (condition)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.mastery-condition
+      lang: en
+      priority: 0
 ---
 name: Magic (condition)
 type: rune
+img: systems/rqg/assets/images/runes/magic.svg
 data:
-  rqid: rune-magic-condition
-  rqidPriority: "0"
-  rqidLang: en
   rune: Magic
   chance: 0
   hasExperience: false
@@ -58,31 +51,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: null
-  journalId: UgDSldMq035lVqwR
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/magic.svg
----
-name: Light (condition)
-type: rune
-data:
-  rqid: rune-light-condition
-  rqidPriority: "0"
-  rqidLang: en
-  rune: Light
-  chance: 0
-  hasExperience: false
-  runeType: condition
-  minorRunes: []
-  isMastered: false
-  opposingRune: null
-img: systems/rqg/assets/images/runes/light.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-magic
+    name: Magic (condition)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.magic-condition
+      lang: en
+      priority: 0
 ---
 name: Infinity (condition)
 type: rune
+img: systems/rqg/assets/images/runes/infinity.svg
 data:
-  rqid: rune-infinity-condition
-  rqidPriority: "0"
-  rqidLang: en
   rune: Infinity
   chance: 0
   hasExperience: false
@@ -90,31 +72,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: null
-  journalId: eefIf11AEJgk13pD
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/infinity.svg
----
-name: Power (condition)
-type: rune
-data:
-  rqid: rune-power-condition
-  rqidPriority: "0"
-  rqidLang: en
-  rune: Power
-  chance: 0
-  hasExperience: false
-  runeType: condition
-  opposingRune: null
-  minorRunes: []
-  isMastered: false
-img: systems/rqg/assets/images/runes/pamalt.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-infinity
+    name: Infinity (condition)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.infinity-condition
+      lang: en
+      priority: 0
 ---
 name: Luck (condition)
 type: rune
+img: systems/rqg/assets/images/runes/luck.svg
 data:
-  rqid: rune-luck-condition
-  rqidPriority: "0"
-  rqidLang: en
   rune: Luck
   chance: 0
   hasExperience: false
@@ -122,31 +93,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: null
-  journalId: OjpMkpX21Qa0qKGN
-  journalPack: "luck.rune-descriptions"
-img: systems/rqg/assets/images/runes/luck.svg
----
-name: Communication (condition)
-type: rune
-data:
-  rqid: rune-communication-condition
-  rqidPriority: "0"
-  rqidLang: en
-  rune: Communication
-  chance: 0
-  hasExperience: false
-  runeType: condition
-  opposingRune: null
-  minorRunes: []
-  isMastered: false
-img: systems/rqg/assets/images/runes/communication_trade.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-luck
+    name: Luck (condition)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.luck-condition
+      lang: en
+      priority: 0
 ---
 name: Fate (condition)
 type: rune
+img: systems/rqg/assets/images/runes/fate.svg
 data:
-  rqid: rune-fate-condition
-  rqidPriority: "0"
-  rqidLang: en
   rune: Fate
   chance: 0
   hasExperience: false
@@ -154,48 +114,12 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: null
-  journalId: Gsl5fSY7vMvW9p4a
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/fate.svg
----
-name: Unlife (condition)
-type: rune
-data:
-  rqid: rune-unlife-condition
-  rqidPriority: "0"
-  rqidLang: en
-  rune: Unlife
-  chance: 0
-  hasExperience: false
-  runeType: condition
-  opposingRune: null
-  minorRunes: []
-  isMastered: false
-img: systems/rqg/assets/images/runes/undeath.svg
----
-name: Dragon (condition)
-type: rune
-data:
-  rune: Dragon
-  chance: 0
-  hasExperience: false
-  runeType: condition
-  opposingRune: null
-  minorRunes: []
-  isMastered: false
-img: systems/rqg/assets/images/runes/dragon.svg
----
-name: Odalya (condition)
-type: rune
-data:
-  rqid: rune-odalya-condition
-  rqidPriority: "0"
-  rqidLang: en
-  rune: Odalya
-  chance: 0
-  hasExperience: false
-  runeType: Dragonewt
-  opposingRune: null
-  minorRunes: []
-  isMastered: false
-img: systems/rqg/assets/images/runes/odayla.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-fate
+    name: Fate (condition)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.fate-condition
+      lang: en
+      priority: 0

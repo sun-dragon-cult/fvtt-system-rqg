@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/speak.svg
 data:
   category: communication
   skillName: Speak Language
-  specialization: '...'
+  specialization: ...
   baseChance: 0
   learnedChance: 0
   canGetExperience: true

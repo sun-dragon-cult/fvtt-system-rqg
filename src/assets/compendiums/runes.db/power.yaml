@@ -1,9 +1,7 @@
 name: Movement (power)
 type: rune
+img: systems/rqg/assets/images/runes/movement_change.svg
 data:
-  rqid: rune-movement-power
-  rqidPriority: "0"
-  rqidLang: en
   rune: Movement
   chance: 50
   hasExperience: false
@@ -11,14 +9,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Stasis (power)
-img: systems/rqg/assets/images/runes/movement_change.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-movement
+    name: Movement (power)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.movement-power
+      lang: en
+      priority: 0
 ---
 name: Harmony (power)
 type: rune
+img: systems/rqg/assets/images/runes/harmony.svg
 data:
-  rqid: rune-harmony-power
-  rqidPriority: "0"
-  rqidLang: en
   rune: Harmony
   chance: 50
   hasExperience: false
@@ -26,16 +30,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Disorder (power)
-  journalId: aDRLDO48F826i6vr
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/harmony.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-harmony
+    name: Harmony (power)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.harmony-power
+      lang: en
+      priority: 0
 ---
 name: Fertility (power)
 type: rune
+img: systems/rqg/assets/images/runes/fertility.svg
 data:
-  rqid: rune-fertility-power
-  rqidPriority: "0"
-  rqidLang: en
   rune: Fertility
   chance: 50
   hasExperience: false
@@ -43,16 +51,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Death (power)
-  journalId: Vnkl9a3Wlh3hCnXV
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/fertility.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-fertility
+    name: Fertility (power)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.fertility-power
+      lang: en
+      priority: 0
 ---
 name: Truth (power)
 type: rune
+img: systems/rqg/assets/images/runes/truth.svg
 data:
-  rqid: rune-truth-power
-  rqidPriority: "0"
-  rqidLang: en
   rune: Truth
   chance: 50
   hasExperience: false
@@ -60,16 +72,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Illusion (power)
-  journalId: 65WD7NrMeQbd60XS
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/truth.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-truth
+    name: Truth (power)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.truth-power
+      lang: en
+      priority: 0
 ---
 name: Stasis (power)
 type: rune
+img: systems/rqg/assets/images/runes/stasis.svg
 data:
-  rqid: rune-stasis-power
-  rqidPriority: "0"
-  rqidLang: en
   rune: Stasis
   chance: 50
   hasExperience: false
@@ -77,16 +93,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Movement (power)
-  journalId: k9aDS2B4r4Kw4jy6
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/stasis.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-stasis
+    name: Stasis (power)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.stasis-power
+      lang: en
+      priority: 0
 ---
 name: Illusion (power)
 type: rune
+img: systems/rqg/assets/images/runes/illusion.svg
 data:
-  rqid: rune-illusion-power
-  rqidPriority: "0"
-  rqidLang: en
   rune: Illusion
   chance: 50
   hasExperience: false
@@ -94,16 +114,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Truth (power)
-  journalId: 5IjM967nFDMlwidI
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/illusion.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-illusion
+    name: Illusion (power)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.illusion-power
+      lang: en
+      priority: 0
 ---
 name: Death (power)
 type: rune
+img: systems/rqg/assets/images/runes/death.svg
 data:
-  rqid: rune-death-power
-  rqidPriority: "0"
-  rqidLang: en
   rune: Death
   chance: 50
   hasExperience: false
@@ -111,16 +135,20 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Fertility (power)
-  journalId: u1eUcT63yjYZG103
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/death.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-death
+    name: Death (power)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.death-power
+      lang: en
+      priority: 0
 ---
 name: Disorder (power)
 type: rune
+img: systems/rqg/assets/images/runes/disorder.svg
 data:
-  rqid: rune-disorder-power
-  rqidPriority: "0"
-  rqidLang: en
   rune: Disorder
   chance: 50
   hasExperience: false
@@ -128,6 +156,12 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Harmony (power)
-  journalId: wRsskyTp7uZxvJJg
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/disorder.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-disorder
+    name: Disorder (power)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.disorder-power
+      lang: en
+      priority: 0

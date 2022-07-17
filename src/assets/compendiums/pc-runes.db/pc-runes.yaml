@@ -10,7 +10,10 @@ data:
     - Darkness (element)
     - Water (element)
   isMastered: false
-  opposingRune: null
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-air
+    name: Air (element)
 flags:
   rqg:
     documentRqidFlags:
@@ -20,7 +23,6 @@ flags:
 ---
 name: Water (element)
 type: rune
-img: systems/rqg/assets/images/runes/water.svg
 data:
   rune: Water
   chance: 0
@@ -30,7 +32,11 @@ data:
     - Air (element)
     - Fire (element)
   isMastered: false
-  opposingRune: null
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-water
+    name: Water (element)
+img: systems/rqg/assets/images/runes/water.svg
 flags:
   rqg:
     documentRqidFlags:
@@ -40,7 +46,6 @@ flags:
 ---
 name: Darkness (element)
 type: rune
-img: systems/rqg/assets/images/runes/darkness.svg
 data:
   rune: Darkness
   chance: 0
@@ -50,7 +55,11 @@ data:
     - Earth (element)
     - Air (element)
   isMastered: false
-  opposingRune: null
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-darkness
+    name: Darkness (element)
+img: systems/rqg/assets/images/runes/darkness.svg
 flags:
   rqg:
     documentRqidFlags:
@@ -58,11 +67,10 @@ flags:
       lang: en
       priority: -1
 ---
-name: Fire (element)
+name: Fire/Sky (element)
 type: rune
-img: systems/rqg/assets/images/runes/fire_sky.svg
 data:
-  rune: Fire
+  rune: Fire/Sky
   chance: 0
   hasExperience: false
   runeType: element
@@ -70,7 +78,11 @@ data:
     - Water (element)
     - Earth (element)
   isMastered: false
-  opposingRune: nul
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-fire-sky
+    name: Fire/Sky (element)
+img: systems/rqg/assets/images/runes/fire_sky.svg
 flags:
   rqg:
     documentRqidFlags:
@@ -80,7 +92,6 @@ flags:
 ---
 name: Moon (element)
 type: rune
-img: systems/rqg/assets/images/runes/moon_full.svg
 data:
   rune: Moon
   chance: 0
@@ -88,7 +99,11 @@ data:
   runeType: element
   minorRunes: []
   isMastered: false
-  opposingRune: null
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-moon
+    name: Moon (element)
+img: systems/rqg/assets/images/runes/moon_full.svg
 flags:
   rqg:
     documentRqidFlags:
@@ -98,7 +113,6 @@ flags:
 ---
 name: Earth (element)
 type: rune
-img: systems/rqg/assets/images/runes/earth.svg
 data:
   rune: Earth
   chance: 0
@@ -108,12 +122,16 @@ data:
     - Fire (element)
     - Darkness (element)
   isMastered: false
-  opposingRune: null
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-earth
+    name: Earth (element)
+img: systems/rqg/assets/images/runes/earth.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.earth-element
-      lang: en
+      lang: "en"
       priority: -1
 ---
 name: Beast (form)
@@ -127,6 +145,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Man (form)
+  descriptionRqidLink:
+    rqid: je..runedescription-beast
+    name: Beast (form)
 flags:
   rqg:
     documentRqidFlags:
@@ -145,6 +166,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Beast (form)
+  descriptionRqidLink:
+    rqid: je..runedescription-man
+    name: Man (form)
 flags:
   rqg:
     documentRqidFlags:
@@ -163,6 +187,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Stasis (power)
+  descriptionRqidLink:
+    rqid: je..runedescription-movement
+    name: Movement (power)
 flags:
   rqg:
     documentRqidFlags:
@@ -181,6 +208,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Disorder (power)
+  descriptionRqidLink:
+    rqid: je..runedescription-harmony
+    name: Harmony (power)
 flags:
   rqg:
     documentRqidFlags:
@@ -199,6 +229,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Death (power)
+  descriptionRqidLink:
+    rqid: je..runedescription-fertility
+    name: Fertility (power)
 flags:
   rqg:
     documentRqidFlags:
@@ -217,6 +250,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Illusion (power)
+  descriptionRqidLink:
+    rqid: je..runedescription-truth
+    name: Truth (power)
 flags:
   rqg:
     documentRqidFlags:
@@ -235,6 +271,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Movement (power)
+  descriptionRqidLink:
+    rqid: je..runedescription-stasis
+    name: Stasis (power)
 flags:
   rqg:
     documentRqidFlags:
@@ -253,6 +292,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Truth (power)
+  descriptionRqidLink:
+    rqid: je..runedescription-illusion
+    name: Illusion (power)
 flags:
   rqg:
     documentRqidFlags:
@@ -271,6 +313,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Fertility (power)
+  descriptionRqidLink:
+    rqid: je..runedescription-death
+    name: Death (power)
 flags:
   rqg:
     documentRqidFlags:
@@ -289,6 +334,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Harmony (power)
+  descriptionRqidLink:
+    rqid: je..runedescription-disorder
+    name: Disorder (power)
 flags:
   rqg:
     documentRqidFlags:

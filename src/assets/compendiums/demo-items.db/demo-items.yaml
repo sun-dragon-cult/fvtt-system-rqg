@@ -1,17 +1,16 @@
+_id: l1ppQI75agqD5w3e
 name: Demo Sword Skill - meleeWeapons
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 data:
   category: meleeWeapons
   skillName: Demo Sword Skill
-  specialization: null
+  specialization:
   baseChance: 25
   learnedChance: 67
   canGetExperience: true
   hasExperience: false
   runes: []
-  journalId: null
-  journalPack: null
 flags:
     rqg:
       documentRqidFlags:
@@ -24,46 +23,24 @@ type: weapon
 img: systems/rqg/assets/images/weapons/arrows.svg
 data:
   usage:
-    oneHand:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
     missile:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
+      strikeRank:
+      skillOrigin:
+      combatManeuvers:
+        - name: Shoot
+          damageType: impale
+      damage: 1d8
       minStrength: 0
       minDexterity: 0
-  description: null
-  gmNotes: null
+  description:
+  gmNotes:
   hitPoints:
-    value: null
-    max: null
-  hitPointLocation: '---'
+    value: 8
+    max: 8
+  hitPointLocation: ---
   encumbrance: 0
-  location: null
-  attunedTo: null
+  location:
+  attunedTo:
   physicalItemType: consumable
   quantity: 10
   isContainer: false
@@ -72,13 +49,13 @@ data:
     estimated: 0
   isNatural: false
   equippedStatus: carried
-  rate: null
+  rate:
   range: 0
   isProjectile: true
   isProjectileWeapon: false
   isThrownWeapon: false
   isRangedWeapon: false
-  projectileId: null
+  projectileId:
 flags:
   rqg:
     documentRqidFlags:
@@ -90,22 +67,21 @@ name: Demo Rune Spell
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 data:
-  cultId: null
   runes:
     - Air (element)
     - Harmony (power)
   points: 1
   castingRange: ranged
   duration: temporal
+  concentration: passive
   isRitual: false
   isStackable: false
   isOneUse: false
-  journalId: null
-  journalPack: null
+  isEnchantment: false
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.demo-rune-spell
+      id: i.rune-magic.demo-rune-spell
       lang: en
       priority: 0
 ---
@@ -118,15 +94,13 @@ data:
     value: 0
     max: 0
   tagline: The keeper of demos
-  holyDays: null
-  gifts: null
-  geases: null
+  holyDays:
+  gifts:
+  geases:
   runes:
     - Air (element)
     - Movement (power)
-  subCults: null
-  journalId: null
-  journalPack: null
+  subCults:
 flags:
   rqg:
     documentRqidFlags:
@@ -138,17 +112,17 @@ name: Demo Food Rations
 type: gear
 img: systems/rqg/assets/images/skills/farm.svg
 data:
-  description: null
-  gmNotes: null
+  description:
+  gmNotes:
   quantity: 5
   price:
     real: 0
     estimated: 0
   encumbrance: 1
   equippedStatus: carried
-  location: null
+  location:
   isContainer: false
-  attunedTo: null
+  attunedTo:
   physicalItemType: consumable
 flags:
   rqg:
@@ -161,17 +135,17 @@ name: Demo Coins
 type: gear
 img: systems/rqg/assets/images/equipped/not_carried.svg
 data:
-  description: null
-  gmNotes: null
+  description:
+  gmNotes:
   quantity: 10
   price:
     real: 1
     estimated: 1
   encumbrance: 1
   equippedStatus: carried
-  location: null
+  location:
   isContainer: false
-  attunedTo: null
+  attunedTo:
   physicalItemType: currency
 flags:
   rqg:
@@ -186,97 +160,46 @@ img: systems/rqg/assets/images/weapons/1h-sword.svg
 data:
   usage:
     oneHand:
-      skillId: null
       skillOrigin: Compendium.rqg.demo-items.l1ppQI75agqD5w3e
       combatManeuvers:
         - name: Cut
           damageType: slash
-          description: null
-          placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
+          description:
         - name: Parry
           damageType: parry
-          description: null
-          placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
+          description:
         - name: Knockback
           damageType: special
-          description: null
-          placeholder: |-
-            <details>
-                      <summary>Attacker STR+SIZ vs Defender SIZ+DEX</summary>
-                      <p>The average of
-                      the attacker’s STR+SIZ is compared with the average of the
-                      defender’s SIZ+DEX as a resistance roll (see page 10). For the resistance roll:</p>
-                      <ul>
-                        <li>A success knocks the target back 1D3 meters.</li>
-                        <li>A special success knocks the target down (see Fighting While Prone, page 57).</li>
-                        <li>A critical success knocks them down and disarms them.</li>
-                      </ul>
-                      <p>The target does not take any damage from the knockback
-                      itself. If the knockback is not successful, the attacker must roll DEX×5 or fall. If unsuccessful, the attacker is knocked back [1D3] meters instead, or misses completely and rushes by the intended target.</p>
-                      <p>A fumble by attacker or defender results in a roll on the Fumbles table (page 25).</p>
-                      </details>
+          description:
       damage: 1d6
       minStrength: 10
       minDexterity: 10
       strikeRank: 3
     offHand:
-      skillId: null
-      skillOrigin: null
+      skillOrigin: Compendium.rqg.demo-items.l1ppQI75agqD5w3e
       combatManeuvers:
         - name: Cut
           damageType: slash
-          description: null
-          placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
+          description:
         - name: Parry
           damageType: parry
-          description: null
-          placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
+          description:
         - name: Knockback
           damageType: special
-          description: null
-          placeholder: |-
-            <details>
-                      <summary>Attacker STR+SIZ vs Defender SIZ+DEX</summary>
-                      <p>The average of
-                      the attacker’s STR+SIZ is compared with the average of the
-                      defender’s SIZ+DEX as a resistance roll (see page 10). For the resistance roll:</p>
-                      <ul>
-                        <li>A success knocks the target back 1D3 meters.</li>
-                        <li>A special success knocks the target down (see Fighting While Prone, page 57).</li>
-                        <li>A critical success knocks them down and disarms them.</li>
-                      </ul>
-                      <p>The target does not take any damage from the knockback
-                      itself. If the knockback is not successful, the attacker must roll DEX×5 or fall. If unsuccessful, the attacker is knocked back [1D3] meters instead, or misses completely and rushes by the intended target.</p>
-                      <p>A fumble by attacker or defender results in a roll on the Fumbles table (page 25).</p>
-                      </details>
+          description:
       damage: 1d6
       minStrength: 10
       minDexterity: 10
       strikeRank: 3
-    twoHand:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    missile:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
-      minStrength: 0
-      minDexterity: 0
-  description: null
-  gmNotes: null
+  description:
+  gmNotes:
   hitPoints:
     value: 10
     max: 10
-  hitPointLocation: null
+  hitPointLocation: ---
   encumbrance: 1
-  location: null
-  attunedTo: null
+  location:
+  attunedTo:
   physicalItemType: unique
   quantity: 1
   isContainer: false
@@ -285,13 +208,12 @@ data:
     estimated: 10
   isNatural: false
   equippedStatus: carried
-  rate: null
+  rate:
   range: 0
   isProjectile: false
   isProjectileWeapon: false
   isThrownWeapon: false
   isRangedWeapon: false
-  projectileId: null
 flags:
   rqg:
     documentRqidFlags:
@@ -303,8 +225,8 @@ name: Demo Armor Pants (Leather)
 type: armor
 img: systems/rqg/assets/images/armor/pants.svg
 data:
-  description: null
-  gmNotes: null
+  description:
+  gmNotes:
   size: 10
   price:
     real: 10
@@ -319,9 +241,9 @@ data:
   material: Leather
   absorbs: 1
   moveQuietlyPenalty: 10
-  location: null
+  location:
   isContainer: false
-  attunedTo: null
+  attunedTo:
   physicalItemType: unique
   quantity: 1
 flags:
@@ -331,20 +253,19 @@ flags:
       lang: en
       priority: 0
 ---
+_id: wlxabuWq6ImK7mTR
 name: Demo Bow Skill - missileWeapons
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 data:
   category: missileWeapons
   skillName: Demo Bow Skill
-  specialization: null
+  specialization:
   baseChance: 15
   learnedChance: 56
   canGetExperience: true
   hasExperience: false
   runes: []
-  journalId: null
-  journalPack: null
 flags:
   rqg:
     documentRqidFlags:
@@ -357,50 +278,25 @@ type: weapon
 img: systems/rqg/assets/images/weapons/bowman.svg
 data:
   usage:
-    oneHand:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId: null
-      skillOrigin: null
-      combatManeuvers: []
-      damage: null
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
     missile:
-      skillId: null
       skillOrigin: Compendium.rqg.demo-items.wlxabuWq6ImK7mTR
       combatManeuvers:
         - name: Shoot
           damageType: impale
-          description: null
-          placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
+          description:
       damage: 1d3
       minStrength: 5
+      strikeRank:
       minDexterity: 11
-  description: null
-  gmNotes: null
+  description:
+  gmNotes:
   hitPoints:
     value: 4
     max: 4
-  hitPointLocation: null
+  hitPointLocation: ---
   encumbrance: 0
-  location: null
-  attunedTo: null
+  location:
+  attunedTo:
   physicalItemType: unique
   quantity: 1
   isContainer: false
@@ -415,7 +311,7 @@ data:
   isProjectileWeapon: true
   isThrownWeapon: false
   isRangedWeapon: false
-  projectileId: null
+  projectileId:
 flags:
   rqg:
     documentRqidFlags:
@@ -429,13 +325,13 @@ img: systems/rqg/assets/images/items/spirit-magic.svg
 data:
   points: 1
   isVariable: false
+  isEnchantment: false
+  isRitual: false
   castingRange: ranged
   duration: instant
-  concentration: null
+  concentration: active
   incompatibleWith: []
-  spellFocus: null
-  journalId: null
-  journalPack: null
+  spellFocus:
   isMatrix: false
 flags:
   rqg:
@@ -448,17 +344,17 @@ name: Demo Bag
 type: gear
 img: systems/rqg/assets/images/skills/first-aid.svg
 data:
-  description: null
-  gmNotes: null
+  description:
+  gmNotes:
   quantity: 1
   price:
     real: 0
     estimated: 0
   encumbrance: 1
   equippedStatus: carried
-  location: null
+  location:
   isContainer: true
-  attunedTo: null
+  attunedTo:
   physicalItemType: unique
 flags:
   rqg:
@@ -473,7 +369,7 @@ img: systems/rqg/assets/images/passion/love.svg
 data:
   passion: Love
   subject: RQG
-  description: null
+  description:
   chance: 83
   canGetExperience: true
   hasExperience: false

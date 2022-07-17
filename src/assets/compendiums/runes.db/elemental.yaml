@@ -1,5 +1,6 @@
 name: Air (element)
 type: rune
+img: systems/rqg/assets/images/runes/air.svg
 data:
   rune: Air
   chance: 0
@@ -9,11 +10,10 @@ data:
     - Darkness (element)
     - Water (element)
   isMastered: false
-  opposingRune: null
-  journalId: l6On1MA7MnW7qWrA
-  journalPack: rqg.rune-descriptions
-  journalName: "Air (element)"
-img: systems/rqg/assets/images/runes/air.svg
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-air
+    name: Air (element)
 flags:
   rqg:
     documentRqidFlags:
@@ -32,10 +32,10 @@ data:
     - Air (element)
     - Fire (element)
   isMastered: false
-  opposingRune: null
-  journalId: j93VzaD9qOZILORZ
-  journalPack: "rqg.rune-descriptions"
-  journalName: "Water (element)"
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-water
+    name: Water (element)
 img: systems/rqg/assets/images/runes/water.svg
 flags:
   rqg:
@@ -55,9 +55,10 @@ data:
     - Earth (element)
     - Air (element)
   isMastered: false
-  opposingRune: null
-  journalId: a0vmiA1kUR98lb50
-  journalPack: "rqg.rune-descriptions"
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-darkness
+    name: Darkness (element)
 img: systems/rqg/assets/images/runes/darkness.svg
 flags:
   rqg:
@@ -66,28 +67,10 @@ flags:
       lang: en
       priority: 0
 ---
-name: Cold (element)
+name: Fire/Sky (element)
 type: rune
 data:
-  rune: Cold
-  chance: 0
-  hasExperience: false
-  runeType: element
-  opposingRune: null
-  minorRunes: []
-  isMastered: false
-img: systems/rqg/assets/images/runes/cold.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.rune.cold-element
-      lang: en
-      priority: 0
----
-name: Fire (element)
-type: rune
-data:
-  rune: Fire
+  rune: Fire/Sky
   chance: 0
   hasExperience: false
   runeType: element
@@ -95,9 +78,10 @@ data:
     - Water (element)
     - Earth (element)
   isMastered: false
-  opposingRune: null
-  journalId: BIEK7wfJsaXm9Zmq
-  journalPack: "rqg.rune-descriptions"
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-fire-sky
+    name: Fire/Sky (element)
 img: systems/rqg/assets/images/runes/fire_sky.svg
 flags:
   rqg:
@@ -115,9 +99,10 @@ data:
   runeType: element
   minorRunes: []
   isMastered: false
-  opposingRune: null
-  journalId: LMZp22OStRRxL93Z
-  journalPack: "rqg.rune-descriptions"
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-moon
+    name: Moon (element)
 img: systems/rqg/assets/images/runes/moon_full.svg
 flags:
   rqg:
@@ -137,13 +122,14 @@ data:
     - Fire (element)
     - Darkness (element)
   isMastered: false
-  opposingRune: null
-  journalId: CLkwxZ9y7j9VX00v
-  journalPack: "rqg.rune-descriptions"
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-earth
+    name: Earth (element)
 img: systems/rqg/assets/images/runes/earth.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.earth-element
-      lang: en
+      lang: "en"
       priority: 0

@@ -2506,10 +2506,9 @@ items:
           priority: 0
       core:
         sourceId: Compendium.rqg.skills-basic.T5C6b9pbj1QHsA4D
-effects: []
 flags:
-  exportSource:
-    world: abc
-    system: rqg
-    coreVersion: '9.269'
-    systemVersion: 1.14.0
+  rqg:
+    documentRqidFlags:
+      id: a.character.species-template-human
+      lang: en
+      priority: 0

@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/skills/boat.svg
 data:
   category: agility
   skillName: Boat
-  specialization: null
+  specialization:
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -21,7 +21,7 @@ img: systems/rqg/assets/images/skills/climb.svg
 data:
   category: agility
   skillName: Climb
-  specialization: null
+  specialization:
   baseChance: 40
   learnedChance: 40
   canGetExperience: true
@@ -38,7 +38,7 @@ img: systems/rqg/assets/images/skills/dodge.svg
 data:
   category: agility
   skillName: Dodge
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true
@@ -72,7 +72,7 @@ img: systems/rqg/assets/images/skills/jump.svg
 data:
   category: agility
   skillName: Jump
-  specialization: null
+  specialization:
   baseChance: 0
   learnedChance: 0
   canGetExperience: true
@@ -89,7 +89,7 @@ img: systems/rqg/assets/images/skills/ride.svg
 data:
   category: agility
   skillName: Ride
-  specialization: '...'
+  specialization: ...
   baseChance: 5
   learnedChance: 5
   canGetExperience: true
@@ -106,7 +106,7 @@ img: systems/rqg/assets/images/skills/swim.svg
 data:
   category: agility
   skillName: Swim
-  specialization: null
+  specialization:
   baseChance: 15
   learnedChance: 15
   canGetExperience: true

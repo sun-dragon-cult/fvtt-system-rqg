@@ -1,4 +1,3 @@
-_id: 5Efm1mCbg178godF
 name: Combine (technique)
 img: systems/rqg/assets/images/runes/combine.svg
 content: >
@@ -13,7 +12,6 @@ flags:
       priority: 0
 
 ---
-_id: WQxNLQ3Hs6hoj91D
 name: Tap (technique)
 img: systems/rqg/assets/images/runes/tap.svg
 content: >
@@ -30,7 +28,6 @@ flags:
       priority: 0
 
 ---
-_id: sZoKKkZs0LzrQQo2
 name: Dispel (technique)
 img: systems/rqg/assets/images/runes/dispel.svg
 content: >
@@ -46,7 +43,6 @@ flags:
       priority: 0
 
 ---
-_id: NWgJo2ogTE38Xm3U
 name: Separate (technique)
 img: systems/rqg/assets/images/runes/separate.svg
 content: >
@@ -62,7 +58,6 @@ flags:
       priority: 0
 
 ---
-_id: UVUjCIghlt2p8baD
 name: Summon (technique)
 img: systems/rqg/assets/images/runes/summon.svg
 content: >
@@ -78,7 +73,6 @@ flags:
       priority: 0
 
 ---
-_id: 1z88e2QndcBTfzBC
 name: Command (technique)
 img: systems/rqg/assets/images/runes/command.svg
 content: >

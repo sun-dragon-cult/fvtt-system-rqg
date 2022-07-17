@@ -8,7 +8,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: head
-  connectedTo: null
+  connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -28,7 +28,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: chest
-  connectedTo: null
+  connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -48,7 +48,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: abdomen
-  connectedTo: null
+  connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:

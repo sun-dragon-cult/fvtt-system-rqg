@@ -2797,3 +2797,9 @@ items:
     flags:
       core:
         sourceId: Item.ecql28ZW1OqdI6wK
+flags:
+  rqg:
+    documentRqidFlags:
+      id: a.character.species-template-mostali
+      lang: en
+      priority: 0

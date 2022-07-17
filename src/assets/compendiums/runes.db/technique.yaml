@@ -1,9 +1,7 @@
 name: Combine (technique)
 type: rune
+img: systems/rqg/assets/images/runes/combine.svg
 data:
-  rqid: rune-combine-technique
-  rqidPriority: "0"
-  rqidLang: en
   rune: Combine
   chance: 0
   hasExperience: false
@@ -11,17 +9,21 @@ data:
   minorRunes:
     - Separate (technique)
   isMastered: true
-  opposingRune: null
-  journalId: 5Efm1mCbg178godF
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/combine.svg
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-combine
+    name: Combine (technique)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.combine-technique
+      lang: en
+      priority: 0
 ---
 name: Tap (technique)
 type: rune
+img: systems/rqg/assets/images/runes/tap.svg
 data:
-  rqid: rune-tap-technique
-  rqidPriority: "0"
-  rqidLang: en
   rune: Tap
   chance: 0
   hasExperience: false
@@ -33,16 +35,20 @@ data:
     - Dispel (technique)
   isMastered: true
   opposingRune: null
-  journalId: WQxNLQ3Hs6hoj91D
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/tap.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-tap
+    name: Tap (technique)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.tap-technique
+      lang: en
+      priority: 0
 ---
 name: Dispel (technique)
 type: rune
+img: systems/rqg/assets/images/runes/dispel.svg
 data:
-  rqid: rune-dispel-technique
-  rqidPriority: "0"
-  rqidLang: en
   rune: Dispel
   chance: 0
   hasExperience: false
@@ -51,16 +57,20 @@ data:
     - Summon (technique)
   isMastered: true
   opposingRune: null
-  journalId: sZoKKkZs0LzrQQo2
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/dispel.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-dispel
+    name: Dispel (technique)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.dispel-technique
+      lang: en
+      priority: 0
 ---
 name: Separate (technique)
 type: rune
+img: systems/rqg/assets/images/runes/separate.svg
 data:
-  rqid: rune-separate-technique
-  rqidPriority: "0"
-  rqidLang: en
   rune: Separate
   chance: 0
   hasExperience: false
@@ -69,16 +79,20 @@ data:
     - Combine (technique)
   isMastered: true
   opposingRune: null
-  journalId: NWgJo2ogTE38Xm3U
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/separate.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-separate
+    name: Separate (technique)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.separate-technique
+      lang: en
+      priority: 0
 ---
 name: Summon (technique)
 type: rune
+img: systems/rqg/assets/images/runes/summon.svg
 data:
-  rqid: rune-summon-technique
-  rqidPriority: "0"
-  rqidLang: en
   rune: Summon
   chance: 0
   hasExperience: false
@@ -87,16 +101,20 @@ data:
     - Dispel (technique)
   isMastered: true
   opposingRune: null
-  journalId: UVUjCIghlt2p8baD
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/summon.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-summon
+    name: Summon (technique)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.summon-technique
+      lang: en
+      priority: 0
 ---
 name: Command (technique)
 type: rune
+img: systems/rqg/assets/images/runes/command.svg
 data:
-  rqid: rune-command-technique
-  rqidPriority: "0"
-  rqidLang: en
   rune: Command
   chance: 0
   hasExperience: false
@@ -108,6 +126,12 @@ data:
     - Dispel (technique)
   isMastered: true
   opposingRune: null
-  journalId: 1z88e2QndcBTfzBC
-  journalPack: "rqg.rune-descriptions"
-img: systems/rqg/assets/images/runes/command.svg
+  descriptionRqidLink:
+    rqid: je..runedescription-command
+    name: Command (technique)
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.command-technique
+      lang: en
+      priority: 0

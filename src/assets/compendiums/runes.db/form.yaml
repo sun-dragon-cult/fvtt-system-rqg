@@ -9,6 +9,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Man (form)
+  descriptionRqidLink:
+    rqid: je..runedescription-beast
+    name: Beast (form)
 flags:
   rqg:
     documentRqidFlags:
@@ -26,7 +29,10 @@ data:
   runeType: form
   minorRunes: []
   isMastered: false
-  opposingRune: null
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-chaos
+    name: Chaos (form)
 flags:
   rqg:
     documentRqidFlags:
@@ -44,7 +50,10 @@ data:
   runeType: form
   minorRunes: []
   isMastered: false
-  opposingRune: null
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-plant
+    name: Plant (form)
 flags:
   rqg:
     documentRqidFlags:
@@ -62,7 +71,10 @@ data:
   runeType: form
   minorRunes: []
   isMastered: false
-  opposingRune: null
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..runedescription-spirit
+    name: Spirit (form)
 flags:
   rqg:
     documentRqidFlags:
@@ -70,17 +82,20 @@ flags:
       lang: en
       priority: 0
 ---
-name: Dragonnewt (form)
+name: Dragonewt (form)
 type: rune
-img: systems/rqg/assets/images/runes/dragonnewt.svg
+img: systems/rqg/assets/images/runes/dragonewt.svg
 data:
-  rune: Dragonnewt
+  rune: Dragonewt
   chance: 0
   hasExperience: false
   runeType: form
-  opposingRune: null
+  opposingRune:
   minorRunes: []
   isMastered: false
+  descriptionRqidLink:
+    rqid: je..runedescription-dragonewt
+    name: Dragonewt (form)
 flags:
   rqg:
     documentRqidFlags:
@@ -99,6 +114,9 @@ data:
   minorRunes: []
   isMastered: false
   opposingRune: Beast (form)
+  descriptionRqidLink:
+    rqid: je..runedescription-man
+    name: Man (form)
 flags:
   rqg:
     documentRqidFlags:
