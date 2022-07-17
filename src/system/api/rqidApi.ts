@@ -8,6 +8,8 @@ import { RQG_CONFIG, systemId } from "../config";
 import { getGame, localize, toKebabCase, trimChars } from "../util";
 import { documentRqidFlags, DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 
+type SupportedDocumentTypes = RqgItem | JournalEntry | RollTable;
+
 export class Rqid {
   /**
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
@@ -16,7 +18,7 @@ export class Rqid {
   static async fromRqid(
     rqid: string,
     lang: string = "en"
-  ): Promise<RqgItem | JournalEntry | RollTable | undefined> {
+  ): Promise<SupportedDocumentTypes | undefined> {
     if (!rqid) {
       return undefined;
     }
@@ -105,7 +107,7 @@ export class Rqid {
     }
   }
 
-  private static getHighestPrioCandidate<T extends RqgItem | JournalEntry | RollTable>(
+  private static getHighestPrioCandidate<T extends SupportedDocumentTypes>(
     candidates: T[]
   ): T | undefined {
     if (candidates.length === 0) {
