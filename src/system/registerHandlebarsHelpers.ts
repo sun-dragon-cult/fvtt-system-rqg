@@ -152,15 +152,10 @@ export const registerHandlebarsHelpers = function () {
       return `<i class="fas fa-book-open"></i>`;
     }
 
-    const iconSettings: any = <ClientSettings>(
-      getGame().settings.get(systemId, "defaultItemIconSettings")
-    );
-
-    // if (rqidLink.itemType === "cult") {
-    //   return `<img src="${iconSettings.cult}">`;
-    // }
-
     if (rqidLink.documentType === "Item" && rqidLink.itemType) {
+      const iconSettings: any = <ClientSettings>(
+        getGame().settings.get(systemId, "defaultItemIconSettings")
+      );
       if (iconSettings[rqidLink.itemType]) {
         return `<img src="${iconSettings[rqidLink.itemType]}">`;
       }
