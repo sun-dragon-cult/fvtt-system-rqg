@@ -51,12 +51,6 @@ export class ReputationCard {
 
     const { reputationValue, modifier } = await ReputationCard.getFormDataFromFlags(flags);
     await ReputationCard.roll(reputationValue, modifier, speaker);
-
-    await ReputationCard.roll(
-      reputationValue,
-      modifier,
-      ChatMessage.getSpeaker({ actor: actor, token: token })
-    );
   }
 
   public static async roll(
