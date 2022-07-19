@@ -250,15 +250,39 @@ export async function getDocumentFromUuid<T>(
   return documentUuid ? ((await fromUuid(documentUuid)) as T | null) ?? undefined : undefined;
 }
 
-// A convenience getter that calls fromUuid and trows error if no result.
+// A convenience getter that calls fromUuid and throws error if no result.
 export async function getRequiredDocumentFromUuid<T>(documentUuid: string | undefined): Promise<T> {
   const document = await getDocumentFromUuid<T>(documentUuid);
   if (!document) {
-    const msg = "TODO FIXME some text about no actor found!!!!";
+    const msg = `Actor could not be found from uuid [${documentUuid}]`; // TODO translate
     console.warn(msg);
     throw new RqgError(msg, documentUuid);
   }
   return document;
+}
+
+// A convenience getter that calls fromUuid and throws error if no result. Also handles unlinked actors.
+// TODO the weird generics is because the `jsTemplate2json.mjs` refuses to work if I use RqgActor instead of T.
+// TODO this method needs to be called with `getRequiredRqgActorFromUuid<RqgActor>(...` to work as intended.
+export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefined): Promise<T> {
+  const rqgActorOrTokenDocument = await getRequiredDocumentFromUuid<RqgActor | TokenDocument>(
+    actorUuid
+  );
+  if (!(rqgActorOrTokenDocument instanceof TokenDocument)) {
+    return rqgActorOrTokenDocument as unknown as T;
+  }
+  if (rqgActorOrTokenDocument instanceof TokenDocument) {
+    const rqgActor = rqgActorOrTokenDocument.actor;
+    if (!rqgActor) {
+      const msg = `TokenDocument didn't contain actor`; // TODO translate
+      console.warn(msg);
+      throw new RqgError(msg, rqgActorOrTokenDocument);
+    }
+    return rqgActor as unknown as T;
+  }
+  const msg = `Unexpected return type - did you call 'getRequiredRqgActorFromUuid' with a uuid not pointing to a actor?`;
+  console.warn(msg);
+  throw new RqgError(msg, rqgActorOrTokenDocument);
 }
 
 export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Metadata> {
@@ -329,7 +353,7 @@ export function uuid2Name(uuid: string | undefined): string | null {
 }
 
 /**
- * An system specific Error that can encapsulate extra debugging information (in `debugData`)
+ * A system specific Error that can encapsulate extra debugging information (in `debugData`)
  */
 export class RqgError implements Error {
   public name: string = "RqgError";

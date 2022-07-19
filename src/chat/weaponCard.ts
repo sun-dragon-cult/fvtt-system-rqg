@@ -12,6 +12,7 @@ import {
   getGame,
   getGameUser,
   getRequiredDocumentFromUuid,
+  getRequiredRqgActorFromUuid,
   hasOwnProperty,
   localize,
   logMisconfiguration,
@@ -80,7 +81,7 @@ export class WeaponCard {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "weaponCard");
 
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const weaponItem = (await getRequiredDocumentFromUuid(flags.card.weaponUuid)) as
       | RqgItem
@@ -156,7 +157,7 @@ export class WeaponCard {
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "weaponCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const weaponItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.weaponUuid);
     const usage = convertFormValueToString(flags.card.usage) as UsageType;

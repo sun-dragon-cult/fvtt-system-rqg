@@ -8,7 +8,7 @@ import {
   convertFormValueToInteger,
   getDocumentFromUuid,
   getGame,
-  getRequiredDocumentFromUuid,
+  getRequiredRqgActorFromUuid,
   localize,
   usersIdsThatOwnActor,
 } from "../system/util";
@@ -45,7 +45,7 @@ export class ReputationCard {
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "reputationCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
@@ -68,7 +68,7 @@ export class ReputationCard {
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "reputationCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const { reputationValue, modifier } = await ReputationCard.getFormDataFromFlags(flags);
 
@@ -97,7 +97,7 @@ export class ReputationCard {
     flags: RqgChatMessageFlags
   ): Promise<{ modifier: number; reputationValue: number }> {
     assertChatMessageFlagType(flags.type, "reputationCard");
-    const actor = await getDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     assertActorType(actor?.data.type, ActorTypeEnum.Character);
     const reputationValue: number = Number(actor.data.data.background.reputation) || 0;
 

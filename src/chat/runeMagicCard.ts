@@ -15,6 +15,7 @@ import {
   getDocumentFromUuid,
   getGame,
   getRequiredDocumentFromUuid,
+  getRequiredRqgActorFromUuid,
   localize,
   requireValue,
   RqgError,
@@ -73,7 +74,7 @@ export class RuneMagicCard {
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "runeMagicCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
     const runeMagicItem = (await getRequiredDocumentFromUuid(flags.card.itemUuid)) as
@@ -301,7 +302,7 @@ export class RuneMagicCard {
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "runeMagicCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const runeMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
     assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);

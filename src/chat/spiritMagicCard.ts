@@ -8,6 +8,7 @@ import {
   getDocumentFromUuid,
   getGame,
   getRequiredDocumentFromUuid,
+  getRequiredRqgActorFromUuid,
   localize,
   usersIdsThatOwnActor,
 } from "../system/util";
@@ -53,7 +54,7 @@ export class SpiritMagicCard {
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "spiritMagicCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const spiritMagicItem = (await getRequiredDocumentFromUuid(flags.card.itemUuid)) as RqgItem;
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
@@ -125,7 +126,7 @@ export class SpiritMagicCard {
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "spiritMagicCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const spiritMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
     const templateData = {

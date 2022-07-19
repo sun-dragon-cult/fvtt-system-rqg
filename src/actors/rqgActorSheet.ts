@@ -29,8 +29,8 @@ import {
   getDomDataset,
   getGame,
   getGameUser,
-  getRequiredDocumentFromUuid,
   getRequiredDomDataset,
+  getRequiredRqgActorFromUuid,
   hasOwnProperty,
   localize,
   requireValue,
@@ -1253,7 +1253,7 @@ export class RqgActorSheet extends ActorSheet<
     // This is probably not working because of the itemLocationTree
     if (sameActor) return this._onSortItem(event, itemData);
 
-    const sourceActor = await getRequiredDocumentFromUuid<RqgActor>(data.actorId);
+    const sourceActor = await getRequiredRqgActorFromUuid<RqgActor>(data.actorId);
     const token = await getDocumentFromUuid<TokenDocument>(data.tokenId);
 
     if (!sourceActor) return false;

@@ -12,6 +12,7 @@ import {
   convertFormValueToInteger,
   cleanIntegerString,
   requireValue,
+  getRequiredRqgActorFromUuid,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
@@ -60,7 +61,7 @@ export class ItemCard {
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "itemCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
     const item = (await getRequiredDocumentFromUuid(flags.card.itemUuid)) as RqgItem | undefined;
@@ -101,7 +102,7 @@ export class ItemCard {
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "itemCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const item = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
 

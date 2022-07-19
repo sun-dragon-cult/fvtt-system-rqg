@@ -8,7 +8,7 @@ import {
   convertFormValueToInteger,
   getDocumentFromUuid,
   getGame,
-  getRequiredDocumentFromUuid,
+  getRequiredRqgActorFromUuid,
   localize,
   localizeCharacteristic,
   usersIdsThatOwnActor,
@@ -57,7 +57,7 @@ export class CharacteristicCard {
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "characteristicCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
@@ -119,7 +119,7 @@ export class CharacteristicCard {
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "characteristicCard");
-    const actor = await getRequiredDocumentFromUuid<RqgActor>(flags.card.actorUuid);
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
 
     const { characteristicValue, difficulty, modifier } =
