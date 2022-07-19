@@ -61,14 +61,6 @@ export class SpiritMagicCard {
 
     const { level, boost } = await SpiritMagicCard.getFormDataFromFlags(flags);
     await SpiritMagicCard.roll(spiritMagicItem, level, boost, actor, speaker);
-
-    await SpiritMagicCard.roll(
-      spiritMagicItem,
-      level,
-      boost,
-      actor,
-      ChatMessage.getSpeaker({ actor: actor, token: token })
-    );
   }
 
   public static async roll(
