@@ -918,13 +918,6 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    // Open Linked Journal Entry
-    this.form?.querySelectorAll<HTMLElement>("[data-journal-id]").forEach((el) => {
-      const pack = getDomDataset(el, "journal-pack");
-      const id = getRequiredDomDataset(el, "journal-id");
-      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-    });
-
     // Edit Item (open the item sheet)
     this.form?.querySelectorAll<HTMLElement>("[data-item-edit]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");

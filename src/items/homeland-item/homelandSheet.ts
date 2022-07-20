@@ -1,4 +1,3 @@
-import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import {
   HomelandDataProperties,
   HomelandDataPropertiesData,
@@ -8,9 +7,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
   assertItemType,
   findDatasetValueInSelfOrAncestors,
-  getDomDataset,
   getGameUser,
-  getRequiredDomDataset,
   localize,
 } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
@@ -79,14 +76,6 @@ export class HomelandSheet extends RqgItemSheet<
     const form = this.form as HTMLFormElement;
 
     form.addEventListener("drop", this._onDrop.bind(this));
-
-    // Open Linked Journal Entry
-    form.querySelectorAll("[data-journal-id]").forEach((element) => {
-      const el = element as HTMLElement;
-      const pack = getDomDataset($(el), "journal-pack");
-      const id = getRequiredDomDataset($(el), "journal-id");
-      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-    });
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {

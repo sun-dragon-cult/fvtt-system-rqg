@@ -4,14 +4,11 @@ import {
   RuneMagicDataPropertiesData,
 } from "../../data-model/item-data/runeMagicData";
 
-import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import {
   assertItemType,
   getAllRunesIndex,
-  getDomDataset,
   getGameUser,
   getJournalEntryName,
-  getRequiredDomDataset,
 } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
@@ -100,14 +97,6 @@ export class RuneMagicSheet extends RqgItemSheet<
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
     this.form?.addEventListener("drop", this._onDrop.bind(this));
-
-    // Open Linked Journal Entry
-    this.form?.querySelectorAll("[data-journal-id]").forEach((el) => {
-      const elem = el as HTMLElement;
-      const pack = getDomDataset($(elem), "journal-pack");
-      const id = getRequiredDomDataset($(elem), "journal-id");
-      elem.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-    });
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
