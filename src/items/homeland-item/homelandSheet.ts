@@ -4,12 +4,7 @@ import {
   HomelandDataSourceData,
 } from "../../data-model/item-data/homelandData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
-  assertItemType,
-  findDatasetValueInSelfOrAncestors,
-  getGameUser,
-  localize,
-} from "../../system/util";
+import { assertItemType, getDomDataset, getGameUser, localize } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 
@@ -89,10 +84,7 @@ export class HomelandSheet extends RqgItemSheet<
       return;
     }
 
-    const targetPropertyName = findDatasetValueInSelfOrAncestors(
-      event.target as HTMLElement,
-      "targetDropProperty"
-    );
+    const targetPropertyName = getDomDataset(event, "target-drop-property");
 
     const droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
 

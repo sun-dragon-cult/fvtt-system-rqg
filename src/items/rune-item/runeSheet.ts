@@ -4,12 +4,7 @@ import {
   RuneDataPropertiesData,
   RuneTypeEnum,
 } from "../../data-model/item-data/runeData";
-import {
-  assertItemType,
-  getAllRunesIndex,
-  getGameUser,
-  getJournalEntryName,
-} from "../../system/util";
+import { assertItemType, getAllRunesIndex, getGameUser } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -60,7 +55,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
         // @ts-ignore name
         allRunes: getAllRunesIndex().map((r) => r.name),
         runeTypes: Object.values(RuneTypeEnum),
-        journalEntryName: getJournalEntryName(runeData),
+        journalEntryName: runeData.descriptionRqidLink.name,
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,

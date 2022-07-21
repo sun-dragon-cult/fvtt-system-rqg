@@ -3,7 +3,7 @@ import {
   SpiritMagicDataProperties,
   SpiritMagicDataPropertiesData,
 } from "../../data-model/item-data/spiritMagicData";
-import { assertItemType, getGameUser, getJournalEntryName } from "../../system/util";
+import { assertItemType, getGameUser } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import {
   SpellConcentrationEnum,
@@ -62,7 +62,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
         ranges: Object.values(SpellRangeEnum),
         durations: Object.values(SpellDurationEnum),
         types: Object.values(SpellConcentrationEnum),
-        journalEntryName: getJournalEntryName(spiritMagicData),
+        journalEntryName: spiritMagicData.descriptionRqidLink.name,
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,

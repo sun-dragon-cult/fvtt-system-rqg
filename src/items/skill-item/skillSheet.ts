@@ -5,12 +5,7 @@ import {
 } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import {
-  assertItemType,
-  getAllRunesIndex,
-  getGameUser,
-  getJournalEntryName,
-} from "../../system/util";
+import { assertItemType, getAllRunesIndex, getGameUser } from "../../system/util";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -59,7 +54,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       skillData: itemData.data,
       sheetSpecific: {
         skillCategories: Object.values(SkillCategoryEnum),
-        journalEntryName: getJournalEntryName(skillData),
+        journalEntryName: skillData.descriptionRqidLink.name,
         allRunes: getAllRunesIndex(),
       },
       isGM: getGameUser().isGM,

@@ -11,21 +11,21 @@
           {{#if characterElementRunes}}
             <div>
               {{#each characterElementRunes}}
-                <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
+                <img class="rune" src="{{img}}"{{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
               {{/each}}
             </div>
           {{/if}}
           {{#if characterPowerRunes}}
             <div>
               {{#each characterPowerRunes}}
-                <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
+                <img class="rune" src="{{img}}"{{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
               {{/each}}
             </div>
           {{/if}}
           {{#if characterFormRunes}}
             <div>
               {{#each characterFormRunes}}
-                <img class="rune" src="{{img}}" {{#if data.journalId}} data-journal-pack="{{data.journalPack}}" data-journal-id="{{data.journalId}}"{{/if}}>
+                <img class="rune" src="{{img}}"{{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
               {{/each}}
             </div>
           {{/if}}

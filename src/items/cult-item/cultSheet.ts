@@ -4,12 +4,7 @@ import {
   CultDataPropertiesData,
   CultRankEnum,
 } from "../../data-model/item-data/cultData";
-import {
-  assertItemType,
-  getAllRunesIndex,
-  getGameUser,
-  getJournalEntryName,
-} from "../../system/util";
+import { assertItemType, getAllRunesIndex, getGameUser } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
@@ -61,7 +56,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       cultData: itemData.data,
       sheetSpecific: {
         allRunes: getAllRunesIndex(),
-        journalEntryName: getJournalEntryName(cultData),
+        journalEntryName: cultData.descriptionRqidLink.name,
         ranksEnum: Object.values(CultRankEnum),
       },
       isGM: getGameUser().isGM,

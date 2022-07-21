@@ -4,12 +4,7 @@ import {
   RuneMagicDataPropertiesData,
 } from "../../data-model/item-data/runeMagicData";
 
-import {
-  assertItemType,
-  getAllRunesIndex,
-  getGameUser,
-  getJournalEntryName,
-} from "../../system/util";
+import { assertItemType, getAllRunesIndex, getGameUser } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
@@ -71,7 +66,7 @@ export class RuneMagicSheet extends RqgItemSheet<
         durations: Object.values(SpellDurationEnum),
         actorCults: this.getActorCults(),
         allRunes: getAllRunesIndex(),
-        journalEntryName: getJournalEntryName(runeMagicData),
+        journalEntryName: runeMagicData.descriptionRqidLink.name,
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,

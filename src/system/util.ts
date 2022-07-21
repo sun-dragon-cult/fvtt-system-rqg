@@ -17,19 +17,58 @@ export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset:
   return data;
 }
 
+/**
+ * Get the dataset value of the first DOM element where it is set, searching
+ * in parents until found.
+ */
 export function getDomDataset(
   el: HTMLElement | Event | JQuery,
   dataset: string
 ): string | undefined {
-  const elem =
-    el instanceof HTMLElement
-      ? el
-      : !!(el as Event).target
-      ? ((el as Event).target as HTMLElement)
-      : (el as JQuery).get(0);
-
+  const elem = getHTMLElement(el);
   const closestElement = elem?.closest(`[data-${dataset}]`) as HTMLElement;
   return closestElement?.dataset[toCamelCase(dataset)];
+}
+
+/**
+ * Get the dataset value of the first DOM element with the same item-id as the
+ * id on the provided element.
+ *
+ * This is useful for finding the first element on an item row (usually the
+ * image) that has a `data-rqid-link` that has an event handler to open the description
+ * when clicked. The rest of the row should not open the description, but the
+ * context menu needs to know if there is a description and what rqid it has.
+ */
+export function getDomDatasetAmongSiblings(
+  el: HTMLElement | Event | JQuery,
+  dataset: string
+): string | undefined {
+  const elem = getHTMLElement(el);
+  let firstItemEl = elem;
+  if (!elem) {
+    const msg = `Called getFormDatasetAmongSiblings with a nonexistent element`;
+    console.error(msg);
+    throw new RqgError(msg, el);
+  }
+  // Get the itemId on the provided DOM element
+  const itemId = elem.dataset.itemId;
+
+  // Follow the siblings above the provided DOM element til the first with the same itemId
+  while (
+    firstItemEl?.previousElementSibling instanceof HTMLElement &&
+    firstItemEl?.previousElementSibling?.dataset?.itemId === itemId
+  ) {
+    firstItemEl = firstItemEl.previousElementSibling;
+  }
+  return firstItemEl?.dataset[toCamelCase(dataset)];
+}
+
+function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | undefined {
+  return el instanceof HTMLElement
+    ? el
+    : !!(el as Event).target
+    ? ((el as Event).target as HTMLElement)
+    : (el as JQuery).get(0);
 }
 
 /**
@@ -302,20 +341,6 @@ export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Me
   return pack.index;
 }
 
-// Returns the linked item name in the compendium for items extending JournalEntryLink
-export function getJournalEntryName(itemData: any): string {
-  if (!itemData.journalId) {
-    return "";
-  }
-  if (itemData.journalPack) {
-    const pack = getGame().packs.get(itemData.journalPack);
-    // @ts-ignore name
-    return pack?.index.get(itemData.journalId)?.name;
-  } else {
-    return getGame().journal?.get(itemData.journalId)?.name ?? "";
-  }
-}
-
 export function getJournalEntryNameByJournalEntryLink(link: JournalEntryLink): string {
   if (!link.journalId) {
     return "";
@@ -466,17 +491,4 @@ export function activateChatTab() {
   // TODO: add player setting to allow skipping this if they don't like the tab changing
   // @ts-ignore 0.8 tabs
   ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
-}
-
-export function findDatasetValueInSelfOrAncestors(
-  el: HTMLElement,
-  datasetname: string
-): string | undefined {
-  if (el.dataset[datasetname]) {
-    return el.dataset[datasetname] || "";
-  } else if (el.parentElement) {
-    return findDatasetValueInSelfOrAncestors(el.parentElement, datasetname);
-  } else {
-    return undefined;
-  }
 }

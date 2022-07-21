@@ -23,7 +23,6 @@ import { RqgActor } from "./rqgActor";
 import {
   assertActorType,
   assertItemType,
-  findDatasetValueInSelfOrAncestors,
   getDocumentFromUuid,
   getDocumentTypes,
   getDomDataset,
@@ -1142,16 +1141,9 @@ export class RqgActorSheet extends ActorSheet<
       return;
     }
 
-    const targetPropertyName = findDatasetValueInSelfOrAncestors(
-      event.target as HTMLElement,
-      "targetDropProperty"
-    );
+    const targetPropertyName = getDomDataset(event, "target-drop-property");
 
-    const dropTypes = findDatasetValueInSelfOrAncestors(
-      // TODO is not used ???
-      event.target as HTMLElement,
-      "expectedDropTypes"
-    )?.split(",");
+    const dropTypes = getDomDataset(event, "expected-drop-types")?.split(","); // TODO is not used ???
 
     let droppedDocument: Item | JournalEntry | undefined = undefined;
 

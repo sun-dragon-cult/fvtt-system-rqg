@@ -4,7 +4,7 @@ import { RqgActor } from "../rqgActor";
 import {
   activateChatTab,
   assertItemType,
-  findDatasetValueInSelfOrAncestors,
+  getDomDatasetAmongSiblings,
   getGame,
   getRequiredDomDataset,
   localize,
@@ -77,11 +77,11 @@ export const runeMenuOptions = (
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
-      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeRqid");
+      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       return !!rqid;
     },
     callback: async (el: JQuery) => {
-      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeRqid");
+      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       if (rqid) {
         await Rqid.renderRqidDocument(rqid);
       }
