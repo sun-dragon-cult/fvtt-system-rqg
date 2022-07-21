@@ -307,20 +307,15 @@ export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefin
     actorUuid
   );
   if (!(rqgActorOrTokenDocument instanceof TokenDocument)) {
-    return rqgActorOrTokenDocument as unknown as T;
+    return rqgActorOrTokenDocument as unknown as T; // Assume T is RqgActor
   }
-  if (rqgActorOrTokenDocument instanceof TokenDocument) {
-    const rqgActor = rqgActorOrTokenDocument.actor;
-    if (!rqgActor) {
-      const msg = `TokenDocument didn't contain actor`; // TODO translate
-      console.warn(msg);
-      throw new RqgError(msg, rqgActorOrTokenDocument);
-    }
-    return rqgActor as unknown as T;
+  const rqgActor = rqgActorOrTokenDocument.actor;
+  if (!rqgActor) {
+    const msg = `TokenDocument didn't contain actor`; // TODO translate
+    console.warn(msg);
+    throw new RqgError(msg, rqgActorOrTokenDocument);
   }
-  const msg = `Unexpected return type - did you call 'getRequiredRqgActorFromUuid' with a uuid not pointing to a actor?`;
-  console.warn(msg);
-  throw new RqgError(msg, rqgActorOrTokenDocument);
+  return rqgActor as unknown as T;
 }
 
 export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Metadata> {
