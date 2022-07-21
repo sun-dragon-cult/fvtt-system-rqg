@@ -624,6 +624,7 @@ export class RqgActorSheet extends ActorSheet<
       // Only owners are allowed to interact
       return;
     }
+    const htmlElement = html[0];
 
     new ContextMenu(
       html,
@@ -655,7 +656,7 @@ export class RqgActorSheet extends ActorSheet<
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
 
     // Roll Characteristic
-    this.form?.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
+    htmlElement.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
       const characteristicName = (el.closest("[data-characteristic]") as HTMLElement)?.dataset
         .characteristic;
 
@@ -701,7 +702,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    this.form?.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
@@ -727,7 +728,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll against Item Ability Chance
-    this.form?.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId);
       requireValue(item, "AbilityChance roll couldn't find skillItem");
@@ -765,8 +766,8 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll Rune Magic
-    this.form?.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    htmlElement?.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
       const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId) as RqgItem | undefined;
       assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
       let clickCount = 0;
@@ -806,8 +807,8 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll Spirit Magic
-    this.form?.querySelectorAll<HTMLElement>("[data-spirit-magic-roll]").forEach((el) => {
-      const itemId = getRequiredDomDataset($(el as HTMLElement), "item-id");
+    htmlElement?.querySelectorAll<HTMLElement>("[data-spirit-magic-roll]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId);
       if (!item) {
         const msg = `Couldn't find item [${itemId}] to roll Spirit Magic against`;
@@ -847,7 +848,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Show Weapon Chat Card
-    this.form?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
       const weaponUsage = getRequiredDomDataset(el, "weapon-roll");
       const weaponItemId = getRequiredDomDataset(el, "item-id");
       const skillItemId = getDomDataset(el, "skill-id");
@@ -878,8 +879,8 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Set Token SR in Combat Tracker
-    this.form?.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el: HTMLElement) => {
-      const sr = getRequiredDomDataset($(el as HTMLElement), "set-sr");
+    htmlElement?.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el: HTMLElement) => {
+      const sr = getRequiredDomDataset(el, "set-sr");
       let token = this.token as TokenDocument | null;
       if (!token && this.actor.data.token.actorLink) {
         const activeTokens = this.actor.getActiveTokens();
@@ -918,7 +919,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Edit Item (open the item sheet)
-    this.form?.querySelectorAll<HTMLElement>("[data-item-edit]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-item-edit]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId);
       if (!item || !item.sheet) {
@@ -930,13 +931,13 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Delete Item (remove item from actor)
-    this.form?.querySelectorAll<HTMLElement>("[data-item-delete]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-item-delete]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
     // Cycle the equipped state of a physical Item
-    this.form?.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", async () => {
         const item = this.actor.items.get(itemId);
@@ -955,7 +956,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Edit item value
-    this.form?.querySelectorAll<HTMLInputElement>("[data-item-edit-value]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLInputElement>("[data-item-edit-value]").forEach((el) => {
       const path = getRequiredDomDataset(el, "item-edit-value");
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("change", async (event) => {
@@ -966,7 +967,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Add wound to hit location TODO move listener to hitlocation
-    this.form?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       const speakerName = (this.token?.name || this.actor.data.token.name) ?? "";
@@ -976,13 +977,13 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Heal wounds to hit location TODO move listener to hitlocation
-    this.form?.querySelectorAll<HTMLElement>("[data-item-heal-wound]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-item-heal-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));
     });
 
     // Edit Actor Active Effect
-    this.form?.querySelectorAll<HTMLElement>("[data-actor-effect-edit]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-actor-effect-edit]").forEach((el) => {
       const effectId = getRequiredDomDataset(el, "effect-id");
       el.addEventListener("click", () => {
         const effect = this.actor.effects.get(effectId);
@@ -992,7 +993,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Delete Item Active Effect
-    this.form?.querySelectorAll<HTMLElement>("[data-actor-effect-delete]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-actor-effect-delete]").forEach((el) => {
       const effectId = getRequiredDomDataset(el, "effect-id");
       el.addEventListener("click", () => {
         this.actor.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
@@ -1000,7 +1001,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll Damage for spirit magic (and separate damage bonus)
-    this.form?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
       const damage = el.dataset.damageRoll;
       requireValue(damage, "direct damage roll without damage");
       el.addEventListener("click", async () => {
@@ -1015,10 +1016,10 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Handle rqid links
-    RqidLink.addRqidLinkClickHandlers($(this.form!));
+    RqidLink.addRqidLinkClickHandlers(html);
 
     // Handle deleting RqidLinks from RqidLink Array Properties
-    $(this.form!)
+    $(htmlElement!)
       .find("[data-delete-from-property]")
       .each((i: number, el: HTMLElement) => {
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");

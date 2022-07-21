@@ -340,19 +340,6 @@ export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Me
   return pack.index;
 }
 
-export function getJournalEntryNameByJournalEntryLink(link: JournalEntryLink): string {
-  if (!link.journalId) {
-    return "";
-  }
-  if (link.journalPack) {
-    const pack = getGame().packs.get(link.journalPack);
-    // @ts-ignore name
-    return pack?.index.get(link.journalId)?.name;
-  } else {
-    return getGame().journal?.get(link.journalId)?.name ?? "";
-  }
-}
-
 export function uuid2Name(uuid: string | undefined): string | null {
   const parts = uuid?.split(".") ?? [];
   let name;
