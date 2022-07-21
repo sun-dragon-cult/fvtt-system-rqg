@@ -3,7 +3,6 @@ import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
-import { JournalEntryLink } from "../data-model/shared/journalentrylink";
 import { ChatCardType } from "../chat/RqgChatMessage";
 import { systemId } from "./config";
 
