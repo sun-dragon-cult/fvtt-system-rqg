@@ -4,15 +4,7 @@ import {
   RuneDataPropertiesData,
   RuneTypeEnum,
 } from "../../data-model/item-data/runeData";
-import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import {
-  assertItemType,
-  getAllRunesIndex,
-  getDomDataset,
-  getGameUser,
-  getJournalEntryName,
-  getRequiredDomDataset,
-} from "../../system/util";
+import { assertItemType, getAllRunesIndex, getGameUser } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -63,7 +55,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
         // @ts-ignore name
         allRunes: getAllRunesIndex().map((r) => r.name),
         runeTypes: Object.values(RuneTypeEnum),
-        journalEntryName: getJournalEntryName(runeData),
+        journalEntryName: runeData.descriptionRqidLink.name,
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
@@ -89,14 +81,6 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     const form = this.form as HTMLFormElement;
 
     form.addEventListener("drop", this._onDrop.bind(this));
-
-    // Open Linked Journal Entry
-    form.querySelectorAll("[data-journal-id]").forEach((element) => {
-      const el = element as HTMLElement;
-      const pack = getDomDataset($(el), "journal-pack");
-      const id = getRequiredDomDataset($(el), "journal-id");
-      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-    });
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {

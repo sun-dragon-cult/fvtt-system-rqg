@@ -12,17 +12,12 @@
 <div data-item-id="{{skill.id}}"
     title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}"
     class="skill contextmenu item"
-    {{#if skill.data.data.descriptionRqidLink.rqid}}
-        data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
-    {{/if}}>
+    {{#if skill.data.data.descriptionRqidLink.rqid}}data-rqid-link="{{skill.data.data.descriptionRqidLink.rqid}}"{{/if}}>
     <img class="item" src="{{skill.img}}">
 </div>
 <div data-item-id="{{skill.id}}"
         class="skill contextmenu item" data-item-roll
-        title="{{localize "RQG.Game.RollTitle"}}"
-        {{#if skill.data.data.descriptionRqidLink.rqid}}
-            data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
-        {{/if}}>
+        title="{{localize "RQG.Game.RollTitle"}}">
         {{skill.data.data.skillName}}{{#if skill.data.data.specialization}} ({{skill.data.data.specialization}}){{/if}}
     {{#each skill.data.data.runes}}
     <img class="rune" src="{{runeImg this}}" title="{{this}}">
@@ -31,9 +26,6 @@
 <div data-item-id="{{skill.id}}"
     class="skill contextmenu item {{#if skill.data.data.hasExperience}}experienced{{/if}}"
     data-item-roll
-    title="{{localize "RQG.Game.RollTitle"}}"
-    {{#if skill.data.data.descriptionRqidLink.rqid}}
-        data-skill-rqid="{{skill.data.data.descriptionRqidLink.rqid}}"
-    {{/if}}>
+    title="{{localize "RQG.Game.RollTitle"}}">
 <span class="text-right nowrap">{{#if asBonus}}+{{/if}}{{skill.data.data.chance}}%</span>
 </div>

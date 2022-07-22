@@ -2,7 +2,6 @@ import { RqidLink } from "../data-model/shared/rqidLink";
 import { Rqid } from "../system/api/rqidApi";
 import { systemId } from "../system/config";
 import {
-  findDatasetValueInSelfOrAncestors,
   getDomDataset,
   getGame,
   getRequiredDomDataset,
@@ -221,15 +220,9 @@ export class RqgItemSheet<
       return;
     }
 
-    const targetPropertyName = findDatasetValueInSelfOrAncestors(
-      event.target as HTMLElement,
-      "targetDropProperty"
-    );
+    const targetPropertyName = getDomDataset(event, "target-drop-property");
 
-    const dropTypes = findDatasetValueInSelfOrAncestors(
-      event.target as HTMLElement,
-      "expectedDropTypes"
-    )?.split(",");
+    const dropTypes = getDomDataset(event, "expected-drop-types")?.split(",");
 
     let droppedDocument: Item | JournalEntry | undefined = undefined;
 

@@ -360,11 +360,12 @@ body {
     }
 
     &.spirit-combat {
-      grid-template-columns: [col-start] auto auto [col-end];
+      grid-template-columns: [col-start] 30px auto min-content [col-end];
 
       // Alternating row background
-      > *:nth-child(4n + 1),
-      > *:nth-child(4n + 2) {
+      > *:nth-child(6n + 1),
+      > *:nth-child(6n + 2),
+      > *:nth-child(6n + 3) {
         background: var(--rqg-table-alternate-background);
       }
     }
@@ -595,7 +596,7 @@ body {
   [data-item-equipped-toggle],
   [data-item-heal-wound],
   [data-item-add-wound],
-  [data-journal-id],
+  [data-rqid-link],
   [data-weapon-roll],
   [data-reputation-roll],
   [data-rune-magic-roll] {
@@ -613,7 +614,7 @@ body {
     cursor: context-menu;
   }
 
-  [data-journal-id] {
+  [data-rqid-link] {
     cursor: help;
   }
 

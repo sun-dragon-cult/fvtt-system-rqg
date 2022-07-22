@@ -3,8 +3,8 @@ import { ItemCard } from "../../chat/itemCard";
 import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
-  findDatasetValueInSelfOrAncestors,
   getDomDataset,
+  getDomDatasetAmongSiblings,
   getGame,
   getRequiredDomDataset,
   localize,
@@ -102,11 +102,11 @@ export const skillMenuOptions = (
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
-      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "skillRqid");
+      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       return !!rqid;
     },
     callback: async (el: JQuery) => {
-      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "skillRqid");
+      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       if (rqid) {
         await Rqid.renderRqidDocument(rqid);
       }

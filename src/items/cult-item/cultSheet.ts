@@ -4,15 +4,7 @@ import {
   CultDataPropertiesData,
   CultRankEnum,
 } from "../../data-model/item-data/cultData";
-import { RqgActorSheet } from "../../actors/rqgActorSheet";
-import {
-  assertItemType,
-  getAllRunesIndex,
-  getDomDataset,
-  getGameUser,
-  getJournalEntryName,
-  getRequiredDomDataset,
-} from "../../system/util";
+import { assertItemType, getAllRunesIndex, getGameUser } from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
@@ -64,7 +56,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       cultData: itemData.data,
       sheetSpecific: {
         allRunes: getAllRunesIndex(),
-        journalEntryName: getJournalEntryName(cultData),
+        journalEntryName: cultData.descriptionRqidLink.name,
         ranksEnum: Object.values(CultRankEnum),
       },
       isGM: getGameUser().isGM,
@@ -85,17 +77,9 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
     (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
-
-    // Open Linked Journal Entry
-    (this.form as HTMLElement).querySelectorAll("[data-journal-id]").forEach((el: Element) => {
-      const elem = el as HTMLElement;
-      const pack = getDomDataset($(elem), "journal-pack");
-      const id = getRequiredDomDataset($(elem), "journal-id");
-      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-    });
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+    await super._onDrop(event);
   }
 }

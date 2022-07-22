@@ -1,4 +1,3 @@
-import { RqgActorSheet } from "../../actors/rqgActorSheet";
 import {
   OccupationDataProperties,
   OccupationDataPropertiesData,
@@ -6,14 +5,7 @@ import {
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
-  assertItemType,
-  findDatasetValueInSelfOrAncestors,
-  getDomDataset,
-  getGameUser,
-  getRequiredDomDataset,
-  localize,
-} from "../../system/util";
+import { assertItemType, getDomDataset, getGameUser, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { HomelandDataSource } from "../../data-model/item-data/homelandData";
@@ -151,15 +143,6 @@ export class OccupationSheet extends RqgItemSheet<
     const form = this.form as HTMLFormElement;
 
     form.addEventListener("drop", this._onDrop.bind(this));
-
-    // Open Linked Journal Entry
-    form.querySelectorAll("[data-journal-id]").forEach((element) => {
-      const el = element as HTMLElement;
-      const pack = getDomDataset($(el), "journal-pack");
-      const id = getRequiredDomDataset($(el), "journal-id");
-      el.addEventListener("click", () => RqgActorSheet.showJournalEntry(id, pack));
-    });
-
     form
       .querySelector("#btn-edit-occupational-skills-" + this.item.id)
       ?.addEventListener("click", () => {
@@ -202,10 +185,7 @@ export class OccupationSheet extends RqgItemSheet<
       return;
     }
 
-    const targetPropertyName = findDatasetValueInSelfOrAncestors(
-      event.target as HTMLElement,
-      "targetDropProperty"
-    );
+    const targetPropertyName = getDomDataset(event, "target-drop-property");
 
     const droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
 

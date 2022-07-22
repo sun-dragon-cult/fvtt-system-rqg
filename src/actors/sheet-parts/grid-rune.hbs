@@ -12,25 +12,19 @@
         class="rune contextmenu item"
         data-item-id="{{rune.id}}"
         {{#if rune.data.data.descriptionRqidLink.rqid}}
-            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
+            data-rqid-link="{{rune.data.data.descriptionRqidLink.rqid}}"
         {{/if}}>
     <img class="rune" src="{{rune.img}}">
 </div>
 <div title="{{localize "RQG.Game.RollTitle"}}"
         class="rune contextmenu item"
         data-item-id="{{rune.id}}"
-        {{#if rune.data.data.descriptionRqidLink.rqid}}
-            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
-        {{/if}}
         data-item-roll>
     {{rune.data.data.rune}}
 </div>
 <div title="{{localize "RQG.Game.RollTitle"}}"
         class="rune contextmenu item {{#if rune.data.data.hasExperience}}experienced{{/if}}"
         data-item-id="{{rune.id}}"
-        {{#if rune.data.data.descriptionRqidLink.rqid}}
-            data-rune-rqid="{{rune.data.data.descriptionRqidLink.rqid}}"
-        {{/if}}
         data-item-roll>
     <span class="text-right">{{rune.data.data.chance}}%</span>
 </div>

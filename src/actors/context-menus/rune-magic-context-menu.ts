@@ -2,7 +2,7 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
-  findDatasetValueInSelfOrAncestors,
+  getDomDatasetAmongSiblings,
   getGame,
   getRequiredDomDataset,
   localize,
@@ -51,11 +51,11 @@ export const runeMagicMenuOptions = (
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: ContextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
-      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeMagicSpellRqid");
+      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       return !!rqid;
     },
     callback: async (el: JQuery) => {
-      const rqid = findDatasetValueInSelfOrAncestors(el[0] as HTMLElement, "runeMagicSpellRqid");
+      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       if (rqid) {
         await Rqid.renderRqidDocument(rqid);
       }

@@ -36,7 +36,7 @@
           <span class="flex-column text-right">
             {{#each data.data.usage}}
               {{#if skillId}}
-                <div  class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{#if unusable}}warning{{/if}}"  
+                <div  class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{#if unusable}}warning{{/if}}"
                       {{#if unusable}}title="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
                       data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">
                   {{localize (concat "RQG.Game.WeaponUsage." @key)}}
@@ -159,7 +159,11 @@
   {{/each}}
 
   {{#if dodgeSkillData}}
-    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"> <img class="item" src="{{dodgeSkillData.img}}"></div>
+    <div data-item-id="{{dodgeSkillData._id}}"
+         class="skill contextmenu"
+         {{#if dodgeSkillData.data.descriptionRqidLink.rqid}}data-rqid-link="{{dodgeSkillData.data.descriptionRqidLink.rqid}}"{{/if}}>
+      <img class="item" src="{{dodgeSkillData.img}}">
+    </div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu">{{localize "RQG.Actor.Combat.Dodge"}}</div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
     <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu {{experiencedclass dodgeSkillData._id @root.data._id @root.tokenId}}">
