@@ -4,13 +4,14 @@ import { ItemUpdate } from "../applyMigrations";
 
 // Dummy placeholder item Migrator
 export async function migrateItemDummy(itemData: ItemData): Promise<ItemUpdate> {
-  if (itemData.type === ItemTypeEnum.Armor && false) {
-    return {
+  let updateData = {};
+  if (false && itemData.type === ItemTypeEnum.Armor) {
+    updateData = {
       name: "newName",
       data: {
         namePrefix: "newNamePrefix",
       },
     };
   }
-  return {};
+  return updateData;
 }

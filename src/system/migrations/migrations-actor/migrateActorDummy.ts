@@ -6,7 +6,7 @@ import { ActorUpdate } from "../applyMigrations";
 // Dummy Actor Migrator
 export function migrateActorDummy(actorData: ActorData): ActorUpdate {
   let updateData = {};
-  if (actorData.type === ActorTypeEnum.Character && false) {
+  if (false && actorData.type === ActorTypeEnum.Character) {
     updateData = {
       data: {
         background: {
