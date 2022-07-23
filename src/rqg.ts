@@ -18,9 +18,9 @@ import { Rqid } from "./system/api/rqidApi.js";
 
 Hooks.once("init", async () => {
   console.log(
-    "                                                                                            \n" +
+    "%c                                                                                            \n" +
       "                                                                                            \n" +
-      '`7MM"""Mq.  (Unofficial)                     .g8""8q.                                 mm    \n' +
+      '`7MM"""Mq.  %c(Unofficial)%c                     .g8""8q.                                 mm    \n' +
       "  MM   `MM.                                .dP'    `YM.                               MM    \n" +
       '  MM   ,M9 `7MM  `7MM  `7MMpMMMb.  .gP"Ya  dM\'      `MM `7MM  `7MM  .gP"Ya  ,pP"Ybd mmMMmm  \n' +
       "  MMmmdM9    MM    MM    MM    MM ,M'   Yb MM        MM   MM    MM ,M'   Yb 8I   `\"   MM    \n" +
@@ -38,7 +38,10 @@ Hooks.once("init", async () => {
       "`Mb.     MM   MM YA.   ,A9 MM    8M   MM    MM    MM  MM     MM    MM  8M   MM  \n" +
       "  `\"bmmmdPY .JMML.`Ybmd9'.JMML.  `Moo9^Yo..JMML  JMML.`Mbmo.JMML  JMML.`Moo9^Yo.\n" +
       "                                                                                \n" +
-      "                                                                                \n"
+      "                                                                                \n",
+    "color: #F3A71E",
+    "color: unset",
+    "color: #F3A71E"
   );
   console.log("RQG | Initializing the Runequest Glorantha (Unofficial) Game System");
 

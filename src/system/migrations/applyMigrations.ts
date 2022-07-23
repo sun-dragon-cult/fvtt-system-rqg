@@ -1,4 +1,4 @@
-import { convertDeleteKeyToFoundrySyntax, getGame } from "../util";
+import { convertDeleteKeyToFoundrySyntax, getGame, localize } from "../util";
 import { RqgItem } from "../../items/rqgItem";
 import {
   ActorData,
@@ -40,7 +40,20 @@ async function migrateWorldActors(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[]
 ): Promise<void> {
-  for (let actor of getGame().actors!.contents) {
+  let progress = 0;
+  const actorArray = getGame().actors?.contents;
+  const actorCount = actorArray?.length ?? 0;
+  const migrationMsg = localize("RQG.Migration.actors", {
+    count: actorCount,
+  });
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 0 });
+  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
+  if (!actorArray || actorCount === 0) {
+    return;
+  }
+  const step = 100 / actorCount;
+  for (let actor of actorArray) {
     try {
       const updates = await migrateActorData(
         actor.toObject() as any,
@@ -52,34 +65,70 @@ async function migrateWorldActors(
         console.log(`RQG | Migrating Actor document ${actor.name}`, convertedUpdates);
         await actor.update(convertedUpdates, { enforceTypes: false });
       }
+      progress += step;
+      // @ts-expect-error displayProgressBar
+      SceneNavigation.displayProgressBar({ label: migrationMsg, pct: Math.round(progress) });
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Actor ${actor.name}: ${err.message}`;
       console.error(err, actor);
     }
   }
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 100 });
 }
 
-async function migrateWorldItems(itemMigrations: ItemMigration[]) {
-  for (let item of getGame().items!.contents as RqgItem[]) {
+async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void> {
+  const itemArray = getGame().items?.contents as RqgItem[] | undefined;
+  const itemCount = itemArray?.length ?? 0;
+  const migrationMsg = localize("RQG.Migration.items", {
+    count: itemCount,
+  });
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 0 });
+  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
+  let progress = 0;
+  if (!itemArray || itemCount === 0) {
+    return;
+  }
+  const step = 100 / itemCount;
+  for (let item of itemArray) {
     try {
       const updateData = await migrateItemData(item.data, itemMigrations);
       if (!foundry.utils.isObjectEmpty(updateData)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
         console.log(`RQG | Migrating Item document ${item.name}`, convertedUpdates);
         await item.update(convertedUpdates, { enforceTypes: false });
+        progress += step;
+        // @ts-expect-error displayProgressBar
+        SceneNavigation.displayProgressBar({ label: migrationMsg, pct: Math.round(progress) });
       }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Item ${item.name}: ${err.message}`;
       console.error(err, item);
     }
   }
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 100 });
 }
 
 async function migrateWorldScenes(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[]
-) {
-  for (let scene of getGame().scenes!) {
+): Promise<void> {
+  const scenes = getGame()?.scenes?.contents;
+  const scenesCount = scenes?.length ?? 0;
+  const migrationMsg = localize("RQG.Migration.scenes", {
+    count: scenesCount,
+  });
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 0 });
+  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
+  let progress = 0;
+  if (!scenes || scenesCount === 0) {
+    return;
+  }
+  const step = 100 / scenesCount;
+  for (let scene of scenes) {
     try {
       const updateData = await migrateSceneData(scene.data, itemMigrations, actorMigrations);
       if (!foundry.utils.isObjectEmpty(updateData)) {
@@ -90,40 +139,65 @@ async function migrateWorldScenes(
         // If we do not do this, then synthetic token actors remain in cache
         // with the un-updated actorData.
         scene.tokens.contents.forEach((t: any) => (t._actor = null));
+        progress += step;
+        // @ts-expect-error displayProgressBar
+        SceneNavigation.displayProgressBar({ label: migrationMsg, pct: Math.round(progress) });
       }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Scene ${scene.name}: ${err.message}`;
       console.error(err, scene);
     }
   }
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 100 });
 }
 
 async function migrateWorldCompendiumPacks(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[]
-) {
-  for (let pack of getGame().packs!) {
+): Promise<void> {
+  let progress = 0;
+  const packs = getGame().packs.contents;
+  const packsCount = packs?.length ?? 0;
+  const migrationMsg = localize("RQG.Migration.compendiums", {
+    count: packsCount,
+  });
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 0 });
+  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
+  if (!packs || packsCount === 0) {
+    return;
+  }
+  const step = 100 / packsCount;
+  for (let pack of packs) {
     if (pack.metadata.package !== "world") {
       continue;
     }
-    if (!["Actor", "Item", "Scene"].includes(pack.metadata.entity)) {
+    // @ts-expect-error type
+    if (!["Actor", "Item", "Scene"].includes(pack.metadata.type)) {
       continue;
     }
     await migrateCompendium(pack, itemMigrations, actorMigrations);
+    progress += step;
+    // @ts-expect-error displayProgressBar
+    SceneNavigation.displayProgressBar({ label: migrationMsg, pct: Math.round(progress) });
   }
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 100 });
 }
 
 /* -------------------------------------------- */
 
 /**
- * Apply migration rules to all Entities within a single Compendium pack
+ * Apply migration rules to all Documents within a single Compendium pack
  */
 async function migrateCompendium(
   pack: CompendiumCollection<CompendiumCollection.Metadata>,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[]
 ): Promise<void> {
-  const documentType: string = pack.metadata.entity;
+  // @ts-expect-error type
+  const documentType: string = pack.metadata.type;
   if (!["Actor", "Item", "Scene"].includes(documentType)) {
     return;
   }

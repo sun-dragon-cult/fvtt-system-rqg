@@ -1078,6 +1078,12 @@
         "settingName": "System Migration Version",
         "settingHint": "Do not touch this unless you really know what you are doing!"
       }
+    },
+    "Migration" : {
+      "actors": "Step 1 / 4 - Migrating {count} actors",
+      "items": "Step 2 / 4 - Migrating {count} world items",
+      "scenes": "Step 3 / 4 - Migrating {count} scenes",
+      "compendiums": "Step 4 / 4 - Migrating {count} compendiums"
     }
   }
 }
