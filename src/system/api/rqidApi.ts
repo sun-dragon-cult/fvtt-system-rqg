@@ -1,113 +1,199 @@
 import { Homeland } from "../../actors/item-specific/homeland";
 import { RqgActor } from "../../actors/rqgActor";
-import { ArmorDataSource } from "../../data-model/item-data/armorData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { SkillDataSource } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../../items/rqgItem";
-import { RQG_CONFIG, systemId } from "../config";
-import { getGame, localize, toKebabCase, trimChars } from "../util";
+import { systemId } from "../config";
+import { getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
 import { documentRqidFlags, DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-
-type SupportedDocumentTypes = RqgItem | JournalEntry | RollTable;
+import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 export class Rqid {
   /**
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
    * found return the highest priority Document matching the supplied rqid and lang from the installed Compendia.
    */
-  static async fromRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<SupportedDocumentTypes | undefined> {
+  public static async fromRqid(
+    rqid: string | undefined,
+    lang: string = "en",
+    silent: boolean = false
+  ): Promise<Document<any, any> | undefined> {
     if (!rqid) {
       return undefined;
     }
 
-    if (rqid.startsWith(RQG_CONFIG.rqid.prefixes.item)) {
-      return this.itemFromRqid(rqid, lang);
-    }
-
-    if (rqid.startsWith(RQG_CONFIG.rqid.prefixes.journalEntry)) {
-      return this.journalFromRqid(rqid, lang);
-    }
-
-    if (rqid.startsWith(RQG_CONFIG.rqid.prefixes.rollTable)) {
-      return this.rollTableFromRqid(rqid, lang);
-    }
-
-    console.warn("fromRqid called with unknown prefix", rqid);
-  }
-
-  static async itemFromRqid(rqid: string, lang: string = "en"): Promise<RqgItem | undefined> {
-    if (!rqid) {
-      return undefined;
-    }
-
-    const worldItem = await Rqid.itemFromWorldRqid(rqid, lang);
-
-    if (worldItem !== undefined) {
+    const worldItem = await Rqid.documentFromWorldRqid(rqid, lang);
+    if (worldItem) {
       return worldItem;
     }
 
-    const compendiumItem = await Rqid.itemFromAllCompendiaRqid(rqid, lang);
-
-    if (compendiumItem !== undefined) {
+    const compendiumItem = await Rqid.documentFromCompendiaRqid(rqid, lang);
+    if (compendiumItem) {
       return compendiumItem;
-    } else {
-      const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
+    }
+
+    if (!silent) {
+      const msg = localize("RQG.RQGSystem.Error.DocumentNotFoundByRqid", {
         rqid: rqid,
-        rqidLang: lang,
+        lang: lang,
       });
       ui.notifications?.warn(msg);
       console.log(msg);
     }
-
     return undefined;
   }
 
-  private static async itemFromWorldRqid(
+  /**
+   * Given a Document, create a valid rqid string for the document.
+   */
+  public static getDefaultRqid(document: Document<any, any>): string {
+    if (!document.name) {
+      return "";
+    }
+
+    const rqidDocumentString = Rqid.getRqidDocumentString(document);
+    const documentSubType = toKebabCase(document.data.type ?? "");
+    let rqidIdentifier = "";
+
+    if (document instanceof Item) {
+      if (document.data.type === ItemTypeEnum.Skill) {
+        rqidIdentifier = trimChars(
+          toKebabCase(`${document.data.data.skillName}-${document.data.data.specialization}`),
+          "-"
+        );
+      }
+      if (document.data.type === ItemTypeEnum.Armor) {
+        rqidIdentifier = trimChars(
+          toKebabCase(
+            `${document.data.data.namePrefix}-${document.data.data.armorType}-${document.data.data.material}`
+          ),
+          "-"
+        );
+      }
+    }
+    if (!rqidIdentifier) {
+      rqidIdentifier = toKebabCase(document.name);
+    }
+
+    return `${rqidDocumentString}.${documentSubType}.${rqidIdentifier}`;
+  }
+
+  /**
+   * For Documents that have a sheet, render it.
+   */
+  public static async renderRqidDocument(rqid: string) {
+    const document = (await Rqid.fromRqid(rqid)) as any;
+    if (document?.sheet) {
+      // Not all documents have sheet
+      document?.sheet?.render(true);
+    } else {
+      const msg = localize("RQG.Item.Notification.RqidFromLinkNotFound", { rqid: rqid });
+      ui.notifications?.warn(msg);
+      console.log(msg, "Document without sheet:", document);
+    }
+  }
+
+  // ----------------------------------
+
+  private static async documentFromWorldRqid(
     rqid: string,
     lang: string = "en"
-  ): Promise<RqgItem | undefined> {
+  ): Promise<Document<any, any> | undefined> {
     if (!rqid) {
       return undefined;
     }
 
-    const candidates = getGame().items?.contents.filter(
-      (i) =>
+    const candidates = (getGame() as any)[this.getGameProperty(rqid)]?.contents.filter(
+      (i: Document<any, any>) =>
         i.getFlag(systemId, documentRqidFlags)?.id === rqid &&
         i.getFlag(systemId, documentRqidFlags)?.lang === lang
     );
 
-    if (candidates === undefined) {
+    if (candidates === undefined || candidates.length === 0) {
       return undefined;
     }
 
-    if (candidates.length > 0) {
-      let result = this.getHighestPrioCandidate(candidates);
-
-      // Detect more than one item that could be the match
-      let duplicates = candidates.filter(
-        (i) =>
-          i.getFlag(systemId, documentRqidFlags)?.priority ===
-          result?.getFlag(systemId, documentRqidFlags)?.priority
-      );
-      if (duplicates.length > 1) {
-        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
-          rqid: rqid,
-          rqidLang: lang,
-          rqidPriority: result?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
-        });
-        ui.notifications?.error(msg);
-        console.log(msg + "  Duplicate items: ", duplicates);
-      }
-      return result as RqgItem;
-    } else {
-      return undefined;
+    if (candidates.length > 1) {
+      const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInWorld", {
+        rqid: rqid,
+        lang: lang,
+        priority: candidates[0]?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
+      });
+      ui.notifications?.error(msg);
+      console.log(msg + "  Duplicate items: ", candidates);
     }
+    return candidates[0];
   }
 
-  private static getHighestPrioCandidate<T extends SupportedDocumentTypes>(
+  private static async documentFromCompendiaRqid(
+    rqid: string,
+    lang: string = "en"
+  ): Promise<Document<any, any> | undefined> {
+    if (!rqid) {
+      return undefined;
+    }
+    const documentType = Rqid.getDocumentType(rqid);
+
+    const candidates: Document<any, any>[] = [];
+
+    for (const pack of getGame().packs) {
+      if (pack.documentClass.name === documentType) {
+        // @ts-expect-error indexed
+        if (!pack.indexed) {
+          await pack.getIndex();
+        }
+        // TODO fix typing when upgrading type versions!
+        const indexInstances: any[] = (pack.index as any).filter(
+          (i: any) =>
+            i?.flags?.rqg?.documentRqidFlags?.id === rqid &&
+            i?.flags?.rqg?.documentRqidFlags?.lang === lang &&
+            // don't add if we already have a Document with higher priority
+            i?.flags?.rqg?.documentRqidFlags?.priority >=
+              Math.max(
+                ...candidates.map(
+                  (candidate: any) =>
+                    (candidate.getFlag(systemId, documentRqidFlags)?.priority as number) ??
+                    -Infinity
+                )
+              )
+        );
+        for (const index of indexInstances) {
+          const document = await pack.getDocument(index._id);
+          if (!document) {
+            const msg = localize("RQG.RQGSystem.Error.DocumentNotFoundByRqid", {
+              rqid: rqid,
+              lang: lang,
+            });
+            ui.notifications?.error(msg);
+            console.log("RQG | " + msg, index);
+            throw new RqgError(msg, index, indexInstances);
+          }
+          candidates.push(document);
+        }
+      }
+    }
+
+    // We can get multiple results depending on the order we find the documents (and if there are duplicates)
+    let highestPrioCandidate = this.getHighestPrioCandidate(candidates);
+
+    // Detect more than one item that could be the match
+    let duplicates = candidates.filter(
+      (i: any) =>
+        i.getFlag(systemId, documentRqidFlags)?.priority ===
+        highestPrioCandidate?.getFlag(systemId, documentRqidFlags)?.priority
+    );
+    if (duplicates.length > 1) {
+      const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInCompendia", {
+        rqid: rqid,
+        lang: lang,
+        priority: highestPrioCandidate?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
+      });
+      ui.notifications?.error(msg);
+      console.log(msg + "  Duplicate items: ", duplicates);
+    }
+    return highestPrioCandidate;
+  }
+
+  private static getHighestPrioCandidate<T extends Document<any, any>>(
     candidates: T[]
   ): T | undefined {
     if (candidates.length === 0) {
@@ -115,353 +201,86 @@ export class Rqid {
     }
 
     return candidates.reduce((max: T, obj: T) => {
-      const maxFlags = (max as T).getFlag(systemId, documentRqidFlags) as DocumentRqidFlags; // TODO Typing didn't work with generics
-      const objFlags = (obj as T).getFlag(systemId, documentRqidFlags) as DocumentRqidFlags;
+      const maxFlags = (max as T).getFlag(systemId, documentRqidFlags) as
+        | DocumentRqidFlags
+        | undefined; // TODO Typing didn't work with generics
+      const objFlags = (obj as T).getFlag(systemId, documentRqidFlags) as
+        | DocumentRqidFlags
+        | undefined;
       return (maxFlags?.priority ?? 0) > (objFlags?.priority ?? 0) ? max : obj;
     });
   }
 
-  private static async itemFromAllCompendiaRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<RqgItem | undefined> {
-    if (!rqid) {
-      return undefined;
+  /**
+   *   Translates the first part of a rqid to what those documents are called in the `game` object.
+   */
+  private static getGameProperty(rqid: string): string {
+    const rqidDocument = rqid.split(".")[0];
+    const gameProperty = Rqid.gamePropertyLookup[rqidDocument];
+    if (!gameProperty) {
+      const msg = "Tried to convert rqid with non existing document type";
+      throw new RqgError(msg, rqid);
     }
-
-    const candidates: RqgItem[] = [];
-
-    for (const pack of getGame().packs) {
-      if (pack.documentClass.name === "RqgItem") {
-        for (const item of (await pack.getDocuments()) as StoredDocument<RqgItem>[]) {
-          const itemRqidFlags = item.getFlag(systemId, documentRqidFlags);
-          if (itemRqidFlags?.id === rqid && itemRqidFlags?.lang === lang) {
-            candidates.push(item);
-          }
-        }
-      }
-    }
-    if (candidates.length === 0) {
-      return undefined;
-    }
-
-    if (candidates.length > 0) {
-      let result = this.getHighestPrioCandidate(candidates);
-
-      // Detect more than one item that could be the match
-      let duplicates = candidates.filter(
-        (i) =>
-          i.getFlag(systemId, documentRqidFlags)?.priority ===
-          result?.getFlag(systemId, documentRqidFlags)?.priority
-      );
-      if (duplicates.length > 1) {
-        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
-          rqid: rqid,
-          rqidLang: lang,
-          rqidPriority: result?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
-        });
-        ui.notifications?.error(msg);
-        console.log(msg + "  Duplicate items: ", duplicates);
-      }
-      return result;
-    } else {
-      return undefined;
-    }
+    return gameProperty;
   }
 
-  static async journalFromRqid(
-    rqid: string | undefined,
-    lang: string = "en"
-  ): Promise<JournalEntry | undefined> {
-    if (!rqid) {
-      return;
-    }
+  private static readonly gamePropertyLookup: { [key: string]: string } = {
+    a: "actors",
+    c: "cards",
+    f: "folders",
+    i: "items",
+    je: "journal",
+    m: "macros",
+    p: "playlists",
+    rt: "tables",
+    s: "scenes",
+  };
 
-    const worldJournal = Rqid.journalFromWorldRqid(rqid, lang);
-    if (worldJournal) {
-      return worldJournal;
+  /**
+   *   Translates the first part of a rqid to a document type (like "RqgItem").
+   */
+  private static getDocumentType(rqid: string): string {
+    const rqidDocument = rqid.split(".")[0];
+    const documentType = Rqid.documentLookup[rqidDocument];
+    if (!documentType) {
+      const msg = "Tried to convert rqid with non existing document type";
+      throw new RqgError(msg, rqid);
     }
-
-    const compendiumJournal = await Rqid.journalFromAllCompendiaRqid(rqid, lang);
-    if (compendiumJournal) {
-      return compendiumJournal;
-    }
-
-    const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
-      rqid: rqid,
-      rqidLang: lang,
-    });
-    ui.notifications?.warn(msg);
-    console.log(msg);
+    return documentType;
   }
 
-  private static journalFromWorldRqid(rqid: string, lang: string = "en"): JournalEntry | undefined {
-    if (!rqid) {
-      return undefined;
+  private static readonly documentLookup: { [key: string]: string } = {
+    a: "RqgActor",
+    c: "Card",
+    f: "Folder",
+    i: "RqgItem",
+    je: "JournalEntry",
+    m: "Macro",
+    p: "Playlist",
+    rt: "RollTable",
+    s: "Scene",
+  };
+
+  /**
+   * Get the first part of a rqid (like "i") from a Document.
+   */
+  private static getRqidDocumentString(document: Document<any, any>): string {
+    const clsName =
+      (getDocumentClass(document.documentName) as unknown as Document<any, any>).name ?? "";
+    const documentString = Rqid.rqidDocumentStringLookup[clsName];
+    if (!documentString) {
+      const msg = "Tried to convert a unsupported document to rqid";
+      throw new RqgError(msg, document);
     }
-
-    const candidates = getGame().journal?.contents.filter(
-      (i) =>
-        i.getFlag(systemId, documentRqidFlags)?.id === rqid &&
-        i.getFlag(systemId, documentRqidFlags)?.lang === lang
-    );
-
-    if (!candidates || candidates.length === 0) {
-      return undefined;
-    }
-
-    let result = this.getHighestPrioCandidate(candidates);
-
-    // Detect more than one journal that could be the match
-    let duplicates = candidates.filter(
-      (i) =>
-        i.getFlag(systemId, documentRqidFlags)?.priority ===
-        result?.getFlag(systemId, documentRqidFlags)?.priority
-    );
-    if (duplicates.length > 1) {
-      const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
-        rqid: rqid,
-        rqidLang: lang,
-        rqidPriority: result?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
-      });
-      ui.notifications?.error(msg);
-      console.log(msg + "  Duplicate items: ", duplicates);
-    }
-    return result as JournalEntry;
+    return documentString;
   }
 
-  private static async journalFromAllCompendiaRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<JournalEntry | undefined> {
-    if (!rqid) {
-      return undefined;
-    }
-
-    const candidates: JournalEntry[] = [];
-
-    for (const pack of getGame().packs) {
-      if (pack.documentClass.name === "JournalEntry") {
-        for (const journal of await pack.getDocuments()) {
-          const rqidFlags = journal.getFlag(systemId, "documentRqidFlags") as
-            | DocumentRqidFlags
-            | undefined;
-          if (rqidFlags?.id === rqid && rqidFlags?.lang === lang) {
-            candidates.push(journal as JournalEntry);
-          }
-        }
-      }
-    }
-
-    const result = this.getHighestPrioCandidate(candidates);
-    if (!result) {
-      return undefined;
-    }
-
-    // Detect more than one item that could be the match
-    let duplicates = candidates.filter(
-      (i) =>
-        i.getFlag(systemId, documentRqidFlags)?.priority ===
-        result.getFlag(systemId, documentRqidFlags)?.priority
-    );
-    if (duplicates.length > 1) {
-      const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
-        rqid: rqid,
-        rqidLang: lang,
-        rqidPriority: result.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
-      });
-      ui.notifications?.error(msg);
-      console.log(msg + "  Duplicate items: ", duplicates);
-    }
-    return result;
-  }
-
-  static async rollTableFromRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<RollTable | undefined> {
-    if (!rqid) {
-      return undefined;
-    }
-
-    const worldRollTable = await Rqid.rollTableFromWorldRqid(rqid, lang);
-
-    if (worldRollTable !== undefined) {
-      return worldRollTable;
-    }
-
-    const compendiumRollTable = await Rqid.rollTableFromAllCompendiaRqid(rqid, lang);
-
-    if (compendiumRollTable !== undefined) {
-      return compendiumRollTable;
-    } else {
-      const msg = localize("RQG.Item.RqgItem.Error.ItemNotFoundByRqid", {
-        rqid: rqid,
-        rqidLang: lang,
-      });
-      ui.notifications?.warn(msg);
-      console.log(msg);
-    }
-
-    return undefined;
-  }
-
-  private static async rollTableFromWorldRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<RollTable | undefined> {
-    if (!rqid) {
-      return undefined;
-    }
-
-    const candidates = getGame().tables?.contents.filter(
-      (rt) =>
-        rt.getFlag(systemId, documentRqidFlags)?.id === rqid &&
-        rt.getFlag(systemId, documentRqidFlags)?.lang === lang
-    );
-
-    if (candidates === undefined) {
-      return undefined;
-    }
-
-    if (candidates.length > 0) {
-      let result = this.getHighestPrioCandidate(candidates);
-
-      // Detect more than one rollTable that could be the match
-      let duplicates = candidates.filter(
-        (rt) =>
-          rt.getFlag(systemId, documentRqidFlags)?.priority ===
-          result?.getFlag(systemId, documentRqidFlags)?.priority
-      );
-      if (duplicates.length > 1) {
-        const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInWorld", {
-          rqid: rqid,
-          rqidLang: lang,
-
-          rqidPriority: result?.getFlag(systemId, documentRqidFlags)?.priority,
-        });
-        ui.notifications?.error(msg);
-        console.log(msg + "  Duplicate items: ", duplicates);
-      }
-      return result as RollTable;
-    } else {
-      return undefined;
-    }
-  }
-
-  private static async rollTableFromAllCompendiaRqid(
-    rqid: string,
-    lang: string = "en"
-  ): Promise<RollTable | undefined> {
-    if (!rqid) {
-      return undefined;
-    }
-
-    const candidates: RollTable[] = [];
-
-    for (const pack of getGame().packs) {
-      if (pack.documentClass.name === "RollTable") {
-        const rollTablePackDocuments = (await pack.getDocuments()) as StoredDocument<RollTable>[];
-        for (const rollTable of rollTablePackDocuments) {
-          if (
-            rollTable.getFlag(systemId, documentRqidFlags)?.id === rqid &&
-            rollTable.getFlag(systemId, documentRqidFlags)?.lang === lang
-          ) {
-            candidates.push(rollTable as RollTable);
-          }
-        }
-      }
-    }
-    if (candidates.length === 0) {
-      return undefined;
-    }
-
-    let result = this.getHighestPrioCandidate(candidates);
-    if (!result) {
-      return;
-    }
-    // TODO Typing not working for RollTable?
-    const resultFlags: DocumentRqidFlags | undefined = result?.getFlag(systemId, documentRqidFlags);
-
-    // Detect more than one item that could be the match
-    let duplicates = candidates.filter(
-      (i) => i.getFlag(systemId, documentRqidFlags)?.priority === resultFlags?.priority
-    );
-    if (duplicates.length > 1) {
-      const msg = localize("RQG.Item.RqgItem.Error.MoreThanOneRqidMatchInCompendia", {
-        rqid: rqid,
-        rqidLang: lang,
-        rqidPriority: resultFlags?.priority,
-      });
-      ui.notifications?.error(msg);
-      console.log(msg + "  Duplicate items: ", duplicates);
-    }
-    return result;
-  }
-
-  static getDefaultRqid(document: Actor | Item | JournalEntry | Macro | RollTable | Scene): string {
-    if (!document.name) {
-      return "";
-    }
-
-    let result = "";
-
-    if (document instanceof Actor) {
-      return (
-        RQG_CONFIG.rqid.prefixes.actor +
-        toKebabCase(document.type) +
-        "." +
-        toKebabCase(document.name)
-      );
-    }
-
-    if (document instanceof Item) {
-      const item = document as Item;
-      if (item.type === ItemTypeEnum.Skill) {
-        const skill = item.data as SkillDataSource;
-        result = trimChars(
-          toKebabCase(`${skill.data.skillName}-${skill.data.specialization}`),
-          "-"
-        );
-      }
-      if (item.type === ItemTypeEnum.Armor) {
-        const armor = item.data as ArmorDataSource;
-        result = trimChars(
-          toKebabCase(`${armor.data.namePrefix}-${armor.data.armorType}-${armor.data.material}`),
-          "-"
-        );
-      }
-
-      if (result) {
-        return RQG_CONFIG.rqid.prefixes.item + toKebabCase(item.type) + "." + result;
-      }
-
-      return RQG_CONFIG.rqid.prefixes.item + toKebabCase(item.type) + "." + toKebabCase(item.name!);
-    }
-
-    if (document instanceof JournalEntry) {
-      return RQG_CONFIG.rqid.prefixes.journalEntry + "." + toKebabCase(document.name);
-    }
-
-    if (document instanceof Macro) {
-      return RQG_CONFIG.rqid.prefixes.macro + "." + toKebabCase(document.name);
-    }
-
-    if (document instanceof RollTable) {
-      return RQG_CONFIG.rqid.prefixes.rollTable + "." + toKebabCase(document.name);
-    }
-
-    if (document instanceof Scene) {
-      return RQG_CONFIG.rqid.prefixes.scene + "." + toKebabCase(document.name);
-    }
-
-    return "";
-  }
-
-  static async renderRqidDocument(rqid: string) {
-    const document = await Rqid.fromRqid(rqid);
-    document?.sheet?.render(true);
-  }
+  /**
+   *  Reverse lookup from DocumentType to rqidDocument ("RqgItem" -> "i").
+   */
+  private static readonly rqidDocumentStringLookup: { [key: string]: string } = Object.entries(
+    Rqid.documentLookup
+  ).reduce((acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }), {});
 }
 
 export async function getActorTemplates(): Promise<RqgActor[] | undefined> {

@@ -178,18 +178,17 @@ export class ActorWizard extends FormApplication {
     const homelandRunes: RqgItem[] = [];
     if (selectedHomeland?.data?.runeRqidLinks) {
       for (const runeRqidLink of selectedHomeland?.data?.runeRqidLinks) {
-        const rune = await Rqid.itemFromRqid(runeRqidLink.rqid);
-        if (rune && rune.type === ItemTypeEnum.Rune) {
-          (rune.data as RuneDataSource).data.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
-          (rune.data as RuneDataSource).data.hasExperience = false;
-          const associatedChoice = this.choices[runeRqidLink.rqid];
-          if (associatedChoice) {
-            // put choice on homeland runes for purposes of sheet
-            //@ts-ignore choice TODO Is choice a temporary property?
-            rune.data.data.choice = associatedChoice;
-          }
-          homelandRunes.push(rune);
+        const rune = await Rqid.fromRqid(runeRqidLink.rqid);
+        assertItemType(rune?.data.type, ItemTypeEnum.Rune);
+        (rune.data as RuneDataSource).data.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
+        (rune.data as RuneDataSource).data.hasExperience = false;
+        const associatedChoice = this.choices[runeRqidLink.rqid];
+        if (associatedChoice) {
+          // put choice on homeland runes for purposes of sheet
+          //@ts-ignore choice TODO Is choice a temporary property?
+          rune.data.data.choice = associatedChoice;
         }
+        homelandRunes.push(rune as RqgItem); // Already asserted
       }
       // put runes on homeland for purposes of sheet
       //@ts-ignore runes
@@ -199,23 +198,22 @@ export class ActorWizard extends FormApplication {
     const homelandSkills: RqgItem[] = [];
     if (selectedHomeland?.data?.skillRqidLinks) {
       for (const skillRqidLink of selectedHomeland?.data?.skillRqidLinks) {
-        const skill = await Rqid.itemFromRqid(skillRqidLink.rqid);
-        if (skill && skill.type === ItemTypeEnum.Skill) {
-          const associatedChoice = this.choices[skillRqidLink.rqid];
-          if (associatedChoice) {
-            // put choice on homeland skills for purposes of sheet
-            //@ts-ignore choice
-            skill.data.data.choice = associatedChoice;
-          }
-          if (skillRqidLink.bonus) {
-            const skillDataSource = skill.data as SkillDataSource;
-            skillDataSource.data.baseChance = 0;
-            skillDataSource.data.learnedChance = 0;
-            skillDataSource.data.hasExperience = false;
-            skillDataSource.data.chance = skillRqidLink.bonus;
-          }
-          homelandSkills.push(skill);
+        const skill = await Rqid.fromRqid(skillRqidLink.rqid);
+        assertItemType(skill?.data.type, ItemTypeEnum.Skill);
+        const associatedChoice = this.choices[skillRqidLink.rqid];
+        if (associatedChoice) {
+          // put choice on homeland skills for purposes of sheet
+          //@ts-ignore choice
+          skill.data.data.choice = associatedChoice;
         }
+        if (skillRqidLink.bonus) {
+          const skillDataSource = skill.data as SkillDataSource;
+          skillDataSource.data.baseChance = 0;
+          skillDataSource.data.learnedChance = 0;
+          skillDataSource.data.hasExperience = false;
+          skillDataSource.data.chance = skillRqidLink.bonus;
+        }
+        homelandSkills.push(skill as RqgItem); // Already asserted
       }
     }
 
@@ -236,17 +234,16 @@ export class ActorWizard extends FormApplication {
     const homelandPassions: RqgItem[] = [];
     if (selectedHomeland?.data?.passionRqidLinks) {
       for (const passionRqidLink of selectedHomeland?.data?.passionRqidLinks) {
-        const passion = await Rqid.itemFromRqid(passionRqidLink.rqid);
-        if (passion && passion.type === ItemTypeEnum.Passion) {
-          const associatedChoice = this.choices[passionRqidLink.rqid];
-          (passion.data as PassionDataSource).data.hasExperience = false;
-          if (associatedChoice) {
-            // put choice on homeland passions for purposes of sheet
-            //@ts-ignore choice
-            passion.data.data.choice = associatedChoice;
-          }
-          homelandPassions.push(passion);
+        const passion = await Rqid.fromRqid(passionRqidLink.rqid);
+        assertItemType(passion?.data.type, ItemTypeEnum.Passion);
+        const associatedChoice = this.choices[passionRqidLink.rqid];
+        (passion.data as PassionDataSource).data.hasExperience = false;
+        if (associatedChoice) {
+          // put choice on homeland passions for purposes of sheet
+          //@ts-ignore choice
+          passion.data.data.choice = associatedChoice;
         }
+        homelandPassions.push(passion as RqgItem); // Already asserted
       }
     }
 
@@ -701,7 +698,7 @@ export class ActorWizard extends FormApplication {
 
         if (cultsEligibleToAdd.map((c) => c.rqid).includes(key)) {
           if (this.choices[key].homelandCultChosen) {
-            const cult = await Rqid.itemFromRqid(key);
+            const cult = await Rqid.fromRqid(key);
             if (cult) {
               adds.push(cult.data);
             }
