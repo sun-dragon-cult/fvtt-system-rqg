@@ -147,7 +147,7 @@ export class nameGeneration {
   }
 
   static async GetNameBase(rqid: DocumentRqidFlags): Promise<NameBase | undefined> {
-    const nameJournal = await Rqid.journalFromRqid(rqid.id, rqid.lang);
+    const nameJournal = await Rqid.fromRqid(rqid.id, rqid.lang);
 
     if (!nameJournal) {
       return;
@@ -173,7 +173,7 @@ export class nameGeneration {
       return undefined;
     }
 
-    const nameTable = await Rqid.rollTableFromRqid(rqid);
+    const nameTable = await Rqid.fromRqid(rqid);
 
     if (!nameTable) {
       const msg = localize("RQG.Notification.Warn.NameGenRqidNotFound", {

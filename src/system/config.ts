@@ -114,15 +114,20 @@ export const RQG_CONFIG = {
 
   rqid: {
     prefixes: {
+      // TODO remove from here, is defined in class Rqid
       actor: "a.",
+      card: "c.",
+      chatMessage: "cm.",
+      combat: "co.",
+      folder: "f.",
       item: "i.",
       journalEntry: "je.",
       macro: "m.",
+      playlist: "p.",
       rollTable: "rt.",
       scene: "s.",
-      card: "c.",
     },
-    defaultPriority: 999999,
+    defaultPriority: 999999, // TODO move to class Rqid when that doesn't import RqgItem anymore
     defaultLang: "en",
   },
 };

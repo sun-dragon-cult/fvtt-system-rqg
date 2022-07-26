@@ -1,5 +1,5 @@
 import { Rqid } from "../../system/api/rqidApi";
-import { localize } from "../../system/util";
+import { getDomDataset } from "../../system/util";
 
 export class RqidLink {
   /** The rqid to link to */
@@ -13,17 +13,10 @@ export class RqidLink {
   // Handle rqid links
   static async addRqidLinkClickHandlers(html: JQuery): Promise<void> {
     html.find("[data-rqid-link]").each((i: number, el: HTMLElement) => {
-      const rqid = el.dataset.rqidLink;
+      const rqid = getDomDataset(el, "rqid-link");
       if (rqid) {
         el.addEventListener("click", async () => {
-          const rqidItem = await Rqid.fromRqid(rqid);
-          if (rqidItem) {
-            rqidItem.sheet?.render(true);
-          } else {
-            ui.notifications?.warn(
-              localize("RQG.Item.Notification.RqidFromLinkNotFound", { rqid: rqid })
-            );
-          }
+          await Rqid.renderRqidDocument(rqid);
         });
       }
     });

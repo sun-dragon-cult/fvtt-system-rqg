@@ -19,6 +19,8 @@ export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset:
 /**
  * Get the dataset value of the first DOM element where it is set, searching
  * in parents until found.
+ * @param dataset Should be formatted as kebab case without the `data-`
+ * (`my-value` searches for `data-my-value`)
  */
 export function getDomDataset(
   el: HTMLElement | Event | JQuery,
@@ -122,7 +124,7 @@ export function toCamelCase(s: string): string {
   });
 }
 
-export function toKebabCase(s: string): string {
+export function toKebabCase(s: string | undefined): string {
   if (!s) {
     return "";
   }

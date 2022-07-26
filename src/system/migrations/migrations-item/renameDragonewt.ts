@@ -2,7 +2,7 @@ import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/fo
 import { ItemUpdate } from "../applyMigrations";
 
 export async function renameDragonewt(itemData: ItemData): Promise<ItemUpdate> {
-  const updateData: any = {};
+  const updateData: ItemUpdate = {};
 
   if (itemData.img === "systems/rqg/assets/images/runes/dragonnewt.svg") {
     updateData.img = "systems/rqg/assets/images/runes/dragonewt.svg";
