@@ -47,14 +47,6 @@ Hooks.once("init", async () => {
 
   CONFIG.RQG = RQG_CONFIG;
 
-  // Include rqid flags in index for compendiums
-  // @ts-expect-error INDEX_FIELDS
-  CompendiumCollection.INDEX_FIELDS.Actor.push("flags.rqg.documentRqidFlags");
-  // @ts-expect-error INDEX_FIELDS
-  CompendiumCollection.INDEX_FIELDS.Item.push("flags.rqg.documentRqidFlags");
-  // @ts-expect-error INDEX_FIELDS
-  CompendiumCollection.INDEX_FIELDS.JournalEntry.push("flags.rqg.documentRqidFlags");
-
   // CONFIG.debug.hooks = true; // console log when hooks fire
   // CONFIG.debug.time = true; // console log time
 
@@ -62,6 +54,7 @@ Hooks.once("init", async () => {
     turnTime: 0, // Don't advance time per combatant
     roundTime: 12, // Melee round
   };
+  Rqid.init();
   RqgChatMessage.init();
   RqgActiveEffect.init();
   RqgCombat.init();

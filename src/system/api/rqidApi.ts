@@ -8,6 +8,48 @@ import { documentRqidFlags, DocumentRqidFlags } from "../../data-model/shared/rq
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 export class Rqid {
+  public static init(): void {
+    // Include rqid flags in index for compendiums
+
+    // @ts-expect-error release
+    if (getGame().release.generation >= 10) {
+      // @ts-expect-error compendiumIndexFields
+      CONFIG.Actor.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CONFIG.Cards.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CONFIG.Item.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CONFIG.JournalEntry.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CONFIG.Macro.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CONFIG.Playlist.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CONFIG.RollTable.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CONFIG.Scene.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+    } else {
+      // Foundry 9
+      // @ts-expect-error compendiumIndexFields
+      CompendiumCollection.INDEX_FIELDS.Actor.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CompendiumCollection.INDEX_FIELDS.Cards.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CompendiumCollection.INDEX_FIELDS.Item.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CompendiumCollection.INDEX_FIELDS.JournalEntry.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CompendiumCollection.INDEX_FIELDS.Macro.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CompendiumCollection.INDEX_FIELDS.Playlist.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CompendiumCollection.INDEX_FIELDS.RollTable.push("flags.rqg.documentRqidFlags");
+      // @ts-expect-error compendiumIndexFields
+      CompendiumCollection.INDEX_FIELDS.Scene.push("flags.rqg.documentRqidFlags");
+    }
+  }
+
   /**
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
    * found return the highest priority Document matching the supplied rqid and lang from the installed Compendia.
@@ -227,7 +269,6 @@ export class Rqid {
   private static readonly gamePropertyLookup: { [key: string]: string } = {
     a: "actors",
     c: "cards",
-    f: "folders",
     i: "items",
     je: "journal",
     m: "macros",
@@ -252,7 +293,6 @@ export class Rqid {
   private static readonly documentLookup: { [key: string]: string } = {
     a: "RqgActor",
     c: "Card",
-    f: "Folder",
     i: "RqgItem",
     je: "JournalEntry",
     m: "Macro",
