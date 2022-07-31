@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItem } from "../../items/rqgItem";
 import { systemId } from "../config";
 import { getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
-import { documentRqidFlags, DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 export class Rqid {
@@ -63,12 +63,12 @@ export class Rqid {
       return undefined;
     }
 
-    const worldItem = await Rqid.documentFromWorldRqid(rqid, lang);
+    const worldItem = await Rqid.documentFromWorld(rqid, lang);
     if (worldItem) {
       return worldItem;
     }
 
-    const compendiumItem = await Rqid.documentFromCompendiaRqid(rqid, lang);
+    const compendiumItem = await Rqid.documentFromCompendia(rqid, lang);
     if (compendiumItem) {
       return compendiumItem;
     }
@@ -82,6 +82,76 @@ export class Rqid {
       console.log(msg);
     }
     return undefined;
+  }
+
+  public static async fromRqidRegex(
+    rqidRegex: RegExp | undefined,
+    rqidDocumentType: string, // like "i", "a", "je"
+    lang: string = "en"
+  ): Promise<Document<any, any>[]> {
+    if (!rqidRegex) {
+      return [];
+    }
+
+    const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
+    if (worldDocuments.length) {
+      return worldDocuments;
+    }
+
+    return await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
+  }
+
+  /**
+   * Return how many document match the supplied rqid.
+   */
+  public static async fromRqidCount(
+    rqid: string | undefined,
+    lang: string = "en"
+  ): Promise<number> {
+    if (!rqid) {
+      return 0;
+    }
+
+    // Check World
+    let count = (getGame() as any)[this.getGameProperty(rqid)]?.contents.reduce(
+      (count: number, document: Document<any, any>) => {
+        if (
+          document.getFlag(systemId, documentRqidFlags)?.id === rqid &&
+          document.getFlag(systemId, documentRqidFlags)?.lang === lang
+        ) {
+          count++;
+        }
+        return count;
+      },
+      0
+    );
+
+    if (count > 0) {
+      return count;
+    }
+
+    // Check compendium packs
+    const documentName = Rqid.getDocumentType(rqid);
+    for (const pack of getGame().packs) {
+      if (pack.documentClass.name === documentName) {
+        // @ts-expect-error indexed
+        if (!pack.indexed) {
+          await pack.getIndex();
+        }
+        // TODO fix typing when upgrading type versions!
+        const countInPack = (pack.index as any).reduce((sum: number, indexData: any) => {
+          if (
+            indexData?.flags?.rqg?.documentRqidFlags?.id === rqid &&
+            indexData?.flags?.rqg?.documentRqidFlags?.lang === lang
+          ) {
+            sum++;
+          }
+          return sum;
+        }, 0);
+        count += countInPack;
+      }
+    }
+    return count;
   }
 
   /**
@@ -120,62 +190,95 @@ export class Rqid {
   }
 
   /**
-   * For Documents that have a sheet, render it.
+   * Render the sheet of the documents the rqid points to.
+   * Convenience shorthand of `Rqid.fromRqid(rqidString)?.sheet?.render(true)`
    */
   public static async renderRqidDocument(rqid: string) {
-    const document = (await Rqid.fromRqid(rqid)) as any;
-    if (document?.sheet) {
-      // Not all documents have sheet
-      document?.sheet?.render(true);
-    } else {
-      const msg = localize("RQG.Item.Notification.RqidFromLinkNotFound", { rqid: rqid });
-      ui.notifications?.warn(msg);
-      console.log(msg, "Document without sheet:", document);
-    }
+    const document = await Rqid.fromRqid(rqid);
+    // @ts-ignore all rqid supported documents have sheet
+    document?.sheet?.render(true);
   }
 
   // ----------------------------------
 
-  private static async documentFromWorldRqid(
+  /**
+   * Get a single document from the rqid / language. The document with the highest priority
+   * will be chosen and an error is shown if there are more than one document with the same
+   * priority in the world.
+   */
+  private static async documentFromWorld(
     rqid: string,
-    lang: string = "en"
+    lang: string
   ): Promise<Document<any, any> | undefined> {
     if (!rqid) {
       return undefined;
     }
 
-    const candidates = (getGame() as any)[this.getGameProperty(rqid)]?.contents.filter(
-      (i: Document<any, any>) =>
-        i.getFlag(systemId, documentRqidFlags)?.id === rqid &&
-        i.getFlag(systemId, documentRqidFlags)?.lang === lang
+    const candidateDocuments = (getGame() as any)[this.getGameProperty(rqid)]?.contents.filter(
+      (doc: Document<any, any>) =>
+        doc.getFlag(systemId, documentRqidFlags)?.id === rqid &&
+        doc.getFlag(systemId, documentRqidFlags)?.lang === lang
     );
 
-    if (candidates === undefined || candidates.length === 0) {
+    if (candidateDocuments === undefined || candidateDocuments.length === 0) {
       return undefined;
     }
 
-    if (candidates.length > 1) {
+    if (candidateDocuments.length > 1) {
       const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInWorld", {
         rqid: rqid,
         lang: lang,
-        priority: candidates[0]?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
+        priority: candidateDocuments[0]?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
       });
       ui.notifications?.error(msg);
-      console.log(msg + "  Duplicate items: ", candidates);
+      // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
+      // TODO Or should this be handled in the compendium browser eventually?
+      console.log(msg + "  Duplicate items: ", candidateDocuments);
     }
-    return candidates[0];
+    return candidateDocuments[0];
   }
 
-  private static async documentFromCompendiaRqid(
+  /**
+   * Get a list of all documents matching the rqid regex & language from the world.
+   * The document list is sorted with the highest priority first.
+   */
+  private static async documentsFromWorld(
+    rqidRegex: RegExp | undefined,
+    rqidDocumentType: string,
+    lang: string
+  ): Promise<Document<any, any>[]> {
+    if (!rqidRegex) {
+      return [];
+    }
+
+    const gameProperty = Rqid.getGameProperty(`${rqidDocumentType}..`);
+    const candidateDocuments = (getGame() as any)[gameProperty]?.filter(
+      (d: Document<any, any>) =>
+        rqidRegex.test(d.getFlag(systemId, documentRqidFlags)?.id) &&
+        d.getFlag(systemId, documentRqidFlags)?.lang === lang
+    );
+
+    if (candidateDocuments === undefined) {
+      return [];
+    }
+
+    return candidateDocuments.sort(Rqid.compareRqidPrio);
+  }
+
+  /**
+   * Get a single document from the rqid / language. The document with the highest priority
+   * will be chosen and an error is shown if there are more than one document with the same
+   * priority in the compendiums.
+   */
+  private static async documentFromCompendia(
     rqid: string,
-    lang: string = "en"
+    lang: string
   ): Promise<Document<any, any> | undefined> {
     if (!rqid) {
       return undefined;
     }
     const documentType = Rqid.getDocumentType(rqid);
-
-    const candidates: Document<any, any>[] = [];
+    const indexCandidates: { pack: any; indexData: any }[] = [];
 
     for (const pack of getGame().packs) {
       if (pack.documentClass.name === documentType) {
@@ -187,70 +290,99 @@ export class Rqid {
         const indexInstances: any[] = (pack.index as any).filter(
           (i: any) =>
             i?.flags?.rqg?.documentRqidFlags?.id === rqid &&
-            i?.flags?.rqg?.documentRqidFlags?.lang === lang &&
-            // don't add if we already have a Document with higher priority
-            i?.flags?.rqg?.documentRqidFlags?.priority >=
-              Math.max(
-                ...candidates.map(
-                  (candidate: any) =>
-                    (candidate.getFlag(systemId, documentRqidFlags)?.priority as number) ??
-                    -Infinity
-                )
-              )
+            i?.flags?.rqg?.documentRqidFlags?.lang === lang // &&
+        );
+        indexInstances.forEach((i) => indexCandidates.push({ pack: pack, indexData: i }));
+      }
+    }
+
+    if (indexCandidates.length === 0) {
+      return undefined;
+    }
+
+    const sortedCandidates = indexCandidates.sort(Rqid.compareCandidatesPrio);
+    const topPrio = sortedCandidates[0].indexData.flags.rqg.documentRqidFlags.priority;
+    const result = sortedCandidates.filter(
+      (i: any) => i.indexData.flags.rqg.documentRqidFlags.priority === topPrio
+    );
+
+    if (result.length > 1) {
+      const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInCompendia", {
+        rqid: rqid,
+        lang: lang,
+        priority: result[0].indexData.flags.rqg.documentRqidFlags.priority ?? "---",
+      });
+      ui.notifications?.error(msg);
+      // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
+      console.log(msg + "  Duplicate items: ", result);
+    }
+    return await result[0].pack.getDocument(result[0].indexData._id);
+  }
+
+  /**
+   * Get a list of all documents matching the rqid regex & language from the compendiums.
+   * The document list is sorted with the highest priority first.
+   */
+  private static async documentsFromCompendia(
+    rqidRegex: RegExp,
+    rqidDocumentType: string,
+    lang: string
+  ): Promise<Document<any, any>[]> {
+    if (!rqidRegex) {
+      return [];
+    }
+    const documentType = Rqid.getDocumentType(`${rqidDocumentType}..`);
+
+    const candidateDocuments: Document<any, any>[] = [];
+
+    for (const pack of getGame().packs) {
+      if (pack.documentClass.name === documentType) {
+        // @ts-expect-error indexed
+        if (!pack.indexed) {
+          await pack.getIndex();
+        }
+        // TODO fix typing when upgrading type versions!
+        const indexInstances: any[] = (pack.index as any).filter(
+          (i: any) =>
+            rqidRegex.test(i?.flags?.rqg?.documentRqidFlags?.id) &&
+            i?.flags?.rqg?.documentRqidFlags?.lang === lang
         );
         for (const index of indexInstances) {
           const document = await pack.getDocument(index._id);
           if (!document) {
             const msg = localize("RQG.RQGSystem.Error.DocumentNotFoundByRqid", {
-              rqid: rqid,
+              rqid: rqidRegex,
               lang: lang,
             });
             ui.notifications?.error(msg);
             console.log("RQG | " + msg, index);
             throw new RqgError(msg, index, indexInstances);
           }
-          candidates.push(document);
+          candidateDocuments.push(document);
         }
       }
     }
-
-    // We can get multiple results depending on the order we find the documents (and if there are duplicates)
-    let highestPrioCandidate = this.getHighestPrioCandidate(candidates);
-
-    // Detect more than one item that could be the match
-    let duplicates = candidates.filter(
-      (i: any) =>
-        i.getFlag(systemId, documentRqidFlags)?.priority ===
-        highestPrioCandidate?.getFlag(systemId, documentRqidFlags)?.priority
-    );
-    if (duplicates.length > 1) {
-      const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInCompendia", {
-        rqid: rqid,
-        lang: lang,
-        priority: highestPrioCandidate?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
-      });
-      ui.notifications?.error(msg);
-      console.log(msg + "  Duplicate items: ", duplicates);
-    }
-    return highestPrioCandidate;
+    return candidateDocuments.sort(Rqid.compareRqidPrio);
   }
 
-  private static getHighestPrioCandidate<T extends Document<any, any>>(
-    candidates: T[]
-  ): T | undefined {
-    if (candidates.length === 0) {
-      return undefined;
-    }
+  /**
+   * Sort a list of document on rqid priority - the highest first.
+   */
+  private static compareRqidPrio<T extends Document<any, any>>(a: T, b: T): number {
+    return (
+      b.getFlag(systemId, documentRqidFlags)?.priority -
+      a.getFlag(systemId, documentRqidFlags)?.priority
+    );
+  }
 
-    return candidates.reduce((max: T, obj: T) => {
-      const maxFlags = (max as T).getFlag(systemId, documentRqidFlags) as
-        | DocumentRqidFlags
-        | undefined; // TODO Typing didn't work with generics
-      const objFlags = (obj as T).getFlag(systemId, documentRqidFlags) as
-        | DocumentRqidFlags
-        | undefined;
-      return (maxFlags?.priority ?? 0) > (objFlags?.priority ?? 0) ? max : obj;
-    });
+  /**
+   * Sort a list of indexCandidates on rqid priority - the highest first.
+   */
+  private static compareCandidatesPrio(a: any, b: any): number {
+    return (
+      b.indexData?.flags?.rqg?.documentRqidFlags?.priority -
+      a.indexData?.flags?.rqg?.documentRqidFlags?.priority
+    );
   }
 
   /**
@@ -322,6 +454,8 @@ export class Rqid {
     Rqid.documentLookup
   ).reduce((acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }), {});
 }
+
+// ----------
 
 export async function getActorTemplates(): Promise<RqgActor[] | undefined> {
   // TODO: Option 1: Find by rqid with "-template" in the rqid and of type Actor?
