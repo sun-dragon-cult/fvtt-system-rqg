@@ -10,7 +10,7 @@ data:
   isMastered: false
   opposingRune: Stasis (power)
   descriptionRqidLink:
-    rqid: je..runedescription-movement
+    rqid: je..movement-power
     name: Movement (power)
 flags:
   rqg:
@@ -31,7 +31,7 @@ data:
   isMastered: false
   opposingRune: Disorder (power)
   descriptionRqidLink:
-    rqid: je..runedescription-harmony
+    rqid: je..harmony-power
     name: Harmony (power)
 flags:
   rqg:
@@ -52,7 +52,7 @@ data:
   isMastered: false
   opposingRune: Death (power)
   descriptionRqidLink:
-    rqid: je..runedescription-fertility
+    rqid: je..fertility-power
     name: Fertility (power)
 flags:
   rqg:
@@ -73,7 +73,7 @@ data:
   isMastered: false
   opposingRune: Illusion (power)
   descriptionRqidLink:
-    rqid: je..runedescription-truth
+    rqid: je..truth-power
     name: Truth (power)
 flags:
   rqg:
@@ -94,7 +94,7 @@ data:
   isMastered: false
   opposingRune: Movement (power)
   descriptionRqidLink:
-    rqid: je..runedescription-stasis
+    rqid: je..stasis-power
     name: Stasis (power)
 flags:
   rqg:
@@ -115,7 +115,7 @@ data:
   isMastered: false
   opposingRune: Truth (power)
   descriptionRqidLink:
-    rqid: je..runedescription-illusion
+    rqid: je..illusion-power
     name: Illusion (power)
 flags:
   rqg:
@@ -136,7 +136,7 @@ data:
   isMastered: false
   opposingRune: Fertility (power)
   descriptionRqidLink:
-    rqid: je..runedescription-death
+    rqid: je..death-power
     name: Death (power)
 flags:
   rqg:
@@ -157,7 +157,7 @@ data:
   isMastered: false
   opposingRune: Harmony (power)
   descriptionRqidLink:
-    rqid: je..runedescription-disorder
+    rqid: je..disorder-power
     name: Disorder (power)
 flags:
   rqg:

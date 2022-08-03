@@ -10,7 +10,7 @@ data:
   isMastered: false
   opposingRune: Man (form)
   descriptionRqidLink:
-    rqid: je..runedescription-beast
+    rqid: je..beast-form
     name: Beast (form)
 flags:
   rqg:
@@ -31,7 +31,7 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-chaos
+    rqid: je..chaos-form
     name: Chaos (form)
 flags:
   rqg:
@@ -52,7 +52,7 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-plant
+    rqid: je..plant-form
     name: Plant (form)
 flags:
   rqg:
@@ -73,7 +73,7 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-spirit
+    rqid: je..spirit-form
     name: Spirit (form)
 flags:
   rqg:
@@ -94,7 +94,7 @@ data:
   minorRunes: []
   isMastered: false
   descriptionRqidLink:
-    rqid: je..runedescription-dragonewt
+    rqid: je..dragonewt-form
     name: Dragonewt (form)
 flags:
   rqg:
@@ -115,7 +115,7 @@ data:
   isMastered: false
   opposingRune: Beast (form)
   descriptionRqidLink:
-    rqid: je..runedescription-man
+    rqid: je..man-form
     name: Man (form)
 flags:
   rqg:

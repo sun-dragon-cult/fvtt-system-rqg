@@ -10,7 +10,7 @@ data:
   minorRunes: []
   isMastered: false
   descriptionRqidLink:
-    rqid: je..runedescription-law
+    rqid: je..law-condition
     name: Law (condition)
 flags:
   rqg:
@@ -31,7 +31,7 @@ data:
   isMastered: false
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-mastery
+    rqid: je..mastery-condition
     name: Mastery (condition)
 flags:
   rqg:
@@ -52,7 +52,7 @@ data:
   isMastered: false
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-magic
+    rqid: je..magic-condition
     name: Magic (condition)
 flags:
   rqg:
@@ -73,7 +73,7 @@ data:
   isMastered: false
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-infinity
+    rqid: je..infinity-condition
     name: Infinity (condition)
 flags:
   rqg:
@@ -94,7 +94,7 @@ data:
   isMastered: false
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-luck
+    rqid: je..luck-condition
     name: Luck (condition)
 flags:
   rqg:
@@ -115,7 +115,7 @@ data:
   isMastered: false
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-fate
+    rqid: je..fate-condition
     name: Fate (condition)
 flags:
   rqg:

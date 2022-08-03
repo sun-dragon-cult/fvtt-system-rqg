@@ -11,7 +11,7 @@ data:
   isMastered: true
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-combine
+    rqid: je..combine-technique
     name: Combine (technique)
 flags:
   rqg:
@@ -36,7 +36,7 @@ data:
   isMastered: true
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-tap
+    rqid: je..tap-technique
     name: Tap (technique)
 flags:
   rqg:
@@ -58,7 +58,7 @@ data:
   isMastered: true
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-dispel
+    rqid: je..dispel-technique
     name: Dispel (technique)
 flags:
   rqg:
@@ -80,7 +80,7 @@ data:
   isMastered: true
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-separate
+    rqid: je..separate-technique
     name: Separate (technique)
 flags:
   rqg:
@@ -102,7 +102,7 @@ data:
   isMastered: true
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-summon
+    rqid: je..summon-technique
     name: Summon (technique)
 flags:
   rqg:
@@ -127,7 +127,7 @@ data:
   isMastered: true
   opposingRune: null
   descriptionRqidLink:
-    rqid: je..runedescription-command
+    rqid: je..command-technique
     name: Command (technique)
 flags:
   rqg:

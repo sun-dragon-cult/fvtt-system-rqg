@@ -12,7 +12,7 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-air
+    rqid: je..air-element
     name: Air (element)
 flags:
   rqg:
@@ -23,6 +23,7 @@ flags:
 ---
 name: Water (element)
 type: rune
+img: systems/rqg/assets/images/runes/water.svg
 data:
   rune: Water
   chance: 0
@@ -34,9 +35,8 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-water
+    rqid: je..water-element
     name: Water (element)
-img: systems/rqg/assets/images/runes/water.svg
 flags:
   rqg:
     documentRqidFlags:
@@ -46,6 +46,7 @@ flags:
 ---
 name: Darkness (element)
 type: rune
+img: systems/rqg/assets/images/runes/darkness.svg
 data:
   rune: Darkness
   chance: 0
@@ -57,9 +58,8 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-darkness
+    rqid: je..darkness-element
     name: Darkness (element)
-img: systems/rqg/assets/images/runes/darkness.svg
 flags:
   rqg:
     documentRqidFlags:
@@ -69,6 +69,7 @@ flags:
 ---
 name: Fire/Sky (element)
 type: rune
+img: systems/rqg/assets/images/runes/fire_sky.svg
 data:
   rune: Fire/Sky
   chance: 0
@@ -80,18 +81,18 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-fire-sky
+    rqid: je..fire-sky-element
     name: Fire/Sky (element)
-img: systems/rqg/assets/images/runes/fire_sky.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.rune.fire-element
+      id: i.rune.fire-sky-element
       lang: en
       priority: 0
 ---
 name: Moon (element)
 type: rune
+img: systems/rqg/assets/images/runes/moon_full.svg
 data:
   rune: Moon
   chance: 0
@@ -101,9 +102,8 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-moon
+    rqid: je..moon-element
     name: Moon (element)
-img: systems/rqg/assets/images/runes/moon_full.svg
 flags:
   rqg:
     documentRqidFlags:
@@ -113,6 +113,7 @@ flags:
 ---
 name: Earth (element)
 type: rune
+img: systems/rqg/assets/images/runes/earth.svg
 data:
   rune: Earth
   chance: 0
@@ -124,9 +125,8 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..runedescription-earth
+    rqid: je..earth-element
     name: Earth (element)
-img: systems/rqg/assets/images/runes/earth.svg
 flags:
   rqg:
     documentRqidFlags:
