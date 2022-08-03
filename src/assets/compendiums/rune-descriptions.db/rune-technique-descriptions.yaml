@@ -7,7 +7,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-combine
+      id: je..combine-technique
       lang: en
       priority: 0
 
@@ -23,7 +23,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-tap
+      id: je..tap-technique
       lang: en
       priority: 0
 
@@ -38,7 +38,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-dispel
+      id: je..dispel-technique
       lang: en
       priority: 0
 
@@ -53,7 +53,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-separate
+      id: je..separate-technique
       lang: en
       priority: 0
 
@@ -68,7 +68,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-summon
+      id: je..summon-technique
       lang: en
       priority: 0
 
@@ -84,6 +84,6 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-command
+      id: je..command-technique
       lang: en
       priority: 0

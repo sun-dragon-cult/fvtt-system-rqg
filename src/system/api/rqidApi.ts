@@ -106,49 +106,56 @@ export class Rqid {
    */
   public static async fromRqidCount(
     rqid: string | undefined,
-    lang: string = "en"
+    lang: string = "en",
+    scope: "all" | "world" | "compendiums" = "all"
   ): Promise<number> {
     if (!rqid) {
       return 0;
     }
 
+    let count = 0;
+
     // Check World
-    let count = (getGame() as any)[this.getGameProperty(rqid)]?.contents.reduce(
-      (count: number, document: Document<any, any>) => {
-        if (
-          document.getFlag(systemId, documentRqidFlags)?.id === rqid &&
-          document.getFlag(systemId, documentRqidFlags)?.lang === lang
-        ) {
-          count++;
-        }
-        return count;
-      },
-      0
-    );
+    if (["all", "world"].includes(scope)) {
+      count = (getGame() as any)[this.getGameProperty(rqid)]?.contents.reduce(
+        (count: number, document: Document<any, any>) => {
+          if (
+            document.getFlag(systemId, documentRqidFlags)?.id === rqid &&
+            document.getFlag(systemId, documentRqidFlags)?.lang === lang
+          ) {
+            count++;
+          }
+          return count;
+        },
+        0
+      );
+    }
 
     if (count > 0) {
       return count;
     }
 
     // Check compendium packs
-    const documentName = Rqid.getDocumentType(rqid);
-    for (const pack of getGame().packs) {
-      if (pack.documentClass.name === documentName) {
-        // @ts-expect-error indexed
-        if (!pack.indexed) {
-          await pack.getIndex();
-        }
-        // TODO fix typing when upgrading type versions!
-        const countInPack = (pack.index as any).reduce((sum: number, indexData: any) => {
-          if (
-            indexData?.flags?.rqg?.documentRqidFlags?.id === rqid &&
-            indexData?.flags?.rqg?.documentRqidFlags?.lang === lang
-          ) {
-            sum++;
+    if (["all", "compendiums"].includes(scope)) {
+      const documentName = Rqid.getDocumentType(rqid);
+      for (const pack of getGame().packs) {
+        if (pack.documentClass.name === documentName) {
+          // @ts-expect-error indexed
+          if (!pack.indexed) {
+            await pack.getIndex();
           }
-          return sum;
-        }, 0);
-        count += countInPack;
+          // TODO fix typing when upgrading type versions!
+          const countInPack = (pack.index as any).reduce((sum: number, indexData: any) => {
+            if (
+              indexData?.flags?.rqg?.documentRqidFlags?.id === rqid &&
+              indexData?.flags?.rqg?.documentRqidFlags?.lang === lang
+            ) {
+              sum++;
+            }
+            return sum;
+          }, 0);
+          count += countInPack;
+        }
       }
     }
     return count;
@@ -183,7 +190,7 @@ export class Rqid {
       }
     }
     if (!rqidIdentifier) {
-      rqidIdentifier = toKebabCase(document.name);
+      rqidIdentifier = trimChars(toKebabCase(document.name), "-");
     }
 
     return `${rqidDocumentString}.${documentSubType}.${rqidIdentifier}`;
@@ -233,7 +240,7 @@ export class Rqid {
       ui.notifications?.error(msg);
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
       // TODO Or should this be handled in the compendium browser eventually?
-      console.log(msg + "  Duplicate items: ", candidateDocuments);
+      console.warn(msg + "  Duplicate items: ", candidateDocuments);
     }
     return candidateDocuments[0];
   }
@@ -314,7 +321,7 @@ export class Rqid {
       });
       ui.notifications?.error(msg);
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
-      console.log(msg + "  Duplicate items: ", result);
+      console.warn(msg + "  Duplicate items: ", result);
     }
     return await result[0].pack.getDocument(result[0].indexData._id);
   }
