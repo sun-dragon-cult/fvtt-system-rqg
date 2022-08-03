@@ -7,6 +7,7 @@ import { moveRuneIcons } from "./migrations-item/moveRuneIcon";
 import { renameSkillIcons } from "./migrations-item/renameSkillIcons";
 import { systemId } from "../config";
 import { renameDragonewt } from "./migrations-item/renameDragonewt";
+import { useRqidDescriptionLinks } from "./migrations-item/migrateDescriptionLinks";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -44,6 +45,7 @@ export async function applyDefaultWorldMigrations(): Promise<void> {
     moveRuneIcons,
     renameSkillIcons,
     renameDragonewt,
+    useRqidDescriptionLinks,
   ];
   const worldActorMigrations: ActorMigration[] = [migrateActorDummy];
 

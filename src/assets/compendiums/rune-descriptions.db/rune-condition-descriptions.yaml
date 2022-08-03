@@ -10,7 +10,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-mastery
+      id: je..mastery-condition
       lang: en
       priority: 0
 
@@ -25,7 +25,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-magic
+      id: je..magic-condition
       lang: en
       priority: 0
 ---
@@ -39,7 +39,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-infinity
+      id: je..infinity-condition
       lang: en
       priority: 0
 
@@ -54,7 +54,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-luck
+      id: je..luck-condition
       lang: en
       priority: 0
 
@@ -69,7 +69,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-fate
+      id: je..fate-condition
       lang: en
       priority: 0
 
@@ -82,6 +82,6 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-law
+      id: je..law-condition
       lang: en
       priority: 0

@@ -11,7 +11,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-beast
+      id: je..beast-form
       lang: en
       priority: 0
 ---
@@ -24,7 +24,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-chaos
+      id: je..chaos-form
       lang: en
       priority: 0
 
@@ -39,7 +39,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-plant
+      id: je..plant-form
       lang: en
       priority: 0
 
@@ -52,7 +52,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-spirit
+      id: je..spirit-form
       lang: en
       priority: 0
 
@@ -66,7 +66,7 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-dragonewt
+      id: je..dragonewt-form
       lang: en
       priority: 0
 
@@ -83,6 +83,6 @@ content: >
 flags:
   rqg:
     documentRqidFlags:
-      id: je..runedescription-man
+      id: je..man-form
       lang: en
       priority: 0
