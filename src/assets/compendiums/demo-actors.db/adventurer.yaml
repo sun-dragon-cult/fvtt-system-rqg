@@ -293,7 +293,7 @@ items:
       runeType: element
       opposingRune: null
       minorRunes:
-        - Fire (element)
+        - Fire/Sky (element)
         - Darkness (element)
       isMastered: false
       journalId: null
@@ -314,7 +314,7 @@ items:
       journalId: null
       journalPack: null
   - _id: j7GzukX2zuafVgac
-    name: Fire (element)
+    name: Fire/Sky (element)
     type: rune
     img: systems/rqg/assets/images/runes/fire_sky.svg
     data:
@@ -448,7 +448,7 @@ items:
       opposingRune: null
       minorRunes:
         - Air (element)
-        - Fire (element)
+        - Fire/Sky (element)
       isMastered: false
       journalId: null
       journalPack: null

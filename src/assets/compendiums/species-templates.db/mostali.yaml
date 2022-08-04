@@ -291,7 +291,7 @@ items:
       runeType: element
       opposingRune: ''
       minorRunes:
-        - Fire (element)
+        - Fire/Sky (element)
         - Darkness (element)
       isMastered: false
       rqid: ''
@@ -348,7 +348,7 @@ items:
       core:
         sourceId: Compendium.rqg.pc-runes.E81hrUv0oK4pzleL
   - _id: iIe3XRm8lKK7MEwk
-    name: Fire (element)
+    name: Fire/Sky (element)
     type: rune
     img: systems/rqg/assets/images/runes/fire_sky.svg
     data:
@@ -622,7 +622,7 @@ items:
       opposingRune:
       minorRunes:
         - Air (element)
-        - Fire (element)
+        - Fire/Sky (element)
       isMastered: false
     effects: []
     folder:
