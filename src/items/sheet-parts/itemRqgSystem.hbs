@@ -32,7 +32,6 @@
     <input
       type="text"
       id="item-foundryid-{{data._id}}"
-      name="data.item-foundryid"
       value="{{data._id}}"
       readonly
     />
@@ -48,7 +47,6 @@
     <input
       type="text"
       id="item-foundryuuid-{{data._id}}"
-      name="data.item-foundryuuid"
       value="{{uuid}}"
       readonly
     />
@@ -65,7 +63,6 @@
     <input
       type="text"
       id="owner-foundryid-{{data._id}}"
-      name="data.owner-foundryid"
       value="{{ownerId}}"
       readonly
     />
@@ -82,7 +79,6 @@
     <input
       type="text"
       id="get-item-macro-{{data._id}}"
-      name="data.get-item-macro"
       value='await fromUuid("{{uuid}}")'
       readonly
     />
@@ -98,7 +94,6 @@
     <input
       type="text"
       id="get-item-like-this-macro-{{data._id}}"
-      name="data.get-item-like-this-macro"
       value='await game.system.api.rqid.fromRqid("{{data.flags.rqg.documentRqidFlags.id}}","{{data.flags.rqg.documentRqidFlags.lang}}")'
       readonly
     />
