@@ -29,7 +29,6 @@
       </div>
     </div>
 
-    
     {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
         rqidLink=runeData.descriptionRqidLink
         parentField="descriptionRqidLink"
@@ -64,7 +63,7 @@
           <div>
             <input
               type="number"
-              id="chance-{{data._id}}"              
+              id="chance-{{data._id}}"
               name="data.chance"
               min="0"
               max="999"
@@ -83,14 +82,14 @@
           <label for="opposing-rune-{{data._id}}">{{localize "RQG.Item.Rune.OpposingRune"}}</label>
           <div class="rune-property">
             <img class="rune" src="{{runeImg runeData.opposingRune}}" title="{{runeData.opposingRune}}"/>
-            <input type="text" id="opposing-rune-{{data._id}}" 
-              name="data.opposingRune" 
-              value="{{runeData.opposingRune}}" 
+            <input type="text" id="opposing-rune-{{data._id}}"
+              name="data.opposingRune"
+              value="{{runeData.opposingRune}}"
               list="allRunes">
           </div>
 
           <label for="is-mastered-{{data._id}}">{{localize "RQG.Item.Rune.MasteredSorceryQ"}}</label>
-          <input type="checkbox" id="is-mastered-{{data._id}}" name="data.hasExperience" {{checked runeData.isMastered}}>
+          <input type="checkbox" id="is-mastered-{{data._id}}" name="data.isMastered" {{checked runeData.isMastered}}>
 
           <label for="minor-runes-{{data._id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
           <div class="rune-property rune-group">
@@ -98,11 +97,11 @@
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
             <input type="text" name="data.minorRunes" value="{{this}}">
             {{/each}}
-            <input type="text" id="minor-runes-{{data._id}}" name="data.minorRunes" list="allRunes" 
+            <input type="text" id="minor-runes-{{data._id}}" name="data.minorRunes" list="allRunes"
               placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" style="grid-column: 1 / span 2;">
           </div>
 
-          
+
         </div>
       </div>
 
@@ -120,7 +119,7 @@
         itemData=runeData
         }}
       </div>
-      
+
     </section>
   </main>
 
