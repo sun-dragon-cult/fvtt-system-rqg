@@ -31,7 +31,7 @@ data:
   runeType: element
   minorRunes:
     - Air (element)
-    - Fire (element)
+    - Fire/Sky (element)
   isMastered: false
   opposingRune:
   descriptionRqidLink:
@@ -120,7 +120,7 @@ data:
   hasExperience: false
   runeType: element
   minorRunes:
-    - Fire (element)
+    - Fire/Sky (element)
     - Darkness (element)
   isMastered: false
   opposingRune:
