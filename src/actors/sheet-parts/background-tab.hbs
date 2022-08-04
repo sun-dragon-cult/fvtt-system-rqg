@@ -68,16 +68,17 @@
         {{data.data.background.species}}
       {{/if}}
     </div>
-        
-    {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-        rqidLink=data.data.background.speciesRqidLink
-        parentField="speciesRqidLink"
-        dropTypes="JournalEntry"
-        showDeleteFromPropertyName="speciesRqidLink"
-        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-        showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-    }}
 
+    {{#if actorWizardFeatureFlag}}
+      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+          rqidLink=data.data.background.speciesRqidLink
+          parentField="speciesRqidLink"
+          dropTypes="JournalEntry"
+          showDeleteFromPropertyName="speciesRqidLink"
+          showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+          showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+      }}
+    {{/if}}
   </fieldset>
 
   <fieldset>
@@ -260,64 +261,66 @@
         {{data.data.background.ransomDetails}}
       {{/if}}
     </div>
-
   </fieldset>
-  <fieldset>
-    <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
-    <div class="item-sheet-properties">
 
-          <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-            rqidLink=data.data.background.homelandJournalRqidLink
-            parentField="background.homelandJournalRqidLink"
-            dropTypes="JournalEntry"
-            showDeleteFromPropertyName="background.homelandJournalRqidLink"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          }}
+  {{#if actorWizardFeatureFlag}}
+    <fieldset>
+      <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
+      <div class="item-sheet-properties">
 
-          <label>{{localize "RQG.Actor.Background.Region"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-            rqidLink=data.data.background.regionJournalRqidLink
-            parentField="background.regionJournalRqidLink"
-            dropTypes="JournalEntry"
-            showDeleteFromPropertyName="background.regionJournalRqidLink"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          }}
+            <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+              rqidLink=data.data.background.homelandJournalRqidLink
+              parentField="background.homelandJournalRqidLink"
+              dropTypes="JournalEntry"
+              showDeleteFromPropertyName="background.homelandJournalRqidLink"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+            }}
 
-          <label>{{localize "RQG.Actor.Background.Cultures"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=data.data.background.cultureJournalRqidLinks
-            parentField="background.cultureJournalRqidLinks"
-            dropTypes="JournalEntry"
-            showDeleteFromPropertyName="background.cultureJournalRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          }}
+            <label>{{localize "RQG.Actor.Background.Region"}}</label>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+              rqidLink=data.data.background.regionJournalRqidLink
+              parentField="background.regionJournalRqidLink"
+              dropTypes="JournalEntry"
+              showDeleteFromPropertyName="background.regionJournalRqidLink"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+            }}
 
-          <label>{{localize "RQG.Actor.Background.Tribes"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=data.data.background.tribeJournalRqidLinks
-            parentField="background.tribeJournalRqidLinks"
-            dropTypes="JournalEntry"
-            showDeleteFromPropertyName="background.tribeJournalRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          }}
+            <label>{{localize "RQG.Actor.Background.Cultures"}}</label>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+              rqidLinkArray=data.data.background.cultureJournalRqidLinks
+              parentField="background.cultureJournalRqidLinks"
+              dropTypes="JournalEntry"
+              showDeleteFromPropertyName="background.cultureJournalRqidLinks"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+            }}
 
-          <label>{{localize "RQG.Actor.Background.Clans"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=data.data.background.clanJournalRqidLinks
-            parentField="background.clanJournalRqidLinks"
-            dropTypes="JournalEntry"
-            showDeleteFromPropertyName="background.clanJournalRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          }}
+            <label>{{localize "RQG.Actor.Background.Tribes"}}</label>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+              rqidLinkArray=data.data.background.tribeJournalRqidLinks
+              parentField="background.tribeJournalRqidLinks"
+              dropTypes="JournalEntry"
+              showDeleteFromPropertyName="background.tribeJournalRqidLinks"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+            }}
 
-    </div>
-  </fieldset>
+            <label>{{localize "RQG.Actor.Background.Clans"}}</label>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+              rqidLinkArray=data.data.background.clanJournalRqidLinks
+              parentField="background.clanJournalRqidLinks"
+              dropTypes="JournalEntry"
+              showDeleteFromPropertyName="background.clanJournalRqidLinks"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+            }}
+
+      </div>
+    </fieldset>
+  {{/if}}
 </div>
 
 {{#if isGM}}

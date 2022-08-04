@@ -113,6 +113,7 @@ interface CharacterSheetData {
   isGM: boolean;
   isPC: boolean;
   showUiSection: UiSections;
+  actorWizardFeatureFlag: boolean;
 }
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
@@ -215,6 +216,7 @@ export class RqgActorSheet extends ActorSheet<
       isGM: getGameUser().isGM,
       isPC: this.actor.hasPlayerOwner,
       showUiSection: this.getUiSectionVisibility(),
+      actorWizardFeatureFlag: !!getGame().settings.get(systemId, "actor-wizard-feature-flag"),
     };
   }
 
