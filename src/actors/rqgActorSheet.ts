@@ -850,8 +850,8 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Show Weapon Chat Card
-    htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
-      const weaponUsage = getRequiredDomDataset(el, "weapon-roll");
+    htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-usage-type]").forEach((el) => {
+      const weaponUsage = getRequiredDomDataset(el, "weapon-usage-type");
       const weaponItemId = getRequiredDomDataset(el, "item-id");
       const skillItemId = getDomDataset(el, "skill-id");
       if (!skillItemId) {

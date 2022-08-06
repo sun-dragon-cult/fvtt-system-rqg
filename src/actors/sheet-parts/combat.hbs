@@ -38,7 +38,7 @@
               {{#if skillId}}
                 <div  class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{#if unusable}}warning{{/if}}"
                       {{#if unusable}}title="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
-                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}">
+                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-usage-type="{{@key}}">
                   {{localize (concat "RQG.Game.WeaponUsage." @key)}}
                   <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span>
                 </div>
@@ -52,7 +52,7 @@
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
                       data-skill-id="{{skillId}}" data-item-id="{{../data._id}}"
-                      data-weapon-roll="{{@key}}">{{damage}}&nbsp;</span>
+                      data-weapon-usage-type="{{@key}}">{{damage}}&nbsp;</span>
               {{/if}}
             {{/each}}
           </span>
@@ -103,7 +103,7 @@
             {{#each data.data.usage}}
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass skillId @root.data._id @root.tokenId}}"
-                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll="{{@key}}" title="{{localize "RQG.Game.RollCard"}}">
+                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-usage-type="{{@key}}" title="{{localize "RQG.Game.RollCard"}}">
                       {{skillchance skillId @root.data._id @root.tokenId}}%
                 </span>
               {{/if}}
@@ -116,7 +116,7 @@
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
                       data-skill-id="{{skillId}}" data-item-id="{{../data._id}}"
-                      data-weapon-roll="{{@key}}" title="{{localize "RQG.Game.RollCard"}}">
+                      data-weapon-usage-type="{{@key}}" title="{{localize "RQG.Game.RollCard"}}">
                       {{damage}}&nbsp;
                 </span>
               {{/if}}

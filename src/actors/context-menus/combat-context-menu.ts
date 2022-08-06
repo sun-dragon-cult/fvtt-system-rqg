@@ -20,11 +20,11 @@ export const combatMenuOptions = (
   {
     name: localize("RQG.Game.RollCard"),
     icon: ContextMenuRunes.RollCard,
-    condition: (el) => !!getDomDataset(el, "weapon-roll"),
+    condition: (el) => !!getDomDataset(el, "weapon-usage-type"),
     callback: async (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const weaponItemId = getDomDataset(el, "item-id");
-      const usage = getRequiredDomDataset(el, "weapon-roll") as UsageType;
+      const usage = getRequiredDomDataset(el, "weapon-usage-type") as UsageType;
       if (skillItemId && weaponItemId) {
         await WeaponCard.show(weaponItemId, usage, actor, token);
       } else {
