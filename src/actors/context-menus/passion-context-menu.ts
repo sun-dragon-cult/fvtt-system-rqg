@@ -8,7 +8,7 @@ import {
   localize,
   RqgError,
 } from "../../system/util";
-import { ItemCard } from "../../chat/itemCard";
+import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
@@ -19,12 +19,12 @@ export const passionMenuOptions = (
   token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
-    name: localize("RQG.Game.RollCard"),
-    icon: ContextMenuRunes.RollCard,
+    name: localize("RQG.Game.RollChat"),
+    icon: ContextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await ItemCard.show(itemId, actor, token);
+      await ItemChatHandler.show(itemId, actor, token);
     },
   },
   {

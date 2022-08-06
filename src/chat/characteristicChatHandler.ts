@@ -14,7 +14,7 @@ import {
   usersIdsThatOwnActor,
 } from "../system/util";
 import {
-  CharacteristicCardFlags,
+  CharacteristicChatFlags,
   RqgChatMessageFlags,
 } from "../data-model/shared/rqgDocumentFlags";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
@@ -26,15 +26,15 @@ export type CharacteristicData = {
   data: Characteristic;
 };
 
-export class CharacteristicCard {
+export class CharacteristicChatHandler {
   public static async show(
     characteristic: CharacteristicData,
     actor: RqgActor,
     token: TokenDocument | null | undefined
   ): Promise<void> {
-    const flags: CharacteristicCardFlags = {
-      type: "characteristicCard",
-      card: {
+    const flags: CharacteristicChatFlags = {
+      type: "characteristicChat",
+      chat: {
         actorUuid: actor.uuid,
         tokenUuid: token?.uuid,
         chatImage: "", // TODO What img should a characteristic have?
@@ -46,24 +46,24 @@ export class CharacteristicCard {
       },
     };
 
-    await ChatMessage.create(await CharacteristicCard.renderContent(flags));
+    await ChatMessage.create(await CharacteristicChatHandler.renderContent(flags));
     activateChatTab();
   }
 
   /**
-   * Do a roll from the Characteristic Chat card. Use the flags on the chatMessage to get the required data.
+   * Do a roll from the Characteristic Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "characteristicCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    assertChatMessageFlagType(flags?.type, "characteristicChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
     const { characteristicName, characteristicValue, difficulty, modifier } =
-      await CharacteristicCard.getFormDataFromFlags(flags);
-    await CharacteristicCard.roll(
+      await CharacteristicChatHandler.getFormDataFromFlags(flags);
+    await CharacteristicChatHandler.roll(
       characteristicName,
       characteristicValue,
       difficulty,
@@ -83,17 +83,17 @@ export class CharacteristicCard {
   ): Promise<void> {
     const translationKeyDifficulty = difficulty === 0.5 ? 0 : difficulty;
     const localizedDifficulty = localize(`RQG.Game.RollDifficulty.${translationKeyDifficulty}`);
-    let flavor = localize("RQG.Dialog.characteristicCard.RollFlavor", {
+    let flavor = localize("RQG.Dialog.characteristicChat.RollFlavor", {
       difficulty: localizedDifficulty,
       name: localizeCharacteristic(characteristicName),
     });
     if (modifier !== 0) {
-      flavor += localize("RQG.Dialog.characteristicCard.RollFlavorModifier", {
+      flavor += localize("RQG.Dialog.characteristicChat.RollFlavorModifier", {
         modifier: modifier,
       });
     }
     const result = await Ability.roll(flavor, characteristicValue * difficulty, modifier, speaker);
-    await CharacteristicCard.checkExperience(actor, characteristicName, result);
+    await CharacteristicChatHandler.checkExperience(actor, characteristicName, result);
   }
 
   public static async checkExperience(
@@ -118,25 +118,25 @@ export class CharacteristicCard {
   public static async renderContent(
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
-    assertChatMessageFlagType(flags.type, "characteristicCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    assertChatMessageFlagType(flags.type, "characteristicChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
 
     const { characteristicValue, difficulty, modifier } =
-      await CharacteristicCard.getFormDataFromFlags(flags);
+      await CharacteristicChatHandler.getFormDataFromFlags(flags);
     const chance = Math.ceil(characteristicValue * difficulty + modifier);
 
     const templateData = {
       ...flags,
-      difficultyOptions: CharacteristicCard.getDifficultyOptions(),
+      difficultyOptions: CharacteristicChatHandler.getDifficultyOptions(),
       chance: chance,
-      cardHeading: localize("RQG.Dialog.characteristicCard.CardFlavor", {
-        name: localizeCharacteristic(flags.card.characteristic.name),
-        value: flags.card.characteristic.data.value,
+      chatHeading: localize("RQG.Dialog.characteristicChat.ChatFlavor", {
+        name: localizeCharacteristic(flags.chat.characteristic.name),
+        value: flags.chat.characteristic.data.value,
       }),
     };
 
-    let html = await renderTemplate("systems/rqg/chat/characteristicCard.hbs", templateData);
+    let html = await renderTemplate("systems/rqg/chat/characteristicChatHandler.hbs", templateData);
     return {
       user: getGame().user?.id,
       speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
@@ -156,9 +156,9 @@ export class CharacteristicCard {
     modifier: number;
     characteristicValue: number;
   }> {
-    assertChatMessageFlagType(flags.type, "characteristicCard");
-    const characteristicName = flags.card.characteristic.name;
-    const characteristicValue: number = Number(flags.card.characteristic.data.value) || 0;
+    assertChatMessageFlagType(flags.type, "characteristicChat");
+    const characteristicName = flags.chat.characteristic.name;
+    const characteristicValue: number = Number(flags.chat.characteristic.data.value) || 0;
 
     // The dropdown value is a (string) integer - let 0 be a stand in for 0.5 to make the corresponding translation key work.
     const difficulty =
@@ -178,7 +178,7 @@ export class CharacteristicCard {
    * Called from {@link RqgChatMessage.formSubmitHandler} and {@link RqgChatMessage.inputChangeHandler}
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
-    assertChatMessageFlagType(flags.type, "characteristicCard");
+    assertChatMessageFlagType(flags.type, "characteristicChat");
     const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
     const formData = new FormData(form);
 

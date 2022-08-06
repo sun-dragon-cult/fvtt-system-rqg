@@ -1,7 +1,7 @@
 import { ResultEnum } from "./ability";
-import { CharacteristicData } from "../../chat/characteristicCard";
+import { CharacteristicData } from "../../chat/characteristicChatHandler";
 import { UsageType } from "../item-data/weaponData";
-import { ChatCardType } from "../../chat/RqgChatMessage";
+import { ChatMessageType } from "../../chat/RqgChatMessage";
 
 export const documentRqidFlags = "documentRqidFlags";
 export const actorWizardFlags = "actorWizardFlags";
@@ -48,29 +48,29 @@ export interface DocumentRqidFlags {
   priority?: number;
 }
 
-// Base chat card flag structure
-export type BaseRqgChatCard = {
+// Base chat message flag structure
+export type BaseRqgChatFlags = {
   /** The different types of chatmessages. Used for type narrowing, see {@link assertChatMessageFlagType} */
-  type: ChatCardType;
-  /** Data that needs to be persisted. Should include {@link CommonRqgCardFlags} */
-  card: {};
+  type: ChatMessageType;
+  /** Data that needs to be persisted. Should include {@link CommonRqgChatFlags} */
+  chat: {};
   /** Data from inputs in the form only */
   formData: {};
 };
 
 // Flags common to all chatmessages
-export type CommonRqgCardFlags = {
+export type CommonRqgChatFlags = {
   /** The actor that is speaking / acting */
   actorUuid: string;
   /** The token that is speaking / acting */
   tokenUuid: string | undefined;
-  /** An image url to represent what the chat card is about (often an item.img) */
+  /** An image url to represent what the chat message is about (often an item.img) */
   chatImage: string | undefined;
 };
 
-export interface CharacteristicCardFlags extends BaseRqgChatCard {
-  type: "characteristicCard";
-  card: CommonRqgCardFlags & {
+export interface CharacteristicChatFlags extends BaseRqgChatFlags {
+  type: "characteristicChat";
+  chat: CommonRqgChatFlags & {
     characteristic: CharacteristicData;
   };
   formData: {
@@ -79,9 +79,9 @@ export interface CharacteristicCardFlags extends BaseRqgChatCard {
   };
 }
 
-export interface ItemCardFlags extends BaseRqgChatCard {
-  type: "itemCard";
-  card: CommonRqgCardFlags & {
+export interface ItemChatFlags extends BaseRqgChatFlags {
+  type: "itemChat";
+  chat: CommonRqgChatFlags & {
     itemUuid: string;
   };
   formData: {
@@ -89,16 +89,16 @@ export interface ItemCardFlags extends BaseRqgChatCard {
   };
 }
 
-export interface ReputationCardFlags extends BaseRqgChatCard {
-  type: "reputationCard";
-  card: CommonRqgCardFlags & {};
+export interface ReputationChatFlags extends BaseRqgChatFlags {
+  type: "reputationChat";
+  chat: CommonRqgChatFlags & {};
   formData: {
     modifier: FormDataEntryValue;
   };
 }
-export interface RuneMagicCardFlags extends BaseRqgChatCard {
-  type: "runeMagicCard";
-  card: CommonRqgCardFlags & {
+export interface RuneMagicChatFlags extends BaseRqgChatFlags {
+  type: "runeMagicChat";
+  chat: CommonRqgChatFlags & {
     itemUuid: string;
   };
   formData: {
@@ -111,9 +111,9 @@ export interface RuneMagicCardFlags extends BaseRqgChatCard {
   };
 }
 
-export interface SpiritMagicCardFlags extends BaseRqgChatCard {
-  type: "spiritMagicCard";
-  card: CommonRqgCardFlags & {
+export interface SpiritMagicChatFlags extends BaseRqgChatFlags {
+  type: "spiritMagicChat";
+  chat: CommonRqgChatFlags & {
     itemUuid: string;
   };
   formData: {
@@ -122,9 +122,9 @@ export interface SpiritMagicCardFlags extends BaseRqgChatCard {
   };
 }
 
-export interface WeaponCardFlags extends BaseRqgChatCard {
-  type: "weaponCard";
-  card: CommonRqgCardFlags & {
+export interface WeaponChatFlags extends BaseRqgChatFlags {
+  type: "weaponChat";
+  chat: CommonRqgChatFlags & {
     weaponUuid: string;
     usage: UsageType;
     result: ResultEnum | undefined;
@@ -139,9 +139,9 @@ export interface WeaponCardFlags extends BaseRqgChatCard {
 }
 
 export type RqgChatMessageFlags =
-  | CharacteristicCardFlags
-  | ItemCardFlags
-  | ReputationCardFlags
-  | RuneMagicCardFlags
-  | SpiritMagicCardFlags
-  | WeaponCardFlags;
+  | CharacteristicChatFlags
+  | ItemChatFlags
+  | ReputationChatFlags
+  | RuneMagicChatFlags
+  | SpiritMagicChatFlags
+  | WeaponChatFlags;

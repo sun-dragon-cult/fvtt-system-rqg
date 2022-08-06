@@ -9,7 +9,7 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneMagicCard } from "../../chat/runeMagicCard";
+import { RuneMagicChatHandler } from "../../chat/runeMagicChatHandler";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { Rqid } from "../../system/api/rqidApi";
@@ -19,12 +19,12 @@ export const runeMagicMenuOptions = (
   token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
-    name: localize("RQG.Game.RollCard"),
-    icon: ContextMenuRunes.RollCard,
+    name: localize("RQG.Game.RollChat"),
+    icon: ContextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await RuneMagicCard.show(itemId, actor, token);
+      await RuneMagicChatHandler.show(itemId, actor, token);
     },
   },
   {
@@ -35,7 +35,7 @@ export const runeMagicMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.RuneMagic);
-      await RuneMagicCard.roll(
+      await RuneMagicChatHandler.roll(
         item,
         item?.data.data.points,
         0,

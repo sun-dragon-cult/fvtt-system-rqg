@@ -1,4 +1,4 @@
-import { CharacteristicCard } from "../../chat/characteristicCard";
+import { CharacteristicChatHandler } from "../../chat/characteristicChatHandler";
 import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
@@ -20,12 +20,12 @@ export const characteristicMenuOptions = (
   token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
-    name: localize("RQG.Game.RollCard"),
-    icon: ContextMenuRunes.RollCard,
+    name: localize("RQG.Game.RollChat"),
+    icon: ContextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      await CharacteristicCard.show(
+      await CharacteristicChatHandler.show(
         {
           name: characteristicName,
           data: characteristic,
@@ -41,7 +41,7 @@ export const characteristicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      await CharacteristicCard.roll(
+      await CharacteristicChatHandler.roll(
         characteristicName,
         characteristic.value,
         5,
@@ -138,7 +138,7 @@ async function getCharacteristicUpdate(
     await r.toMessage({
       speaker: { alias: speakerName },
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: localize("RQG.ContextMenu.InitializeResultCard", {
+      flavor: localize("RQG.ContextMenu.InitializeResultChat", {
         char: localizeCharacteristic(characteristic),
       }),
     });

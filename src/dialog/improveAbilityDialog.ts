@@ -174,12 +174,12 @@ export async function submitImproveAbilityDialog(
       ) {
         // increase ability learnedChance, clear experience check
         const resultFlavor = localize(
-          "RQG.Dialog.improveAbilityDialog.experienceResultCard.flavor",
+          "RQG.Dialog.improveAbilityDialog.experienceResultChat.flavor",
           { name: adapter.name, typeLocName: adapter.typeLocName }
         );
         if (gaintype === "experience-gain-fixed") {
           const resultContentChoseFixed = localize(
-            "RQG.Dialog.improveAbilityDialog.experienceResultCard.contentChoseFixed",
+            "RQG.Dialog.improveAbilityDialog.experienceResultChat.contentChoseFixed",
             { gain: adapter.experienceGainFixed + "%" }
           );
           const gainRoll = new Roll(String(adapter.experienceGainFixed));
@@ -192,7 +192,7 @@ export async function submitImproveAbilityDialog(
         }
         if (gaintype === "experience-gain-random") {
           const resultContentChoseRandom = localize(
-            "RQG.Dialog.improveAbilityDialog.experienceResultCard.contentChoseRandom",
+            "RQG.Dialog.improveAbilityDialog.experienceResultChat.contentChoseRandom",
             { gain: adapter.experienceGainRandom + "%" }
           );
           const gainRoll = new Roll(adapter.experienceGainRandom);
@@ -232,12 +232,12 @@ export async function submitImproveAbilityDialog(
     }
   }
   if (gaintype === "training-gain-fixed") {
-    const flavor = localize("RQG.Dialog.improveAbilityDialog.trainingResultCard.flavor", {
+    const flavor = localize("RQG.Dialog.improveAbilityDialog.trainingResultChat.flavor", {
       name: adapter.name,
       typeLocName: adapter.typeLocName,
     });
     const content = localize(
-      "RQG.Dialog.improveAbilityDialog.trainingResultCard.contentChoseFixed",
+      "RQG.Dialog.improveAbilityDialog.trainingResultChat.contentChoseFixed",
       { gain: adapter.trainingGainFixed + "%" }
     );
     const roll = new Roll(String(adapter.trainingGainFixed));
@@ -249,12 +249,12 @@ export async function submitImproveAbilityDialog(
     gain = adapter.trainingGainFixed;
   }
   if (gaintype === "training-gain-random") {
-    const flavor = localize("RQG.Dialog.improveAbilityDialog.trainingResultCard.flavor", {
+    const flavor = localize("RQG.Dialog.improveAbilityDialog.trainingResultChat.flavor", {
       name: adapter.name,
       typeLocName: adapter.typeLocName,
     });
     const content = localize(
-      "RQG.Dialog.improveAbilityDialog.trainingResultCard.contentChoseRandom",
+      "RQG.Dialog.improveAbilityDialog.trainingResultChat.contentChoseRandom",
       { gain: adapter.trainingGainRandom + "%" }
     );
     const gainRoll = new Roll(adapter.trainingGainRandom);

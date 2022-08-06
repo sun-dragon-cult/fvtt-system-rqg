@@ -1,5 +1,5 @@
-import { ReputationCard } from "./reputationCard";
-import { CharacteristicCard } from "./characteristicCard";
+import { ReputationChatHandler } from "./reputationChatHandler";
+import { CharacteristicChatHandler } from "./characteristicChatHandler";
 import {
   getGame,
   getRequiredDomDataset,
@@ -8,26 +8,26 @@ import {
   requireValue,
 } from "../system/util";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { ItemCard } from "./itemCard";
-import { SpiritMagicCard } from "./spiritMagicCard";
-import { RuneMagicCard } from "./runeMagicCard";
-import { WeaponCard } from "./weaponCard";
+import { ItemChatHandler } from "./itemChatHandler";
+import { SpiritMagicChatHandler } from "./spiritMagicChatHandler";
+import { RuneMagicChatHandler } from "./runeMagicChatHandler";
+import { WeaponChatHandler } from "./weaponChatHandler";
 
-export type ChatCardType = keyof typeof cardMap;
+export type ChatMessageType = keyof typeof chatHandlerMap;
 
-const cardMap = {
-  characteristicCard: CharacteristicCard,
-  itemCard: ItemCard,
-  spiritMagicCard: SpiritMagicCard,
-  runeMagicCard: RuneMagicCard,
-  weaponCard: WeaponCard,
-  reputationCard: ReputationCard,
+const chatHandlerMap = {
+  characteristicChat: CharacteristicChatHandler,
+  itemChat: ItemChatHandler,
+  spiritMagicChat: SpiritMagicChatHandler,
+  runeMagicChat: RuneMagicChatHandler,
+  weaponChat: WeaponChatHandler,
+  reputationChat: ReputationChatHandler,
 };
 
 export class RqgChatMessage extends ChatMessage {
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
-    // CONFIG.ChatMessage.template = "systems/rqg/chat/chat-message.hbs"; // TODO redefine the base chat card
+    // CONFIG.ChatMessage.template = "systems/rqg/chat/chat-message.hbs"; // TODO redefine the base chat message
 
     Hooks.on("renderChatLog", (chatLog: any, html: JQuery) => {
       RqgChatMessage.addChatListeners(html[0]);
@@ -55,17 +55,17 @@ export class RqgChatMessage extends ChatMessage {
     if ((inputEvent.target as Element)?.classList.contains("roll-type-select")) {
       return; // Don't handle foundry roll type select dropdown
     }
-    const { chatMessageId } = RqgChatMessage.getChatCardInfo(inputEvent);
+    const { chatMessageId } = RqgChatMessage.getChatMessageInfo(inputEvent);
     const chatMessage = getGame().messages?.get(chatMessageId);
     requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
 
     const flags = chatMessage.data.flags.rqg;
-    requireValue(flags, "No rqg flags found on chat card");
-    const chatCardType = flags?.type;
-    requireValue(chatCardType, "Found chatmessage without chatCardType");
+    requireValue(flags, "No rqg flags found on chat message");
+    const chatMessageType = flags?.type;
+    requireValue(chatMessageType, "Found chatmessage without chat message type");
 
-    cardMap[chatCardType].updateFlagsFromForm(flags, inputEvent);
-    const data = await cardMap[chatCardType].renderContent(flags);
+    chatHandlerMap[chatMessageType].updateFlagsFromForm(flags, inputEvent);
+    const data = await chatHandlerMap[chatMessageType].renderContent(flags);
 
     const domChatMessages = document.querySelectorAll<HTMLElement>(
       `[data-message-id="${chatMessage.id}"]`
@@ -93,13 +93,13 @@ export class RqgChatMessage extends ChatMessage {
       newInputElement && moveCursorToEnd(newInputElement);
     }
     // @ts-ignore is marked as private!?
-    ui.chat?.scrollBottom(); // Fix that the weapon card gets bigger and pushes the rest of the chatlog down
+    ui.chat?.scrollBottom(); // Fix that the weapon chat gets bigger and pushes the rest of the chatlog down
   }
 
   public static async formSubmitHandler(submitEvent: SubmitEvent): Promise<boolean> {
     submitEvent.preventDefault();
 
-    const { chatMessageId } = RqgChatMessage.getChatCardInfo(submitEvent);
+    const { chatMessageId } = RqgChatMessage.getChatMessageInfo(submitEvent);
 
     const clickedButton = submitEvent.submitter as HTMLButtonElement;
     clickedButton.disabled = true;
@@ -109,9 +109,9 @@ export class RqgChatMessage extends ChatMessage {
     const flags = chatMessage?.data.flags.rqg;
     requireValue(flags, "Couldn't find flags on chatmessage");
 
-    const chatCardType = flags.type;
+    const chatMessageType = flags.type;
 
-    cardMap[chatCardType].updateFlagsFromForm(flags, submitEvent);
+    chatHandlerMap[chatMessageType].updateFlagsFromForm(flags, submitEvent);
 
     const form = submitEvent.target as HTMLFormElement;
     // Disable form until completed
@@ -126,12 +126,12 @@ export class RqgChatMessage extends ChatMessage {
 
   public async doRoll(): Promise<void> {
     const flags = this.data.flags.rqg;
-    requireValue(flags, "No rqg flags found on chat card");
-    const chatCardType = flags.type;
-    await cardMap[chatCardType].rollFromChat(this);
+    requireValue(flags, "No rqg flags found on chat message");
+    const chatMessageType = flags.type;
+    await chatHandlerMap[chatMessageType].rollFromChat(this);
   }
 
-  private static getChatCardInfo(event: Event): {
+  private static getChatMessageInfo(event: Event): {
     chatMessageId: string;
   } {
     const chatMessageId = getRequiredDomDataset(event, "message-id");

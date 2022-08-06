@@ -22,7 +22,7 @@ import {
   usersIdsThatOwnActor,
 } from "../system/util";
 import { systemId } from "../system/config";
-import { RqgChatMessageFlags, RuneMagicCardFlags } from "../data-model/shared/rqgDocumentFlags";
+import { RqgChatMessageFlags, RuneMagicChatFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import {
   ChatSpeakerData,
@@ -31,7 +31,7 @@ import {
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
-export class RuneMagicCard {
+export class RuneMagicChatHandler {
   public static async show(
     runeMagicItemId: string,
     actor: RqgActor,
@@ -42,12 +42,12 @@ export class RuneMagicCard {
     const cult = actor.items.get(runeMagicItem.data.data.cultId);
     assertItemType(cult?.data.type, ItemTypeEnum.Cult);
 
-    const eligibleRunes = RuneMagicCard.getEligibleRunes(runeMagicItem, actor);
-    const defaultRuneId = RuneMagicCard.getStrongestRune(eligibleRunes)?.id;
+    const eligibleRunes = RuneMagicChatHandler.getEligibleRunes(runeMagicItem, actor);
+    const defaultRuneId = RuneMagicChatHandler.getStrongestRune(eligibleRunes)?.id;
 
-    const flags: RuneMagicCardFlags = {
-      type: "runeMagicCard",
-      card: {
+    const flags: RuneMagicChatFlags = {
+      type: "runeMagicChat",
+      chat: {
         actorUuid: actor.uuid,
         tokenUuid: token?.uuid,
         chatImage: runeMagicItem.img ?? "",
@@ -68,16 +68,16 @@ export class RuneMagicCard {
   }
 
   /**
-   * Do a roll from the Rune Magic Chat card. Use the flags on the chatMessage to get the required data.
+   * Do a roll from the Rune Magic Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "runeMagicCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    assertChatMessageFlagType(flags?.type, "runeMagicChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
-    const runeMagicItem = (await getRequiredDocumentFromUuid(flags.card.itemUuid)) as
+    const runeMagicItem = (await getRequiredDocumentFromUuid(flags.chat.itemUuid)) as
       | RqgItem
       | undefined;
     requireValue(runeMagicItem, "Couldn't find item on item chat message");
@@ -88,8 +88,8 @@ export class RuneMagicCard {
       skillAugmentation,
       otherModifiers,
       selectedRuneId,
-    } = await RuneMagicCard.getFormDataFromFlags(flags);
-    await RuneMagicCard.roll(
+    } = await RuneMagicChatHandler.getFormDataFromFlags(flags);
+    await RuneMagicChatHandler.roll(
       runeMagicItem,
       runePointCost,
       magicPointBoost,
@@ -118,13 +118,13 @@ export class RuneMagicCard {
     const cult = actor.getEmbeddedDocument("Item", runeMagicCultId) as RqgItem | undefined;
     assertItemType(cult?.data.type, ItemTypeEnum.Cult);
     if (!usedRuneId) {
-      const eligibleRunes = RuneMagicCard.getEligibleRunes(runeMagicItem, actor);
-      usedRuneId = RuneMagicCard.getStrongestRune(eligibleRunes)?.id ?? "";
+      const eligibleRunes = RuneMagicChatHandler.getEligibleRunes(runeMagicItem, actor);
+      usedRuneId = RuneMagicChatHandler.getStrongestRune(eligibleRunes)?.id ?? "";
     }
     const runeItem = actor.getEmbeddedDocument("Item", usedRuneId) as RqgItem | undefined;
     assertItemType(runeItem?.data.type, ItemTypeEnum.Rune);
 
-    const validationError = RuneMagicCard.validateData(
+    const validationError = RuneMagicChatHandler.validateData(
       actor,
       cult,
       runePointsCast,
@@ -138,45 +138,45 @@ export class RuneMagicCard {
     const resultMessages: ResultMessage[] = [
       {
         result: ResultEnum.Critical,
-        html: localize("RQG.Dialog.runeMagicCard.resultMessageCritical", {
+        html: localize("RQG.Dialog.runeMagicChat.resultMessageCritical", {
           magicPointBoost: magicPointBoost,
         }),
       },
       {
         result: ResultEnum.Special,
-        html: localize("RQG.Dialog.runeMagicCard.resultMessageSpecial", {
+        html: localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
           runePointCost: runePointsCast,
           magicPointBoost: magicPointBoost,
         }),
       },
       {
         result: ResultEnum.Success,
-        html: localize("RQG.Dialog.runeMagicCard.resultMessageSuccess", {
+        html: localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
           runePointCost: runePointsCast,
           magicPointBoost: magicPointBoost,
         }),
       },
       {
         result: ResultEnum.Failure,
-        html: localize("RQG.Dialog.runeMagicCard.resultMessageFailure"),
+        html: localize("RQG.Dialog.runeMagicChat.resultMessageFailure"),
       },
       {
         result: ResultEnum.Fumble,
-        html: localize("RQG.Dialog.runeMagicCard.resultMessageFumble", {
+        html: localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
           runePointCost: runePointsCast,
         }),
       },
     ];
 
     const result = await Ability.roll(
-      localize("RQG.Dialog.runeMagicCard.Cast", { spellName: runeMagicItem.name }),
+      localize("RQG.Dialog.runeMagicChat.Cast", { spellName: runeMagicItem.name }),
       Number(runeItem.data.data.chance),
       ritualOrMeditation + skillAugmentation + otherModifiers,
       speaker,
       resultMessages
     );
 
-    await RuneMagicCard.handleResult(
+    await RuneMagicChatHandler.handleResult(
       result,
       runePointsCast,
       magicPointBoost,
@@ -207,14 +207,20 @@ export class RuneMagicCard {
       case ResultEnum.SpecialCritical:
       case ResultEnum.HyperCritical:
         // spell takes effect, Rune Points NOT spent, Rune gets xp check, boosting Magic Points spent
-        await RuneMagicCard.SpendRuneAndMagicPoints(0, magicPointsUsed, actor, cult, isOneUse);
+        await RuneMagicChatHandler.SpendRuneAndMagicPoints(
+          0,
+          magicPointsUsed,
+          actor,
+          cult,
+          isOneUse
+        );
         await actor.AwardExperience(runeItem.id);
         break;
 
       case ResultEnum.Success:
       case ResultEnum.Special:
         // spell takes effect, Rune Points spent, Rune gets xp check, boosting Magic Points spent
-        await RuneMagicCard.SpendRuneAndMagicPoints(
+        await RuneMagicChatHandler.SpendRuneAndMagicPoints(
           runePointsUsed,
           magicPointsUsed,
           actor,
@@ -228,18 +234,24 @@ export class RuneMagicCard {
         {
           // spell fails, no Rune Point Loss, if Magic Point boosted, lose 1 Magic Point if boosted
           const boosted = magicPointsUsed >= 1 ? 1 : 0;
-          await RuneMagicCard.SpendRuneAndMagicPoints(0, boosted, actor, cult, isOneUse);
+          await RuneMagicChatHandler.SpendRuneAndMagicPoints(0, boosted, actor, cult, isOneUse);
         }
         break;
 
       case ResultEnum.Fumble:
         // spell fails, lose Rune Points, if Magic Point boosted, lose 1 Magic Point if boosted
         const boosted = magicPointsUsed >= 1 ? 1 : 0;
-        await RuneMagicCard.SpendRuneAndMagicPoints(runePointsUsed, boosted, actor, cult, isOneUse);
+        await RuneMagicChatHandler.SpendRuneAndMagicPoints(
+          runePointsUsed,
+          boosted,
+          actor,
+          cult,
+          isOneUse
+        );
         break;
 
       default:
-        const msg = "Got unexpected result from roll in runeMagicCard";
+        const msg = "Got unexpected result from roll in runeMagicChat";
         ui.notifications?.error(msg);
         throw new RqgError(msg);
     }
@@ -263,7 +275,7 @@ export class RuneMagicCard {
       newRunePointMaxTotal -= runePoints;
       if (newRunePointMaxTotal < (cult.data.data.runePoints.max || 0)) {
         ui.notifications?.info(
-          localize("RQG.Dialog.runeMagicCard.SpentOneUseRunePoints", {
+          localize("RQG.Dialog.runeMagicChat.SpentOneUseRunePoints", {
             actorName: actor?.name,
             runePoints: runePoints,
             cultName: cult.name,
@@ -290,9 +302,9 @@ export class RuneMagicCard {
   ): string {
     assertItemType(cultItem?.data.type, ItemTypeEnum.Cult);
     if (runePointsUsed > (Number(cultItem.data.data.runePoints.value) || 0)) {
-      return getGame().i18n.format("RQG.Dialog.RuneMagicCard.validationNotEnoughRunePoints");
+      return getGame().i18n.format("RQG.Dialog.runeMagicChat.validationNotEnoughRunePoints");
     } else if (magicPointsBoost > (Number(actor?.data.data.attributes?.magicPoints?.value) || 0)) {
-      return localize("RQG.Dialog.runeMagicCard.validationNotEnoughMagicPoints");
+      return localize("RQG.Dialog.runeMagicChat.validationNotEnoughMagicPoints");
     } else {
       return "";
     }
@@ -301,14 +313,14 @@ export class RuneMagicCard {
   public static async renderContent(
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
-    assertChatMessageFlagType(flags.type, "runeMagicCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
-    const runeMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
+    assertChatMessageFlagType(flags.type, "runeMagicChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
+    const runeMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.chat.itemUuid);
     assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
-    const eligibleRunes = RuneMagicCard.getEligibleRunes(runeMagicItem, actor);
+    const eligibleRunes = RuneMagicChatHandler.getEligibleRunes(runeMagicItem, actor);
     const { otherModifiers, selectedRuneId, ritualOrMeditation, skillAugmentation } =
-      await RuneMagicCard.getFormDataFromFlags(flags);
+      await RuneMagicChatHandler.getFormDataFromFlags(flags);
     const selectedRune = actor.getEmbeddedDocument("Item", selectedRuneId) as RqgItem | undefined;
     assertItemType(selectedRune?.data.type, ItemTypeEnum.Rune);
 
@@ -321,14 +333,14 @@ export class RuneMagicCard {
     const ritualOrMeditationOptions: any = {};
     for (let i = 0; i <= 100; i += 5) {
       ritualOrMeditationOptions[i] = localize(
-        "RQG.Dialog.runeMagicCard.MeditationOrRitualValue" + i
+        "RQG.Dialog.runeMagicChat.MeditationOrRitualValue" + i
       );
     }
 
     const skillAugmentationOptions: any = {};
     [0, 50, 30, 20, -20, -50].forEach((value) => {
       skillAugmentationOptions[value] = localize(
-        "RQG.Dialog.runeMagicCard.SkillAugmentationValue" + value
+        "RQG.Dialog.runeMagicChat.SkillAugmentationValue" + value
       );
     });
 
@@ -341,12 +353,12 @@ export class RuneMagicCard {
       ritualOrMeditationOptions: ritualOrMeditationOptions,
       skillAugmentationOptions: skillAugmentationOptions,
       chance: chance,
-      cardHeading: localize("RQG.Dialog.runeMagicCard.runeMagicResultFlavor", {
+      chatHeading: localize("RQG.Dialog.runeMagicChat.runeMagicResultFlavor", {
         name: runeMagicItem.name,
       }),
     };
 
-    let html = await renderTemplate("systems/rqg/chat/runeMagicCard.hbs", templateData);
+    let html = await renderTemplate("systems/rqg/chat/runeMagicChatHandler.hbs", templateData);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
 
     return {
@@ -370,7 +382,7 @@ export class RuneMagicCard {
     magicPointBoost: number;
     selectedRuneId: string;
   }> {
-    assertChatMessageFlagType(flags.type, "runeMagicCard");
+    assertChatMessageFlagType(flags.type, "runeMagicChat");
     const runePointCost = convertFormValueToInteger(flags.formData.runePointCost);
     const magicPointBoost = convertFormValueToInteger(flags.formData.magicPointBoost);
     const ritualOrMeditation = convertFormValueToInteger(flags.formData.ritualOrMeditation);
@@ -392,7 +404,7 @@ export class RuneMagicCard {
    * Called from {@link RqgChatMessage.formSubmitHandler} and {@link RqgChatMessage.inputChangeHandler}
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
-    assertChatMessageFlagType(flags.type, "runeMagicCard");
+    assertChatMessageFlagType(flags.type, "runeMagicChat");
     const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
     const formData = new FormData(form);
 

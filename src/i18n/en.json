@@ -358,7 +358,7 @@
       "ToggleExperience": "Toggle Experience",
       "InitializeCharacteristic": "Initialize Characteristic",
       "InitializeAllCharacteristics": "Initialize All Characteristics",
-      "InitializeResultCard": "Initialize {char}",
+      "InitializeResultChat": "Initialize {char}",
       "OverwriteCharacteristicDialogTitle": "Overwrite {characteristicName} on {actorName}?",
       "OverwriteCharacteristicDialog": "Do you want to overwrite the current value of {characteristicName}? This will cause a recalculation of any derived attributes like Hit Points, Magic Points, Strike Ranks, and skill Categories that depend upon {characteristicName}.",
       "OverwriteAllCharacteristicsDialogTitle": "Overwrite all characteristics on {actorName}?",
@@ -372,7 +372,7 @@
       "Notification": {
         "DatasetNotFound": "Couldn't find dataset for characteristic",
         "CharacteristicNotFound": "Couldn't find characteristic name \"{characteristicName}\" on actor {actorName} to do an action from the characteristics context menu.",
-        "CantShowWeaponChatCardError": "Couldn't find skillId [{skillItemId}] or weaponId [{weaponItemId}] on actor ${actorName} to show the weapon chat card from the combat context menu.",
+        "CantShowWeaponChatError": "Couldn't find skillId [{skillItemId}] or weaponId [{weaponItemId}] on actor ${actorName} to show the weapon chat message from the combat context menu.",
         "CantToggleExperienceError": "Couldn't find itemId [{itemId}] on actor {actorName} to toggle experience from the combat context menu.",
         "CantShowItemSheetError": "Couldn't find itemId [{skillItemId}] on actor {actorName} to show skill Item sheet from the combat context menu.",
         "CantShowWeaponSheetError": "Couldn't find itemId [{weaponItemId}] on actor {actorName} to show weapon item sheet from the combat context menu.",
@@ -402,8 +402,8 @@
         "RollFormat": "Roll ({chance}%)",
         "CantFindChatMessageError": "CantFindChatMessageError"
       },
-      "characteristicCard": {
-        "CardFlavor": "Characteristic: {name} ({value})",
+      "characteristicChat": {
+        "ChatFlavor": "Characteristic: {name} ({value})",
         "RollFlavor": "{difficulty} {name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"
       },
@@ -421,19 +421,19 @@
         "ReallyGiveItemQuantity": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory, or {sourceActor}'s inventory quantity will be reduced.",
         "GiveHowMany": "Give how many {itemName} to {targetActor}?  {sourceActor}'s inventory of this item will be reduced by the amount chosen, or the item will be deleted if you choose to give the maximum amount of {maxQty}."
       },
-      "itemCard": {
+      "itemChat": {
         "RollFlavor": "{name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"
       },
-      "reputationCard": {
+      "reputationChat": {
         "CheckReputationFlavor": "Check Reputation",
         "Reputation": "Reputation"
       },
-      "spiritMagicCard": {
+      "spiritMagicChat": {
         "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
         "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
         "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points.",
-        "CardFlavor": "Spirit Magic: {name}",
+        "ChatFlavor": "Spirit Magic: {name}",
         "Cast": "Cast {spellName}",
         "Level": "Level",
         "Boost": "Boost"
@@ -470,7 +470,7 @@
           "contentOther": "Roll 1d100 and gain if the roll is HIGHER than the {typeLocName} \"{name}\" value of {chance}%",
           "contentChar": "Roll 1d100 and gain if the roll is LOWER THAN OR EQUAL TO {chanceToGain}%.  This is based on the Species Maximum for the Characteristic of {speciesMax} minus the Characteristic \"{name}\" value of {chance} times five."
         },
-        "experienceResultCard": {
+        "experienceResultChat": {
           "flavor": "Experience improvement for {typeLocName} \"{name}\" succeeded",
           "contentChoseFixed": "Chose fixed gain of {gain}.",
           "contentChoseRandom": "Chose gain of {gain}."
@@ -479,7 +479,7 @@
           "flavor": "Experience improvement for {typeLocName} \"{name}\" failed",
           "content": "{actorName} failed to learn from experience and the experience check has been cleared from {typeLocName} \"{name}\"."
         },
-        "trainingResultCard": {
+        "trainingResultChat": {
           "flavor": "Training improvement for {typeLocName} \"{name}\"",
           "contentChoseFixed": "Chose fixed gain of {gain}.",
           "contentChoseRandom": "Chose gain of {gain}."
@@ -488,7 +488,7 @@
           "flavor": "{actorName} makes a research improvement check for {typeLocName} \"{name}\"",
           "contentChar": "Roll 1d100 and gain if the roll is LOWER THAN OR EQUAL TO {chanceToGain}%.  This is based on the Species Maximum for the Characteristic of {speciesMax} minus the Characteristic \"{name}\" value of {chance} times five."
         },
-        "researchResultCard": {
+        "researchResultChat": {
           "flavor": "Research improvement for {typeLocName} \"{name}\"",
           "contentChoseRandom": "Chose gain of {gain}."
         },
@@ -500,7 +500,7 @@
           "noExperience": "{actorName} does not have an experience check in {typeLocName} \"{name}\" and cannot gain from experience now."
         }
       },
-      "runeMagicCard": {
+      "runeMagicChat": {
         "MissingJournalLinkTitle": "Edit the spell and add a description to have a journal link here!",
         "CastUsingRune": "Cast using Rune:",
         "RuneHasExperienceTitle": "Has Experience Check",
@@ -537,7 +537,7 @@
         "SkillAugmentationValue20": "Success, +20%",
         "SkillAugmentationValue-20": "Failure, -20%",
         "SkillAugmentationValue-50": "Fumble, -50%",
-        "noSelectedRuneWarning": "Attempt to roll a Rune Magic Spell with no Rune selected on the card.",
+        "noSelectedRuneWarning": "Attempt to roll a Rune Magic Spell with no Rune selected on the chat message.",
         "resultMessageCritical": "The spell takes effect and costs no Rune Points and {magicPointBoost} Magic Points from boosting.",
         "resultMessageSpecial": "The spell takes effect and costs {runePointCost} Rune Points and {magicPointBoost} Magic Points from boosting.",
         "resultMessageSuccess": "The spell takes effect and costs {runePointCost} Rune Points and {magicPointBoost} Magic Points from boosting.",
@@ -549,12 +549,12 @@
         "runeMagicResultFlavor": "Rune Magic: {name}",
         "Cast": "Cast {spellName}"
       },
-      "weaponCard": {
+      "weaponChat": {
         "Damage": "Damage",
         "damageRollType": {
           "normal": "Normal",
           "special": "Special",
-          "maxSpecial": "Max Special"
+          "maxSpecial": "Max Special"
         },
         "fumbleRoll": "Roll Fumble",
         "hitLocationRoll": "Roll Hit location",
@@ -563,8 +563,8 @@
         "UsedLastOfAmmoWarn": "You just used the last of your {projectileName}!",
         "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
         "HitLocationRollFlavor": "Hit Location Roll",
-        "UnknownButtonInCardError": "Unknown button \"{actionButton}\" in weapon chat card",
-        "WeaponCardFlavor": "Weapon: {weaponName}",
+        "UnknownButtonInChatError": "Unknown button \"{actionButton}\" in weapon chat message",
+        "WeaponChatFlavor": "Weapon: {weaponName}",
         "NoCombatManeuverInDamageRollError": "No combat maneuver in Damage Roll.",
         "CantFindActorToDoDamageRollWarn": "Can't find world actor do do damage roll.",
         "WeaponDoesNotHaveCombatManeuverError": "Weapon doesn't have a combat maneuver.",
@@ -747,7 +747,7 @@
         "CantCreateActiveEffect": "Can't create Active Effect",
         "NoIdOnTokenError": "No ID on Token",
         "NoIdOnActorError": "No ID on Actor",
-        "ItemWithIdDoesNotHaveChanceError": "Can't find an item that has a chance and ID {itemId} on actor named {actorName} to show item chat card.",
+        "ItemWithIdDoesNotHaveChanceError": "Can't find an item that has a chance and ID {itemId} on actor named {actorName} to show item chat message.",
         "CanOnlyDropJournalEntryWarning": "You can only drop a Journal Entry onto a {itemType} Sheet",
         "CanOnlyDropJournalEntryOnThisTargetWarning": "You can only drop a Journal Entry onto the {target} Journal target.",
         "PleaseDropOnTarget": "You can't drop that here.  Look for an appropriate target.",
@@ -999,10 +999,10 @@
         "5": "Failure",
         "6": "Fumble"
       },
-      "RollCard": "Roll with Card (click)",
+      "RollChat": "Roll via Chat (click)",
       "RollQuick": "Quick Roll (dbl click)",
       "RollCharacteristicQuick": "Quick Roll *5 (dbl click)",
-      "RollTitle": "Roll with Card (click), Quick Roll (dbl click)",
+      "RollTitle": "Roll via Chat (click), Quick Roll (dbl click)",
       "WeaponUsage": {
         "oneHand": "1H",
         "offHand": "offH",

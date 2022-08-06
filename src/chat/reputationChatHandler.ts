@@ -13,19 +13,19 @@ import {
   usersIdsThatOwnActor,
 } from "../system/util";
 import { systemId } from "../system/config";
-import { ReputationCardFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
+import { ReputationChatFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
-export class ReputationCard {
+export class ReputationChatHandler {
   public static async show(actor: RqgActor, token: TokenDocument | null): Promise<void> {
     const iconSettings = getGame().settings.get(systemId, "defaultItemIconSettings");
 
-    const flags: ReputationCardFlags = {
-      type: "reputationCard",
-      card: {
+    const flags: ReputationChatFlags = {
+      type: "reputationChat",
+      chat: {
         actorUuid: actor.uuid,
         tokenUuid: token?.uuid,
         chatImage: iconSettings.Reputation,
@@ -39,18 +39,18 @@ export class ReputationCard {
   }
 
   /**
-   * Do a roll from the Reputation Chat card. Use the flags on the chatMessage to get the required data.
+   * Do a roll from the Reputation Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "reputationCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
+    assertChatMessageFlagType(flags?.type, "reputationChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
-    const { reputationValue, modifier } = await ReputationCard.getFormDataFromFlags(flags);
-    await ReputationCard.roll(reputationValue, modifier, speaker);
+    const { reputationValue, modifier } = await ReputationChatHandler.getFormDataFromFlags(flags);
+    await ReputationChatHandler.roll(reputationValue, modifier, speaker);
   }
 
   public static async roll(
@@ -58,7 +58,7 @@ export class ReputationCard {
     modifier: number,
     speaker: ChatSpeakerDataProperties
   ): Promise<void> {
-    const flavor = localize("RQG.Dialog.reputationCard.CheckReputationFlavor");
+    const flavor = localize("RQG.Dialog.reputationChat.CheckReputationFlavor");
 
     await Ability.roll(flavor, reputationValue, modifier, speaker);
     activateChatTab();
@@ -67,17 +67,17 @@ export class ReputationCard {
   public static async renderContent(
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
-    assertChatMessageFlagType(flags.type, "reputationCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
-    const { reputationValue, modifier } = await ReputationCard.getFormDataFromFlags(flags);
+    assertChatMessageFlagType(flags.type, "reputationChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
+    const { reputationValue, modifier } = await ReputationChatHandler.getFormDataFromFlags(flags);
 
     const templateData = {
       ...flags,
       chance: reputationValue + modifier,
-      cardHeading: localize("RQG.Dialog.reputationCard.Reputation"),
+      chatHeading: localize("RQG.Dialog.reputationChat.Reputation"),
     };
-    let html = await renderTemplate("systems/rqg/chat/reputationCard.hbs", templateData);
+    let html = await renderTemplate("systems/rqg/chat/reputationChatHandler.hbs", templateData);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
     return {
@@ -96,8 +96,8 @@ export class ReputationCard {
   public static async getFormDataFromFlags(
     flags: RqgChatMessageFlags
   ): Promise<{ modifier: number; reputationValue: number }> {
-    assertChatMessageFlagType(flags.type, "reputationCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
+    assertChatMessageFlagType(flags.type, "reputationChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
     assertActorType(actor?.data.type, ActorTypeEnum.Character);
     const reputationValue: number = Number(actor.data.data.background.reputation) || 0;
 
@@ -110,7 +110,7 @@ export class ReputationCard {
    * Called from {@link RqgChatMessage.formSubmitHandler} and {@link RqgChatMessage.inputChangeHandler}
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
-    assertChatMessageFlagType(flags.type, "reputationCard");
+    assertChatMessageFlagType(flags.type, "reputationChat");
     const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
     const formData = new FormData(form);
     flags.formData.modifier = cleanIntegerString(formData.get("modifier"));

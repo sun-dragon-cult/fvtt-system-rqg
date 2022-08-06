@@ -14,13 +14,13 @@ import {
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { RqgChatMessageFlags, SpiritMagicCardFlags } from "../data-model/shared/rqgDocumentFlags";
+import { RqgChatMessageFlags, SpiritMagicChatFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
-export class SpiritMagicCard {
+export class SpiritMagicChatHandler {
   public static async show(
     spiritMagicItemId: string,
     actor: RqgActor,
@@ -29,9 +29,9 @@ export class SpiritMagicCard {
     const spiritMagicItem = actor.items.get(spiritMagicItemId);
     assertItemType(spiritMagicItem?.data.type, ItemTypeEnum.SpiritMagic);
 
-    const flags: SpiritMagicCardFlags = {
-      type: "spiritMagicCard",
-      card: {
+    const flags: SpiritMagicChatFlags = {
+      type: "spiritMagicChat",
+      chat: {
         actorUuid: actor.uuid,
         tokenUuid: token?.uuid,
         chatImage: spiritMagicItem?.img ?? "",
@@ -48,19 +48,19 @@ export class SpiritMagicCard {
   }
 
   /**
-   * Do a roll from the Spirit Magic Chat card. Use the flags on the chatMessage to get the required data.
+   * Do a roll from the Spirit Magic Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "spiritMagicCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
-    const spiritMagicItem = (await getRequiredDocumentFromUuid(flags.card.itemUuid)) as RqgItem;
+    assertChatMessageFlagType(flags?.type, "spiritMagicChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
+    const spiritMagicItem = (await getRequiredDocumentFromUuid(flags.chat.itemUuid)) as RqgItem;
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
-    const { level, boost } = await SpiritMagicCard.getFormDataFromFlags(flags);
-    await SpiritMagicCard.roll(spiritMagicItem, level, boost, actor, speaker);
+    const { level, boost } = await SpiritMagicChatHandler.getFormDataFromFlags(flags);
+    await SpiritMagicChatHandler.roll(spiritMagicItem, level, boost, actor, speaker);
   }
 
   public static async roll(
@@ -70,17 +70,22 @@ export class SpiritMagicCard {
     actor: RqgActor,
     speaker: ChatSpeakerDataProperties
   ): Promise<void> {
-    const validationError = SpiritMagicCard.validateData(actor, spiritMagicItem, level, boost);
+    const validationError = SpiritMagicChatHandler.validateData(
+      actor,
+      spiritMagicItem,
+      level,
+      boost
+    );
     if (validationError) {
       ui.notifications?.warn(validationError);
     } else {
       const result = await Ability.roll(
-        localize("RQG.Dialog.spiritMagicCard.Cast", { spellName: spiritMagicItem.name }),
+        localize("RQG.Dialog.spiritMagicChat.Cast", { spellName: spiritMagicItem.name }),
         actor.data.data.characteristics.power.value * 5,
         0,
         speaker
       );
-      await SpiritMagicCard.drawMagicPoints(actor, level + boost, result);
+      await SpiritMagicChatHandler.drawMagicPoints(actor, level + boost, result);
     }
   }
 
@@ -92,9 +97,9 @@ export class SpiritMagicCard {
   ): string | undefined {
     assertItemType(spiritMagicItem.data.type, ItemTypeEnum.SpiritMagic);
     if (level > spiritMagicItem.data.data.points) {
-      return localize("RQG.Dialog.spiritMagicCard.CantCastSpellAboveLearnedLevel");
+      return localize("RQG.Dialog.spiritMagicChat.CantCastSpellAboveLearnedLevel");
     } else if (level + boost > (actor.data.data.attributes.magicPoints.value || 0)) {
-      return localize("RQG.Dialog.spiritMagicCard.NotEnoughMagicPoints");
+      return localize("RQG.Dialog.spiritMagicChat.NotEnoughMagicPoints");
     } else {
       return;
     }
@@ -109,7 +114,7 @@ export class SpiritMagicCard {
       const newMp = (actor.data.data.attributes.magicPoints.value || 0) - amount;
       await actor.update({ "data.attributes.magicPoints.value": newMp });
       ui.notifications?.info(
-        localize("RQG.Dialog.spiritMagicCard.SuccessfullyCastInfo", { amount: amount })
+        localize("RQG.Dialog.spiritMagicChat.SuccessfullyCastInfo", { amount: amount })
       );
     }
   }
@@ -117,18 +122,18 @@ export class SpiritMagicCard {
   public static async renderContent(
     flags: RqgChatMessageFlags
   ): Promise<ChatMessageDataConstructorData> {
-    assertChatMessageFlagType(flags.type, "spiritMagicCard");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.card.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.card.tokenUuid);
-    const spiritMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.card.itemUuid);
+    assertChatMessageFlagType(flags.type, "spiritMagicChat");
+    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
+    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
+    const spiritMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.chat.itemUuid);
     const templateData = {
       ...flags,
       chance: actor.data.data.characteristics.power.value * 5,
-      cardHeading: localize("RQG.Dialog.spiritMagicCard.CardFlavor", {
+      chatHeading: localize("RQG.Dialog.spiritMagicChat.ChatFlavor", {
         name: spiritMagicItem?.name,
       }),
     };
-    let html = await renderTemplate("systems/rqg/chat/spiritMagicCard.hbs", templateData);
+    let html = await renderTemplate("systems/rqg/chat/spiritMagicChatHandler.hbs", templateData);
 
     return {
       user: getGame().user?.id,
@@ -146,7 +151,7 @@ export class SpiritMagicCard {
   public static async getFormDataFromFlags(
     flags: RqgChatMessageFlags
   ): Promise<{ level: number; boost: number }> {
-    assertChatMessageFlagType(flags.type, "spiritMagicCard");
+    assertChatMessageFlagType(flags.type, "spiritMagicChat");
     const level = convertFormValueToInteger(flags.formData.level);
     const boost = convertFormValueToInteger(flags.formData.boost);
     return { level: level, boost: boost };
@@ -157,7 +162,7 @@ export class SpiritMagicCard {
    * Called from {@link RqgChatMessage.formSubmitHandler} and {@link RqgChatMessage.inputChangeHandler}
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
-    assertChatMessageFlagType(flags.type, "spiritMagicCard");
+    assertChatMessageFlagType(flags.type, "spiritMagicChat");
     const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
     const formData = new FormData(form);
 

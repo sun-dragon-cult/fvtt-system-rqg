@@ -681,17 +681,17 @@ body {
     padding: 0;
   }
 
-  &.chat-card {
-    .card-options {
+  &.chat-content {
+    .chat-options {
       margin: 10px 0 0 0;
       background: url(./assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
     }
 
-    .card-option {
+    .chat-option {
       margin: 5px;
     }
 
-    &.weapon-card {
+    &.weapon-chat {
       .active {
         box-shadow: 0 0 0.5em red;
       }
@@ -715,14 +715,14 @@ body {
       }
     }
 
-    &.characteristic-card {
+    &.characteristic-chat {
       .multiplier {
         font-size: 80%;
         vertical-align: text-top;
       }
     }
 
-    &.rune-magic-card{
+    &.rune-magic-chat {
       .rune-option {
         margin-right: 5px;
       }
@@ -739,7 +739,7 @@ body {
     }
   }
 
-  .card-number-input {
+  .chat-number-input {
     text-align: right;
     width: 50px;
   }

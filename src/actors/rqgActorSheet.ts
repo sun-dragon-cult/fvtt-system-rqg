@@ -15,10 +15,10 @@ import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { createItemLocationTree, LocationNode } from "./item-specific/shared/locationNode";
-import { CharacteristicCard } from "../chat/characteristicCard";
-import { WeaponCard } from "../chat/weaponCard";
-import { SpiritMagicCard } from "../chat/spiritMagicCard";
-import { ItemCard } from "../chat/itemCard";
+import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
+import { WeaponChatHandler } from "../chat/weaponChatHandler";
+import { SpiritMagicChatHandler } from "../chat/spiritMagicChatHandler";
+import { ItemChatHandler } from "../chat/itemChatHandler";
 import { RqgActor } from "./rqgActor";
 import {
   assertActorType,
@@ -46,8 +46,8 @@ import {
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { ReputationCard } from "../chat/reputationCard";
-import { RuneMagicCard } from "../chat/runeMagicCard";
+import { ReputationChatHandler } from "../chat/reputationChatHandler";
+import { RuneMagicChatHandler } from "../chat/runeMagicChatHandler";
 import { ActorWizard } from "../dialog/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
@@ -673,7 +673,7 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await CharacteristicCard.roll(
+          await CharacteristicChatHandler.roll(
             characteristicName,
             actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
             5,
@@ -686,7 +686,7 @@ export class RqgActorSheet extends ActorSheet<
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await CharacteristicCard.show(
+              await CharacteristicChatHandler.show(
                 {
                   name: characteristicName,
                   data: actorCharacteristics[
@@ -712,12 +712,16 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
           const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
-          await ReputationCard.roll(this.actor.data.data.background.reputation ?? 0, 0, speaker);
+          await ReputationChatHandler.roll(
+            this.actor.data.data.background.reputation ?? 0,
+            0,
+            speaker
+          );
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await ReputationCard.show(
+              await ReputationChatHandler.show(
                 this.actor,
                 // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
                 this.token
@@ -753,13 +757,13 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
           const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
-          await ItemCard.roll(item, 0, this.actor, speaker);
+          await ItemChatHandler.roll(item, 0, this.actor, speaker);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
               // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await ItemCard.show(itemId, this.actor, this.token);
+              await ItemChatHandler.show(itemId, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -780,9 +784,9 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           if (runeMagicItem.data.data.points > 1) {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            await RuneMagicCard.show(itemId, this.actor, this.token);
+            await RuneMagicChatHandler.show(itemId, this.actor, this.token);
           } else {
-            await RuneMagicCard.roll(
+            await RuneMagicChatHandler.roll(
               runeMagicItem,
               runeMagicItem.data.data.points,
               0,
@@ -800,7 +804,7 @@ export class RqgActorSheet extends ActorSheet<
           setTimeout(async () => {
             if (clickCount === 1) {
               // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await RuneMagicCard.show(itemId, this.actor, this.token);
+              await RuneMagicChatHandler.show(itemId, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -829,11 +833,11 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           if (item.data.data.isVariable && item.data.data.points > 1) {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            await SpiritMagicCard.show(itemId, this.actor, this.token);
+            await SpiritMagicChatHandler.show(itemId, this.actor, this.token);
           } else {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
-            await SpiritMagicCard.roll(item, item.data.data.points, 0, this.actor, speaker);
+            await SpiritMagicChatHandler.roll(item, item.data.data.points, 0, this.actor, speaker);
           }
 
           clickCount = 0;
@@ -841,7 +845,7 @@ export class RqgActorSheet extends ActorSheet<
           setTimeout(async () => {
             if (clickCount === 1) {
               // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await SpiritMagicCard.show(itemId, this.actor, this.token);
+              await SpiritMagicChatHandler.show(itemId, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -849,7 +853,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    // Show Weapon Chat Card
+    // Show Weapon Chat Message
     htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-usage-type]").forEach((el) => {
       const weaponUsage = getRequiredDomDataset(el, "weapon-usage-type");
       const weaponItemId = getRequiredDomDataset(el, "item-id");
@@ -866,13 +870,13 @@ export class RqgActorSheet extends ActorSheet<
         if (skillItemId && clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
           // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          await WeaponCard.show(weaponItemId, weaponUsage, this.actor, this.token);
+          await WeaponChatHandler.show(weaponItemId, weaponUsage, this.actor, this.token);
           clickCount = 0;
         } else if (skillItemId && clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
               // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await WeaponCard.show(weaponItemId, weaponUsage, this.actor, this.token);
+              await WeaponChatHandler.show(weaponItemId, weaponUsage, this.actor, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

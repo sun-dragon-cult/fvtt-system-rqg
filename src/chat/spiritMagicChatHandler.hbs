@@ -1,0 +1,17 @@
+<form>
+  <div class="rqg chat-content spirit-magic-chat">
+
+    <h2>
+      <img class="item" src="{{chat.chatImage}}"> {{chatHeading}}
+    </h2>
+
+    <label>{{localize "RQG.Dialog.spiritMagicChat.Level"}}
+      <input class="chat-number-input" type="text" value="{{formData.level}}" name="level">
+    </label><br>
+
+    <label>{{localize "RQG.Dialog.spiritMagicChat.Boost"}}
+      <input class="chat-number-input" type="text" value="{{formData.boost}}" name="boost">
+    </label>
+    <button type="submit" data-chat-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=chance}}</button>
+  </div>
+</form>

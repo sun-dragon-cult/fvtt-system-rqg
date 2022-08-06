@@ -50,11 +50,11 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
     "systems/rqg/items/cult-item/cultSheet.hbs",
 
-    // ChatCard
-    "systems/rqg/chat/characteristicCard.hbs",
-    "systems/rqg/chat/itemCard.hbs",
-    "systems/rqg/chat/spiritMagicCard.hbs",
-    "systems/rqg/chat/weaponCard.hbs",
+    // Chat Messages
+    "systems/rqg/chat/characteristicChatHandler.hbs",
+    "systems/rqg/chat/itemChatHandler.hbs",
+    "systems/rqg/chat/spiritMagicChatHandler.hbs",
+    "systems/rqg/chat/weaponChatHandler.hbs",
 
     // Dialogs & Settings
     "systems/rqg/dialog/improveAbilityDialog.hbs",

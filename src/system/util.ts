@@ -3,7 +3,7 @@ import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
-import { ChatCardType } from "../chat/RqgChatMessage";
+import { ChatMessageType } from "../chat/RqgChatMessage";
 import { systemId } from "./config";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
@@ -191,14 +191,14 @@ export function assertActorType<T extends ActorTypeEnum>(
 }
 
 /**
- * Check if a flags of a chatmessage card has the specified type and narrow the flag data to that type.
+ * Check if a flags of a chat message has the specified type and narrow the flag data to that type.
  */
-export function assertChatMessageFlagType<T extends ChatCardType>(
-  chatCardType: ChatCardType | undefined,
+export function assertChatMessageFlagType<T extends ChatMessageType>(
+  chatMessageType: ChatMessageType | undefined,
   type: T
-): asserts chatCardType is T {
-  if (!chatCardType || chatCardType !== type) {
-    const msg = `Got unexpected chat card type in assert, ${chatCardType} ≠ ${type}`;
+): asserts chatMessageType is T {
+  if (!chatMessageType || chatMessageType !== type) {
+    const msg = `Got unexpected chat message type in assert, ${chatMessageType} ≠ ${type}`;
     ui.notifications?.error(msg);
     throw new RqgError(msg);
   }

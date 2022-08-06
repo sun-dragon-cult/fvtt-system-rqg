@@ -1,5 +1,5 @@
 export enum ContextMenuRunes {
-  RollCard = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/luck.svg"></div>',
+  RollViaChat = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/luck.svg"></div>',
   RollQuick = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/luck.svg"></div>',
   ToggleExperience = '<div class="context-icon experienced"><img class="context-icon-img" src="systems/rqg/assets/images/runes/mastery.svg"></div>',
   Improve = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/mastery.svg"></div>',

@@ -1,5 +1,5 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { ItemCard } from "../../chat/itemCard";
+import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
@@ -22,8 +22,8 @@ export const skillMenuOptions = (
   token: TokenDocument | undefined
 ): ContextMenu.Item[] => [
   {
-    name: localize("RQG.Game.RollCard"),
-    icon: ContextMenuRunes.RollCard,
+    name: localize("RQG.Game.RollChat"),
+    icon: ContextMenuRunes.RollViaChat,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -34,7 +34,7 @@ export const skillMenuOptions = (
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await ItemCard.show(itemId, actor, token);
+      await ItemChatHandler.show(itemId, actor, token);
     },
   },
   {
@@ -61,7 +61,12 @@ export const skillMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await ItemCard.roll(item, 0, actor, ChatMessage.getSpeaker({ actor: actor, token: token }));
+      await ItemChatHandler.roll(
+        item,
+        0,
+        actor,
+        ChatMessage.getSpeaker({ actor: actor, token: token })
+      );
     },
   },
   {
