@@ -24,7 +24,8 @@ export const runeMagicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await RuneMagicChatHandler.show(itemId, actor, token);
+      const item = actor.items.get(itemId);
+      await item?.toChat();
     },
   },
   {

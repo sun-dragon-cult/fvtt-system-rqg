@@ -1,6 +1,5 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import {
-  activateChatTab,
   assertChatMessageFlagType,
   assertItemType,
   cleanIntegerString,
@@ -14,7 +13,7 @@ import {
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { RqgChatMessageFlags, SpiritMagicChatFlags } from "../data-model/shared/rqgDocumentFlags";
+import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";

@@ -14,8 +14,8 @@
   {{#each ownedItems.weapon}}
     {{#if (eq data.data.equippedStatus "equipped")}}
       {{#unless data.data.isNatural}}
-        <div data-item-id="{{data._id}}" class="combat contextmenu item"><img class="item" src="{{img}}"></div>
-        <div data-item-id="{{data._id}}" class="combat contextmenu item">{{name}}
+        <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu item"><img class="item" src="{{img}}"></div>
+        <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu item">{{name}}
           {{#if data.data.isProjectileWeapon}}
             ({{quantity data.data.projectileId @root.data._id @root.tokenId}})
           {{else if data.data.isThrownWeapon}}
@@ -32,13 +32,15 @@
                         value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</label>
           {{/if}}
         </div>
-        <div class="item">
+        <div class="item" data-weapon-roll data-item-id="{{data._id}}">
           <span class="flex-column text-right">
             {{#each data.data.usage}}
               {{#if skillId}}
-                <div  class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{#if unusable}}warning{{/if}}"
+                <div  class="combat contextmenu usage
+                      {{#if (eq @key "missile")}}missile{{/if}} {{#if unusable}}warning{{/if}}
+                       {{#if (eq ../data.data.defaultUsage @key)}}default-usage{{/if}}"
                       {{#if unusable}}title="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
-                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-usage-type="{{@key}}">
+                      data-skill-id="{{skillId}}">
                   {{localize (concat "RQG.Game.WeaponUsage." @key)}}
                   <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span>
                 </div>
@@ -46,13 +48,13 @@
             {{/each}}
           </span>
         </div>
-        <div class="item">
+        <div class="item" data-weapon-roll data-item-id="{{data._id}}">
           <span class="flex-column">
             {{#each data.data.usage}}
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
-                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}"
-                      data-weapon-usage-type="{{@key}}">{{damage}}&nbsp;</span>
+                      data-skill-id="{{skillId}}"
+                      >{{damage}}&nbsp;</span>
               {{/if}}
             {{/each}}
           </span>
@@ -95,15 +97,15 @@
 
   {{#each ownedItems.weapon}}
     {{#if data.data.isNatural}}
-      <div data-item-id="{{data._id}}" class="combat contextmenu"><img class="item" src="{{img}}"></div>
-      <div data-item-id="{{data._id}}" class="combat contextmenu">{{name}}</div>
-      <div data-item-id="{{data._id}}" class="combat contextmenu"></div>
+      <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu"><img class="item" src="{{img}}"></div>
+      <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu">{{name}}</div>
+      <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu"></div>
       <div>
           <span class="flex-column text-right">
             {{#each data.data.usage}}
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass skillId @root.data._id @root.tokenId}}"
-                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-usage-type="{{@key}}" title="{{localize "RQG.Game.RollChat"}}">
+                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll title="{{localize "RQG.Game.RollChat"}}">
                       {{skillchance skillId @root.data._id @root.tokenId}}%
                 </span>
               {{/if}}
@@ -116,7 +118,7 @@
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
                       data-skill-id="{{skillId}}" data-item-id="{{../data._id}}"
-                      data-weapon-usage-type="{{@key}}" title="{{localize "RQG.Game.RollChat"}}">
+                      data-weapon-roll title="{{localize "RQG.Game.RollChat"}}">
                       {{damage}}&nbsp;
                 </span>
               {{/if}}

@@ -1,6 +1,5 @@
 import { ResultEnum } from "./ability";
 import { CharacteristicData } from "../../chat/characteristicChatHandler";
-import { UsageType } from "../item-data/weaponData";
 import { ChatMessageType } from "../../chat/RqgChatMessage";
 
 export const documentRqidFlags = "documentRqidFlags";
@@ -126,12 +125,12 @@ export interface WeaponChatFlags extends BaseRqgChatFlags {
   type: "weaponChat";
   chat: CommonRqgChatFlags & {
     weaponUuid: string;
-    usage: UsageType;
     result: ResultEnum | undefined;
     specialDamageTypeText: string | undefined;
   };
   formData: {
     otherModifiers: FormDataEntryValue;
+    usage: FormDataEntryValue;
     combatManeuverName: FormDataEntryValue;
     actionName: string; // the clicked buttons name (like "combatManeuver" or "damageRoll")
     actionValue: string; // the clicked buttons value (like "slash" or "special")

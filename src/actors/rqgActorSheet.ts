@@ -16,7 +16,6 @@ import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { createItemLocationTree, LocationNode } from "./item-specific/shared/locationNode";
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
-import { WeaponChatHandler } from "../chat/weaponChatHandler";
 import { SpiritMagicChatHandler } from "../chat/spiritMagicChatHandler";
 import { ItemChatHandler } from "../chat/itemChatHandler";
 import { RqgActor } from "./rqgActor";
@@ -635,7 +634,7 @@ export class RqgActorSheet extends ActorSheet<
       characteristicMenuOptions(this.actor, this.token)
     );
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor, this.token));
+    new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor));
     new ContextMenu(html, ".hit-location.contextmenu", hitLocationMenuOptions(this.actor));
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
@@ -783,7 +782,7 @@ export class RqgActorSheet extends ActorSheet<
         if (clickCount >= 2) {
           if (runeMagicItem.data.data.points > 1) {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            await RuneMagicChatHandler.show(itemId, this.actor, this.token);
+            await runeMagicItem.toChat();
           } else {
             await RuneMagicChatHandler.roll(
               runeMagicItem,
@@ -830,8 +829,7 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (item.data.data.isVariable && item.data.data.points > 1) {
-            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            await SpiritMagicChatHandler.show(itemId, this.actor, this.token);
+            await item.toChat();
           } else {
             // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
@@ -851,29 +849,22 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Show Weapon Chat Message
-    htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-usage-type]").forEach((el) => {
-      const weaponUsage = getRequiredDomDataset(el, "weapon-usage-type");
+    htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = getRequiredDomDataset(el, "item-id");
-      const skillItemId = getDomDataset(el, "skill-id");
-      if (!skillItemId) {
-        console.warn(
-          `Weapon ${weaponItemId} is missing a skill. Normal if you just dragged the weapon in, but should only happen then`
-        );
-      }
+      const weapon = this.actor.items.get(weaponItemId);
+      assertItemType(weapon?.data.type, ItemTypeEnum.Weapon);
 
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
-        if (skillItemId && clickCount >= 2) {
+        if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
-          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-          await WeaponChatHandler.show(weaponItemId, weaponUsage, this.actor, this.token);
+          await weapon.toChat();
           clickCount = 0;
-        } else if (skillItemId && clickCount === 1) {
+        } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await WeaponChatHandler.show(weaponItemId, weaponUsage, this.actor, this.token);
+              await weapon.toChat();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

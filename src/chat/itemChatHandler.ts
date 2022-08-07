@@ -1,6 +1,5 @@
 import { Ability, ResultEnum } from "../data-model/shared/ability";
 import {
-  activateChatTab,
   formatModifier,
   getGame,
   localize,
@@ -16,44 +15,12 @@ import {
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
-import { ItemChatFlags, RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
+import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import { RqgChatMessage } from "./RqgChatMessage";
 
 export class ItemChatHandler {
-  public static async show(
-    itemId: string,
-    actor: RqgActor,
-    token: TokenDocument | undefined
-  ): Promise<void> {
-    const item = actor.items.get(itemId);
-    if (!item || !("chance" in item.data.data) || item.data.data.chance == null) {
-      const msg = localize("RQG.Item.Notification.ItemWithIdDoesNotHaveChanceError", {
-        itemId: itemId,
-        actorName: actor.name,
-      });
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
-    }
-
-    const flags: ItemChatFlags = {
-      type: "itemChat",
-      chat: {
-        actorUuid: actor.uuid,
-        tokenUuid: token?.uuid,
-        chatImage: item.data.img ?? "",
-        itemUuid: item.uuid,
-      },
-      formData: {
-        modifier: "",
-      },
-    };
-
-    await ChatMessage.create(await ItemChatHandler.renderContent(flags));
-    activateChatTab();
-  }
-
   /**
    * Do a roll from the Item Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}

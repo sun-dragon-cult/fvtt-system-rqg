@@ -39,6 +39,7 @@ export interface WeaponDataSourceData extends IPhysicalItem {
   usage: {
     [K in UsageType]: Usage;
   };
+  defaultUsage: UsageType | undefined; // Used to remember how the actor used it lastly
   hitPoints: Resource;
   /** E.g. arm or --- instead of a number */
   hitPointLocation: string;
@@ -117,6 +118,7 @@ export const defaultWeaponData: WeaponDataSourceData = {
       minDexterity: 0,
     },
   },
+  defaultUsage: undefined,
   description: "",
   gmNotes: "",
   hitPoints: defaultResource,

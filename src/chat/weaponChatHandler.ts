@@ -2,7 +2,6 @@ import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import {
-  activateChatTab,
   assertChatMessageFlagType,
   assertItemType,
   cleanIntegerString,
@@ -25,7 +24,7 @@ import { DeepPartial } from "snowpack";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import { CombatManeuver, DamageType, UsageType } from "../data-model/item-data/weaponData";
-import { RqgChatMessageFlags, WeaponChatFlags } from "../data-model/shared/rqgDocumentFlags";
+import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
@@ -38,41 +37,6 @@ export enum DamageRollTypeEnum {
 }
 
 export class WeaponChatHandler {
-  public static async show(
-    weaponId: string,
-    usage: UsageType,
-    actor: RqgActor,
-    token: TokenDocument | undefined
-  ): Promise<void> {
-    requireValue(actor.id, "No id on actor");
-    const weaponItem = actor.items.get(weaponId);
-    assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
-    const skillItem = WeaponChatHandler.getUsedSkillItem(actor, weaponItem, usage);
-    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
-
-    const flags: WeaponChatFlags = {
-      type: "weaponChat",
-      chat: {
-        actorUuid: actor.uuid,
-        tokenUuid: token?.uuid,
-        chatImage: weaponItem.img ?? undefined,
-        weaponUuid: weaponItem.uuid,
-        usage: usage,
-        specialDamageTypeText: undefined,
-        result: undefined,
-      },
-      formData: {
-        otherModifiers: "",
-        actionName: "",
-        actionValue: "",
-        combatManeuverName: "",
-      },
-    };
-
-    await ChatMessage.create(await WeaponChatHandler.renderContent(flags));
-    activateChatTab();
-  }
-
   /**
    * Do a roll from the Weapon Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}
@@ -88,8 +52,7 @@ export class WeaponChatHandler {
       | undefined;
     assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
-    const usageType = flags.chat.usage;
-    const { otherModifiers, actionName, actionValue } =
+    const { otherModifiers, actionName, actionValue, usageType } =
       await WeaponChatHandler.getFormDataFromFlags(flags);
 
     switch (actionName) {
@@ -117,7 +80,7 @@ export class WeaponChatHandler {
         await WeaponChatHandler.damageRoll(
           actor,
           weaponItem,
-          flags.chat.usage,
+          convertFormValueToString(flags?.formData.usage) as UsageType,
           convertFormValueToString(flags.formData.combatManeuverName),
           damageRollType,
           speaker
@@ -159,8 +122,8 @@ export class WeaponChatHandler {
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
     const weaponItem = await getRequiredDocumentFromUuid<RqgItem>(flags.chat.weaponUuid);
-    const usage = convertFormValueToString(flags.chat.usage) as UsageType;
-    const skillItem = WeaponChatHandler.getUsedSkillItem(actor, weaponItem, usage);
+    const { otherModifiers, usageType } = await WeaponChatHandler.getFormDataFromFlags(flags);
+    const skillItem = WeaponChatHandler.getUsedSkillItem(actor, weaponItem, usageType);
     assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
 
     const specialization = skillItem.data.data.specialization
@@ -169,15 +132,15 @@ export class WeaponChatHandler {
     const chatHeading = localize("RQG.Dialog.weaponChat.WeaponChatFlavor", {
       weaponName: weaponItem.name,
     });
-
-    const { otherModifiers } = await WeaponChatHandler.getFormDataFromFlags(flags);
-
+    const usageOptions = WeaponChatHandler.getUsageTypeOptions(weaponItem);
     const templateData = {
       ...flags,
       skillItemData: skillItem.data.data,
       weaponItemData: weaponItem.data.data,
       chatHeading: chatHeading,
       chance: skillItem.data.data.chance + otherModifiers,
+      usageOptions: usageOptions,
+      hideUsageOptions: Object.keys(usageOptions).length === 1,
     };
     const html = await renderTemplate("systems/rqg/chat/weaponChatHandler.hbs", templateData);
 
@@ -195,17 +158,22 @@ export class WeaponChatHandler {
     };
   }
 
-  public static async getFormDataFromFlags(
-    flags: RqgChatMessageFlags
-  ): Promise<{ actionValue: string; otherModifiers: number; actionName: string }> {
+  public static async getFormDataFromFlags(flags: RqgChatMessageFlags): Promise<{
+    actionValue: string;
+    usageType: UsageType;
+    otherModifiers: number;
+    actionName: string;
+  }> {
     assertChatMessageFlagType(flags.type, "weaponChat");
     const actionName = convertFormValueToString(flags.formData.actionName);
     const actionValue = convertFormValueToString(flags.formData.actionValue);
     const otherModifiers = convertFormValueToInteger(flags.formData.otherModifiers);
+    const usage = convertFormValueToString(flags.formData.usage) as UsageType;
     return {
       otherModifiers: otherModifiers,
       actionName: actionName,
       actionValue: actionValue,
+      usageType: usage,
     };
   }
 
@@ -230,8 +198,36 @@ export class WeaponChatHandler {
         flags.formData.combatManeuverName = pushedButton.value;
       }
     }
-
+    flags.formData.usage = formData.get("usage") ?? "";
     flags.formData.otherModifiers = cleanIntegerString(formData.get("otherModifiers"));
+
+    // Initiate an update of the embedded weapon defaultUsage to store the preferred usage for next attack
+    fromUuid(flags.chat.weaponUuid).then((weapon: any) => {
+      weapon?.actor?.updateEmbeddedDocuments("Item", [
+        { _id: weapon.id, data: { defaultUsage: flags.formData.usage } },
+      ]);
+    });
+  }
+
+  static getDefaultUsage(weapon: RqgItem): UsageType {
+    assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
+    const defaultUsage = weapon.data.data.defaultUsage;
+    if (defaultUsage) {
+      return defaultUsage;
+    }
+    const options = WeaponChatHandler.getUsageTypeOptions(weapon);
+    // Fallback to picking the first available
+    return Object.keys(options)[0] as UsageType;
+  }
+
+  private static getUsageTypeOptions(weapon: RqgItem): {} {
+    assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
+    return Object.entries(weapon.data.data.usage).reduce((acc: any, [key, usage]) => {
+      if (usage.skillId) {
+        acc[key] = localize(`RQG.Game.WeaponUsage.${key}`);
+      }
+      return acc;
+    }, {});
   }
 
   private static async combatManeuverRoll(
@@ -515,7 +511,7 @@ export class WeaponChatHandler {
   ): RqgItem | undefined {
     assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
 
-    return actor.getEmbeddedDocument("Item", weaponItem.data.data.usage[usage].skillId) as
+    return actor.getEmbeddedDocument("Item", weaponItem.data.data.usage[usage]?.skillId) as
       | RqgItem
       | undefined;
   }

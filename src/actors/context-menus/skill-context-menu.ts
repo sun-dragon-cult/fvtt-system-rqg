@@ -34,7 +34,8 @@ export const skillMenuOptions = (
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await ItemChatHandler.show(itemId, actor, token);
+      const item = actor.items.get(itemId);
+      await item?.toChat();
     },
   },
   {

@@ -2,7 +2,6 @@ import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
-  activateChatTab,
   assertItemType,
   getDomDatasetAmongSiblings,
   getGame,
@@ -10,7 +9,6 @@ import {
   localize,
   RqgError,
 } from "../../system/util";
-import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
@@ -27,8 +25,8 @@ export const runeMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await ItemChatHandler.show(itemId, actor, token);
-      activateChatTab();
+      const item = actor.items.get(itemId);
+      await item?.toChat();
     },
   },
   {

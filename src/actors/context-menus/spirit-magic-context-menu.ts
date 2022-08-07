@@ -27,7 +27,7 @@ export const spiritMagicMenuOptions = (
       const itemId = getDomDataset(el, "item-id");
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.data.type, ItemTypeEnum.SpiritMagic);
-      item.id && (await SpiritMagicChatHandler.show(item.id, actor, token));
+      await item?.toChat();
     },
   },
   {
@@ -39,7 +39,7 @@ export const spiritMagicMenuOptions = (
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.data.type, ItemTypeEnum.SpiritMagic);
       if (item.data.data.isVariable && item.data.data.points > 1) {
-        item.id && (await SpiritMagicChatHandler.show(item.id, actor, token));
+        await item.toChat();
       } else {
         await SpiritMagicChatHandler.roll(
           item,
