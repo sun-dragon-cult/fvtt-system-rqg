@@ -1,5 +1,6 @@
 import { RqgItem } from "../../items/rqgItem";
 import { RqgActor } from "../rqgActor";
+import { RqgError } from "../../system/util";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateEmbeddedDocuments etc. is called.
@@ -7,6 +8,11 @@ import { RqgActor } from "../rqgActor";
 export abstract class AbstractEmbeddedItem {
   // TODO ***
   // public static init() {}
+
+  static toChat(item: RqgItem): void {}
+
+  static async rollFromChat(): Promise<void> {}
+  static async roll(): Promise<void> {}
 
   static preEmbedItem(actor: RqgActor, item: RqgItem, options: object[], userId: string): void {}
 

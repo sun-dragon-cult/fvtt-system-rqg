@@ -2,9 +2,12 @@ import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
-import { assertItemType, getGame, localize, RqgError } from "../../system/util";
+import { activateChatTab, assertItemType, getGame, localize, RqgError } from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { systemId } from "../../system/config";
+import { ItemChatFlags, RuneMagicChatFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { ItemChatHandler } from "../../chat/itemChatHandler";
+import { RuneMagicChatHandler } from "../../chat/runeMagicChatHandler";
 
 export class RuneMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -13,6 +16,31 @@ export class RuneMagic extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
+
+  static async toChat(runeMagic: RqgItem): Promise<void> {
+    const eligibleRunes = RuneMagicChatHandler.getEligibleRunes(runeMagic, runeMagic.actor!);
+    const defaultRuneId = RuneMagicChatHandler.getStrongestRune(eligibleRunes)?.id;
+    assertItemType(runeMagic.data.type, ItemTypeEnum.RuneMagic);
+    const flags: RuneMagicChatFlags = {
+      type: "runeMagicChat",
+      chat: {
+        actorUuid: runeMagic.actor!.uuid,
+        tokenUuid: runeMagic.actor!.token?.uuid,
+        chatImage: runeMagic.img ?? "",
+        itemUuid: runeMagic.uuid,
+      },
+      formData: {
+        runePointCost: runeMagic.data.data.points.toString(),
+        magicPointBoost: "",
+        ritualOrMeditation: "0",
+        skillAugmentation: "0",
+        otherModifiers: "",
+        selectedRuneId: defaultRuneId ?? "",
+      },
+    };
+
+    await ChatMessage.create(await RuneMagicChatHandler.renderContent(flags));
+  }
 
   static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.data.type !== ItemTypeEnum.RuneMagic || !item.actor) {

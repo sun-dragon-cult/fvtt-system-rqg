@@ -21,32 +21,6 @@ import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 export class SpiritMagicChatHandler {
-  public static async show(
-    spiritMagicItemId: string,
-    actor: RqgActor,
-    token: TokenDocument | undefined
-  ): Promise<void> {
-    const spiritMagicItem = actor.items.get(spiritMagicItemId);
-    assertItemType(spiritMagicItem?.data.type, ItemTypeEnum.SpiritMagic);
-
-    const flags: SpiritMagicChatFlags = {
-      type: "spiritMagicChat",
-      chat: {
-        actorUuid: actor.uuid,
-        tokenUuid: token?.uuid,
-        chatImage: spiritMagicItem?.img ?? "",
-        itemUuid: spiritMagicItem?.uuid,
-      },
-      formData: {
-        level: spiritMagicItem.data.data.points.toString(),
-        boost: "",
-      },
-    };
-
-    await ChatMessage.create(await this.renderContent(flags));
-    activateChatTab();
-  }
-
   /**
    * Do a roll from the Spirit Magic Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}

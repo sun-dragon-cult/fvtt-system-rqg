@@ -4,6 +4,8 @@ import { RqgActor } from "../rqgActor";
 import { assertItemType, localize, logMisconfiguration } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { getSameLocationUpdates } from "./shared/physicalItemUtil";
+import { WeaponChatHandler } from "../../chat/weaponChatHandler";
+import { WeaponChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 
 export class Weapon extends AbstractEmbeddedItem {
   // public static init() {
@@ -12,6 +14,34 @@ export class Weapon extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
+
+  static async toChat(weapon: RqgItem): Promise<void> {
+    assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
+    const usage = WeaponChatHandler.getDefaultUsage(weapon);
+    if (!usage) {
+      return; // There is no way to use this weapon - it could be arrows for example
+    }
+    const flags: WeaponChatFlags = {
+      type: "weaponChat",
+      chat: {
+        actorUuid: weapon.actor!.uuid,
+        tokenUuid: weapon.actor!.token?.uuid,
+        chatImage: weapon.img ?? undefined,
+        weaponUuid: weapon.uuid,
+        specialDamageTypeText: undefined,
+        result: undefined,
+      },
+      formData: {
+        otherModifiers: "",
+        actionName: "",
+        actionValue: "",
+        combatManeuverName: "",
+        usage: usage,
+      },
+    };
+
+    await ChatMessage.create(await WeaponChatHandler.renderContent(flags));
+  }
 
   static preUpdateItem(actor: RqgActor, weapon: RqgItem, updates: object[], options: any): void {
     if (weapon.data.type === ItemTypeEnum.Weapon) {

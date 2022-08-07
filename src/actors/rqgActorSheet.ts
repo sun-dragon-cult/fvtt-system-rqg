@@ -762,8 +762,7 @@ export class RqgActorSheet extends ActorSheet<
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await ItemChatHandler.show(itemId, this.actor, this.token);
+              await item.toChat();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -803,8 +802,7 @@ export class RqgActorSheet extends ActorSheet<
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await RuneMagicChatHandler.show(itemId, this.actor, this.token);
+              await runeMagicItem.toChat();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -844,8 +842,7 @@ export class RqgActorSheet extends ActorSheet<
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              await SpiritMagicChatHandler.show(itemId, this.actor, this.token);
+              await item.toChat();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

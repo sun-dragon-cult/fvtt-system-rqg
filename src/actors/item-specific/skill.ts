@@ -1,9 +1,11 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { localize, RqgError } from "../../system/util";
+import { activateChatTab, localize, RqgError } from "../../system/util";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { SkillDataPropertiesData } from "../../data-model/item-data/skillData";
+import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { ItemChatHandler } from "../../chat/itemChatHandler";
 
 export class Skill extends AbstractEmbeddedItem {
   // public static init() {
@@ -12,6 +14,22 @@ export class Skill extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
+
+  static async toChat(skill: RqgItem): Promise<void> {
+    const flags: ItemChatFlags = {
+      type: "itemChat",
+      chat: {
+        actorUuid: skill.actor!.uuid,
+        tokenUuid: skill.actor!.token?.uuid,
+        chatImage: skill.img ?? "",
+        itemUuid: skill.uuid,
+      },
+      formData: {
+        modifier: "",
+      },
+    };
+    await ChatMessage.create(await ItemChatHandler.renderContent(flags));
+  }
 
   public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
     if (skillItem.data.type !== ItemTypeEnum.Skill) {

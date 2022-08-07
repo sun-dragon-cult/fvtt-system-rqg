@@ -2,7 +2,9 @@ import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgActor } from "../rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { localize } from "../../system/util";
+import { activateChatTab, localize } from "../../system/util";
+import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { ItemChatHandler } from "../../chat/itemChatHandler";
 
 export class Rune extends AbstractEmbeddedItem {
   // public static init() {
@@ -11,6 +13,23 @@ export class Rune extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
+
+  static async toChat(rune: RqgItem): Promise<void> {
+    const flags: ItemChatFlags = {
+      type: "itemChat",
+      chat: {
+        actorUuid: rune.actor!.uuid,
+        tokenUuid: rune.actor!.token?.uuid,
+        chatImage: rune.img ?? "",
+        itemUuid: rune.uuid,
+      },
+      formData: {
+        modifier: "",
+      },
+    };
+    await ChatMessage.create(await ItemChatHandler.renderContent(flags));
+  }
+
   static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {
     if (rune.data.type === ItemTypeEnum.Rune) {
       const chanceResult = updates.find((r) => r["data.chance"] != null);

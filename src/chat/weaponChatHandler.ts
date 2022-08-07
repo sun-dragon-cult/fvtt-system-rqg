@@ -508,7 +508,7 @@ export class WeaponChatHandler {
     return Roll.parse(`+ (${weaponDamage})[${impaleSpecialDamageTag}]`, {});
   }
 
-  private static getUsedSkillItem(
+  public static getUsedSkillItem(
     actor: RqgActor,
     weaponItem: RqgItem,
     usage: UsageType

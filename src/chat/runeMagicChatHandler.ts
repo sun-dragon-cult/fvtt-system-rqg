@@ -32,41 +32,6 @@ import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 export class RuneMagicChatHandler {
-  public static async show(
-    runeMagicItemId: string,
-    actor: RqgActor,
-    token: TokenDocument | undefined
-  ): Promise<void> {
-    const runeMagicItem = actor.items.get(runeMagicItemId);
-    assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
-    const cult = actor.items.get(runeMagicItem.data.data.cultId);
-    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
-
-    const eligibleRunes = RuneMagicChatHandler.getEligibleRunes(runeMagicItem, actor);
-    const defaultRuneId = RuneMagicChatHandler.getStrongestRune(eligibleRunes)?.id;
-
-    const flags: RuneMagicChatFlags = {
-      type: "runeMagicChat",
-      chat: {
-        actorUuid: actor.uuid,
-        tokenUuid: token?.uuid,
-        chatImage: runeMagicItem.img ?? "",
-        itemUuid: runeMagicItem?.uuid,
-      },
-      formData: {
-        runePointCost: runeMagicItem.data.data.points.toString(),
-        magicPointBoost: "",
-        ritualOrMeditation: "0",
-        skillAugmentation: "0",
-        otherModifiers: "",
-        selectedRuneId: defaultRuneId ?? "",
-      },
-    };
-
-    await ChatMessage.create(await this.renderContent(flags));
-    activateChatTab();
-  }
-
   /**
    * Do a roll from the Rune Magic Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}
@@ -419,7 +384,7 @@ export class RuneMagicChatHandler {
   /**
    * Given a rune spell and an actor, returns the runes that are possible to use for casting that spell.
    */
-  private static getEligibleRunes(runeMagicItem: RqgItem, actor: RqgActor): RqgItem[] {
+  static getEligibleRunes(runeMagicItem: RqgItem, actor: RqgActor): RqgItem[] {
     assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
     assertActorType(actor.data.type, ActorTypeEnum.Character);
 
@@ -453,7 +418,7 @@ export class RuneMagicChatHandler {
     return runesForCasting;
   }
 
-  private static getStrongestRune(runeMagicItems: RqgItem[]): RqgItem | undefined {
+  static getStrongestRune(runeMagicItems: RqgItem[]): RqgItem | undefined {
     if (runeMagicItems.length === 0) {
       return undefined;
     }
