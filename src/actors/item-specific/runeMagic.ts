@@ -47,7 +47,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   static async abilityRoll(
     runeMagicItem: RqgItem,
     options: {
-      runePointsCost: number;
+      runePointCost: number;
       magicPointBoost: number;
       ritualOrMeditation: number;
       skillAugmentation: number;
@@ -68,7 +68,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
     const validationError = RuneMagic.validateData(
       cult,
-      options.runePointsCost,
+      options.runePointCost,
       options.magicPointBoost
     );
     if (validationError) {
@@ -86,14 +86,14 @@ export class RuneMagic extends AbstractEmbeddedItem {
       {
         result: ResultEnum.Special,
         html: localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
-          runePointCost: options.runePointsCost,
+          runePointCost: options.runePointCost,
           magicPointBoost: options.magicPointBoost,
         }),
       },
       {
         result: ResultEnum.Success,
         html: localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
-          runePointCost: options.runePointsCost,
+          runePointCost: options.runePointCost,
           magicPointBoost: options.magicPointBoost,
         }),
       },
@@ -104,7 +104,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       {
         result: ResultEnum.Fumble,
         html: localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
-          runePointCost: options.runePointsCost,
+          runePointCost: options.runePointCost,
         }),
       },
     ];
@@ -120,7 +120,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
     await RuneMagic.handleRollResult(
       result,
-      options.runePointsCost,
+      options.runePointCost,
       options.magicPointBoost,
       runeItem,
       runeMagicItem
@@ -258,11 +258,11 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
   public static validateData(
     cultItem: RqgItem,
-    runePointsUsed: number,
+    runePointCost: number,
     magicPointsBoost: number
   ): string {
     assertItemType(cultItem?.data.type, ItemTypeEnum.Cult);
-    if (runePointsUsed > (Number(cultItem.data.data.runePoints.value) || 0)) {
+    if (runePointCost > (Number(cultItem.data.data.runePoints.value) || 0)) {
       return getGame().i18n.format("RQG.Dialog.runeMagicChat.validationNotEnoughRunePoints");
     } else if (
       magicPointsBoost > (Number(cultItem.actor?.data.data.attributes?.magicPoints?.value) || 0)
@@ -320,7 +320,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
   private static async handleRollResult(
     result: ResultEnum,
-    runePointsUsed: number,
+    runePointCost: number,
     magicPointsUsed: number,
     runeItem: RqgItem,
     runeMagicItem: RqgItem
@@ -350,7 +350,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       case ResultEnum.Special:
         // spell takes effect, Rune Points spent, Rune gets xp check, boosting Magic Points spent
         await RuneMagic.SpendRuneAndMagicPoints(
-          runePointsUsed,
+          runePointCost,
           magicPointsUsed,
           runeMagicItem.actor ?? undefined,
           cult,
@@ -377,7 +377,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
         // spell fails, lose Rune Points, if Magic Point boosted, lose 1 Magic Point if boosted
         const boosted = magicPointsUsed >= 1 ? 1 : 0;
         await RuneMagic.SpendRuneAndMagicPoints(
-          runePointsUsed,
+          runePointCost,
           boosted,
           runeMagicItem.actor ?? undefined,
           cult,
