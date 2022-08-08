@@ -150,7 +150,7 @@ export class WeaponChatHandler {
     assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
     return Object.entries(weapon.data.data.usage).reduce((acc: any, [key, usage]) => {
       if (usage.skillId) {
-        acc[key] = localize(`RQG.Game.WeaponUsage.${key}`);
+        acc[key] = localize(`RQG.Game.WeaponUsage.${key}-full`);
       }
       return acc;
     }, {});

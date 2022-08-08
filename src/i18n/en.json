@@ -1006,7 +1006,11 @@
         "oneHand": "1H",
         "offHand": "offH",
         "twoHand": "2H",
-        "missile": "Missile"
+        "missile": "Missile",
+        "oneHand-full": "One-handed",
+        "offHand-full": "One-handed – offhand",
+        "twoHand-full": "Two-handed",
+        "missile-full": "Missile"
       },
       "RollDifficulty": {
         "0": "Nearly Impossible (*0.5)",
