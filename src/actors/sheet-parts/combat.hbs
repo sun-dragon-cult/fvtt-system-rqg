@@ -65,7 +65,7 @@
               {{#if skillId}}
                 {{#if (eq @key "missile")}}
                   {{#if ../data.data.rate}}
-                    <div class="text-right">1/{{#unless (eq 1 ../data.data.rate)}}{{../data.data.rate}}{{/unless}}MR</div>
+                    <div class="text-right usage {{#if (eq @key "missile")}}missile{{/if}}">1/{{#unless (eq 1 ../data.data.rate)}}{{../data.data.rate}}{{/unless}}MR</div>
                   {{else}}
                     <div class="flex-column">
                       <div>
@@ -131,7 +131,7 @@
               {{#if skillId}}
                 {{#if (eq @key "missile")}}
                   {{#if ../data.data.rate}}
-                    <div class="text-right">1/{{#unless (eq 1 ../data.data.rate)}}{{../data.data.rate}}{{/unless}}{{localize "RQG.Game.MeleeRoundAbbr"}}</div>
+                    <div class="text-right usage {{#if (eq @key "missile")}}missile{{/if}}">1/{{#unless (eq 1 ../data.data.rate)}}{{../data.data.rate}}{{/unless}}{{localize "RQG.Game.MeleeRoundAbbr"}}</div>
                   {{else}}
                     <div class="flex-column">
                       <div>
