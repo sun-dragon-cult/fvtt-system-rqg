@@ -1,5 +1,4 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
@@ -62,12 +61,7 @@ export const skillMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await ItemChatHandler.roll(
-        item,
-        0,
-        actor,
-        ChatMessage.getSpeaker({ actor: actor, token: token })
-      );
+      await item?.abilityRoll();
     },
   },
   {

@@ -16,8 +16,6 @@ import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { createItemLocationTree, LocationNode } from "./item-specific/shared/locationNode";
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
-import { SpiritMagicChatHandler } from "../chat/spiritMagicChatHandler";
-import { ItemChatHandler } from "../chat/itemChatHandler";
 import { RqgActor } from "./rqgActor";
 import {
   assertActorType,
@@ -46,7 +44,6 @@ import {
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ReputationChatHandler } from "../chat/reputationChatHandler";
-import { RuneMagicChatHandler } from "../chat/runeMagicChatHandler";
 import { ActorWizard } from "../dialog/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
@@ -642,11 +639,11 @@ export class RqgActorSheet extends ActorSheet<
       html,
       ".spirit-magic.contextmenu",
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-      spiritMagicMenuOptions(this.actor, this.token)
+      spiritMagicMenuOptions(this.actor)
     );
     new ContextMenu(html, ".cult.contextmenu", cultMenuOptions(this.actor));
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor, this.token));
+    new ContextMenu(html, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor));
     // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".skill.contextmenu", skillMenuOptions(this.actor, this.token));
     new ContextMenu(html, ".gear.contextmenu", gearMenuOptions(this.actor));
@@ -656,7 +653,7 @@ export class RqgActorSheet extends ActorSheet<
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
 
-    // Roll Characteristic
+    // Roll actor Characteristic
     htmlElement.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
       const characteristicName = (el.closest("[data-characteristic]") as HTMLElement)?.dataset
         .characteristic;
@@ -703,6 +700,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
+    // Roll actor Reputation
     htmlElement?.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
@@ -732,7 +730,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    // Roll against Item Ability Chance
+    // Roll Item (Rune, Skill, Passion)
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId);
@@ -754,9 +752,7 @@ export class RqgActorSheet extends ActorSheet<
 
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-          const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
-          await ItemChatHandler.roll(item, 0, this.actor, speaker);
+          await item.abilityRoll();
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
@@ -781,20 +777,9 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.data.data.points > 1) {
-            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
             await runeMagicItem.toChat();
           } else {
-            await RuneMagicChatHandler.roll(
-              runeMagicItem,
-              runeMagicItem.data.data.points,
-              0,
-              0,
-              0,
-              0,
-              this.actor,
-              // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-              ChatMessage.getSpeaker({ actor: this.actor, token: this.token })
-            );
+            await runeMagicItem.abilityRoll();
           }
 
           clickCount = 0;
@@ -831,9 +816,7 @@ export class RqgActorSheet extends ActorSheet<
           if (item.data.data.isVariable && item.data.data.points > 1) {
             await item.toChat();
           } else {
-            // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-            const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
-            await SpiritMagicChatHandler.roll(item, item.data.data.points, 0, this.actor, speaker);
+            await item.abilityRoll({ level: item.data.data.points, boost: 0 });
           }
 
           clickCount = 0;
@@ -848,7 +831,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    // Show Weapon Chat Message
+    // Roll Weapon Ability (send to chat)
     htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = getRequiredDomDataset(el, "item-id");
       const weapon = this.actor.items.get(weaponItemId);
@@ -960,7 +943,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    // Add wound to hit location TODO move listener to hitlocation
+    // Add wound to hit location
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
@@ -970,7 +953,7 @@ export class RqgActorSheet extends ActorSheet<
       );
     });
 
-    // Heal wounds to hit location TODO move listener to hitlocation
+    // Heal wounds to hit location
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-heal-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));

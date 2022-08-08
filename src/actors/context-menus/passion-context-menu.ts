@@ -1,4 +1,3 @@
-import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
@@ -8,7 +7,6 @@ import {
   localize,
   RqgError,
 } from "../../system/util";
-import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
@@ -44,12 +42,7 @@ export const passionMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await Ability.roll(
-        item.name ?? "",
-        item.data.data.chance,
-        0,
-        ChatMessage.getSpeaker({ actor: actor, token: token })
-      );
+      await item?.abilityRoll();
     },
   },
   {

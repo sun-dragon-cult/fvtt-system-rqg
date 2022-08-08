@@ -9,29 +9,13 @@ import { WeaponSheet } from "./weapon-item/weaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
-import {
-  activateChatTab,
-  assertItemType,
-  getGame,
-  localize,
-  requireValue,
-  RqgError,
-} from "../system/util";
+import { activateChatTab, getGame, hasOwnProperty, localize, RqgError } from "../system/util";
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
-import {
-  ItemChatFlags,
-  RuneMagicChatFlags,
-  SpiritMagicChatFlags,
-  WeaponChatFlags,
-} from "../data-model/shared/rqgDocumentFlags";
-import { ItemChatHandler } from "../chat/itemChatHandler";
-import { RuneMagicChatHandler } from "../chat/runeMagicChatHandler";
-import { SpiritMagicChatHandler } from "../chat/spiritMagicChatHandler";
-import { WeaponChatHandler } from "../chat/weaponChatHandler";
-import { UsageType } from "../data-model/item-data/weaponData";
+import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { ResultEnum, ResultMessage } from "../data-model/shared/ability";
 
 export class RqgItem extends Item {
   public static init() {
@@ -134,77 +118,105 @@ export class RqgItem extends Item {
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
     }
-    console.log("%€#%€#%#€%#€%€#%#€ toChat !!!!!!!!", this);
-
-    ResponsibleItemClass.get(this.data.type)?.toChat(this);
     activateChatTab();
+    await ResponsibleItemClass.get(this.data.type)?.toChat(this);
   }
 
-  // public async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
-  //   const flags = chatMessage.data.flags.rqg;
-  //   assertChatMessageFlagType(flags?.type, "itemChat");
-  //   // const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
-  //   // const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
-  //   // const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined, token: this.actor?.token ?? undefined });
-  //   // const item = (await getRequiredDocumentFromUuid(flags.chat.itemUuid)) as RqgItem | undefined;
-  //   // requireValue(item, "Couldn't find item on item chat message");
-  //   const { modifier } = await ItemChatHandler.getFormDataFromFlags(flags);
-  //
-  //   await this.roll(modifier);
-  // }
-  //
-  // public async roll(modifier: number): Promise<void> {
-  //   const speaker = ChatMessage.getSpeaker({
-  //     actor: this.actor ?? undefined,
-  //     token: this.actor?.token ?? undefined,
-  //   });
-  //
-  //   const chance = Number((this?.data.data as any).chance) || 0;
-  //   let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: this.name });
-  //   if (modifier !== 0) {
-  //     flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {
-  //       modifier: formatModifier(modifier),
-  //     });
-  //   }
-  //   const result = await Ability.roll(flavor, chance, modifier, speaker);
-  //   this.actor && (await ItemChatHandler.checkExperience(this.actor, this, result)); // TODO should alos be part of RqgItem
-  // }
-  //
-  // getRollData(): this["data"]["data"] {
-  //   return super.getRollData();
-  // }
-  //
-  // /** Do a roll against this ability and factor in all modifiers.
-  //  * stat - an object that implements IAbility
-  //  * chanceMod - a +/- value that changes the chance
-  //  **/
-  // public static async roll(
-  //   flavor: string,
-  //   chance: number,
-  //   chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
-  //   speaker: ChatSpeakerDataProperties,
-  //   resultMessages?: ResultMessage[]
-  // ): Promise<ResultEnum> {
-  //   const r = new Roll("1d100");
-  //   await r.evaluate({ async: true });
-  //   const modifiedChance: number = chance + chanceMod;
-  //   const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
-  //   const result = Ability.evaluateResult(modifiedChance, r.total!, useSpecialCriticals);
-  //   let resultMsgHtml: string | undefined = "";
-  //   if (resultMessages) {
-  //     resultMsgHtml = resultMessages.find((i) => i.result === result)?.html;
-  //   }
-  //   const sign = chanceMod > 0 ? "+" : "";
-  //   const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
-  //   const resultText = localize(`RQG.Game.ResultEnum.${result}`);
-  //   await r.toMessage({
-  //     flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1><div>${resultMsgHtml}</div>`,
-  //     speaker: speaker,
-  //     type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-  //   });
-  //   activateChatTab();
-  //   return result;
-  // }
+  public async abilityRoll(options: {} = {}): Promise<ResultEnum | undefined> {
+    if (!this.isEmbedded) {
+      const msg = "Item is not embedded";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this);
+    }
+    activateChatTab();
+    return ResponsibleItemClass.get(this.data.type)?.abilityRoll(this, options);
+  }
+
+  /**
+   * Common code to do a roll to chat.
+   */
+  async _roll(
+    flavor: string,
+    chance: number,
+    chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
+    speaker: ChatSpeakerDataProperties,
+    resultMessages?: ResultMessage[]
+  ): Promise<ResultEnum> {
+    chance = chance || 0; // Handle NaN
+    chanceMod = chanceMod || 0;
+    const r = new Roll("1d100");
+    await r.evaluate({ async: true });
+    const modifiedChance: number = chance + chanceMod;
+    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
+    const result = this.evaluateResult(modifiedChance, r.total!, useSpecialCriticals);
+    let resultMsgHtml: string | undefined = "";
+    if (resultMessages) {
+      resultMsgHtml = resultMessages.find((i) => i.result === result)?.html;
+    }
+    const sign = chanceMod > 0 ? "+" : "";
+    const chanceModText = chanceMod ? `${sign}${chanceMod}` : "";
+    const resultText = localize(`RQG.Game.ResultEnum.${result}`);
+    await r.toMessage({
+      flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1><div>${resultMsgHtml}</div>`,
+      speaker: speaker,
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+    });
+    return result;
+  }
+
+  private evaluateResult(chance: number, roll: number, useSpecialCriticals: boolean): ResultEnum {
+    chance = Math.max(0, chance); // -50% = 0%
+
+    const hyperCritical = useSpecialCriticals && chance >= 100 ? Math.ceil(chance / 500) : 0;
+    const specialCritical = useSpecialCriticals && chance >= 100 ? Math.ceil(chance / 100) : 0;
+
+    const critical = Math.max(1, Math.ceil((chance - 29) / 20) + 1);
+    const special =
+      chance === 6 || chance === 7 ? 2 : Math.min(95, Math.max(1, Math.ceil((chance - 7) / 5) + 1));
+    const fumble = Math.min(100, 100 - Math.ceil((100 - chance - 9) / 20) + 1);
+    const success = Math.min(95, Math.max(chance, 5));
+    const fail = fumble === 96 ? 95 : Math.max(96, fumble - 1);
+    let lookup = [
+      { limit: hyperCritical, result: ResultEnum.HyperCritical },
+      { limit: specialCritical, result: ResultEnum.SpecialCritical },
+      { limit: critical, result: ResultEnum.Critical },
+      { limit: special, result: ResultEnum.Special },
+      { limit: success, result: ResultEnum.Success },
+      { limit: fail, result: ResultEnum.Failure },
+      { limit: Infinity, result: ResultEnum.Fumble },
+    ];
+    return lookup.filter((v) => roll <= v.limit)[0].result;
+  }
+
+  public async checkExperience(result: ResultEnum | undefined): Promise<void> {
+    if (result && result <= ResultEnum.Success && !(this.data.data as any).hasExperience) {
+      await this.awardExperience();
+    }
+  }
+
+  public async awardExperience() {
+    if (hasOwnProperty(this.data.data, "hasExperience")) {
+      if (hasOwnProperty(this.data.data, "canGetExperience") && this.data.data.canGetExperience) {
+        if (!this.data.data.hasExperience) {
+          await this.actor?.updateEmbeddedDocuments("Item", [
+            { _id: this.id, data: { hasExperience: true } },
+          ]);
+          const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+            actorName: this.actor?.name,
+            itemName: this.name,
+          });
+          ui.notifications?.info(msg);
+        }
+      }
+    } else {
+      const msg = localize("RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError", {
+        itemName: this.name,
+        itemId: this.id,
+      });
+      console.log(msg);
+      ui.notifications?.error(msg);
+    }
+  }
 
   protected _onCreate(
     data: RqgItem["data"]["_source"],

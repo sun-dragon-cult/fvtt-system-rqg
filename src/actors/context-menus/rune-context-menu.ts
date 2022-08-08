@@ -1,4 +1,3 @@
-import { Ability } from "../../data-model/shared/ability";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
@@ -37,13 +36,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Rune);
-      const itemChance = item.data.data.chance;
-      await Ability.roll(
-        item.name ?? "",
-        itemChance,
-        0,
-        ChatMessage.getSpeaker({ actor: actor, token: token })
-      );
+      await item?.abilityRoll();
     },
   },
   {

@@ -372,7 +372,6 @@
       "Notification": {
         "DatasetNotFound": "Couldn't find dataset for characteristic",
         "CharacteristicNotFound": "Couldn't find characteristic name \"{characteristicName}\" on actor {actorName} to do an action from the characteristics context menu.",
-        "CantShowWeaponChatError": "Couldn't find skillId [{skillItemId}] or weaponId [{weaponItemId}] on actor ${actorName} to show the weapon chat message from the combat context menu.",
         "CantToggleExperienceError": "Couldn't find itemId [{itemId}] on actor {actorName} to toggle experience from the combat context menu.",
         "CantShowItemSheetError": "Couldn't find itemId [{skillItemId}] on actor {actorName} to show skill Item sheet from the combat context menu.",
         "CantShowWeaponSheetError": "Couldn't find itemId [{weaponItemId}] on actor {actorName} to show weapon item sheet from the combat context menu.",

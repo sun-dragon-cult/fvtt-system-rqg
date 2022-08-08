@@ -1,11 +1,12 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { activateChatTab, localize, RqgError } from "../../system/util";
+import { assertItemType, formatModifier, localize, RqgError } from "../../system/util";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { SkillDataPropertiesData } from "../../data-model/item-data/skillData";
 import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemChatHandler } from "../../chat/itemChatHandler";
+import { ResultEnum } from "../../data-model/shared/ability";
 
 export class Skill extends AbstractEmbeddedItem {
   // public static init() {
@@ -29,6 +30,21 @@ export class Skill extends AbstractEmbeddedItem {
       },
     };
     await ChatMessage.create(await ItemChatHandler.renderContent(flags));
+  }
+
+  public static async abilityRoll(skill: RqgItem, options: any): Promise<ResultEnum> {
+    assertItemType(skill?.data.type, ItemTypeEnum.Skill);
+    const chance: number = Number(skill.data.data.chance) || 0;
+    let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: skill.name });
+    if (options.modifier && options.modifier !== 0) {
+      flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {
+        modifier: formatModifier(options.modifier),
+      });
+    }
+    const speaker = ChatMessage.getSpeaker({ actor: skill.actor ?? undefined });
+    const result = await skill._roll(flavor, chance, options.modifier, speaker);
+    await skill.checkExperience(result);
+    return result;
   }
 
   public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {

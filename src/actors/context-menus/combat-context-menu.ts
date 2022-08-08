@@ -19,16 +19,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: async (el: JQuery) => {
       const weaponItemId = getRequiredDomDataset(el, "item-id");
       const weapon = actor.getEmbeddedDocument("Item", weaponItemId) as RqgItem | undefined;
-      if (!weapon) {
-        const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponChatError", {
-          skillItemId: "****", // TODO Change translation!!!!
-          weaponItemId: weaponItemId,
-          actorName: actor.name,
-        });
-        ui.notifications?.error(msg);
-        throw new RqgError(msg);
-      }
-      await weapon.toChat();
+      await weapon?.toChat();
     },
   },
   {
