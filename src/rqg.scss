@@ -685,8 +685,12 @@ body {
   }
 
   &.chat-content {
+    &>* {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
     .chat-options {
-      margin: 10px 0 0 0;
       background: url(./assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
     }
 
