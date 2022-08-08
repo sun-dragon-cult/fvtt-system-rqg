@@ -1,4 +1,10 @@
 import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
+import { assertItemType, localize } from "../../system/util";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { SpiritMagicChatFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { SpiritMagicChatHandler } from "../../chat/spiritMagicChatHandler";
+import { RqgItem } from "../../items/rqgItem";
+import { ResultEnum } from "../../data-model/shared/ability";
 
 export class SpiritMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -7,4 +13,66 @@ export class SpiritMagic extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
+
+  static async toChat(spiritMagic: RqgItem): Promise<void> {
+    assertItemType(spiritMagic.data.type, ItemTypeEnum.SpiritMagic);
+
+    const flags: SpiritMagicChatFlags = {
+      type: "spiritMagicChat",
+      chat: {
+        actorUuid: spiritMagic.actor!.uuid,
+        tokenUuid: spiritMagic.actor!.token?.uuid,
+        chatImage: spiritMagic.img ?? "",
+        itemUuid: spiritMagic.uuid,
+      },
+      formData: {
+        level: spiritMagic.data.data.points.toString(),
+        boost: "",
+      },
+    };
+
+    await ChatMessage.create(await SpiritMagicChatHandler.renderContent(flags));
+  }
+
+  static async abilityRoll(
+    spiritMagicItem: RqgItem,
+    options: { level: number; boost: number }
+  ): Promise<ResultEnum | undefined> {
+    const validationError = SpiritMagic.validateRollData(
+      spiritMagicItem,
+      options.level,
+      options.boost
+    );
+    if (validationError) {
+      ui.notifications?.warn(validationError);
+      return;
+    }
+    const mpCost = options.level + options.boost;
+    const result = await spiritMagicItem._roll(
+      localize("RQG.Dialog.spiritMagicChat.Cast", { spellName: spiritMagicItem.name }),
+      (spiritMagicItem.actor?.data.data.characteristics.power.value ?? 0) * 5,
+      0,
+      ChatMessage.getSpeaker({ actor: spiritMagicItem.actor ?? undefined })
+    );
+    await spiritMagicItem.actor?.drawMagicPoints(mpCost, result);
+    return result;
+  }
+
+  public static validateRollData(
+    spiritMagicItem: RqgItem,
+    level: number,
+    boost: number
+  ): string | undefined {
+    assertItemType(spiritMagicItem.data.type, ItemTypeEnum.SpiritMagic);
+    if (level > spiritMagicItem.data.data.points) {
+      return localize("RQG.Dialog.spiritMagicChat.CantCastSpellAboveLearnedLevel");
+    } else if (
+      level + boost >
+      (spiritMagicItem.actor?.data.data.attributes.magicPoints.value || 0)
+    ) {
+      return localize("RQG.Dialog.spiritMagicChat.NotEnoughMagicPoints");
+    } else {
+      return;
+    }
+  }
 }

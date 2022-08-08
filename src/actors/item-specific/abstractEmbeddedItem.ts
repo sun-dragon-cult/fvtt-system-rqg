@@ -1,5 +1,6 @@
 import { RqgItem } from "../../items/rqgItem";
 import { RqgActor } from "../rqgActor";
+import { ResultEnum } from "../../data-model/shared/ability";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateEmbeddedDocuments etc. is called.
@@ -7,6 +8,18 @@ import { RqgActor } from "../rqgActor";
 export abstract class AbstractEmbeddedItem {
   // TODO ***
   // public static init() {}
+
+  /**
+   * Send this item to a chat message to select option before doing a roll against it.
+   */
+  static async toChat(item: RqgItem): Promise<void> {}
+
+  /**
+   * Do a roll immediately with specified options.
+   */
+  static async abilityRoll(item: RqgItem, options: {}): Promise<ResultEnum | undefined> {
+    return;
+  }
 
   static preEmbedItem(actor: RqgActor, item: RqgItem, options: object[], userId: string): void {}
 

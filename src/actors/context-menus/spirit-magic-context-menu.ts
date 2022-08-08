@@ -1,5 +1,4 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { SpiritMagicChatHandler } from "../../chat/spiritMagicChatHandler";
 import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
@@ -15,10 +14,7 @@ import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { Rqid } from "../../system/api/rqidApi";
 
-export const spiritMagicMenuOptions = (
-  actor: RqgActor,
-  token: TokenDocument | undefined
-): ContextMenu.Item[] => [
+export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: ContextMenuRunes.RollViaChat,
@@ -27,7 +23,7 @@ export const spiritMagicMenuOptions = (
       const itemId = getDomDataset(el, "item-id");
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.data.type, ItemTypeEnum.SpiritMagic);
-      item.id && (await SpiritMagicChatHandler.show(item.id, actor, token));
+      await item?.toChat();
     },
   },
   {
@@ -39,15 +35,9 @@ export const spiritMagicMenuOptions = (
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.data.type, ItemTypeEnum.SpiritMagic);
       if (item.data.data.isVariable && item.data.data.points > 1) {
-        item.id && (await SpiritMagicChatHandler.show(item.id, actor, token));
+        await item.toChat();
       } else {
-        await SpiritMagicChatHandler.roll(
-          item,
-          item.data.data.points,
-          0,
-          actor,
-          ChatMessage.getSpeaker({ actor: actor, token: token })
-        );
+        await item?.abilityRoll();
       }
     },
   },

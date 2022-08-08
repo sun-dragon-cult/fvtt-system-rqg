@@ -1,35 +1,25 @@
-import { Ability, ResultEnum } from "../data-model/shared/ability";
 import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import {
-  activateChatTab,
   assertChatMessageFlagType,
   assertItemType,
   cleanIntegerString,
   convertFormValueToInteger,
   convertFormValueToString,
   getDocumentFromUuid,
-  getGame,
   getGameUser,
   getRequiredDocumentFromUuid,
   getRequiredRqgActorFromUuid,
-  hasOwnProperty,
   localize,
-  logMisconfiguration,
-  requireValue,
-  RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
 
-import { DeepPartial } from "snowpack";
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
-import { CombatManeuver, DamageType, UsageType } from "../data-model/item-data/weaponData";
-import { RqgChatMessageFlags, WeaponChatFlags } from "../data-model/shared/rqgDocumentFlags";
+import { UsageType } from "../data-model/item-data/weaponData";
+import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
-import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
-import { systemId } from "../system/config";
+import { Weapon } from "../actors/item-specific/weapon";
 
 export enum DamageRollTypeEnum {
   Normal = "normal",
@@ -38,41 +28,6 @@ export enum DamageRollTypeEnum {
 }
 
 export class WeaponChatHandler {
-  public static async show(
-    weaponId: string,
-    usage: UsageType,
-    actor: RqgActor,
-    token: TokenDocument | undefined
-  ): Promise<void> {
-    requireValue(actor.id, "No id on actor");
-    const weaponItem = actor.items.get(weaponId);
-    assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
-    const skillItem = WeaponChatHandler.getUsedSkillItem(actor, weaponItem, usage);
-    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
-
-    const flags: WeaponChatFlags = {
-      type: "weaponChat",
-      chat: {
-        actorUuid: actor.uuid,
-        tokenUuid: token?.uuid,
-        chatImage: weaponItem.img ?? undefined,
-        weaponUuid: weaponItem.uuid,
-        usage: usage,
-        specialDamageTypeText: undefined,
-        result: undefined,
-      },
-      formData: {
-        otherModifiers: "",
-        actionName: "",
-        actionValue: "",
-        combatManeuverName: "",
-      },
-    };
-
-    await ChatMessage.create(await WeaponChatHandler.renderContent(flags));
-    activateChatTab();
-  }
-
   /**
    * Do a roll from the Weapon Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}
@@ -80,76 +35,21 @@ export class WeaponChatHandler {
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "weaponChat");
-
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
     const weaponItem = (await getRequiredDocumentFromUuid(flags.chat.weaponUuid)) as
       | RqgItem
       | undefined;
     assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
-    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
-    const usageType = flags.chat.usage;
-    const { otherModifiers, actionName, actionValue } =
+
+    const { otherModifiers, actionName, actionValue, usageType } =
       await WeaponChatHandler.getFormDataFromFlags(flags);
 
-    switch (actionName) {
-      case "combatManeuverRoll":
-        const weaponUsage = weaponItem.data.data.usage[usageType];
-        const combatManeuver = weaponUsage.combatManeuvers.find((m) => m.name === actionValue);
-        requireValue(
-          combatManeuver,
-          `Couldn't find combatmaneuver [${actionName}] and usage type [${usageType}] on weapon [${weaponItem.name}]`,
-          weaponItem
-        );
-        await WeaponChatHandler.combatManeuverRoll(
-          weaponItem,
-          actor,
-          usageType,
-          combatManeuver,
-          chatMessage,
-          otherModifiers,
-          speaker
-        );
-        return;
-
-      case "damageRoll":
-        const damageRollType = flags.formData.actionValue as DamageRollTypeEnum; // TODO improve typing
-        await WeaponChatHandler.damageRoll(
-          actor,
-          weaponItem,
-          flags.chat.usage,
-          convertFormValueToString(flags.formData.combatManeuverName),
-          damageRollType,
-          speaker
-        );
-        return;
-
-      case "hitLocationRoll":
-        await WeaponChatHandler.hitLocationRoll(speaker);
-        return;
-
-      case "fumbleRoll":
-        await WeaponChatHandler.fumbleRoll(actor, speaker);
-        return;
-
-      default:
-        const msg = localize("RQG.Dialog.weaponChat.UnknownButtonInChatError", {
-          actionButton: actionName,
-        });
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, actionName);
-    }
-  }
-
-  public static async checkExperience(
-    actor: RqgActor,
-    skillItem: RqgItem,
-    result: ResultEnum
-  ): Promise<void> {
-    assertItemType(skillItem.data.type, ItemTypeEnum.Skill);
-    if (result <= ResultEnum.Success) {
-      actor.AwardExperience(skillItem.id);
-    }
+    await weaponItem?.abilityRoll({
+      actionName,
+      actionValue,
+      otherModifiers,
+      usageType,
+      chatMessage,
+    });
   }
 
   public static async renderContent(
@@ -159,8 +59,8 @@ export class WeaponChatHandler {
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
     const weaponItem = await getRequiredDocumentFromUuid<RqgItem>(flags.chat.weaponUuid);
-    const usage = convertFormValueToString(flags.chat.usage) as UsageType;
-    const skillItem = WeaponChatHandler.getUsedSkillItem(actor, weaponItem, usage);
+    const { otherModifiers, usageType } = await WeaponChatHandler.getFormDataFromFlags(flags);
+    const skillItem = Weapon.getUsedSkillItem(weaponItem, usageType);
     assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
 
     const specialization = skillItem.data.data.specialization
@@ -169,15 +69,15 @@ export class WeaponChatHandler {
     const chatHeading = localize("RQG.Dialog.weaponChat.WeaponChatFlavor", {
       weaponName: weaponItem.name,
     });
-
-    const { otherModifiers } = await WeaponChatHandler.getFormDataFromFlags(flags);
-
+    const usageOptions = WeaponChatHandler.getUsageTypeOptions(weaponItem);
     const templateData = {
       ...flags,
       skillItemData: skillItem.data.data,
       weaponItemData: weaponItem.data.data,
       chatHeading: chatHeading,
       chance: skillItem.data.data.chance + otherModifiers,
+      usageOptions: usageOptions,
+      hideUsageOptions: Object.keys(usageOptions).length === 1,
     };
     const html = await renderTemplate("systems/rqg/chat/weaponChatHandler.hbs", templateData);
 
@@ -195,17 +95,22 @@ export class WeaponChatHandler {
     };
   }
 
-  public static async getFormDataFromFlags(
-    flags: RqgChatMessageFlags
-  ): Promise<{ actionValue: string; otherModifiers: number; actionName: string }> {
+  public static async getFormDataFromFlags(flags: RqgChatMessageFlags): Promise<{
+    actionValue: string;
+    usageType: UsageType;
+    otherModifiers: number;
+    actionName: string;
+  }> {
     assertChatMessageFlagType(flags.type, "weaponChat");
     const actionName = convertFormValueToString(flags.formData.actionName);
     const actionValue = convertFormValueToString(flags.formData.actionValue);
     const otherModifiers = convertFormValueToInteger(flags.formData.otherModifiers);
+    const usage = convertFormValueToString(flags.formData.usage) as UsageType;
     return {
       otherModifiers: otherModifiers,
       actionName: actionName,
       actionValue: actionValue,
+      usageType: usage,
     };
   }
 
@@ -230,293 +135,24 @@ export class WeaponChatHandler {
         flags.formData.combatManeuverName = pushedButton.value;
       }
     }
-
+    flags.formData.usage = formData.get("usage") ?? "";
     flags.formData.otherModifiers = cleanIntegerString(formData.get("otherModifiers"));
-  }
 
-  private static async combatManeuverRoll(
-    weaponItem: RqgItem,
-    actor: RqgActor,
-    usage: UsageType,
-    combatManeuver: CombatManeuver,
-    chatMessage: RqgChatMessage,
-    otherModifiers: number,
-    speaker: ChatSpeakerDataProperties
-  ): Promise<void> {
-    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
-    requireValue(chatMessage, "No chat message provided for combarManeuverRoll");
-    const damageType = combatManeuver?.damageType;
-    const specialDamageTypeDescription =
-      damageType === "special" ? combatManeuver?.description || undefined : undefined;
-    const flags = chatMessage.data.flags.rqg;
-    assertChatMessageFlagType(flags?.type, "weaponChat");
-
-    flags.chat.specialDamageTypeText =
-      specialDamageTypeDescription ??
-      CONFIG.RQG.combatManeuvers.get(combatManeuver?.name ?? "")?.specialDescriptionHtml;
-
-    const projectileItemData = weaponItem.data.data.isProjectileWeapon
-      ? actor.items.get(weaponItem.data.data.projectileId)?.data
-      : weaponItem.data; // Thrown (or melee)
-
-    let originalAmmoQty: number = 0;
-
-    // Decrease quantity of linked projectile if shooting
-    if (
-      projectileItemData?.type === ItemTypeEnum.Weapon &&
-      projectileItemData.data.quantity &&
-      projectileItemData.data.quantity > 0 &&
-      usage === "missile" &&
-      !["parry", "special"].includes(damageType ?? "")
-    ) {
-      originalAmmoQty = projectileItemData.data.quantity;
-      const updateData: DeepPartial<ItemDataSource> = {
-        _id: projectileItemData._id,
-        data: { quantity: --projectileItemData.data.quantity },
-      };
-      await actor.updateEmbeddedDocuments("Item", [updateData]);
-    }
-
-    if (usage === "missile" && !projectileItemData) {
-      ui.notifications?.warn(
-        localize("RQG.Dialog.weaponChat.OutOfAmmoWarn", {
-          projectileName: "---",
-          combatManeuverName: combatManeuver?.name,
-        })
-      );
-      return;
-    }
-
-    // Prevent using weapons with projectile quantity 0
-    if (
-      projectileItemData?.type === ItemTypeEnum.Weapon &&
-      projectileItemData.data.quantity != null &&
-      projectileItemData.data.quantity <= 0
-    ) {
-      if (originalAmmoQty > 0) {
-        ui.notifications?.warn(
-          localize("RQG.Dialog.weaponChat.UsedLastOfAmmoWarn", {
-            projectileName: projectileItemData.name,
-          })
-        );
-      } else {
-        ui.notifications?.warn(
-          localize("RQG.Dialog.weaponChat.OutOfAmmoWarn", {
-            projectileName: projectileItemData.name,
-            combatManeuverName: combatManeuver?.name,
-          })
-        );
-        return;
-      }
-    }
-
-    const skillItem = WeaponChatHandler.getUsedSkillItem(actor, weaponItem, usage);
-    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
-
-    const chance: number = Number(skillItem.data.data.chance) || 0;
-
-    flags.chat.result = await Ability.roll(
-      skillItem.name + " " + WeaponChatHandler.getDamageTypeString(damageType, [combatManeuver]),
-      chance,
-      otherModifiers,
-      speaker
-    );
-    await WeaponChatHandler.checkExperience(actor, skillItem, flags.chat.result);
-
-    const data = await WeaponChatHandler.renderContent(flags);
-    await chatMessage.update(data);
-  }
-
-  private static async damageRoll(
-    actor: RqgActor,
-    weaponItem: RqgItem,
-    usageType: UsageType,
-    combatManeuverName: string | undefined,
-    damageRollType: DamageRollTypeEnum,
-    speaker: ChatSpeakerDataProperties
-  ): Promise<void> {
-    requireValue(
-      combatManeuverName,
-      localize("RQG.Dialog.weaponChat.NoCombatManeuverInDamageRollError")
-    );
-    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
-    let damageBonusFormula: string =
-      actor.data.data.attributes.damageBonus !== "0"
-        ? `${actor.data.data.attributes.damageBonus}`
-        : "";
-
-    const weaponUsage = weaponItem.data.data.usage[usageType];
-    const weaponDamageTag = localize("RQG.Dialog.weaponChat.WeaponDamageTag");
-    const weaponDamage = hasOwnProperty(weaponUsage, "damage")
-      ? Roll.parse(`(${weaponUsage.damage})[${weaponDamageTag}]`, {})
-      : [];
-
-    if (usageType === "missile") {
-      if (weaponItem.data.data.isThrownWeapon) {
-        damageBonusFormula = "ceil(" + actor.data.data.attributes.damageBonus + "/2)";
-      } else {
-        damageBonusFormula = "";
-      }
-    }
-
-    const damageRollTerms =
-      hasOwnProperty(weaponUsage, "damage") && weaponUsage.damage ? weaponDamage : []; // Don't add 0 damage rollTerm
-
-    const damageType = weaponUsage.combatManeuvers.find(
-      (m) => m.name === combatManeuverName
-    )?.damageType;
-    requireValue(
-      damageType,
-      localize("RQG.Dialog.weaponChat.WeaponDoesNotHaveCombatManeuverError")
-    );
-
-    if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageRollType)) {
-      if (["slash", "impale"].includes(damageType)) {
-        damageRollTerms.push(...WeaponChatHandler.slashImpaleSpecialDamage(weaponUsage.damage));
-      } else if (damageType === "crush") {
-        damageRollTerms.push(...(await WeaponChatHandler.crushSpecialDamage(damageBonusFormula)));
-      } else if (damageType === "parry") {
-        // Parry will use crush if existing or slash/impale if not, will work unless some weapon has both crush & slash
-        // No weapon in the core rulebook has that though
-        const usedParryingDamageType = WeaponChatHandler.getDamageTypeString(
-          damageType,
-          weaponUsage.combatManeuvers
-        );
-        if (usedParryingDamageType === "crush") {
-          damageRollTerms.push(...(await WeaponChatHandler.crushSpecialDamage(damageBonusFormula)));
-        } else if (["slash", "impale"].includes(usedParryingDamageType)) {
-          damageRollTerms.push(...WeaponChatHandler.slashImpaleSpecialDamage(weaponUsage.damage));
-        } else {
-          logMisconfiguration(
-            localize("RQG.Dialog.weaponChat.WeaponDoesNotHaveCombatManeuverError", {
-              weaponName: weaponItem.name,
-            }),
-            true
-          );
-        }
-      }
-    }
-    if (damageBonusFormula.length) {
-      const damageBonusDamageTag = localize("RQG.Dialog.weaponChat.DamageBonusDamageTag");
-      damageRollTerms.push(...Roll.parse(`+ ${damageBonusFormula}[${damageBonusDamageTag}]`, {}));
-    }
-    const maximise = damageRollType === DamageRollTypeEnum.MaxSpecial;
-    const roll = Roll.fromTerms(damageRollTerms);
-    await roll.evaluate({
-      maximize: maximise,
-      async: true,
-    });
-    await roll.toMessage({
-      speaker: speaker,
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: `${localize("RQG.Dialog.weaponChat.Damage")}: ${WeaponChatHandler.getDamageTypeString(
-        damageType,
-        weaponUsage.combatManeuvers
-      )}`,
+    // Initiate an update of the embedded weapon defaultUsage to store the preferred usage for next attack
+    fromUuid(flags.chat.weaponUuid).then((weapon: any) => {
+      weapon?.actor?.updateEmbeddedDocuments("Item", [
+        { _id: weapon.id, data: { defaultUsage: flags.formData.usage } },
+      ]);
     });
   }
 
-  private static getDamageTypeString(
-    damageType: DamageType,
-    combatManeuvers: CombatManeuver[]
-  ): string {
-    if (damageType === "parry") {
-      if (combatManeuvers.some((cm) => cm.damageType === "crush")) {
-        damageType = "crush";
-      } else if (combatManeuvers.some((cm) => cm.damageType === "slash")) {
-        damageType = "slash";
-      } else if (combatManeuvers.some((cm) => cm.damageType === "impale")) {
-        damageType = "impale";
+  static getUsageTypeOptions(weapon: RqgItem): {} {
+    assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
+    return Object.entries(weapon.data.data.usage).reduce((acc: any, [key, usage]) => {
+      if (usage.skillId) {
+        acc[key] = localize(`RQG.Game.WeaponUsage.${key}-full`);
       }
-    }
-    return damageType;
-  }
-
-  private static async hitLocationRoll(speaker: ChatSpeakerDataProperties) {
-    const roll = new Roll("1d20");
-    await roll.evaluate({ async: true });
-    await roll.toMessage({
-      speaker: speaker,
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: localize("RQG.Dialog.weaponChat.HitLocationRollFlavor"),
-    });
-  }
-
-  private static async fumbleRoll(actor: RqgActor, speaker: ChatSpeakerDataProperties) {
-    const fumbleTableName = getGame().settings.get(systemId, "fumbleRollTable");
-    const fumbleTable = getGame().tables?.getName(fumbleTableName);
-    if (!fumbleTable) {
-      logMisconfiguration(
-        localize("RQG.Dialog.weaponChat.FumbleTableMissingWarn", {
-          fumbleTableName: fumbleTableName,
-        }),
-        true
-      );
-      return;
-    }
-    // @ts-ignore TODO draw StoredDocument<RollTable>
-    const draw = await fumbleTable.draw({ displayChat: false });
-    // Construct chat data
-    const numberOfResults =
-      draw.results.length > 1
-        ? localize("RQG.Dialog.weaponChat.PluralResults", { numberOfResults: draw.results.length })
-        : localize("RQG.Dialog.weaponChat.SingularResult");
-    const messageData: ChatMessageDataConstructorData = {
-      flavor: localize("RQG.Dialog.weaponChat.DamageBonusDamageTag", {
-        numberOfResults: numberOfResults,
-        fumbleTableName: fumbleTableName,
-      }),
-      user: getGameUser().id,
-      speaker: speaker,
-      whisper: usersIdsThatOwnActor(actor),
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      roll: draw.roll,
-      sound: draw.roll ? CONFIG.sounds.dice : null,
-      flags: { "core.RollTable": fumbleTable.id },
-    };
-
-    // Render the chat message which combines the dice roll with the drawn results
-    messageData.content = await renderTemplate(CONFIG.RollTable.resultTemplate, {
-      // @ts-expect-error is "documents" in current foundry versions
-      description: TextEditor.enrichHTML(fumbleTable.data.description, { documents: true }),
-      results: draw.results.map((r: any) => {
-        // TODO fix typing
-        r.text = r.getChatText();
-        return r;
-      }),
-      rollHTML: fumbleTable.data.displayRoll ? await draw.roll.render() : null,
-      table: fumbleTable,
-    });
-
-    // Create the chat message
-    await ChatMessage.create(messageData);
-  }
-
-  private static async crushSpecialDamage(damageBonus: string): Promise<any[]> {
-    if (damageBonus.length) {
-      const specialDamage = Roll.parse(damageBonus, {});
-      const roll = Roll.fromTerms(specialDamage);
-      await roll.evaluate({ maximize: true, async: true });
-      const crushSpecialDamageTag = localize("RQG.Dialog.weaponChat.CrushSpecialDamageTag");
-      return Roll.parse(`+ ${roll.result}[${crushSpecialDamageTag}]`, {});
-    }
-    return [];
-  }
-
-  private static slashImpaleSpecialDamage(weaponDamage: string): any[] {
-    const impaleSpecialDamageTag = localize("RQG.Dialog.weaponChat.ImpaleSpecialDamageTag");
-    return Roll.parse(`+ (${weaponDamage})[${impaleSpecialDamageTag}]`, {});
-  }
-
-  private static getUsedSkillItem(
-    actor: RqgActor,
-    weaponItem: RqgItem,
-    usage: UsageType
-  ): RqgItem | undefined {
-    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
-
-    return actor.getEmbeddedDocument("Item", weaponItem.data.data.usage[usage].skillId) as
-      | RqgItem
-      | undefined;
+      return acc;
+    }, {});
   }
 }

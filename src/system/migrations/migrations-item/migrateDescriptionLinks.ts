@@ -42,7 +42,7 @@ export async function useRqidDescriptionLinks(itemData: ItemData): Promise<ItemU
         console.log(
           logPrefix,
           // @ts-expect-errors journalId & journalPack
-          `Didn't find a JE from previous link id [${itemData.data?.journalId}], pack [${itemData.data?.journalPack}] but found a link to a standard named JE [${testRqidLink}] - updated item`,
+          `Didn't find a JE from previous link id [${itemData.data?.journalId}], compendium [${itemData.data?.journalPack}] but found a link to a standard named JE [${testRqidLink}] - updated item`,
 
           updateData,
           itemData
@@ -51,7 +51,7 @@ export async function useRqidDescriptionLinks(itemData: ItemData): Promise<ItemU
         console.debug(
           logPrefix,
           // @ts-expect-errors journalId & journalPack
-          `Didn't find a JE from previous link id [${itemData.data?.journalId}], pack [${itemData.data?.journalPack}] or from default rqid link [${testRqidLink}] - no update`,
+          `Didn't find a JE from previous link id [${itemData.data?.journalId}], compendium [${itemData.data?.journalPack}] or from default rqid link [${testRqidLink}] - no update`,
           itemData
         );
       }

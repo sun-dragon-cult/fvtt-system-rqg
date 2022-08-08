@@ -9,22 +9,19 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneMagicChatHandler } from "../../chat/runeMagicChatHandler";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { Rqid } from "../../system/api/rqidApi";
 
-export const runeMagicMenuOptions = (
-  actor: RqgActor,
-  token: TokenDocument | undefined
-): ContextMenu.Item[] => [
+export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: ContextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      await RuneMagicChatHandler.show(itemId, actor, token);
+      const item = actor.items.get(itemId);
+      await item?.toChat();
     },
   },
   {
@@ -35,16 +32,7 @@ export const runeMagicMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.RuneMagic);
-      await RuneMagicChatHandler.roll(
-        item,
-        item?.data.data.points,
-        0,
-        0,
-        0,
-        0,
-        actor,
-        ChatMessage.getSpeaker({ actor: actor, token: token })
-      );
+      item.abilityRoll();
     },
   },
   {

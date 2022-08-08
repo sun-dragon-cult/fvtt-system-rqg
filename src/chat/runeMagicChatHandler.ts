@@ -1,12 +1,7 @@
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { RuneDataPropertiesData } from "../data-model/item-data/runeData";
-import { Ability, ResultEnum, ResultMessage } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import {
-  activateChatTab,
-  assertActorType,
   assertChatMessageFlagType,
   assertItemType,
   cleanIntegerString,
@@ -18,55 +13,15 @@ import {
   getRequiredRqgActorFromUuid,
   localize,
   requireValue,
-  RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
-import { systemId } from "../system/config";
-import { RqgChatMessageFlags, RuneMagicChatFlags } from "../data-model/shared/rqgDocumentFlags";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import {
-  ChatSpeakerData,
-  ChatSpeakerDataProperties,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
+import { ChatSpeakerData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { RuneMagic } from "../actors/item-specific/runeMagic";
 
 export class RuneMagicChatHandler {
-  public static async show(
-    runeMagicItemId: string,
-    actor: RqgActor,
-    token: TokenDocument | undefined
-  ): Promise<void> {
-    const runeMagicItem = actor.items.get(runeMagicItemId);
-    assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
-    const cult = actor.items.get(runeMagicItem.data.data.cultId);
-    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
-
-    const eligibleRunes = RuneMagicChatHandler.getEligibleRunes(runeMagicItem, actor);
-    const defaultRuneId = RuneMagicChatHandler.getStrongestRune(eligibleRunes)?.id;
-
-    const flags: RuneMagicChatFlags = {
-      type: "runeMagicChat",
-      chat: {
-        actorUuid: actor.uuid,
-        tokenUuid: token?.uuid,
-        chatImage: runeMagicItem.img ?? "",
-        itemUuid: runeMagicItem?.uuid,
-      },
-      formData: {
-        runePointCost: runeMagicItem.data.data.points.toString(),
-        magicPointBoost: "",
-        ritualOrMeditation: "0",
-        skillAugmentation: "0",
-        otherModifiers: "",
-        selectedRuneId: defaultRuneId ?? "",
-      },
-    };
-
-    await ChatMessage.create(await this.renderContent(flags));
-    activateChatTab();
-  }
-
   /**
    * Do a roll from the Rune Magic Chat message. Use the flags on the chatMessage to get the required data.
    * Called from {@link RqgChatMessage.doRoll}
@@ -74,12 +29,9 @@ export class RuneMagicChatHandler {
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.data.flags.rqg;
     assertChatMessageFlagType(flags?.type, "runeMagicChat");
-    const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
-    const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
-    const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
-    const runeMagicItem = (await getRequiredDocumentFromUuid(flags.chat.itemUuid)) as
-      | RqgItem
-      | undefined;
+    const runeMagicItem = await getRequiredDocumentFromUuid<RqgItem | undefined>(
+      flags.chat.itemUuid
+    );
     requireValue(runeMagicItem, "Couldn't find item on item chat message");
     const {
       runePointCost,
@@ -89,225 +41,15 @@ export class RuneMagicChatHandler {
       otherModifiers,
       selectedRuneId,
     } = await RuneMagicChatHandler.getFormDataFromFlags(flags);
-    await RuneMagicChatHandler.roll(
-      runeMagicItem,
+
+    await runeMagicItem.abilityRoll({
       runePointCost,
       magicPointBoost,
       ritualOrMeditation,
       skillAugmentation,
       otherModifiers,
-      actor,
-      speaker,
-      selectedRuneId
-    );
-  }
-
-  public static async roll(
-    runeMagicItem: RqgItem,
-    runePointsCast: number,
-    magicPointBoost: number,
-    ritualOrMeditation: number,
-    skillAugmentation: number,
-    otherModifiers: number,
-    actor: RqgActor,
-    speaker: ChatSpeakerDataProperties,
-    usedRuneId?: string
-  ): Promise<void> {
-    assertItemType(runeMagicItem?.data.type, ItemTypeEnum.RuneMagic);
-    const runeMagicCultId = runeMagicItem?.data.data.cultId;
-    const cult = actor.getEmbeddedDocument("Item", runeMagicCultId) as RqgItem | undefined;
-    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
-    if (!usedRuneId) {
-      const eligibleRunes = RuneMagicChatHandler.getEligibleRunes(runeMagicItem, actor);
-      usedRuneId = RuneMagicChatHandler.getStrongestRune(eligibleRunes)?.id ?? "";
-    }
-    const runeItem = actor.getEmbeddedDocument("Item", usedRuneId) as RqgItem | undefined;
-    assertItemType(runeItem?.data.type, ItemTypeEnum.Rune);
-
-    const validationError = RuneMagicChatHandler.validateData(
-      actor,
-      cult,
-      runePointsCast,
-      magicPointBoost
-    );
-    if (validationError) {
-      ui.notifications?.warn(validationError);
-      return;
-    }
-
-    const resultMessages: ResultMessage[] = [
-      {
-        result: ResultEnum.Critical,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageCritical", {
-          magicPointBoost: magicPointBoost,
-        }),
-      },
-      {
-        result: ResultEnum.Special,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
-          runePointCost: runePointsCast,
-          magicPointBoost: magicPointBoost,
-        }),
-      },
-      {
-        result: ResultEnum.Success,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
-          runePointCost: runePointsCast,
-          magicPointBoost: magicPointBoost,
-        }),
-      },
-      {
-        result: ResultEnum.Failure,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageFailure"),
-      },
-      {
-        result: ResultEnum.Fumble,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
-          runePointCost: runePointsCast,
-        }),
-      },
-    ];
-
-    const result = await Ability.roll(
-      localize("RQG.Dialog.runeMagicChat.Cast", { spellName: runeMagicItem.name }),
-      Number(runeItem.data.data.chance),
-      ritualOrMeditation + skillAugmentation + otherModifiers,
-      speaker,
-      resultMessages
-    );
-
-    await RuneMagicChatHandler.handleResult(
-      result,
-      runePointsCast,
-      magicPointBoost,
-      actor,
-      runeItem,
-      runeMagicItem
-    );
-  }
-
-  private static async handleResult(
-    result: ResultEnum,
-    runePointsUsed: number,
-    magicPointsUsed: number,
-    actor: RqgActor,
-    runeItem: RqgItem,
-    runeMagicItem: RqgItem
-  ): Promise<void> {
-    assertItemType(runeItem.data.type, ItemTypeEnum.Rune);
-    assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
-    const cult = actor.getEmbeddedDocument("Item", runeMagicItem.data.data.cultId ?? "") as
-      | RqgItem
-      | undefined;
-    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
-    const isOneUse = runeMagicItem.data.data.isOneUse;
-
-    switch (result) {
-      case ResultEnum.Critical:
-      case ResultEnum.SpecialCritical:
-      case ResultEnum.HyperCritical:
-        // spell takes effect, Rune Points NOT spent, Rune gets xp check, boosting Magic Points spent
-        await RuneMagicChatHandler.SpendRuneAndMagicPoints(
-          0,
-          magicPointsUsed,
-          actor,
-          cult,
-          isOneUse
-        );
-        await actor.AwardExperience(runeItem.id);
-        break;
-
-      case ResultEnum.Success:
-      case ResultEnum.Special:
-        // spell takes effect, Rune Points spent, Rune gets xp check, boosting Magic Points spent
-        await RuneMagicChatHandler.SpendRuneAndMagicPoints(
-          runePointsUsed,
-          magicPointsUsed,
-          actor,
-          cult,
-          isOneUse
-        );
-        await actor.AwardExperience(runeItem.id);
-        break;
-
-      case ResultEnum.Failure:
-        {
-          // spell fails, no Rune Point Loss, if Magic Point boosted, lose 1 Magic Point if boosted
-          const boosted = magicPointsUsed >= 1 ? 1 : 0;
-          await RuneMagicChatHandler.SpendRuneAndMagicPoints(0, boosted, actor, cult, isOneUse);
-        }
-        break;
-
-      case ResultEnum.Fumble:
-        // spell fails, lose Rune Points, if Magic Point boosted, lose 1 Magic Point if boosted
-        const boosted = magicPointsUsed >= 1 ? 1 : 0;
-        await RuneMagicChatHandler.SpendRuneAndMagicPoints(
-          runePointsUsed,
-          boosted,
-          actor,
-          cult,
-          isOneUse
-        );
-        break;
-
-      default:
-        const msg = "Got unexpected result from roll in runeMagicChat";
-        ui.notifications?.error(msg);
-        throw new RqgError(msg);
-    }
-  }
-
-  private static async SpendRuneAndMagicPoints(
-    runePoints: number,
-    magicPoints: number,
-    actor: RqgActor,
-    cult: RqgItem,
-    isOneUse: boolean
-  ) {
-    assertItemType(cult.data.type, ItemTypeEnum.Cult);
-    assertActorType(actor.data.type, ActorTypeEnum.Character);
-    // At this point if the current Rune Points or Magic Points are zero
-    // it's too late. That validation happened earlier.
-    const newRunePointTotal = (cult.data.data.runePoints.value || 0) - runePoints;
-    const newMagicPointTotal = (actor?.data.data.attributes.magicPoints.value || 0) - magicPoints;
-    let newRunePointMaxTotal = cult.data.data.runePoints.max || 0;
-    if (isOneUse) {
-      newRunePointMaxTotal -= runePoints;
-      if (newRunePointMaxTotal < (cult.data.data.runePoints.max || 0)) {
-        ui.notifications?.info(
-          localize("RQG.Dialog.runeMagicChat.SpentOneUseRunePoints", {
-            actorName: actor?.name,
-            runePoints: runePoints,
-            cultName: cult.name,
-          })
-        );
-      }
-    }
-    const updateCultItemRunePoints: DeepPartial<ItemDataSource> = {
-      _id: cult?.id,
-      data: { runePoints: { value: newRunePointTotal, max: newRunePointMaxTotal } },
-    };
-    await actor?.updateEmbeddedDocuments("Item", [updateCultItemRunePoints]);
-    const updateActorMagicPoints = {
-      data: { attributes: { magicPoints: { value: newMagicPointTotal } } },
-    };
-    await actor?.update(updateActorMagicPoints);
-  }
-
-  public static validateData(
-    actor: RqgActor,
-    cultItem: RqgItem,
-    runePointsUsed: number,
-    magicPointsBoost: number
-  ): string {
-    assertItemType(cultItem?.data.type, ItemTypeEnum.Cult);
-    if (runePointsUsed > (Number(cultItem.data.data.runePoints.value) || 0)) {
-      return getGame().i18n.format("RQG.Dialog.runeMagicChat.validationNotEnoughRunePoints");
-    } else if (magicPointsBoost > (Number(actor?.data.data.attributes?.magicPoints?.value) || 0)) {
-      return localize("RQG.Dialog.runeMagicChat.validationNotEnoughMagicPoints");
-    } else {
-      return "";
-    }
+      selectedRuneId,
+    });
   }
 
   public static async renderContent(
@@ -318,7 +60,7 @@ export class RuneMagicChatHandler {
     const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
     const runeMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.chat.itemUuid);
     assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
-    const eligibleRunes = RuneMagicChatHandler.getEligibleRunes(runeMagicItem, actor);
+    const eligibleRunes = RuneMagic.getEligibleRunes(runeMagicItem);
     const { otherModifiers, selectedRuneId, ritualOrMeditation, skillAugmentation } =
       await RuneMagicChatHandler.getFormDataFromFlags(flags);
     const selectedRune = actor.getEmbeddedDocument("Item", selectedRuneId) as RqgItem | undefined;
@@ -390,12 +132,12 @@ export class RuneMagicChatHandler {
     const otherModifiers = convertFormValueToInteger(flags.formData.otherModifiers);
     const selectedRuneId = convertFormValueToString(flags.formData.selectedRuneId);
     return {
-      runePointCost: runePointCost,
-      magicPointBoost: magicPointBoost,
-      ritualOrMeditation: ritualOrMeditation,
-      skillAugmentation: skillAugmentation,
-      otherModifiers: otherModifiers,
-      selectedRuneId: selectedRuneId,
+      runePointCost,
+      magicPointBoost,
+      ritualOrMeditation,
+      skillAugmentation,
+      otherModifiers,
+      selectedRuneId,
     };
   }
 
@@ -414,53 +156,5 @@ export class RuneMagicChatHandler {
     flags.formData.skillAugmentation = cleanIntegerString(formData.get("skillAugmentation"));
     flags.formData.otherModifiers = cleanIntegerString(formData.get("otherModifiers"));
     flags.formData.selectedRuneId = convertFormValueToString(formData.get("selectedRuneId"));
-  }
-
-  /**
-   * Given a rune spell and an actor, returns the runes that are possible to use for casting that spell.
-   */
-  private static getEligibleRunes(runeMagicItem: RqgItem, actor: RqgActor): RqgItem[] {
-    assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
-    assertActorType(actor.data.type, ActorTypeEnum.Character);
-
-    // The cult from where the spell was learned
-    const cult = actor.getEmbeddedDocument("Item", runeMagicItem.data.data.cultId) as
-      | RqgItem
-      | undefined;
-    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
-
-    // Get the name of the "magic" rune.
-    const magicRuneName = getGame().settings.get(systemId, "magicRuneName");
-
-    let usableRuneNames: string[];
-    if (runeMagicItem.data.data.runes.includes(magicRuneName)) {
-      // Actor can use any of the cult's runes to cast
-      // And some cults have the same rune more than once, so de-dupe them
-      usableRuneNames = [...new Set(cult.data.data.runes)];
-    } else {
-      // Actor can use any of the Rune Magic Spell's runes to cast
-      usableRuneNames = [...new Set(runeMagicItem.data.data.runes)];
-    }
-
-    let runesForCasting: RqgItem[] = [];
-    // Get the actor's versions of the runes, which will have their "chance"
-    usableRuneNames.forEach((runeName: string) => {
-      const actorRune = actor.items.getName(runeName);
-      assertItemType(actorRune?.data.type, ItemTypeEnum.Rune);
-      runesForCasting.push(actorRune);
-    });
-
-    return runesForCasting;
-  }
-
-  private static getStrongestRune(runeMagicItems: RqgItem[]): RqgItem | undefined {
-    if (runeMagicItems.length === 0) {
-      return undefined;
-    }
-    return runeMagicItems.reduce((strongest: RqgItem, current: RqgItem) => {
-      const strongestRuneChance = (strongest.data.data as RuneDataPropertiesData).chance ?? 0;
-      const currentRuneChance = (current.data.data as RuneDataPropertiesData).chance ?? 0;
-      return strongestRuneChance > currentRuneChance ? strongest : current;
-    });
   }
 }

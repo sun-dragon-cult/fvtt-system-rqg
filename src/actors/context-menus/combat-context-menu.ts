@@ -1,5 +1,4 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { WeaponChatHandler } from "../../chat/weaponChatHandler";
 import { RqgActor } from "../rqgActor";
 import {
   getDomDataset,
@@ -11,31 +10,16 @@ import {
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { UsageType } from "../../data-model/item-data/weaponData";
 
-export const combatMenuOptions = (
-  actor: RqgActor,
-  token: TokenDocument | undefined
-): ContextMenu.Item[] => [
+export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: ContextMenuRunes.RollViaChat,
-    condition: (el) => !!getDomDataset(el, "weapon-usage-type"),
+    condition: (el: JQuery) => !!getDomDataset(el, "item-id"),
     callback: async (el: JQuery) => {
-      const skillItemId = getDomDataset(el, "skill-id");
-      const weaponItemId = getDomDataset(el, "item-id");
-      const usage = getRequiredDomDataset(el, "weapon-usage-type") as UsageType;
-      if (skillItemId && weaponItemId) {
-        await WeaponChatHandler.show(weaponItemId, usage, actor, token);
-      } else {
-        const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponChatError", {
-          skillItemId: skillItemId,
-          weaponItemId: weaponItemId,
-          actorName: actor.name,
-        });
-        ui.notifications?.error(msg);
-        throw new RqgError(msg);
-      }
+      const weaponItemId = getRequiredDomDataset(el, "item-id");
+      const weapon = actor.getEmbeddedDocument("Item", weaponItemId) as RqgItem | undefined;
+      await weapon?.toChat();
     },
   },
   {

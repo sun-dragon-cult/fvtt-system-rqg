@@ -10,6 +10,7 @@ import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/f
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
 import { systemId } from "../system/config";
+import { ResultEnum } from "../data-model/shared/ability";
 
 export class RqgActor extends Actor {
   static init() {
@@ -34,7 +35,6 @@ export class RqgActor extends Actor {
     data.attributes.magicPoints.max = data.characteristics.power.value;
   }
 
-  // Foundry 9 renamed entities to documents.
   prepareEmbeddedDocuments(): void {
     // @ts-ignore Foundry 9
     super.prepareEmbeddedDocuments();
@@ -260,45 +260,13 @@ export class RqgActor extends Actor {
     return { str, con, siz, dex, int, pow, cha };
   }
 
-  public async AwardExperience(itemId: string | null) {
-    if (itemId !== null) {
-      const itemToAward = this.items.get(itemId);
-      if (itemToAward !== undefined) {
-        if (itemToAward) {
-          if (hasOwnProperty(itemToAward.data.data, "hasExperience")) {
-            if (
-              hasOwnProperty(itemToAward.data.data, "canGetExperience") &&
-              itemToAward.data.data.canGetExperience
-            ) {
-              if (!itemToAward.data.data.hasExperience) {
-                await this.updateEmbeddedDocuments("Item", [
-                  { _id: itemToAward.id, data: { hasExperience: true } },
-                ]);
-                const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
-                  actorName: this.name,
-                  itemName: itemToAward.name,
-                });
-                ui.notifications?.info(msg);
-              }
-            }
-          } else {
-            const msg = localize("RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError", {
-              itemName: itemToAward.name,
-              itemId: itemToAward.id,
-            });
-            console.log(msg);
-            ui.notifications?.error(msg);
-          }
-        } else {
-          const msg = localize("RQG.Actor.AwardExperience.ItemNotFoundError", {
-            itemId: itemId,
-            actorName: this.name,
-            actorid: this.id,
-          });
-          console.log(msg);
-          ui.notifications?.error(msg);
-        }
-      }
+  public async drawMagicPoints(amount: number, result: ResultEnum): Promise<void> {
+    if (result <= ResultEnum.Success) {
+      const newMp = (this.data.data.attributes.magicPoints.value || 0) - amount;
+      await this.update({ "data.attributes.magicPoints.value": newMp });
+      ui.notifications?.info(
+        localize("RQG.Dialog.spiritMagicChat.SuccessfullyCastInfo", { amount: amount })
+      );
     }
   }
 

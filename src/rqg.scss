@@ -396,6 +396,9 @@ body {
         &.missile {
           line-height: 3rem;
         }
+        &.default-usage {
+          font-weight: bold;
+        }
       }
     }
 
@@ -597,7 +600,7 @@ body {
   [data-item-heal-wound],
   [data-item-add-wound],
   [data-rqid-link],
-  [data-weapon-usage-type],
+  [data-weapon-roll],
   [data-reputation-roll],
   [data-rune-magic-roll] {
     &:hover {
@@ -682,8 +685,12 @@ body {
   }
 
   &.chat-content {
+    &>* {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
     .chat-options {
-      margin: 10px 0 0 0;
       background: url(./assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
     }
 
