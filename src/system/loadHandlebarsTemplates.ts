@@ -28,10 +28,10 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/actors/sheet-parts/health.hbs",
     "systems/rqg/actors/sheet-parts/combat.hbs",
     "systems/rqg/actors/sheet-parts/spirit-combat.hbs",
-    "systems/rqg/actors/sheet-parts/elemental.hbs",
-    "systems/rqg/actors/sheet-parts/power.hbs",
-    "systems/rqg/actors/sheet-parts/form.hbs",
-    "systems/rqg/actors/sheet-parts/condition.hbs",
+    "systems/rqg/actors/sheet-parts/runes-elemental.hbs",
+    "systems/rqg/actors/sheet-parts/runes-power.hbs",
+    "systems/rqg/actors/sheet-parts/runes-form.hbs",
+    "systems/rqg/actors/sheet-parts/runes-condition.hbs",
     "systems/rqg/actors/sheet-parts/physical-item-location.hbs",
 
     // Actor Wizard Sheet Parts

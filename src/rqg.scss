@@ -145,6 +145,10 @@ body {
     gap: 0.3rem;
   }
 
+  .gap01rem {
+    gap: 0.1rem;
+  }
+
   .warning {
     outline: 2px dashed var(--rqg-color-enc-warning);
     background-color: var(--rqg-color-enc-warning);
@@ -227,7 +231,7 @@ body {
       justify-content: space-around;
     }
 
-    img.rune {
+    .rune img {
       height: 30px;
     }
   }

@@ -9,23 +9,30 @@
         <div class="flex-row gap1rem">
           {{#unless (eq characterData.attributes.health "healthy")}}<i>{{localize (concat "RQG.Actor.Attributes.Health." characterData.attributes.health)}}</i>{{/unless}}
           {{#if characterElementRunes}}
-            <div>
+            <div class="flex-row gap01rem">
               {{#each characterElementRunes}}
-                <img class="rune" src="{{img}}"{{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
+                {{log 'characterRune' this}}
+                <div class="rune contextmenu item" data-item-id="{{_id}}">
+                  <img class="rune" src="{{img}}" {{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
+                </div>
               {{/each}}
             </div>
           {{/if}}
           {{#if characterPowerRunes}}
-            <div>
+            <div class="flex-row gap01rem">
               {{#each characterPowerRunes}}
-                <img class="rune" src="{{img}}"{{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
+              <div class="rune contextmenu item" data-item-id="{{_id}}">
+                <img class="rune" src="{{img}}" {{_id}}"{{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
+              </div>
               {{/each}}
             </div>
           {{/if}}
           {{#if characterFormRunes}}
-            <div>
+            <div class="flex-row gap01rem">
               {{#each characterFormRunes}}
-                <img class="rune" src="{{img}}"{{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
+              <div class="rune contextmenu item" data-item-id="{{_id}}">
+                <img class="rune" src="{{img}}" {{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
+              </div>
               {{/each}}
             </div>
           {{/if}}

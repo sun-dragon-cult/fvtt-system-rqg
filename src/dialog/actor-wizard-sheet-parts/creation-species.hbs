@@ -18,7 +18,7 @@
     {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
       rqidLink=species.selectedSpeciesTemplate.data.data.background.speciesRqidLink
     }}
-    {{/if}}    
+    {{/if}}
   </div>
 
 </div>
@@ -105,25 +105,25 @@
         <div class="tab runes" data-group="species-item-selection" data-tab="runes">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesRunes"}}</h2>
           <div class="flex-row flex-wrap">
-            {{>"systems/rqg/actors/sheet-parts/elemental.hbs"
+            {{>"systems/rqg/actors/sheet-parts/runes-elemental.hbs"
             ownedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
             checkedProperty="speciesPresent"
             }}
-            {{>"systems/rqg/actors/sheet-parts/power.hbs"
+            {{>"systems/rqg/actors/sheet-parts/runes-power.hbs"
             ownedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
             checkedProperty="speciesPresent"
             }}
-            {{>"systems/rqg/actors/sheet-parts/form.hbs"
+            {{>"systems/rqg/actors/sheet-parts/runes-form.hbs"
             ownedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
             checkedProperty="speciesPresent"
             }}
-            {{>"systems/rqg/actors/sheet-parts/condition.hbs"
+            {{>"systems/rqg/actors/sheet-parts/runes-condition.hbs"
             ownedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
