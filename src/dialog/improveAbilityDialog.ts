@@ -278,16 +278,9 @@ export async function submitImproveAbilityDialog(
     ]);
     if (adapter.isRune) {
       assertItemType(item?.data.type, ItemTypeEnum.Rune);
-      const opposingRuneName = item.data.data.opposingRune;
-      const opposingRune = actor.items.filter(
-        (r) => r.data.type === ItemTypeEnum.Rune && r.name === opposingRuneName
-      );
-      if (opposingRune && opposingRune.length === 1) {
-        const opposingRuneChance = 100 - newChance;
-        await actor.updateEmbeddedDocuments("Item", [
-          { _id: opposingRune[0].id, data: { hasExperience: false, chance: opposingRuneChance } },
-        ]);
-      }
+      await actor.updateEmbeddedDocuments("Item", [
+        { _id: item.id, data: { hasExperience: false, chance: newChance } },
+      ]);
     }
   }
 }

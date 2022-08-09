@@ -50,13 +50,14 @@ export class Rune extends AbstractEmbeddedItem {
 
   static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {
     if (rune.data.type === ItemTypeEnum.Rune) {
-      const chanceResult = updates.find((r) => r["data.chance"] != null);
+      const chanceResult = updates.find((r) => r["data.chance"] != null || r?.data?.chance != null);
       if (!chanceResult) {
         return;
       }
       if (rune.data.data.opposingRune) {
         const opposingRune = actor.items.getName(rune.data.data.opposingRune);
-        this.adjustOpposingRuneChance(opposingRune, chanceResult["data.chance"], updates);
+        const chance = chanceResult["data.chance"] || chanceResult.data.chance;
+        this.adjustOpposingRuneChance(opposingRune, chance, updates);
       }
     }
   }
