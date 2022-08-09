@@ -1,6 +1,6 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
-import { RqgActor } from "../rqgActor";
-import { RqgItem } from "../../items/rqgItem";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
+import { RqgActor } from "../../actors/rqgActor";
+import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { assertItemType, formatModifier, localize } from "../../system/util";
 import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";

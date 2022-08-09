@@ -1,7 +1,7 @@
-import { RqgActor } from "../../rqgActor";
-import { RqgItem } from "../../../items/rqgItem";
+import { RqgActor } from "../../actors/rqgActor";
+import { RqgItem } from "../rqgItem";
 import { getOtherItemIdsInSameLocationTree } from "./locationNode";
-import { localize, requireValue } from "../../../system/util";
+import { localize, requireValue } from "../../system/util";
 
 export function getSameLocationUpdates(
   actor: RqgActor,
@@ -18,7 +18,12 @@ export function getSameLocationUpdates(
   if (newLocationUpdate) {
     // Change location of the item that is sent to getOtherItemIdsInSameLocationTree
     const item = actorOwnedItems.find((i: any) => i._id === newLocationUpdate._id);
-    requireValue(item, localize("RQG.Item.Notification.LocationDidntFindItem"), actorOwnedItems, newLocationUpdate);
+    requireValue(
+      item,
+      localize("RQG.Item.Notification.LocationDidntFindItem"),
+      actorOwnedItems,
+      newLocationUpdate
+    );
     // @ts-ignore physicalItem location
     item.data.location = newLocationUpdate["data.location"];
   }

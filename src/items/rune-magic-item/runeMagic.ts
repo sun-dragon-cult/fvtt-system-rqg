@@ -1,7 +1,7 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgActor } from "../rqgActor";
-import { RqgItem } from "../../items/rqgItem";
+import { RqgActor } from "../../actors/rqgActor";
+import { RqgItem } from "../rqgItem";
 import { assertActorType, assertItemType, getGame, localize, RqgError } from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { systemId } from "../../system/config";
@@ -222,7 +222,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     actorName: string
   ): Promise<string> {
     const htmlContent = await renderTemplate(
-      "systems/rqg/actors/item-specific/runeMagicCultDialog.hbs",
+      "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
       {
         actorCults: actorCults,
         runeMagicName: runeMagicName,

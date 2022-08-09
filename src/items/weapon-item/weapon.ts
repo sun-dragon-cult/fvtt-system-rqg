@@ -1,6 +1,6 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
-import { RqgItem } from "../../items/rqgItem";
-import { RqgActor } from "../rqgActor";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
+import { RqgItem } from "../rqgItem";
+import { RqgActor } from "../../actors/rqgActor";
 import {
   assertChatMessageFlagType,
   assertItemType,
@@ -15,7 +15,7 @@ import {
   usersIdsThatOwnActor,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getSameLocationUpdates } from "./shared/physicalItemUtil";
+import { getSameLocationUpdates } from "../shared/physicalItemUtil";
 import { DamageRollTypeEnum, WeaponChatHandler } from "../../chat/weaponChatHandler";
 import { WeaponChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ResultEnum } from "../../data-model/shared/ability";

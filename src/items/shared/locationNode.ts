@@ -1,7 +1,7 @@
-import { defaultPriceData, IPhysicalItem } from "../../../data-model/item-data/IPhysicalItem";
-import { hasOwnProperty, localize, RqgError } from "../../../system/util";
+import { defaultPriceData, IPhysicalItem } from "../../data-model/item-data/IPhysicalItem";
+import { hasOwnProperty, localize, RqgError } from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export type LocationNode = IPhysicalItem & {
   // For the grouping of physical items in a tree structure

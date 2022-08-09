@@ -1,4 +1,4 @@
-import { Homeland } from "../../actors/item-specific/homeland";
+import { Homeland } from "../../items/homeland-item/homeland";
 import { RqgActor } from "../../actors/rqgActor";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItem } from "../../items/rqgItem";

@@ -19,7 +19,7 @@ import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { ChatSpeakerData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
-import { RuneMagic } from "../actors/item-specific/runeMagic";
+import { RuneMagic } from "../items/rune-magic-item/runeMagic";
 
 export class RuneMagicChatHandler {
   /**

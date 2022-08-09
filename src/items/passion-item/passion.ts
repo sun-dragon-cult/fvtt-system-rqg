@@ -1,5 +1,5 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
-import { RqgItem } from "../../items/rqgItem";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
+import { RqgItem } from "../rqgItem";
 import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { assertItemType, formatModifier, localize } from "../../system/util";

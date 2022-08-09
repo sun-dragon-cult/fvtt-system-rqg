@@ -1,5 +1,5 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
-import { RqgItem } from "../../items/rqgItem";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
+import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { assertItemType, formatModifier, localize, RqgError } from "../../system/util";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";

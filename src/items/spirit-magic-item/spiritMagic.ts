@@ -1,9 +1,9 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { assertItemType, localize } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SpiritMagicChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { SpiritMagicChatHandler } from "../../chat/spiritMagicChatHandler";
-import { RqgItem } from "../../items/rqgItem";
+import { RqgItem } from "../rqgItem";
 import { ResultEnum } from "../../data-model/shared/ability";
 
 export class SpiritMagic extends AbstractEmbeddedItem {

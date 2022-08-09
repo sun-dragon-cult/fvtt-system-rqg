@@ -1,13 +1,13 @@
-import { Skill } from "../../actors/item-specific/skill";
-import { AbstractEmbeddedItem } from "../../actors/item-specific/abstractEmbeddedItem";
-import { HitLocation } from "../../actors/item-specific/hitLocation";
-import { Gear } from "../../actors/item-specific/gear";
-import { Armor } from "../../actors/item-specific/armor";
-import { SpiritMagic } from "../../actors/item-specific/spiritMagic";
-import { Cult } from "../../actors/item-specific/cult";
-import { RuneMagic } from "../../actors/item-specific/runeMagic";
-import { Passion } from "../../actors/item-specific/passion";
-import { Rune } from "../../actors/item-specific/rune";
+import { Skill } from "../../items/skill-item/skill";
+import { AbstractEmbeddedItem } from "../../items/abstractEmbeddedItem";
+import { HitLocation } from "../../items/hit-location-item/hitLocation";
+import { Gear } from "../../items/gear-item/gear";
+import { Armor } from "../../items/armor-item/armor";
+import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
+import { Cult } from "../../items/cult-item/cult";
+import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
+import { Passion } from "../../items/passion-item/passion";
+import { Rune } from "../../items/rune-item/rune";
 import { ArmorDataProperties, ArmorDataSource } from "./armorData";
 import { PassionDataProperties, PassionDataSource } from "./passionData";
 import { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
@@ -18,8 +18,11 @@ import { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
 import { SkillDataProperties, SkillDataSource } from "./skillData";
 import { RuneDataProperties, RuneDataSource } from "./runeData";
 import { WeaponDataProperties, WeaponDataSource } from "./weaponData";
-import { Weapon } from "../../actors/item-specific/weapon";
-import { HomelandDataProperties as HomelandDataProperties, HomelandDataSource } from "./homelandData";
+import { Weapon } from "../../items/weapon-item/weapon";
+import {
+  HomelandDataProperties as HomelandDataProperties,
+  HomelandDataSource,
+} from "./homelandData";
 import {
   OccupationDataProperties as OccupationDataProperties,
   OccupationDataSource,

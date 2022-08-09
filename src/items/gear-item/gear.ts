@@ -1,8 +1,8 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
-import { RqgActor } from "../rqgActor";
-import { RqgItem } from "../../items/rqgItem";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
+import { RqgActor } from "../../actors/rqgActor";
+import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getSameLocationUpdates } from "./shared/physicalItemUtil";
+import { getSameLocationUpdates } from "../shared/physicalItemUtil";
 
 export class Gear extends AbstractEmbeddedItem {
   // public static init() {

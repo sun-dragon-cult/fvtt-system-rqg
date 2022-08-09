@@ -1,6 +1,6 @@
-import { RqgItem } from "../../items/rqgItem";
-import { RqgActor } from "../rqgActor";
-import { ResultEnum } from "../../data-model/shared/ability";
+import { RqgItem } from "./rqgItem";
+import { RqgActor } from "../actors/rqgActor";
+import { ResultEnum } from "../data-model/shared/ability";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateEmbeddedDocuments etc. is called.

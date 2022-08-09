@@ -9,7 +9,7 @@ import {
   WeaponDataProperties,
   WeaponDataPropertiesData,
 } from "../../data-model/item-data/weaponData";
-import { Weapon } from "../../actors/item-specific/weapon";
+import { Weapon } from "./weapon";
 import { systemId } from "../../system/config";
 
 interface WeaponSheetData extends RqgItemSheetData {

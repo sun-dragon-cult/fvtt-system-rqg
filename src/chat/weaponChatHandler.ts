@@ -19,7 +19,7 @@ import { UsageType } from "../data-model/item-data/weaponData";
 import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { RqgChatMessage } from "./RqgChatMessage";
-import { Weapon } from "../actors/item-specific/weapon";
+import { Weapon } from "../items/weapon-item/weapon";
 
 export enum DamageRollTypeEnum {
   Normal = "normal",

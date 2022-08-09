@@ -1,5 +1,5 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
-import { RqgItem } from "../../items/rqgItem";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
+import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { localize, RqgError } from "../../system/util";
 
@@ -13,8 +13,7 @@ export class HitLocation extends AbstractEmbeddedItem {
 
   public static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.data.type !== ItemTypeEnum.HitLocation) {
-      const msg =
-        localize("RQG.Item.Notification.ItemWasNotHitLocationError");
+      const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }

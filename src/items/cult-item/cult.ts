@@ -1,8 +1,8 @@
-import { AbstractEmbeddedItem } from "./abstractEmbeddedItem";
+import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgActor } from "../rqgActor";
+import { RqgActor } from "../../actors/rqgActor";
 import { getAllRunesIndex, getGame, localize, RqgError } from "../../system/util";
-import { RqgItem } from "../../items/rqgItem";
+import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 
 export class Cult extends AbstractEmbeddedItem {
