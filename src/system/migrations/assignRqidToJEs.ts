@@ -20,6 +20,9 @@ export async function assignRqidToJEs(): Promise<void> {
   }
 
   console.info("--- Assigning rqid to compendia journal entries ---");
+  // Keep track of what Rqids this script has already added since the index won't be updated during the runs so
+  // newly added duplicates won't be detected.
+  const addedRqids: string[] = [];
   for (const pack of getGame()?.packs) {
     if (pack.documentClass.name === "JournalEntry") {
       // @ts-expect-error indexed
@@ -44,7 +47,7 @@ export async function assignRqidToJEs(): Promise<void> {
             console.error("Couldn't get journal entry from pack!!!");
             continue;
           }
-          rqidFlags.id = await generateRqid(je, "compendiums");
+          rqidFlags.id = await generateRqid(je, "compendiums", addedRqids);
           rqidFlags.lang = rqidFlags?.lang ? rqidFlags.lang : "en";
           rqidFlags.priority = rqidFlags?.priority ? rqidFlags.priority : 1999;
 
@@ -65,11 +68,21 @@ export async function assignRqidToJEs(): Promise<void> {
    * Generate a unique rqid for the JournalEntry.
    * Assumes the JE does not yet have a rqid.
    * Also assumes english only rqids.
+   * As a side effect update the `alreadyAddedRqids` array with the "base" rqid without the count postfix part.
    **/
-  async function generateRqid(je: Document<any, any>, scope: "all" | "world" | "compendiums") {
+  async function generateRqid(
+    je: Document<any, any>,
+    scope: "all" | "world" | "compendiums",
+    alreadyAddedRqids: string[] = []
+  ): Promise<string> {
     const proposedRqid = Rqid.getDefaultRqid(je);
     const count = await Rqid.fromRqidCount(proposedRqid, "en", scope);
-    const postfixCount = !!count ? "-" + (Number(count) + 1) : "";
+    const alreadyAddedCount = alreadyAddedRqids.filter(
+      (alreadyAddedRqid) => alreadyAddedRqid === proposedRqid
+    ).length;
+    const totalCount = count + alreadyAddedCount;
+    const postfixCount = !!totalCount ? "-" + (Number(totalCount) + 1) : "";
+    alreadyAddedRqids.push(proposedRqid);
     return `${proposedRqid}${postfixCount}`;
   }
 }
