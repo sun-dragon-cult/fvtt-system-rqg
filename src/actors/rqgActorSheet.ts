@@ -740,9 +740,11 @@ export class RqgActorSheet extends ActorSheet<
       el.addEventListener("click", async (ev: MouseEvent) => {
         if (
           hasOwnProperty(item.data.data, "category") &&
-          [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
-            item.data.data.category
-          )
+          [
+            SkillCategoryEnum.MeleeWeapons,
+            SkillCategoryEnum.MissileWeapons,
+            SkillCategoryEnum.Shields,
+          ].includes(item.data.data.category)
         ) {
           ui.notifications?.warn(
             "To use a weapon please make sure it is equipped and use the Combat tab instead."
