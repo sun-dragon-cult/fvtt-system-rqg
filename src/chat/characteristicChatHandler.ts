@@ -6,6 +6,7 @@ import {
   assertChatMessageFlagType,
   cleanIntegerString,
   convertFormValueToInteger,
+  formatModifier,
   getDocumentFromUuid,
   getGame,
   getRequiredRqgActorFromUuid,
@@ -88,8 +89,9 @@ export class CharacteristicChatHandler {
       name: localizeCharacteristic(characteristicName),
     });
     if (modifier !== 0) {
+      const formattedModifier = formatModifier(modifier);
       flavor += localize("RQG.Dialog.characteristicChat.RollFlavorModifier", {
-        modifier: modifier,
+        modifier: formattedModifier,
       });
     }
     const result = await Ability.roll(flavor, characteristicValue * difficulty, modifier, speaker);
