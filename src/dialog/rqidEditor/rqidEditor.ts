@@ -47,17 +47,6 @@ export class RqidEditor extends FormApplication {
         documentLang,
         "compendiums"
       );
-
-      const worldCount = await Rqid.fromRqidCount(
-        documentRqid,
-        this.document.data.flags.rqg.documentRqidFlags.lang,
-        "world"
-      );
-      const compendiumCount = await Rqid.fromRqidCount(
-        documentRqid,
-        this.document.data.flags.rqg.documentRqidFlags.lang,
-        "compendiums"
-      );
       const worldDocumentInfo = worldDocuments.map((d) => ({
         priority: d.data.flags.rqg.documentRqidFlags.priority,
         // @ts-ignore
@@ -70,8 +59,22 @@ export class RqidEditor extends FormApplication {
         // @ts-ignore
         link: TextEditor.enrichHTML(d.link),
         // @ts-ignore
-        compendium: `${d.compendium?.metadata?.label} (${d.compendium?.metadata?.system})`,
+        compendium: `${d.compendium?.metadata?.label} (${d.compendium?.metadata?.package})`,
       }));
+
+      const uniqueWorldPriorityCount = new Set(
+        worldDocuments.map((d) => d.data.flags.rqg.documentRqidFlags.priority)
+      ).size;
+      if (uniqueWorldPriorityCount !== worldDocuments.length) {
+        appData.warnDuplicateWorldPriority = true;
+      }
+
+      const uniqueCompendiumPriorityCount = new Set(
+        compendiumDocuments.map((d) => d.data.flags.rqg.documentRqidFlags.priority)
+      ).size;
+      if (uniqueCompendiumPriorityCount !== compendiumDocuments.length) {
+        appData.warnDuplicateCompendiumPriority = true;
+      }
 
       appData.worldDuplicates = worldDocuments.length;
       appData.compendiumDuplicates = compendiumDocuments.length;

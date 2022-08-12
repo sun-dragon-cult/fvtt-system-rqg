@@ -1022,7 +1022,7 @@
       }
     },
     "RQGSystem": {
-      "rqid": "RuneQuest System ID",
+      "rqid": "RuneQuest System ID (rqid)",
       "GenerateDefaultRqid": "Create Rune Quest System ID (rqid) based on current document. The rqid should be based on the english document name.",
       "rqidPriority": "Rqid Priority",
       "rqidLang": "Language",
@@ -1035,6 +1035,7 @@
       "OtherDocumentsHeader": "Documents with this rqid and language (excluding embedded documents)",
       "DocsInWorld": "{count} documents in the world",
       "DocsInCompendiums": "{count} documents in the compendiums",
+      "DuplicateWarning": "Warning: Multiple rqids with same priority!",
       "Error": {
         "NoSheet": "No sheet found for document linked to by RQG System ID (rqid) \"{rqid}\". See console log.",
         "MoreThanOneRqidMatchInWorld": "More than one RQG Document in the world (not in Compendia) matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",

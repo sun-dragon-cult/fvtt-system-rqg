@@ -32,7 +32,7 @@
     <label>{{localize "RQG.RQGSystem.OtherDocumentsHeader"}}</label>
     <div>
       <details>
-        <summary>{{localize 'RQG.RQGSystem.DocsInWorld' count=worldDuplicates}}</summary>
+        <summary>{{localize 'RQG.RQGSystem.DocsInWorld' count=worldDuplicates}}{{#if warnDuplicateWorldPriority}} <span class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}</summary>
         <table>
           <tr>
             <td><b>Priority</b></td>
@@ -51,7 +51,7 @@
       </details>
 
       <details>
-        <summary>{{localize 'RQG.RQGSystem.DocsInCompendiums' count=compendiumDuplicates}}</summary>
+        <summary>{{localize 'RQG.RQGSystem.DocsInCompendiums' count=compendiumDuplicates}}{{#if warnDuplicateCompendiumPriority}} <span class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}</summary>
         <table>
           <tr>
             <td><b>Priority</b></td>
