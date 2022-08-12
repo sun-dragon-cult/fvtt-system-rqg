@@ -76,8 +76,8 @@ export class RqidEditor extends FormApplication {
         appData.warnDuplicateCompendiumPriority = true;
       }
 
-      appData.worldDuplicates = worldDocuments.length;
-      appData.compendiumDuplicates = compendiumDocuments.length;
+      appData.worldDuplicates = worldDocuments.length ?? 0;
+      appData.compendiumDuplicates = compendiumDocuments.length ?? 0;
       appData.worldDocumentInfo = worldDocumentInfo;
       appData.compendiumDocumentInfo = compendiumDocumentInfo;
     }
@@ -90,7 +90,7 @@ export class RqidEditor extends FormApplication {
     appData.data = {
       flags: {
         rqg: {
-          documentRqidFlags: this.document.data.flags.rqg.documentRqidFlags,
+          documentRqidFlags: this.document.data?.flags?.rqg?.documentRqidFlags,
         },
       },
     };
