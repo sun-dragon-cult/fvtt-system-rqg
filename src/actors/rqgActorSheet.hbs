@@ -11,7 +11,6 @@
           {{#if characterElementRunes}}
             <div class="flex-row gap01rem">
               {{#each characterElementRunes}}
-                {{log 'characterRune' this}}
                 <div class="rune contextmenu item" data-item-id="{{_id}}">
                   <img class="rune" src="{{img}}" {{#if data.descriptionRqidLink.rqid}} data-rqid-link="{{data.descriptionRqidLink.rqid}}"{{/if}}>
                 </div>

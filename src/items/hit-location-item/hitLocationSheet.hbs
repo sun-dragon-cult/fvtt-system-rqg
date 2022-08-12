@@ -12,14 +12,13 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 
     <section class="sheet-body">
       {{!-- Hit Location Tab --}}
       <div class="tab" data-group="primary" data-tab="hit-location">
-        
+
           <div class="item-sheet-properties">
 
             <label for="health-status-{{data._id}}">{{localize "RQG.Item.HitLocation.HealthStatus"}}</label>
@@ -42,7 +41,7 @@
 
           <label>{{localize "RQG.Item.HitLocation.ArmorPoints"}}</label>
           {{hitLocationData.armorPoints}}
-          
+
           <label>{{localize "RQG.Item.HitLocation.Wounds"}}</label>
           <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}">
           {{#each hitLocationData.wounds}}
@@ -55,7 +54,7 @@
 
       {{!-- Hit Location Definition Tab --}}
       <div class="tab" data-group="primary" data-tab="hit-location-definition">
-        
+
         <div class="item-sheet-properties">
 
           <label for="hit-points-value-{{data._id}}">{{localize "RQG.Item.HitLocation.Name"}}</label>
@@ -86,7 +85,7 @@
             {{/select}}
           </select>
           {{/if}}
-            
+
           <label for="hit-location-on-from-{{data._id}}">{{localize "RQG.Item.HitLocation.HitLocationOn"}}</label>
           <div>
             <input
@@ -97,14 +96,14 @@
               name="data.dieFrom"
               value="{{hitLocationData.dieFrom}}">
             -
-            <input 
-              type="number" 
-              name="data.dieTo" 
-              min="1" 
-              max="20" 
+            <input
+              type="number"
+              name="data.dieTo"
+              min="1"
+              max="20"
               value="{{hitLocationData.dieTo}}">
           </div>
-            
+
 
           <label for="natural-armor-points-{{data._id}}">{{localize "RQG.Item.HitLocation.NaturalArmorPoints"}}</label>
           <input
@@ -126,25 +125,15 @@
             value="{{hitLocationData.baseHpDelta}}"
           />
 
-        </div>  
+        </div>
 
       </div>
-
 
       {{!-- Active Effects Tab --}}
       <div class="tab" data-group="primary" data-tab="active-effects">
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 
       </div>
-
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-          itemData=hitLocationData
-        }}
-      </div>
-
     </section>
 
   </main>

@@ -1,4 +1,5 @@
 @use "variables";
+@use "dialog/rqidEditor/rqidEditor";
 
 body {
   background-attachment: fixed !important;
@@ -695,7 +696,7 @@ body {
     }
 
     .chat-options {
-      background: url(./assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
+      background: url(assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
     }
 
     .chat-option {
@@ -771,7 +772,7 @@ body {
 
   .mainbackground {
     grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
-    background: url(./assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
+    background: url(assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
   }
 
   .window-content {
@@ -1190,7 +1191,7 @@ body {
 
 .item-sheet-properties div.rune-property {
   display: grid;
-  grid-template-columns: 1fr 5fr;
+  grid-template-columns: auto 1fr;
   grid-gap: 0.5em;
 
   &.rune-group {

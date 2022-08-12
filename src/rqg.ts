@@ -15,6 +15,7 @@ import { RqgPause } from "./foundryUi/pause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
+import { RqgJournalSheet } from "./journals/rqgJournalSheet";
 
 Hooks.once("init", async () => {
   console.log(
@@ -63,6 +64,15 @@ Hooks.once("init", async () => {
   RqgActor.init();
   RqgItem.init();
   RqgPause.init();
+
+  // @ts-expect-error
+  Journal.unregisterSheet("core", JournalSheet);
+  // @ts-expect-error
+  Journal.registerSheet(systemId, RqgJournalSheet as any, {
+    label: "Journal Sheet",
+    makeDefault: true,
+  });
+
   registerRqgSystemSettings();
   await loadHandlebarsTemplates();
   registerHandlebarsHelpers();

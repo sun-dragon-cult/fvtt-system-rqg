@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    
+
     {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
         rqidLink=spiritMagicData.descriptionRqidLink
         parentField="descriptionRqidLink"
@@ -33,8 +33,6 @@
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
     }}
-
-
   </header>
   <main>
 
@@ -45,10 +43,8 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
-
 
     <section class="sheet-body">
       {{! Spirit Magic Tab }}
@@ -70,20 +66,20 @@
 
           <label for="duration-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Duration"}}</label>
           <select id="duration-{{data._id}}" name="data.duration">
-            {{#select spiritMagicData.duration}} 
+            {{#select spiritMagicData.duration}}
             {{#each sheetSpecific.durations}}
             <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
-            {{/each}} 
+            {{/each}}
             {{/select}}
           </select>
 
           {{#if (eq spiritMagicData.duration "temporal")}}
           <label for="concentration-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Concentration"}}</label>
           <select id="concentration-{{data._id}}" name="data.concentration">
-            {{#select spiritMagicData.concentration}} 
+            {{#select spiritMagicData.concentration}}
             {{#each sheetSpecific.types}}
             <option value="{{this}}">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." this)}}</option>
-            {{/each}} 
+            {{/each}}
             {{/select}}
           </select>
           {{/if}}
@@ -95,7 +91,7 @@
           {{!-- <input type="text" id="concentration-focused-{{data._id}}" name="data.concentration" value="active" readonly> --}}
           <select id="concentration-{{data._id}}" name="data.concentration" >
             <option value="active">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." "active")}}</option>
-          </select>          
+          </select>
           {{/if}}
 
           {{#unless (eq spiritMagicData.duration "temporal")}}
@@ -116,9 +112,6 @@
 
           <label for="spell-focus-{{data._id}}">{{localize "RQG.Item.SpiritMagic.SpellFocus"}}</label>
           <input type="text" id="spell-focus-{{data._id}}" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}">
-          
-
-
         </div>
       </div>
 
@@ -127,13 +120,6 @@
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
       </div>
 
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-        itemData=spiritMagicData
-        }}
-      </div>
     </section>
   </main>
 

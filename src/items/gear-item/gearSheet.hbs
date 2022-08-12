@@ -16,7 +16,6 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 
@@ -34,7 +33,7 @@
             <option value="{{this}}">{{localize (concat "RQG.Item.Gear.PhysicalItemTypeEnum." this)}}</option>
             {{/each}} {{/select}}
           </select>
-          
+
           {{#unless (eq gearData.physicalItemType "unique")}}
           <label for="data.quantity">{{localize "RQG.Item.Gear.Quantity"}}</label>
           <input name="data.quantity" type="number" min="0" max="9999999" value="{{gearData.quantity}}">
@@ -42,14 +41,14 @@
 
         </div>
 
-        
+
         {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"
           itemData=gearData
         }}
 
       </div>
 
-      
+
       {{!-- Description Tab --}}
       <div class="tab" data-group="primary" data-tab="description">
 
@@ -69,14 +68,6 @@
       {{!-- Active Effects Tab --}}
       <div class="tab" data-group="primary" data-tab="active-effects">
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
-      </div>
-
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-          itemData=gearData
-        }}
       </div>
     </section>
 

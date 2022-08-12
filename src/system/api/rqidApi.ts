@@ -84,21 +84,31 @@ export class Rqid {
     return undefined;
   }
 
+  /**
+   * A more flexible way to get all matching documents from a rqid.
+   */
   public static async fromRqidRegex(
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
-    lang: string = "en"
+    lang: string = "en",
+    scope: "all" | "world" | "compendiums" = "all"
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
     }
 
-    const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
-    if (worldDocuments.length) {
-      return worldDocuments;
+    if (["all", "world"].includes(scope)) {
+      const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
+      if (worldDocuments.length) {
+        return worldDocuments;
+      }
     }
 
-    return await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
+    if (["all", "compendiums"].includes(scope)) {
+      return await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
+    }
+
+    return [];
   }
 
   /**
@@ -197,13 +207,14 @@ export class Rqid {
   }
 
   /**
-   * Render the sheet of the documents the rqid points to.
-   * Convenience shorthand of `Rqid.fromRqid(rqidString)?.sheet?.render(true)`
+   * Render the sheet of the documents the rqid points to and brings it to top.
    */
   public static async renderRqidDocument(rqid: string) {
     const document = await Rqid.fromRqid(rqid);
     // @ts-ignore all rqid supported documents have sheet
     document?.sheet?.render(true);
+    // @ts-ignore
+    document?.sheet?.bringToTop();
   }
 
   // ----------------------------------

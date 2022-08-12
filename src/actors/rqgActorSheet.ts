@@ -49,6 +49,7 @@ import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
+import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 
 interface UiSections {
   health: boolean;
@@ -1435,12 +1436,14 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
+    const systemHeaderButtons = super._getHeaderButtons();
+    addRqidSheetHeaderButton(systemHeaderButtons, this);
     if (
       !getGame().settings.get(systemId, "actor-wizard-feature-flag") || // TODO remove when wizard is released
       this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete ||
       this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
     ) {
-      return super._getHeaderButtons();
+      return systemHeaderButtons;
     }
     return [
       {
@@ -1449,7 +1452,7 @@ export class RqgActorSheet extends ActorSheet<
         icon: "fas fa-user-edit",
         onclick: () => this._openActorWizard(),
       },
-      ...super._getHeaderButtons(),
+      ...systemHeaderButtons,
     ];
   }
 

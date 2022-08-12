@@ -37,11 +37,9 @@
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
     }}
-
   </header>
 
   <main>
-
     {{! Sheet Tab Navigation }}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="rune">{{localize "RQG.Item.SheetTab.Rune"}}</a>
@@ -49,7 +47,6 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 
@@ -100,26 +97,14 @@
             <input type="text" id="minor-runes-{{data._id}}" name="data.minorRunes" list="allRunes"
               placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" style="grid-column: 1 / span 2;">
           </div>
-
-
         </div>
       </div>
-
 
       {{!-- Active Effects Tab --}}
       <div class="tab" data-group="primary" data-tab="active-effects">
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 
       </div>
-
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-        itemData=runeData
-        }}
-      </div>
-
     </section>
   </main>
 
