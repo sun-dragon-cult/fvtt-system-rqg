@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="item-sheet-header">
-  
+
     <div class="item-sheet-header-img">
       <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
@@ -40,21 +40,20 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 
     <section class="sheet-body">
       {{!-- Passion Tab --}}
       <div class="tab" data-group="primary" data-tab="passion">
-        
+
         <div class="item-sheet-properties">
 
           <label for="chance-{{data._id}}">{{localize "RQG.Item.Passion.Chance"}}</label>
           <div>
             <input
               type="number"
-              id="chance-{{data._id}}"              
+              id="chance-{{data._id}}"
               name="data.chance"
               min="0"
               max="999"
@@ -81,7 +80,7 @@
             }}
           </div>
 
-        </div> 
+        </div>
 
       </div>
 
@@ -98,15 +97,6 @@
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 
       </div>
-
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-          itemData=passionData
-        }}
-      </div>
-
     </section>
 
   </main>

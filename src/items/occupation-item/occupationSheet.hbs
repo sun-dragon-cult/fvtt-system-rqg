@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="item-sheet-header">
-  
+
     <div class="item-sheet-header-img">
       <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
@@ -8,8 +8,8 @@
     <div class="name-parts-2-equal" data-target-drop-property="occupationJournalLink">
       <div>
         <label for="occupation-{{data._id}}">{{localize "RQG.Item.Occupation.Occupation"}}</label>
-        <input type="text" 
-            id="occupation-{{data._id}}" 
+        <input type="text"
+            id="occupation-{{data._id}}"
             name="data.occupation"
             value="{{occupationData.occupation}}">
       </div>
@@ -45,14 +45,13 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 
     <section class="sheet-body">
       {{!-- Occupation Tab --}}
       <div class="tab" data-group="primary" data-tab="occupation">
-        
+
         <div class="item-sheet-properties">
 
           <label>{{localize "RQG.Item.Occupation.Homelands"}}</label>
@@ -92,10 +91,10 @@
                   data-skill-rqid="{{this.skillRqidLink.rqid}}"
                   title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
                   value="{{this.bonus}}">%
-                </span> 
+                </span>
               {{/each}}
               </div>
-            </div>            
+            </div>
           </div>
 
 
@@ -114,7 +113,7 @@
             &nbsp;
             {{localize "RQG.Item.Gear.LunarsAbbr"}}
           </div>
-          
+
           <label for="base-income-notes-{{data._id}}">{{localize "RQG.Item.Occupation.BaseIncomeNotes"}}</label>
           <input type="text" id="base-income-notes-{{data._id}}" name="data.baseIncomeNotes" value="{{occupationData.baseIncomeNotes}}">
 
@@ -126,14 +125,14 @@
             showDeleteFromPropertyName="cultRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
           }}
-          
+
           <label for="ransom-{{data._id}}">{{localize "RQG.Item.Occupation.Ransom"}}</label>
           <div>
             <input  type="number" id="ransom-{{data._id}}" name="data.ransom" min="0" value="{{occupationData.ransom}}">
             &nbsp;
             {{localize "RQG.Item.Gear.LunarsAbbr"}}
           </div>
-          
+
           <label>{{localize "RQG.Item.Occupation.StartingEquipmentLinks"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
             rqidLinkArray=occupationData.startingEquipmentRqidLinks
@@ -158,14 +157,6 @@
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 
       </div>
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-          itemData=occupationData
-        }}
-      </div>
-
     </section>
 
   </main>

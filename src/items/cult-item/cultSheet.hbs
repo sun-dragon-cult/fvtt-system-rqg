@@ -27,7 +27,7 @@
         />
       </div>
     </div>
-    
+
     {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
         rqidLink=cultData.descriptionRqidLink
         parentField="descriptionRqidLink"
@@ -36,14 +36,14 @@
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
     }}
-      
+
   </header>
   <main>
 
 
     {{! Sheet Tab Navigation }}
     <nav class="item-sheet-nav-tabs" data-group="primary">
-      
+
       {{#if isEmbedded}}
       <a class="item" data-tab="cult-standing">{{localize "RQG.Item.SheetTab.CultStanding"}}</a>
       {{/if}}
@@ -53,7 +53,6 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 
@@ -62,7 +61,7 @@
       <div class="tab" data-group="primary" data-tab="cult-standing">
 
         <div class="item-sheet-properties">
-         
+
           <label for="rune-points-value-{{data._id}}">{{localize "RQG.Item.Cult.RunePoints"}}</label>
           <div>
               <input
@@ -125,7 +124,7 @@
               editable=editable
             }}
           </div>
-          
+
         </div>
       </div>
 
@@ -168,16 +167,8 @@
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 
       </div>
-
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-        itemData=cultData
-        }}
-      </div>
     </section>
-        
+
 
 
 

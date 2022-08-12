@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="item-sheet-header">
-  
+
     <div class="item-sheet-header-img">
       <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
@@ -15,10 +15,10 @@
         <label for="specialization-{{data._id}}">{{localize "RQG.Item.Skill.Specialization"}}</label>
         <div>
           ( <input type="text" id="specialization-{{data._id}}" name="data.specialization" value="{{skillData.specialization}}"> )
-        </div>        
+        </div>
       </div>
     </div>
-  
+
     {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
         rqidLink=skillData.descriptionRqidLink
         parentField="descriptionRqidLink"
@@ -41,7 +41,6 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 
@@ -50,39 +49,36 @@
       <div class="tab" data-group="primary" data-tab="skill">
 
         <div class="skill-sheet-grid">
-          
+
           <label>{{localize "RQG.Item.Skill.Chance"}}</label>
           &nbsp;
           <label for="learned-chance-{{data._id}}">{{localize "RQG.Item.Skill.LearnedChance"}}</label>
-          <label>{{localize "RQG.Item.Skill.CategoryModifier" category=(localize (concat 'RQG.Actor.Skill.SkillCategory.' skillData.category) ) }}</label> 
+          <label>{{localize "RQG.Item.Skill.CategoryModifier" category=(localize (concat 'RQG.Actor.Skill.SkillCategory.' skillData.category) ) }}</label>
           <label for="base-chance-{{data._id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
 
           <span class="skill {{#if skillData.hasExperience}}experienced{{/if}}">
             {{skillData.chance}}%
             {{#if skillData.canGetExperience}}
-            <input 
-              type="checkbox" 
-              id="has-experience-{{data._id}}" 
+            <input
+              type="checkbox"
+              id="has-experience-{{data._id}}"
               name="data.hasExperience"
               title="{{localize 'RQG.Item.Skill.HasExperienceQ'}}"
               {{checked skillData.hasExperience}}>
             {{/if}}
           </span>
           =
-          <input 
-            type="number" 
+          <input
+            type="number"
             id="learned-chance-{{data._id}}"
-            name="data.learnedChance" 
-            min="0" 
-            max="999" 
+            name="data.learnedChance"
+            min="0"
+            max="999"
             value="{{skillData.learnedChance}}">
           <span>{{skillData.categoryMod}}</span>
           <span>{{skillData.baseChance}}</span>
-
         </div>
-
       </div>
-
 
       {{!-- Skill Definition Tab --}}
       <div class="tab" data-group="primary" data-tab="skill-definition">
@@ -99,17 +95,17 @@
           </select>
 
           <label for="base-chance-{{data._id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
-          <input 
-            type="number" 
+          <input
+            type="number"
             id="base-chance-{{data._id}}"
-            name="data.baseChance" 
-            min="0" 
-            max="999" 
+            name="data.baseChance"
+            min="0"
+            max="999"
             value="{{skillData.baseChance}}">
 
           <label for="can-gain-experience-{{data._id}}">{{localize "RQG.Item.Skill.CanGainExperienceQ"}}</label>
           <input type="checkbox" id="is-ritual-{{data._id}}" name="data.canGetExperience" {{checked skillData.canGetExperience}}>
-          
+
 
           <label for="runes-{{data._id}}">{{localize "RQG.Item.Skill.SorceryRunes"}}</label>
           <div class="rune-property rune-group">
@@ -117,11 +113,11 @@
             <img class="rune" src="{{runeImg this}}" title="{{this}}">
             <input type="text" name="data.runes" value="{{this}}">
             {{/each}}
-            <input 
-              type="text" 
-              id="runes-{{data._id}}" 
-              name="data.runes" list="allRunes" 
-              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" 
+            <input
+              type="text"
+              id="runes-{{data._id}}"
+              name="data.runes" list="allRunes"
+              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}"
               style="grid-column: 1 / span 2;">
           </div>
 
@@ -134,15 +130,7 @@
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 
       </div>
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-        itemData=skillData
-        }}
-      </div>
     </section>
-
 
   </main>
   <datalist id="allRunes">

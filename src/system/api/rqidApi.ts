@@ -84,21 +84,31 @@ export class Rqid {
     return undefined;
   }
 
+  /**
+   * A more flexible way to get all matching documents from a rqid.
+   */
   public static async fromRqidRegex(
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
-    lang: string = "en"
+    lang: string = "en",
+    scope: "all" | "world" | "compendiums" = "all"
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
     }
 
-    const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
-    if (worldDocuments.length) {
-      return worldDocuments;
+    if (["all", "world"].includes(scope)) {
+      const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
+      if (worldDocuments.length) {
+        return worldDocuments;
+      }
     }
 
-    return await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
+    if (["all", "compendiums"].includes(scope)) {
+      return await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
+    }
+
+    return [];
   }
 
   /**
@@ -197,13 +207,12 @@ export class Rqid {
   }
 
   /**
-   * Render the sheet of the documents the rqid points to.
-   * Convenience shorthand of `Rqid.fromRqid(rqidString)?.sheet?.render(true)`
+   * Render the sheet of the documents the rqid points to and brings it to top.
    */
   public static async renderRqidDocument(rqid: string) {
     const document = await Rqid.fromRqid(rqid);
     // @ts-ignore all rqid supported documents have sheet
-    document?.sheet?.render(true);
+    document?.sheet?.render(true, { focus: true });
   }
 
   // ----------------------------------
@@ -444,8 +453,11 @@ export class Rqid {
    * Get the first part of a rqid (like "i") from a Document.
    */
   private static getRqidDocumentString(document: Document<any, any>): string {
-    const clsName =
-      (getDocumentClass(document.documentName) as unknown as Document<any, any>).name ?? "";
+    const cls = getDocumentClass(document.documentName) as unknown as
+      | Document<any, any>
+      | TokenDocument;
+
+    const clsName = cls?.name ?? "";
     const documentString = Rqid.rqidDocumentStringLookup[clsName];
     if (!documentString) {
       const msg = "Tried to convert a unsupported document to rqid";

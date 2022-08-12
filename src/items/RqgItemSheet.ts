@@ -1,5 +1,4 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { Rqid } from "../system/api/rqidApi";
 import { systemId } from "../system/config";
 import {
   getDomDataset,
@@ -8,8 +7,8 @@ import {
   localize,
   localizeItemType,
 } from "../system/util";
-import { RqgItem } from "./rqgItem";
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
+import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 
 export interface RqgItemSheetData {
   isGM: boolean;
@@ -91,53 +90,6 @@ export class RqgItemSheet<
         this.item.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
       });
     });
-
-    // RQG System Tab
-
-    // Create a quick rqid based on the item
-    $(this.form!)
-      .find("[data-item-rqid-quick]")
-      .each((i: number, el: HTMLElement) => {
-        const itemId = getRequiredDomDataset($(el), "item-id");
-        const ownerId = getDomDataset($(el), "owner-id");
-        el.addEventListener("click", async () => {
-          let item: RqgItem | undefined;
-          if (ownerId) {
-            // Get the item from the owner
-            item = getGame().actors?.get(ownerId)?.items.get(itemId);
-          } else {
-            // Get the item from the world
-            item = getGame().items?.get(itemId) as RqgItem;
-          }
-          if (!item) {
-            ui.notifications?.warn("Couldn't find item");
-            return;
-          }
-          const newRqid = Rqid.getDefaultRqid(item);
-
-          if (ownerId) {
-            const actor = getGame().actors?.get(ownerId);
-            if (actor) {
-              await actor.updateEmbeddedDocuments("Item", [
-                { _id: item.id, flags: { [systemId]: { [documentRqidFlags]: newRqid } } },
-              ]);
-            }
-          } else {
-            await item.setFlag(systemId, documentRqidFlags, { id: newRqid });
-          }
-        });
-      });
-
-    // Copy associated input value to clipboard
-    $(this.form!)
-      .find("[data-item-copy-input]")
-      .each((i: number, el: HTMLElement) => {
-        const itemId = getRequiredDomDataset($(el), "item-id");
-        el.addEventListener("click", async () => {
-          const input = el.previousElementSibling as HTMLInputElement;
-          await navigator.clipboard.writeText(input.value);
-        });
-      });
 
     // Handle rqid links
     RqidLink.addRqidLinkClickHandlers($(this.form!));
@@ -311,6 +263,12 @@ export class RqgItemSheet<
         }
       }
     }
+  }
+
+  protected _getHeaderButtons(): Application.HeaderButton[] {
+    const systemHeaderButtons = super._getHeaderButtons();
+    addRqidSheetHeaderButton(systemHeaderButtons, this);
+    return systemHeaderButtons;
   }
 }
 

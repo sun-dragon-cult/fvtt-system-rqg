@@ -49,6 +49,7 @@ import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
+import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 
 interface UiSections {
   health: boolean;
@@ -1435,22 +1436,23 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
+    const headerButtons = super._getHeaderButtons();
+    addRqidSheetHeaderButton(headerButtons, this);
+
     if (
-      !getGame().settings.get(systemId, "actor-wizard-feature-flag") || // TODO remove when wizard is released
-      this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete ||
-      this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
+      getGame().settings.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
+      !this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete &&
+      !this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
     ) {
-      return super._getHeaderButtons();
-    }
-    return [
-      {
+      headerButtons.splice(0, 0, {
         class: `actor-wizard-button-${this.actor.id}`,
         label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
         icon: "fas fa-user-edit",
         onclick: () => this._openActorWizard(),
-      },
-      ...super._getHeaderButtons(),
-    ];
+      });
+    }
+
+    return headerButtons;
   }
 
   _openActorWizard() {

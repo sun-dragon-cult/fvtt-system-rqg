@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="item-sheet-header">
-  
+
     <div class="item-sheet-header-img">
       <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
     </div>
@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-          
+
   </header>
   <main>
 
@@ -37,21 +37,20 @@
       {{#unless isEmbedded}}
       <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
       {{/unless}}
-      <a class="item" data-tab="rqgsystem">{{localize "RQG.Item.SheetTab.RQGSystem"}}</a>
       {{/if}}
     </nav>
 
     <section class="sheet-body">
       {{!-- Armor Tab --}}
       <div class="tab" data-group="primary" data-tab="armor">
-        
+
         <div class="item-sheet-properties">
           <label for="hitlocations-{{data._id}}">{{localize "RQG.Item.Armor.HitLocations"}}</label>
           <div name="data.hitlocations">
             {{#each armorData.hitLocations}}
             <span><input name="data.hitLocations" type="text" value="{{this}}"></span>
             {{/each}}
-            <input type="text" id="hitlocations-{{data._id}}" name="data.hitLocations" style="width:50%" list="allHitLocations" 
+            <input type="text" id="hitlocations-{{data._id}}" name="data.hitLocations" style="width:50%" list="allHitLocations"
               placeholder="{{localize "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder"}}">
           </div>
 
@@ -64,8 +63,8 @@
           <label for="fits-size-{{data._id}}">{{localize "RQG.Item.Armor.FitsSIZ"}}</label>
           <input type="number" id="fits-size-{{data._id}}" name="data.size" min="1" max="99" value="{{armorData.size}}">
 
-        </div> 
-          
+        </div>
+
         {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"
           itemData=armorData
         }}
@@ -93,15 +92,6 @@
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
 
       </div>
-
-
-      {{!-- RQG System Tab --}}
-      <div class="tab" data-group="primary" data-tab="rqgsystem">
-        {{> "systems/rqg/items/sheet-parts/itemRqgSystem.hbs"
-          itemData=armorData
-        }}
-      </div>
-
     </section>
 
 

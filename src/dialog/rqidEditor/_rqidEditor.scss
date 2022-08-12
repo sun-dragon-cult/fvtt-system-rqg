@@ -1,0 +1,16 @@
+#rqid-editor-application {
+
+  .item-sheet-properties {
+    input[type="text"], select {
+      width: 15rem;
+    }
+  }
+
+  fieldset {
+    margin-top: 2rem;
+
+    .input-button input[type="text"] {
+      width: 28rem;
+    }
+  }
+}
