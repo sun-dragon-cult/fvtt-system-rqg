@@ -3,11 +3,12 @@
   "type": "system",
   "title": "RuneQuest Glorantha (Unofficial)",
   "description": "A RuneQuest Glorantha (Unofficial) system implementation.",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "license": "UNLICENSED",
   "background": "assets/images/ui/priestess.webp",
   "authors": [
-    { "name": "Sun Dragon Cult",
+    {
+      "name": "Sun Dragon Cult",
       "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg"
     },
     {
@@ -133,8 +134,8 @@
   "compatibleCoreVersion": "9",
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.14.0/rqg.zip",
-  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.14.0/readme.md",
-  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.14.0/CHANGELOG.md",
+  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.15.0/rqg.zip",
+  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.15.0/readme.md",
+  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.15.0/CHANGELOG.md",
   "bugs": "https://github.com/sun-dragon-cult/foundry-vtt-rqg/issues"
 }

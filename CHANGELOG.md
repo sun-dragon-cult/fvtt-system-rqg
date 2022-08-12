@@ -1,3 +1,55 @@
+# [1.15.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.14.0...v1.15.0) (2022-08-12)
+
+
+### Bug Fixes
+
+* "Damage" displayed wrongly on chat card [#253](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/253) ([0674257](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0674257))
+* Added Punch and Kick translation keys ([#209](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/209)) ([838fffd](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/838fffd))
+* apply actor wizard feature flag to actor sheet background tab as well [#274](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/274) ([22d5c6e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/22d5c6e))
+* change name of Fire rune to Fire/Sky ([#306](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/306)) ([d3d9e87](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d3d9e87))
+* characteristic roll modifier is not properly formatted ([8d03a53](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8d03a53))
+* context menu on actorsheet combat list shows options that are not possible [#163](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/163) The skill related actions like toggle experience or edit skill can only be done on the right side where the skill links are. ([87a02f2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/87a02f2))
+* Currency counts not carried ENC [#252](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/252) ([4180a2e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/4180a2e))
+* default new passions to 60% [#219](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/219) ([828419a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/828419a))
+* doing double spirit magic rolls ([b74793a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b74793a)), closes [#292](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/292)
+* double reputation rolls ([8ad5048](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8ad5048)), closes [#284](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/284)
+* editing experience on rune item sheet doesn't work [#307](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/307) ([f5fb99a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f5fb99a))
+* error log for players when GM creates actor [#250](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/250) ([5c2cfe9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5c2cfe9))
+* failed to index packs in Foundry v10 ([5a46fe0](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5a46fe0))
+* improving power rune removed opposing exp check closes [#266](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/266) ([67d4580](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/67d4580))
+* link runes to correct journal entry description ([9f163c6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/9f163c6))
+* migration assigns multiple compendium JE with the same rqid ([5d04218](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5d04218))
+* remove double fumble roll table references ([c8801e1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c8801e1))
+* Rqg System sheet data submitted along with item data closes [#308](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/308) ([3fa3552](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3fa3552))
+* rqid undefined errors ([d13e8c7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d13e8c7))
+* shield skills should not be rollable from the skill tab (the same way melee & missile weapons are blocked) ([78cffa3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/78cffa3))
+* show linked description in Rune Magic chat message ([192123e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/192123e))
+* weapon chat not working for unlinked actors ([13d77d2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/13d77d2)), closes [#285](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/285)
+* while editing rune opposing rune link might be incomplete ([5a706d5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5a706d5))
+
+
+### Features
+
+* add combat Fumble table to system compendiums ([#272](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/272)) ([8287a59](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8287a59))
+* Add context menu to character defining runes Also refactor by renaming some rune partials to group them better closes [#302](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/302) ([6200cfb](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6200cfb))
+* add feature flag for character creation ([#275](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/275)) ([27798c2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/27798c2))
+* added rqid for system runes and hitlocation compendiums also readded a jsdoc ([ea5f65c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ea5f65c))
+* added rqid for system skills ([94c649c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/94c649c))
+* Expand the Rqid api to include regex search and count. ([23768b2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/23768b2))
+* improve migration progress feedback ([#298](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/298)) ([8c15c1d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8c15c1d))
+* Include rqid in compendium index ([#300](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/300)) ([8545374](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8545374))
+* make all system compendiums use rqid as flags also remove deprecated runes ([346640e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/346640e))
+* use flags to tag documents ([#263](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/263)) ([639b510](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/639b510))
+* warn about duplicate rqid prio in rqid editor ([18e5595](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/18e5595))
+
+
+### Reverts
+
+* Revert "#101 Subtask: Alternate Actor Sheet (#239)" (#245) ([134092d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/134092d)), closes [#101](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/101) [#239](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/239) [#245](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/245)
+
+
+
+
 # [1.14.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.13.0...v1.14.0) (2022-03-06)
 
 
