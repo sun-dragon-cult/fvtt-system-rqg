@@ -264,7 +264,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+    await super._onDrop(event);
     const usage = getRequiredDomDataset(event, "dropzone");
     const dropzone = (event.target as HTMLElement)?.closest("[data-dropzone]");
     dropzone && dropzone.classList.remove("drag-hover");

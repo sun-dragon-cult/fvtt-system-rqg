@@ -173,7 +173,7 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+    await super._onDrop(event);
 
     const thisOccupation = this.item.data.data as OccupationDataSourceData;
 

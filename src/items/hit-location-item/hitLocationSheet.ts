@@ -299,7 +299,7 @@ export class HitLocationSheet extends RqgItemSheet<
 
     // Reopen the dialog if there still are wounds left
     if (hitLocation.data.data.wounds.length) {
-      this.showHealWoundDialog(actor, hitLocation.id!);
+      await this.showHealWoundDialog(actor, hitLocation.id!);
     }
   }
 

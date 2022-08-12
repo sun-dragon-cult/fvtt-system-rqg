@@ -25,7 +25,7 @@ export class RqgCombatTracker extends CombatTracker {
           const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
           if (combatant) {
             // @ts-ignore
-            this.viewed!.createEmbeddedDocuments("Combatant", [combatant.data]);
+            await this.viewed!.createEmbeddedDocuments("Combatant", [combatant.data]);
           }
         },
       },

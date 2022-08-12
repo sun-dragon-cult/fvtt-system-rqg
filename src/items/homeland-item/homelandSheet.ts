@@ -74,7 +74,7 @@ export class HomelandSheet extends RqgItemSheet<
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+    await super._onDrop(event);
 
     let droppedDocumentData;
     try {

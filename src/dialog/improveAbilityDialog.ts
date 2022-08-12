@@ -220,7 +220,7 @@ export async function submitImproveAbilityDialog(
           content: failedContent,
           speaker: { alias: speakerName },
         };
-        ChatMessage.create(failChat);
+        await ChatMessage.create(failChat);
       }
     } else {
       const msg = localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {

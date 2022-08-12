@@ -166,7 +166,7 @@ export async function submitImproveCharacteristicDialog(
           content: failedContent,
           speaker: { alias: speakerName },
         };
-        ChatMessage.create(failChat);
+        await ChatMessage.create(failChat);
       }
     } else {
       const msg = localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
@@ -249,7 +249,7 @@ export async function submitImproveCharacteristicDialog(
         content: failedContent,
         speaker: { alias: speakerName },
       };
-      ChatMessage.create(failChat);
+      await ChatMessage.create(failChat);
     }
   }
 

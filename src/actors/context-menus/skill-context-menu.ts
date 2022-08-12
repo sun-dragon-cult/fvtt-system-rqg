@@ -95,7 +95,7 @@ export const skillMenuOptions = (
       const item = actor.items.get(itemId);
       assertItemType(item?.data.type, ItemTypeEnum.Skill);
       const speakerName = token?.name ?? actor.data.token.name ?? "";
-      showImproveAbilityDialog(actor, itemId, item, speakerName);
+      await showImproveAbilityDialog(actor, itemId, item, speakerName);
     },
   },
   {
