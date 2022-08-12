@@ -57,7 +57,10 @@ export class Rune extends AbstractEmbeddedItem {
       if (rune.data.data.opposingRune) {
         const opposingRune = actor.items.getName(rune.data.data.opposingRune);
         const chance = chanceResult["data.chance"] || chanceResult.data.chance;
-        this.adjustOpposingRuneChance(opposingRune, chance, updates);
+        if (opposingRune && chance) {
+          // While editing a rune it's possible to have incomplete data, ignore in that case.
+          this.adjustOpposingRuneChance(opposingRune, chance, updates);
+        }
       }
     }
   }
