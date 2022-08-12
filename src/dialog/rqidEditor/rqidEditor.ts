@@ -12,7 +12,7 @@ export class RqidEditor extends FormApplication {
 
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "form"],
+      classes: [systemId, "form", "rqid-editor"],
       popOut: true,
       template: `systems/rqg/dialog/rqidEditor/rqidEditor.hbs`,
       width: 650,
@@ -70,15 +70,16 @@ export class RqidEditor extends FormApplication {
         // @ts-ignore
         link: TextEditor.enrichHTML(d.link),
         // @ts-ignore
-        pack: `${d.compendium?.metadata?.label} (${d.compendium?.metadata?.system})`,
+        compendium: `${d.compendium?.metadata?.label} (${d.compendium?.metadata?.system})`,
       }));
-      appData.supportedLanguages = CONFIG.supportedLanguages;
+
       appData.worldDuplicates = worldDocuments.length;
       appData.compendiumDuplicates = compendiumDocuments.length;
       appData.worldDocumentInfo = worldDocumentInfo;
       appData.compendiumDocumentInfo = compendiumDocumentInfo;
     }
 
+    appData.supportedLanguages = CONFIG.supportedLanguages;
     appData.id = this.document.id;
     appData.parentId = this.document?.parent?.id ?? "";
     // @ts-expect-error uuid
@@ -136,7 +137,6 @@ export class RqidEditor extends FormApplication {
   }
 
   async _updateObject(event: Event, formData: any): Promise<void> {
-    console.log("_updateObject: formData:", formData);
     await this.document.update(formData);
     this.render();
   }

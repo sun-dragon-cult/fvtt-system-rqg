@@ -2,11 +2,11 @@ import { getGameUser } from "../system/util";
 import { RqidEditor } from "../dialog/rqidEditor/rqidEditor";
 
 export function addRqidSheetHeaderButton(
-  systemHeaderButtons: any[],
+  headerButtons: any[],
   sheet: DocumentSheet<any, any>
 ): void {
   if (getGameUser().isGM) {
-    const numberOfButtons = systemHeaderButtons.length;
+    const numberOfButtons = headerButtons.length;
     const rqidEditorButton = {
       class: "edit-rqid",
       label: "Rqid",
@@ -15,6 +15,6 @@ export function addRqidSheetHeaderButton(
         new RqidEditor(sheet.object, {}).render(true, { focus: true });
       },
     };
-    systemHeaderButtons.splice(numberOfButtons - 1, 0, rqidEditorButton);
+    headerButtons.splice(numberOfButtons - 1, 0, rqidEditorButton);
   }
 }

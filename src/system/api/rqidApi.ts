@@ -212,9 +212,7 @@ export class Rqid {
   public static async renderRqidDocument(rqid: string) {
     const document = await Rqid.fromRqid(rqid);
     // @ts-ignore all rqid supported documents have sheet
-    document?.sheet?.render(true);
-    // @ts-ignore
-    document?.sheet?.bringToTop();
+    document?.sheet?.render(true, { focus: true });
   }
 
   // ----------------------------------
@@ -455,8 +453,11 @@ export class Rqid {
    * Get the first part of a rqid (like "i") from a Document.
    */
   private static getRqidDocumentString(document: Document<any, any>): string {
-    const clsName =
-      (getDocumentClass(document.documentName) as unknown as Document<any, any>).name ?? "";
+    const cls = getDocumentClass(document.documentName) as unknown as
+      | Document<any, any>
+      | TokenDocument;
+
+    const clsName = cls?.name ?? "";
     const documentString = Rqid.rqidDocumentStringLookup[clsName];
     if (!documentString) {
       const msg = "Tried to convert a unsupported document to rqid";
