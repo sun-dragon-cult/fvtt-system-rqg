@@ -2,10 +2,9 @@
 <div class="flex-row flex-wrap">
   <fieldset>
     <legend>{{localize "RQG.Actor.Background.BaseData"}}</legend>
-
-    <div class="nowrap">
+    <div class="item-sheet-properties">
       {{#if isGM}}
-        <label>{{localize "RQG.Actor.Background.BirthYear"}}
+        <label>{{localize "RQG.Actor.Background.BirthYear"}}</label>
           <input
             type="number"
             min="0"
@@ -13,16 +12,13 @@
             name="data.background.birthyear"
             value="{{characterData.background.birthyear}}"
           />
-        </label>
       {{else if characterData.background.birthyear}}
         <label>{{localize "RQG.Actor.Background.BirthYear"}}</label>
         {{characterData.background.birthyear}}
       {{/if}}
-    </div>
 
-    <div class="nowrap">
       {{#if isGM}}
-        <label>{{localize "RQG.Actor.Background.Age"}}
+        <label>{{localize "RQG.Actor.Background.Age"}}</label>
           <input
             type="number"
             min="0"
@@ -30,56 +26,56 @@
             name="data.background.age"
             value="{{characterData.background.age}}"
           />
-        </label>
       {{else if characterData.background.age}}
         <label>{{localize "RQG.Actor.Background.Age"}}</label>
         {{characterData.background.age}}
       {{/if}}
-    </div>
 
-    <div class="nowrap">
       {{#if isGM}}
-        <label>{{localize "RQG.Actor.Background.Gender"}}
+        <label>{{localize "RQG.Actor.Background.Gender"}}</label>
           <input
             type="text"
             name="data.background.gender"
             value="{{characterData.background.gender}}"
             size="10"
           />
-        </label>
       {{else if data.data.background.gender}}
         <label>{{localize "RQG.Actor.Background.Gender"}}</label>
         {{data.data.background.gender}}
       {{/if}}
-    </div>
 
-    <div class="nowrap" data-target-drop-property="speciesRqidLink">
       {{#if isGM}}
-        <label>{{localize "RQG.Actor.Background.Species"}}
+        <label>{{localize "RQG.Actor.Background.Species"}}</label>
           <input
             type="text"
             name="data.background.species"
             value="{{data.data.background.species}}"
             size="20"
           />
-        </label>
       {{else if data.data.background.species}}
         <label>{{localize "RQG.Actor.Background.Species"}}</label>
         {{data.data.background.species}}
       {{/if}}
+      
+      {{#if actorWizardFeatureFlag}}
+        <label></label>
+        {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+            rqidLink=data.data.background.speciesRqidLink
+            parentField="background.speciesRqidLink"
+            dropTypes="JournalEntry"
+            showDeleteFromPropertyName="background.speciesRqidLink"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+        }}
+      {{/if}}
+
     </div>
 
-    {{#if actorWizardFeatureFlag}}
-      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-          rqidLink=data.data.background.speciesRqidLink
-          parentField="background.speciesRqidLink"
-          dropTypes="JournalEntry"
-          showDeleteFromPropertyName="background.speciesRqidLink"
-          showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-      }}
-    {{/if}}
+
   </fieldset>
+
+  
+  {{#unless actorWizardFeatureFlag}}
 
   <fieldset>
     <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
@@ -152,6 +148,8 @@
     </div>
 
   </fieldset>
+
+  {{/unless}}
 
   <fieldset>
     <legend>{{localize "RQG.Actor.Background.Circumstance"}}</legend>
