@@ -72,9 +72,9 @@
     {{#if actorWizardFeatureFlag}}
       {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
           rqidLink=data.data.background.speciesRqidLink
-          parentField="speciesRqidLink"
+          parentField="background.speciesRqidLink"
           dropTypes="JournalEntry"
-          showDeleteFromPropertyName="speciesRqidLink"
+          showDeleteFromPropertyName="background.speciesRqidLink"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
       }}
