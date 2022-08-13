@@ -86,29 +86,44 @@ export class Rqid {
 
   /**
    * A more flexible way to get all matching documents from a rqid.
+   * @param rqidRegex regex used on the rqid
+   * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
+   * @param lang the language to match against ("en", "es", ...)
+   * @param scope defines where it will look:
+   * **match** same logic as fromRqid function,
+   * **all**: find in both world & compendia,
+   * **world**: only search in world,
+   * **compendiums**: only search in compendiums
    */
   public static async fromRqidRegex(
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en",
-    scope: "all" | "world" | "compendiums" = "all"
+    scope: "match" | "all" | "world" | "compendiums" = "match"
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
     }
+    const result: Document<any, any>[] = [];
 
-    if (["all", "world"].includes(scope)) {
+    if (["match", "all", "world"].includes(scope)) {
       const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
-      if (worldDocuments.length) {
+      if (scope === "match" && worldDocuments.length) {
         return worldDocuments;
       }
+      result.splice(0, 0, ...worldDocuments);
     }
 
-    if (["all", "compendiums"].includes(scope)) {
-      return await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
+    if (["match", "all", "compendiums"].includes(scope)) {
+      const compendiaDocuments = await Rqid.documentsFromCompendia(
+        rqidRegex,
+        rqidDocumentType,
+        lang
+      );
+      result.splice(result.length, 0, ...compendiaDocuments);
     }
 
-    return [];
+    return result;
   }
 
   /**
