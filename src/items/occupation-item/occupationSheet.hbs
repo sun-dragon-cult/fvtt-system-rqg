@@ -78,28 +78,32 @@
               <div style="display: flex; flex-wrap: wrap;" name="occupationalSkill">
               {{#each occupationData.occupationalSkills}}
                 <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
-                {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                  rqidLink=this.skillRqidLink
-                }}
-                <div>
-                  <input
-                    type="number"
-                    min="-100"
-                    max="100"
-                    id="bonus-{{@index}}"
-                    data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                    title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
-                    value="{{this.bonus}}">%                  
-                </div>
-                <div>
-                  <input
-                    type="checkbox"
-                    id="income-skill-{{@index}}"
-                    data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                    title="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
-                    {{checked this.incomeSkill}}>
-                  <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}</label>                  
-                </div>
+                  <i class="fas fa-times icon"
+                      data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
+                      title="{{localize 'RQG.Item.RqgItem.RqidLinkDelete' rqid=this.skillRqidLink.rqid name=this.skillRqidLink.name}}"></i>
+
+                  {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                    rqidLink=this.skillRqidLink
+                  }}
+                  <div>
+                    <input
+                      type="number"
+                      min="-100"
+                      max="100"
+                      id="bonus-{{@index}}"
+                      data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                      title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
+                      value="{{this.bonus}}">%                  
+                  </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id="income-skill-{{@index}}"
+                      data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                      title="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
+                      {{checked this.incomeSkill}}>
+                    <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}</label>                  
+                  </div>
                 </div>
               {{/each}}
               </div>

@@ -151,6 +151,32 @@ export class OccupationSheet extends RqgItemSheet<
       ?.addEventListener("click", () => {
         this.toggleSkillEdit(false);
       });
+
+    $(this.form!)
+      .find("[data-delete-occupational-skill-rqid]")
+      .each((i: number, el: HTMLElement) => {
+        el.addEventListener("click", async (ev: MouseEvent) => {
+          // Note that if there are duplicate skills, like "Craft (...)",
+          // deleting one of them will delete all of them.
+          let rqidToDelete = getDomDataset(ev, "delete-occupational-skill-rqid");
+          const thisOccupation = this.item.data.data as OccupationDataSourceData;
+          const occSkills = thisOccupation.occupationalSkills.filter(function (skill) {return skill.skillRqidLink?.rqid !== rqidToDelete});
+
+          if (this.item.isEmbedded) {
+            await this.item.actor?.updateEmbeddedDocuments("Item", [
+              {
+                _id: this.item.id,
+                "data.occupationalSkills": occSkills,
+              },
+            ]);
+          } else {
+            await this.item.update({
+              "data.occupationalSkills": occSkills,
+            });
+          }
+
+        });
+    });
   }
 
   private toggleSkillEdit(forceEdit = false) {
