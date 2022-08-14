@@ -1,4 +1,5 @@
 import {
+  OccupationalSkill,
   OccupationDataProperties,
   OccupationDataPropertiesData,
   OccupationDataSourceData,
@@ -10,6 +11,8 @@ import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { HomelandDataSource } from "../../data-model/item-data/homelandData";
 import { systemId } from "../../system/config";
+import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { RqidLink } from "../../data-model/shared/rqidLink";
 
 export interface OccupationSheetData extends RqgItemSheetData {
   isEmbedded: boolean; // There might be no reason to actually embed Occupation items!
@@ -219,7 +222,7 @@ export class OccupationSheet extends RqgItemSheet<
       if (droppedItem === undefined) {
         return;
       }
-
+   
       if (droppedItem.type === "homeland") {
         // For this one we're just saving the name of the homeland, without the region
         // to an array of strings.
@@ -239,6 +242,46 @@ export class OccupationSheet extends RqgItemSheet<
               "data.homelands": homelands,
             });
           }
+        }
+      }
+
+      if (droppedItem.type === "skill") {
+        let droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
+
+        if (droppedRqid && droppedRqid.id) {
+                console.log(droppedRqid);
+
+          let occSkill = new OccupationalSkill();
+          occSkill.bonus = 0;
+          occSkill.incomeSkill = false;
+          occSkill.skillRqidLink = new RqidLink();
+          occSkill.skillRqidLink.name = droppedItem.name || "";
+          occSkill.skillRqidLink.rqid = droppedRqid?.id;   
+
+          let occSkills = thisOccupation.occupationalSkills;
+
+          // this is intentionally NOT checking for duplicate skills
+          // since an Occupation might have generic skills more than once,
+          // for example Craft(...)
+          occSkills.push(occSkill);
+
+          if (this.item.isEmbedded) {
+            await this.item.actor?.updateEmbeddedDocuments("Item", [
+              {
+                _id: this.item.id,
+                "data.occupationalSkills": occSkills
+              }
+            ])
+          } else {
+            await this.item.update({
+              "data.occupationalSkills":  occSkills
+            })
+          }
+        }
+        else {
+          // see #315 and this situation should be handled however we decide
+          // to generally handle dropping things that do not have rqids
+          console.log("Dropped skill did not have an Rqid");
         }
       }
     }
