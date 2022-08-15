@@ -165,7 +165,7 @@
       "label": "Cult Descriptions",
       "system": "rqg",
       "path": "assets/packs/cult-descriptions.db",
-      "type": "Item"
+      "type": "JournalEntry"
     },
     {
       "name": "passions",

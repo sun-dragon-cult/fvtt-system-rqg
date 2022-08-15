@@ -504,28 +504,8 @@ export async function getActorTemplates(): Promise<RqgActor[] | undefined> {
 }
 
 export async function getHomelands(): Promise<RqgItem[] | undefined> {
-  // get all rqids of homelands
-  let homelandRqids: string[] = [];
 
-  const worldHomelandRqids =
-    getGame()
-      .items?.filter((h) => h.type === ItemTypeEnum.Homeland)
-      .map((h) => h.getFlag(systemId, documentRqidFlags)?.id)
-      .filter((h): h is string => !!h) ?? [];
-
-  getGame().packs.forEach((p) => {
-    p.forEach((h) => {
-      if (h instanceof Homeland) {
-        const rqid = (h as RqgItem).getFlag(systemId, documentRqidFlags)?.id;
-        !!rqid && homelandRqids.push(rqid);
-      }
-    });
-  });
-
-  worldHomelandRqids?.forEach((h) => homelandRqids.push(h));
-
-  // get distinct rqids
-  homelandRqids = [...new Set(homelandRqids)];
+  let homelandRqids = await getHomelandsRqids();
 
   // get the best version of each homeland by rqid
   const result: RqgItem[] = [];
@@ -540,4 +520,49 @@ export async function getHomelands(): Promise<RqgItem[] | undefined> {
   }
 
   return result;
+}
+
+async function getHomelandsRqids():  Promise<string[]>{
+    // get all rqids of homelands
+  let compendiumHomelandRqids: string[] = await getCompendiumHomelandRqids();
+
+  const worldHomelandRqids = await getWorldHomelandRqids();
+
+  // get distinct rqids
+   return [... new Set([...compendiumHomelandRqids,...worldHomelandRqids])];
+}
+
+async function getWorldHomelandRqids(): Promise<string[]> {
+
+  let worldRqids = getGame()
+    .items?.filter((h) => h?.type === ItemTypeEnum.Homeland)
+    .map((h) => h.getFlag(systemId, documentRqidFlags)?.id)
+    .filter((rqid) => rqid !== undefined) as string[];
+
+  return worldRqids;
+}
+
+async function getCompendiumHomelandRqids(): Promise<string[]> {
+  let homelandRqids: string[] = [];
+
+  let packs = getGame().packs;
+    for (const pack of packs) {
+      // @ts-ignore type
+      if (pack.metadata.type === "Item") {
+      let docs = await pack.getDocuments();
+      for (const packItem of docs) {
+          let pi = packItem as StoredDocument<RqgItem>;
+
+          if (pi != null) {
+            if (pi.type === "homeland") {
+              const rqid = pi.getFlag(systemId, documentRqidFlags)?.id;
+              !!rqid && homelandRqids.push(rqid);
+            }
+          } else {
+            console.log("Could not cast packItem as StoredDocument<RqgItem>", packItem);
+          }
+      }
+    }
+  };
+  return homelandRqids;
 }
