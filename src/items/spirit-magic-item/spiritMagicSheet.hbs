@@ -84,22 +84,6 @@
           </select>
           {{/if}}
 
-          {{!-- TODO: If this is supposed to set the concentration to "Active" when "Duration" is "Focused"
-                it's not working.  The select "looks best" at least so I'm leaving that for now. --}}
-          {{#if (eq spiritMagicData.duration "focused")}}
-          <label for="concentration-focused-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Concentration"}}</label>
-          {{!-- <input type="text" id="concentration-focused-{{data._id}}" name="data.concentration" value="active" readonly> --}}
-          <select id="concentration-{{data._id}}" name="data.concentration" >
-            <option value="active">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." "active")}}</option>
-          </select>
-          {{/if}}
-
-          {{#unless (eq spiritMagicData.duration "temporal")}}
-            {{#unless (eq item.data.duration "focused")}}
-            <input type="text" id="concentration-none-{{data._id}}" name="data.concentration" value="" hidden>
-            {{/unless}}
-          {{/unless}}
-
           <label for="is-ritual-{{data._id}}">{{localize "RQG.Item.Spell.RitualQ"}}</label>
           <input type="checkbox" id="is-ritual-{{data._id}}" name="data.isRitual" {{checked spiritMagicData.isRitual}}>
 
