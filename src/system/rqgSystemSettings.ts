@@ -52,15 +52,6 @@ export const registerRqgSystemSettings = function () {
     },
   });
 
-  getGame().settings.register(systemId, "runesCompendium", {
-    name: localize("RQG.Settings.RunesCompendium.settingName"),
-    hint: localize("RQG.Settings.RunesCompendium.settingHint"),
-    scope: "world",
-    config: true,
-    type: String,
-    default: "rqg.runes",
-  });
-
   getGame().settings.register(systemId, "fumbleRollTable", {
     name: localize("RQG.Settings.FumbleRollTable.settingName"),
     hint: localize("RQG.Settings.FumbleRollTable.settingHint"),

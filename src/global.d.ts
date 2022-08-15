@@ -46,12 +46,12 @@ declare global {
   namespace ClientSettings {
     interface Values {
       "rqg.specialCrit": boolean;
-      "rqg.runesCompendium": string;
       "rqg.fumbleRollTable": string;
       "rqg.systemMigrationVersion": string;
       "rqg.hitLocations": Object;
       "rqg.magicRuneName": string;
       "rqg.defaultItemIconSettings": any; // TODO type the setting
+      "rqg.actor-wizard-feature-flag": boolean;
     }
   }
 }

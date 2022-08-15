@@ -213,7 +213,7 @@ export class RqgActorSheet extends ActorSheet<
       isGM: getGameUser().isGM,
       isPC: this.actor.hasPlayerOwner,
       showUiSection: this.getUiSectionVisibility(),
-      actorWizardFeatureFlag: !!getGame().settings.get(systemId, "actor-wizard-feature-flag"),
+      actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
     };
   }
 
@@ -1055,7 +1055,6 @@ export class RqgActorSheet extends ActorSheet<
             callback: async () => {
               const idsToDelete = [];
               if (item.type === ItemTypeEnum.Cult) {
-                console.log("CULT", item);
                 const cultId = item.id;
                 //@ts-ignore cultId
                 const runeMagicSpells = actor.items.filter(

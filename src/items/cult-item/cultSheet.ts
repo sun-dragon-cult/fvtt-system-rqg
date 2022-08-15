@@ -4,9 +4,13 @@ import {
   CultDataPropertiesData,
   CultRankEnum,
 } from "../../data-model/item-data/cultData";
-import { assertItemType, getAllRunesIndex, getGameUser } from "../../system/util";
+import {
+  assertItemType,
+  getAvailableRunes,
+  getGameUser,
+  AvailableRuneCache,
+} from "../../system/util";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 
@@ -15,7 +19,7 @@ interface CultSheetData extends RqgItemSheetData {
   data: CultDataProperties; // Actually contains more...complete with effects, flags etc
   cultData: CultDataPropertiesData;
   sheetSpecific: {
-    allRunes: IndexTypeForMetadata<CompendiumCollection.Metadata>;
+    allRunes: AvailableRuneCache[];
     journalEntryName: string;
     ranksEnum: CultRankEnum[];
   };
@@ -55,7 +59,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       data: itemData,
       cultData: itemData.data,
       sheetSpecific: {
-        allRunes: getAllRunesIndex(),
+        allRunes: getAvailableRunes(),
         journalEntryName: cultData.descriptionRqidLink.name,
         ranksEnum: Object.values(CultRankEnum),
       },

@@ -1,9 +1,9 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../../actors/rqgActor";
-import { getAllRunesIndex, getGame, localize, RqgError } from "../../system/util";
+import { getAvailableRunes, getGame, localize, RqgError } from "../../system/util";
 import { RqgItem } from "../rqgItem";
-import { systemId } from "../../system/config";
+import { Rqid } from "../../system/api/rqidApi";
 
 export class Cult extends AbstractEmbeddedItem {
   // public static init() {
@@ -33,38 +33,16 @@ export class Cult extends AbstractEmbeddedItem {
       .map((r: RqgItem) => r.name);
     const newRuneNames = cultRuneNames.filter((r: string) => !actorRuneNames.includes(r));
     if (newRuneNames.length > 0) {
-      const runesCompendiumName = getGame().settings.get(systemId, "runesCompendium");
-      const runePack = getGame().packs?.get(runesCompendiumName);
-      if (!runePack) {
-        const msg = localize("RQG.Item.Notification.CantFindRunesCompendiumError", {
-          runesCompendiumName: runesCompendiumName,
-        });
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, runesCompendiumName);
-      }
-      const allRunesIndex = getAllRunesIndex();
-      const newRuneIds = newRuneNames.map((newRune) => {
-        const newRuneIndex = allRunesIndex.getName(newRune);
-        if (newRuneIndex == null) {
-          const msg = localize("RQG.Item.Notification.CantFindCultRuneError", { newRune: newRune });
-          ui.notifications?.error(msg);
-          throw new RqgError(msg, actor, cultItem);
-        }
-        // @ts-ignore TODO Pick "type" only?
-        return newRuneIndex._id;
-      });
-      Promise.all(newRuneIds.map((id: string) => runePack.getDocument(id))).then(
-        (newRuneEntities) => {
-          newRuneEntities.map(async (rune: StoredDocument<any>) => {
-            if (rune == null || rune.data.type !== ItemTypeEnum.Rune) {
-              const msg = localize("RQG.Item.Notification.CantFindRuneInAllRunesCompendiumError");
-              ui.notifications?.error(msg);
-              throw new RqgError(msg, newRuneIds, runePack);
-            }
-            await actor.createEmbeddedDocuments("Item", [rune.data]);
-          });
-        }
+      // Until we use Rqid for actual linking, convert the name to Rqid
+      const newRuneRqids = getAvailableRunes()
+        .filter((r) => newRuneNames.includes(r.name))
+        .map((r) => r.rqid);
+      const gameLanguage = getGame().settings.get("core", "language") as string;
+      const runes = await Promise.all(
+        newRuneRqids.map(async (r) => await Rqid.fromRqid(r, gameLanguage))
       );
+      const runesData = runes.map((r) => r?.data);
+      await actor.createEmbeddedDocuments("Item", runesData);
     }
     return;
   }

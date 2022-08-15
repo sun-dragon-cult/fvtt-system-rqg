@@ -79,7 +79,7 @@ export class Rqid {
         lang: lang,
       });
       ui.notifications?.warn(msg);
-      console.log(msg);
+      console.log("RQG |", msg);
     }
     return undefined;
   }
@@ -386,7 +386,7 @@ export class Rqid {
               lang: lang,
             });
             ui.notifications?.error(msg);
-            console.log("RQG | " + msg, index);
+            console.log("RQG |", msg, index);
             throw new RqgError(msg, index, indexInstances);
           }
           candidateDocuments.push(document);

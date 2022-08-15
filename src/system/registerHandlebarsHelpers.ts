@@ -1,7 +1,7 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import {
   getActorFromIds,
-  getAllRunesIndex,
+  getAvailableRunes,
   getGame,
   hasOwnProperty,
   localize,
@@ -87,15 +87,16 @@ export const registerHandlebarsHelpers = function () {
     if (!runeName) {
       return;
     }
-    const allRunesIndex = getAllRunesIndex();
-    // @ts-ignore waiting for issue #897 in foundry-vtt-types (r.name)
-    const rune = allRunesIndex.find((r) => r.name === runeName);
+    const availableRunes = getAvailableRunes();
+    const rune = availableRunes.find((r) => r.name === runeName);
     if (!rune) {
-      const msg = `Couldn't find rune ${runeName}`;
+      const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {
+        runeName: runeName,
+      });
       ui.notifications?.error(msg);
-      throw new RqgError(msg);
+      console.error("RQG |", msg);
+      return "";
     }
-    // @ts-ignore waiting for issue #897 in foundry-vtt-types
     return rune.img;
   });
 

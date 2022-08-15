@@ -9,7 +9,7 @@ import { RQG_CONFIG, systemId } from "./system/config";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
-import { getGame, RqgError } from "./system/util";
+import { cacheAvailableRunes, getGame } from "./system/util";
 // import { consolidateCompendiumItems } from "./system/migrations/ConsolidateItems";
 import { RqgPause } from "./foundryUi/pause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
@@ -91,13 +91,6 @@ Hooks.once("ready", async () => {
     await migrateWorld();
     // await setupSimpleCalendar();
   }
-  const runeCompendium = getGame().settings.get(systemId, "runesCompendium");
-  // Make sure the index for runes is preloaded
-  try {
-    await getGame().packs!.get(runeCompendium)!.getIndex();
-  } catch (err) {
-    const msg = `Couldn't load rune compendium - check that you have the compendium specified in the "Rune items compendium" enabled and that the link is correct`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg, runeCompendium);
-  }
+  // Make sure the cache of available runes is preloaded
+  await cacheAvailableRunes();
 });

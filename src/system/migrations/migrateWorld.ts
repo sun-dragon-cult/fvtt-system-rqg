@@ -89,7 +89,7 @@ async function confirmRunAssignRqidDialog(newVersion: string): Promise<void> {
             label: "<b>Step 1</b> – Assign Rqid IDs",
             callback: async () => {
               await assignRqidToJEs();
-              console.log("*** Reloading browser to force pack index update ***");
+              console.log("RQG | *** Reloading browser to force pack index update ***");
               location.reload();
             },
           },

@@ -5,8 +5,12 @@ import {
 } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { assertItemType, getAllRunesIndex, getGameUser } from "../../system/util";
-import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
+import {
+  assertItemType,
+  getAvailableRunes,
+  getGameUser,
+  AvailableRuneCache,
+} from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 
@@ -17,7 +21,7 @@ interface SkillSheetData extends RqgItemSheetData {
   sheetSpecific: {
     skillCategories: SkillCategoryEnum[];
     journalEntryName: string;
-    allRunes: IndexTypeForMetadata<CompendiumCollection.Metadata>;
+    allRunes: AvailableRuneCache[];
   };
 }
 
@@ -55,7 +59,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       sheetSpecific: {
         skillCategories: Object.values(SkillCategoryEnum),
         journalEntryName: skillData.descriptionRqidLink.name,
-        allRunes: getAllRunesIndex(),
+        allRunes: getAvailableRunes(),
       },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,

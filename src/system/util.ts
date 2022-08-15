@@ -1,5 +1,4 @@
 import { RqgActor } from "../actors/rqgActor";
-import { IndexTypeForMetadata } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/foundry.js/collections/documentCollections/compendiumCollection";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
@@ -320,21 +319,91 @@ export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefin
   return rqgActor as unknown as T;
 }
 
-export function getAllRunesIndex(): IndexTypeForMetadata<CompendiumCollection.Metadata> {
-  const runeCompendiumName = getGame().settings.get(systemId, "runesCompendium");
-  const pack = getGame().packs.get(runeCompendiumName);
-  if (!pack) {
-    const msg = `Couldn't find Compendium of runes named ${runeCompendiumName}`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg);
+export type AvailableRuneCache = {
+  name: string;
+  img: string;
+  rqid: string;
+};
+
+let availableRunes: AvailableRuneCache[] = [];
+
+/**
+ * Get the cached data about the runes that are available in the world.
+ * @see {@link cacheAvailableRunes}
+ */
+export function getAvailableRunes(): AvailableRuneCache[] {
+  if (availableRunes.length > 0) {
+    return availableRunes;
   }
-  // @ts-ignore waiting for issue #897 in foundry-vtt-types
-  if (!pack.indexed) {
-    const msg = "Runes pack is not yet indexed, try again";
-    ui.notifications?.error(msg);
-    getGame().packs!.get(runeCompendiumName)!.getIndex();
+  ui.notifications?.warn("compendiums not indexed yet, try again!");
+  cacheAvailableRunes();
+  return [];
+}
+
+/**
+ * Go through all compendiums and make a list of all the unique runes in them
+ * using rqid to find the runes and storing name, img & rqid for each.
+ */
+export async function cacheAvailableRunes(): Promise<AvailableRuneCache[]> {
+  if (availableRunes.length > 0) {
+    return availableRunes;
   }
-  return pack.index;
+  const compendiumRuneIndexData = (
+    await Promise.all(
+      getGame().packs.map(async (pack: CompendiumCollection<CompendiumCollection.Metadata>) => {
+        // @ts-expect-error indexed
+        if (!pack.indexed) {
+          await pack.getIndex();
+        }
+        return getRuneIndexData(pack);
+      })
+    )
+  ).flat();
+
+  // Only keep one of each rqid, the one with the highest priority
+  const highestPriorityRunesData: any = compendiumRuneIndexData.reduce(
+    (acc: AvailableRuneCache[], runeIndexData: any) => {
+      const toReplaceRune = acc.findIndex(
+        (r: any) =>
+          r.rqid === runeIndexData.rqid && Number(r.priority) <= Number(runeIndexData.priority)
+      );
+      if (toReplaceRune >= 0) {
+        acc.splice(toReplaceRune, 1, runeIndexData);
+      } else if (!acc.some((r) => r.rqid === runeIndexData.rqid)) {
+        acc.push(runeIndexData);
+      }
+      return acc;
+    },
+    []
+  );
+
+  availableRunes = highestPriorityRunesData.map((r: any) => ({
+    name: r.name,
+    img: r.img,
+    rqid: r.rqid,
+  }));
+  return availableRunes;
+}
+
+function getRuneIndexData(
+  pack: CompendiumCollection<CompendiumCollection.Metadata>
+): AvailableRuneCache[] {
+  return pack.index.reduce((acc, indexData) => {
+    // @ts-expect-error flags
+    if (indexData?.flags?.rqg?.documentRqidFlags?.id?.startsWith("i.rune.")) {
+      acc.push({
+        // @ts-expect-error name
+        name: indexData.name ?? "",
+        // @ts-expect-error img
+        img: indexData.img ?? "",
+        // @ts-expect-error flags
+        rqid: indexData?.flags?.rqg?.documentRqidFlags?.id ?? "",
+        // @ts-expect-error flags
+        priority: indexData?.flags?.rqg?.documentRqidFlags?.priority ?? "",
+      });
+    }
+    return acc;
+  }, []);
 }
 
 export function uuid2Name(uuid: string | undefined): string | null {
@@ -366,6 +435,7 @@ export function uuid2Name(uuid: string | undefined): string | null {
 export class RqgError implements Error {
   public name: string = "RqgError";
   public debugData: any[];
+
   constructor(public message: string, ...debugData: any[]) {
     // Maintains proper stack trace for where our error was thrown.
     if (Error.captureStackTrace) {
@@ -433,7 +503,7 @@ export function localize(key: string, data?: Record<string, unknown>): string {
   const result = getGame().i18n.format(key, data);
   if (result === key) {
     console.log(
-      `Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en.json).`
+      `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en.json).`
     );
   }
   return result;

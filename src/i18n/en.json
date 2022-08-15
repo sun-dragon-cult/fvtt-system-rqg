@@ -729,9 +729,8 @@
         "CantFindRootLocationNode": "Can't find root location Node",
         "LocationDidntFindItem": "location didn't find item",
         "ExpectedCultItemError": "Expected Cult item",
-        "CantFindRunesCompendiumError": "Can't find runes Compendium {runesCompendiumName}",
         "CantFindCultRuneError": "Can't find cult rune {newRune} among allRunesIndex",
-        "CantFindRuneInAllRunesCompendiumError": "Can't find rune in all runes compendium",
+        "CantFindRuneInAvailableRunesError": "Can't find rune \"{runeName}\" in any compendium",
         "ItemWasNotHitLocationError": "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
         "HitLocationDoesNotHaveActorError": "Hit Location item didn't have an actor",
         "ActorDoesNotHaveMaxHpError": "Actor doesn't have max hitPoints",
@@ -1064,10 +1063,6 @@
         "settingName": "Default Item Icons",
         "settingLabel": "Configure Default Icons for new Items",
         "settingHint": "Set the default icons used when creating new items."
-      },
-      "RunesCompendium": {
-        "settingName": "Rune items compendium",
-        "settingHint": "The runes in the specified compendium will be used in the system. Please include all possible runes."
       },
       "FumbleRollTable": {
         "settingName": "Fumble Roll Table",
