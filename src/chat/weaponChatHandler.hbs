@@ -19,7 +19,7 @@
       {{#each combatManeuvers}}
             <button name="combatManeuverRoll" value="{{name}}"
                 {{#if (eq name ../../formData.combatManeuverName)}}class="active"{{/if}}>
-                {{localize (concat "RQG.Item.Weapon.combatManeuver." name)}}
+                {{name}}
             </button>
       {{/each}}
       {{/with}}
