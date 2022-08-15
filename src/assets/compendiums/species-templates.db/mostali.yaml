@@ -26,7 +26,11 @@ data:
       value: 11
       formula: 3d6
   background:
-    species: Human
+    species: Mostali (Iron)
+    speciesRqidLink:
+        rqid: je..species-description-mostali-iron
+        name: Mostali (Iron)
+        documentType: JournalEntry
     occupation: ''
     homeland: sartar
     cultureJournalRqidLinks: []
