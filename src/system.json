@@ -131,6 +131,55 @@
       "system": "rqg",
       "path": "assets/packs/homeland-descriptions.db",
       "type": "JournalEntry"
+    },
+    {
+      "name": "tribe-descriptions",
+      "label": "Tribe Descriptions",
+      "system": "rqg",
+      "path": "assets/packs/tribe-descriptions.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "clan-descriptions",
+      "label": "Clan Descriptions",
+      "system": "rqg",
+      "path": "assets/packs/clan-descriptions.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "region-descriptions",
+      "label": "Region Descriptions",
+      "system": "rqg",
+      "path": "assets/packs/region-descriptions.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "cults",
+      "label": "Cults",
+      "system": "rqg",
+      "path": "assets/packs/cults.db",
+      "type": "Item"
+    },
+    {
+      "name": "cult-descriptions",
+      "label": "Cult Descriptions",
+      "system": "rqg",
+      "path": "assets/packs/cult-descriptions.db",
+      "type": "Item"
+    },
+    {
+      "name": "passions",
+      "label": "Passions",
+      "system": "rqg",
+      "path": "assets/packs/passions.db",
+      "type": "Item"
+    },
+    {
+      "name": "homelands",
+      "label": "Homelands",
+      "system": "rqg",
+      "path": "assets/packs/homelands.db",
+      "type": "Item"
     }
   ],
   "languages": [
