@@ -155,8 +155,11 @@ export class nameGeneration {
 
     let names = nameJournal?.data.content;
     // TODO: This could possibly be more robust to allow users to not have to be exact in entering names
-    names = names?.replace("<pre>", "").replace("</pre>", "");
-    const nameArray = names?.split("<br />");
+    names = names
+      ?.replace("<pre>", "")
+      .replace("</pre>", "")
+      .replace(/<br \/>/gm, "\n");
+    const nameArray = names?.split("\n");
 
     return new NameBase({
       rqid: rqid.id,
