@@ -201,14 +201,18 @@ export class Rqid {
     if (document instanceof Item) {
       if (document.data.type === ItemTypeEnum.Skill) {
         rqidIdentifier = trimChars(
-          toKebabCase(`${document.data.data.skillName}-${document.data.data.specialization}`),
+          toKebabCase(
+            `${document.data.data.skillName ?? ""}-${document.data.data.specialization ?? ""}`
+          ),
           "-"
         );
       }
       if (document.data.type === ItemTypeEnum.Armor) {
         rqidIdentifier = trimChars(
           toKebabCase(
-            `${document.data.data.namePrefix}-${document.data.data.armorType}-${document.data.data.material}`
+            `${document.data.data.namePrefix ?? ""}-${document.data.data.armorType ?? ""}-${
+              document.data.data.material ?? ""
+            }`
           ),
           "-"
         );
