@@ -10,6 +10,7 @@ import {
   RqgJournalEntryFlags,
   RqgRollTableFlags,
 } from "./data-model/shared/rqgDocumentFlags";
+import { IconSettingsData } from "./dialog/defaultItemIconSettings";
 
 declare global {
   interface DocumentClassConfig {
@@ -50,7 +51,7 @@ declare global {
       "rqg.systemMigrationVersion": string;
       "rqg.hitLocations": Object;
       "rqg.magicRuneName": string;
-      "rqg.defaultItemIconSettings": any; // TODO type the setting
+      "rqg.defaultItemIconSettings": IconSettingsData;
       "rqg.actor-wizard-feature-flag": boolean;
     }
   }

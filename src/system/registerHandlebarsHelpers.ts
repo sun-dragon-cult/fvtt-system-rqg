@@ -154,9 +154,8 @@ export const registerHandlebarsHelpers = function () {
     }
 
     if (rqidLink.documentType === "Item" && rqidLink.itemType) {
-      const iconSettings: any = <ClientSettings>(
-        getGame().settings.get(systemId, "defaultItemIconSettings")
-      );
+      const iconSettings: any = getGame().settings.get(systemId, "defaultItemIconSettings");
+      // TODO use the first part of the rqid instead
       if (iconSettings[rqidLink.itemType]) {
         return `<img src="${iconSettings[rqidLink.itemType]}">`;
       }
