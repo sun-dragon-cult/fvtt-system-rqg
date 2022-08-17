@@ -866,8 +866,7 @@
         "WeaponUsage": "Usage",
         "Description": "Description",
         "GM": "GM",
-        "ActiveEffects": "Active Effects",
-        "RQGSystem": "RQG System"
+        "ActiveEffects": "Active Effects"
       },
       "Skill": {
         "Name": "Name",

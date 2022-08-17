@@ -41,8 +41,17 @@ export async function migrateWorld(): Promise<void> {
   }
 }
 
-export async function applyDefaultWorldMigrations(): Promise<void> {
-  const worldItemMigrations: ItemMigration[] = [
+/**
+ * Run the default world migration. It is possible to override the migrations for items
+ * and or actors by supplying an array of migration functions.
+ * Accessible through game.system.api.migrate()
+ * This makes it possible to run custom migrations via macros.
+ */
+export async function applyDefaultWorldMigrations(
+  itemMigrations: ItemMigration[] | undefined = undefined,
+  actorMigrations: ActorMigration[] | undefined = undefined
+): Promise<void> {
+  const worldItemMigrations: ItemMigration[] = itemMigrations ?? [
     changeRuneExperienceFieldName,
     renameRuneMagicDurationSpecial,
     moveRuneIcons,
@@ -51,7 +60,7 @@ export async function applyDefaultWorldMigrations(): Promise<void> {
     renameFireSky,
     useRqidDescriptionLinks,
   ];
-  const worldActorMigrations: ActorMigration[] = [migrateActorDummy];
+  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 
   await applyMigrations(worldItemMigrations, worldActorMigrations);
 }
