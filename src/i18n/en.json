@@ -657,7 +657,7 @@
         "HitPointsAbbr": "HP",
         "CurrentHitPoints": "Current Hit Points",
         "HitPointLocation": "Hit Point Location",
-        "PhysicalItemType": "Item Type",
+        "ItemType": "Item Type",
         "PhysicalItemTypeEnum": {
           "unique": "Unique",
           "currency": "Currency",
