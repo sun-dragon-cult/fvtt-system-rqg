@@ -249,17 +249,26 @@ export class Rqid {
       return undefined;
     }
 
-    const candidateDocuments = (getGame() as any)[this.getGameProperty(rqid)]?.contents.filter(
-      (doc: Document<any, any>) =>
-        doc.getFlag(systemId, documentRqidFlags)?.id === rqid &&
-        doc.getFlag(systemId, documentRqidFlags)?.lang === lang
-    );
+    const candidateDocuments: Document<any, any>[] = (getGame() as any)[
+      this.getGameProperty(rqid)
+    ]?.contents
+      .filter(
+        (doc: Document<any, any>) =>
+          doc.getFlag(systemId, documentRqidFlags)?.id === rqid &&
+          doc.getFlag(systemId, documentRqidFlags)?.lang === lang
+      )
+      .sort(Rqid.compareRqidPrio);
 
     if (candidateDocuments === undefined || candidateDocuments.length === 0) {
       return undefined;
     }
 
-    if (candidateDocuments.length > 1) {
+    const highestPrio = candidateDocuments[0].getFlag(systemId, documentRqidFlags)?.priority;
+    const highestPrioDocuments = candidateDocuments.filter(
+      (doc) => doc.getFlag(systemId, documentRqidFlags)?.priority === highestPrio
+    );
+
+    if (highestPrioDocuments.length > 1) {
       const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInWorld", {
         rqid: rqid,
         lang: lang,
@@ -270,7 +279,7 @@ export class Rqid {
       // TODO Or should this be handled in the compendium browser eventually?
       console.warn(msg + "  Duplicate items: ", candidateDocuments);
     }
-    return candidateDocuments[0];
+    return highestPrioDocuments[0];
   }
 
   /**
