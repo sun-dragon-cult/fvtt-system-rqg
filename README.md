@@ -4,7 +4,7 @@
 ![Latest Release Download Count](https://img.shields.io/github/downloads/wakeand/fvtt-system-rqg/latest/rqg.zip)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/wakeand/fvtt-module-reverseinitiativeorder/blob/master/LICENSE)
 
-# RuneQuest Glorantha (Unofficial) system for Foundry Virtual Table Top
+# RuneQuest Glorantha system for Foundry Virtual Table Top
 
 ## Installing
 Paste this into Foundry VTT Install System -> Manifest URL

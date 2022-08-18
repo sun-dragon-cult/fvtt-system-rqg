@@ -21,7 +21,7 @@ Hooks.once("init", async () => {
   console.log(
     "%c                                                                                            \n" +
       "                                                                                            \n" +
-      '`7MM"""Mq.  %c(Unofficial)%c                     .g8""8q.                                 mm    \n' +
+      '`7MM"""Mq.                                   .g8""8q.                                 mm    \n' +
       "  MM   `MM.                                .dP'    `YM.                               MM    \n" +
       '  MM   ,M9 `7MM  `7MM  `7MMpMMMb.  .gP"Ya  dM\'      `MM `7MM  `7MM  .gP"Ya  ,pP"Ybd mmMMmm  \n' +
       "  MMmmdM9    MM    MM    MM    MM ,M'   Yb MM        MM   MM    MM ,M'   Yb 8I   `\"   MM    \n" +
@@ -40,13 +40,16 @@ Hooks.once("init", async () => {
       "  `\"bmmmdPY .JMML.`Ybmd9'.JMML.  `Moo9^Yo..JMML  JMML.`Mbmo.JMML  JMML.`Moo9^Yo.\n" +
       "                                                                                \n" +
       "                                                                                \n",
-    "color: #F3A71E",
-    "color: unset",
     "color: #F3A71E"
   );
-  console.log("RQG | Initializing the Runequest Glorantha (Unofficial) Game System");
+  console.log("RQG | Initializing the Runequest Glorantha Game System");
 
   CONFIG.RQG = RQG_CONFIG;
+  // @ts-expect-errors v10
+  if (CONFIG?.compatibility) {
+    // @ts-expect-errors v10 SILENT - no warnings
+    CONFIG.compatibility.mode = CONST.COMPATIBILITY_MODES?.SILENT;
+  }
 
   // CONFIG.debug.hooks = true; // console log when hooks fire
   // CONFIG.debug.time = true; // console log time
