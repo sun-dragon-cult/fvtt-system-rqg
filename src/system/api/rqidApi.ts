@@ -90,6 +90,7 @@ export class Rqid {
    * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
    * @param scope defines where it will look:
+   * @param best if true only gets the "best" version, highest prio from world, or failing that, highest prio from compendium packs
    * **match** same logic as fromRqid function,
    * **all**: find in both world & compendia,
    * **world**: only search in world,
@@ -99,12 +100,13 @@ export class Rqid {
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en",
-    scope: "match" | "all" | "world" | "compendiums" = "match"
+    scope: "match" | "all" | "world" | "compendiums" = "match",
+    best: boolean = false
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
     }
-    const result: Document<any, any>[] = [];
+    let result: Document<any, any>[] = [];
 
     if (["match", "all", "world"].includes(scope)) {
       const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
@@ -114,12 +116,50 @@ export class Rqid {
       result.splice(0, 0, ...worldDocuments);
     }
 
+    const distinctWorldRqids: string[] = result
+      .map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)
+      .filter(function (value, index, self) {
+        return self.indexOf(value) === index;
+      });
+
+    // find the best results in the world
+    if (best) {
+      console.log("Distinct World Rqids: ", distinctWorldRqids);
+      result = [];
+      for (const rqid of distinctWorldRqids) {
+        const best = await Rqid.fromRqid(rqid);
+        if (best) {
+          result.push(best);
+        }
+      }
+    }
+
     if (["match", "all", "compendiums"].includes(scope)) {
-      const compendiaDocuments = await Rqid.documentsFromCompendia(
+      let compendiaDocuments = await Rqid.documentsFromCompendia(
         rqidRegex,
         rqidDocumentType,
         lang
       );
+
+      if (best) {
+        // list of all the rqids from the compendia that were not already found in the world.
+        const distinctCompendiaRqids = compendiaDocuments
+          .map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)
+          .filter(function (value, index, self) {
+            return self.indexOf(value) === index;
+          })
+          .filter(
+            (rqid) => !distinctWorldRqids.includes(rqid)
+          );
+        compendiaDocuments = [];
+        for (const rqid of distinctCompendiaRqids) {
+          const best = await Rqid.fromRqid(rqid);
+          if (best) {
+            compendiaDocuments.push(best);
+          }
+        }
+      }
+
       result.splice(result.length, 0, ...compendiaDocuments);
     }
 

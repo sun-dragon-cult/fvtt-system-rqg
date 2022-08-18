@@ -107,7 +107,17 @@ export class ActorWizard extends FormApplication {
 
     if (!this.species.speciesTemplates) {
       // Don't get these every time.
-      this.species.speciesTemplates = await getActorTemplates();
+      // this.species.speciesTemplates = await getActorTemplates();
+      const templates = await Rqid.fromRqidRegex(
+        /.*template.*/,
+        "a",
+        "en",
+        "all",
+        true
+      );
+
+      this.species.speciesTemplates = templates as RqgActor[];
+
     }
 
     if (!this.homeland.homelands) {
@@ -640,8 +650,14 @@ export class ActorWizard extends FormApplication {
 
         // Copy Skills, Runes, and Passions from the Actor template
         if (this.choices[key].speciesPresent) {
-          const itemsToAddFromTemplate =
-            this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key);
+          let itemsToAddFromTemplate = [await Rqid.fromRqid(key) as RqgItem];
+          if (!itemsToAddFromTemplate || itemsToAddFromTemplate.length === 0) {
+            // Didn't find items by rqid, so just take what's on the Species Template
+            itemsToAddFromTemplate =
+            this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key) || [];
+            console.log(`Actor Species Template had an item with rqid "${key} that was not found in by rqid. Using item from the Actor Species Template.`, itemsToAddFromTemplate);
+          }
+            
           if (itemsToAddFromTemplate) {
             for (const templateItem of itemsToAddFromTemplate) {
               // Item exists on the template and has been chosen but does not exist on the actor, so add it
