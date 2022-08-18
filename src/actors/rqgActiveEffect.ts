@@ -20,7 +20,13 @@ export class RqgActiveEffect extends ActiveEffect {
       const affectedItem = items[0];
       const currentValue: number = getProperty(items[0], path) || 0;
       const changeValue: number = Number(change.value) || 0;
-      foundry.utils.setProperty(affectedItem, path, changeValue + currentValue);
+      try {
+        foundry.utils.setProperty(affectedItem, path, changeValue + currentValue);
+      } catch (e) {
+        const msg = `Active Effect on item [${affectedItem.name}] in actor [${actor.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`;
+        ui.notifications?.warn(msg);
+        console.warn("RQG |", msg, change, e);
+      }
       return changeValue;
     } else if (items.length === 0) {
       if (this.data.origin && this.data.origin?.split(".")[1] === actor.id) {
