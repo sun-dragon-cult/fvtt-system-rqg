@@ -202,7 +202,6 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-    await super._onDrop(event);
 
     const thisOccupation = this.item.data.data as OccupationDataSourceData;
 
@@ -214,41 +213,15 @@ export class OccupationSheet extends RqgItemSheet<
       return;
     }
 
-    const targetPropertyName = getDomDataset(event, "target-drop-property");
-
-    const droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
-
-    if (droppedDocument) {
-      if (targetPropertyName === "occupationRqidLink") {
-        const specializationFormatted = thisOccupation.specialization
-          ? ` (${thisOccupation.specialization})`
-          : "";
-        // update the occupation portion of the occupation name
-        const updatedName = droppedDocument.name + specializationFormatted;
-        if (this.item.isEmbedded) {
-          await this.item.actor?.updateEmbeddedDocuments("Item", [
-            {
-              _id: this.item.id,
-              "data.occupation": droppedDocument.name,
-              name: updatedName,
-            },
-          ]);
-        } else {
-          await this.item.update({
-            "data.occupation": droppedDocument.name,
-            name: updatedName,
-          });
-        }
-      }
-    }
-
     if (droppedDocumentData.type === "Item") {
       const droppedItem = (await Item.fromDropData(droppedDocumentData)) as RqgItem;
 
       if (droppedItem === undefined) {
         return;
       }
-   
+
+      // Homelands require special handling here (rather than in RqgItemSheet) becase
+      // we are just storing the name of the homeland in an array.
       if (droppedItem.type === "homeland") {
         // For this one we're just saving the name of the homeland, without the region
         // to an array of strings.
@@ -269,20 +242,23 @@ export class OccupationSheet extends RqgItemSheet<
             });
           }
         }
+        return;
       }
 
+      // Skills require special handling here (rather than in RqgItemSheet) because 
+      // we will associate the skill with a bonus
       if (droppedItem.type === "skill") {
         let droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
 
         if (droppedRqid && droppedRqid.id) {
-                console.log(droppedRqid);
+          console.log(droppedRqid);
 
           let occSkill = new OccupationalSkill();
           occSkill.bonus = 0;
           occSkill.incomeSkill = false;
           occSkill.skillRqidLink = new RqidLink();
           occSkill.skillRqidLink.name = droppedItem.name || "";
-          occSkill.skillRqidLink.rqid = droppedRqid?.id;   
+          occSkill.skillRqidLink.rqid = droppedRqid?.id;
 
           let occSkills = thisOccupation.occupationalSkills;
 
@@ -295,22 +271,26 @@ export class OccupationSheet extends RqgItemSheet<
             await this.item.actor?.updateEmbeddedDocuments("Item", [
               {
                 _id: this.item.id,
-                "data.occupationalSkills": occSkills
-              }
-            ])
+                "data.occupationalSkills": occSkills,
+              },
+            ]);
           } else {
             await this.item.update({
-              "data.occupationalSkills":  occSkills
-            })
+              "data.occupationalSkills": occSkills,
+            });
           }
-        }
-        else {
+        } else {
           // see #315 and this situation should be handled however we decide
           // to generally handle dropping things that do not have rqids
           console.log("Dropped skill did not have an Rqid");
         }
+        // Return now so we don't handle his at the RqgItemSheet._onDrop
+        return;
       }
     }
+
+    await super._onDrop(event);
+
   }
 }
 
