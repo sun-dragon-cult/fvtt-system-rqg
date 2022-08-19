@@ -144,6 +144,13 @@ export function trimChars(inputString: string, charsToTrim: string): string {
   return inputString.replace(new RegExp(`^[${charsToTrim}]+|[${charsToTrim}]+$`, "g"), "");
 }
 
+/**
+ * Escape any special regex characters.
+ */
+export function escapeRegex(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}
+
 export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
   // TODO only for GM? getGame().user.isGM &&
   console.warn(`RQG | ${msg}`, debugData);
