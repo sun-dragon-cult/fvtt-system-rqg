@@ -545,3 +545,14 @@ export function activateChatTab() {
   // @ts-ignore 0.8 tabs
   ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
 }
+
+/**
+ * This is for the transition period before we make a clean switch to Foundry v10.
+ * When reading data from itemData the actual data is either behind `.data` or `.system`
+ * depending on Foundry version.
+ * If the data is no longer an item (just an item data object) the Foundry polyfills won't work.
+ * In that case use the `systemProp` constant to make it work in both: `itemdata[systemProp()]`.
+ */
+export function systemProp(): string {
+  return (getGame() as any).data.release.generation > 9 ? "system" : "data";
+}
