@@ -1,6 +1,6 @@
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../../system/config";
-import { getRequiredDomDataset } from "../../system/util";
+import { escapeRegex, getRequiredDomDataset } from "../../system/util";
 import { Rqid } from "../../system/api/rqidApi";
 
 export class RqidEditor extends FormApplication {
@@ -33,16 +33,17 @@ export class RqidEditor extends FormApplication {
       this.document.data?.flags?.rqg?.documentRqidFlags?.lang;
     if (documentRqid && documentLang) {
       const rqidDocumentPrefix = documentRqid.split(".")[0];
+      const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
 
       // Find out if there exists a duplicate rqid already and propose a
       const worldDocuments = await Rqid.fromRqidRegex(
-        new RegExp(documentRqid),
+        rqidSearchRegex,
         rqidDocumentPrefix,
         documentLang,
         "world"
       );
       const compendiumDocuments = await Rqid.fromRqidRegex(
-        new RegExp(documentRqid),
+        rqidSearchRegex,
         rqidDocumentPrefix,
         documentLang,
         "compendiums"
