@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItem } from "../../items/rqgItem";
 import { systemId } from "../config";
 import { getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
-import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { documentRqidFlags, rqidFlagScope } from "../../data-model/shared/rqgDocumentFlags";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 export class Rqid {
@@ -268,6 +268,27 @@ export class Rqid {
     const document = await Rqid.fromRqid(rqid);
     // @ts-ignore all rqid supported documents have sheet
     document?.sheet?.render(true, { focus: true });
+  }
+
+  /**
+   * Given a Document, set its rqid to the default rqid and the supplied language. 
+   * Returns the rqid flag
+   */
+  public static async setDefaultRqid(document: Document<any, any>, lang: string = "en", priority: number = 0): Promise<any> {
+    const newRqid = this.getDefaultRqid(document);
+    if (newRqid === "") {
+      return;
+    }   
+
+    const rqid = {
+        id: newRqid,
+        lang: lang,
+        priority: priority
+      };
+
+    await document.setFlag(rqidFlagScope, documentRqidFlags, rqid);
+
+    return rqid;
   }
 
   // ----------------------------------

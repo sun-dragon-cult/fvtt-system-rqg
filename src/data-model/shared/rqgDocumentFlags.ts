@@ -2,6 +2,7 @@ import { ResultEnum } from "./ability";
 import { CharacteristicData } from "../../chat/characteristicChatHandler";
 import { ChatMessageType } from "../../chat/RqgChatMessage";
 
+export const rqidFlagScope = "rqg";
 export const documentRqidFlags = "documentRqidFlags";
 export const actorWizardFlags = "actorWizardFlags";
 
