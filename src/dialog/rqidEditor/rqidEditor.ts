@@ -58,8 +58,11 @@ export class RqidEditor extends FormApplication {
         priority: d.data.flags.rqg.documentRqidFlags.priority,
         // @ts-ignore
         link: TextEditor.enrichHTML(d.link),
-        // @ts-ignore
-        compendium: `${d.compendium?.metadata?.label} (${d.compendium?.metadata?.package})`,
+        // @ts-expect-error compendium
+        compendium: `${d.compendium?.metadata?.label} ⇒ ${
+          // @ts-expect-error compendium  v9 => package, v10 => packageName
+          d.compendium?.metadata?.packageName ?? d.compendium?.metadata?.package
+        }`,
       }));
 
       const uniqueWorldPriorityCount = new Set(
