@@ -1022,7 +1022,7 @@
     },
     "RQGSystem": {
       "rqid": "RuneQuest System ID (rqid)",
-      "GenerateDefaultRqid": "Create Rune Quest System ID (rqid) based on current document. The rqid should be based on the english document name.",
+      "GenerateDefaultRqid": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
       "rqidPriority": "Rqid Priority",
       "rqidLang": "Language",
       "FoundryId": "Foundry ID",
