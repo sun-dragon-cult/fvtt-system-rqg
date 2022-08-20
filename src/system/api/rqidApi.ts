@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItem } from "../../items/rqgItem";
 import { systemId } from "../config";
 import { getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
-import { documentRqidFlags, rqidFlagScope } from "../../data-model/shared/rqgDocumentFlags";
+import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 export class Rqid {
@@ -286,7 +286,7 @@ export class Rqid {
         priority: priority
       };
 
-    await document.setFlag(rqidFlagScope, documentRqidFlags, rqid);
+    await document.setFlag(systemId, documentRqidFlags, rqid);
 
     return rqid;
   }
