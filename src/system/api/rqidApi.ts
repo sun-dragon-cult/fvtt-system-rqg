@@ -90,7 +90,7 @@ export class Rqid {
    * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
    * @param scope defines where it will look:
-   * @param best if true only gets the "best" version, highest prio from world, or failing that, highest prio from compendium packs
+   * @param best if true only gets the "best" version from the requested scope.
    * **match** same logic as fromRqid function,
    * **all**: find in both world & compendia,
    * **world**: only search in world,
@@ -124,12 +124,11 @@ export class Rqid {
 
     // find the best results in the world
     if (best) {
-      console.log("Distinct World Rqids: ", distinctWorldRqids);
       result = [];
       for (const rqid of distinctWorldRqids) {
-        const best = await Rqid.fromRqid(rqid);
-        if (best) {
-          result.push(best);
+        const bestWorldDocFound = await Rqid.fromRqid(rqid);
+        if (bestWorldDocFound) {
+          result.push(bestWorldDocFound);
         }
       }
     }
@@ -153,9 +152,9 @@ export class Rqid {
           );
         compendiaDocuments = [];
         for (const rqid of distinctCompendiaRqids) {
-          const best = await Rqid.fromRqid(rqid);
-          if (best) {
-            compendiaDocuments.push(best);
+          const bestCompendiaDocFound = await Rqid.fromRqid(rqid);
+          if (bestCompendiaDocFound) {
+            compendiaDocuments.push(bestCompendiaDocFound);
           }
         }
       }

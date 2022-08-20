@@ -222,7 +222,7 @@ export class OccupationSheet extends RqgItemSheet<
 
       // Homelands require special handling here (rather than in RqgItemSheet) becase
       // we are just storing the name of the homeland in an array.
-      if (droppedItem.type === "homeland") {
+      if (droppedItem.type === ItemTypeEnum.Homeland) {
         // For this one we're just saving the name of the homeland, without the region
         // to an array of strings.
         const homelands = thisOccupation.homelands;
@@ -247,7 +247,7 @@ export class OccupationSheet extends RqgItemSheet<
 
       // Skills require special handling here (rather than in RqgItemSheet) because 
       // we will associate the skill with a bonus
-      if (droppedItem.type === "skill") {
+      if (droppedItem.type === ItemTypeEnum.Skill) {
         let droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
 
         if (droppedRqid && droppedRqid.id) {
