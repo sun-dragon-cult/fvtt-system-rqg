@@ -90,7 +90,7 @@ export class Rqid {
    * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
    * @param scope defines where it will look:
-   * @param best if true only gets the "best" version from the requested scope.
+   * @param onlyFindBest if true only gets the "best" version from the requested scope.
    * **match** same logic as fromRqid function,
    * **all**: find in both world & compendia,
    * **world**: only search in world,
@@ -101,7 +101,7 @@ export class Rqid {
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en",
     scope: "match" | "all" | "world" | "compendiums" = "match",
-    best: boolean = false
+    onlyFindBest: boolean = false
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
@@ -116,14 +116,18 @@ export class Rqid {
       result.splice(0, 0, ...worldDocuments);
     }
 
-    const distinctWorldRqids: string[] = result
-      .map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)
-      .filter(function (value, index, self) {
-        return self.indexOf(value) === index;
-      });
+    // const distinctWorldRqids: string[] = result
+    //   .map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)
+    //   .filter(function (value, index, self) {
+    //     return self.indexOf(value) === index;
+    //   });
+
+    const distinctWorldRqids: string[] = [
+      ...new Set(result.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id))
+    ];
 
     // find the best results in the world
-    if (best) {
+    if (onlyFindBest) {
       result = [];
       for (const rqid of distinctWorldRqids) {
         const bestWorldDocFound = await Rqid.fromRqid(rqid);
@@ -140,16 +144,11 @@ export class Rqid {
         lang
       );
 
-      if (best) {
+      if (onlyFindBest) {
         // list of all the rqids from the compendia that were not already found in the world.
-        const distinctCompendiaRqids = compendiaDocuments
-          .map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)
-          .filter(function (value, index, self) {
-            return self.indexOf(value) === index;
-          })
-          .filter(
-            (rqid) => !distinctWorldRqids.includes(rqid)
-          );
+        const distinctCompendiaRqids: string[] = [
+          ...new Set(compendiaDocuments.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id))
+        ]
         compendiaDocuments = [];
         for (const rqid of distinctCompendiaRqids) {
           const bestCompendiaDocFound = await Rqid.fromRqid(rqid);
@@ -560,82 +559,4 @@ export class Rqid {
   private static readonly rqidDocumentStringLookup: { [key: string]: string } = Object.entries(
     Rqid.documentLookup
   ).reduce((acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }), {});
-}
-
-// ----------
-
-export async function getActorTemplates(): Promise<RqgActor[] | undefined> {
-  // TODO: Option 1: Find by rqid with "-template" in the rqid and of type Actor?
-  // TODO: Option 2: Make a configurable world folder, and look there first, otherwise look in configurable compendium
-  const speciesTemplatesCompendium = getGame().packs.get("rqg.species-templates");
-  const templates = await speciesTemplatesCompendium?.getDocuments();
-  if (templates) {
-    return templates as RqgActor[];
-  } else {
-    return undefined;
-  }
-}
-
-export async function getHomelands(): Promise<RqgItem[] | undefined> {
-
-  let homelandRqids = await getHomelandsRqids();
-
-  // get the best version of each homeland by rqid
-  const result: RqgItem[] = [];
-
-  for (const rqid of homelandRqids) {
-    const homeland = await Rqid.fromRqid(rqid);
-    if (homeland && hasProperty(homeland, "type")) {
-      if ((homeland as RqgItem).type === ItemTypeEnum.Homeland) {
-        result.push(homeland as RqgItem);
-      }
-    }
-  }
-
-  return result;
-}
-
-async function getHomelandsRqids():  Promise<string[]>{
-    // get all rqids of homelands
-  let compendiumHomelandRqids: string[] = await getCompendiumHomelandRqids();
-
-  const worldHomelandRqids = await getWorldHomelandRqids();
-
-  // get distinct rqids
-   return [... new Set([...compendiumHomelandRqids,...worldHomelandRqids])];
-}
-
-async function getWorldHomelandRqids(): Promise<string[]> {
-
-  let worldRqids = getGame()
-    .items?.filter((h) => h?.type === ItemTypeEnum.Homeland)
-    .map((h) => h.getFlag(systemId, documentRqidFlags)?.id)
-    .filter((rqid) => rqid !== undefined) as string[];
-
-  return worldRqids;
-}
-
-async function getCompendiumHomelandRqids(): Promise<string[]> {
-  let homelandRqids: string[] = [];
-
-  let packs = getGame().packs;
-    for (const pack of packs) {
-      // @ts-ignore type
-      if (pack.metadata.type === "Item") {
-      let docs = await pack.getDocuments();
-      for (const packItem of docs) {
-          let pi = packItem as StoredDocument<RqgItem>;
-
-          if (pi != null) {
-            if (pi.type === "homeland") {
-              const rqid = pi.getFlag(systemId, documentRqidFlags)?.id;
-              !!rqid && homelandRqids.push(rqid);
-            }
-          } else {
-            console.log("Could not cast packItem as StoredDocument<RqgItem>", packItem);
-          }
-      }
-    }
-  };
-  return homelandRqids;
 }
