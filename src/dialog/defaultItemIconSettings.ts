@@ -7,6 +7,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 export interface IconSettingsData {
   [ItemTypeEnum.Armor]: string;
   [ItemTypeEnum.Cult]: string;
+  [ItemTypeEnum.FamilyHistory]: string;
   [ItemTypeEnum.Gear]: string;
   [ItemTypeEnum.HitLocation]: string;
   [ItemTypeEnum.Homeland]: string;

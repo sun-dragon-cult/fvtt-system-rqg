@@ -1,6 +1,7 @@
 import { Skill } from "../../items/skill-item/skill";
 import { AbstractEmbeddedItem } from "../../items/abstractEmbeddedItem";
 import { HitLocation } from "../../items/hit-location-item/hitLocation";
+import { FamilyHistory } from "../../items/family-history-item/familyHistory";
 import { Gear } from "../../items/gear-item/gear";
 import { Armor } from "../../items/armor-item/armor";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
@@ -11,6 +12,7 @@ import { Rune } from "../../items/rune-item/rune";
 import { ArmorDataProperties, ArmorDataSource } from "./armorData";
 import { PassionDataProperties, PassionDataSource } from "./passionData";
 import { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
+import { FamilyHistoryDataProperties, FamilyHistoryDataSource} from "./familyHistoryData";
 import { GearDataProperties, GearDataSource } from "./gearData";
 import { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
 import { CultDataProperties, CultDataSource } from "./cultData";
@@ -31,6 +33,7 @@ import {
 export enum ItemTypeEnum {
   Armor = "armor",
   Cult = "cult",
+  FamilyHistory = "familyHistory",
   Gear = "gear",
   HitLocation = "hitLocation",
   Homeland = "homeland",
@@ -51,6 +54,7 @@ export enum ItemTypeEnum {
 export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = new Map([
   [ItemTypeEnum.Armor, Armor],
   [ItemTypeEnum.Cult, Cult],
+  [ItemTypeEnum.FamilyHistory, FamilyHistory],
   [ItemTypeEnum.Gear, Gear],
   [ItemTypeEnum.HitLocation, HitLocation],
   [ItemTypeEnum.Passion, Passion],
@@ -64,6 +68,7 @@ export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = ne
 export type RqgItemDataSource =
   | ArmorDataSource
   | CultDataSource
+  | FamilyHistoryDataSource
   | GearDataSource
   | HitLocationDataSource
   | HomelandDataSource
@@ -78,6 +83,7 @@ export type RqgItemDataSource =
 export type RqgItemDataProperties =
   | ArmorDataProperties
   | CultDataProperties
+  | FamilyHistoryDataProperties
   | GearDataProperties
   | HitLocationDataProperties
   | HomelandDataProperties

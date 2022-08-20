@@ -16,6 +16,7 @@ import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { ResultEnum, ResultMessage } from "../data-model/shared/ability";
+import { FamilyHistorySheet } from "./family-history-item/familyHistorySheet";
 
 export class RqgItem extends Item {
   public static init() {
@@ -81,6 +82,11 @@ export class RqgItem extends Item {
     Items.registerSheet(systemId, RuneMagicSheet as any, {
       label: "GM Rune Magic Item Sheet",
       types: [ItemTypeEnum.RuneMagic],
+      makeDefault: true,
+    });
+    Items.registerSheet(systemId, FamilyHistorySheet as any, {
+      label: "GM Family History Item Sheet",
+      types: [ItemTypeEnum.FamilyHistory],
       makeDefault: true,
     });
     // TODO this doesn't compile!? Sheet registration would be better in Item init
