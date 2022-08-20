@@ -1,8 +1,9 @@
 {
   "name": "rqg",
+  "id": "rqg",
   "type": "system",
-  "title": "RuneQuest Glorantha (Unofficial)",
-  "description": "A RuneQuest Glorantha (Unofficial) system implementation.",
+  "title": "RuneQuest Glorantha",
+  "description": "A RuneQuest Glorantha system implementation.",
   "version": "1.15.0",
   "license": "UNLICENSED",
   "background": "assets/images/ui/priestess.webp",
@@ -195,6 +196,10 @@
   "gridUnits": "m",
   "minimumCoreVersion": "9",
   "compatibleCoreVersion": "9",
+  "compatibility": {
+    "minimum": 9,
+    "verified": 10
+  },
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
   "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.15.0/rqg.zip",

@@ -1,9 +1,9 @@
 import { getGame, localize } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { DefaultItemIconSettings } from "../dialog/defaultItemIconSettings";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationSettings } from "../dialog/hitLocationSettings";
 import { systemId } from "./config";
+import { defaultItemIconsObject } from "./settings/defaultItemIcons";
 
 export const registerRqgSystemSettings = function () {
   getGame().settings.registerMenu(systemId, "hitLocations", {
@@ -34,31 +34,8 @@ export const registerRqgSystemSettings = function () {
   getGame().settings.register(systemId, "defaultItemIconSettings", {
     scope: "world",
     config: false,
-    type: Object,
-    default: {
-      [ItemTypeEnum.Armor]: "systems/rqg/assets/images/armor/cuirass.svg",
-      [ItemTypeEnum.Cult]: "systems/rqg/assets/images/items/cult.svg",
-      [ItemTypeEnum.Gear]: "systems/rqg/assets/images/gear/knapsack.svg",
-      [ItemTypeEnum.HitLocation]: "systems/rqg/assets/images/items/hit-location.svg",
-      [ItemTypeEnum.Homeland]: "systems/rqg/assets/images/items/homeland.svg",
-      [ItemTypeEnum.Occupation]: "systems/rqg/assets/images/items/occupation.svg",
-      [ItemTypeEnum.Passion]: "systems/rqg/assets/images/passion/love.svg",
-      [ItemTypeEnum.Rune]: "systems/rqg/assets/images/runes/chaos.svg",
-      [ItemTypeEnum.RuneMagic]: "systems/rqg/assets/images/items/rune-magic.svg",
-      [ItemTypeEnum.Skill]: "systems/rqg/assets/images/items/skill.svg",
-      [ItemTypeEnum.SpiritMagic]: "systems/rqg/assets/images/items/spirit-magic.svg",
-      [ItemTypeEnum.Weapon]: "systems/rqg/assets/images/items/weapon.svg",
-      Reputation: "systems/rqg/assets/images/other/reputation.svg",
-    },
-  });
-
-  getGame().settings.register(systemId, "runesCompendium", {
-    name: localize("RQG.Settings.RunesCompendium.settingName"),
-    hint: localize("RQG.Settings.RunesCompendium.settingHint"),
-    scope: "world",
-    config: true,
-    type: String,
-    default: "rqg.runes",
+    type: Object as any, // TODO how to type?
+    default: defaultItemIconsObject,
   });
 
   getGame().settings.register(systemId, "fumbleRollTable", {

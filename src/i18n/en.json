@@ -657,7 +657,7 @@
         "HitPointsAbbr": "HP",
         "CurrentHitPoints": "Current Hit Points",
         "HitPointLocation": "Hit Point Location",
-        "PhysicalItemType": "Item Type",
+        "ItemType": "Item Type",
         "PhysicalItemTypeEnum": {
           "unique": "Unique",
           "currency": "Currency",
@@ -729,9 +729,8 @@
         "CantFindRootLocationNode": "Can't find root location Node",
         "LocationDidntFindItem": "location didn't find item",
         "ExpectedCultItemError": "Expected Cult item",
-        "CantFindRunesCompendiumError": "Can't find runes Compendium {runesCompendiumName}",
         "CantFindCultRuneError": "Can't find cult rune {newRune} among allRunesIndex",
-        "CantFindRuneInAllRunesCompendiumError": "Can't find rune in all runes compendium",
+        "CantFindRuneInAvailableRunesError": "Can't find rune \"{runeName}\" in any compendium",
         "ItemWasNotHitLocationError": "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
         "HitLocationDoesNotHaveActorError": "Hit Location item didn't have an actor",
         "ActorDoesNotHaveMaxHpError": "Actor doesn't have max hitPoints",
@@ -864,12 +863,12 @@
         "RuneMagic": "Rune Magic",
         "Skill": "Skill",
         "SkillDefinition": "Skill Definition",
+        "SpiritMagic": "Spirit Magic",
         "Weapon": "Weapon",
         "WeaponUsage": "Usage",
         "Description": "Description",
         "GM": "GM",
-        "ActiveEffects": "Active Effects",
-        "RQGSystem": "RQG System"
+        "ActiveEffects": "Active Effects"
       },
       "Skill": {
         "Name": "Name",
@@ -1025,7 +1024,7 @@
     },
     "RQGSystem": {
       "rqid": "RuneQuest System ID (rqid)",
-      "GenerateDefaultRqid": "Create Rune Quest System ID (rqid) based on current document. The rqid should be based on the english document name.",
+      "GenerateDefaultRqid": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
       "rqidPriority": "Rqid Priority",
       "rqidLang": "Language",
       "FoundryId": "Foundry ID",
@@ -1066,10 +1065,6 @@
         "settingName": "Default Item Icons",
         "settingLabel": "Configure Default Icons for new Items",
         "settingHint": "Set the default icons used when creating new items."
-      },
-      "RunesCompendium": {
-        "settingName": "Rune items compendium",
-        "settingHint": "The runes in the specified compendium will be used in the system. Please include all possible runes."
       },
       "FumbleRollTable": {
         "settingName": "Fumble Roll Table",

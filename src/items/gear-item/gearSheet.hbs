@@ -27,7 +27,7 @@
           <label for="data.isContainer">{{localize "RQG.Item.Gear.IsContainerQ"}}</label>
           <input type="checkbox" name="data.isContainer" {{checked gearData.isContainer}}>
 
-          <label for="data.physicalItemType">{{localize "RQG.Item.Gear.PhysicalItemType"}}</label>
+          <label for="data.physicalItemType">{{localize "RQG.Item.Gear.ItemType"}}</label>
           <select name="data.physicalItemType">
             {{#select gearData.physicalItemType}} {{#each sheetSpecific.physicalItemTypes}}
             <option value="{{this}}">{{localize (concat "RQG.Item.Gear.PhysicalItemTypeEnum." this)}}</option>

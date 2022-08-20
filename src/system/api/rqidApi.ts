@@ -79,7 +79,7 @@ export class Rqid {
         lang: lang,
       });
       ui.notifications?.warn(msg);
-      console.log(msg);
+      console.log("RQG |", msg);
     }
     return undefined;
   }
@@ -241,14 +241,18 @@ export class Rqid {
     if (document instanceof Item) {
       if (document.data.type === ItemTypeEnum.Skill) {
         rqidIdentifier = trimChars(
-          toKebabCase(`${document.data.data.skillName}-${document.data.data.specialization}`),
+          toKebabCase(
+            `${document.data.data.skillName ?? ""}-${document.data.data.specialization ?? ""}`
+          ),
           "-"
         );
       }
       if (document.data.type === ItemTypeEnum.Armor) {
         rqidIdentifier = trimChars(
           toKebabCase(
-            `${document.data.data.namePrefix}-${document.data.data.armorType}-${document.data.data.material}`
+            `${document.data.data.namePrefix ?? ""}-${document.data.data.armorType ?? ""}-${
+              document.data.data.material ?? ""
+            }`
           ),
           "-"
         );
@@ -306,17 +310,26 @@ export class Rqid {
       return undefined;
     }
 
-    const candidateDocuments = (getGame() as any)[this.getGameProperty(rqid)]?.contents.filter(
-      (doc: Document<any, any>) =>
-        doc.getFlag(systemId, documentRqidFlags)?.id === rqid &&
-        doc.getFlag(systemId, documentRqidFlags)?.lang === lang
-    );
+    const candidateDocuments: Document<any, any>[] = (getGame() as any)[
+      this.getGameProperty(rqid)
+    ]?.contents
+      .filter(
+        (doc: Document<any, any>) =>
+          doc.getFlag(systemId, documentRqidFlags)?.id === rqid &&
+          doc.getFlag(systemId, documentRqidFlags)?.lang === lang
+      )
+      .sort(Rqid.compareRqidPrio);
 
     if (candidateDocuments === undefined || candidateDocuments.length === 0) {
       return undefined;
     }
 
-    if (candidateDocuments.length > 1) {
+    const highestPrio = candidateDocuments[0].getFlag(systemId, documentRqidFlags)?.priority;
+    const highestPrioDocuments = candidateDocuments.filter(
+      (doc) => doc.getFlag(systemId, documentRqidFlags)?.priority === highestPrio
+    );
+
+    if (highestPrioDocuments.length > 1) {
       const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInWorld", {
         rqid: rqid,
         lang: lang,
@@ -327,7 +340,7 @@ export class Rqid {
       // TODO Or should this be handled in the compendium browser eventually?
       console.warn(msg + "  Duplicate items: ", candidateDocuments);
     }
-    return candidateDocuments[0];
+    return highestPrioDocuments[0];
   }
 
   /**
@@ -447,7 +460,7 @@ export class Rqid {
               lang: lang,
             });
             ui.notifications?.error(msg);
-            console.log("RQG | " + msg, index);
+            console.log("RQG |", msg, index);
             throw new RqgError(msg, index, indexInstances);
           }
           candidateDocuments.push(document);

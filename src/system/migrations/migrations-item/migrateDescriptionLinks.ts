@@ -1,6 +1,6 @@
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ItemUpdate } from "../applyMigrations";
-import { getGame, toKebabCase } from "../../util";
+import { getGame, systemProp, toKebabCase } from "../../util";
 import { Rqid } from "../../api/rqidApi";
 
 const logPrefix = "RQG | Migrate Descr. Link |";
@@ -9,8 +9,8 @@ export async function useRqidDescriptionLinks(itemData: ItemData): Promise<ItemU
   const updateData: ItemUpdate = {};
   updateData.data = updateData.data ?? {};
 
-  if (hasProperty(itemData.data, "journalId")) {
-    const previousRqidLink = (itemData as any).data?.descriptionRqidLink?.id;
+  if (hasProperty((itemData as any)[systemProp()], "journalId")) {
+    const previousRqidLink = (itemData as any)[systemProp()]?.descriptionRqidLink?.id;
     // Already has a rqidLink - don't update
     if (previousRqidLink) {
       return updateData;
@@ -41,8 +41,11 @@ export async function useRqidDescriptionLinks(itemData: ItemData): Promise<ItemU
         };
         console.log(
           logPrefix,
-          // @ts-expect-errors journalId & journalPack
-          `Didn't find a JE from previous link id [${itemData.data?.journalId}], compendium [${itemData.data?.journalPack}] but found a link to a standard named JE [${testRqidLink}] - updated item`,
+          `Didn't find a JE from previous link id [${
+            (itemData as any)[systemProp()]?.journalId
+          }], compendium [${
+            (itemData as any)[systemProp()]?.journalPack
+          }] but found a link to a standard named JE [${testRqidLink}] - updated item`,
 
           updateData,
           itemData
@@ -50,8 +53,11 @@ export async function useRqidDescriptionLinks(itemData: ItemData): Promise<ItemU
       } else {
         console.debug(
           logPrefix,
-          // @ts-expect-errors journalId & journalPack
-          `Didn't find a JE from previous link id [${itemData.data?.journalId}], compendium [${itemData.data?.journalPack}] or from default rqid link [${testRqidLink}] - no update`,
+          `Didn't find a JE from previous link id [${
+            (itemData as any)[systemProp()]?.journalId
+          }], compendium [${
+            (itemData as any)[systemProp()]?.journalPack
+          }] or from default rqid link [${testRqidLink}] - no update`,
           itemData
         );
       }
@@ -66,13 +72,13 @@ export async function useRqidDescriptionLinks(itemData: ItemData): Promise<ItemU
 
 async function getUpdateViaPreviousLink(itemData: ItemData): Promise<ItemUpdate | undefined> {
   // Follow the old link and get its values
-  const oldJournalId: string | undefined = (itemData.data as any).journalId;
+  const oldJournalId: string | undefined = (itemData as any)[systemProp()]?.journalId;
   if (!oldJournalId) {
     // no previous id - will check if there is a match with default rqid as well...
     return undefined;
   }
 
-  const oldJournalPack: string | undefined = (itemData.data as any).journalPack;
+  const oldJournalPack: string | undefined = (itemData as any)[systemProp()]?.journalPack;
   const updateData = oldJournalPack
     ? await getUpdateFromCompendium(oldJournalId, oldJournalPack)
     : getUpdateFromWorld(oldJournalId);

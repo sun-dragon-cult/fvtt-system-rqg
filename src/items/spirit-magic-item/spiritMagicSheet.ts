@@ -11,6 +11,7 @@ import {
   SpellRangeEnum,
 } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
+import { RqgItem } from "../rqgItem";
 
 interface SpiritMagicSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -69,6 +70,30 @@ export class SpiritMagicSheet extends RqgItemSheet<
       uuid: this.document.uuid,
       supportedLanguages: CONFIG.supportedLanguages,
     };
+  }
+
+  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+    // Set a concentration value if there isn't one already
+    if (formData["data.duration"] === SpellDurationEnum.Temporal) {
+      formData["data.concentration"] = formData["data.concentration"]
+        ? formData["data.concentration"]
+        : SpellConcentrationEnum.Active;
+    } else {
+      // Generally only Temporal spells have concentration
+      formData["data.concentration"] = "";
+    }
+
+    // ... except Focused spells that always are concentration active
+    if (formData["data.duration"] === SpellDurationEnum.Focused) {
+      formData["data.concentration"] = SpellConcentrationEnum.Active;
+    }
+
+    // ... and Special Duration spells that always are concentration passive
+    if (formData["data.duration"] === SpellDurationEnum.Special) {
+      formData["data.concentration"] = SpellConcentrationEnum.Passive;
+    }
+
+    return super._updateObject(event, formData);
   }
 
   public activateListeners(html: JQuery): void {

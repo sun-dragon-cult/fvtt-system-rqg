@@ -10,6 +10,7 @@ import {
   RqgJournalEntryFlags,
   RqgRollTableFlags,
 } from "./data-model/shared/rqgDocumentFlags";
+import { IconSettingsData } from "./dialog/defaultItemIconSettings";
 
 declare global {
   interface DocumentClassConfig {
@@ -46,12 +47,12 @@ declare global {
   namespace ClientSettings {
     interface Values {
       "rqg.specialCrit": boolean;
-      "rqg.runesCompendium": string;
       "rqg.fumbleRollTable": string;
       "rqg.systemMigrationVersion": string;
       "rqg.hitLocations": Object;
       "rqg.magicRuneName": string;
-      "rqg.defaultItemIconSettings": any; // TODO type the setting
+      "rqg.defaultItemIconSettings": IconSettingsData;
+      "rqg.actor-wizard-feature-flag": boolean;
     }
   }
 }

@@ -52,8 +52,8 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   private static async inputChangeHandler(inputEvent: Event): Promise<void> {
-    if ((inputEvent.target as Element)?.classList.contains("roll-type-select")) {
-      return; // Don't handle foundry roll type select dropdown
+    if ((inputEvent.target as HTMLElement)?.dataset.handleChange == null) {
+      return; // Only handle inputs etc that are tagged with "data-handle-change"
     }
     const { chatMessageId } = RqgChatMessage.getChatMessageInfo(inputEvent);
     const chatMessage = getGame().messages?.get(chatMessageId);

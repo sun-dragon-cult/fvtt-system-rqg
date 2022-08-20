@@ -5,12 +5,12 @@
       <i>{{chatHeading}}</i>
     </h2>
 
-    <select name="usage" {{#if hideUsageOptions}}class="no-display"{{/if}}>
+    <select data-handle-change name="usage" {{#if hideUsageOptions}}class="no-display"{{/if}}>
       {{selectOptions usageOptions selected=formData.usage}}
     </select><br>
 
     <label>{{localize 'RQG.Dialog.Common.OtherModifiers'}}
-      <input class="chat-number-input" type="text" value="{{formData.otherModifiers}}" name="otherModifiers">
+      <input data-handle-change class="chat-number-input" type="text" value="{{formData.otherModifiers}}" name="otherModifiers">
     </label>
     <i class="fas fa-arrow-right"></i> <span>{{chance}}%</span>
 
@@ -19,7 +19,7 @@
       {{#each combatManeuvers}}
             <button name="combatManeuverRoll" value="{{name}}"
                 {{#if (eq name ../../formData.combatManeuverName)}}class="active"{{/if}}>
-                {{localize (concat "RQG.Item.Weapon.combatManeuver." name)}}
+                {{name}}
             </button>
       {{/each}}
       {{/with}}

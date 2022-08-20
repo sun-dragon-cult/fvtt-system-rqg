@@ -4,7 +4,12 @@
     <div class="grid skill">
     {{#each ownedItems.skill.magic}}
     {{#if data.data.runes}}
-    {{>"systems/rqg/actors/sheet-parts/grid-skill.hbs" }}
+    {{>"systems/rqg/actors/sheet-parts/grid-skill.hbs"
+      skill=this
+      wizard=../../wizard
+      forChoice=../../forChoice
+      checkedProperty=../../checkedProperty
+      asBonus=../../asBonus}}
     {{/if}}
     {{/each}}
     </div>
@@ -14,7 +19,11 @@
     <h2>{{localize "RQG.Actor.Sorcery.Techniques"}}</h2>
     <div class="grid rune">
     {{#each ownedItems.rune.technique}}
-      {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
+      {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+        rune=this
+        wizard=../wizard
+        forChoice=../forChoice
+        checkedProperty=../checkedProperty}}
     {{/each}}
     </div>
   </div>
@@ -24,19 +33,31 @@
     <div class="grid rune">
       {{#each ownedItems.rune.element}}
         {{#if data.data.isMastered}}
-        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
+        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+          rune=this
+          wizard=../wizard
+          forChoice=../forChoice
+          checkedProperty=../checkedProperty}}
         {{/if}}
       {{/each}}
 
       {{#each ownedItems.rune.power}}
         {{#if data.data.isMastered}}
-        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
+        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+          rune=this
+          wizard=../wizard
+          forChoice=../forChoice
+          checkedProperty=../checkedProperty}}
         {{/if}}
       {{/each}}
 
       {{#each ownedItems.rune.form}}
         {{#if data.data.isMastered}}
-        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" }}
+        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+          rune=this
+          wizard=../wizard
+          forChoice=../forChoice
+          checkedProperty=../checkedProperty}}
         {{/if}}
       {{/each}}
     </div>

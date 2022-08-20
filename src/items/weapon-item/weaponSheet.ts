@@ -3,7 +3,13 @@ import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { assertItemType, getGameUser, getRequiredDomDataset, uuid2Name } from "../../system/util";
+import {
+  assertItemType,
+  getGameUser,
+  getRequiredDomDataset,
+  localize,
+  uuid2Name,
+} from "../../system/util";
 import {
   damageType,
   WeaponDataProperties,
@@ -59,7 +65,9 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       data: itemData,
       weaponData: weaponData,
       sheetSpecific: {
-        defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()),
+        defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).map((cm) =>
+          localize(`RQG.Item.Weapon.combatManeuver.${cm}`)
+        ),
         damageTypes: Object.values(damageType),
         weaponSkills: this.getWeaponSkills(),
         skillNames: this.getSkillNames(),
