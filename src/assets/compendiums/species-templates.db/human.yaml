@@ -371,7 +371,7 @@ items:
     flags:
       rqg:
         documentRqidFlags:
-          id: i.rune.fire-element
+          id: i.rune.fire-sky-element
           lang: en
           priority: -1
       core:
