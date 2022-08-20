@@ -1264,6 +1264,13 @@ body {
   grid-gap: 0.5em;
 }
 
+.item-sheet-header .name-parts-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  grid-gap: 0.5em;
+}
+
 // .item-sheet-header-name label {
 //   display: block;
 // }
@@ -1274,7 +1281,8 @@ body {
 .name-parts-2 select,
 .name-parts-2-equal input[type="text"],
 .name-parts-2-equal select,
-.name-parts-3 select {
+.name-parts-3 select,
+.name-parts-1 {
   width: -webkit-fill-available;
 }
 
