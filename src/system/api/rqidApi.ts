@@ -123,7 +123,7 @@ export class Rqid {
     //   });
 
     const distinctWorldRqids: string[] = [
-      ...new Set(result.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id))
+      ...new Set(result.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)),
     ];
 
     // find the best results in the world
@@ -138,17 +138,13 @@ export class Rqid {
     }
 
     if (["match", "all", "compendiums"].includes(scope)) {
-      let compendiaDocuments = await Rqid.documentsFromCompendia(
-        rqidRegex,
-        rqidDocumentType,
-        lang
-      );
+      let compendiaDocuments = await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
 
       if (onlyFindBest) {
         // list of all the rqids from the compendia that were not already found in the world.
         const distinctCompendiaRqids: string[] = [
-          ...new Set(compendiaDocuments.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id))
-        ]
+          ...new Set(compendiaDocuments.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)),
+        ];
         compendiaDocuments = [];
         for (const rqid of distinctCompendiaRqids) {
           const bestCompendiaDocFound = await Rqid.fromRqid(rqid);
@@ -273,24 +269,43 @@ export class Rqid {
   }
 
   /**
-   * Given a Document, set its rqid to the default rqid and the supplied language. 
-   * Returns the rqid flag
+   * Given a Document, set its rqid to the provided value with the supplied language and priority.
+   * Ensures the right flag scope and flag variable name will be used.
+   * Returns the new rqid flag
    */
-  public static async setDefaultRqid(document: Document<any, any>, lang: string = "en", priority: number = 0): Promise<any> {
-    const newRqid = this.getDefaultRqid(document);
-    if (newRqid === "") {
-      return;
-    }   
-
+  public static async setRqid(
+    document: Document<any, any>,
+    newRqid: string,
+    lang: string = "en",
+    priority: number = 0
+  ): Promise<any> {
     const rqid = {
-        id: newRqid,
-        lang: lang,
-        priority: priority
-      };
+      id: newRqid,
+      lang: lang,
+      priority: priority,
+    };
 
     await document.setFlag(systemId, documentRqidFlags, rqid);
 
     return rqid;
+  }
+
+  /**
+   * Given a Document, set its rqid to the default rqid with the supplied language and priority.
+   * Ensures the right flag scope and flag variable name will be used.
+   * Returns the new rqid flag
+   */
+  public static async setDefaultRqid(
+    document: Document<any, any>,
+    lang: string = "en",
+    priority: number = 0
+  ): Promise<any> {
+    const newRqid = this.getDefaultRqid(document);
+    if (newRqid === "") {
+      return;
+    }
+
+    return await this.setRqid(document, newRqid, lang, priority);
   }
 
   // ----------------------------------
