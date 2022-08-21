@@ -76,7 +76,6 @@ Hooks.once("init", async () => {
     makeDefault: true,
   });
 
-  registerRqgSystemSettings();
   await loadHandlebarsTemplates();
   registerHandlebarsHelpers();
 
@@ -90,6 +89,8 @@ Hooks.once("init", async () => {
 });
 
 Hooks.once("ready", async () => {
+  registerRqgSystemSettings();
+
   if (getGame().user?.isGM) {
     await migrateWorld();
     // await setupSimpleCalendar();
