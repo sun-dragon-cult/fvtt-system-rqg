@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "./itemTypes";
 export class FamilyHistoryEntry {
   beginYear: number | undefined;
   endYear: number | undefined;
-  ancestor: string = "";
+  targetCharacter: string = "";
   rollTableRqidLink: RqidLink | undefined = undefined;
   modifiers: string = "";
 }

@@ -13,6 +13,7 @@
             value="{{data.name}}">
     </div>
 
+              {{sheetSpecific.targetCharacterTypes}}
   </header>
 
   <main>
@@ -32,27 +33,66 @@
       {{!-- Family History Tab --}}
       <div class="tab" data-group="primary" data-tab="family-history">
 
-        <div style="display: flex; flex-wrap: wrap;">
+        <div class="family-history-sheet-grid">
+            <div class="header">
+              Years
+            </div>
+            <div class="header">
+              Target
+            </div>
+            <div class="header">
+              Roll Table
+            </div>
+            <div class="header">
+              Modifiers
+            </div>
+            <div class="header">
 
+            </div>
           {{#each familyHistoryData.familyHistoryEntries}}
 
             <div>
-              <input type="text" 
+              <input type="number" 
+                     style="  text-align: right;width: 50px;"
                      id="begin-year-{{@index}}"
                      data-index="{{@index}}"
                      value="{{this.beginYear}}">
               -
-              <input type="text" 
+              <input type="number" 
+                     style="  text-align: right;width: 50px;"
                      id="end-year-{{@index}}"
                      data-index="{{@index}}"
                      value="{{this.endYear}}">    
             </div>
             <div>
-              {{this.ancestor}}
+              <select id="target-character-{{@index}}"
+                      data-index="{{@index}}" >
+
+                {{#select this.targetCharacter}}
+                  {{#each ../sheetSpecific.targetCharacterTypes}}
+                    <option
+                      value="{{this}}"
+                    >{{localize (concat 'RQG.Item.FamilyHistory.TargetCharacterType.' this)}}</option>
+                  {{/each}}
+                {{/select}}
+              </select>              
             </div>
             {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
                 rqidLink=this.rollTableRqidLink
             }}   
+            <div>
+              <input type="text" 
+                     id="modifiers-{{@index}}"
+                     data-index="{{@index}}"
+                     value="{{this.modifiers}}">    
+            </div>
+            <div>
+              <i
+                class="fas fa-times icon"
+                data-delete-index="{{@index}}"
+                title="{{localize 'RQG.Item.FamilyHistory.DeleteFamilyHistoryEntry' rqid=rqidLink.rqid name=rqidLink.name}}"
+              ></i>              
+            </div>
           {{/each}}
 
         </div>

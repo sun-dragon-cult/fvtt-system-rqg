@@ -641,7 +641,13 @@
         "equipped": "Equipped"
       },
       "FamilyHistory": {
-        "FamilyHistory": "Family History"
+        "FamilyHistory": "Family History",
+        "TargetCharacterType": {
+          "pick": "Pick a Target",
+          "grandparent": "Grandparent",
+          "parent": "Parent",
+          "self": "Self"
+        }
       },
       "Gear": {
         "Name": "Name",

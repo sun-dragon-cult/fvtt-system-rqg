@@ -1406,3 +1406,11 @@ body {
 .skill-selector {
   display: grid;
 }
+
+.family-history-sheet-grid {
+  display: grid;
+  grid-template-columns: minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(14px, auto);
+  .header {
+    font-weight: bold;
+  }
+}

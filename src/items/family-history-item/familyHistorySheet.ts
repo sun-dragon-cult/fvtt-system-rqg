@@ -2,14 +2,13 @@ import {
   FamilyHistoryDataProperties,
   FamilyHistoryDataPropertiesData,
   FamilyHistoryDataSourceData,
+  FamilyHistoryEntry,
 } from "../../data-model/item-data/familyHistoryData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { assertItemType, getDomDataset, getGameUser, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { HomelandDataSource } from "../../data-model/item-data/homelandData";
 import { systemId } from "../../system/config";
-import { documentRqidFlags } from "src/data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "src/data-model/shared/rqidLink";
 
 export interface FamilyHistorySheetData extends RqgItemSheetData {
@@ -27,8 +26,8 @@ export class FamilyHistorySheet extends RqgItemSheet<
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "sheet", ItemTypeEnum.FamilyHistory],
       template: "systems/rqg/items/family-history-item/familyHistorySheet.hbs",
-      width: 550,
-      height: 650,
+      width: 650,
+      height: 850,
       tabs: [
         {
           navSelector: ".item-sheet-nav-tabs",
@@ -52,7 +51,9 @@ export class FamilyHistorySheet extends RqgItemSheet<
       options: this.options,
       data: itemData,
       familyHistoryData: itemData.data,
-      sheetSpecific: {},
+      sheetSpecific: {
+        targetCharacterTypes: ["pick", "grandparent", "parent", "self"]
+      },
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
       uuid: this.document.uuid,
@@ -71,7 +72,11 @@ export class FamilyHistorySheet extends RqgItemSheet<
         const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
         //@ts-ignore value
         entries[targetIndex].beginYear = Number(event.currentTarget.value);
-        entries.sort((a,b) => ((a.beginYear || 0) > (b.beginYear || 0)) ? 1 : -1);
+        // Most of the time the two years will be the same, so set the end year to the begin year if not already set
+        if (entries[targetIndex].endYear === undefined) {
+          entries[targetIndex].endYear = entries[targetIndex].beginYear;
+        }
+        entries.sort((a, b) => ((a.beginYear || 0) > (b.beginYear || 0) ? 1 : -1));
         if (this.item.isEmbedded) {
           await this.item.actor?.updateEmbeddedDocuments("Item", [
             {
@@ -91,28 +96,45 @@ export class FamilyHistorySheet extends RqgItemSheet<
     if (event?.currentTarget?.id.startsWith("end-year-")) {
       //@ts-ignore dataset
       const targetIndex = event.currentTarget.dataset.index;
-      console.log("Family History Entry Index", targetIndex);
 
       if (targetIndex) {
         const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
         //@ts-ignore value
         entries[targetIndex].endYear = Number(event.currentTarget.value);
-        if (this.item.isEmbedded) {
-          await this.item.actor?.updateEmbeddedDocuments("Item", [
-            {
-              _id: this.item.id,
-              "data.familyHistoryEntries": entries,
-            },
-          ]);
-        } else {
-          await this.item.update({
-            "data.familyHistoryEntries": entries,
-          });
-        }
+        await this.updateEntries(entries);
+      }
+    }
+
+    
+    //@ts-ignore id
+    if (event?.currentTarget?.id.startsWith("target-character-")) {
+      //@ts-ignore dataset
+      const targetIndex = event.currentTarget.dataset.index;
+
+      if (targetIndex) {
+        const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+        //@ts-ignore value
+        entries[targetIndex].targetCharacter = event.currentTarget.value;
+        await this.updateEntries(entries);
       }
     }
 
     return super._updateObject(event, formData);
+  }
+
+  private async updateEntries(entries: FamilyHistoryEntry[]) {
+    if (this.item.isEmbedded) {
+      await this.item.actor?.updateEmbeddedDocuments("Item", [
+        {
+          _id: this.item.id,
+          "data.familyHistoryEntries": entries,
+        },
+      ]);
+    } else {
+      await this.item.update({
+        "data.familyHistoryEntries": entries,
+      });
+    }
   }
 
   public activateListeners(html: JQuery): void {
@@ -120,10 +142,20 @@ export class FamilyHistorySheet extends RqgItemSheet<
     const form = this.form as HTMLFormElement;
 
     form.addEventListener("drop", this._onDrop.bind(this));
+
+    html.find("[data-delete-index]").each((i: number, el: HTMLElement) => {
+      const deleteIndex = Number(getDomDataset(el, "delete-index"));
+      if (deleteIndex) {
+        el.addEventListener("click", async () => {
+          const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+          entries.splice(deleteIndex, 1);
+          await this.updateEntries(entries);
+        });
+      }
+    });
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-
     const thisFamilyHistory = this.item.data.data as FamilyHistoryDataSourceData;
 
     let droppedDocumentData;
@@ -151,25 +183,25 @@ export class FamilyHistorySheet extends RqgItemSheet<
         return;
       }
 
-      const rqidLink: RqidLink = {rqid: rollTableRqid, name: droppedItem.name || "", documentType: droppedItem.type, bonus: 0};
+      const rqidLink: RqidLink = {
+        rqid: rollTableRqid,
+        name: droppedItem.name || "",
+        documentType: droppedItem.type,
+        bonus: 0,
+      };
 
       const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
 
-      entries.push({beginYear: 0, endYear: 0, ancestor: "grandparent", rollTableRqidLink: rqidLink, modifiers: ""});
+      entries.push({
+        beginYear: undefined,
+        endYear: undefined,
+        targetCharacter: "grandparent",
+        rollTableRqidLink: rqidLink,
+        modifiers: "",
+      });
       entries.sort((a, b) => ((a.beginYear || 0) > (b.beginYear || 0) ? 1 : -1));
 
-      if (this.item.isEmbedded) {
-        await this.item.actor?.updateEmbeddedDocuments("Item", [
-          {
-            _id: this.item.id,
-            "data.familyHistoryEntries": entries,
-          },
-        ]);
-      } else {
-        await this.item.update({
-          "data.familyHistoryEntries": entries,
-        });
-      }
+      await this.updateEntries(entries);
 
       return;
     }
