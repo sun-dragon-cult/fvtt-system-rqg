@@ -85,23 +85,23 @@ export class Rqid {
   }
 
   /**
-   * A more flexible way to get all matching documents from a rqid.
+   * Returns all documents whith an rqid matching the regex and matching the document type
+   * and language, from the specified scope.
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
    * @param scope defines where it will look:
-   * @param onlyFindBest if true only gets the "best" version from the requested scope.
    * **match** same logic as fromRqid function,
    * **all**: find in both world & compendia,
    * **world**: only search in world,
    * **compendiums**: only search in compendiums
    */
-  public static async fromRqidRegex(
+  public static async fromRqidRegexAll(
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en",
     scope: "match" | "all" | "world" | "compendiums" = "match",
-    onlyFindBest: boolean = false
+    // onlyFindBest: boolean = false
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
@@ -116,45 +116,55 @@ export class Rqid {
       result.splice(0, 0, ...worldDocuments);
     }
 
-    // const distinctWorldRqids: string[] = result
-    //   .map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)
-    //   .filter(function (value, index, self) {
-    //     return self.indexOf(value) === index;
-    //   });
 
     const distinctWorldRqids: string[] = [
       ...new Set(result.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)),
     ];
 
-    // find the best results in the world
-    if (onlyFindBest) {
-      result = [];
-      for (const rqid of distinctWorldRqids) {
-        const bestWorldDocFound = await Rqid.fromRqid(rqid);
-        if (bestWorldDocFound) {
-          result.push(bestWorldDocFound);
-        }
-      }
-    }
-
     if (["match", "all", "compendiums"].includes(scope)) {
       let compendiaDocuments = await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
 
-      if (onlyFindBest) {
-        // list of all the rqids from the compendia that were not already found in the world.
-        const distinctCompendiaRqids: string[] = [
-          ...new Set(compendiaDocuments.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)),
-        ];
-        compendiaDocuments = [];
-        for (const rqid of distinctCompendiaRqids) {
-          const bestCompendiaDocFound = await Rqid.fromRqid(rqid);
-          if (bestCompendiaDocFound) {
-            compendiaDocuments.push(bestCompendiaDocFound);
-          }
-        }
-      }
-
       result.splice(result.length, 0, ...compendiaDocuments);
+    }
+
+    return result;
+  }
+
+    /**
+   * Gets only the highest priority documents for each rqid that matches the Regex and 
+   * language, with the highest priority documents in the World taking precedence over 
+   * any documents
+   * in compendium packs.
+   * @param rqidRegex regex used on the rqid
+   * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
+   * @param lang the language to match against ("en", "es", ...)
+   * **match** same logic as fromRqid function,
+   * **all**: find in both world & compendia,
+   * **world**: only search in world,
+   * **compendiums**: only search in compendiums
+   */
+  public static async fromRqidRegexBest(
+    rqidRegex: RegExp | undefined,
+    rqidDocumentType: string, // like "i", "a", "je"
+    lang: string = "en"
+    // onlyFindBest: boolean = false
+  ): Promise<Document<any, any>[]> {
+    const allDocuments = this.fromRqidRegexAll(rqidRegex, rqidDocumentType, lang, "all");
+    const distinctRqids = [
+      ...new Set((await allDocuments).map((doc) =>doc.data?.flags?.rqg?.documentRqidFlags?.id)),
+    ]
+    console.log("Distince Rqids", distinctRqids);
+
+    const result: Document<any, any>[] = [];
+
+    for (const rqid of distinctRqids) {
+      const doc = await this.fromRqid(rqid);
+      if (doc) {
+        result.push(doc);
+      }
+      else {
+        console.log(`fromRqidRegexAll returned the rqid "${rqid}" which was not found by fromRqid`);
+      }
     }
 
     return result;

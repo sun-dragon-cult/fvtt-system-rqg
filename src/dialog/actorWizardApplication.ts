@@ -108,13 +108,13 @@ export class ActorWizard extends FormApplication {
     if (!this.species.speciesTemplates) {
       // Don't get these every time.
       // this.species.speciesTemplates = await getActorTemplates();
-      const templates = await Rqid.fromRqidRegex(/.*template.*/, "a", "en", "all", true);
+      const templates = await Rqid.fromRqidRegexBest(/.*template.*/, "a", "en");
       this.species.speciesTemplates = templates as RqgActor[];
     }
 
     if (!this.homeland.homelands) {
       // Don't get these every time
-      const homelands = await Rqid.fromRqidRegex(/.*homeland.*/, "i", "en", "all", true);
+      const homelands = await Rqid.fromRqidRegexBest(/.*homeland.*/, "i", "en");
       this.homeland.homelands = homelands.filter((i) => (i as RqgItem).type === ItemTypeEnum.Homeland) as RqgItem[];
     }
 
