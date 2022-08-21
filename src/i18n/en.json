@@ -640,6 +640,9 @@
         "carried": "Carried",
         "equipped": "Equipped"
       },
+      "FamilyHistory": {
+        "FamilyHistory": "Family History"
+      },
       "Gear": {
         "Name": "Name",
         "EncumbranceAbbr": "ENC",
@@ -853,6 +856,7 @@
         "Cult": "Cult",
         "CultStanding": "Cult Standing",
         "Gear": "Gear",
+        "FamilyHistory": "Family History",
         "HitLocation": "Hit Location",
         "HitLocationDefinition": "Hit Location Definition",
         "Homeland": "Homeland",

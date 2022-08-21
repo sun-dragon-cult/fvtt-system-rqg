@@ -12,11 +12,67 @@
             name="data.name"
             value="{{data.name}}">
     </div>
-    
+
   </header>
 
   <main>
 
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="item-sheet-nav-tabs" data-group="primary">
+      <a class="item" data-tab="family-history">{{localize "RQG.Item.SheetTab.FamilyHistory"}}</a>
+      {{#if isGM}}
+      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
+      {{#unless isEmbedded}}
+      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+      {{/unless}}
+      {{/if}}
+    </nav>
+
+    <section class="sheet-body">
+      {{!-- Family History Tab --}}
+      <div class="tab" data-group="primary" data-tab="family-history">
+
+        <div style="display: flex; flex-wrap: wrap;">
+
+          {{#each familyHistoryData.familyHistoryEntries}}
+
+            <div>
+              <input type="text" 
+                     id="begin-year-{{@index}}"
+                     data-index="{{@index}}"
+                     value="{{this.beginYear}}">
+              -
+              <input type="text" 
+                     id="end-year-{{@index}}"
+                     data-index="{{@index}}"
+                     value="{{this.endYear}}">    
+            </div>
+            <div>
+              {{this.ancestor}}
+            </div>
+            {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                rqidLink=this.rollTableRqidLink
+            }}   
+          {{/each}}
+
+        </div>
+
+      </div>
+
+      {{!-- GM Tab --}}
+      <div class="tab" data-group="primary" data-tab="gm">
+
+        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=homelandData.gmNotes target="data.gmNotes"
+          button=true owner=owner editable=editable}}
+        </label>
+      </div>
+
+      {{!-- Active Effects Tab --}}
+      <div class="tab" data-group="primary" data-tab="active-effects">
+        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+
+      </div>
+    </section>
 
   </main>
 

@@ -2,12 +2,11 @@ import { RqidLink } from "../shared/rqidLink";
 import { ItemTypeEnum } from "./itemTypes";
 
 export class FamilyHistoryEntry {
-  beginYear: number = 0;
-  endYear: number = 0;
+  beginYear: number | undefined;
+  endYear: number | undefined;
   ancestor: string = "";
   rollTableRqidLink: RqidLink | undefined = undefined;
   modifiers: string = "";
-  skillRqidLink: RqidLink | undefined = undefined;
 }
 
 export interface FamilyHistoryDataSourceData {

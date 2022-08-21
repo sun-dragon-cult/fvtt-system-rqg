@@ -9,6 +9,8 @@ import { RqgItem } from "../rqgItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
 import { HomelandDataSource } from "../../data-model/item-data/homelandData";
 import { systemId } from "../../system/config";
+import { documentRqidFlags } from "src/data-model/shared/rqgDocumentFlags";
+import { RqidLink } from "src/data-model/shared/rqidLink";
 
 export interface FamilyHistorySheetData extends RqgItemSheetData {
   isEmbedded: boolean; // There might be no reason to actually embed FamilyHistory items!
@@ -50,208 +52,127 @@ export class FamilyHistorySheet extends RqgItemSheet<
       options: this.options,
       data: itemData,
       familyHistoryData: itemData.data,
-      sheetSpecific: {
-        // homelandsJoined: itemData.data.homelands.join(", "),
-        // standardsOfLiving: Object.values(StandardOfLivingEnum),
-        // skillsJoined: itemData.data.occupationalSkills
-        //   .map((skill) => {
-        //     const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;
-        //     if (skill.incomeSkill) {
-        //       return `<span class="incomeSkillText">${skill.skillRqidLink?.name} ${bonus}</span>`;
-        //     } else {
-        //       return `<span>${skill.skillRqidLink?.name} ${bonus}</span>`;
-        //     }
-        //   })
-        //   .join(", "),
-      },
+      sheetSpecific: {},
       isGM: getGameUser().isGM,
       ownerId: this.document.actor?.id,
       uuid: this.document.uuid,
       supportedLanguages: CONFIG.supportedLanguages,
     };
   }
+
+  protected async _updateObject(event: Event, formData: any): Promise<any> {
+    //@ts-ignore id
+    if (event?.currentTarget?.id.startsWith("begin-year-")) {
+      //@ts-ignore dataset
+      const targetIndex = event.currentTarget.dataset.index;
+      console.log("Family History Entry Index", targetIndex);
+
+      if (targetIndex) {
+        const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+        //@ts-ignore value
+        entries[targetIndex].beginYear = Number(event.currentTarget.value);
+        entries.sort((a,b) => ((a.beginYear || 0) > (b.beginYear || 0)) ? 1 : -1);
+        if (this.item.isEmbedded) {
+          await this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
+              "data.familyHistoryEntries": entries,
+            },
+          ]);
+        } else {
+          await this.item.update({
+            "data.familyHistoryEntries": entries,
+          });
+        }
+      }
+    }
+
+    //@ts-ignore id
+    if (event?.currentTarget?.id.startsWith("end-year-")) {
+      //@ts-ignore dataset
+      const targetIndex = event.currentTarget.dataset.index;
+      console.log("Family History Entry Index", targetIndex);
+
+      if (targetIndex) {
+        const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+        //@ts-ignore value
+        entries[targetIndex].endYear = Number(event.currentTarget.value);
+        if (this.item.isEmbedded) {
+          await this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
+              "data.familyHistoryEntries": entries,
+            },
+          ]);
+        } else {
+          await this.item.update({
+            "data.familyHistoryEntries": entries,
+          });
+        }
+      }
+    }
+
+    return super._updateObject(event, formData);
+  }
+
+  public activateListeners(html: JQuery): void {
+    super.activateListeners(html);
+    const form = this.form as HTMLFormElement;
+
+    form.addEventListener("drop", this._onDrop.bind(this));
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<void> {
+
+    const thisFamilyHistory = this.item.data.data as FamilyHistoryDataSourceData;
+
+    let droppedDocumentData;
+    try {
+      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
+    } catch (err) {
+      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
+      return;
+    }
+
+    const targetPropertyName = getDomDataset(event, "target-drop-property");
+
+    const droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
+
+    if (droppedDocumentData.type === "RollTable") {
+      const droppedItem = (await RollTable.fromDropData(droppedDocumentData)) as RqgItem;
+
+      if (droppedItem === undefined) {
+        return;
+      }
+
+      const rollTableRqid = droppedItem.data.flags.rqg?.documentRqidFlags?.id;
+
+      if (!rollTableRqid) {
+        return;
+      }
+
+      const rqidLink: RqidLink = {rqid: rollTableRqid, name: droppedItem.name || "", documentType: droppedItem.type, bonus: 0};
+
+      const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+
+      entries.push({beginYear: 0, endYear: 0, ancestor: "grandparent", rollTableRqidLink: rqidLink, modifiers: ""});
+      entries.sort((a, b) => ((a.beginYear || 0) > (b.beginYear || 0) ? 1 : -1));
+
+      if (this.item.isEmbedded) {
+        await this.item.actor?.updateEmbeddedDocuments("Item", [
+          {
+            _id: this.item.id,
+            "data.familyHistoryEntries": entries,
+          },
+        ]);
+      } else {
+        await this.item.update({
+          "data.familyHistoryEntries": entries,
+        });
+      }
+
+      return;
+    }
+    await super._onDrop(event);
+  }
 }
-//   protected _updateObject(event: Event, formData: any): Promise<any> {
-//     //@ts-ignore id
-//     if (event?.currentTarget?.id.startsWith("bonus-")) {
-//       //@ts-ignore dataset
-//       const targetRqid = event.currentTarget.dataset.skillRqid;
-//       if (targetRqid) {
-//         const occSkills = (this.item.data.data as FamilyHistoryDataSourceData).occupationalSkills;
-//         for (const skill of occSkills) {
-//           if (skill.skillRqidLink?.rqid === targetRqid) {
-//             //@ts-ignore value
-//             skill.bonus = Number(event.currentTarget.value);
-//           }
-//         }
-//         if (this.item.isEmbedded) {
-//           this.item.actor?.updateEmbeddedDocuments("Item", [
-//             {
-//               _id: this.item.id,
-//               "data.occupationalSkills": occSkills,
-//             },
-//           ]);
-//         } else {
-//           this.item.update({
-//             "data.occupationalSkills": occSkills,
-//           });
-//         }
-//       }
-//     }
-
-//     //@ts-ignore name
-//     if (event?.currentTarget?.id.startsWith("income-skill-")) {
-//       //@ts-ignore dataset
-//       const targetRqid = event.currentTarget.dataset.skillRqid;
-//       if (targetRqid) {
-//         const occSkills = (this.item.data.data as FamilyHistoryDataSourceData).occupationalSkills;
-//         for (const skill of occSkills) {
-//           if (skill.skillRqidLink?.rqid === targetRqid) {
-//             //@ts-ignore checked
-//             skill.incomeSkill = event.currentTarget?.checked;
-//           }
-//         }
-//         if (this.item.isEmbedded) {
-//           this.item.actor?.updateEmbeddedDocuments("Item", [
-//             {
-//               _id: this.item.id,
-//               "data.occupationalSkills": occSkills,
-//             },
-//           ]);
-//         } else {
-//           this.item.update({
-//             "data.occupationalSkills": occSkills,
-//           });
-//         }
-//       }
-//     }
-
-//     const specializationFormatted = formData["data.specialization"]
-//       ? ` (${formData["data.specialization"]})`
-//       : "";
-//     const newName = formData["data.occupation"] + specializationFormatted;
-//     if (newName) {
-//       // If there's nothing in the occupation or region, don't rename
-//       formData["name"] = newName;
-//     }
-//     return super._updateObject(event, formData);
-//   }
-
-//   public activateListeners(html: JQuery): void {
-//     super.activateListeners(html);
-//     const form = this.form as HTMLFormElement;
-
-//     form.addEventListener("drop", this._onDrop.bind(this));
-//     form
-//       .querySelector("#btn-edit-occupational-skills-" + this.item.id)
-//       ?.addEventListener("click", () => {
-//         this.toggleSkillEdit(false);
-//       });
-//   }
-
-//   private toggleSkillEdit(forceEdit = false) {
-//     const form = this.form as HTMLFormElement;
-//     const displaySkills = form.querySelector(
-//       "#occupational-skill-display-" + this.item.id
-//     ) as HTMLElement;
-//     const editSkills = form.querySelector(
-//       "#occupational-skill-edit-" + this.item.id
-//     ) as HTMLElement;
-//     const btnEdit = form.querySelector(
-//       "#btn-edit-occupational-skills-" + this.item.id
-//     ) as HTMLElement;
-//     if (displaySkills?.style.display === "block" || forceEdit) {
-//       displaySkills.style.display = "none";
-//       editSkills.style.display = "block";
-//       btnEdit.style.color = "gray";
-//     } else {
-//       displaySkills.style.display = "block";
-//       editSkills.style.display = "none";
-//       btnEdit.style.color = "black";
-//     }
-//   }
-
-//   protected async _onDrop(event: DragEvent): Promise<void> {
-//     await super._onDrop(event);
-
-//     const thisFamilyHistory = this.item.data.data as FamilyHistoryDataSourceData;
-
-//     let droppedDocumentData;
-//     try {
-//       droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-//     } catch (err) {
-//       ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
-//       return;
-//     }
-
-//     const targetPropertyName = getDomDataset(event, "target-drop-property");
-
-//     const droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
-
-//     if (droppedDocument) {
-//       if (targetPropertyName === "occupationRqidLink") {
-//         const specializationFormatted = thisFamilyHistory.specialization
-//           ? ` (${thisFamilyHistory.specialization})`
-//           : "";
-//         // update the occupation portion of the occupation name
-//         const updatedName = droppedDocument.name + specializationFormatted;
-//         if (this.item.isEmbedded) {
-//           await this.item.actor?.updateEmbeddedDocuments("Item", [
-//             {
-//               _id: this.item.id,
-//               "data.occupation": droppedDocument.name,
-//               name: updatedName,
-//             },
-//           ]);
-//         } else {
-//           await this.item.update({
-//             "data.occupation": droppedDocument.name,
-//             name: updatedName,
-//           });
-//         }
-//       }
-//     }
-
-//     if (droppedDocumentData.type === "Item") {
-//       const droppedItem = (await Item.fromDropData(droppedDocumentData)) as RqgItem;
-
-//       if (droppedItem === undefined) {
-//         return;
-//       }
-
-//       if (droppedItem.type === "homeland") {
-//         // For this one we're just saving the name of the homeland, without the region
-//         // to an array of strings.
-//         const homelands = thisFamilyHistory.homelands;
-//         const newHomeland = (droppedItem.data as HomelandDataSource).data.homeland;
-//         if (!homelands.includes(newHomeland)) {
-//           homelands.push(newHomeland);
-//           if (this.item.isEmbedded) {
-//             await this.item.actor?.updateEmbeddedDocuments("Item", [
-//               {
-//                 _id: this.item.id,
-//                 "data.homelands": homelands,
-//               },
-//             ]);
-//           } else {
-//             await this.item.update({
-//               "data.homelands": homelands,
-//             });
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-
-// function ensureJournal(droppedItemData: any, target: string): boolean {
-//   if (droppedItemData.type !== "JournalEntry") {
-//     ui.notifications?.warn(
-//       localize("RQG.Item.Notification.CanOnlyDropJournalEntryOnThisTargetWarning", {
-//         target: localize("RQG.Item.FamilyHistory." + target),
-//       })
-//     );
-//     return false;
-//   }
-//   return true;
-// }
