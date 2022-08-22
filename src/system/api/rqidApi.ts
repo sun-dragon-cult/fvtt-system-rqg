@@ -100,7 +100,7 @@ export class Rqid {
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en",
-    scope: "match" | "all" | "world" | "compendiums" = "match",
+    scope: "match" | "all" | "world" | "compendiums" = "match"
     // onlyFindBest: boolean = false
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
@@ -116,7 +116,6 @@ export class Rqid {
       result.splice(0, 0, ...worldDocuments);
     }
 
-
     const distinctWorldRqids: string[] = [
       ...new Set(result.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)),
     ];
@@ -130,9 +129,9 @@ export class Rqid {
     return result;
   }
 
-    /**
-   * Gets only the highest priority documents for each rqid that matches the Regex and 
-   * language, with the highest priority documents in the World taking precedence over 
+  /**
+   * Gets only the highest priority documents for each rqid that matches the Regex and
+   * language, with the highest priority documents in the World taking precedence over
    * any documents
    * in compendium packs.
    * @param rqidRegex regex used on the rqid
@@ -149,25 +148,31 @@ export class Rqid {
     lang: string = "en"
     // onlyFindBest: boolean = false
   ): Promise<Document<any, any>[]> {
-    const allDocuments = this.fromRqidRegexAll(rqidRegex, rqidDocumentType, lang, "all");
-    const distinctRqids = [
-      ...new Set((await allDocuments).map((doc) =>doc.data?.flags?.rqg?.documentRqidFlags?.id)),
-    ]
-    console.log("Distince Rqids", distinctRqids);
+    const allDocuments = await this.fromRqidRegexAll(rqidRegex, rqidDocumentType, lang, "all");
+    const bestDocuments = this.filterBestRqid(allDocuments);
+    return bestDocuments;
+  }
 
-    const result: Document<any, any>[] = [];
+  /**
+   * For an array of documents, returns only those that are the "best" version of their Rqid
+   * @param documents 
+   * @returns 
+   */
+  public static filterBestRqid(documents: Document<any, any>[]): Document<any, any>[] {
+    const highestPrioDocuments = new Map<string, Document<any, any>>();
 
-    for (const rqid of distinctRqids) {
-      const doc = await this.fromRqid(rqid);
-      if (doc) {
-        result.push(doc);
-      }
-      else {
-        console.log(`fromRqidRegexAll returned the rqid "${rqid}" which was not found by fromRqid`);
+    for (const doc of documents) {
+      const docPrio: number = doc.getFlag(systemId, documentRqidFlags)?.priority;
+      const docRqid: string = doc.getFlag(systemId, documentRqidFlags)?.id;
+      const currentHighestPrio =
+        highestPrioDocuments.get(docRqid)?.getFlag(systemId, documentRqidFlags)?.priority ??
+        -Infinity;
+      if (docPrio > currentHighestPrio) {
+        highestPrioDocuments.set(docRqid, doc);
       }
     }
 
-    return result;
+    return [...highestPrioDocuments.values()];
   }
 
   /**
