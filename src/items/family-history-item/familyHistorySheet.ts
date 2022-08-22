@@ -119,6 +119,30 @@ export class FamilyHistorySheet extends RqgItemSheet<
       }
     }
 
+    // Was this from an editor?
+    if (event.type === "mcesave") {
+      // DON'T save on event.type === "submit" because the new text always will be empty
+      const mceId = Object.keys(formData).filter((k) => k.startsWith("mce"));
+      if (mceId && mceId.length === 1) {
+        // Sometimes the value to save is in formData.mce_## and sometimes
+        // it's in formData.eventsText (which is the "target" from the handlebars editor)
+        const newText = formData[mceId[0]] || formData.eventsText;
+        console.log(newText);
+        const editor = $("#" + mceId[0]);
+        if (editor) {
+          const gridItemAncestor = $(editor).closest(".grid-item");
+          const targetIndex = Number(gridItemAncestor.data("index"));
+          if (targetIndex === 0 || targetIndex) {
+            const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+            //@ts-ignore value
+            entries[targetIndex].eventsText = newText;
+            await this.updateEntries(entries);
+          }
+        }
+      }      
+    }
+
+
     return super._updateObject(event, formData);
   }
 
@@ -198,6 +222,7 @@ export class FamilyHistorySheet extends RqgItemSheet<
         targetCharacter: "grandparent",
         rollTableRqidLink: rqidLink,
         modifiers: "",
+        eventsText: ""
       });
       entries.sort((a, b) => ((a.beginYear || 0) > (b.beginYear || 0) ? 1 : -1));
 

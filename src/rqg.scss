@@ -1409,8 +1409,14 @@ body {
 
 .family-history-sheet-grid {
   display: grid;
-  grid-template-columns: minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(100px, auto) minmax(14px, auto);
+  grid-template-columns: repeat(6, minmax(100px, auto));
   .header {
     font-weight: bold;
+  }
+  .grid-item:nth-child(6n-5) {
+    grid-column:span 6;
+  }
+  .grid-item:nth-child(6n-4) {
+    grid-column: span 2;
   }
 }

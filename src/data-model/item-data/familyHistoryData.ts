@@ -7,6 +7,7 @@ export class FamilyHistoryEntry {
   targetCharacter: string = "";
   rollTableRqidLink: RqidLink | undefined = undefined;
   modifiers: string = "";
+  eventsText: string = "";
 }
 
 export interface FamilyHistoryDataSourceData {

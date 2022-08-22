@@ -34,24 +34,18 @@
       <div class="tab" data-group="primary" data-tab="family-history">
 
         <div class="family-history-sheet-grid">
-            <div class="header">
-              Years
-            </div>
-            <div class="header">
-              Target
-            </div>
-            <div class="header">
-              Roll Table
-            </div>
-            <div class="header">
-              Modifiers
-            </div>
-            <div class="header">
 
-            </div>
           {{#each familyHistoryData.familyHistoryEntries}}
-
-            <div>
+            <div class="grid-item" data-index="{{@index}}">
+                {{editor
+                  content=this.eventsText
+                  target="eventsText"
+                  button=true
+                  owner=owner
+                  editable=editable
+                }}              
+            </div>
+            <div class="grid-item">
               <input type="number" 
                      style="  text-align: right;width: 50px;"
                      id="begin-year-{{@index}}"
@@ -64,7 +58,7 @@
                      data-index="{{@index}}"
                      value="{{this.endYear}}">    
             </div>
-            <div>
+            <div class="grid-item">
               <select id="target-character-{{@index}}"
                       data-index="{{@index}}" >
 
@@ -77,16 +71,18 @@
                 {{/select}}
               </select>              
             </div>
-            {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                rqidLink=this.rollTableRqidLink
-            }}   
-            <div>
+            <div class="grid-item">
+              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                  rqidLink=this.rollTableRqidLink
+              }}
+            </div>
+            <div class="grid-item">
               <input type="text" 
                      id="modifiers-{{@index}}"
                      data-index="{{@index}}"
                      value="{{this.modifiers}}">    
             </div>
-            <div>
+            <div class="grid-item">
               <i
                 class="fas fa-times icon"
                 data-delete-index="{{@index}}"
