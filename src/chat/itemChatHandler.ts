@@ -10,6 +10,7 @@ import {
   cleanIntegerString,
   requireValue,
   getRequiredRqgActorFromUuid,
+  localizeItemType,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
@@ -45,7 +46,7 @@ export class ItemChatHandler {
     const templateData = {
       ...flags,
       chance: itemChance + modifier,
-      chatHeading: localize("ITEM.Type" + item?.data.type.titleCase()) + ": " + item?.name,
+      chatHeading: localizeItemType(item?.data.type) + ": " + item?.name,
     };
 
     let html = await renderTemplate("systems/rqg/chat/itemChatHandler.hbs", templateData);
