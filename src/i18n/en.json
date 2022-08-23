@@ -68,6 +68,10 @@
         "ImportCultTitle": "Import Cult: \"{name}\"",
         "ImportRuneTitle": "Import Rune: \"{name}\""
       },
+      "Step2": {
+        "ChooseAncestors": "Choose Ancestors",
+        "familyYearlyHistory": "Yearly History"
+      },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
         "SetAdventurerCreationCompleteButton": "Adventurer Creation Complete"

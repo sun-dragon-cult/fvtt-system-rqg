@@ -103,6 +103,8 @@ export class ActorWizard extends FormApplication {
       this.collapsibleOpenStates["speciesBackground"] = true;
       this.collapsibleOpenStates["homelandWizardInstructions"] = true;
       this.collapsibleOpenStates["homelandAdvanced"] = true;
+      this.collapsibleOpenStates["familyChooseAncestors"] = true;
+      this.collapsibleOpenStates["familyYearlyHistory"] = true;
     }
 
     if (!this.species.speciesTemplates) {
@@ -182,16 +184,23 @@ export class ActorWizard extends FormApplication {
     if (selectedHomeland?.data?.runeRqidLinks) {
       for (const runeRqidLink of selectedHomeland?.data?.runeRqidLinks) {
         const rune = await Rqid.fromRqid(runeRqidLink.rqid);
-        assertItemType(rune?.data.type, ItemTypeEnum.Rune);
-        (rune.data as RuneDataSource).data.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
-        (rune.data as RuneDataSource).data.hasExperience = false;
-        const associatedChoice = this.choices[runeRqidLink.rqid];
-        if (associatedChoice) {
-          // put choice on homeland runes for purposes of sheet
-          //@ts-ignore choice TODO Is choice a temporary property?
-          rune.data.data.choice = associatedChoice;
+        if (rune) {
+          assertItemType(rune?.data.type, ItemTypeEnum.Rune);
+          (rune.data as RuneDataSource).data.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
+          (rune.data as RuneDataSource).data.hasExperience = false;
+          const associatedChoice = this.choices[runeRqidLink.rqid];
+          if (associatedChoice) {
+            // put choice on homeland runes for purposes of sheet
+            //@ts-ignore choice TODO Is choice a temporary property?
+            rune.data.data.choice = associatedChoice;
+          }
+          homelandRunes.push(rune as RqgItem); // Already asserted          
         }
-        homelandRunes.push(rune as RqgItem); // Already asserted
+        else {
+          const msg = `Homeland contains Rune with RQID "${runeRqidLink.rqid}" that was not found.`;
+          console.warn(msg);
+          ui.notifications?.warn(msg);                   
+        }
       }
       // put runes on homeland for purposes of sheet
       //@ts-ignore runes
@@ -202,21 +211,28 @@ export class ActorWizard extends FormApplication {
     if (selectedHomeland?.data?.skillRqidLinks) {
       for (const skillRqidLink of selectedHomeland?.data?.skillRqidLinks) {
         const skill = await Rqid.fromRqid(skillRqidLink.rqid);
-        assertItemType(skill?.data.type, ItemTypeEnum.Skill);
-        const associatedChoice = this.choices[skillRqidLink.rqid];
-        if (associatedChoice) {
-          // put choice on homeland skills for purposes of sheet
-          //@ts-ignore choice
-          skill.data.data.choice = associatedChoice;
+        if (skill) {
+          assertItemType(skill?.data.type, ItemTypeEnum.Skill);
+          const associatedChoice = this.choices[skillRqidLink.rqid];
+          if (associatedChoice) {
+            // put choice on homeland skills for purposes of sheet
+            //@ts-ignore choice
+            skill.data.data.choice = associatedChoice;
+          }
+          if (skillRqidLink.bonus) {
+            const skillDataSource = skill.data as SkillDataSource;
+            skillDataSource.data.baseChance = 0;
+            skillDataSource.data.learnedChance = 0;
+            skillDataSource.data.hasExperience = false;
+            skillDataSource.data.chance = skillRqidLink.bonus;
+          }
+          homelandSkills.push(skill as RqgItem); // Already asserted          
         }
-        if (skillRqidLink.bonus) {
-          const skillDataSource = skill.data as SkillDataSource;
-          skillDataSource.data.baseChance = 0;
-          skillDataSource.data.learnedChance = 0;
-          skillDataSource.data.hasExperience = false;
-          skillDataSource.data.chance = skillRqidLink.bonus;
+        else {
+          const msg = `Homeland contains Skill with RQID "${skillRqidLink.rqid}" that was not found.`;
+          console.warn(msg);
+          ui.notifications?.warn(msg);          
         }
-        homelandSkills.push(skill as RqgItem); // Already asserted
       }
     }
 
@@ -238,15 +254,22 @@ export class ActorWizard extends FormApplication {
     if (selectedHomeland?.data?.passionRqidLinks) {
       for (const passionRqidLink of selectedHomeland?.data?.passionRqidLinks) {
         const passion = await Rqid.fromRqid(passionRqidLink.rqid);
-        assertItemType(passion?.data.type, ItemTypeEnum.Passion);
-        const associatedChoice = this.choices[passionRqidLink.rqid];
-        (passion.data as PassionDataSource).data.hasExperience = false;
-        if (associatedChoice) {
-          // put choice on homeland passions for purposes of sheet
-          //@ts-ignore choice
-          passion.data.data.choice = associatedChoice;
+        if (passion) {
+          assertItemType(passion?.data.type, ItemTypeEnum.Passion);
+          const associatedChoice = this.choices[passionRqidLink.rqid];
+          (passion.data as PassionDataSource).data.hasExperience = false;
+          if (associatedChoice) {
+            // put choice on homeland passions for purposes of sheet
+            //@ts-ignore choice
+            passion.data.data.choice = associatedChoice;
+          }
+          homelandPassions.push(passion as RqgItem); // Already asserted          
         }
-        homelandPassions.push(passion as RqgItem); // Already asserted
+        else {
+          const msg = `Homeland contains Passion with RQID "${passionRqidLink.rqid}" that was not found.`;
+          console.warn(msg);
+          ui.notifications?.warn(msg);         
+        }
       }
     }
 
