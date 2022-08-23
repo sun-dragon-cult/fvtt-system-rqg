@@ -36,27 +36,32 @@
         <div class="family-history-sheet-grid">
 
           {{#each familyHistoryData.familyHistoryEntries}}
-            <div class="grid-item" data-index="{{@index}}">
-                {{editor
-                  content=this.eventsText
-                  target="eventsText"
-                  button=true
-                  owner=owner
-                  editable=editable
-                }}              
-            </div>
             <div class="grid-item">
               <input type="number" 
-                     style="  text-align: right;width: 50px;"
+                     style="text-align: right;width: 50px;"
                      id="begin-year-{{@index}}"
                      data-index="{{@index}}"
                      value="{{this.beginYear}}">
               -
               <input type="number" 
-                     style="  text-align: right;width: 50px;"
+                     style="text-align: right;width: 50px;"
                      id="end-year-{{@index}}"
                      data-index="{{@index}}"
                      value="{{this.endYear}}">    
+            </div>
+            <div class="grid-item" data-index="{{@index}}">
+                <textarea rows="10"
+                  id="events-text-{{@index}}"
+                  data-index="{{@index}}"
+                  >{{this.eventsText}}</textarea>
+                  
+                {{!-- {{editor
+                  content=this.eventsText
+                  target="eventsText"
+                  button=true
+                  owner=owner
+                  editable=editable
+                }}               --}}
             </div>
             <div class="grid-item">
               <select id="target-character-{{@index}}"

@@ -105,7 +105,6 @@ export class FamilyHistorySheet extends RqgItemSheet<
       }
     }
 
-    
     //@ts-ignore id
     if (event?.currentTarget?.id.startsWith("target-character-")) {
       //@ts-ignore dataset
@@ -119,29 +118,45 @@ export class FamilyHistorySheet extends RqgItemSheet<
       }
     }
 
-    // Was this from an editor?
-    if (event.type === "mcesave") {
-      // DON'T save on event.type === "submit" because the new text always will be empty
-      const mceId = Object.keys(formData).filter((k) => k.startsWith("mce"));
-      if (mceId && mceId.length === 1) {
-        // Sometimes the value to save is in formData.mce_## and sometimes
-        // it's in formData.eventsText (which is the "target" from the handlebars editor)
-        const newText = formData[mceId[0]] || formData.eventsText;
-        console.log(newText);
-        const editor = $("#" + mceId[0]);
-        if (editor) {
-          const gridItemAncestor = $(editor).closest(".grid-item");
-          const targetIndex = Number(gridItemAncestor.data("index"));
-          if (targetIndex === 0 || targetIndex) {
-            const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
-            //@ts-ignore value
-            entries[targetIndex].eventsText = newText;
-            await this.updateEntries(entries);
-          }
-        }
-      }      
+    //@ts-ignore id
+    if (event?.currentTarget?.id.startsWith("events-text-")) {
+      //@ts-ignore dataset
+      const targetIndex = event.currentTarget.dataset.index;
+
+      if (targetIndex) {
+        const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+        //@ts-ignore value
+        entries[targetIndex].eventsText = event.currentTarget.value;
+        await this.updateEntries(entries);
+      }
     }
 
+    // NOTE: This was an attempt to use the TinyMCE Editor inside the {{#each}}.
+    // It was a hack and it very nearly works but not quite, because the editor
+    // "mceId" appears to change after submit.
+
+    // Was this from an editor?
+    // if (event.type === "mcesave") {
+    //   // DON'T save on event.type === "submit" because the new text always will be empty
+    //   const mceId = Object.keys(formData).filter((k) => k.startsWith("mce"));
+    //   if (mceId && mceId.length === 1) {
+    //     // Sometimes the value to save is in formData.mce_## and sometimes
+    //     // it's in formData.eventsText (which is the "target" from the handlebars editor)
+    //     const newText = formData[mceId[0]] || formData.eventsText;
+    //     console.log(newText);
+    //     const editor = $("#" + mceId[0]);
+    //     if (editor) {
+    //       const gridItemAncestor = $(editor).closest(".grid-item");
+    //       const targetIndex = Number(gridItemAncestor.data("index"));
+    //       if (targetIndex === 0 || targetIndex) {
+    //         const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+    //         //@ts-ignore value
+    //         entries[targetIndex].eventsText = newText;
+    //         await this.updateEntries(entries);
+    //       }
+    //     }
+    //   }
+    // }
 
     return super._updateObject(event, formData);
   }
