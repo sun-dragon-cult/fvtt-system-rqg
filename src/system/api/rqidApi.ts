@@ -101,12 +101,11 @@ export class Rqid {
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en",
     scope: "match" | "all" | "world" | "compendiums" = "match"
-    // onlyFindBest: boolean = false
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
     }
-    let result: Document<any, any>[] = [];
+    const result: Document<any, any>[] = [];
 
     if (["match", "all", "world"].includes(scope)) {
       const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
@@ -115,10 +114,6 @@ export class Rqid {
       }
       result.splice(0, 0, ...worldDocuments);
     }
-
-    const distinctWorldRqids: string[] = [
-      ...new Set(result.map((d) => d.data?.flags?.rqg?.documentRqidFlags?.id)),
-    ];
 
     if (["match", "all", "compendiums"].includes(scope)) {
       let compendiaDocuments = await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
@@ -137,16 +132,11 @@ export class Rqid {
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
-   * **match** same logic as fromRqid function,
-   * **all**: find in both world & compendia,
-   * **world**: only search in world,
-   * **compendiums**: only search in compendiums
    */
   public static async fromRqidRegexBest(
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en"
-    // onlyFindBest: boolean = false
   ): Promise<Document<any, any>[]> {
     const allDocuments = await this.fromRqidRegexAll(rqidRegex, rqidDocumentType, lang, "all");
     const bestDocuments = this.filterBestRqid(allDocuments);
