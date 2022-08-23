@@ -83,6 +83,23 @@ flags:
       lang: en
       priority: 0
 ---
+name: Customs, own (Heortling) - knowledge
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+data:
+  category: knowledge
+  skillName: Customs, own
+  specialization: Heortling
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: false
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-own-heortling
+      lang: en
+      priority: 0
+---
 name: Elder Race Lore - knowledge
 type: skill
 img: systems/rqg/assets/images/skills/elder-race-lore.svg

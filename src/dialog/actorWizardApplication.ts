@@ -1,7 +1,6 @@
 import { RqgActor } from "../actors/rqgActor";
 import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { getActorTemplates, getHomelands, Rqid } from "../system/api/rqidApi";
 import { systemId } from "../system/config";
 import { assertItemType, getDocumentTypes, getGame, localize } from "../system/util";
 import { SkillCategoryEnum, SkillDataSource } from "../data-model/item-data/skillData";
@@ -13,6 +12,7 @@ import { HomelandDataSource } from "../data-model/item-data/homelandData";
 import { RuneDataSource } from "../data-model/item-data/runeData";
 import { PassionDataSource } from "../data-model/item-data/passionData";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
+import { Rqid } from "../system/api/rqidApi";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -107,12 +107,15 @@ export class ActorWizard extends FormApplication {
 
     if (!this.species.speciesTemplates) {
       // Don't get these every time.
-      this.species.speciesTemplates = await getActorTemplates();
+      // this.species.speciesTemplates = await getActorTemplates();
+      const templates = await Rqid.fromRqidRegexBest(/.*template.*/, "a", "en");
+      this.species.speciesTemplates = templates as RqgActor[];
     }
 
     if (!this.homeland.homelands) {
       // Don't get these every time
-      this.homeland.homelands = await getHomelands();
+      const homelands = await Rqid.fromRqidRegexBest(/.*homeland.*/, "i", "en");
+      this.homeland.homelands = homelands.filter((i) => (i as RqgItem).type === ItemTypeEnum.Homeland) as RqgItem[];
     }
 
     if (this.actor) {
@@ -640,8 +643,17 @@ export class ActorWizard extends FormApplication {
 
         // Copy Skills, Runes, and Passions from the Actor template
         if (this.choices[key].speciesPresent) {
-          const itemsToAddFromTemplate =
-            this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key);
+          let itemsToAddFromTemplate = [(await Rqid.fromRqid(key)) as RqgItem];
+          if (!itemsToAddFromTemplate || itemsToAddFromTemplate.length === 0) {
+            // Didn't find items by rqid, so just take what's on the Species Template
+            itemsToAddFromTemplate =
+              this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key) || [];
+            console.log(
+              `Actor Species Template had an item with rqid "${key} that was not found in by rqid. Using item from the Actor Species Template.`,
+              itemsToAddFromTemplate
+            );
+          }
+
           if (itemsToAddFromTemplate) {
             for (const templateItem of itemsToAddFromTemplate) {
               // Item exists on the template and has been chosen but does not exist on the actor, so add it

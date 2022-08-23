@@ -27,6 +27,10 @@ data:
       formula: 3d6
   background:
     species: Human
+    speciesRqidLink:
+        rqid: je..species-description-human
+        name: Human
+        documentType: JournalEntry
     occupation: ''
     homeland: sartar
     cultureJournalRqidLinks: []
@@ -367,7 +371,7 @@ items:
     flags:
       rqg:
         documentRqidFlags:
-          id: i.rune.fire-element
+          id: i.rune.fire-sky-element
           lang: en
           priority: -1
       core:

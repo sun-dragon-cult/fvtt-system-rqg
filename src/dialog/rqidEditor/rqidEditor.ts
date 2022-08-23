@@ -36,13 +36,13 @@ export class RqidEditor extends FormApplication {
       const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
 
       // Find out if there exists a duplicate rqid already and propose a
-      const worldDocuments = await Rqid.fromRqidRegex(
+      const worldDocuments = await Rqid.fromRqidRegexAll(
         rqidSearchRegex,
         rqidDocumentPrefix,
         documentLang,
         "world"
       );
-      const compendiumDocuments = await Rqid.fromRqidRegex(
+      const compendiumDocuments = await Rqid.fromRqidRegexAll(
         rqidSearchRegex,
         rqidDocumentPrefix,
         documentLang,

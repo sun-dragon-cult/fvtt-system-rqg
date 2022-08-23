@@ -1,0 +1,23 @@
+name: Orlanth
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: the Storm King
+  holyDays:
+  runes:
+    - Movement (power)
+    - Air (element)
+    - Air (element)
+    - Mastery (condition)
+  journalId: HZzvqPqihVtWK3Rd
+  journalPack: ${{SS.module.name}}$.cult-descriptions
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.orlanth
+      lang: en
+      priority: 0

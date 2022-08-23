@@ -201,3 +201,54 @@ flags:
       id: i.skill.speak-own-language
       lang: en
       priority: 0
+---
+name: Speak Own Language (Heortling) - communication
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: Speak Own Language
+  specialization: Heortling
+  baseChance: 50
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-own-language-heortling
+      lang: en
+      priority: 0
+---
+name: Speak Other Language (...) - communication
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: Speak Other Language
+  specialization: ...
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-other-language
+      lang: en
+      priority: 0
+---
+name: Speak Other Language (Tradetalk) - communication
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: Speak Other Language
+  specialization: Tradetalk
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-other-language-tradetalk
+      lang: en
+      priority: 0

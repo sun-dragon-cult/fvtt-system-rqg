@@ -1162,6 +1162,12 @@ export class RqgActorSheet extends ActorSheet<
           await this.actor.update({ data: { [targetPropertyName]: newLink } });
         }
       }
+      else {
+        // Property does not already exist
+        // TODO: Should we ensure that the Actor template actually is allowed
+        // to have a property of the name contained in targetPropertyName?
+        await this.actor.update({ data: { [targetPropertyName]: newLink } });
+      }
     }
   }
 
