@@ -1,3 +1,4 @@
+import { localize } from "../../system/util";
 import { RqidLink } from "../shared/rqidLink";
 import { ItemTypeEnum } from "./itemTypes";
 
@@ -8,6 +9,7 @@ export class FamilyHistoryEntry {
   rollTableRqidLink: RqidLink | undefined = undefined;
   modifiers: string = "";
   eventsText: string = "";
+  yearText: string = "";
 }
 
 export interface FamilyHistoryDataSourceData {

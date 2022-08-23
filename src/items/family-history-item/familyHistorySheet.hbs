@@ -33,66 +33,79 @@
       {{!-- Family History Tab --}}
       <div class="tab" data-group="primary" data-tab="family-history">
 
-        <div class="family-history-sheet-grid">
+        <div class="family-history-entries">
 
           {{#each familyHistoryData.familyHistoryEntries}}
-            <div class="grid-item year-header">
-              <input type="number" 
-                     style="text-align: right;width: 50px;"
-                     id="begin-year-{{@index}}"
-                     data-index="{{@index}}"
-                     value="{{this.beginYear}}">
-              -
-              <input type="number" 
-                     style="text-align: right;width: 50px;"
-                     id="end-year-{{@index}}"
-                     data-index="{{@index}}"
-                     value="{{this.endYear}}">    
-            </div>
-            <div class="grid-item" data-index="{{@index}}">
+
+            <div class="family-history-entry">
+              <div class="year-header">
+                <div class="year-header-display">
+                  {{this.yearText}}
+                  {{#if (eq this.beginYear this.endYear)}}
+                    {{this.beginYear}}
+                  {{else}}
+                    ({{this.beginYear}}-{{this.endYear}})
+                  {{/if}}
+                </div>
+                <div class="year-header-edit">
+                  <input type="text" 
+                        style="text-align: right;width: 50px;"
+                        id="year-text-{{@index}}"
+                        data-index="{{@index}}"
+                        value="{{this.yearText}}">
+                  <input type="number" 
+                        style="text-align: right;width: 50px;"
+                        id="begin-year-{{@index}}"
+                        data-index="{{@index}}"
+                        value="{{this.beginYear}}">
+                  -
+                  <input type="number" 
+                        style="text-align: right;width: 50px;"
+                        id="end-year-{{@index}}"
+                        data-index="{{@index}}"
+                        value="{{this.endYear}}">   
+                </div>
+                <div  class="year-controls">
+                  <i
+                    class="fas fa-times icon"
+                    data-delete-index="{{@index}}"
+                    title="{{localize 'RQG.Item.FamilyHistory.DeleteFamilyHistoryEntry' rqid=rqidLink.rqid name=rqidLink.name}}"
+                  ></i>   
+                </div>
+              </div>
+
+              <div class="year-description">
                 <textarea rows="10"
                   id="events-text-{{@index}}"
                   data-index="{{@index}}"
                   >{{this.eventsText}}</textarea>
-                  
-                {{!-- {{editor
-                  content=this.eventsText
-                  target="eventsText"
-                  button=true
-                  owner=owner
-                  editable=editable
-                }}               --}}
-            </div>
-            <div class="grid-item">
-              <select id="target-character-{{@index}}"
-                      data-index="{{@index}}" >
+              </div>
+              <div class="year-details">
+                <div>
+                  <select id="target-character-{{@index}}"
+                          data-index="{{@index}}" >
 
-                {{#select this.targetCharacter}}
-                  {{#each ../sheetSpecific.targetCharacterTypes}}
-                    <option
-                      value="{{this}}"
-                    >{{localize (concat 'RQG.Item.FamilyHistory.TargetCharacterType.' this)}}</option>
-                  {{/each}}
-                {{/select}}
-              </select>              
-            </div>
-            <div class="grid-item">
-              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                  rqidLink=this.rollTableRqidLink
-              }}
-            </div>
-            <div class="grid-item">
-              <input type="text" 
-                     id="modifiers-{{@index}}"
-                     data-index="{{@index}}"
-                     value="{{this.modifiers}}">    
-            </div>
-            <div class="grid-item">
-              <i
-                class="fas fa-times icon"
-                data-delete-index="{{@index}}"
-                title="{{localize 'RQG.Item.FamilyHistory.DeleteFamilyHistoryEntry' rqid=rqidLink.rqid name=rqidLink.name}}"
-              ></i>              
+                    {{#select this.targetCharacter}}
+                      {{#each ../sheetSpecific.targetCharacterTypes}}
+                        <option
+                          value="{{this}}"
+                        >{{localize (concat 'RQG.Item.FamilyHistory.TargetCharacterType.' this)}}</option>
+                      {{/each}}
+                    {{/select}}
+                  </select>                      
+                </div>
+                <div>
+                    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                        rqidLink=this.rollTableRqidLink
+                    }}
+                </div>
+                <div>
+                  <input type="text" 
+                        id="modifiers-{{@index}}"
+                        data-index="{{@index}}"
+                        value="{{this.modifiers}}">  
+                </div>
+              </div>
             </div>
           {{/each}}
 

@@ -642,6 +642,7 @@
       },
       "FamilyHistory": {
         "FamilyHistory": "Family History",
+        "Year": "Year",
         "TargetCharacterType": {
           "pick": "Pick a Target",
           "grandparent": "Grandparent",
