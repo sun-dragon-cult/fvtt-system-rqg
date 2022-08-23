@@ -643,6 +643,9 @@
       "FamilyHistory": {
         "FamilyHistory": "Family History",
         "Year": "Year",
+        "DeleteFamilyHistoryEntry": "Delete this year or years",
+        "HideDetails": "Hide Details",
+        "ShowDetails": "Show Details",
         "TargetCharacterType": {
           "pick": "Pick a Target",
           "grandparent": "Grandparent",

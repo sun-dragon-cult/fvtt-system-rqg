@@ -9,11 +9,10 @@
         <label for="family-history-{{data._id}}">{{localize "RQG.Item.FamilyHistory.FamilyHistory"}}</label>
         <input type="text"
             id="family-history-{{data._id}}"
-            name="data.name"
+            name="name"
             value="{{data.name}}">
     </div>
 
-              {{sheetSpecific.targetCharacterTypes}}
   </header>
 
   <main>
@@ -39,38 +38,37 @@
 
             <div class="family-history-entry">
               <div class="year-header">
-                <div class="year-header-display">
-                  {{this.yearText}}
-                  {{#if (eq this.beginYear this.endYear)}}
-                    {{this.beginYear}}
-                  {{else}}
-                    ({{this.beginYear}}-{{this.endYear}})
-                  {{/if}}
-                </div>
                 <div class="year-header-edit">
                   <input type="text" 
-                        style="text-align: right;width: 50px;"
                         id="year-text-{{@index}}"
                         data-index="{{@index}}"
                         value="{{this.yearText}}">
-                  <input type="number" 
-                        style="text-align: right;width: 50px;"
+                  <input type="number"
                         id="begin-year-{{@index}}"
                         data-index="{{@index}}"
                         value="{{this.beginYear}}">
                   -
-                  <input type="number" 
-                        style="text-align: right;width: 50px;"
+                  <input type="number"
                         id="end-year-{{@index}}"
                         data-index="{{@index}}"
                         value="{{this.endYear}}">   
                 </div>
                 <div  class="year-controls">
-                  <i
-                    class="fas fa-times icon"
-                    data-delete-index="{{@index}}"
-                    title="{{localize 'RQG.Item.FamilyHistory.DeleteFamilyHistoryEntry' rqid=rqidLink.rqid name=rqidLink.name}}"
-                  ></i>   
+                  <div>
+                    <i class="fas fa-caret-down"
+                       title="{{localize 'RQG.Item.FamilyHistory.HideDetails'}}"></i>
+                    <i class="fas fa-caret-right" 
+                       style="display: none;"
+                       title="{{localize 'RQG.Item.FamilyHistory.ShowDetails'}}"></i>
+                  </div>
+                  <div></div>
+                  <div>
+                    <i
+                      class="fas fa-times icon"
+                      data-delete-index="{{@index}}"
+                      title="{{localize 'RQG.Item.FamilyHistory.DeleteFamilyHistoryEntry'}}"
+                    ></i>                       
+                  </div>
                 </div>
               </div>
 

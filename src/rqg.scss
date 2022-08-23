@@ -1407,3 +1407,41 @@ body {
   display: grid;
 }
 
+.family-history-entries {
+
+  .family-history-entry {
+    margin-bottom: 1.5em;
+
+    .year-header {
+      background-color: black;
+      color: white;
+      margin: 0 0 1.0em 0;
+      display: grid;
+      grid-template-columns: 1fr min-content;
+
+      .year-header-edit {
+        padding: 0.25em;
+        input[type="text"] {
+          color: white;
+          width: 300px;
+        }
+        input[type="number"] {
+          color: white;
+          width: 50px;
+        }
+      }
+      .year-controls {
+        display: grid;
+        grid-template-columns: 1fr 25px 1fr;
+        padding: 0.5em;
+      }
+    }
+
+    .year-details {
+      display: grid;
+      gap: 0.25em;
+      grid-template-columns: min-content min-content 1fr;
+      align-items: center;
+    }
+  }
+}
