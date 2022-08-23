@@ -1,0 +1,23 @@
+name: Ernalda
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: the Earth Mother
+  holyDays:
+  runes:
+    - Fertility (power)
+    - Earth (element)
+    - Earth (element)
+    - Harmony (power)
+  journalId: ypiivGloiz4YAJvx
+  journalPack: ${{SS.module.name}}$.cult-descriptions
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.ernalda
+      lang: en
+      priority: 0

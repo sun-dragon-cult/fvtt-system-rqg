@@ -121,7 +121,7 @@
         "StandardOfLiving": "Standard Of Living",
         "BaseIncome": "Base Income",
         "Ransom": "Ransom",
-        "RansomDetails": "Details",
+        "RansomDetails": "Ransom Details",
         "Cultures": "Culture(s)",
         "Tribes": "Tribe(s)",
         "Clans": "Clan(s)",
@@ -162,7 +162,7 @@
           "habitatWaterSea": "Habitat: Water / Sea"
         },
         "Occupation": {
-          "Heading": "Occupation",
+          "Heading": "Current Occupation",
           "": " ",
           "assistantShaman": "Assistant Shaman",
           "chariotDriver": "Chariot Driver",
@@ -824,7 +824,9 @@
           "DropToConnectRune": "Drop a Rune Item on this field to connect.",
           "DropToReplaceRune": "Drop a Rune Item on this field to replace.",
           "DropToConnectSkill": "Drop a Skill Item on this field to connect.",
-          "DropToReplaceSkill": "Drop a Skill Item on this field to replace."
+          "DropToReplaceSkill": "Drop a Skill Item on this field to replace.",
+          "DropToConnectOccupation": "Drop an Occuption Item on this field to connect.",
+          "DropToReplaceOccupation": "Drop an Occuption Item on this field to replace."
         }
       },
       "Rune": {

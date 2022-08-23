@@ -16,6 +16,7 @@ import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
 import { RqgJournalSheet } from "./journals/rqgJournalSheet";
+import { RqgRollTableConfig } from "./rollTables/rqgRollTableConfig";
 
 Hooks.once("init", async () => {
   console.log(
@@ -76,7 +77,14 @@ Hooks.once("init", async () => {
     makeDefault: true,
   });
 
-  registerRqgSystemSettings();
+  // @ts-expect-error
+  RollTables.unregisterSheet("core", RollTableConfig);
+  // @ts-expect-error
+  RollTables.registerSheet(systemId, RqgRollTableConfig as any, {
+    // label: localize("TABLE.SheetTitle"),
+    makeDefault: true,
+  });
+
   await loadHandlebarsTemplates();
   registerHandlebarsHelpers();
 
@@ -90,6 +98,8 @@ Hooks.once("init", async () => {
 });
 
 Hooks.once("ready", async () => {
+  registerRqgSystemSettings();
+
   if (getGame().user?.isGM) {
     await migrateWorld();
     // await setupSimpleCalendar();

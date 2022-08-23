@@ -1344,9 +1344,18 @@ body {
   border: 1px green dashed;
   padding: 0.25rem;
   margin: 0.25rem;
+  width: 100%;
+  display: flex;
+  column-gap: 0.5em;
+  align-items: baseline;
 
   & input[type="number"] {
     width: 45px;
+  }
+
+  & div{
+    display: flex;
+    align-items: baseline;
   }
 }
 

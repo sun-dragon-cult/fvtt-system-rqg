@@ -63,6 +63,7 @@ export interface Background {
   species: string;
   speciesRqidLink: RqidLink | undefined;
   occupation: OccupationEnum;
+  currentOccupationRqidLink: RqidLink | undefined;
   homeland: HomeLandEnum;
   town?: string;
   birthYear?: number;
@@ -87,6 +88,7 @@ export const defaultBackground: Background = {
   species: "Human",
   speciesRqidLink: undefined,
   occupation: OccupationEnum.NoOccupation,
+  currentOccupationRqidLink: undefined,
   homeland: HomeLandEnum.Sartar,
   homelandJournalRqidLink: undefined,
   regionJournalRqidLink: undefined,

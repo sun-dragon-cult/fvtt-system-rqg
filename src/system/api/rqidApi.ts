@@ -85,7 +85,8 @@ export class Rqid {
   }
 
   /**
-   * A more flexible way to get all matching documents from a rqid.
+   * Returns all documents whith an rqid matching the regex and matching the document type
+   * and language, from the specified scope.
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
@@ -95,7 +96,7 @@ export class Rqid {
    * **world**: only search in world,
    * **compendiums**: only search in compendiums
    */
-  public static async fromRqidRegex(
+  public static async fromRqidRegexAll(
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en",
@@ -115,15 +116,53 @@ export class Rqid {
     }
 
     if (["match", "all", "compendiums"].includes(scope)) {
-      const compendiaDocuments = await Rqid.documentsFromCompendia(
-        rqidRegex,
-        rqidDocumentType,
-        lang
-      );
+      let compendiaDocuments = await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
+
       result.splice(result.length, 0, ...compendiaDocuments);
     }
 
     return result;
+  }
+
+  /**
+   * Gets only the highest priority documents for each rqid that matches the Regex and
+   * language, with the highest priority documents in the World taking precedence over
+   * any documents
+   * in compendium packs.
+   * @param rqidRegex regex used on the rqid
+   * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
+   * @param lang the language to match against ("en", "es", ...)
+   */
+  public static async fromRqidRegexBest(
+    rqidRegex: RegExp | undefined,
+    rqidDocumentType: string, // like "i", "a", "je"
+    lang: string = "en"
+  ): Promise<Document<any, any>[]> {
+    const allDocuments = await this.fromRqidRegexAll(rqidRegex, rqidDocumentType, lang, "all");
+    const bestDocuments = this.filterBestRqid(allDocuments);
+    return bestDocuments;
+  }
+
+  /**
+   * For an array of documents, returns only those that are the "best" version of their Rqid
+   * @param documents 
+   * @returns 
+   */
+  public static filterBestRqid(documents: Document<any, any>[]): Document<any, any>[] {
+    const highestPrioDocuments = new Map<string, Document<any, any>>();
+
+    for (const doc of documents) {
+      const docPrio: number = doc.getFlag(systemId, documentRqidFlags)?.priority;
+      const docRqid: string = doc.getFlag(systemId, documentRqidFlags)?.id;
+      const currentHighestPrio =
+        highestPrioDocuments.get(docRqid)?.getFlag(systemId, documentRqidFlags)?.priority ??
+        -Infinity;
+      if (docPrio > currentHighestPrio) {
+        highestPrioDocuments.set(docRqid, doc);
+      }
+    }
+
+    return [...highestPrioDocuments.values()];
   }
 
   /**
@@ -232,6 +271,46 @@ export class Rqid {
     const document = await Rqid.fromRqid(rqid);
     // @ts-ignore all rqid supported documents have sheet
     document?.sheet?.render(true, { focus: true });
+  }
+
+  /**
+   * Given a Document, set its rqid to the provided value with the supplied language and priority.
+   * Ensures the right flag scope and flag variable name will be used.
+   * Returns the new rqid flag
+   */
+  public static async setRqid(
+    document: Document<any, any>,
+    newRqid: string,
+    lang: string = "en",
+    priority: number = 0
+  ): Promise<any> {
+    const rqid = {
+      id: newRqid,
+      lang: lang,
+      priority: priority,
+    };
+
+    await document.setFlag(systemId, documentRqidFlags, rqid);
+
+    return rqid;
+  }
+
+  /**
+   * Given a Document, set its rqid to the default rqid with the supplied language and priority.
+   * Ensures the right flag scope and flag variable name will be used.
+   * Returns the new rqid flag
+   */
+  public static async setDefaultRqid(
+    document: Document<any, any>,
+    lang: string = "en",
+    priority: number = 0
+  ): Promise<any> {
+    const newRqid = this.getDefaultRqid(document);
+    if (newRqid === "") {
+      return;
+    }
+
+    return await this.setRqid(document, newRqid, lang, priority);
   }
 
   // ----------------------------------
@@ -500,57 +579,4 @@ export class Rqid {
   private static readonly rqidDocumentStringLookup: { [key: string]: string } = Object.entries(
     Rqid.documentLookup
   ).reduce((acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }), {});
-}
-
-// ----------
-
-export async function getActorTemplates(): Promise<RqgActor[] | undefined> {
-  // TODO: Option 1: Find by rqid with "-template" in the rqid and of type Actor?
-  // TODO: Option 2: Make a configurable world folder, and look there first, otherwise look in configurable compendium
-  const speciesTemplatesCompendium = getGame().packs.get("rqg.species-templates");
-  const templates = await speciesTemplatesCompendium?.getDocuments();
-  if (templates) {
-    return templates as RqgActor[];
-  } else {
-    return undefined;
-  }
-}
-
-export async function getHomelands(): Promise<RqgItem[] | undefined> {
-  // get all rqids of homelands
-  let homelandRqids: string[] = [];
-
-  const worldHomelandRqids =
-    getGame()
-      .items?.filter((h) => h.type === ItemTypeEnum.Homeland)
-      .map((h) => h.getFlag(systemId, documentRqidFlags)?.id)
-      .filter((h): h is string => !!h) ?? [];
-
-  getGame().packs.forEach((p) => {
-    p.forEach((h) => {
-      if (h instanceof Homeland) {
-        const rqid = (h as RqgItem).getFlag(systemId, documentRqidFlags)?.id;
-        !!rqid && homelandRqids.push(rqid);
-      }
-    });
-  });
-
-  worldHomelandRqids?.forEach((h) => homelandRqids.push(h));
-
-  // get distinct rqids
-  homelandRqids = [...new Set(homelandRqids)];
-
-  // get the best version of each homeland by rqid
-  const result: RqgItem[] = [];
-
-  for (const rqid of homelandRqids) {
-    const homeland = await Rqid.fromRqid(rqid);
-    if (homeland && hasProperty(homeland, "type")) {
-      if ((homeland as RqgItem).type === ItemTypeEnum.Homeland) {
-        result.push(homeland as RqgItem);
-      }
-    }
-  }
-
-  return result;
 }
