@@ -1,3 +1,40 @@
+# [1.16.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.15.0...v1.16.0) (2022-08-24)
+
+
+### Bug Fixes
+
+* avoid startup warnings about missing translations by postponing init of system settings until foundry has loaded the translations ([615a656](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/615a656))
+* create document failed because of foundry default item rune changed ([f22708d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f22708d))
+* cult name can't be edited closes [#318](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/318) ([e1786f6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e1786f6))
+* don't add cult runes to actor closes: [#326](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/326) ([fe05015](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fe05015))
+* dragging items between actors fails ([#342](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/342)) ([8016614](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8016614))
+* expand rune image migration to for module ([06bc0b7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/06bc0b7))
+* fromRqid does not return the "best" document from the world ([#329](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/329)) ([b1fe91f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b1fe91f)), closes [#328](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/328)
+* game pause styling is broken ([fe5fe71](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fe5fe71))
+* migration code does not support new data model ([9e0fcbc](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/9e0fcbc))
+* nonstandard attacks display content keys closes [#247](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/247) ([6836995](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6836995))
+* null in generated default rqid when skill specialisation is missing closes [#322](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/322) ([5e27995](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5e27995))
+* rqid dialog can give false warning of multiple Rqids ([#331](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/331)) ([02e30ce](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/02e30ce))
+* RqidEditor fails to name compendium - shows unknown instead ([d8f7f55](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d8f7f55))
+* show all items in DefaultItemIconSettings also gives discrete icons for all items instead of reusing runes etc closes [#226](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/226) ([ab1d4ea](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ab1d4ea))
+* sorcery tab doesn't work closes [#319](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/319) ([b763e3e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b763e3e))
+* spirit magic Duration "Focused" does not set Concentration to "Active" closes [#208](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/208) ([e0ec105](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e0ec105))
+* spirit Magic Sheet tab says Rune Magic instead of Spirit Magic closes [#325](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/325) ([fb5032d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fb5032d))
+* translation failed for Gear Item Type ([8aa5e46](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8aa5e46))
+* writing in chat gives RqgError "Couldn't find dataset [message-id]" closes [#320](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/320) ([0e17f6d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0e17f6d))
+
+
+### Features
+
+* improve detection of available runes closes [#309](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/309) ([03b918e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/03b918e))
+* improve error handling for failed ActiveEffects only works in foundry v10 since the validation is stricter there ([70bcc66](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/70bcc66))
+* make it possible to get both world and compendia results in one search with the fromRqidRegex function ([c9717e6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c9717e6))
+* make it possible to have macros run custom migrations via game.system.api.migrate ([256d2a7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/256d2a7))
+* rollTables need Rqid Editor ([#337](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/337)) ([06ce46a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/06ce46a)), closes [#336](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/336)
+
+
+
+
 # [1.15.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.14.0...v1.15.0) (2022-08-12)
 
 
