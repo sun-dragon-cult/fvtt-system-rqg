@@ -20,7 +20,6 @@ import { RqgActor } from "./rqgActor";
 import {
   assertActorType,
   assertItemType,
-  getDocumentFromUuid,
   getDocumentTypes,
   getDomDataset,
   getGame,
@@ -1222,7 +1221,6 @@ export class RqgActorSheet extends ActorSheet<
     const sourceActor =
       getGame().actors?.get(data.actorId) ??
       (await getRequiredRqgActorFromUuid<RqgActor>(data.actorId));
-    const token = await getDocumentFromUuid<TokenDocument>(data.tokenId); // TODO Failar om man drar mellan unlinked actors!!! - hur funkar compendiums? ***
 
     if (!sourceActor) {
       return false;
