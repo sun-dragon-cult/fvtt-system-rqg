@@ -50,6 +50,7 @@ import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
+import { RqgAsyncDialog } from "../dialog/rqgAsyncDialog";
 
 interface UiSections {
   health: boolean;
@@ -1018,7 +1019,7 @@ export class RqgActorSheet extends ActorSheet<
       });
   }
 
-  static confirmItemDelete(actor: RqgActor, itemId: string): void {
+  static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {
     const item = actor.items.get(itemId);
     requireValue(item, `No itemId [${itemId}] on actor ${actor.name} to show delete item Dialog`);
 
@@ -1043,44 +1044,37 @@ export class RqgActorSheet extends ActorSheet<
       });
     }
 
-    new Dialog(
-      {
-        title: title,
-        content: content,
-        default: "submit",
-        buttons: {
-          submit: {
-            icon: '<i class="fas fa-check"></i>',
-            label: localize("RQG.Dialog.Common.btnConfirm"),
-            callback: async () => {
-              const idsToDelete = [];
-              if (item.type === ItemTypeEnum.Cult) {
-                const cultId = item.id;
-                //@ts-ignore cultId
-                const runeMagicSpells = actor.items.filter(
-                  (i) => i.data.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultId
-                );
-                runeMagicSpells.forEach((s) => {
-                  idsToDelete.push(s.id);
-                });
-              }
+    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
 
-              idsToDelete.push(itemId);
-
-              await actor.deleteEmbeddedDocuments("Item", idsToDelete);
-            },
-          },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: localize("RQG.Dialog.Common.btnCancel"),
-            callback: () => null,
-          },
-        },
+    const buttons = {
+      submit: {
+        icon: '<i class="fas fa-check"></i>',
+        label: localize("RQG.Dialog.Common.btnConfirm"),
+        callback: async () => confirmDialog.resolve(true),
       },
-      {
-        classes: [systemId, "dialog"],
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        callback: () => confirmDialog.resolve(false),
+      },
+    };
+
+    if (await confirmDialog.setButtons(buttons, "cancel").show()) {
+      const idsToDelete = [];
+      if (item.type === ItemTypeEnum.Cult) {
+        const cultId = item.id;
+        const runeMagicSpells = actor.items.filter(
+          (i) => i.data.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultId
+        );
+        runeMagicSpells.forEach((s) => {
+          idsToDelete.push(s.id);
+        });
       }
-    ).render(true);
+
+      idsToDelete.push(itemId);
+
+      await actor.deleteEmbeddedDocuments("Item", idsToDelete);
+    }
   }
 
   // TODO Move somewhere else!
@@ -1161,8 +1155,7 @@ export class RqgActorSheet extends ActorSheet<
           // Property is a single RqidLink, not an array
           await this.actor.update({ data: { [targetPropertyName]: newLink } });
         }
-      }
-      else {
+      } else {
         // Property does not already exist
         // TODO: Should we ensure that the Actor template actually is allowed
         // to have a property of the name contained in targetPropertyName?
@@ -1214,20 +1207,26 @@ export class RqgActorSheet extends ActorSheet<
     // Check if the actor is the owner of the item
     // If so change the sort order
     const targetActor = this.actor;
-
-    if (!targetActor) return false;
+    if (!targetActor) {
+      return false;
+    }
 
     let sameActor =
       data.actorId === targetActor.id ||
       (targetActor.isToken && data.tokenId === targetActor.token?.id);
 
-    // This is probably not working because of the itemLocationTree
-    if (sameActor) return this._onSortItem(event, itemData);
+    if (sameActor) {
+      return this._onSortItem(event, itemData) ?? [];
+    }
 
-    const sourceActor = await getRequiredRqgActorFromUuid<RqgActor>(data.actorId);
-    const token = await getDocumentFromUuid<TokenDocument>(data.tokenId);
+    const sourceActor =
+      getGame().actors?.get(data.actorId) ??
+      (await getRequiredRqgActorFromUuid<RqgActor>(data.actorId));
+    const token = await getDocumentFromUuid<TokenDocument>(data.tokenId); // TODO Failar om man drar mellan unlinked actors!!! - hur funkar compendiums? ***
 
-    if (!sourceActor) return false;
+    if (!sourceActor) {
+      return false;
+    }
 
     if (
       itemData.type === ItemTypeEnum.Armor ||
@@ -1236,18 +1235,18 @@ export class RqgActorSheet extends ActorSheet<
     ) {
       // Prompt to confirm giving physical item from one Actor to another,
       // and ask how many if it has a quantity of more than one.
-      await this.confirmTransferPhysicalItem(itemData, sourceActor);
+      return await this.confirmTransferPhysicalItem(itemData, sourceActor);
     } else {
       // Prompt to ensure user wants to copy intangible items
       //(runes, skills, passions, etc) from one Actor to another
-      await this.confirmCopyIntangibleItem(itemData, sourceActor);
+      return await this.confirmCopyIntangibleItem(itemData, sourceActor);
     }
   }
 
   private async confirmCopyIntangibleItem(
     incomingItemDataSource: ItemDataSource,
     sourceActor: RqgActor
-  ) {
+  ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
       sourceActor: sourceActor,
@@ -1264,38 +1263,35 @@ export class RqgActorSheet extends ActorSheet<
       itemName: incomingItemDataSource.name,
       targetActor: this.actor.name,
     });
+    const confirmDialog = new RqgAsyncDialog<RqgItem[] | boolean>(title, content);
 
-    const buttons: any = {};
-    buttons.submit = {
-      icon: '<i class="fas fa-check"></i>',
-      label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
-      callback: async () => await this.submitConfirmCopyIntangibleItem(incomingItemDataSource),
-    };
-    buttons.cancel = {
-      icon: '<i class="fas fa-times"></i>',
-      label: localize("RQG.Dialog.Common.btnCancel"),
-      callback: () => null,
-    };
-
-    new Dialog(
-      {
-        title: title,
-        content: content,
-        default: "submit",
-        buttons: buttons,
+    const buttons = {
+      submit: {
+        icon: '<i class="fas fa-check"></i>',
+        label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+        callback: () => {
+          confirmDialog.resolve(this.submitConfirmCopyIntangibleItem(incomingItemDataSource));
+        },
       },
-      { classes: [systemId, "dialog"] }
-    ).render(true);
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        callback: () => confirmDialog.resolve(false),
+      },
+    };
+    return await confirmDialog.setButtons(buttons, "submit").show();
   }
 
-  private async submitConfirmCopyIntangibleItem(incomingItemDataSource: ItemDataSource) {
+  private async submitConfirmCopyIntangibleItem(
+    incomingItemDataSource: ItemDataSource
+  ): Promise<RqgItem[]> {
     return this._onDropItemCreate(incomingItemDataSource);
   }
 
   private async confirmTransferPhysicalItem(
     incomingItemDataSource: ItemDataSource,
     sourceActor: RqgActor
-  ) {
+  ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
       sourceActor: sourceActor,
@@ -1316,39 +1312,35 @@ export class RqgActorSheet extends ActorSheet<
       targetActor: this.actor.name,
     });
 
-    const buttons: any = {};
-    buttons.submit = {
-      icon: '<i class="fas fa-check"></i>',
-      label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
-      callback: async (html: JQuery | HTMLElement) =>
-        await this.submitConfirmTransferPhysicalItem(
-          html as JQuery,
-          incomingItemDataSource,
-          sourceActor
-        ),
-    };
-    buttons.cancel = {
-      icon: '<i class="fas fa-times"></i>',
-      label: localize("RQG.Dialog.Common.btnCancel"),
-      callback: () => null,
-    };
+    const confirmDialog = new RqgAsyncDialog<RqgItem[] | boolean>(title, content);
 
-    new Dialog(
-      {
-        title: title,
-        content: content,
-        default: "submit",
-        buttons: buttons,
+    const buttons = {
+      submit: {
+        icon: '<i class="fas fa-check"></i>',
+        label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+        callback: async (html: JQuery | HTMLElement) =>
+          confirmDialog.resolve(
+            this.submitConfirmTransferPhysicalItem(
+              html as JQuery,
+              incomingItemDataSource,
+              sourceActor
+            )
+          ),
       },
-      { classes: [systemId, "dialog"] }
-    ).render(true);
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        callback: () => confirmDialog.resolve(false),
+      },
+    };
+    return await confirmDialog.setButtons(buttons, "submit").show();
   }
 
   private async submitConfirmTransferPhysicalItem(
     html: JQuery,
     incomingItemDataSource: ItemDataSource,
     sourceActor: RqgActor
-  ) {
+  ): Promise<RqgItem[] | boolean> {
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
@@ -1357,14 +1349,14 @@ export class RqgActorSheet extends ActorSheet<
     if (data.numtotransfer) {
       quantityToTransfer = Number(data.numtotransfer);
     }
-    await this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
+    return await this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
   }
 
   private async transferPhysicalItem(
     incomingItemDataSource: ItemDataSource,
     quantityToTransfer: number,
     sourceActor: RqgActor
-  ) {
+  ): Promise<RqgItem[] | boolean> {
     if (!incomingItemDataSource) {
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
       return false;
@@ -1410,10 +1402,10 @@ export class RqgActorSheet extends ActorSheet<
       ]);
       if (targetUpdate) {
         if (newSourceQty > 0) {
-          // udate with new source quantity
-          return sourceActor.updateEmbeddedDocuments("Item", [
+          // update with new source quantity
+          return (await sourceActor.updateEmbeddedDocuments("Item", [
             { _id: incomingItemDataSource._id, data: { quantity: newSourceQty } },
-          ]);
+          ])) as RqgItem[];
         } else {
           // delete source item
           // @ts-ignore _id
@@ -1427,10 +1419,10 @@ export class RqgActorSheet extends ActorSheet<
       const targetCreate = await this._onDropItemCreate(incomingItemDataSource);
       if (targetCreate) {
         if (newSourceQty > 0) {
-          // udate with new source quantity
-          return sourceActor.updateEmbeddedDocuments("Item", [
+          // update with new source quantity
+          return (await sourceActor.updateEmbeddedDocuments("Item", [
             { _id: incomingItemDataSource._id, data: { quantity: newSourceQty } },
-          ]);
+          ])) as RqgItem[];
         } else {
           // delete source item
           // @ts-ignore _id
@@ -1438,6 +1430,7 @@ export class RqgActorSheet extends ActorSheet<
         }
       }
     }
+    return false;
   }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
