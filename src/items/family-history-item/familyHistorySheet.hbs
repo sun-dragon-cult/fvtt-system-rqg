@@ -78,7 +78,8 @@
                   data-index="{{@index}}"
                   >{{this.eventsText}}</textarea>
               </div>
-              <div class="year-details">
+              <div class="year-details item-sheet-properties">
+                <label>{{localize 'RQG.Item.FamilyHistory.TargetCharacter'}}</label>
                 <div>
                   <select id="target-character-{{@index}}"
                           data-index="{{@index}}" >
@@ -92,14 +93,24 @@
                     {{/select}}
                   </select>                      
                 </div>
+                <label>{{localize 'RQG.Item.FamilyHistory.YearRollTable'}}</label>
                 <div>
                     {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
                         rqidLink=this.rollTableRqidLink
                     }}
                 </div>
+                <label>{{localize 'RQG.Item.FamilyHistory.YearDiceExpression'}}</label>
+                <div>
+                  <input type="text"
+                         id="year-dice-expression-{{@index}}"
+                         data-index="{{@index}}"
+                         value="{{this.yearDiceExpression}}">
+
+                </div>
+                <label>{{localize 'RQG.Item.FamilyHistory.YearModifiers'}}</label>
                 <div>
                   <input type="text" 
-                        id="modifiers-{{@index}}"
+                        id="year-modifiers-{{@index}}"
                         data-index="{{@index}}"
                         value="{{this.modifiers}}">  
                 </div>

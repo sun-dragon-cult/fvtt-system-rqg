@@ -86,7 +86,13 @@
         "Name": "Name",
         "Relation": "Relation",
         "Occupation": "Occupation",
-        "ChooseFamilyHistory": "Choose a Family History Template"
+        "ChooseFamilyHistory": "Choose a Family History Template",
+        "YearAppliesTo": "Year Applies To:",
+        "YearRollTable": "Year Roll Table:",
+        "RollThisYear": "Roll This Year",
+        "YearRollModifiers": "Modifiers:",
+        "YearDiceExpression": "Dice Expression:",
+        "Self": "Self"
       },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
@@ -671,7 +677,11 @@
           "grandparent": "Grandparent",
           "parent": "Parent",
           "self": "Self"
-        }
+        },
+        "TargetCharacter": "Target Character:",
+        "YearRollTable": "Roll Table for this Year:",
+        "YearDiceExpression": "Year Dice Expression:",
+        "YearModifiers": "Modifiers:"
       },
       "Gear": {
         "Name": "Name",
@@ -787,7 +797,8 @@
         "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
         "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
         "DroppedItemWrongType": "This field expects an item of type(s) {allowedDropTypes} and the dropped item was {type}",
-        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with id ${id} does not have an RQID and cannot be dropped onto this sheet."
+        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with id ${id} does not have an RQID and cannot be dropped onto this sheet.",
+        "RollTableNoRqid": "The dropped Roll Table named \"{rollTableName}\" does not have an RQID."
       },
       "Occupation": {
         "Occupation": "Occupation",

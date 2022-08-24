@@ -10,6 +10,7 @@ export class FamilyHistoryEntry {
   modifiers: string = "";
   eventsText: string = "";
   yearText: string = "";
+  yearDiceExpression: string = "1d20";
 }
 
 export interface FamilyHistoryDataSourceData {

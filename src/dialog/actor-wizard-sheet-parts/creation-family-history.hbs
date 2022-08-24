@@ -81,37 +81,61 @@
       </select>
     </div>
 
-    <div>
+    <div class="family-history-entries">
       {{#each familyHistory.selectedFamilyHistory.data.data.familyHistoryEntries}}
         
             <div class="family-history-entry">
               <div class="year-header">
                 <div class="year-header-display">
-                  <h3>
-                    {{#if (eq this.beginYear this.endYear)}}
-                      {{this.yearText}} {{this.beginYear}}
-                    {{else}}
-                      {{this.yearText}} ({{this.beginYear}} - {{this.endYear}})
-                    {{/if}}
-                  </h3>
+                  {{#if (eq this.beginYear this.endYear)}}
+                    {{this.yearText}} {{this.beginYear}}
+                  {{else}}
+                    {{this.yearText}} ({{this.beginYear}} - {{this.endYear}})
+                  {{/if}}
                 </div>
               </div>
 
               <div class="year-description">
-                <p>{{this.eventsText}}</p>
+                <p>{{{this.eventsText}}}</p>
               </div>
-              <div class="year-details">
-                <div>
-                  <p>Applies to {{this.targetCharacter}}</p>
-                </div>
-                <div>
-                    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                        rqidLink=this.rollTableRqidLink
-                    }}
-                </div>
-                <div>
+
+                <div class="item-sheet-properties">
+                  <label>{{localize "RQG.ActorCreation.Step2.YearAppliesTo"}}</label>
+                  <div>
+                    {{#if (eq this.targetCharacter "grandparent")}}
+                      {{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." ../familyHistory.grandparentType)}}: {{../familyHistory.grandparentName}}
+                    {{/if}}
+                    {{#if (eq this.targetCharacter "parent")}}
+                      {{localize (concat "RQG.ActorCreation.Step2.ParentTypes." ../familyHistory.parentType)}}: {{../familyHistory.parentName}}
+                    {{/if}}
+                    {{#if (eq this.targetCharacter "self")}}
+                      {{localize "RQG.ActorCreation.Step2.Self"}}: {{../actor.name}}
+                    {{/if}}
+                  </div>                  
+                  <label>{{localize "RQG.ActorCreation.Step2.YearRollTable"}}</label>
+                  <div>
+                      {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                          rqidLink=this.rollTableRqidLink
+                      }}
+                  </div>                  
+                  <label>{{localize "RQG.ActorCreation.Step2.YearRollModifiers"}}</label>
                   <p>{{this.modifiers}}</p>
+                  <label>
+                    <div class="rune-button" title="{{localize "RQG.ActorCreation.Step2.RollThisYear"}}">
+                      <img class="rune-button-img" src="systems/rqg/assets/images/runes/luck.svg">
+                    </div>
+                    {{localize "RQG.ActorCreation.Step2.YearDiceExpression"}}
+                  </label>
+                  <input type="text"
+                         name="year-dice-expression" 
+                         id="year-dice-expression-{{@index}}"
+                         data-index="{{@index}}"
+                         value="{{this.yearDiceExpression}}">
                 </div>
+
+              <div class="year-result">
+
+                <textarea rows="4"></textarea>
               </div>
             </div>
       {{/each}}
