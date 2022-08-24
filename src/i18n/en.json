@@ -82,7 +82,10 @@
           "parent": "Parent",
           "father": "Father",
           "mother": "Mother"
-        }
+        },
+        "Name": "Name",
+        "Relation": "Relation",
+        "Occupation": "Occupation"
       },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
