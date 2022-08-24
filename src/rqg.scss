@@ -528,10 +528,10 @@ body {
       grid-template-columns: [col-start] 30px 30px auto min-content [col-end];
 
       // Alternating row background
-      >*:nth-child(8n + 1),
-      >*:nth-child(8n + 2),
-      >*:nth-child(8n + 3),
-      >*:nth-child(8n + 4) {
+      > *:nth-child(8n + 1),
+      > *:nth-child(8n + 2),
+      > *:nth-child(8n + 3),
+      > *:nth-child(8n + 4) {
         background: var(--rqg-table-alternate-background);
       }
     }
@@ -690,7 +690,7 @@ body {
   }
 
   &.chat-content {
-    &>* {
+    & > * {
       margin-top: 5px;
       margin-bottom: 5px;
     }
@@ -1106,7 +1106,6 @@ body {
     text-shadow: 1px 1px 2px var(--rqg-color-main), 0 0 1em var(--rqg-color-main-bg),
       0 0 0.2em var(--rqg-color-main-bg);
 
-
     margin: 0;
     //font-size: 2em;
     font-weight: normal;
@@ -1353,7 +1352,7 @@ body {
     width: 45px;
   }
 
-  & div{
+  & div {
     display: flex;
     align-items: baseline;
   }
@@ -1362,7 +1361,7 @@ body {
 .incomeSkill {
   font-weight: bold;
   font-style: italic;
-  background-image: linear-gradient( to bottom right, #bcc6cc, #eee, #bcc6cc);
+  background-image: linear-gradient(to bottom right, #bcc6cc, #eee, #bcc6cc);
 }
 
 .incomeSkillText {
@@ -1380,7 +1379,7 @@ body {
 }
 
 .rqid-content-link {
-  background: #DDD;
+  background: #ddd;
   padding: 1px 4px;
   border: 1px solid var(--color-border-dark-tertiary);
   color: var(--color-text-dark-inactive);
@@ -1403,7 +1402,6 @@ body {
   .wizard-choice-input {
     align-self: center;
   }
-
 }
 
 .rune-selector {
@@ -1417,7 +1415,6 @@ body {
 }
 
 .family-history-entries {
-
   .family-history-entry {
     margin-bottom: 1.5em;
 
@@ -1439,10 +1436,7 @@ body {
           width: 50px;
         }
       }
-      .year-header-display {
-        padding: 0.25em;
-        text-align: center;
-      }
+
       .year-controls {
         display: grid;
         grid-template-columns: 1fr 25px 1fr;
@@ -1456,7 +1450,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 0.5fr 0.75fr;
   gap: 0.5em;
-  margin: 0 0 1.0em 0;
+  margin: 0 0 1em 0;
 }
 
 .rune-button {
@@ -1472,4 +1466,43 @@ body {
 
 .rune-button-img {
   height: 16pt;
+}
+
+
+
+details.title-bar-details > summary {
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  align-items: baseline;
+
+  // hides the default marker
+  list-style: none;
+
+  .title-bar-summar-content {
+    background-color: black;
+    color: white;
+    margin: 0 0 0.5em 0;
+    padding: 0.25em;
+    text-align: center;
+  }
+}
+summary.title-bar-summary::-webkit-details-marker {
+  display: none;
+}
+
+summary.title-bar-summary::after {
+  background-color: black;
+  color: white;
+  margin: 0 0 0.5em 0;
+  padding: 0.25em;
+  text-align: center;
+  content: " ►";
+}
+details.title-bar-details[open] summary.title-bar-summary:after {
+  background-color: black;
+  color: white;
+  margin: 0 0 0.5em 0;
+  padding: 0.25em;
+  text-align: center;
+  content: " ▼";
 }
