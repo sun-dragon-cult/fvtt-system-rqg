@@ -14,8 +14,42 @@
   <section class="collabsible-wrapper-body" {{#unless
     collapsibleOpenStates.familyChooseAncestors}}style="display: none;" {{/unless}}>
 
-    <p>Choose ancestors here</p>
+    <h3>{{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." familyHistory.grandparentType)}}</h3>
 
+    <p>{{localize "RQG.ActorCreation.Step2.GrandparentInstructions"}}</p>
+
+    <div class="wizard-ancestor">
+      <input type="text" name="grandparent-name"
+        value="{{familyHistory.grandparentName}}">
+      <select name="selectGrandparentType">
+        {{#select familyHistory.grandparentType}}
+          {{#each familyHistory.grandparentTypes}}
+            <option value="{{this}}">{{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." this)}}</option>
+          {{/each}}
+        {{/select}}
+      </select>
+      <input type="text" name="grandparent-occupation"
+        value="{{familyHistory.grandparentOccupation}}">
+    </div>
+
+    <h3>{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." familyHistory.parentType)}}</h3>
+
+    <p>{{localize "RQG.ActorCreation.Step2.ParentInstructions"}}</p>
+
+    <div class="wizard-ancestor">
+      <input type="text" name="parent-name"
+        value="{{familyHistory.parentName}}">
+      <select name="selectParentType">
+        {{#select familyHistory.parentType}}
+          {{#each familyHistory.parentTypes}}
+            <option value="{{this}}">{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." this)}}</option>
+          {{/each}}
+        {{/select}}
+      </select>
+      <input type="text" name="parent-occupation"
+        value="{{familyHistory.parentOccupation}}">
+    </div>
+      
   </section>
 </article>
 

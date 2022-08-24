@@ -24,6 +24,25 @@ export class ActorWizard extends FormApplication {
     selectedHomeland: RqgItem | undefined;
     homelands: RqgItem[] | undefined;
   } = { selectedHomeland: undefined, homelands: undefined };
+  familyHistory: {
+    grandparentType: string | undefined;
+    grandparentTypes: string[];
+    grandparentName: string | undefined;
+    grandparentOccupation: string | undefined;
+    parentType: string | undefined;
+    parentTypes: string[];
+    parentName: string | undefined;
+    parentOccupation: string | undefined;
+  } = {
+    grandparentType: "grandparent",
+    grandparentTypes: ["grandparent", "grandfather", "grandmother"],
+    grandparentName: undefined,
+    grandparentOccupation: undefined,
+    parentType: "parent",
+    parentTypes: ["parent", "father", "mother"],
+    parentName: undefined,
+    parentOccupation: undefined,
+  };
   collapsibleOpenStates: Record<string, boolean> = {};
   choices: Record<string, CreationChoice> = {};
 
@@ -117,7 +136,9 @@ export class ActorWizard extends FormApplication {
     if (!this.homeland.homelands) {
       // Don't get these every time
       const homelands = await Rqid.fromRqidRegexBest(/.*homeland.*/, "i", "en");
-      this.homeland.homelands = homelands.filter((i) => (i as RqgItem).type === ItemTypeEnum.Homeland) as RqgItem[];
+      this.homeland.homelands = homelands.filter(
+        (i) => (i as RqgItem).type === ItemTypeEnum.Homeland
+      ) as RqgItem[];
     }
 
     if (this.actor) {
@@ -148,6 +169,51 @@ export class ActorWizard extends FormApplication {
       )?.selectedHomelandRqid;
       if (previouslySelectedHomelandRqid) {
         await this.setHomeland(previouslySelectedHomelandRqid);
+      }
+
+      // Has the user already specified Grandparent and Parent with choices stored in flags?
+      const previouslySelectedGrandparentName = this.actor.getFlag(
+        systemId,
+        actorWizardFlags
+      )?.grandparentName;
+      if (previouslySelectedGrandparentName) {
+        this.familyHistory.grandparentName = previouslySelectedGrandparentName;
+      }
+      const previouslySelectedGrandParentType = this.actor.getFlag(
+        systemId,
+        actorWizardFlags
+      )?.grandparentType;
+      if (previouslySelectedGrandParentType) {
+        this.familyHistory.grandparentType = previouslySelectedGrandParentType;
+      }
+      const previouslySelectedGrandparentOccupation = this.actor.getFlag(
+        systemId,
+        actorWizardFlags
+      )?.grandparentOccupation;
+      if (previouslySelectedGrandparentOccupation) {
+        this.familyHistory.grandparentOccupation = previouslySelectedGrandparentOccupation;
+      }
+      
+      const previouslySelectedParentName = this.actor.getFlag(
+        systemId,
+        actorWizardFlags
+      )?.parentName;
+      if (previouslySelectedParentName) {
+        this.familyHistory.parentName = previouslySelectedParentName;
+      }
+      const previouslySelectedParentType = this.actor.getFlag(
+        systemId,
+        actorWizardFlags
+      )?.parentType;
+      if (previouslySelectedParentType) {
+        this.familyHistory.parentType = previouslySelectedParentType;
+      }
+      const previouslySelectedParentOccupation = this.actor.getFlag(
+        systemId,
+        actorWizardFlags
+      )?.parentOccupation;
+      if (previouslySelectedParentOccupation) {
+        this.familyHistory.parentOccupation = previouslySelectedParentOccupation;
       }
     }
 
@@ -194,12 +260,11 @@ export class ActorWizard extends FormApplication {
             //@ts-ignore choice TODO Is choice a temporary property?
             rune.data.data.choice = associatedChoice;
           }
-          homelandRunes.push(rune as RqgItem); // Already asserted          
-        }
-        else {
+          homelandRunes.push(rune as RqgItem); // Already asserted
+        } else {
           const msg = `Homeland contains Rune with RQID "${runeRqidLink.rqid}" that was not found.`;
           console.warn(msg);
-          ui.notifications?.warn(msg);                   
+          ui.notifications?.warn(msg);
         }
       }
       // put runes on homeland for purposes of sheet
@@ -226,12 +291,11 @@ export class ActorWizard extends FormApplication {
             skillDataSource.data.hasExperience = false;
             skillDataSource.data.chance = skillRqidLink.bonus;
           }
-          homelandSkills.push(skill as RqgItem); // Already asserted          
-        }
-        else {
+          homelandSkills.push(skill as RqgItem); // Already asserted
+        } else {
           const msg = `Homeland contains Skill with RQID "${skillRqidLink.rqid}" that was not found.`;
           console.warn(msg);
-          ui.notifications?.warn(msg);          
+          ui.notifications?.warn(msg);
         }
       }
     }
@@ -263,12 +327,11 @@ export class ActorWizard extends FormApplication {
             //@ts-ignore choice
             passion.data.data.choice = associatedChoice;
           }
-          homelandPassions.push(passion as RqgItem); // Already asserted          
-        }
-        else {
+          homelandPassions.push(passion as RqgItem); // Already asserted
+        } else {
           const msg = `Homeland contains Passion with RQID "${passionRqidLink.rqid}" that was not found.`;
           console.warn(msg);
-          ui.notifications?.warn(msg);         
+          ui.notifications?.warn(msg);
         }
       }
     }
@@ -292,6 +355,7 @@ export class ActorWizard extends FormApplication {
         ? RqgActorSheet.organizeOwnedItems(this.species.selectedSpeciesTemplate)
         : undefined,
       homeland: this.homeland,
+      familyHistory: this.familyHistory,
       choices: this.choices,
       collapsibleOpenStates: this.collapsibleOpenStates,
     };
@@ -384,7 +448,46 @@ export class ActorWizard extends FormApplication {
         const selectedHomelandRqid = formData?.selectedHomelandRqid;
         await this.setHomeland(selectedHomelandRqid);
       }
+      if (select.name === "selectGrandparentType") {
+        // @ts-ignore selectGrandparentType
+        const grandparentType: string = formData["selectGrandparentType"] as string;
+        await this.actor.setFlag(systemId, actorWizardFlags, { grandparentType: grandparentType });
+      }
+      if (select.name === "selectParentType") {
+        // @ts-ignore selectGrandparentType
+        const parentType: string = formData["selectParentType"] as string;
+        await this.actor.setFlag(systemId, actorWizardFlags, { parentType: parentType });
+      }
     }
+
+    if (target instanceof HTMLInputElement) {
+      const input = target as HTMLInputElement;
+      if (input.name === "grandparent-name") {
+        // @ts-ignore grandparent-name
+        const grandparentName = formData["grandparent-name"] as string;
+        await this.actor.setFlag(systemId, actorWizardFlags, { grandparentName: grandparentName });
+      }
+      if (input.name === "grandparent-occupation") {
+        // @ts-ignore grandparent-occupation
+        const grandparentOccupation = formData["grandparent-occupation"] as string;
+        await this.actor.setFlag(systemId, actorWizardFlags, {
+          grandparentOccupation: grandparentOccupation,
+        });
+      }
+      if (input.name === "parent-name") {
+        // @ts-ignore parent-name
+        const parentName = formData["parent-name"] as string;
+        await this.actor.setFlag(systemId, actorWizardFlags, { parentName: parentName });
+      }
+      if (input.name === "parent-occupation") {
+        // @ts-ignore parent-occupation
+        const parentOccupation = formData["parent-occupation"] as string;
+        await this.actor.setFlag(systemId, actorWizardFlags, {
+          parentOccupation: parentOccupation,
+        });
+      }
+    }
+
     this.render();
     return;
   }

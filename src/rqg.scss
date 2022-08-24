@@ -1454,3 +1454,10 @@ body {
     }
   }
 }
+
+.wizard-ancestor {
+  display: grid;
+  grid-template-columns: 1fr 0.5fr 0.75fr;
+  gap: 0.5em;
+  margin: 0 0 1.0em 0;
+}

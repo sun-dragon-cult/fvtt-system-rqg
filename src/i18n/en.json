@@ -70,7 +70,19 @@
       },
       "Step2": {
         "ChooseAncestors": "Choose Ancestors",
-        "familyYearlyHistory": "Yearly History"
+        "familyYearlyHistory": "Yearly History",
+        "GrandparentInstructions": "Decide the grandparent that is most significant to your adventurer's story. If in doubt, pick a grandparent from your adventurer’s clan (instead of a grandparent that married into your clan).",
+        "ParentInstructions": "Pick whichever parent is most significant to your adventurer's sense of identity (that parent may die early in your adventurer’s life but still cast a huge shadow over their life). If in doubt, pick the parent born to the grandparent already tracked.",
+        "GrandparentTypes": {
+          "grandparent": "Grandparent",
+          "grandfather": "Grandfather",
+          "grandmother": "Grandmother"
+        },
+        "ParentTypes": {
+          "parent": "Parent",
+          "father": "Father",
+          "mother": "Mother"
+        }
       },
       "Step9": {
         "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",

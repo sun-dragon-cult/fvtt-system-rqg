@@ -24,6 +24,12 @@ export interface RqgActorFlags {
     selectedSpeciesId?: string;
     selectedHomelandRqid?: string;
     isActorTemplate?: boolean;
+    grandparentType?: string;
+    grandparentName?: string;
+    grandparentOccupation?: string;
+    parentType?: string;
+    parentName?: string;
+    parentOccupation?: string;
     wizardChoices?: string;
   };
 }
