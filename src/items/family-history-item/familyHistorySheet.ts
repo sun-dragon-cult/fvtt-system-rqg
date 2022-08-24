@@ -202,50 +202,6 @@ export class FamilyHistorySheet extends RqgItemSheet<
         await this.updateEntries(entries);
       });
     });
-    html.find(".fas.fa-caret-right").each((i: number, el: HTMLElement) => {
-      el.addEventListener("click", async () => {
-        const familyHistoryEntry = el.closest(".family-history-entry");
-        if (familyHistoryEntry) {
-          const description = familyHistoryEntry.querySelector(".year-description") as HTMLElement;
-          if (description) {
-            description.style.display = "flex";
-          }
-          const details = familyHistoryEntry.querySelector(".year-details") as HTMLElement;
-          if (details) {
-            details.style.display = "grid";
-          }
-          const collapseArrow = familyHistoryEntry.querySelector(
-            ".fas.fa-caret-down"
-          ) as HTMLElement;
-          if (collapseArrow) {
-            el.style.display = "none";
-            collapseArrow.style.display = "inline-block";
-          }
-        }
-      });
-    });
-    html.find(".fas.fa-caret-down").each((i: number, el: HTMLElement) => {
-      el.addEventListener("click", async () => {
-        const familyHistoryEntry = el.closest(".family-history-entry");
-        if (familyHistoryEntry) {
-          const description = familyHistoryEntry.querySelector(".year-description") as HTMLElement;
-          if (description) {
-            description.style.display = "none";
-          }
-          const details = familyHistoryEntry.querySelector(".year-details") as HTMLElement;
-          if (details) {
-            details.style.display = "none";
-          }
-          const expandArrow = familyHistoryEntry.querySelector(
-            ".fas.fa-caret-right"
-          ) as HTMLElement;
-          if (expandArrow) {
-            el.style.display = "none";
-            expandArrow.style.display = "inline-block";
-          }
-        }
-      });
-    });
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {

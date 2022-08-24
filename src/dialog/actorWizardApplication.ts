@@ -47,7 +47,6 @@ export class ActorWizard extends FormApplication {
     selectedFamilyHistory: undefined,
     familyHistories: undefined,
   };
-  collapsibleOpenStates: Record<string, boolean> = {};
   choices: Record<string, CreationChoice> = {};
 
   constructor(object: RqgActor, options: any) {
@@ -121,14 +120,7 @@ export class ActorWizard extends FormApplication {
   }
 
   async getData(): Promise<any> {
-    // Set any collapsible sections that need to be open by default
-    if (this.collapsibleOpenStates["speciesBackground"] === undefined) {
-      this.collapsibleOpenStates["speciesBackground"] = true;
-      this.collapsibleOpenStates["homelandWizardInstructions"] = true;
-      this.collapsibleOpenStates["homelandAdvanced"] = true;
-      this.collapsibleOpenStates["familyChooseAncestors"] = true;
-      this.collapsibleOpenStates["familyYearlyHistory"] = true;
-    }
+
 
     if (!this.species.speciesTemplates) {
       // Don't get these every time.
@@ -379,7 +371,6 @@ export class ActorWizard extends FormApplication {
       homeland: this.homeland,
       familyHistory: this.familyHistory,
       choices: this.choices,
-      collapsibleOpenStates: this.collapsibleOpenStates,
     };
   }
 
@@ -414,25 +405,6 @@ export class ActorWizard extends FormApplication {
             }
           }
         }
-        this.render();
-      });
-    });
-
-    this.form?.querySelectorAll(".collabsible-header").forEach((el) => {
-      el.addEventListener("click", (ev) => {
-        const wrapper = (ev.target as HTMLElement).closest(".collabsible-wrapper") as HTMLElement;
-        const wasOpen = wrapper.dataset.open === "true";
-        const wrapperName = wrapper.dataset.collabsibleName;
-        if (wrapperName) {
-          this.collapsibleOpenStates[wrapperName] = !wasOpen;
-        }
-        const body = $(wrapper as HTMLElement).find(".collabsible-wrapper-body")[0];
-        $(body).slideToggle(300);
-        const plus = $(wrapper as HTMLElement).find(".fa-plus-square")[0];
-        plus?.classList.toggle("no-display");
-        const minus = $(wrapper as HTMLElement).find(".fa-minus-square")[0];
-        minus?.classList.toggle("no-display");
-
         this.render();
       });
     });
