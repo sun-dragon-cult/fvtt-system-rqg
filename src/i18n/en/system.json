@@ -1091,6 +1091,8 @@
     }
   },
   "content": {
+    "prio": 1000,
+    "lang": "en",    
     "cult": {
       "aldrya": {
         "name": "Aldrya",
