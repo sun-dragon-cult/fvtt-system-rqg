@@ -30,6 +30,7 @@ export interface RqgActorFlags {
     parentType?: string;
     parentName?: string;
     parentOccupation?: string;
+    selectedFamilyHistoryRqid?: string;
     wizardChoices?: string;
   };
 }

@@ -69,7 +69,17 @@
   <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.familyYearlyHistory}}style="display: none;"
     {{/unless}}>
 
-      <p>Yearly History Here</p>
+    <div class="item-sheet-properties">
+      <label>{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}:</label>
+      <select name="selectedFamilyHistoryRqid">
+        {{#select familyHistory.selectedFamilyHistory.data.flags.rqg.documentRqidFlags.id}}
+        <option value="">{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}</option>
+        {{#each familyHistory.familyHistories}}
+        <option value="{{this.data.flags.rqg.documentRqidFlags.id}}">{{this.name}}</option>
+        {{/each}}
+        {{/select}}
+      </select>
+    </div>
 
   </section>
   </section>

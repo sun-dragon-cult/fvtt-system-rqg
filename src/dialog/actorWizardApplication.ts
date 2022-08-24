@@ -33,6 +33,8 @@ export class ActorWizard extends FormApplication {
     parentTypes: string[];
     parentName: string | undefined;
     parentOccupation: string | undefined;
+    selectedFamilyHistory: RqgItem | undefined;
+    familyHistories: RqgItem[] | undefined;
   } = {
     grandparentType: "grandparent",
     grandparentTypes: ["grandparent", "grandfather", "grandmother"],
@@ -42,6 +44,8 @@ export class ActorWizard extends FormApplication {
     parentTypes: ["parent", "father", "mother"],
     parentName: undefined,
     parentOccupation: undefined,
+    selectedFamilyHistory: undefined,
+    familyHistories: undefined,
   };
   collapsibleOpenStates: Record<string, boolean> = {};
   choices: Record<string, CreationChoice> = {};
@@ -141,6 +145,14 @@ export class ActorWizard extends FormApplication {
       ) as RqgItem[];
     }
 
+    if (!this.familyHistory.familyHistories) {
+      // Don't get these every time
+      const familyHistories = await Rqid.fromRqidRegexBest(/.*family-history.*/, "i", "en");
+      this.familyHistory.familyHistories = familyHistories.filter(
+        (i) => (i as RqgItem).type === ItemTypeEnum.FamilyHistory
+      ) as RqgItem[];
+    }
+
     if (this.actor) {
       // See if the user has already chosen a species template that is stored in flags
       const previouslySelectedSpeciesId = this.actor.getFlag(
@@ -158,7 +170,7 @@ export class ActorWizard extends FormApplication {
           this.species.selectedSpeciesTemplate === undefined
         ) {
           // User has chosen a species in a previous session, so set it
-          await this.setSpeciesTemplate(flaggedSpecies.id, false);
+          await this.setSelectecdSpeciesTemplate(flaggedSpecies.id, false);
         }
       }
 
@@ -168,7 +180,16 @@ export class ActorWizard extends FormApplication {
         actorWizardFlags
       )?.selectedHomelandRqid;
       if (previouslySelectedHomelandRqid) {
-        await this.setHomeland(previouslySelectedHomelandRqid);
+        await this.setSelectedHomeland(previouslySelectedHomelandRqid);
+      }
+
+      // Has the user already chosen a Family History stored in flags?
+      const previouslySelectedFamilyHistoryRqid = this.actor.getFlag(
+        systemId,
+        actorWizardFlags
+      )?.selectedFamilyHistoryRqid;
+      if (previouslySelectedFamilyHistoryRqid) {
+        await this.setSelectedFamilyHistory(previouslySelectedFamilyHistoryRqid);
       }
 
       // Has the user already specified Grandparent and Parent with choices stored in flags?
@@ -193,7 +214,7 @@ export class ActorWizard extends FormApplication {
       if (previouslySelectedGrandparentOccupation) {
         this.familyHistory.grandparentOccupation = previouslySelectedGrandparentOccupation;
       }
-      
+
       const previouslySelectedParentName = this.actor.getFlag(
         systemId,
         actorWizardFlags
@@ -441,12 +462,12 @@ export class ActorWizard extends FormApplication {
       if (select.name === "selectedSpeciesTemplateId") {
         // @ts-ignore selectedSpeciesTemplateId
         const selectedTemplateId = formData?.selectedSpeciesTemplateId;
-        await this.setSpeciesTemplate(selectedTemplateId, true);
+        await this.setSelectecdSpeciesTemplate(selectedTemplateId, true);
       }
       if (select.name === "selectedHomelandRqid") {
         // @ts-ignore selectedHomelandRqid
         const selectedHomelandRqid = formData?.selectedHomelandRqid;
-        await this.setHomeland(selectedHomelandRqid);
+        await this.setSelectedHomeland(selectedHomelandRqid);
       }
       if (select.name === "selectGrandparentType") {
         // @ts-ignore selectGrandparentType
@@ -457,6 +478,11 @@ export class ActorWizard extends FormApplication {
         // @ts-ignore selectGrandparentType
         const parentType: string = formData["selectParentType"] as string;
         await this.actor.setFlag(systemId, actorWizardFlags, { parentType: parentType });
+      }
+      if (select.name === "selectedFamilyHistoryRqid") {
+        // @ts-ignore selectedFamilyHistoryRqid
+        const selectedFamilyHistoryRqid = formData?.selectedFamilyHistoryRqid;
+        await this.setSelectedFamilyHistory(selectedFamilyHistoryRqid);
       }
     }
 
@@ -492,7 +518,7 @@ export class ActorWizard extends FormApplication {
     return;
   }
 
-  async setSpeciesTemplate(selectedTemplateId: string, checkAll: boolean) {
+  async setSelectecdSpeciesTemplate(selectedTemplateId: string, checkAll: boolean) {
     this.species.selectedSpeciesTemplate = this.species.speciesTemplates?.find(
       (t) => t.id === selectedTemplateId
     );
@@ -615,7 +641,7 @@ export class ActorWizard extends FormApplication {
     }
   }
 
-  async setHomeland(selectedHomelandRqid: string) {
+  async setSelectedHomeland(selectedHomelandRqid: string) {
     this.homeland.selectedHomeland = this.homeland.homelands?.find(
       (h) => h.getFlag(systemId, documentRqidFlags)?.id === selectedHomelandRqid
     );
@@ -705,6 +731,19 @@ export class ActorWizard extends FormApplication {
         this.choices[passionRqidLink.rqid].homelandValue = 10;
       });
     }
+  }
+
+  async setSelectedFamilyHistory(selectedFamilyHistoryRqid: string) {
+    this.familyHistory.selectedFamilyHistory = this.familyHistory.familyHistories?.find(
+      (f) => f.getFlag(systemId, documentRqidFlags)?.id === selectedFamilyHistoryRqid
+    );
+
+    await this.actor.setFlag(systemId, actorWizardFlags, {
+      selectedFamilyHistoryRqid: this.familyHistory.selectedFamilyHistory?.getFlag(
+        systemId,
+        documentRqidFlags
+      )?.id,
+    });
   }
 
   async updateChoices() {
