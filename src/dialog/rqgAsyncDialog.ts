@@ -67,23 +67,3 @@ export class RqgAsyncDialog<T> {
     });
   }
 }
-
-// --------------------------------------------------
-
-// const myDialog = new rqgAsyncDialog<boolean>("myTitle", "<h1>my content</h1>");
-// const buttons = {
-//   submit: {
-//     icon: '<i class="fas fa-check"></i>',
-//     label: "my button label",
-//     callback: () => {
-//       myDialog.resolve?.(true);
-//     },
-//   },
-//   cancel: {
-//     icon: '<i class="fas fa-times"></i>',
-//     label: "my other button label",
-//     callback: () => myDialog.resolve?.(false),
-//   },
-// };
-//
-// const answer = await myDialog.setButtons(buttons, "submit").show();
