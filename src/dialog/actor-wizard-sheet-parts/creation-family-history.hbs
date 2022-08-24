@@ -2,147 +2,129 @@
   {{localize "RQG.ActorCreation.Nav.2-FamilyHistory"}}
 </h1>
 
-<article class="collabsible-wrapper" data-collabsible-name="familyChooseAncestors"
-  data-open="{{collapsibleOpenStates.familyChooseAncestors}}">
-  <h2 class="collabsible-header">
-    <span class="toggle-icon">
-      <i class="far fa-plus-square {{#if collapsibleOpenStates.familyChooseAncestors}}no-display{{/if}}"></i>
-      <i class="far fa-minus-square {{#unless collapsibleOpenStates.familyChooseAncestors}}no-display{{/unless}}"></i>
+<details class="title-bar-details" open>
+  <summary class="title-bar-summary title-bar-head-1">
+    <div class="title-bar-summary-content">
       {{localize "RQG.ActorCreation.Step2.ChooseAncestors"}}
-    </span>
-  </h2>
-  <section class="collabsible-wrapper-body" {{#unless
-    collapsibleOpenStates.familyChooseAncestors}}style="display: none;" {{/unless}}>
-
-    <h3>{{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." familyHistory.grandparentType)}}</h3>
-
-    <p>{{localize "RQG.ActorCreation.Step2.GrandparentInstructions"}}</p>
-
-    <div class="wizard-ancestor">
-      <div>{{localize "RQG.ActorCreation.Step2.Name"}}</div>
-      <div>{{localize "RQG.ActorCreation.Step2.Relation"}}</div>
-      <div>{{localize "RQG.ActorCreation.Step2.Occupation"}}</div>
-      <input type="text" name="grandparent-name"
-        value="{{familyHistory.grandparentName}}">
-      <select name="selectGrandparentType">
-        {{#select familyHistory.grandparentType}}
-          {{#each familyHistory.grandparentTypes}}
-            <option value="{{this}}">{{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." this)}}</option>
-          {{/each}}
-        {{/select}}
-      </select>
-      <input type="text" name="grandparent-occupation"
-        value="{{familyHistory.grandparentOccupation}}">
     </div>
+  </summary>
 
-    <h3>{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." familyHistory.parentType)}}</h3>
+  <h3>{{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." familyHistory.grandparentType)}}</h3>
 
-    <p>{{localize "RQG.ActorCreation.Step2.ParentInstructions"}}</p>
+  <p>{{localize "RQG.ActorCreation.Step2.GrandparentInstructions"}}</p>
 
-    <div class="wizard-ancestor">
-      <input type="text" name="parent-name"
-        value="{{familyHistory.parentName}}">
-      <select name="selectParentType">
-        {{#select familyHistory.parentType}}
-          {{#each familyHistory.parentTypes}}
-            <option value="{{this}}">{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." this)}}</option>
-          {{/each}}
-        {{/select}}
-      </select>
-      <input type="text" name="parent-occupation"
-        value="{{familyHistory.parentOccupation}}">
-    </div>
-      
-  </section>
-</article>
-
-
-<article class="collabsible-wrapper" data-collabsible-name="familyYearlyHistory"
-  data-open="{{collapsibleOpenStates.familyYearlyHistory}}">
-  <h2 class="collabsible-header">
-    <span class="toggle-icon">
-      <i class="far fa-plus-square {{#if collapsibleOpenStates.familyYearlyHistory}}no-display{{/if}}"></i>
-      <i class="far fa-minus-square {{#unless collapsibleOpenStates.familyYearlyHistory}}no-display{{/unless}}"></i>
-      {{localize "RQG.ActorCreation.Step2.familyYearlyHistory"}}
-    </span>
-  </h2>
-  <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.familyYearlyHistory}}style="display: none;"
-    {{/unless}}>
-
-    <div class="item-sheet-properties">
-      <label>{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}:</label>
-      <select name="selectedFamilyHistoryRqid">
-        {{#select familyHistory.selectedFamilyHistory.data.flags.rqg.documentRqidFlags.id}}
-        <option value="">{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}</option>
-        {{#each familyHistory.familyHistories}}
-        <option value="{{this.data.flags.rqg.documentRqidFlags.id}}">{{this.name}}</option>
+  <div class="wizard-ancestor">
+    <div>{{localize "RQG.ActorCreation.Step2.Name"}}</div>
+    <div>{{localize "RQG.ActorCreation.Step2.Relation"}}</div>
+    <div>{{localize "RQG.ActorCreation.Step2.Occupation"}}</div>
+    <input type="text" name="grandparent-name"
+      value="{{familyHistory.grandparentName}}">
+    <select name="selectGrandparentType">
+      {{#select familyHistory.grandparentType}}
+        {{#each familyHistory.grandparentTypes}}
+          <option value="{{this}}">{{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." this)}}</option>
         {{/each}}
-        {{/select}}
-      </select>
+      {{/select}}
+    </select>
+    <input type="text" name="grandparent-occupation"
+      value="{{familyHistory.grandparentOccupation}}">
+  </div>
+
+  <h3>{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." familyHistory.parentType)}}</h3>
+
+  <p>{{localize "RQG.ActorCreation.Step2.ParentInstructions"}}</p>
+
+  <div class="wizard-ancestor">
+    <input type="text" name="parent-name"
+      value="{{familyHistory.parentName}}">
+    <select name="selectParentType">
+      {{#select familyHistory.parentType}}
+        {{#each familyHistory.parentTypes}}
+          <option value="{{this}}">{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." this)}}</option>
+        {{/each}}
+      {{/select}}
+    </select>
+    <input type="text" name="parent-occupation"
+      value="{{familyHistory.parentOccupation}}">
+  </div>
+    
+</details>
+
+
+<details class="title-bar-details" open>
+  <summary class="title-bar-summary title-bar-head-1">
+    <div class="title-bar-summary-content">
+      {{localize "RQG.ActorCreation.Step2.familyYearlyHistory"}}
     </div>
+  </summary>
 
-    <div class="family-history-entries">
-      {{#each familyHistory.selectedFamilyHistory.data.data.familyHistoryEntries}}
-        
-      <div class="family-history-entry">
-        <details class="title-bar-details" open>
-          <summary class="title-bar-summary">
-            <div class="title-bar-summar-content">
-              {{#if (eq this.beginYear this.endYear)}}
-                {{this.yearText}} {{this.beginYear}}
-              {{else}}
-                {{this.yearText}} ({{this.beginYear}} - {{this.endYear}})
-              {{/if}}
-            </div>
-          </summary>
-
-
-          <div class="year-description">
-            <p>{{{this.eventsText}}}</p>
-          </div>
-
-            <div class="item-sheet-properties">
-              <label>{{localize "RQG.ActorCreation.Step2.YearAppliesTo"}}</label>
-              <div>
-                {{#if (eq this.targetCharacter "grandparent")}}
-                  {{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." ../familyHistory.grandparentType)}}: {{../familyHistory.grandparentName}}
-                {{/if}}
-                {{#if (eq this.targetCharacter "parent")}}
-                  {{localize (concat "RQG.ActorCreation.Step2.ParentTypes." ../familyHistory.parentType)}}: {{../familyHistory.parentName}}
-                {{/if}}
-                {{#if (eq this.targetCharacter "self")}}
-                  {{localize "RQG.ActorCreation.Step2.Self"}}: {{../actor.name}}
-                {{/if}}
-              </div>                  
-              <label>{{localize "RQG.ActorCreation.Step2.YearRollTable"}}</label>
-              <div>
-                  {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                      rqidLink=this.rollTableRqidLink
-                  }}
-              </div>                  
-              <label>{{localize "RQG.ActorCreation.Step2.YearRollModifiers"}}</label>
-              <p>{{this.modifiers}}</p>
-              <label>
-                <div class="rune-button" title="{{localize "RQG.ActorCreation.Step2.RollThisYear"}}">
-                  <img class="rune-button-img" src="systems/rqg/assets/images/runes/luck.svg">
-                </div>
-                {{localize "RQG.ActorCreation.Step2.YearDiceExpression"}}
-              </label>
-              <input type="text"
-                      name="year-dice-expression" 
-                      id="year-dice-expression-{{@index}}"
-                      data-index="{{@index}}"
-                      value="{{this.yearDiceExpression}}">
-            </div>
-
-          <div class="year-result">
-
-            <textarea rows="4"></textarea>
-          </div>
-        </details>
-      </div>
+  <div class="item-sheet-properties">
+    <label>{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}:</label>
+    <select name="selectedFamilyHistoryRqid" style="width: min-content;">
+      {{#select familyHistory.selectedFamilyHistory.data.flags.rqg.documentRqidFlags.id}}
+      <option value="">{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}</option>
+      {{#each familyHistory.familyHistories}}
+      <option value="{{this.data.flags.rqg.documentRqidFlags.id}}">{{this.name}}</option>
       {{/each}}
-    </div>
+      {{/select}}
+    </select>
+  </div>
 
-  </section>
-</article>
+  {{#each familyHistory.selectedFamilyHistory.data.data.familyHistoryEntries}}
+    <details class="title-bar-details" open>
+      <summary class="title-bar-summary title-bar-head-2">
+        <div class="title-bar-summary-content">
+          {{#if (eq this.beginYear this.endYear)}}
+            {{this.yearText}} {{this.beginYear}}
+          {{else}}
+            {{this.yearText}} ({{this.beginYear}} - {{this.endYear}})
+          {{/if}}
+        </div>
+      </summary>
+
+      <div class="year-description">
+        <p>{{{this.eventsText}}}</p>
+      </div>
+
+      <div class="item-sheet-properties">
+        <label>{{localize "RQG.ActorCreation.Step2.YearAppliesTo"}}</label>
+        <div>
+          {{#if (eq this.targetCharacter "grandparent")}}
+            {{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." ../familyHistory.grandparentType)}}: {{../familyHistory.grandparentName}}
+          {{/if}}
+          {{#if (eq this.targetCharacter "parent")}}
+            {{localize (concat "RQG.ActorCreation.Step2.ParentTypes." ../familyHistory.parentType)}}: {{../familyHistory.parentName}}
+          {{/if}}
+          {{#if (eq this.targetCharacter "self")}}
+            {{localize "RQG.ActorCreation.Step2.Self"}}: {{../actor.name}}
+          {{/if}}
+        </div>                  
+        <label>{{localize "RQG.ActorCreation.Step2.YearRollTable"}}</label>
+        <div>
+            {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                rqidLink=this.rollTableRqidLink
+            }}
+        </div>                  
+        <label>{{localize "RQG.ActorCreation.Step2.YearRollModifiers"}}</label>
+        <p>{{this.modifiers}}</p>
+        <label>
+          <div class="rune-button" title="{{localize "RQG.ActorCreation.Step2.RollThisYear"}}">
+            <img class="rune-button-img" src="systems/rqg/assets/images/runes/luck.svg">
+          </div>
+          {{localize "RQG.ActorCreation.Step2.YearDiceExpression"}}
+        </label>
+        <input type="text"
+                name="year-dice-expression" 
+                id="year-dice-expression-{{@index}}"
+                data-index="{{@index}}"
+                value="{{this.yearDiceExpression}}">
+      </div>
+
+      <div class="year-result">
+        <textarea rows="4"></textarea>
+      </div>
+    </details>
+  {{/each}}
+
+
+</details>

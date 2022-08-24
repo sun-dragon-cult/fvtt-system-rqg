@@ -1470,39 +1470,54 @@ body {
 
 
 
-details.title-bar-details > summary {
-  display: grid;
-  grid-template-columns: 1fr min-content;
-  align-items: baseline;
+details.title-bar-details {
+  margin-bottom: 1.5rem;
 
-  // hides the default marker
-  list-style: none;
+  > summary {
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    align-items: baseline;
 
-  .title-bar-summar-content {
-    background-color: black;
-    color: white;
-    margin: 0 0 0.5em 0;
-    padding: 0.25em;
-    text-align: center;
+    // hides the default marker
+    list-style: none;
+
+    .title-bar-summary-content {
+      background-color: var(--rqg-summary-bar-background);
+      color: var(--rqg-summary-bar-text);
+      margin: 0 0 0.5em 0;
+      padding: 0.25em;
+      text-align: center;
+    }
   }
-}
-summary.title-bar-summary::-webkit-details-marker {
-  display: none;
+  summary.title-bar-summary::-webkit-details-marker {
+    display: none;
+  }
+
+
 }
 
-summary.title-bar-summary::after {
-  background-color: black;
-  color: white;
+details.title-bar-details > summary.title-bar-summary::after {
+  background-color: var(--rqg-summary-bar-background);
+  color: var(--rqg-summary-bar-text);
   margin: 0 0 0.5em 0;
   padding: 0.25em;
   text-align: center;
-  content: " ►";
+  content: "►";
 }
-details.title-bar-details[open] summary.title-bar-summary:after {
-  background-color: black;
-  color: white;
+
+details.title-bar-details[open] > summary.title-bar-summary:after {
+  background-color: var(--rqg-summary-bar-background);
+  color: var(--rqg-summary-bar-text);
   margin: 0 0 0.5em 0;
   padding: 0.25em;
   text-align: center;
-  content: " ▼";
+  content: "▼";
+}
+
+.title-bar-head-1 {
+  font-size: 1.5rem;
+}
+
+.title-bar-head-2 {
+  font-size: 1.0rem;
 }

@@ -151,6 +151,7 @@ export class ActorWizard extends FormApplication {
       this.familyHistory.familyHistories = familyHistories.filter(
         (i) => (i as RqgItem).type === ItemTypeEnum.FamilyHistory
       ) as RqgItem[];
+      console.warn(this.familyHistory);
     }
 
     if (this.actor) {
