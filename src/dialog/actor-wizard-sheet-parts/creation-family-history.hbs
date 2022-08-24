@@ -81,6 +81,41 @@
       </select>
     </div>
 
-  </section>
+    <div>
+      {{#each familyHistory.selectedFamilyHistory.data.data.familyHistoryEntries}}
+        
+            <div class="family-history-entry">
+              <div class="year-header">
+                <div class="year-header-display">
+                  <h3>
+                    {{#if (eq this.beginYear this.endYear)}}
+                      {{this.yearText}} {{this.beginYear}}
+                    {{else}}
+                      {{this.yearText}} ({{this.beginYear}} - {{this.endYear}})
+                    {{/if}}
+                  </h3>
+                </div>
+              </div>
+
+              <div class="year-description">
+                <p>{{this.eventsText}}</p>
+              </div>
+              <div class="year-details">
+                <div>
+                  <p>Applies to {{this.targetCharacter}}</p>
+                </div>
+                <div>
+                    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                        rqidLink=this.rollTableRqidLink
+                    }}
+                </div>
+                <div>
+                  <p>{{this.modifiers}}</p>
+                </div>
+              </div>
+            </div>
+      {{/each}}
+    </div>
+
   </section>
 </article>
