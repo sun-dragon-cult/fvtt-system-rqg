@@ -143,6 +143,33 @@ export class FamilyHistorySheet extends RqgItemSheet<
         await this.updateEntries(entries);
       }
     }
+
+    //@ts-ignore id
+    if (event?.currentTarget?.id.startsWith("year-dice-expression-")) {
+      //@ts-ignore dataset
+      const targetIndex = event.currentTarget.dataset.index;
+
+      if (targetIndex) {
+        const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+        //@ts-ignore value
+        entries[targetIndex].yearDiceExpression = event.currentTarget.value;
+        await this.updateEntries(entries);
+      }
+    }
+
+    //@ts-ignore id
+    if (event?.currentTarget?.id.startsWith("year-modifiers-")) {
+      //@ts-ignore dataset
+      const targetIndex = event.currentTarget.dataset.index;
+
+      if (targetIndex) {
+        const entries = (this.item.data.data as FamilyHistoryDataSourceData).familyHistoryEntries;
+        //@ts-ignore value
+        entries[targetIndex].modifiers = event.currentTarget.value;
+        await this.updateEntries(entries);
+      }
+    }
+
     return super._updateObject(event, formData);
   }
 
@@ -246,6 +273,9 @@ export class FamilyHistorySheet extends RqgItemSheet<
       const rollTableRqid = droppedItem.data.flags.rqg?.documentRqidFlags?.id;
 
       if (!rollTableRqid) {
+        const msg = localize("RQG.Item.Notification.RollTableNoRqid", {rollTableName: droppedItem.name});
+        console.log(msg);
+        ui.notifications?.warn(msg);
         return;
       }
 
@@ -266,6 +296,7 @@ export class FamilyHistorySheet extends RqgItemSheet<
         modifiers: "",
         eventsText: "",
         yearText: localize("RQG.Item.FamilyHistory.Year"),
+        yearDiceExpression: "1d20",
       });
       entries.sort((a, b) => ((a.beginYear || 0) > (b.beginYear || 0) ? 1 : -1));
 
