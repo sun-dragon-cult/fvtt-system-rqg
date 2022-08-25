@@ -13,6 +13,7 @@ import { RuneDataSource } from "../data-model/item-data/runeData";
 import { PassionDataSource } from "../data-model/item-data/passionData";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { Rqid } from "../system/api/rqidApi";
+import { FamilyHistoryDataSource } from "src/data-model/item-data/familyHistoryData";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -143,7 +144,6 @@ export class ActorWizard extends FormApplication {
       this.familyHistory.familyHistories = familyHistories.filter(
         (i) => (i as RqgItem).type === ItemTypeEnum.FamilyHistory
       ) as RqgItem[];
-      console.warn(this.familyHistory);
     }
 
     if (this.actor) {
@@ -415,8 +415,49 @@ export class ActorWizard extends FormApplication {
       });
     });
 
+    const rollYearButtons = this.form?.querySelectorAll("[data-roll-year-index]");
+    if (rollYearButtons) {
+      for (const el of rollYearButtons) {
+        el.addEventListener("click", async () => {
+          const target = el as HTMLElement
+          const yearIndex = Number(target.dataset.rollYearIndex);
+          if (Number.isInteger(yearIndex)) {
+            await this.rollYear(yearIndex);
+          }
+        });
+      };      
+    }
+
+
     // Handle rqid links
     RqidLink.addRqidLinkClickHandlers($(this.form!));
+  }
+
+  async rollYear(yearIndex: number) {
+    const familyHistory = this.familyHistory.selectedFamilyHistory?.data as FamilyHistoryDataSource;
+    const yearEntry = familyHistory.data.familyHistoryEntries[yearIndex];
+    const yearRollTable = await Rqid.fromRqid(yearEntry.rollTableRqidLink?.rqid);
+    if (yearRollTable instanceof RollTable) {
+      const diceExpressionInput = document.querySelector(
+        "#year-dice-expression-" + yearIndex
+      ) as HTMLInputElement;
+      const diceExpression = diceExpressionInput.value;
+      const roll = new Roll(diceExpression);
+      // @ts-expect-error roll
+      const yearResults = await yearRollTable!.roll({roll});
+
+        const yearResult = yearResults.results[0]?.data?.text as string;
+        if (yearResult) {
+
+          const yearResultTextArea = document.querySelector("#year-result-" + yearIndex) as HTMLTextAreaElement;
+
+          if (yearResultTextArea) {
+            (this.familyHistory.selectedFamilyHistory?.data as FamilyHistoryDataSource).data.familyHistoryEntries[yearIndex].yearResult = yearResult;
+            yearResultTextArea.value = yearResult;
+          }
+
+        }
+    }
   }
 
   _setActorCreationComplete() {

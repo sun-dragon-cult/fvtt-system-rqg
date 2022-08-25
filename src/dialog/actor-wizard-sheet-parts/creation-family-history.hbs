@@ -109,7 +109,9 @@
         <p>{{this.modifiers}}</p>
         <label>
           <div class="rune-button" title="{{localize "RQG.ActorCreation.Step2.RollThisYear"}}">
-            <img class="rune-button-img" src="systems/rqg/assets/images/runes/luck.svg">
+            <img class="rune-button-img"
+                 data-roll-year-index="{{@index}}"
+                 src="systems/rqg/assets/images/runes/luck.svg">
           </div>
           {{localize "RQG.ActorCreation.Step2.YearDiceExpression"}}
         </label>
@@ -121,7 +123,7 @@
       </div>
 
       <div class="year-result">
-        <textarea rows="4"></textarea>
+        <textarea rows="4" id="year-result-{{@index}}">{{this.yearResult}}</textarea>
       </div>
     </details>
   {{/each}}
