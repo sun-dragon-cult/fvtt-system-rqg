@@ -127,13 +127,22 @@ export function toKebabCase(s: string | undefined): string {
   if (!s) {
     return "";
   }
-  const match = s.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g);
 
-  if (!match) {
-    return "";
+  const toEmptyStringMatch = s.match(/[^']/g);
+
+  let result = s;
+
+  if (toEmptyStringMatch) {
+    result = toEmptyStringMatch.join("") || "";
+  } 
+
+  const toDashMatch = result.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g);
+
+  if (!toDashMatch) {
+    return result;
   }
 
-  return match.join("-").toLowerCase();
+  return toDashMatch.join("-").toLowerCase();
 }
 
 /**
