@@ -11,7 +11,6 @@ export class FamilyHistoryEntry {
   eventsText: string = "";
   yearText: string = "";
   yearDiceExpression: string = "1d20";
-  yearResult: string = "";
 }
 
 export interface FamilyHistoryDataSourceData {

@@ -253,7 +253,6 @@ export class FamilyHistorySheet extends RqgItemSheet<
         eventsText: "",
         yearText: localize("RQG.Item.FamilyHistory.Year"),
         yearDiceExpression: "1d20",
-        yearResult: ""
       });
       entries.sort((a, b) => ((a.beginYear || 0) > (b.beginYear || 0) ? 1 : -1));
 

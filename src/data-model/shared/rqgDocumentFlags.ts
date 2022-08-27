@@ -1,6 +1,8 @@
 import { ResultEnum } from "./ability";
 import { CharacteristicData } from "../../chat/characteristicChatHandler";
 import { ChatMessageType } from "../../chat/RqgChatMessage";
+import { FamilyHistoryWizardValues, YearResult } from "../../dialog/actorWizardApplication";
+
 
 export const documentRqidFlags = "documentRqidFlags";
 export const actorWizardFlags = "actorWizardFlags";
@@ -23,14 +25,8 @@ export interface RqgActorFlags {
     actorWizardComplete?: boolean;
     selectedSpeciesId?: string;
     selectedHomelandRqid?: string;
+    familyHistory?: FamilyHistoryWizardValues;
     isActorTemplate?: boolean;
-    grandparentType?: string;
-    grandparentName?: string;
-    grandparentOccupation?: string;
-    parentType?: string;
-    parentName?: string;
-    parentOccupation?: string;
-    selectedFamilyHistoryRqid?: string;
     wizardChoices?: string;
   };
 }

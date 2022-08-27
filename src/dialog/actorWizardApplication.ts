@@ -13,7 +13,44 @@ import { RuneDataSource } from "../data-model/item-data/runeData";
 import { PassionDataSource } from "../data-model/item-data/passionData";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { Rqid } from "../system/api/rqidApi";
-import { FamilyHistoryDataSource } from "src/data-model/item-data/familyHistoryData";
+import {
+  FamilyHistoryDataSource,
+  FamilyHistoryEntry,
+} from "../data-model/item-data/familyHistoryData";
+import { FamilyHistory } from "../items/family-history-item/familyHistory";
+
+export class YearResult {
+  yearResultText: string = ""; // this can't also be undefined. Causing problems in detokenize
+  itemsToAdd: { rqidLink: RqidLink; value: number }[] = [];
+  reputationDice: string | undefined;
+  reputationValue: number | undefined;
+}
+
+export class Ancestor {
+  name: string | undefined;
+  type: string | undefined;
+  types: string[] = [];
+  occupation: string | undefined;
+}
+
+export class FamilyHistoryWizardValues {
+  grandparent: Ancestor = {
+    name: undefined,
+    type: "grandparent",
+    types: ["grandparent", "grandfather", "grandmother"],
+    occupation: undefined,
+  };
+  parent: Ancestor = {
+    name: undefined,
+    type: "parent",
+    types: ["parent", "father", "mother"],
+    occupation: undefined,
+  };
+  selectedFamilyHistoryRqid: string | undefined;
+  selectedFamilyHistoryEntries: FamilyHistoryEntry[] = [];
+  availableFamilyHistories: RqgItem[] | undefined;
+  yearResults: YearResult[] = []; // This array will parallel familyHistories with results.
+}
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -25,29 +62,7 @@ export class ActorWizard extends FormApplication {
     selectedHomeland: RqgItem | undefined;
     homelands: RqgItem[] | undefined;
   } = { selectedHomeland: undefined, homelands: undefined };
-  familyHistory: {
-    grandparentType: string | undefined;
-    grandparentTypes: string[];
-    grandparentName: string | undefined;
-    grandparentOccupation: string | undefined;
-    parentType: string | undefined;
-    parentTypes: string[];
-    parentName: string | undefined;
-    parentOccupation: string | undefined;
-    selectedFamilyHistory: RqgItem | undefined;
-    familyHistories: RqgItem[] | undefined;
-  } = {
-    grandparentType: "grandparent",
-    grandparentTypes: ["grandparent", "grandfather", "grandmother"],
-    grandparentName: undefined,
-    grandparentOccupation: undefined,
-    parentType: "parent",
-    parentTypes: ["parent", "father", "mother"],
-    parentName: undefined,
-    parentOccupation: undefined,
-    selectedFamilyHistory: undefined,
-    familyHistories: undefined,
-  };
+  familyHistory: FamilyHistoryWizardValues = new FamilyHistoryWizardValues();
   choices: Record<string, CreationChoice> = {};
 
   constructor(object: RqgActor, options: any) {
@@ -121,8 +136,6 @@ export class ActorWizard extends FormApplication {
   }
 
   async getData(): Promise<any> {
-
-
     if (!this.species.speciesTemplates) {
       // Don't get these every time.
       // this.species.speciesTemplates = await getActorTemplates();
@@ -138,10 +151,10 @@ export class ActorWizard extends FormApplication {
       ) as RqgItem[];
     }
 
-    if (!this.familyHistory.familyHistories) {
+    if (!this.familyHistory.availableFamilyHistories) {
       // Don't get these every time
       const familyHistories = await Rqid.fromRqidRegexBest(/.*family-history.*/, "i", "en");
-      this.familyHistory.familyHistories = familyHistories.filter(
+      this.familyHistory.availableFamilyHistories = familyHistories.filter(
         (i) => (i as RqgItem).type === ItemTypeEnum.FamilyHistory
       ) as RqgItem[];
     }
@@ -176,58 +189,12 @@ export class ActorWizard extends FormApplication {
         await this.setSelectedHomeland(previouslySelectedHomelandRqid);
       }
 
-      // Has the user already chosen a Family History stored in flags?
-      const previouslySelectedFamilyHistoryRqid = this.actor.getFlag(
+      const previouslySetFamilyHistory = this.actor.getFlag(
         systemId,
         actorWizardFlags
-      )?.selectedFamilyHistoryRqid;
-      if (previouslySelectedFamilyHistoryRqid) {
-        await this.setSelectedFamilyHistory(previouslySelectedFamilyHistoryRqid);
-      }
-
-      // Has the user already specified Grandparent and Parent with choices stored in flags?
-      const previouslySelectedGrandparentName = this.actor.getFlag(
-        systemId,
-        actorWizardFlags
-      )?.grandparentName;
-      if (previouslySelectedGrandparentName) {
-        this.familyHistory.grandparentName = previouslySelectedGrandparentName;
-      }
-      const previouslySelectedGrandParentType = this.actor.getFlag(
-        systemId,
-        actorWizardFlags
-      )?.grandparentType;
-      if (previouslySelectedGrandParentType) {
-        this.familyHistory.grandparentType = previouslySelectedGrandParentType;
-      }
-      const previouslySelectedGrandparentOccupation = this.actor.getFlag(
-        systemId,
-        actorWizardFlags
-      )?.grandparentOccupation;
-      if (previouslySelectedGrandparentOccupation) {
-        this.familyHistory.grandparentOccupation = previouslySelectedGrandparentOccupation;
-      }
-
-      const previouslySelectedParentName = this.actor.getFlag(
-        systemId,
-        actorWizardFlags
-      )?.parentName;
-      if (previouslySelectedParentName) {
-        this.familyHistory.parentName = previouslySelectedParentName;
-      }
-      const previouslySelectedParentType = this.actor.getFlag(
-        systemId,
-        actorWizardFlags
-      )?.parentType;
-      if (previouslySelectedParentType) {
-        this.familyHistory.parentType = previouslySelectedParentType;
-      }
-      const previouslySelectedParentOccupation = this.actor.getFlag(
-        systemId,
-        actorWizardFlags
-      )?.parentOccupation;
-      if (previouslySelectedParentOccupation) {
-        this.familyHistory.parentOccupation = previouslySelectedParentOccupation;
+      )?.familyHistory;
+      if (previouslySetFamilyHistory) {
+        this.familyHistory = previouslySetFamilyHistory;
       }
     }
 
@@ -419,23 +386,21 @@ export class ActorWizard extends FormApplication {
     if (rollYearButtons) {
       for (const el of rollYearButtons) {
         el.addEventListener("click", async () => {
-          const target = el as HTMLElement
+          const target = el as HTMLElement;
           const yearIndex = Number(target.dataset.rollYearIndex);
           if (Number.isInteger(yearIndex)) {
             await this.rollYear(yearIndex);
           }
         });
-      };      
+      }
     }
-
 
     // Handle rqid links
     RqidLink.addRqidLinkClickHandlers($(this.form!));
   }
 
   async rollYear(yearIndex: number) {
-    const familyHistory = this.familyHistory.selectedFamilyHistory?.data as FamilyHistoryDataSource;
-    const yearEntry = familyHistory.data.familyHistoryEntries[yearIndex];
+    const yearEntry = this.familyHistory.selectedFamilyHistoryEntries[yearIndex];
     const yearRollTable = await Rqid.fromRqid(yearEntry.rollTableRqidLink?.rqid);
     if (yearRollTable instanceof RollTable) {
       const diceExpressionInput = document.querySelector(
@@ -443,21 +408,87 @@ export class ActorWizard extends FormApplication {
       ) as HTMLInputElement;
       const diceExpression = diceExpressionInput.value;
       const roll = new Roll(diceExpression);
+      const yearResult = new YearResult();
       // @ts-expect-error roll
-      const yearResults = await yearRollTable!.roll({roll});
+      const yearTableResult = await yearRollTable!.roll({ roll });
 
-        const yearResult = yearResults.results[0]?.data?.text as string;
-        if (yearResult) {
+      let tableResult = yearTableResult.results[0]?.data?.text as string;
+      if (tableResult) {
+        yearResult.yearResultText = tableResult;
+        const yearResultTextArea = document.querySelector(
+          "#year-result-" + yearIndex
+        ) as HTMLTextAreaElement;
 
-          const yearResultTextArea = document.querySelector("#year-result-" + yearIndex) as HTMLTextAreaElement;
+        if (yearResultTextArea) {
+          await this._detokenizeYearResult(yearResult);
 
-          if (yearResultTextArea) {
-            (this.familyHistory.selectedFamilyHistory?.data as FamilyHistoryDataSource).data.familyHistoryEntries[yearIndex].yearResult = yearResult;
-            yearResultTextArea.value = yearResult;
-          }
+          this.familyHistory.yearResults[yearIndex] = yearResult;
+          await this.actor.setFlag(systemId, actorWizardFlags, {
+            familyHistory: this.familyHistory,
+          });
 
+          //TODO: maybe the button can submit and not have to do this?
+          yearResultTextArea.value = yearResult.yearResultText;
         }
+      }
     }
+  }
+
+  async _detokenizeYearResult(yearResult: YearResult): Promise<void> {
+    const regex = /[^{{\}\}]+(?=})/gm;
+    let match;
+
+    if (!yearResult) {
+      return;
+    }
+
+    while ((match = regex.exec(yearResult.yearResultText)) != null) {
+      const token = match[0];
+
+      if (token === "grandparent.type") {
+        yearResult.yearResultText = yearResult.yearResultText.replace(
+          token,
+          localize(
+            "RQG.ActorCreation.Step2.GrandparentTypes." + this.familyHistory.grandparent.type
+          )
+        );
+      }
+
+      if (token === "grandparent.name") {
+        yearResult.yearResultText = yearResult.yearResultText.replace(
+          token,
+          this.familyHistory.grandparent.name || "NAME YOUR GRANDPARENT"
+        );
+      }
+
+      if (token === "parent.type") {
+        yearResult.yearResultText = yearResult.yearResultText.replace(
+          token,
+          localize("RQG.ActorCreation.Step2.ParentTypes." + this.familyHistory.parent.type)
+        );
+      }
+
+      if (token === "parent.name") {
+        yearResult.yearResultText = yearResult.yearResultText.replace(
+          token,
+          this.familyHistory.parent.name || "NAME YOUR PARENT"
+        );
+      }
+
+      if (token.startsWith("rt.")) {
+        const followupTable = await Rqid.fromRqid(token);
+        const diceExpression = "1d20"; // TODO: Dialog to get this if modifiers.
+        const roll = new Roll(diceExpression);
+        // @ts-expect-error roll
+        let followupTableResult = await followupTable.roll({ roll });
+        yearResult.yearResultText = yearResult.yearResultText.replace(
+          token,
+          followupTableResult.results[0]?.data?.text
+        );
+        await this._detokenizeYearResult(yearResult);
+      }
+    }
+    yearResult.yearResultText = yearResult.yearResultText.replaceAll("{{", "").replaceAll("}}", "");
   }
 
   _setActorCreationComplete() {
@@ -486,17 +517,34 @@ export class ActorWizard extends FormApplication {
       if (select.name === "selectGrandparentType") {
         // @ts-ignore selectGrandparentType
         const grandparentType: string = formData["selectGrandparentType"] as string;
-        await this.actor.setFlag(systemId, actorWizardFlags, { grandparentType: grandparentType });
+        this.familyHistory.grandparent.type = grandparentType;
+        await this.actor.setFlag(systemId, actorWizardFlags, { familyHistory: this.familyHistory });
       }
       if (select.name === "selectParentType") {
         // @ts-ignore selectGrandparentType
         const parentType: string = formData["selectParentType"] as string;
-        await this.actor.setFlag(systemId, actorWizardFlags, { parentType: parentType });
+        this.familyHistory.parent.type = parentType;
+        await this.actor.setFlag(systemId, actorWizardFlags, { familyHistory: this.familyHistory });
       }
       if (select.name === "selectedFamilyHistoryRqid") {
         // @ts-ignore selectedFamilyHistoryRqid
         const selectedFamilyHistoryRqid = formData?.selectedFamilyHistoryRqid;
-        await this.setSelectedFamilyHistory(selectedFamilyHistoryRqid);
+        const selectedFamilyHistory = await Rqid.fromRqid(selectedFamilyHistoryRqid);
+        if (selectedFamilyHistory) {
+          this.familyHistory.selectedFamilyHistoryRqid = selectedFamilyHistoryRqid;
+          this.familyHistory.selectedFamilyHistoryEntries = (
+            selectedFamilyHistory.data as FamilyHistoryDataSource
+          ).data.familyHistoryEntries;
+
+          this.familyHistory.yearResults = [];
+          for (const yearEntry in this.familyHistory.selectedFamilyHistoryEntries) {
+            this.familyHistory.yearResults.push(new YearResult());
+          }
+
+          await this.actor.setFlag(systemId, actorWizardFlags, {
+            familyHistory: this.familyHistory,
+          });
+        }
       }
     }
 
@@ -505,25 +553,29 @@ export class ActorWizard extends FormApplication {
       if (input.name === "grandparent-name") {
         // @ts-ignore grandparent-name
         const grandparentName = formData["grandparent-name"] as string;
-        await this.actor.setFlag(systemId, actorWizardFlags, { grandparentName: grandparentName });
+        this.familyHistory.grandparent.name = grandparentName;
+        await this.actor.setFlag(systemId, actorWizardFlags, { familyHistory: this.familyHistory });
       }
       if (input.name === "grandparent-occupation") {
         // @ts-ignore grandparent-occupation
         const grandparentOccupation = formData["grandparent-occupation"] as string;
+        this.familyHistory.grandparent.occupation = grandparentOccupation;
         await this.actor.setFlag(systemId, actorWizardFlags, {
-          grandparentOccupation: grandparentOccupation,
+          familyHistory: this.familyHistory,
         });
       }
       if (input.name === "parent-name") {
         // @ts-ignore parent-name
         const parentName = formData["parent-name"] as string;
-        await this.actor.setFlag(systemId, actorWizardFlags, { parentName: parentName });
+        this.familyHistory.parent.name = parentName;
+        await this.actor.setFlag(systemId, actorWizardFlags, { familyHistory: this.familyHistory });
       }
       if (input.name === "parent-occupation") {
         // @ts-ignore parent-occupation
         const parentOccupation = formData["parent-occupation"] as string;
+        this.familyHistory.parent.occupation = parentOccupation;
         await this.actor.setFlag(systemId, actorWizardFlags, {
-          parentOccupation: parentOccupation,
+          familyHistory: this.familyHistory,
         });
       }
     }
@@ -745,19 +797,6 @@ export class ActorWizard extends FormApplication {
         this.choices[passionRqidLink.rqid].homelandValue = 10;
       });
     }
-  }
-
-  async setSelectedFamilyHistory(selectedFamilyHistoryRqid: string) {
-    this.familyHistory.selectedFamilyHistory = this.familyHistory.familyHistories?.find(
-      (f) => f.getFlag(systemId, documentRqidFlags)?.id === selectedFamilyHistoryRqid
-    );
-
-    await this.actor.setFlag(systemId, actorWizardFlags, {
-      selectedFamilyHistoryRqid: this.familyHistory.selectedFamilyHistory?.getFlag(
-        systemId,
-        documentRqidFlags
-      )?.id,
-    });
   }
 
   async updateChoices() {

@@ -18,34 +18,34 @@
     <div>{{localize "RQG.ActorCreation.Step2.Relation"}}</div>
     <div>{{localize "RQG.ActorCreation.Step2.Occupation"}}</div>
     <input type="text" name="grandparent-name"
-      value="{{familyHistory.grandparentName}}">
+      value="{{familyHistory.grandparent.name}}">
     <select name="selectGrandparentType">
-      {{#select familyHistory.grandparentType}}
-        {{#each familyHistory.grandparentTypes}}
+      {{#select familyHistory.grandparent.type}}
+        {{#each familyHistory.grandparent.types}}
           <option value="{{this}}">{{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." this)}}</option>
         {{/each}}
       {{/select}}
     </select>
     <input type="text" name="grandparent-occupation"
-      value="{{familyHistory.grandparentOccupation}}">
+      value="{{familyHistory.grandparent.occupation}}">
   </div>
 
-  <h3>{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." familyHistory.parentType)}}</h3>
+  <h3>{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." familyHistory.parent.type)}}</h3>
 
   <p>{{localize "RQG.ActorCreation.Step2.ParentInstructions"}}</p>
 
   <div class="wizard-ancestor">
     <input type="text" name="parent-name"
-      value="{{familyHistory.parentName}}">
+      value="{{familyHistory.parent.name}}">
     <select name="selectParentType">
-      {{#select familyHistory.parentType}}
-        {{#each familyHistory.parentTypes}}
+      {{#select familyHistory.parent.type}}
+        {{#each familyHistory.parent.types}}
           <option value="{{this}}">{{localize (concat "RQG.ActorCreation.Step2.ParentTypes." this)}}</option>
         {{/each}}
       {{/select}}
     </select>
     <input type="text" name="parent-occupation"
-      value="{{familyHistory.parentOccupation}}">
+      value="{{familyHistory.parent.occupation}}">
   </div>
     
 </details>
@@ -61,16 +61,16 @@
   <div class="item-sheet-properties">
     <label>{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}:</label>
     <select name="selectedFamilyHistoryRqid" style="width: min-content;">
-      {{#select familyHistory.selectedFamilyHistory.data.flags.rqg.documentRqidFlags.id}}
+      {{#select familyHistory.selectedFamilyHistory.rqid}}
       <option value="">{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}</option>
-      {{#each familyHistory.familyHistories}}
+      {{#each familyHistory.availableFamilyHistories}}
       <option value="{{this.data.flags.rqg.documentRqidFlags.id}}">{{this.name}}</option>
       {{/each}}
       {{/select}}
     </select>
   </div>
 
-  {{#each familyHistory.selectedFamilyHistory.data.data.familyHistoryEntries}}
+  {{#each familyHistory.selectedFamilyHistoryEntries}}
     <details class="title-bar-details" open>
       <summary class="title-bar-summary title-bar-head-2">
         <div class="title-bar-summary-content">
@@ -90,10 +90,10 @@
         <label>{{localize "RQG.ActorCreation.Step2.YearAppliesTo"}}</label>
         <div>
           {{#if (eq this.targetCharacter "grandparent")}}
-            {{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." ../familyHistory.grandparentType)}}: {{../familyHistory.grandparentName}}
+            {{localize (concat "RQG.ActorCreation.Step2.GrandparentTypes." ../familyHistory.grandparent.type)}}: {{../familyHistory.grandparent.name}}
           {{/if}}
           {{#if (eq this.targetCharacter "parent")}}
-            {{localize (concat "RQG.ActorCreation.Step2.ParentTypes." ../familyHistory.parentType)}}: {{../familyHistory.parentName}}
+            {{localize (concat "RQG.ActorCreation.Step2.ParentTypes." ../familyHistory.parent.type)}}: {{../familyHistory.parent.name}}
           {{/if}}
           {{#if (eq this.targetCharacter "self")}}
             {{localize "RQG.ActorCreation.Step2.Self"}}: {{../actor.name}}
@@ -123,7 +123,8 @@
       </div>
 
       <div class="year-result">
-        <textarea rows="4" id="year-result-{{@index}}">{{this.yearResult}}</textarea>
+        <textarea rows="4" id="year-result-{{@index}}">{{../familyHistory.yearResults.[@index].yearResultText}}</textarea>
+        <textarea rows="6">{{json ../familyHistory.yearResults.[@index]}}</textarea>
       </div>
     </details>
   {{/each}}
