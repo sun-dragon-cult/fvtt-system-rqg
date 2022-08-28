@@ -1,0 +1,20 @@
+# insight
+name: ${{content.skill.insight.skillName}}$ (${{content.skill.insight.specialization.human}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/insight.svg
+data:
+  category: perception
+  skillName: ${{content.skill.insight.skillName}}$
+  specialization: ${{content.skill.insight.specialization.human}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..insight
+    name: ${{content.skill.insight.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.insight-human
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$

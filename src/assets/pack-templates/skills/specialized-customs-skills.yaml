@@ -1,0 +1,125 @@
+# customs-esrolia
+name: ${{content.skill.customs.skillName}}$ (${{content.homeland.esrolia.name}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+data:
+  category: knowledge
+  skillName: ${{content.skill.customs.skillName}}$
+  specialization: ${{content.homeland.esrolia.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-esrolia
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# customs-grazelands
+name: ${{content.skill.customs.skillName}}$ (${{content.homeland.grazelands.name}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+data:
+  category: knowledge
+  skillName: ${{content.skill.customs.skillName}}$
+  specialization: ${{content.homeland.grazelands.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-grazelands
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# customs-lunar-tarsh
+name: ${{content.skill.customs.skillName}}$ (${{content.homeland.lunarTarsh.name}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+data:
+  category: knowledge
+  skillName: ${{content.skill.customs.skillName}}$
+  specialization: ${{content.homeland.lunarTarsh.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-lunar-tarsh
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# customs-old-tarsh
+name: ${{content.skill.customs.skillName}}$ (${{content.homeland.oldTarsh.name}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+data:
+  category: knowledge
+  skillName: ${{content.skill.customs.skillName}}$
+  specialization: ${{content.homeland.oldTarsh.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-old-tarsh
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# customs-prax
+name: ${{content.skill.customs.skillName}}$ (${{content.homeland.prax.name}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+data:
+  category: knowledge
+  skillName: ${{content.skill.customs.skillName}}$
+  specialization: ${{content.homeland.prax.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-prax
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# customs-sartar
+name: ${{content.skill.customs.skillName}}$ (${{content.homeland.sartar.name}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+data:
+  category: knowledge
+  skillName: ${{content.skill.customs.skillName}}$
+  specialization: ${{content.homeland.sartar.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-sartar
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$

@@ -1,0 +1,152 @@
+# boat
+name: ${{content.skill.boat.skillName}}$ - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/boat.svg
+data:
+  category: agility
+  skillName: ${{content.skill.boat.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..boat
+    name: ${{content.skill.boat.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.boat
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# climb
+name: ${{content.skill.climb.skillName}}$ - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/climb.svg
+data:
+  category: agility
+  skillName: ${{content.skill.climb.skillName}}$
+  specialization:
+  baseChance: 40
+  learnedChance: 40
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..climb
+    name: ${{content.skill.climb.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.climb
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# dodge
+name: ${{content.skill.dodge.skillName}}$ - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/dodge.svg
+data:
+  rqid: skill-dodge
+  rqidPriority: ${{content.prio}}$
+  rqidLang: ${{content.lang}}$
+  category: agility
+  skillName: ${{content.skill.dodge.skillName}}$
+  specialization:
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..dodge
+    name: ${{content.skill.dodge.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.dodge
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# drive-chariot
+name: ${{content.skill.driveChariot.skillName}}$ - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/drive.svg
+data:
+  category: agility
+  skillName: ${{content.skill.driveChariot.skillName}}$
+  specialization: Chariot
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..drive-chariot
+    name: ${{content.skill.driveChariot.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.drive-chariot
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# jump
+name: ${{content.skill.jump.skillName}}$ - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/jump.svg
+data:
+  rqid: skill-jump
+  rqidPriority: ${{content.prio}}$
+  rqidLang: ${{content.lang}}$
+  category: agility
+  skillName: Jump
+  specialization:
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..jump
+    name: ${{content.skill.jump.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.jump
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# ride
+name: ${{content.skill.ride.skillName}}$ (...) - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/ride.svg
+data:
+  category: agility
+  skillName: ${{content.skill.ride.skillName}}$
+  specialization: "..."
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..ride
+    name: ${{content.skill.ride.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.ride
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# swim
+name: ${{content.skill.swim.skillName}}$ - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/swim.svg
+data:
+  category: agility
+  skillName: ${{content.skill.swim.skillName}}$
+  specialization:
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..swim
+    name: ${{content.skill.swim.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.swim
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$

@@ -1091,8 +1091,8 @@
     }
   },
   "content": {
-    "prio": 1000,
-    "lang": "en",    
+    "prio": 0,
+    "lang": "en",
     "cult": {
       "aldrya": {
         "name": "Aldrya",
@@ -1152,17 +1152,17 @@
       "magasta": {
         "name": "Magasta",
         "tagline": "the Lord of Waters",
-        "descriptionHtml": "<p>Magasta is the son of Daliath and Framanthe, the moving source of life in the waters. His family personifies the tremendous primal forces of the sea, but Magasta directs them. He is King of the Sea Gods, master of life and death within the depths.</p>"      
+        "descriptionHtml": "<p>Magasta is the son of Daliath and Framanthe, the moving source of life in the waters. His family personifies the tremendous primal forces of the sea, but Magasta directs them. He is King of the Sea Gods, master of life and death within the depths.</p>"
       },
       "maranGor": {
         "name": "Maran Gor",
         "tagline": "the Earthshaker",
-        "descriptionHtml": "<p>A sister of Ernalda, she was once generous and kind. When the troubles of the Gods War came, she took the title of Gor, and became an object of fear and awe. She was then a destroyer and was powerful and famous during that black time. Now she is only actively worshiped by those that enjoy the carnage which is her most precious gift. Most great earth temples still include shrines to this deity, and prayers are sent to deflect her wrath.</p>"      
+        "descriptionHtml": "<p>A sister of Ernalda, she was once generous and kind. When the troubles of the Gods War came, she took the title of Gor, and became an object of fear and awe. She was then a destroyer and was powerful and famous during that black time. Now she is only actively worshiped by those that enjoy the carnage which is her most precious gift. Most great earth temples still include shrines to this deity, and prayers are sent to deflect her wrath.</p>"
       },
       "mostal": {
         "name": "Mostal",
         "tagline": "the Maker",
-        "descriptionHtml": "<p>Machine God, Keeper of the World Mill, and Master of Stone are some of his titles. Mostal is believed to be a son of the earth and mighty Acos, god of Law from the Celestial Court. From his father he inherited power over stone, which is sometimes called the Lawful Element. He was skilled at all kinds of making and building and has an inborn distrust and lack of understanding for Aldrya. In the God Time he and his brother Stone were slain by elves. Now, dwarfs work steadfastly to repair Mostal’s machine, so that the world works correctly again.</p>"      
+        "descriptionHtml": "<p>Machine God, Keeper of the World Mill, and Master of Stone are some of his titles. Mostal is believed to be a son of the earth and mighty Acos, god of Law from the Celestial Court. From his father he inherited power over stone, which is sometimes called the Lawful Element. He was skilled at all kinds of making and building and has an inborn distrust and lack of understanding for Aldrya. In the God Time he and his brother Stone were slain by elves. Now, dwarfs work steadfastly to repair Mostal’s machine, so that the world works correctly again.</p>"
       },
       "orlanth": {
         "name": "Orlanth",
@@ -1262,7 +1262,7 @@
         "runeMagicDescription": {
          "name": "Rune Magic",
         "title": "<h3>Rune Magic</h3><br/>"
-      },      
+      },
       "skillDescription": {
         "name": "Skill",
         "title": "<h3>Skill</h3><br/>"
@@ -1270,7 +1270,7 @@
       "spiritMagicDescription": {
         "name": "Spirit Magic",
         "title": "<h3>Spirit Magic</h3><br/>"
-      }    
+      }
     },
     "language": {
       "esrolian": {
@@ -1345,7 +1345,7 @@
       "chaosForm": {
         "name": "Chaos (form)",
         "description": "<p>Descriptive of beings tainted by Chaos. The Chaos Rune might be combined with any other Rune, as nothing is totally safe from its influence.</p>"
-      },    
+      },
       "combineTechnique": {
         "name": "Combine (technique)",
         "description": "<p>This technique forces a specific manifestation of one Rune to combine with that of a different specified Rune. It is the opposite of Separate.</p>"
@@ -1353,7 +1353,7 @@
       "commandTechnique": {
         "name": "Command (technique)",
         "description": "<p>This technique forces a specific manifestation of a Rune to act in a specific manner in accordance with its nature. Knowledge of Command provides insight into all other techniques.</p>"
-      },    
+      },
       "darknessElement": {
         "name": "Darkness (element)",
         "description": "<p>The most ancient Rune, the First Born, from whom all other Elements were born or descended. Darkness was the first Element to arise out of the Primal Chaos.</p> <p>The element of Darkness was the first to withdraw itself from Chaos, its birth attended by tales of primeval wars of Darkness against Chaos. It is the element of the Underworld, the endless freezing darkness that preceded creation and still lurks and hungers under the earth and seas.</p><p><b>Characteristic:</b> SIZ</p><p><b>Personality:</b> To have a strong affinity with Darkness is to be cold, cruel, patient, hungry, large, and secretive.</p><p><b>Sense:</b> Listen</p><p><b>Skill Category:</b> Stealth</p><p><b>Weapons:</b> Club, mace, rock</p><p><b>Organs:</b> Stomach, fat</p><p><b>Color:</b> Black</p><p><b>Metal:</b> Lead</p><p><b>Phyla:</b> Insect</p>"
@@ -1365,11 +1365,11 @@
       "disorderPower": {
         "name": "Disorder (power)",
         "description": "<p>Directly derived from Chaos. Anarchistic cults claim that this was the first step of creation from Chaos, therefore Disorder is the First Born of the Powers and the foundation of the universe.</p><p>To be strong with the Disorder Rune is to place one’s own welfare, advantage, or pleasure above all others. Such adventurers may be described as individualistic, impulsive, and contrary, or as greedy, thoughtless, and egocentric.</p>"
-      }, 
+      },
       "dispelTechnique": {
         "name": "Dispel (technique)",
         "description": "<p>This technique allows a sorcerer to dismiss specific manifestations of the Rune to the material world. It is the opposite of Summon.</p>"
-      },       
+      },
       "dragonewtForm": {
         "name": "Dragonewt (form)",
         "description": "<p>As exotic as the race it represents, it is found only in the Dragon Pass area. Unlike most of the other Form Runes, it is never used with an Elemental Rune.</p>"
@@ -1385,7 +1385,7 @@
       "fertilityPower": {
         "name": "Fertility (power)",
         "description": "<p>Symbolizes the Ancient Cup from which the whole world was poured at the dawn of creation. This is the symbol of growth and life.</p><p>To be strong with the Fertility Rune is to enjoy the pleasures of the flesh, most notably sexual desire. Such adventurers are generous and giving, often without personal commitment between the persons involved.</p>"
-      },      
+      },
       "fireskyElement": {
         "name": "Fire/Sky (element)",
         "description": "<p>The Sky is different from the Air, for Air separates the Sky and the Earth. After his defeat by his son, the Sky has been aloof from mankind, although vestiges of his worship, such as the Sun Dome Temple, are still present in the land.</p><p>The element of Fire/Sky is purification. It destroys polluting matter and withdraws upward from the Material World. It is the Sky Dome and the stars, with its greatest manifestation being the fiery Sun that brings light and warmth to the world.</p><p><b>Characteristic:</b> INT</p><p><b>Personality:</b> To have a strong affinity with Fire/Sky means to be pure, chaste, idealistic, intellectual, and perceptive.</p><p><b>Sense:</b> Scan</p><p><b>Skill Category:</b> Perception</p><p><b>Weapons:</b> Spear, bow</p><p><b>Organs:</b> Brain, sinew</p><p><b>Color:</b> Yellow</p><p><b>Metal:</b> Gold</p><p><b>Phyla:</b> Bird</p>"
@@ -1397,7 +1397,7 @@
       "illusionPower": {
         "name": "Illusion (power)",
         "description": "<p>The Puppeteer Troupe, the major cult of the Father of Illusion, always claimed that this was the First Rune, for without Illusion, there would be none of us to think we ever were. They refuse to explain further.</p><p>To be strong with the Illusion Rune is to distort truths or fabricate untruths, for one’s own ends or on behalf of others, or in some cases simply for the sake of doing so. Such adventurers view reality as something subjective, and subject to their imagination.</p>"
-      },      
+      },
       "infinityCondition": {
         "name": "Infinity (condition)",
         "description": "<p>The mark of the gods. One who possesses the Infinity Rune is almost like a god. This Rune is not used lightly, as it implies total control of the power flow around the user, making them invulnerable to almost all magic. It is characteristic of gods, dragons, and the greatest Heroes only.</p>"
@@ -1409,7 +1409,7 @@
       "lightCondition": {
         "name": "Light (condition)",
         "description": "<p>Light without heat. A subrune of Fire/Sky.</p>"
-      },    
+      },
       "luckCondition": {
         "name": "Luck (condition)",
         "description": "<p>Thought to be both an expression of Chaos as well as the stamp of approval of the gods, this Rune is little used, except in the Holy Country, where the Masters of Luck and Death proudly display the symbol of the chance they take with every breath.</p>"
@@ -1421,8 +1421,8 @@
       "manForm": {
         "name": "Man (form)",
         "description": "<p>This Rune represents the humanoid shape and is common among all humanoid races. Some other races interpret it as “slave” or “food.” It is said to represent Grandfather Mortal, and numerous folktales are told about him.</p><p>To be strong with the Man Rune is to be civilized, settled, sociable, and ethical. Such adventurers are uncomfortable in the wilderness, preferring lands tamed by humanity.</p>"
-      },    
-      "masteryCondition": { 
+      },
+      "masteryCondition": {
         "name": "Mastery (condition)",
         "description": "<p>This all-purpose Rune can symbolize the mastery of mortals, of magic, or of elements. As the mastery of mortals, it describes a Hero; as the mastery of magic, it symbolizes any cult of reasonable power. The use of such Condition Runes usually masks the true identifying Runes of the cult or person described, although it may also signify the independence of a Hero or powerful magician from cult ties.</p>"
       },
@@ -1433,15 +1433,15 @@
       "movementPower": {
         "name": "Movement (power)",
         "description": "<p>Denotes the ancient wheel. As usual, there are claims for it to be the First Rune, for there would have been no growth from Chaos without it. Folktales speak of the World Bird which escaped from the Maws of Chaos upon this wheel.</p><p>To be strong with the Movement Rune is to be changeable, energetic, rebellious, and ambitious. Such adventurers can adapt quickly to changing circumstances, but are also impulsive and reckless.</p>"
-      },      
+      },
       "plantForm": {
         "name": "Plant (form)",
         "description": "<p>The symbol of the first life upon Glorantha. It is said to symbolize the first Plant god, a son of the Earth and Sea. Many cults have a connection with the Plant Rune, such as Aldrya, whose worship combines the Runes of Earth, Plant, and the Power Rune of Fertility.</p>"
-      },    
+      },
       "separateTechnique": {
         "name": "Separate (technique)",
         "description": "<p>This technique forces a specific manifestation of a Rune to remove itself from a different specified Rune. It is the opposite of Combine.</p>"
-      },    
+      },
       "spiritForm": {
         "name": "Spirit (form)",
         "description": "</p>This Rune describes disembodied entities existing in the Spirit World.</p>"
@@ -1449,7 +1449,7 @@
       "stasisPower": {
         "name": "Stasis (power)",
         "description": "<p>This Rune is closely connected with the art of alchemy, and the dwarves. They claim that this is the First Rune, for it provided the foundation from which all else was created.</p><p>To be strong with the Stasis Rune is to be resolute and unchanging. Such an adventurer may be described kindly as determined or dogged, and less kindly as doctrinaire or obstinate.</p>"
-      },      
+      },
       "summonTechnique": {
         "name": "Summon (technique)",
         "description": "<p>This technique allows the sorcerer to call forth specific manifestations of the Rune to the material world. It is the opposite of Dispel.</p>"
@@ -1457,11 +1457,11 @@
       "tapTechnique": {
         "name": "Tap (technique)",
         "description": "<p>This technique allows a sorcerer to transform the manifestation of a Rune into raw energy that the sorcerer can use. Knowledge of Tap provides insight into all other techniques.</p>"
-      },        
+      },
       "truthPower": {
         "name": "Truth (power)",
         "description": "<p>A Rune of the ancient, all-seeing Sky gods. Said to represent the torch that mortals used to escape from Chaos in the Great Darkness and to survive until the Dawn. Yet another candidate for First Rune, for its constancy and order set creation apart from random, unsettled Chaos.</p><p>To be strong with the Truth Rune is to view the truth as something objective, and outside of individual biases, interpretations, feelings, and imaginings. Such adventurers describe things as they truly are, both in matters small and large, no matter what the consequences.</p>"
-      },      
+      },
       "waterElement": {
         "name": "Water (element)",
         "description": "<p>Water was born of Darkness. As an Element, it is called Son of Darkness, Pathway to the Underworld, and Supporter of the Earth.</p><p>Within Water lies all the potential of the universe without darkness. It is the element of the seas, lakes, and rivers, and all the waters of the world.</p><p><b>Characteristic:</b> DEX</p><p><b>Personality:</b> To have a strong affinity with Water is to be mercurial, changeable, capricious, quick, and mutable.</p><p><b>Sense:</b> Taste</p><p><b>Skill Category:</b> Agility</p><p><b>Weapons:</b> Net, trident, whip</p><p><b>Organs:</b> Heart, blood</p><p><b>Color:</b> Blue</p><p><b>Metal:</b> Quicksilver</p><p><b>Phyla:</b> Fish</p>"
@@ -1487,7 +1487,7 @@
       "axeTrance": {
         "name": "Axe Trance",
         "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Babeester Gor</i></p><p>Each magic point spent with this spell increases one of the caster’s Axe skills by +10%. This can be combined with other weapon-enhancing spells, but not Berserker or Fanaticism. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using an axe in combat, the spell’s effect ends.</p>"
-      },    
+      },
       "ban": {
         "name": "Ban",
         "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1 or 3<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Can only be cast by Chief or High Priest. Forbids target from participating in worship at the caster’s temple or shrine for three years (1 pt.) or until the target is dead (3 pts.).</p>"
@@ -1511,7 +1511,7 @@
       "bindGhost": {
         "name": "Bind Ghost",
         "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Binds a spirit of a willing and dying Humakti into the targeted area as a ghost. Requires one round of successful spirit combat.</p>"
-      },    
+      },
       "bindingEnchantment": {
         "name": "Binding Enchantment",
         "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Creates a magic item capable of holding a spirit or other entity. Must be enchanted with 1 point of permanent POW per type of characteristic possessed by the desired entity.</p>"
@@ -1599,7 +1599,7 @@
       "dismissElementalType": {
         "name": "Dismiss Elemental (type)",
         "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Instant<br><b>Cults:</b> Ernalda (Earth), Orlanth (Air), Seven Mothers (all but Air), Waha (Earth)</i></p><p>The Rune depends on the type of elemental to be dismissed. Dismisses a cult spirit (usually an elemental) of the type listed.</p><ul><li>With 1 Rune point, the caster can try to dismiss a small elemental.</li><li>With 2 Rune points, the caster can try to dismiss a medium elemental.</li><li>With 3 Rune points, the caster can try to dismiss a large elemental.</li></ul> <p>The caster of the spell must overcome the POW of the elemental for the spell to work.</p>"
-      },    
+      },
       "dismissMagic": {
         "name": "Dismiss Magic",
         "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Instant<br><b>Cults:</b> All</i></p><p>Each point cancels 2 points of spirit magic or 1 point of Rune magic.</p>"
@@ -2054,14 +2054,14 @@
       "boat": {
         "skillName":"Boat",
         "description": "<p>Handling a small boat, kayak, or raft. This alsovincludes knowledge of their general maintenance.</p>"
-      },    
+      },
       "bureaucracy": {
         "skillName": "Bureaucracy",
         "description": "<p>Understanding and maneuvering around the institutions of a government or court.</p>"
       },
       "celestialLore": {
         "skillName": "Celestial Lore",
-        "description": "<p>Knowledge of the stars and heavens.</p>"    
+        "description": "<p>Knowledge of the stars and heavens.</p>"
       },
       "charm": {
         "skillName": "Charm",
@@ -2148,7 +2148,7 @@
         "description": "<p>Evaluating someone’s character, emotional state, trustworthiness, and motives based on body language, speech patterns, and other factors. Specialties are per species, so most adventurers have Human as their specialty, while others might be Aldryami, Ducks, Mostali, Trolls, or even Dragons.</p>",
         "specialization": {
           "human": "Human"
-        }      
+        }
       },
       "intimidate": {
         "skillName": "Intimidate",
@@ -2265,7 +2265,7 @@
       "speakLanguage": {
         "skillName": "Speak Language",
         "description": "<p>Speaking one’s native language. No roll is needed when speaking to other native speakers. Generally, this skill is only used when eavesdropping, translating, or in difficult circumstances. If attempting another Communication-based skill, the level in Speak Language is the limit at which the adventurer can use the other skill.</p><p>Speaking a language other than one’s own, such as one of those listed in Languages. Generally, 20% or more is enough to have simple conversations in. If attempting another Communication-based skill, the level in Speak Other Language is the limit at which the entity can use the other skill.</p><p><em>An adventurer with Speak Own Language (Heortling) 75% and Charm 83% is limited to 75% when using Charm.</em></p><p>See Languages for more information.</p>"
-      },        
+      },
       "spiritCombat": {
         "skillName": "Spirit Combat",
         "description": "<p>Battling a hostile spirit and doing damage to it. See Spirit Combat for more information."
@@ -2312,7 +2312,7 @@
       "worship": {
         "skillName": "Worship",
         "description": "<p>Based upon a specific cult and its representative god, this skill represents knowledge of the sacred rites and rituals necessary to gain the attention of and appease a god. It takes a full day to perform and must be held on sacred ground. Successful use of this skill returns spent Rune points. Specialties are for each cult.</p>"
-      } 
+      }
     },
     "skillCategory": {
       "agility": {
@@ -2346,7 +2346,7 @@
       "weapon": {
         "name": "Weapon",
         "description": "<p>All Melee Weapon, Missile Weapon, and Shield skills use the Manipulation skill category modifier and are either specialized by a specific type of weapon (such as Broadsword) or a more general category (1-Handed Axes, for example).</p><p>All Weapon and Shield skills can be improved by experience.</p>"
-      } 
+      }
     },
     "weaponSkill": {
       "1h-axe": {
@@ -2362,16 +2362,16 @@
         "specialization": {
           "dagger": "Dagger",
           "sickle": "Sickle",
-          "offhand"  : "Offhand"          
+          "offhand"  : "Offhand"
         }
       },
       "1h-hammer": {
         "name": "1H Hammer",
         "specialization": {
           "warHammer": "War Hammer",
-          "offhand"  : "Offhand"                    
+          "offhand"  : "Offhand"
         }
-      },    
+      },
       "1h-mace": {
         "name": "1H Mace",
         "specialization": {
@@ -2379,18 +2379,18 @@
           "heavyMace": "Heavy Mace",
           "lightMace": "Light Mace",
           "singlestick": "Singlestick",
-          "offhand"  : "Offhand"            
+          "offhand"  : "Offhand"
         }
-      },      
+      },
       "1h-spear": {
         "name": "1H Spear",
         "specialization": {
           "javelin": "Javelin",
           "lance": "Lance",
           "shortspear": "Shortspear",
-          "offhand"  : "Offhand"        
+          "offhand"  : "Offhand"
         }
-      },      
+      },
       "1h-sword": {
         "name": "1H Sword",
         "specialization": {
@@ -2398,9 +2398,9 @@
           "kopis": "Kopis",
           "rapier": "Rapier",
           "shortsword": "Shortsword",
-          "offhand"  : "Offhand"        
+          "offhand"  : "Offhand"
         }
-      },     
+      },
       "2h-axe": {
         "name": "2H Axe",
         "specialization": {
@@ -2408,17 +2408,17 @@
           "daggerAxe": "Dagger Axe",
           "greatAxe": "Great Axe"
         }
-      },    
+      },
       "2h-hammer": {
         "name": "2H Hammer",
         "specialization": {
           "greatHammer": "Great Hammer",
-          "maul": "Maul"     
+          "maul": "Maul"
         }
-      },        
+      },
       "2h-mace": {
         "name": "2H Mace"
-      },   
+      },
       "2h-spear": {
         "name": "2H Spear",
         "specialization": {
@@ -2426,7 +2426,7 @@
           "pike": "Pike",
           "shortspear": "Shortspear"
         }
-      },    
+      },
       "2h-sword": {
         "name": "2H Sword",
         "specialization": {
@@ -2445,7 +2445,7 @@
           "elfBow": "Elf Bow",
           "selfBow": "Self Bow"
         }
-      },   
+      },
       "crossbow": {
         "name": "Crossbow",
         "specialization": {
@@ -2454,14 +2454,14 @@
           "lightCrossbow": "Light Crossbow",
           "repeatingCrossbow": "Repeating Crossbow"
         }
-      },                       
+      },
       "fist": {
         "name": "Fist",
         "specialization": {
           "claw": "Claw",
           "fist": "Fist",
           "heavyCestus": "Heavy Cestus",
-          "lightCestus"  : "Light Cestus"          
+          "lightCestus"  : "Light Cestus"
         }
       },
       "gore": {
@@ -2472,7 +2472,7 @@
       },
       "headButt": {
         "name": "Head Butt"
-      },    
+      },
       "hug": {
         "name": "Hug"
       },
@@ -2483,7 +2483,7 @@
           "javelin": "Javelin",
           "shortspear": "Shortspear"
         }
-      },       
+      },
       "kick": {
         "name": "Kick"
       },
@@ -2491,10 +2491,10 @@
         "name": "Lasso",
         "specialization": {
           "poleLasso": "Pole Lasso"
-        }      
-      },       
+        }
+      },
       "quarterstaff": {
-        "name": "Quarterstaff"   
+        "name": "Quarterstaff"
       },
       "rearAndPlunge": {
         "name": "Rear & Plunge"
@@ -2507,7 +2507,7 @@
         "specialization": {
           "sling": "Sling",
           "staffSling": "Staff Sling"
-        }      
+        }
       },
       "shield": {
         "name": "Shield",
@@ -2531,9 +2531,9 @@
       },
       "trample": {
         "name": "Trample"
-      }    
-    }    
+      }
+    }
   }
 
-  
+
 }

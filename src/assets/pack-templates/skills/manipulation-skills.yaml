@@ -1,0 +1,104 @@
+# conceal
+name: ${{content.skill.conceal.skillName}}$ - ${{content.skillCategory.manipulation.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/conceal.svg
+data:
+  category: manipulation
+  skillName: ${{content.skill.conceal.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..conceal
+    name: ${{content.skill.conceal.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.conceal.battle
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# craft
+name: ${{content.skill.craft.skillName}}$ (...) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/craft.svg
+data:
+  category: manipulation
+  skillName: ${{content.skill.craft.skillName}}$
+  specialization: "..."
+  baseChance: 10
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..craft
+    name: ${{content.skill.craft.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.craft.battle
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# devise
+name: ${{content.skill.devise.skillName}}$ - ${{content.skillCategory.manipulation.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/devise.svg
+data:
+  category: manipulation
+  skillName: ${{content.skill.devise.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..devise
+    name: ${{content.skill.devise.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.devise.battle
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# play instrument
+name: ${{content.skill.playInstrument.skillName}}$ (...) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/play-instrument.svg
+data:
+  category: manipulation
+  skillName: ${{content.skill.playInstrument.skillName}}$
+  specialization: "..."
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..play-instrument
+    name: ${{content.skill.playInstrument.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.devise.play-instrument
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# sleight
+name: ${{content.skill.sleight.skillName}}$ - ${{content.skillCategory.manipulation.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/sleight.svg
+data:
+  category: manipulation
+  skillName: ${{content.skill.sleight.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..sleight
+    name: ${{content.skill.sleight.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.devise.sleight
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$

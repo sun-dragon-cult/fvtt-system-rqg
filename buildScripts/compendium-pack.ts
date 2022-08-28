@@ -2,6 +2,8 @@ import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
 import * as crypto from "crypto";
+import { i18nDir } from "./buildPacks";
+import { lookup } from "./translate";
 
 export interface PackMetadata {
   system: string;
@@ -15,6 +17,10 @@ export const PackError = (message: string) => {
   process.exit(1);
 };
 
+// const localeDictionarys = fs.readdirSync(I18N_DIR).filter((file) => {
+//   return fs.statSync(path.join(I18N_DIR, file)).isDirectory();
+// });
+
 type CompendiumSource = any["data"]["_source"];
 
 export class CompendiumPack {
@@ -25,37 +31,46 @@ export class CompendiumPack {
   data: any[];
 
   static outDir = path.resolve(process.cwd(), "src/assets/packs");
-  private static namesToIds = new Map<string, Map<string, string>>();
-  private static packsMetadata = JSON.parse(fs.readFileSync(path.resolve("./src/system.json"), "utf-8")).packs as PackMetadata[];
+  // private static namesToIds = new Map<string, Map<string, string>>();
+  private static packsMetadata = JSON.parse(
+    fs.readFileSync(path.resolve("./src/system.json"), "utf-8")
+  ).packs as PackMetadata[];
 
-  constructor(packDir: string, parsedData: unknown[]) {
+  constructor(packDir: string, parsedData: unknown[], template: boolean = true) {
     const metadata = CompendiumPack.packsMetadata.find(
       (pack) => path.basename(pack.path) === path.basename(packDir)
     );
-    if (metadata === undefined) {
+    if (metadata === undefined && !template) {
+      // Don't care about the template packs, only warn about missing translated pack specifications
       throw PackError(`Compendium at ${packDir} has no metadata in the local system.json file.`);
     }
-    this.systemId = metadata.system;
-    this.name = metadata.name;
-    this.documentType = metadata.type;
+
+    this.systemId = metadata?.system ?? "";
+    this.name = metadata?.name ?? "";
+    this.documentType = metadata?.type ?? "";
 
     if (!this.isPackData(parsedData)) {
-      throw PackError(`Data supplied for ${this.name} does not resemble Foundry document source data.`);
+      throw PackError(
+        `Data supplied for ${this.name} does not resemble Foundry document source data.`
+      );
     }
 
     this.packDir = packDir;
 
-    CompendiumPack.namesToIds.set(this.name, new Map());
-    const packMap = CompendiumPack.namesToIds.get(this.name);
-    if (!packMap) {
-      throw PackError(`Compendium ${this.name} (${packDir}) was not found.`);
-    }
+    // CompendiumPack.namesToIds.set(this.name, new Map());
+    // const packMap = CompendiumPack.namesToIds.get(this.name);
+    // if (!packMap) {
+    //   throw PackError(`Compendium ${this.name} (${packDir}) was not found.`);
+    // }
 
-    parsedData = parsedData.map(d => {
-      if (!d._id) {
-        // Make sure we don't generate new ids everytime we rebuild
-        d._id = crypto.createHash("md5").update(d.name).digest("base64").replace(/[\+=\/]/g, "").substring(0, 16);
-      }
+    parsedData = parsedData.map((d) => {
+      // Generate new ids everytime we rebuild TODO didn't do this before - any downsides?
+      d._id = crypto
+        .createHash("md5")
+        .update(d.name)
+        .digest("base64")
+        .replace(/[\+=\/]/g, "")
+        .substring(0, 16);
       return d;
     });
 
@@ -63,10 +78,10 @@ export class CompendiumPack {
   }
 
   static loadYAML(dirPath: string): CompendiumPack {
-    if (!dirPath.replace(/\/$/, "").endsWith(".db")) {
-      const dirName = path.basename(dirPath);
-      throw PackError(`JSON directory (${dirName}) does not end in ".db"`);
-    }
+    // if (!dirPath.replace(/\/$/, "").endsWith(".db")) {
+    //   const dirName = path.basename(dirPath);
+    //   throw PackError(`JSON directory (${dirName}) does not end in ".db"`);
+    // }
 
     const filenames = fs.readdirSync(dirPath);
     const filePaths = filenames.map((filename) => path.resolve(dirPath, filename));
@@ -86,11 +101,42 @@ export class CompendiumPack {
     });
 
     const dbFilename = path.basename(dirPath);
-    return new CompendiumPack(dbFilename, parsedData.flat());
+    return new CompendiumPack(dbFilename, parsedData.flat(), undefined);
   }
 
   private finalize(docSource: CompendiumSource) {
     return JSON.stringify(docSource);
+  }
+
+  /**
+   * Create a translated clone of this template CompendiumPack by replacing `${{key}}$` with the translations for that key & lang
+   */
+  translate(lang: string): CompendiumPack {
+    let localizationMatchCount = 0;
+    const dictionary = JSON.parse(fs.readFileSync(`${i18nDir}/${lang}/system.json`, "utf8"));
+    const localisedPackDir = `${this.packDir}-${lang}.db`;
+    const localisedData = this.data.map((d) =>
+      JSON.parse(
+        JSON.stringify(d).replace(
+          /\$\{\{ ?([\w-.]+) ?\}\}\$/g,
+          function (match: string, key: string) {
+            const translation = lookup(dictionary, key);
+
+            if (!translation) {
+              console.error(match, "translation key missing in language", lang);
+              // errors.push([match, "translation missing in", locale]);
+            } else {
+              localizationMatchCount++;
+            }
+
+            return translation ?? match;
+          }
+        )
+      )
+    );
+
+    const translatedPack = new CompendiumPack(localisedPackDir, localisedData, false); // clone this CompendiumPack
+    return translatedPack;
   }
 
   save(): number {
@@ -98,6 +144,7 @@ export class CompendiumPack {
       path.resolve(CompendiumPack.outDir, this.packDir),
       this.data
         .map((datum) => this.finalize(datum))
+        // TODO Add translate step here?
         .join("\n")
         .concat("\n")
     );
@@ -116,7 +163,7 @@ export class CompendiumPack {
         (typeof data.permission === "object" &&
           data.permission !== null &&
           Object.keys(data.permission).length === 1 &&
-          Number.isInteger(data.permission.default))
+          Number.isInteger(data.permission.default)),
     });
 
     const failedChecks = checks

@@ -1,0 +1,41 @@
+# ride-bison
+name: ${{content.skill.ride.skillName}}$ (${{content.skill.ride.specialization.bison}}$) - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/ride.svg
+data:
+  category: agility
+  skillName: ${{content.skill.ride.skillName}}$
+  specialization: ${{content.skill.ride.specialization.bison}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..ride
+    name: ${{content.skill.ride.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.ride-bison
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# ride-horse
+name: ${{content.skill.ride.skillName}}$ (${{content.skill.ride.specialization.horse}}$) - ${{content.skillCategory.agility.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/ride.svg
+data:
+  category: agility
+  skillName: ${{content.skill.ride.skillName}}$
+  specialization: ${{content.skill.ride.specialization.horse}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..ride
+    name: ${{content.skill.ride.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.ride-horse
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$

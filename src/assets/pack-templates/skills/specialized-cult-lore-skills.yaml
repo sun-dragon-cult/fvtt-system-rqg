@@ -1,0 +1,20 @@
+# cult-lore-orlanth
+name: ${{content.skill.cultLore.skillName}}$ (${{content.cult.orlanth.name}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/passion/devotion.svg
+data:
+  category: knowledge
+  skillName: ${{content.skill.cultLore.skillName}}$
+  specialization: ${{content.cult.orlanth.name}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..cult-lore
+    name: ${{content.skill.cultLore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.cult-lore-orlanth
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$

@@ -1,0 +1,125 @@
+# insight
+name: ${{content.skill.insight.skillName}}$ (...) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/insight.svg
+data:
+  category: perception
+  skillName: ${{content.skill.insight.skillName}}$
+  specialization: "..."
+  baseChance: 20
+  learnedChance: 20
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..insight
+    name: ${{content.skill.insight.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.insight
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# listen
+name: ${{content.skill.listen.skillName}}$ - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/listen.svg
+data:
+  category: perception
+  skillName: ${{content.skill.listen.skillName}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..listen
+    name: ${{content.skill.listen.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.listen
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# scan
+name: ${{content.skill.scan.skillName}}$ - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/scan.svg
+data:
+  category: perception
+  skillName: ${{content.skill.scan.skillName}}
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..scan
+    name: ${{content.skill.scan.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.scan
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# search
+name: ${{content.skill.search.skillName}}$ - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/search.svg
+data:
+  category: perception
+  skillName: ${{content.skill.search.skillName}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..search
+    name: ${{content.skill.search.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.search
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+# track
+name: ${{content.skill.track.skillName}}$ - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/track.svg
+data:
+  category: perception
+  skillName: ${{content.skill.track.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..track
+    name: ${{content.skill.track.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.track
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
+---
+#track-by-scent
+name: ${{content.skill.track.skillName}}$ (${{content.skill.track.specialization.scent}}$) - ${{content.skillCategory.knowledge.name}}$
+type: skill
+img: systems/rqg/assets/images/skills/track-by-scent.svg
+data:
+  category: perception
+  skillName: ${{content.skill.track.skillName}}$
+  specialization: ${{content.skill.track.specialization.scent}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..track
+    name: ${{content.skill.track.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.track-by-scent
+      priority: ${{content.prio}}$
+      lang: ${{content.lang}}$
