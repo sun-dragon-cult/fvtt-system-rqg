@@ -16,6 +16,8 @@ export class RqidEditor extends FormApplication {
       popOut: true,
       template: `systems/rqg/dialog/rqidEditor/rqidEditor.hbs`,
       width: 650,
+      left: 35,
+      top: 15,
       id: "rqid-editor-application",
       title: "Rqid Editor",
       closeOnSubmit: false,
