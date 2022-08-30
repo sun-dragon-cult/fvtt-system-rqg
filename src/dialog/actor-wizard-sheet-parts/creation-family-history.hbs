@@ -64,7 +64,7 @@
       {{#select familyHistory.selectedFamilyHistory.rqid}}
       <option value="">{{localize "RQG.ActorCreation.Step2.ChooseFamilyHistory"}}</option>
       {{#each familyHistory.availableFamilyHistories}}
-      <option value="{{this.data.flags.rqg.documentRqidFlags.id}}">{{this.name}}</option>
+      <option value="{{this.flags.rqg.documentRqidFlags.id}}">{{this.name}}</option>
       {{/each}}
       {{/select}}
     </select>
@@ -111,7 +111,7 @@
           <div class="rune-button" title="{{localize "RQG.ActorCreation.Step2.RollThisYear"}}">
             <img class="rune-button-img"
                  data-roll-year-index="{{@index}}"
-                 src="systems/rqg/assets/images/runes/luck.svg">
+                 src="systems/rqg/assets/images/runes/luck.svg" />
           </div>
           {{localize "RQG.ActorCreation.Step2.YearDiceExpression"}}
         </label>
@@ -123,8 +123,14 @@
       </div>
 
       <div class="year-result">
-        <textarea rows="4" id="year-result-{{@index}}">{{../familyHistory.yearResults.[@index].yearResultText}}</textarea>
-        <textarea rows="6">{{json ../familyHistory.yearResults.[@index]}}</textarea>
+
+        {{#with (lookup ../familyHistory.yearResults @index)}}
+          <textarea rows="4" id="year-result-{{@index}}">{{this.yearResultText}}</textarea>
+
+          <div id="family-history-year-choices-{{@index}}">
+            
+          </div>
+        {{/with}}
       </div>
     </details>
   {{/each}}

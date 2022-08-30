@@ -110,6 +110,8 @@ export class ActorWizard extends FormApplication {
       title: localize("RQG.ActorCreation.AdventurerCreationWizardTitle"),
       width: 850,
       height: 650,
+      left: 35,
+      top: 15,
       closeOnSubmit: false,
       submitOnClose: true,
       submitOnChange: true,
@@ -396,6 +398,7 @@ export class ActorWizard extends FormApplication {
     }
 
     // Handle rqid links
+
     RqidLink.addRqidLinkClickHandlers($(this.form!));
   }
 
@@ -428,6 +431,7 @@ export class ActorWizard extends FormApplication {
           });
 
           //TODO: maybe the button can submit and not have to do this?
+          // I tried making the rune roll button be an input and that didn't help
           yearResultTextArea.value = yearResult.yearResultText;
         }
       }
