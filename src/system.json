@@ -29,6 +29,27 @@
   ],
   "packs": [
     {
+      "name": "clan-descriptions-en",
+      "label": "Clan Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/clan-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "combat-fumble-en",
+      "label": "Combat Fumble | en",
+      "system": "rqg",
+      "path": "assets/packs/combat-fumble-en.db",
+      "type": "RollTable"
+    },
+    {
+      "name": "cult-descriptions-en",
+      "label": "Cult Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/cult-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
       "name": "cults-en",
       "label": "Cults | en",
       "system": "rqg",
@@ -36,10 +57,94 @@
       "type": "Item"
     },
     {
-      "name": "cults-sv",
-      "label": "Kulter | sv",
+      "name": "culture-descriptions-en",
+      "label": "Culture Descriptions | en",
       "system": "rqg",
-      "path": "assets/packs/cults-sv.db",
+      "path": "assets/packs/culture-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "demo-items-en",
+      "label": "Demo | en",
+      "system": "rqg",
+      "path": "assets/packs/demo-items-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "demo-actors-en",
+      "label": "Demo Actors | en",
+      "system": "rqg",
+      "path": "assets/packs/demo-actors-en.db",
+      "type": "Actor"
+    },
+    {
+      "name": "name-bases-en",
+      "label": "Name Bases | en",
+      "system": "rqg",
+      "path": "assets/packs/name-bases-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "name-tables-en",
+      "label": "Name Tables | en",
+      "system": "rqg",
+      "path": "assets/packs/name-tables-en.db",
+      "type": "RollTable"
+    },
+    {
+      "name": "homeland-descriptions-en",
+      "label": "Homeland Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/homeland-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "homelands-en",
+      "label": "Homelands | en",
+      "system": "rqg",
+      "path": "assets/packs/homelands-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "human-hit-locations-en",
+      "label": "Human Hitlocations | en",
+      "system": "rqg",
+      "path": "assets/packs/human-hit-locations-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "passions-en",
+      "label": "Passions | en",
+      "system": "rqg",
+      "path": "assets/packs/passions-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "pc-runes-en",
+      "label": "Runes (Player Character) | en",
+      "system": "rqg",
+      "path": "assets/packs/pc-runes-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "region-descriptions-en",
+      "label": "Region Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/region-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "rune-descriptions-en",
+      "label": "Rune Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/rune-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "runes-en",
+      "label": "Runes (All) | en",
+      "system": "rqg",
+      "path": "assets/packs/runes-en.db",
       "type": "Item"
     },
     {
@@ -50,11 +155,174 @@
       "type": "Item"
     },
     {
+      "name": "species-descriptions-en",
+      "label": "Species Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/species-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "species-templates-en",
+      "label": "Species Templates | en",
+      "system": "rqg",
+      "path": "assets/packs/species-templates-en.db",
+      "type": "Actor"
+    },
+    {
+      "name": "tribe-descriptions-en",
+      "label": "Tribe Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/tribe-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+
+
+    {
+      "name": "clan-descriptions-sv",
+      "label": "Klanbeskrivningar | sv",
+      "system": "rqg",
+      "path": "assets/packs/clan-descriptions-sv.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "combat-fumble-sv",
+      "label": "Stridsfummel | sv",
+      "system": "rqg",
+      "path": "assets/packs/combat-fumble-sv.db",
+      "type": "RollTable"
+    },
+    {
+      "name": "cult-descriptions-sv",
+      "label": "Kultbeskrivningar | sv",
+      "system": "rqg",
+      "path": "assets/packs/cult-descriptions-sv.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "demo-items-sv",
+      "label": "Demo | sv",
+      "system": "rqg",
+      "path": "assets/packs/demo-items-sv.db",
+      "type": "Item"
+    },
+    {
+      "name": "demo-actors-sv",
+      "label": "Demo Actors | sv",
+      "system": "rqg",
+      "path": "assets/packs/demo-actors-sv.db",
+      "type": "Actor"
+    },
+    {
+      "name": "cults-sv",
+      "label": "Kulter | sv",
+      "system": "rqg",
+      "path": "assets/packs/cults-sv.db",
+      "type": "Item"
+    },
+    {
+      "name": "culture-descriptions-sv",
+      "label": "Kulturbeskrivningar | sv",
+      "system": "rqg",
+      "path": "assets/packs/culture-descriptions-sv.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "name-bases-sv",
+      "label": "Namnbaser | sv",
+      "system": "rqg",
+      "path": "assets/packs/name-bases-sv.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "name-tables-sv",
+      "label": "Namntabeller | sv",
+      "system": "rqg",
+      "path": "assets/packs/name-tables-sv.db",
+      "type": "RollTable"
+    },
+    {
+      "name": "homeland-descriptions-sv",
+      "label": "Hemlandsbeskrivningar | sv",
+      "system": "rqg",
+      "path": "assets/packs/homeland-descriptions-sv.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "homelands-sv",
+      "label": "Hemländer | sv",
+      "system": "rqg",
+      "path": "assets/packs/homelands-sv.db",
+      "type": "Item"
+    },
+    {
+      "name": "human-hit-locations-sv",
+      "label": "Mänskliga träffzoner | sv",
+      "system": "rqg",
+      "path": "assets/packs/human-hit-locations-sv.db",
+      "type": "Item"
+    },
+    {
+      "name": "passions-sv",
+      "label": "Passioner | sv",
+      "system": "rqg",
+      "path": "assets/packs/passions-sv.db",
+      "type": "Item"
+    },
+    {
+      "name": "pc-runes-sv",
+      "label": "Runor (Spelarkaraktärer) | sv",
+      "system": "rqg",
+      "path": "assets/packs/pc-runes-sv.db",
+      "type": "Item"
+    },
+    {
+      "name": "region-descriptions-sv",
+      "label": "Regionbeskrivningar | sv",
+      "system": "rqg",
+      "path": "assets/packs/region-descriptions-sv.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "rune-descriptions-sv",
+      "label": "Runbeskrivningar | sv",
+      "system": "rqg",
+      "path": "assets/packs/rune-descriptions-sv.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "runes-sv",
+      "label": "Runor (Alla) | sv",
+      "system": "rqg",
+      "path": "assets/packs/runes-sv.db",
+      "type": "Item"
+    },
+    {
       "name": "skills-sv",
       "label": "Färdigheter | sv",
       "system": "rqg",
       "path": "assets/packs/skills-sv.db",
       "type": "Item"
+    },
+    {
+      "name": "species-descriptions-sv",
+      "label": "Artbeskrivningar | sv",
+      "system": "rqg",
+      "path": "assets/packs/species-descriptions-sv.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "species-templates-sv",
+      "label": "Artmallar | sv",
+      "system": "rqg",
+      "path": "assets/packs/species-templates-sv.db",
+      "type": "Actor"
+    },
+    {
+      "name": "tribe-descriptions-sv",
+      "label": "Stambeskrivningar | sv",
+      "system": "rqg",
+      "path": "assets/packs/tribe-descriptions-sv.db",
+      "type": "JournalEntry"
     }
   ],
   "languages": [

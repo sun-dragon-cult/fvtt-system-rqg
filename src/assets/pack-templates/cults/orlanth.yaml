@@ -13,11 +13,12 @@ data:
     - Air (element)
     - Air (element)
     - Mastery (condition)
-  journalId: HZzvqPqihVtWK3Rd
-  journalPack: ${{SS.module.name}}$.cult-descriptions
+  descriptionRqidLink:
+    rqid: je..cult-orlanth
+    name: ${{content.cult.orlanth.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.cult.orlanth
-      lang: en
-      priority: 0
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

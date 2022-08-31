@@ -1,0 +1,17 @@
+name: 'Region: Colymar Tribal Lands'
+content: |-
+  <h2>Region: Colymar Tribal Lands</h2>
+  <ul>
+    <li>Apple Lane (village)</li>
+    <li>Clearwine Fort (small city)</li>
+    <li>Gejay Hills</li>
+    <li>Runegate Fort</li>
+    <li>Stael's Hills</li>
+  </ul>
+  <p>More information will be available in future module releases!</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..region-colymar
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

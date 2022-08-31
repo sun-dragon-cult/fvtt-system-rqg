@@ -1,0 +1,2518 @@
+name: Human
+type: character
+img: icons/svg/mystery-man.svg
+data:
+  characteristics:
+    strength:
+      value: 12
+      formula: 3d6
+    constitution:
+      value: 13
+      formula: 3d6
+    size:
+      value: 15
+      formula: 2d6+6
+    dexterity:
+      value: 12
+      formula: 3d6
+    intelligence:
+      value: 10
+      formula: 2d6+6
+    power:
+      value: 15
+      formula: 3d6
+      hasExperience: false
+    charisma:
+      value: 12
+      formula: 3d6
+  background:
+    species: Human
+    speciesRqidLink:
+        rqid: je..species-description-human
+        name: Human
+        documentType: JournalEntry
+    occupation: ''
+    homeland: sartar
+    cultureJournalRqidLinks: []
+    tribeJournalRqidLinks: []
+    clanJournalRqidLinks: []
+    birthyear:
+    age:
+    gender: ''
+    town: ''
+    tribe: ''
+    clan: ''
+    reputation:
+    standardOfLiving: ''
+    baseIncome:
+    ransom:
+    ransomDetails: ''
+    biography: >-
+      <p style="box-sizing: border-box; user-select: text; color: #191813;"><em style="box-sizing: border-box; user-select: text;"><strong style="box-sizing: border-box; user-select: text;">Homo sapiens sapiens</strong></em></p>
+      <p style="box-sizing: border-box; user-select: text; color: #191813;">Glorantha has four major human races and several minor ones. There is a good deal of racially motivated prejudice, discrimination, and intolerance in Glorantha, none of it with any more reason than racism on Earth. However, communications between regions is limited in Glorantha, and most people have never seen persons of different racial stocks than their own. When several races share the same region, however, racism in all its ugly forms is just as likely as it is on Earth. Several cruel Gloranthan cultures even enslave persons of different races.</p>
+      <p style="box-sizing: border-box; user-select: text; color: #191813;">Three of Glorantha&rsquo;s four major human racial types roughly correspond to Earthly equivalents, but the fourth is unique.</p>
+      <ul style="box-sizing: border-box; user-select: text; color: #191813;">
+      <li style="box-sizing: border-box; user-select: text;">Agimori: a dark-skinned race native to Pamaltela.</li>
+      <li style="box-sizing: border-box; user-select: text;">Veldang: a blue-skinned race with no Earthly equivalent. Their skin is not bright blue, but slate colored. The Veldang are native to Pamaltela, where they are found in Zamokil and Fonrit.</li>
+      <li style="box-sizing: border-box; user-select: text;">Vithelans: they resemble Earth&rsquo;s East Asians. They inhabit the East Isles, Kralorela, Teshnos, and Vormain.</li>
+      <li style="box-sizing: border-box; user-select: text;">Wareran: a fair to olive-skinned race that inhabit most of Genertela, and Umathela in Pamaltela.</li>
+      </ul>
+      <p style="box-sizing: border-box; user-select: text; color: #191813;">Other minor human or semi-human races also exist, including the green-skinned amphibious Waertagi, pygmies in Pamaltela and Prax, and the Teleono people, who are one of six colors. The presence of non-human and semi-human beings on Glorantha can lead to interesting assumptions. A person encountering another human of a different race for the first time may assume that he is seeing a creature of a different species altogether, with suspicion and fear engendered thereby.</p>
+  allies: ''
+  attributes:
+    magicPoints:
+      value: 15
+    hitPoints:
+      value: 14
+    move:
+      currentLocomotion: walk
+      walk:
+        value: 8
+        carryingFactor: 1
+      swim:
+        value: 2
+        carryingFactor: 0.5
+      fly: {}
+    heroPoints: 0
+    isCreature: false
+    health: healthy
+token:
+  name: Human Template
+  img: icons/svg/mystery-man.svg
+  displayName: 0
+  actorLink: true
+  width: 1
+  height: 1
+  scale: 1
+  mirrorX: false
+  mirrorY: false
+  lockRotation: false
+  rotation: 0
+  alpha: 1
+  vision: false
+  dimSight: 0
+  brightSight: 0
+  sightAngle: 0
+  light:
+    alpha: 0.5
+    angle: 0
+    bright: 0
+    coloration: 1
+    dim: 0
+    gradual: true
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    animation:
+      speed: 5
+      intensity: 5
+      reverse: false
+    darkness:
+      min: 0
+      max: 1
+  disposition: -1
+  displayBars: 0
+  bar1:
+    attribute: attributes.hitPoints.value
+  bar2:
+    attribute: attributes.magicPoints.value
+  flags: {}
+  randomImg: false
+items:
+  - _id: Nz00iOW9PLUF6VPC
+    name: Air (element)
+    type: rune
+    img: systems/rqg/assets/images/runes/air.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Air
+      chance: 0
+      canGetExperience: true
+      hasExperience: false
+      runeType: element
+      opposingRune:
+      minorRunes:
+        - Darkness (element)
+        - Water (element)
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.air-element
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.eC5R4sOr4pV9t8UC
+  - _id: aU9PXmBVFLh1Zw2l
+    name: Beast (form)
+    type: rune
+    img: systems/rqg/assets/images/runes/beast.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Beast
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: form
+      opposingRune: Man (form)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.beast-form
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.hCkn5atYnit7mqoA
+  - _id: QQ2xqibyDz2oOFqZ
+    name: Darkness (element)
+    type: rune
+    img: systems/rqg/assets/images/runes/darkness.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Darkness
+      chance: 0
+      canGetExperience: true
+      hasExperience: false
+      runeType: element
+      opposingRune:
+      minorRunes:
+        - Earth (element)
+        - Air (element)
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.darkness-element
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.3n2ezgxnigNarKYT
+  - _id: E9siP3E7QLVWKNnl
+    name: Death (power)
+    type: rune
+    img: systems/rqg/assets/images/runes/death.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Death
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: power
+      opposingRune: Fertility (power)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.death-power
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.Uhjcf9At0lGl4MId
+  - _id: 2rAANkzmxj9DCZyY
+    name: Disorder (power)
+    type: rune
+    img: systems/rqg/assets/images/runes/disorder.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Disorder
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: power
+      opposingRune: Harmony (power)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.disorder-power
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.966UZ7PfAUWcUcv8
+  - _id: LZP0EMppG7IoypDv
+    name: Earth (element)
+    type: rune
+    img: systems/rqg/assets/images/runes/earth.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Earth
+      chance: 0
+      canGetExperience: true
+      hasExperience: false
+      runeType: element
+      opposingRune:
+      minorRunes:
+        - Fire/Sky (element)
+        - Darkness (element)
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.earth-element
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.QjSwwQ9t1TbLtPDK
+  - _id: RAR5qtVTLD9aPfpP
+    name: Fertility (power)
+    type: rune
+    img: systems/rqg/assets/images/runes/fertility.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Fertility
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: power
+      opposingRune: Death (power)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.fertility-power
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.E81hrUv0oK4pzleL
+  - _id: iIe3XRm8lKK7MEwk
+    name: Fire/Sky (element)
+    type: rune
+    img: systems/rqg/assets/images/runes/fire_sky.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Fire
+      chance: 0
+      canGetExperience: true
+      hasExperience: false
+      runeType: element
+      opposingRune: nul
+      minorRunes:
+        - Water (element)
+        - Earth (element)
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.fire-sky-element
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.7f7km1WimdPpcjmw
+  - _id: 0ful6jLVKsnZZfZQ
+    name: Harmony (power)
+    type: rune
+    img: systems/rqg/assets/images/runes/harmony.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Harmony
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: power
+      opposingRune: Disorder (power)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.harmony-power
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.7GwGEVCATpSRcdoq
+  - _id: XEzlh568mqAlJg1e
+    name: Illusion (power)
+    type: rune
+    img: systems/rqg/assets/images/runes/illusion.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Illusion
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: power
+      opposingRune: Truth (power)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.illusion-power
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.iR9hVEORA7czLqqN
+  - _id: P2nr3u44iGoZ7BVm
+    name: Man (form)
+    type: rune
+    img: systems/rqg/assets/images/runes/man.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Man
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: form
+      opposingRune: Beast (form)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.man-form
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.xEylnyNgJU1DcIdv
+  - _id: RUOK63E11Qdg0DFl
+    name: Moon (element)
+    type: rune
+    img: systems/rqg/assets/images/runes/moon_full.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Moon
+      chance: 0
+      canGetExperience: true
+      hasExperience: false
+      runeType: element
+      opposingRune:
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.moon-element
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.YcxTYFVfwvNOkl7J
+  - _id: e6IXzkdUVFZRGK4h
+    name: Movement (power)
+    type: rune
+    img: systems/rqg/assets/images/runes/movement_change.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Movement
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: power
+      opposingRune: Stasis (power)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.movement-power
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.tocmJXUkZK27hkP0
+  - _id: dSvn5OQ8YmhpBkSa
+    name: Stasis (power)
+    type: rune
+    img: systems/rqg/assets/images/runes/stasis.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Stasis
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: power
+      opposingRune: Movement (power)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.stasis-power
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.pi1Ct0CGkzJ7nMBD
+  - _id: Fvm6sUhAvNyZwMRm
+    name: Truth (power)
+    type: rune
+    img: systems/rqg/assets/images/runes/truth.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Truth
+      chance: 50
+      canGetExperience: true
+      hasExperience: false
+      runeType: power
+      opposingRune: Illusion (power)
+      minorRunes: []
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.truth-power
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.Tb1GtgJdCOSdc4gq
+  - _id: WyDmxhObjvFlg8Gc
+    name: Water (element)
+    type: rune
+    img: systems/rqg/assets/images/runes/water.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      rune: Water
+      chance: 0
+      canGetExperience: true
+      hasExperience: false
+      runeType: element
+      opposingRune:
+      minorRunes:
+        - Air (element)
+        - Fire/Sky (element)
+      isMastered: false
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.rune.water-element
+          lang: en
+          priority: -1
+      core:
+        sourceId: Compendium.rqg.pc-runes.MLcqKX0gxQ1SmNMP
+  - _id: Qs80VLBfkHw1GbR7
+    name: Abdomen
+    type: hitLocation
+    img: systems/rqg/assets/images/items/hit-location.svg
+    data:
+      dieFrom: 9
+      dieTo: 11
+      hitPoints:
+        value: 0
+      baseHpDelta: 0
+      naturalAp: 0
+      wounds: []
+      hitLocationHealthState: healthy
+      actorHealthImpact: healthy
+      hitLocationType: abdomen
+      connectedTo:
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.hit-location.abdomen-human
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.human-hit-locations.TbUTw9xkWE87j1Mu
+  - _id: N4T3KoNd8N8sf4ac
+    name: Chest
+    type: hitLocation
+    img: systems/rqg/assets/images/items/hit-location.svg
+    data:
+      dieFrom: 12
+      dieTo: 12
+      hitPoints:
+        value: 0
+      baseHpDelta: 1
+      naturalAp: 0
+      wounds: []
+      hitLocationHealthState: healthy
+      actorHealthImpact: healthy
+      hitLocationType: chest
+      connectedTo:
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.hit-location.chest-human
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.human-hit-locations.CApUaryp0RZ8nujM
+  - _id: QKvowwxVPThIbBE2
+    name: Head
+    type: hitLocation
+    img: systems/rqg/assets/images/items/hit-location.svg
+    data:
+      dieFrom: 19
+      dieTo: 20
+      hitPoints:
+        value: 0
+      baseHpDelta: 0
+      naturalAp: 0
+      wounds: []
+      hitLocationHealthState: healthy
+      actorHealthImpact: healthy
+      hitLocationType: head
+      connectedTo:
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.hit-location.head-human
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.human-hit-locations.mJIRM9EPvbD7bbt7
+  - _id: xqq5ZEiCjH9PIO1S
+    name: Left Arm
+    type: hitLocation
+    img: systems/rqg/assets/images/items/hit-location.svg
+    data:
+      dieFrom: 16
+      dieTo: 18
+      hitPoints:
+        value: 0
+      baseHpDelta: -1
+      naturalAp: 0
+      wounds: []
+      hitLocationHealthState: healthy
+      actorHealthImpact: healthy
+      hitLocationType: limb
+      connectedTo: Chest
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.hit-location.left-arm-human
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.human-hit-locations.C2MNZyfGE10JIN2K
+  - _id: v3sStAHjjSQvVqpL
+    name: Left Leg
+    type: hitLocation
+    img: systems/rqg/assets/images/items/hit-location.svg
+    data:
+      dieFrom: 5
+      dieTo: 8
+      hitPoints:
+        value: 0
+      baseHpDelta: 0
+      naturalAp: 0
+      wounds: []
+      hitLocationHealthState: healthy
+      actorHealthImpact: healthy
+      hitLocationType: limb
+      connectedTo: Abdomen
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.hit-location.left-leg-human
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.human-hit-locations.EmCl58HGJW3CnWPT
+  - _id: t4KkAdzSYt5noij3
+    name: Right Arm
+    type: hitLocation
+    img: systems/rqg/assets/images/items/hit-location.svg
+    data:
+      dieFrom: 13
+      dieTo: 15
+      hitPoints:
+        value: 0
+      baseHpDelta: -1
+      naturalAp: 0
+      wounds: []
+      hitLocationHealthState: healthy
+      actorHealthImpact: healthy
+      hitLocationType: limb
+      connectedTo: Chest
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.hit-location.right-arm-human
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.human-hit-locations.vGrZn51Ytzo7TFf8
+  - _id: MFZLxiqTS65LTEEh
+    name: Right Leg
+    type: hitLocation
+    img: systems/rqg/assets/images/items/hit-location.svg
+    data:
+      dieFrom: 1
+      dieTo: 4
+      hitPoints:
+        value: 0
+      baseHpDelta: 0
+      naturalAp: 0
+      wounds: []
+      hitLocationHealthState: healthy
+      actorHealthImpact: healthy
+      hitLocationType: limb
+      connectedTo: Abdomen
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.hit-location.right-leg-human
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.human-hit-locations.Yoc6w2EBbKRybtpk
+  - _id: O93y6OTMfJ9K9Vzt
+    name: Act - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/act.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Act
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.act
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.lw81nCKgkXO7qU0Q
+  - _id: 2F31zMlDMA3UZ9hi
+    name: Animal Lore - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/animal-lore.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Animal Lore
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: false
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.animal-lore
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.8jPEV9XT6xWl5LM8
+  - _id: q4sjOXHIIqaIXb5V
+    name: Art - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/art.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Art
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.art
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.W6TWs7TVUEK45NxA
+  - _id: twXJhUxFPqAAdIKX
+    name: Bargain - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/bargain.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Bargain
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.bargain
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.6e6K7106parcHGnY
+  - _id: ioTwopOihU2jhjD4
+    name: Battle - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/battle.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Battle
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.battle
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.5k20dlRoD6Kspc0h
+  - _id: fgpO8GWM2prOMEca
+    name: Boat - agility
+    type: skill
+    img: systems/rqg/assets/images/skills/boat.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: agility
+      skillName: Boat
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.boat
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.XxNsdbQNHZXxKta3
+  - _id: hFrJDo2VUmzQyDZN
+    name: Celestial Lore - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/celestial-lore.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Celestial Lore
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: false
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.celestial-lore
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.QX2YtWhyRpl9JwjB
+  - _id: NYQ3JCJ6duxpAkQN
+    name: Charm - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/charm.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Charm
+      specialization:
+      baseChance: 15
+      learnedChance: 15
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.charm
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.BHwOn3pfUtjN36Og
+  - _id: o8hDkR6CrCytiFeJ
+    name: Climb - agility
+    type: skill
+    img: systems/rqg/assets/images/skills/climb.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: agility
+      skillName: Climb
+      specialization:
+      baseChance: 40
+      learnedChance: 40
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.climb
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.pn4hGJRlJmyetlac
+  - _id: 8Sl9hMpTxHLsVWq6
+    name: Conceal - manipulation
+    type: skill
+    img: systems/rqg/assets/images/skills/conceal.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: manipulation
+      skillName: Conceal
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.conceal
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.Hwu6c11I6oKQJEPr
+  - _id: VUx2T9FQswW467sc
+    name: Craft (...) - manipulation
+    type: skill
+    img: systems/rqg/assets/images/skills/craft.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: manipulation
+      skillName: Craft
+      specialization: "..."
+      baseChance: 10
+      learnedChance: 0
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.craft
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.wE0tFduP4aWZenP5
+  - _id: N92Lp4jBQGC2DWFH
+    name: Cult Lore (...) - knowledge
+    type: skill
+    img: systems/rqg/assets/images/passion/devotion.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Cult Lore
+      specialization: "..."
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: false
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.cult-lore
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.0Akg00ega0De1TTW
+  - _id: zd8Z0h5VSfxWauhn
+    name: Customs, own (...) - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/customs.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Customs, own
+      specialization: "..."
+      baseChance: 25
+      learnedChance: 25
+      canGetExperience: false
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.customs-own
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.NAH2IY8gYjv94rbA
+  - _id: BUFUZvahS0h1pLPJ
+    name: Dance - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/dance.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Dance
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.dance
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.s3v0MhIwonQwOjs3
+  - _id: IjlNWA5BPivN3Jb5
+    name: Devise - manipulation
+    type: skill
+    img: systems/rqg/assets/images/skills/devise.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: manipulation
+      skillName: Devise
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.devise
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.yf8wtDWTBTvJgQW8
+  - _id: rAXUNwGgOsRW8Z0T
+    name: Disguise - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/disguise.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Disguise
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.disguise
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.XFRK9Tmwd2pd8xvv
+  - _id: VjMsluoPn2IuGlsm
+    name: Dodge - agility
+    type: skill
+    img: systems/rqg/assets/images/skills/dodge.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: agility
+      skillName: Dodge
+      specialization:
+      baseChance: 0
+      learnedChance: 0
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.dodge
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.8KcsMsmHPHeDIOSh
+  - _id: xvpEK16pND0J6Dle
+    name: Drive (Chariot) - agility
+    type: skill
+    img: systems/rqg/assets/images/skills/drive.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: agility
+      skillName: Drive
+      specialization: Chariot
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.drive-chariot
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.UbkrwN5SZ5AAiL3V
+  - _id: aoqYsC6qo5uxPhaD
+    name: Elder Race Lore - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/elder-race-lore.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Elder Race Lore
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: false
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.elder-race-lore
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.6oUoZ6oiQKp65roX
+  - _id: bgKOUqenItbv6vYG
+    name: Evaluate - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/evaluate.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Evaluate
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.evaluate
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.tOW0l4cBVHuwkrZx
+  - _id: ydaCTxNW6MZkHdWR
+    name: Farm - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/farm.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Farm
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.farm
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.nE3eDjVZXZHPE9dS
+  - _id: IWVLZruFSPhQiPpE
+    name: Fast Talk - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/speak.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Fast Talk
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.fast-talk
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.cf5wmuBTYPCM6I1n
+  - _id: mu1vpTaLP3mGOoxl
+    name: First Aid - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/first-aid.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: First Aid
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.first-aid
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.fp4vE9wRULXK7gCW
+  - _id: kSWLHhW2CDwr8PtV
+    name: Game - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/game.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Game
+      specialization:
+      baseChance: 15
+      learnedChance: 15
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.game
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.SufFp4Xye1vPAEwa
+  - _id: LK0dC59BLPOPAAid
+    name: Herd - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/herd.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Herd
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.herd
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.N9bVqnBeSi7WQVmu
+  - _id: NuGj5eHr7CyKBNr8
+    name: Hide - stealth
+    type: skill
+    img: systems/rqg/assets/images/skills/hide.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: stealth
+      skillName: Hide
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.hide
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.jeRxdSYlgpUhBaM8
+  - _id: iSzs91qVwapwYpk6
+    name: Homeland Lore, own (...) - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/homeland-lore.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Homeland Lore, own
+      specialization: "..."
+      baseChance: 30
+      learnedChance: 30
+      canGetExperience: false
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.homeland-lore-own
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.K5J2WYRz0SG0ZIFM
+  - _id: Yfe0IJV1lRMo1cx0
+    name: Insight, own (...) - perception
+    type: skill
+    img: systems/rqg/assets/images/skills/insight.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: perception
+      skillName: Insight
+      specialization: "..."
+      baseChance: 20
+      learnedChance: 20
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.insight-own
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.G8FObjkh8sxwMTEc
+  - _id: VDx34wSD6bWnnZCB
+    name: Intimidate - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/intimidate.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Intimidate
+      specialization:
+      baseChance: 15
+      learnedChance: 15
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.intimidate
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.cRyRQswlyr7NyY28
+  - _id: WwPYAtC8EzRH283W
+    name: Intrigue - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/intrigue.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Intrigue
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.intrigue
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.KxEU59NREYh7bgeP
+  - _id: zZGTAL54ZtssuF2G
+    name: Jump - agility
+    type: skill
+    img: systems/rqg/assets/images/skills/jump.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: agility
+      skillName: Jump
+      specialization:
+      baseChance: 0
+      learnedChance: 0
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.jump
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.vyfNmpLF5qFhGN5P
+  - _id: X0rFkSIr9Ll1Noqi
+    name: Listen - perception
+    type: skill
+    img: systems/rqg/assets/images/skills/listen.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: perception
+      skillName: Listen
+      specialization:
+      baseChance: 25
+      learnedChance: 25
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.listen
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.u1rOCfH0tPz69Jer
+  - _id: ROzDKkZcXlTjkrVF
+    name: Manage Household - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/manage-household.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Manage Household
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.manage-household
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.uZHQKfU29cAzbZ7X
+  - _id: 9c8Oqs5iKYQW5yV5
+    name: Mineral Lore - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/mineral-lore.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Mineral Lore
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: false
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.mineral-lore
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.ORoKRbmgfXaxtHU0
+  - _id: sUmSdgW1e1bMJx6d
+    name: Move Quietly - stealth
+    type: skill
+    img: systems/rqg/assets/images/skills/move-quietly.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: stealth
+      skillName: Move Quietly
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.move-quietly
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.Xz903rBompCYhpPR
+  - _id: gMcOGsWhQf19XJBv
+    name: Orate - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/orate.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Orate
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.orate
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.YWduBtMUIZAWRYqf
+  - _id: fola8MGcstg1kBAu
+    name: Peaceful Cut - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/peaceful-cut.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Peaceful Cut
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.peaceful-cut
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.F4eUGEM4nuRwDvsf
+  - _id: 6g7mycfFLygC49eF
+    name: Plant Lore - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/plant-lore.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Plant Lore
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: false
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.plant-lore
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.dOUE7WZbUjxJ3rBP
+  - _id: KxSAiPO96HCoAcX9
+    name: Play Instrument (...) - manipulation
+    type: skill
+    img: systems/rqg/assets/images/skills/play-instrument.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: manipulation
+      skillName: Play Instrument
+      specialization: "..."
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.play-instrument
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.t8ZAmNCkdAM0YnGe
+  - _id: 4hk4WLnW1YmRei14
+    name: Prepare Corpse - magic
+    type: skill
+    img: systems/rqg/assets/images/skills/prepare-corpse.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: magic
+      skillName: Prepare Corpse
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.prepare-corpse
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.jjoWVtqPOwv0kE0I
+  - _id: sfx3FaetB3jPB7JA
+    name: Ride (...) - agility
+    type: skill
+    img: systems/rqg/assets/images/skills/ride.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: agility
+      skillName: Ride
+      specialization: "..."
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.ride
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.1TWtw8DvNaixKZ8y
+  - _id: w0SdXQs9fdlQfkfy
+    name: Scan - perception
+    type: skill
+    img: systems/rqg/assets/images/skills/scan.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: perception
+      skillName: Scan
+      specialization:
+      baseChance: 25
+      learnedChance: 25
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.scan
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.E2GcUe4LtpBVe27j
+  - _id: Iykcn7DsYnJxPir4
+    name: Search - perception
+    type: skill
+    img: systems/rqg/assets/images/skills/search.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: perception
+      skillName: Search
+      specialization:
+      baseChance: 25
+      learnedChance: 25
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.search
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.fG9eGvenDrOw8ju0
+  - _id: X8OmGT8kZkAuoxoW
+    name: Sing - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/sing.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Sing
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.sing
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.1QuPqtAqwsqiSp1n
+  - _id: YtRIqd97oJm1HVY8
+    name: Sleight - manipulation
+    type: skill
+    img: systems/rqg/assets/images/skills/sleight.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: manipulation
+      skillName: Sleight
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.sleight
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.sDGOflTKCcXA1Ddf
+  - _id: 4V3BTOdSW5xBfPaP
+    name: Speak Own Language (...) - communication
+    type: skill
+    img: systems/rqg/assets/images/skills/speak.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: communication
+      skillName: Speak Own Language
+      specialization: "..."
+      baseChance: 50
+      learnedChance: 0
+      canGetExperience: true]
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.speak-own-language
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.D2z5Ju4ScCf25rL9
+  - _id: o2tmEt15UGQi43fY
+    name: Spirit Combat - magic
+    type: skill
+    img: systems/rqg/assets/images/skills/spirit-combat.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: magic
+      skillName: Spirit Combat
+      specialization:
+      baseChance: 20
+      learnedChance: 20
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.spirit-combat
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.gldRbbKnKpqw2EQl
+  - _id: 6Kxj83kvG4POzOJB
+    name: Spirit Travel - magic
+    type: skill
+    img: systems/rqg/assets/images/skills/spirit-travel.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: magic
+      skillName: Spirit Travel
+      specialization:
+      baseChance: 10
+      learnedChance: 10
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.spirit-travel
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.sAMCBlVol0Qxjha8
+  - _id: zYxMEGyap5ivXNTB
+    name: Survival - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/survival.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Survival
+      specialization:
+      baseChance: 15
+      learnedChance: 15
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.survival
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.l28B0HGWIkFTs1ZX
+  - _id: EVEqfWwPZiC82q0j
+    name: Swim - agility
+    type: skill
+    img: systems/rqg/assets/images/skills/swim.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: agility
+      skillName: Swim
+      specialization:
+      baseChance: 15
+      learnedChance: 15
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.swim
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.xMiFG945A8ObkvdT
+  - _id: t1IibyWwAuxCu15y
+    name: Track - perception
+    type: skill
+    img: systems/rqg/assets/images/skills/track.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: perception
+      skillName: Track
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.track
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.ejtiRekUaQGXBplT
+  - _id: LuNdgSOf3h1poRMP
+    name: Treat Disease - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/treat-disease.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Treat Disease
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.treat-disease
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.y4ibPy2lsr0GcMuO
+  - _id: yujrFPxyBqdZnClW
+    name: Treat Poison - knowledge
+    type: skill
+    img: systems/rqg/assets/images/skills/treat-poison.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: knowledge
+      skillName: Treat Poison
+      specialization:
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.treat-poison
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.rZ4emLHsXwDSzQOA
+  - _id: iKJ1TiEyJUZEhv0x
+    name: Worship (...) - magic
+    type: skill
+    img: systems/rqg/assets/images/skills/worship.svg
+    data:
+      descriptionRqidLink:
+        rqid: ''
+        name: ''
+        documentType: ''
+      category: magic
+      skillName: Worship
+      specialization: "..."
+      baseChance: 5
+      learnedChance: 5
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+    effects: []
+    folder:
+    sort: 0
+    permission:
+      default: 0
+      h39MBDS9VBPKXc3S: 3
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.worship
+          lang: en
+          priority: 0
+      core:
+        sourceId: Compendium.rqg.skills-basic.T5C6b9pbj1QHsA4D
+flags:
+  rqg:
+    documentRqidFlags:
+      id: a.character.species-template-human
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

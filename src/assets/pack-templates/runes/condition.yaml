@@ -1,0 +1,146 @@
+name: ${{content.rune.fate}}$ (${{content.runeType.condition}}$)
+type: rune
+img: systems/rqg/assets/images/runes/fate.svg
+data:
+  rune: ${{content.rune.fate}}$
+  chance: 0
+  hasExperience: false
+  runeType: ${{content.runeType.condition}}$
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..fate-condition
+    name: ${{content.rune.fate}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.fate-condition
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.infinity}}$ (${{content.runeType.condition}}$)
+type: rune
+img: systems/rqg/assets/images/runes/infinity.svg
+data:
+  rune: ${{content.rune.infinity}}$
+  chance: 0
+  hasExperience: false
+  runeType: ${{content.runeType.condition}}$
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..infinity-condition
+    name: ${{content.rune.infinity}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.infinity-condition
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.law}}$ (${{content.runeType.condition}}$)
+type: rune
+img: systems/rqg/assets/images/runes/law.svg
+data:
+  rune: ${{content.rune.law}}$
+  chance: 0
+  hasExperience: false
+  runeType: ${{content.runeType.condition}}$
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..law-condition
+    name: ${{content.rune.law}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.law-condition
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.light}}$ (${{content.runeType.condition}}$)
+type: rune
+img: systems/rqg/assets/images/runes/light.svg
+data:
+  rune: ${{content.rune.light}}$
+  chance: 0
+  hasExperience: false
+  runeType: ${{content.runeType.condition}}$
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..light-condition
+    name: ${{content.rune.light}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.light-condition
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.luck}}$ (${{content.runeType.condition}}$)
+type: rune
+img: systems/rqg/assets/images/runes/luck.svg
+data:
+  rune: ${{content.rune.luck}}$
+  chance: 0
+  hasExperience: false
+  runeType: ${{content.runeType.condition}}$
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..luck-condition
+    name: ${{content.rune.luck}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.luck-condition
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.magic}}$ (${{content.runeType.condition}}$)
+type: rune
+img: systems/rqg/assets/images/runes/magic.svg
+data:
+  rune: ${{content.rune.magic}}$
+  chance: 0
+  hasExperience: false
+  runeType: ${{content.runeType.condition}}$
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..magic-condition
+    name: ${{content.rune.magic}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.magic-condition
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.mastery}}$ (${{content.runeType.condition}}$)
+type: rune
+img: systems/rqg/assets/images/runes/mastery.svg
+data:
+  rune: ${{content.rune.mastery}}$
+  chance: 0
+  hasExperience: false
+  runeType: ${{content.runeType.condition}}$
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..mastery-condition
+    name: ${{content.rune.mastery}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.mastery-condition
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

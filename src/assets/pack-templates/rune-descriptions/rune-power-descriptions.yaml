@@ -1,0 +1,134 @@
+name: Movement (power)
+img: systems/rqg/assets/images/runes/movement_change.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/movement_change.svg" height="175">
+  Denotes the ancient wheel. As usual, there are claims for it to be the First Rune, for there would have
+  been no growth from Chaos without it. Folktales speak of the World Bird which escaped from the
+  Maws of Chaos upon this wheel.</p>
+  <p>To be strong with the Movement Rune is to be changeable, energetic, rebellious, and ambitious. Such adventurers
+  can adapt quickly to changing circumstances, but are also impulsive and reckless.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..movement-power
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+
+---
+name: Harmony (power)
+img: systems/rqg/assets/images/runes/harmony.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/harmony.svg" height="175">
+  Said to represent the Divine Harp with which Order was separated from Chaos. It is quite ancient and
+  revered throughout Glorantha.</p>
+  <p>To be strong with the Harmony Rune is to put the welfare of one’s selfdefined
+  community (which might be as small as a village or as large as their entire world) above
+  one’s own. Those aligned with this Rune are helpful, careful,
+  compromising, generous, and compassionate—they make peace, not discord.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..harmony-power
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+
+---
+name: Fertility (power)
+img: systems/rqg/assets/images/runes/fertility.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fertility.svg" height="175">
+  Symbolizes the Ancient Cup from which the whole world was poured at the dawn of creation. This is
+  the symbol of growth and life.</p>
+  <p>To be strong with the Fertility Rune is to enjoy the pleasures of the flesh, most notably sexual desire. Such adventurers
+  are generous and giving, often without personal commitment between the persons involved.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..fertility-power
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+
+---
+name: Truth (power)
+img: systems/rqg/assets/images/runes/truth.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/truth.svg" height="175">
+  A Rune of the ancient, all-seeing Sky gods. Said to represent the torch that mortals used to escape from
+  Chaos in the Great Darkness and to survive until the Dawn. Yet another candidate for First Rune, for its
+  constancy and order set creation apart from random, unsettled Chaos.</p>
+  <p>To be strong with the Truth Rune is to view the truth as something objective, and outside of individual
+  biases, interpretations, feelings, and imaginings. Such adventurers describe things as they truly are, both in matters
+  small and large, no matter what the consequences.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..truth-power
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+
+---
+name: Stasis (power)
+img: systems/rqg/assets/images/runes/stasis.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/stasis.svg" height="175">
+  This Rune is closely connected with the art of alchemy, and the dwarves. They claim that this is the First
+  Rune, for it provided the foundation from which all else was created.</p>
+  <p>To be strong with the Stasis Rune is to be resolute and unchanging. Such an adventurer may be
+  described kindly as determined or dogged, and less kindly as doctrinaire or obstinate.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..stasis-power
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+
+---
+name: Illusion (power)
+img: systems/rqg/assets/images/runes/illusion.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/illusion.svg" height="175">
+  The Puppeteer Troupe, the major cult of the Father of Illusion, always claimed that this was the First
+  Rune, for without Illusion, there would be none of us to think we ever were. They refuse to explain
+  further.</p>
+  <p>To be strong with the Illusion Rune is to distort truths or fabricate untruths, for one’s own ends or on behalf of
+  others, or in some cases simply for the sake of doing so. Such adventurers view reality as something subjective, and subject
+  to their imagination.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..illusion-power
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+
+---
+name: Death (power)
+img: systems/rqg/assets/images/runes/death.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/death.svg" height="175">
+  Known to be the First Sword, the immortal and cursed weapon which the god Humakt used to bring
+  Death to the world. Others claim this to be the first of the Runes, citing the separation of the world
+  from Chaos as the first action in creation.</p>
+  <p>To be strong with the Death Rune is to separate oneself from the material world and seek to deny or even destroy the
+  world of the senses. Such adventurers are relentless, ruthless, and ascetic, willing to deny others and themselves.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..death-power
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+
+---
+name: Disorder (power)
+img: systems/rqg/assets/images/runes/disorder.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/disorder.svg" height="175">
+  Directly derived from Chaos. Anarchistic cults claim that this was the first step of creation from Chaos,
+  therefore Disorder is the First Born of the Powers and the foundation of the universe.</p>
+  <p>To be strong with the Disorder Rune is to place one’s own welfare, advantage, or pleasure above all others. Such
+  adventurers may be described as individualistic, impulsive, and contrary, or as greedy, thoughtless, and egocentric.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..disorder-power
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

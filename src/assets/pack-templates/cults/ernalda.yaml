@@ -13,6 +13,9 @@ data:
     - Earth (element)
     - Earth (element)
     - Harmony (power)
+  descriptionRqidLink:
+    rqid: je..cult-ernalda
+    name: ${{content.cult.ernalda.name}}$
 flags:
   rqg:
     documentRqidFlags:

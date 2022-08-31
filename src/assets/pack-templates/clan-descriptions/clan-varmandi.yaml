@@ -1,0 +1,16 @@
+name: 'Clan: Varmandi'
+content: |-
+  <h2>Clan: Varmandi</h2>
+  <p>The Varmandi are a small clan of the Colymar tribe, numbering less than 500 members. Their lands are in the Gejay
+  Hills between Apple Lane and the Malani tribe, where they
+  herd cattle and sheep. The Varmandi have had many violent
+  feuds with the neighboring Orlev clan of the Malani tribe.
+  Their chief is Korol Serpent-Tongue, who many outsiders
+  consider little better than a bandit.</p>
+  <p>The clan tattoo is a stylized bear.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..clan-varmandi
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

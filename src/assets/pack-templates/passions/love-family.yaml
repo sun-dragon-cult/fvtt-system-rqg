@@ -1,0 +1,18 @@
+name: Love (Family)
+type: passion
+img: systems/rqg/assets/images/passion/loyalty.svg
+data:
+  passion: Love
+  subject: Family
+  description: ''
+  gmNotes: ''
+  chance: 60
+  canGetExperience: true
+  hasExperience: false
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.passion.love-family
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

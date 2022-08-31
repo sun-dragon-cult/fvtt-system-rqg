@@ -36,13 +36,15 @@ export class CompendiumPack {
     fs.readFileSync(path.resolve("./src/system.json"), "utf-8")
   ).packs as PackMetadata[];
 
-  constructor(packDir: string, parsedData: unknown[], template: boolean = true) {
+  constructor(packDir: string, parsedData: unknown[], template: boolean) {
     const metadata = CompendiumPack.packsMetadata.find(
       (pack) => path.basename(pack.path) === path.basename(packDir)
     );
-    if (metadata === undefined && !template) {
+    if (!metadata && !template) {
       // Don't care about the template packs, only warn about missing translated pack specifications
-      throw PackError(`Compendium at ${packDir} has no metadata in the local system.json file.`);
+      throw PackError(
+        `Compendium at ${packDir} has no metadata in the "packs" section in the system.json manifest file.`
+      );
     }
 
     this.systemId = metadata?.system ?? "";
@@ -51,7 +53,7 @@ export class CompendiumPack {
 
     if (!this.isPackData(parsedData)) {
       throw PackError(
-        `Data supplied for ${this.name} does not resemble Foundry document source data.`
+        `Data supplied for [${this.name}] in [${packDir}] does not resemble Foundry document source data.`
       );
     }
 
@@ -101,7 +103,7 @@ export class CompendiumPack {
     });
 
     const dbFilename = path.basename(dirPath);
-    return new CompendiumPack(dbFilename, parsedData.flat(), undefined);
+    return new CompendiumPack(dbFilename, parsedData.flat(), true);
   }
 
   private finalize(docSource: CompendiumSource) {

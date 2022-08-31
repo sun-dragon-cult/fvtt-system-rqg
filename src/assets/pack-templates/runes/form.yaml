@@ -1,0 +1,125 @@
+name: ${{content.rune.beast}}$ (${{content.runeType.form}}$)
+type: rune
+img: systems/rqg/assets/images/runes/beast.svg
+data:
+  rune: ${{content.rune.beast}}$
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{content.rune.man}}$ (${{content.runeType.form}}$)
+  descriptionRqidLink:
+    rqid: je..beast-form
+    name: ${{content.rune.beast}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.beast-form
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.chaos}}$ (${{content.runeType.form}}$)
+type: rune
+img: systems/rqg/assets/images/runes/chaos.svg
+data:
+  rune: ${{content.rune.chaos}}$
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..chaos-form
+    name: ${{content.rune.chaos}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.chaos-form
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.dragonewt}}$ (${{content.runeType.form}}$)
+type: rune
+img: systems/rqg/assets/images/runes/dragonewt.svg
+data:
+  rune: ${{content.rune.dragonewt}}$
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..dragonewt-form
+    name: ${{content.rune.dragonewt}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.dragonewt-form
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.man}}$ (${{content.runeType.form}}$)
+type: rune
+img: systems/rqg/assets/images/runes/man.svg
+data:
+  rune: ${{content.rune.man}}$
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..man-form
+    name: ${{content.rune.man}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.man-form
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.plant}}$ (${{content.runeType.form}}$)
+type: rune
+img: systems/rqg/assets/images/runes/plant.svg
+data:
+  rune: ${{content.rune.plant}}$
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..plant-form
+    name: ${{content.rune.plant}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.plant-form
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.spirit}}$ (${{content.runeType.form}}$)
+type: rune
+img: systems/rqg/assets/images/runes/spirit.svg
+data:
+  rune: ${{content.rune.spirit}}$
+  chance: 50
+  hasExperience: false
+  runeType: form
+  minorRunes: []
+  isMastered: false
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..spirit-form
+    name: ${{content.rune.spirit}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.spirit-form
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

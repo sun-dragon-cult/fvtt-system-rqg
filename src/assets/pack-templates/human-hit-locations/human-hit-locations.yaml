@@ -1,0 +1,139 @@
+name: Head
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 19
+  dieTo: 20
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: head
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.head-human
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: Chest
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 12
+  dieTo: 12
+  baseHpDelta: 1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: chest
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.chest-human
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: Abdomen
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 9
+  dieTo: 11
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: abdomen
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.abdomen-human
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: Left Arm
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 16
+  dieTo: 18
+  baseHpDelta: -1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Chest
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.left-arm-human
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: Right Arm
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 13
+  dieTo: 15
+  baseHpDelta: -1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Chest
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.right-arm-human
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: Left Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 5
+  dieTo: 8
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.left-leg-human
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: Right Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 1
+  dieTo: 4
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.right-leg-human
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$

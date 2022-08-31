@@ -1,0 +1,137 @@
+name: ${{content.rune.combine}}$ (${{content.runeType.technique}}$)
+type: rune
+img: systems/rqg/assets/images/runes/combine.svg
+data:
+  rune: ${{content.rune.combine}}$
+  chance: 50
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - ${{content.rune.separate}}$ (${{content.runeType.technique}}$)
+  isMastered: true
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..combine-technique
+    name: ${{content.rune.combine}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.combine-technique
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.command}}$ (${{content.runeType.technique}}$)
+type: rune
+img: systems/rqg/assets/images/runes/command.svg
+data:
+  rune: ${{content.rune.command}}$
+  chance: 50
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - ${{content.rune.combine}}$ (${{content.runeType.technique}}$)
+    - ${{content.rune.dispel}}$ (${{content.runeType.technique}}$)
+    - ${{content.rune.separate}}$ (${{content.runeType.technique}}$)
+    - ${{content.rune.summon}}$ (${{content.runeType.technique}}$)
+  isMastered: true
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..command-technique
+    name: ${{content.rune.command}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.command-technique
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.dispel}}$ (${{content.runeType.technique}}$)
+type: rune
+img: systems/rqg/assets/images/runes/dispel.svg
+data:
+  rune: ${{content.rune.dispel}}$
+  chance: 50
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - ${{content.rune.summon}}$ (${{content.runeType.technique}}$)
+  isMastered: true
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..dispel-technique
+    name: ${{content.rune.dispel}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.dispel-technique
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.separate}}$ (${{content.runeType.technique}}$)
+type: rune
+img: systems/rqg/assets/images/runes/separate.svg
+data:
+  rune: ${{content.rune.separate}}$
+  chance: 50
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - ${{content.rune.combine}}$ (${{content.runeType.technique}}$)
+  isMastered: true
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..separate-technique
+    name: ${{content.rune.separate}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.separate-technique
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.summon}}$ (${{content.runeType.technique}}$)
+type: rune
+img: systems/rqg/assets/images/runes/summon.svg
+data:
+  rune: ${{content.rune.summon}}$
+  chance: 50
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - ${{content.rune.dispel}}$ (${{content.runeType.technique}}$)
+  isMastered: true
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..summon-technique
+    name: ${{content.rune.summon}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.summon-technique
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
+---
+name: ${{content.rune.tap}}$ (${{content.runeType.technique}}$)
+type: rune
+img: systems/rqg/assets/images/runes/tap.svg
+data:
+  rune: ${{content.rune.tap}}$
+  chance: 50
+  hasExperience: false
+  runeType: technique
+  minorRunes:
+    - ${{content.rune.combine}}$ (${{content.runeType.technique}}$)
+    - ${{content.rune.dispel}}$ (${{content.runeType.technique}}$)
+    - ${{content.rune.separate}}$ (${{content.runeType.technique}}$)
+    - ${{content.rune.summon}}$ (${{content.runeType.technique}}$)
+  isMastered: true
+  opposingRune:
+  descriptionRqidLink:
+    rqid: je..tap-technique
+    name: ${{content.rune.tap}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.tap-technique
+      lang: ${{content.lang}}$
+      priority: ${{content.prio}}$
