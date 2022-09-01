@@ -541,7 +541,7 @@ export class ActorWizard extends FormApplication {
           ).data.familyHistoryEntries;
 
           this.familyHistory.yearResults = [];
-          for (const yearEntry in this.familyHistory.selectedFamilyHistoryEntries) {
+          for (let i = 0; i < this.familyHistory.selectedFamilyHistoryEntries.length; i++) {
             this.familyHistory.yearResults.push(new YearResult());
           }
 
