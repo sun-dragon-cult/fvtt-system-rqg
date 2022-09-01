@@ -87,6 +87,7 @@ Hooks.once("init", async () => {
 
   await loadHandlebarsTemplates();
   registerHandlebarsHelpers();
+  registerRqgSystemSettings();
 
   // run game.system.api.migrate() to force a new migration
   (getGame().system as any).api = {
@@ -98,8 +99,6 @@ Hooks.once("init", async () => {
 });
 
 Hooks.once("ready", async () => {
-  registerRqgSystemSettings();
-
   if (getGame().user?.isGM) {
     await migrateWorld();
     // await setupSimpleCalendar();

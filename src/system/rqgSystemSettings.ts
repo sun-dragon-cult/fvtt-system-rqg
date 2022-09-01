@@ -1,4 +1,4 @@
-import { getGame, localize } from "./util";
+import { getGame } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { DefaultItemIconSettings } from "../dialog/defaultItemIconSettings";
 import { HitLocationSettings } from "../dialog/hitLocationSettings";
@@ -7,9 +7,9 @@ import { defaultItemIconsObject } from "./settings/defaultItemIcons";
 
 export const registerRqgSystemSettings = function () {
   getGame().settings.registerMenu(systemId, "hitLocations", {
-    name: localize("RQG.Settings.HitLocations.settingName"),
-    label: localize("RQG.Settings.HitLocations.settingLabel"),
-    hint: localize("RQG.Settings.HitLocations.settingHint"),
+    name: "RQG.Settings.HitLocations.settingName",
+    label: "RQG.Settings.HitLocations.settingLabel",
+    hint: "RQG.Settings.HitLocations.settingHint",
     icon: "fas fa-child",
     type: HitLocationSettings,
     restricted: true,
@@ -23,9 +23,9 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.registerMenu(systemId, "defaultItemIconSettings", {
-    name: localize("RQG.Settings.DefaultItemIcons.settingName"),
-    label: localize("RQG.Settings.DefaultItemIcons.settingLabel"),
-    hint: localize("RQG.Settings.DefaultItemIcons.settingHint"),
+    name: "RQG.Settings.DefaultItemIcons.settingName",
+    label: "RQG.Settings.DefaultItemIcons.settingLabel",
+    hint: "RQG.Settings.DefaultItemIcons.settingHint",
     icon: "fas fa-image",
     type: DefaultItemIconSettings,
     restricted: true,
@@ -39,8 +39,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register(systemId, "fumbleRollTable", {
-    name: localize("RQG.Settings.FumbleRollTable.settingName"),
-    hint: localize("RQG.Settings.FumbleRollTable.settingHint"),
+    name: "RQG.Settings.FumbleRollTable.settingName",
+    hint: "RQG.Settings.FumbleRollTable.settingHint",
     scope: "world",
     config: true,
     type: String,
@@ -48,8 +48,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register(systemId, "specialCrit", {
-    name: localize("RQG.Settings.SpecialCrit.settingName"),
-    hint: localize("RQG.Settings.SpecialCrit.settingHint"),
+    name: "RQG.Settings.SpecialCrit.settingName",
+    hint: "RQG.Settings.SpecialCrit.settingHint",
     scope: "world",
     config: true,
     type: Boolean,
@@ -57,8 +57,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register(systemId, "magicRuneName", {
-    name: localize("RQG.Settings.MagicRuneName.settingName"),
-    hint: localize("RQG.Settings.MagicRuneName.settingHint"),
+    name: "RQG.Settings.MagicRuneName.settingName",
+    hint: "RQG.Settings.MagicRuneName.settingHint",
     scope: "world",
     config: true,
     type: String,
@@ -66,8 +66,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register(systemId, "systemMigrationVersion", {
-    name: localize("RQG.Settings.SystemMigrationVersion.settingName"),
-    hint: localize("RQG.Settings.SystemMigrationVersion.settingHint"),
+    name: "RQG.Settings.SystemMigrationVersion.settingName",
+    hint: "RQG.Settings.SystemMigrationVersion.settingHint",
     scope: "world",
     config: true, // TODO make this false eventually
     type: String,
