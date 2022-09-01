@@ -418,24 +418,15 @@ export class ActorWizard extends FormApplication {
       let tableResult = yearTableResult.results[0]?.data?.text as string;
       if (tableResult) {
         yearResult.yearResultText = tableResult;
-        const yearResultTextArea = document.querySelector(
-          "#year-result-" + yearIndex
-        ) as HTMLTextAreaElement;
+        await this._detokenizeYearResult(yearResult);
 
-        if (yearResultTextArea) {
-          await this._detokenizeYearResult(yearResult);
-
-          this.familyHistory.yearResults[yearIndex] = yearResult;
-          await this.actor.setFlag(systemId, actorWizardFlags, {
-            familyHistory: this.familyHistory,
-          });
-
-          //TODO: maybe the button can submit and not have to do this?
-          // I tried making the rune roll button be an input and that didn't help
-          yearResultTextArea.value = yearResult.yearResultText;
-        }
+        this.familyHistory.yearResults[yearIndex] = yearResult;
+        await this.actor.setFlag(systemId, actorWizardFlags, {
+          familyHistory: this.familyHistory,
+        });
       }
     }
+    await this.render(true);
   }
 
   async _detokenizeYearResult(yearResult: YearResult): Promise<void> {
@@ -490,6 +481,22 @@ export class ActorWizard extends FormApplication {
           followupTableResult.results[0]?.data?.text
         );
         await this._detokenizeYearResult(yearResult);
+      }
+
+      if (token.startsWith("i.passion.")) {
+        const passion = await Rqid.fromRqid(token);
+        if (passion) {
+          const existingPassion = yearResult.itemsToAdd.filter((p) => p.rqidLink.rqid === token);
+          if (!existingPassion || existingPassion.length === 0) {
+            const passionRqidLink = new RqidLink();
+            passionRqidLink.rqid = token;
+            passionRqidLink.name = passion.name || "Uknown Passion";
+            yearResult.itemsToAdd.push({ rqidLink: passionRqidLink, value: 60 });
+            yearResult.yearResultText = yearResult.yearResultText.replace(token, "");
+          }
+        } else {
+          yearResult.yearResultText.replace(token, `RQID "${token} not found.`);
+        }
       }
     }
     yearResult.yearResultText = yearResult.yearResultText.replaceAll("{{", "").replaceAll("}}", "");

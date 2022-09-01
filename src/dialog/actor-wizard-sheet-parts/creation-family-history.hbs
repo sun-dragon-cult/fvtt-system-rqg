@@ -125,10 +125,14 @@
       <div class="year-result">
 
         {{#with (lookup ../familyHistory.yearResults @index)}}
-          <textarea rows="4" id="year-result-{{@index}}">{{this.yearResultText}}</textarea>
+          {{{this.yearResultText}}}
 
           <div id="family-history-year-choices-{{@index}}">
-            
+            {{#each this.itemsToAdd}}
+              {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                rqidLink=this.rqidLink
+              }}
+            {{/each}}
           </div>
         {{/with}}
       </div>
