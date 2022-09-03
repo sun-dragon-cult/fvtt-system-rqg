@@ -1,4 +1,3 @@
-_id: l1ppQI75agqD5w3e
 name: Demo Sword Skill - meleeWeapons
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
@@ -253,7 +252,6 @@ flags:
       lang: ${{content.lang}}$
       priority: ${{content.prio}}$
 ---
-_id: wlxabuWq6ImK7mTR
 name: Demo Bow Skill - missileWeapons
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg

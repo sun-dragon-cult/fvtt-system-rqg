@@ -1,8 +1,11 @@
 import * as path from "path";
 import * as fs from "fs";
-import { CompendiumPack, PackError } from "./compendium-pack";
+import { CompendiumPack, PackError, PackMetadata } from "./compendium-pack";
 
 export const i18nDir = "src/i18n";
+export const outDir = path.resolve(process.cwd(), "src/assets/packs");
+export const packsMetadata = JSON.parse(fs.readFileSync(path.resolve("./src/system.json"), "utf-8"))
+  .packs as PackMetadata[];
 const packTemplateDir = "./src/assets/pack-templates";
 const targetLanguages = fs.readdirSync(i18nDir).filter((file) => {
   return fs.statSync(path.join(i18nDir, file)).isDirectory();

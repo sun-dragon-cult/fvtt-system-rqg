@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
 import * as crypto from "crypto";
-import { i18nDir } from "./buildPacks";
+import { i18nDir, outDir, packsMetadata } from "./buildPacks";
 import { lookup } from "./translate";
 
 export interface PackMetadata {
@@ -17,10 +17,6 @@ export const PackError = (message: string) => {
   process.exit(1);
 };
 
-// const localeDictionarys = fs.readdirSync(I18N_DIR).filter((file) => {
-//   return fs.statSync(path.join(I18N_DIR, file)).isDirectory();
-// });
-
 type CompendiumSource = any["data"]["_source"];
 
 export class CompendiumPack {
@@ -30,17 +26,13 @@ export class CompendiumPack {
   systemId: string;
   data: any[];
 
-  static outDir = path.resolve(process.cwd(), "src/assets/packs");
-  // private static namesToIds = new Map<string, Map<string, string>>();
-  private static packsMetadata = JSON.parse(
-    fs.readFileSync(path.resolve("./src/system.json"), "utf-8")
-  ).packs as PackMetadata[];
+  constructor(packDir: string, parsedData: unknown[], isTemplate: boolean) {
+    const packName = isTemplate ? packDir + "-en.db" : packDir;
 
-  constructor(packDir: string, parsedData: unknown[], template: boolean) {
-    const metadata = CompendiumPack.packsMetadata.find(
-      (pack) => path.basename(pack.path) === path.basename(packDir)
+    const metadata = packsMetadata.find(
+      (pack) => path.basename(pack.path) === path.basename(packName)
     );
-    if (!metadata && !template) {
+    if (!metadata && !isTemplate) {
       // Don't care about the template packs, only warn about missing translated pack specifications
       throw PackError(
         `Compendium at ${packDir} has no metadata in the "packs" section in the system.json manifest file.`
@@ -64,17 +56,6 @@ export class CompendiumPack {
     // if (!packMap) {
     //   throw PackError(`Compendium ${this.name} (${packDir}) was not found.`);
     // }
-
-    parsedData = parsedData.map((d) => {
-      // Generate new ids everytime we rebuild TODO didn't do this before - any downsides?
-      d._id = crypto
-        .createHash("md5")
-        .update(d.name)
-        .digest("base64")
-        .replace(/[\+=\/]/g, "")
-        .substring(0, 16);
-      return d;
-    });
 
     this.data = parsedData;
   }
@@ -107,6 +88,13 @@ export class CompendiumPack {
   }
 
   private finalize(docSource: CompendiumSource) {
+    docSource._id = crypto
+      .createHash("md5")
+      .update(this.name + docSource.name) // Has to be unique - use the pack and document name (like "cults-enOrlanth")
+      .digest("base64")
+      .replace(/[\+=\/]/g, "")
+      .substring(0, 16);
+
     return JSON.stringify(docSource);
   }
 
@@ -143,10 +131,9 @@ export class CompendiumPack {
 
   save(): number {
     fs.writeFileSync(
-      path.resolve(CompendiumPack.outDir, this.packDir),
+      path.resolve(outDir, this.packDir),
       this.data
         .map((datum) => this.finalize(datum))
-        // TODO Add translate step here?
         .join("\n")
         .concat("\n")
     );
@@ -159,11 +146,11 @@ export class CompendiumPack {
     if (!isObject(maybeDocSource)) return false;
     const checks = Object.entries({
       name: (data: { name?: unknown }) => typeof data.name === "string",
-      // flags: (data: unknown) => typeof data === "object" && data !== null && "flags" in data,
+      flags: (data: unknown) => typeof data === "object" && data !== null && "flags" in data,
       permission: (data: { permission?: { default: unknown } }) =>
         !data.permission ||
         (typeof data.permission === "object" &&
-          data.permission !== null &&
+          data.permission != null &&
           Object.keys(data.permission).length === 1 &&
           Number.isInteger(data.permission.default)),
     });
@@ -174,7 +161,9 @@ export class CompendiumPack {
 
     if (failedChecks.length > 0) {
       throw PackError(
-        `Document source in (${this.name}) has invalid or missing keys: ${failedChecks.join(", ")}`
+        `Document source [${(maybeDocSource as any)?.name}] in (${
+          this.name
+        }) has invalid or missing keys: ${failedChecks.join(", ")}`
       );
     }
 

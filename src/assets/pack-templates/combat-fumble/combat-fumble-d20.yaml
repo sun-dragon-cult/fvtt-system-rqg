@@ -2,8 +2,7 @@ name: Fumble
 img: icons/svg/d20-grey.svg
 description: D20 Combat Fumble Table
 results:
-  - _id: rzBEKlitdbG8Z1uo
-    type: 0
+  - type: 0
     text: Cannot parry next melee round.
     weight: 1
     range:
@@ -15,8 +14,7 @@ results:
     resultId: null
     rangeL: 1
     rangeH: 4
-  - _id: LZnjxHEqcw4va7eF
-    type: 0
+  - type: 0
     text: Cannot attack next melee round.
     collection: null
     weight: 1
@@ -28,8 +26,7 @@ results:
     resultId: null
     rangeL: 5
     rangeH: 8
-  - _id: 53DUYuwXGu9HGQRw
-    type: 0
+  - type: 0
     text: Cannot attack or parry next melee round.
     collection: null
     weight: 1
@@ -41,8 +38,7 @@ results:
     resultId: null
     rangeL: 9
     rangeH: 12
-  - _id: DKa2LA0vlT29nHoz
-    type: 0
+  - type: 0
     text: Cannot attack, parry, or dodge next round.
     collection: null
     weight: 1
@@ -54,8 +50,7 @@ results:
     resultId: null
     rangeL: 13
     rangeH: 15
-  - _id: xj6kIURtoGYHyRQs
-    type: 0
+  - type: 0
     text: Loses one piece of armor (hit location [[1d20]]).
     collection: null
     weight: 1
@@ -67,8 +62,7 @@ results:
     resultId: null
     rangeL: 16
     rangeH: 18
-  - _id: vIjLnX8D0ugsHSN8
-    type: 0
+  - type: 0
     text: Drop weapon and/or shield, taking 5 SR to recover.
     collection: null
     weight: 1
