@@ -4,7 +4,7 @@
   "type": "system",
   "title": "RuneQuest Glorantha",
   "description": "A RuneQuest Glorantha system implementation.",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "license": "UNLICENSED",
   "background": "assets/images/ui/priestess.webp",
   "authors": [
@@ -344,8 +344,8 @@
   },
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.16.0/rqg.zip",
-  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.16.0/readme.md",
-  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.16.0/CHANGELOG.md",
+  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.17.0/rqg.zip",
+  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.17.0/readme.md",
+  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v1.17.0/CHANGELOG.md",
   "bugs": "https://github.com/sun-dragon-cult/foundry-vtt-rqg/issues"
 }

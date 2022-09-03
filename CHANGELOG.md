@@ -1,3 +1,18 @@
+# [1.17.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.16.0...v1.17.0) (2022-09-01)
+
+
+### Bug Fixes
+
+* crash when preparing actor data closes: 348 ([a464e2b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a464e2b))
+
+
+### Features
+
+* don't open Rqid Editor on top of the sheet you are editing closes [#346](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/346) ([6969a3b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6969a3b))
+
+
+
+
 # [1.16.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.15.0...v1.16.0) (2022-08-24)
 
 
