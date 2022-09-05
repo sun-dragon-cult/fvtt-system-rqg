@@ -63,7 +63,7 @@ export class Rqid {
       return undefined;
     }
 
-    lang = lang ?? getGame().i18n.lang ?? "en";
+    lang = lang ?? getGame().settings.get(systemId, "worldLanguage");
 
     const worldItem = await Rqid.documentFromWorld(rqid, lang);
     if (worldItem) {

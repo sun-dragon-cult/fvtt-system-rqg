@@ -105,17 +105,21 @@ export class ActorWizard extends FormApplication {
       this.collapsibleOpenStates["homelandAdvanced"] = true;
     }
 
+    const worldLanguage = getGame().settings.get(systemId, "worldLanguage");
+
     if (!this.species.speciesTemplates) {
       // Don't get these every time.
       // this.species.speciesTemplates = await getActorTemplates();
-      const templates = await Rqid.fromRqidRegexBest(/.*template.*/, "a", "en");
+      const templates = await Rqid.fromRqidRegexBest(/.*template.*/, "a", worldLanguage);
       this.species.speciesTemplates = templates as RqgActor[];
     }
 
     if (!this.homeland.homelands) {
       // Don't get these every time
-      const homelands = await Rqid.fromRqidRegexBest(/.*homeland.*/, "i", "en");
-      this.homeland.homelands = homelands.filter((i) => (i as RqgItem).type === ItemTypeEnum.Homeland) as RqgItem[];
+      const homelands = await Rqid.fromRqidRegexBest(/.*homeland.*/, "i", worldLanguage);
+      this.homeland.homelands = homelands.filter(
+        (i) => (i as RqgItem).type === ItemTypeEnum.Homeland
+      ) as RqgItem[];
     }
 
     if (this.actor) {

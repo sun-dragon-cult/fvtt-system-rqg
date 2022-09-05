@@ -6,6 +6,18 @@ import { systemId } from "./config";
 import { defaultItemIconsObject } from "./settings/defaultItemIcons";
 
 export const registerRqgSystemSettings = function () {
+  getGame().settings.register(systemId, "worldLanguage", {
+    name: "RQG.Settings.WorldLanguage.settingName",
+    hint: "RQG.Settings.WorldLanguage.settingHint",
+    scope: "world",
+    config: true,
+    type: String,
+    // @ts-expect-error
+    choices: CONFIG.supportedLanguages,
+    default: "en",
+    onChange: () => window.location.reload(),
+  });
+
   getGame().settings.registerMenu(systemId, "hitLocations", {
     name: "RQG.Settings.HitLocations.settingName",
     label: "RQG.Settings.HitLocations.settingLabel",

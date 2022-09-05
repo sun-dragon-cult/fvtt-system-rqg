@@ -1053,6 +1053,10 @@
       }
     },
     "Settings": {
+      "WorldLanguage": {
+        "settingName": "World Language",
+        "settingHint": "This is the language the game will be played in. It affects which compendium packs and journal descriptions are shown. It is recommended, but not strictly necessary, that all players have this language selected as their Foundry language."
+      },
       "HitLocations": {
         "dialogTitle": "Hit Location Name Settings",
         "settingName": "Hit Location Names",

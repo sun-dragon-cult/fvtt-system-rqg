@@ -46,6 +46,7 @@ declare global {
 declare global {
   namespace ClientSettings {
     interface Values {
+      "rqg.worldLanguage": string;
       "rqg.specialCrit": boolean;
       "rqg.fumbleRollTable": string;
       "rqg.systemMigrationVersion": string;

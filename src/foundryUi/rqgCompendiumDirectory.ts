@@ -11,7 +11,7 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
 
     // Filter packs for visibility updated from Foundry - the rest is a copy
 
-    const requestedLang = getGame().i18n.lang;
+    const requestedLang = getGame().settings.get(systemId, "worldLanguage");
     const requestedLangRegex = new RegExp(`(.*)-(${requestedLang})$`);
     const englishRegex = /.*-en$/;
     const splitRegex = new RegExp(`(.*)-(..)$`);
