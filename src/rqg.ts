@@ -17,6 +17,7 @@ import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
 import { RqgJournalSheet } from "./journals/rqgJournalSheet";
 import { RqgRollTableConfig } from "./rollTables/rqgRollTableConfig";
+import { RqgCompendiumDirectory } from "./foundryUi/rqgCompendiumDirectory";
 
 Hooks.once("init", async () => {
   console.log(
@@ -68,6 +69,7 @@ Hooks.once("init", async () => {
   RqgActor.init();
   RqgItem.init();
   RqgPause.init();
+  RqgCompendiumDirectory.init();
 
   // @ts-expect-error
   Journal.unregisterSheet("core", JournalSheet);
