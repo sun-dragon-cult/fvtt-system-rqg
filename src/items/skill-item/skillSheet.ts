@@ -73,7 +73,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       ? ` (${formData["data.specialization"]})`
       : "";
     formData["name"] =
-      formData["data.skillName"] + specialization + " - " + formData["data.category"];
+      formData["data.skillName"] + specialization;
 
     let runes = formData["data.runes"];
     runes = Array.isArray(runes) ? runes : [runes];

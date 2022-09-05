@@ -1,4 +1,4 @@
-name: Boat - agility
+name: Boat
 type: skill
 img: systems/rqg/assets/images/skills/boat.svg
 data:
@@ -15,7 +15,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Climb - agility
+name: Climb
 type: skill
 img: systems/rqg/assets/images/skills/climb.svg
 data:
@@ -32,7 +32,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Dodge - agility
+name: Dodge
 type: skill
 img: systems/rqg/assets/images/skills/dodge.svg
 data:
@@ -49,7 +49,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Drive (Chariot) - agility
+name: Drive (Chariot)
 type: skill
 img: systems/rqg/assets/images/skills/drive.svg
 data:
@@ -66,7 +66,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Jump - agility
+name: Jump
 type: skill
 img: systems/rqg/assets/images/skills/jump.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Ride (...) - agility
+name: Ride (...)
 type: skill
 img: systems/rqg/assets/images/skills/ride.svg
 data:
@@ -100,7 +100,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Swim - agility
+name: Swim
 type: skill
 img: systems/rqg/assets/images/skills/swim.svg
 data:
