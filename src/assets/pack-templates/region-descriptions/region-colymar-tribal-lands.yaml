@@ -13,5 +13,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..region-colymar
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -14,8 +14,8 @@ flags:
     rqg:
       documentRqidFlags:
         id: i.skill.demo-sword-skill
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Arrows
 type: weapon
@@ -59,8 +59,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.demo-arrows
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Rune Spell
 type: runeMagic
@@ -81,8 +81,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.demo-rune-spell
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Cult
 type: cult
@@ -104,8 +104,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.demo-cult
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Food Rations
 type: gear
@@ -127,8 +127,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.gear.demo-food-rations
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Coins
 type: gear
@@ -150,8 +150,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.gear.demo-coins
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Sword
 type: weapon
@@ -217,8 +217,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.demo-sword
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Armor Pants (Leather)
 type: armor
@@ -249,8 +249,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.armor.demo-armor-pants-leather
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Bow Skill - missileWeapons
 type: skill
@@ -268,8 +268,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.skill.demo-bow-skill
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Bow
 type: weapon
@@ -314,8 +314,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.demo-bow
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Spirit Magic
 type: spiritMagic
@@ -335,8 +335,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.spirit-magic.demo-spirit-magic
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Bag
 type: gear
@@ -358,8 +358,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.gear.demo-bag
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Love (RQG)
 type: passion
@@ -375,5 +375,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.passion.demo-passion
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -2514,5 +2514,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: a.character.species-template-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

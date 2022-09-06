@@ -106,5 +106,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: a.character.demo-spirit
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

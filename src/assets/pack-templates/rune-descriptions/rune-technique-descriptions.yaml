@@ -8,8 +8,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..combine-technique
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Tap (technique)
@@ -24,8 +24,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..tap-technique
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Dispel (technique)
@@ -39,8 +39,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..dispel-technique
-  lang: ${{content.lang}}$
-  priority: ${{content.prio}}$
+  lang: ${{openSystem.lang}}$
+  priority: ${{openSystem.prio}}$
 
 ---
 name: Separate (technique)
@@ -54,8 +54,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..separate-technique
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Summon (technique)
@@ -69,8 +69,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..summon-technique
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Command (technique)
@@ -85,5 +85,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..command-technique
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

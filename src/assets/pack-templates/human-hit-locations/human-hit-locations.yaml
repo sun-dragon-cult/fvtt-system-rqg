@@ -15,8 +15,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.head-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Chest
 type: hitLocation
@@ -35,8 +35,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.chest-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Abdomen
 type: hitLocation
@@ -55,8 +55,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.abdomen-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Left Arm
 type: hitLocation
@@ -75,8 +75,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.left-arm-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Right Arm
 type: hitLocation
@@ -95,8 +95,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.right-arm-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Left Leg
 type: hitLocation
@@ -115,8 +115,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.left-leg-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Right Leg
 type: hitLocation
@@ -135,5 +135,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.right-leg-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

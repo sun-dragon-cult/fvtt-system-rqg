@@ -27,6 +27,6 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..species-description-human
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 

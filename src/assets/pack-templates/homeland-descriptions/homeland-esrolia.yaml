@@ -7,5 +7,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..homeland-esrolia
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

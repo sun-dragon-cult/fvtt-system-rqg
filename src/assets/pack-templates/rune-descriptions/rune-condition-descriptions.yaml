@@ -11,8 +11,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..mastery-condition
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Magic (condition)
@@ -26,8 +26,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..magic-condition
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Infinity (condition)
 img: systems/rqg/assets/images/runes/infinity.svg
@@ -40,8 +40,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..infinity-condition
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Luck (condition)
@@ -55,8 +55,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..luck-condition
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Fate (condition)
@@ -70,8 +70,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..fate-condition
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Law (condition)
@@ -83,5 +83,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..law-condition
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
 import * as crypto from "crypto";
-import { i18nDir, outDir, packsMetadata } from "./buildPacks";
+import { i18nDir, outDir, packsMetadata, translationsFileName } from "./buildPacks";
 
 export interface PackMetadata {
   system: string;
@@ -102,7 +102,12 @@ export class CompendiumPack {
    */
   translate(lang: string): CompendiumPack {
     let localizationMatchCount = 0;
-    const dictionary = JSON.parse(fs.readFileSync(`${i18nDir}/${lang}/system.json`, "utf8"));
+    // Include the filename in path to match the behaviour in starter set
+    const dictionary = {
+      [translationsFileName]: JSON.parse(
+        fs.readFileSync(`${i18nDir}/${lang}/${translationsFileName}.json`, "utf8")
+      ),
+    };
     const localisedPackDir = `${this.packDir}-${lang}.db`;
     const localisedData = this.data.map((d) =>
       JSON.parse(

@@ -1,41 +1,41 @@
 # hide
-name: ${{content.skill.hide.skillName}}$ - ${{content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.hide.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
 type: skill
 img: systems/rqg/assets/images/skills/hide.svg
 data:
   category: stealth
-  skillName: ${{content.skill.hide.skillName}}$
+  skillName: ${{openSystem.content.skill.hide.skillName}}$
   specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..hide
-    name: ${{content.skill.hide.skillName}}$
+    name: ${{openSystem.content.skill.hide.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: je.hide.insight
-      priority: ${{content.prio}}$
-      lang: ${{content.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 ---
 # move-quietly
-name: ${{content.skill.moveQuietly.skillName}}$ - ${{content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.moveQuietly.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
 type: skill
 img: systems/rqg/assets/images/skills/move-quietly.svg
 data:
   category: stealth
-  skillName: ${{content.skill.moveQuietly.skillName}}$
+  skillName: ${{openSystem.content.skill.moveQuietly.skillName}}$
   specialization:
   baseChance: 10
   learnedChance: 10
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..move-quietly
-    name: ${{content.skill.moveQuietly.skillName}}$
+    name: ${{openSystem.content.skill.moveQuietly.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: je.move-quietly.insight
-      priority: ${{content.prio}}$
-      lang: ${{content.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

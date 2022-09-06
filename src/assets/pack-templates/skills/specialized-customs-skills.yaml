@@ -1,125 +1,125 @@
 # customs-esrolia
-name: ${{content.skill.customs.skillName}}$ (${{content.homeland.esrolia.name}}$) - ${{content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.esrolia.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
   category: knowledge
-  skillName: ${{content.skill.customs.skillName}}$
-  specialization: ${{content.homeland.esrolia.name}}$
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.homeland.esrolia.name}}$
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
-    name: ${{content.skill.customs.skillName}}$
+    name: ${{openSystem.content.skill.customs.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.customs-esrolia
-      priority: ${{content.prio}}$
-      lang: ${{content.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 ---
 # customs-grazelands
-name: ${{content.skill.customs.skillName}}$ (${{content.homeland.grazelands.name}}$) - ${{content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.grazelands.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
   category: knowledge
-  skillName: ${{content.skill.customs.skillName}}$
-  specialization: ${{content.homeland.grazelands.name}}$
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.homeland.grazelands.name}}$
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
-    name: ${{content.skill.customs.skillName}}$
+    name: ${{openSystem.content.skill.customs.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.customs-grazelands
-      priority: ${{content.prio}}$
-      lang: ${{content.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 ---
 # customs-lunar-tarsh
-name: ${{content.skill.customs.skillName}}$ (${{content.homeland.lunarTarsh.name}}$) - ${{content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.lunarTarsh.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
   category: knowledge
-  skillName: ${{content.skill.customs.skillName}}$
-  specialization: ${{content.homeland.lunarTarsh.name}}$
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.homeland.lunarTarsh.name}}$
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
-    name: ${{content.skill.customs.skillName}}$
+    name: ${{openSystem.content.skill.customs.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.customs-lunar-tarsh
-      priority: ${{content.prio}}$
-      lang: ${{content.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 ---
 # customs-old-tarsh
-name: ${{content.skill.customs.skillName}}$ (${{content.homeland.oldTarsh.name}}$) - ${{content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.oldTarsh.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
   category: knowledge
-  skillName: ${{content.skill.customs.skillName}}$
-  specialization: ${{content.homeland.oldTarsh.name}}$
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.homeland.oldTarsh.name}}$
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
-    name: ${{content.skill.customs.skillName}}$
+    name: ${{openSystem.content.skill.customs.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.customs-old-tarsh
-      priority: ${{content.prio}}$
-      lang: ${{content.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 ---
 # customs-prax
-name: ${{content.skill.customs.skillName}}$ (${{content.homeland.prax.name}}$) - ${{content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.prax.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
   category: knowledge
-  skillName: ${{content.skill.customs.skillName}}$
-  specialization: ${{content.homeland.prax.name}}$
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.homeland.prax.name}}$
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
-    name: ${{content.skill.customs.skillName}}$
+    name: ${{openSystem.content.skill.customs.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.customs-prax
-      priority: ${{content.prio}}$
-      lang: ${{content.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 ---
 # customs-sartar
-name: ${{content.skill.customs.skillName}}$ (${{content.homeland.sartar.name}}$) - ${{content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.sartar.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
   category: knowledge
-  skillName: ${{content.skill.customs.skillName}}$
-  specialization: ${{content.homeland.sartar.name}}$
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.homeland.sartar.name}}$
   baseChance: 0
   learnedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
-    name: ${{content.skill.customs.skillName}}$
+    name: ${{openSystem.content.skill.customs.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.customs-sartar
-      priority: ${{content.prio}}$
-      lang: ${{content.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

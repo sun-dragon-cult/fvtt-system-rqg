@@ -11,8 +11,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..movement-power
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Harmony (power)
@@ -29,8 +29,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..harmony-power
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Fertility (power)
@@ -45,8 +45,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..fertility-power
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Truth (power)
@@ -63,8 +63,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..truth-power
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Stasis (power)
@@ -79,8 +79,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..stasis-power
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Illusion (power)
@@ -97,8 +97,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..illusion-power
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Death (power)
@@ -114,8 +114,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..death-power
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Disorder (power)
@@ -130,5 +130,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..disorder-power
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

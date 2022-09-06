@@ -1,4 +1,4 @@
-name: ${{content.cult.ernalda.name}}$
+name: ${{openSystem.content.cult.ernalda.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 data:
@@ -6,7 +6,7 @@ data:
   runePoints:
     value: 0
     max: 0
-  tagline: ${{content.cult.ernalda.tagline}}$
+  tagline: ${{openSystem.content.cult.ernalda.tagline}}$
   holyDays:
   runes:
     - Fertility (power)
@@ -15,10 +15,10 @@ data:
     - Harmony (power)
   descriptionRqidLink:
     rqid: je..cult-ernalda
-    name: ${{content.cult.ernalda.name}}$
+    name: ${{openSystem.content.cult.ernalda.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.cult.ernalda
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

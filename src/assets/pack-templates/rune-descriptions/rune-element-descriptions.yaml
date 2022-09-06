@@ -23,8 +23,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..air-element
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Water (element)
@@ -50,8 +50,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..water-element
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Earth (element)
@@ -80,8 +80,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..earth-element
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Darkness (element)
 img: systems/rqg/assets/images/runes/darkness.svg
@@ -109,8 +109,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..darkness-element
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Fire/Sky (element)
 img: systems/rqg/assets/images/runes/fire_sky.svg
@@ -138,8 +138,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..fire-sky-element
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Moon (element)
 img: systems/rqg/assets/images/runes/moon_full.svg
@@ -167,5 +167,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..moon-element
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

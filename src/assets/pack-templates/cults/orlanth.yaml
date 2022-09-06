@@ -15,10 +15,10 @@ data:
     - Mastery (condition)
   descriptionRqidLink:
     rqid: je..cult-orlanth
-    name: ${{content.cult.orlanth.name}}$
+    name: ${{openSystem.content.cult.orlanth.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.cult.orlanth
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

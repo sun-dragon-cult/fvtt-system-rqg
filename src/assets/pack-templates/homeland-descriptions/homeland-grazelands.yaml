@@ -6,5 +6,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..homeland-grazelands
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

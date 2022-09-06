@@ -6,8 +6,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..names-sartarite-female
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: 'Help: Name Generation'
 content: |-
@@ -80,8 +80,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..help-name-generation
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: 'Names: Sartarite, Male'
 content: <pre>Andrin<br />Argrath<br />Broyan<br />Farnan<br />Garadangian<br />Harmast<br />Jarang<br />Saronil<br />Tarkalor<br />Vargast<br />Venharl</pre>
@@ -91,5 +91,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..names-sartarite-male
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

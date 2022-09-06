@@ -1102,9 +1102,9 @@
       "compendiums": "Step 4 / 4 - Migrating {count} compendiums"
     }
   },
+  "prio": 0,
+  "lang": "en",
   "content": {
-    "prio": 0,
-    "lang": "en",
     "cult": {
       "aldrya": {
         "name": "Aldrya",

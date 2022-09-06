@@ -12,8 +12,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..beast-form
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Chaos (form)
 img: systems/rqg/assets/images/runes/chaos.svg
@@ -25,8 +25,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..chaos-form
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Plant (form)
@@ -40,8 +40,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..plant-form
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Spirit (form)
@@ -53,8 +53,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..spirit-form
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Dragonewt (form)
@@ -67,8 +67,8 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..dragonewt-form
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 
 ---
 name: Man (form)
@@ -84,5 +84,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..man-form
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

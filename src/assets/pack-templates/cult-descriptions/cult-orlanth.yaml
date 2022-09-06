@@ -15,5 +15,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..cult-orlanth
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -81,5 +81,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: rt..combat-fumble
-      lang: ${{content.lang}}$
-      priority: ${{content.prio}}$
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

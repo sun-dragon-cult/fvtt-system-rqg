@@ -180,7 +180,7 @@
     {
       "lang": "en",
       "name": "English",
-      "path": "i18n/en/system.json"
+      "path": "i18n/en/openSystem.json"
     }
   ],
   "primaryTokenAttribute": "attributes.hitPoints.value",
