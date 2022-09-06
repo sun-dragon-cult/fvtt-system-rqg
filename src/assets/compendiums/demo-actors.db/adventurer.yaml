@@ -453,7 +453,7 @@ items:
       journalId: null
       journalPack: null
   - _id: Rn1J0aTiNTK4kL65
-    name: Spirit Travel - magic
+    name: Spirit Travel
     type: skill
     img: systems/rqg/assets/images/skills/spirit-travel.svg
     data:
@@ -468,13 +468,13 @@ items:
       journalId: null
       journalPack: null
   - _id: V13nSGlHjWfW4ku8
-    name: Play Instrument (...) - manipulation
+    name: Play Instrument (...)
     type: skill
     img: systems/rqg/assets/images/skills/play-instrument.svg
     data:
       category: manipulation
       skillName: Play Instrument
-      specialization: '...'
+      specialization: "..."
       baseChance: 5
       learnedChance: 5
       canGetExperience: true
@@ -483,7 +483,7 @@ items:
       journalId: null
       journalPack: null
   - _id: M325KcgGWn1tiKuF
-    name: Track - perception
+    name: Track
     type: skill
     img: systems/rqg/assets/images/skills/track.svg
     data:
@@ -498,7 +498,7 @@ items:
       journalId: null
       journalPack: null
   - _id: h52t3LQglj5OhPuo
-    name: Act - communication
+    name: Act
     type: skill
     img: systems/rqg/assets/images/skills/act.svg
     data:
@@ -513,7 +513,7 @@ items:
       journalId: null
       journalPack: null
   - _id: h8zEtAQdFQosft2W
-    name: Sing - communication
+    name: Sing
     type: skill
     img: systems/rqg/assets/images/skills/sing.svg
     data:
@@ -528,7 +528,7 @@ items:
       journalId: null
       journalPack: null
   - _id: VnxFpK5hRaTTYplT
-    name: Sleight - manipulation
+    name: Sleight
     type: skill
     img: systems/rqg/assets/images/skills/sleight.svg
     data:
@@ -543,7 +543,7 @@ items:
       journalId: null
       journalPack: null
   - _id: cAZvmSlCftmpKPYR
-    name: Hide - stealth
+    name: Hide
     type: skill
     img: systems/rqg/assets/images/skills/hide.svg
     data:
@@ -558,7 +558,7 @@ items:
       journalId: null
       journalPack: null
   - _id: a6poyBzppquMmt0l
-    name: Treat Poison - knowledge
+    name: Treat Poison
     type: skill
     img: systems/rqg/assets/images/skills/treat-poison.svg
     data:
@@ -573,7 +573,7 @@ items:
       journalId: null
       journalPack: null
   - _id: jRNKU2xcDSBPkEVc
-    name: Spirit Combat - magic
+    name: Spirit Combat
     type: skill
     img: systems/rqg/assets/images/skills/spirit-combat.svg
     data:
@@ -588,7 +588,7 @@ items:
       journalId: null
       journalPack: null
   - _id: XRUlXMed8JNVGqjH
-    name: Prepare Corpse - magic
+    name: Prepare Corpse
     type: skill
     img: systems/rqg/assets/images/skills/prepare-corpse.svg
     data:
@@ -603,7 +603,7 @@ items:
       journalId: null
       journalPack: null
   - _id: DgibcTqi0xFguQBB
-    name: Peaceful Cut - knowledge
+    name: Peaceful Cut
     type: skill
     img: systems/rqg/assets/images/skills/peaceful-cut.svg
     data:
@@ -618,7 +618,7 @@ items:
       journalId: null
       journalPack: null
   - _id: 1N9FytpnUscyDtnr
-    name: Climb - agility
+    name: Climb
     type: skill
     img: systems/rqg/assets/images/skills/climb.svg
     data:
@@ -633,7 +633,7 @@ items:
       journalId: null
       journalPack: null
   - _id: grZ0UW60pUxyItUo
-    name: Swim - agility
+    name: Swim
     type: skill
     img: systems/rqg/assets/images/skills/swim.svg
     data:
@@ -648,7 +648,7 @@ items:
       journalId: null
       journalPack: null
   - _id: FOuCB1N0m3cBzXyM
-    name: Elder Race Lore - knowledge
+    name: Elder Race Lore
     type: skill
     img: systems/rqg/assets/images/skills/elder-race-lore.svg
     data:
@@ -663,7 +663,7 @@ items:
       journalId: null
       journalPack: null
   - _id: WWLeAJtaxNZRT8G9
-    name: Plant Lore - knowledge
+    name: Plant Lore
     type: skill
     img: systems/rqg/assets/images/skills/plant-lore.svg
     data:
@@ -678,7 +678,7 @@ items:
       journalId: null
       journalPack: null
   - _id: FoVno7cdfJQB0gVq
-    name: Listen - perception
+    name: Listen
     type: skill
     img: systems/rqg/assets/images/skills/listen.svg
     data:
@@ -693,7 +693,7 @@ items:
       journalId: null
       journalPack: null
   - _id: 6MLTRlwqVtfJCLFg
-    name: Farm - knowledge
+    name: Farm
     type: skill
     img: systems/rqg/assets/images/skills/farm.svg
     data:
@@ -708,7 +708,7 @@ items:
       journalId: null
       journalPack: null
   - _id: xl0BqXI25PnxfwHu
-    name: Fast Talk - communication
+    name: Fast Talk
     type: skill
     img: systems/rqg/assets/images/skills/fast-talk.svg
     data:
@@ -723,7 +723,7 @@ items:
       journalId: null
       journalPack: null
   - _id: SPz0r1tEOHOWoBxf
-    name: Devise - manipulation
+    name: Devise
     type: skill
     img: systems/rqg/assets/images/skills/devise.svg
     data:
@@ -738,7 +738,7 @@ items:
       journalId: null
       journalPack: null
   - _id: pJJdb5iEdgBvkcAy
-    name: Charm - communication
+    name: Charm
     type: skill
     img: systems/rqg/assets/images/skills/charm.svg
     data:
@@ -753,13 +753,13 @@ items:
       journalId: null
       journalPack: null
   - _id: Sk5c9Et49GhYSaia
-    name: Customs, own (...) - knowledge
+    name: Customs, own (...)
     type: skill
     img: systems/rqg/assets/images/skills/customs.svg
     data:
       category: knowledge
       skillName: Customs, own
-      specialization: '...'
+      specialization: "..."
       baseChance: 25
       learnedChance: 25
       canGetExperience: false
@@ -768,7 +768,7 @@ items:
       journalId: null
       journalPack: null
   - _id: wAGutlIh55B09aB5
-    name: Search - perception
+    name: Search
     type: skill
     img: systems/rqg/assets/images/skills/search.svg
     data:
@@ -783,7 +783,7 @@ items:
       journalId: null
       journalPack: null
   - _id: jfIyKKXDXW22MmC4
-    name: Drive (Chariot) - agility
+    name: Drive (Chariot)
     type: skill
     img: systems/rqg/assets/images/skills/drive.svg
     data:
@@ -798,13 +798,13 @@ items:
       journalId: null
       journalPack: null
   - _id: dkBMTcCZeYlpD2Bg
-    name: Speak Own Language (...) - communication
+    name: Speak Own Language (...)
     type: skill
     img: systems/rqg/assets/images/skills/speak.svg
     data:
       category: communication
       skillName: Speak Own Language
-      specialization: '...'
+      specialization: "..."
       baseChance: 50
       learnedChance: 0
       canGetExperience: true]
@@ -813,7 +813,7 @@ items:
       journalId: null
       journalPack: null
   - _id: FTaIakAnlIlX7Xw2
-    name: Disguise - communication
+    name: Disguise
     type: skill
     img: systems/rqg/assets/images/skills/disguise.svg
     data:
@@ -828,7 +828,7 @@ items:
       journalId: null
       journalPack: null
   - _id: I7mmdKPAAnNr4UrV
-    name: Animal Lore - knowledge
+    name: Animal Lore
     type: skill
     img: systems/rqg/assets/images/skills/animal-lore.svg
     data:
@@ -843,7 +843,7 @@ items:
       journalId: null
       journalPack: null
   - _id: JEjNmvyZFEN7NjBJ
-    name: Orate - communication
+    name: Orate
     type: skill
     img: systems/rqg/assets/images/skills/orate.svg
     data:
@@ -858,7 +858,7 @@ items:
       journalId: null
       journalPack: null
   - _id: I5uh5SiDwBvDFqY3
-    name: Celestial Lore - knowledge
+    name: Celestial Lore
     type: skill
     img: systems/rqg/assets/images/skills/celestial-lore.svg
     data:
@@ -873,7 +873,7 @@ items:
       journalId: null
       journalPack: null
   - _id: mKBnMyFhfX42pDJS
-    name: Scan - perception
+    name: Scan
     type: skill
     img: systems/rqg/assets/images/skills/scan.svg
     data:
@@ -888,7 +888,7 @@ items:
       journalId: null
       journalPack: null
   - _id: tbK1EUkg3yx7pzYR
-    name: Battle - knowledge
+    name: Battle
     type: skill
     img: systems/rqg/assets/images/skills/battle.svg
     data:
@@ -903,7 +903,7 @@ items:
       journalId: null
       journalPack: null
   - _id: EM8kj3NCT3jbwMTl
-    name: Survival - knowledge
+    name: Survival
     type: skill
     img: systems/rqg/assets/images/skills/survival.svg
     data:
@@ -918,7 +918,7 @@ items:
       journalId: null
       journalPack: null
   - _id: LvEamOfLVowXdQlf
-    name: Treat Disease - knowledge
+    name: Treat Disease
     type: skill
     img: systems/rqg/assets/images/skills/treat-disease.svg
     data:
@@ -933,7 +933,7 @@ items:
       journalId: null
       journalPack: null
   - _id: mNJqDf5fveztYCGP
-    name: First Aid - knowledge
+    name: First Aid
     type: skill
     img: systems/rqg/assets/images/skills/first-aid.svg
     data:
@@ -948,7 +948,7 @@ items:
       journalId: null
       journalPack: null
   - _id: hW6i6fOQLxPjIQ1C
-    name: Intrigue - communication
+    name: Intrigue
     type: skill
     img: systems/rqg/assets/images/skills/intrigue.svg
     data:
@@ -963,7 +963,7 @@ items:
       journalId: null
       journalPack: null
   - _id: iqmMhPKfG3EE4sWH
-    name: Mineral Lore - knowledge
+    name: Mineral Lore
     type: skill
     img: systems/rqg/assets/images/skills/mineral-lore.svg
     data:
@@ -978,7 +978,7 @@ items:
       journalId: null
       journalPack: null
   - _id: UNN9KL34Op7cCDYT
-    name: Game - knowledge
+    name: Game
     type: skill
     img: systems/rqg/assets/images/skills/game.svg
     data:
@@ -993,13 +993,13 @@ items:
       journalId: null
       journalPack: null
   - _id: QrHWcbmsHAOdUT0G
-    name: Craft (...) - manipulation
+    name: Craft (...)
     type: skill
     img: systems/rqg/assets/images/skills/craft.svg
     data:
       category: manipulation
       skillName: Craft
-      specialization: '...'
+      specialization: "..."
       baseChance: 10
       learnedChance: 0
       canGetExperience: true
@@ -1008,7 +1008,7 @@ items:
       journalId: null
       journalPack: null
   - _id: B7F0vOnVBX6Vbch1
-    name: Bargain - communication
+    name: Bargain
     type: skill
     img: systems/rqg/assets/images/skills/bargain.svg
     data:
@@ -1023,7 +1023,7 @@ items:
       journalId: null
       journalPack: null
   - _id: ehnhO4Gbila8OaoF
-    name: Conceal - manipulation
+    name: Conceal
     type: skill
     img: systems/rqg/assets/images/skills/conceal.svg
     data:
@@ -1038,13 +1038,13 @@ items:
       journalId: null
       journalPack: null
   - _id: WdkYZNktLLVefvCw
-    name: Homeland Lore, own (...) - knowledge
+    name: Homeland Lore, own (...)
     type: skill
     img: systems/rqg/assets/images/skills/homeland-lore.svg
     data:
       category: knowledge
       skillName: Homeland Lore, own
-      specialization: '...'
+      specialization: "..."
       baseChance: 30
       learnedChance: 30
       canGetExperience: false
@@ -1053,13 +1053,13 @@ items:
       journalId: null
       journalPack: null
   - _id: Eid6csaQBNBtggxK
-    name: Insight, own (...) - perception
+    name: Insight, own (...)
     type: skill
     img: systems/rqg/assets/images/skills/insight.svg
     data:
       category: perception
       skillName: Insight
-      specialization: '...'
+      specialization: "..."
       baseChance: 20
       learnedChance: 20
       canGetExperience: true
@@ -1068,7 +1068,7 @@ items:
       journalId: null
       journalPack: null
   - _id: kEzxhVUacWNBGeqd
-    name: Evaluate - knowledge
+    name: Evaluate
     type: skill
     img: systems/rqg/assets/images/skills/evaluate.svg
     data:
@@ -1083,7 +1083,7 @@ items:
       journalId: null
       journalPack: null
   - _id: MobiRRBJK9FxL15y
-    name: Dance - communication
+    name: Dance
     type: skill
     img: systems/rqg/assets/images/skills/dance.svg
     data:
@@ -1098,7 +1098,7 @@ items:
       journalId: null
       journalPack: null
   - _id: copAdXUMTyKJnXZO
-    name: Dodge - agility
+    name: Dodge
     type: skill
     img: systems/rqg/assets/images/skills/dodge.svg
     data:
@@ -1113,7 +1113,7 @@ items:
       journalId: null
       journalPack: null
   - _id: iamIUx7SzTh342wa
-    name: Boat - agility
+    name: Boat
     type: skill
     img: systems/rqg/assets/images/skills/boat.svg
     data:
@@ -1128,7 +1128,7 @@ items:
       journalId: null
       journalPack: null
   - _id: NKiWiWMN9joIt3Mb
-    name: Art - communication
+    name: Art
     type: skill
     img: systems/rqg/assets/images/skills/art.svg
     data:
@@ -1143,13 +1143,13 @@ items:
       journalId: null
       journalPack: null
   - _id: kpIQ6PeDpWQaQbW3
-    name: Worship (...) - magic
+    name: Worship (...)
     type: skill
     img: systems/rqg/assets/images/skills/worship.svg
     data:
       category: magic
       skillName: Worship
-      specialization: '...'
+      specialization: "..."
       baseChance: 5
       learnedChance: 5
       canGetExperience: true
@@ -1158,7 +1158,7 @@ items:
       journalId: null
       journalPack: null
   - _id: wcLsREzXQGJtSYR4
-    name: Herd - knowledge
+    name: Herd
     type: skill
     img: systems/rqg/assets/images/skills/herd.svg
     data:
@@ -1173,7 +1173,7 @@ items:
       journalId: null
       journalPack: null
   - _id: BVSr5VWVfduLneAe
-    name: Jump - agility
+    name: Jump
     type: skill
     img: systems/rqg/assets/images/skills/jump.svg
     data:
@@ -1188,7 +1188,7 @@ items:
       journalId: null
       journalPack: null
   - _id: AiZ5kq2BrisO9thM
-    name: Intimidate - communication
+    name: Intimidate
     type: skill
     img: systems/rqg/assets/images/skills/intimidate.svg
     data:
@@ -1203,13 +1203,13 @@ items:
       journalId: null
       journalPack: null
   - _id: qYeaXdjHR1EEXZt8
-    name: Ride (...) - agility
+    name: Ride (...)
     type: skill
     img: systems/rqg/assets/images/skills/ride.svg
     data:
       category: agility
       skillName: Ride
-      specialization: '...'
+      specialization: "..."
       baseChance: 5
       learnedChance: 5
       canGetExperience: true
@@ -1218,13 +1218,13 @@ items:
       journalId: null
       journalPack: null
   - _id: rA0kijB0mJ9881Q0
-    name: Cult Lore (...) - knowledge
+    name: Cult Lore (...)
     type: skill
     img: systems/rqg/assets/images/passion/devotion.svg
     data:
       category: knowledge
       skillName: Cult Lore
-      specialization: '...'
+      specialization: "..."
       baseChance: 5
       learnedChance: 5
       canGetExperience: false
@@ -1233,7 +1233,7 @@ items:
       journalId: null
       journalPack: null
   - _id: KfZACoLuzN4a0eCx
-    name: Manage Household - knowledge
+    name: Manage Household
     type: skill
     img: systems/rqg/assets/images/skills/manage-household.svg
     data:
@@ -1248,7 +1248,7 @@ items:
       journalId: null
       journalPack: null
   - _id: pemaQL31NYFbhqOH
-    name: Move Quietly - stealth
+    name: Move Quietly
     type: skill
     img: systems/rqg/assets/images/skills/move-quietly.svg
     data:
@@ -1341,7 +1341,7 @@ items:
       hitPoints:
         value: null
         max: null
-      hitPointLocation: '---'
+      hitPointLocation: "---"
       encumbrance: 0
       location: null
       attunedTo: null
@@ -1443,7 +1443,7 @@ items:
       isRangedWeapon: false
       projectileId: X7HintvqK3MCZxjz
   - _id: RU6jvy1QyOruzRaj
-    name: Demo Bow Skill - missileWeapons
+    name: Demo Bow Skill
     type: skill
     img: systems/rqg/assets/images/weapons/bowman.svg
     data:
@@ -1656,7 +1656,7 @@ items:
       isRangedWeapon: false
       projectileId: null
   - _id: wpQd8MIxLr964goo
-    name: Demo Sword Skill - meleeWeapons
+    name: Demo Sword Skill
     type: skill
     img: systems/rqg/assets/images/weapons/1h-sword.svg
     data:

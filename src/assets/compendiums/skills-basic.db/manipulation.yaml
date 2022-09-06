@@ -1,4 +1,4 @@
-name: Devise - manipulation
+name: Devise
 type: skill
 img: systems/rqg/assets/images/skills/devise.svg
 data:
@@ -15,7 +15,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Play Instrument (...) - manipulation
+name: Play Instrument (...)
 type: skill
 img: systems/rqg/assets/images/skills/play-instrument.svg
 data:
@@ -32,7 +32,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Sleight - manipulation
+name: Sleight
 type: skill
 img: systems/rqg/assets/images/skills/sleight.svg
 data:
@@ -49,7 +49,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Conceal - manipulation
+name: Conceal
 type: skill
 img: systems/rqg/assets/images/skills/conceal.svg
 data:
@@ -66,7 +66,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Craft (...) - manipulation
+name: Craft (...)
 type: skill
 img: systems/rqg/assets/images/skills/craft.svg
 data:

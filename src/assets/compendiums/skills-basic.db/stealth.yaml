@@ -1,4 +1,4 @@
-name: Move Quietly - stealth
+name: Move Quietly
 type: skill
 img: systems/rqg/assets/images/skills/move-quietly.svg
 data:
@@ -15,7 +15,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Hide - stealth
+name: Hide
 type: skill
 img: systems/rqg/assets/images/skills/hide.svg
 data:

@@ -1,4 +1,4 @@
-name: Insight, own (...) - perception
+name: Insight, own (...)
 type: skill
 img: systems/rqg/assets/images/skills/insight.svg
 data:
@@ -15,7 +15,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Listen - perception
+name: Listen
 type: skill
 img: systems/rqg/assets/images/skills/listen.svg
 data:
@@ -32,7 +32,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Scan - perception
+name: Scan
 type: skill
 img: systems/rqg/assets/images/skills/scan.svg
 data:
@@ -49,7 +49,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Search - perception
+name: Search
 type: skill
 img: systems/rqg/assets/images/skills/search.svg
 data:
@@ -66,7 +66,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Track - perception
+name: Track
 type: skill
 img: systems/rqg/assets/images/skills/track.svg
 data:

@@ -1,4 +1,4 @@
-name: Animal Lore - knowledge
+name: Animal Lore
 type: skill
 img: systems/rqg/assets/images/skills/animal-lore.svg
 data:
@@ -15,7 +15,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Battle - knowledge
+name: Battle
 type: skill
 img: systems/rqg/assets/images/skills/battle.svg
 data:
@@ -32,7 +32,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Celestial Lore - knowledge
+name: Celestial Lore
 type: skill
 img: systems/rqg/assets/images/skills/celestial-lore.svg
 data:
@@ -49,7 +49,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Cult Lore (...) - knowledge
+name: Cult Lore (...)
 type: skill
 img: systems/rqg/assets/images/passion/devotion.svg
 data:
@@ -66,7 +66,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Customs, own (...) - knowledge
+name: Customs, own (...)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Customs, own (Heortling) - knowledge
+name: Customs, own (Heortling)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
@@ -100,7 +100,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Elder Race Lore - knowledge
+name: Elder Race Lore
 type: skill
 img: systems/rqg/assets/images/skills/elder-race-lore.svg
 data:
@@ -117,7 +117,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Evaluate - knowledge
+name: Evaluate
 type: skill
 img: systems/rqg/assets/images/skills/evaluate.svg
 data:
@@ -134,7 +134,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Farm - knowledge
+name: Farm
 type: skill
 img: systems/rqg/assets/images/skills/farm.svg
 data:
@@ -151,7 +151,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: First Aid - knowledge
+name: First Aid
 type: skill
 img: systems/rqg/assets/images/skills/first-aid.svg
 data:
@@ -168,7 +168,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Game - knowledge
+name: Game
 type: skill
 img: systems/rqg/assets/images/skills/game.svg
 data:
@@ -185,7 +185,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Herd - knowledge
+name: Herd
 type: skill
 img: systems/rqg/assets/images/skills/herd.svg
 data:
@@ -202,7 +202,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Homeland Lore, own (...) - knowledge
+name: Homeland Lore, own (...)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
 data:
@@ -219,7 +219,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Manage Household - knowledge
+name: Manage Household
 type: skill
 img: systems/rqg/assets/images/skills/manage-household.svg
 data:
@@ -236,7 +236,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Mineral Lore - knowledge
+name: Mineral Lore
 type: skill
 img: systems/rqg/assets/images/skills/mineral-lore.svg
 data:
@@ -253,7 +253,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Peaceful Cut - knowledge
+name: Peaceful Cut
 type: skill
 img: systems/rqg/assets/images/skills/peaceful-cut.svg
 data:
@@ -270,7 +270,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Plant Lore - knowledge
+name: Plant Lore
 type: skill
 img: systems/rqg/assets/images/skills/plant-lore.svg
 data:
@@ -287,7 +287,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Survival - knowledge
+name: Survival
 type: skill
 img: systems/rqg/assets/images/skills/survival.svg
 data:
@@ -304,7 +304,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Treat Disease - knowledge
+name: Treat Disease
 type: skill
 img: systems/rqg/assets/images/skills/treat-disease.svg
 data:
@@ -321,7 +321,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Treat Poison - knowledge
+name: Treat Poison
 type: skill
 img: systems/rqg/assets/images/skills/treat-poison.svg
 data:

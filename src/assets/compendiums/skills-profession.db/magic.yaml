@@ -1,4 +1,4 @@
-name: Meditate - magic
+name: Meditate
 type: skill
 img: systems/rqg/assets/images/skills/meditate.svg
 data:
@@ -15,7 +15,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Sense Assassin - magic
+name: Sense Assassin
 type: skill
 img: systems/rqg/assets/images/skills/sense-assassin.svg
 data:
@@ -32,7 +32,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Sense Chaos - magic
+name: Sense Chaos
 type: skill
 img: systems/rqg/assets/images/skills/sense-chaos.svg
 data:
@@ -49,7 +49,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Spirit Dance - magic
+name: Spirit Dance
 type: skill
 img: systems/rqg/assets/images/skills/spirit-dance.svg
 data:
@@ -66,7 +66,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Spirit Lore - magic
+name: Spirit Lore
 type: skill
 img: systems/rqg/assets/images/skills/spirit-lore.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Understand Herd Beast - magic
+name: Understand Herd Beast
 type: skill
 img: systems/rqg/assets/images/skills/understand-herd-beast.svg
 data:

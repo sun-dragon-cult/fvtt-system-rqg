@@ -1,4 +1,4 @@
-name: Prepare Corpse - magic
+name: Prepare Corpse
 type: skill
 img: systems/rqg/assets/images/skills/prepare-corpse.svg
 data:
@@ -15,7 +15,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Spirit Combat - magic
+name: Spirit Combat
 type: skill
 img: systems/rqg/assets/images/skills/spirit-combat.svg
 data:
@@ -32,7 +32,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Spirit Travel - magic
+name: Spirit Travel
 type: skill
 img: systems/rqg/assets/images/skills/spirit-travel.svg
 data:
@@ -49,7 +49,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Worship (...) - magic
+name: Worship (...)
 type: skill
 img: systems/rqg/assets/images/skills/worship.svg
 data:

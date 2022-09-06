@@ -1,4 +1,4 @@
-name: Act - communication
+name: Act
 type: skill
 img: systems/rqg/assets/images/skills/act.svg
 data:
@@ -15,7 +15,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Art - communication
+name: Art
 type: skill
 img: systems/rqg/assets/images/skills/art.svg
 data:
@@ -32,7 +32,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Bargain - communication
+name: Bargain
 type: skill
 img: systems/rqg/assets/images/skills/bargain.svg
 data:
@@ -49,7 +49,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Charm - communication
+name: Charm
 type: skill
 img: systems/rqg/assets/images/skills/charm.svg
 data:
@@ -66,7 +66,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Dance - communication
+name: Dance
 type: skill
 img: systems/rqg/assets/images/skills/dance.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Disguise - communication
+name: Disguise
 type: skill
 img: systems/rqg/assets/images/skills/disguise.svg
 data:
@@ -100,7 +100,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Fast Talk - communication
+name: Fast Talk
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -117,7 +117,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Intimidate - communication
+name: Intimidate
 type: skill
 img: systems/rqg/assets/images/skills/intimidate.svg
 data:
@@ -134,7 +134,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Intrigue - communication
+name: Intrigue
 type: skill
 img: systems/rqg/assets/images/skills/intrigue.svg
 data:
@@ -151,7 +151,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Orate - communication
+name: Orate
 type: skill
 img: systems/rqg/assets/images/skills/orate.svg
 data:
@@ -168,7 +168,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Sing - communication
+name: Sing
 type: skill
 img: systems/rqg/assets/images/skills/sing.svg
 data:
@@ -185,7 +185,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Speak Own Language (...) - communication
+name: Speak Own Language (...)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -202,7 +202,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Speak Own Language (Heortling) - communication
+name: Speak Own Language (Heortling)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -219,7 +219,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Speak Other Language (...) - communication
+name: Speak Other Language (...)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -236,7 +236,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: Speak Other Language (Tradetalk) - communication
+name: Speak Other Language (Tradetalk)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:

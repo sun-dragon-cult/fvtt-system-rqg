@@ -1,5 +1,5 @@
 _id: l1ppQI75agqD5w3e
-name: Demo Sword Skill - meleeWeapons
+name: Demo Sword Skill
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 data:
@@ -12,11 +12,11 @@ data:
   hasExperience: false
   runes: []
 flags:
-    rqg:
-      documentRqidFlags:
-        id: i.skill.demo-sword-skill
-        lang: en
-        priority: 0
+  rqg:
+    documentRqidFlags:
+      id: i.skill.demo-sword-skill
+      lang: en
+      priority: 0
 ---
 name: Demo Arrows
 type: weapon
@@ -254,7 +254,7 @@ flags:
       priority: 0
 ---
 _id: wlxabuWq6ImK7mTR
-name: Demo Bow Skill - missileWeapons
+name: Demo Bow Skill
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 data:

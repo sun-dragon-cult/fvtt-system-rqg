@@ -20,10 +20,10 @@ export const RQG_CONFIG = {
 
   // Skill items that need special handling
   skillName: {
-    dodge: "Dodge - agility",
-    jump: "Jump - agility",
-    moveQuietly: "Move Quietly - stealth",
-    spiritCombat: "Spirit Combat - magic",
+    dodge: "Dodge",
+    jump: "Jump",
+    moveQuietly: "Move Quietly",
+    spiritCombat: "Spirit Combat",
   },
 
   // Default Combat Maneuvers for weapon items
