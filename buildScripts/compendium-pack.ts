@@ -3,7 +3,6 @@ import * as path from "path";
 import * as yaml from "js-yaml";
 import * as crypto from "crypto";
 import { i18nDir, outDir, packsMetadata } from "./buildPacks";
-import { lookup } from "./translate";
 
 export interface PackMetadata {
   system: string;
@@ -114,7 +113,6 @@ export class CompendiumPack {
 
             if (!translation) {
               console.error(match, "translation key missing in language", lang);
-              // errors.push([match, "translation missing in", locale]);
             } else {
               localizationMatchCount++;
             }
@@ -173,6 +171,21 @@ export class CompendiumPack {
   private isPackData(packData: unknown[]): packData is CompendiumSource[] {
     return packData.every((maybeDocSource: unknown) => this.isDocumentSource(maybeDocSource));
   }
+}
+
+/**
+ * Translate a key given a dictionary.
+ * @param {obj} dict dictionary object
+ * @return {string} translated text
+ */
+function lookup(dict: any, key: string): string {
+  const keyParts = key.split(".");
+
+  const value = keyParts.reduce(function (acc, keyPart) {
+    return (acc || {})[keyPart];
+  }, dict);
+
+  return value;
 }
 
 export function isObject(value: unknown): boolean {
