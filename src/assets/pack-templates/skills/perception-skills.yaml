@@ -1,5 +1,5 @@
 # insight
-name: ${{openSystem.content.skill.insight.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.insight.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/insight.svg
 data:
@@ -20,7 +20,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # listen
-name: ${{openSystem.content.skill.listen.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.listen.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/listen.svg
 data:
@@ -41,7 +41,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # scan
-name: ${{openSystem.content.skill.scan.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.scan.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/scan.svg
 data:
@@ -62,7 +62,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # search
-name: ${{openSystem.content.skill.search.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.search.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/search.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # track
-name: ${{openSystem.content.skill.track.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.track.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/track.svg
 data:
@@ -104,7 +104,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 #track-by-scent
-name: ${{openSystem.content.skill.track.skillName}}$ (${{openSystem.content.skill.track.specialization.scent}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.track.skillName}}$ (${{openSystem.content.skill.track.specialization.scent}}$)
 type: skill
 img: systems/rqg/assets/images/skills/track-by-scent.svg
 data:

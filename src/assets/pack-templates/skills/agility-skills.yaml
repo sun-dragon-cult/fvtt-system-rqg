@@ -1,5 +1,5 @@
 # boat
-name: ${{openSystem.content.skill.boat.skillName}}$ - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.boat.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/boat.svg
 data:
@@ -20,7 +20,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # climb
-name: ${{openSystem.content.skill.climb.skillName}}$ - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.climb.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/climb.svg
 data:
@@ -41,7 +41,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # dodge
-name: ${{openSystem.content.skill.dodge.skillName}}$ - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.dodge.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/dodge.svg
 data:
@@ -65,7 +65,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # drive-chariot
-name: ${{openSystem.content.skill.driveChariot.skillName}}$ - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.driveChariot.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/drive.svg
 data:
@@ -86,7 +86,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # jump
-name: ${{openSystem.content.skill.jump.skillName}}$ - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.jump.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/jump.svg
 data:
@@ -110,7 +110,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # ride
-name: ${{openSystem.content.skill.ride.skillName}}$ (...) - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.ride.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/ride.svg
 data:
@@ -131,7 +131,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # swim
-name: ${{openSystem.content.skill.swim.skillName}}$ - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.swim.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/swim.svg
 data:

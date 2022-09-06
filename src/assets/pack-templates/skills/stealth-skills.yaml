@@ -1,5 +1,5 @@
 # hide
-name: ${{openSystem.content.skill.hide.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.hide.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/hide.svg
 data:
@@ -20,7 +20,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # move-quietly
-name: ${{openSystem.content.skill.moveQuietly.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.moveQuietly.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/move-quietly.svg
 data:

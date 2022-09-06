@@ -1,5 +1,5 @@
 # worship
-name: ${{openSystem.content.skill.worship.skillName}}$ (${{openSystem.content.cult.orlanth.name}}$) - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.worship.skillName}}$ (${{openSystem.content.cult.orlanth.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/worship.svg
 data:

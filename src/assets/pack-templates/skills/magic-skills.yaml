@@ -1,5 +1,5 @@
 # meditate
-name: ${{openSystem.content.skill.meditate.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.meditate.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/meditate.svg
 data:
@@ -20,7 +20,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # prepare-corpse
-name: ${{openSystem.content.skill.prepareCorpse.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.prepareCorpse.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/prepare-corpse.svg
 data:
@@ -41,7 +41,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # sense-assassin
-name: ${{openSystem.content.skill.senseAssassin.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.senseAssassin.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sense-assassin.svg
 data:
@@ -62,7 +62,7 @@ flags:
       lang: ${{openSystem.lang}}$
 # sense-chaos
 ---
-name: ${{openSystem.content.skill.senseChaos.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.senseChaos.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sense-chaos.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # spirit-combat
-name: ${{openSystem.content.skill.spiritCombat.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.spiritCombat.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-combat.svg
 data:
@@ -104,7 +104,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # spirit-dance
-name: ${{openSystem.content.skill.spiritDance.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.spiritDance.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-dance.svg
 data:
@@ -125,7 +125,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # spirit-lore
-name: ${{openSystem.content.skill.spiritLore.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.spiritLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-lore.svg
 data:
@@ -146,7 +146,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # spirit-travel
-name: ${{openSystem.content.skill.spiritTravel.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.spiritTravel.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-travel.svg
 data:
@@ -167,7 +167,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 ### understand-heard-beast
-name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$ - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/understand-herd-beast.svg
 data:
@@ -188,7 +188,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # worship
-name: ${{openSystem.content.skill.worship.skillName}}$ (...) - ${{openSystem.content.skillCategory.magic.name}}$
+name: ${{openSystem.content.skill.worship.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/worship.svg
 data:

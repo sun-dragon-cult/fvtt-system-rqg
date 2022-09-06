@@ -1,5 +1,5 @@
 # customs-esrolia
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.esrolia.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.esrolia.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
@@ -20,7 +20,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # customs-grazelands
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.grazelands.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.grazelands.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
@@ -41,7 +41,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # customs-lunar-tarsh
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.lunarTarsh.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.lunarTarsh.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
@@ -62,7 +62,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # customs-old-tarsh
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.oldTarsh.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.oldTarsh.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # customs-prax
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.prax.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.prax.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
@@ -104,7 +104,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # customs-sartar
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.sartar.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.sartar.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:

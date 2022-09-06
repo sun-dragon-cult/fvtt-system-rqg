@@ -1,5 +1,5 @@
 # alchemy
-name: ${{openSystem.content.skill.alchemy.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.alchemy.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/alchemy.svg
 data:
@@ -20,7 +20,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # animal-lore
-name: ${{openSystem.content.skill.animalLore.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.animalLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/animal-lore.svg
 data:
@@ -41,7 +41,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # bureaucracy
-name: ${{openSystem.content.skill.bureaucracy.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.bureaucracy.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/bureaucracy.svg
 data:
@@ -62,7 +62,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # battle
-name: ${{openSystem.content.skill.battle.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.battle.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/battle.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # celestial-lore
-name: ${{openSystem.content.skill.celestialLore.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.celestialLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/celestial-lore.svg
 data:
@@ -104,7 +104,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # cult-lore
-name: ${{openSystem.content.skill.cultLore.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.cultLore.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/passion/devotion.svg
 data:
@@ -125,7 +125,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # customs
-name: ${{openSystem.content.skill.customs.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.customs.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 data:
@@ -146,7 +146,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # elder-race-lore
-name: ${{openSystem.content.skill.elderRaceLore.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.elderRaceLore.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/elder-race-lore.svg
 data:
@@ -167,7 +167,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # evaluate
-name: ${{openSystem.content.skill.evaluate.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.evaluate.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/evaluate.svg
 data:
@@ -188,7 +188,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # farm
-name: ${{openSystem.content.skill.farm.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.farm.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/farm.svg
 data:
@@ -209,7 +209,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # first-aid
-name: ${{openSystem.content.skill.firstAid.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.firstAid.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/first-aid.svg
 data:
@@ -230,7 +230,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # game
-name: ${{openSystem.content.skill.game.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.game.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/game.svg
 data:
@@ -251,7 +251,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # herd
-name: ${{openSystem.content.skill.herd.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.herd.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/herd.svg
 data:
@@ -272,7 +272,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # homeland-lore
-name: ${{openSystem.content.skill.homelandLore.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.homelandLore.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
 data:
@@ -293,7 +293,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 ### library-use
-name: ${{openSystem.content.skill.libraryUse.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.libraryUse.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/library-use.svg
 data:
@@ -314,7 +314,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # lore
-name: ${{openSystem.content.skill.lore.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.lore.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/lore.svg
 data:
@@ -335,7 +335,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # manage-household
-name: ${{openSystem.content.skill.manageHousehold.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.manageHousehold.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/manage-household.svg
 data:
@@ -356,7 +356,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # mineral-lore
-name: ${{openSystem.content.skill.mineralLore.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.mineralLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/mineral-lore.svg
 data:
@@ -377,7 +377,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # peaceful-cut
-name: ${{openSystem.content.skill.peacefulCut.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.peacefulCut.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/peaceful-cut.svg
 data:
@@ -398,7 +398,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # plant-lore
-name: ${{openSystem.content.skill.plantLore.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.plantLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/plant-lore.svg
 data:
@@ -418,7 +418,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
-name: ${{openSystem.content.skill.readWrite.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
 data:
@@ -442,7 +442,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # survival
-name: ${{openSystem.content.skill.survival.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.survival.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/survival.svg
 data:
@@ -463,7 +463,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # shiphandling
-name: ${{openSystem.content.skill.shiphandling.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.shiphandling.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/shiphandling.svg
 data:
@@ -484,7 +484,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # treat-disease
-name: ${{openSystem.content.skill.treatDisease.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.treatDisease.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/treat-disease.svg
 data:
@@ -505,7 +505,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # treat-poison
-name: ${{openSystem.content.skill.treatPoison.skillName}}$ - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.treatPoison.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/treat-poison.svg
 data:

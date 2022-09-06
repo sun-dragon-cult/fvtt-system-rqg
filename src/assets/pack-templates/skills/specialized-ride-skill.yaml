@@ -1,5 +1,5 @@
 # ride-bison
-name: ${{openSystem.content.skill.ride.skillName}}$ (${{openSystem.content.skill.ride.specialization.bison}}$) - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.ride.skillName}}$ (${{openSystem.content.skill.ride.specialization.bison}}$)
 type: skill
 img: systems/rqg/assets/images/skills/ride.svg
 data:
@@ -20,7 +20,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # ride-horse
-name: ${{openSystem.content.skill.ride.skillName}}$ (${{openSystem.content.skill.ride.specialization.horse}}$) - ${{openSystem.content.skillCategory.agility.name}}$
+name: ${{openSystem.content.skill.ride.skillName}}$ (${{openSystem.content.skill.ride.specialization.horse}}$)
 type: skill
 img: systems/rqg/assets/images/skills/ride.svg
 data:

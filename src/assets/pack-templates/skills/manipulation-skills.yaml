@@ -1,5 +1,5 @@
 # conceal
-name: ${{openSystem.content.skill.conceal.skillName}}$ - ${{openSystem.content.skillCategory.manipulation.name}}$
+name: ${{openSystem.content.skill.conceal.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/conceal.svg
 data:
@@ -20,7 +20,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # craft
-name: ${{openSystem.content.skill.craft.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.craft.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/craft.svg
 data:
@@ -41,7 +41,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # devise
-name: ${{openSystem.content.skill.devise.skillName}}$ - ${{openSystem.content.skillCategory.manipulation.name}}$
+name: ${{openSystem.content.skill.devise.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/devise.svg
 data:
@@ -62,7 +62,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # play instrument
-name: ${{openSystem.content.skill.playInstrument.skillName}}$ (...) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.playInstrument.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/play-instrument.svg
 data:
@@ -83,7 +83,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # sleight
-name: ${{openSystem.content.skill.sleight.skillName}}$ - ${{openSystem.content.skillCategory.manipulation.name}}$
+name: ${{openSystem.content.skill.sleight.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sleight.svg
 data:

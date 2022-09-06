@@ -1,5 +1,5 @@
 # read-write-esrolian
-name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.esrolian.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.esrolian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
 data:
@@ -23,7 +23,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # read-write-heorting
-name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.heortling.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.heortling.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
 data:
@@ -47,7 +47,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # read-write-new-pelorian
-name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
 data:
@@ -71,7 +71,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # read-write-praxian
-name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.praxian.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.praxian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
 data:
@@ -95,7 +95,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # read-write-pure-horse-tongue
-name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.pureHorseTongue.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.pureHorseTongue.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
 data:
@@ -119,7 +119,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # read-write-tarshite
-name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.tarshite.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.tarshite.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
 data:
@@ -143,7 +143,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # read-write-tradetalk
-name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.tradetalk.name}}$) - ${{openSystem.content.skillCategory.knowledge.name}}$
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.tradetalk.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
 data:
@@ -167,7 +167,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # speak-language-esrolian
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.esrolian.name}}$) - ${{openSystem.content.skillCategory.communication.name}}$
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.esrolian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -188,7 +188,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # speak-language-heortling
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.heortling.name}}$) - ${{openSystem.content.skillCategory.communication.name}}$
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.heortling.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -209,7 +209,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # speak-language-new-pelorian
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$) - ${{openSystem.content.skillCategory.communication.name}}$
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -230,7 +230,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # speak-language-praxian
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.praxian.name}}$) - ${{openSystem.content.skillCategory.communication.name}}$
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.praxian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -251,7 +251,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # speak-language-pure-horse-tongue
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.pureHorseTongue.name}}$) - ${{openSystem.content.skillCategory.communication.name}}$
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.pureHorseTongue.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -272,7 +272,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # speak-language-stormspeech
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.stormspeech.name}}$) - ${{openSystem.content.skillCategory.communication.name}}$
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.stormspeech.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -293,7 +293,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # speak-language-tarshite
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.tarshite.name}}$) - ${{openSystem.content.skillCategory.communication.name}}$
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.tarshite.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
@@ -314,7 +314,7 @@ flags:
       lang: ${{openSystem.lang}}$
 ---
 # speak-language-tradetalk
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.tradetalk.name}}$) - ${{openSystem.content.skillCategory.communication.name}}$
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.tradetalk.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
 data:
