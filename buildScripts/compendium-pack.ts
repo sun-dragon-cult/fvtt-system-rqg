@@ -49,22 +49,10 @@ export class CompendiumPack {
     }
 
     this.packDir = packDir;
-
-    // CompendiumPack.namesToIds.set(this.name, new Map());
-    // const packMap = CompendiumPack.namesToIds.get(this.name);
-    // if (!packMap) {
-    //   throw PackError(`Compendium ${this.name} (${packDir}) was not found.`);
-    // }
-
     this.data = parsedData;
   }
 
   static loadYAML(dirPath: string): CompendiumPack {
-    // if (!dirPath.replace(/\/$/, "").endsWith(".db")) {
-    //   const dirName = path.basename(dirPath);
-    //   throw PackError(`JSON directory (${dirName}) does not end in ".db"`);
-    // }
-
     const filenames = fs.readdirSync(dirPath);
     const filePaths = filenames.map((filename) => path.resolve(dirPath, filename));
     const parsedData: unknown[] = filePaths.map((filePath) => {
