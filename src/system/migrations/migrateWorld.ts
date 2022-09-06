@@ -10,6 +10,7 @@ import { renameDragonewt } from "./migrations-item/renameDragonewt";
 import { useRqidDescriptionLinks } from "./migrations-item/migrateDescriptionLinks";
 import { renameFireSky } from "./migrations-item/renameFireSky";
 import { assignRqidToJEs } from "./assignRqidToJEs";
+import { trimCategoryFromSkillNames } from "./migrations-item/trimCategoryFromSkillNames";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -20,8 +21,7 @@ export async function migrateWorld(): Promise<void> {
   ) {
     await confirmRunAssignRqidDialog(getGame().system.data.version);
     ui.notifications?.info(
-      `Applying RQG System Migration for version ${
-        getGame().system.data.version
+      `Applying RQG System Migration for version ${getGame().system.data.version
       }. Please be patient and do not close your game or shut down your server.`,
       { permanent: true }
     );
@@ -59,6 +59,7 @@ export async function applyDefaultWorldMigrations(
     renameDragonewt,
     renameFireSky,
     useRqidDescriptionLinks,
+    trimCategoryFromSkillNames,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 
