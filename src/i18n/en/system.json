@@ -1053,10 +1053,6 @@
       }
     },
     "Settings": {
-      "WorldLanguage": {
-        "settingName": "World Language",
-        "settingHint": "This is the language the game will be played in. It affects which compendium packs and journal descriptions are shown. It is recommended, but not strictly necessary, that all players have this language selected as their Foundry language."
-      },
       "HitLocations": {
         "dialogTitle": "Hit Location Name Settings",
         "settingName": "Hit Location Names",
@@ -1069,6 +1065,18 @@
         "settingName": "Default Item Icons",
         "settingLabel": "Configure Default Icons for new Items",
         "settingHint": "Set the default icons used when creating new items."
+      },
+      "WorldLanguage": {
+        "settingName": "World Language",
+        "settingHint": "This is the language the game will be played in. It affects which compendium packs and journal descriptions are shown. It is recommended, but not strictly necessary, that all players have this language selected as their 'Core Settings Language Preference'."
+      },
+      "ShowOnlyWorldLanguagePacks": {
+        "settingName": "Filter compendium packs",
+        "settingHint": "Show only system provided compendium packs in the language defined in the 'World Language' setting, hiding the compendium packs provided by the system in other languages. If the selected language is not available the English compendium packs will be shown."
+      },
+      "ShowEnglishLanguagePacksAlso": {
+        "settingName": "English compendium packs",
+        "settingHint": "Show the English compendium packs in addition to the selected 'World Language'."
       },
       "FumbleRollTable": {
         "settingName": "Fumble Roll Table",

@@ -12,6 +12,14 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
     // Filter packs for visibility updated from Foundry - the rest is a copy
 
     const requestedLang = getGame().settings.get(systemId, "worldLanguage");
+    const showOnlyWorldLanguagePacks = getGame().settings.get(
+      systemId,
+      "showOnlyWorldLanguagePacks"
+    );
+    const showEnglishLanguagePacksAlso = getGame().settings.get(
+      systemId,
+      "showEnglishLanguagePacksAlso"
+    );
     const requestedLangRegex = new RegExp(`(.*)-(${requestedLang})$`);
     const englishRegex = /.*-en$/;
     const splitRegex = new RegExp(`(.*)-(..)$`);
@@ -43,14 +51,20 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
         return hasAccess; // Include all non system packs the user should have access to
       }
 
-      const isInRequestedLang = requestedLangRegex.test(p.metadata.name);
       const isEnglish = englishRegex.test(p.metadata.name);
+      const isInRequestedLang =
+        !showOnlyWorldLanguagePacks || requestedLangRegex.test(p.metadata.name);
       const shouldFallBack =
         !isInRequestedLang &&
         !sortedSystemPacks[p.metadata.name.match(splitRegex)[1]][requestedLang];
 
       // Only show system packs in the requested language
-      return hasAccess && (isInRequestedLang || (shouldFallBack && isEnglish));
+      return (
+        hasAccess &&
+        (isInRequestedLang ||
+          (shouldFallBack && isEnglish) ||
+          (showEnglishLanguagePacksAlso && isEnglish))
+      );
     });
 
     // vvv  copied from foundry below  vvv

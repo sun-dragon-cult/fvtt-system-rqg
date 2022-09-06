@@ -323,6 +323,155 @@
       "system": "rqg",
       "path": "assets/packs/tribe-descriptions-sv.db",
       "type": "JournalEntry"
+    },
+
+
+    {
+      "name": "clan-descriptions-es",
+      "label": "Clan Descriptions | es",
+      "system": "rqg",
+      "path": "assets/packs/clan-descriptions-es.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "combat-fumble-es",
+      "label": "Combat Fumble | es",
+      "system": "rqg",
+      "path": "assets/packs/combat-fumble-es.db",
+      "type": "RollTable"
+    },
+    {
+      "name": "cult-descriptions-es",
+      "label": "Cult Descriptions | es",
+      "system": "rqg",
+      "path": "assets/packs/cult-descriptions-es.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "cults-es",
+      "label": "Cults | es",
+      "system": "rqg",
+      "path": "assets/packs/cults-es.db",
+      "type": "Item"
+    },
+    {
+      "name": "culture-descriptions-es",
+      "label": "Culture Descriptions | es",
+      "system": "rqg",
+      "path": "assets/packs/culture-descriptions-es.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "demo-items-es",
+      "label": "Demo | es",
+      "system": "rqg",
+      "path": "assets/packs/demo-items-es.db",
+      "type": "Item"
+    },
+    {
+      "name": "demo-actors-es",
+      "label": "Demo Actors | es",
+      "system": "rqg",
+      "path": "assets/packs/demo-actors-es.db",
+      "type": "Actor"
+    },
+    {
+      "name": "name-bases-es",
+      "label": "Name Bases | es",
+      "system": "rqg",
+      "path": "assets/packs/name-bases-es.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "name-tables-es",
+      "label": "Name Tables | es",
+      "system": "rqg",
+      "path": "assets/packs/name-tables-es.db",
+      "type": "RollTable"
+    },
+    {
+      "name": "homeland-descriptions-es",
+      "label": "Homeland Descriptions | es",
+      "system": "rqg",
+      "path": "assets/packs/homeland-descriptions-es.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "homelands-es",
+      "label": "Homelands | es",
+      "system": "rqg",
+      "path": "assets/packs/homelands-es.db",
+      "type": "Item"
+    },
+    {
+      "name": "human-hit-locations-es",
+      "label": "Human Hitlocations | es",
+      "system": "rqg",
+      "path": "assets/packs/human-hit-locations-es.db",
+      "type": "Item"
+    },
+    {
+      "name": "passions-es",
+      "label": "Passions | es",
+      "system": "rqg",
+      "path": "assets/packs/passions-es.db",
+      "type": "Item"
+    },
+    {
+      "name": "pc-runes-es",
+      "label": "Runes (Player Character) | es",
+      "system": "rqg",
+      "path": "assets/packs/pc-runes-es.db",
+      "type": "Item"
+    },
+    {
+      "name": "region-descriptions-es",
+      "label": "Region Descriptions | es",
+      "system": "rqg",
+      "path": "assets/packs/region-descriptions-es.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "rune-descriptions-es",
+      "label": "Rune Descriptions | es",
+      "system": "rqg",
+      "path": "assets/packs/rune-descriptions-es.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "runes-es",
+      "label": "Runes (All) | es",
+      "system": "rqg",
+      "path": "assets/packs/runes-es.db",
+      "type": "Item"
+    },
+    {
+      "name": "skills-es",
+      "label": "Skills | es",
+      "system": "rqg",
+      "path": "assets/packs/skills-es.db",
+      "type": "Item"
+    },
+    {
+      "name": "species-descriptions-es",
+      "label": "Species Descriptions | es",
+      "system": "rqg",
+      "path": "assets/packs/species-descriptions-es.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "species-templates-es",
+      "label": "Species Templates | es",
+      "system": "rqg",
+      "path": "assets/packs/species-templates-es.db",
+      "type": "Actor"
+    },
+    {
+      "name": "tribe-descriptions-es",
+      "label": "Tribe Descriptions | es",
+      "system": "rqg",
+      "path": "assets/packs/tribe-descriptions-es.db",
+      "type": "JournalEntry"
     }
   ],
   "languages": [

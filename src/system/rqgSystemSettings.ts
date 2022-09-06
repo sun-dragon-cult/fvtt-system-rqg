@@ -6,18 +6,6 @@ import { systemId } from "./config";
 import { defaultItemIconsObject } from "./settings/defaultItemIcons";
 
 export const registerRqgSystemSettings = function () {
-  getGame().settings.register(systemId, "worldLanguage", {
-    name: "RQG.Settings.WorldLanguage.settingName",
-    hint: "RQG.Settings.WorldLanguage.settingHint",
-    scope: "world",
-    config: true,
-    type: String,
-    // @ts-expect-error
-    choices: CONFIG.supportedLanguages,
-    default: "en",
-    onChange: () => window.location.reload(),
-  });
-
   getGame().settings.registerMenu(systemId, "hitLocations", {
     name: "RQG.Settings.HitLocations.settingName",
     label: "RQG.Settings.HitLocations.settingLabel",
@@ -48,6 +36,38 @@ export const registerRqgSystemSettings = function () {
     config: false,
     type: Object as any, // TODO how to type?
     default: defaultItemIconsObject,
+  });
+
+  getGame().settings.register(systemId, "worldLanguage", {
+    name: "RQG.Settings.WorldLanguage.settingName",
+    hint: "RQG.Settings.WorldLanguage.settingHint",
+    scope: "world",
+    config: true,
+    type: String,
+    // @ts-expect-error
+    choices: CONFIG.supportedLanguages,
+    default: "en",
+    onChange: () => setTimeout(() => window.location.reload(), 200),
+  });
+
+  getGame().settings.register(systemId, "showOnlyWorldLanguagePacks", {
+    name: "RQG.Settings.ShowOnlyWorldLanguagePacks.settingName",
+    hint: "RQG.Settings.ShowOnlyWorldLanguagePacks.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => setTimeout(() => window.location.reload(), 200),
+  });
+
+  getGame().settings.register(systemId, "showEnglishLanguagePacksAlso", {
+    name: "RQG.Settings.ShowEnglishLanguagePacksAlso.settingName",
+    hint: "RQG.Settings.ShowEnglishLanguagePacksAlso.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: () => setTimeout(() => window.location.reload(), 200),
   });
 
   getGame().settings.register(systemId, "fumbleRollTable", {
