@@ -52,7 +52,7 @@ export class Rqid {
   /**
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
    * found return the highest priority Document matching the supplied rqid and lang from the installed Compendia.
-   * If lang parameter is not supplied the users selected language will be used.
+   * If lang parameter is not supplied the language selected for the world will be used.
    */
   public static async fromRqid(
     rqid: string | undefined,
