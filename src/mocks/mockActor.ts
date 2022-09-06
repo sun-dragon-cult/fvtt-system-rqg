@@ -6,7 +6,7 @@ const embeddedItems = [
     type: "skill",
     data: {
       _id: "Jq9Xav1BWcoHQFSy",
-      name: "Spirit Combat - magic",
+      name: "Spirit Combat",
       type: "skill",
       img: "modules/rqg-core/assets/skills/Spirit.png",
       data: {

@@ -88,7 +88,7 @@ token:
     attribute: attributes.magicPoints.value
   randomImg: false
 items:
-  - name: Spirit Combat - magic
+  - name: Spirit Combat
     type: skill
     img: systems/rqg/assets/images/skills/spirit-combat.svg
     data:

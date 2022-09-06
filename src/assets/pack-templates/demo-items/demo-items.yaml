@@ -1,4 +1,4 @@
-name: Demo Sword Skill - meleeWeapons
+name: Demo Sword Skill
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 data:
@@ -14,8 +14,8 @@ flags:
     rqg:
       documentRqidFlags:
         id: i.skill.demo-sword-skill
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+        lang: ${{openSystem.lang}}$
+        priority: ${{openSystem.prio}}$
 ---
 name: Demo Arrows
 type: weapon
@@ -252,7 +252,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Demo Bow Skill - missileWeapons
+name: Demo Bow Skill
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 data:
