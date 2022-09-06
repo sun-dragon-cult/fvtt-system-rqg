@@ -1,0 +1,251 @@
+# act
+name: ${{openSystem.content.skill.act.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/act.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.act.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..act
+    name: ${{openSystem.content.skill.act.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.act
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# art
+name: ${{openSystem.content.skill.art.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/art.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.art.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..art
+    name: ${{openSystem.content.skill.art.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.art
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# bargain
+name: ${{openSystem.content.skill.bargain.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/bargain.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.bargain.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..bargain
+    name: ${{openSystem.content.skill.bargain.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.bargain
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# charm
+name: ${{openSystem.content.skill.charm.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/charm.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.charm.skillName}}$
+  specialization:
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..charm
+    name: ${{openSystem.content.skill.charm.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.charm
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# dance
+name: ${{openSystem.content.skill.dance.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/dance.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.dance.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..dance
+    name: ${{openSystem.content.skill.dance.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.dance
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# disguise
+name: ${{openSystem.content.skill.disguise.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/disguise.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.disguise.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..disguise
+    name: ${{openSystem.content.skill.disguise.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.disguise
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# fast-talk
+name: ${{openSystem.content.skill.fastTalk.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.fastTalk.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..fast-talk
+    name: ${{openSystem.content.skill.fastTalk.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.fast-talk
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# intimidate
+name: ${{openSystem.content.skill.intimidate.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/intimidate.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.intimidate.skillName}}$
+  specialization:
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..intimidate
+    name: ${{openSystem.content.skill.intimidate.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.intimidate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# intrigue
+name: ${{openSystem.content.skill.intrigue.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/intrigue.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.intrigue.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..intrigue
+    name: ${{openSystem.content.skill.intrigue.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.intrigue
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# orate
+name: ${{openSystem.content.skill.orate.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/orate.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.orate.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..orate
+    name: ${{openSystem.content.skill.orate.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.orate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# sing
+name: ${{openSystem.content.skill.sing.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/sing.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.sing.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..sing
+    name: ${{openSystem.content.skill.sing.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.sing
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (...)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: "..."
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

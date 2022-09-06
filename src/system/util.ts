@@ -510,7 +510,7 @@ export function localize(key: string, data?: Record<string, unknown>): string {
   const result = getGame().i18n.format(key, data);
   if (result === key) {
     console.log(
-      `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/system.json).`
+      `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/openSystem.json).`
     );
   }
   return result;

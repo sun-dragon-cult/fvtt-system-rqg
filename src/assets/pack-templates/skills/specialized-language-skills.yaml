@@ -1,0 +1,335 @@
+# read-write-esrolian
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.esrolian.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.esrolian.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-esrolian
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# read-write-heorting
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.heortling.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.heortling.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-heortling
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# read-write-new-pelorian
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.newPelorian.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-new-pelorian
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# read-write-praxian
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.praxian.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.praxian.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-praxian
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# read-write-pure-horse-tongue
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.pureHorseTongue.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.pureHorseTongue.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-pure-horse-tongue
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# read-write-tarshite
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.tarshite.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.tarshite.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-tarshite
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# read-write-tradetalk
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.tradetalk.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.tradetalk.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-tradetalk
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-esrolian
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.esrolian.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.esrolian.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-esrolian
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-heortling
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.heortling.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.heortling.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-heortling
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-new-pelorian
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.newPelorian.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-new-pelorian
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-praxian
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.praxian.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.praxian.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-praxian
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-pure-horse-tongue
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.pureHorseTongue.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.pureHorseTongue.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-pure-horse-tongue
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-stormspeech
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.stormspeech.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.stormspeech.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-stormspeech
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-tarshite
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.tarshite.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.tarshite.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-tarshite
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-tradetalk
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.tradetalk.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.tradetalk.name}}$
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-tradetalk
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

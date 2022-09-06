@@ -38,6 +38,38 @@ export const registerRqgSystemSettings = function () {
     default: defaultItemIconsObject,
   });
 
+  getGame().settings.register(systemId, "worldLanguage", {
+    name: "RQG.Settings.WorldLanguage.settingName",
+    hint: "RQG.Settings.WorldLanguage.settingHint",
+    scope: "world",
+    config: true,
+    type: String,
+    // @ts-expect-error
+    choices: CONFIG.supportedLanguages,
+    default: "en",
+    onChange: () => setTimeout(() => window.location.reload(), 200),
+  });
+
+  getGame().settings.register(systemId, "showOnlyWorldLanguagePacks", {
+    name: "RQG.Settings.ShowOnlyWorldLanguagePacks.settingName",
+    hint: "RQG.Settings.ShowOnlyWorldLanguagePacks.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => setTimeout(() => window.location.reload(), 200),
+  });
+
+  getGame().settings.register(systemId, "showEnglishLanguagePacksAlso", {
+    name: "RQG.Settings.ShowEnglishLanguagePacksAlso.settingName",
+    hint: "RQG.Settings.ShowEnglishLanguagePacksAlso.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: () => setTimeout(() => window.location.reload(), 200),
+  });
+
   getGame().settings.register(systemId, "fumbleRollTable", {
     name: "RQG.Settings.FumbleRollTable.settingName",
     hint: "RQG.Settings.FumbleRollTable.settingHint",

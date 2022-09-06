@@ -1,0 +1,41 @@
+# hide
+name: ${{openSystem.content.skill.hide.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/hide.svg
+data:
+  category: stealth
+  skillName: ${{openSystem.content.skill.hide.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..hide
+    name: ${{openSystem.content.skill.hide.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je.hide.insight
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# move-quietly
+name: ${{openSystem.content.skill.moveQuietly.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/move-quietly.svg
+data:
+  category: stealth
+  skillName: ${{openSystem.content.skill.moveQuietly.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..move-quietly
+    name: ${{openSystem.content.skill.moveQuietly.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je.move-quietly.insight
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

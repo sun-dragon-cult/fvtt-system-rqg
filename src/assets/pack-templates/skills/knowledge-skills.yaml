@@ -1,0 +1,526 @@
+# alchemy
+name: ${{openSystem.content.skill.alchemy.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/alchemy.svg
+data:
+  category: knowledge
+  skillName: Alchemy
+  specialization:
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..alchemy
+    name: ${{openSystem.content.skill.alchemy.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.alchemy
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# animal-lore
+name: ${{openSystem.content.skill.animalLore.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/animal-lore.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.animalLore.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..animal-lore
+    name: ${{openSystem.content.skill.animalLore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.animal-lore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# bureaucracy
+name: ${{openSystem.content.skill.bureaucracy.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/bureaucracy.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.bureaucracy.skillName}}$
+  specialization:
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..bureaucracy
+    name: ${{openSystem.content.skill.bureaucracy.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.bureaucracy
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# battle
+name: ${{openSystem.content.skill.battle.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/battle.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.battle.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..battle
+    name: ${{openSystem.content.skill.battle.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.battle
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# celestial-lore
+name: ${{openSystem.content.skill.celestialLore.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/celestial-lore.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.celestialLore.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..celestial-lore
+    name: ${{openSystem.content.skill.celestialLore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.celestial-lore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# cult-lore
+name: ${{openSystem.content.skill.cultLore.skillName}}$ (...)
+type: skill
+img: systems/rqg/assets/images/passion/devotion.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.cultLore.skillName}}$
+  specialization: "..."
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..cult-lore
+    name: ${{openSystem.content.skill.cultLore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.cult-lore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# customs
+name: ${{openSystem.content.skill.customs.skillName}}$ (...)
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: "..."
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{openSystem.content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# elder-race-lore
+name: ${{openSystem.content.skill.elderRaceLore.skillName}}$ (...)
+type: skill
+img: systems/rqg/assets/images/skills/elder-race-lore.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.elderRaceLore.skillName}}$
+  specialization: "..."
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..elder-race-lore
+    name: ${{openSystem.content.skill.elderRaceLore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.elder-race-lore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# evaluate
+name: ${{openSystem.content.skill.evaluate.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/evaluate.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.evaluate.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..evaluate
+    name: ${{openSystem.content.skill.evaluate.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.evaluate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# farm
+name: ${{openSystem.content.skill.farm.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/farm.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.farm.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..evaluate
+    name: ${{openSystem.content.skill.farm.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.farm
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# first-aid
+name: ${{openSystem.content.skill.firstAid.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/first-aid.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.firstAid.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..first-aid
+    name: ${{openSystem.content.skill.firstAid.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.first-aid
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# game
+name: ${{openSystem.content.skill.game.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/game.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.game.skillName}}$
+  specialization:
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..game
+    name: ${{openSystem.content.skill.game.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.game
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# herd
+name: ${{openSystem.content.skill.herd.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/herd.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.herd.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..herd
+    name: ${{openSystem.content.skill.herd.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.herd
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# homeland-lore
+name: ${{openSystem.content.skill.homelandLore.skillName}}$ (...)
+type: skill
+img: systems/rqg/assets/images/skills/homeland-lore.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
+  specialization: "..."
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..homeland-lore
+    name: ${{openSystem.content.skill.homelandLore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.homeland-lore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+### library-use
+name: ${{openSystem.content.skill.libraryUse.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/library-use.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.libraryUse.skillName}}$
+  specialization:
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..library-use
+    name: ${{openSystem.content.skill.libraryUse.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.library-use
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# lore
+name: ${{openSystem.content.skill.lore.skillName}}$ (...)
+type: skill
+img: systems/rqg/assets/images/skills/lore.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.lore.skillName}}$
+  specialization: "..."
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..lore
+    name: ${{openSystem.content.skill.lore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.lore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# manage-household
+name: ${{openSystem.content.skill.manageHousehold.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/manage-household.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.manageHousehold.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..manage-household
+    name: ${{openSystem.content.skill.manageHousehold.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.homelandLore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# mineral-lore
+name: ${{openSystem.content.skill.mineralLore.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/mineral-lore.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.mineralLore.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..mineral-lore
+    name: ${{openSystem.content.skill.mineralLore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.mineral-lore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# peaceful-cut
+name: ${{openSystem.content.skill.peacefulCut.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/peaceful-cut.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.peacefulCut.skillName}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..peaceful-cut
+    name: ${{openSystem.content.skill.peacefulCut.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.peaceful-cut
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# plant-lore
+name: ${{openSystem.content.skill.plantLore.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/plant-lore.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.plantLore.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..plant-lore
+    name: ${{openSystem.content.skill.plantLore.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.plant-lore
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (...)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: "..."
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# survival
+name: ${{openSystem.content.skill.survival.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/survival.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.survival.skillName}}$
+  specialization:
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..survival
+    name: ${{openSystem.content.skill.survival.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.survival
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# shiphandling
+name: ${{openSystem.content.skill.shiphandling.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/shiphandling.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.shiphandling.skillName}}$
+  specialization:
+  baseChance: 0
+  learnedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..shiphandling
+    name: ${{openSystem.content.skill.shiphandling.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.shiphandling
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# treat-disease
+name: ${{openSystem.content.skill.treatDisease.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/treat-disease.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.treatDisease.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..treat-disease
+    name: ${{openSystem.content.skill.treatDisease.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.treat-disease
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# treat-poison
+name: ${{openSystem.content.skill.treatPoison.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/treat-poison.svg
+data:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.treatPoison.skillName}}$
+  specialization:
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..treat-poison
+    name: ${{openSystem.content.skill.treatPoison.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.treat-poison
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

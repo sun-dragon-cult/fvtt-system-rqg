@@ -1,0 +1,88 @@
+name: Beast (form)
+img: systems/rqg/assets/images/runes/beast.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/beast.svg" height="175">
+  This Rune is also called the Dragon’s Eye, and is supposed to represent the armor plate over
+  the eye of a dragon. Dragons are thought to be the progenitors of all beasts (at least those
+  with four or more legs) though no one has had the nerve to ask a dragon about it. It is
+  thought to have originally been a Dragonewt Rune, and its complexity would indicate this.</p>
+  <p>To be strong with the Beast Rune is to be bestial, savage, feral, wild, and untamed. Such adventurers are uncomfortable
+  in cultivated lands, preferring the wilderness.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..beast-form
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Chaos (form)
+img: systems/rqg/assets/images/runes/chaos.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/chaos.svg" height="175">
+  Descriptive of beings tainted by Chaos. The Chaos Rune might be combined with any other
+  Rune, as nothing is totally safe from its influence.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..chaos-form
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+
+---
+name: Plant (form)
+img: systems/rqg/assets/images/runes/plant.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/plant.svg" height="175">
+  The symbol of the first life upon Glorantha. It is said to symbolize the first Plant god, a son of
+  the Earth and Sea. Many cults have a connection with the Plant Rune, such as Aldrya, whose
+  worship combines the Runes of Earth, Plant, and the Power Rune of Fertility.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..plant-form
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+
+---
+name: Spirit (form)
+img: systems/rqg/assets/images/runes/spirit.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/spirit.svg" height="175">
+  This Rune describes disembodied entities existing in the Spirit World.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..spirit-form
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+
+---
+name: Dragonewt (form)
+img: systems/rqg/assets/images/runes/dragonewt.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/dragonewt.svg" height="175">
+  As exotic as the race it represents, it is found only in the Dragon Pass area. Unlike most of
+  the other Form Runes, it is never used with an Elemental Rune.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..dragonewt-form
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+
+---
+name: Man (form)
+img: systems/rqg/assets/images/runes/man.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/man.svg" height="175">
+  This Rune represents the humanoid shape and is common among all humanoid races. Some
+  other races interpret it as “slave” or “food.” It is said to represent Grandfather Mortal, and
+  numerous folktales are told about him.</p>
+  <p>To be strong with the Man Rune is to be civilized, settled, sociable, and ethical. Such adventurers are uncomfortable in
+  the wilderness, preferring lands tamed by humanity.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..man-form
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

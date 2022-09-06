@@ -1,0 +1,20 @@
+# worship
+name: ${{openSystem.content.skill.worship.skillName}}$ (${{openSystem.content.cult.orlanth.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/worship.svg
+data:
+  category: magic
+  skillName: ${{openSystem.content.skill.worship.skillName}}$
+  specialization: ${{openSystem.content.cult.orlanth.name}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..worship
+    name: ${{openSystem.content.skill.worship.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.worship-orlanth
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

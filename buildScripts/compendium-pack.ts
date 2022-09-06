@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
 import * as crypto from "crypto";
+import { i18nDir, outDir, packsMetadata, translationsFileName } from "./buildPacks";
 
 export interface PackMetadata {
   system: string;
@@ -24,50 +25,34 @@ export class CompendiumPack {
   systemId: string;
   data: any[];
 
-  static outDir = path.resolve(process.cwd(), "src/assets/packs");
-  private static namesToIds = new Map<string, Map<string, string>>();
-  private static packsMetadata = JSON.parse(fs.readFileSync(path.resolve("./src/system.json"), "utf-8")).packs as PackMetadata[];
+  constructor(packDir: string, parsedData: unknown[], isTemplate: boolean) {
+    const packName = isTemplate ? packDir + "-en.db" : packDir;
 
-  constructor(packDir: string, parsedData: unknown[]) {
-    const metadata = CompendiumPack.packsMetadata.find(
-      (pack) => path.basename(pack.path) === path.basename(packDir)
+    const metadata = packsMetadata.find(
+      (pack) => path.basename(pack.path) === path.basename(packName)
     );
-    if (metadata === undefined) {
-      throw PackError(`Compendium at ${packDir} has no metadata in the local system.json file.`);
+    if (!metadata && !isTemplate) {
+      // Don't care about the template packs, only warn about missing translated pack specifications
+      throw PackError(
+        `Compendium at ${packDir} has no metadata in the "packs" section in the system.json manifest file.`
+      );
     }
-    this.systemId = metadata.system;
-    this.name = metadata.name;
-    this.documentType = metadata.type;
+
+    this.systemId = metadata?.system ?? "";
+    this.name = metadata?.name ?? "";
+    this.documentType = metadata?.type ?? "";
 
     if (!this.isPackData(parsedData)) {
-      throw PackError(`Data supplied for ${this.name} does not resemble Foundry document source data.`);
+      throw PackError(
+        `Data supplied for [${this.name}] in [${packDir}] does not resemble Foundry document source data.`
+      );
     }
 
     this.packDir = packDir;
-
-    CompendiumPack.namesToIds.set(this.name, new Map());
-    const packMap = CompendiumPack.namesToIds.get(this.name);
-    if (!packMap) {
-      throw PackError(`Compendium ${this.name} (${packDir}) was not found.`);
-    }
-
-    parsedData = parsedData.map(d => {
-      if (!d._id) {
-        // Make sure we don't generate new ids everytime we rebuild
-        d._id = crypto.createHash("md5").update(d.name).digest("base64").replace(/[\+=\/]/g, "").substring(0, 16);
-      }
-      return d;
-    });
-
     this.data = parsedData;
   }
 
   static loadYAML(dirPath: string): CompendiumPack {
-    if (!dirPath.replace(/\/$/, "").endsWith(".db")) {
-      const dirName = path.basename(dirPath);
-      throw PackError(`JSON directory (${dirName}) does not end in ".db"`);
-    }
-
     const filenames = fs.readdirSync(dirPath);
     const filePaths = filenames.map((filename) => path.resolve(dirPath, filename));
     const parsedData: unknown[] = filePaths.map((filePath) => {
@@ -86,16 +71,58 @@ export class CompendiumPack {
     });
 
     const dbFilename = path.basename(dirPath);
-    return new CompendiumPack(dbFilename, parsedData.flat());
+    return new CompendiumPack(dbFilename, parsedData.flat(), true);
   }
 
   private finalize(docSource: CompendiumSource) {
+    docSource._id = crypto
+      .createHash("md5")
+      .update(this.name + docSource.name) // Has to be unique - use the pack and document name (like "cults-enOrlanth")
+      .digest("base64")
+      .replace(/[\+=\/]/g, "")
+      .substring(0, 16);
+
     return JSON.stringify(docSource);
+  }
+
+  /**
+   * Create a translated clone of this template CompendiumPack by replacing `${{key}}$` with the translations for that key & lang
+   */
+  translate(lang: string): CompendiumPack {
+    let localizationMatchCount = 0;
+    // Include the filename in path to match the behaviour in starter set
+    const dictionary = {
+      [translationsFileName]: JSON.parse(
+        fs.readFileSync(`${i18nDir}/${lang}/${translationsFileName}.json`, "utf8")
+      ),
+    };
+    const localisedPackDir = `${this.packDir}-${lang}.db`;
+    const localisedData = this.data.map((d) =>
+      JSON.parse(
+        JSON.stringify(d).replace(
+          /\$\{\{ ?([\w-.]+) ?\}\}\$/g,
+          function (match: string, key: string) {
+            const translation = lookup(dictionary, key);
+
+            if (!translation) {
+              console.error(match, "translation key missing in language", lang);
+            } else {
+              localizationMatchCount++;
+            }
+
+            return translation ?? match;
+          }
+        )
+      )
+    );
+
+    const translatedPack = new CompendiumPack(localisedPackDir, localisedData, false); // clone this CompendiumPack
+    return translatedPack;
   }
 
   save(): number {
     fs.writeFileSync(
-      path.resolve(CompendiumPack.outDir, this.packDir),
+      path.resolve(outDir, this.packDir),
       this.data
         .map((datum) => this.finalize(datum))
         .join("\n")
@@ -110,13 +137,13 @@ export class CompendiumPack {
     if (!isObject(maybeDocSource)) return false;
     const checks = Object.entries({
       name: (data: { name?: unknown }) => typeof data.name === "string",
-      // flags: (data: unknown) => typeof data === "object" && data !== null && "flags" in data,
+      flags: (data: unknown) => typeof data === "object" && data !== null && "flags" in data,
       permission: (data: { permission?: { default: unknown } }) =>
         !data.permission ||
         (typeof data.permission === "object" &&
-          data.permission !== null &&
+          data.permission != null &&
           Object.keys(data.permission).length === 1 &&
-          Number.isInteger(data.permission.default))
+          Number.isInteger(data.permission.default)),
     });
 
     const failedChecks = checks
@@ -125,7 +152,9 @@ export class CompendiumPack {
 
     if (failedChecks.length > 0) {
       throw PackError(
-        `Document source in (${this.name}) has invalid or missing keys: ${failedChecks.join(", ")}`
+        `Document source [${(maybeDocSource as any)?.name}] in (${
+          this.name
+        }) has invalid or missing keys: ${failedChecks.join(", ")}`
       );
     }
 
@@ -135,6 +164,21 @@ export class CompendiumPack {
   private isPackData(packData: unknown[]): packData is CompendiumSource[] {
     return packData.every((maybeDocSource: unknown) => this.isDocumentSource(maybeDocSource));
   }
+}
+
+/**
+ * Translate a key given a dictionary.
+ * @param {obj} dict dictionary object
+ * @return {string} translated text
+ */
+function lookup(dict: any, key: string): string {
+  const keyParts = key.split(".");
+
+  const value = keyParts.reduce(function (acc, keyPart) {
+    return (acc || {})[keyPart];
+  }, dict);
+
+  return value;
 }
 
 export function isObject(value: unknown): boolean {

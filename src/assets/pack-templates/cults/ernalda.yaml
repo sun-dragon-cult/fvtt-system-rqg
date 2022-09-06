@@ -1,0 +1,24 @@
+name: ${{openSystem.content.cult.ernalda.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.ernalda.tagline}}$
+  holyDays:
+  runes:
+    - Fertility (power)
+    - Earth (element)
+    - Earth (element)
+    - Harmony (power)
+  descriptionRqidLink:
+    rqid: je..cult-ernalda
+    name: ${{openSystem.content.cult.ernalda.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.ernalda
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,167 @@
+name: ${{openSystem.content.rune.death}}$ (${{openSystem.content.runeType.power}}$)
+type: rune
+img: systems/rqg/assets/images/runes/death.svg
+data:
+  rune: ${{openSystem.content.rune.death}}$
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{openSystem.content.rune.fertility}}$ (${{openSystem.content.runeType.power}}$)
+  descriptionRqidLink:
+    rqid: je..death-power
+    name: ${{openSystem.content.rune.death}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.death-power
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.rune.disorder}}$ (${{openSystem.content.runeType.power}}$)
+type: rune
+img: systems/rqg/assets/images/runes/disorder.svg
+data:
+  rune: ${{openSystem.content.rune.disorder}}$
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{openSystem.content.rune.harmony}}$ (${{openSystem.content.runeType.power}}$)
+  descriptionRqidLink:
+    rqid: je..disorder-power
+    name: ${{openSystem.content.rune.disorder}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.disorder-power
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.rune.fertility}}$ (${{openSystem.content.runeType.power}}$)
+type: rune
+img: systems/rqg/assets/images/runes/fertility.svg
+data:
+  rune: ${{openSystem.content.rune.fertility}}$
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{openSystem.content.rune.death}}$ (${{openSystem.content.runeType.power}}$)
+  descriptionRqidLink:
+    rqid: je..fertility-power
+    name: ${{openSystem.content.rune.fertility}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.fertility-power
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.rune.harmony}}$ (${{openSystem.content.runeType.power}}$)
+type: rune
+img: systems/rqg/assets/images/runes/harmony.svg
+data:
+  rune: ${{openSystem.content.rune.harmony}}$
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{openSystem.content.rune.disorder}}$ (${{openSystem.content.runeType.power}}$)
+  descriptionRqidLink:
+    rqid: je..harmony-power
+    name: ${{openSystem.content.rune.harmony}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.harmony-power
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.rune.illusion}}$ (${{openSystem.content.runeType.power}}$)
+type: rune
+img: systems/rqg/assets/images/runes/illusion.svg
+data:
+  rune: ${{openSystem.content.rune.illusion}}$
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{openSystem.content.rune.truth}}$ (${{openSystem.content.runeType.power}}$)
+  descriptionRqidLink:
+    rqid: je..illusion-power
+    name: ${{openSystem.content.rune.illusion}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.illusion-power
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.rune.movement}}$ (${{openSystem.content.runeType.power}}$)
+type: rune
+img: systems/rqg/assets/images/runes/movement_change.svg
+data:
+  rune: ${{openSystem.content.rune.movement}}$
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{openSystem.content.rune.stasis}}$ (${{openSystem.content.runeType.power}}$)
+  descriptionRqidLink:
+    rqid: je..movement-power
+    name: ${{openSystem.content.rune.movement}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.movement-power
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.rune.stasis}}$ (${{openSystem.content.runeType.power}}$)
+type: rune
+img: systems/rqg/assets/images/runes/stasis.svg
+data:
+  rune: ${{openSystem.content.rune.stasis}}$
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{openSystem.content.rune.movement}}$ (${{openSystem.content.runeType.power}}$)
+  descriptionRqidLink:
+    rqid: je..stasis-power
+    name: ${{openSystem.content.rune.stasis}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.stasis-power
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.rune.truth}}$ (${{openSystem.content.runeType.power}}$)
+type: rune
+img: systems/rqg/assets/images/runes/truth.svg
+data:
+  rune: ${{openSystem.content.rune.truth}}$
+  chance: 50
+  hasExperience: false
+  runeType: power
+  minorRunes: []
+  isMastered: false
+  opposingRune: ${{openSystem.content.rune.illusion}}$ (${{openSystem.content.runeType.power}}$)
+  descriptionRqidLink:
+    rqid: je..truth-power
+    name: ${{openSystem.content.rune.truth}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune.truth-power
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

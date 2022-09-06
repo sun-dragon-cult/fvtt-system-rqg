@@ -1,0 +1,21 @@
+name: 'Homeland: Prax'
+content: >
+  <h2>Homeland: Prax</h2>
+  <p>These barbarian nomads reside in the chaparral plains east of Dragon Pass. Each tribe rides and herds the beast it is named for: bison, bolo lizard, high llama, impala, rhinoceros, sable antelope, and even horses. Otherwise, the horse is strictly taboo for most Praxians (except for the Pol-Joni).</p>
+  <p>Praxians are proud and warlike, distrusting outsiders and each other. They hate Chaos with a passion and eschew civilized cults. Their lives are harsh and cruel, full of war, the very environment they live in hostile to them. A popular refrain among the Praxians is “Life is War.”</p>
+  <p>These are the major human Praxian tribes:</p>
+  <ul>
+  <li><strong>Bison</strong>: Bison Riders are dependent upon their heavy, slow animals for their livelihood. Like their beasts, Bison Riders are big and thick, slow but terrible on impact.</li>
+  <li><strong>High Llama</strong>: High Llama Riders are the smallest Great Tribe but are the most powerful. Their beasts tower over other Praxian steeds and can run down even the swiftest skirmishers. They fear no one on the plains.</li>
+  <li><strong>Impala</strong>: Impala Riders make up for their diminutive size with numbers, being the most populous tribe in Prax. They rely on the speed and agility of their beasts to protect them.</li>
+  <li><strong>Pol-Joni</strong>: The ‘Bastard Tribe,’ the Pol-Joni were horseriders from Dragon Pass. They fought their way onto the plains and have the magical and martial strength to remain there. They are sometimes considered one of the tribes of Sartar.</li>
+  <li><strong>Sable Riders</strong>: The Sable Tribe ride giant antelopes with curving horns. When the Lunar Empire invaded Prax, the Sables sided with them against the other Praxian tribes. The Sables later turned against the Lunars, demonstrating the temporary nature of any agreement among the Praxians.</li>
+  </ul>
+  <p>Another species, the <strong>Morokanth</strong>, are intelligent, humanoid tapirs, and herd nonintelligent humans.</p>
+  <p>At Prax’s edge is the River of Cradles, an arable river valley dominated by the city of Pavis and old ruins called the Big Rubble. The hero Argrath White Bull has united the Praxian tribes behind his leadership and has proclaimed himself King of Pavis.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..homeland-prax
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

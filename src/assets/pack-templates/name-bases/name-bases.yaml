@@ -1,0 +1,95 @@
+name: 'Names: Sartarite, Female'
+content: "<pre><span class=\"fontstyle0\">Andrasta<br />Beneva<br />Berra<br />Dorasa<br />Esrolvula<br />Ferenasa<br />Ivarne<br />Jareen<br />Kallyr<br />Leika<br />Onelisen<br />Vareena<br />Vasana<br />Yanioth</span> \n<br style=\"font-variant-numeric:normal;font-variant-east-asian:normal;line-height:normal;text-align:-webkit-auto;white-space:normal;text-size-adjust:auto\" />\n</pre>"
+folder: null
+sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..names-sartarite-female
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: 'Help: Name Generation'
+content: |-
+  <h1>Roll Tables with Tokenized Results</h1>
+  <p>The RQG System offers some ways to help the Players and GM create names appropriate to the Gloranthan setting.  In the Adventurer Creation Wizard, for example, the system looks for Roll Tables in the world or in any compendium that have an RQID starting with "names-", and makes these roll tables available in a dialog to the Player or GM.  The Names Roll Tables supplied with the RQG System and its add-ons are normal Foundry VTT Roll Tables with results of type "Text".</p>
+  <p>The "Result Details" of each entry in the table can contain literal text, tokenized references to other Roll Tables, and tokenized references to Name Base Journal Entries.  Tokens always start with two left curly braces, like "{{", and end with two right curly braces, like "}}".  Between the curly braces is the RQID of either another Roll Table or a Journal Entry.   Examples include:</p>
+  <ul>
+  <li>{{je.names-sartarite-male}}
+  <ul>
+  <li>This Table Result references a Journal Entry, thus the "je." in the RQID.  This will use the "je.names-sartarite-male" Journal Entry as a Name Base.</li>
+  </ul>
+  </li>
+  <li>{{rt.name-parts-descriptor}} {{je.names-sartarite-male}}
+  <ul>
+  <li>The first token references another Roll Table with the RQID "rt.name-parts-descriptor" and includes a space and then refrerences the same Name Base as the previous Result.</li>
+  </ul>
+  </li>
+  <li>{{je.names-sartarite-male}} son of {{je.names-sartarite-male}}
+  <ul>
+  <li>This Result references the same Name Base, and includes the literal text " son of " (with spaces) and then references the same Name Base again to generate a different name.</li>
+  </ul>
+  </li>
+  <li>Harmast
+  <ul>
+  <li>This Result is just the literal text "Harmast", and does not reference any other Roll Table or Name Base.</li>
+  </ul>
+  </li>
+  </ul>
+  <p>When the RQG System's Name Generator picks a result from the table, it "de-tokenizes" the Result by rolling on any referenced Roll Tables and generating names from any referenced Name Bases.  The above entries might yeild the following results:</p>
+  <ul>
+  <li>Garang</li>
+  <li>Little Vargast</li>
+  <li>Venharl son of Saronil</li>
+  <li>Harmast</li>
+  </ul>
+  <p>Please note that rolling on these Roll Tables normally will simply result in the actual text of the entry and will not generate a name.  You must use the RQG System's Name Generator, either through an RQG System form, or via a macro in order to actually generate names.</p>
+  <h1>Name Bases and Markov Name Generation</h1>
+  <p>When a Roll Table Result references a Name Base Journal Entry in a token, such as "<span style="font-family:var(--font-primary);font-size:var(--font-size-14)">je.names-sartarite-male", the RQG Systems Name Generator will look up the referenced Journal Entry using the RQID and read the contents in as an array of strings.   Each entry in the Name Base should be on its own line and the entire contents of the Name Base should be formatted with the "Pre" style.</span></p>
+  <p>If you are creating or editing a Name Base Journal Entry, after entering the names one to a line, select all of the text, remove formatting using the button on the editor menu, and then select  "Paragraph&gt;Block&gt;Pre".  The results should look like the following, though your Name Base should contain nothing but names:</p>
+  <pre style="box-sizing:border-box;user-select:text;color:#191813;font-size:16px"><span class="fontstyle0" style="box-sizing:border-box;user-select:text">Andrasta<br style="box-sizing:border-box;user-select:text" />Beneva<br style="box-sizing:border-box;user-select:text" />Berra<br style="box-sizing:border-box;user-select:text" />Dorasa<br style="box-sizing:border-box;user-select:text" />Esrolvula<br style="box-sizing:border-box;user-select:text" />Ferenasa<br style="box-sizing:border-box;user-select:text" />Ivarne<br style="box-sizing:border-box;user-select:text" />Jareen<br style="box-sizing:border-box;user-select:text" />Kallyr<br style="box-sizing:border-box;user-select:text" />Leika<br style="box-sizing:border-box;user-select:text" />Onelisen<br style="box-sizing:border-box;user-select:text" />Vareena<br style="box-sizing:border-box;user-select:text" />Vasana<br style="box-sizing:border-box;user-select:text" />Yanioth<br /></span></pre>
+  <p style="box-sizing:border-box;user-select:text;color:#191813;font-size:16px">If you are creating or renaming your table you will need to set the RQID which should always start with "je.".  You can then use that RQID in a token in a Roll Table and the RQG System</p>
+  <h1>Name Generation by Macro</h1>
+  <p>This is an advanced topic that is not necessary to understand in order to use the RQG System's Name Generator in RQG forms, such as the Adventurer Creation Wizard.</p>
+  <p>You can use a macro or the command line to make use of the RQG System's Name Generator yourself.  This is an advanced topic but the following explains how to get name results as an array of string that you can then use in your own macros.</p>
+  <h2>Rolling on a Name Table</h2>
+  <p>Most of the time you'll probably want to generate names that make use of names generated by Name Bases, parts of names generated from other Roll Tables, and literal text.  In your macro or on the command line you can use the following code, with your own parameters:</p>
+  <pre>await game.system.api.names.Generate("rt.names-sartarite-male")</pre>
+  <p>This looks up the "rt.names-sartarite-male" table by RQID and rolls once on it, detokenizing any values in the Result to create a name, and returning it as the only element in an array of string.</p>
+  <pre>await game.system.api.names.Generate("rt.names-sartarite-male", 20)</pre>
+  <p>This looks up the "rt.names-sartarite-male" table by RQID and rolls twenty times on it, detokenizing any values in the Result to create a name, and returning them in an array of string.</p>
+  <h2>Generating Names with Name Bases and Markov Generation</h2>
+  <p>If you just want one name, you probably want to use a Name Base to generate the name using Markov Generation.  <span style="font-family:var(--font-primary);font-size:var(--font-size-14)">In your macro or on the command line you can use the following code, with your own parameters:</span></p>
+  <pre>await game.system.api.names.Generate("je.names-sartarite-female")</pre>
+  <p>This looks up the "je.names-sartarite-female" Name Base by RQID and generates one name from it using the default Markov constraints and returns the result as the only elment in an array of string.</p>
+  <pre>await game.system.api.names.Generate("je.names-sartarite-female", 10)</pre>
+  <p>This looks up the "je.names-sartarite-female" Name Base by RQID and generates ten names from it using the default Markov constraints and returns the results in an array of string.</p>
+  <pre>await game.system.api.names.Generate("je.names-sartarite-female", 20, {maxAttempts: 5, allowDuplicates: false,})</pre>
+  <p>This looks up the "je.names-sartarite-female" Name Base by RQID and generates twenty names from it using the default Markov constraints but overriding the "maxAttempts" and "allowDuplicates" and returns the results  in an array of string.</p>
+  <h2>Markov Constraints</h2>
+  <p>The RQG System's Name Generator uses the following default constraints unless overridden, and you can override some, none, or all of the values when calling "game.system.api.names.Generate".<br /><br /></p>
+  <pre>defaultConstraints = {<br />  minLength: 2,<br />  maxLength: 10,<br />  allowDuplicates: true,<br />  maxAttempts: 25,<br />};</pre>
+  <p>"minLength" specifies the minimum number of characters to return when generating a name.</p>
+  <p>"maxLength" specifies the maximum number of characters to return when generating a name.</p>
+  <p>If "allowDuplicates" is true, which it will be by default, if the Name Generator generates a name that exists in the original Name Base, the Name Generator will return that name. If "allowDuplicates" is false, the Name Generator will never return a value that matches a name in the Name Base, only entirely new names generated from the Name Base.</p>
+  <p>The Markov name generation can fail, usually because there are not enough names in the Name Base.  The "maxAttempts" setting specifies how many times the Name Generator will try to generate a name before giving up.</p>
+  <p> </p>
+folder: null
+sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..help-name-generation
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: 'Names: Sartarite, Male'
+content: <pre>Andrin<br />Argrath<br />Broyan<br />Farnan<br />Garadangian<br />Harmast<br />Jarang<br />Saronil<br />Tarkalor<br />Vargast<br />Venharl</pre>
+folder: null
+sort: 0
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..names-sartarite-male
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

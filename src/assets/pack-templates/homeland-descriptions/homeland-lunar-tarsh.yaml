@@ -1,0 +1,12 @@
+---
+name: 'Homeland: Lunar Tarsh'
+content: >
+  <h2>Homeland: Lunar Tarsh</h2>
+  <p>The Kingdom of Tarsh is a province of the Lunar Empire and its rulers and urban populations have adopted the civilized culture and religion of the Lunar Heartlands.</p>
+  <p>Lunar Tarshites are proud and arrogant: they dominated Dragon Pass for the last generation. They are loyal to the Red Emperor and the Red Goddess but are now torn between partisans of King Pharandros and those of his uncle, the great general Fazzur Wideread.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..homeland-lunar-tarsh
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

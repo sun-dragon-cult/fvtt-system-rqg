@@ -1,0 +1,110 @@
+name: Demo Spirit
+type: character
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  characteristics:
+    strength:
+      value: null
+      formula: null
+    constitution:
+      value: null
+      formula: null
+    size:
+      value: null
+      formula: null
+    dexterity:
+      value: null
+      formula: null
+    intelligence:
+      value: null
+      formula: null
+    power:
+      value: 1
+      formula: 1d6
+      hasExperience: false
+    charisma:
+      value: 2
+      formula: 1d3
+  background:
+    species: Human
+    occupation: null
+    homeland: sartar
+    birthyear: null
+    age: null
+    gender: null
+    town: null
+    tribe: null
+    clan: null
+    reputation: null
+    standardOfLiving: null
+    baseIncome: null
+    ransom: null
+    ransomDetails: null
+  allies: null
+  attributes:
+    magicPoints:
+      value: 6
+    hitPoints:
+      value: 8
+    move:
+      currentLocomotion: walk
+      walk:
+        value: 8
+        carryingFactor: 1
+      swim: {}
+      fly: {}
+    isCreature: true
+    heroPoints: 0
+    health: healthy
+token:
+  name: Demo Sprit
+  img: systems/rqg/assets/images/items/spirit-magic.svg
+  displayName: 0
+  actorLink: true
+  width: 1
+  height: 1
+  scale: 1
+  mirrorX: false
+  mirrorY: false
+  lockRotation: false
+  rotation: 0
+  alpha: 1
+  vision: true
+  dimSight: 30
+  brightSight: 0
+  dimLight: 0
+  brightLight: 0
+  sightAngle: 0
+  lightAngle: 0
+  lightAlpha: 0.25
+  lightAnimation:
+    speed: 5
+    intensity: 5
+  disposition: -1
+  displayBars: 0
+  bar1:
+    attribute: attributes.hitPoints.value
+  bar2:
+    attribute: attributes.magicPoints.value
+  randomImg: false
+items:
+  - name: Spirit Combat
+    type: skill
+    img: systems/rqg/assets/images/skills/spirit-combat.svg
+    data:
+      category: magic
+      skillName: Spirit Combat
+      specialization: null
+      baseChance: 20
+      learnedChance: 20
+      canGetExperience: true
+      hasExperience: false
+      runes: []
+      journalId: null
+      journalPack: null
+flags:
+  rqg:
+    documentRqidFlags:
+      id: a.character.demo-spirit
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

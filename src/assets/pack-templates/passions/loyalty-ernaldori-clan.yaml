@@ -1,0 +1,18 @@
+name: Loyalty (Ernaldori Clan)
+type: passion
+img: systems/rqg/assets/images/passion/loyalty.svg
+data:
+  passion: Loyalty
+  subject: Ernaldori Clan
+  description:
+  gmNotes:
+  chance: 60
+  canGetExperience: true
+  hasExperience: false
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.passion.loyalty-ernaldori-clan
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,17 @@
+name: 'Clan: Ernaldori'
+content: |-
+  <h2>Clan: Ernaldori</h2>
+  <p>The Ernaldori are the original royal clan of the Colymar tribe.
+  Their lands are near Clearwine Fort; as a result they are often
+  called the Clearwine Clan. They are a large clan, numbering
+  about 1,600 people. Ernalda is the patron deity of the clan,
+  and her priestess speaks for the goddess with the entire tribe.
+  Baranthos the Old has been clan chieftain since 1602 and is
+  responsible for war and dealing with outsiders.</p>
+  <p>The clan tattoo is of a snake surrounded by vines.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..clan-ernaldori
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

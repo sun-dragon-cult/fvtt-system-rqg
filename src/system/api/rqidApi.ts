@@ -1,4 +1,3 @@
-import { Homeland } from "../../items/homeland-item/homeland";
 import { RqgActor } from "../../actors/rqgActor";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItem } from "../../items/rqgItem";
@@ -53,15 +52,18 @@ export class Rqid {
   /**
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
    * found return the highest priority Document matching the supplied rqid and lang from the installed Compendia.
+   * If lang parameter is not supplied the language selected for the world will be used.
    */
   public static async fromRqid(
     rqid: string | undefined,
-    lang: string = "en",
+    lang?: string,
     silent: boolean = false
   ): Promise<Document<any, any> | undefined> {
     if (!rqid) {
       return undefined;
     }
+
+    lang = lang ?? getGame().settings.get(systemId, "worldLanguage");
 
     const worldItem = await Rqid.documentFromWorld(rqid, lang);
     if (worldItem) {
@@ -145,8 +147,8 @@ export class Rqid {
 
   /**
    * For an array of documents, returns only those that are the "best" version of their Rqid
-   * @param documents 
-   * @returns 
+   * @param documents
+   * @returns
    */
   public static filterBestRqid(documents: Document<any, any>[]): Document<any, any>[] {
     const highestPrioDocuments = new Map<string, Document<any, any>>();

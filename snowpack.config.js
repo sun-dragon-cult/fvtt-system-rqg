@@ -15,6 +15,7 @@ export default {
     ],
   ],
   external: ["template.json"],
+  exclude: ["**/src/assets/pack-templates/**/*"],
   optimize: {
     entrypoints: ["rqg.js", "template.js"],
     splitting: false,

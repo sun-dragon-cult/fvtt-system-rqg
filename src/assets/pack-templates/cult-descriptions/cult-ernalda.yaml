@@ -1,0 +1,19 @@
+name: 'Cult: Ernalda'
+content: >
+  <h2>Ernalda, the Earth Mother</h2>
+
+  <p>Ernalda is the Earth Mother and the most favored of all the Earth goddesses. Among her titles are Earth Queen, the
+  Life-Giver, the Beautiful One, the Great Green Lady, Source of Bounty, the Giver, the Sustainer, Wife of Many, Supporter
+  of All, and Midwife of Time. She and her daughters are the source of food, shelter, and society for most of life.
+  She is the goddess of women, female sexuality, fertility, and motherhood.</p>
+
+  <p>Ernalda has many husbands, but the foremost of them is Orlanth. She presides over a sprawling pantheon of Earth
+  deities, both benevolent and malign.</p>
+
+  <p>The Ernalda cult is of vast importance everywhere, even if her priestesses do not always possess direct political power.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..cult-ernalda
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

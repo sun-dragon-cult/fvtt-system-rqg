@@ -29,165 +29,158 @@
   ],
   "packs": [
     {
-      "name": "pc-runes",
-      "label": "Runes (Player Character)",
+      "name": "clan-descriptions-en",
+      "label": "Clan Descriptions | en",
       "system": "rqg",
-      "path": "assets/packs/pc-runes.db",
-      "type": "Item"
-    },
-    {
-      "name": "runes",
-      "label": "Runes (All)",
-      "system": "rqg",
-      "path": "assets/packs/runes.db",
-      "type": "Item"
-    },
-    {
-      "name": "rune-descriptions",
-      "label": "Rune Descriptions",
-      "system": "rqg",
-      "path": "assets/packs/rune-descriptions.db",
+      "path": "assets/packs/clan-descriptions-en.db",
       "type": "JournalEntry"
     },
     {
-      "name": "fumble",
-      "label": "Fumble",
+      "name": "combat-fumble-en",
+      "label": "Combat Fumble | en",
       "system": "rqg",
-      "path": "assets/packs/fumble-roll-table.db",
+      "path": "assets/packs/combat-fumble-en.db",
       "type": "RollTable"
     },
     {
-      "name": "skills-basic",
-      "label": "Skills - Basic ",
+      "name": "cult-descriptions-en",
+      "label": "Cult Descriptions | en",
       "system": "rqg",
-      "path": "assets/packs/skills-basic.db",
+      "path": "assets/packs/cult-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "cults-en",
+      "label": "Cults | en",
+      "system": "rqg",
+      "path": "assets/packs/cults-en.db",
       "type": "Item"
     },
     {
-      "name": "skills-profession",
-      "label": "Skills - Profession",
+      "name": "culture-descriptions-en",
+      "label": "Culture Descriptions | en",
       "system": "rqg",
-      "path": "assets/packs/skills-profession.db",
+      "path": "assets/packs/culture-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "demo-items-en",
+      "label": "Demo | en",
+      "system": "rqg",
+      "path": "assets/packs/demo-items-en.db",
       "type": "Item"
     },
     {
-      "name": "human-hit-locations",
-      "label": "Human Hitlocations",
+      "name": "demo-actors-en",
+      "label": "Demo Actors | en",
       "system": "rqg",
-      "path": "assets/packs/human-hit-locations.db",
-      "type": "Item"
-    },
-    {
-      "name": "demo-items",
-      "label": "Demo",
-      "system": "rqg",
-      "path": "assets/packs/demo-items.db",
-      "type": "Item"
-    },
-    {
-      "name": "demo-actors",
-      "label": "Demo Actors",
-      "system": "rqg",
-      "path": "assets/packs/demo-actors.db",
+      "path": "assets/packs/demo-actors-en.db",
       "type": "Actor"
     },
     {
-      "name": "species-templates",
-      "label": "Species Templates",
+      "name": "name-bases-en",
+      "label": "Name Bases | en",
       "system": "rqg",
-      "path": "assets/packs/species-templates.db",
-      "type": "Actor"
-    },
-    {
-      "name": "species-descriptions",
-      "label": "Species Descriptions",
-      "system": "rqg",
-      "path": "assets/packs/species-descriptions.db",
+      "path": "assets/packs/name-bases-en.db",
       "type": "JournalEntry"
     },
     {
-      "name": "culture-descriptions",
-      "label": "Culture Descriptions",
+      "name": "name-tables-en",
+      "label": "Name Tables | en",
       "system": "rqg",
-      "path": "assets/packs/culture-descriptions.db",
-      "type": "JournalEntry"
-    },
-    {
-      "name": "name-bases",
-      "label": "Name Bases",
-      "system": "rqg",
-      "path": "assets/packs/name-bases.db",
-      "type": "JournalEntry"
-    },
-    {
-      "name": "name-tables",
-      "label": "Name Tables",
-      "system": "rqg",
-      "path": "assets/packs/name-tables.db",
+      "path": "assets/packs/name-tables-en.db",
       "type": "RollTable"
     },
     {
-      "name": "homeland-descriptions",
-      "label": "Homeland Descriptions",
+      "name": "homeland-descriptions-en",
+      "label": "Homeland Descriptions | en",
       "system": "rqg",
-      "path": "assets/packs/homeland-descriptions.db",
+      "path": "assets/packs/homeland-descriptions-en.db",
       "type": "JournalEntry"
     },
     {
-      "name": "tribe-descriptions",
-      "label": "Tribe Descriptions",
+      "name": "homelands-en",
+      "label": "Homelands | en",
       "system": "rqg",
-      "path": "assets/packs/tribe-descriptions.db",
-      "type": "JournalEntry"
-    },
-    {
-      "name": "clan-descriptions",
-      "label": "Clan Descriptions",
-      "system": "rqg",
-      "path": "assets/packs/clan-descriptions.db",
-      "type": "JournalEntry"
-    },
-    {
-      "name": "region-descriptions",
-      "label": "Region Descriptions",
-      "system": "rqg",
-      "path": "assets/packs/region-descriptions.db",
-      "type": "JournalEntry"
-    },
-    {
-      "name": "cults",
-      "label": "Cults",
-      "system": "rqg",
-      "path": "assets/packs/cults.db",
+      "path": "assets/packs/homelands-en.db",
       "type": "Item"
     },
     {
-      "name": "cult-descriptions",
-      "label": "Cult Descriptions",
+      "name": "human-hit-locations-en",
+      "label": "Human Hitlocations | en",
       "system": "rqg",
-      "path": "assets/packs/cult-descriptions.db",
+      "path": "assets/packs/human-hit-locations-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "passions-en",
+      "label": "Passions | en",
+      "system": "rqg",
+      "path": "assets/packs/passions-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "pc-runes-en",
+      "label": "Runes (Player Character) | en",
+      "system": "rqg",
+      "path": "assets/packs/pc-runes-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "region-descriptions-en",
+      "label": "Region Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/region-descriptions-en.db",
       "type": "JournalEntry"
     },
     {
-      "name": "passions",
-      "label": "Passions",
+      "name": "rune-descriptions-en",
+      "label": "Rune Descriptions | en",
       "system": "rqg",
-      "path": "assets/packs/passions.db",
+      "path": "assets/packs/rune-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "runes-en",
+      "label": "Runes (All) | en",
+      "system": "rqg",
+      "path": "assets/packs/runes-en.db",
       "type": "Item"
     },
     {
-      "name": "homelands",
-      "label": "Homelands",
+      "name": "skills-en",
+      "label": "Skills | en",
       "system": "rqg",
-      "path": "assets/packs/homelands.db",
+      "path": "assets/packs/skills-en.db",
       "type": "Item"
+    },
+    {
+      "name": "species-descriptions-en",
+      "label": "Species Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/species-descriptions-en.db",
+      "type": "JournalEntry"
+    },
+    {
+      "name": "species-templates-en",
+      "label": "Species Templates | en",
+      "system": "rqg",
+      "path": "assets/packs/species-templates-en.db",
+      "type": "Actor"
+    },
+    {
+      "name": "tribe-descriptions-en",
+      "label": "Tribe Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/tribe-descriptions-en.db",
+      "type": "JournalEntry"
     }
   ],
   "languages": [
     {
       "lang": "en",
       "name": "English",
-      "path": "i18n/en/system.json"
+      "path": "i18n/en/openSystem.json"
     }
   ],
   "primaryTokenAttribute": "attributes.hitPoints.value",

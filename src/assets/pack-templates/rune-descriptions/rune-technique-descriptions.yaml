@@ -1,0 +1,89 @@
+name: Combine (technique)
+img: systems/rqg/assets/images/runes/combine.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/combine.svg" height="175">
+  This technique forces a specific manifestation of one Rune to combine with that of a different
+  specified Rune. It is the opposite of Separate.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..combine-technique
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+
+---
+name: Tap (technique)
+img: systems/rqg/assets/images/runes/tap.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/tap.svg" height="175">
+  This technique allows a sorcerer to transform
+  the manifestation of a Rune into raw energy that the
+  sorcerer can use. Knowledge of Tap provides insight
+  into all other techniques.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..tap-technique
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+
+---
+name: Dispel (technique)
+img: systems/rqg/assets/images/runes/dispel.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/dispel.svg" height="175">
+  This technique allows a sorcerer to dismiss
+  specific manifestations of the Rune to the material
+  world. It is the opposite of Summon.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..dispel-technique
+  lang: ${{openSystem.lang}}$
+  priority: ${{openSystem.prio}}$
+
+---
+name: Separate (technique)
+img: systems/rqg/assets/images/runes/separate.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/separate.svg" height="175">
+  This technique forces a specific manifestation
+  of a Rune to remove itself from a different
+  specified Rune. It is the opposite of Combine.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..separate-technique
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+
+---
+name: Summon (technique)
+img: systems/rqg/assets/images/runes/summon.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/summon.svg" height="175">
+  This technique allows the sorcerer to
+  call forth specific manifestations of the Rune to the
+  material world. It is the opposite of Dispel.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..summon-technique
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+
+---
+name: Command (technique)
+img: systems/rqg/assets/images/runes/command.svg
+content: >
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/command.svg" height="175">
+  This technique forces a specific manifestation
+  of a Rune to act in a specific manner in
+  accordance with its nature. Knowledge of Command
+  provides insight into all other techniques.</p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..command-technique
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
