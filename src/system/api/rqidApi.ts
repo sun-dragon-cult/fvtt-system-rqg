@@ -6,7 +6,7 @@ import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/fo
 
 export class Rqid {
   public static init(): void {
-    // Include rqid flags in index for compendiums
+    // Include rqid flags in index for compendium packs
 
     // @ts-expect-error release
     if (getGame().release.generation >= 10) {
@@ -49,7 +49,7 @@ export class Rqid {
 
   /**
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
-   * found return the highest priority Document matching the supplied rqid and lang from the installed Compendia.
+   * found return the highest priority Document matching the supplied rqid and lang from the installed Compendium packs.
    * If lang parameter is not supplied the language selected for the world will be used.
    */
   public static async fromRqid(
@@ -68,9 +68,9 @@ export class Rqid {
       return worldItem;
     }
 
-    const compendiumItem = await Rqid.documentFromCompendia(rqid, lang);
-    if (compendiumItem) {
-      return compendiumItem;
+    const packItem = await Rqid.documentFromPacks(rqid, lang);
+    if (packItem) {
+      return packItem;
     }
 
     if (!silent) {
@@ -86,39 +86,47 @@ export class Rqid {
 
   /**
    * Returns all documents whith an rqid matching the regex and matching the document type
-   * and language, from the specified scope.
+   * and language, from the specified scope. The valid values for scope are:
+   *
+   * * **match**: same logic as fromRqid function,
+   * * **all**: find in both world & compendium packs,
+   * * **world**: only search in world,
+   * * **packs**: only search in compendium packs
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
-   * @param scope defines where it will look:
-   * **match** same logic as fromRqid function,
-   * **all**: find in both world & compendia,
-   * **world**: only search in world,
-   * **compendiums**: only search in compendiums
+   * @param scope defines where it will look
    */
   public static async fromRqidRegexAll(
     rqidRegex: RegExp | undefined,
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en",
-    scope: "match" | "all" | "world" | "compendiums" = "match"
+    scope: "match" | "all" | "world" | "packs" = "match"
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
     }
     const result: Document<any, any>[] = [];
 
+    let worldDocuments: Document<any, any>[] = [];
     if (["match", "all", "world"].includes(scope)) {
-      const worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
-      if (scope === "match" && worldDocuments.length) {
-        return worldDocuments;
-      }
+      worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
       result.splice(0, 0, ...worldDocuments);
     }
 
-    if (["match", "all", "compendiums"].includes(scope)) {
-      let compendiaDocuments = await Rqid.documentsFromCompendia(rqidRegex, rqidDocumentType, lang);
+    if (["match", "all", "packs"].includes(scope)) {
+      let packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentType, lang);
 
-      result.splice(result.length, 0, ...compendiaDocuments);
+      if (scope === "match") {
+        const worldDocumentRqids = [
+          ...new Set(worldDocuments.map((d) => d.getFlag(systemId, documentRqidFlags)?.id)),
+        ];
+        // Remove any rqid matches that exists in the world
+        packDocuments = packDocuments.filter(
+          (d) => !worldDocumentRqids.includes(d.getFlag(systemId, documentRqidFlags)?.id)
+        );
+      }
+      result.splice(result.length, 0, ...packDocuments);
     }
 
     return result;
@@ -127,8 +135,7 @@ export class Rqid {
   /**
    * Gets only the highest priority documents for each rqid that matches the Regex and
    * language, with the highest priority documents in the World taking precedence over
-   * any documents
-   * in compendium packs.
+   * any documents in compendium packs.
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
@@ -138,9 +145,13 @@ export class Rqid {
     rqidDocumentType: string, // like "i", "a", "je"
     lang: string = "en"
   ): Promise<Document<any, any>[]> {
-    const allDocuments = await this.fromRqidRegexAll(rqidRegex, rqidDocumentType, lang, "all");
-    const bestDocuments = this.filterBestRqid(allDocuments);
-    return bestDocuments;
+    const matchingDocuments = await this.fromRqidRegexAll(
+      rqidRegex,
+      rqidDocumentType,
+      lang,
+      "match"
+    );
+    return this.filterBestRqid(matchingDocuments);
   }
 
   /**
@@ -171,7 +182,7 @@ export class Rqid {
   public static async fromRqidCount(
     rqid: string | undefined,
     lang: string = "en",
-    scope: "all" | "world" | "compendiums" = "all"
+    scope: "all" | "world" | "packs" = "all"
   ): Promise<number> {
     if (!rqid) {
       return 0;
@@ -200,7 +211,7 @@ export class Rqid {
     }
 
     // Check compendium packs
-    if (["all", "compendiums"].includes(scope)) {
+    if (["all", "packs"].includes(scope)) {
       const documentName = Rqid.getDocumentName(rqid);
       for (const pack of getGame().packs) {
         if (pack.documentClass.documentName === documentName) {
@@ -391,9 +402,9 @@ export class Rqid {
   /**
    * Get a single document from the rqid / language. The document with the highest priority
    * will be chosen and an error is shown if there are more than one document with the same
-   * priority in the compendiums.
+   * priority in the compendium packs.
    */
-  private static async documentFromCompendia(
+  private static async documentFromPacks(
     rqid: string,
     lang: string
   ): Promise<Document<any, any> | undefined> {
@@ -430,7 +441,7 @@ export class Rqid {
     );
 
     if (result.length > 1) {
-      const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInCompendia", {
+      const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInPacks", {
         rqid: rqid,
         lang: lang,
         priority: result[0].indexData.flags.rqg.documentRqidFlags.priority ?? "---",
@@ -443,10 +454,10 @@ export class Rqid {
   }
 
   /**
-   * Get a list of all documents matching the rqid regex & language from the compendiums.
+   * Get a list of all documents matching the rqid regex & language from the compendium packs.
    * The document list is sorted with the highest priority first.
    */
-  private static async documentsFromCompendia(
+  private static async documentsFromPacks(
     rqidRegex: RegExp,
     rqidDocumentType: string,
     lang: string

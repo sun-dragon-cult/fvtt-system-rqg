@@ -47,7 +47,7 @@ export async function assignRqidToJEs(): Promise<void> {
             console.error("Couldn't get journal entry from pack!!!");
             continue;
           }
-          rqidFlags.id = await generateRqid(je, "compendiums", addedRqids);
+          rqidFlags.id = await generateRqid(je, "packs", addedRqids);
           rqidFlags.lang = rqidFlags?.lang ? rqidFlags.lang : "en";
           rqidFlags.priority = rqidFlags?.priority ? rqidFlags.priority : 1999;
 
@@ -72,7 +72,7 @@ export async function assignRqidToJEs(): Promise<void> {
    **/
   async function generateRqid(
     je: Document<any, any>,
-    scope: "all" | "world" | "compendiums",
+    scope: "all" | "world" | "packs",
     alreadyAddedRqids: string[] = []
   ): Promise<string> {
     const proposedRqid = Rqid.getDefaultRqid(je);
