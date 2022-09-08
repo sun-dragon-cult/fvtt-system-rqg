@@ -1,6 +1,4 @@
-import { RqgActor } from "../../actors/rqgActor";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgItem } from "../../items/rqgItem";
 import { systemId } from "../config";
 import { getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
@@ -203,9 +201,9 @@ export class Rqid {
 
     // Check compendium packs
     if (["all", "compendiums"].includes(scope)) {
-      const documentName = Rqid.getDocumentType(rqid);
+      const documentName = Rqid.getDocumentName(rqid);
       for (const pack of getGame().packs) {
-        if (pack.documentClass.name === documentName) {
+        if (pack.documentClass.documentName === documentName) {
           // @ts-expect-error indexed
           if (!pack.indexed) {
             await pack.getIndex();
@@ -402,11 +400,11 @@ export class Rqid {
     if (!rqid) {
       return undefined;
     }
-    const documentType = Rqid.getDocumentType(rqid);
+    const documentName = Rqid.getDocumentName(rqid);
     const indexCandidates: { pack: any; indexData: any }[] = [];
 
     for (const pack of getGame().packs) {
-      if (pack.documentClass.name === documentType) {
+      if (pack.documentClass.documentName === documentName) {
         // @ts-expect-error indexed
         if (!pack.indexed) {
           await pack.getIndex();
@@ -456,12 +454,11 @@ export class Rqid {
     if (!rqidRegex) {
       return [];
     }
-    const documentType = Rqid.getDocumentType(`${rqidDocumentType}..`);
-
+    const documentName = Rqid.getDocumentName(`${rqidDocumentType}..fake-rqid`);
     const candidateDocuments: Document<any, any>[] = [];
 
     for (const pack of getGame().packs) {
-      if (pack.documentClass.name === documentType) {
+      if (pack.documentClass.documentName === documentName) {
         // @ts-expect-error indexed
         if (!pack.indexed) {
           await pack.getIndex();
@@ -535,22 +532,22 @@ export class Rqid {
   };
 
   /**
-   *   Translates the first part of a rqid to a document type (like "RqgItem").
+   *   Translates the first part of a rqid to a document type (like "Item").
    */
-  private static getDocumentType(rqid: string): string {
+  private static getDocumentName(rqid: string): string {
     const rqidDocument = rqid.split(".")[0];
-    const documentType = Rqid.documentLookup[rqidDocument];
-    if (!documentType) {
+    const documentName = Rqid.documentNameLookup[rqidDocument];
+    if (!documentName) {
       const msg = "Tried to convert rqid with non existing document type";
       throw new RqgError(msg, rqid);
     }
-    return documentType;
+    return documentName;
   }
 
-  private static readonly documentLookup: { [key: string]: string } = {
-    a: "RqgActor",
+  private static readonly documentNameLookup: { [key: string]: string } = {
+    a: "Actor",
     c: "Card",
-    i: "RqgItem",
+    i: "Item",
     je: "JournalEntry",
     m: "Macro",
     p: "Playlist",
@@ -562,12 +559,7 @@ export class Rqid {
    * Get the first part of a rqid (like "i") from a Document.
    */
   private static getRqidDocumentString(document: Document<any, any>): string {
-    const cls = getDocumentClass(document.documentName) as unknown as
-      | Document<any, any>
-      | TokenDocument;
-
-    const clsName = cls?.name ?? "";
-    const documentString = Rqid.rqidDocumentStringLookup[clsName];
+    const documentString = Rqid.rqidDocumentStringLookup[document.documentName];
     if (!documentString) {
       const msg = "Tried to convert a unsupported document to rqid";
       throw new RqgError(msg, document);
@@ -576,9 +568,9 @@ export class Rqid {
   }
 
   /**
-   *  Reverse lookup from DocumentType to rqidDocument ("RqgItem" -> "i").
+   *  Reverse lookup from DocumentType to rqidDocument ("Item" -> "i").
    */
   private static readonly rqidDocumentStringLookup: { [key: string]: string } = Object.entries(
-    Rqid.documentLookup
+    Rqid.documentNameLookup
   ).reduce((acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }), {});
 }
