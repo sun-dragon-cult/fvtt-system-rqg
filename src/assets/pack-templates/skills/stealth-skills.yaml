@@ -15,7 +15,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: je.hide.insight
+      id: i.skill.hide
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
@@ -36,6 +36,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: je.move-quietly.insight
+      id: i.skill.move-quietly
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$

@@ -15,7 +15,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.conceal.battle
+      id: i.skill.conceal
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
@@ -36,7 +36,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.craft.battle
+      id: i.skill.craft
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
@@ -57,7 +57,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.devise.battle
+      id: i.skill.devise
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
@@ -78,7 +78,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.devise.play-instrument
+      id: i.skill.play-instrument
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
@@ -99,6 +99,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.devise.sleight
+      id: i.skill.sleight
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$

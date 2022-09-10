@@ -4,9 +4,10 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { assertItemType, formatModifier, localize, RqgError } from "../../system/util";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { SkillDataPropertiesData } from "../../data-model/item-data/skillData";
-import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { documentRqidFlags, ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { ResultEnum } from "../../data-model/shared/ability";
+import { systemId } from "../../system/config";
 
 export class Skill extends AbstractEmbeddedItem {
   // public static init() {
@@ -68,16 +69,17 @@ export class Skill extends AbstractEmbeddedItem {
 
     // Special case for Dodge, Jump & Move Quietly
     const dex = actorData.data.characteristics.dexterity.value;
-    if (CONFIG.RQG.skillName.dodge === skillItem.name) {
+    const skillRqid = skillItem.getFlag(systemId, documentRqidFlags)?.id;
+    if (skillRqid === CONFIG.RQG.skillRqid.dodge) {
       Skill.updateBaseChance(skillData, dex * 2);
       mod = -Math.min(
         // mod is equipped ENC modifier
         actorData.data.attributes.encumbrance?.equipped || 0,
         actorData.data.attributes.encumbrance?.max || 0
       );
-    } else if (CONFIG.RQG.skillName.jump === skillItem.name) {
+    } else if (skillRqid === CONFIG.RQG.skillRqid.jump) {
       Skill.updateBaseChance(skillData, dex * 3);
-    } else if (CONFIG.RQG.skillName.moveQuietly === skillItem.name) {
+    } else if (skillRqid === CONFIG.RQG.skillRqid.moveQuietly) {
       mod = -Math.max(
         0,
         ...actor.items
