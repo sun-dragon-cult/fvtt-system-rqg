@@ -81,12 +81,12 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..firesky-element
+    rqid: je..fire-sky-element
     name: ${{openSystem.content.rune.firesky}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.rune.firesky-element
+      id: i.rune.fire-sky-element
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
