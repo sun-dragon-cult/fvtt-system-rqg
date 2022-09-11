@@ -38,10 +38,10 @@ const name2Rqid = new Map([
   ["Esquivar", "i.skill.dodge"],
   ["Saltar", "i.skill.jump"],
   ["Deslizarse en silencio", "i.skill.move-quietly"],
-  ["Combatante espiritual", "i.skill.spirit-combat"],
+  ["Combate espiritual", "i.skill.spirit-combat"],
 
   ["Esquivar - agility", "i.skill.dodge"],
   ["Saltar - agility", "i.skill.jump"],
   ["Deslizarse en silencio - stealth", "i.skill.move-quietly"],
-  ["Combatante espiritual - magic", "i.skill.spirit-combat"],
+  ["Combate espiritual - magic", "i.skill.spirit-combat"],
 ]);
