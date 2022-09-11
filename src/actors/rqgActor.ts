@@ -11,6 +11,7 @@ import { initializeAllCharacteristics } from "./context-menus/characteristic-con
 import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
 import { systemId } from "../system/config";
 import { ResultEnum } from "../data-model/shared/ability";
+import { Rqid } from "../system/api/rqidApi";
 
 export class RqgActor extends Actor {
   static init() {
@@ -272,5 +273,9 @@ export class RqgActor extends Actor {
 
   public getEmbeddedItemsByRqid(rqid: string): RqgItem[] {
     return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
+  }
+
+  public getBestEmbeddedItemByRqid(rqid: string): RqgItem {
+    return this.getEmbeddedItemsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 }

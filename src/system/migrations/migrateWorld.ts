@@ -11,6 +11,7 @@ import { useRqidDescriptionLinks } from "./migrations-item/migrateDescriptionLin
 import { renameFireSky } from "./migrations-item/renameFireSky";
 import { assignRqidToJEs } from "./assignRqidToJEs";
 import { trimCategoryFromSkillNames } from "./migrations-item/trimCategoryFromSkillNames";
+import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkillsWithRqid";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -21,7 +22,8 @@ export async function migrateWorld(): Promise<void> {
   ) {
     await confirmRunAssignRqidDialog(getGame().system.data.version);
     ui.notifications?.info(
-      `Applying RQG System Migration for version ${getGame().system.data.version
+      `Applying RQG System Migration for version ${
+        getGame().system.data.version
       }. Please be patient and do not close your game or shut down your server.`,
       { permanent: true }
     );
@@ -60,6 +62,7 @@ export async function applyDefaultWorldMigrations(
     renameFireSky,
     useRqidDescriptionLinks,
     trimCategoryFromSkillNames,
+    tagSkillNameSkillsWithRqid,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 
@@ -69,7 +72,10 @@ export async function applyDefaultWorldMigrations(
 // This is only for this update - since you need to make sure you have tagged the journal entries with rqid before migration.
 async function confirmRunAssignRqidDialog(newVersion: string): Promise<void> {
   return await new Promise(async (resolve) => {
-    const title = `Migrating RQG system to version ${newVersion}`;
+    const title = `Migrating RQG system to version ${newVersion}  (current version is ${getGame().settings.get(
+      systemId,
+      "systemMigrationVersion"
+    )})`;
     const content = `
       <h1>Please read before continuing!</h1>
       <p>This version introduces a new internal id (Rqid) that is used for links between documents like items, journal entries etc. This migration will update the

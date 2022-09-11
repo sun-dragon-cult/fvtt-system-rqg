@@ -489,8 +489,10 @@ export class Rqid {
 
   /**
    * Sort a list of document on rqid priority - the highest first.
+   * @example
+   * aListOfDocuments.sort(Rqid.compareRqidPrio)
    */
-  private static compareRqidPrio<T extends Document<any, any>>(a: T, b: T): number {
+  public static compareRqidPrio<T extends Document<any, any>>(a: T, b: T): number {
     return (
       b.getFlag(systemId, documentRqidFlags)?.priority -
       a.getFlag(systemId, documentRqidFlags)?.priority

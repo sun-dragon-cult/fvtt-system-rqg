@@ -50,6 +50,7 @@ import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../dialog/rqgAsyncDialog";
+import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 interface UiSections {
   health: boolean;
@@ -75,9 +76,9 @@ interface CharacterSheetData {
   ownedItems: any;
 
   /** Find this skill to show on spirit combat part */
-  spiritCombatSkillData: SkillDataProperties | undefined;
+  spiritCombatSkillData: ItemData | undefined;
   /** Find this skill to show on combat part */
-  dodgeSkillData: SkillDataProperties | undefined;
+  dodgeSkillData: ItemData | undefined;
 
   // Lists for dropdown values
   occupations: `${OccupationEnum}`[];
@@ -179,8 +180,9 @@ export class RqgActorSheet extends ActorSheet<
       tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
       ownedItems: RqgActorSheet.organizeOwnedItems(this.actor),
 
-      spiritCombatSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.spiritCombat),
-      dodgeSkillData: this.getSkillDataByName(CONFIG.RQG.skillName.dodge),
+      spiritCombatSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.spiritCombat)
+        ?.data,
+      dodgeSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.dodge)?.data,
 
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
@@ -526,7 +528,9 @@ export class RqgActorSheet extends ActorSheet<
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
-          (i: RqgItem) => i.name === CONFIG.RQG.skillName.dodge || i.type === ItemTypeEnum.Weapon
+          (i: RqgItem) =>
+            i.getFlag(systemId, documentRqidFlags)?.id === CONFIG.RQG.skillRqid.dodge ||
+            i.type === ItemTypeEnum.Weapon
         ),
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
