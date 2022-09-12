@@ -52,7 +52,7 @@
 
           <label>{{localize "RQG.Item.Skill.Chance"}}</label>
           &nbsp;
-          <label for="learned-chance-{{data._id}}">{{localize "RQG.Item.Skill.LearnedChance"}}</label>
+          <label for="gained-chance-{{data._id}}">{{localize "RQG.Item.Skill.GainedChance"}}</label>
           <label>{{localize "RQG.Item.Skill.CategoryModifier" category=(localize (concat 'RQG.Actor.Skill.SkillCategory.' skillData.category) ) }}</label>
           <label for="base-chance-{{data._id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
 
@@ -70,11 +70,11 @@
           =
           <input
             type="number"
-            id="learned-chance-{{data._id}}"
-            name="data.learnedChance"
+            id="gained-chance-{{data._id}}"
+            name="data.gainedChance"
             min="0"
             max="999"
-            value="{{skillData.learnedChance}}">
+            value="{{skillData.gainedChance}}">
           <span>{{skillData.categoryMod}}</span>
           <span>{{skillData.baseChance}}</span>
         </div>

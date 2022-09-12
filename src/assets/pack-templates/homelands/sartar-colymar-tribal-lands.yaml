@@ -73,7 +73,7 @@ data:
       documentType: Item
       itemType: skill
       bonus: 10
-    - rqid: i.skill.speak-own-language-heortling
+    - rqid: i.skill.speak-language-heortling
       name: Speak Own Language (Heortling)
       documentType: Item
       itemType: skill

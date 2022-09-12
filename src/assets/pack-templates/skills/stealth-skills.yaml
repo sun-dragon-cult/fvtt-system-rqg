@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.hide.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..hide
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.moveQuietly.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..move-quietly

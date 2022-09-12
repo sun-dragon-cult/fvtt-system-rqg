@@ -10,7 +10,7 @@ data:
   skillName: ${{openSystem.content.skill.readWrite.skillName}}$
   specialization: ${{openSystem.content.language.esrolian.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..read-write
@@ -34,7 +34,7 @@ data:
   skillName: ${{openSystem.content.skill.readWrite.skillName}}$
   specialization: ${{openSystem.content.language.heortling.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..read-write
@@ -58,7 +58,7 @@ data:
   skillName: ${{openSystem.content.skill.readWrite.skillName}}$
   specialization: ${{openSystem.content.language.newPelorian.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..read-write
@@ -82,7 +82,7 @@ data:
   skillName: ${{openSystem.content.skill.readWrite.skillName}}$
   specialization: ${{openSystem.content.language.praxian.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..read-write
@@ -106,7 +106,7 @@ data:
   skillName: ${{openSystem.content.skill.readWrite.skillName}}$
   specialization: ${{openSystem.content.language.pureHorseTongue.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..read-write
@@ -130,7 +130,7 @@ data:
   skillName: ${{openSystem.content.skill.readWrite.skillName}}$
   specialization: ${{openSystem.content.language.tarshite.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..read-write
@@ -154,7 +154,7 @@ data:
   skillName: ${{openSystem.content.skill.readWrite.skillName}}$
   specialization: ${{openSystem.content.language.tradetalk.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..read-write
@@ -175,7 +175,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.esrolian.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language
@@ -196,7 +196,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.heortling.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language
@@ -217,7 +217,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.newPelorian.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language
@@ -238,7 +238,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.praxian.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language
@@ -259,7 +259,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.pureHorseTongue.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language
@@ -280,7 +280,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.stormspeech.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language
@@ -301,7 +301,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.tarshite.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language
@@ -322,7 +322,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.tradetalk.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language

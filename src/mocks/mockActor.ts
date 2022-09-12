@@ -14,7 +14,7 @@ const embeddedItems = [
         skillName: "Spirit Combat",
         specialization: "",
         baseChance: 20,
-        learnedChance: 20,
+        gainedChance: 10,
         canGetExperience: true,
         hasExperience: false,
         runes: [],

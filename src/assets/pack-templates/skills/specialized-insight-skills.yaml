@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.insight.skillName}}$
   specialization: ${{openSystem.content.skill.insight.specialization.human}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..insight

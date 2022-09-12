@@ -877,7 +877,7 @@
         "Category": "Category",
         "CategoryModifier": "{category} Modifier",
         "BaseChance": "Base Chance",
-        "LearnedChance": "Learned Chance",
+        "GainedChance": "Gained Chance",
         "Chance": "Chance",
         "CanGainExperienceQ": "Can Gain Experience?",
         "HasExperienceQ": "Has Experience?",

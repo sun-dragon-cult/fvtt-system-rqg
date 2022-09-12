@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.insight.skillName}}$
   specialization: "..."
   baseChance: 20
-  learnedChance: 20
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..insight
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.listen.skillName}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..listen
@@ -46,10 +46,10 @@ type: skill
 img: systems/rqg/assets/images/skills/scan.svg
 data:
   category: perception
-  skillName: ${{openSystem.content.skill.scan.skillName}}
+  skillName: ${{openSystem.content.skill.scan.skillName}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..scan
@@ -70,7 +70,7 @@ data:
   skillName: ${{openSystem.content.skill.search.skillName}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..search
@@ -91,7 +91,7 @@ data:
   skillName: ${{openSystem.content.skill.track.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..track
@@ -112,7 +112,7 @@ data:
   skillName: ${{openSystem.content.skill.track.skillName}}$
   specialization: ${{openSystem.content.skill.track.specialization.scent}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..track

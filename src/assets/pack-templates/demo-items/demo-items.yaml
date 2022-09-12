@@ -6,7 +6,7 @@ data:
   skillName: Demo Sword Skill
   specialization:
   baseChance: 25
-  learnedChance: 67
+  gainedChance: 67
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -260,7 +260,7 @@ data:
   skillName: Demo Bow Skill
   specialization:
   baseChance: 15
-  learnedChance: 56
+  gainedChance: 56
   canGetExperience: true
   hasExperience: false
   runes: []
