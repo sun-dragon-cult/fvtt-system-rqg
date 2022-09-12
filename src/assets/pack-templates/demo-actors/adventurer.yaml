@@ -461,7 +461,7 @@ items:
       skillName: Spirit Travel
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -476,7 +476,7 @@ items:
       skillName: Play Instrument
       specialization: "..."
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -491,7 +491,7 @@ items:
       skillName: Track
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -506,7 +506,7 @@ items:
       skillName: Act
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -521,7 +521,7 @@ items:
       skillName: Sing
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -536,7 +536,7 @@ items:
       skillName: Sleight
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -551,7 +551,7 @@ items:
       skillName: Hide
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -566,7 +566,7 @@ items:
       skillName: Treat Poison
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -581,12 +581,18 @@ items:
       skillName: Spirit Combat
       specialization: null
       baseChance: 20
-      learnedChance: 20
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
       journalId: null
       journalPack: null
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.spirit-combat
+          lang: ${{openSystem.lang}}$
+          priority: ${{openSystem.prio}}$
   - _id: XRUlXMed8JNVGqjH
     name: Prepare Corpse
     type: skill
@@ -596,7 +602,7 @@ items:
       skillName: Prepare Corpse
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -611,7 +617,7 @@ items:
       skillName: Peaceful Cut
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -626,7 +632,7 @@ items:
       skillName: Climb
       specialization: null
       baseChance: 40
-      learnedChance: 40
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -641,7 +647,7 @@ items:
       skillName: Swim
       specialization: null
       baseChance: 15
-      learnedChance: 15
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -656,7 +662,7 @@ items:
       skillName: Elder Race Lore
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: false
       hasExperience: false
       runes: []
@@ -671,7 +677,7 @@ items:
       skillName: Plant Lore
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: false
       hasExperience: false
       runes: []
@@ -686,7 +692,7 @@ items:
       skillName: Listen
       specialization: null
       baseChance: 25
-      learnedChance: 25
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -701,7 +707,7 @@ items:
       skillName: Farm
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -716,7 +722,7 @@ items:
       skillName: Fast Talk
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -731,7 +737,7 @@ items:
       skillName: Devise
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -746,7 +752,7 @@ items:
       skillName: Charm
       specialization: null
       baseChance: 15
-      learnedChance: 15
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -761,7 +767,7 @@ items:
       skillName: Customs, own
       specialization: "..."
       baseChance: 25
-      learnedChance: 25
+      gainedChance: 0
       canGetExperience: false
       hasExperience: false
       runes: []
@@ -776,7 +782,7 @@ items:
       skillName: Search
       specialization: null
       baseChance: 25
-      learnedChance: 25
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -791,7 +797,7 @@ items:
       skillName: Drive
       specialization: Chariot
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -806,7 +812,7 @@ items:
       skillName: Speak Own Language
       specialization: "..."
       baseChance: 50
-      learnedChance: 0
+      gainedChance: 0
       canGetExperience: true]
       hasExperience: false
       runes: []
@@ -821,7 +827,7 @@ items:
       skillName: Disguise
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -836,7 +842,7 @@ items:
       skillName: Animal Lore
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: false
       hasExperience: false
       runes: []
@@ -851,7 +857,7 @@ items:
       skillName: Orate
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -866,7 +872,7 @@ items:
       skillName: Celestial Lore
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: false
       hasExperience: false
       runes: []
@@ -881,7 +887,7 @@ items:
       skillName: Scan
       specialization: null
       baseChance: 25
-      learnedChance: 25
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -896,7 +902,7 @@ items:
       skillName: Battle
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -911,7 +917,7 @@ items:
       skillName: Survival
       specialization: null
       baseChance: 15
-      learnedChance: 15
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -926,7 +932,7 @@ items:
       skillName: Treat Disease
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -941,7 +947,7 @@ items:
       skillName: First Aid
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -956,7 +962,7 @@ items:
       skillName: Intrigue
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -971,7 +977,7 @@ items:
       skillName: Mineral Lore
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: false
       hasExperience: false
       runes: []
@@ -986,7 +992,7 @@ items:
       skillName: Game
       specialization: null
       baseChance: 15
-      learnedChance: 15
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1001,7 +1007,7 @@ items:
       skillName: Craft
       specialization: "..."
       baseChance: 10
-      learnedChance: 0
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1016,7 +1022,7 @@ items:
       skillName: Bargain
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1031,7 +1037,7 @@ items:
       skillName: Conceal
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1046,7 +1052,7 @@ items:
       skillName: Homeland Lore, own
       specialization: "..."
       baseChance: 30
-      learnedChance: 30
+      gainedChance: 0
       canGetExperience: false
       hasExperience: false
       runes: []
@@ -1061,7 +1067,7 @@ items:
       skillName: Insight
       specialization: "..."
       baseChance: 20
-      learnedChance: 20
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1076,7 +1082,7 @@ items:
       skillName: Evaluate
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1091,7 +1097,7 @@ items:
       skillName: Dance
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1106,12 +1112,18 @@ items:
       skillName: Dodge
       specialization: null
       baseChance: 0
-      learnedChance: 0
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
       journalId: null
       journalPack: null
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.dodge
+          lang: ${{openSystem.lang}}$
+          priority: ${{openSystem.prio}}$
   - _id: iamIUx7SzTh342wa
     name: Boat
     type: skill
@@ -1121,7 +1133,7 @@ items:
       skillName: Boat
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1136,7 +1148,7 @@ items:
       skillName: Art
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1151,7 +1163,7 @@ items:
       skillName: Worship
       specialization: "..."
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1166,7 +1178,7 @@ items:
       skillName: Herd
       specialization: null
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1181,12 +1193,18 @@ items:
       skillName: Jump
       specialization: null
       baseChance: 0
-      learnedChance: 0
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
       journalId: null
       journalPack: null
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.jump
+          lang: ${{openSystem.lang}}$
+          priority: ${{openSystem.prio}}$
   - _id: AiZ5kq2BrisO9thM
     name: Intimidate
     type: skill
@@ -1196,7 +1214,7 @@ items:
       skillName: Intimidate
       specialization: null
       baseChance: 15
-      learnedChance: 15
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1211,7 +1229,7 @@ items:
       skillName: Ride
       specialization: "..."
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1226,7 +1244,7 @@ items:
       skillName: Cult Lore
       specialization: "..."
       baseChance: 5
-      learnedChance: 5
+      gainedChance: 0
       canGetExperience: false
       hasExperience: false
       runes: []
@@ -1241,7 +1259,7 @@ items:
       skillName: Manage Household
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1256,12 +1274,18 @@ items:
       skillName: Move Quietly
       specialization: null
       baseChance: 10
-      learnedChance: 10
+      gainedChance: 0
       canGetExperience: true
       hasExperience: false
       runes: []
       journalId: null
       journalPack: null
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.move-quietly
+          lang: ${{openSystem.lang}}$
+          priority: ${{openSystem.prio}}$
   - _id: D5SYkC1RiTxNjrxB
     name: Love (RQG)
     type: passion
@@ -1451,7 +1475,7 @@ items:
       skillName: Demo Bow Skill
       specialization: null
       baseChance: 15
-      learnedChance: 56
+      gainedChance: 56
       canGetExperience: true
       hasExperience: false
       runes: []
@@ -1664,7 +1688,7 @@ items:
       skillName: Demo Sword Skill
       specialization: null
       baseChance: 25
-      learnedChance: 67
+      gainedChance: 67
       canGetExperience: true
       hasExperience: false
       runes: []

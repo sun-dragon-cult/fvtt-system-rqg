@@ -216,7 +216,7 @@ export class ActorWizard extends FormApplication {
         if (skillRqidLink.bonus) {
           const skillDataSource = skill.data as SkillDataSource;
           skillDataSource.data.baseChance = 0;
-          skillDataSource.data.learnedChance = 0;
+          skillDataSource.data.gainedChance = 0;
           skillDataSource.data.hasExperience = false;
           skillDataSource.data.chance = skillRqidLink.bonus;
         }

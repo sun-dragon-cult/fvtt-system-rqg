@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.act.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..act
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.art.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..art
@@ -49,7 +49,7 @@ data:
   skillName: ${{openSystem.content.skill.bargain.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..bargain
@@ -70,7 +70,7 @@ data:
   skillName: ${{openSystem.content.skill.charm.skillName}}$
   specialization:
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..charm
@@ -91,7 +91,7 @@ data:
   skillName: ${{openSystem.content.skill.dance.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..dance
@@ -112,7 +112,7 @@ data:
   skillName: ${{openSystem.content.skill.disguise.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..disguise
@@ -133,7 +133,7 @@ data:
   skillName: ${{openSystem.content.skill.fastTalk.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..fast-talk
@@ -154,7 +154,7 @@ data:
   skillName: ${{openSystem.content.skill.intimidate.skillName}}$
   specialization:
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..intimidate
@@ -175,7 +175,7 @@ data:
   skillName: ${{openSystem.content.skill.intrigue.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..intrigue
@@ -196,7 +196,7 @@ data:
   skillName: ${{openSystem.content.skill.orate.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..orate
@@ -217,7 +217,7 @@ data:
   skillName: ${{openSystem.content.skill.sing.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..sing
@@ -238,7 +238,7 @@ data:
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: "..."
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..speak-language

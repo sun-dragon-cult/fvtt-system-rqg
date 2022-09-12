@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.ride.skillName}}$
   specialization: ${{openSystem.content.skill.ride.specialization.bison}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..ride
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.ride.skillName}}$
   specialization: ${{openSystem.content.skill.ride.specialization.horse}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..ride

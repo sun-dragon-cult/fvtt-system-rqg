@@ -23,14 +23,14 @@ export interface SkillDataSourceData extends IAbility {
   skillName: string;
   specialization: string;
   baseChance: number;
-  learnedChance: number;
+  gainedChance: number;
   /** For Sorcery Magic */
   runes: string[];
 }
 
 // --- Derived Data ---
 export interface SkillDataPropertiesData extends SkillDataSourceData {
-  /** Derived: Learned chance + categoryMod (from IAbility) */
+  /** Derived: Base chance + Gained chance + categoryMod (from IAbility) */
   chance: number;
   /** Derived: The modifier from skill category for this skill*/
   categoryMod: number;
@@ -52,7 +52,7 @@ export const defaultSkillData: SkillDataSourceData = {
   skillName: "",
   specialization: "",
   baseChance: 0,
-  learnedChance: 0,
+  gainedChance: 0,
   canGetExperience: true,
   hasExperience: false,
   runes: [],

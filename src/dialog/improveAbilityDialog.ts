@@ -172,7 +172,7 @@ export async function submitImproveAbilityDialog(
         expRoll.total !== undefined &&
         (expRoll.total > Number(abilityData.chance) || expRoll.total >= 100)
       ) {
-        // increase ability learnedChance, clear experience check
+        // increase ability gainedChance, clear experience check
         const resultFlavor = localize(
           "RQG.Dialog.improveAbilityDialog.experienceResultChat.flavor",
           { name: adapter.name, typeLocName: adapter.typeLocName }
@@ -266,10 +266,10 @@ export async function submitImproveAbilityDialog(
     gain = Number(gainRoll.total) || 0;
   }
   if (adapter.isSkill) {
-    //@ts-ignore abilityData.learnedChance
-    let newLearnedChance: number = Number(abilityData.learnedChance) + gain;
+    //@ts-ignore abilityData.gainedChance
+    let newGainedChance: number = Number(abilityData.gainedChance) + gain;
     await actor.updateEmbeddedDocuments("Item", [
-      { _id: item.id, data: { hasExperience: false, learnedChance: newLearnedChance } },
+      { _id: item.id, data: { hasExperience: false, gainedChance: newGainedChance } },
     ]);
   } else {
     let newChance: number = Number(abilityData.chance) + gain;

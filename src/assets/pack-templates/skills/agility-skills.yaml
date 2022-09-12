@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.boat.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..boat
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.climb.skillName}}$
   specialization:
   baseChance: 40
-  learnedChance: 40
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..climb
@@ -52,7 +52,7 @@ data:
   skillName: ${{openSystem.content.skill.dodge.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..dodge
@@ -73,7 +73,7 @@ data:
   skillName: ${{openSystem.content.skill.driveChariot.skillName}}$
   specialization: Chariot
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..drive-chariot
@@ -97,7 +97,7 @@ data:
   skillName: Jump
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..jump
@@ -118,7 +118,7 @@ data:
   skillName: ${{openSystem.content.skill.ride.skillName}}$
   specialization: "..."
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..ride
@@ -139,7 +139,7 @@ data:
   skillName: ${{openSystem.content.skill.swim.skillName}}$
   specialization:
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..swim

@@ -866,7 +866,7 @@
           "type": "integer",
           "default": 0
         },
-        "learnedChance": {
+        "gainedChance": {
           "type": "integer",
           "default": 0
         },
@@ -890,7 +890,7 @@
         "skillName",
         "specialization",
         "baseChance",
-        "learnedChance",
+        "gainedChance",
         "canGetExperience"
       ],
       "additionalProperties": false

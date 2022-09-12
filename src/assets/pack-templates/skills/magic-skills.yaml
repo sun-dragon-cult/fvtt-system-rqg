@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.meditate.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..meditate
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.prepareCorpse.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..prepare-corpse
@@ -49,7 +49,7 @@ data:
   skillName: ${{openSystem.content.skill.senseAssassin.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..sense-assassin
@@ -70,7 +70,7 @@ data:
   skillName: ${{openSystem.content.skill.senseChaos.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..sense-chaos
@@ -91,7 +91,7 @@ data:
   skillName: ${{openSystem.content.skill.spiritCombat.skillName}}$
   specialization:
   baseChance: 20
-  learnedChance: 20
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..spirit-combat
@@ -112,7 +112,7 @@ data:
   skillName: ${{openSystem.content.skill.spiritDance.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..spirit-dance
@@ -133,7 +133,7 @@ data:
   skillName: ${{openSystem.content.skill.spiritLore.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..spirit-lore
@@ -154,7 +154,7 @@ data:
   skillName: ${{openSystem.content.skill.spiritTravel.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..spirit-travel
@@ -175,7 +175,7 @@ data:
   skillName: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..understand-herd-beast
@@ -196,7 +196,7 @@ data:
   skillName: ${{openSystem.content.skill.worship.skillName}}$
   specialization: "..."
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..worship

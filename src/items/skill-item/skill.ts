@@ -91,16 +91,14 @@ export class Skill extends AbstractEmbeddedItem {
       );
     }
 
-    // Learned chance can't be lower than base chance
-    if (skillData.baseChance > skillData.learnedChance) {
-      skillData.learnedChance = skillData.baseChance;
-    }
-
-    // Update the skill chance including skill category modifiers.
-    // If base chance is 0 you need to have learned something to get category modifier
+    // Calculate the effective skill chance including skill category modifier.
+    // If skill base chance is 0 you need to have studied to get an effective chance
     skillData.chance =
-      skillData.baseChance > 0 || skillData.learnedChance > 0
-        ? Math.max(0, skillData.learnedChance + (skillData.categoryMod || 0) + mod)
+      skillData.baseChance > 0 || skillData.baseChance + skillData.gainedChance > 0
+        ? Math.max(
+            0,
+            skillData.baseChance + skillData.gainedChance + (skillData.categoryMod || 0) + mod
+          )
         : 0;
     return skillItem;
   }

@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.cultLore.skillName}}$
   specialization: ${{openSystem.content.cult.orlanth.name}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..cult-lore

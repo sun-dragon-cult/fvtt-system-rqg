@@ -96,12 +96,19 @@ items:
       skillName: Spirit Combat
       specialization: null
       baseChance: 20
-      learnedChance: 20
+      gainedChance: 40
       canGetExperience: true
       hasExperience: false
       runes: []
       journalId: null
       journalPack: null
+    flags:
+      rqg:
+        documentRqidFlags:
+          id: i.skill.spirit-combat
+          lang: ${{openSystem.lang}}$
+          priority: ${{openSystem.prio}}$
+
 flags:
   rqg:
     documentRqidFlags:

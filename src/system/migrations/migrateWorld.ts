@@ -12,6 +12,7 @@ import { renameFireSky } from "./migrations-item/renameFireSky";
 import { assignRqidToJEs } from "./assignRqidToJEs";
 import { trimCategoryFromSkillNames } from "./migrations-item/trimCategoryFromSkillNames";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkillsWithRqid";
+import { renameLearnedToGainedChance } from "./migrations-item/renameLearnedToGainedChance";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -63,6 +64,7 @@ export async function applyDefaultWorldMigrations(
     useRqidDescriptionLinks,
     trimCategoryFromSkillNames,
     tagSkillNameSkillsWithRqid,
+    renameLearnedToGainedChance,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 

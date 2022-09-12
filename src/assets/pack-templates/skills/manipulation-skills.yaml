@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.conceal.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..conceal
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.craft.skillName}}$
   specialization: "..."
   baseChance: 10
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..craft
@@ -49,7 +49,7 @@ data:
   skillName: ${{openSystem.content.skill.devise.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..devise
@@ -70,7 +70,7 @@ data:
   skillName: ${{openSystem.content.skill.playInstrument.skillName}}$
   specialization: "..."
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..play-instrument
@@ -91,7 +91,7 @@ data:
   skillName: ${{openSystem.content.skill.sleight.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..sleight

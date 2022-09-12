@@ -7,7 +7,7 @@ data:
   skillName: Alchemy
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..alchemy
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.animalLore.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..animal-lore
@@ -49,7 +49,7 @@ data:
   skillName: ${{openSystem.content.skill.bureaucracy.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..bureaucracy
@@ -70,7 +70,7 @@ data:
   skillName: ${{openSystem.content.skill.battle.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..battle
@@ -91,7 +91,7 @@ data:
   skillName: ${{openSystem.content.skill.celestialLore.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..celestial-lore
@@ -112,7 +112,7 @@ data:
   skillName: ${{openSystem.content.skill.cultLore.skillName}}$
   specialization: "..."
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..cult-lore
@@ -133,7 +133,7 @@ data:
   skillName: ${{openSystem.content.skill.customs.skillName}}$
   specialization: "..."
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
@@ -154,7 +154,7 @@ data:
   skillName: ${{openSystem.content.skill.elderRaceLore.skillName}}$
   specialization: "..."
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..elder-race-lore
@@ -175,7 +175,7 @@ data:
   skillName: ${{openSystem.content.skill.evaluate.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..evaluate
@@ -196,7 +196,7 @@ data:
   skillName: ${{openSystem.content.skill.farm.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..evaluate
@@ -217,7 +217,7 @@ data:
   skillName: ${{openSystem.content.skill.firstAid.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..first-aid
@@ -238,7 +238,7 @@ data:
   skillName: ${{openSystem.content.skill.game.skillName}}$
   specialization:
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..game
@@ -259,7 +259,7 @@ data:
   skillName: ${{openSystem.content.skill.herd.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..herd
@@ -280,7 +280,7 @@ data:
   skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
   specialization: "..."
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..homeland-lore
@@ -301,7 +301,7 @@ data:
   skillName: ${{openSystem.content.skill.libraryUse.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..library-use
@@ -322,7 +322,7 @@ data:
   skillName: ${{openSystem.content.skill.lore.skillName}}$
   specialization: "..."
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..lore
@@ -343,7 +343,7 @@ data:
   skillName: ${{openSystem.content.skill.manageHousehold.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..manage-household
@@ -351,7 +351,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.homelandLore
+      id: i.skill.manage-household
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
@@ -364,7 +364,7 @@ data:
   skillName: ${{openSystem.content.skill.mineralLore.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..mineral-lore
@@ -385,7 +385,7 @@ data:
   skillName: ${{openSystem.content.skill.peacefulCut.skillName}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..peaceful-cut
@@ -406,7 +406,7 @@ data:
   skillName: ${{openSystem.content.skill.plantLore.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..plant-lore
@@ -429,7 +429,7 @@ data:
   skillName: ${{openSystem.content.skill.readWrite.skillName}}$
   specialization: "..."
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..read-write
@@ -450,7 +450,7 @@ data:
   skillName: ${{openSystem.content.skill.survival.skillName}}$
   specialization:
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..survival
@@ -471,7 +471,7 @@ data:
   skillName: ${{openSystem.content.skill.shiphandling.skillName}}$
   specialization:
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..shiphandling
@@ -492,7 +492,7 @@ data:
   skillName: ${{openSystem.content.skill.treatDisease.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..treat-disease
@@ -513,7 +513,7 @@ data:
   skillName: ${{openSystem.content.skill.treatPoison.skillName}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..treat-poison

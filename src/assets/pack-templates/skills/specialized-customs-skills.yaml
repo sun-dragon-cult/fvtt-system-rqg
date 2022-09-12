@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.skill.customs.skillName}}$
   specialization: ${{openSystem.content.homeland.esrolia.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
@@ -28,7 +28,7 @@ data:
   skillName: ${{openSystem.content.skill.customs.skillName}}$
   specialization: ${{openSystem.content.homeland.grazelands.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
@@ -49,7 +49,7 @@ data:
   skillName: ${{openSystem.content.skill.customs.skillName}}$
   specialization: ${{openSystem.content.homeland.lunarTarsh.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
@@ -70,7 +70,7 @@ data:
   skillName: ${{openSystem.content.skill.customs.skillName}}$
   specialization: ${{openSystem.content.homeland.oldTarsh.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
@@ -91,7 +91,7 @@ data:
   skillName: ${{openSystem.content.skill.customs.skillName}}$
   specialization: ${{openSystem.content.homeland.prax.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
@@ -112,7 +112,7 @@ data:
   skillName: ${{openSystem.content.skill.customs.skillName}}$
   specialization: ${{openSystem.content.homeland.sartar.name}}$
   baseChance: 0
-  learnedChance: 0
+  gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..customs
