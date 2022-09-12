@@ -170,7 +170,9 @@ export class RqgActor extends Actor {
     effectsOriginUpdates.length &&
       this.updateEmbeddedDocuments("ActiveEffect", effectsOriginUpdates);
 
-    initializeAllCharacteristics(this, true);
+    if (!this.data.token.actorLink) {
+      initializeAllCharacteristics(this, true);
+    }
   }
 
   private static updateEffectOrigin(origin: string, actorId: string): string {
