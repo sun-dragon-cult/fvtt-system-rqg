@@ -1,3 +1,4 @@
+{{log 'improveDialog' this}}
 <form>
     <h1>
         {{#if adapter.img}}
@@ -12,7 +13,7 @@
             <p>{{localize "RQG.Dialog.improveAbilityDialog.chanceToGain" chanceToGain=adapter.chanceToGain}}</p>
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience-gain-fixed">
-                {{#if forChar}}
+                {{#if adapter.forChar}}
                 {{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=adapter.experienceGainFixed}}
                 {{else}}
                 {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.experienceGainFixed}}
@@ -21,7 +22,7 @@
             <label>
                 <input type="radio" name="experiencegaintype" class="improvement-type-checkbox" value="experience-gain-random"
                     {{#if adapter.showExperience}}checked="checked"{{/if}}>
-                {{#if forChar}}
+                {{#if adapter.forChar}}
                 {{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=adapter.experienceGainRandom}}
                 {{else}}
                 {{localize "RQG.Dialog.improveAbilityDialog.gain" gain=adapter.experienceGainRandom}}
