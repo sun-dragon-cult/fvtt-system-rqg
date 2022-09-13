@@ -1,0 +1,129 @@
+# meditate
+name: ${{openSystem.content.skill.meditate.skillName}}$
+img: systems/rqg/assets/images/skills/meditate.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.meditate.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..meditate
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# prepare-corpse
+name: ${{openSystem.content.skill.prepareCorpse.skillName}}$
+img: systems/rqg/assets/images/skills/prepare-corpse.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.prepareCorpse.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..prepare-corpse
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# sense-assassin
+name: ${{openSystem.content.skill.senseAssassin.skillName}}$
+img: systems/rqg/assets/images/skills/sense-assassin.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.senseAssassin.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..sense-assassin
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# sense-chaos
+name: ${{openSystem.content.skill.senseChaos.skillName}}$
+img: systems/rqg/assets/images/skills/sense-chaos.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.senseChaos.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..sense-chaos
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# spirit-combat
+name: ${{openSystem.content.skill.spiritCombat.skillName}}$
+img: systems/rqg/assets/images/skills/spirit-combat.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.spiritCombat.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..spirit-combat
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# spirit-dance
+name: ${{openSystem.content.skill.spiritDance.skillName}}$
+img: systems/rqg/assets/images/skills/spirit-dance.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.spiritDance.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..spirit-dance
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# spirit-lore
+name: ${{openSystem.content.skill.spiritLore.skillName}}$
+img: systems/rqg/assets/images/skills/spirit-lore.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.spiritLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..spirit-lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# spirit travel
+name: ${{openSystem.content.skill.spiritTravel.skillName}}$
+img: systems/rqg/assets/images/skills/spirit-travel.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.spiritTravel.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..spirit-travel
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# understand-herd-beast
+name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
+img: systems/rqg/assets/images/skills/understand-herd-beast.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.understandHerdBeast.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..understand-herd-beast
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# worship
+name: ${{openSystem.content.skill.worship.skillName}}$
+img: systems/rqg/assets/images/skills/worship.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.worship.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..worship
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

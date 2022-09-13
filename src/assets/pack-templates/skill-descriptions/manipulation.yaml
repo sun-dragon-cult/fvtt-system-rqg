@@ -1,0 +1,64 @@
+# conceal
+name: ${{openSystem.content.skill.conceal.skillName}}$
+img: systems/rqg/assets/images/skills/conceal.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.conceal.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..conceal
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.content.lang}}
+---
+# craft
+name: ${{openSystem.content.skill.craft.skillName}}$
+img: systems/rqg/assets/images/skills/craft.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.craft.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..craft
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.content.lang}}
+---
+# devise
+name: ${{openSystem.content.skill.devise.skillName}}$
+img: systems/rqg/assets/images/skills/devise.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.devise.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..devise
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.content.lang}}
+---
+# play instrument
+name: ${{openSystem.content.skill.playInstrument.skillName}}$
+img: systems/rqg/assets/images/skills/play-instrument.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.playInstrument.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..play-instrument
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.content.lang}}
+---
+# sleight
+name: ${{openSystem.content.skill.sleight.skillName}}$
+img: systems/rqg/assets/images/skills/sleight.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.sleight.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..sleight
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.content.lang}}

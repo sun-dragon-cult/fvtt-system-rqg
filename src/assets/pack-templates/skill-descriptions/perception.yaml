@@ -1,0 +1,64 @@
+# insight
+name: ${{openSystem.content.skill.insight.skillName}}$
+img: systems/rqg/assets/images/skills/insight.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.insight.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..insight
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# listen
+name: ${{openSystem.content.skill.listen.skillName}}$
+img: systems/rqg/assets/images/skills/listen.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.listen.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..listen
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# scan
+name: ${{openSystem.content.skill.scan.skillName}}$
+img: systems/rqg/assets/images/skills/scan.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.scan.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..scan
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# search
+name: ${{openSystem.content.skill.search.skillName}}$
+img: systems/rqg/assets/images/skills/search.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.search.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..search
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# track
+name: ${{openSystem.content.skill.track.skillName}}$
+img: systems/rqg/assets/images/skills/track.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.track.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..track
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

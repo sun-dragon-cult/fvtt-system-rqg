@@ -1,0 +1,324 @@
+# alchemy
+name: ${{openSystem.content.skill.alchemy.skillName}}$
+img: systems/rqg/assets/images/skills/alchemy.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.alchemy.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..alchemy
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# animal lore
+name: ${{openSystem.content.skill.animalLore.skillName}}$
+img: systems/rqg/assets/images/skills/animal-lore.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.animalLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..animal-lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# battle
+name: ${{openSystem.content.skill.battle.skillName}}$
+img: systems/rqg/assets/images/skills/battle.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.battle.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..battle
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# bureaucracy
+name: ${{openSystem.content.skill.bureaucracy.skillName}}$
+img: systems/rqg/assets/images/skills/bureaucracy.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.bureaucracy.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..bureaucracy
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# celestial-lore
+name: ${{openSystem.content.skill.celestialLore.skillName}}$
+img: systems/rqg/assets/images/skills/celestial-lore.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.celestialLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..celestial-lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# cult-lore
+name: ${{openSystem.content.skill.cultLore.skillName}}$
+img: systems/rqg/assets/images/passion/devotion.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.cultLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..cult-lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# customs
+name: ${{openSystem.content.skill.customs.skillName}}$
+img: systems/rqg/assets/images/skills/customs.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.customs.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..customs
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# elder-race-lore
+name: ${{openSystem.content.skill.elderRaceLore.skillName}}$
+img: systems/rqg/assets/images/skills/elder-race-lore.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.elderRaceLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..elder-race-lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# evaluate
+name: ${{openSystem.content.skill.evaluate.skillName}}$
+img: systems/rqg/assets/images/skills/evaluate.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.evaluate.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..evaluate
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# farm
+name: ${{openSystem.content.skill.farm.skillName}}$
+img: systems/rqg/assets/images/skills/farm.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.farm.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..farm
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# first-aid
+name: ${{openSystem.content.skill.firstAid.skillName}}$
+img: systems/rqg/assets/images/skills/first-aid.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.firstAid.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..first-aid
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# game
+name: ${{openSystem.content.skill.game.skillName}}$
+img: systems/rqg/assets/images/skills/game.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.game.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..game
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# herd
+name: ${{openSystem.content.skill.herd.skillName}}$
+img: systems/rqg/assets/images/skills/herd.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.herd.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..herd
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# homeland-lore
+name: ${{openSystem.content.skill.homelandLore.skillName}}$
+img: systems/rqg/assets/images/skills/homeland-lore.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.homelandLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..homeland-lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# library-use
+name: ${{openSystem.content.skill.libraryUse.skillName}}$
+img: systems/rqg/assets/images/skills/library-use.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.libraryUse.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..library-use
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# lore
+name: ${{openSystem.content.skill.lore.skillName}}$
+img: systems/rqg/assets/images/skills/lore.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.lore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# manage-household
+name: ${{openSystem.content.skill.manageHousehold.skillName}}$
+img: systems/rqg/assets/images/skills/manage-household.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.manageHousehold.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..manage-household
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# mineral-lore
+name: ${{openSystem.content.skill.mineralLore.skillName}}$
+img: systems/rqg/assets/images/skills/mineral-lore.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.mineralLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..mineral-lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# peaceful-cut
+name: ${{openSystem.content.skill.peacefulCut.skillName}}$
+img: systems/rqg/assets/images/skills/peaceful-cut.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.peacefulCut.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..peaceful-cut
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# plant-lore
+name: ${{openSystem.content.skill.plantLore.skillName}}$
+img: systems/rqg/assets/images/skills/plant-lore.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.plantLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..plant-lore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# read-write
+name: ${{openSystem.content.skill.readWrite.skillName}}$
+img: systems/rqg/assets/images/skills/read-write.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.readWrite.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..read-write
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# shiphandling
+name: ${{openSystem.content.skill.shiphandling.skillName}}$
+img: systems/rqg/assets/images/skills/shiphandling.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.shiphandling.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..shiphandling
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# survival
+name: ${{openSystem.content.skill.survival.skillName}}$
+img: systems/rqg/assets/images/skills/survival.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.survival.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..survival
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# treat-disease
+name: ${{openSystem.content.skill.treatDisease.skillName}}$
+img: systems/rqg/assets/images/skills/treat-disease.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.treatDisease.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..treat-disease
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# treat-poison
+name: ${{openSystem.content.skill.treatPoison.skillName}}$
+img: systems/rqg/assets/images/skills/treat-poison.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.treatPoison.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..treat-poison
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

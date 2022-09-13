@@ -1,0 +1,25 @@
+# hide
+name: ${{openSystem.content.skill.hide.skillName}}$
+img: systems/rqg/assets/images/skills/hide.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.hide.description}}$<hr><blockquote>${{openSystem.content.skillCategory.stealth.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..hide
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# moveQuietly
+name: ${{openSystem.content.skill.moveQuietly.skillName}}$
+img: systems/rqg/assets/images/skills/move-quietly.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.moveQuietly.description}}$<hr><blockquote>${{openSystem.content.skillCategory.stealth.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..move-quietly
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

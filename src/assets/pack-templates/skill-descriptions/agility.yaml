@@ -1,0 +1,90 @@
+# boat
+name: ${{openSystem.content.skill.boat.skillName}}$
+img: systems/rqg/assets/images/skills/boat.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.boat.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..boat
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# climb
+name: ${{openSystem.content.skill.climb.skillName}}$
+img: systems/rqg/assets/images/skills/climb.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.climb.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..climb
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# dodge
+name: ${{openSystem.content.skill.dodge.skillName}}$
+img: systems/rqg/assets/images/skills/dodge.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.dodge.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..dodge
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# drive-chariot
+name: ${{openSystem.content.skill.driveChariot.skillName}}$
+img: systems/rqg/assets/images/skills/drive.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.driveChariot.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..drive-chariot
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# jump
+name: ${{openSystem.content.skill.jump.skillName}}$
+img: systems/rqg/assets/images/skills/jump.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.jump.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..jump
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# ride
+name: ${{openSystem.content.skill.ride.skillName}}$
+img: systems/rqg/assets/images/skills/ride.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.ride.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..ride
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# swim
+name: ${{openSystem.content.skill.swim.skillName}}$
+img: systems/rqg/assets/images/skills/swim.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.swim.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..swim
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
