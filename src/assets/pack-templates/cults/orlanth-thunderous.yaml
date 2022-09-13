@@ -1,15 +1,15 @@
-# orlanth
-name: ${{openSystem.content.cult.orlanth.name}}$
+# orlanth-thunderous
+name: ${{openSystem.content.cult.orlanth.subcult.thunderous.name}}$ (${{openSystem.content.cult.orlanth.name}}$)
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 data:
   cultName: ${{openSystem.content.cult.orlanth.name}}$
-  subcults: "..."
+  subcults: ${{openSystem.content.cult.orlanth.subcult.thunderous.name}}$
   rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.orlanth.tagline}}$
+  tagline: ${{openSystem.content.cult.orlanth.subcult.thunderous.tagline}}$
   holyDays: ${{openSystem.content.cult.orlanth.holyDays}}$
   runes:
     - ${{openSystem.content.runeDescription.movementPower.name}}$
@@ -22,6 +22,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.cult.orlanth
+      id: i.cult.orlanth-thunderous-orlanth
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -1,0 +1,26 @@
+# the-red-goddess
+name: ${{openSystem.content.cult.theRedGoddess.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.theRedGoddess.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.theRedGoddess.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.fertilityPower.name}}$
+    - ${{openSystem.content.runeDescription.moonElement.name}}$
+    - ${{openSystem.content.runeDescription.moonElement.name}}$
+    - ${{openSystem.content.runeDescription.chaosForm.name}}$
+  descriptionRqidLink:
+    rqid: je..the-red-goddess
+    name: ${{openSystem.content.cult.theRedGoddess.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.the-red-goddess
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

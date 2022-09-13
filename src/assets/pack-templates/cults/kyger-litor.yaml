@@ -1,0 +1,24 @@
+# kyger-litor
+name: ${{openSystem.content.cult.kygerLitor.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.kygerLitor.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.kygerLitor.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.darknessElement.name}}$
+    - ${{openSystem.content.runeDescription.manForm.name}}$
+  descriptionRqidLink:
+    rqid: je..kyger-litor
+    name: ${{openSystem.content.cult.kygerLitor.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.kyger-litor
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

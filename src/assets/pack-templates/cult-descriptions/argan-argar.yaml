@@ -1,0 +1,15 @@
+# argan-argar
+name: ${{openSystem.content.cult.arganArgar.name}}$
+img: systems/rqg/assets/images/items/cult.svg
+content: >
+  ${{openSystem.content.journalEntryType.cultDescription.title}}$
+  <h2>${{openSystem.content.cult.arganArgar.name}}$, ${{openSystem.content.cult.arganArgar.tagline}}$</h2>
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/harmony.svg" height="70">
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/darkness.svg" height="70">
+  ${{openSystem.content.cult.arganArgar.descriptionHtml}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..argan-argar
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

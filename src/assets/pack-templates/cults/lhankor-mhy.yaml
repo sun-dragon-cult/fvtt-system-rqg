@@ -1,0 +1,24 @@
+# lhankor-mhy
+name: ${{openSystem.content.cult.lhankorMhy.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.lhankorMhy.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.lhankorMhy.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.truthPower.name}}$
+    - ${{openSystem.content.runeDescription.stasisPower.name}}$
+  descriptionRqidLink:
+    rqid: je..lhankor-mhy
+    name: ${{openSystem.content.cult.lhankorMhy.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.lhankor-mhy
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,26 +1,25 @@
-# ernalda
-name: ${{openSystem.content.cult.ernalda.name}}$
+# chalana-arroy
+name: ${{openSystem.content.cult.chalanaArroy.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 data:
-  cultName: ${{openSystem.content.cult.ernalda.name}}$
+  cultName: ${{openSystem.content.cult.chalanaArroy.name}}$
   rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.ernalda.tagline}}$
+  tagline: ${{openSystem.content.cult.chalanaArroy.tagline}}$
   holyDays:
   runes:
+    - ${{openSystem.content.runeDescription.harmonyPower.name}}$
     - ${{openSystem.content.runeDescription.fertilityPower.name}}$
-    - ${{openSystem.content.runeDescription.earthElement.name}}$
-    - ${{openSystem.content.runeDescription.earthElement.name}}$
     - ${{openSystem.content.runeDescription.harmonyPower.name}}$
   descriptionRqidLink:
-    rqid: je..ernalda
-    name: ${{openSystem.content.cult.ernalda.name}}$
+    rqid: je..chalana-arroy
+    name: ${{openSystem.content.cult.chalanaArroy.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.cult.ernalda
+      id: i.cult.chalana-arroy
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

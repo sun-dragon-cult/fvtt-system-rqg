@@ -1,0 +1,25 @@
+# storm-bull
+name: ${{openSystem.content.cult.stormBull.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.stormBull.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.stormBull.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.airElement.name}}$
+    - ${{openSystem.content.runeDescription.beastForm.name}}$
+    - ${{openSystem.content.runeDescription.deathPower.name}}$
+  descriptionRqidLink:
+    rqid: je..storm-bull
+    name: ${{openSystem.content.cult.stormBull.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.storm-bull
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

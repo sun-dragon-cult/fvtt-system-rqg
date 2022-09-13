@@ -1,0 +1,15 @@
+# kyger-litor
+name: ${{openSystem.content.cult.kygerLitor.name}}$
+img: systems/rqg/assets/images/items/cult.svg
+content: >
+  ${{openSystem.content.journalEntryType.cultDescription.title}}$
+  <h2>${{openSystem.content.cult.kygerLitor.name}}$, ${{openSystem.content.cult.kygerLitor.tagline}}$</h2>
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/man.svg" height="70">
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/darkness.svg" height="70">
+  ${{openSystem.content.cult.kygerLitor.descriptionHtml}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..kyger-litor
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

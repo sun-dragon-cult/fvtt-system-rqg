@@ -1,0 +1,16 @@
+# aldrya
+name: ${{openSystem.content.cult.aldrya.name}}$
+img: systems/rqg/assets/images/items/cult.svg
+content: >
+  ${{openSystem.content.journalEntryType.cultDescription.title}}$
+  <h2>${{openSystem.content.cult.aldrya.name}}$, ${{openSystem.content.cult.aldrya.tagline}}$</h2>
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/plant.svg" height="70">
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/earth.svg" height="70">
+  ${{openSystem.content.cult.aldrya.descriptionHtml}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..aldrya
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
