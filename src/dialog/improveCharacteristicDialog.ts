@@ -1,6 +1,8 @@
 import { RqgActor } from "../actors/rqgActor";
 import { convertFormValueToString, localize } from "../system/util";
 import { systemId } from "../system/config";
+import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { CultRankEnum } from "../data-model/item-data/cultData";
 
 //**Shows a dialog for improving a Characteristic */
 export async function showImproveCharacteristicDialog(
@@ -14,9 +16,19 @@ export async function showImproveCharacteristicDialog(
 
   const rollmax = Roll.create(char.formula);
   const speciesRollableMax = (await rollmax.evaluate({ maximize: true, async: true })).total || 0;
-  const rollmin = Roll.create(char.formula);
-  const speciesRollableMin = (await rollmin.evaluate({ minimize: true, async: true })).total || 0;
-  const speciesMax = speciesRollableMax + speciesRollableMin;
+  const { diceCount, bonusNumber } = char.formula
+    .replaceAll(" ", "")
+    .match(/(?:(?<diceCount>\d+)[dD]\d+\+?)?(?<bonusNumber>\d*)/).groups;
+  const speciesMin = Number(diceCount || 0) + Math.floor(Number(bonusNumber || 0) / 6);
+  const speciesMax = speciesRollableMax + speciesMin;
+  // Priests & God-talkers get a 20% bonus, p276 & p278
+  const cultStandingBonus = actor.items.some(
+    (i) =>
+      i.data.type === ItemTypeEnum.Cult &&
+      [CultRankEnum.GodTalker, CultRankEnum.RunePriest].includes(i.data.data.rank)
+  )
+    ? 20
+    : 0;
 
   const adapter: any = {
     showExperience: char.hasExperience,
@@ -24,7 +36,7 @@ export async function showImproveCharacteristicDialog(
     showTraining: trainable.includes(char.name),
     showResearch: researchable.includes(char.name),
     chance: char.value || 0,
-    chanceToGain: (speciesMax - Number(char.value)) * 5 || 0,
+    chanceToGain: ((speciesMax - Number(char.value)) * 5 || 0) + cultStandingBonus,
     experienceGainFixed: 1,
     experienceGainRandom: "1d3-1",
     trainingGainFixed: false,
