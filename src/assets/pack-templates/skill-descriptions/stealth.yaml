@@ -1,5 +1,4 @@
 # hide
-_id: 93zwvwQh0YBZ2KpU
 name: ${{openSystem.content.skill.hide.skillName}}$
 img: systems/rqg/assets/images/skills/hide.svg
 content: >
@@ -13,7 +12,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # moveQuietly
-_id: VC3XYJi5PTMdGxKR
 name: ${{openSystem.content.skill.moveQuietly.skillName}}$
 img: systems/rqg/assets/images/skills/move-quietly.svg
 content: >

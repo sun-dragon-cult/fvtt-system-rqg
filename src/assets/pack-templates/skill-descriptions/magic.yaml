@@ -1,5 +1,4 @@
 # meditate
-_id: 9aG341I9brbdFu3o
 name: ${{openSystem.content.skill.meditate.skillName}}$
 img: systems/rqg/assets/images/skills/meditate.svg
 content: >
@@ -13,7 +12,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # prepare-corpse
-_id: myTT6L8U3PiJuet1
 name: ${{openSystem.content.skill.prepareCorpse.skillName}}$
 img: systems/rqg/assets/images/skills/prepare-corpse.svg
 content: >
@@ -27,7 +25,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # sense-assassin
-_id: hG7Q6A2pyFF4oVOc
 name: ${{openSystem.content.skill.senseAssassin.skillName}}$
 img: systems/rqg/assets/images/skills/sense-assassin.svg
 content: >
@@ -41,7 +38,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # sense-chaos
-_id: lDBQR602H8hzQmmC
 name: ${{openSystem.content.skill.senseChaos.skillName}}$
 img: systems/rqg/assets/images/skills/sense-chaos.svg
 content: >
@@ -55,7 +51,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # spirit-combat
-_id: gZ8UV8EL8nTvqM6C
 name: ${{openSystem.content.skill.spiritCombat.skillName}}$
 img: systems/rqg/assets/images/skills/spirit-combat.svg
 content: >
@@ -69,7 +64,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # spirit-dance
-_id: HotSOQZ72mf5Sox9
 name: ${{openSystem.content.skill.spiritDance.skillName}}$
 img: systems/rqg/assets/images/skills/spirit-dance.svg
 content: >
@@ -83,7 +77,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # spirit-lore
-_id: K6j9Ecvi40pqydV0
 name: ${{openSystem.content.skill.spiritLore.skillName}}$
 img: systems/rqg/assets/images/skills/spirit-lore.svg
 content: >
@@ -97,7 +90,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # spirit travel
-_id: uSAOtHtf6KeWqIT0
 name: ${{openSystem.content.skill.spiritTravel.skillName}}$
 img: systems/rqg/assets/images/skills/spirit-travel.svg
 content: >
@@ -111,7 +103,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # understand-herd-beast
-_id: JjAd7bFQMg3QkQ3w
 name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
 img: systems/rqg/assets/images/skills/understand-herd-beast.svg
 content: >
@@ -125,7 +116,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # worship
-_id: 5GGr9XB4216eG3jn
 name: ${{openSystem.content.skill.worship.skillName}}$
 img: systems/rqg/assets/images/skills/worship.svg
 content: >

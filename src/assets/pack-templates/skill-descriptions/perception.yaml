@@ -1,5 +1,4 @@
 # insight
-_id: a6P9sOsDGR6JLlUi
 name: ${{openSystem.content.skill.insight.skillName}}$
 img: systems/rqg/assets/images/skills/insight.svg
 content: >
@@ -13,7 +12,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # listen
-_id: 71a7LmJkK2p8qpJj
 name: ${{openSystem.content.skill.listen.skillName}}$
 img: systems/rqg/assets/images/skills/listen.svg
 content: >
@@ -27,7 +25,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # scan
-_id: 34Fc508BFjZm1f5v
 name: ${{openSystem.content.skill.scan.skillName}}$
 img: systems/rqg/assets/images/skills/scan.svg
 content: >
@@ -41,7 +38,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # search
-_id: a01l4e9qVbvx5n4P
 name: ${{openSystem.content.skill.search.skillName}}$
 img: systems/rqg/assets/images/skills/search.svg
 content: >
@@ -55,7 +51,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # track
-_id: FDzEZOIYBhTx19H2
 name: ${{openSystem.content.skill.track.skillName}}$
 img: systems/rqg/assets/images/skills/track.svg
 content: >

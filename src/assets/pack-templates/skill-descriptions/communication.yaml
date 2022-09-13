@@ -1,5 +1,4 @@
 # act
-_id: NFt570N3Xm1Ly2Tc
 name: ${{openSystem.content.skill.act.skillName}}$
 img: systems/rqg/assets/images/skills/act.svg
 content: >
@@ -13,7 +12,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # art
-_id: Hh3u0pyQbGWFaN3s
 name: ${{openSystem.content.skill.art.skillName}}$
 img: systems/rqg/assets/images/skills/art.svg
 content: >
@@ -27,7 +25,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # bargain
-_id: qDIFE35qkECjT94k
 name: ${{openSystem.content.skill.bargain.skillName}}$
 img: systems/rqg/assets/images/skills/bargain.svg
 content: >
@@ -41,7 +38,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # charm
-_id: 3ezu0iwicsoCp24A
 name: ${{openSystem.content.skill.charm.skillName}}$
 img: systems/rqg/assets/images/skills/charm.svg
 content: >
@@ -55,7 +51,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # dance
-_id: v28nooB6qx6G61jW
 name: ${{openSystem.content.skill.dance.skillName}}$
 img: systems/rqg/assets/images/skills/dance.svg
 content: >
@@ -69,7 +64,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # disguise
-_id: s98so4YEj8VKLZKJ
 name: ${{openSystem.content.skill.disguise.skillName}}$
 img: systems/rqg/assets/images/skills/disguise.svg
 content: >
@@ -83,7 +77,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # fast-talk
-_id: 6tLcaFu3F8i69FQr
 name: ${{openSystem.content.skill.fastTalk.skillName}}$
 img: systems/rqg/assets/images/skills/fast-talk.svg
 content: >
@@ -97,7 +90,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # intimidate
-_id: AhyRO9U34KN26qsV
 name: ${{openSystem.content.skill.intimidate.skillName}}$
 img: systems/rqg/assets/images/skills/intimidate.svg
 content: >
@@ -111,7 +103,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # intrigue
-_id: e9hEUy2f9CkdW9UA
 name: ${{openSystem.content.skill.intrigue.skillName}}$
 img: systems/rqg/assets/images/skills/intrigue.svg
 content: >
@@ -125,7 +116,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # orate
-_id: mhqGljxzPlF8DbWL
 name: ${{openSystem.content.skill.orate.skillName}}$
 img: systems/rqg/assets/images/skills/orate.svg
 content: >
@@ -139,7 +129,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # sing
-_id: 8C7o2ZmrRs6TLg0R
 name: ${{openSystem.content.skill.sing.skillName}}$
 img: systems/rqg/assets/images/skills/sing.svg
 content: >
@@ -153,7 +142,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # speak-language
-_id: 905pAOV9D0dW1IBL
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$
 img: systems/rqg/assets/images/skills/speak.svg
 content: >

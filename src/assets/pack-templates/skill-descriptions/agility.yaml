@@ -1,5 +1,4 @@
 # boat
-_id: KRacu04VC87nhjOQ
 name: ${{openSystem.content.skill.boat.skillName}}$
 img: systems/rqg/assets/images/skills/boat.svg
 content: >
@@ -13,7 +12,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # climb
-_id: C0qOlw6Iul5U3ZW3
 name: ${{openSystem.content.skill.climb.skillName}}$
 img: systems/rqg/assets/images/skills/climb.svg
 content: >
@@ -27,7 +25,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # dodge
-_id: Y23358bQF4LE9KCP
 name: ${{openSystem.content.skill.dodge.skillName}}$
 img: systems/rqg/assets/images/skills/dodge.svg
 content: >
@@ -41,7 +38,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # drive-chariot
-_id: vM92Fd76G6SP9zhP
 name: ${{openSystem.content.skill.driveChariot.skillName}}$
 img: systems/rqg/assets/images/skills/drive.svg
 content: >
@@ -55,7 +51,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # jump
-_id: oTmutF2q07K1TmCO
 name: ${{openSystem.content.skill.jump.skillName}}$
 img: systems/rqg/assets/images/skills/jump.svg
 content: >
@@ -69,7 +64,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # ride
-_id: HieAoaU8759Bks6r
 name: ${{openSystem.content.skill.ride.skillName}}$
 img: systems/rqg/assets/images/skills/ride.svg
 content: >
@@ -83,7 +77,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # swim
-_id: bw98v765bvVY0447
 name: ${{openSystem.content.skill.swim.skillName}}$
 img: systems/rqg/assets/images/skills/swim.svg
 content: >

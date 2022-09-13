@@ -1,5 +1,4 @@
 # conceal
-_id: E3F2vQ9kWTTlNmoq
 name: ${{openSystem.content.skill.conceal.skillName}}$
 img: systems/rqg/assets/images/skills/conceal.svg
 content: >
@@ -13,7 +12,6 @@ flags:
       lang: ${{openSystem.content.lang}}
 ---
 # craft
-_id: yOb5fU1byO8NSSXT
 name: ${{openSystem.content.skill.craft.skillName}}$
 img: systems/rqg/assets/images/skills/craft.svg
 content: >
@@ -27,7 +25,6 @@ flags:
       lang: ${{openSystem.content.lang}}
 ---
 # devise
-_id: ataMNwKUA9HQlpD5
 name: ${{openSystem.content.skill.devise.skillName}}$
 img: systems/rqg/assets/images/skills/devise.svg
 content: >
@@ -41,7 +38,6 @@ flags:
       lang: ${{openSystem.content.lang}}
 ---
 # play instrument
-_id: 84Y6W0Mg708GkJf7
 name: ${{openSystem.content.skill.playInstrument.skillName}}$
 img: systems/rqg/assets/images/skills/play-instrument.svg
 content: >
@@ -55,7 +51,6 @@ flags:
       lang: ${{openSystem.content.lang}}
 ---
 # sleight
-_id: 1FO338bjh9Ca7rbS
 name: ${{openSystem.content.skill.sleight.skillName}}$
 img: systems/rqg/assets/images/skills/sleight.svg
 content: >

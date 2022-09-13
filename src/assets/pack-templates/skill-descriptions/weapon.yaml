@@ -1,5 +1,4 @@
 # melee weapon
-_id: HJfXS35kL0mxXvJk
 name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 content: >
@@ -13,7 +12,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # missile weapon
-_id: 4jqG68q9ZUh9ZMoy
 name: ${{openSystem.content.skill.missileWeapon.skillName}}$
 img: systems/rqg/assets/images/weapons/bowman.svg
 content: >
@@ -27,7 +25,6 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # shield
-_id: Vz2X5MoTnICBCsm1
 name: ${{openSystem.content.skill.shield.skillName}}$
 img: systems/rqg/assets/images/weapons/medium-shield.svg
 content: >
