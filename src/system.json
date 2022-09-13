@@ -155,6 +155,13 @@
       "type": "Item"
     },
     {
+      "name": "skill-descriptions-en",
+      "label": "Skill Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/skill-descriptions-en.db",
+      "type": "JournalEntry"
+    },    
+    {
       "name": "species-descriptions-en",
       "label": "Species Descriptions | en",
       "system": "rqg",

@@ -1,0 +1,41 @@
+# melee weapon
+_id: HJfXS35kL0mxXvJk
+name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+img: systems/rqg/assets/images/weapons/1h-sword.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.meleeWeapon.description}}$<hr><blockquote>${{openSystem.content.skillCategory.weapon.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..melee-weapon
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# missile weapon
+_id: 4jqG68q9ZUh9ZMoy
+name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+img: systems/rqg/assets/images/weapons/bowman.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.missileWeapon.description}}$<hr><blockquote>${{openSystem.content.skillCategory.weapon.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..missile-weapon
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# shield
+_id: Vz2X5MoTnICBCsm1
+name: ${{openSystem.content.skill.shield.skillName}}$
+img: systems/rqg/assets/images/weapons/medium-shield.svg
+content: >
+  ${{openSystem.content.journalEntryType.skillDescription.title}}$
+  ${{openSystem.content.skill.shield.description}}$<hr><blockquote>${{openSystem.content.skillCategory.weapon.description}}$</blockquote>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..shield-weapon
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

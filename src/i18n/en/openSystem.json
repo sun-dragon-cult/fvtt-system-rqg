@@ -1578,7 +1578,7 @@
       },
       "createMarket": {
         "name": "Create Market",
-        "description": "<h3>Rune Spell</h3><p><i><b>Cost:</b> 3+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Requires four wands. Creates a neutral trading ground 10 meters square, warded against vs. those with hostile intent. This provides the benefits of @JournalEntry[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Countermagic} 1,  @JournalEntry[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Spirit Screen} 2, and does 1D3 points of damage (ignoring armor) to a random hit location of an unwelcome intruder. Additional Rune points spent can increase the magical effects by the same amounts per point, or they can increase the size of the market by a multiple equal to those points spent. Lasts eight weeks.</p>"
+        "description": "<h3>Rune Spell</h3><p><i><b>Cost:</b> 3+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Requires four wands. Creates a neutral trading ground 10 meters square, warded against vs. those with hostile intent. This provides the benefits of @JournalEntry[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Countermagic} 1,  @JournalEntry[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Spirit Screen} 2, and does 1D3 points of damage (ignoring armor) to a random hit location of an unwelcome intruder. Additional Rune points spent can increase the magical effects by the same amounts per point, or they can increase the size of the market by a multiple equal to those points spent. Lasts eight weeks.</p>"
       },
       "cureAllDisease": {
         "name": "Cure All Disease",
@@ -1714,7 +1714,7 @@
       },
       "madness": {
         "name": "Madness",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Instant<br><b>Cults:</b> Seven Mothers</i></p><p>If the target’s POW is overcome by the caster, the target suffers effects based on the degree of success:</p><ul><li><b>Critical:</b> Target goes insane and is incapacitated for 30 minus POW days, permanently losing 1D4 points INT.</li><li><b>Special Success:</b> Target attacks nearest person as if @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Fanatic}for the next 30 minus POW minutes.</li><li><b>Success:</b> Victim collapses for 30 minus POW minutes and cannot be awakened.</li><li><b>Failure/Fumble:</b> No effect.</li></ul>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Instant<br><b>Cults:</b> Seven Mothers</i></p><p>If the target’s POW is overcome by the caster, the target suffers effects based on the degree of success:</p><ul><li><b>Critical:</b> Target goes insane and is incapacitated for 30 minus POW days, permanently losing 1D4 points INT.</li><li><b>Special Success:</b> Target attacks nearest person as if @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Fanatic}for the next 30 minus POW minutes.</li><li><b>Success:</b> Victim collapses for 30 minus POW minutes and cannot be awakened.</li><li><b>Failure/Fumble:</b> No effect.</li></ul>"
       },
       "magicPointEnchantment": {
         "name": "Magic Point Enchantment",
@@ -1738,7 +1738,7 @@
       },
       "morale": {
         "name": "Morale",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Creates a field around the caster and their unit like a @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Fanaticism} spell, without the restrictions on dodging and parrying. Lasts until sunrise or sunset, whichever comes first.</p>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Creates a field around the caster and their unit like a @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Fanaticism} spell, without the restrictions on dodging and parrying. Lasts until sunrise or sunset, whichever comes first.</p>"
       },
       "multispell": {
         "name": "Multispell",
@@ -1746,11 +1746,11 @@
       },
       "oath": {
         "name": "Oath",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2+<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Each person involved spends magic points, forming a pact: oathbreakers suffer a @Compendium[${{SS.module.name}}$.rune-magic-descriptions.XS49qoJ2oXGQdzO7]{Sever Spirit} spell with magic points equal to the total magic points spent in Oath. Each extra Rune point adds one person to the oath. Lasts until broken.</p>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2+<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Each person involved spends magic points, forming a pact: oathbreakers suffer a @Compendium[${{openSystem.module.name}}$.rune-magic-descriptions.XS49qoJ2oXGQdzO7]{Sever Spirit} spell with magic points equal to the total magic points spent in Oath. Each extra Rune point adds one person to the oath. Lasts until broken.</p>"
       },
       "passage": {
         "name": "Passage",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Opens a door, gate, etc. that has been locked, or one magically sealed if enough points are used. When cast with @Compendium[${{SS.module.name}}$.rune-magic-descriptions.62G2B108WSZYr4oq]{Lock}, each point allows one additional person to open the targeted door, lid, lock, etc. besides the caster.</p>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Opens a door, gate, etc. that has been locked, or one magically sealed if enough points are used. When cast with @Compendium[${{openSystem.module.name}}$.rune-magic-descriptions.62G2B108WSZYr4oq]{Lock}, each point allows one additional person to open the targeted door, lid, lock, etc. besides the caster.</p>"
       },
       "pathWatch": {
         "name": "Path Watch",
@@ -1818,7 +1818,7 @@
       },
       "summonCultSpirit": {
         "name": "Summon Cult Spirit",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br> <b>Cults:</b> All</i></p><p>The caster’s deity sends a cult spirit to their aid. Its size depends on the number of Rune points spent. As a rule, greater deities have more sizes and types of cult spirits. The summoned entity arrives at the end of the round, on strike rank 12. This spell may be cast simultaneously with @Compendium[${{SS.module.name}}$.rune-magic-descriptions.Qz4FreuMsSNSKX9X]{Command Cult Spirit}.</p><p>@Compendium[${{SS.module.name}}$.rune-magic-descriptions.0J1JDQ9BOs0xaDpa]{Summon Elemental} is a specific example of this spell, but many other variants exist.</p>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br> <b>Cults:</b> All</i></p><p>The caster’s deity sends a cult spirit to their aid. Its size depends on the number of Rune points spent. As a rule, greater deities have more sizes and types of cult spirits. The summoned entity arrives at the end of the round, on strike rank 12. This spell may be cast simultaneously with @Compendium[${{openSystem.module.name}}$.rune-magic-descriptions.Qz4FreuMsSNSKX9X]{Command Cult Spirit}.</p><p>@Compendium[${{openSystem.module.name}}$.rune-magic-descriptions.0J1JDQ9BOs0xaDpa]{Summon Elemental} is a specific example of this spell, but many other variants exist.</p>"
       },
       "summonElementalType": {
         "name": "Summon Elemental (type)",
@@ -1830,15 +1830,15 @@
       },
       "sunbright": {
         "name": "Sunbright",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> Yelmalio</i></p><p>Creates a 60-meter radius circle of light around the target. If unwilling, target’s POW must be defeated in a resistance roll. Has the effect of full daylight, affecting cave trolls and Demoralizing trollkin, vampires, ghouls, and undead as per the @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Demoralize} spell. Serves as a @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Shimmer} 2 spell. Darkness elementals suffer 1D3 damage per round from this spell. If cast directly on one and defeating its POW in a resistance roll, the elemental is banished.</p>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> Yelmalio</i></p><p>Creates a 60-meter radius circle of light around the target. If unwilling, target’s POW must be defeated in a resistance roll. Has the effect of full daylight, affecting cave trolls and Demoralizing trollkin, vampires, ghouls, and undead as per the @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Demoralize} spell. Serves as a @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Shimmer} 2 spell. Darkness elementals suffer 1D3 damage per round from this spell. If cast directly on one and defeating its POW in a resistance roll, the elemental is banished.</p>"
       },
       "sureshot": {
         "name": "Sureshot",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Foundchild, Yelm</i></p><p>Cast upon a missile weapon. If successful, the next attack within range always hits unless a 96–00 is rolled for the attack. Special and critical successes are as per the attacker’s skill. Attacks made with this spell do not count for experience, and the spell cannot be combined with Speedart or Firearrow. If it is used with @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Multimissile}, Sureshot only affects the first/original missile.</p>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Foundchild, Yelm</i></p><p>Cast upon a missile weapon. If successful, the next attack within range always hits unless a 96–00 is rolled for the attack. Special and critical successes are as per the attacker’s skill. Attacks made with this spell do not count for experience, and the spell cannot be combined with Speedart or Firearrow. If it is used with @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Multimissile}, Sureshot only affects the first/original missile.</p>"
       },
       "swordTrance": {
         "name": "Sword Trance",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Self<br><b>Cults:</b> Humakt</i></p><p>Each magic point spent with this spell increases one of the caster’s Sword skills by +10%. This can be combined with other weapon-enhancing spells, but not @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Berserker} or @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Fanaticism}. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using a sword in combat, the spell’s effect ends.</p>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Self<br><b>Cults:</b> Humakt</i></p><p>Each magic point spent with this spell increases one of the caster’s Sword skills by +10%. This can be combined with other weapon-enhancing spells, but not @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Berserker} or @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Fanaticism}. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using a sword in combat, the spell’s effect ends.</p>"
       },
       "teleportation": {
         "name": "Teleportation",
@@ -1858,11 +1858,11 @@
       },
       "turnUndead": {
         "name": "Turn Undead",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Humakt</i></p><p>Affects one undead per point. Roll the caster’s POW vs. the target’s magic points:</p><ul><li><b>Critical:</b> Undead destroyed, released, or otherwise ended.</li><li><b>Special:</b> Undead paralyzed for 20 melee rounds minus INT (minimum 1, skeletons inactive for 20 rounds).</li><li><b>Success:</b> Undead flees, if possible. If not, see <b>Special</b>.</li><li><b>Failure:</b> The undead is @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Befuddled}.</li><li><b>Fumble:</b> No effect.</li></ul>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Humakt</i></p><p>Affects one undead per point. Roll the caster’s POW vs. the target’s magic points:</p><ul><li><b>Critical:</b> Undead destroyed, released, or otherwise ended.</li><li><b>Special:</b> Undead paralyzed for 20 melee rounds minus INT (minimum 1, skeletons inactive for 20 rounds).</li><li><b>Success:</b> Undead flees, if possible. If not, see <b>Special</b>.</li><li><b>Failure:</b> The undead is @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Befuddled}.</li><li><b>Fumble:</b> No effect.</li></ul>"
       },
       "warding": {
         "name": "Warding",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>This ritual creates an area of safety for those inside. Four wands arranged in a rough rectangle define the area’s boundary. These can be made of any material and must be placed to enclose a maximum area of up to 100 square meters (typically 10×10 meters). The spell extends into the air for three meters above the wands, and underground to the depth of the wands. The stakes need not be visible to work; some casters bury them completely.</p><p>The spell connects these wands invisibly to form a barrier detectable only by magical means. The protection effects activate when physical or spirit enemies of the caster cross the barrier, or when a spell is cast across the barrier from the outside. When this happens, a loud noise (a keening, whistling, booming, etc.) begins, which can be suppressed by the casting priest.</p><p>Each point of Warding (up to 4) counts as 1 point of @Compendium[${{SS.module.name}}$.spirit-magic-descriptions-DUMMY]{Countermagic} against spells cast across the barrier, 2 points of spirit armor against outside spirits, and does 1D3 damage, ignoring armor, to one hit location of any corporeal enemy unwise enough to cross the boundary.</p><p>Each stacked point of Warding increases the area protected by another 100 square meters.</p><p>The Warding spell remains in effect until one of the wands is removed. Anyone but the caster that attempts to touch the stakes is affected by the Warding, but after suffering the effect, the person can then remove the stakes.</p>"
+        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>This ritual creates an area of safety for those inside. Four wands arranged in a rough rectangle define the area’s boundary. These can be made of any material and must be placed to enclose a maximum area of up to 100 square meters (typically 10×10 meters). The spell extends into the air for three meters above the wands, and underground to the depth of the wands. The stakes need not be visible to work; some casters bury them completely.</p><p>The spell connects these wands invisibly to form a barrier detectable only by magical means. The protection effects activate when physical or spirit enemies of the caster cross the barrier, or when a spell is cast across the barrier from the outside. When this happens, a loud noise (a keening, whistling, booming, etc.) begins, which can be suppressed by the casting priest.</p><p>Each point of Warding (up to 4) counts as 1 point of @Compendium[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Countermagic} against spells cast across the barrier, 2 points of spirit armor against outside spirits, and does 1D3 damage, ignoring armor, to one hit location of any corporeal enemy unwise enough to cross the boundary.</p><p>Each stacked point of Warding increases the area protected by another 100 square meters.</p><p>The Warding spell remains in effect until one of the wands is removed. Anyone but the caster that attempts to touch the stakes is affected by the Warding, but after suffering the effect, the person can then remove the stakes.</p>"
       },
       "windWords": {
         "name": "Wind Words",
