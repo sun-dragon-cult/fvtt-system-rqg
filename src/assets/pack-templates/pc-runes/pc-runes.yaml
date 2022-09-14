@@ -67,11 +67,11 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: -1
 ---
-name: ${{openSystem.content.rune.firesky}}$ (${{openSystem.content.runeType.element}}$)
+name: ${{openSystem.content.rune.fireSky}}$ (${{openSystem.content.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/fire_sky.svg
 data:
-  rune: ${{openSystem.content.rune.firesky}}$
+  rune: ${{openSystem.content.rune.fireSky}}$
   chance: 0
   hasExperience: false
   runeType: ${{openSystem.content.runeType.element}}$
@@ -81,12 +81,12 @@ data:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
-    rqid: je..firesky-element
-    name: ${{openSystem.content.rune.firesky}}$
+    rqid: je..fire-sky-element
+    name: ${{openSystem.content.rune.fireSky}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.rune.firesky-element
+      id: i.rune.fire-sky-element
       lang: ${{openSystem.lang}}$
       priority: -1
 ---

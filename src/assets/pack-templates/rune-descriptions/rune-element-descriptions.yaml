@@ -37,16 +37,16 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-# firesky
-name: ${{openSystem.content.runeDescription.fireskyElement.name}}$
+# fireSky
+name: ${{openSystem.content.runeDescription.fireSkyElement.name}}$
 img: systems/rqg/assets/images/runes/fire_sky.svg
 content: >
   ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fire_sky.svg" height="175"></p>${{openSystem.content.runeDescription.fireskyElement.description}}$
+  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fire_sky.svg" height="175"></p>${{openSystem.content.runeDescription.fireSkyElement.description}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: je..firesky-element
+      id: je..fire-sky-element
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---

@@ -1324,7 +1324,7 @@
       "earth": "Earth",
       "fate": "Fate",
       "fertility": "Fertility",
-      "firesky": "Fire/Sky",
+      "fireSky": "Fire/Sky",
       "harmony": "Harmony",
       "illusion": "Illusion",
       "infinity": "Infinity",
@@ -1398,7 +1398,7 @@
         "name": "Fertility (power)",
         "description": "<p>Symbolizes the Ancient Cup from which the whole world was poured at the dawn of creation. This is the symbol of growth and life.</p><p>To be strong with the Fertility Rune is to enjoy the pleasures of the flesh, most notably sexual desire. Such adventurers are generous and giving, often without personal commitment between the persons involved.</p>"
       },
-      "fireskyElement": {
+      "fireSkyElement": {
         "name": "Fire/Sky (element)",
         "description": "<p>The Sky is different from the Air, for Air separates the Sky and the Earth. After his defeat by his son, the Sky has been aloof from mankind, although vestiges of his worship, such as the Sun Dome Temple, are still present in the land.</p><p>The element of Fire/Sky is purification. It destroys polluting matter and withdraws upward from the Material World. It is the Sky Dome and the stars, with its greatest manifestation being the fiery Sun that brings light and warmth to the world.</p><p><b>Characteristic:</b> INT</p><p><b>Personality:</b> To have a strong affinity with Fire/Sky means to be pure, chaste, idealistic, intellectual, and perceptive.</p><p><b>Sense:</b> Scan</p><p><b>Skill Category:</b> Perception</p><p><b>Weapons:</b> Spear, bow</p><p><b>Organs:</b> Brain, sinew</p><p><b>Color:</b> Yellow</p><p><b>Metal:</b> Gold</p><p><b>Phyla:</b> Bird</p>"
       },
