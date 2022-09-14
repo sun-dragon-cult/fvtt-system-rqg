@@ -1,0 +1,19 @@
+# bladesharp
+name: ${{openSystem.content.spiritMagic.bladesharp.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: true
+  castingRange: touch
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..bladesharp
+    name: ${{openSystem.content.spiritMagic.bladesharp.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.bladesharp
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

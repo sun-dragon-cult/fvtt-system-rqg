@@ -1,0 +1,19 @@
+# slow
+name: ${{openSystem.content.spiritMagic.slow.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..slow
+    name: ${{openSystem.content.spiritMagic.slow.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.slow
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

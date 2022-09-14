@@ -1,0 +1,19 @@
+# dullblade
+name: ${{openSystem.content.spiritMagic.dullblade.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: true
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..dullblade
+    name: ${{openSystem.content.spiritMagic.dullblade.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.dullblade
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

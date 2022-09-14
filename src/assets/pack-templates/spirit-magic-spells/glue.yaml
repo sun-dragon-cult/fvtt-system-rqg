@@ -1,0 +1,19 @@
+# glue
+name: ${{openSystem.content.spiritMagic.glue.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: true
+  castingRange: touch
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..glue
+    name: ${{openSystem.content.spiritMagic.glue.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.glue
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

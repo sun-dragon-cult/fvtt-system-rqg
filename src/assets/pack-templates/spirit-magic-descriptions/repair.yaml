@@ -1,0 +1,12 @@
+# repair
+name: ${{openSystem.content.spiritMagic.repair.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.repair.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..repair
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

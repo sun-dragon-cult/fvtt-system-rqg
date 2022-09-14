@@ -1,0 +1,19 @@
+# coordination
+name: ${{openSystem.content.spiritMagic.coordination.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 2
+  isVariable: false
+  castingRange: touch
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..coordination
+    name: ${{openSystem.content.spiritMagic.coordination.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.coordination
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

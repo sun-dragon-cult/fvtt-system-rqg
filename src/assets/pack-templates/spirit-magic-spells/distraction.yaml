@@ -1,0 +1,19 @@
+# distraction
+name: ${{openSystem.content.spiritMagic.distraction.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: false
+  castingRange: ranged
+  duration: instant
+  concentration:
+  descriptionRqidLink:
+    rqid: je..distraction
+    name: ${{openSystem.content.spiritMagic.distraction.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.distraction
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

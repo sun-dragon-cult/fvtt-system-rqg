@@ -1,0 +1,12 @@
+# disruption
+name: ${{openSystem.content.spiritMagic.disruption.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.disruption.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..disruption
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

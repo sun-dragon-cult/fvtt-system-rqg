@@ -1,0 +1,19 @@
+# firearrow
+name: ${{openSystem.content.spiritMagic.firearrow.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 2
+  isVariable: false
+  castingRange: touch
+  duration: instant
+  concentration:
+  descriptionRqidLink:
+    rqid: je..firearrow
+    name: ${{openSystem.content.spiritMagic.firearrow.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.firearrow
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

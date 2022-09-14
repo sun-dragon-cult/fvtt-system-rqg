@@ -1,0 +1,19 @@
+# befuddle
+name: ${{openSystem.content.spiritMagic.befuddle.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 2
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..befuddle
+    name: ${{openSystem.content.spiritMagic.befuddle.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.befuddle
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

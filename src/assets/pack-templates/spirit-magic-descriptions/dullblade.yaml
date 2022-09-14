@@ -1,0 +1,12 @@
+# dullblade
+name: ${{openSystem.content.spiritMagic.dullblade.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.dullblade.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..dullblade
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

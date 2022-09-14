@@ -1,0 +1,19 @@
+# strength
+name: ${{openSystem.content.spiritMagic.strength.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 2
+  isVariable: false
+  castingRange: touch
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..strength
+    name: ${{openSystem.content.spiritMagic.strength.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.strength
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

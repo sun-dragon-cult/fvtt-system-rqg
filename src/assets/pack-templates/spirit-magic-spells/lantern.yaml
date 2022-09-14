@@ -1,0 +1,19 @@
+# lantern
+name: ${{openSystem.content.spiritMagic.lantern.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..lantern
+    name: ${{openSystem.content.spiritMagic.lantern.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.lantern
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

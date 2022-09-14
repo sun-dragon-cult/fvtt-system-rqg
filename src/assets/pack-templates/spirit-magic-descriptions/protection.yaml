@@ -1,0 +1,12 @@
+# protection
+name: ${{openSystem.content.spiritMagic.protection.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.protection.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..protection
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

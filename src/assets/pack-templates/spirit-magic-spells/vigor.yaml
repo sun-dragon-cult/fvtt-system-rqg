@@ -1,0 +1,19 @@
+# vigor
+name: ${{openSystem.content.spiritMagic.vigor.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 2
+  isVariable: false
+  castingRange: touch
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..vigor
+    name: ${{openSystem.content.spiritMagic.vigor.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.vigor
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

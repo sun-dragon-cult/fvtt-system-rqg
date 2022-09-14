@@ -1,0 +1,12 @@
+# ignite
+name: ${{openSystem.content.spiritMagic.ignite.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.ignite.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..ignite
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

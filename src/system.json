@@ -176,6 +176,20 @@
       "type": "Actor"
     },
     {
+      "name": "spirit-magic-spells-en",
+      "label": "Spirit Magic Spells | en",
+      "system": "rqg",
+      "path": "assets/packs/spirit-magic-spells-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "spirit-magic-descriptions-en",
+      "label": "Spirit Magic Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/spirit-magic-descriptions-en.db",
+      "type": "JournalEntry"
+    },     
+    {
       "name": "tribe-descriptions-en",
       "label": "Tribe Descriptions | en",
       "system": "rqg",

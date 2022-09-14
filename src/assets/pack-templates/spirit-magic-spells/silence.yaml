@@ -1,0 +1,19 @@
+# silence
+name: ${{openSystem.content.spiritMagic.silence.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: false
+  castingRange: touch
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..silence
+    name: ${{openSystem.content.spiritMagic.silence.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.silence
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

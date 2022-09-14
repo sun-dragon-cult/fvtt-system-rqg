@@ -1,0 +1,19 @@
+# sleep
+name: ${{openSystem.content.spiritMagic.sleep.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 3
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..sleep
+    name: ${{openSystem.content.spiritMagic.sleep.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.sleep
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

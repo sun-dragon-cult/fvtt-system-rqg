@@ -1,0 +1,12 @@
+# visibility
+name: ${{openSystem.content.spiritMagic.visibility.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.visibility.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..visibility
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

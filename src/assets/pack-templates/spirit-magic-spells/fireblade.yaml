@@ -1,0 +1,19 @@
+# fireblade
+name: ${{openSystem.content.spiritMagic.fireblade.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 4
+  isVariable: false
+  castingRange: touch
+  duration: temporal
+  concentration: active
+  descriptionRqidLink:
+    rqid: je..fireblade
+    name: ${{openSystem.content.spiritMagic.fireblade.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.fireblade
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

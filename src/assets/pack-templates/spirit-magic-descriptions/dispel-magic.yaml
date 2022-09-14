@@ -1,0 +1,12 @@
+# dispel-magic
+name: ${{openSystem.content.spiritMagic.dispelMagic.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.dispelMagic.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..dispelMagic
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

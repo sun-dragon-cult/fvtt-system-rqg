@@ -1,0 +1,19 @@
+# extinguish
+name: ${{openSystem.content.spiritMagic.extinguish.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: true
+  castingRange: ranged
+  duration: instant
+  concentration:
+  descriptionRqidLink:
+    rqid: je..extinguish
+    name: ${{openSystem.content.spiritMagic.extinguish.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.extinguish
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

@@ -1,0 +1,12 @@
+# glamour
+name: ${{openSystem.content.spiritMagic.glamour.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.glamour.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..glamour
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

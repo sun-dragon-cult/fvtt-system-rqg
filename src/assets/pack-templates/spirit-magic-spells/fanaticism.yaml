@@ -1,0 +1,19 @@
+# fanaticism
+name: ${{openSystem.content.spiritMagic.fanaticism.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..fanaticism
+    name: ${{openSystem.content.spiritMagic.fanaticism.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.fanaticism
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

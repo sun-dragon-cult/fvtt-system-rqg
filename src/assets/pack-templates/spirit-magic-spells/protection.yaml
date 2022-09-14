@@ -1,0 +1,19 @@
+# protection
+name: ${{openSystem.content.spiritMagic.protection.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: true
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..protection
+    name: ${{openSystem.content.spiritMagic.protection.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.protection
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

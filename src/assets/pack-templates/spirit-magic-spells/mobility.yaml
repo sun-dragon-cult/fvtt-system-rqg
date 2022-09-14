@@ -1,0 +1,19 @@
+# mobility
+name: ${{openSystem.content.spiritMagic.mobility.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..mobility
+    name: ${{openSystem.content.spiritMagic.mobility.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.mobility
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$
