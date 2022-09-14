@@ -1,0 +1,91 @@
+# 1h-sword-broadsword
+name: ${{openSystem.content.weaponSkill.1h-sword.name}}$ (${{openSystem.content.weaponSkill.1h-sword.specialization.broadsword}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-sword.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-sword.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-sword.specialization.broadsword}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-sword-broadsword
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 1h-sword-kopis
+name: ${{openSystem.content.weaponSkill.1h-sword.name}}$ (${{openSystem.content.weaponSkill.1h-sword.specialization.kopis}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-sword.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-sword.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-sword.specialization.kopis}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-sword-kopis
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 1h-sword-rapier
+name: ${{openSystem.content.weaponSkill.1h-sword.name}}$ (${{openSystem.content.weaponSkill.1h-sword.specialization.rapier}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-sword.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-sword.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-sword.specialization.rapier}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-sword-rapier
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 1h-sword-shortsword
+name: ${{openSystem.content.weaponSkill.1h-sword.name}}$ (${{openSystem.content.weaponSkill.1h-sword.specialization.shortsword}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-sword.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-sword.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-sword.specialization.shortsword}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-sword-shortsword
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

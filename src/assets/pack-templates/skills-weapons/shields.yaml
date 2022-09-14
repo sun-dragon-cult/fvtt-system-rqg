@@ -1,0 +1,68 @@
+# shield-large
+name: ${{openSystem.content.weaponSkill.shield.name}}$ (${{openSystem.content.weaponSkill.shield.specialization.small}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/large-shield.svg
+data:
+  category: shields
+  skillName: ${{openSystem.content.weaponSkill.shield.name}}$
+  specialization: ${{openSystem.content.weaponSkill.shield.specialization.large}}$
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..shield-weapon
+    name: ${{openSystem.content.skill.shield.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.shield-large
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# shield-medium
+name: ${{openSystem.content.weaponSkill.shield.name}}$ (${{openSystem.content.weaponSkill.shield.specialization.small}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/medium-shield.svg
+data:
+  category: shields
+  skillName: ${{openSystem.content.weaponSkill.shield.name}}$
+  specialization: ${{openSystem.content.weaponSkill.shield.specialization.medium}}$
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..shield-weapon
+    name: ${{openSystem.content.skill.shield.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.shield-medium
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# shield-small
+name: ${{openSystem.content.weaponSkill.shield.name}}$ (${{openSystem.content.weaponSkill.shield.specialization.small}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/small-shield.svg
+data:
+  category: shields
+  skillName: ${{openSystem.content.weaponSkill.shield.name}}$
+  specialization: ${{openSystem.content.weaponSkill.shield.specialization.small}}$
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..shield-weapon
+    name: ${{openSystem.content.skill.shield.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.shield-small
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,45 @@
+# 1h-axe-battle-axe
+name: ${{openSystem.content.weaponSkill.1h-axe.name}}$ (${{openSystem.content.weaponSkill.1h-axe.specialization.battleAxe}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-axe.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-axe.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-axe.specialization.battleAxe}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-axe-battle-axe
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 1h-axe-small-axe
+name: ${{openSystem.content.weaponSkill.1h-axe.name}}$ (${{openSystem.content.weaponSkill.1h-axe.specialization.smallAxe}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-axe.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-axe.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-axe.specialization.smallAxe}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-axe-small-axe
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

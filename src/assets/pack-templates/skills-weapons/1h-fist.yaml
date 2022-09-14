@@ -1,0 +1,68 @@
+# fist-claw
+name: ${{openSystem.content.weaponSkill.fist.name}}$ (${{openSystem.content.weaponSkill.fist.specialization.claw}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/claw.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.fist.name}}$
+  specialization: ${{openSystem.content.weaponSkill.fist.specialization.claw}}$
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.fist-claw
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# fist-heavy-cestus
+name: ${{openSystem.content.weaponSkill.fist.name}}$ (${{openSystem.content.weaponSkill.fist.specialization.heavyCestus}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/cestus.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.fist.name}}$
+  specialization: ${{openSystem.content.weaponSkill.fist.specialization.heavyCestus}}$
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.fist-heavy-cestus
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# fist-light-cestus
+name: ${{openSystem.content.weaponSkill.fist.name}}$ (${{openSystem.content.weaponSkill.fist.specialization.lightCestus}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/cestus.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.fist.name}}$
+  specialization: ${{openSystem.content.weaponSkill.fist.specialization.lightCestus}}$
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.fist-light-cestus
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

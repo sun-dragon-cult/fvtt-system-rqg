@@ -1,0 +1,252 @@
+# bite
+name: ${{openSystem.content.weaponSkill.bite.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/bite.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.bite.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.bite
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# head-butt
+name: ${{openSystem.content.weaponSkill.headButt.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/head-butt.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.headButt.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.head-butt
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# fist
+name: ${{openSystem.content.weaponSkill.fist.name}}$ (${{openSystem.content.weaponSkill.fist.specialization.fist}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/fist.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.fist.name}}$
+  specialization: ${{openSystem.content.weaponSkill.fist.name}}$
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.fist-fist
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# gore
+name: ${{openSystem.content.weaponSkill.gore.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/head-butt.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.gore.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.gore
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# grapple
+name: ${{openSystem.content.weaponSkill.grapple.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/grab.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.grapple.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.grapple
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# hug
+name: ${{openSystem.content.weaponSkill.hug.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/grab.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.hug.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.hug
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# kick
+name: ${{openSystem.content.weaponSkill.kick.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/kick.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.kick
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# rip
+name: ${{openSystem.content.weaponSkill.rip.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/claw.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.rip.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.fist-rip
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# rear-and-plunge
+name: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/rear-plunge.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.rear-and-plunge
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# sting
+name: ${{openSystem.content.weaponSkill.sting.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/sting.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.sting.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.sting
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# trample
+name: ${{openSystem.content.weaponSkill.trample.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/trample.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.trample.name}}$
+  specialization:
+  baseChance: 25
+  learnedChance: 25
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.trample
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
