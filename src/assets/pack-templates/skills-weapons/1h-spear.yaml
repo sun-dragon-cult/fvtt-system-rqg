@@ -1,0 +1,68 @@
+# 1h-spear-javelin
+name: ${{openSystem.content.weaponSkill.1h-spear.name}}$ (${{openSystem.content.weaponSkill.1h-spear.specialization.javelin}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-spear.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-spear.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-spear.specialization.javelin}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-spear-javelin
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 1h-spear-lance
+name: ${{openSystem.content.weaponSkill.1h-spear.name}}$ (${{openSystem.content.weaponSkill.1h-spear.specialization.lance}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-spear.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-spear.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-spear.specialization.lance}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-spear-lance
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 1h-spear-shortspear
+name: ${{openSystem.content.weaponSkill.1h-spear.name}}$ (${{openSystem.content.weaponSkill.1h-spear.specialization.shortspear}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-spear.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-spear.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-spear.specialization.shortspear}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-spear-shortspear
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

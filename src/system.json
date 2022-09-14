@@ -162,6 +162,13 @@
       "type": "JournalEntry"
     },    
     {
+      "name": "skills-weapons-en",
+      "label": "Skills - Weapons | en",
+      "system": "rqg",
+      "path": "assets/packs/skills-weapons-en.db",
+      "type": "Item"
+    },     
+    {
       "name": "species-descriptions-en",
       "label": "Species Descriptions | en",
       "system": "rqg",

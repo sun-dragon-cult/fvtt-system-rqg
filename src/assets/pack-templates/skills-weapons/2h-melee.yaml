@@ -1,0 +1,298 @@
+# 2h-axe-battle-axe
+name: ${{openSystem.content.weaponSkill.2h-axe.name}}$ (${{openSystem.content.weaponSkill.2h-axe.specialization.battleAxe}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-axe.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.battleAxe}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-axe-battle-axe
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-axe-dagger-axe
+name: ${{openSystem.content.weaponSkill.2h-axe.name}}$ (${{openSystem.content.weaponSkill.2h-axe.specialization.daggerAxe}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-axe.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.daggerAxe}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-axe-dagger-axe
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-axe-great-axe
+name: ${{openSystem.content.weaponSkill.2h-axe.name}}$ (${{openSystem.content.weaponSkill.2h-axe.specialization.greatAxe}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-axe.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.greatAxe}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-axe-great-axe
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-hammer-great-hammer
+name: ${{openSystem.content.weaponSkill.2h-hammer.name}}$ (${{openSystem.content.weaponSkill.2h-hammer.specialization.greatHammer}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-hammer.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-hammer.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-hammer.specialization.greatHammer}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-hammer-great-hammer
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-hammer-maul
+name: ${{openSystem.content.weaponSkill.2h-hammer.name}}$ (${{openSystem.content.weaponSkill.2h-hammer.specialization.maul}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-hammer.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-hammer.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-hammer.specialization.maul}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-hammer-maul
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-mace
+name: ${{openSystem.content.weaponSkill.2h-mace.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/2h-mace.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-mace.name}}$
+  specialization:
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-mace
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-spear-longspear
+name: ${{openSystem.content.weaponSkill.2h-spear.name}}$ (${{openSystem.content.weaponSkill.2h-spear.specialization.longspear}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-spear.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.longspear}}$
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-spear-longspear
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-spear-pike
+name: ${{openSystem.content.weaponSkill.2h-spear.name}}$ (${{openSystem.content.weaponSkill.2h-spear.specialization.pike}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-spear.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.pike}}$
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-spear-pike
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-spear-shortspear
+name: ${{openSystem.content.weaponSkill.2h-spear.name}}$ (${{openSystem.content.weaponSkill.2h-spear.specialization.shortspear}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-spear.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.shortspear}}$
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-spear-shortspear
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-sword-greatsword
+name: ${{openSystem.content.weaponSkill.2h-sword.name}}$ (${{openSystem.content.weaponSkill.2h-sword.specialization.greatsword}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-sword.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.greatsword}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-sword-greatsword
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-sword-rhomphaia
+name: ${{openSystem.content.weaponSkill.2h-sword.name}}$ (${{openSystem.content.weaponSkill.2h-sword.specialization.rhomphaia}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-sword.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.rhomphaia}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-sword-rhomphaia
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 2h-sword-sickle-sword
+name: ${{openSystem.content.weaponSkill.2h-sword.name}}$ (${{openSystem.content.weaponSkill.2h-sword.specialization.sickle-sword}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/2h-sword.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.sickle-sword}}$
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.2h-sword-sickle-sword
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# quarterstaff
+name: ${{openSystem.content.weaponSkill.quarterstaff.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/quarterstaff.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.quarterstaff.name}}$
+  specialization:
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.quarterstaff
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

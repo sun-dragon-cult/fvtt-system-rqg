@@ -1,0 +1,21 @@
+name: ${{openSystem.content.weaponSkill.1h-hammer.name}}$ (${{openSystem.content.weaponSkill.1h-hammer.specialization.warHammer}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/1h-warhammer.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-hammer.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-hammer.specialization.warHammer}}$
+  baseChance: 10
+  learnedChance: 10
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-hammer-war-hammer
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

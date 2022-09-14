@@ -1,0 +1,45 @@
+# 1h-dagger-dagger
+name: ${{openSystem.content.weaponSkill.1h-dagger.name}}$ (${{openSystem.content.weaponSkill.1h-dagger.specialization.dagger}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/knife.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-dagger.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-dagger.specialization.dagger}}$
+  baseChance: 15
+  learnedChance: 15
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-dagger-dagger
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# 1h-dagger-sickle
+name: ${{openSystem.content.weaponSkill.1h-dagger.name}}$ (${{openSystem.content.weaponSkill.1h-dagger.specialization.sickle}}$)
+type: skill
+img: systems/rqg/assets/images/weapons/sickle.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.1h-dagger.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-dagger.specialization.sickle}}$)
+  baseChance: 5
+  learnedChance: 5
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.1h-dagger-sickle
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
