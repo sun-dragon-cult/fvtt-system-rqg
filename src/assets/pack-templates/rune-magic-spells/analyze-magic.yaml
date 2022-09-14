@@ -1,0 +1,22 @@
+# analyze-magic
+name: ${{openSystem.content.runeMagic.analyzeMagic.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Truth (power)
+  points: 1
+  castingRange: touch
+  duration: instant
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..analyze-magic
+    name: ${{openSystem.content.runeMagic.analyzeMagic.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.runeMagic.rune-magic-analyze-magic
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

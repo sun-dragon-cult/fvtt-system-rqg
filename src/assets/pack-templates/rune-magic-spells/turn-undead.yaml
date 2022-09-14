@@ -1,0 +1,22 @@
+# turn-undead
+name: ${{openSystem.content.runeMagic.turnUndead.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Death (power)
+  points: 1
+  castingRange: ranged
+  duration: instant
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..turn-undead
+    name: ${{openSystem.content.runeMagic.turnUndead.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.runeMagic.rune-magic-turn-undead
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,13 @@
+# summon-healing-spirit
+name: ${{openSystem.content.runeMagic.summonHealingSpirit.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
+  ${{openSystem.content.runeMagic.summonHealingSpirit.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..summon-healing-spirit
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,13 @@
+# passage
+name: ${{openSystem.content.runeMagic.passage.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
+  ${{openSystem.content.runeMagic.passage.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..passage
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

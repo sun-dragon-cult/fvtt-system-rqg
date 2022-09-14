@@ -1,0 +1,13 @@
+# create-market
+name: ${{openSystem.content.runeMagic.createMarket.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/harmony.svg" height="70">
+  ${{openSystem.content.runeMagic.createMarket.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..create-market
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,13 @@
+# madness
+name: ${{openSystem.content.runeMagic.madness.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/moon_full.svg" height="70">
+  ${{openSystem.content.runeMagic.madness.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..madness
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

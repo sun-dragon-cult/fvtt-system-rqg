@@ -1,0 +1,24 @@
+# heal-body
+name: ${{openSystem.content.runeMagic.healBody.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Earth (element)
+    - Fertility (power)
+    - Harmony (power)
+  points: 3
+  castingRange: touch
+  duration: instant
+  isStackable: false
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..heal-body
+    name: ${{openSystem.content.runeMagic.healBody.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.runeMagic.rune-magic-heal-body
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

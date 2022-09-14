@@ -1,0 +1,22 @@
+# command-cult-spirit-elemental
+name: ${{openSystem.content.runeMagic.commandCultSpiritElemental.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Magic (condition)
+  points: 2
+  castingRange: ranged
+  duration: temporal
+  isStackable: false
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..command-cult-spirit-elemental
+    name: ${{openSystem.content.runeMagic.commandCultSpiritElemental.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.runeMagic.rune-magic-command-cult-spirit-elemental
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

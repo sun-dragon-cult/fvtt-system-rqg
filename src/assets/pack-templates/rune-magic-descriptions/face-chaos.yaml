@@ -1,0 +1,14 @@
+# face-chaos
+name: ${{openSystem.content.runeMagic.faceChaos.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/beast.svg" height="70"> 
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/air.svg" height="70">
+  ${{openSystem.content.runeMagic.faceChaos.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..face-chaos
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

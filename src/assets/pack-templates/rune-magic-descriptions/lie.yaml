@@ -1,0 +1,14 @@
+# lie
+name: ${{openSystem.content.runeMagic.lie.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/disorder.svg" height="70"> 
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/illusion.svg" height="70">
+  ${{openSystem.content.runeMagic.lie.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..lie
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,21 @@
+# passage
+name: ${{openSystem.content.runeMagic.passage.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Movement (power)
+  points: 1
+  isRitual: true
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..passage
+    name: ${{openSystem.content.runeMagic.passage.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.runeMagic.rune-magic-passage
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
