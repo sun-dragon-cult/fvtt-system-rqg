@@ -1,0 +1,25 @@
+# daka-fal
+name: ${{openSystem.content.cult.dakaFal.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.dakaFal.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.dakaFal.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.manForm.name}}$
+    - ${{openSystem.content.runeDescription.spiritForm.name}}$
+    - ${{openSystem.content.runeDescription.manForm.name}}$
+  descriptionRqidLink:
+    rqid: je..daka-fal
+    name: ${{openSystem.content.cult.dakaFal.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.daka-fal
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

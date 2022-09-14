@@ -1,0 +1,25 @@
+# the-seven-mothers
+name: ${{openSystem.content.cult.theSevenMothers.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.theSevenMothers.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.theSevenMothers.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.moonElement.name}}$
+    - ${{openSystem.content.runeDescription.fertilityPower.name}}$
+    - ${{openSystem.content.runeDescription.deathPower.name}}$
+  descriptionRqidLink:
+    rqid: je..the-seven-mothers
+    name: ${{openSystem.content.cult.theSevenMothers.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.the-seven-mothers
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

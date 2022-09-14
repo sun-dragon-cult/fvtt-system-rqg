@@ -1,0 +1,25 @@
+# eurmal
+name: ${{openSystem.content.cult.eurmal.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.eurmal.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.eurmal.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.illusionPower.name}}$
+    - ${{openSystem.content.runeDescription.disorderPower.name}}$
+    - ${{openSystem.content.runeDescription.illusionPower.name}}$
+  descriptionRqidLink:
+    rqid: je..eurmal
+    name: ${{openSystem.content.cult.eurmal.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.eurmal
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

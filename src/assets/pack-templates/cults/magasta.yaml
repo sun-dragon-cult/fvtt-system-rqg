@@ -1,0 +1,26 @@
+# magasta
+name: ${{openSystem.content.cult.magasta.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.magasta.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.magasta.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.movementPower.name}}$
+    - ${{openSystem.content.runeDescription.waterElement.name}}$
+    - ${{openSystem.content.runeDescription.waterElement.name}}$
+    - ${{openSystem.content.runeDescription.deathPower.name}}$
+  descriptionRqidLink:
+    rqid: je..magasta
+    name: ${{openSystem.content.cult.magasta.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.magasta
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

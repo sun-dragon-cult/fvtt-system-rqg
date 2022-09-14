@@ -1,0 +1,24 @@
+# issaries
+name: ${{openSystem.content.cult.issaries.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.issaries.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.issaries.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.harmonyPower.name}}$
+    - ${{openSystem.content.runeDescription.movementPower.name}}$
+  descriptionRqidLink:
+    rqid: je..issaries
+    name: ${{openSystem.content.cult.issaries.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.issaries
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,16 @@
+# storm-bull
+name: ${{openSystem.content.cult.stormBull.name}}$
+img: systems/rqg/assets/images/items/cult.svg
+content: >
+  ${{openSystem.content.journalEntryType.cultDescription.title}}$
+  <h2>${{openSystem.content.cult.stormBull.name}}$</h2>
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/beast.svg" height="70">
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
+  ${{openSystem.content.cult.stormBull.descriptionHtml}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..storm-bull
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

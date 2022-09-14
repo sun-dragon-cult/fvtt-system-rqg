@@ -1,0 +1,25 @@
+# humakt
+name: ${{openSystem.content.cult.humakt.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.humakt.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.humakt.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.deathPower.name}}$
+    - ${{openSystem.content.runeDescription.truthPower.name}}$
+    - ${{openSystem.content.runeDescription.deathPower.name}}$
+  descriptionRqidLink:
+    rqid: je..humakt
+    name: ${{openSystem.content.cult.humakt.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.humakt
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

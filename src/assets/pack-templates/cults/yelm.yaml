@@ -1,0 +1,26 @@
+# yelm
+name: ${{openSystem.content.cult.yelm.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.yelm.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.yelm.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.fertilityPower.name}}$
+    - ${{openSystem.content.runeDescription.fireskyElement.name}}$
+    - ${{openSystem.content.runeDescription.fireskyElement.name}}$
+    - ${{openSystem.content.runeDescription.deathPower.name}}$
+  descriptionRqidLink:
+    rqid: je..yelm
+    name: ${{openSystem.content.cult.yelm.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.yelm
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

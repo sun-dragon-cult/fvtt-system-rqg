@@ -1,0 +1,25 @@
+# maran-gor
+name: ${{openSystem.content.cult.maranGor.name}}$
+type: cult
+img: systems/rqg/assets/images/items/cult.svg
+data:
+  cultName: ${{openSystem.content.cult.maranGor.name}}$
+  rank: layMember
+  runePoints:
+    value: 0
+    max: 0
+  tagline: ${{openSystem.content.cult.maranGor.tagline}}$
+  holyDays:
+  runes:
+    - ${{openSystem.content.runeDescription.deathPower.name}}$
+    - ${{openSystem.content.runeDescription.earthElement.name}}$
+    - ${{openSystem.content.runeDescription.disorderPower.name}}$
+  descriptionRqidLink:
+    rqid: je..maran-gor
+    name: ${{openSystem.content.cult.maranGor.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.cult.maran-gor
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
