@@ -1,0 +1,19 @@
+# heal
+name: ${{openSystem.content.spiritMagic.heal.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: true
+  castingRange: touch
+  duration: instant
+  concentration:
+  descriptionRqidLink:
+    rqid: je..heal
+    name: ${{openSystem.content.spiritMagic.heal.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.heal
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

@@ -1,0 +1,12 @@
+# speedart
+name: ${{openSystem.content.spiritMagic.speedart.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.speedart.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..speedart
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

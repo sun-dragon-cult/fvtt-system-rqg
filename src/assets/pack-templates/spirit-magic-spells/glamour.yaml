@@ -1,0 +1,19 @@
+# glamour
+name: ${{openSystem.content.spiritMagic.glamour.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 2
+  isVariable: false
+  castingRange: touch
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..glamour
+    name: ${{openSystem.content.spiritMagic.glamour.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.glamour
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

@@ -1,0 +1,12 @@
+# sleep
+name: ${{openSystem.content.spiritMagic.sleep.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.sleep.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..sleep
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

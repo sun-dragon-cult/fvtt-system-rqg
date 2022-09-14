@@ -1,0 +1,19 @@
+# light
+name: ${{openSystem.content.spiritMagic.light.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..light
+    name: ${{openSystem.content.spiritMagic.light.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.light
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

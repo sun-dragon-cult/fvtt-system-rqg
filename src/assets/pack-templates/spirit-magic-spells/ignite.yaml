@@ -1,0 +1,19 @@
+# ignite
+name: ${{openSystem.content.spiritMagic.ignite.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: true
+  castingRange: ranged
+  duration: instant
+  concentration:
+  descriptionRqidLink:
+    rqid: je..ignite
+    name: ${{openSystem.content.spiritMagic.ignite.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.ignite
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

@@ -1,0 +1,19 @@
+# forget
+name: ${{openSystem.content.spiritMagic.forget.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 3
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration:
+  descriptionRqidLink:
+    rqid: je..forget
+    name: ${{openSystem.content.spiritMagic.forget.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.forget
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

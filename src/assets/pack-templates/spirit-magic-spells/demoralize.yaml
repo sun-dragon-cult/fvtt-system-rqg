@@ -1,0 +1,19 @@
+# demoralize
+name: ${{openSystem.content.spiritMagic.demoralize.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 2
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..demoralize
+    name: ${{openSystem.content.spiritMagic.demoralize.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.demoralize
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

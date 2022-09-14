@@ -1,0 +1,19 @@
+# speedart
+name: ${{openSystem.content.spiritMagic.speedart.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..speedart
+    name: ${{openSystem.content.spiritMagic.speedart.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.speedart
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

@@ -1,0 +1,12 @@
+# bludgeon
+name: ${{openSystem.content.spiritMagic.bludgeon.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.bludgeon.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..bludgeon
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

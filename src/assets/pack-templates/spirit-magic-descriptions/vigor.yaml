@@ -1,0 +1,12 @@
+# vigor
+name: ${{openSystem.content.spiritMagic.vigor.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.vigor.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..vigor
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

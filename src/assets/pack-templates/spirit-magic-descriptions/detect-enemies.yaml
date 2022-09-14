@@ -1,0 +1,12 @@
+# detect-enemies
+name: ${{openSystem.content.spiritMagic.detectEnemies.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.detectEnemies.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..detectEnemies
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

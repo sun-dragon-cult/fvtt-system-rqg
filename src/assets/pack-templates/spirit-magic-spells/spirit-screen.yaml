@@ -1,0 +1,19 @@
+# spirit-screen
+name: ${{openSystem.content.spiritMagic.spiritScreen.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 1
+  isVariable: true
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..spiritScreen
+    name: ${{openSystem.content.spiritMagic.spiritScreen.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.spiritScreen
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

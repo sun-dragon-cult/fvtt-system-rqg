@@ -1,0 +1,19 @@
+# second-sight
+name: ${{openSystem.content.spiritMagic.secondSight.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 3
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..secondSight
+    name: ${{openSystem.content.spiritMagic.secondSight.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.secondSight
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

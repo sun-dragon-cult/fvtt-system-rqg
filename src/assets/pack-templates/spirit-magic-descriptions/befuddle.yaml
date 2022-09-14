@@ -1,0 +1,12 @@
+# befuddle
+name: ${{openSystem.content.spiritMagic.befuddle.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.befuddle.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..befuddle
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,12 @@
+# farsee
+name: ${{openSystem.content.spiritMagic.farsee.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.farsee.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..farsee
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

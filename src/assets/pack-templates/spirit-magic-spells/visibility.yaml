@@ -1,0 +1,19 @@
+# visibility
+name: ${{openSystem.content.spiritMagic.visibility.name}}$
+type: spiritMagic
+img: systems/rqg/assets/images/items/spirit-magic.svg
+data:
+  points: 2
+  isVariable: false
+  castingRange: ranged
+  duration: temporal
+  concentration: passive
+  descriptionRqidLink:
+    rqid: je..visibility
+    name: ${{openSystem.content.spiritMagic.visibility.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.spirit-magic.visibility
+      lang: ${openSystem.lang}}$
+      priority: ${openSystem.prio}}$

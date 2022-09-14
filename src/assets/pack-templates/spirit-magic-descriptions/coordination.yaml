@@ -1,0 +1,12 @@
+# coordination
+name: ${{openSystem.content.spiritMagic.coordination.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.coordination.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..coordination
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

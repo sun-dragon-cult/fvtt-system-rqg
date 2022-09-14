@@ -1,0 +1,12 @@
+# second-sight
+name: ${{openSystem.content.spiritMagic.secondSight.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.secondSight.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..secondSight
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

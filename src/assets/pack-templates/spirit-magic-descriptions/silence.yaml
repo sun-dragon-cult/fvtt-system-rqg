@@ -1,0 +1,12 @@
+# silence
+name: ${{openSystem.content.spiritMagic.silence.name}}$
+img: systems/rqg/assets/images/items/spirit-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+  ${{openSystem.content.spiritMagic.silence.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..silence
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
