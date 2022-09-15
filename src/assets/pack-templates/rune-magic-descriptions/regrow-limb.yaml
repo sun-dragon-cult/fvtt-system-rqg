@@ -1,0 +1,15 @@
+# regrow-limb
+name: ${{openSystem.content.runeMagic.regrowLimb.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/moon_full.svg" height="70"> 
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70"> 
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
+  ${{openSystem.content.runeMagic.regrowLimb.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..regrow-limb
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

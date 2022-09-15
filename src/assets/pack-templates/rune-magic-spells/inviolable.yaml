@@ -1,0 +1,24 @@
+# inviolable
+name: ${{openSystem.content.runeMagic.inviolable.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Earth (element)
+    - Fertility (power)
+    - Harmony (power)
+  points: 1
+  castingRange: ranged
+  duration: temporal
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..inviolable
+    name: ${{openSystem.content.runeMagic.inviolable.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.inviolable
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

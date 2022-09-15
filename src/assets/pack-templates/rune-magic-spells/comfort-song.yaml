@@ -1,0 +1,23 @@
+# comfort-song
+name: ${{openSystem.content.runeMagic.comfortSong.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Fertility (power)
+    - Harmony (power)
+  points: 1
+  castingRange: ranged
+  duration: temporal
+  isStackable: false
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..comfort-song
+    name: ${{openSystem.content.runeMagic.comfortSong.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.comfort-song
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

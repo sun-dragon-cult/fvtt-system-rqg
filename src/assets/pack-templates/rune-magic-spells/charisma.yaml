@@ -1,0 +1,24 @@
+# charisma
+name: ${{openSystem.content.runeMagic.charisma.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Fertility (power)
+    - Illusion (power)
+    - Beast (form)
+  points: 1
+  castingRange: ranged
+  duration: temporal
+  isStackable: false
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..charisma
+    name: ${{openSystem.content.runeMagic.charisma.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.charisma
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

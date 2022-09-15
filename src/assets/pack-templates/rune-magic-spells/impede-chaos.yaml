@@ -1,0 +1,24 @@
+# impede-chaos
+name: ${{openSystem.content.runeMagic.impedeChaos.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Air (element)
+    - Death (power)
+    - Beast (power)
+  points: 1
+  castingRange: ranged
+  duration: temporal
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..impede-chaos
+    name: ${{openSystem.content.runeMagic.impedeChaos.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.impede-chaos
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

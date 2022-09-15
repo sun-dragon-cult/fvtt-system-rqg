@@ -1,0 +1,21 @@
+# divination
+name: ${{openSystem.content.runeMagic.divination.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Magic (condition)
+  points: 1
+  isRitual: true
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..divination
+    name: ${{openSystem.content.runeMagic.divination.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.divination
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

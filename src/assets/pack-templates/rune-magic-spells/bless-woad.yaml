@@ -1,0 +1,22 @@
+# bless-woad
+name: ${{openSystem.content.runeMagic.blessWoad.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Air (element)
+    - Movement (power)
+  points: 1
+  isRitual: true
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..bless-woad
+    name: ${{openSystem.content.runeMagic.blessWoad.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.bless-woad
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

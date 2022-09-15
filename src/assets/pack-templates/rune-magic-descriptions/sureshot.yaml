@@ -1,0 +1,15 @@
+# sureshot
+name: ${{openSystem.content.runeMagic.sureshot.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/harmony.svg" height="70">
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70"> 
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fire_sky.svg" height="70"> 
+  ${{openSystem.content.runeMagic.sureshot.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..sureshot
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,22 @@
+# arouse-passion
+name: ${{openSystem.content.runeMagic.arousePassion.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Earth (element)
+  points: 1
+  castingRange: ranged
+  duration: temporal
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..arouse-passion
+    name: ${{openSystem.content.runeMagic.arousePassion.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.arouse-passion
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

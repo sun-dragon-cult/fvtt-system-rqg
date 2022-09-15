@@ -1,0 +1,12 @@
+# shield
+name: ${{openSystem.content.runeMagic.shield.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  ${{openSystem.content.runeMagic.shield.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..shield
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -1,0 +1,22 @@
+# earthpower
+name: ${{openSystem.content.runeMagic.earthpower.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Earth (element)
+  points: 3
+  castingRange: self
+  duration: instant
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..earthpower
+    name: ${{openSystem.content.runeMagic.earthpower.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.earthpower
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

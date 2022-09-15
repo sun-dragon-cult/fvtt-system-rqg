@@ -1,0 +1,22 @@
+# teleportation
+name: ${{openSystem.content.runeMagic.teleportation.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Movement (power)
+  points: 3
+  castingRange: touch
+  duration: instant
+  isStackable: false
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..teleportation
+    name: ${{openSystem.content.runeMagic.teleportation.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.teleportation
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

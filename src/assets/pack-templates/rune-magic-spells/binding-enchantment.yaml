@@ -1,0 +1,24 @@
+# binding-enchantment
+name: ${{openSystem.content.runeMagic.bindingEnchantment.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  rqid: rune-magic-binding-enchantment
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  runes:
+    - Magic (condition)
+  points: 1
+  isRitual: true
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..binding-enchantment
+    name: ${{openSystem.content.runeMagic.bindingEnchantment.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.binding-enchantment
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

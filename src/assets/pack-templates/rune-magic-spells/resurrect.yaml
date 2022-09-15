@@ -1,0 +1,23 @@
+# resurrect
+name: ${{openSystem.content.runeMagic.resurrect.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Fate (condition)
+    - Harmony (power)
+    - Man (form)
+  points: 3
+  isRitual: true
+  isStackable: false
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..resurrect
+    name: ${{openSystem.content.runeMagic.resurrect.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.resurrect
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

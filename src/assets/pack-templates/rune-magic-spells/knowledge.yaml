@@ -1,0 +1,22 @@
+# knowledge
+name: ${{openSystem.content.runeMagic.knowledge.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Truth (power)
+  points: 2
+  castingRange: touch
+  duration: temporal
+  isStackable: false
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..knowledge
+    name: ${{openSystem.content.runeMagic.knowledge.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.knowledge
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

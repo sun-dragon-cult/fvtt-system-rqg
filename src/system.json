@@ -148,6 +148,20 @@
       "type": "Item"
     },
     {
+      "name": "rune-magic-spells-en",
+      "label": "Rune Magic Spells | en",
+      "system": "rqg",
+      "path": "assets/packs/rune-magic-spells-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "rune-magic-descriptions-en",
+      "label": "Rune Magic Descriptions | en",
+      "system": "rqg",
+      "path": "assets/packs/rune-magic-descriptions-en.db",
+      "type": "JournalEntry"
+    },    
+    {
       "name": "skills-en",
       "label": "Skills | en",
       "system": "rqg",

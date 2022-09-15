@@ -1,0 +1,22 @@
+# shield
+name: ${{openSystem.content.runeMagic.shield.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Magic (condition)
+  points: 1
+  castingRange: ranged
+  duration: temporal
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..shield
+    name: ${{openSystem.content.runeMagic.shield.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.shield
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

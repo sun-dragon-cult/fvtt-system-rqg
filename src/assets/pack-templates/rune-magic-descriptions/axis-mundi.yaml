@@ -1,0 +1,13 @@
+# axis-mundi
+name: ${{openSystem.content.runeMagic.axisMundi.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/magic.svg" height="70">
+  ${{openSystem.content.runeMagic.axisMundi.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..axis-mundi
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

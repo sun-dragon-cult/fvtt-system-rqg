@@ -1,0 +1,13 @@
+# discorporation
+name: ${{openSystem.content.runeMagic.discorporation.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/magic.svg" height="70">
+  ${{openSystem.content.runeMagic.discorporation.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..discorporation
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

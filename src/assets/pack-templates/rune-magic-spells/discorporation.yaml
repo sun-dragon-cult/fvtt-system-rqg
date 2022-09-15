@@ -1,0 +1,21 @@
+# discorporation
+name: ${{openSystem.content.runeMagic.discorporation.name}}$
+type: runeMagic
+img: systems/rqg/assets/images/items/rune-magic.svg
+data:
+  runes:
+    - Magic (condition)
+  points: 1
+  isRitual: true
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..discorporation
+    name: ${{openSystem.content.runeMagic.discorporation.name}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.rune-magic.discorporation
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

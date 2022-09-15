@@ -1,0 +1,13 @@
+# summon-elemental-type
+name: ${{openSystem.content.runeMagic.summonElementalType.name}}$
+img: systems/rqg/assets/images/items/rune-magic.svg
+content: >
+  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/magic.svg" height="70">
+  ${{openSystem.content.runeMagic.summonElementalType.description}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..summon-elemental-type
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
