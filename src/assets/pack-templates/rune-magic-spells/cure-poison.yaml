@@ -18,6 +18,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-cure-poison
+      id: i.rune-magic.cure-poison
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

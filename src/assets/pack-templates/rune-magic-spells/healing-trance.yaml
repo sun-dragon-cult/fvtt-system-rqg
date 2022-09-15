@@ -18,6 +18,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-healing-trance
+      id: i.rune-magic.healing-trance
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

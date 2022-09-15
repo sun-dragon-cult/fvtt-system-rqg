@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-passage
+      id: i.rune-magic.passage
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

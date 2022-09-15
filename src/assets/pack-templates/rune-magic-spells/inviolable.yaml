@@ -19,6 +19,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-inviolable
+      id: i.rune-magic.inviolable
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

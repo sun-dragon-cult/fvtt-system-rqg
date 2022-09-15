@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-truespeak
+      id: i.rune-magic.truespeak
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

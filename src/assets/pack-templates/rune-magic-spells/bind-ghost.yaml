@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-bind-ghost
+      id: i.rune-magic.bind-ghost
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

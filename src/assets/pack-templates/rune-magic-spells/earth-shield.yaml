@@ -18,6 +18,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-earth-shield
+      id: i.rune-magic.earth-shield
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

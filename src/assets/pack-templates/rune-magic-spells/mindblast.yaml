@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-mindblast
+      id: i.rune-magic.mindblast
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

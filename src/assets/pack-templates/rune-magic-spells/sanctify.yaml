@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-sanctify
+      id: i.rune-magic.sanctify
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

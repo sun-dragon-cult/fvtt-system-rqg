@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-path-watch
+      id: i.rune-magic.path-watch
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

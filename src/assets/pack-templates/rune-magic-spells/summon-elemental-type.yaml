@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-summon-elemental-type
+      id: i.rune-magic.summon-elemental-type
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

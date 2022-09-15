@@ -18,6 +18,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-berserker
+      id: i.rune-magic.berserker
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

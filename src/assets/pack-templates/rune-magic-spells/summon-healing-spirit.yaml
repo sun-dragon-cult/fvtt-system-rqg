@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-summon-healing-spirit
+      id: i.rune-magic.summon-healing-spirit
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

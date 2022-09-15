@@ -21,6 +21,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-wind-words
+      id: i.rune-magic.wind-words
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

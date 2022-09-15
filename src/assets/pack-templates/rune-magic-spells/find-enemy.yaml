@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-find-enemy
+      id: i.rune-magic.find-enemy
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

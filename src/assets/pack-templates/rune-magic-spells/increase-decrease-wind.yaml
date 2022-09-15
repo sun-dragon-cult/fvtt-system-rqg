@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-increase-decrease-wind
+      id: i.rune-magic.increase-decrease-wind
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

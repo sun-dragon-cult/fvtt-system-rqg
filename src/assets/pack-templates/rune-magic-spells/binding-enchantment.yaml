@@ -19,6 +19,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-binding-enchantment
+      id: i.rune-magic.binding-enchantment
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-create-market
+      id: i.rune-magic.create-market
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

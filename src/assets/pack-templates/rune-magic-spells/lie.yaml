@@ -18,6 +18,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-lie
+      id: i.rune-magic.lie
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

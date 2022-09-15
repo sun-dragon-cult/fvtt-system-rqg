@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-extension
+      id: i.rune-magic.extension
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

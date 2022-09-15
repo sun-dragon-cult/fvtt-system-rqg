@@ -18,6 +18,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-cure-chaos-wound
+      id: i.rune-magic.cure-chaos-wound
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

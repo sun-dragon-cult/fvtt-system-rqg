@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-divination
+      id: i.rune-magic.divination
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

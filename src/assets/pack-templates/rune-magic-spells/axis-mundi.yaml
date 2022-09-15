@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-axis-mundi
+      id: i.rune-magic.axis-mundi
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -20,6 +20,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-morale
+      id: i.rune-magic.morale
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

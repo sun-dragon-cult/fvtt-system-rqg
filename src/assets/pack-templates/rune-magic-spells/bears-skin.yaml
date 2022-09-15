@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-bears-skin
+      id: i.rune-magic.bears-skin
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-mist-cloud
+      id: i.rune-magic.mist-cloud
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

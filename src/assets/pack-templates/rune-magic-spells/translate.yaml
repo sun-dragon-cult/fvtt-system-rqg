@@ -20,6 +20,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-translate
+      id: i.rune-magic.translate
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

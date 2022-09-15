@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-dismiss-magic
+      id: i.rune-magic.dismiss-magic
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

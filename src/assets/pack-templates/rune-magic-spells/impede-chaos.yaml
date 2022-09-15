@@ -19,6 +19,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-impede-chaos
+      id: i.rune-magic.impede-chaos
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-summon-cult-spirit
+      id: i.rune-magic.summon-cult-spirit
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

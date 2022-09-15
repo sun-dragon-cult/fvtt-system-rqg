@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-matrix-creation
+      id: i.rune-magic.matrix-creation
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

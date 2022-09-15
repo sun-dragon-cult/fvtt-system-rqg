@@ -1,15 +1,23 @@
 # restore-health
 name: ${{openSystem.content.runeMagic.restoreHealth.name}}$
+type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/man.svg" height="70"> 
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/harmony.svg" height="70"> 
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
-  ${{openSystem.content.runeMagic.restoreHealth.description}}$
+data:
+  runes:
+    - Fertility (power)
+    - Harmony (power)
+    - Man (form)
+  points: 1
+  castingRange: touch
+  duration: instant
+  isStackable: true
+  isOneUse: false
+  chance: 0
+  descriptionRqidLink:
+    rqid: je..restore-health
+    name: ${{openSystem.content.runeMagic.restoreHealth.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: je..restore-health
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.rune-magic.restore-health
+      lang: ${{SS.lang}}$

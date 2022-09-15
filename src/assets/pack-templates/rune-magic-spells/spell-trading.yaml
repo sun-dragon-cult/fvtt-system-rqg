@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-spell-trading
+      id: i.rune-magic.spell-trading
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

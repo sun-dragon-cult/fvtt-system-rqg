@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-bears-strength
+      id: i.rune-magic.bears-strength
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-multispell
+      id: i.rune-magic.multispell
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

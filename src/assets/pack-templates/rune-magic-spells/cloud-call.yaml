@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-cloud-call
+      id: i.rune-magic.cloud-call
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -18,6 +18,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-blast-earth
+      id: i.rune-magic.blast-earth
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

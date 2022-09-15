@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-oath
+      id: i.rune-magic.oath
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-bless-woad
+      id: i.rune-magic.bless-woad
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

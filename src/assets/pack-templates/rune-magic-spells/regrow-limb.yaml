@@ -19,6 +19,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-restore-health
+      id: i.rune-magic.restore-health
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

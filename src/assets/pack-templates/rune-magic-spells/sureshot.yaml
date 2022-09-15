@@ -19,6 +19,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-sureshot
+      id: i.rune-magic.sureshot
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

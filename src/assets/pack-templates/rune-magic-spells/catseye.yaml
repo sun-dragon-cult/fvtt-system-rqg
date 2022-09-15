@@ -18,6 +18,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-catseye
+      id: i.rune-magic.catseye
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

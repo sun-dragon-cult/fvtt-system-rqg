@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-command-cult-spirit-elemental
+      id: i.rune-magic.command-cult-spirit-elemental
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

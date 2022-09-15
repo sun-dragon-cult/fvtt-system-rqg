@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-slash
+      id: i.rune-magic.slash
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

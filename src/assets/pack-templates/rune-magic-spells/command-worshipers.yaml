@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-command-worshipers
+      id: i.rune-magic.command-worshipers
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

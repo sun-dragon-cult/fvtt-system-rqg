@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-sever-spirit
+      id: i.rune-magic.sever-spirit
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

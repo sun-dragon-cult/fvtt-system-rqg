@@ -19,6 +19,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-charisma
+      id: i.rune-magic.charisma
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

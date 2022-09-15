@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-become-other-sex
+      id: i.rune-magic.become-other-sex
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

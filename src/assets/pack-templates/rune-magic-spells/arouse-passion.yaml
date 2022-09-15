@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-arouse-passion
+      id: i.rune-magic.arouse-passion
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

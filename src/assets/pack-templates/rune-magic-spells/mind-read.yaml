@@ -17,6 +17,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-mind-read
+      id: i.rune-magic.mind-read
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -19,6 +19,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-regrow-limb
+      id: i.rune-magic.regrow-limb
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

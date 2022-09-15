@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.runeMagic.rune-magic-warding
+      id: i.rune-magic.warding
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
