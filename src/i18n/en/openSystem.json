@@ -1039,9 +1039,9 @@
       "DuplicateWarning": "Warning: Multiple rqids with same priority!",
       "Error": {
         "NoSheet": "No sheet found for document linked to by RQG System ID (rqid) \"{rqid}\". See console log.",
-        "MoreThanOneRqidMatchInWorld": "More than one RQG Document in the world (not in Compendia) matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
-        "MoreThanOneRqidMatchInCompendia": "More than one RQG Document in installed Compendia matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
-        "DocumentNotFoundByRqid": "Document not found in world or Compendia matching the rqid \"{rqid}\", and lang \"{lang}\". See console log."
+        "MoreThanOneRqidMatchInWorld": "More than one RQG Document in the world (not in compendium packs) matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
+        "MoreThanOneRqidMatchInPacks": "More than one RQG Document in installed compendium packs matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
+        "DocumentNotFoundByRqid": "Document not found in world or compendium packs matching the rqid \"{rqid}\", and lang \"{lang}\". See console log."
       }
     },
     "Notification": {

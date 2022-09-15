@@ -48,7 +48,7 @@ export class RqidEditor extends FormApplication {
         rqidSearchRegex,
         rqidDocumentPrefix,
         documentLang,
-        "compendiums"
+        "packs"
       );
       const worldDocumentInfo = worldDocuments.map((d) => ({
         priority: d.data.flags.rqg.documentRqidFlags.priority,
