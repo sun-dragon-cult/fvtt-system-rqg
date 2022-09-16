@@ -8,6 +8,9 @@ import { documentRqidFlags, ItemChatFlags } from "../../data-model/shared/rqgDoc
 import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { ResultEnum } from "../../data-model/shared/ability";
 import { systemId } from "../../system/config";
+import { RqgActor } from "../../actors/rqgActor";
+import { requestSkillSpecializationDialog } from "../../dialog/requestSkillSpecialization";
+import { concatenateSkillName } from "./concatenateSkillName";
 
 export class Skill extends AbstractEmbeddedItem {
   // public static init() {
@@ -101,6 +104,32 @@ export class Skill extends AbstractEmbeddedItem {
           )
         : 0;
     return skillItem;
+  }
+
+  static async onEmbedItem(
+    actor: RqgActor,
+    skillItem: RqgItem,
+    options: any,
+    userId: string
+  ): Promise<any> {
+    let updateData;
+    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
+
+    try {
+      const answer = await requestSkillSpecializationDialog(skillItem);
+      if (answer) {
+        updateData = {
+          _id: skillItem.id,
+          name: concatenateSkillName(skillItem.data.data.skillName, answer),
+          data: { specialization: answer },
+        };
+      }
+    } catch (e) {
+      // Delete the item if the user cancels the dialog
+      skillItem.id && (await actor.deleteEmbeddedDocuments("Item", [skillItem.id]));
+    }
+
+    return updateData;
   }
 
   private static updateBaseChance(skillData: SkillDataPropertiesData, newBaseChance: number): void {

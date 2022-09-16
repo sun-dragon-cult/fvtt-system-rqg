@@ -97,7 +97,11 @@ export class RqgItem extends Item {
 
       if (RqgItem.isDuplicateItem(document)) {
         ui.notifications?.warn(
-          `${document.parent.name} already has a ${document.data.type} '${document.name}' and duplicates are not allowed`
+          localize("RQG.Item.Notification.ItemNotUnique", {
+            actorName: document.parent.name,
+            documentType: document.data.type,
+            documentName: document.name,
+          })
         );
         return false;
       }

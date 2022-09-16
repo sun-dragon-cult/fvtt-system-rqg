@@ -6,7 +6,7 @@ import { RqgError } from "../system/util";
  *
  * usage
  * @example
- * const myDialog = new rqgAsyncDialog<boolean>("myTitle", "<h1>my content</h1>");
+ * const myDialog = new RqgAsyncDialog<boolean>("myTitle", "<h1>my content</h1>");
  * const buttons = {
  *   submit: {
  *     icon: '<i class="fas fa-check"></i>',
@@ -60,6 +60,7 @@ export class RqgAsyncDialog<T> {
           content: this.htmlContent,
           default: this.defaultButton,
           buttons: this.buttons,
+          close: () => reject(),
         },
         { classes: this.cssClasses }
       );

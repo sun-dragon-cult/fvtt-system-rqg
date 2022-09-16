@@ -63,7 +63,7 @@ export function getDomDatasetAmongSiblings(
   return firstItemEl?.dataset[toCamelCase(dataset)];
 }
 
-function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | undefined {
+export function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | undefined {
   return el instanceof HTMLElement
     ? el
     : !!(el as Event).target

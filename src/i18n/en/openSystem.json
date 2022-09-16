@@ -548,6 +548,11 @@
         "runeMagicResultFlavor": "Rune Magic: {name}",
         "Cast": "Cast {spellName}"
       },
+      "requestSkillSpecialization": {
+        "title": "Decide skill specialization",
+        "inputRequired": "Skill specialization is required",
+        "btnSetSpecialization": "Set Specialization"
+      },
       "weaponChat": {
         "Damage": "Damage",
         "damageRollType": {
@@ -753,7 +758,8 @@
         "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
         "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
         "DroppedItemWrongType": "This field expects an item of type(s) {allowedDropTypes} and the dropped item was {type}",
-        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with id ${id} does not have an RQID and cannot be dropped onto this sheet."
+        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with id ${id} does not have an RQID and cannot be dropped onto this sheet.",
+        "ItemNotUnique": "{actorName} already has a {documentType} '{documentName}' and duplicates are not allowed"
       },
       "Occupation": {
         "Occupation": "Occupation",

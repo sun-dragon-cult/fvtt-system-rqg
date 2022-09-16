@@ -38,8 +38,8 @@ data:
       documentType: Item
       itemType: cult
   skillRqidLinks:
-    - rqid: i.skill.customs-own-heortling
-      name: Customs, own (Heortling)
+    - rqid: i.skill.customs
+      name: Customs (...)
       documentType: Item
       itemType: skill
       bonus: 0
@@ -68,8 +68,8 @@ data:
       documentType: Item
       itemType: skill
       bonus: 10
-    - rqid: i.skill.speak-other-language-tradetalk
-      name: Speak Other Language (Tradetalk)
+    - rqid: i.skill.speak-language-tradetalk
+      name: Speak Language (Tradetalk)
       documentType: Item
       itemType: skill
       bonus: 10
