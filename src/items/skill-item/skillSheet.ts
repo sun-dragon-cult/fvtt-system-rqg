@@ -13,6 +13,7 @@ import {
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
+import { concatenateSkillName } from "./concatenateSkillName";
 
 interface SkillSheetData extends RqgItemSheetData {
   isEmbedded: boolean;
@@ -69,11 +70,10 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
-    const specialization = formData["data.specialization"]
-      ? ` (${formData["data.specialization"]})`
-      : "";
-    formData["name"] =
-      formData["data.skillName"] + specialization;
+    formData["name"] = concatenateSkillName(
+      formData["data.skillName"],
+      formData["data.specialization"]
+    );
 
     let runes = formData["data.runes"];
     runes = Array.isArray(runes) ? runes : [runes];

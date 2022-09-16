@@ -1,6 +1,7 @@
 import { RqgItem } from "./rqgItem";
 import { RqgActor } from "../actors/rqgActor";
 import { ResultEnum } from "../data-model/shared/ability";
+import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateEmbeddedDocuments etc. is called.
@@ -21,7 +22,7 @@ export abstract class AbstractEmbeddedItem {
     return;
   }
 
-  static preEmbedItem(actor: RqgActor, item: RqgItem, options: object[], userId: string): void {}
+  static preEmbedItem(actor: RqgActor, item: ItemData, options: object[], userId: string): void {}
 
   /**
    * Will be called when the item is embedded into an actor.

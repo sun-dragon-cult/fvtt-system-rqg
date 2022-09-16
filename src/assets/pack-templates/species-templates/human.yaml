@@ -151,8 +151,6 @@ items:
           id: i.rune.air-element
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.eC5R4sOr4pV9t8UC
   - _id: aU9PXmBVFLh1Zw2l
     name: Beast (form)
     type: rune
@@ -182,8 +180,6 @@ items:
           id: i.rune.beast-form
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.hCkn5atYnit7mqoA
   - _id: QQ2xqibyDz2oOFqZ
     name: Darkness (element)
     type: rune
@@ -215,8 +211,6 @@ items:
           id: i.rune.darkness-element
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.3n2ezgxnigNarKYT
   - _id: E9siP3E7QLVWKNnl
     name: Death (power)
     type: rune
@@ -246,8 +240,6 @@ items:
           id: i.rune.death-power
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.Uhjcf9At0lGl4MId
   - _id: 2rAANkzmxj9DCZyY
     name: Disorder (power)
     type: rune
@@ -277,8 +269,6 @@ items:
           id: i.rune.disorder-power
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.966UZ7PfAUWcUcv8
   - _id: LZP0EMppG7IoypDv
     name: Earth (element)
     type: rune
@@ -310,8 +300,6 @@ items:
           id: i.rune.earth-element
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.QjSwwQ9t1TbLtPDK
   - _id: RAR5qtVTLD9aPfpP
     name: Fertility (power)
     type: rune
@@ -341,8 +329,6 @@ items:
           id: i.rune.fertility-power
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.E81hrUv0oK4pzleL
   - _id: iIe3XRm8lKK7MEwk
     name: Fire/Sky (element)
     type: rune
@@ -374,8 +360,6 @@ items:
           id: i.rune.fire-sky-element
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.7f7km1WimdPpcjmw
   - _id: 0ful6jLVKsnZZfZQ
     name: Harmony (power)
     type: rune
@@ -405,8 +389,6 @@ items:
           id: i.rune.harmony-power
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.7GwGEVCATpSRcdoq
   - _id: XEzlh568mqAlJg1e
     name: Illusion (power)
     type: rune
@@ -436,8 +418,6 @@ items:
           id: i.rune.illusion-power
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.iR9hVEORA7czLqqN
   - _id: P2nr3u44iGoZ7BVm
     name: Man (form)
     type: rune
@@ -467,8 +447,6 @@ items:
           id: i.rune.man-form
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.xEylnyNgJU1DcIdv
   - _id: RUOK63E11Qdg0DFl
     name: Moon (element)
     type: rune
@@ -498,8 +476,6 @@ items:
           id: i.rune.moon-element
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.YcxTYFVfwvNOkl7J
   - _id: e6IXzkdUVFZRGK4h
     name: Movement (power)
     type: rune
@@ -529,8 +505,6 @@ items:
           id: i.rune.movement-power
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.tocmJXUkZK27hkP0
   - _id: dSvn5OQ8YmhpBkSa
     name: Stasis (power)
     type: rune
@@ -560,8 +534,6 @@ items:
           id: i.rune.stasis-power
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.pi1Ct0CGkzJ7nMBD
   - _id: Fvm6sUhAvNyZwMRm
     name: Truth (power)
     type: rune
@@ -591,8 +563,6 @@ items:
           id: i.rune.truth-power
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.Tb1GtgJdCOSdc4gq
   - _id: WyDmxhObjvFlg8Gc
     name: Water (element)
     type: rune
@@ -624,8 +594,6 @@ items:
           id: i.rune.water-element
           lang: en
           priority: -1
-      core:
-        sourceId: Compendium.rqg.pc-runes.MLcqKX0gxQ1SmNMP
   - _id: Qs80VLBfkHw1GbR7
     name: Abdomen
     type: hitLocation
@@ -654,8 +622,6 @@ items:
           id: i.hit-location.abdomen-human
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.human-hit-locations.TbUTw9xkWE87j1Mu
   - _id: N4T3KoNd8N8sf4ac
     name: Chest
     type: hitLocation
@@ -684,8 +650,6 @@ items:
           id: i.hit-location.chest-human
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.human-hit-locations.CApUaryp0RZ8nujM
   - _id: QKvowwxVPThIbBE2
     name: Head
     type: hitLocation
@@ -714,8 +678,6 @@ items:
           id: i.hit-location.head-human
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.human-hit-locations.mJIRM9EPvbD7bbt7
   - _id: xqq5ZEiCjH9PIO1S
     name: Left Arm
     type: hitLocation
@@ -744,8 +706,6 @@ items:
           id: i.hit-location.left-arm-human
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.human-hit-locations.C2MNZyfGE10JIN2K
   - _id: v3sStAHjjSQvVqpL
     name: Left Leg
     type: hitLocation
@@ -774,8 +734,6 @@ items:
           id: i.hit-location.left-leg-human
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.human-hit-locations.EmCl58HGJW3CnWPT
   - _id: t4KkAdzSYt5noij3
     name: Right Arm
     type: hitLocation
@@ -804,8 +762,6 @@ items:
           id: i.hit-location.right-arm-human
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.human-hit-locations.vGrZn51Ytzo7TFf8
   - _id: MFZLxiqTS65LTEEh
     name: Right Leg
     type: hitLocation
@@ -834,8 +790,6 @@ items:
           id: i.hit-location.right-leg-human
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.human-hit-locations.Yoc6w2EBbKRybtpk
   - _id: O93y6OTMfJ9K9Vzt
     name: Act
     type: skill
@@ -865,8 +819,6 @@ items:
           id: i.skill.act
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.lw81nCKgkXO7qU0Q
   - _id: 2F31zMlDMA3UZ9hi
     name: Animal Lore
     type: skill
@@ -896,8 +848,6 @@ items:
           id: i.skill.animal-lore
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.8jPEV9XT6xWl5LM8
   - _id: q4sjOXHIIqaIXb5V
     name: Art
     type: skill
@@ -927,8 +877,6 @@ items:
           id: i.skill.art
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.W6TWs7TVUEK45NxA
   - _id: twXJhUxFPqAAdIKX
     name: Bargain
     type: skill
@@ -958,8 +906,6 @@ items:
           id: i.skill.bargain
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.6e6K7106parcHGnY
   - _id: ioTwopOihU2jhjD4
     name: Battle
     type: skill
@@ -989,8 +935,6 @@ items:
           id: i.skill.battle
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.5k20dlRoD6Kspc0h
   - _id: fgpO8GWM2prOMEca
     name: Boat
     type: skill
@@ -1020,8 +964,6 @@ items:
           id: i.skill.boat
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.XxNsdbQNHZXxKta3
   - _id: hFrJDo2VUmzQyDZN
     name: Celestial Lore
     type: skill
@@ -1051,8 +993,6 @@ items:
           id: i.skill.celestial-lore
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.QX2YtWhyRpl9JwjB
   - _id: NYQ3JCJ6duxpAkQN
     name: Charm
     type: skill
@@ -1082,8 +1022,6 @@ items:
           id: i.skill.charm
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.BHwOn3pfUtjN36Og
   - _id: o8hDkR6CrCytiFeJ
     name: Climb
     type: skill
@@ -1113,8 +1051,6 @@ items:
           id: i.skill.climb
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.pn4hGJRlJmyetlac
   - _id: 8Sl9hMpTxHLsVWq6
     name: Conceal
     type: skill
@@ -1144,8 +1080,6 @@ items:
           id: i.skill.conceal
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.Hwu6c11I6oKQJEPr
   - _id: VUx2T9FQswW467sc
     name: Craft (...)
     type: skill
@@ -1175,41 +1109,8 @@ items:
           id: i.skill.craft
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.wE0tFduP4aWZenP5
-  - _id: N92Lp4jBQGC2DWFH
-    name: Cult Lore (...)
-    type: skill
-    img: systems/rqg/assets/images/passion/devotion.svg
-    data:
-      descriptionRqidLink:
-        rqid: ""
-        name: ""
-        documentType: ""
-      category: knowledge
-      skillName: Cult Lore
-      specialization: "..."
-      baseChance: 5
-      gainedChance: 0
-      canGetExperience: false
-      hasExperience: false
-      runes: []
-    effects: []
-    folder:
-    sort: 0
-    permission:
-      default: 0
-      h39MBDS9VBPKXc3S: 3
-    flags:
-      rqg:
-        documentRqidFlags:
-          id: i.skill.cult-lore
-          lang: en
-          priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.0Akg00ega0De1TTW
   - _id: zd8Z0h5VSfxWauhn
-    name: Customs, own (...)
+    name: Customs (...)
     type: skill
     img: systems/rqg/assets/images/skills/customs.svg
     data:
@@ -1218,7 +1119,7 @@ items:
         name: ""
         documentType: ""
       category: knowledge
-      skillName: Customs, own
+      skillName: Customs
       specialization: "..."
       baseChance: 25
       gainedChance: 0
@@ -1237,8 +1138,6 @@ items:
           id: i.skill.customs
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.NAH2IY8gYjv94rbA
   - _id: BUFUZvahS0h1pLPJ
     name: Dance
     type: skill
@@ -1268,8 +1167,6 @@ items:
           id: i.skill.dance
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.s3v0MhIwonQwOjs3
   - _id: IjlNWA5BPivN3Jb5
     name: Devise
     type: skill
@@ -1299,8 +1196,6 @@ items:
           id: i.skill.devise
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.yf8wtDWTBTvJgQW8
   - _id: rAXUNwGgOsRW8Z0T
     name: Disguise
     type: skill
@@ -1330,8 +1225,6 @@ items:
           id: i.skill.disguise
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.XFRK9Tmwd2pd8xvv
   - _id: VjMsluoPn2IuGlsm
     name: Dodge
     type: skill
@@ -1361,8 +1254,6 @@ items:
           id: i.skill.dodge
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.8KcsMsmHPHeDIOSh
   - _id: xvpEK16pND0J6Dle
     name: Drive (Chariot)
     type: skill
@@ -1392,8 +1283,6 @@ items:
           id: i.skill.drive-chariot
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.UbkrwN5SZ5AAiL3V
   - _id: aoqYsC6qo5uxPhaD
     name: Elder Race Lore
     type: skill
@@ -1423,8 +1312,6 @@ items:
           id: i.skill.elder-race-lore
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.6oUoZ6oiQKp65roX
   - _id: bgKOUqenItbv6vYG
     name: Evaluate
     type: skill
@@ -1454,8 +1341,6 @@ items:
           id: i.skill.evaluate
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.tOW0l4cBVHuwkrZx
   - _id: ydaCTxNW6MZkHdWR
     name: Farm
     type: skill
@@ -1485,8 +1370,6 @@ items:
           id: i.skill.farm
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.nE3eDjVZXZHPE9dS
   - _id: IWVLZruFSPhQiPpE
     name: Fast Talk
     type: skill
@@ -1516,8 +1399,6 @@ items:
           id: i.skill.fast-talk
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.cf5wmuBTYPCM6I1n
   - _id: mu1vpTaLP3mGOoxl
     name: First Aid
     type: skill
@@ -1547,8 +1428,6 @@ items:
           id: i.skill.first-aid
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.fp4vE9wRULXK7gCW
   - _id: kSWLHhW2CDwr8PtV
     name: Game
     type: skill
@@ -1578,8 +1457,6 @@ items:
           id: i.skill.game
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.SufFp4Xye1vPAEwa
   - _id: LK0dC59BLPOPAAid
     name: Herd
     type: skill
@@ -1609,8 +1486,6 @@ items:
           id: i.skill.herd
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.N9bVqnBeSi7WQVmu
   - _id: NuGj5eHr7CyKBNr8
     name: Hide
     type: skill
@@ -1640,10 +1515,8 @@ items:
           id: i.skill.hide
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.jeRxdSYlgpUhBaM8
   - _id: iSzs91qVwapwYpk6
-    name: Homeland Lore, own (...)
+    name: Homeland Lore (...)
     type: skill
     img: systems/rqg/assets/images/skills/homeland-lore.svg
     data:
@@ -1652,7 +1525,7 @@ items:
         name: ""
         documentType: ""
       category: knowledge
-      skillName: Homeland Lore, own
+      skillName: Homeland Lore
       specialization: "..."
       baseChance: 30
       gainedChance: 0
@@ -1671,8 +1544,6 @@ items:
           id: i.skill.homeland-lore
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.K5J2WYRz0SG0ZIFM
   - _id: Yfe0IJV1lRMo1cx0
     name: Insight (human)
     type: skill
@@ -1702,8 +1573,6 @@ items:
           id: i.skill.insight-human
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.G8FObjkh8sxwMTEc
   - _id: VDx34wSD6bWnnZCB
     name: Intimidate
     type: skill
@@ -1733,8 +1602,6 @@ items:
           id: i.skill.intimidate
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.cRyRQswlyr7NyY28
   - _id: WwPYAtC8EzRH283W
     name: Intrigue
     type: skill
@@ -1764,8 +1631,6 @@ items:
           id: i.skill.intrigue
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.KxEU59NREYh7bgeP
   - _id: zZGTAL54ZtssuF2G
     name: Jump
     type: skill
@@ -1795,8 +1660,6 @@ items:
           id: i.skill.jump
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.vyfNmpLF5qFhGN5P
   - _id: X0rFkSIr9Ll1Noqi
     name: Listen
     type: skill
@@ -1826,8 +1689,6 @@ items:
           id: i.skill.listen
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.u1rOCfH0tPz69Jer
   - _id: ROzDKkZcXlTjkrVF
     name: Manage Household
     type: skill
@@ -1857,8 +1718,6 @@ items:
           id: i.skill.manage-household
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.uZHQKfU29cAzbZ7X
   - _id: 9c8Oqs5iKYQW5yV5
     name: Mineral Lore
     type: skill
@@ -1888,8 +1747,6 @@ items:
           id: i.skill.mineral-lore
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.ORoKRbmgfXaxtHU0
   - _id: sUmSdgW1e1bMJx6d
     name: Move Quietly
     type: skill
@@ -1919,8 +1776,6 @@ items:
           id: i.skill.move-quietly
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.Xz903rBompCYhpPR
   - _id: gMcOGsWhQf19XJBv
     name: Orate
     type: skill
@@ -1950,8 +1805,6 @@ items:
           id: i.skill.orate
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.YWduBtMUIZAWRYqf
   - _id: fola8MGcstg1kBAu
     name: Peaceful Cut
     type: skill
@@ -1981,8 +1834,6 @@ items:
           id: i.skill.peaceful-cut
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.F4eUGEM4nuRwDvsf
   - _id: 6g7mycfFLygC49eF
     name: Plant Lore
     type: skill
@@ -2012,8 +1863,6 @@ items:
           id: i.skill.plant-lore
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.dOUE7WZbUjxJ3rBP
   - _id: KxSAiPO96HCoAcX9
     name: Play Instrument (...)
     type: skill
@@ -2043,8 +1892,6 @@ items:
           id: i.skill.play-instrument
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.t8ZAmNCkdAM0YnGe
   - _id: 4hk4WLnW1YmRei14
     name: Prepare Corpse
     type: skill
@@ -2074,8 +1921,6 @@ items:
           id: i.skill.prepare-corpse
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.jjoWVtqPOwv0kE0I
   - _id: sfx3FaetB3jPB7JA
     name: Ride (...)
     type: skill
@@ -2105,8 +1950,6 @@ items:
           id: i.skill.ride
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.1TWtw8DvNaixKZ8y
   - _id: w0SdXQs9fdlQfkfy
     name: Scan
     type: skill
@@ -2136,8 +1979,6 @@ items:
           id: i.skill.scan
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.E2GcUe4LtpBVe27j
   - _id: Iykcn7DsYnJxPir4
     name: Search
     type: skill
@@ -2167,8 +2008,6 @@ items:
           id: i.skill.search
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.fG9eGvenDrOw8ju0
   - _id: X8OmGT8kZkAuoxoW
     name: Sing
     type: skill
@@ -2198,8 +2037,6 @@ items:
           id: i.skill.sing
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.1QuPqtAqwsqiSp1n
   - _id: YtRIqd97oJm1HVY8
     name: Sleight
     type: skill
@@ -2229,10 +2066,8 @@ items:
           id: i.skill.sleight
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.sDGOflTKCcXA1Ddf
   - _id: 4V3BTOdSW5xBfPaP
-    name: Speak Own Language (...)
+    name: Speak Language (...)
     type: skill
     img: systems/rqg/assets/images/skills/speak.svg
     data:
@@ -2241,7 +2076,7 @@ items:
         name: ""
         documentType: ""
       category: communication
-      skillName: Speak Own Language
+      skillName: Speak Language
       specialization: "..."
       baseChance: 50
       gainedChance: 0
@@ -2260,8 +2095,6 @@ items:
           id: i.skill.speak-language
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.D2z5Ju4ScCf25rL9
   - _id: o2tmEt15UGQi43fY
     name: Spirit Combat
     type: skill
@@ -2291,8 +2124,6 @@ items:
           id: i.skill.spirit-combat
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.gldRbbKnKpqw2EQl
   - _id: 6Kxj83kvG4POzOJB
     name: Spirit Travel
     type: skill
@@ -2322,8 +2153,6 @@ items:
           id: i.skill.spirit-travel
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.sAMCBlVol0Qxjha8
   - _id: zYxMEGyap5ivXNTB
     name: Survival
     type: skill
@@ -2353,8 +2182,6 @@ items:
           id: i.skill.survival
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.l28B0HGWIkFTs1ZX
   - _id: EVEqfWwPZiC82q0j
     name: Swim
     type: skill
@@ -2384,8 +2211,6 @@ items:
           id: i.skill.swim
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.xMiFG945A8ObkvdT
   - _id: t1IibyWwAuxCu15y
     name: Track
     type: skill
@@ -2414,9 +2239,6 @@ items:
         documentRqidFlags:
           id: i.skill.track
           lang: en
-          priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.ejtiRekUaQGXBplT
   - _id: LuNdgSOf3h1poRMP
     name: Treat Disease
     type: skill
@@ -2446,8 +2268,6 @@ items:
           id: i.skill.treat-disease
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.y4ibPy2lsr0GcMuO
   - _id: yujrFPxyBqdZnClW
     name: Treat Poison
     type: skill
@@ -2477,39 +2297,6 @@ items:
           id: i.skill.treat-poison
           lang: en
           priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.rZ4emLHsXwDSzQOA
-  - _id: iKJ1TiEyJUZEhv0x
-    name: Worship (...)
-    type: skill
-    img: systems/rqg/assets/images/skills/worship.svg
-    data:
-      descriptionRqidLink:
-        rqid: ""
-        name: ""
-        documentType: ""
-      category: magic
-      skillName: Worship
-      specialization: "..."
-      baseChance: 5
-      gainedChance: 0
-      canGetExperience: true
-      hasExperience: false
-      runes: []
-    effects: []
-    folder:
-    sort: 0
-    permission:
-      default: 0
-      h39MBDS9VBPKXc3S: 3
-    flags:
-      rqg:
-        documentRqidFlags:
-          id: i.skill.worship
-          lang: en
-          priority: 0
-      core:
-        sourceId: Compendium.rqg.skills-basic.T5C6b9pbj1QHsA4D
 flags:
   rqg:
     documentRqidFlags:
