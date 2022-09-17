@@ -679,6 +679,7 @@ body {
   .editor-content {
     min-height: 5rem;
     width: 100%;
+    max-width: 80vw;
     box-shadow: var(--rqg-box-shadow-editor-content);
   }
 
@@ -1166,7 +1167,7 @@ body {
     display: flex;
 
     & input {
-      width: -webkit-fill-available;
+      width: 100%;
     }
 
     & a {
@@ -1264,10 +1265,6 @@ body {
   grid-gap: 0.5em;
 }
 
-// .item-sheet-header-name label {
-//   display: block;
-// }
-
 .name-number input[type="text"],
 .name-parts-3 input[type="text"],
 .name-parts-2 input[type="text"],
@@ -1275,7 +1272,7 @@ body {
 .name-parts-2-equal input[type="text"],
 .name-parts-2-equal select,
 .name-parts-3 select {
-  width: -webkit-fill-available;
+  width: 100%;
 }
 
 .paren-head {
