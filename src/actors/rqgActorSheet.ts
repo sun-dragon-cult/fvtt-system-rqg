@@ -749,6 +749,7 @@ export class RqgActorSheet extends ActorSheet<
             SkillCategoryEnum.MeleeWeapons,
             SkillCategoryEnum.MissileWeapons,
             SkillCategoryEnum.Shields,
+            SkillCategoryEnum.NaturalWeapons,
           ].includes(item.data.data.category)
         ) {
           ui.notifications?.warn(
