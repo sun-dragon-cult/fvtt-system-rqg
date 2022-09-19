@@ -11,6 +11,7 @@ import {
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { systemId } from "../config";
 
 export type ItemUpdate =
   | object &
@@ -159,7 +160,7 @@ async function migrateWorldCompendiumPacks(
   actorMigrations: ActorMigration[]
 ): Promise<void> {
   let progress = 0;
-  const packs = getGame().packs.contents;
+  const packs = getGame().packs.contents.filter((p) => p.metadata.package !== systemId); // Exclude system packs
   const packsCount = packs?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.compendiums", {
     count: packsCount,
