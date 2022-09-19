@@ -6,8 +6,9 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
     CONFIG.ui.compendium = RqgCompendiumDirectory;
   }
 
-  getData(options: any): CompendiumDirectory.Data {
-    // Foundry v10 const context = await super.getData(options);
+  // @ts-expect-error return type
+  async getData(options: any): CompendiumDirectory.Data {
+    const context = await super.getData(options);
 
     // Filter packs for visibility updated from Foundry - the rest is a copy
 
@@ -89,12 +90,6 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
       p.packs = p.packs.sort((a, b) => a.title.localeCompare(b.title));
     }
 
-    // Return data to the sidebar
-    return {
-      user: getGame().user!,
-      packs: packData,
-    };
-
-    // Foundry v10  return foundry.utils.mergeObject(context, {packs: packData});
+    return foundry.utils.mergeObject(context, { packs: packData });
   }
 }
