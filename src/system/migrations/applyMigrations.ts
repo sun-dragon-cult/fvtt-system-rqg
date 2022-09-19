@@ -30,12 +30,12 @@ export async function applyMigrations(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[]
 ): Promise<void> {
-  console.time("⏱ Migrations took");
+  console.time("RQG | ⏱ World Migrations took (ms)");
   await migrateWorldActors(itemMigrations, actorMigrations);
   await migrateWorldItems(itemMigrations);
   await migrateWorldScenes(itemMigrations, actorMigrations);
   await migrateWorldCompendiumPacks(itemMigrations, actorMigrations);
-  console.timeEnd("⏱ Migrations took");
+  console.timeEnd("RQG | ⏱ World Migrations took (ms)");
 }
 
 async function migrateWorldActors(

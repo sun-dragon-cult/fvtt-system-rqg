@@ -97,11 +97,11 @@ export const registerRqgSystemSettings = function () {
     default: "Magic (condition)",
   });
 
-  getGame().settings.register(systemId, "systemMigrationVersion", {
-    name: "RQG.Settings.SystemMigrationVersion.settingName",
-    hint: "RQG.Settings.SystemMigrationVersion.settingHint",
+  getGame().settings.register(systemId, "worldMigrationVersion", {
+    name: "RQG.Settings.WorldMigrationVersion.settingName",
+    hint: "RQG.Settings.WorldMigrationVersion.settingHint",
     scope: "world",
-    config: true, // TODO make this false eventually
+    config: true,
     type: String,
     default: "",
   });

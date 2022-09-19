@@ -1096,12 +1096,21 @@
         "settingName": "Magic (condition) Rune name",
         "settingHint": "If a Rune Magic Spell has this rune it is considered \"Common\", and an adventurer can cast it using any of the cult runes associated with the rune point(s) they spend."
       },
-      "SystemMigrationVersion": {
-        "settingName": "System Migration Version",
-        "settingHint": "Do not touch this unless you really know what you are doing!"
+      "WorldMigrationVersion": {
+        "settingName": "World Migration Version",
+        "settingHint": "The RQG system version this world has been migrated to."
       }
     },
     "Migration" : {
+      "Dialog": {
+        "windowTitle": "Migrating world data",
+        "header": "Please backup your world!",
+        "migrationWarning": "The version of this world ({worldVersion}) does not match the RQG system ({systemVersion}). Running this world migration will change the data in your world to what the system expects. Please make a backup of your world before proceeding, as you will not be able to undo this migration!",
+        "migrationTime": "The migration can take some time if you have a large world, but please be patient and do not shut the system down before it is finished.",
+        "btnMigrate": "Migrate world \"{worldTitle}\" to version {systemVersion}"
+      },
+      "applyingMigration" : "Applying World Migration to version {systemVersion}. Please be patient and do not close your game or shut down your server.",
+      "migrationFinished": "World Migration to version {systemVersion} completed!",
       "actors": "Step 1 / 4 - Migrating {count} actors",
       "items": "Step 2 / 4 - Migrating {count} world items",
       "scenes": "Step 3 / 4 - Migrating {count} scenes",

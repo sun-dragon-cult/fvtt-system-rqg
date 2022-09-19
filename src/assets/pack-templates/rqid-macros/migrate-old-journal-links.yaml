@@ -1,0 +1,162 @@
+name: migrate old Journal links
+type: script
+author: w2zGrrO8YNPw14xr
+img: icons/tools/navigation/map-marked-red.webp
+scope: global
+command: |-
+  const logPrefix = "RQG | Migrate Descr. Link |";
+
+  function systemProp() {
+    return game.data.release.generation > 9 ? "system" : "data";
+  }
+
+  function toKebabCase(s) {
+    if (!s) {
+      return "";
+    }
+    const match = s.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g);
+
+    if (!match) {
+      return "";
+    }
+
+    return match.join("-").toLowerCase();
+  }
+
+  async function useRqidDescriptionLinks(itemData) {
+    const updateData = {};
+    updateData.data = updateData.data ?? {};
+
+    if (hasProperty(itemData[systemProp()], "journalId")) {
+      const previousRqidLink = itemData[systemProp()]?.descriptionRqidLink?.id;
+      // Already has a rqidLink - don't update
+      if (previousRqidLink) {
+        return updateData;
+      }
+      // Follow & use old style link
+      const previousLinkUpdate = await getUpdateViaPreviousLink(itemData);
+      if (previousLinkUpdate) {
+        updateData.data = previousLinkUpdate;
+        console.log(
+          logPrefix,
+          "Followed old style description link and found JE with rqid - updated item with descriptionRqidLink",
+          updateData,
+          itemData
+        );
+      } else {
+        // No previous link -try if there exists a journal entry with a standard rqid name that matches the item name.
+        // This will fix all (unlinked) rune description links since they now have a provided compendium
+        const testRqidLink = `je..${toKebabCase(itemData.name)}`;
+        const foundJournal = await game.system.api.rqid.fromRqid(testRqidLink, "en", true); // Only supports lang "en"
+
+        if (foundJournal) {
+          // Set the new values
+          updateData.data = {
+            descriptionRqidLink: {
+              name: foundJournal.name ?? "",
+              rqid: testRqidLink,
+            },
+          };
+          console.log(
+            logPrefix,
+            `Didn't find a JE from previous link id [${
+              itemData[systemProp()]?.journalId
+            }], compendium [${
+              itemData[systemProp()]?.journalPack
+            }] but found a link to a standard named JE [${testRqidLink}] - updated item`,
+
+            updateData,
+            itemData
+          );
+        } else {
+          console.debug(
+            logPrefix,
+            `Didn't find a JE from previous link id [${
+              itemData[systemProp()]?.journalId
+            }], compendium [${
+              itemData[systemProp()]?.journalPack
+            }] or from default rqid link [${testRqidLink}] - no update`,
+            itemData
+          );
+        }
+      }
+      // Remove old description link
+      updateData.data["-=journalId"] = null;
+      updateData.data["-=journalPack"] = null;
+      updateData.data["-=journalName"] = null;
+    }
+    return updateData;
+  }
+
+  async function getUpdateViaPreviousLink(itemData) {
+    // Follow the old link and get its values
+    const oldJournalId = itemData[systemProp()]?.journalId;
+    if (!oldJournalId) {
+      // no previous id - will check if there is a match with default rqid as well...
+      return undefined;
+    }
+
+    const oldJournalPack = itemData[systemProp()]?.journalPack;
+    const updateData = oldJournalPack
+      ? await getUpdateFromCompendium(oldJournalId, oldJournalPack)
+      : getUpdateFromWorld(oldJournalId);
+
+    if (!updateData) {
+      const msg = `Can't find linked description id [${oldJournalId}] in compendium [${oldJournalPack}]. Misconfiguration in existing description link - No migration done.`;
+      console.warn(logPrefix, msg, itemData);
+      return undefined;
+    }
+    return updateData;
+  }
+
+  async function getUpdateFromCompendium(oldJournalId, oldJournalPack) {
+    // Get the old journal entry
+    const pack = game.packs.get(oldJournalPack);
+    if (!pack) {
+      const msg = `Can't find linked description compendium: [${oldJournalPack}]. Is the compendium active? - No migration done.`;
+      console.warn(logPrefix, msg, oldJournalId, oldJournalPack);
+      // TODO give opportunity to relink?
+      return undefined;
+    }
+    // @ts-expect-error indexed
+    if (!pack.indexed) {
+      await pack.getIndex();
+    }
+
+    // @ts-expect-error key
+    const indexData = pack.index.find((d) => d._id === oldJournalId);
+    if (!indexData) {
+      const msg = `Can't get indexData for id [${oldJournalId}] in compendium [${pack.metadata.name}]. - No migration done.`;
+      console.warn(logPrefix, msg, oldJournalId, oldJournalPack);
+      return undefined;
+    }
+
+    return {
+      descriptionRqidLink: {
+        // @ts-expect-error name
+        name: indexData?.name ?? "",
+        // @ts-expect-error flags
+        rqid: indexData?.flags?.rqg?.documentRqidFlags?.id ?? "",
+      },
+    };
+  }
+
+  function getUpdateFromWorld(oldJournalId) {
+    const journal = game.journal?.find((j) => j.id === oldJournalId);
+    if (!journal) {
+      const msg = `Can't find journalEntry in world, id: [${oldJournalId}]. No migration done.`;
+      console.warn(logPrefix, msg, oldJournalId);
+      return;
+    }
+
+    return {
+      descriptionRqidLink: {
+        name: journal.name ?? "",
+        rqid: journal.data?.flags?.rqg?.documentRqidFlags?.id ?? "",
+      },
+    };
+  }
+
+  game.system.api.migrate([useRqidDescriptionLinks], []);
+flags:
+

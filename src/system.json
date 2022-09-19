@@ -29,6 +29,13 @@
   ],
   "packs": [
     {
+      "name": "rqid-macros-en",
+      "label": "Rqid Macros | en",
+      "system": "rqg",
+      "path": "assets/packs/rqid-macros-en.db",
+      "type": "Macro"
+    },
+    {
       "name": "clan-descriptions-en",
       "label": "Clan Descriptions | en",
       "system": "rqg",
@@ -160,7 +167,7 @@
       "system": "rqg",
       "path": "assets/packs/rune-magic-descriptions-en.db",
       "type": "JournalEntry"
-    },    
+    },
     {
       "name": "skills-en",
       "label": "Skills | en",
@@ -174,14 +181,14 @@
       "system": "rqg",
       "path": "assets/packs/skill-descriptions-en.db",
       "type": "JournalEntry"
-    },    
+    },
     {
       "name": "skills-weapons-en",
       "label": "Skills - Weapons | en",
       "system": "rqg",
       "path": "assets/packs/skills-weapons-en.db",
       "type": "Item"
-    },     
+    },
     {
       "name": "species-descriptions-en",
       "label": "Species Descriptions | en",
@@ -209,7 +216,7 @@
       "system": "rqg",
       "path": "assets/packs/spirit-magic-descriptions-en.db",
       "type": "JournalEntry"
-    },     
+    },
     {
       "name": "tribe-descriptions-en",
       "label": "Tribe Descriptions | en",

@@ -51,7 +51,7 @@ declare global {
       "rqg.showEnglishLanguagePacksAlso": boolean;
       "rqg.specialCrit": boolean;
       "rqg.fumbleRollTable": string;
-      "rqg.systemMigrationVersion": string;
+      "rqg.worldMigrationVersion": string;
       "rqg.hitLocations": Object;
       "rqg.magicRuneName": string;
       "rqg.defaultItemIconSettings": IconSettingsData;
