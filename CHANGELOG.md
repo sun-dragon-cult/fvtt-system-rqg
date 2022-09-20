@@ -1,3 +1,34 @@
+# [1.18.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.17.0...v1.18.0) (2022-09-20)
+
+
+### Bug Fixes
+
+* block rolling natural weapons from skill list ([4c25624](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/4c25624))
+* chatlog looks strange in Foundry v10 ([514dedf](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/514dedf))
+* entering wide formatted content in an editor can push the edit button outside the screen closes: [#372](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/372) ([edf0044](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/edf0044))
+* fromRqidRegexAll with scope "match" does not give correct results ([#354](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/354)) ([082a9c4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/082a9c4))
+* getDefaultRqid(document) fails for RqgItems & RqgActors closes: [#345](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/345) ([1be312a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1be312a))
+* misspelled spanish skill name in migration ([c8b9857](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c8b9857))
+* POW improvement uses wrong max value closes [#262](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/262) ([908f82d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/908f82d))
+* wrong text when improving POW closes [#242](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/242) ([87b1592](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/87b1592))
+
+
+### Features
+
+* add rune magic and descriptions ([#370](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/370)) ([0192f7b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0192f7b))
+* Adding skill descriptions to the RQ System ([#360](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/360)) ([ca82502](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca82502))
+* adding spirit magic spells and descriptions ([#368](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/368)) ([8d43ac4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8d43ac4))
+* ask for specification of (...) skill items ([#371](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/371)) ([2579701](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2579701))
+* don't reroll characteristics of a linked actor when importing from compendium closes [#327](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/327) ([3ca5801](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3ca5801))
+* moving cults from the SS to the system ([#364](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/364)) ([27d0a16](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/27d0a16))
+* refactor skillData learned chance ([#358](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/358)) ([1b368b8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1b368b8))
+* remove rqid tagging and relinking of journals from migration Keeps the tagging & relinking as system macros. closes: [#357](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/357) ([8bd0d04](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8bd0d04))
+* rune descriptions now use labels ([#362](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/362)) ([608da55](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/608da55))
+* use rqid for the rqg config special skill names ([#356](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/356)) ([56079d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/56079d8))
+
+
+
+
 # [1.17.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.16.0...v1.17.0) (2022-09-01)
 
 
