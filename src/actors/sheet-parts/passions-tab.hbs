@@ -11,7 +11,7 @@
           class="wizard-choice-input"
           data-rqid="{{this.data.flags.rqg.documentRqidFlags.id}}"
           data-for-choice="{{../forChoice}}"
-          {{#if (lookup this.data.data.choice ../checkedProperty)}}checked{{/if}}
+          {{#if (lookup this.system.choice ../checkedProperty)}}checked{{/if}}
           title="{{localize "RQG.Actor.Passion.ImportPassionCheckboxTitle" passionName=this.name}}" />
       </div>
       {{/if}}
@@ -24,10 +24,10 @@
     <div data-item-id="{{id}}" data-item-roll
       class="passion contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
       title="{{localize 'RQG.Game.RollTitle'}}">
-      {{this.data.data.chance}}%
+      {{this.system.chance}}%
     </div>
     <details data-item-id="{{id}}" class="description passion contextmenu item">
-      <summary>{{localize "RQG.Actor.Passion.BackStory"}}</summary>{{{enrichHtml this.data.data.description}}}
+      <summary>{{localize "RQG.Actor.Passion.BackStory"}}</summary>{{{enrichHtml this.system.description}}}
     </details>
   </div>
   {{/each}}

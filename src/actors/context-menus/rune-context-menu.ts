@@ -35,7 +35,7 @@ export const runeMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.data.type, ItemTypeEnum.Rune);
+      assertItemType(item?.type, ItemTypeEnum.Rune);
       await item?.abilityRoll();
     },
   },
@@ -46,8 +46,8 @@ export const runeMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.data.type, ItemTypeEnum.Rune);
-      await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
+      assertItemType(item?.type, ItemTypeEnum.Rune);
+      await item.update({ "data.hasExperience": !item.system.hasExperience }, {});
     },
   },
   {
@@ -59,7 +59,7 @@ export const runeMenuOptions = (
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.data.type, ItemTypeEnum.Rune);
+      assertItemType(item?.type, ItemTypeEnum.Rune);
       const speakerName = token?.name ?? actor.data.token.name ?? "";
       showImproveAbilityDialog(actor, itemId, item, speakerName);
     },
@@ -87,7 +87,7 @@ export const runeMenuOptions = (
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.data.type, ItemTypeEnum.Rune);
+      assertItemType(item?.type, ItemTypeEnum.Rune);
       if (!item.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantEditRuneError", {
           itemId: itemId,

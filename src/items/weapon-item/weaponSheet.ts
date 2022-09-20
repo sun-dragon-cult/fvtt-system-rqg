@@ -91,36 +91,38 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
 
   private getWeaponSkills(): any {
     return this.item.isEmbedded && this.actor
-      ? this.actor
-          .getEmbeddedCollection("Item")
-          .filter(
-            (i) =>
-              i.data.type === ItemTypeEnum.Skill &&
-              (i.data.data.category === SkillCategoryEnum.MeleeWeapons ||
-                i.data.data.category === SkillCategoryEnum.Shields ||
-                i.data.data.category === SkillCategoryEnum.NaturalWeapons)
-          )
+      ? this.actor.getEmbeddedCollection("Item").filter(
+          (i) =>
+            // @ts-expect-error v10
+            i.type === ItemTypeEnum.Skill &&
+            // @ts-expect-error system
+            (i.system.category === SkillCategoryEnum.MeleeWeapons ||
+              // @ts-expect-error system
+              i.system.category === SkillCategoryEnum.Shields ||
+              // @ts-expect-error system
+              i.system.category === SkillCategoryEnum.NaturalWeapons)
+        )
       : [];
   }
 
   private getSkillNames(): any {
-    assertItemType(this.item.data.type, ItemTypeEnum.Weapon);
+    assertItemType(this.item.type, ItemTypeEnum.Weapon);
     return {
       oneHand: this.getName(
-        this.item.data.data.usage.oneHand.skillOrigin,
-        this.item.data.data.usage.oneHand.skillId
+        this.item.system.usage.oneHand.skillOrigin,
+        this.item.system.usage.oneHand.skillId
       ),
       offHand: this.getName(
-        this.item.data.data.usage.offHand.skillOrigin,
-        this.item.data.data.usage.offHand.skillId
+        this.item.system.usage.offHand.skillOrigin,
+        this.item.system.usage.offHand.skillId
       ),
       twoHand: this.getName(
-        this.item.data.data.usage.twoHand.skillOrigin,
-        this.item.data.data.usage.twoHand.skillId
+        this.item.system.usage.twoHand.skillOrigin,
+        this.item.system.usage.twoHand.skillId
       ),
       missile: this.getName(
-        this.item.data.data.usage.missile.skillOrigin,
-        this.item.data.data.usage.missile.skillId
+        this.item.system.usage.missile.skillOrigin,
+        this.item.system.usage.missile.skillId
       ),
     };
   }
@@ -130,7 +132,8 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       return [
         [{ _id: "", name: "---" }],
         ...this.actor!.getEmbeddedCollection("Item").filter(
-          (i) => i.data.type === ItemTypeEnum.Weapon && i.data.data.isProjectile
+          // @ts-expect-error system
+          (i) => i.type === ItemTypeEnum.Weapon && i.system.isProjectile
         ),
       ];
     }
@@ -286,16 +289,16 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     if (droppedItemData.type === "Item") {
       const droppedItem = (await Item.fromDropData(droppedItemData)) as RqgItem;
       if (
-        droppedItem.data.type === ItemTypeEnum.Skill &&
-        (droppedItem.data.data.category === SkillCategoryEnum.MeleeWeapons ||
-          droppedItem.data.data.category === SkillCategoryEnum.MissileWeapons ||
-          droppedItem.data.data.category === SkillCategoryEnum.NaturalWeapons ||
-          droppedItem.data.data.category === SkillCategoryEnum.Shields)
+        droppedItem.type === ItemTypeEnum.Skill &&
+        (droppedItem.system.category === SkillCategoryEnum.MeleeWeapons ||
+          droppedItem.system.category === SkillCategoryEnum.MissileWeapons ||
+          droppedItem.system.category === SkillCategoryEnum.NaturalWeapons ||
+          droppedItem.system.category === SkillCategoryEnum.Shields)
       ) {
         const originSkillId = droppedItem.uuid || "";
         if (this.item.isOwned) {
           const weaponItem = this.item;
-          assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
+          assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
           const embeddedSkillId = await Weapon.embedLinkedSkill("", originSkillId, this.actor!);
           await this.item.update({
             [`data.usage.${usage}.skillId`]: embeddedSkillId,

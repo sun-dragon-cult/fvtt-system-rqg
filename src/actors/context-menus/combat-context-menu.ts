@@ -37,7 +37,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      const toggledExperience = !item.data.data.hasExperience;
+      const toggledExperience = !item.system.hasExperience;
       await item.update({ "data.hasExperience": toggledExperience }, {});
     },
   },

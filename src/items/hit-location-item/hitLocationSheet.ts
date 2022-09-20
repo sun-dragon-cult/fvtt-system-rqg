@@ -87,7 +87,7 @@ export class HitLocationSheet extends RqgItemSheet<
     speakerName: string
   ): Promise<void> {
     const hitLocation = actor.items.get(hitLocationItemId);
-    if (!hitLocation || hitLocation.data.type !== ItemTypeEnum.HitLocation) {
+    if (!hitLocation || hitLocation.type !== ItemTypeEnum.HitLocation) {
       const msg = localize("RQG.Item.HitLocation.Notification.CantFindHitLocation", {
         hitLocationItemId: hitLocationItemId,
         actorName: actor.name,
@@ -141,7 +141,7 @@ export class HitLocationSheet extends RqgItemSheet<
     hitLocation: RqgItem,
     speakerName: string
   ) {
-    assertItemType(hitLocation.data.type, ItemTypeEnum.HitLocation);
+    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
@@ -149,7 +149,7 @@ export class HitLocationSheet extends RqgItemSheet<
     const subtractAP: boolean = !!data.subtractAP;
     let damage = Number(data.damage);
     if (subtractAP) {
-      const armorPoints = hitLocation.data.data.armorPoints;
+      const armorPoints = hitLocation.system.armorPoints;
       if (armorPoints == null) {
         const msg = localize(
           "RQG.Item.HitLocation.Notification.HitLocationDoesNotHaveCalculatedArmor",
@@ -199,18 +199,18 @@ export class HitLocationSheet extends RqgItemSheet<
     for (const update of uselessLegs) {
       // @ts-ignore _id
       const leg = actor.items.get(update._id);
-      assertItemType(leg?.data.type, ItemTypeEnum.HitLocation);
+      assertItemType(leg?.type, ItemTypeEnum.HitLocation);
       await leg.update(update);
     }
   }
 
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
     const hitLocation = actor.items.get(hitLocationItemId);
-    assertItemType(hitLocation?.data.type, ItemTypeEnum.HitLocation);
+    assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
 
     const dialogContentHtml = await renderTemplate(
       "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
-      { hitLocationName: hitLocation.name, wounds: hitLocation.data.data.wounds }
+      { hitLocationName: hitLocation.name, wounds: hitLocation.system.wounds }
     );
 
     new Dialog(
@@ -248,18 +248,18 @@ export class HitLocationSheet extends RqgItemSheet<
     actor: RqgActor,
     hitLocation: RqgItem
   ): Promise<void> {
-    assertItemType(hitLocation.data.type, ItemTypeEnum.HitLocation);
+    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore formData.entries
     const data = Object.fromEntries(formData.entries());
     requireValue(
-      hitLocation.data.data.hitPoints.value,
+      hitLocation.system.hitPoints.value,
       localize("RQG.Item.HitLocation.Notification.NoValueOnHitLocation", {
         hitLocationName: hitLocation.name,
       })
     );
     requireValue(
-      hitLocation.data.data.hitPoints.max,
+      hitLocation.system.hitPoints.max,
       localize("RQG.Item.HitLocation.Notification.NoMaxOnHitLocation", {
         hitLocationName: hitLocation.name,
       })
@@ -298,7 +298,7 @@ export class HitLocationSheet extends RqgItemSheet<
     }
 
     // Reopen the dialog if there still are wounds left
-    if (hitLocation.data.data.wounds.length) {
+    if (hitLocation.system.wounds.length) {
       await this.showHealWoundDialog(actor, hitLocation.id!);
     }
   }
@@ -321,7 +321,7 @@ export class HitLocationSheet extends RqgItemSheet<
       return;
     }
 
-    const newEffect = health2Effect.get(token.actor.data.data.attributes.health);
+    const newEffect = health2Effect.get(token.actor.system.attributes.health);
 
     for (const status of health2Effect.values()) {
       const thisEffectOn = !!token.actor.effects.find(

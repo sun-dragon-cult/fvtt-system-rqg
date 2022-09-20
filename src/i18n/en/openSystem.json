@@ -380,7 +380,7 @@
         "CantEditCultError": "`Couldn't find itemId [{itemId}] on actor {actorName} to edit cult item from the cult context menu.",
         "CantEditGearError": "Couldn't find gear with itemId [{itemId}] on actor {actorName} to edit item from the gear context menu.",
         "CantEditHitLocationError": "Couldn't find itemId [{itemId}] on actor {actorName} to edit hitLocation item from the health context menu.",
-        "CantDirectRollPassionError": "Couldn't find itemId [{itemId}] or item Chance (item.data.data.chance) on actor {actorName} to do a direct roll for passion item from the passion context menu.`",
+        "CantDirectRollPassionError": "Couldn't find itemId [{itemId}] or item Chance (item.system.chance) on actor {actorName} to do a direct roll for passion item from the passion context menu.`",
         "CantToggleExperiencePassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to toggle experience on passion item from the passion context menu.",
         "CantImprovePassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to improve passion item from the passion context menu.",
         "CantEditPassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to edit a passion item from the passion context menu.",

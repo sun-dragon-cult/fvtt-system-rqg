@@ -25,23 +25,23 @@ export class RqgActor extends Actor {
     });
   }
 
+  public system: any; // TODO workaround tryout
+
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
   prepareBaseData(): void {
     super.prepareBaseData();
-    const actorData = this.data;
-    const data = actorData.data;
     // Set this here before Active effects to allow POW crystals to boost it.
-    data.attributes.magicPoints.max = data.characteristics.power.value;
+    this.system.attributes.magicPoints.max = this.system.characteristics.power.value;
   }
 
   prepareEmbeddedDocuments(): void {
     // @ts-ignore Foundry 9
     super.prepareEmbeddedDocuments();
-    const actorData = this.data.data;
+    const actorSystem = this.system;
     const { con, siz, pow } = this.actorCharacteristics();
-    actorData.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+    actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
     );
@@ -59,9 +59,9 @@ export class RqgActor extends Actor {
    */
   prepareDerivedData(): void {
     super.prepareDerivedData();
-    const attributes = this.data.data.attributes;
+    const attributes = this.system.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
-    const skillCategoryModifiers = (this.data.data.skillCategoryModifiers =
+    const skillCategoryModifiers = (this.system.skillCategoryModifiers =
       RqgCalculations.skillCategoryModifiers(
         str,
         siz,
@@ -69,7 +69,7 @@ export class RqgActor extends Actor {
         int,
         pow,
         cha,
-        this.data.data.attributes.isCreature
+        this.system.attributes.isCreature
       ));
 
     attributes.encumbrance = {
@@ -88,7 +88,7 @@ export class RqgActor extends Actor {
     );
 
     attributes.move.value =
-      this.data.data.attributes.move?.[attributes.move?.currentLocomotion]?.value || 0;
+      this.system.attributes.move?.[attributes.move?.currentLocomotion]?.value || 0;
 
     attributes.move.equipped = attributes.move.value + equippedMovementEncumbrancePenalty;
     skillCategoryModifiers.agility += equippedMovementEncumbrancePenalty * 5;
@@ -127,9 +127,9 @@ export class RqgActor extends Actor {
       items.reduce((sum: number, item: RqgItem) => {
         if (
           hasOwnProperty(item.data.data, "equippedStatus") &&
-          ["carried", "equipped"].includes(item.data.data.equippedStatus)
+          ["carried", "equipped"].includes(item.system.equippedStatus)
         ) {
-          const enc = (item.data.data.quantity ?? 1) * (item.data.data.encumbrance ?? 0);
+          const enc = (item.system.quantity ?? 1) * (item.system.encumbrance ?? 0);
           return sum + enc;
         }
         return sum;
@@ -142,10 +142,10 @@ export class RqgActor extends Actor {
       items.reduce((sum, item: RqgItem) => {
         if (
           hasOwnProperty(item.data.data, "physicalItemType") &&
-          item.data.data.equippedStatus === "equipped"
+          item.system.equippedStatus === "equipped"
         ) {
-          const quantity = item.data.data.quantity ?? 1;
-          const encumbrance = item.data.data.encumbrance ?? 0;
+          const quantity = item.system.quantity ?? 1;
+          const encumbrance = item.system.encumbrance ?? 0;
           return sum + quantity * encumbrance;
         }
         return sum;
@@ -227,7 +227,8 @@ export class RqgActor extends Actor {
   ): void {
     if (embeddedName === "Item" && getGame().user?.id === userId) {
       documents.forEach((d) => {
-        const updateData = ResponsibleItemClass.get(d.data.type)?.onDeleteItem(
+        // @ts-expect-error type
+        const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(
           this,
           d as RqgItem, // TODO type bailout - fixme
           options,
@@ -252,7 +253,7 @@ export class RqgActor extends Actor {
     pow: number;
     cha: number;
   } {
-    const characteristics = this.data.data.characteristics;
+    const characteristics = this.system.characteristics;
     const str = characteristics.strength.value;
     const con = characteristics.constitution.value;
     const siz = characteristics.size.value;
@@ -265,7 +266,7 @@ export class RqgActor extends Actor {
 
   public async drawMagicPoints(amount: number, result: ResultEnum): Promise<void> {
     if (result <= ResultEnum.Success) {
-      const newMp = (this.data.data.attributes.magicPoints.value || 0) - amount;
+      const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
       await this.update({ "data.attributes.magicPoints.value": newMp });
       ui.notifications?.info(
         localize("RQG.Dialog.spiritMagicChat.SuccessfullyCastInfo", { amount: amount })

@@ -13,7 +13,7 @@ export class Gear extends AbstractEmbeddedItem {
   // }
 
   static preUpdateItem(actor: RqgActor, gear: RqgItem, updates: object[], options: any): void {
-    if (gear.data.type === ItemTypeEnum.Gear) {
+    if (gear.type === ItemTypeEnum.Gear) {
       updates.push(...getSameLocationUpdates(actor, gear, updates));
     }
   }

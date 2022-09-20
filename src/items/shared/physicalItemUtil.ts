@@ -8,7 +8,7 @@ export function getSameLocationUpdates(
   physicalItem: RqgItem,
   updates: object[]
 ): any[] {
-  if ("isNatural" in physicalItem.data.data && physicalItem.data.data.isNatural) {
+  if ("isNatural" in physicalItem.data.data && physicalItem.system.isNatural) {
     return []; // natural weapons don't have location and are excluded from the LocationTree
   }
   const actorObject = actor.toObject();
@@ -36,7 +36,7 @@ export function getSameLocationUpdates(
   const equippedStatusUpdate: any = updates.find((u: any) => u["data.equippedStatus"]);
   const equippedStatusOfOtherWithSameLocation = sameLocationItemIds.length
     ? // @ts-ignore equippedStatus does exist
-      actor.items.get(sameLocationItemIds[0])!.data.data.equippedStatus
+      actor.items.get(sameLocationItemIds[0])!.system.equippedStatus
     : undefined;
   const newEquippedStatus = equippedStatusUpdate
     ? equippedStatusUpdate["data.equippedStatus"] // Change equippedStatus of all in same location group

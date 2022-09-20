@@ -16,7 +16,8 @@ export async function migrateWorldDialog(systemVersion: string): Promise<void> {
         buttons: {
           submit: {
             label: localize("RQG.Migration.Dialog.btnMigrate", {
-              worldTitle: getGame().world.data.title,
+              // @ts-expect-error v10
+              worldTitle: getGame().world.title,
               systemVersion: systemVersion,
             }),
             icon: '<i class="fas fa-wrench"></i>',

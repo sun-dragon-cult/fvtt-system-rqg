@@ -12,7 +12,7 @@ export class HitLocation extends AbstractEmbeddedItem {
   // }
 
   public static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
-    if (item.data.type !== ItemTypeEnum.HitLocation) {
+    if (item.type !== ItemTypeEnum.HitLocation) {
       const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
@@ -28,16 +28,16 @@ export class HitLocation extends AbstractEmbeddedItem {
     // Add equipped armor absorptions for this hit location
     const armorAbsorption = actor.items.reduce((sum, armorItem) => {
       if (
-        armorItem.data.type === ItemTypeEnum.Armor &&
-        armorItem.data.data.equippedStatus === "equipped" &&
-        armorItem.data.data.hitLocations.includes(item.data.name)
+        armorItem.type === ItemTypeEnum.Armor &&
+        armorItem.system.equippedStatus === "equipped" &&
+        armorItem.system.hitLocations.includes(item.data.name)
       ) {
-        sum += armorItem.data.data.absorbs;
+        sum += armorItem.system.absorbs;
       }
       return sum;
     }, 0);
 
-    item.data.data.armorPoints = item.data.data.naturalAp + armorAbsorption;
+    item.system.armorPoints = item.system.naturalAp + armorAbsorption;
 
     // Calc HP
     const totalHp = actorData.attributes.hitPoints.max;
@@ -47,15 +47,13 @@ export class HitLocation extends AbstractEmbeddedItem {
       throw new RqgError(msg, actor);
     }
     // Remove any healed wounds
-    item.data.data.wounds = item.data.data.wounds.filter((w) => w > 0);
+    // @ts-expect-error system
+    item.system.wounds = item.system.wounds.filter((w) => w > 0);
 
-    item.data.data.hitPoints.max = HitLocation.hitPointsPerLocation(
-      totalHp,
-      item.data.data.baseHpDelta
-    );
-    item.data.data.hitPoints.value = item.data.data.wounds.reduce(
+    item.system.hitPoints.max = HitLocation.hitPointsPerLocation(totalHp, item.system.baseHpDelta);
+    item.system.hitPoints.value = item.system.wounds.reduce(
       (acc: number, w: number) => acc - w,
-      item.data.data.hitPoints.max
+      item.system.hitPoints.max
     );
 
     return item;

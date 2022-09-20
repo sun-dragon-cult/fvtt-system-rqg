@@ -26,8 +26,8 @@ export class RqgCombat extends Combat {
       return a2.id!.localeCompare(b2.id!);
     }
 
-    const actorADex = a.actor.data.data.characteristics.dexterity.value;
-    const actorBDex = b.actor.data.data.characteristics.dexterity.value;
+    const actorADex = a.actor.system.characteristics.dexterity.value;
+    const actorBDex = b.actor.system.characteristics.dexterity.value;
     const cDex = actorBDex - actorADex;
     if (cDex !== 0) {
       return cDex; // Sort on highest DEX

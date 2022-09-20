@@ -28,7 +28,7 @@
           <i>&nbsp;{{toLowerCase (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." data.data.hitLocationHealthState))}}</i>
         {{/unless}}
       </div>
-      <div {{#if @root.isGM}}class="hit-location contextmenu item"{{/if}} data-item-id="{{id}}"><span class="text-right nowrap">{{data.data.hitPoints.value}} / {{this.data.data.hitPoints.max}}</span></div>
+      <div {{#if @root.isGM}}class="hit-location contextmenu item"{{/if}} data-item-id="{{id}}"><span class="text-right nowrap">{{data.data.hitPoints.value}} / {{this.system.hitPoints.max}}</span></div>
       <div {{#if @root.isGM}}class="hit-location contextmenu item"{{/if}} data-item-id="{{id}}"><span class="text-right">{{data.data.armorPoints}}</span></div>
       <div {{#if @root.isGM}}class="hit-location contextmenu item"{{/if}} data-item-id="{{id}}">
         <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}" class="text-right nowrap">

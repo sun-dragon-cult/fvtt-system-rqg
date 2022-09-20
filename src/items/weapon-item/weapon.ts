@@ -36,7 +36,7 @@ export class Weapon extends AbstractEmbeddedItem {
   // }
 
   static async toChat(weapon: RqgItem): Promise<void> {
-    assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
+    assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const usage = Weapon.getDefaultUsage(weapon);
     if (!usage) {
       return; // There is no way to use this weapon - it could be arrows for example
@@ -73,15 +73,15 @@ export class Weapon extends AbstractEmbeddedItem {
       chatMessage: RqgChatMessage;
     }
   ): Promise<ResultEnum | undefined> {
-    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
+    assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     requireValue(weaponItem.actor, "Called weapon abilityRoll with a not embedded weapon item");
     const speaker = ChatMessage.getSpeaker({ actor: weaponItem.actor ?? undefined });
 
     switch (options.actionName) {
       case "combatManeuverRoll":
-        const weaponUsage = weaponItem.data.data.usage[options.usageType];
+        const weaponUsage = weaponItem.system.usage[options.usageType];
         const combatManeuver = weaponUsage.combatManeuvers.find(
-          (m) => m.name === options.actionValue
+          (m: CombatManeuver) => m.name === options.actionValue
         );
         requireValue(
           combatManeuver,
@@ -129,7 +129,7 @@ export class Weapon extends AbstractEmbeddedItem {
   }
 
   static preUpdateItem(actor: RqgActor, weapon: RqgItem, updates: object[], options: any): void {
-    if (weapon.data.type === ItemTypeEnum.Weapon) {
+    if (weapon.type === ItemTypeEnum.Weapon) {
       updates.push(...getSameLocationUpdates(actor, weapon, updates));
     }
   }
@@ -144,25 +144,25 @@ export class Weapon extends AbstractEmbeddedItem {
     options: any,
     userId: string
   ): Promise<any> {
-    assertItemType(child.data.type, ItemTypeEnum.Weapon);
+    assertItemType(child.type, ItemTypeEnum.Weapon);
     const oneHandSkillId = await Weapon.embedLinkedSkill(
-      child.data.data.usage.oneHand.skillId,
-      child.data.data.usage.oneHand.skillOrigin,
+      child.system.usage.oneHand.skillId,
+      child.system.usage.oneHand.skillOrigin,
       actor
     );
     const offHandSkillId = await Weapon.embedLinkedSkill(
-      child.data.data.usage.offHand.skillId,
-      child.data.data.usage.offHand.skillOrigin,
+      child.system.usage.offHand.skillId,
+      child.system.usage.offHand.skillOrigin,
       actor
     );
     const twoHandSkillId = await Weapon.embedLinkedSkill(
-      child.data.data.usage.twoHand.skillId,
-      child.data.data.usage.twoHand.skillOrigin,
+      child.system.usage.twoHand.skillId,
+      child.system.usage.twoHand.skillOrigin,
       actor
     );
     const missileSkillId = await Weapon.embedLinkedSkill(
-      child.data.data.usage.missile.skillId,
-      child.data.data.usage.missile.skillOrigin,
+      child.system.usage.missile.skillId,
+      child.system.usage.missile.skillOrigin,
       actor
     );
     if (!oneHandSkillId || !offHandSkillId || !twoHandSkillId || !missileSkillId) {
@@ -171,7 +171,7 @@ export class Weapon extends AbstractEmbeddedItem {
       options.renderSheet = true;
     }
     // Thrown weapons should decrease quantity of themselves
-    const projectileId = child.data.data.isThrownWeapon ? child.id : child.data.data.projectileId;
+    const projectileId = child.system.isThrownWeapon ? child.id : child.system.projectileId;
 
     return {
       _id: child.id,
@@ -237,8 +237,8 @@ export class Weapon extends AbstractEmbeddedItem {
   }
 
   static getDefaultUsage(weapon: RqgItem): UsageType {
-    assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
-    const defaultUsage = weapon.data.data.defaultUsage;
+    assertItemType(weapon.type, ItemTypeEnum.Weapon);
+    const defaultUsage = weapon.system.defaultUsage;
     if (defaultUsage) {
       return defaultUsage;
     }
@@ -255,7 +255,7 @@ export class Weapon extends AbstractEmbeddedItem {
     otherModifiers: number,
     speaker: ChatSpeakerDataProperties
   ): Promise<void> {
-    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
+    assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     requireValue(chatMessage, "No chat message provided for combarManeuverRoll");
     const damageType = combatManeuver?.damageType;
     const specialDamageTypeDescription =
@@ -267,8 +267,8 @@ export class Weapon extends AbstractEmbeddedItem {
       specialDamageTypeDescription ??
       CONFIG.RQG.combatManeuvers.get(combatManeuver?.name ?? "")?.specialDescriptionHtml;
 
-    const projectileItemData = weaponItem.data.data.isProjectileWeapon
-      ? weaponItem.actor?.items.get(weaponItem.data.data.projectileId)?.data
+    const projectileItemData = weaponItem.system.isProjectileWeapon
+      ? weaponItem.actor?.items.get(weaponItem.system.projectileId)?.data
       : weaponItem.data; // Thrown (or melee)
 
     let originalAmmoQty: number = 0;
@@ -323,9 +323,9 @@ export class Weapon extends AbstractEmbeddedItem {
     }
 
     const skillItem = Weapon.getUsedSkillItem(weaponItem, usage);
-    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
+    assertItemType(skillItem?.type, ItemTypeEnum.Skill);
 
-    const chance: number = Number(skillItem.data.data.chance) || 0;
+    const chance: number = Number(skillItem.system.chance) || 0;
 
     flags.chat.result = await skillItem._roll(
       skillItem.name + " " + Weapon.getDamageTypeString(damageType, [combatManeuver]),
@@ -349,22 +349,22 @@ export class Weapon extends AbstractEmbeddedItem {
       combatManeuverName,
       localize("RQG.Dialog.weaponChat.NoCombatManeuverInDamageRollError")
     );
-    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
+    assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     let damageBonusFormula: string =
-      weaponItem.actor?.data.data.attributes.damageBonus !== "0"
-        ? `${weaponItem.actor?.data.data.attributes.damageBonus}`
+      weaponItem.actor?.system.attributes.damageBonus !== "0"
+        ? `${weaponItem.actor?.system.attributes.damageBonus}`
         : "";
 
-    const weaponUsage = weaponItem.data.data.usage[usageType];
+    const weaponUsage = weaponItem.system.usage[usageType];
     const weaponDamageTag = localize("RQG.Dialog.weaponChat.WeaponDamageTag");
     const weaponDamage = hasOwnProperty(weaponUsage, "damage")
       ? Roll.parse(`(${weaponUsage.damage})[${weaponDamageTag}]`, {})
       : [];
 
     if (usageType === "missile") {
-      if (weaponItem.data.data.isThrownWeapon) {
+      if (weaponItem.system.isThrownWeapon) {
         damageBonusFormula =
-          "ceil(" + (weaponItem.actor?.data.data.attributes.damageBonus || 0) + "/2)";
+          "ceil(" + (weaponItem.actor?.system.attributes.damageBonus || 0) + "/2)";
       } else {
         damageBonusFormula = "";
       }
@@ -374,7 +374,7 @@ export class Weapon extends AbstractEmbeddedItem {
       hasOwnProperty(weaponUsage, "damage") && weaponUsage.damage ? weaponDamage : []; // Don't add 0 damage rollTerm
 
     const damageType = weaponUsage.combatManeuvers.find(
-      (m) => m.name === combatManeuverName
+      (m: CombatManeuver) => m.name === combatManeuverName
     )?.damageType;
     requireValue(
       damageType,
@@ -521,7 +521,7 @@ export class Weapon extends AbstractEmbeddedItem {
   }
 
   public static getUsedSkillItem(weaponItem: RqgItem, usage: UsageType): RqgItem | undefined {
-    assertItemType(weaponItem.data.type, ItemTypeEnum.Weapon);
-    return weaponItem.actor?.items.get(weaponItem.data.data.usage[usage]?.skillId);
+    assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
+    return weaponItem.actor?.items.get(weaponItem.system.usage[usage]?.skillId);
   }
 }

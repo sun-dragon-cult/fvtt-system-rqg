@@ -197,8 +197,7 @@ export class DamageCalculations {
     ) {
       const attachedLimbs = actorData.items.filter(
         (i: RqgItem) =>
-          i.data.type === ItemTypeEnum.HitLocation &&
-          i.data.data.connectedTo === hitLocationData.name
+          i.type === ItemTypeEnum.HitLocation && i.system.connectedTo === hitLocationData.name
       );
       damageEffects.uselessLegs = attachedLimbs.map((limb) => {
         return {
@@ -243,7 +242,8 @@ export class DamageCalculations {
   }
 
   static getCombinedActorHealth(actorData: ActorData): ActorHealthState {
-    const totalHitPoints = actorData.data.attributes.hitPoints.value;
+    // @ts-expect-error v10
+    const totalHitPoints = actorData.attributes.hitPoints.value;
     if (totalHitPoints == null) {
       const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actorData.name}`;
       ui.notifications?.error(msg);
@@ -263,10 +263,10 @@ export class DamageCalculations {
       return "unconscious";
     } else {
       return actorData.items.reduce((acc: ActorHealthState, item: RqgItem) => {
-        if (item.data.type !== ItemTypeEnum.HitLocation) {
+        if (item.type !== ItemTypeEnum.HitLocation) {
           return acc;
         } else {
-          const actorHealthImpact = item.data.data.actorHealthImpact;
+          const actorHealthImpact = item.system.actorHealthImpact;
           return actorHealthStatuses.indexOf(actorHealthImpact) > actorHealthStatuses.indexOf(acc)
             ? actorHealthImpact
             : acc;

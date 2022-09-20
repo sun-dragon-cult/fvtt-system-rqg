@@ -33,8 +33,8 @@ export const passionMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.data.type, ItemTypeEnum.Passion);
-      if (item.data.data.chance == null) {
+      assertItemType(item?.type, ItemTypeEnum.Passion);
+      if (item.system.chance == null) {
         const msg = localize("RQG.ContextMenu.Notification.CantDirectRollPassionError", {
           itemId: itemId,
           actorName: actor.name,
@@ -52,7 +52,7 @@ export const passionMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || item.data.type !== ItemTypeEnum.Passion) {
+      if (!item || item.type !== ItemTypeEnum.Passion) {
         const msg = localize("RQG.ContextMenu.Notification.CantToggleExperiencePassionError", {
           itemId: itemId,
           actorName: actor.name,
@@ -60,7 +60,7 @@ export const passionMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await item.update({ "data.hasExperience": !item.data.data.hasExperience }, {});
+      await item.update({ "data.hasExperience": !item.system.hasExperience }, {});
     },
   },
   {
@@ -71,7 +71,7 @@ export const passionMenuOptions = (
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      if (!item || item.data.type !== ItemTypeEnum.Passion) {
+      if (!item || item.type !== ItemTypeEnum.Passion) {
         const msg = localize("RQG.ContextMenu.Notification.CantImprovePassionError", {
           itemId: itemId,
           actorName: actor.name,
@@ -79,12 +79,12 @@ export const passionMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      return !!item.data.data.hasExperience;
+      return !!item.system.hasExperience;
     },
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.data.type, ItemTypeEnum.Passion);
+      assertItemType(item?.type, ItemTypeEnum.Passion);
       const speakerName = token?.name ?? actor.data.token.name ?? "";
       showImproveAbilityDialog(actor, itemId, item, speakerName);
     },

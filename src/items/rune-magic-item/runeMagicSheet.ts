@@ -81,7 +81,8 @@ export class RuneMagicSheet extends RqgItemSheet<
 
   private getActorCults(): any[] {
     return this.actor
-      ? this.actor.getEmbeddedCollection("Item").filter((i) => i.data.type === ItemTypeEnum.Cult)
+      ? // @ts-expect-error v10
+        this.actor.getEmbeddedCollection("Item").filter((i) => i.type === ItemTypeEnum.Cult)
       : [];
   }
 

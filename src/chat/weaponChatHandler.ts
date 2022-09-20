@@ -38,7 +38,7 @@ export class WeaponChatHandler {
     const weaponItem = (await getRequiredDocumentFromUuid(flags.chat.weaponUuid)) as
       | RqgItem
       | undefined;
-    assertItemType(weaponItem?.data.type, ItemTypeEnum.Weapon);
+    assertItemType(weaponItem?.type, ItemTypeEnum.Weapon);
 
     const { otherModifiers, actionName, actionValue, usageType } =
       await WeaponChatHandler.getFormDataFromFlags(flags);
@@ -61,10 +61,10 @@ export class WeaponChatHandler {
     const weaponItem = await getRequiredDocumentFromUuid<RqgItem>(flags.chat.weaponUuid);
     const { otherModifiers, usageType } = await WeaponChatHandler.getFormDataFromFlags(flags);
     const skillItem = Weapon.getUsedSkillItem(weaponItem, usageType);
-    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
+    assertItemType(skillItem?.type, ItemTypeEnum.Skill);
 
-    const specialization = skillItem.data.data.specialization
-      ? ` (${skillItem.data.data.specialization})`
+    const specialization = skillItem.system.specialization
+      ? ` (${skillItem.system.specialization})`
       : "";
     const chatHeading = localize("RQG.Dialog.weaponChat.WeaponChatFlavor", {
       weaponName: weaponItem.name,
@@ -75,14 +75,14 @@ export class WeaponChatHandler {
       skillItemData: skillItem.data.data,
       weaponItemData: weaponItem.data.data,
       chatHeading: chatHeading,
-      chance: skillItem.data.data.chance + otherModifiers,
+      chance: skillItem.system.chance + otherModifiers,
       usageOptions: usageOptions,
       hideUsageOptions: Object.keys(usageOptions).length === 1,
     };
     const html = await renderTemplate("systems/rqg/chat/weaponChatHandler.hbs", templateData);
 
     return {
-      flavor: "Skill:" + skillItem.data.data.skillName + specialization, // TODO Translate (or rethink)
+      flavor: "Skill:" + skillItem.system.skillName + specialization, // TODO Translate (or rethink)
       user: getGameUser().id,
       speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),
       content: html,
@@ -147,8 +147,9 @@ export class WeaponChatHandler {
   }
 
   static getUsageTypeOptions(weapon: RqgItem): {} {
-    assertItemType(weapon.data.type, ItemTypeEnum.Weapon);
-    return Object.entries(weapon.data.data.usage).reduce((acc: any, [key, usage]) => {
+    assertItemType(weapon.type, ItemTypeEnum.Weapon);
+    return Object.entries(weapon.system.usage).reduce((acc: any, [key, usage]) => {
+      // @ts-expect-error system
       if (usage.skillId) {
         acc[key] = localize(`RQG.Game.WeaponUsage.${key}-full`);
       }

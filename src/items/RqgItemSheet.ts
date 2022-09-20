@@ -74,7 +74,7 @@ export class RqgItemSheet<
             .catch((reason: any) => {
               ui.notifications?.error(
                 localize("RQG.Item.Notification.CantCreateActiveEffect", {
-                  itemType: localizeItemType(item.data.type),
+                  itemType: localizeItemType(item.type),
                 })
               );
               throw reason;

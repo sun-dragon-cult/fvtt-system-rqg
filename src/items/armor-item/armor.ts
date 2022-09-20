@@ -13,7 +13,7 @@ export class Armor extends AbstractEmbeddedItem {
   // }
 
   static preUpdateItem(actor: RqgActor, armor: RqgItem, updates: object[], options: any): void {
-    if (armor.data.type === ItemTypeEnum.Armor) {
+    if (armor.type === ItemTypeEnum.Armor) {
       updates.push(...getSameLocationUpdates(actor, armor, updates));
     }
   }

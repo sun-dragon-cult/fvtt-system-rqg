@@ -90,7 +90,7 @@ export class RqgItem extends Item {
       const isOwnedItem =
         document instanceof RqgItem &&
         document.parent &&
-        Object.values(ItemTypeEnum).includes(document.data.type);
+        Object.values(ItemTypeEnum).includes(document.type);
       if (!isOwnedItem) {
         return true;
       }
@@ -99,7 +99,7 @@ export class RqgItem extends Item {
         ui.notifications?.warn(
           localize("RQG.Item.Notification.ItemNotUnique", {
             actorName: document.parent.name,
-            documentType: document.data.type,
+            documentType: document.type,
             documentName: document.name,
           })
         );
@@ -116,6 +116,8 @@ export class RqgItem extends Item {
     });
   }
 
+  public system: any; // TODO workaround tryout
+
   public async toChat(): Promise<void> {
     if (!this.isEmbedded) {
       const msg = "Item is not embedded";
@@ -123,7 +125,7 @@ export class RqgItem extends Item {
       throw new RqgError(msg, this);
     }
     activateChatTab();
-    await ResponsibleItemClass.get(this.data.type)?.toChat(this);
+    await ResponsibleItemClass.get(this.type)?.toChat(this);
   }
 
   public async abilityRoll(options: {} = {}): Promise<ResultEnum | undefined> {
@@ -133,7 +135,7 @@ export class RqgItem extends Item {
       throw new RqgError(msg, this);
     }
     activateChatTab();
-    return ResponsibleItemClass.get(this.data.type)?.abilityRoll(this, options);
+    return ResponsibleItemClass.get(this.type)?.abilityRoll(this, options);
   }
 
   /**
@@ -200,8 +202,8 @@ export class RqgItem extends Item {
 
   public async awardExperience() {
     if (hasOwnProperty(this.data.data, "hasExperience")) {
-      if (hasOwnProperty(this.data.data, "canGetExperience") && this.data.data.canGetExperience) {
-        if (!this.data.data.hasExperience) {
+      if (hasOwnProperty(this.data.data, "canGetExperience") && this.system.canGetExperience) {
+        if (!this.system.hasExperience) {
           await this.actor?.updateEmbeddedDocuments("Item", [
             { _id: this.id, data: { hasExperience: true } },
           ]);
@@ -275,7 +277,7 @@ export class RqgItem extends Item {
             throw new RqgError(msg, updates);
           }
           // Will update "updates" as a side effect
-          ResponsibleItemClass.get(document.data.type)?.preUpdateItem(
+          ResponsibleItemClass.get(document.type)?.preUpdateItem(
             parent,
             document,
             updates,
@@ -293,7 +295,7 @@ export class RqgItem extends Item {
   private static isDuplicateItem(document: any): boolean {
     return document.parent.items.some(
       (i: RqgItem) =>
-        document.data.type !== ItemTypeEnum.RuneMagic &&
+        document.type !== ItemTypeEnum.RuneMagic &&
         i.name === document.name &&
         i.type === document.type
     );
@@ -301,10 +303,8 @@ export class RqgItem extends Item {
 
   // Validate that embedded runeMagic can be connected to a cult
   private static isRuneMagicWithoutCult(document: any): boolean {
-    const isRuneMagic = document.data.type === ItemTypeEnum.RuneMagic;
-    const actorHasCult = document.parent.items.some(
-      (i: RqgItem) => i.data.type === ItemTypeEnum.Cult
-    );
+    const isRuneMagic = document.type === ItemTypeEnum.RuneMagic;
+    const actorHasCult = document.parent.items.some((i: RqgItem) => i.type === ItemTypeEnum.Cult);
     const okToAdd = !isRuneMagic || !(isRuneMagic && !actorHasCult);
     return !okToAdd;
   }

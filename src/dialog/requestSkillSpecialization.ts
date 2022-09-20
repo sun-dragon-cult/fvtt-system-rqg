@@ -9,21 +9,21 @@ import { concatenateSkillName } from "../items/skill-item/concatenateSkillName";
 export async function requestSkillSpecializationDialog(
   skillItem: RqgItem
 ): Promise<string | undefined> {
-  assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
-  if (skillItem.data.data?.specialization !== "...") {
+  assertItemType(skillItem?.type, ItemTypeEnum.Skill);
+  if (skillItem.system?.specialization !== "...") {
     return; // Not a skill with undefined specialization
   }
 
   const worldLanguage = getGame().settings.get(systemId, "worldLanguage");
   const descriptionJournal = await Rqid.fromRqid(
-    skillItem.data.data.descriptionRqidLink.rqid,
+    skillItem.system.descriptionRqidLink.rqid,
     worldLanguage,
     true
   );
   // @ts-ignore link - fel typ på descriptionJournal?
   const link = descriptionJournal ? TextEditor.enrichHTML(descriptionJournal.link) : "";
   const contentHtml = await renderTemplate("systems/rqg/dialog/requestSkillSpecialization.hbs", {
-    skillName: skillItem.data.data.skillName,
+    skillName: skillItem.system.skillName,
     skillDescriptionLink: link,
   });
 
@@ -58,7 +58,7 @@ export async function requestSkillSpecializationDialog(
           throw new Error(
             localize("RQG.Item.Notification.ItemNotUnique", {
               actorName: skillItem.parent?.name,
-              documentType: skillItem.data.type,
+              documentType: skillItem.type,
               documentName: proposedSkillName,
             })
           );

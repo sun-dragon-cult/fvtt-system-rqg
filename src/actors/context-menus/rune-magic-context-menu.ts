@@ -31,7 +31,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.data.type, ItemTypeEnum.RuneMagic);
+      assertItemType(item?.type, ItemTypeEnum.RuneMagic);
       item.abilityRoll();
     },
   },
@@ -58,7 +58,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.data.type, ItemTypeEnum.RuneMagic);
+      assertItemType(item?.type, ItemTypeEnum.RuneMagic);
       if (!item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the runemagic item from the runemagic context menu.`;
         ui.notifications?.error(msg);

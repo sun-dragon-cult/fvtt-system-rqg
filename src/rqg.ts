@@ -47,11 +47,6 @@ Hooks.once("init", async () => {
   console.log("RQG | Initializing the Runequest Glorantha Game System");
 
   CONFIG.RQG = RQG_CONFIG;
-  // @ts-expect-errors v10
-  if (CONFIG?.compatibility) {
-    // @ts-expect-errors v10 SILENT - no warnings
-    CONFIG.compatibility.mode = CONST.COMPATIBILITY_MODES?.SILENT;
-  }
 
   // CONFIG.debug.hooks = true; // console log when hooks fire
   // CONFIG.debug.time = true; // console log time

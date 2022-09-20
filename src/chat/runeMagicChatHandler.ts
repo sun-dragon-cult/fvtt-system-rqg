@@ -59,18 +59,15 @@ export class RuneMagicChatHandler {
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
     const runeMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.chat.itemUuid);
-    assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
+    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
     const eligibleRunes = RuneMagic.getEligibleRunes(runeMagicItem);
     const { otherModifiers, selectedRuneId, ritualOrMeditation, skillAugmentation } =
       await RuneMagicChatHandler.getFormDataFromFlags(flags);
     const selectedRune = actor.getEmbeddedDocument("Item", selectedRuneId) as RqgItem | undefined;
-    assertItemType(selectedRune?.data.type, ItemTypeEnum.Rune);
+    assertItemType(selectedRune?.type, ItemTypeEnum.Rune);
 
     const chance =
-      Number(selectedRune.data.data.chance) +
-      ritualOrMeditation +
-      skillAugmentation +
-      otherModifiers;
+      Number(selectedRune.system.chance) + ritualOrMeditation + skillAugmentation + otherModifiers;
 
     const ritualOrMeditationOptions: any = {};
     for (let i = 0; i <= 100; i += 5) {
@@ -89,9 +86,9 @@ export class RuneMagicChatHandler {
     const templateData = {
       ...flags,
       eligibleRunes: eligibleRunes,
-      spellRunes: runeMagicItem.data.data.runes,
-      isOneUse: runeMagicItem.data.data.isOneUse,
-      descriptionLink: runeMagicItem.data.data.descriptionRqidLink,
+      spellRunes: runeMagicItem.system.runes,
+      isOneUse: runeMagicItem.system.isOneUse,
+      descriptionLink: runeMagicItem.system.descriptionRqidLink,
       ritualOrMeditationOptions: ritualOrMeditationOptions,
       skillAugmentationOptions: skillAugmentationOptions,
       chance: chance,

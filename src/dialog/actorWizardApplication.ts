@@ -161,7 +161,7 @@ export class ActorWizard extends FormApplication {
       const associatedChoice = rqid && this.choices[rqid];
       if (associatedChoice) {
         // @ts-ignore choice TODO Is choice a temporary property?
-        i.data.data.choice = associatedChoice;
+        i.system.choice = associatedChoice;
       }
     });
 
@@ -186,14 +186,15 @@ export class ActorWizard extends FormApplication {
     if (selectedHomeland?.data?.runeRqidLinks) {
       for (const runeRqidLink of selectedHomeland?.data?.runeRqidLinks) {
         const rune = await Rqid.fromRqid(runeRqidLink.rqid);
-        assertItemType(rune?.data.type, ItemTypeEnum.Rune);
+        // @ts-expect-error type
+        assertItemType(rune?.type, ItemTypeEnum.Rune);
         (rune.data as RuneDataSource).data.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
         (rune.data as RuneDataSource).data.hasExperience = false;
         const associatedChoice = this.choices[runeRqidLink.rqid];
         if (associatedChoice) {
           // put choice on homeland runes for purposes of sheet
           //@ts-ignore choice TODO Is choice a temporary property?
-          rune.data.data.choice = associatedChoice;
+          rune.system.choice = associatedChoice;
         }
         homelandRunes.push(rune as RqgItem); // Already asserted
       }
@@ -206,12 +207,13 @@ export class ActorWizard extends FormApplication {
     if (selectedHomeland?.data?.skillRqidLinks) {
       for (const skillRqidLink of selectedHomeland?.data?.skillRqidLinks) {
         const skill = await Rqid.fromRqid(skillRqidLink.rqid);
-        assertItemType(skill?.data.type, ItemTypeEnum.Skill);
+        // @ts-expect-error type
+        assertItemType(skill?.type, ItemTypeEnum.Skill);
         const associatedChoice = this.choices[skillRqidLink.rqid];
         if (associatedChoice) {
           // put choice on homeland skills for purposes of sheet
           //@ts-ignore choice
-          skill.data.data.choice = associatedChoice;
+          skill.system.choice = associatedChoice;
         }
         if (skillRqidLink.bonus) {
           const skillDataSource = skill.data as SkillDataSource;
@@ -228,7 +230,7 @@ export class ActorWizard extends FormApplication {
     const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
     const skills: any = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
-      skills[cat] = homelandSkills.filter((s: any) => cat === s.data.data.category);
+      skills[cat] = homelandSkills.filter((s: any) => cat === s.system.category);
     });
     // Sort the skills inside each category
     Object.values(skills).forEach((skillList) =>
@@ -242,13 +244,14 @@ export class ActorWizard extends FormApplication {
     if (selectedHomeland?.data?.passionRqidLinks) {
       for (const passionRqidLink of selectedHomeland?.data?.passionRqidLinks) {
         const passion = await Rqid.fromRqid(passionRqidLink.rqid);
-        assertItemType(passion?.data.type, ItemTypeEnum.Passion);
+        // @ts-expect-error type
+        assertItemType(passion?.type, ItemTypeEnum.Passion);
         const associatedChoice = this.choices[passionRqidLink.rqid];
         (passion.data as PassionDataSource).data.hasExperience = false;
         if (associatedChoice) {
           // put choice on homeland passions for purposes of sheet
           //@ts-ignore choice
-          passion.data.data.choice = associatedChoice;
+          passion.system.choice = associatedChoice;
         }
         homelandPassions.push(passion as RqgItem); // Already asserted
       }
@@ -381,18 +384,18 @@ export class ActorWizard extends FormApplication {
       selectedSpeciesId: this.species.selectedSpeciesTemplate?.id ?? undefined,
     });
 
-    const templateChars = this.species.selectedSpeciesTemplate?.data.data.characteristics;
+    const templateChars = this.species.selectedSpeciesTemplate?.system.characteristics;
 
     if (templateChars) {
       const update = {
         data: {
           attributes: {
-            move: this.species.selectedSpeciesTemplate?.data.data.attributes.move,
+            move: this.species.selectedSpeciesTemplate?.system.attributes.move,
           },
           background: {
-            species: this.species.selectedSpeciesTemplate?.data.data.background.species,
+            species: this.species.selectedSpeciesTemplate?.system.background.species,
             speciesRqidLink:
-              this.species.selectedSpeciesTemplate?.data.data.background.speciesRqidLink,
+              this.species.selectedSpeciesTemplate?.system.background.speciesRqidLink,
           },
           characteristics: {
             strength: {

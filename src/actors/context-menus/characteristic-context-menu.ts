@@ -61,7 +61,7 @@ export const characteristicMenuOptions = (
     callback: async (): Promise<RqgActor | undefined> =>
       await actor.update({
         "data.characteristics.power.hasExperience":
-          !actor.data.data.characteristics.power.hasExperience,
+          !actor.system.characteristics.power.hasExperience,
       }),
   },
   {
@@ -81,7 +81,7 @@ export const characteristicMenuOptions = (
       const charName = getDomDataset(el, "characteristic") as keyof Characteristics | undefined;
       requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
-      const characteristic = actor.data.data.characteristics[charName];
+      const characteristic = actor.system.characteristics[charName];
       (characteristic as any).name = charName; // TODO adding extra properties that's not on type Characteristic
       const speakerName = token?.name ?? actor.data.token.name ?? "";
       showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
@@ -100,7 +100,7 @@ export const characteristicMenuOptions = (
       if (confirmed) {
         const updateData = await getCharacteristicUpdate(
           characteristic,
-          actor.data.data.characteristics[characteristic].formula,
+          actor.system.characteristics[characteristic].formula,
           actor.name ?? getGameUser().name ?? ""
         );
         await actor.update(updateData);
@@ -159,10 +159,10 @@ export async function initializeAllCharacteristics(
     return;
   }
 
-  for (const characteristic of Object.keys(actor.data.data.characteristics)) {
+  for (const characteristic of Object.keys(actor.system.characteristics)) {
     const update = await getCharacteristicUpdate(
       characteristic,
-      actor.data.data.characteristics[characteristic as keyof Characteristics].formula,
+      actor.system.characteristics[characteristic as keyof Characteristics].formula,
       silent ? undefined : actor.name ?? getGameUser().name ?? ""
     );
     mergeObject(updateData, update);
@@ -174,15 +174,15 @@ export async function initializeAllCharacteristics(
 /** Sets actor's current hitPoints.value to the hitPoints.max */
 async function initializeCurrentDerivedAttributes(actor: RqgActor) {
   const hpUpdate = {
-    "data.attributes.hitPoints.value": actor.data.data.attributes.hitPoints.max,
-    "data.attributes.magicPoints.value": actor.data.data.attributes.magicPoints.max,
+    "data.attributes.hitPoints.value": actor.system.attributes.hitPoints.max,
+    "data.attributes.magicPoints.value": actor.system.attributes.magicPoints.max,
   };
   await actor.update(hpUpdate);
 }
 
 function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: Characteristic } {
   const characteristicName = getDomDataset(el, "characteristic");
-  const actorCharacteristics: Characteristics = actor.data.data.characteristics;
+  const actorCharacteristics: Characteristics = actor.system.characteristics;
   if (characteristicName && characteristicName in actorCharacteristics) {
     return {
       name: characteristicName,

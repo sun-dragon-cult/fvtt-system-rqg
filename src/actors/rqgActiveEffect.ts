@@ -13,7 +13,7 @@ export class RqgActiveEffect extends ActiveEffect {
   _applyCustom(actor: RqgActor, change: EffectChangeData): any {
     const [affectedItemType, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.armorPoints
     const items: Item[] = actor.items.filter(
-      (i: Item) => i.data.type === affectedItemType && i.data.name === itemName
+      (i: Item) => i.type === affectedItemType && i.data.name === itemName
     );
     if (items.length === 1) {
       // Found one and only one item that should be affected (Happy path)

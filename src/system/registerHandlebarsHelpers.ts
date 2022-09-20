@@ -45,29 +45,27 @@ export const registerHandlebarsHelpers = function () {
     if (!item) {
       return "---";
     }
-    if (item.data.type !== ItemTypeEnum.Skill) {
+    if (item.type !== ItemTypeEnum.Skill) {
       const msg = `Handlebar helper "skillname" called with an item that is not a skill`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, item, actor);
     }
-    const specialization = item.data.data.specialization
-      ? ` (${item.data.data.specialization})`
-      : "";
-    return `${item.data.data.skillName}${specialization}`;
+    const specialization = item.system.specialization ? ` (${item.system.specialization})` : "";
+    return `${item.system.skillName}${specialization}`;
   });
 
   Handlebars.registerHelper("skillchance", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
     const item = actor && actor.items.get(itemId);
     // @ts-ignore chance
-    return item ? item.data.data.chance : "---";
+    return item ? item.system.chance : "---";
   });
 
   Handlebars.registerHelper("experiencedclass", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
     const item = actor && actor.items.get(itemId);
     // @ts-ignore hasExperience
-    return item && item.data.data.hasExperience ? "experienced" : "";
+    return item && item.system.hasExperience ? "experienced" : "";
   });
 
   Handlebars.registerHelper("quantity", (itemId, actorId, tokenId) => {
@@ -81,7 +79,7 @@ export const registerHandlebarsHelpers = function () {
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
-    return item.data.data.quantity;
+    return item.system.quantity;
   });
   Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
     if (!runeName) {
