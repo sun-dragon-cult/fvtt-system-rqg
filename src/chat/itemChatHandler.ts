@@ -71,7 +71,7 @@ export class ItemChatHandler {
     assertChatMessageFlagType(flags.type, "itemChat");
     const item = await getDocumentFromUuid<RqgItem>(flags.chat.itemUuid);
 
-    if (!item || !("chance" in item.data.data) || item.system.chance == null) {
+    if (!item || !("chance" in item.system) || item.system.chance == null) {
       const msg = localize("RQG.Item.Notification.ItemWithIdDoesNotHaveChanceError", {
         itemId: item?.id,
         actorName: item?.parent?.name,

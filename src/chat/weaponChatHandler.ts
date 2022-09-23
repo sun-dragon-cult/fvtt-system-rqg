@@ -72,8 +72,8 @@ export class WeaponChatHandler {
     const usageOptions = WeaponChatHandler.getUsageTypeOptions(weaponItem);
     const templateData = {
       ...flags,
-      skillItemData: skillItem.data.data,
-      weaponItemData: weaponItem.data.data,
+      skillItemData: skillItem.system,
+      weaponItemData: weaponItem.system,
       chatHeading: chatHeading,
       chance: skillItem.system.chance + otherModifiers,
       usageOptions: usageOptions,

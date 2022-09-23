@@ -23,14 +23,14 @@ export class HitLocation extends AbstractEmbeddedItem {
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
-    const actorData = actor.data.data;
+    const actorData = actor.system;
 
     // Add equipped armor absorptions for this hit location
     const armorAbsorption = actor.items.reduce((sum, armorItem) => {
       if (
         armorItem.type === ItemTypeEnum.Armor &&
         armorItem.system.equippedStatus === "equipped" &&
-        armorItem.system.hitLocations.includes(item.data.name)
+        armorItem.system.hitLocations.includes(item.name)
       ) {
         sum += armorItem.system.absorbs;
       }

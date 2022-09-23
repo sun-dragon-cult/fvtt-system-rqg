@@ -81,7 +81,7 @@ export class OccupationSheet extends RqgItemSheet<
       //@ts-ignore dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
-        const occSkills = (this.item.data.data as OccupationDataSourceData).occupationalSkills;
+        const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
             //@ts-ignore value
@@ -108,7 +108,7 @@ export class OccupationSheet extends RqgItemSheet<
       //@ts-ignore dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
-        const occSkills = (this.item.data.data as OccupationDataSourceData).occupationalSkills;
+        const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
             //@ts-ignore checked
@@ -159,8 +159,10 @@ export class OccupationSheet extends RqgItemSheet<
           // Note that if there are duplicate skills, like "Craft (...)",
           // deleting one of them will delete all of them.
           let rqidToDelete = getDomDataset(ev, "delete-occupational-skill-rqid");
-          const thisOccupation = this.item.data.data as OccupationDataSourceData;
-          const occSkills = thisOccupation.occupationalSkills.filter(function (skill) {return skill.skillRqidLink?.rqid !== rqidToDelete});
+          const thisOccupation = this.item.system as OccupationDataSourceData;
+          const occSkills = thisOccupation.occupationalSkills.filter(function (skill) {
+            return skill.skillRqidLink?.rqid !== rqidToDelete;
+          });
 
           if (this.item.isEmbedded) {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
@@ -174,9 +176,8 @@ export class OccupationSheet extends RqgItemSheet<
               "data.occupationalSkills": occSkills,
             });
           }
-
         });
-    });
+      });
   }
 
   private toggleSkillEdit(forceEdit = false) {
@@ -202,8 +203,7 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-
-    const thisOccupation = this.item.data.data as OccupationDataSourceData;
+    const thisOccupation = this.item.system as OccupationDataSourceData;
 
     let droppedDocumentData;
     try {
@@ -245,7 +245,7 @@ export class OccupationSheet extends RqgItemSheet<
         return;
       }
 
-      // Skills require special handling here (rather than in RqgItemSheet) because 
+      // Skills require special handling here (rather than in RqgItemSheet) because
       // we will associate the skill with a bonus
       if (droppedItem.type === ItemTypeEnum.Skill) {
         let droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
@@ -290,7 +290,6 @@ export class OccupationSheet extends RqgItemSheet<
     }
 
     await super._onDrop(event);
-
   }
 }
 

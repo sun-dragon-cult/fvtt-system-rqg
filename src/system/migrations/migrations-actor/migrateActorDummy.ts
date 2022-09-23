@@ -10,7 +10,8 @@ export function migrateActorDummy(actorData: ActorData): ActorUpdate {
     updateData = {
       data: {
         background: {
-          species: (actorData.data.background as any).race,
+          // @ts-expect-errors system ???
+          species: (actorData.background as any).race,
           [`${deleteKeyPrefix}race`]: null,
         },
       },

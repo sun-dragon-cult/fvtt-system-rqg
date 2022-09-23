@@ -47,7 +47,8 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       isEmbedded: this.document.isEmbedded,
       options: this.options,
       data: itemData,
-      armorData: itemData.data,
+      // @ts-expect-errors system
+      armorData: itemData.system,
       sheetSpecific: {
         allHitLocations: getHitLocations(),
         equippedStatuses: [...equippedStatuses],

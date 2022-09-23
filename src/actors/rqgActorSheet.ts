@@ -120,15 +120,15 @@ export class RqgActorSheet extends ActorSheet<
   CharacterSheetData | ActorSheet.Data
 > {
   get title(): string {
-    const linked = this.actor.data.token.actorLink;
+    const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
 
     let prefix = "";
     if (!linked) {
       prefix = isToken ? "[Token] " : "[Prototype] ";
     }
-    const speakerName = isToken ? this.actor.token!.data.name : this.actor.data.token.name;
-    const postfix = isToken ? ` (${this.actor.data.token.name})` : "";
+    const speakerName = isToken ? this.actor.token!.data.name : this.actor.prototypeToken.name;
+    const postfix = isToken ? ` (${this.actor.prototypeToken.name})` : "";
 
     return prefix + speakerName + postfix;
   }
@@ -255,18 +255,18 @@ export class RqgActorSheet extends ActorSheet<
   private getPhysicalItemLocations(): string[] {
     // Used for DataList input dropdown
     const physicalItems: RqgItem[] = this.actor.items.filter((i: RqgItem) =>
-      hasOwnProperty(i.data.data, "physicalItemType")
+      hasOwnProperty(i.system, "physicalItemType")
     );
     return [
       ...new Set([
         // Make a unique list of names of container items and "free text" locations
         ...this.actor.items.reduce((acc: string[], i: RqgItem) => {
-          if (hasOwnProperty(i.data.data, "isContainer") && i.system.isContainer && i.name) {
+          if (hasOwnProperty(i.system, "isContainer") && i.system.isContainer && i.name) {
             acc.push(i.name);
           }
           return acc;
         }, []),
-        ...physicalItems.map((i: RqgItem) => (i.data.data as any).location ?? ""),
+        ...physicalItems.map((i: RqgItem) => (i.system as any).location ?? ""),
       ]),
     ];
   }
@@ -560,7 +560,7 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some(
           (i: RqgItem) =>
             [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(i.type) &&
-            !(i.data.data as any).isNatural // Don't show gear tab for natural weapons
+            !(i.system as any).isNatural // Don't show gear tab for natural weapons
         ),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -584,10 +584,10 @@ export class RqgActorSheet extends ActorSheet<
     const hpTmp = this.actor.system.attributes.hitPoints.value;
     this.actor.system.attributes.hitPoints.value = formData["data.attributes.hitPoints.value"];
 
-    const newHealth = DamageCalculations.getCombinedActorHealth(this.actor.data);
+    const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
     if (newHealth !== this.actor.system.attributes.health) {
       // @ts-ignore wait for foundry-vtt-types issue #1165
-      const speakerName = this.token?.name || this.actor.data.token.name;
+      const speakerName = this.token?.name || this.actor.prototypeToken.name;
       let message;
       if (newHealth === "dead" && !this.actor.effects.find((e) => e.data.label === "dead")) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
@@ -746,7 +746,7 @@ export class RqgActorSheet extends ActorSheet<
 
       el.addEventListener("click", async (ev: MouseEvent) => {
         if (
-          hasOwnProperty(item.data.data, "category") &&
+          hasOwnProperty(item.system, "category") &&
           [
             SkillCategoryEnum.MeleeWeapons,
             SkillCategoryEnum.MissileWeapons,
@@ -869,7 +869,7 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el: HTMLElement) => {
       const sr = getRequiredDomDataset(el, "set-sr");
       let token = this.token as TokenDocument | null;
-      if (!token && this.actor.data.token.actorLink) {
+      if (!token && this.actor.prototypeToken?.actorLink) {
         const activeTokens = this.actor.getActiveTokens();
         token = activeTokens ? activeTokens[0] : null; // TODO Just picks the first token found
       }
@@ -928,7 +928,7 @@ export class RqgActorSheet extends ActorSheet<
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", async () => {
         const item = this.actor.items.get(itemId);
-        if (!item || !("equippedStatus" in item.data.data)) {
+        if (!item || !("equippedStatus" in item.system)) {
           const msg = `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`;
           ui.notifications?.error(msg);
           throw new RqgError(msg);
@@ -957,7 +957,7 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-      const speakerName = (this.token?.name || this.actor.data.token.name) ?? "";
+      const speakerName = (this.token?.name || this.actor.prototypeToken.name) ?? "";
       el.addEventListener("click", () =>
         HitLocationSheet.showAddWoundDialog(this.actor, itemId, speakerName)
       );
@@ -1012,7 +1012,7 @@ export class RqgActorSheet extends ActorSheet<
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
-          let deleteFromProperty = getProperty(this.actor.data.data, deleteFromPropertyName);
+          let deleteFromProperty = getProperty(this.actor.system, deleteFromPropertyName);
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid
@@ -1144,7 +1144,7 @@ export class RqgActorSheet extends ActorSheet<
         newLink.itemType = droppedDocument.type;
       }
 
-      const targetProperty = getProperty(this.actor.data.data, targetPropertyName);
+      const targetProperty = getProperty(this.actor.system, targetPropertyName);
 
       if (targetProperty) {
         event.TargetPropertyName = targetPropertyName;

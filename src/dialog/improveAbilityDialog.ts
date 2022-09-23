@@ -17,7 +17,7 @@ export async function showImproveAbilityDialog(
   item: RqgItem,
   speakerName: string
 ): Promise<void> {
-  const ability = item.data.data as IAbility;
+  const ability = item.system as IAbility;
 
   const adapter: any = {
     showExperience: ability.hasExperience,
@@ -125,14 +125,13 @@ export async function submitImproveAbilityDialog(
     return;
   }
 
-  const abilityData = item.data.data;
+  const abilityData = item.system;
 
   const formData = new FormData(html.find("form")[0]);
   const gaintype = convertFormValueToString(formData.get("experiencegaintype"));
   let gain: number = 0;
 
   if (gaintype === "experience-gain-fixed" || gaintype === "experience-gain-random") {
-    // @ts-expect-error v10
     if (abilityData.hasExperience) {
       let categoryMod: number = adapter.categoryMod || 0;
       const rollFlavor = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.flavor", {
@@ -144,14 +143,12 @@ export async function submitImproveAbilityDialog(
       if (adapter.isSkill) {
         rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentSkill", {
           mod: categoryMod,
-          // @ts-expect-error v10
           skillChance: abilityData.chance,
           name: adapter.name,
           typeLocName: adapter.typeLocName,
         });
       } else {
         rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentOther", {
-          // @ts-expect-error v10
           chance: abilityData.chance,
           name: adapter.name,
           typeLocName: adapter.typeLocName,
@@ -173,7 +170,6 @@ export async function submitImproveAbilityDialog(
       // Gain if the modified d100 roll is greater than (but not equal to) the skill chance, or if the roll is greater than or equal to 100
       if (
         expRoll.total !== undefined &&
-        // @ts-expect-error v10
         (expRoll.total > Number(abilityData.chance) || expRoll.total >= 100)
       ) {
         // increase ability gainedChance, clear experience check
@@ -276,7 +272,6 @@ export async function submitImproveAbilityDialog(
       { _id: item.id, data: { hasExperience: false, gainedChance: newGainedChance } },
     ]);
   } else {
-    // @ts-expect-error v10
     let newChance: number = Number(abilityData.chance) + gain;
     await actor.updateEmbeddedDocuments("Item", [
       { _id: item.id, data: { hasExperience: false, chance: newChance } },

@@ -26,6 +26,7 @@ export class RqgActor extends Actor {
   }
 
   public system: any; // TODO workaround tryout
+  public prototypeToken: any; // TODO workaround tryout
 
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
@@ -115,7 +116,7 @@ export class RqgActor extends Actor {
     attributes.healingRate = RqgCalculations.healingRate(con);
     attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
 
-    attributes.health = DamageCalculations.getCombinedActorHealth(this.data);
+    attributes.health = DamageCalculations.getCombinedActorHealth(this);
   }
 
   private calcMaxEncumbrance(str: number, con: number, carryingFactor: number | undefined): number {
@@ -126,7 +127,7 @@ export class RqgActor extends Actor {
     return Math.round(
       items.reduce((sum: number, item: RqgItem) => {
         if (
-          hasOwnProperty(item.data.data, "equippedStatus") &&
+          hasOwnProperty(item.system, "equippedStatus") &&
           ["carried", "equipped"].includes(item.system.equippedStatus)
         ) {
           const enc = (item.system.quantity ?? 1) * (item.system.encumbrance ?? 0);
@@ -141,7 +142,7 @@ export class RqgActor extends Actor {
     return Math.round(
       items.reduce((sum, item: RqgItem) => {
         if (
-          hasOwnProperty(item.data.data, "physicalItemType") &&
+          hasOwnProperty(item.system, "physicalItemType") &&
           item.system.equippedStatus === "equipped"
         ) {
           const quantity = item.system.quantity ?? 1;

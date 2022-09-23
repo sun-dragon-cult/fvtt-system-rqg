@@ -8,7 +8,7 @@ export function getSameLocationUpdates(
   physicalItem: RqgItem,
   updates: object[]
 ): any[] {
-  if ("isNatural" in physicalItem.data.data && physicalItem.system.isNatural) {
+  if ("isNatural" in physicalItem.system && physicalItem.system.isNatural) {
     return []; // natural weapons don't have location and are excluded from the LocationTree
   }
   const actorObject = actor.toObject();

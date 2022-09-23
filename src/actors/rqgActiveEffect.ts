@@ -13,7 +13,7 @@ export class RqgActiveEffect extends ActiveEffect {
   _applyCustom(actor: RqgActor, change: EffectChangeData): any {
     const [affectedItemType, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.armorPoints
     const items: Item[] = actor.items.filter(
-      (i: Item) => i.type === affectedItemType && i.data.name === itemName
+      (i: Item) => i.type === affectedItemType && i.name === itemName
     );
     if (items.length === 1) {
       // Found one and only one item that should be affected (Happy path)
@@ -29,11 +29,13 @@ export class RqgActiveEffect extends ActiveEffect {
       }
       return changeValue;
     } else if (items.length === 0) {
-      if (this.data.origin && this.data.origin?.split(".")[1] === actor.id) {
+      // @ts-expect-error system
+      if (this.origin && this.origin?.split(".")[1] === actor.id) {
         logMisconfiguration(
           `Could not find any ${affectedItemType} called "${itemName}" on actor "${actor.name}".
                 Please either add a ${affectedItemType} item called "${itemName}" or modify the item that has this active effect`,
-          !this.data.disabled,
+          // @ts-expect-error system
+          !this.disabled,
           change,
           this
         );

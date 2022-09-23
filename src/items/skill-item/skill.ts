@@ -57,33 +57,31 @@ export class Skill extends AbstractEmbeddedItem {
       ui.notifications?.error(msg);
       throw new RqgError(msg, skillItem);
     }
-    const skillData = skillItem.data.data;
+    const skillData = skillItem.system;
     const actor = skillItem.actor!;
     if (actor.type !== ActorTypeEnum.Character) {
       const msg = localize("RQG.Item.Notification.ActorNotCharacterError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, actor);
     }
-    const actorData = actor.data.toObject(false); // FIXME v10 bug ??
-    // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
     // @ts-expect-error system
-    skillData.categoryMod = actorData.data.skillCategoryModifiers![skillItem.system.category];
+    const actorData = actor.toObject(false).system; // TODO Why use toObject ???
+    // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
+    skillData.categoryMod = actorData.skillCategoryModifiers![skillItem.system.category];
 
     let mod = 0;
 
     // Special case for Dodge, Jump & Move Quietly
-    const dex = actorData.data.characteristics.dexterity.value;
+    const dex = actorData.characteristics.dexterity.value;
     const skillRqid = skillItem.getFlag(systemId, documentRqidFlags)?.id;
     if (skillRqid === CONFIG.RQG.skillRqid.dodge) {
-      // @ts-expect-error v10
       Skill.updateBaseChance(skillData, dex * 2);
       mod = -Math.min(
         // mod is equipped ENC modifier
-        actorData.data.attributes.encumbrance?.equipped || 0,
-        actorData.data.attributes.encumbrance?.max || 0
+        actorData.attributes.encumbrance?.equipped || 0,
+        actorData.attributes.encumbrance?.max || 0
       );
     } else if (skillRqid === CONFIG.RQG.skillRqid.jump) {
-      // @ts-expect-error v10
       Skill.updateBaseChance(skillData, dex * 3);
     } else if (skillRqid === CONFIG.RQG.skillRqid.moveQuietly) {
       mod = -Math.max(
@@ -98,11 +96,9 @@ export class Skill extends AbstractEmbeddedItem {
 
     // Calculate the effective skill chance including skill category modifier.
     // If skill base chance is 0 you need to have studied to get an effective chance
-    // @ts-expect-error v10
     skillData.baseChance > 0 || skillData.baseChance + skillData.gainedChance > 0
       ? Math.max(
           0,
-          // @ts-expect-error v10
           skillData.baseChance + skillData.gainedChance + (skillData.categoryMod || 0) + mod
         )
       : 0;

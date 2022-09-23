@@ -101,7 +101,7 @@ export class RqgItemSheet<
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
-          let deleteFromProperty = getProperty(this.item.data.data, deleteFromPropertyName);
+          let deleteFromProperty = getProperty(this.item.system, deleteFromPropertyName);
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid
@@ -132,7 +132,7 @@ export class RqgItemSheet<
         const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
         el.addEventListener("change", async () => {
           console.log("CHANGE!", editRqid, editPropertyName);
-          let updateProperty = getProperty(this.item.data.data, editPropertyName);
+          let updateProperty = getProperty(this.item.system, editPropertyName);
           if (Array.isArray(updateProperty)) {
             const updateRqidLink = (updateProperty as RqidLink[]).find(
               (rqidLink) => rqidLink.rqid === editRqid
@@ -225,7 +225,7 @@ export class RqgItemSheet<
         newLink.itemType = droppedDocument.type;
       }
 
-      const targetProperty = getProperty(this.item.data.data, targetPropertyName);
+      const targetProperty = getProperty(this.item.system, targetPropertyName);
 
       if (targetProperty) {
         (event as RqidLinkDragEvent).TargetPropertyName = targetPropertyName;

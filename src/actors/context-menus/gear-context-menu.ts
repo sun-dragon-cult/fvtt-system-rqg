@@ -37,7 +37,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       return (
-        hasOwnProperty(item?.data.data, "physicalItemType") &&
+        hasOwnProperty(item?.system, "physicalItemType") &&
         item?.system.physicalItemType !== "unique"
       );
     },

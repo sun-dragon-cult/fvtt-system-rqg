@@ -74,7 +74,7 @@ export const registerHandlebarsHelpers = function () {
     if (!item) {
       return "---";
     }
-    if (!hasOwnProperty(item.data.data, "quantity")) {
+    if (!hasOwnProperty(item.system, "quantity")) {
       const msg = `Handlebar helper quantity was called with an item without quantity propery`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);

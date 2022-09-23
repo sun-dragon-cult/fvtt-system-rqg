@@ -1,6 +1,6 @@
 import { DamageCalculations } from "./damageCalculations";
 import { mockActor as mockActorOriginal } from "../mocks/mockActor";
-import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import { RqgActor } from "../actors/rqgActor";
 
 describe("Inflict Damage", () => {
   let mockActor: any;
@@ -684,18 +684,18 @@ export function applyTestDamage(
   damage: number,
   applyDamageToTotalHp: boolean,
   hitLocationData: any,
-  actorData: ActorData
+  actor: RqgActor
 ) {
   const damageEffects = DamageCalculations.addWound(
     damage,
     true,
     hitLocationData,
-    actorData,
+    actor,
     "Pelle Plutt"
   );
   mergeObject(hitLocationData, damageEffects.hitLocationUpdates);
-  mergeObject(actorData, damageEffects.actorUpdates);
-  actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);
+  mergeObject(actor, damageEffects.actorUpdates);
+  actor.system.attributes.health = DamageCalculations.getCombinedActorHealth(actor);
   hitLocationData.data.hitPoints.value =
     hitLocationData.data.hitPoints.max! -
     hitLocationData.data.wounds.reduce((acc: number, val: number) => acc + val, 0);

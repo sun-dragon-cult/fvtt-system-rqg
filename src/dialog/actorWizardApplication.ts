@@ -467,7 +467,7 @@ export class ActorWizard extends FormApplication {
       }
       if (i.type === ItemTypeEnum.Rune || i.type === ItemTypeEnum.Passion) {
         // Rune or Passion
-        const ability = i.data.data as IAbility;
+        const ability = i.system as IAbility;
         if (this.choices[rqidFlags.id] === undefined) {
           // Adding a new choice that hasn't existed before so it should be checked.
           this.choices[rqidFlags.id] = new CreationChoice();
@@ -615,7 +615,7 @@ export class ActorWizard extends FormApplication {
                   });
               }
               if (actorItem.type === ItemTypeEnum.Rune || actorItem.type === ItemTypeEnum.Passion) {
-                const existingAbility = actorItem.data.data as IAbility;
+                const existingAbility = actorItem.system as IAbility;
                 const newChance = this.choices[key].totalValue();
                 if (existingAbility.chance !== newChance) {
                   updates.push({

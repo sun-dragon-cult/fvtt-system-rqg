@@ -35,7 +35,7 @@ export class Rune extends AbstractEmbeddedItem {
     runeItem: RqgItem,
     options: { modifier: number }
   ): Promise<ResultEnum | undefined> {
-    const chance: number = Number((runeItem?.data.data as any).chance) || 0;
+    const chance: number = Number((runeItem?.system as any).chance) || 0;
     let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: runeItem.name });
     if (options.modifier && options.modifier !== 0) {
       flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {

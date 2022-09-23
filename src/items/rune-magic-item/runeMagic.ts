@@ -176,7 +176,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
               cultRuneNames.includes(i.name ?? "")))
       )
       // @ts-ignore r is a runeItem TODO rewrite as reduce
-      .map((r: RqgItem) => r.data.chance);
+      .map((r: RqgItem) => r.system.chance);
     return Math.max(...runeChances);
   }
 
@@ -314,8 +314,8 @@ export class RuneMagic extends AbstractEmbeddedItem {
       return undefined;
     }
     return runeMagicItems.reduce((strongest: RqgItem, current: RqgItem) => {
-      const strongestRuneChance = (strongest.data.data as RuneDataPropertiesData).chance ?? 0;
-      const currentRuneChance = (current.data.data as RuneDataPropertiesData).chance ?? 0;
+      const strongestRuneChance = (strongest.system as RuneDataPropertiesData).chance ?? 0;
+      const currentRuneChance = (current.system as RuneDataPropertiesData).chance ?? 0;
       return strongestRuneChance > currentRuneChance ? strongest : current;
     });
   }

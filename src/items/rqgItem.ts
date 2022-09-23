@@ -195,14 +195,14 @@ export class RqgItem extends Item {
   }
 
   public async checkExperience(result: ResultEnum | undefined): Promise<void> {
-    if (result && result <= ResultEnum.Success && !(this.data.data as any).hasExperience) {
+    if (result && result <= ResultEnum.Success && !(this.system as any).hasExperience) {
       await this.awardExperience();
     }
   }
 
   public async awardExperience() {
-    if (hasOwnProperty(this.data.data, "hasExperience")) {
-      if (hasOwnProperty(this.data.data, "canGetExperience") && this.system.canGetExperience) {
+    if (hasOwnProperty(this.system, "hasExperience")) {
+      if (hasOwnProperty(this.system, "canGetExperience") && this.system.canGetExperience) {
         if (!this.system.hasExperience) {
           await this.actor?.updateEmbeddedDocuments("Item", [
             { _id: this.id, data: { hasExperience: true } },

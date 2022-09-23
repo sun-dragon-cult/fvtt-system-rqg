@@ -167,7 +167,7 @@ export class HitLocationSheet extends RqgItemSheet<
         damage,
         applyDamageToTotalHp,
         hitLocation.data,
-        actor.data,
+        actor,
         speakerName
       );
 
@@ -270,7 +270,7 @@ export class HitLocationSheet extends RqgItemSheet<
       healPoints,
       healWoundIndex,
       hitLocation.data,
-      actor.data
+      actor
     );
 
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));

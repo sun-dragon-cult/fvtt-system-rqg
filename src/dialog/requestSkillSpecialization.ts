@@ -48,7 +48,7 @@ export async function requestSkillSpecializationDialog(
         }
 
         const proposedSkillName = concatenateSkillName(
-          (skillItem.data.data as any).skillName, // TODO typing
+          (skillItem.system as any).skillName, // TODO typing
           requestedSpecialization
         );
         const notUnique = skillItem.parent?.items.contents.some(
