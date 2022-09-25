@@ -83,7 +83,7 @@ export const characteristicMenuOptions = (
 
       const characteristic = actor.system.characteristics[charName];
       (characteristic as any).name = charName; // TODO adding extra properties that's not on type Characteristic
-      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      const speakerName = token?.name ?? actor.prototypeToken.name ?? "";
       showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
     },
   },

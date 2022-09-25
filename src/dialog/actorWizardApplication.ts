@@ -235,7 +235,7 @@ export class ActorWizard extends FormApplication {
     // Sort the skills inside each category
     Object.values(skills).forEach((skillList) =>
       (skillList as RqgItem[]).sort((a: RqgItem, b: RqgItem) =>
-        ("" + a.data.name).localeCompare(b.data.name)
+        ("" + a.name).localeCompare("" + b.name)
       )
     );
     itemTypes[ItemTypeEnum.Skill] = skills;

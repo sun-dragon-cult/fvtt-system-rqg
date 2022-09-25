@@ -96,12 +96,13 @@ export class Skill extends AbstractEmbeddedItem {
 
     // Calculate the effective skill chance including skill category modifier.
     // If skill base chance is 0 you need to have studied to get an effective chance
-    skillData.baseChance > 0 || skillData.baseChance + skillData.gainedChance > 0
-      ? Math.max(
-          0,
-          skillData.baseChance + skillData.gainedChance + (skillData.categoryMod || 0) + mod
-        )
-      : 0;
+    skillData.chance =
+      skillData.baseChance > 0 || skillData.baseChance + skillData.gainedChance > 0
+        ? Math.max(
+            0,
+            skillData.baseChance + skillData.gainedChance + (skillData.categoryMod || 0) + mod
+          )
+        : 0;
     return skillItem;
   }
 

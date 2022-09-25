@@ -31,7 +31,7 @@ export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("itemname", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
     const item = actor && actor.items.get(itemId);
-    return item ? item.data.name : "---";
+    return item ? item.name : "---";
   });
 
   Handlebars.registerHelper("localizeitemtype", (typeName) => {

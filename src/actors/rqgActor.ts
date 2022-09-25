@@ -1,5 +1,5 @@
 import { RqgCalculations } from "../system/rqgCalculations";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgItem } from "../items/rqgItem";
@@ -12,6 +12,7 @@ import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/
 import { systemId } from "../system/config";
 import { ResultEnum } from "../data-model/shared/ability";
 import { Rqid } from "../system/api/rqidApi";
+import { PrototypeTokenData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 export class RqgActor extends Actor {
   static init() {
@@ -24,9 +25,8 @@ export class RqgActor extends Actor {
       makeDefault: true,
     });
   }
-
-  public system: any; // TODO workaround tryout
-  public prototypeToken: any; // TODO workaround tryout
+  public system!: CharacterDataPropertiesData; // v10 type workaround
+  public prototypeToken!: PrototypeTokenData; // v10 type workaround
 
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
@@ -171,7 +171,7 @@ export class RqgActor extends Actor {
     effectsOriginUpdates.length &&
       this.updateEmbeddedDocuments("ActiveEffect", effectsOriginUpdates);
 
-    if (!this.data.token.actorLink) {
+    if (!this.prototypeToken.actorLink) {
       initializeAllCharacteristics(this, true);
     }
   }

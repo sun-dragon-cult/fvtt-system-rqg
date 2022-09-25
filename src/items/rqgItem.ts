@@ -234,11 +234,8 @@ export class RqgItem extends Item {
       "defaultItemIconSettings"
     );
     const item = data._id ? getGame().items?.get(data._id) : undefined;
-    // @ts-expect-errors Foundry v10 vs v9 default icon
-    const defaultIcon = foundry?.documents?.BaseItem?.DEFAULT_ICON
-      ? // @ts-expect-errors Foundry v10 vs v9 default icon
-        foundry.documents.BaseItem.DEFAULT_ICON
-      : foundry.data.ItemData.DEFAULT_ICON;
+    // @ts-expect-errors Foundry v10
+    const defaultIcon = foundry.documents.BaseItem.DEFAULT_ICON;
 
     if (item?.data.img === defaultIcon) {
       const updateData: any = {

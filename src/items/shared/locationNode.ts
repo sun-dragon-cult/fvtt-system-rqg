@@ -26,12 +26,16 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
     equippedStatus: "notCarried",
     price: defaultPriceData,
   };
-  const physicalItemDatas = itemDatas.filter((i) => hasOwnProperty(i.data, "physicalItemType"));
+  // @ts-expect-error system
+  const physicalItemDatas = itemDatas.filter((i) => hasOwnProperty(i.system, "physicalItemType"));
   let physicalItemNodes: LocationNode[] = physicalItemDatas
-    .filter((itemData) => !(itemData.type === ItemTypeEnum.Weapon && itemData.data.isNatural))
-    .map((itemData) => {
+    .filter(
+      // TODO v10 any
+      (itemData: any) => !(itemData.type === ItemTypeEnum.Weapon && itemData.system.isNatural)
+    ) // TODO v10 any
+    .map((itemData: any) => {
       const itemLocation =
-        (hasOwnProperty(itemData.data, "location") && itemData.data.location) || "";
+        (hasOwnProperty(itemData.system, "location") && itemData.system.location) || "";
       // Placing an item inside itself is not allowed - count it as root level
       let location = itemLocation === itemData.name ? "" : itemLocation;
       if (hasLoop(itemData, physicalItemDatas)) {
@@ -44,10 +48,10 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       }
       const containingItem = physicalItemDatas.find(
         // @ts-ignore
-        (p) => itemData.data.location && p.name === itemData.data.location
+        (p) => itemData.system.location && p.name === itemData.system.location
       );
       // @ts-ignore
-      if (containingItem && !containingItem.data.isContainer) {
+      if (containingItem && !containingItem.system.isContainer) {
         ui.notifications?.warn(
           localize("RQG.Item.Notification.ItemIsNotContainerWarning", {
             itemName: containingItem.name,
@@ -59,16 +63,16 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
         name: itemData.name,
         id: itemData._id,
         location: location,
-        description: (itemData.data as any).description,
-        gmNotes: (itemData.data as any).gmNotes,
-        attunedTo: (itemData.data as any).attunedTo,
+        description: (itemData.system as any).description,
+        gmNotes: (itemData.system as any).gmNotes,
+        attunedTo: (itemData.system as any).attunedTo,
         contains: [],
-        isContainer: (itemData.data as any).isContainer,
-        physicalItemType: (itemData.data as any).physicalItemType,
-        encumbrance: (itemData.data as any).encumbrance,
-        equippedStatus: (itemData.data as any).equippedStatus,
-        quantity: (itemData.data as any).quantity || 1,
-        price: (itemData.data as any).price,
+        isContainer: (itemData.system as any).isContainer,
+        physicalItemType: (itemData.system as any).physicalItemType,
+        encumbrance: (itemData.system as any).encumbrance,
+        equippedStatus: (itemData.system as any).equippedStatus,
+        quantity: (itemData.system as any).quantity || 1,
+        price: (itemData.system as any).price,
       };
     });
 
@@ -86,7 +90,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
       return acc;
     }, new Map());
 
-  const virtualNodes: LocationNode[] = [...virtualNodesMap].map(([i, node]) => {
+  const virtualNodes: LocationNode[] = [...virtualNodesMap].map(([_, node]) => {
     return {
       name: node.location,
       id: "",
@@ -143,15 +147,26 @@ function searchTree(node: LocationNode, location: string): LocationNode | null {
 
 function hasLoop(initialItem: ItemDataSource, physicalItems: ItemDataSource[]): boolean {
   let currentItem = physicalItems.find(
-    (i) => hasOwnProperty(i.data, "location") && initialItem.name === i.data.location
+    // @ts-expect-error system
+    (i) => hasOwnProperty(i.system, "location") && initialItem.name === i.system.location
   );
   let isLoop: boolean = false;
-  while (hasOwnProperty(currentItem?.data, "location") && currentItem?.data?.location && !isLoop) {
+  while (
+    // @ts-expect-error system
+    hasOwnProperty(currentItem?.system, "location") &&
+    // @ts-expect-error system
+    currentItem?.system?.location &&
+    !isLoop
+  ) {
     isLoop =
-      hasOwnProperty(initialItem.data, "location") &&
-      initialItem.data.location === currentItem?.name;
+      // @ts-expect-error system
+      hasOwnProperty(initialItem.system, "location") &&
+      // @ts-expect-error system
+      initialItem.system.location === currentItem?.name;
     currentItem = physicalItems.find(
-      (i) => hasOwnProperty(currentItem?.data, "location") && i.name === currentItem?.data.location
+      (i) =>
+        // @ts-expect-error system
+        hasOwnProperty(currentItem?.system, "location") && i.name === currentItem?.system.location
     );
   }
   return isLoop;

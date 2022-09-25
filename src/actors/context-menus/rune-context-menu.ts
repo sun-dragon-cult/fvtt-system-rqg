@@ -60,7 +60,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.Rune);
-      const speakerName = token?.name ?? actor.data.token.name ?? "";
+      const speakerName = token?.name ?? actor.prototypeToken.name ?? "";
       showImproveAbilityDialog(actor, itemId, item, speakerName);
     },
   },

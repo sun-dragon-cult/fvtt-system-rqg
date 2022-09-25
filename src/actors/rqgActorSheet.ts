@@ -127,7 +127,7 @@ export class RqgActorSheet extends ActorSheet<
     if (!linked) {
       prefix = isToken ? "[Token] " : "[Prototype] ";
     }
-    const speakerName = isToken ? this.actor.token!.data.name : this.actor.prototypeToken.name;
+    const speakerName = isToken ? this.actor.token!.name : this.actor.prototypeToken.name;
     const postfix = isToken ? ` (${this.actor.prototypeToken.name})` : "";
 
     return prefix + speakerName + postfix;
@@ -158,12 +158,13 @@ export class RqgActorSheet extends ActorSheet<
   /* -------------------------------------------- */
 
   getData(): CharacterSheetData | ActorSheet.Data {
-    const actorData = this.document.data.toObject(false);
+    const actorData = this.document.toObject(false);
     assertActorType(actorData.type, ActorTypeEnum.Character);
 
     const isOwner: boolean = this.document.isOwner;
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
-    const dexStrikeRank = actorData.data.attributes.dexStrikeRank;
+    // @ts-expect-error system
+    const dexStrikeRank = actorData.system.attributes.dexStrikeRank;
 
     return {
       cssClass: isOwner ? "editable" : "locked",
@@ -173,16 +174,17 @@ export class RqgActorSheet extends ActorSheet<
       owner: isOwner,
       title: this.title,
 
-      data: actorData,
-      characterData: actorData.data,
+      data: actorData, // TODO Why have both data & characterData???
+      // @ts-expect-error system
+      characterData: actorData.system,
 
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
       ownedItems: RqgActorSheet.organizeOwnedItems(this.actor),
 
       spiritCombatSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.spiritCombat)
-        ?.data,
-      dodgeSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.dodge)?.data,
+        ?.system,
+      dodgeSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.dodge)?.system,
 
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
@@ -195,7 +197,8 @@ export class RqgActorSheet extends ActorSheet<
       freeInt: this.getFreeInt(spiritMagicPointSum),
       baseStrikeRank: this.getBaseStrikeRank(
         dexStrikeRank,
-        actorData.data.attributes.sizStrikeRank
+        // @ts-expect-error system
+        actorData.system.attributes.sizStrikeRank
       ),
 
       // Lists for dropdown values
@@ -286,13 +289,17 @@ export class RqgActorSheet extends ActorSheet<
       this.actor.effects &&
       this.actor.effects
         .filter(
-          (e) =>
-            e.data.changes.find((e) => e.key === "data.attributes.magicPoints.max") !== undefined
+          (
+            e: any // TODO v10 any
+          ) =>
+            e.system.changes.find((e: any) => e.key === "data.attributes.magicPoints.max") !==
+            undefined
         )
-        .map((e) => {
+        // TODO v10 any
+        .map((e: any) => {
           return {
-            name: e.data.label,
-            size: e.data.changes
+            name: e.system.label,
+            size: e.system.changes
               .filter((c: any) => c.key === "data.attributes.magicPoints.max")
               .reduce((acc: number, c: any) => acc + Number(c.value), 0),
           };
@@ -354,61 +361,69 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   private getCharacterElementRuneImgs(): RuneDataSource[] {
-    return this.actor.items
-      .reduce((acc: RuneDataSource[], i: RqgItem) => {
-        if (
-          i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Element &&
-          !!i.system.chance
-        ) {
-          acc.push(i.data as RuneDataSource);
-        }
-        return acc;
-      }, [])
-      .sort((a: RuneDataSource, b: RuneDataSource) => b.data.chance - a.data.chance);
+    return (
+      this.actor.items
+        .reduce((acc: RuneDataSource[], i: RqgItem) => {
+          if (
+            i.type === ItemTypeEnum.Rune &&
+            i.system.runeType === RuneTypeEnum.Element &&
+            !!i.system.chance
+          ) {
+            acc.push(i.system as RuneDataSource);
+          }
+          return acc;
+        }, [])
+        // @ts-expect-error v10
+        .sort((a: RuneDataSource, b: RuneDataSource) => b.chance - a.chance)
+    );
   }
 
   private getCharacterPowerRuneImgs(): RuneDataSource[] {
-    return this.actor.items
-      .reduce((acc: RuneDataSource[], i: RqgItem) => {
-        if (
-          i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Power &&
-          i.system.chance > 50
-        ) {
-          acc.push(i.data as RuneDataSource);
-        }
-        return acc;
-      }, [])
-      .sort((a: RuneDataSource, b: RuneDataSource) => b.data.chance - a.data.chance);
+    return (
+      this.actor.items
+        .reduce((acc: RuneDataSource[], i: RqgItem) => {
+          if (
+            i.type === ItemTypeEnum.Rune &&
+            i.system.runeType === RuneTypeEnum.Power &&
+            i.system.chance > 50
+          ) {
+            acc.push(i.system as RuneDataSource);
+          }
+          return acc;
+        }, [])
+        // @ts-expect-error v10
+        .sort((a: RuneDataSource, b: RuneDataSource) => b.chance - a.chance)
+    );
   }
 
   private getCharacterFormRuneImgs(): RuneDataSource[] {
-    return this.actor.items
-      .reduce((acc: RuneDataSource[], i: RqgItem) => {
-        if (
-          i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Form &&
-          (!i.system.opposingRune || i.system.chance > 50)
-        ) {
-          acc.push(i.data as RuneDataSource);
-        }
-        return acc;
-      }, [])
-      .sort((a: RuneDataSource, b: RuneDataSource) => b.data.chance - a.data.chance);
+    return (
+      this.actor.items
+        .reduce((acc: RuneDataSource[], i: RqgItem) => {
+          if (
+            i.type === ItemTypeEnum.Rune &&
+            i.system.runeType === RuneTypeEnum.Form &&
+            (!i.system.opposingRune || i.system.chance > 50)
+          ) {
+            acc.push(i.system as RuneDataSource);
+          }
+          return acc;
+        }, [])
+        // @ts-expect-error v10
+        .sort((a: RuneDataSource, b: RuneDataSource) => b.chance - a.chance)
+    );
   }
 
   private getSkillDataByName(name: String): SkillDataProperties | undefined {
     const skillItem = this.actor.items.find(
-      (i: RqgItem) => i.data.name === name && i.type === ItemTypeEnum.Skill
+      (i: RqgItem) => i.name === name && i.type === ItemTypeEnum.Skill
     );
 
     if (!skillItem) {
       return;
     }
     assertItemType(skillItem.type, ItemTypeEnum.Skill);
-    // @ts-expect-error v10
-    return skillItem.data;
+    return skillItem.system;
   }
 
   /**
@@ -448,7 +463,7 @@ export class RqgActorSheet extends ActorSheet<
     // Sort the skills inside each category
     Object.values(skills).forEach((skillList) =>
       (skillList as RqgItem[]).sort((a: RqgItem, b: RqgItem) =>
-        ("" + a.data.name).localeCompare(b.data.name)
+        ("" + a.name).localeCompare("" + b.name)
       )
     );
     itemTypes[ItemTypeEnum.Skill] = skills;
@@ -589,12 +604,14 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-ignore wait for foundry-vtt-types issue #1165
       const speakerName = this.token?.name || this.actor.prototypeToken.name;
       let message;
-      if (newHealth === "dead" && !this.actor.effects.find((e) => e.data.label === "dead")) {
+      // TODO v10 any
+      if (newHealth === "dead" && !this.actor.effects.find((e: any) => e.system.label === "dead")) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
       }
       if (
         newHealth === "unconscious" &&
-        !this.actor.effects.find((e) => e.data.label === "unconscious")
+        // TODO v10 any
+        !this.actor.effects.find((e: any) => e.system.label === "unconscious")
       ) {
         message = `${speakerName} faints from lack of hitpoints!`;
       }
@@ -1302,7 +1319,7 @@ export class RqgActorSheet extends ActorSheet<
       sourceActor: sourceActor,
       targetActor: this.actor,
       // @ts-ignore quantity
-      showQuantity: incomingItemDataSource.data.quantity > 1,
+      showQuantity: incomingItemDataSource.system.quantity > 1,
     };
 
     const content: string = await renderTemplate(
@@ -1366,7 +1383,8 @@ export class RqgActorSheet extends ActorSheet<
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
       return false;
     }
-    if (!incomingItemDataSource.data.hasOwnProperty("quantity")) {
+    // @ts-expect-error system TODO bug?
+    if (!incomingItemDataSource.system.hasOwnProperty("quantity")) {
       ui.notifications?.error(
         localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError")
       );
@@ -1377,7 +1395,7 @@ export class RqgActorSheet extends ActorSheet<
       return false;
     }
     // @ts-ignore quantity
-    if (quantityToTransfer > incomingItemDataSource.data.quantity) {
+    if (quantityToTransfer > incomingItemDataSource.system.quantity) {
       ui.notifications?.error(
         localize("RQG.Actor.Notification.CantTransferMoreThanSourceOwnsError", {
           itemName: incomingItemDataSource.name,
@@ -1395,7 +1413,7 @@ export class RqgActorSheet extends ActorSheet<
     // @ts-ignore quantity
     let newTargetQty = quantityToTransfer;
     // @ts-ignore quantity
-    const newSourceQty = Number(incomingItemDataSource.data.quantity) - quantityToTransfer;
+    const newSourceQty = Number(incomingItemDataSource.system.quantity) - quantityToTransfer;
 
     if (existingItem) {
       // Target actor has an item of this type with the same name
@@ -1420,7 +1438,7 @@ export class RqgActorSheet extends ActorSheet<
     } else {
       // Target actor does not have an item of this type with the same name
       // @ts-ignore quantity
-      incomingItemDataSource.data.quantity = newTargetQty;
+      incomingItemDataSource.system.quantity = newTargetQty;
       const targetCreate = await this._onDropItemCreate(incomingItemDataSource);
       if (targetCreate) {
         if (newSourceQty > 0) {
