@@ -1,16 +1,12 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form autocomplete="off">
   <header class="item-sheet-header">
-
-    <div class="item-sheet-header-img">
-      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
-    </div>
-
-    <div class="name-parts-2">
-      <div>
-        <label for="name-{{data._id}}">{{localize "RQG.Item.Passion.Name"}}</label>
-        <select id="name-{{data._id}}" name="data.passion">
-          {{#select passionData.passion}}
-            {{#each sheetSpecific.passionTypes}}
+    <img src="{{img}}" title="{{name}}" />
+    <div class="property-line">
+      <div class="label-above">
+        <label for="passion-{{id}}">{{localize "RQG.Item.Passion.Name"}}</label><br>
+        <select id="passion-{{id}}" name="system.passion">
+          {{#select system.passion}}
+            {{#each passionTypes}}
               <option
                 value="{{localize (concat 'RQG.Item.Passion.PassionEnum.' this)}}"
               >{{this}}</option>
@@ -19,86 +15,68 @@
         </select>
       </div>
 
-      <div class="paren-head">
-        <label for="subject-{{data._id}}">{{localize "RQG.Item.Passion.Subject"}}</label>
+      <div class="label-above parens">
+        <label for="subject-{{id}}">{{localize "RQG.Item.Passion.Subject"}}</label>
         <div>
-          ( <input type="text" id="subject-{{data._id}}" name="data.subject" value="{{passionData.subject}}"> )
+          (<input type="text" id="subject-{{id}}" name="system.subject" value="{{system.subject}}">)
         </div>
       </div>
     </div>
-
   </header>
 
   <main>
-
-
     {{!-- Sheet Tab Navigation --}}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="passion">{{localize "RQG.Item.SheetTab.Passion"}}</a>
+      <a class="item" data-tab="backstory">{{localize "RQG.Item.Passion.BackStory"}}</a>
       {{#if isGM}}
-      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
+        <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GMNotes"}}</a>
       {{/if}}
     </nav>
 
     <section class="sheet-body">
       {{!-- Passion Tab --}}
       <div class="tab" data-group="primary" data-tab="passion">
-
         <div class="item-sheet-properties">
-
-          <label for="chance-{{data._id}}">{{localize "RQG.Item.Passion.Chance"}}</label>
+          <label for="chance-{{id}}">{{localize "RQG.Item.Passion.Chance"}}</label>
           <div>
             <input
+              id="chance-{{id}}"
+              name="system.chance"
+              value="{{system.chance}}"
               type="number"
-              id="chance-{{data._id}}"
-              name="data.chance"
               min="0"
               max="999"
-              {{#if passionData.hasExperience}}class="experienced"{{/if}}
-              value="{{passionData.chance}}">
-            %
+              {{#if system.hasExperience}}class="experienced"{{/if}}> %
           </div>
 
-          <label for="has-experience-{{data._id}}">{{localize "RQG.Item.Passion.HasExperienceQ"}}</label>
+          <label for="has-experience-{{id}}">{{localize "RQG.Item.Passion.HasExperienceQ"}}</label>
           <input
-            type="checkbox"
-            name="data.hasExperience"
-            id="has-experience-{{data._id}}"
-            {{checked passionData.hasExperience}}>
-
-          <label class="editor-label">{{localize "RQG.Item.Passion.BackStory"}}</label>
-          <div class="editor-container">
-            {{editor
-              content=passionData.description
-              target="data.description"
-              button=true
-              owner=owner
-              editable=editable
-            }}
-          </div>
-
+            id="has-experience-{{id}}"
+            name="system.hasExperience"
+            {{checked system.hasExperience}}
+            type="checkbox">
         </div>
+      </div>
 
+      {{!-- Backstory Tab --}}
+      <div class="tab" data-group="primary" data-tab="backstory">
+        {{editor
+          enrichedDescription
+          target="system.description"
+          button=true
+          editable=isEditable
+        }}
       </div>
 
       {{!-- GM Tab --}}
       <div class="tab" data-group="primary" data-tab="gm">
-
-        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=passionData.gmNotes target="data.gmNotes"
-          button=true owner=owner editable=editable}}
-        </label>
-      </div>
-
-      {{!-- Active Effects Tab --}}
-      <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
-
+        {{editor
+          enrichedGmNotes
+          target="system.gmNotes"
+          button=true
+          editable=isEditable}}
       </div>
     </section>
-
   </main>
-
 </form>

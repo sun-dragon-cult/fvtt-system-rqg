@@ -1,47 +1,43 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form autocomplete="off">
   <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" title="{{name}}" />
 
-    <div class="item-sheet-header-img">
-      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
-    </div>
+    <div class="flex-column gap03rem">
+      <div class="property-line">
 
-    <div class="name-parts-2-equal" data-target-drop-property="homelandJournalRqidLink">
-      <div>
-        <label for="homeland-{{data._id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
-        <input type="text"
-            id="homeland-{{data._id}}"
-            name="data.homeland"
-            value="{{homelandData.homeland}}">
-      </div>
+        <div class="label-above" data-target-drop-property="homelandJournalRqidLink">
+          <label for="homeland-{{id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
+          <input type="text"
+                 id="homeland-{{id}}"
+                 name="system.homeland"
+                 value="{{system.homeland}}">
+          {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+            rqidLink=system.homelandJournalRqidLink
+            parentField="homelandJournalRqidLink"
+            dropTypes="JournalEntry"
+            showDeleteFromPropertyName="homelandJournalRqidLink"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+          }}
+        </div>
 
-      <div class="paren-head" data-target-drop-property="regionJournalRqidLink">
-        <label for="region-{{data._id}}">{{localize "RQG.Item.Homeland.Region"}}</label>
-        <div>
-          ( <input type="text" id="region-{{data._id}}" name="data.region" value="{{homelandData.region}}"> )
+        <div class="label-above parens" data-target-drop-property="regionJournalRqidLink">
+          <label for="region-{{id}}">{{localize "RQG.Item.Homeland.Region"}}</label>
+          <div>
+            ( <input type="text" id="region-{{id}}" name="system.region" value="{{system.region}}"> )
+          </div>
+
+          {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+            rqidLink=system.regionJournalRqidLink
+            parentField="regionJournalRqidLink"
+            dropTypes="JournalEntry"
+            showDeleteFromPropertyName="regionJournalRqidLink"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+          }}
         </div>
       </div>
     </div>
-
-    <div class="name-parts-2-equal">
-      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-          rqidLink=homelandData.homelandJournalRqidLink
-          parentField="homelandJournalRqidLink"
-          dropTypes="JournalEntry"
-          showDeleteFromPropertyName="homelandJournalRqidLink"
-          showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-      }}
-
-      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-          rqidLink=homelandData.regionJournalRqidLink
-          parentField="regionJournalRqidLink"
-          dropTypes="JournalEntry"
-          showDeleteFromPropertyName="regionJournalRqidLink"
-          showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-      }}
-    </div>
-
   </header>
 
   <main>
@@ -49,12 +45,7 @@
     {{!-- Sheet Tab Navigation --}}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="homeland">{{localize "RQG.Item.SheetTab.Homeland"}}</a>
-      {{#if isGM}}
-      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
-      {{/if}}
+      <a class="item" data-tab="wizardInstructions">{{localize "RQG.Item.SheetTab.WizardInstructions"}}</a>
     </nav>
 
     <section class="sheet-body">
@@ -65,7 +56,7 @@
 
           <label>{{localize "RQG.Item.Homeland.CultureJournalEntries"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=homelandData.cultureJournalRqidLinks
+            rqidLinkArray=system.cultureJournalRqidLinks
             parentField="cultureJournalRqidLinks"
             dropTypes="JournalEntry"
             showDeleteFromPropertyName="cultureJournalRqidLinks"
@@ -74,7 +65,7 @@
 
           <label>{{localize "RQG.Item.Homeland.TribeJournalEntries"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=homelandData.tribeJournalRqidLinks
+            rqidLinkArray=system.tribeJournalRqidLinks
             parentField="tribeJournalRqidLinks"
             dropTypes="JournalEntry"
             showDeleteFromPropertyName="tribeJournalRqidLinks"
@@ -83,7 +74,7 @@
 
           <label>{{localize "RQG.Item.Homeland.ClanJournalEntries"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=homelandData.clanJournalRqidLinks
+            rqidLinkArray=system.clanJournalRqidLinks
             parentField="clanJournalRqidLinks"
             dropTypes="JournalEntry"
             showDeleteFromPropertyName="clanJournalRqidLinks"
@@ -92,7 +83,7 @@
 
           <label>{{localize "RQG.Item.Homeland.CultLinks"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=homelandData.cultRqidLinks
+            rqidLinkArray=system.cultRqidLinks
             parentField="cultRqidLinks"
             dropTypes="cult"
             showDeleteFromPropertyName="cultRqidLinks"
@@ -101,7 +92,7 @@
 
           <label>{{localize "RQG.Item.Homeland.SkillLinks"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=homelandData.skillRqidLinks
+            rqidLinkArray=system.skillRqidLinks
             parentField="skillRqidLinks"
             dropTypes="skill"
             showDeleteFromPropertyName="skillRqidLinks"
@@ -112,7 +103,7 @@
 
           <label>{{localize "RQG.Item.Homeland.RuneLinks"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=homelandData.runeRqidLinks
+            rqidLinkArray=system.runeRqidLinks
             parentField="runeRqidLinks"
             dropTypes="rune"
             showDeleteFromPropertyName="runeRqidLinks"
@@ -121,38 +112,24 @@
 
           <label>{{localize "RQG.Item.Homeland.PassionLinks"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=homelandData.passionRqidLinks
+            rqidLinkArray=system.passionRqidLinks
             parentField="passionRqidLinks"
             dropTypes="passion"
             showDeleteFromPropertyName="passionRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectPassion"
           }}
-
-          <label class="editor-label">{{localize "RQG.Item.Homeland.WizardInstructions"}}</label>
-          <div class="editor-container">
-            {{editor content=homelandData.wizardInstructions target="data.wizardInstructions"
-              button=true owner=owner editable=editable}}
-          </div>
-
         </div>
-
       </div>
 
-      {{!-- GM Tab --}}
-      <div class="tab" data-group="primary" data-tab="gm">
-
-        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=homelandData.gmNotes target="data.gmNotes"
-          button=true owner=owner editable=editable}}
-        </label>
-      </div>
-
-      {{!-- Active Effects Tab --}}
-      <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
-
+      {{!-- Description Tab --}}
+      <div class="tab" data-group="primary" data-tab="wizardInstructions">
+        {{editor
+          enrichedWizardInstructions
+          target="system.wizardInstructions"
+          button=true
+          editable=isEditable
+        }}
       </div>
     </section>
-
   </main>
-
 </form>

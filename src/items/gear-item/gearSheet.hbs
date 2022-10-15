@@ -1,68 +1,67 @@
-<form class="{{cssClass}}" autocomplete="off">
-  <header class="sheet-header">
-    <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}">
-    <input type="text" name="name" value="{{data.name}}">
+<form autocomplete="off">
+  <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" title="{{name}}">
+    <div class="label-above">
+      <label for="name-{{id}}">{{localize "RQG.Item.Gear.Name"}}</label>
+      <input id="name-{{id}}" type="text" name="name" value="{{name}}">
+    </div>
   </header>
 
   <main>
-
-
     {{!-- Sheet Tab Navigation --}}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="gear">{{localize "RQG.Item.SheetTab.Gear"}}</a>
       <a class="item" data-tab="description">{{localize "RQG.Item.SheetTab.Description"}}</a>
       {{#if isGM}}
-      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
+        <a class="item" data-tab="gm">{{localize 'RQG.Item.SheetTab.GMNotes'}}</a>
+        {{#unless isEmbedded}}
+          <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+        {{/unless}}
       {{/if}}
     </nav>
 
     <section class="sheet-body">
+
       {{!-- Gear Tab --}}
       <div class="tab" data-group="primary" data-tab="gear">
         <div class="item-sheet-properties">
 
-          <label for="data.isContainer">{{localize "RQG.Item.Gear.IsContainerQ"}}</label>
-          <input type="checkbox" name="data.isContainer" {{checked gearData.isContainer}}>
+          <label for="isContainer-{{id}}">{{localize "RQG.Item.Gear.IsContainerQ"}}</label>
+          <input type="checkbox" id="isContainer-{{id}}" name="system.isContainer" {{checked system.isContainer}}>
 
-          <label for="data.physicalItemType">{{localize "RQG.Item.Gear.ItemType"}}</label>
-          <select name="data.physicalItemType">
-            {{#select gearData.physicalItemType}} {{#each sheetSpecific.physicalItemTypes}}
+          <label for="physicalItemType-{{id}}">{{localize "RQG.Item.Gear.ItemType"}}</label>
+          <select name="system.physicalItemType" id="physicalItemType-{{id}}">
+            {{#select system.physicalItemType}} {{#each physicalItemTypes}}
             <option value="{{this}}">{{localize (concat "RQG.Item.Gear.PhysicalItemTypeEnum." this)}}</option>
             {{/each}} {{/select}}
           </select>
 
-          {{#unless (eq gearData.physicalItemType "unique")}}
-          <label for="data.quantity">{{localize "RQG.Item.Gear.Quantity"}}</label>
-          <input name="data.quantity" type="number" min="0" max="9999999" value="{{gearData.quantity}}">
+          {{#unless (eq system.physicalItemType "unique")}}
+          <label for="quantity-{{id}}">{{localize "RQG.Item.Gear.Quantity"}}</label>
+          <input id="quantity-{{id}}" name="system.quantity" type="number" min="0" max="9999999" value="{{system.quantity}}">
           {{/unless}}
 
+          {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"}}
         </div>
-
-
-        {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"
-          itemData=gearData
-        }}
-
       </div>
-
 
       {{!-- Description Tab --}}
       <div class="tab" data-group="primary" data-tab="description">
-
-        <label>{{localize "RQG.Item.Gear.Description"}} {{editor content=gearData.description target="data.description"
-          button=true owner=owner editable=editable}}
-        </label><br>
+        {{editor
+          enrichedDescription
+          target="system.description"
+          button=true
+          editable=isEditable
+        }}
       </div>
 
       {{!-- GM Tab --}}
       <div class="tab" data-group="primary" data-tab="gm">
-
-        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=gearData.gmNotes target="data.gmNotes"
-          button=true owner=owner editable=editable}}
-        </label>
+        {{editor
+          enrichedGmNotes
+          target="system.gmNotes"
+          button=true
+          editable=isEditable}}
       </div>
 
       {{!-- Active Effects Tab --}}

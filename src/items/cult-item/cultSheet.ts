@@ -1,37 +1,27 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
-  CultDataProperties,
-  CultDataPropertiesData,
-  CultRankEnum,
-} from "../../data-model/item-data/cultData";
-import {
-  assertItemType,
-  getAvailableRunes,
-  getGameUser,
-  AvailableRuneCache,
-} from "../../system/util";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { CultRankEnum } from "../../data-model/item-data/cultData";
+import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
+import { ItemSheetData } from "../shared/sheetInterfaces";
 
-interface CultSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: CultDataProperties; // Actually contains more...complete with effects, flags etc
-  cultData: CultDataPropertiesData;
-  sheetSpecific: {
-    allRunes: AvailableRuneCache[];
-    journalEntryName: string;
-    ranksEnum: CultRankEnum[];
-  };
+interface CultSheetData {
+  allRunes: AvailableRuneCache[];
+  ranksEnum: CultRankEnum[];
+  enrichedGifts: string;
+  enrichedGeases: string;
+  enrichedSubCults: string;
+  enrichedHolyDays: string;
 }
 
 export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.Cult],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
       template: "systems/rqg/items/cult-item/cultSheet.hbs",
       width: 450,
-      height: 650,
+      height: 500,
       tabs: [
         {
           navSelector: ".item-sheet-nav-tabs",
@@ -42,39 +32,37 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     });
   }
 
-  getData(): CultSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.Cult);
-
-    const cultData = itemData.data;
-    cultData.runes = Array.isArray(cultData.runes) ? cultData.runes : [cultData.runes];
+  async getData(): Promise<CultSheetData & ItemSheetData> {
+    const system = duplicate(this.document.system);
+    system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
 
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
+      isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      cultData: itemData.data,
-      sheetSpecific: {
-        allRunes: getAvailableRunes(),
-        journalEntryName: cultData.descriptionRqidLink.name,
-        ranksEnum: Object.values(CultRankEnum),
-      },
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      system: system,
+      // @ts-expect-error async
+      enrichedGifts: await TextEditor.enrichHTML(system.gifts, { async: true }),
+      // @ts-expect-error async
+      enrichedGeases: await TextEditor.enrichHTML(system.geases, { async: true }),
+      // @ts-expect-error async
+      enrichedSubCults: await TextEditor.enrichHTML(system.subCults, { async: true }),
+      // @ts-expect-error async
+      enrichedHolyDays: await TextEditor.enrichHTML(system.holyDays, { async: true }),
+      allRunes: getAvailableRunes(),
+      // journalEntryName: system.descriptionRqidLink.name,
+      ranksEnum: Object.values(CultRankEnum),
     };
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
-    let runes = formData["data.runes"];
+    let runes = formData["system.runes"];
     runes = Array.isArray(runes) ? runes : [runes];
     runes = runes.filter((r: any) => r); // Remove empty
-    formData["data.runes"] = duplicate(runes);
+    formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
 

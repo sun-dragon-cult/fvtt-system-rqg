@@ -1,60 +1,53 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { GearDataProperties, GearDataPropertiesData } from "../../data-model/item-data/gearData";
 import { equippedStatuses, physicalItemTypes } from "../../data-model/item-data/IPhysicalItem";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { assertItemType, getGameUser } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
+import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
+import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 
-interface GearSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: GearDataProperties; // Actually contains more...complete with effects, flags etc
-  gearData: GearDataPropertiesData;
-
-  sheetSpecific: {
-    equippedStatuses: typeof equippedStatuses;
-    physicalItemTypes: typeof physicalItemTypes;
-  };
+interface GearSheetData {
+  enrichedDescription: string;
+  enrichedGmNotes: string;
+  equippedStatuses: typeof equippedStatuses;
+  physicalItemTypes: typeof physicalItemTypes;
 }
 
 export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.Gear],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Gear],
       template: "systems/rqg/items/gear-item/gearSheet.hbs",
-      width: 420,
-      height: 580,
+      width: 450,
+      height: 500,
       tabs: [
         { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "gear" },
       ],
     });
   }
 
-  getData(): GearSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.Gear);
+  async getData(): Promise<GearSheetData & EffectsItemSheetData> {
+    const system = duplicate(this.document.system);
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      gearData: itemData.data,
-      sheetSpecific: {
-        equippedStatuses: [...equippedStatuses],
-        physicalItemTypes: [...physicalItemTypes],
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      isEmbedded: this.document.isEmbedded,
+      isEditable: this.isEditable,
+      system: system,
+      effects: this.document.effects,
+      // @ts-expect-error async
+      enrichedDescription: await TextEditor.enrichHTML(system.description, { async: true }),
+      // @ts-expect-error async
+      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes, { async: true }),
+      equippedStatuses: [...equippedStatuses],
+      physicalItemTypes: [...physicalItemTypes],
     };
   }
 
   protected async _updateObject(event: Event, formData: any): Promise<any> {
-    if (formData[`data.physicalItemType`] === "unique") {
-      formData[`data.quantity`] = 1;
+    if (formData[`system.physicalItemType`] === "unique") {
+      formData[`system.quantity`] = 1;
     }
     return super._updateObject(event, formData);
   }

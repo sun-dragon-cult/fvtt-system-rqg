@@ -2,7 +2,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { RqgItemSheet } from "../RqgItemSheet";
 import {
   assertItemType,
   getGameUser,
@@ -10,82 +10,77 @@ import {
   localize,
   uuid2Name,
 } from "../../system/util";
-import {
-  damageType,
-  WeaponDataProperties,
-  WeaponDataPropertiesData,
-} from "../../data-model/item-data/weaponData";
+import { damageType } from "../../data-model/item-data/weaponData";
 import { Weapon } from "./weapon";
 import { systemId } from "../../system/config";
+import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 
-interface WeaponSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: WeaponDataProperties; // Actually contains more...complete with effects, flags etc
-  weaponData: WeaponDataPropertiesData;
-  sheetSpecific: {
-    defaultCombatManeuverNames: string[];
-    damageTypes: string[];
-    weaponSkills: any[];
-    /** For showing the name of the linked skill if the item isn't owned */
-    skillNames: any;
-    equippedStatuses: string[];
-    rateOfFire: { [label: string]: number };
-    ownedProjectiles: RqgItem[];
-  };
+interface WeaponSheetData {
+  defaultCombatManeuverNames: string[];
+  damageTypes: string[];
+  weaponSkills: any[];
+  /** For showing the name of the linked skill if the item isn't owned */
+  skillNames: any;
+  equippedStatuses: string[];
+  rateOfFire: { [label: string]: number };
+  ownedProjectiles: RqgItem[];
 }
 
 export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.Weapon],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Weapon],
       template: "systems/rqg/items/weapon-item/weaponSheet.hbs",
       width: 960,
       height: 800,
+      dragDrop: [
+        {
+          dragSelector: ".item",
+          dropSelector: "[data-dropzone]",
+        },
+      ],
       tabs: [
         { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "weapon" },
       ],
     });
   }
 
-  getData(): WeaponSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.Weapon);
-    const weaponData = itemData.data;
-    if (isNaN(Number(weaponData.quantity))) {
-      weaponData.quantity = 1;
+  async getData(): Promise<WeaponSheetData & EffectsItemSheetData> {
+    const system = duplicate(this.document.system);
+
+    if (isNaN(Number(system.quantity))) {
+      system.quantity = 1;
     }
 
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      weaponData: weaponData,
-      sheetSpecific: {
-        defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).map((cm) =>
-          localize(`RQG.Item.Weapon.combatManeuver.${cm}`)
-        ),
-        damageTypes: Object.values(damageType),
-        weaponSkills: this.getWeaponSkills(),
-        skillNames: this.getSkillNames(),
-        equippedStatuses: [...equippedStatuses],
-        ownedProjectiles: this.getOwnedProjectiles(),
-        rateOfFire: {
-          "S/MR": 0,
-          "1/MR": 1,
-          "1/2MR": 2,
-          "1/3MR": 3,
-          "1/4MR": 4,
-          "1/5MR": 5,
-        },
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      isEmbedded: this.document.isEmbedded,
+      isEditable: this.isEditable,
+      system: system,
+      effects: this.document.effects,
+      // @ts-expect-error async
+      enrichedDescription: await TextEditor.enrichHTML(system.description, { async: true }),
+      // @ts-expect-error async
+      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes, { async: true }),
+      defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).map((cm) =>
+        localize(`RQG.Item.Weapon.combatManeuver.${cm}`)
+      ),
+      damageTypes: Object.values(damageType),
+      weaponSkills: this.getWeaponSkills(),
+      skillNames: this.getSkillNames(),
+      equippedStatuses: [...equippedStatuses],
+      ownedProjectiles: this.getOwnedProjectiles(),
+      rateOfFire: {
+        "S/MR": 0,
+        "1/MR": 1,
+        "1/2MR": 2,
+        "1/3MR": 3,
+        "1/4MR": 4,
+        "1/5MR": 5,
+      },
     };
   }
 
@@ -154,68 +149,71 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   }
 
   protected async _updateObject(event: Event, formData: any): Promise<any> {
-    formData["data.usage.oneHand.combatManeuvers"] = this.getUsageCombatManeuvers(
+    formData["system.usage.oneHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "oneHand",
       formData
     );
-    formData["data.usage.offHand.combatManeuvers"] = this.getUsageCombatManeuvers(
+    formData["system.usage.offHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "offHand",
       formData
     );
-    formData["data.usage.twoHand.combatManeuvers"] = this.getUsageCombatManeuvers(
+    formData["system.usage.twoHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "twoHand",
       formData
     );
-    formData["data.usage.missile.combatManeuvers"] = this.getUsageCombatManeuvers(
+    formData["system.usage.missile.combatManeuvers"] = this.getUsageCombatManeuvers(
       "missile",
       formData
     );
 
     this.copyOneHandData2offHand(formData);
 
-    formData["data.rate"] = Number(formData["data.rate"]);
+    formData["system.rate"] = Number(formData["system.rate"]);
 
-    formData["data.physicalItemType"] =
-      formData["data.isProjectile"] || formData["data.isThrownWeapon"] ? "consumable" : "unique";
+    formData["system.physicalItemType"] =
+      formData["system.isProjectile"] || formData["system.isThrownWeapon"]
+        ? "consumable"
+        : "unique";
 
-    if (formData["data.physicalItemType"] === "unique") {
-      formData["data.quantity"] = 1;
+    if (formData["system.physicalItemType"] === "unique") {
+      formData["system.quantity"] = 1;
     }
 
     // Non projectile weapons should not decrease any projectile quantity (remove link)
-    if (!formData["data.isProjectileWeapon"] && !formData["data.isThrownWeapon"]) {
-      formData["data.projectileId"] = "";
+    if (!formData["system.isProjectileWeapon"] && !formData["system.isThrownWeapon"]) {
+      formData["system.projectileId"] = "";
     }
 
     // Thrown weapons should decrease quantity of themselves
-    if (formData["data.isThrownWeapon"]) {
-      formData["data.projectileId"] = this.item.id;
+    if (formData["system.isThrownWeapon"]) {
+      formData["system.projectileId"] = this.item.id;
     }
 
-    if (formData["data.hitPointLocation"]) {
-      formData["data.hitPoints.value"] = "";
-      formData["data.hitPoints.max"] = "";
+    if (formData["system.hitPointLocation"]) {
+      formData["system.hitPoints.value"] = "";
+      formData["system.hitPoints.max"] = "";
     }
 
     return super._updateObject(event, formData);
   }
 
   private copyOneHandData2offHand(formData: any): void {
-    formData["data.usage.offHand.combatManeuvers"] = formData["data.usage.oneHand.combatManeuvers"];
-    formData["data.usage.offHand.damage"] = formData["data.usage.oneHand.damage"];
-    formData["data.usage.offHand.minStrength"] = formData["data.usage.oneHand.minStrength"];
-    formData["data.usage.offHand.minDexterity"] = formData["data.usage.oneHand.minDexterity"];
-    formData["data.usage.offHand.strikeRank"] = formData["data.usage.oneHand.strikeRank"];
+    formData["system.usage.offHand.combatManeuvers"] =
+      formData["system.usage.oneHand.combatManeuvers"];
+    formData["system.usage.offHand.damage"] = formData["system.usage.oneHand.damage"];
+    formData["system.usage.offHand.minStrength"] = formData["system.usage.oneHand.minStrength"];
+    formData["system.usage.offHand.minDexterity"] = formData["system.usage.oneHand.minDexterity"];
+    formData["system.usage.offHand.strikeRank"] = formData["system.usage.oneHand.strikeRank"];
   }
 
   private getUsageCombatManeuvers(usage: string, formData: any): any[] {
-    const usageNames = formData[`data.usage.${usage}.combatManeuvers.name`];
+    const usageNames = formData[`system.usage.${usage}.combatManeuvers.name`];
     const usageCombatManueversNames = Array.isArray(usageNames) ? usageNames : [usageNames];
 
     const usageCombatManeuvers = usageCombatManueversNames.reduce((acc, name, i) => {
       if (name) {
         const dmgType =
-          formData[`data.usage.${usage}.combatManeuvers.damageTypes`] ??
+          formData[`system.usage.${usage}.combatManeuvers.damageTypes`] ??
           CONFIG.RQG.combatManeuvers.get(name)?.defaultDamageType;
 
         const damageTypes = Array.isArray(dmgType) ? dmgType : [dmgType];
@@ -226,7 +224,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
             ? damageTypes[i]
             : CONFIG.RQG.combatManeuvers.get(name)?.defaultDamageType;
 
-        const desc = formData[`data.usage.${usage}.combatManeuvers.description`];
+        const desc = formData[`system.usage.${usage}.combatManeuvers.description`];
         const descriptions = Array.isArray(desc) ? desc : [desc];
         const description = descriptions.length > i ? descriptions[i] : "";
         acc.push({
@@ -247,35 +245,44 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
+    const that = this;
+
+    // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
     html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
-      elem.addEventListener("drop", this._onDrop.bind(this));
-      elem.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
-        dropzone && dropzone.classList.add("drag-hover");
-      });
-      elem.addEventListener("dragenter", (e) => {
-        e.preventDefault();
-        const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
-        dropzone && dropzone.classList.add("drag-hover");
-      });
-      elem.addEventListener("dragleave", (e) => {
-        e.preventDefault();
-        const dropzone = (e.target as HTMLElement)?.closest("[data-dropzone]");
-        dropzone && dropzone.classList.remove("drag-hover");
-      });
+      elem.addEventListener("dragenter", that._onDragEnter);
+      elem.addEventListener("dragleave", that._onDragLeave);
     });
 
     html[0].querySelectorAll<HTMLElement>("[data-delete-skill]").forEach((elem) => {
       elem.addEventListener("click", async () => {
         const use = getRequiredDomDataset(elem, "delete-skill");
-        await this.item.update({ [`data.usage.${use}.skillOrigin`]: "" });
+        await this.item.update({ [`system.usage.${use}.skillOrigin`]: "" });
       });
     });
   }
 
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    await super._onDrop(event);
+  _onDragEnter(event: DragEvent): void {
+    const dropZone = event.currentTarget as Element | null; // Target the event handler was attached to
+    const relatedTarget = event.relatedTarget as Element | null; // EventTarget the pointer exited from
+
+    if ((dropZone && dropZone === relatedTarget) || dropZone?.contains(relatedTarget)) {
+      event.preventDefault();
+      dropZone.classList.add("drag-hover");
+    }
+  }
+
+  _onDragLeave(event: DragEvent): void {
+    const dropZone = event.currentTarget as Element | null; // Target the event handler was attached to
+    const relatedTarget = event.relatedTarget as Element | null; // EventTarget the pointer exited from
+    // Workaround for Chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=68629
+    const sameShadowDom = dropZone?.getRootNode() === relatedTarget?.getRootNode();
+    if (sameShadowDom && !dropZone?.contains(relatedTarget)) {
+      event.preventDefault();
+      dropZone && dropZone.classList.remove("drag-hover");
+    }
+  }
+
+  async _onDrop(event: DragEvent): Promise<void> {
     const usage = getRequiredDomDataset(event, "dropzone");
     const dropzone = (event.target as HTMLElement)?.closest("[data-dropzone]");
     dropzone && dropzone.classList.remove("drag-hover");
@@ -301,12 +308,12 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
           assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
           const embeddedSkillId = await Weapon.embedLinkedSkill("", originSkillId, this.actor!);
           await this.item.update({
-            [`data.usage.${usage}.skillId`]: embeddedSkillId,
-            [`data.usage.${usage}.skillOrigin`]: originSkillId,
+            [`system.usage.${usage}.skillId`]: embeddedSkillId,
+            [`system.usage.${usage}.skillOrigin`]: originSkillId,
           });
         } else {
           await this.item.update({
-            [`data.usage.${usage}.skillOrigin`]: originSkillId,
+            [`system.usage.${usage}.skillOrigin`]: originSkillId,
           });
         }
       } else {

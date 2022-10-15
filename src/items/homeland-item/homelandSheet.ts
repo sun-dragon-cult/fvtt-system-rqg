@@ -1,18 +1,11 @@
-import {
-  HomelandDataProperties,
-  HomelandDataPropertiesData,
-  HomelandDataSourceData,
-} from "../../data-model/item-data/homelandData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertItemType, getDomDataset, getGameUser, localize } from "../../system/util";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { getGameUser } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
+import { ItemSheetData } from "../shared/sheetInterfaces";
 
-export interface HomelandSheetData extends RqgItemSheetData {
-  isEmbedded: boolean; // There might be no reason to actually embed Homeland items!
-  data: HomelandDataProperties;
-  homelandData: HomelandDataPropertiesData;
-  sheetSpecific: {};
+export interface HomelandSheetData {
+  enrichedWizardInstructions: string;
 }
 
 export class HomelandSheet extends RqgItemSheet<
@@ -21,10 +14,10 @@ export class HomelandSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.Homeland],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Homeland],
       template: "systems/rqg/items/homeland-item/homelandSheet.hbs",
-      width: 550,
-      height: 850,
+      width: 500,
+      height: 650,
       tabs: [
         {
           navSelector: ".item-sheet-nav-tabs",
@@ -35,30 +28,27 @@ export class HomelandSheet extends RqgItemSheet<
     });
   }
 
-  getData(): HomelandSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.Homeland);
+  async getData(): Promise<HomelandSheetData & ItemSheetData> {
+    const system = duplicate(this.document.system);
 
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      homelandData: itemData.data,
-      sheetSpecific: {},
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
+      isEditable: this.isEditable,
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      system: system,
+      isEmbedded: this.document.isEmbedded,
+      enrichedWizardInstructions: await TextEditor.enrichHTML(system.wizardInstructions, {
+        // @ts-expect-error async
+        async: true,
+      }),
     };
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    const region = formData["data.region"] ? ` (${formData["data.region"]})` : "";
-    const newName = formData["data.homeland"] + region;
+    const region = formData["system.region"] ? ` (${formData["system.region"]})` : "";
+    const newName = formData["system.homeland"] + region;
     if (newName) {
       // If there's nothing in the homeland or region, don't rename
       formData["name"] = newName;

@@ -1,5 +1,6 @@
 @use "variables";
 @use "dialog/rqidEditor/rqidEditor";
+@use "items/itemsheets";
 
 body {
   background-attachment: fixed !important;
@@ -672,14 +673,20 @@ body {
   }
 
   .editor {
-    margin-top: 10px;
+    height: auto;
+    min-height: 100px;
+    margin: 10px auto;
+    min-width: 100%;
+
+    .editor-content {
+      max-width: 100vw; // Make sure the edit button always is viewable
+    }
+  }
+  .tox.tox-tinymce {
+    min-height: 200px;
   }
 
-  .editor,
-  .editor-content {
-    min-height: 5rem;
-    width: 100%;
-    max-width: 80vw;
+  &.character.sheet .editor-content {
     box-shadow: var(--rqg-box-shadow-editor-content);
   }
 
@@ -1029,6 +1036,7 @@ body {
 .rqg.sheet {
   input {
     width: inherit;
+    background-color: #ffffff10;
   }
 }
 
@@ -1120,244 +1128,8 @@ body {
   }
 }
 
-// Tabbed Navigation for Item Sheets
 
-.item-sheet-nav-tabs {
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  margin-bottom: 0.25rem;
 
-  .item {
-    font-weight: bold;
-    white-space: nowrap;
-    padding: 0.25rem;
-  }
-
-  .item.active {
-    background-color: black;
-    color: white;
-  }
-
-  .item.wider {
-    flex: 1.3 1 0;
-  }
-
-  .item.narrower {
-    flex: 0.7 1 0;
-  }
-}
-
-.item-sheet-properties {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-gap: 0.5em;
-  align-items: center;
-  padding: 0 0 0.5em 0;
-
-  & .editor-label,
-  & .editor-container {
-    text-align: start;
-    grid-column: 1 / 3;
-  }
-
-  & .input-button {
-    display: flex;
-
-    & input {
-      width: 100%;
-    }
-
-    & a {
-      padding: 5px;
-    }
-  }
-
-  & .drop-target {
-    display: inline-grid;
-    align-content: center;
-  }
-}
-
-.item-sheet-properties label {
-  font-weight: bold;
-  display: block;
-  text-align: right;
-}
-
-.item-sheet-properties input[type="number"] {
-  text-align: right;
-  width: 75px;
-}
-
-.item-sheet-properties input.short {
-  width: 75px;
-}
-
-.item-sheet-properties span.number {
-  text-align: right;
-  width: 75px;
-}
-
-.item-sheet-properties div.rune-property {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-gap: 0.5em;
-
-  &.rune-group {
-    border: 1px black solid;
-    padding: 0.5rem;
-  }
-
-  & img {
-    mix-blend-mode: normal;
-  }
-}
-
-.item-sheet-rqid-link {
-  display: block;
-}
-
-.item-sheet-rqid-link i.fa-info-circle {
-  padding: 0 0 0 7px;
-}
-
-.item-sheet-header {
-  display: grid;
-  grid-template-columns: 6rem auto;
-  grid-gap: 0.5em;
-  align-items: center;
-  padding: 0 0 0.5em 0;
-}
-
-.item-sheet-header-img {
-  // width: 6rem;
-  grid-row: 1 / 3;
-}
-
-.item-sheet-header .name-number {
-  display: grid;
-  grid-template-columns: auto 75px;
-  align-items: center;
-  grid-gap: 0.5em;
-}
-
-.item-sheet-header .name-parts-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: center;
-  grid-gap: 0.5em;
-}
-
-.item-sheet-header .name-parts-2 {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  align-items: center;
-  grid-gap: 0.5em;
-}
-
-.item-sheet-header .name-parts-2-equal {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  grid-gap: 0.5em;
-}
-
-.name-number input[type="text"],
-.name-parts-3 input[type="text"],
-.name-parts-2 input[type="text"],
-.name-parts-2 select,
-.name-parts-2-equal input[type="text"],
-.name-parts-2-equal select,
-.name-parts-3 select {
-  width: 100%;
-}
-
-.paren-head {
-  align-items: center;
-}
-
-.paren-head label {
-  margin-left: 0.5rem;
-}
-
-.paren-head div {
-  display: inline-flex;
-  align-items: center;
-}
-
-.paren-head input[type="text"],
-.paren-head select {
-  text-align: center;
-  width: 90%;
-  margin: 0.25rem;
-}
-
-.paren-head input[type="number"] {
-  text-align: center;
-  width: 50px;
-  margin: 0.25rem;
-}
-
-.skill-sheet-grid {
-  display: grid;
-  grid-template-columns: 1fr 0.25fr 1fr 1fr 1fr;
-  grid-gap: 0.5rem;
-  align-items: center;
-  text-align: center;
-  padding: 0 0 0.5em 0;
-
-  & label {
-    font-weight: bold;
-  }
-
-  & .skill {
-    font-weight: bold;
-    font-size: xx-large;
-  }
-}
-
-.drop-target {
-  border: 1px dotted black;
-  min-height: 2rem;
-
-  & a {
-    margin: 0.25rem;
-    width: fit-content;
-  }
-}
-
-.occupationalSkill {
-  border: 1px green dashed;
-  padding: 0.25rem;
-  margin: 0.25rem;
-  width: 100%;
-  display: flex;
-  column-gap: 0.5em;
-  align-items: baseline;
-
-  & input[type="number"] {
-    width: 45px;
-  }
-
-  & div{
-    display: flex;
-    align-items: baseline;
-  }
-}
-
-.incomeSkill {
-  font-weight: bold;
-  font-style: italic;
-  background-image: linear-gradient( to bottom right, #bcc6cc, #eee, #bcc6cc);
-}
-
-.incomeSkillText {
-  font-weight: bold;
-  font-style: italic;
-}
 
 .rqidlink {
   vertical-align: middle;

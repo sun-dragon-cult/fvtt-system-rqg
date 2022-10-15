@@ -1,42 +1,39 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form autocomplete="off">
   <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" title="{{name}}">
 
-    <div class="item-sheet-header-img">
-      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
-    </div>
-
-    <div class="name-parts-3">
-      <div>
-        <label for="name-{{data._id}}">{{localize "RQG.Item.Armor.NamePrefix"}}</label>
-        <input type="text" id="name-{{data._id}}" name="data.namePrefix" value="{{armorData.namePrefix}}">
+    <div class="property-line">
+      <div class="label-above">
+        <label for="name-{{id}}">{{localize "RQG.Item.Armor.NamePrefix"}}</label>
+        <input type="text" id="name-{{id}}" name="system.namePrefix" value="{{system.namePrefix}}">
       </div>
 
-      <div>
-        <label for="armor-type-{{data._id}}">{{localize "RQG.Item.Armor.ArmorTypeLabel"}}</label>
-        <input type="text" id="armor-type-{{data._id}}" name="data.armorType" value="{{armorData.armorType}}" list="armorTypeNames">
+      <div class="label-above">
+        <label for="armor-type-{{id}}">{{localize "RQG.Item.Armor.ArmorTypeLabel"}}</label>
+        <input type="text" id="armor-type-{{id}}" name="system.armorType" value="{{system.armorType}}"
+               list="armorTypeNames">
       </div>
 
-      <div class="paren-head">
-        <label for="material-{{data._id}}">{{localize "RQG.Item.Armor.Material"}}</label>
+      <div class="label-above parens long">
+        <label for="material-{{id}}">{{localize "RQG.Item.Armor.Material"}}</label>
         <div>
-          ( <input type="text" id="material-{{data._id}}" name="data.material" value="{{armorData.material}}" list="materialNames"> )
+          (<input type="text" id="material-{{id}}" name="system.material" value="{{system.material}}"
+                   list="materialNames">)
         </div>
       </div>
     </div>
 
   </header>
   <main>
-
-
     {{!-- Sheet Tab Navigation --}}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="armor">{{localize "RQG.Item.SheetTab.Armor"}}</a>
       <a class="item" data-tab="description">{{localize "RQG.Item.SheetTab.Description"}}</a>
       {{#if isGM}}
-      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
+        <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GMNotes"}}</a>
+        {{#unless isEmbedded}}
+          <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+        {{/unless}}
       {{/if}}
     </nav>
 
@@ -45,70 +42,72 @@
       <div class="tab" data-group="primary" data-tab="armor">
 
         <div class="item-sheet-properties">
-          <label for="hitlocations-{{data._id}}">{{localize "RQG.Item.Armor.HitLocations"}}</label>
-          <div name="data.hitlocations">
-            {{#each armorData.hitLocations}}
-            <span><input name="data.hitLocations" type="text" value="{{this}}"></span>
+          <label for="hitlocations-{{id}}">{{localize "RQG.Item.Armor.HitLocations"}}</label>
+
+          <div class="img-name-grid bordered">
+            {{#each system.hitLocations}}
+
+              <span><input class="maxcontentwidth" name="system.hitLocations" type="text" value="{{this}}"></span>
             {{/each}}
-            <input type="text" id="hitlocations-{{data._id}}" name="data.hitLocations" style="width:50%" list="allHitLocations"
-              placeholder="{{localize "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder"}}">
+            <input type="text" id="hitlocations-{{id}}" name="system.hitLocations"
+                   list="allHitLocations"
+                   placeholder="{{localize "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder"}}"
+            style="grid-column: 1 / span 2;">
           </div>
 
-          <label for="absorbs-{{data._id}}">{{localize "RQG.Item.Armor.Absorbs"}}</label>
-          <input  type="number" id="absorbs-{{data._id}}" name="data.absorbs" min="0" max="99" value="{{armorData.absorbs}}">
+          <label for="absorbs-{{id}}">{{localize "RQG.Item.Armor.Absorbs"}}</label>
+          <input type="number" id="absorbs-{{id}}" name="system.absorbs" min="0" max="99" value="{{system.absorbs}}">
 
-          <label for="move-quietly-penalty-{{data._id}}">{{localize "RQG.Item.Armor.MoveQuietlyPenalty"}}</label>
-          <input type="number" id="move-quietly-penalty-{{data._id}}" name="data.moveQuietlyPenalty" min="0" max="99" value="{{armorData.moveQuietlyPenalty}}">
+          <label for="move-quietly-penalty-{{id}}">{{localize "RQG.Item.Armor.MoveQuietlyPenalty"}}</label>
+          <input type="number" id="move-quietly-penalty-{{id}}" name="system.moveQuietlyPenalty" min="0" max="99"
+                 value="{{system.moveQuietlyPenalty}}">
 
-          <label for="fits-size-{{data._id}}">{{localize "RQG.Item.Armor.FitsSIZ"}}</label>
-          <input type="number" id="fits-size-{{data._id}}" name="data.size" min="1" max="99" value="{{armorData.size}}">
+          <label for="fits-size-{{id}}">{{localize "RQG.Item.Armor.FitsSIZ"}}</label>
+          <input type="number" id="fits-size-{{id}}" name="system.size" min="1" max="99" value="{{system.size}}">
 
+          {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"}}
         </div>
-
-        {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"
-          itemData=armorData
-        }}
-
       </div>
 
       {{!-- Description Tab --}}
       <div class="tab" data-group="primary" data-tab="description">
-
-        <label>{{localize "RQG.Item.Gear.Description"}} {{editor content=armorData.description target="data.description"
-          button=true owner=owner editable=editable}}
-        </label><br>
+        {{editor
+          enrichedDescription
+          target="system.description"
+          button=true
+          editable=isEditable
+        }}
       </div>
 
       {{!-- GM Tab --}}
       <div class="tab" data-group="primary" data-tab="gm">
-
-        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=armorData.gmNotes target="data.gmNotes"
-          button=true owner=owner editable=editable}}
-        </label>
+        {{editor
+          enrichedGmNotes
+          target="system.gmNotes"
+          button=true
+          editable=isEditable}}
       </div>
 
       {{!-- Active Effects Tab --}}
       <div class="tab" data-group="primary" data-tab="active-effects">
         {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
-
       </div>
     </section>
-
-
   </main>
+
   <datalist id="allHitLocations">
-    {{#each sheetSpecific.allHitLocations}}
-    <option value="{{this}}">{{this}}</option>
+    {{#each allHitLocations}}
+      <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>
   <datalist id="armorTypeNames">
-    {{#each sheetSpecific.armorTypeNames}}
-    <option value="{{this}}">{{this}}</option>
+    {{#each armorTypeNames}}
+      <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>
   <datalist id="materialNames">
-    {{#each sheetSpecific.materialNames}}
-    <option value="{{this}}">{{this}}</option>
+    {{#each materialNames}}
+      <option value="{{this}}">{{this}}</option>
     {{/each}}
   </datalist>
 </form>

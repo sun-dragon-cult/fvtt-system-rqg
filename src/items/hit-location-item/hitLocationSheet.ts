@@ -1,7 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  HitLocationDataProperties,
-  HitLocationDataPropertiesData,
   hitLocationHealthStatuses,
   HitLocationTypesEnum,
 } from "../../data-model/item-data/hitLocationData";
@@ -17,23 +15,19 @@ import {
   RqgError,
   usersIdsThatOwnActor,
 } from "../../system/util";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
 import { ActorHealthState } from "../../data-model/actor-data/attributes";
 import { RqgItem } from "../rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
 import { systemId } from "../../system/config";
+import { ItemSheetData } from "../shared/sheetInterfaces";
 
-interface HitLocationSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: HitLocationDataProperties; // Actually contains more...complete with effects, flags etc
-  hitLocationData: HitLocationDataPropertiesData;
-  sheetSpecific: {
-    allHitLocations: string[];
-    hitLocationTypes: string[];
-    hitLocationHealthStatuses: string[];
-  };
+interface HitLocationSheetData {
+  allHitLocations: string[];
+  hitLocationTypes: string[];
+  hitLocationHealthStatuses: string[];
 }
 
 export class HitLocationSheet extends RqgItemSheet<
@@ -42,7 +36,7 @@ export class HitLocationSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.HitLocation],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
       width: 450,
       height: 500,
@@ -56,28 +50,19 @@ export class HitLocationSheet extends RqgItemSheet<
     });
   }
 
-  getData(): HitLocationSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.HitLocation);
-
+  getData(): HitLocationSheetData & ItemSheetData {
+    const system = duplicate(this.document.system);
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      hitLocationData: itemData.data,
-      sheetSpecific: {
-        allHitLocations: getHitLocations(),
-        hitLocationTypes: Object.values(HitLocationTypesEnum),
-        hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      isEmbedded: this.document.isEmbedded,
+      system: system,
+
+      allHitLocations: getHitLocations(),
+      hitLocationTypes: Object.values(HitLocationTypesEnum),
+      hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
     };
   }
 

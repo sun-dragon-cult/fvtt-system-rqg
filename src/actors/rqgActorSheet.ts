@@ -5,7 +5,7 @@ import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { RqgItem } from "../items/rqgItem";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
-import { hitLocationMenuOptions } from "./context-menus/health-context-menu";
+import { hitLocationMenuOptions } from "./context-menus/hit-location-context-menu";
 import { passionMenuOptions } from "./context-menus/passion-context-menu";
 import { gearMenuOptions } from "./context-menus/gear-context-menu";
 import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-menu";
@@ -102,6 +102,8 @@ interface CharacterSheetData {
   spiritMagicPointSum: number;
   freeInt: number;
   baseStrikeRank: number | undefined;
+  enrichedAllies: string;
+  enrichedBiography: string;
 
   locomotionModes: { [a: string]: string };
 
@@ -157,7 +159,7 @@ export class RqgActorSheet extends ActorSheet<
 
   /* -------------------------------------------- */
 
-  getData(): CharacterSheetData | ActorSheet.Data {
+  async getData(): Promise<CharacterSheetData | ActorSheet.Data> {
     const actorData = this.document.toObject(false);
     assertActorType(actorData.type, ActorTypeEnum.Character);
 
@@ -200,6 +202,13 @@ export class RqgActorSheet extends ActorSheet<
         // @ts-expect-error system
         actorData.system.attributes.sizStrikeRank
       ),
+      // @ts-expect-error async
+      enrichedAllies: await TextEditor.enrichHTML(actorData.system.allies, { async: true }),
+      // @ts-expect-error system
+      enrichedBiography: await TextEditor.enrichHTML(actorData.system.background.biography, {
+        // @ts-expect-error async
+        async: true,
+      }),
 
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
@@ -291,15 +300,13 @@ export class RqgActorSheet extends ActorSheet<
         .filter(
           (
             e: any // TODO v10 any
-          ) =>
-            e.system.changes.find((e: any) => e.key === "data.attributes.magicPoints.max") !==
-            undefined
+          ) => e.changes.find((e: any) => e.key === "data.attributes.magicPoints.max") != undefined
         )
         // TODO v10 any
         .map((e: any) => {
           return {
-            name: e.system.label,
-            size: e.system.changes
+            name: e.label,
+            size: e.changes
               .filter((c: any) => c.key === "data.attributes.magicPoints.max")
               .reduce((acc: number, c: any) => acc + Number(c.value), 0),
           };

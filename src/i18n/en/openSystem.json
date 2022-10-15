@@ -291,11 +291,11 @@
         "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
         "DeleteRuneMagicSpellTitle": "Delete Rune Magic Spell",
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
-        "CultRankLabel": "Cult Rank:",
-        "RunePoints": "Rune Points:",
-        "Gifts": "Gifts:",
-        "Geases": "Geases:",
-        "SubCults": "Sub Cults:",
+        "CultRankLabel": "Cult Rank",
+        "RunePoints": "Rune Points",
+        "Gifts": "Gifts",
+        "Geases": "Geases",
+        "SubCults": "Sub Cults",
         "RuneSpell": "Rune Spell",
         "Points": "Points",
         "Range": "Range",
@@ -397,7 +397,7 @@
         "btnNo": "No",
         "btnCancel": "Cancel",
         "btnConfirm": "Confirm",
-        "OtherModifiers": "Other Modifiers:",
+        "OtherModifiers": "Other Modifiers",
         "RollFormat": "Roll ({chance}%)",
         "CantFindChatMessageError": "CantFindChatMessageError"
       },
@@ -447,13 +447,13 @@
         "titleChar": "Improvement for Characteristic \"{name}\"",
         "header": "Improving {name}",
         "fromExperience": ". . . from experience",
-        "chanceToGain": "{chanceToGain}% chance to gain:",
+        "chanceToGain": "{chanceToGain}% chance to gain",
         "experienceGainFixed": "Gain 3%",
         "experienceGainRandom": "Gain 1d6%",
         "noExperienceCheckTitle": "No Experience Check",
         "noExperienceCheckExplanation": "This character does not have an experience check in this {typeLocName} and may not improve from Experience.",
         "throughTraining": ". . . through training",
-        "afterTraining": "After training:",
+        "afterTraining": "After training",
         "gain": "Gain {gain}%",
         "gainChar": "Gain {gain}",
         "throughResearch": ". . . through research",
@@ -501,13 +501,13 @@
       },
       "runeMagicChat": {
         "MissingJournalLinkTitle": "Edit the spell and add a description to have a journal link here!",
-        "CastUsingRune": "Cast using Rune:",
+        "CastUsingRune": "Cast using Rune",
         "RuneHasExperienceTitle": "Has Experience Check",
-        "RunePointCost": "Rune Point Cost:",
+        "RunePointCost": "Rune Point Cost",
         "OneUseWarning": "One Use!",
         "OneUseWarningTip": "Casting this spell will reduce both your current and maximum Rune Points for the cult!",
-        "MagicPointBoost": "Magic Point Boost:",
-        "MeditationOrRitual": "Meditation or Ritual:",
+        "MagicPointBoost": "Magic Point Boost",
+        "MeditationOrRitual": "Meditation or Ritual",
         "MeditationOrRitualValue0": "None",
         "MeditationOrRitualValue5": "Meditate: 1 melee round, +5% bonus",
         "MeditationOrRitualValue10": "Meditate: 2 melee rounds, +10% bonus",
@@ -529,7 +529,7 @@
         "MeditationOrRitualValue90": "Ritual: 5 years, +90% bonus",
         "MeditationOrRitualValue95": "Ritual: 10 years, +95% bonus",
         "MeditationOrRitualValue100": "Ritual: 20 years, +100% bonus",
-        "SkillAugmentation": "Skill Augmentation:",
+        "SkillAugmentation": "Skill Augmentation",
         "SkillAugmentationValue0": "None",
         "SkillAugmentationValue50": "Critical Success, +50%",
         "SkillAugmentationValue30": "Special Success, +30%",
@@ -655,8 +655,6 @@
         "Location": "Location",
         "AttunedTo": "Attuned to",
         "Quantity": "Quantity",
-        "Description": "Description",
-        "GMNotes": "GM Notes",
         "IsContainerQ": "Is Container?",
         "LunarsAbbr": "L",
         "HitPointsAbbr": "HP",
@@ -725,8 +723,7 @@
         "CultLinks": "Cult Links",
         "SkillLinks": "Skill Links",
         "PassionLinks": "Passion Links",
-        "RuneLinks": "Rune Links",
-        "WizardInstructions": "Wizard Instructions"
+        "RuneLinks": "Rune Links"
       },
       "Notification": {
         "CircularGearLocationWarning": "Circular gear locations (A in B in A) - check your gear locations: {itemLocation}",
@@ -817,8 +814,8 @@
           "DropToReplaceRune": "Drop a Rune Item on this field to replace.",
           "DropToConnectSkill": "Drop a Skill Item on this field to connect.",
           "DropToReplaceSkill": "Drop a Skill Item on this field to replace.",
-          "DropToConnectOccupation": "Drop an Occuption Item on this field to connect.",
-          "DropToReplaceOccupation": "Drop an Occuption Item on this field to replace."
+          "DropToConnectOccupation": "Drop an Occupation Item on this field to connect.",
+          "DropToReplaceOccupation": "Drop an Occupation Item on this field to replace."
         }
       },
       "Rune": {
@@ -846,19 +843,22 @@
         "StackableQ": "Stackable?",
         "OneUseQ": "One Use?",
         "GrantedByCult": "Granted by Cult",
-        "Runes": "Runes:",
+        "Runes": "Runes",
         "AddNewRunePlaceholder": "Add new rune",
         "runeMagicCultDialog": {
           "title": "Which cult provides this Rune Magic?",
           "btnAddRuneMagic": "Add Rune Magic",
-          "Actor": "Actor:",
-          "RuneMagic": "RuneMagic:"
+          "Actor": "Actor",
+          "RuneMagic": "RuneMagic"
         }
       },
       "SheetTab": {
+        "ActiveEffects": "Active Effects",
         "Armor": "Armor",
         "Cult": "Cult",
         "CultStanding": "Cult Standing",
+        "Description": "Description",
+        "GMNotes": "GM Notes",
         "Gear": "Gear",
         "HitLocation": "Hit Location",
         "HitLocationDefinition": "Hit Location Definition",
@@ -872,9 +872,7 @@
         "SpiritMagic": "Spirit Magic",
         "Weapon": "Weapon",
         "WeaponUsage": "Usage",
-        "Description": "Description",
-        "GM": "GM",
-        "ActiveEffects": "Active Effects"
+        "WizardInstructions": "Wizard Instructions"
       },
       "Skill": {
         "Name": "Name",
@@ -887,7 +885,7 @@
         "Chance": "Chance",
         "CanGainExperienceQ": "Can Gain Experience?",
         "HasExperienceQ": "Has Experience?",
-        "SorceryRunes": "Sorcery Runes:",
+        "SorceryRunes": "Sorcery Runes",
         "Notification": {
           "CantFindSkillJournalEntryError": "Can't find Journal Entry you are trying to link to the Skill Item Sheet for {skillName}"
         },
@@ -924,12 +922,13 @@
         "Range": "Range",
         "Duration": "Duration",
         "Concentration": "Concentration",
-        "SpellFocus": "Spell Focus:",
+        "SpellFocus": "Spell Focus",
         "MatrixIndicator": "(held in matrix)",
         "MatrixQ": "Held in Matrix?",
         "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
       },
       "Weapon": {
+        "Name": "Name",
         "UsesOfWeaponHeader": "Uses of Weapon",
         "DropSkillToChange": "(Drop a different weapon skill on this weapon to change)",
         "DropSkillToAdd": "Drop a weapon skill on this weapon!",
@@ -1322,7 +1321,7 @@
         "name": "Tarshite"
       },
       "tradetalk": {
-        "name":"Tradetalk"
+        "name": "Tradetalk"
       }
     },
     "rune": {
@@ -2079,7 +2078,7 @@
         "description": "<p>Negotiation and compromise, haggling: used when buying and selling. If successful, the target agrees to a lower reasonable price. This is often handled as an opposed roll.</p>"
       },
       "boat": {
-        "skillName":"Boat",
+        "skillName": "Boat",
         "description": "<p>Handling a small boat, kayak, or raft. This alsovincludes knowledge of their general maintenance.</p>"
       },
       "bureaucracy": {
@@ -2235,7 +2234,7 @@
       },
       "plantLore": {
         "skillName": "Plant Lore",
-        "description":"<p>Identifying and using plants for medicinal and other purposes.</p>"
+        "description": "<p>Identifying and using plants for medicinal and other purposes.</p>"
       },
       "playInstrument" : {
         "skillName": "Play Instrument",
@@ -2463,7 +2462,7 @@
         }
       },
       "bite": {
-        "name":"Bite"
+        "name": "Bite"
       },
       "bow": {
         "name": "Bow",

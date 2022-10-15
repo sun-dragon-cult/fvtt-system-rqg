@@ -2,11 +2,11 @@
 <h2>
     <span class="flex-row">
     {{localize "RQG.Foundry.ActiveEffect.Header"}}
-    <a title="{{localize "RQG.Foundry.ActiveEffect.AddEffectTitle"}}" data-item-id="{{data._id}}" data-item-effect-add><i class="fas fa-plus"></i></a>
+    <a title="{{localize "RQG.Foundry.ActiveEffect.AddEffectTitle"}}" data-item-id="{{id}}" data-item-effect-add><i class="fas fa-plus"></i></a>
     </span>
 </h2>
 
-<table data-item-id="{{data._id}}">
+<table data-item-id="{{id}}">
   <thead>
   <tr>
     <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Label"}}</th>
@@ -16,7 +16,7 @@
     <th class="text-left"></th>
   </tr>
   </thead>
-  {{#each data.effects}}
+  {{#each effects}}
     <tbody data-effect-id="{{_id}}">
     <tr>
       <td><a data-item-effect-edit>{{label}}</a></td>

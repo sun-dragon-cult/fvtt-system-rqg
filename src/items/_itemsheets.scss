@@ -1,0 +1,249 @@
+.rqg.item-sheet {
+
+  // Tabbed Navigation for Item Sheets
+  .item-sheet-nav-tabs {
+    border-top: 1px solid var(--color-border-dark);
+    border-bottom: 1px solid var(--color-border-dark);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: var(--rqg-color-main-bg);
+    margin: 8px -8px;
+
+    .item {
+      font-weight: bold;
+      white-space: nowrap;
+      padding: 0.25rem;
+    }
+
+    .item.active {
+      background-color: var(--rqg-color-main);;
+      color: white;
+    }
+
+    .item.wider {
+      flex: 1.3 1 0;
+    }
+
+    .item.narrower {
+      flex: 0.7 1 0;
+    }
+  }
+
+  .item-sheet-properties {
+    display: grid;
+    grid-template-columns: auto 2fr;
+    grid-gap: 0.5em;
+    align-items: center;
+    justify-items: flex-start;
+    padding: 0 0 0.5em 0;
+
+    & .input-button {
+      display: flex;
+
+      & input {
+        width: 100%;
+      }
+
+      & a {
+        padding: 5px;
+      }
+    }
+
+    & .drop-target {
+      display: inline-grid;
+      align-content: center;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      justify-self: right;
+    }
+
+    input {
+      background-color: #ffffff10;
+
+      &[type="number"] {
+        text-align: right;
+        width: 75px;
+      }
+
+      &[type="text"] {
+        width: 100%;
+      }
+
+      &.short {
+        width: 75px;
+      }
+
+      &.maxcontentwidth {
+        width: max-content;
+      }
+    }
+
+    span.number {
+      text-align: right;
+      width: 75px;
+    }
+
+    .img-name-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-gap: 0.5em;
+
+      &.bordered {
+        border: 1px black solid;
+        padding: 0.5rem;
+      }
+
+      img {
+        mix-blend-mode: normal; // TODO remove when character sheet css is extracted
+        opacity: 0.8;
+      }
+
+    }
+
+    div.drop-target {
+      width: 100%;
+    }
+
+    .item-sheet-rqid-link {
+      display: block;
+
+      i.fa-info-circle {
+        padding: 0 0 0 7px;
+      }
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    .editor-container {
+      width: 100%;
+    }
+  }
+
+  header.item-sheet-header {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    grid-gap: 0.5em;
+    align-items: center;
+    padding: 8px;
+    margin: -8px;
+    background-color: var(--rqg-color-main-bg);
+
+    .property-line {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+
+      > * {
+        width: fit-content;
+      }
+
+      .short {
+        width: 5rem;
+      }
+
+      .long {
+        width: 100%
+      }
+    }
+
+    img {
+      grid-row: 1 / -1;
+      align-self: end;
+    }
+
+    input, select {
+      background-color: #f5deb3;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+
+  .label-above {
+    label {
+      line-height: 1.3rem;
+      font-weight: bold;
+    }
+
+    &.parens label {
+      margin-left: 0.75rem;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    select {
+      display: block;
+    }
+  }
+
+
+  .skill-sheet-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.25fr 1fr 1fr 1fr;
+    grid-gap: 0.5rem;
+    align-items: center;
+    text-align: center;
+    padding: 0 0 0.5em 0;
+
+    & label {
+      font-weight: bold;
+    }
+
+    & .skill {
+      font-weight: bold;
+      font-size: xx-large;
+    }
+  }
+
+  .drop-target {
+    border: 1px dotted black;
+    min-height: 2rem;
+
+    & a {
+      margin: 0.25rem;
+      width: fit-content;
+    }
+  }
+
+  .occupationalSkill {
+    border: 1px green dashed;
+    padding: 0.25rem;
+    margin: 0.25rem;
+    width: 100%;
+    display: flex;
+    column-gap: 0.5em;
+    align-items: baseline;
+
+    & input[type="number"] {
+      width: 45px;
+    }
+
+    & div {
+      display: flex;
+      align-items: baseline;
+    }
+  }
+
+  .incomeSkill {
+    font-weight: bold;
+    font-style: italic;
+    background-image: linear-gradient(to bottom right, #bcc6cc, #eee, #bcc6cc);
+  }
+
+  .incomeSkillText {
+    font-weight: bold;
+    font-style: italic;
+  }
+}
+

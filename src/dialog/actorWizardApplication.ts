@@ -436,7 +436,8 @@ export class ActorWizard extends FormApplication {
     // add hit locations from template to actor
     const addHitLocations = this.species.selectedSpeciesTemplate?.items
       .filter((h) => h.type === ItemTypeEnum.HitLocation)
-      .map((h) => h.data);
+      // @ts-expect-error system
+      .map((h) => h.toObject().system);
     if (addHitLocations) {
       //@ts-ignore addHitLocations
       await this.actor.createEmbeddedDocuments("Item", addHitLocations);

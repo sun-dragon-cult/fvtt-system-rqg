@@ -1,35 +1,38 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form autocomplete="off">
   <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" title="{{name}}" />
 
-    <div class="item-sheet-header-img">
-      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
-    </div>
+    <div class="flex-column gap03rem">
+      <div class="property-line">
 
-    <div class="name-number">
-      <div>
-        <label for="name-{{data._id}}">{{localize "RQG.Item.RuneMagic.Name"}}</label>
-        <input type="text" id="name-{{data._id}}" name="name" value="{{data.name}}" />
-      </div>
-
-      <div class="paren-head">
-        <label for="points-{{data._id}}">{{localize "RQG.Item.RuneMagic.Points"}}</label>
-        <div>
-         ( <input type="number"
-                  id="points-{{data._id}}"
-                  name="data.points"
-                  value="{{runeMagicData.points}}" /> )
+        <div class="label-above long">
+          <label for="name-{{id}}">{{localize "RQG.Item.RuneMagic.Name"}}</label>
+          <input type="text" id="name-{{id}}" name="name" value="{{name}}" />
         </div>
-      </div>
-    </div>
 
-    {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-        rqidLink=runeMagicData.descriptionRqidLink
+        <div class="label-above parens short">
+          <label for="points-{{id}}">{{localize "RQG.Item.RuneMagic.Points"}}</label>
+          <div>
+            ( <input
+            id="points-{{id}}"
+            name="system.points"
+            value="{{system.points}}"
+            type="number"
+          > )
+          </div>
+        </div>
+
+      </div>
+
+      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        rqidLink=system.descriptionRqidLink
         parentField="descriptionRqidLink"
         dropTypes="JournalEntry"
         showDeleteFromPropertyName="descriptionRqidLink"
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-    }}
+      }}
+    </div>
   </header>
 
   <main>
@@ -37,9 +40,9 @@
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="rune-magic">{{localize "RQG.Item.SheetTab.RuneMagic"}}</a>
       {{#if isGM}}
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
+        {{#unless isEmbedded}}
+          <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+        {{/unless}}
       {{/if}}
     </nav>
 
@@ -48,64 +51,63 @@
       <div class="tab" data-group="primary" data-tab="rune-magic">
 
         <div class="item-sheet-properties">
-          {{#unless runeMagicData.isRitual}}
+          {{#unless system.isRitual}}
 
-          <label for="range-{{data._id}}" class="mp">{{localize "RQG.Item.RuneMagic.Range"}}</label>
-          <select id="range-{{data._id}}" name="data.castingRange">
-            {{#select runeMagicData.castingRange}}
-            {{#each sheetSpecific.ranges}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
-            {{/each}}
-            {{/select}}
-          </select>
+            <label for="range-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.Range"}}</label>
+            <select id="range-{{id}}" name="system.castingRange">
+              {{#select system.castingRange}}
+                {{#each ranges}}
+                  <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
+                {{/each}}
+              {{/select}}
+            </select>
 
-          <label for="duration-{{data._id}}" class="mp">{{localize "RQG.Item.RuneMagic.Duration"}} </label>
-          <select id="duration-{{data._id}}" name="data.duration">
-            {{#select runeMagicData.duration}}
-            {{#each sheetSpecific.durations}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
-            {{/each}}
-            {{/select}}
-          </select>
+            <label for="duration-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.Duration"}} </label>
+            <select id="duration-{{id}}" name="system.duration">
+              {{#select system.duration}}
+                {{#each durations}}
+                  <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
+                {{/each}}
+              {{/select}}
+            </select>
 
           {{/unless}}
 
-          <label for="is-ritual-{{data._id}}">{{localize "RQG.Item.Spell.RitualQ"}}</label>
-          <input type="checkbox" id="is-ritual-{{data._id}}" name="data.isRitual" {{checked runeMagicData.isRitual}}>
+          <label for="is-ritual-{{id}}">{{localize "RQG.Item.Spell.RitualQ"}}</label>
+          <input type="checkbox" id="is-ritual-{{id}}" name="system.isRitual" {{checked system.isRitual}}>
 
-          <label for="is-enchantment-{{data._id}}">{{localize "RQG.Item.Spell.EnchantmentQ"}}</label>
-          <input type="checkbox" id="is-enchantment-{{data._id}}" name="data.isEnchantment" {{checked runeMagicData.isEnchantment}}>
+          <label for="is-enchantment-{{id}}">{{localize "RQG.Item.Spell.EnchantmentQ"}}</label>
+          <input type="checkbox" id="is-enchantment-{{id}}" name="system.isEnchantment" {{checked
+            system.isEnchantment}}>
 
-          <label for="is-stackable-{{data._id}}">{{localize "RQG.Item.RuneMagic.StackableQ"}}</label>
-          <input type="checkbox" id="is-stackable-{{data._id}}" name="data.isStackable" {{checked runeMagicData.isStackable}}>
+          <label for="is-stackable-{{id}}">{{localize "RQG.Item.RuneMagic.StackableQ"}}</label>
+          <input type="checkbox" id="is-stackable-{{id}}" name="system.isStackable" {{checked system.isStackable}}>
 
-          <label for="is-one-use-{{data._id}}">{{localize "RQG.Item.RuneMagic.OneUseQ"}}</label>
-          <input type="checkbox" id="is-one-use-{{data._id}}" name="data.isOneUse" {{checked runeMagicData.isOneUse}}>
+          <label for="is-one-use-{{id}}">{{localize "RQG.Item.RuneMagic.OneUseQ"}}</label>
+          <input type="checkbox" id="is-one-use-{{id}}" name="system.isOneUse" {{checked system.isOneUse}}>
 
           {{#if isEmbedded}}
-          <label for="cult-id-{{data._id}}" class="mp">{{localize "RQG.Item.RuneMagic.GrantedByCult"}}</label>
-          <select id="cult-id-{{data._id}}" name="data.cultId">
-            {{#select runeMagicData.cultId}} {{#each sheetSpecific.actorCults}}
-            <option value="{{id}}">{{name}}</option>
-            {{/each}} {{/select}}
-          </select>
+            <label for="cult-id-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.GrantedByCult"}}</label>
+            <select id="cult-id-{{id}}" name="system.cultId">
+              {{#select system.cultId}} {{#each actorCults}}
+                <option value="{{id}}">{{name}}</option>
+              {{/each}} {{/select}}
+            </select>
           {{/if}}
 
-          <label for="runes-{{data._id}}">{{localize "RQG.Item.RuneMagic.Runes"}}</label>
-          <div class="rune-property rune-group">
-            {{#each runeMagicData.runes}}
-            <img class="rune" src="{{runeImg this}}" title="{{this}}">
-            <input type="text" name="data.runes" value="{{this}}">
+          <label for="runes-{{id}}">{{localize "RQG.Item.RuneMagic.Runes"}}</label>
+          <div class="img-name-grid bordered">
+            {{#each system.runes}}
+              <img class="rune" src="{{runeImg this}}" title="{{this}}">
+              <input type="text" name="system.runes" value="{{this}}">
             {{/each}}
             <input
               type="text"
-              id="runes-{{data._id}}"
-              name="data.runes" list="allRunes"
+              id="runes-{{id}}"
+              name="system.runes" list="allRunes"
               placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}"
               style="grid-column: 1 / span 2;">
           </div>
-
-
         </div>
       </div>
 
@@ -118,8 +120,8 @@
 
   </main>
   <datalist id="allRunes">
-    {{#each sheetSpecific.allRunes}}
-    <option value="{{name}}">{{name}}</option>
+    {{#each allRunes}}
+      <option value="{{name}}">{{name}}</option>
     {{/each}}
   </datalist>
 </form>

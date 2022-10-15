@@ -1,30 +1,15 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
-  RuneMagicDataProperties,
-  RuneMagicDataPropertiesData,
-} from "../../data-model/item-data/runeMagicData";
-
-import {
-  assertItemType,
-  getAvailableRunes,
-  getGameUser,
-  AvailableRuneCache,
-} from "../../system/util";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
+import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 
-interface RuneMagicSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: RuneMagicDataProperties; // Actually contains more...complete with effects, flags etc
-  runeMagicData: RuneMagicDataPropertiesData;
-  sheetSpecific: {
-    ranges: SpellRangeEnum[];
-    durations: SpellDurationEnum[];
-    actorCults: any[];
-    allRunes: AvailableRuneCache[];
-    journalEntryName: string | undefined;
-  };
+interface RuneMagicSheetData {
+  ranges: SpellRangeEnum[];
+  durations: SpellDurationEnum[];
+  actorCults: any[];
+  allRunes: AvailableRuneCache[];
 }
 
 export class RuneMagicSheet extends RqgItemSheet<
@@ -33,7 +18,7 @@ export class RuneMagicSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.RuneMagic],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],
       template: "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
       width: 450,
       height: 500,
@@ -47,35 +32,25 @@ export class RuneMagicSheet extends RqgItemSheet<
     });
   }
 
-  getData(): RuneMagicSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
+  getData(): RuneMagicSheetData & EffectsItemSheetData {
+    const system = duplicate(this.document.system);
 
-    const runeMagicData = itemData.data;
-    runeMagicData.runes = Array.isArray(runeMagicData.runes)
-      ? runeMagicData.runes
-      : [runeMagicData.runes];
+    system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
 
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      runeMagicData: itemData.data,
-      sheetSpecific: {
-        ranges: Object.values(SpellRangeEnum),
-        durations: Object.values(SpellDurationEnum),
-        actorCults: this.getActorCults(),
-        allRunes: getAvailableRunes(),
-        journalEntryName: runeMagicData.descriptionRqidLink.name,
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
+      isEditable: this.isEditable,
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      system: system,
+      isEmbedded: this.document.isEmbedded,
+      effects: this.document.effects,
+
+      ranges: Object.values(SpellRangeEnum),
+      durations: Object.values(SpellDurationEnum),
+      actorCults: this.getActorCults(),
+      allRunes: getAvailableRunes(),
     };
   }
 
@@ -87,10 +62,10 @@ export class RuneMagicSheet extends RqgItemSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    let runes = formData["data.runes"];
+    let runes = formData["system.runes"];
     runes = Array.isArray(runes) ? runes : [runes];
     runes = runes.filter((r: string) => r); // Remove empty
-    formData["data.runes"] = duplicate(runes);
+    formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
 

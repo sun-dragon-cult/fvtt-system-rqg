@@ -56,7 +56,7 @@
         <label>{{localize "RQG.Actor.Background.Species"}}</label>
         {{data.data.background.species}}
       {{/if}}
-      
+
       {{#if actorWizardFeatureFlag}}
         <label></label>
         {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
@@ -70,11 +70,9 @@
       {{/if}}
 
     </div>
-
-
   </fieldset>
 
-  
+
   {{#unless actorWizardFeatureFlag}}
 
   <fieldset>
@@ -107,7 +105,7 @@
       {{else if data.data.background.town}}
         <label>{{localize "RQG.Actor.Background.TownHomeArea"}}</label>
         {{data.data.background.town}}
-      {{/if}}      
+      {{/if}}
 
       {{#if isGM}}
         <label>{{localize "RQG.Actor.Background.Tribe"}}</label>
@@ -120,7 +118,7 @@
       {{else if data.data.background.tribe}}
         <label>{{localize "RQG.Actor.Background.Tribe"}}</label>
         {{data.data.background.tribe}}
-      {{/if}}   
+      {{/if}}
 
       {{#if isGM}}
         <label>{{localize "RQG.Actor.Background.Clan"}}</label>
@@ -133,7 +131,7 @@
       {{else if data.data.background.clan}}
         <label>{{localize "RQG.Actor.Background.Clan"}}</label>
         {{data.data.background.clan}}
-      {{/if}}         
+      {{/if}}
     </div>
 
   </fieldset>
@@ -142,7 +140,7 @@
 
   <fieldset>
     <legend>{{localize "RQG.Actor.Background.Circumstance"}}</legend>
-    
+
     <div class="item-sheet-properties">
       {{#if isGM}}
         <div data-reputation-roll style="display: flex; gap: 0.5em; justify-content:right;">
@@ -170,7 +168,7 @@
           {{data.data.background.reputation}}%
         </div>
       {{/if}}
-      
+
       {{#if isGM}}
         <label>{{localize "RQG.Actor.Background.StandardOfLiving"}}</label>
           <input
@@ -198,7 +196,7 @@
       {{else if data.data.background.occupation}}
         <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
         {{localize (concat "RQG.Actor.Background.Occupation." data.data.background.occupation)}}
-      {{/if}}      
+      {{/if}}
 
       {{#if actorWizardFeatureFlag}}
         <label></label>
@@ -210,7 +208,7 @@
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceOccupation"
         }}
-      {{/if}}      
+      {{/if}}
 
       {{#if isGM}}
         <label>{{localize "RQG.Actor.Background.BaseIncome"}}</label>
@@ -221,7 +219,7 @@
               max="99999999"
               name="data.background.baseIncome"
               value="{{data.data.background.baseIncome}}"
-            />({{localize "RQG.Item.Gear.LunarsAbbr"}})          
+            />({{localize "RQG.Item.Gear.LunarsAbbr"}})
         </div>
       {{else if data.data.background.baseIncome}}
         <label>{{localize "RQG.Actor.Background.BaseIncome"}}</label>
@@ -238,7 +236,7 @@
               max="99999999"
               name="data.background.ransom"
               value="{{data.data.background.ransom}}"
-            />({{localize "RQG.Item.Gear.LunarsAbbr"}})            
+            />({{localize "RQG.Item.Gear.LunarsAbbr"}})
           </div>
         <label>
           {{localize "RQG.Actor.Background.RansomDetails"}}</label>
@@ -320,12 +318,12 @@
 
 {{#if isGM}}
   {{editor
-    content=data.data.background.biography
+    enrichedBiography
     target="data.background.biography"
     button=true
     owner=owner
     editable=editable
   }}
 {{else if data.data.background.biography}}
-  {{{enrichHtml data.data.background.biography}}}
+  {{{enrichedBiography}}}
 {{/if}}

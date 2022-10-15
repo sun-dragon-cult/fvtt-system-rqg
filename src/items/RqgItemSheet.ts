@@ -10,15 +10,6 @@ import {
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 
-export interface RqgItemSheetData {
-  isGM: boolean;
-  ownerId: string | null | undefined;
-  uuid: string | undefined;
-  supportedLanguages: {
-    en: string;
-  } & Partial<Record<string, string>>;
-}
-
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
   Data extends object = ItemSheet.Data<Options>

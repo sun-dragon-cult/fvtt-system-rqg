@@ -106,6 +106,7 @@ export const registerHandlebarsHelpers = function () {
     return defaultItemIconSettings[itemType];
   });
 
+  // TODO remove!
   Handlebars.registerHelper("enrichHtml", (content: string): string => {
     return TextEditor.enrichHTML(content);
   });

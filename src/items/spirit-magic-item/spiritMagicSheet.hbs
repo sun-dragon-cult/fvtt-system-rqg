@@ -1,48 +1,48 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form autocomplete="off">
   <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" title="{{name}}" />
 
-    <div class="item-sheet-header-img">
-      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
-    </div>
+    <div class="flex-column gap03rem">
+      <div class="property-line">
 
-    <div class="name-number">
-      <div>
-        <label for="name-{{data._id}}">{{localize "RQG.Item.SpiritMagic.Name"}}</label>
-        <input type="text" id="name-{{data._id}}" name="name" value="{{data.name}}" />
-      </div>
-
-      <div class="paren-head">
-        <label for="material-{{data._id}}">{{localize "RQG.Item.SpiritMagic.Points"}}</label>
-        <div>
-          (
-          <input type="number"
-                 id="material-{{data._id}}"
-                 name="data.points"
-                 value="{{spiritMagicData.points}}"
-          />
-          )
+        <div class="label-above long">
+          <label for="name-{{id}}">{{localize "RQG.Item.SpiritMagic.Name"}}</label>
+          <input type="text" id="name-{{id}}" name="name" value="{{name}}" />
         </div>
-      </div>
-    </div>
 
-    {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-        rqidLink=spiritMagicData.descriptionRqidLink
+        <div class="label-above parens short">
+          <label for="points-{{id}}">{{localize "RQG.Item.SpiritMagic.Points"}}</label>
+          <div>
+            ( <input type="number"
+                     id="points-{{id}}"
+                     name="system.points"
+                     value="{{system.points}}"
+          > )
+          </div>
+        </div>
+
+      </div>
+
+      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        rqidLink=system.descriptionRqidLink
         parentField="descriptionRqidLink"
         dropTypes="JournalEntry"
         showDeleteFromPropertyName="descriptionRqidLink"
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-    }}
+      }}
+    </div>
   </header>
+
   <main>
 
     {{! Sheet Tab Navigation }}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="spirit-magic">{{localize "RQG.Item.SheetTab.SpiritMagic"}}</a>
       {{#if isGM}}
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
+        {{#unless isEmbedded}}
+          <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
+        {{/unless}}
       {{/if}}
     </nav>
 
@@ -52,50 +52,50 @@
 
         <div class="item-sheet-properties">
 
-          <label for="is-variable-{{data._id}}">{{localize "RQG.Item.SpiritMagic.VariableQ"}}</label>
-          <input type="checkbox" id="is-variable-{{data._id}}" name="data.isVariable" {{checked spiritMagicData.isVariable}}>
+          <label for="is-variable-{{id}}">{{localize "RQG.Item.SpiritMagic.VariableQ"}}</label>
+          <input type="checkbox" id="is-variable-{{id}}" name="system.isVariable" {{checked system.isVariable}}>
 
-          <label for="range-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Range"}}</label>
-          <select id="range-{{data._id}}" name="data.castingRange">
-            {{#select spiritMagicData.castingRange}}
-            {{#each sheetSpecific.ranges}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
-            {{/each}}
+          <label for="range-{{id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Range"}}</label>
+          <select id="range-{{id}}" name="system.castingRange">
+            {{#select system.castingRange}}
+              {{#each ranges}}
+                <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
+              {{/each}}
             {{/select}}
           </select>
 
-          <label for="duration-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Duration"}}</label>
-          <select id="duration-{{data._id}}" name="data.duration">
-            {{#select spiritMagicData.duration}}
-            {{#each sheetSpecific.durations}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
-            {{/each}}
+          <label for="duration-{{id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Duration"}}</label>
+          <select id="duration-{{id}}" name="system.duration">
+            {{#select system.duration}}
+              {{#each durations}}
+                <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
+              {{/each}}
             {{/select}}
           </select>
 
-          {{#if (eq spiritMagicData.duration "temporal")}}
-          <label for="concentration-{{data._id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Concentration"}}</label>
-          <select id="concentration-{{data._id}}" name="data.concentration">
-            {{#select spiritMagicData.concentration}}
-            {{#each sheetSpecific.types}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." this)}}</option>
-            {{/each}}
-            {{/select}}
-          </select>
+          {{#if (eq system.duration "temporal")}}
+            <label for="concentration-{{id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Concentration"}}</label>
+            <select id="concentration-{{id}}" name="system.concentration">
+              {{#select system.concentration}}
+                {{#each types}}
+                  <option value="{{this}}">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." this)}}</option>
+                {{/each}}
+              {{/select}}
+            </select>
           {{/if}}
 
-          <label for="is-ritual-{{data._id}}">{{localize "RQG.Item.Spell.RitualQ"}}</label>
-          <input type="checkbox" id="is-ritual-{{data._id}}" name="data.isRitual" {{checked spiritMagicData.isRitual}}>
+          <label for="is-ritual-{{id}}">{{localize "RQG.Item.Spell.RitualQ"}}</label>
+          <input type="checkbox" id="is-ritual-{{id}}" name="system.isRitual" {{checked system.isRitual}}>
 
-          <label for="is-enchantment-{{data._id}}">{{localize "RQG.Item.Spell.EnchantmentQ"}}</label>
-          <input type="checkbox" id="is-enchantment-{{data._id}}" name="data.isEnchantment" {{checked spiritMagicData.isEnchantment}}>
+          <label for="is-enchantment-{{id}}">{{localize "RQG.Item.Spell.EnchantmentQ"}}</label>
+          <input type="checkbox" id="is-enchantment-{{id}}" name="system.isEnchantment" {{checked system.isEnchantment}}>
 
-          <label for="is-matrix-{{data._id}}">{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
-          <input type="checkbox" id="is-matrix-{{data._id}}" name="data.isMatrix" {{checked spiritMagicData.isMatrix}}>
+          <label for="is-matrix-{{id}}">{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
+          <input type="checkbox" id="is-matrix-{{id}}" name="system.isMatrix" {{checked system.isMatrix}}>
 
 
-          <label for="spell-focus-{{data._id}}">{{localize "RQG.Item.SpiritMagic.SpellFocus"}}</label>
-          <input type="text" id="spell-focus-{{data._id}}" name="data.spellFocus" value="{{spiritMagicData.spellFocus}}">
+          <label for="spell-focus-{{id}}">{{localize "RQG.Item.SpiritMagic.SpellFocus"}}</label>
+          <input type="text" id="spell-focus-{{id}}" name="system.spellFocus" value="{{system.spellFocus}}">
         </div>
       </div>
 

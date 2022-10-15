@@ -1,93 +1,82 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form autocomplete="off">
   <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" title="{{name}}">
 
-    <div class="item-sheet-header-img">
-      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
-    </div>
+    <div class="flex-column gap03rem">
 
-    <div class="name-parts-2">
-      <div>
-        <label for="name-{{data._id}}">{{localize "RQG.Item.Cult.Name"}}</label>
-        <input
-          type="text"
-          id="name-{{data._id}}"
-          name="name"
-          value="{{data.name}}"
-          placeholder="{{localize "RQG.Item.Cult.Name"}}"
-        />
+      <div class="property-line">
+        <div class="label-above">
+          <label for="name-{{id}}">{{localize "RQG.Item.Cult.Name"}}</label>
+          <input
+            id="name-{{id}}"
+            type="text"
+            name="name"
+            value="{{name}}"
+            placeholder="{{localize "RQG.Item.Cult.Name"}}"
+          />
+        </div>
+
+        <div class="label-above long">
+          <label for="tagline-{{id}}">{{localize "RQG.Item.Cult.CultTagline"}}</label>
+          <input
+            id="tagline-{{id}}"
+            type="text"
+            name="system.tagline"
+            value="{{system.tagline}}"
+            placeholder="{{localize "RQG.Item.Cult.CultTagline"}}"
+          />
+        </div>
       </div>
 
-      <div>
-        <label for="name-{{data._id}}">{{localize "RQG.Item.Cult.CultTagline"}}</label>
-        <input
-          type="text"
-          name="data.tagline"
-          value="{{cultData.tagline}}"
-          placeholder="{{localize "RQG.Item.Cult.CultTagline"}}"
-        />
-      </div>
-    </div>
-
-    {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-        rqidLink=cultData.descriptionRqidLink
+      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        rqidLink=system.descriptionRqidLink
         parentField="descriptionRqidLink"
         dropTypes="JournalEntry"
         showDeleteFromPropertyName="descriptionRqidLink"
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-    }}
-
+      }}
+    </div>
   </header>
   <main>
-
-
     {{! Sheet Tab Navigation }}
     <nav class="item-sheet-nav-tabs" data-group="primary">
-
       {{#if isEmbedded}}
-      <a class="item" data-tab="cult-standing">{{localize "RQG.Item.SheetTab.CultStanding"}}</a>
+        <a class="item" data-tab="cult-standing">{{localize "RQG.Item.SheetTab.CultStanding"}}</a>
       {{/if}}
-
       <a class="item" data-tab="cult">{{localize "RQG.Item.SheetTab.Cult"}}</a>
-      {{#if isGM}}
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
-      {{/if}}
     </nav>
 
     <section class="sheet-body">
       {{! Cult Standing Tab }}
       <div class="tab" data-group="primary" data-tab="cult-standing">
-
         <div class="item-sheet-properties">
-
-          <label for="rune-points-value-{{data._id}}">{{localize "RQG.Item.Cult.RunePoints"}}</label>
+          <label for="rune-points-value-{{id}}">{{localize "RQG.Item.Cult.RunePoints"}}</label>
           <div>
-              <input
-                type="number"
-                id="rune-points-value-{{data._id}}"
-                name="data.runePoints.value"
-                min="0"
-                max="99"
-                value="{{cultData.runePoints.value}}"
-              />/<input
-                type="number"
-                id="rune-points-max-{{data._id}}"
-                name="data.runePoints.max"
-                min="0"
-                max="99"
-                value="{{cultData.runePoints.max}}"
-              />
+            <input
+              id="rune-points-value-{{id}}"
+              name="system.runePoints.value"
+              value="{{system.runePoints.value}}"
+              type="number"
+              min="0"
+              max="99"
+            /> / <input
+            id="rune-points-max-{{id}}"
+            name="system.runePoints.max"
+            value="{{system.runePoints.max}}"
+            type="number"
+            min="0"
+            max="99"
+          />
           </div>
 
-          <label for="cult-rank-{{data._id}}">{{localize "RQG.Item.Cult.CultRank"}}</label>
-          <select name="data.rank">
-            {{#select cultData.rank}}
-              {{#each sheetSpecific.ranksEnum}}
+          <label for="cult-rank-{{id}}">{{localize "RQG.Item.Cult.CultRank"}}</label>
+          <select name="system.rank">
+            {{#select system.rank}}
+              {{#each ranksEnum}}
                 <option value="{{this}}">{{localize
-                    (concat "RQG.Actor.RuneMagic.CultRank." this)
-                  }}</option>
+                  (concat "RQG.Actor.RuneMagic.CultRank." this)
+                }}</option>
               {{/each}}
             {{/select}}
           </select>
@@ -95,33 +84,30 @@
           <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGifts"}}</label>
           <div class="editor-container">
             {{editor
-              content=cultData.gifts
-              target="data.gifts"
+              enrichedGifts
+              target="system.gifts"
               button=true
-              owner=owner
-              editable=editable
+              editable=isEditable
             }}
           </div>
 
           <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGeases"}}</label>
           <div class="editor-container">
             {{editor
-              content=cultData.geases
-              target="data.geases"
+              enrichedGeases
+              target="system.geases"
               button=true
-              owner=owner
-              editable=editable
+              editable=isEditable
             }}
           </div>
 
           <label class="editor-label">{{localize "RQG.Item.Cult.ActorsSubCults"}}</label>
           <div class="editor-container">
             {{editor
-              content=cultData.subCults
-              target="data.subCults"
+              enrichedSubCults
+              target="system.subCults"
               button=true
-              owner=owner
-              editable=editable
+              editable=isEditable
             }}
           </div>
 
@@ -130,51 +116,37 @@
 
       {{! Cult Tab }}
       <div class="tab" data-group="primary" data-tab="cult">
-
         <div class="item-sheet-properties">
-
-          <label for="runes-{{data._id}}">{{localize "RQG.Item.Cult.Runes"}}</label>
-          <div class="rune-property rune-group">
-            {{#each cultData.runes}}
-              <img class="rune" src="{{runeImg this}}" title="{{this}}" />
-              <input type="text" name="data.runes" value="{{this}}">
+          <label for="runes-{{id}}">{{localize "RQG.Item.Cult.Runes"}}</label>
+          <div class="img-name-grid bordered">
+            {{#each system.runes}}
+              <img class="rune" src="{{runeImg this}}" title="{{this}}">
+              <input type="text" name="system.runes" value="{{this}}">
             {{/each}}
             <input
-              type="text"
-              id="runes-{{data._id}}"
-              name="data.runes"
-              list="allRunes"
+              id="runes-{{id}}"
               placeholder="{{localize 'RQG.Item.Cult.AddNewRunePlaceholder'}}"
+              name="system.runes"
+              type="text"
+              list="allRunes"
               style="grid-column: 1 / span 2;">
           </div>
 
           <label class="editor-label">{{localize "RQG.Item.Cult.HolyDays"}}</label>
           <div class="editor-container">
             {{editor
-              content=cultData.holyDays
-              target="data.holyDays"
+              enrichedHolyDays
+              target="system.holyDays"
               button=true
-              owner=owner
-              editable=editable
+              editable=isEditable
             }}
           </div>
-
         </div>
       </div>
-
-      {{!-- Active Effects Tab --}}
-      <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
-
-      </div>
     </section>
-
-
-
-
   </main>
   <datalist id="allRunes">
-    {{#each sheetSpecific.allRunes}}
+    {{#each allRunes}}
       <option value="{{name}}">{{name}}</option>
     {{/each}}
   </datalist>

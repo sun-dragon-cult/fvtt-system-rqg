@@ -1,82 +1,60 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
-  RuneDataProperties,
-  RuneDataPropertiesData,
-  RuneTypeEnum,
-} from "../../data-model/item-data/runeData";
-import {
-  assertItemType,
-  getAvailableRunes,
-  getGameUser,
-  AvailableRuneCache,
-} from "../../system/util";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { RuneTypeEnum } from "../../data-model/item-data/runeData";
+import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
+import { DocumentSheetData } from "../shared/sheetInterfaces";
 
-interface RuneSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: RuneDataProperties; // Actually contains more...complete with effects, flags etc
-  runeData: RuneDataPropertiesData;
-  sheetSpecific: {
-    allRunes: AvailableRuneCache[];
-    runeTypes: RuneTypeEnum[];
-    journalEntryName: string;
-  };
+interface RuneSheetData {
+  allRunes: AvailableRuneCache[];
+  runeTypes: RuneTypeEnum[];
 }
 
 export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.Rune],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Rune],
       template: "systems/rqg/items/rune-item/runeSheet.hbs",
       width: 450,
-      height: 400,
+      height: 500,
       tabs: [
-        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "rune" },
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "rune",
+        },
       ],
     });
   }
 
-  getData(): RuneSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.Rune);
+  getData(): RuneSheetData & DocumentSheetData {
+    const system = duplicate(this.document.system);
 
-    const runeData = itemData.data;
-    if (!runeData.rune) {
-      runeData.rune = itemData.name;
+    if (!system.rune) {
+      system.rune = this.document.name;
     }
 
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      runeData: itemData.data,
-      sheetSpecific: {
-        allRunes: getAvailableRunes(),
-        runeTypes: Object.values(RuneTypeEnum),
-        journalEntryName: runeData.descriptionRqidLink.name,
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      system: system,
+      allRunes: getAvailableRunes(),
+      runeTypes: Object.values(RuneTypeEnum),
     };
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
-    formData["name"] = `${formData["data.rune"]} (${formData["data.runeType"]})`;
+    formData["name"] = `${formData["system.rune"]} (${formData["system.runeType"]})`;
 
-    let minorRunes = formData["data.minorRunes"];
+    let minorRunes = formData["system.minorRunes"];
     minorRunes = Array.isArray(minorRunes) ? minorRunes : [minorRunes];
     minorRunes = [...new Set(minorRunes.filter((r: any) => r))]; // Remove empty & duplicates
-    formData["data.minorRunes"] = duplicate(minorRunes);
+    formData["system.minorRunes"] = duplicate(minorRunes);
 
-    formData["data.chance"] = Number(formData["data.chance"]);
+    formData["system.chance"] = Number(formData["system.chance"]);
     return super._updateObject(event, formData);
   }
 
