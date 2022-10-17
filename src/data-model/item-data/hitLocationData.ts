@@ -59,3 +59,13 @@ export const defaultHitLocationData: HitLocationDataSourceData = {
   hitLocationType: HitLocationTypesEnum.Limb,
   connectedTo: "",
 };
+
+export const hitLocationTranslationKeys = [
+  "content.bodyType.humanoid.locations.abdomen",
+  "content.bodyType.humanoid.locations.chest",
+  "content.bodyType.humanoid.locations.head",
+  "content.bodyType.humanoid.locations.leftArm",
+  "content.bodyType.humanoid.locations.leftLeg",
+  "content.bodyType.humanoid.locations.rightArm",
+  "content.bodyType.humanoid.locations.rightLeg",
+];

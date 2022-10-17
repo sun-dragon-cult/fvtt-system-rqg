@@ -5,9 +5,12 @@ import {
   armorTypeTranslationKeys,
   materialTranslationKeys,
 } from "../../data-model/item-data/armorData";
+import {
+  hitLocationTranslationKeys,
+} from "../../data-model/item-data/hitLocationData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { assertItemType, getGameUser, getHitLocations, localize } from "../../system/util";
+import { assertItemType, getGameUser, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 
@@ -49,7 +52,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       data: itemData,
       armorData: itemData.data,
       sheetSpecific: {
-        allHitLocations: getHitLocations(),
+        allHitLocations: hitLocationTranslationKeys.map((key) => localize(key)),
         equippedStatuses: [...equippedStatuses],
         armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
         materialNames: materialTranslationKeys.map((key) => localize(key)),

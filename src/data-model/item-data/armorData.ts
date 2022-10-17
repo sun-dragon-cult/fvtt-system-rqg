@@ -48,7 +48,7 @@ export interface ArmorDataSourceData extends IPhysicalItem {
 }
 
 // --- Derived Data ---
-export interface ArmorDataPropertiesData extends ArmorDataSourceData {}
+export interface ArmorDataPropertiesData extends ArmorDataSourceData { }
 
 export interface ArmorDataSource {
   type: ItemTypeEnum.Armor;

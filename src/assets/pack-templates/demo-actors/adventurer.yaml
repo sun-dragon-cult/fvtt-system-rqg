@@ -91,7 +91,8 @@ token:
   randomImg: false
 items:
   - _id: UQ8H7xAJIgpVG2Dk
-    name: Abdomen
+    # abdomen
+    name: ${{openSystem.content.bodyType.humanoid.locations.abdomen}}$
     type: hitLocation
     img: systems/rqg/assets/images/items/hit-location.svg
     data:
@@ -107,7 +108,8 @@ items:
       hitLocationType: abdomen
       connectedTo: null
   - _id: aFrS82tzcg2nbXmy
-    name: Chest
+    # chest
+    name: ${{openSystem.content.bodyType.humanoid.locations.chest}}$
     type: hitLocation
     img: systems/rqg/assets/images/items/hit-location.svg
     data:
@@ -123,7 +125,8 @@ items:
       hitLocationType: chest
       connectedTo: null
   - _id: JlkCVdemUywPPkCp
-    name: Head
+    # head
+    name: ${{openSystem.content.bodyType.humanoid.locations.head}}$
     type: hitLocation
     img: systems/rqg/assets/images/items/hit-location.svg
     data:
@@ -139,7 +142,8 @@ items:
       hitLocationType: head
       connectedTo: null
   - _id: qnhEMFW1cIVjR70P
-    name: Left Arm
+    # leftArm
+    name: ${{openSystem.content.bodyType.humanoid.locations.leftArm}}$
     type: hitLocation
     img: systems/rqg/assets/images/items/hit-location.svg
     data:
@@ -155,7 +159,8 @@ items:
       hitLocationType: limb
       connectedTo: Chest
   - _id: oRtrkRBoGpX0eDxy
-    name: Left Leg
+    # leftLeg
+    name: ${{openSystem.content.bodyType.humanoid.locations.leftLeg}}$
     type: hitLocation
     img: systems/rqg/assets/images/items/hit-location.svg
     data:
@@ -171,7 +176,8 @@ items:
       hitLocationType: limb
       connectedTo: Abdomen
   - _id: oTkPsXMmGa3HFAKs
-    name: Right Arm
+    # rightArm
+    name: ${{openSystem.content.bodyType.humanoid.locations.rightArm}}$
     type: hitLocation
     img: systems/rqg/assets/images/items/hit-location.svg
     data:
@@ -187,7 +193,8 @@ items:
       hitLocationType: limb
       connectedTo: Chest
   - _id: T2Hat22StKbKmFVG
-    name: Right Leg
+    # rightLeg
+    name: ${{openSystem.content.bodyType.humanoid.locations.rightLeg}}$
     type: hitLocation
     img: systems/rqg/assets/images/items/hit-location.svg
     data:

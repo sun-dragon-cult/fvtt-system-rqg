@@ -1120,6 +1120,31 @@
   "prio": 0,
   "lang": "en",
   "content": {
+    "bodyType": {
+      "humanoid": {
+        "name": "Humanoid",
+        "locations": {
+          "leftLeg": "Left Leg",
+          "rightLeg": "Right Leg",
+          "abdomen": "Abdomen",
+          "chest": "Chest",
+          "leftArm": "Left Arm",
+          "rightArm": "Right Arm",
+          "head": "Head"
+        }
+      },
+      "fourLegged": {
+        "name": "Four Legged",
+        "locations": {
+          "leftHindLeg": "Left Hind Leg",
+          "rightHindLeg": "Right Hind Leg",
+          "hindquarters": "Hindquarters",
+          "forequarters": "Forequarters",
+          "leftFrontLeg": "Left Front Leg",
+          "rightFrontLeg": "Right Frong Leg"
+        }
+      }
+    },    
     "cult": {
       "aldrya": {
         "name": "Aldrya",
