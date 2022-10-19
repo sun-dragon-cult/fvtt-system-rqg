@@ -84,9 +84,12 @@ export async function showImproveAbilityDialog(
     callback: () => null,
   };
 
-  const content: string = await renderTemplate("systems/rqg/dialog/improveAbilityDialog.hbs", {
-    adapter: adapter,
-  });
+  const content: string = await renderTemplate(
+    "systems/rqg/applications/improveAbilityDialog.hbs",
+    {
+      adapter: adapter,
+    }
+  );
   const title = localize("RQG.Dialog.improveAbilityDialog.title", {
     name: adapter.name,
     typeLocName: adapter.typeLocName,

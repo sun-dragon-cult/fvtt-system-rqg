@@ -34,8 +34,8 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/actors/sheet-parts/physical-item-location.hbs",
 
     // Actor Wizard Sheet Parts
-    "systems/rqg/dialog/actor-wizard-sheet-parts/creation-species.hbs",
-    "systems/rqg/dialog/actor-wizard-sheet-parts/creation-homeland.hbs",
+    "systems/rqg/applications/actor-wizard-sheet-parts/creation-species.hbs",
+    "systems/rqg/applications/actor-wizard-sheet-parts/creation-homeland.hbs",
 
     // Item sheets
     "systems/rqg/items/passion-item/passionSheet.hbs",
@@ -56,8 +56,8 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/chat/weaponChatHandler.hbs",
 
     // Dialogs & Settings
-    "systems/rqg/dialog/improveAbilityDialog.hbs",
-    "systems/rqg/dialog/hitLocationSettings.hbs",
+    "systems/rqg/applications/improveAbilityDialog.hbs",
+    "systems/rqg/applications/hitLocationSettings.hbs",
     "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
 
     // Interface

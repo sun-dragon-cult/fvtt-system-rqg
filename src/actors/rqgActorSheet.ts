@@ -43,13 +43,13 @@ import {
 } from "../data-model/actor-data/rqgActorData";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ReputationChatHandler } from "../chat/reputationChatHandler";
-import { ActorWizard } from "../dialog/actorWizardApplication";
+import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
-import { RqgAsyncDialog } from "../dialog/rqgAsyncDialog";
+import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 interface UiSections {
@@ -1256,7 +1256,7 @@ export class RqgActorSheet extends ActorSheet<
       targetActor: this.actor,
     };
     const content: string = await renderTemplate(
-      "systems/rqg/dialog/confirmCopyIntangibleItem.hbs",
+      "systems/rqg/applications/confirmCopyIntangibleItem.hbs",
       {
         adapter: adapter,
       }
@@ -1304,7 +1304,7 @@ export class RqgActorSheet extends ActorSheet<
     };
 
     const content: string = await renderTemplate(
-      "systems/rqg/dialog/confirmTransferPhysicalItem.hbs",
+      "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
       {
         adapter: adapter,
       }

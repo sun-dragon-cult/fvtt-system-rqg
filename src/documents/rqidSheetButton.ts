@@ -1,5 +1,5 @@
 import { getGameUser } from "../system/util";
-import { RqidEditor } from "../dialog/rqidEditor/rqidEditor";
+import { RqidEditor } from "../applications/rqidEditor/rqidEditor";
 
 export function addRqidSheetHeaderButton(
   headerButtons: any[],

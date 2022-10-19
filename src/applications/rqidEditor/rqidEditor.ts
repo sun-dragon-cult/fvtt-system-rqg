@@ -14,7 +14,7 @@ export class RqidEditor extends FormApplication {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-editor"],
       popOut: true,
-      template: `systems/rqg/dialog/rqidEditor/rqidEditor.hbs`,
+      template: `systems/rqg/applications/rqidEditor/rqidEditor.hbs`,
       width: 650,
       left: 35,
       top: 15,

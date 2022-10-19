@@ -11,7 +11,7 @@ import {
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
-import { showImproveAbilityDialog } from "../../dialog/improveAbilityDialog";
+import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { Rqid } from "../../system/api/rqidApi";

@@ -1,7 +1,7 @@
 import { getGame } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
-import { DefaultItemIconSettings } from "../dialog/defaultItemIconSettings";
-import { HitLocationSettings } from "../dialog/hitLocationSettings";
+import { DefaultItemIconSettings } from "../applications/defaultItemIconSettings";
+import { HitLocationSettings } from "../applications/hitLocationSettings";
 import { systemId } from "./config";
 import { defaultItemIconsObject } from "./settings/defaultItemIcons";
 

@@ -32,7 +32,7 @@ export class DefaultItemIconSettings extends FormApplication<
     return mergeObject(super.defaultOptions, {
       id: "default-icons-settings-dialog",
       title: localize("RQG.Settings.DefaultItemIcons.dialogTitle"),
-      template: "./systems/rqg/dialog/defaultItemIconSettings.hbs",
+      template: "./systems/rqg/applications/defaultItemIconSettings.hbs",
       classes: ["form", "default-icons"],
       width: 500,
       closeOnSubmit: false,

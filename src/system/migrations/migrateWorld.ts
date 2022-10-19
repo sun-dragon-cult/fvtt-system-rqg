@@ -11,7 +11,7 @@ import { renameFireSky } from "./migrations-item/renameFireSky";
 import { trimCategoryFromSkillNames } from "./migrations-item/trimCategoryFromSkillNames";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkillsWithRqid";
 import { renameLearnedToGainedChance } from "./migrations-item/renameLearnedToGainedChance";
-import { migrateWorldDialog } from "../../dialog/migrateWorldDialog";
+import { migrateWorldDialog } from "../../applications/migrateWorldDialog";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it

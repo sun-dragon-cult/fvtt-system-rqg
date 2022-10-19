@@ -67,7 +67,7 @@ export class ActorWizard extends FormApplication {
     return mergeObject(FormApplication.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       popOut: true,
-      template: "systems/rqg/dialog/actorWizardApplication.hbs",
+      template: "systems/rqg/applications/actorWizardApplication.hbs",
       id: "actor-wizard-application",
       title: localize("RQG.ActorCreation.AdventurerCreationWizardTitle"),
       width: 850,
