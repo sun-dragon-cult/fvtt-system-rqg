@@ -1,6 +1,8 @@
 <h2>
   {{localize "RQG.Actor.SpiritMagic.SpiritMagic"}}
-  <span class="small-size">{{localize "RQG.Actor.SpiritMagic.CHALimitFormula" points=spiritMagicPointSum CHALimit=data.data.characteristics.charisma.value}}</span>
+  <span class="small-size">{{localize "RQG.Actor.SpiritMagic.CHALimitFormula"
+      points=spiritMagicPointSum
+      CHALimit=system.characteristics.charisma.value}}</span>
 </h2>
 <div class="grid spiritmagic item-list">
   <div class="headings"></div>
@@ -13,41 +15,41 @@
   <div class="head7">{{localize "RQG.Actor.SpiritMagic.Concentration"}}</div>
   <div class="head8">{{localize "RQG.Actor.SpiritMagic.Ritual"}}</div>
   <div class="head9">{{localize "RQG.Actor.SpiritMagic.Enchantment"}}</div>
-  {{#each ownedItems.spiritMagic}}
+  {{#each embeddedItems.spiritMagic}}
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
-         {{#if data.data.descriptionRqidLink.rqid}}data-rqid-link="{{data.data.descriptionRqidLink.rqid}}"{{/if}}>
+         {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
       <img class="item" src="{{img}}">
     </div>
     <div data-item-id="{{id}}"
       class="spirit-magic contextmenu item"
       data-spirit-magic-roll>
-      {{name}}{{#if data.data.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
+      {{name}}{{#if system.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
         data-spirit-magic-roll>
-      <span class="text-center">{{data.data.points}}</span>
+      <span class="text-center">{{system.points}}</span>
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
         data-spirit-magic-roll>
-      <span class="text-center">{{yes-no this.system.isVariable}}</span>
+      <span class="text-center">{{yes-no system.isVariable}}</span>
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
         data-spirit-magic-roll>
-      <span class="text-center">{{localize (concat "RQG.Item.Spell.RangeEnum." data.data.castingRange)}}</span>
+      <span class="text-center">{{localize (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}</span>
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
         data-spirit-magic-roll>
-      <span class="text-center">{{localize (concat "RQG.Item.Spell.DurationEnum." data.data.duration)}}</span>
+      <span class="text-center">{{localize (concat "RQG.Item.Spell.DurationEnum." system.duration)}}</span>
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
         data-spirit-magic-roll>
-      <span class="text-center">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." data.data.concentration)}}</span>
+      <span class="text-center">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." system.concentration)}}</span>
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"

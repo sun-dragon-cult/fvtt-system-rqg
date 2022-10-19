@@ -2,7 +2,7 @@
   {{localize "RQG.ActorCreation.Nav.1-Homeland"}}
 </h1>
 
-<div class="item-sheet-properties">
+<div class="key-value-grid">
   <label>{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}:</label>
   <select name="selectedHomelandRqid">
     {{#select homeland.selectedHomeland.data.flags.rqg.documentRqidFlags.id}}
@@ -126,7 +126,7 @@
         <div class="tab skills" data-group="homeland-item-selection" data-tab="skills">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandSkills"}}</h2>
             {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs"
-              ownedItems=homeland.selectedHomeland.ownedItems
+              embeddedItems=homeland.selectedHomeland.embeddedItems
               wizard="true"
               forChoice="homeland"
               checkedProperty="homelandPresent"
@@ -150,7 +150,7 @@
         <div class="tab passions" data-group="homeland-item-selection" data-tab="passions">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandPassions"}}</h2>
             {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
-            ownedItems=homeland.selectedHomeland.ownedItems
+            embeddedItems=homeland.selectedHomeland.embeddedItems
             wizard="true"
             checkedProperty="homelandPresent"
             forChoice="homeland"

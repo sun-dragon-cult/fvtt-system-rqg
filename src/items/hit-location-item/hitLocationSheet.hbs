@@ -36,7 +36,7 @@
       {{!-- Hit Location Tab --}}
       <div class="tab" data-group="primary" data-tab="hit-location">
 
-          <div class="item-sheet-properties">
+          <div class="key-value-grid">
 
             <label for="health-status-{{id}}">{{localize "RQG.Item.HitLocation.HealthStatus"}}</label>
             <select id="health-status-{{id}}" name="system.hitLocationHealthState">
@@ -71,7 +71,7 @@
 
       {{!-- Hit Location Definition Tab --}}
       <div class="tab" data-group="primary" data-tab="hit-location-definition">
-        <div class="item-sheet-properties">
+        <div class="key-value-grid">
           <label for="act-as-{{id}}">{{localize "RQG.Item.HitLocation.ActAs"}}</label>
           <select id="act-as-{{id}}" name="system.hitLocationType">
             {{#select system.hitLocationType}}

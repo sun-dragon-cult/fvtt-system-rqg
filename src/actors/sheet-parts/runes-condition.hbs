@@ -1,12 +1,12 @@
-{{#if ownedItems.rune.condition}}
-<div class="grid {{#if wizard}}rune-select{{else}}rune{{/if}} item-list">
-  <h2 class="fullrow">{{localize "RQG.Actor.Rune.Condition"}}</h2>
-  {{#each ownedItems.rune.condition}}
-    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
+{{#if embeddedItems.rune.condition}}
+  <div class="grid {{#if wizard}}rune-select{{else}}rune{{/if}} item-list">
+    <h2 class="fullrow">{{localize "RQG.Actor.Rune.Condition"}}</h2>
+    {{#each embeddedItems.rune.condition}}
+      {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
         rune=this
-        wizard=../wizard 
+        wizard=../wizard
         forChoice=../forChoice
         checkedProperty=../checkedProperty}}
-  {{/each}}
-</div>
+    {{/each}}
+  </div>
 {{/if}}

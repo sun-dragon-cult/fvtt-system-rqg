@@ -1,5 +1,5 @@
 <form data-document-uuid="{{uuid}}">
-  <div class="item-sheet-properties">
+  <div class="key-value-grid">
     <label for="rqid-editor">{{localize "RQG.RQGSystem.rqid"}}</label>
     <div class="input-button">
       <input type="text" id="rqid-editor" name="flags.rqg.documentRqidFlags.id" value="{{data.flags.rqg.documentRqidFlags.id}}" />
@@ -26,7 +26,7 @@
     />
   </div>
 
-  <fieldset class="item-sheet-properties">
+  <fieldset class="key-value-grid">
     <legend>Info</legend>
     {{#if data.flags.rqg.documentRqidFlags.id}}
     <label>{{localize "RQG.RQGSystem.OtherDocumentsHeader"}}</label>

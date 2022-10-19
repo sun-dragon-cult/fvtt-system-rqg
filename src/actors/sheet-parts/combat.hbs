@@ -1,6 +1,6 @@
 <h2>Combat</h2>
 <div class="flex-row flex-align-center">
-  <label data-damage-roll="{{characterData.attributes.damageBonus}}">{{localize "RQG.Actor.Combat.DamageBonus"}} {{characterData.attributes.damageBonus}}</label>
+  <label data-damage-roll="{{system.attributes.damageBonus}}">{{localize "RQG.Actor.Combat.DamageBonus"}} {{system.attributes.damageBonus}}</label>
 </div>
 <div class="grid combat item-list">
   <div class="headings"></div>
@@ -11,46 +11,46 @@
   <div class="head5">{{localize "RQG.Actor.Combat.Damage"}}</div>
   <div class="head6">{{localize "RQG.Actor.Combat.SR"}}</div>
 
-  {{#each ownedItems.weapon}}
-    {{#if (eq data.data.equippedStatus "equipped")}}
-      {{#unless data.data.isNatural}}
-        <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu item"><img class="item" src="{{img}}"></div>
-        <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu item">{{name}}
-          {{#if data.data.isProjectileWeapon}}
-            ({{quantity data.data.projectileId @root.data._id @root.tokenId}})
-          {{else if data.data.isThrownWeapon}}
-            [{{quantity data.data.projectileId @root.data._id @root.tokenId}}]
-          {{else if data.data.isProjectile}}
-            [{{data.data.quantity}}]
+  {{#each embeddedItems.weapon}}
+    {{#if (eq system.equippedStatus "equipped")}}
+      {{#unless system.isNatural}}
+        <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item"><img class="item" src="{{img}}"></div>
+        <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item">{{name}}
+          {{#if system.isProjectileWeapon}}
+            ({{quantity system.projectileId @root.id @root.tokenId}})
+          {{else if system.isThrownWeapon}}
+            [{{quantity system.projectileId @root.id @root.tokenId}}]
+          {{else if system.isProjectile}}
+            [{{system.quantity}}]
           {{/if}}
         </div>
-        <div data-item-id="{{data._id}}" class="combat contextmenu item">
-          {{#if data.data.hitPointLocation}}
-            {{data.data.hitPointLocation}}
+        <div data-item-id="{{id}}" class="combat contextmenu item">
+          {{#if system.hitPointLocation}}
+            {{system.hitPointLocation}}
           {{else}}
-          <label><input type="number" min="-99" max="99" data-item-edit-value="data.hitPoints.value"
-                        value="{{data.data.hitPoints.value}}"> / {{data.data.hitPoints.max}}</label>
+          <label><input type="number" min="-99" max="99" data-item-edit-value="system.hitPoints.value"
+                        value="{{system.hitPoints.value}}"> / {{system.hitPoints.max}}</label>
           {{/if}}
         </div>
-        <div class="item" data-weapon-roll data-item-id="{{data._id}}">
+        <div class="item" data-weapon-roll data-item-id="{{id}}">
           <span class="flex-column text-right">
-            {{#each data.data.usage}}
+            {{#each system.usage}}
               {{#if skillId}}
                 <div  class="combat contextmenu usage
                       {{#if (eq @key "missile")}}missile{{/if}} {{#if unusable}}warning{{/if}}
-                       {{#if (eq ../data.data.defaultUsage @key)}}default-usage{{/if}}"
+                       {{#if (eq ../system.defaultUsage @key)}}default-usage{{/if}}"
                       {{#if unusable}}title="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
                       data-skill-id="{{skillId}}">
                   {{localize (concat "RQG.Game.WeaponUsage." @key)}}
-                  <span class="{{experiencedclass skillId @root.data._id @root.tokenId}}">{{skillchance skillId @root.data._id @root.tokenId}}%</span>
+                  <span class="{{experiencedclass skillId @root.id @root.tokenId}}">{{skillchance skillId @root.id @root.tokenId}}%</span>
                 </div>
               {{/if}}
             {{/each}}
           </span>
         </div>
-        <div class="item" data-weapon-roll data-item-id="{{data._id}}">
+        <div class="item" data-weapon-roll data-item-id="{{id}}">
           <span class="flex-column">
-            {{#each data.data.usage}}
+            {{#each system.usage}}
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
                       data-skill-id="{{skillId}}"
@@ -61,11 +61,11 @@
         </div>
         <div class="item">
           <span class="flex-column">
-            {{#each data.data.usage}}
+            {{#each system.usage}}
               {{#if skillId}}
                 {{#if (eq @key "missile")}}
-                  {{#if ../data.data.rate}}
-                    <div class="text-right usage {{#if (eq @key "missile")}}missile{{/if}}">1/{{#unless (eq 1 ../data.data.rate)}}{{../data.data.rate}}{{/unless}}MR</div>
+                  {{#if ../system.rate}}
+                    <div class="text-right usage {{#if (eq @key "missile")}}missile{{/if}}">1/{{#unless (eq 1 ../system.rate)}}{{../system.rate}}{{/unless}}MR</div>
                   {{else}}
                     <div class="flex-column">
                       <div>
@@ -81,9 +81,10 @@
                     </div>
                   {{/if}}
                 {{else}}
-                  <span><button class="combat contextmenu" data-item-id="{{../data._id}}"
+                  <span><button class="combat contextmenu" data-item-id="{{../id}}"
                                 data-set-sr="{{sum @root.system.attributes.sizStrikeRank
-                                                   @root.system.attributes.dexStrikeRank strikeRank}}">
+                                                   @root.system.attributes.dexStrikeRank
+                                                   strikeRank}}">
                     {{sum @root.system.attributes.sizStrikeRank @root.system.attributes.dexStrikeRank strikeRank}}
                   </button></span>
                 {{/if}}
@@ -95,18 +96,18 @@
     {{/if}}
   {{/each}}
 
-  {{#each ownedItems.weapon}}
-    {{#if data.data.isNatural}}
-      <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu"><img class="item" src="{{img}}"></div>
-      <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu">{{name}}</div>
-      <div data-item-id="{{data._id}}" data-weapon-roll class="combat contextmenu"></div>
+  {{#each embeddedItems.weapon}}
+    {{#if system.isNatural}}
+      <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu"><img class="item" src="{{img}}"></div>
+      <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu">{{name}}</div>
+      <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu"></div>
       <div>
           <span class="flex-column text-right">
-            {{#each data.data.usage}}
+            {{#each system.usage}}
               {{#if skillId}}
-                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass skillId @root.data._id @root.tokenId}}"
-                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}" data-weapon-roll title="{{localize "RQG.Game.RollChat"}}">
-                      {{skillchance skillId @root.data._id @root.tokenId}}%
+                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass skillId @root.id @root.tokenId}}"
+                      data-skill-id="{{skillId}}" data-item-id="{{../id}}" data-weapon-roll title="{{localize "RQG.Game.RollChat"}}">
+                      {{skillchance skillId @root.id @root.tokenId}}%
                 </span>
               {{/if}}
             {{/each}}
@@ -114,10 +115,10 @@
       </div>
       <div>
           <span class="flex-column">
-            {{#each data.data.usage}}
+            {{#each system.usage}}
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
-                      data-skill-id="{{skillId}}" data-item-id="{{../data._id}}"
+                      data-skill-id="{{skillId}}" data-item-id="{{../id}}"
                       data-weapon-roll title="{{localize "RQG.Game.RollChat"}}">
                       {{damage}}&nbsp;
                 </span>
@@ -127,11 +128,11 @@
       </div>
       <div>
           <span class="flex-column">
-            {{#each data.data.usage}}
+            {{#each system.usage}}
               {{#if skillId}}
                 {{#if (eq @key "missile")}}
-                  {{#if ../data.data.rate}}
-                    <div class="text-right usage {{#if (eq @key "missile")}}missile{{/if}}">1/{{#unless (eq 1 ../data.data.rate)}}{{../data.data.rate}}{{/unless}}{{localize "RQG.Game.MeleeRoundAbbr"}}</div>
+                  {{#if ../system.rate}}
+                    <div class="text-right usage {{#if (eq @key "missile")}}missile{{/if}}">1/{{#unless (eq 1 ../system.rate)}}{{../system.rate}}{{/unless}}{{localize "RQG.Game.MeleeRoundAbbr"}}</div>
                   {{else}}
                     <div class="flex-column">
                       <div>
@@ -147,9 +148,10 @@
                     </div>
                   {{/if}}
                 {{else}}
-                  <span><button class="combat contextmenu" data-item-id="{{../data._id}}"
+                  <span><button class="combat contextmenu" data-item-id="{{../id}}"
                                 data-set-sr="{{sum @root.system.attributes.sizStrikeRank
-                                                   @root.system.attributes.dexStrikeRank strikeRank}}">
+                                                   @root.system.attributes.dexStrikeRank
+                                                   strikeRank}}">
                     {{sum @root.system.attributes.sizStrikeRank @root.system.attributes.dexStrikeRank strikeRank}}
                   </button></span>
                 {{/if}}
@@ -161,17 +163,17 @@
   {{/each}}
 
   {{#if dodgeSkillData}}
-    <div data-item-id="{{dodgeSkillData._id}}"
+    <div data-item-id="{{dodgeSkillData.id}}"
          class="skill contextmenu"
-         {{#if dodgeSkillData.data.descriptionRqidLink.rqid}}data-rqid-link="{{dodgeSkillData.data.descriptionRqidLink.rqid}}"{{/if}}>
+         {{#if dodgeSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{dodgeSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
       <img class="item" src="{{dodgeSkillData.img}}">
     </div>
-    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu">{{localize "RQG.Actor.Combat.Dodge"}}</div>
-    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
-    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu {{experiencedclass dodgeSkillData._id @root.data._id @root.tokenId}}">
-      <span class="text-right">{{skillchance dodgeSkillData._id @root.data._id @root.tokenId}}%</span>
+    <div data-item-id="{{dodgeSkillData.id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu">{{localize "RQG.Actor.Combat.Dodge"}}</div>
+    <div data-item-id="{{dodgeSkillData.id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
+    <div data-item-id="{{dodgeSkillData.id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu {{experiencedclass dodgeSkillData.id @root.id @root.tokenId}}">
+      <span class="text-right">{{skillchance dodgeSkillData.id @root.id @root.tokenId}}%</span>
     </div>
-    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
-    <div data-item-id="{{dodgeSkillData._id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
+    <div data-item-id="{{dodgeSkillData.id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
+    <div data-item-id="{{dodgeSkillData.id}}" data-item-roll title="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
   {{/if}}
 </div>

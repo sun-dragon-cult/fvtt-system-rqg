@@ -1,17 +1,17 @@
 {{#each runeArray}}
     <div class="rqid-link-selector">
-        <input type="checkbox" 
+        <input type="checkbox"
             class="wizard-choice-input"
             data-rqid="{{this.rqid}}"
             data-for-choice="{{../forChoice}}"
             {{#if this.choice}}
-            {{#if (lookup this.choice ../checkedProperty)}}checked{{/if}}
+              {{#if (lookup this.choice ../checkedProperty)}}checked{{/if}}
             {{/if}}
-            title="{{localize ../title name=this.name}}"
-            />
+            title="{{localize ../title name=name}}"
+        >
     {{> "systems/rqg/actors/sheet-parts/grid-rune.hbs"
         rune=this
-        wizard=../wizard 
+        wizard=../wizard
         forChoice=../forChoice
     }}
     </div>

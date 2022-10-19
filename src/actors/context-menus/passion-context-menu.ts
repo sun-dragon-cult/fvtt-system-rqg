@@ -60,7 +60,7 @@ export const passionMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await item.update({ "data.hasExperience": !item.system.hasExperience }, {});
+      await item.update({ "system.hasExperience": !item.system.hasExperience }, {});
     },
   },
   {

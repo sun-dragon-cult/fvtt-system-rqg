@@ -12,6 +12,13 @@ export interface DocumentSheetData {
   isEditable?: boolean;
 }
 
+export interface ActorSheetData extends DocumentSheetData {
+  tokenId?: string;
+  isPC: boolean;
+  /** Add `document.effects` here */
+  effects: unknown;
+}
+
 export interface ItemSheetData extends DocumentSheetData {
   /** Used, among other things, to decide if Active Effects tab should be shown */
   isEmbedded: boolean;

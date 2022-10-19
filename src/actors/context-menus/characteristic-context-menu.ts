@@ -60,7 +60,7 @@ export const characteristicMenuOptions = (
     },
     callback: async (): Promise<RqgActor | undefined> =>
       await actor.update({
-        "data.characteristics.power.hasExperience":
+        "system.characteristics.power.hasExperience":
           !actor.system.characteristics.power.hasExperience,
       }),
   },
@@ -174,8 +174,8 @@ export async function initializeAllCharacteristics(
 /** Sets actor's current hitPoints.value to the hitPoints.max */
 async function initializeCurrentDerivedAttributes(actor: RqgActor) {
   const hpUpdate = {
-    "data.attributes.hitPoints.value": actor.system.attributes.hitPoints.max,
-    "data.attributes.magicPoints.value": actor.system.attributes.magicPoints.max,
+    "system.attributes.hitPoints.value": actor.system.attributes.hitPoints.max,
+    "system.attributes.magicPoints.value": actor.system.attributes.magicPoints.max,
   };
   await actor.update(hpUpdate);
 }

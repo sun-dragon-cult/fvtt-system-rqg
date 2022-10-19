@@ -1,6 +1,7 @@
 @use "variables";
 @use "dialog/rqidEditor/rqidEditor";
 @use "items/itemsheets";
+@use "actors/actorsheets";
 
 body {
   background-attachment: fixed !important;
@@ -765,274 +766,6 @@ body {
   }
 }
 
-.rqg.character {
-  .profile-img {
-    height: 117px;
-    transform: rotate(5deg);
-    box-shadow: var(--rqg-box-shadow-profile-img);
-    border-radius: 10px;
-
-    &.unset {
-      height: 20px;
-      flex: 0 0 20px;
-    }
-  }
-
-  .mainbackground {
-    grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
-    background: url(assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
-  }
-
-  .window-content {
-    padding: 0;
-    background: none;
-
-    form {
-      display: grid;
-      grid-template-columns: min-content auto;
-      grid-template-areas:
-        "nav header"
-        "nav main";
-      grid-template-rows: min-content 1fr;
-    }
-
-    .sheet-header {
-      grid-area: header;
-      padding: 8px 4%;
-      align-items: start;
-      height: fit-content;
-    }
-
-    .navbackground {
-      grid-area: nav;
-      height: 100%;
-      width: 100%;
-    }
-
-    nav.sheet-tabs {
-      grid-area: nav;
-      flex-direction: row;
-      border: none;
-      padding: 8px 0;
-      margin: 0;
-      display: block;
-      line-height: 20px;
-
-      .item {
-        white-space: nowrap;
-        color: white;
-        writing-mode: vertical-rl;
-        transform: rotate(180deg) translateX(-4px);
-        padding: 10px 0;
-        font-size: 13px;
-        font-variant-caps: normal;
-
-        &.active {
-          text-shadow: 0 0 3px black, -2px -2px 3px black;
-          color: white;
-          font-weight: bold;
-        }
-
-        &.active::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: -6px;
-          right: -6px;
-          z-index: -1;
-          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
-          box-shadow: var(--rqg-box-shadow-tab-active);
-          background: var(--rqg-background-tab-active);
-          background-blend-mode: screen, difference;
-        }
-      }
-    }
-
-    nav.creation-sheet-tabs {
-      grid-area: nav;
-      flex-direction: column;
-      padding: 0 0.5rem;
-      min-width: 125px;
-      height: 600px;
-
-      .item {
-        flex-basis: 1fr;
-        color: white;
-        padding: 0.5rem 0;
-        font-size: 13px;
-        font-variant-caps: normal;
-
-        &.active {
-          text-shadow: 0 0 3px black, -2px -2px 3px black;
-          color: white;
-          font-weight: bold;
-          top: 0;
-          bottom: 0;
-          left: -6px;
-          right: -6px;
-          z-index: -1;
-          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
-          box-shadow: var(--rqg-box-shadow-tab-active);
-          background: var(--rqg-background-tab-active);
-          background-blend-mode: screen, difference;
-        }
-      }
-    }
-
-    nav.gear-tabs {
-      flex: none;
-
-      img {
-        height: 15px;
-      }
-
-      .item {
-        flex: min-content;
-        padding-left: 5px;
-        padding-right: 5px;
-
-        &.active,
-        &:hover {
-          box-shadow: 0 0 10px red;
-        }
-      }
-    }
-
-    .sheet-body {
-      grid-area: main;
-      padding: 8px 4%;
-    }
-  }
-
-  .topheaderline {
-    display: flex;
-    justify-content: space-between;
-
-    * {
-      margin: 0;
-    }
-
-    .mp {
-      font-weight: bold;
-
-      input {
-        width: 25px;
-        font-family: "Signika", sans-serif;
-      }
-    }
-
-    .mp {
-      margin-left: 40px;
-    }
-
-    input[name="name"] {
-      background-color: transparent;
-      border: none;
-      font-size: 35px;
-      font-weight: bold;
-    }
-  }
-
-  .characteristics {
-    display: flex;
-    justify-content: space-between;
-
-    div {
-      text-align: center;
-    }
-
-    .value {
-      font-size: 23px;
-    }
-
-    label {
-      font-size: 23px;
-      font-weight: bold;
-    }
-
-    input {
-      border: none;
-      background-color: transparent;
-      font-size: 25px;
-      width: 100%;
-
-      &:focus {
-        border: 1px solid grey;
-        background-color: var(--color-text-light-highlight);
-      }
-
-      &[type="text"] {
-        font-size: 12px;
-        margin-top: -4px;
-      }
-    }
-  }
-
-  img {
-    border: none;
-  }
-
-  .thirdline {
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 8px;
-
-    .norse {
-      font-weight: bold;
-    }
-  }
-
-  input {
-    width: initial;
-  }
-
-  .background label {
-    line-height: 2rem;
-  }
-
-  ul.location {
-    list-style: none;
-    padding: 0;
-  }
-
-  .location {
-    ul {
-      list-style: none;
-
-      &.container {
-        border-top: 3px solid var(--color-underline-header);
-        border-left: 3px solid var(--color-underline-header);
-        margin-top: 5px;
-        padding-top: 5px;
-        font-style: normal;
-        background-color: var(--rqg-table-alternate-background);
-      }
-    }
-
-    .virtual {
-      font-style: italic;
-    }
-  }
-
-  .grid.location-row {
-    display: grid;
-    grid-template-columns: auto min-content max-content min-content;
-
-    i {
-      color: var(--color-underline-header);
-      margin-right: 5px;
-      position: relative;
-      bottom: -7px;
-      left: -2px;
-      height: 100%;
-      text-align: center;
-    }
-  }
-}
-
 .rqg.sheet {
   input {
     width: inherit;
@@ -1175,4 +908,109 @@ body {
 
 .skill-selector {
   display: grid;
+}
+
+.drop-target {
+  border: 1px dotted black;
+  min-height: 2rem;
+
+  & a {
+    margin: 0.25rem;
+    width: fit-content;
+  }
+}
+
+.key-value-grid {
+  display: grid;
+  grid-template-columns: auto 2fr;
+  grid-gap: 0.5em;
+  align-items: center;
+  justify-items: flex-start;
+  padding: 0 0 0.5em 0;
+
+  & .input-button {
+    display: flex;
+
+    & input {
+      width: 100%;
+    }
+
+    & a {
+      padding: 5px;
+    }
+  }
+
+  & .drop-target {
+    display: inline-grid;
+    align-content: center;
+  }
+
+  label {
+    font-weight: bold;
+    display: block;
+    justify-self: right;
+  }
+
+  input {
+    background-color: #ffffff10;
+
+    &[type="number"] {
+      text-align: right;
+      width: 75px;
+    }
+
+    &[type="text"] {
+      width: 100%;
+    }
+
+    &.short {
+      width: 75px;
+    }
+
+    &.maxcontentwidth {
+      width: max-content;
+    }
+  }
+
+  span.number {
+    text-align: right;
+    width: 75px;
+  }
+
+  .img-name-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 0.5em;
+
+    &.bordered {
+      border: 1px black solid;
+      padding: 0.5rem;
+    }
+
+    img {
+      mix-blend-mode: normal; // TODO remove when character sheet css is extracted
+      opacity: 0.8;
+    }
+
+  }
+
+  div.drop-target {
+    width: 100%;
+  }
+
+  .item-sheet-rqid-link {
+    display: block;
+
+    i.fa-info-circle {
+      padding: 0 0 0 7px;
+    }
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  .editor-container {
+    width: 100%;
+  }
 }

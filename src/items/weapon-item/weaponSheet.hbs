@@ -25,7 +25,7 @@
       {{!-- Weapon Tab --}}
       <div class="tab" data-group="primary" data-tab="weapon">
 
-        <div class="item-sheet-properties">
+        <div class="key-value-grid">
           {{#unless system.hitPointLocation}}
             <label for="hit-points-max-{{id}}">{{localize "RQG.Item.Gear.HitPointsAbbr"}}</label>
             <input
@@ -73,7 +73,6 @@
 
         <div class="flex-row flex-wrap">
           {{#each system.usage}}
-            {{log 'weapon each usage' this}}
             <fieldset data-dropzone="{{@key}}">
               <div> {{!-- Make dragenter work despite flex--}}
               <legend>{{@key}}</legend>

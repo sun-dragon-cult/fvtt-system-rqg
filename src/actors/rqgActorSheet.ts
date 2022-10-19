@@ -18,7 +18,6 @@ import { createItemLocationTree, LocationNode } from "../items/shared/locationNo
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
 import { RqgActor } from "./rqgActor";
 import {
-  assertActorType,
   assertItemType,
   getDocumentTypes,
   getDomDataset,
@@ -36,11 +35,7 @@ import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { RqgToken } from "../combat/rqgToken";
-import {
-  ActorTypeEnum,
-  CharacterDataProperties,
-  CharacterDataPropertiesData,
-} from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ReputationChatHandler } from "../chat/reputationChatHandler";
 import { ActorWizard } from "../dialog/actorWizardApplication";
@@ -50,7 +45,7 @@ import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../dialog/rqgAsyncDialog";
-import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ActorSheetData } from "../items/shared/sheetInterfaces";
 
 interface UiSections {
   health: boolean;
@@ -67,18 +62,13 @@ interface UiSections {
 }
 
 interface CharacterSheetData {
-  data: CharacterDataProperties;
-  characterData: CharacterDataPropertiesData;
-
-  // sheetSpecific { ... TODO organize as in itemSheets with sheetSpecific & data + characterData (data = current Characterdata)
-  tokenId?: string;
   /** reorganized for presentation TODO type it better */
-  ownedItems: any;
+  embeddedItems: any;
 
   /** Find this skill to show on spirit combat part */
-  spiritCombatSkillData: ItemData | undefined;
+  spiritCombatSkillData: any;
   /** Find this skill to show on combat part */
-  dodgeSkillData: ItemData | undefined;
+  dodgeSkillData: RqgItem | undefined;
 
   // Lists for dropdown values
   occupations: `${OccupationEnum}`[];
@@ -109,9 +99,6 @@ interface CharacterSheetData {
 
   currencyTotals: any;
 
-  // UI toggles
-  isGM: boolean;
-  isPC: boolean;
   showUiSection: UiSections;
   actorWizardFeatureFlag: boolean;
 }
@@ -159,34 +146,30 @@ export class RqgActorSheet extends ActorSheet<
 
   /* -------------------------------------------- */
 
-  async getData(): Promise<CharacterSheetData | ActorSheet.Data> {
-    const actorData = this.document.toObject(false);
-    assertActorType(actorData.type, ActorTypeEnum.Character);
-
-    const isOwner: boolean = this.document.isOwner;
+  async getData(): Promise<CharacterSheetData & ActorSheetData> {
+    const system = duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
-    // @ts-expect-error system
-    const dexStrikeRank = actorData.system.attributes.dexStrikeRank;
+    const dexStrikeRank = system.attributes.dexStrikeRank;
 
     return {
-      cssClass: isOwner ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      options: this.options,
-      owner: isOwner,
-      title: this.title,
+      id: this.document.id ?? "",
+      tokenId: this.document?.token?.id ?? undefined, // TODO check if different from actorData.token.id - if not the use data
+      // tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
 
-      data: actorData, // TODO Why have both data & characterData???
-      // @ts-expect-error system
-      characterData: actorData.system,
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
+      isEditable: this.isEditable,
+      isGM: getGameUser().isGM,
+      isPC: this.actor.hasPlayerOwner,
+      system: system,
+      effects: this.actor.effects,
 
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-      tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
-      ownedItems: RqgActorSheet.organizeOwnedItems(this.actor),
+      embeddedItems: await RqgActorSheet.organizeEmbeddedItems(this.actor),
 
-      spiritCombatSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.spiritCombat)
-        ?.system,
-      dodgeSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.dodge)?.system,
+      spiritCombatSkillData: this.actor.getBestEmbeddedItemByRqid(
+        CONFIG.RQG.skillRqid.spiritCombat
+      ),
+      dodgeSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.dodge),
 
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
@@ -197,15 +180,10 @@ export class RqgActorSheet extends ActorSheet<
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
-      baseStrikeRank: this.getBaseStrikeRank(
-        dexStrikeRank,
-        // @ts-expect-error system
-        actorData.system.attributes.sizStrikeRank
-      ),
+      baseStrikeRank: this.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
       // @ts-expect-error async
-      enrichedAllies: await TextEditor.enrichHTML(actorData.system.allies, { async: true }),
-      // @ts-expect-error system
-      enrichedBiography: await TextEditor.enrichHTML(actorData.system.background.biography, {
+      enrichedAllies: await TextEditor.enrichHTML(system.allies, { async: true }),
+      enrichedBiography: await TextEditor.enrichHTML(system.background.biography ?? "", {
         // @ts-expect-error async
         async: true,
       }),
@@ -224,8 +202,6 @@ export class RqgActorSheet extends ActorSheet<
       currencyTotals: this.calcCurrencyTotals(),
 
       // UI toggles
-      isGM: getGameUser().isGM,
-      isPC: this.actor.hasPlayerOwner,
       showUiSection: this.getUiSectionVisibility(),
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
     };
@@ -300,14 +276,15 @@ export class RqgActorSheet extends ActorSheet<
         .filter(
           (
             e: any // TODO v10 any
-          ) => e.changes.find((e: any) => e.key === "data.attributes.magicPoints.max") != undefined
+          ) =>
+            e.changes.find((e: any) => e.key === "system.attributes.magicPoints.max") != undefined
         )
         // TODO v10 any
         .map((e: any) => {
           return {
             name: e.label,
             size: e.changes
-              .filter((c: any) => c.key === "data.attributes.magicPoints.max")
+              .filter((c: any) => c.key === "system.attributes.magicPoints.max")
               .reduce((acc: number, c: any) => acc + Number(c.value), 0),
           };
         })
@@ -368,57 +345,63 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   private getCharacterElementRuneImgs(): RuneDataSource[] {
-    return (
-      this.actor.items
-        .reduce((acc: RuneDataSource[], i: RqgItem) => {
-          if (
-            i.type === ItemTypeEnum.Rune &&
-            i.system.runeType === RuneTypeEnum.Element &&
-            !!i.system.chance
-          ) {
-            acc.push(i.system as RuneDataSource);
-          }
-          return acc;
-        }, [])
-        // @ts-expect-error v10
-        .sort((a: RuneDataSource, b: RuneDataSource) => b.chance - a.chance)
-    );
+    return this.actor.items
+      .reduce((acc: any[], i: RqgItem) => {
+        if (
+          i.type === ItemTypeEnum.Rune &&
+          i.system.runeType === RuneTypeEnum.Element &&
+          !!i.system.chance
+        ) {
+          acc.push({
+            id: i.id,
+            img: i.img,
+            chance: i.system.chance,
+            descriptionRqid: i.system.descriptionRqidLink?.rqid,
+          });
+        }
+        return acc;
+      }, [])
+      .sort((a: any, b: any) => b.chance - a.chance);
   }
 
   private getCharacterPowerRuneImgs(): RuneDataSource[] {
-    return (
-      this.actor.items
-        .reduce((acc: RuneDataSource[], i: RqgItem) => {
-          if (
-            i.type === ItemTypeEnum.Rune &&
-            i.system.runeType === RuneTypeEnum.Power &&
-            i.system.chance > 50
-          ) {
-            acc.push(i.system as RuneDataSource);
-          }
-          return acc;
-        }, [])
-        // @ts-expect-error v10
-        .sort((a: RuneDataSource, b: RuneDataSource) => b.chance - a.chance)
-    );
+    return this.actor.items
+      .reduce((acc: any[], i: RqgItem) => {
+        if (
+          i.type === ItemTypeEnum.Rune &&
+          i.system.runeType === RuneTypeEnum.Power &&
+          i.system.chance > 50
+        ) {
+          acc.push({
+            id: i.id,
+            img: i.img,
+            chance: i.system.chance,
+            descriptionRqid: i.system.descriptionRqidLink?.rqid,
+          });
+        }
+        return acc;
+      }, [])
+      .sort((a: any, b: any) => b.chance - a.chance);
   }
 
   private getCharacterFormRuneImgs(): RuneDataSource[] {
-    return (
-      this.actor.items
-        .reduce((acc: RuneDataSource[], i: RqgItem) => {
-          if (
-            i.type === ItemTypeEnum.Rune &&
-            i.system.runeType === RuneTypeEnum.Form &&
-            (!i.system.opposingRune || i.system.chance > 50)
-          ) {
-            acc.push(i.system as RuneDataSource);
-          }
-          return acc;
-        }, [])
-        // @ts-expect-error v10
-        .sort((a: RuneDataSource, b: RuneDataSource) => b.chance - a.chance)
-    );
+    return this.actor.items
+      .reduce((acc: any[], i: RqgItem) => {
+        if (
+          i.type === ItemTypeEnum.Rune &&
+          i.system.runeType === RuneTypeEnum.Form &&
+          (!i.system.opposingRune || i.system.chance > 50)
+        ) {
+          acc.push({
+            id: i.id,
+            img: i.img,
+            chance: i.system.chance,
+            descriptionRqid: i.system.descriptionRqidLink?.rqid,
+          });
+        }
+        return acc;
+      }, [])
+      .sort((a: any, b: any) => b.chance - a.chance);
   }
 
   private getSkillDataByName(name: String): SkillDataProperties | undefined {
@@ -434,11 +417,11 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   /**
-   * Take the owned items of the actor and rearrange them for presentation.
+   * Take the embedded items of the actor and rearrange them for presentation.
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
    * TODO Fix the typing
    */
-  public static organizeOwnedItems(actor: RqgActor): any {
+  public static async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
     const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
     actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
@@ -507,8 +490,40 @@ export class RqgActorSheet extends ActorSheet<
       (a: any, b: any) => b.system.dieFrom - a.system.dieFrom
     );
 
-    //@ts-ignore
-    itemTypes[ItemTypeEnum.Weapon].forEach((weapon) => {
+    // Enrich Cult texts for holyDays, gifts, geases, subCults
+    await Promise.all(
+      itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
+        cult.system.enrichedHolyDays = await TextEditor.enrichHTML(cult.system.holyDays, {
+          // @ts-expect-error async
+          async: true,
+        });
+        // @ts-expect-error async
+        cult.system.enrichedGifts = await TextEditor.enrichHTML(cult.system.gifts, { async: true });
+        cult.system.enrichedGeases = await TextEditor.enrichHTML(cult.system.geases, {
+          // @ts-expect-error async
+          async: true,
+        });
+        cult.system.enrichedSubCults = await TextEditor.enrichHTML(cult.system.subCults, {
+          // @ts-expect-error async
+          async: true,
+        });
+      })
+    );
+
+    // Enrich passion description texts
+    await Promise.all(
+      itemTypes[ItemTypeEnum.Passion].map(async (passion: any) => {
+        passion.system.enrichedDescription = await TextEditor.enrichHTML(
+          passion.system.description,
+          {
+            // @ts-expect-error async
+            async: true,
+          }
+        );
+      })
+    );
+
+    itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
       assertItemType(weapon.type, ItemTypeEnum.Weapon);
 
       let usages = weapon.system.usage;
@@ -596,15 +611,15 @@ export class RqgActorSheet extends ActorSheet<
     let maxHitPoints = this.actor.system.attributes.hitPoints.max;
     requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
     if (
-      formData["data.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
-      formData["data.attributes.hitPoints.value"] > maxHitPoints
+      formData["system.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
+      formData["system.attributes.hitPoints.value"] > maxHitPoints
     ) {
-      formData["data.attributes.hitPoints.value"] = maxHitPoints;
+      formData["system.attributes.hitPoints.value"] = maxHitPoints;
     }
 
     // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
     const hpTmp = this.actor.system.attributes.hitPoints.value;
-    this.actor.system.attributes.hitPoints.value = formData["data.attributes.hitPoints.value"];
+    this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
 
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
     if (newHealth !== this.actor.system.attributes.health) {
@@ -642,7 +657,7 @@ export class RqgActorSheet extends ActorSheet<
       HitLocationSheet.setTokenEffect(this.token.object as RqgToken, tokenHealthBefore);
     }
 
-    formData["data.attributes.health"] = newHealth;
+    formData["system.attributes.health"] = newHealth;
 
     return super._updateObject(event, formData);
   }
@@ -962,7 +977,7 @@ export class RqgActorSheet extends ActorSheet<
             (equippedStatuses.indexOf(item.system.equippedStatus) + 1) % equippedStatuses.length
           ];
         // Will trigger a Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
-        await item.update({ "data.equippedStatus": newStatus });
+        await item.update({ "system.equippedStatus": newStatus });
       });
     });
 

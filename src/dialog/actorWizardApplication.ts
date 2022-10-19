@@ -226,7 +226,7 @@ export class ActorWizard extends FormApplication {
       }
     }
 
-    // Create an object similar to the one from ActorSheet organizeOwnedItems
+    // Create an object similar to the one from ActorSheet organizeEmbeddedItems
     const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
     const skills: any = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
@@ -265,15 +265,15 @@ export class ActorWizard extends FormApplication {
 
     if (this.homeland.selectedHomeland) {
       // put skills and passions on homeland for purposes of sheet
-      //@ts-ignore ownedItems
-      this.homeland.selectedHomeland.ownedItems = itemTypes; //TODO Sort this by category and use the skill tab
+      //@ts-ignore embeddedItems
+      this.homeland.selectedHomeland.embeddedItems = itemTypes; //TODO Sort this by category and use the skill tab
     }
 
     return {
       actor: this.actor,
       species: this.species,
       speciesTemplateItems: this.species.selectedSpeciesTemplate
-        ? RqgActorSheet.organizeOwnedItems(this.species.selectedSpeciesTemplate)
+        ? await RqgActorSheet.organizeEmbeddedItems(this.species.selectedSpeciesTemplate)
         : undefined,
       homeland: this.homeland,
       choices: this.choices,

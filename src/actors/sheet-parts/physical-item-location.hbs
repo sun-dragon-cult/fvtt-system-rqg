@@ -6,21 +6,21 @@
       {{name}}
     </div>
     {{#if id}}
-    <div>{{multiply quantity encumbrance}}</div>
-    <div>
-      <img data-item-equipped-toggle class="equipped-status text-center" title="{{equippedStatus}}"
-           src="{{equippedIcon equippedStatus}}">
-    </div>
+      <div>{{decimalMultiply quantity encumbrance}}</div>
+      <div>
+        <img data-item-equipped-toggle class="equipped-status text-center" title="{{equippedStatus}}"
+             src="{{equippedIcon equippedStatus}}">
+      </div>
     {{/if}}
     <div>
       {{#if id}}
-      <input type="text" list="locations" data-item-edit-value="data.location" value="{{location}}" size="10">
+        <input type="text" list="locations" data-item-edit-value="system.location" value="{{location}}" size="10">
       {{/if}}
     </div>
   </div>
   <ul class="{{#if contains}}container{{/if}}">
     {{#each contains}}
-    {{> "systems/rqg/actors/sheet-parts/physical-item-location.hbs"}}
+      {{> "systems/rqg/actors/sheet-parts/physical-item-location.hbs"}}
     {{/each}}
   </ul>
 </li>

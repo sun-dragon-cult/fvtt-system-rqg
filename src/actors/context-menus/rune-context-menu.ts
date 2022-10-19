@@ -47,7 +47,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.Rune);
-      await item.update({ "data.hasExperience": !item.system.hasExperience }, {});
+      await item.update({ "system.hasExperience": !item.system.hasExperience }, {});
     },
   },
   {

@@ -1,13 +1,14 @@
 <nav class="gear-tabs tabs" data-group="gear-view">
   <h3 class="item" title="{{localize "RQG.Actor.Gear.ViewByItemType"}}" data-group="gear-view" data-tab="by-item-type">
     <img src="{{gearViewIcon 'byItemType'}}"> {{localize "RQG.Actor.Gear.ViewByItemType"}}
-    </h3>
+  </h3>
   <h3 class="item" title="{{localize "RQG.Actor.Gear.ViewByLocation"}}" data-group="gear-view" data-tab="by-location">
     <img src="{{gearViewIcon 'byLocation'}}"> {{localize "RQG.Actor.Gear.ViewByLocation"}}
   </h3>
 </nav>
 
 <section class="gear-body">
+  {{!-- View by location --}}
   <div class="tab by-location" data-group="gear-view" data-tab="by-location">
     <article>
       <h2>{{localize "RQG.Actor.Gear.Gear"}}</h2>
@@ -20,15 +21,16 @@
       </div>
       <ul class="location virtual item-list">
         {{#each itemLocationTree.contains}}
-        {{> "systems/rqg/actors/sheet-parts/physical-item-location.hbs"}}
+          {{> "systems/rqg/actors/sheet-parts/physical-item-location.hbs"}}
         {{/each}}
       </ul>
     </article>
   </div>
 
+  {{!-- View by item type --}}
   <div class="tab by-item-type" data-group="gear-view" data-tab="by-item-type">
     <div class="gear-wrapper flex-row">
-      <!--Gear-->
+      {{!-- Gear --}}
       <article class="flex-1">
         <h2>{{localize "RQG.Actor.Gear.Gear"}}</h2>
         <div class="grid gear item-list">
@@ -40,31 +42,34 @@
           <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
           <div class="head6"></div>
           <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
-          {{#each ownedItems.gear}}
-          {{#if (eq data.data.physicalItemType "unique")}}
-          <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
-          <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
-          <div data-item-id="{{id}}" class="gear contextmenu item">{{!-- TODO REMOVE QUANTITY --}}</div>
-          <div data-item-id="{{id}}" class="gear contextmenu item">
-            <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
-          </div>
-          <div data-item-id="{{id}}" class="gear contextmenu item">
-            <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
-          </div>
-          <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
-            <img class="equipped-status text-center" title="{{localize (concat "RQG.Item.EquippedStatus." data.data.equippedStatus)}}"
-                 src="{{equippedIcon data.data.equippedStatus}}">
-          </div>
-          <div data-item-id="{{id}}" class="gear contextmenu item">
-            <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
-                   size="10">
-          </div>
-          {{/if}}
+          {{#each embeddedItems.gear}}
+            {{#if (eq system.physicalItemType "unique")}}
+              <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">{{!-- TODO REMOVE QUANTITY --}}</div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">
+                  {{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}
+                </span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
+              </div>
+              <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
+                <img class="equipped-status text-center"
+                     title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                     src="{{equippedIcon system.equippedStatus}}">
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}"
+                       size="10">
+              </div>
+            {{/if}}
           {{/each}}
         </div>
       </article>
 
-      <!--Currency-->
+      {{!-- Currency --}}
       <div class="flex-1">
         <article>
           <h2>{{localize "RQG.Actor.Gear.Currency"}}</h2>
@@ -73,44 +78,49 @@
             <div class="head1"></div>
             <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
             <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.QuantityAbbr"}}</span></div>
-            {{!-- <div class="head4"><span class="text-right">Price</span></div> --}}
             <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.ExtendedAbbr"}}</span></div>
             <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
             <div class="head6"></div>
             <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
-            {{#each ownedItems.currency}}
-            <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
-            <div data-item-id="{{id}}" class="gear contextmenu item" title="{{data.data.price.conversion}}">{{name}}</div>
-            <div data-item-id="{{id}}" class="gear contextmenu item">
-              <span class="text-right"><input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}"></span>
-            </div>
-            <div data-item-id="{{id}}" class="gear contextmenu item">
-              <span class="text-right">{{#if data.data.price.estimated}}{{multiplyfixed2 data.data.quantity data.data.price.estimated}}&thinsp;L{{/if}}</span>
-            </div>
-            <div data-item-id="{{id}}" class="gear contextmenu pad-left item">
-              <span class="text-right">{{multiplyfixed2 data.data.quantity data.data.encumbrance}}</span>
-            </div>
-            <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
-              <img class="equipped-status text-center" title="{{localize (concat "RQG.Item.EquippedStatus." data.data.equippedStatus)}}"
-                   src="{{equippedIcon data.data.equippedStatus}}">
-            </div>
-            <div data-item-id="{{id}}" class="gear contextmenu item">
-              <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
-                     size="10">
-            </div>
+            {{#each embeddedItems.currency}}
+              <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+              <div data-item-id="{{id}}" class="gear contextmenu item"
+                   title="{{system.price.conversion}}">{{name}}</div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right"><input type="number" min="0" max="999999"
+                                                data-item-edit-value="system.quantity"
+                                                value="{{system.quantity}}"></span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{#if system.price.estimated}}
+                  {{multiplyCurrency system.quantity system.price.estimated 'L'}}
+                {{/if}}</span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu pad-left item">
+                <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
+              </div>
+              <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
+                <img class="equipped-status text-center"
+                     title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                     src="{{equippedIcon system.equippedStatus}}">
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}"
+                       size="10">
+              </div>
             {{/each}}
             <div class="no-background"></div>
             <div class="no-background">{{localize "RQG.Actor.Gear.Total"}}</div>
             <div class="no-background"><span class="text-right"></span></div>
-            <div class="no-background"><span class="text-right">{{numberFormat currencyTotals.price.estimated decimals=2}}&thinsp;L</span></div>
-            <div class="no-background"><span class="text-right">{{numberFormat currencyTotals.encumbrance decimals=2}}</span></div>
+            <div class="no-background"><span class="text-right">{{currency currencyTotals.price.estimated 'L'}}</span></div>
+            <div class="no-background"><span class="text-right">{{decimalMultiply 1 currencyTotals.encumbrance}}</span></div>
             <div class="no-background"></div>
-            <div class="no-background" style="background-color: transparent;"></div>
+            <div class="no-background"></div>
             <div class="footer"></div>
           </div>
         </article>
 
-        <!--Consumables-->
+        {{!--Consumables--}}
         <article>
           <h2>{{localize "RQG.Actor.Gear.Consumables"}}</h2>
           <div class="grid gear item-list">
@@ -122,35 +132,40 @@
             <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
             <div class="head6"></div>
             <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
-            {{#each ownedItems.gear}}
-            {{#if (eq data.data.physicalItemType "consumable")}}
-            <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
-            <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
-            <div data-item-id="{{id}}" class="gear contextmenu item">
-              <span class="text-right"><input type="number" min="0" max="999999" data-item-edit-value="data.quantity" value="{{data.data.quantity}}"></span>
-            </div>
-            <div data-item-id="{{id}}" class="gear contextmenu item">
-              <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
-            </div>
-            <div data-item-id="{{id}}" class="gear contextmenu item">
-              <span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
-            </div>
-            <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
-              <img class="equipped-status text-center" title="{{localize (concat "RQG.Item.EquippedStatus." data.data.equippedStatus)}}"
-                   src="{{equippedIcon data.data.equippedStatus}}">
-            </div>
-            <div data-item-id="{{id}}" class="gear contextmenu item">
-              <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
-                     size="10">
-            </div>
-            {{/if}}
+            {{#each embeddedItems.gear}}
+              {{#if (eq system.physicalItemType "consumable")}}
+                <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right"><input type="number" min="0" max="999999"
+                                          data-item-edit-value="system.quantity"
+                                          value="{{system.quantity}}"
+                ></span>
+                </div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{#if system.price.estimated}}
+                  {{currency system.price.estimated 'L'}}{{/if}}</span>
+                </div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">
+                  <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
+                </div>
+                <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
+                  <img class="equipped-status text-center"
+                       title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                       src="{{equippedIcon system.equippedStatus}}">
+                </div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">
+                  <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}"
+                         size="10">
+                </div>
+              {{/if}}
             {{/each}}
           </div>
         </article>
       </div>
     </div>
 
-    <!-- Weapons & Shields-->
+    {{!-- Weapons & Shields --}}
     <article>
       <h2>{{localize "RQG.Actor.Gear.WeaponsAndShields"}}</h2>
       <div class="grid weapon item-list">
@@ -167,75 +182,82 @@
         <div class="head10"></div>
         <div class="head11">{{localize "RQG.Actor.Gear.Location"}}</div>
 
-        {{#each ownedItems.weapon}}
-          {{#unless data.data.isNatural}}
+        {{#each embeddedItems.weapon}}
+          {{#unless system.isNatural}}
             <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
             <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}
-              {{#if (eq data.data.physicalItemType "consumable")}} ({{data.data.quantity}}){{/if}}
+              {{#if (eq system.physicalItemType "consumable")}} ({{system.quantity}}){{/if}}
             </div>
             <div data-item-id="{{id}}" class="gear usagecontainer contextmenu nowrap item">
-              {{#each data.data.usage}}
+              {{#each system.usage}}
                 {{#if skillId}}
-                <div class="usagecell {{#if unusable}} warning{{/if}}" {{#if unusable}}title="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}>
-                  {{skillchance skillId @root.data._id @root.tokenId}}%&nbsp; {{skillname skillId @root.data._id @root.tokenId}}
-                </div>
+                  <div class="usagecell
+                        {{#if unusable}} warning{{/if}}"
+                        {{#if unusable}}title="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
+                  >
+                  {{skillchance skillId @root.id @root.tokenId}}%&nbsp; {{skillname skillId @root.id @root.tokenId}}
+                  </div>
                 {{/if}}
               {{/each}}
             </div>
             <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
               <span class="text-center">
-              {{#each data.data.usage}}
-                {{#if skillId}}
-                <div class="usagecell">
-                  {{damage}}
-                </div>
-                {{/if}}
-              {{/each}}
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    <div class="usagecell">
+                      {{damage}}
+                    </div>
+                  {{/if}}
+                {{/each}}
               </span>
-            </div>
-            <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item"><span class="text-right">
-              {{#each data.data.usage}}
-                {{#if skillId}}
-                  <div class="usagecell {{#if underMinSTR}} warning{{/if}}" {{#if underMinSTR}}title="{{localize "RQG.Actor.Combat.StrMinNotMetTip"}}"{{/if}}>
-                    {{#if minStrength}}{{minStrength}}{{else}}—{{/if}}
-                  </div>
-                {{/if}}
-              {{/each}}
-            </span>
             </div>
             <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
               <span class="text-right">
-              {{#each data.data.usage}}
-                {{#if skillId}}
-                  <div class="usagecell {{#if underMinDEX}} warning{{/if}}" {{#if underMinDEX}}title="{{localize "RQG.Actor.Combat.DexMinNotMetTip"}}"{{/if}}>
-                    {{#if minDexterity}}{{minDexterity}}{{else}}—{{/if}}
-                  </div>
-                {{/if}}
-              {{/each}}
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    <div class="usagecell {{#if underMinSTR}} warning{{/if}}"
+                         {{#if underMinSTR}}title="{{localize "RQG.Actor.Combat.StrMinNotMetTip"}}"{{/if}}>
+                      {{#if minStrength}}{{minStrength}}{{else}}—{{/if}}
+                    </div>
+                  {{/if}}
+                {{/each}}
               </span>
             </div>
-            <div data-item-id="{{id}}" class="gear contextmenu item"><span
-              class="text-right">{{data.data.hitPoints.value}}</span>
+            <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
+              <span class="text-right">
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    <div class="usagecell {{#if underMinDEX}} warning{{/if}}"
+                         {{#if underMinDEX}}title="{{localize "RQG.Actor.Combat.DexMinNotMetTip"}}"{{/if}}>
+                      {{#if minDexterity}}{{minDexterity}}{{else}}—{{/if}}
+                    </div>
+                  {{/if}}
+                {{/each}}
+              </span>
             </div>
             <div data-item-id="{{id}}" class="gear contextmenu item">
-              <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
+              <span class="text-right">{{system.hitPoints.value}}</span>
             </div>
-            <div data-item-id="{{id}}" class="gear contextmenu item"><span class="text-right">{{multiply data.data.quantity data.data.encumbrance}}</span>
+            <div data-item-id="{{id}}" class="gear contextmenu item">
+              <span class="text-right">{{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}</span>
+            </div>
+            <div data-item-id="{{id}}" class="gear contextmenu item">
+              <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
             </div>
             <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
-              <img class="equipped-status text-center" title="{{localize (concat "RQG.Item.EquippedStatus." data.data.equippedStatus)}}"
-                   src="{{equippedIcon data.data.equippedStatus}}">
+              <img class="equipped-status text-center"
+                   title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                   src="{{equippedIcon system.equippedStatus}}">
             </div>
             <div data-item-id="{{id}}" class="gear contextmenu item">
-              <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
-                     size="10">
+              <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}" size="10">
             </div>
           {{/unless}}
         {{/each}}
       </div>
     </article>
 
-    <!--Armor-->
+    {{!-- Armor --}}
     <article>
       <h2>{{localize "RQG.Actor.Gear.Armor"}}</h2>
       <div class="grid armor item-list">
@@ -249,33 +271,34 @@
         <div class="head7"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
         <div class="head8"></div>
         <div class="head9">{{localize "RQG.Actor.Gear.Location"}}</div>
-        {{#each ownedItems.armor}}
+        {{#each embeddedItems.armor}}
           <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
           <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
           <div data-item-id="{{id}}" class="gear contextmenu item">
-            <span class="text-right">{{data.data.absorbs}}</span>
+            <span class="text-right">{{system.absorbs}}</span>
           </div>
           <div data-item-id="{{id}}" class="gear contextmenu item">[
-            {{#each data.data.hitLocations}}
+            {{#each system.hitLocations}}
               {{this}},
             {{/each}}
             ]
           </div>
           <div data-item-id="{{id}}" class="gear contextmenu item">
-            <span class="text-right">{{data.data.moveQuietlyPenalty}}</span>
+            <span class="text-right">{{system.moveQuietlyPenalty}}</span>
           </div>
           <div data-item-id="{{id}}" class="gear contextmenu item">
-            <span class="text-right">{{#if data.data.price.estimated}}{{currency data.data.price.estimated 'L'}}{{/if}}</span>
+            <span class="text-right">{{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}</span>
           </div>
           <div data-item-id="{{id}}" class="gear contextmenu item">
-            <span class="text-right">{{data.data.encumbrance}}</span>
+            <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
           </div>
           <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
-            <img class="equipped-status text-center" title="{{localize (concat "RQG.Item.EquippedStatus." data.data.equippedStatus)}}"
-                 src="{{equippedIcon data.data.equippedStatus}}">
+            <img class="equipped-status text-center"
+                 title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                 src="{{equippedIcon system.equippedStatus}}">
           </div>
           <div data-item-id="{{id}}" class="gear contextmenu item">
-            <input type="text" list="locations" data-item-edit-value="data.location" value="{{data.data.location}}"
+            <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}"
                    size="10">
           </div>
         {{/each}}
@@ -283,8 +306,9 @@
     </article>
   </div>
 </section>
+
 <datalist id="locations">
   {{#each locations}}
-  <option value="{{this}}">{{this}}</option>
+    <option value="{{this}}">{{this}}</option>
   {{/each}}
 </datalist>

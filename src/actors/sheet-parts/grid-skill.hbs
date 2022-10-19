@@ -2,7 +2,7 @@
 <div>
     <input type="checkbox"
         class="wizard-choice-input"
-        data-rqid="{{skill.data.flags.rqg.documentRqidFlags.id}}"
+        data-rqid="{{skill.flags.rqg.documentRqidFlags.id}}"
         data-for-choice="{{forChoice}}"
         {{#if (lookup skill.system.choice checkedProperty)}}checked{{/if}} {{!-- TODO this needs to be made generic.  See rune-selector --}}
         title="{{localize "RQG.Actor.Skill.ImportSkillCheckboxTitle" skillName=skill.name}}"

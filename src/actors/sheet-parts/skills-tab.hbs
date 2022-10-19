@@ -1,25 +1,23 @@
 <div class="masonry">
-  {{#each ownedItems.skill}}
-  {{#if this}}
+  {{#each embeddedItems.skill}} {{#if this}}
   <div class="masonry-item">
-    <h2>{{localize (concat 'RQG.Actor.Skill.SkillCategory.' @key)}} 
+    <h2>{{localize (concat 'RQG.Actor.Skill.SkillCategory.' @key)}}
       {{#unless ../wizard}}
-        ({{#with @root.characterData.skillCategoryModifiers}}{{lookup this @key}}{{/with}})
+        ({{#with @root.system.skillCategoryModifiers}}{{lookup this @key}}{{/with}})
       {{/unless}}
     </h2>
     <div class="grid {{#if ../wizard}}skill-select{{else}}skill{{/if}} item-list">
       {{#each this}}
-      {{#unless data.data.runes}}
-      {{>"systems/rqg/actors/sheet-parts/grid-skill.hbs"
-        skill=this
-        wizard=../../wizard 
-        forChoice=../../forChoice
-        checkedProperty=../../checkedProperty
-        asBonus=../../asBonus}}
-      {{/unless}}
+        {{#unless system.runes}} {{!-- filter out sorcery skills --}}
+          {{>"systems/rqg/actors/sheet-parts/grid-skill.hbs"
+            skill=this
+            wizard=../../wizard
+            forChoice=../../forChoice
+            checkedProperty=../../checkedProperty
+            asBonus=../../asBonus}}
+        {{/unless}}
       {{/each}}
     </div>
   </div>
-  {{/if}}
-  {{/each}}
+  {{/if}} {{/each}}
 </div>

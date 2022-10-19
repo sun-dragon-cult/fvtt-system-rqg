@@ -25,7 +25,27 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("currency", (value, unit) => {
-    return `${new Intl.NumberFormat().format(value)} ${unit}`;
+    return `${new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: value % 1 ? 2 : 0, // 0 or 2 decimals
+      maximumFractionDigits: 2,
+    }).format(value)} ${unit}`;
+  });
+
+  Handlebars.registerHelper("multiplyCurrency", (quantity, value, unit) => {
+    const total = Number(quantity) * Number(value);
+    return `${new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: value % 1 ? 2 : 0, // 0 or 2 decimals
+      maximumFractionDigits: 2,
+    }).format(total)} ${unit}`;
+  });
+
+  Handlebars.registerHelper("decimalMultiply", (quantity, value, decimals) => {
+    const fractionDigits = isNaN(decimals) ? undefined : Number(decimals);
+    const total = Number(quantity) * Number(value);
+    return `${new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: 2,
+    }).format(total)}`;
   });
 
   Handlebars.registerHelper("itemname", (itemId, actorId, tokenId) => {
@@ -104,11 +124,6 @@ export const registerHandlebarsHelpers = function () {
       "defaultItemIconSettings"
     );
     return defaultItemIconSettings[itemType];
-  });
-
-  // TODO remove!
-  Handlebars.registerHelper("enrichHtml", (content: string): string => {
-    return TextEditor.enrichHTML(content);
   });
 
   Handlebars.registerHelper("equippedIcon", (equippedStatus: EquippedStatus): string => {

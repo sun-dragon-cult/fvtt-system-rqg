@@ -268,7 +268,7 @@ export class RqgActor extends Actor {
   public async drawMagicPoints(amount: number, result: ResultEnum): Promise<void> {
     if (result <= ResultEnum.Success) {
       const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
-      await this.update({ "data.attributes.magicPoints.value": newMp });
+      await this.update({ "system.attributes.magicPoints.value": newMp });
       ui.notifications?.info(
         localize("RQG.Dialog.spiritMagicChat.SuccessfullyCastInfo", { amount: amount })
       );
@@ -279,7 +279,7 @@ export class RqgActor extends Actor {
     return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
   }
 
-  public getBestEmbeddedItemByRqid(rqid: string): RqgItem {
+  public getBestEmbeddedItemByRqid(rqid: string): RqgItem | undefined {
     return this.getEmbeddedItemsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 }
