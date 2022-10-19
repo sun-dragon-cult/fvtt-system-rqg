@@ -2,65 +2,69 @@
 <div class="flex-row flex-wrap">
   <fieldset>
     <legend>{{localize "RQG.Actor.Background.BaseData"}}</legend>
-    <div class="item-sheet-properties">
+    <div class="key-value-grid">
       {{#if isGM}}
+        <label for="birthyear-{{id}}">{{localize "RQG.Actor.Background.BirthYear"}}</label>
+        <input
+          id="birthyear-{{id}}"
+          name="system.background.birthyear"
+          value="{{system.background.birthyear}}"
+          type="number"
+          min="0"
+          max="9999"
+        />
+      {{else if system.background.birthyear}}
         <label>{{localize "RQG.Actor.Background.BirthYear"}}</label>
-          <input
-            type="number"
-            min="0"
-            max="9999"
-            name="data.background.birthyear"
-            value="{{characterData.background.birthyear}}"
-          />
-      {{else if characterData.background.birthyear}}
-        <label>{{localize "RQG.Actor.Background.BirthYear"}}</label>
-        {{characterData.background.birthyear}}
+        {{system.background.birthyear}}
       {{/if}}
 
       {{#if isGM}}
+        <label for="age-{{id}}">{{localize "RQG.Actor.Background.Age"}}</label>
+        <input
+          id="age-{{id}}"
+          name="system.background.age"
+          value="{{system.background.age}}"
+          type="number"
+          min="0"
+          max="999"
+        />
+      {{else if system.background.age}}
         <label>{{localize "RQG.Actor.Background.Age"}}</label>
-          <input
-            type="number"
-            min="0"
-            max="999"
-            name="data.background.age"
-            value="{{characterData.background.age}}"
-          />
-      {{else if characterData.background.age}}
-        <label>{{localize "RQG.Actor.Background.Age"}}</label>
-        {{characterData.background.age}}
+        {{system.background.age}}
       {{/if}}
 
       {{#if isGM}}
+        <label for="gender-{{id}}">{{localize "RQG.Actor.Background.Gender"}}</label>
+        <input
+          id="gender-{{id}}"
+          name="system.background.gender"
+          value="{{system.background.gender}}"
+          type="text"
+          size="10"
+        />
+      {{else if system.background.gender}}
         <label>{{localize "RQG.Actor.Background.Gender"}}</label>
-          <input
-            type="text"
-            name="data.background.gender"
-            value="{{characterData.background.gender}}"
-            size="10"
-          />
-      {{else if data.data.background.gender}}
-        <label>{{localize "RQG.Actor.Background.Gender"}}</label>
-        {{data.data.background.gender}}
+        {{system.background.gender}}
       {{/if}}
 
       {{#if isGM}}
-        <label>{{localize "RQG.Actor.Background.Species"}}</label>
+        <label for="species-{{id}}">{{localize "RQG.Actor.Background.Species"}}</label>
           <input
+            id="species-{{id}}"
+            name="system.background.species"
+            value="{{system.background.species}}"
             type="text"
-            name="data.background.species"
-            value="{{data.data.background.species}}"
             size="20"
           />
-      {{else if data.data.background.species}}
+      {{else if system.background.species}}
         <label>{{localize "RQG.Actor.Background.Species"}}</label>
-        {{data.data.background.species}}
+        {{system.background.species}}
       {{/if}}
-      
+
       {{#if actorWizardFeatureFlag}}
         <label></label>
         {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-            rqidLink=data.data.background.speciesRqidLink
+            rqidLink=system.background.speciesRqidLink
             parentField="background.speciesRqidLink"
             dropTypes="JournalEntry"
             showDeleteFromPropertyName="background.speciesRqidLink"
@@ -70,70 +74,71 @@
       {{/if}}
 
     </div>
-
-
   </fieldset>
 
-  
+
   {{#unless actorWizardFeatureFlag}}
 
   <fieldset>
     <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
-    <div class="item-sheet-properties">
+    <div class="key-value-grid">
       {{#if isGM}}
+        <label for="homeland-{{id}}">{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
+        <select id=homeland-{{id}} name="system.background.homeland">
+          {{#select system.background.homeland}}
+            {{#each homelands}}
+              <option value="{{this}}">{{localize
+                  (concat "RQG.Actor.Background.Homeland." this)
+                }}</option>
+            {{/each}}
+          {{/select}}
+        </select>
+      {{else if system.background.homeland}}
         <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-          <select name="data.background.homeland">
-            {{#select data.data.background.homeland}}
-              {{#each homelands}}
-                <option value="{{this}}">{{localize
-                    (concat "RQG.Actor.Background.Homeland." this)
-                  }}</option>
-              {{/each}}
-            {{/select}}
-          </select>
-      {{else if data.data.background.homeland}}
-        <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-        {{localize (concat "RQG.Actor.Background.Homeland." data.data.background.homeland)}}
+        {{localize (concat "RQG.Actor.Background.Homeland." system.background.homeland)}}
       {{/if}}
 
       {{#if isGM}}
+        <label for="town-{{id}}">{{localize "RQG.Actor.Background.TownHomeArea"}}</label>
+        <input
+          id="town-{{id}}"
+          name="system.background.town"
+          value="{{system.background.town}}"
+          type="text"
+          size="30"
+        />
+      {{else if system.background.town}}
         <label>{{localize "RQG.Actor.Background.TownHomeArea"}}</label>
-          <input
-            type="text"
-            name="data.background.town"
-            value="{{data.data.background.town}}"
-            size="30"
-          />
-      {{else if data.data.background.town}}
-        <label>{{localize "RQG.Actor.Background.TownHomeArea"}}</label>
-        {{data.data.background.town}}
-      {{/if}}      
+        {{system.background.town}}
+      {{/if}}
 
       {{#if isGM}}
+        <label for="tribe-{{id}}">{{localize "RQG.Actor.Background.Tribe"}}</label>
+        <input
+          id="tribe-{{id}}"
+          name="system.background.tribe"
+          value="{{system.background.tribe}}"
+          type="text"
+          size="30"
+        />
+      {{else if system.background.tribe}}
         <label>{{localize "RQG.Actor.Background.Tribe"}}</label>
-          <input
-            type="text"
-            name="data.background.tribe"
-            value="{{data.data.background.tribe}}"
-            size="30"
-          />
-      {{else if data.data.background.tribe}}
-        <label>{{localize "RQG.Actor.Background.Tribe"}}</label>
-        {{data.data.background.tribe}}
-      {{/if}}   
+        {{system.background.tribe}}
+      {{/if}}
 
       {{#if isGM}}
+        <label for="clan-{{id}}">{{localize "RQG.Actor.Background.Clan"}}</label>
+        <input
+          id="clan-{{id}}"
+          name="system.background.clan"
+          value="{{system.background.clan}}"
+          type="text"
+          size="30"
+        />
+      {{else if system.background.clan}}
         <label>{{localize "RQG.Actor.Background.Clan"}}</label>
-          <input
-            type="text"
-            name="data.background.clan"
-            value="{{data.data.background.clan}}"
-            size="30"
-          />
-      {{else if data.data.background.clan}}
-        <label>{{localize "RQG.Actor.Background.Clan"}}</label>
-        {{data.data.background.clan}}
-      {{/if}}         
+        {{system.background.clan}}
+      {{/if}}
     </div>
 
   </fieldset>
@@ -142,117 +147,121 @@
 
   <fieldset>
     <legend>{{localize "RQG.Actor.Background.Circumstance"}}</legend>
-    
-    <div class="item-sheet-properties">
+
+    <div class="key-value-grid">
       {{#if isGM}}
         <div data-reputation-roll style="display: flex; gap: 0.5em; justify-content:right;">
           <img src="{{defaultItemIconSrc 'Reputation'}}" class="item" />
-          <label for="data.background.reputation">
+          <label for="reputation-{{id}}">
             {{localize "RQG.Actor.Background.Reputation"}}
           </label>
         </div>
         <div style="justify-content:left;">
           <input
+            id="reputation-{{id}}"
+            name="system.background.reputation"
+            value="{{system.background.reputation}}"
             class="text-right"
             type="number"
             min="0"
             max="999"
-            name="data.background.reputation"
-            value="{{data.data.background.reputation}}"
           />%
         </div>
-      {{else if data.data.background.reputation}}
+      {{else if system.background.reputation}}
         <div data-reputation-roll style="display: flex; gap: 0.5em; justify-content:right;">
           <img src="{{defaultItemIconSrc 'Reputation'}}" class="item" />
           <label>{{localize "RQG.Actor.Background.Reputation"}}</label>
         </div>
         <div>
-          {{data.data.background.reputation}}%
+          {{system.background.reputation}}%
         </div>
-      {{/if}}
-      
-      {{#if isGM}}
-        <label>{{localize "RQG.Actor.Background.StandardOfLiving"}}</label>
-          <input
-            type="text"
-            name="data.background.standardOfLiving"
-            value="{{data.data.background.standardOfLiving}}"
-            size="30"
-          />
-      {{else if data.data.background.standardOfLiving}}
-        <label>{{localize "RQG.Actor.Background.StandardOfLiving"}}</label>
-        {{data.data.background.standardOfLiving}}
       {{/if}}
 
       {{#if isGM}}
+        <label for="standard-of-living-{{id}}">{{localize "RQG.Actor.Background.StandardOfLiving"}}</label>
+        <input
+          id="standard-of-living-{{id}}"
+          name="system.background.standardOfLiving"
+          value="{{system.background.standardOfLiving}}"
+          type="text"
+          size="30"
+        />
+      {{else if system.background.standardOfLiving}}
+        <label>{{localize "RQG.Actor.Background.StandardOfLiving"}}</label>
+        {{system.background.standardOfLiving}}
+      {{/if}}
+
+      {{#if isGM}}
+        <label for="occupation-{{id}}">{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
+        <select id="occupation-{{id}}" name="system.background.occupation">
+          {{#select system.background.occupation}}
+            {{#each occupations}}
+              <option value="{{this}}">{{localize
+                  (concat "RQG.Actor.Background.Occupation." this)
+                }}</option>
+            {{/each}}
+          {{/select}}
+        </select>
+      {{else if system.background.occupation}}
         <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
-          <select name="data.background.occupation">
-            {{#select data.data.background.occupation}}
-              {{#each occupations}}
-                <option value="{{this}}">{{localize
-                    (concat "RQG.Actor.Background.Occupation." this)
-                  }}</option>
-              {{/each}}
-            {{/select}}
-          </select>
-      {{else if data.data.background.occupation}}
-        <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
-        {{localize (concat "RQG.Actor.Background.Occupation." data.data.background.occupation)}}
-      {{/if}}      
+        {{localize (concat "RQG.Actor.Background.Occupation." system.background.occupation)}}
+      {{/if}}
 
       {{#if actorWizardFeatureFlag}}
         <label></label>
         {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-            rqidLink=data.data.background.currentOccupationRqidLink
+            rqidLink=system.background.currentOccupationRqidLink
             parentField="background.currentOccupationRqidLink"
             dropTypes="Item"
             showDeleteFromPropertyName="background.currentOccupationRqidLink"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceOccupation"
         }}
-      {{/if}}      
+      {{/if}}
 
       {{#if isGM}}
-        <label>{{localize "RQG.Actor.Background.BaseIncome"}}</label>
+        <label for="base-income-{{id}}">{{localize "RQG.Actor.Background.BaseIncome"}}</label>
         <div>
             <input
+              id="base-income-{{id}}"
+              name="system.background.baseIncome"
+              value="{{system.background.baseIncome}}"
               type="number"
               min="0"
               max="99999999"
-              name="data.background.baseIncome"
-              value="{{data.data.background.baseIncome}}"
-            />({{localize "RQG.Item.Gear.LunarsAbbr"}})          
+            />({{localize "RQG.Item.Gear.LunarsAbbr"}})
         </div>
-      {{else if data.data.background.baseIncome}}
+      {{else if system.background.baseIncome}}
         <label>{{localize "RQG.Actor.Background.BaseIncome"}}</label>
-        {{data.data.background.baseIncome}}
+        {{system.background.baseIncome}}
         ({{localize "RQG.Item.Gear.LunarsAbbr"}})
       {{/if}}
 
       {{#if isGM}}
-        <label>{{localize "RQG.Actor.Background.Ransom"}}</label>
-          <div>
-            <input
-              type="number"
-              min="0"
-              max="99999999"
-              name="data.background.ransom"
-              value="{{data.data.background.ransom}}"
-            />({{localize "RQG.Item.Gear.LunarsAbbr"}})            
-          </div>
-        <label>
-          {{localize "RQG.Actor.Background.RansomDetails"}}</label>
+        <label for="ransom-{{id}}">{{localize "RQG.Actor.Background.Ransom"}}</label>
+        <div>
           <input
-            type="text"
-            name="data.background.ransomDetails"
-            value="{{data.data.background.ransomDetails}}"
-            size="30"
-          />
-      {{else if data.data.background.ransom}}
+            id="ransom-{{id}}"
+            name="system.background.ransom"
+            value="{{system.background.ransom}}"
+            type="number"
+            min="0"
+            max="99999999"
+          />({{localize "RQG.Item.Gear.LunarsAbbr"}})
+        </div>
+        <label for="ransom-details-{{id}}">{{localize "RQG.Actor.Background.RansomDetails"}}</label>
+        <input
+          id="ransom-details-{{id}}"
+          name="system.background.ransomDetails"
+          value="{{system.background.ransomDetails}}"
+          type="text"
+          size="30"
+        />
+      {{else if system.background.ransom}}
         <label>{{localize "RQG.Actor.Background.Ransom"}}</label>
-        {{data.data.background.ransom}}
+        {{system.background.ransom}}
         ({{localize "RQG.Item.Gear.LunarsAbbr"}})
-        {{data.data.background.ransomDetails}}
+        {{system.background.ransomDetails}}
       {{/if}}
     </div>
 
@@ -261,11 +270,11 @@
   {{#if actorWizardFeatureFlag}}
     <fieldset>
       <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
-      <div class="item-sheet-properties">
+      <div class="key-value-grid">
 
         <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
         {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-          rqidLink=data.data.background.homelandJournalRqidLink
+          rqidLink=system.background.homelandJournalRqidLink
           parentField="background.homelandJournalRqidLink"
           dropTypes="JournalEntry"
           showDeleteFromPropertyName="background.homelandJournalRqidLink"
@@ -275,7 +284,7 @@
 
         <label>{{localize "RQG.Actor.Background.Region"}}</label>
         {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-          rqidLink=data.data.background.regionJournalRqidLink
+          rqidLink=system.background.regionJournalRqidLink
           parentField="background.regionJournalRqidLink"
           dropTypes="JournalEntry"
           showDeleteFromPropertyName="background.regionJournalRqidLink"
@@ -285,7 +294,7 @@
 
         <label>{{localize "RQG.Actor.Background.Cultures"}}</label>
         {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-          rqidLinkArray=data.data.background.cultureJournalRqidLinks
+          rqidLinkArray=system.background.cultureJournalRqidLinks
           parentField="background.cultureJournalRqidLinks"
           dropTypes="JournalEntry"
           showDeleteFromPropertyName="background.cultureJournalRqidLinks"
@@ -295,7 +304,7 @@
 
         <label>{{localize "RQG.Actor.Background.Tribes"}}</label>
         {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-          rqidLinkArray=data.data.background.tribeJournalRqidLinks
+          rqidLinkArray=system.background.tribeJournalRqidLinks
           parentField="background.tribeJournalRqidLinks"
           dropTypes="JournalEntry"
           showDeleteFromPropertyName="background.tribeJournalRqidLinks"
@@ -305,7 +314,7 @@
 
         <label>{{localize "RQG.Actor.Background.Clans"}}</label>
         {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-          rqidLinkArray=data.data.background.clanJournalRqidLinks
+          rqidLinkArray=system.background.clanJournalRqidLinks
           parentField="background.clanJournalRqidLinks"
           dropTypes="JournalEntry"
           showDeleteFromPropertyName="background.clanJournalRqidLinks"
@@ -320,12 +329,11 @@
 
 {{#if isGM}}
   {{editor
-    content=data.data.background.biography
-    target="data.background.biography"
+    enrichedBiography
+    target="system.background.biography"
     button=true
-    owner=owner
-    editable=editable
+    editable=isEditable
   }}
-{{else if data.data.background.biography}}
-  {{{enrichHtml data.data.background.biography}}}
+{{else if system.background.biography}}
+  {{{enrichedBiography}}}
 {{/if}}

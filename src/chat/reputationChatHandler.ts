@@ -98,8 +98,8 @@ export class ReputationChatHandler {
   ): Promise<{ modifier: number; reputationValue: number }> {
     assertChatMessageFlagType(flags.type, "reputationChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
-    assertActorType(actor?.data.type, ActorTypeEnum.Character);
-    const reputationValue: number = Number(actor.data.data.background.reputation) || 0;
+    assertActorType(actor?.type, ActorTypeEnum.Character);
+    const reputationValue: number = Number(actor.system.background.reputation) || 0;
 
     const modifier = convertFormValueToInteger(flags.formData.modifier);
     return { reputationValue: reputationValue, modifier: modifier };

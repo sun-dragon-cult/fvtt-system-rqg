@@ -17,7 +17,7 @@ export async function droppableJournalDescription(item: RqgItem, event: DragEven
   if (droppedItemData.type !== "JournalEntry") {
     ui.notifications?.warn(
       localize("RQG.Item.Notification.CanOnlyDropJournalEntryWarning", {
-        itemType: localizeItemType(item.data.type),
+        itemType: localizeItemType(item.type),
       })
     );
   }

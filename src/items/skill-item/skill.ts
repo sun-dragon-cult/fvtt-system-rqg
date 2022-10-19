@@ -37,8 +37,8 @@ export class Skill extends AbstractEmbeddedItem {
   }
 
   public static async abilityRoll(skill: RqgItem, options: any): Promise<ResultEnum> {
-    assertItemType(skill?.data.type, ItemTypeEnum.Skill);
-    const chance: number = Number(skill.data.data.chance) || 0;
+    assertItemType(skill?.type, ItemTypeEnum.Skill);
+    const chance: number = Number(skill.system.chance) || 0;
     let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: skill.name });
     if (options.modifier && options.modifier !== 0) {
       flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {
@@ -52,33 +52,34 @@ export class Skill extends AbstractEmbeddedItem {
   }
 
   public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
-    if (skillItem.data.type !== ItemTypeEnum.Skill) {
+    if (skillItem.type !== ItemTypeEnum.Skill) {
       const msg = localize("RQG.Item.Notification.PrepareDerivedDataNotSkillError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, skillItem);
     }
-    const skillData = skillItem.data.data;
+    const skillData = skillItem.system;
     const actor = skillItem.actor!;
-    if (actor.data.type !== ActorTypeEnum.Character) {
+    if (actor.type !== ActorTypeEnum.Character) {
       const msg = localize("RQG.Item.Notification.ActorNotCharacterError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, actor);
     }
-    const actorData = actor.data.toObject(false);
+    // @ts-expect-error system
+    const actorData = actor.toObject(false).system; // TODO Why use toObject ???
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
-    skillData.categoryMod = actorData.data.skillCategoryModifiers![skillItem.data.data.category];
+    skillData.categoryMod = actorData.skillCategoryModifiers![skillItem.system.category];
 
     let mod = 0;
 
     // Special case for Dodge, Jump & Move Quietly
-    const dex = actorData.data.characteristics.dexterity.value;
+    const dex = actorData.characteristics.dexterity.value;
     const skillRqid = skillItem.getFlag(systemId, documentRqidFlags)?.id;
     if (skillRqid === CONFIG.RQG.skillRqid.dodge) {
       Skill.updateBaseChance(skillData, dex * 2);
       mod = -Math.min(
         // mod is equipped ENC modifier
-        actorData.data.attributes.encumbrance?.equipped || 0,
-        actorData.data.attributes.encumbrance?.max || 0
+        actorData.attributes.encumbrance?.equipped || 0,
+        actorData.attributes.encumbrance?.max || 0
       );
     } else if (skillRqid === CONFIG.RQG.skillRqid.jump) {
       Skill.updateBaseChance(skillData, dex * 3);
@@ -87,10 +88,9 @@ export class Skill extends AbstractEmbeddedItem {
         0,
         ...actor.items
           .filter(
-            (i: RqgItem) =>
-              i.data.type === ItemTypeEnum.Armor && i.data.data.equippedStatus === "equipped"
+            (i: RqgItem) => i.type === ItemTypeEnum.Armor && i.system.equippedStatus === "equipped"
           )
-          .map((a: any) => Math.abs(a.data.data.moveQuietlyPenalty))
+          .map((a: any) => Math.abs(a.system.moveQuietlyPenalty))
       );
     }
 
@@ -113,14 +113,14 @@ export class Skill extends AbstractEmbeddedItem {
     userId: string
   ): Promise<any> {
     let updateData;
-    assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
+    assertItemType(skillItem?.type, ItemTypeEnum.Skill);
 
     try {
       const answer = await requestSkillSpecializationDialog(skillItem);
       if (answer) {
         updateData = {
           _id: skillItem.id,
-          name: concatenateSkillName(skillItem.data.data.skillName, answer),
+          name: concatenateSkillName(skillItem.system.skillName, answer),
           data: { specialization: answer },
         };
       }

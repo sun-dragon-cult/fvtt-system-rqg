@@ -1,20 +1,14 @@
-import {
-  PassionDataProperties,
-  PassionDataPropertiesData,
-  PassionsEnum,
-} from "../../data-model/item-data/passionData";
+import { PassionsEnum } from "../../data-model/item-data/passionData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { assertItemType, getGameUser } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
+import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
+import { ItemSheetData } from "../shared/sheetInterfaces";
 
-export interface PassionSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: PassionDataProperties; // Actually contains more...complete with effects, flags etc
-  passionData: PassionDataPropertiesData;
-  sheetSpecific: {
-    passionTypes: PassionsEnum[];
-  };
+export interface PassionSheetData {
+  enrichedDescription: string;
+  enrichedGmNotes: string;
+  passionTypes: PassionsEnum[];
 }
 
 export class PassionSheet extends RqgItemSheet<
@@ -37,7 +31,7 @@ export class PassionSheet extends RqgItemSheet<
 
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.Passion],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Passion],
       template: "systems/rqg/items/passion-item/passionSheet.hbs",
       width: 450,
       height: 500,
@@ -47,33 +41,28 @@ export class PassionSheet extends RqgItemSheet<
     });
   }
 
-  getData(): PassionSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.Passion);
-
+  async getData(): Promise<PassionSheetData & ItemSheetData> {
+    const system = duplicate(this.document.system);
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      passionData: itemData.data,
-      sheetSpecific: {
-        passionTypes: Object.values(PassionsEnum),
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      isEditable: this.isEditable,
+      isEmbedded: this.document.isEmbedded,
+      system: system,
+      // @ts-expect-error async
+      enrichedDescription: await TextEditor.enrichHTML(system.description, { async: true }),
+      // @ts-expect-error async
+      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes, { async: true }),
+      passionTypes: Object.values(PassionsEnum),
     };
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    const subject = formData["data.subject"] ? ` (${formData["data.subject"]})` : "";
-    formData["name"] = formData["data.passion"] + subject;
-    formData["img"] = PassionSheet.passionImgUrl.get(formData["data.passion"]);
+    const subject = formData["system.subject"] ? ` (${formData["system.subject"]})` : "";
+    formData["name"] = formData["system.passion"] + subject;
+    formData["img"] = PassionSheet.passionImgUrl.get(formData["system.passion"]);
     return super._updateObject(event, formData);
   }
 }

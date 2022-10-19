@@ -245,23 +245,25 @@ export class Rqid {
     }
 
     const rqidDocumentString = Rqid.getRqidDocumentString(document);
-    const documentSubType = toKebabCase(document.data.type ?? "");
+    // @ts-expect-error v10
+    const documentSubType = toKebabCase(document.type ?? "");
     let rqidIdentifier = "";
 
     if (document instanceof Item) {
-      if (document.data.type === ItemTypeEnum.Skill) {
+      if (document.type === ItemTypeEnum.Skill) {
         rqidIdentifier = trimChars(
-          toKebabCase(
-            `${document.data.data.skillName ?? ""}-${document.data.data.specialization ?? ""}`
-          ),
+          // @ts-expect-error system
+          toKebabCase(`${document.system.skillName ?? ""}-${document.system.specialization ?? ""}`),
           "-"
         );
       }
-      if (document.data.type === ItemTypeEnum.Armor) {
+      if (document.type === ItemTypeEnum.Armor) {
         rqidIdentifier = trimChars(
           toKebabCase(
-            `${document.data.data.namePrefix ?? ""}-${document.data.data.armorType ?? ""}-${
-              document.data.data.material ?? ""
+            // @ts-expect-error system
+            `${document.system.namePrefix ?? ""}-${document.system.armorType ?? ""}-${
+              // @ts-expect-error system
+              document.system.material ?? ""
             }`
           ),
           "-"

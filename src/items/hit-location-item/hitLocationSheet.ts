@@ -1,7 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  HitLocationDataProperties,
-  HitLocationDataPropertiesData,
   hitLocationHealthStatuses,
   HitLocationTypesEnum,
 } from "../../data-model/item-data/hitLocationData";
@@ -17,23 +15,19 @@ import {
   RqgError,
   usersIdsThatOwnActor,
 } from "../../system/util";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { RqgItemSheet } from "../RqgItemSheet";
 import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
 import { ActorHealthState } from "../../data-model/actor-data/attributes";
 import { RqgItem } from "../rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
 import { systemId } from "../../system/config";
+import { ItemSheetData } from "../shared/sheetInterfaces";
 
-interface HitLocationSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: HitLocationDataProperties; // Actually contains more...complete with effects, flags etc
-  hitLocationData: HitLocationDataPropertiesData;
-  sheetSpecific: {
-    allHitLocations: string[];
-    hitLocationTypes: string[];
-    hitLocationHealthStatuses: string[];
-  };
+interface HitLocationSheetData {
+  allHitLocations: string[];
+  hitLocationTypes: string[];
+  hitLocationHealthStatuses: string[];
 }
 
 export class HitLocationSheet extends RqgItemSheet<
@@ -42,7 +36,7 @@ export class HitLocationSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.HitLocation],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
       template: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
       width: 450,
       height: 500,
@@ -56,28 +50,19 @@ export class HitLocationSheet extends RqgItemSheet<
     });
   }
 
-  getData(): HitLocationSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.HitLocation);
-
+  getData(): HitLocationSheetData & ItemSheetData {
+    const system = duplicate(this.document.system);
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      hitLocationData: itemData.data,
-      sheetSpecific: {
-        allHitLocations: getHitLocations(),
-        hitLocationTypes: Object.values(HitLocationTypesEnum),
-        hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      isEmbedded: this.document.isEmbedded,
+      system: system,
+
+      allHitLocations: getHitLocations(),
+      hitLocationTypes: Object.values(HitLocationTypesEnum),
+      hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
     };
   }
 
@@ -87,7 +72,7 @@ export class HitLocationSheet extends RqgItemSheet<
     speakerName: string
   ): Promise<void> {
     const hitLocation = actor.items.get(hitLocationItemId);
-    if (!hitLocation || hitLocation.data.type !== ItemTypeEnum.HitLocation) {
+    if (!hitLocation || hitLocation.type !== ItemTypeEnum.HitLocation) {
       const msg = localize("RQG.Item.HitLocation.Notification.CantFindHitLocation", {
         hitLocationItemId: hitLocationItemId,
         actorName: actor.name,
@@ -141,7 +126,7 @@ export class HitLocationSheet extends RqgItemSheet<
     hitLocation: RqgItem,
     speakerName: string
   ) {
-    assertItemType(hitLocation.data.type, ItemTypeEnum.HitLocation);
+    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
@@ -149,7 +134,7 @@ export class HitLocationSheet extends RqgItemSheet<
     const subtractAP: boolean = !!data.subtractAP;
     let damage = Number(data.damage);
     if (subtractAP) {
-      const armorPoints = hitLocation.data.data.armorPoints;
+      const armorPoints = hitLocation.system.armorPoints;
       if (armorPoints == null) {
         const msg = localize(
           "RQG.Item.HitLocation.Notification.HitLocationDoesNotHaveCalculatedArmor",
@@ -167,7 +152,7 @@ export class HitLocationSheet extends RqgItemSheet<
         damage,
         applyDamageToTotalHp,
         hitLocation.data,
-        actor.data,
+        actor,
         speakerName
       );
 
@@ -199,18 +184,18 @@ export class HitLocationSheet extends RqgItemSheet<
     for (const update of uselessLegs) {
       // @ts-ignore _id
       const leg = actor.items.get(update._id);
-      assertItemType(leg?.data.type, ItemTypeEnum.HitLocation);
+      assertItemType(leg?.type, ItemTypeEnum.HitLocation);
       await leg.update(update);
     }
   }
 
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
     const hitLocation = actor.items.get(hitLocationItemId);
-    assertItemType(hitLocation?.data.type, ItemTypeEnum.HitLocation);
+    assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
 
     const dialogContentHtml = await renderTemplate(
       "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
-      { hitLocationName: hitLocation.name, wounds: hitLocation.data.data.wounds }
+      { hitLocationName: hitLocation.name, wounds: hitLocation.system.wounds }
     );
 
     new Dialog(
@@ -248,18 +233,18 @@ export class HitLocationSheet extends RqgItemSheet<
     actor: RqgActor,
     hitLocation: RqgItem
   ): Promise<void> {
-    assertItemType(hitLocation.data.type, ItemTypeEnum.HitLocation);
+    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     // @ts-ignore formData.entries
     const data = Object.fromEntries(formData.entries());
     requireValue(
-      hitLocation.data.data.hitPoints.value,
+      hitLocation.system.hitPoints.value,
       localize("RQG.Item.HitLocation.Notification.NoValueOnHitLocation", {
         hitLocationName: hitLocation.name,
       })
     );
     requireValue(
-      hitLocation.data.data.hitPoints.max,
+      hitLocation.system.hitPoints.max,
       localize("RQG.Item.HitLocation.Notification.NoMaxOnHitLocation", {
         hitLocationName: hitLocation.name,
       })
@@ -270,7 +255,7 @@ export class HitLocationSheet extends RqgItemSheet<
       healPoints,
       healWoundIndex,
       hitLocation.data,
-      actor.data
+      actor
     );
 
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
@@ -298,7 +283,7 @@ export class HitLocationSheet extends RqgItemSheet<
     }
 
     // Reopen the dialog if there still are wounds left
-    if (hitLocation.data.data.wounds.length) {
+    if (hitLocation.system.wounds.length) {
       await this.showHealWoundDialog(actor, hitLocation.id!);
     }
   }
@@ -321,7 +306,7 @@ export class HitLocationSheet extends RqgItemSheet<
       return;
     }
 
-    const newEffect = health2Effect.get(token.actor.data.data.attributes.health);
+    const newEffect = health2Effect.get(token.actor.system.attributes.health);
 
     for (const status of health2Effect.values()) {
       const thisEffectOn = !!token.actor.effects.find(

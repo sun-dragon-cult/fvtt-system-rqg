@@ -9,14 +9,14 @@ import { concatenateSkillName } from "../items/skill-item/concatenateSkillName";
 export async function requestSkillSpecializationDialog(
   skillItem: RqgItem
 ): Promise<string | undefined> {
-  assertItemType(skillItem?.data.type, ItemTypeEnum.Skill);
-  if (skillItem.data.data?.specialization !== "...") {
+  assertItemType(skillItem?.type, ItemTypeEnum.Skill);
+  if (skillItem.system?.specialization !== "...") {
     return; // Not a skill with undefined specialization
   }
 
   const worldLanguage = getGame().settings.get(systemId, "worldLanguage");
   const descriptionJournal = await Rqid.fromRqid(
-    skillItem.data.data.descriptionRqidLink.rqid,
+    skillItem.system.descriptionRqidLink.rqid,
     worldLanguage,
     true
   );
@@ -25,7 +25,7 @@ export async function requestSkillSpecializationDialog(
   const contentHtml = await renderTemplate(
     "systems/rqg/applications/requestSkillSpecialization.hbs",
     {
-      skillName: skillItem.data.data.skillName,
+      skillName: skillItem.system.skillName,
       skillDescriptionLink: link,
     }
   );
@@ -51,7 +51,7 @@ export async function requestSkillSpecializationDialog(
         }
 
         const proposedSkillName = concatenateSkillName(
-          (skillItem.data.data as any).skillName, // TODO typing
+          (skillItem.system as any).skillName, // TODO typing
           requestedSpecialization
         );
         const notUnique = skillItem.parent?.items.contents.some(
@@ -61,7 +61,7 @@ export async function requestSkillSpecializationDialog(
           throw new Error(
             localize("RQG.Item.Notification.ItemNotUnique", {
               actorName: skillItem.parent?.name,
-              documentType: skillItem.data.type,
+              documentType: skillItem.type,
               documentName: proposedSkillName,
             })
           );

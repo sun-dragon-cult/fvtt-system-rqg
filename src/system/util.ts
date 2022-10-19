@@ -428,7 +428,7 @@ export function uuid2Name(uuid: string | undefined): string | null {
   } else {
     // World Documents
     const [docName, docId] = parts.slice(0, 2);
-    const collection = docName && (CONFIG as any)[docName].collection.instance;
+    const collection = docName && (CONFIG as any)[docName]?.collection.instance;
     const doc = collection && collection.get(docId);
     name = doc?.name;
     name = name ? name + ` (from world items)` : name;

@@ -1,46 +1,47 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form autocomplete="off">
   <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" title="{{name}}" />
 
-    <div class="item-sheet-header-img">
-      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
-    </div>
+    <div class="flex-column gap03rem">
+      <div class="property-line">
 
-    <div class="name-parts-2">
-      <div>
-        <label for="name-{{data._id}}">{{localize "RQG.Item.Skill.Name"}}</label>
-        <input type="text" id="name-{{data._id}}" name="data.skillName" value="{{skillData.skillName}}">
-      </div>
+        <div class="label-above">
+          <label for="name-{{id}}">{{localize "RQG.Item.Skill.Name"}}</label>
+          <input type="text" id="name-{{id}}" name="system.skillName" value="{{system.skillName}}">
+        </div>
 
-      <div class="paren-head">
-        <label for="specialization-{{data._id}}">{{localize "RQG.Item.Skill.Specialization"}}</label>
-        <div>
-          ( <input type="text" id="specialization-{{data._id}}" name="data.specialization" value="{{skillData.specialization}}"> )
+        <div class="label-above parens">
+          <label for="specialization-{{id}}">{{localize "RQG.Item.Skill.Specialization"}}</label>
+          <div>
+            ( <input
+                id="specialization-{{id}}"
+                name="system.specialization"
+                value="{{system.specialization}}"
+                type="text"
+          > )
+          </div>
         </div>
       </div>
-    </div>
 
-    {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-        rqidLink=skillData.descriptionRqidLink
+      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        rqidLink=system.descriptionRqidLink
         parentField="descriptionRqidLink"
         dropTypes="JournalEntry"
         showDeleteFromPropertyName="descriptionRqidLink"
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-    }}
-
+      }}
+    </div>
   </header>
 
   <main>
     {{! Sheet Tab Navigation }}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       {{#if isEmbedded}}
-      <a class="item" data-tab="skill">{{localize "RQG.Item.SheetTab.Skill"}}</a>
+        <a class="item" data-tab="skill">{{localize "RQG.Item.SheetTab.Skill"}}</a>
       {{/if}}
       {{#if isGM}}
-      <a class="item" data-tab="skill-definition">{{localize "RQG.Item.SheetTab.SkillDefinition"}}</a>
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
+        <a class="item" data-tab="skill-definition">{{localize "RQG.Item.SheetTab.SkillDefinition"}}</a>
       {{/if}}
     </nav>
 
@@ -52,90 +53,89 @@
 
           <label>{{localize "RQG.Item.Skill.Chance"}}</label>
           &nbsp;
-          <label for="gained-chance-{{data._id}}">{{localize "RQG.Item.Skill.GainedChance"}}</label>
-          <label>{{localize "RQG.Item.Skill.CategoryModifier" category=(localize (concat 'RQG.Actor.Skill.SkillCategory.' skillData.category) ) }}</label>
-          <label for="base-chance-{{data._id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
+          <label for="gained-chance-{{id}}">{{localize "RQG.Item.Skill.GainedChance"}}</label>
+          <label>{{localize "RQG.Item.Skill.CategoryModifier" category=(localize (concat 'RQG.Actor.Skill.SkillCategory.' system.category) ) }}</label>
+          <label for="base-chance-{{id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
 
-          <span class="skill {{#if skillData.hasExperience}}experienced{{/if}}">
-            {{skillData.chance}}%
-            {{#if skillData.canGetExperience}}
-            <input
-              type="checkbox"
-              id="has-experience-{{data._id}}"
-              name="data.hasExperience"
-              title="{{localize 'RQG.Item.Skill.HasExperienceQ'}}"
-              {{checked skillData.hasExperience}}>
+          <span class="skill {{#if system.hasExperience}}experienced{{/if}}">
+            {{system.chance}}%
+            {{#if system.canGetExperience}}
+              <input
+                id="has-experience-{{id}}"
+                name="system.hasExperience"
+                {{checked system.hasExperience}}
+                type="checkbox"
+                title="{{localize 'RQG.Item.Skill.HasExperienceQ'}}"
+              >
             {{/if}}
           </span>
           =
           <input
             type="number"
-            id="gained-chance-{{data._id}}"
-            name="data.gainedChance"
+            id="gained-chance-{{id}}"
+            name="system.gainedChance"
             min="0"
             max="999"
-            value="{{skillData.gainedChance}}">
-          <span>{{skillData.categoryMod}}</span>
-          <span>{{skillData.baseChance}}</span>
+            value="{{system.gainedChance}}">
+          <span>{{system.categoryMod}}</span>
+          <span>{{system.baseChance}}</span>
         </div>
       </div>
 
       {{!-- Skill Definition Tab --}}
       <div class="tab" data-group="primary" data-tab="skill-definition">
+        <div class="key-value-grid">
 
-        <div class="item-sheet-properties">
-
-          <label for="category-{{data._id}}">{{localize "RQG.Item.Skill.Category"}}</label>
-          <select id="category-{{data._id}}" name="data.category" >
-          {{#select skillData.category}}
-          {{#each sheetSpecific.skillCategories}}
-            <option value="{{this}}">{{localize (concat 'RQG.Actor.Skill.SkillCategory.' this)}}</option>
-          {{/each}}
-          {{/select}}
+          <label for="category-{{id}}">{{localize "RQG.Item.Skill.Category"}}</label>
+          <select id="category-{{id}}" name="system.category">
+            {{#select system.category}}
+              {{#each skillCategories}}
+                <option value="{{this}}">{{localize (concat 'RQG.Actor.Skill.SkillCategory.' this)}}</option>
+              {{/each}}
+            {{/select}}
           </select>
 
-          <label for="base-chance-{{data._id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
+          <label for="base-chance-{{id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
           <input
+            id="base-chance-{{id}}"
+            name="system.baseChance"
+            value="{{system.baseChance}}"
             type="number"
-            id="base-chance-{{data._id}}"
-            name="data.baseChance"
             min="0"
             max="999"
-            value="{{skillData.baseChance}}">
+          >
 
-          <label for="can-gain-experience-{{data._id}}">{{localize "RQG.Item.Skill.CanGainExperienceQ"}}</label>
-          <input type="checkbox" id="is-ritual-{{data._id}}" name="data.canGetExperience" {{checked skillData.canGetExperience}}>
+          <label for="can-gain-experience-{{id}}">{{localize "RQG.Item.Skill.CanGainExperienceQ"}}</label>
+          <input
+            id="can-gain-experience-{{id}}"
+            name="system.canGetExperience"
+            {{checked system.canGetExperience}}
+            type="checkbox"
+          >
 
-
-          <label for="runes-{{data._id}}">{{localize "RQG.Item.Skill.SorceryRunes"}}</label>
-          <div class="rune-property rune-group">
-            {{#each skillData.runes}}
-            <img class="rune" src="{{runeImg this}}" title="{{this}}">
-            <input type="text" name="data.runes" value="{{this}}">
+          <label for="runes-{{id}}">{{localize "RQG.Item.Skill.SorceryRunes"}}</label>
+          <div class="img-name-grid bordered">
+            {{#each system.runes}}
+              <img class="rune" src="{{runeImg this}}" title="{{this}}">
+              <input type="text" name="system.runes" value="{{this}}">
             {{/each}}
             <input
+              id="runes-{{id}}"
+              name="system.runes"
               type="text"
-              id="runes-{{data._id}}"
-              name="data.runes" list="allRunes"
+              list="allRunes"
               placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}"
               style="grid-column: 1 / span 2;">
           </div>
 
         </div>
-
-      </div>
-
-      {{!-- Active Effects Tab --}}
-      <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
-
       </div>
     </section>
-
   </main>
+
   <datalist id="allRunes">
-    {{#each sheetSpecific.allRunes}}
-    <option value="{{name}}">{{name}}</option>
+    {{#each allRunes}}
+      <option value="{{name}}">{{name}}</option>
     {{/each}}
   </datalist>
 </form>

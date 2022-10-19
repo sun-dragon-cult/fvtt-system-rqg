@@ -17,7 +17,7 @@ export async function showImproveAbilityDialog(
   item: RqgItem,
   speakerName: string
 ): Promise<void> {
-  const ability = item.data.data as IAbility;
+  const ability = item.system as IAbility;
 
   const adapter: any = {
     showExperience: ability.hasExperience,
@@ -31,34 +31,34 @@ export async function showImproveAbilityDialog(
     trainingGainRandom: "1d6-1",
   };
 
-  if (item.data.type === ItemTypeEnum.Passion) {
+  if (item.type === ItemTypeEnum.Passion) {
     adapter.isPassion = true;
     // Cannot train passions
     adapter.showTraining = false;
-    adapter.typeLocName = localizeItemType(item.data.type);
-    assertItemType(item?.data.type, ItemTypeEnum.Passion);
-    if (item.data.data.subject) {
-      adapter.name = `${item.data.data.passion} (${item.data.data.subject})`;
+    adapter.typeLocName = localizeItemType(item.type);
+    assertItemType(item?.type, ItemTypeEnum.Passion);
+    if (item.system.subject) {
+      adapter.name = `${item.system.passion} (${item.system.subject})`;
     } else {
-      adapter.name = item.data.data.passion;
+      adapter.name = item.system.passion;
     }
   }
-  if (item.data.type === ItemTypeEnum.Rune) {
+  if (item.type === ItemTypeEnum.Rune) {
     adapter.isRune = true;
-    adapter.typeLocName = localizeItemType(item.data.type);
-    assertItemType(item?.data.type, ItemTypeEnum.Rune);
-    adapter.name = item.data.data.rune;
+    adapter.typeLocName = localizeItemType(item.type);
+    assertItemType(item?.type, ItemTypeEnum.Rune);
+    adapter.name = item.system.rune;
   }
-  if (item.data.type === ItemTypeEnum.Skill) {
+  if (item.type === ItemTypeEnum.Skill) {
     adapter.isSkill = true;
-    assertItemType(item?.data.type, ItemTypeEnum.Skill);
-    if (item.data.data.specialization) {
-      adapter.name = `${item.data.data.skillName} (${item.data.data.specialization})`;
+    assertItemType(item?.type, ItemTypeEnum.Skill);
+    if (item.system.specialization) {
+      adapter.name = `${item.system.skillName} (${item.system.specialization})`;
     } else {
-      adapter.name = item.data.data.skillName;
+      adapter.name = item.system.skillName;
     }
-    adapter.categoryMod = item.data.data.categoryMod;
-    if (item.data.data.chance > 75) {
+    adapter.categoryMod = item.system.categoryMod;
+    if (item.system.chance > 75) {
       //Cannot train skills over 75%
       adapter.showTraining = false;
       adapter.skillOver75 = true;
@@ -116,11 +116,11 @@ export async function submitImproveAbilityDialog(
   adapter: any
 ): Promise<void> {
   if (adapter.isPassion) {
-    assertItemType(item?.data.type, ItemTypeEnum.Passion);
+    assertItemType(item?.type, ItemTypeEnum.Passion);
   } else if (adapter.isRune) {
-    assertItemType(item?.data.type, ItemTypeEnum.Rune);
+    assertItemType(item?.type, ItemTypeEnum.Rune);
   } else if (adapter.isSkill) {
-    assertItemType(item?.data.type, ItemTypeEnum.Skill);
+    assertItemType(item?.type, ItemTypeEnum.Skill);
   } else {
     ui.notifications?.error(
       "Call to submitImproveAbilityDialog with item that was not a Passion, Rune, or Skill"
@@ -128,7 +128,7 @@ export async function submitImproveAbilityDialog(
     return;
   }
 
-  const abilityData = item.data.data;
+  const abilityData = item.system;
 
   const formData = new FormData(html.find("form")[0]);
   const gaintype = convertFormValueToString(formData.get("experiencegaintype"));
@@ -280,7 +280,7 @@ export async function submitImproveAbilityDialog(
       { _id: item.id, data: { hasExperience: false, chance: newChance } },
     ]);
     if (adapter.isRune) {
-      assertItemType(item?.data.type, ItemTypeEnum.Rune);
+      assertItemType(item?.type, ItemTypeEnum.Rune);
       await actor.updateEmbeddedDocuments("Item", [
         { _id: item.id, data: { hasExperience: false, chance: newChance } },
       ]);

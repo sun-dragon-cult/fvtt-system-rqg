@@ -28,10 +28,10 @@
               <input data-handle-change type="radio" id="select-rune-{{this._id}}" name="selectedRuneId" value="{{this.id}}" {{#if (eq
               this.id ../formData.selectedRuneId)}}checked{{/if}}>
 
-              <span title="{{this.name}}"><img class="rune" src="{{runeImg this.name}}"> {{this.data.data.rune}}</span>
+              <span title="{{this.name}}"><img class="rune" src="{{runeImg this.name}}"> {{this.system.rune}}</span>
 
-              <span {{#if this.data.data.hasExperience}}class="experienced" title="{{localize "RQG.Dialog.runeMagicChat.RuneHasExperienceTitle"}}"{{/if}}>
-                {{this.data.data.chance}}%
+              <span {{#if this.system.hasExperience}}class="experienced" title="{{localize "RQG.Dialog.runeMagicChat.RuneHasExperienceTitle"}}"{{/if}}>
+                {{this.system.chance}}%
               </span>
             </label>
           {{/each}}

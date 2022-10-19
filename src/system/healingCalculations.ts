@@ -6,9 +6,9 @@ import {
 } from "../data-model/item-data/hitLocationData";
 import { CharacterDataSource } from "../data-model/actor-data/rqgActorData";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { RqgActor } from "../actors/rqgActor";
 
 export interface HealingEffects {
   /** Updates to the hitlocation item's wounds, health and actor health impact */
@@ -27,7 +27,7 @@ export class HealingCalculations {
     healPoints: number,
     healWoundIndex: number,
     hitLocationData: ItemData,
-    actorData: ActorData
+    actor: RqgActor
   ): HealingEffects {
     assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
     const healingEffects: HealingEffects = {
@@ -75,18 +75,19 @@ export class HealingCalculations {
 
     mergeObject(healingEffects.hitLocationUpdates, {
       data: {
+        // TODO system?? or what
         wounds: wounds,
         actorHealthImpact: actorHealthImpact,
         hitLocationHealthState: hitLocationHealthState,
       },
     });
 
-    const actorTotalHp = actorData.data.attributes.hitPoints.value;
-    const actorMaxHp = actorData.data.attributes.hitPoints.max;
+    const actorTotalHp = actor.system.attributes.hitPoints.value;
+    const actorMaxHp = actor.system.attributes.hitPoints.max;
     if (actorTotalHp == null || actorMaxHp == null) {
       const msg = `Couldn't find actor total hp (max or current value)`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg, actorData);
+      throw new RqgError(msg, actor);
     }
 
     const totalHpAfter = Math.min(actorTotalHp + healPoints, actorMaxHp);

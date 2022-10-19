@@ -10,15 +10,6 @@ import {
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 
-export interface RqgItemSheetData {
-  isGM: boolean;
-  ownerId: string | null | undefined;
-  uuid: string | undefined;
-  supportedLanguages: {
-    en: string;
-  } & Partial<Record<string, string>>;
-}
-
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
   Data extends object = ItemSheet.Data<Options>
@@ -74,7 +65,7 @@ export class RqgItemSheet<
             .catch((reason: any) => {
               ui.notifications?.error(
                 localize("RQG.Item.Notification.CantCreateActiveEffect", {
-                  itemType: localizeItemType(item.data.type),
+                  itemType: localizeItemType(item.type),
                 })
               );
               throw reason;
@@ -101,7 +92,7 @@ export class RqgItemSheet<
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
-          let deleteFromProperty = getProperty(this.item.data.data, deleteFromPropertyName);
+          let deleteFromProperty = getProperty(this.item.system, deleteFromPropertyName);
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid
@@ -132,7 +123,7 @@ export class RqgItemSheet<
         const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
         el.addEventListener("change", async () => {
           console.log("CHANGE!", editRqid, editPropertyName);
-          let updateProperty = getProperty(this.item.data.data, editPropertyName);
+          let updateProperty = getProperty(this.item.system, editPropertyName);
           if (Array.isArray(updateProperty)) {
             const updateRqidLink = (updateProperty as RqidLink[]).find(
               (rqidLink) => rqidLink.rqid === editRqid
@@ -225,7 +216,7 @@ export class RqgItemSheet<
         newLink.itemType = droppedDocument.type;
       }
 
-      const targetProperty = getProperty(this.item.data.data, targetPropertyName);
+      const targetProperty = getProperty(this.item.system, targetPropertyName);
 
       if (targetProperty) {
         (event as RqidLinkDragEvent).TargetPropertyName = targetPropertyName;

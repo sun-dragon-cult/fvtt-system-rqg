@@ -31,8 +31,8 @@ export class Passion extends AbstractEmbeddedItem {
   }
 
   public static async abilityRoll(passion: RqgItem, options: any): Promise<ResultEnum> {
-    assertItemType(passion?.data.type, ItemTypeEnum.Passion);
-    const chance: number = Number(passion.data.data.chance) || 0;
+    assertItemType(passion?.type, ItemTypeEnum.Passion);
+    const chance: number = Number(passion.system.chance) || 0;
     let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: passion.name });
     if (options.modifier && options.modifier !== 0) {
       flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {

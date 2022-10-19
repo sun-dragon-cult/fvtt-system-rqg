@@ -106,7 +106,7 @@ export class CharacteristicChatHandler {
     if (
       result <= ResultEnum.Success &&
       characteristicName === "power" &&
-      !actor.data.data.characteristics.power.hasExperience
+      !actor.system.characteristics.power.hasExperience
     ) {
       await actor.update({ "data.characteristics.power.hasExperience": true });
       const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {

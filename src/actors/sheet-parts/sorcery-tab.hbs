@@ -2,8 +2,8 @@
   <div>
     <div class="small-size">{{localize "RQG.Actor.Sorcery.FreeINT"}} {{freeInt}}</div>
     <div class="grid skill">
-    {{#each ownedItems.skill.magic}}
-    {{#if data.data.runes}}
+    {{#each embeddedItems.skill.magic}}
+    {{#if system.runes}}
     {{>"systems/rqg/actors/sheet-parts/grid-skill.hbs"
       skill=this
       wizard=../../wizard
@@ -18,7 +18,7 @@
   <div>
     <h2>{{localize "RQG.Actor.Sorcery.Techniques"}}</h2>
     <div class="grid rune">
-    {{#each ownedItems.rune.technique}}
+    {{#each embeddedItems.rune.technique}}
       {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
         rune=this
         wizard=../wizard
@@ -31,8 +31,8 @@
   <div>
     <h2>{{localize "RQG.Actor.Sorcery.MasteredRunes"}}</h2>
     <div class="grid rune">
-      {{#each ownedItems.rune.element}}
-        {{#if data.data.isMastered}}
+      {{#each embeddedItems.rune.element}}
+        {{#if system.isMastered}}
         {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
           rune=this
           wizard=../wizard
@@ -41,8 +41,8 @@
         {{/if}}
       {{/each}}
 
-      {{#each ownedItems.rune.power}}
-        {{#if data.data.isMastered}}
+      {{#each embeddedItems.rune.power}}
+        {{#if system.isMastered}}
         {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
           rune=this
           wizard=../wizard
@@ -51,8 +51,8 @@
         {{/if}}
       {{/each}}
 
-      {{#each ownedItems.rune.form}}
-        {{#if data.data.isMastered}}
+      {{#each embeddedItems.rune.form}}
+        {{#if system.isMastered}}
         {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
           rune=this
           wizard=../wizard

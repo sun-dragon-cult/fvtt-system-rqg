@@ -29,7 +29,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "skill-id");
       const item = itemId && actor.items.get(itemId);
-      if (!item || !("hasExperience" in item.data.data)) {
+      if (!item || !("hasExperience" in item.system)) {
         const msg = localize("RQG.ContextMenu.Notification.CantToggleExperienceError", {
           itemId: itemId,
           actorName: actor.name,
@@ -37,8 +37,8 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      const toggledExperience = !item.data.data.hasExperience;
-      await item.update({ "data.hasExperience": toggledExperience }, {});
+      const toggledExperience = !item.system.hasExperience;
+      await item.update({ "system.hasExperience": toggledExperience }, {});
     },
   },
   {

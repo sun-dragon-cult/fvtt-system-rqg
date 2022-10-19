@@ -3,9 +3,9 @@ import { HealingCalculations, HealingEffects } from "./healingCalculations";
 import { applyTestDamage } from "./damageCalculations.test";
 import { DamageCalculations } from "./damageCalculations";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { assertItemType } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { RqgActor } from "../actors/rqgActor";
 
 describe("healing", () => {
   let mockActor: any;
@@ -253,18 +253,18 @@ export function applyTestHealing(
   healPoints: number,
   healWoundIndex: number,
   hitLocationData: ItemData,
-  actorData: ActorData
+  actor: RqgActor
 ): HealingEffects {
   assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
   const healingEffects = HealingCalculations.healWound(
     healPoints,
     healWoundIndex,
     hitLocationData,
-    actorData
+    actor
   );
   mergeObject(hitLocationData, healingEffects.hitLocationUpdates);
-  mergeObject(actorData, healingEffects.actorUpdates);
-  actorData.data.attributes.health = DamageCalculations.getCombinedActorHealth(actorData);
+  mergeObject(actor, healingEffects.actorUpdates);
+  actor.system.attributes.health = DamageCalculations.getCombinedActorHealth(actor);
   hitLocationData.data.hitPoints.value =
     hitLocationData.data.hitPoints.max! -
     hitLocationData.data.wounds.reduce((acc, val) => acc + val, 0);

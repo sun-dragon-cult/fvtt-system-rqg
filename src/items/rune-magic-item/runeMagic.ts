@@ -22,7 +22,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   static async toChat(runeMagic: RqgItem): Promise<void> {
     const eligibleRunes = RuneMagic.getEligibleRunes(runeMagic);
     const defaultRuneId = RuneMagic.getStrongestRune(eligibleRunes)?.id;
-    assertItemType(runeMagic.data.type, ItemTypeEnum.RuneMagic);
+    assertItemType(runeMagic.type, ItemTypeEnum.RuneMagic);
     const flags: RuneMagicChatFlags = {
       type: "runeMagicChat",
       chat: {
@@ -32,7 +32,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
         itemUuid: runeMagic.uuid,
       },
       formData: {
-        runePointCost: runeMagic.data.data.points.toString(),
+        runePointCost: runeMagic.system.points.toString(),
         magicPointBoost: "",
         ritualOrMeditation: "0",
         skillAugmentation: "0",
@@ -55,16 +55,16 @@ export class RuneMagic extends AbstractEmbeddedItem {
       selectedRuneId?: string;
     }
   ): Promise<ResultEnum | undefined> {
-    assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
-    const runeMagicCultId = runeMagicItem?.data.data.cultId;
+    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
+    const runeMagicCultId = runeMagicItem?.system.cultId;
     const cult = runeMagicItem.actor?.items.get(runeMagicCultId);
-    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
+    assertItemType(cult?.type, ItemTypeEnum.Cult);
     if (!options.selectedRuneId) {
       const eligibleRunes = RuneMagic.getEligibleRunes(runeMagicItem);
       options.selectedRuneId = RuneMagic.getStrongestRune(eligibleRunes)?.id ?? "";
     }
     const runeItem = runeMagicItem.actor?.items.get(options.selectedRuneId);
-    assertItemType(runeItem?.data.type, ItemTypeEnum.Rune);
+    assertItemType(runeItem?.type, ItemTypeEnum.Rune);
 
     const validationError = RuneMagic.validateData(
       cult,
@@ -112,7 +112,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     const speaker = ChatMessage.getSpeaker({ actor: runeMagicItem.actor ?? undefined });
     const result = await runeMagicItem._roll(
       localize("RQG.Dialog.runeMagicChat.Cast", { spellName: runeMagicItem.name }),
-      Number(runeItem.data.data.chance),
+      Number(runeItem.system.chance),
       options.ritualOrMeditation + options.skillAugmentation + options.otherModifiers,
       speaker,
       resultMessages
@@ -130,15 +130,15 @@ export class RuneMagic extends AbstractEmbeddedItem {
   }
 
   static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
-    if (item.data.type !== ItemTypeEnum.RuneMagic || !item.actor) {
+    if (item.type !== ItemTypeEnum.RuneMagic || !item.actor) {
       const msg = localize("RQG.Item.Notification.WrongItemTypeRuneMagicError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
     const actor = item.actor;
-    if (item.data.data.cultId) {
-      const runeMagicCult = actor.items.get(item.data.data.cultId);
-      if (!runeMagicCult || runeMagicCult.data.type !== ItemTypeEnum.Cult) {
+    if (item.system.cultId) {
+      const runeMagicCult = actor.items.get(item.system.cultId);
+      if (!runeMagicCult || runeMagicCult.type !== ItemTypeEnum.Cult) {
         // This warning can happen when drag-dropping a rune spell from one Actor to another,
         // but the notification happens a lot of times and doesn't really matter since the system immediately,
         // displays the "Which cult provides this Rune Magic?" dialog allowing the player to fix it.
@@ -147,13 +147,13 @@ export class RuneMagic extends AbstractEmbeddedItem {
         // ui.notifications?.warn(msg);
         // console.warn(msg, item, actor);
 
-        item.data.data.cultId = ""; // remove the mismatched link to make it appear in the GUI
+        item.system.cultId = ""; // remove the mismatched link to make it appear in the GUI
       }
-      if (runeMagicCult && runeMagicCult.data.type === ItemTypeEnum.Cult) {
-        item.data.data.chance = RuneMagic.calcRuneMagicChance(
+      if (runeMagicCult && runeMagicCult.type === ItemTypeEnum.Cult) {
+        item.system.chance = RuneMagic.calcRuneMagicChance(
           actor.items.toObject(),
-          runeMagicCult.data.data.runes,
-          item.data.data.runes
+          runeMagicCult.system.runes,
+          item.system.runes
         );
       }
     }
@@ -176,7 +176,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
               cultRuneNames.includes(i.name ?? "")))
       )
       // @ts-ignore r is a runeItem TODO rewrite as reduce
-      .map((r: RqgItem) => r.data.chance);
+      .map((r: RqgItem) => r.system.chance);
     return Math.max(...runeChances);
   }
 
@@ -191,9 +191,9 @@ export class RuneMagic extends AbstractEmbeddedItem {
   ): Promise<any> {
     let updateData = {};
     const actorCults = actor.items.filter((i) => i.type === ItemTypeEnum.Cult);
-    assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
+    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
 
-    if (!runeMagicItem.data.data.cultId) {
+    if (!runeMagicItem.system.cultId) {
       let cultId;
       // If the actor only has one cult then attach this runeMagic to that Cult
       if (actorCults.length === 1 && actorCults[0].id) {
@@ -261,11 +261,11 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runePointCost: number,
     magicPointsBoost: number
   ): string {
-    assertItemType(cultItem?.data.type, ItemTypeEnum.Cult);
-    if (runePointCost > (Number(cultItem.data.data.runePoints.value) || 0)) {
+    assertItemType(cultItem?.type, ItemTypeEnum.Cult);
+    if (runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
       return getGame().i18n.format("RQG.Dialog.runeMagicChat.validationNotEnoughRunePoints");
     } else if (
-      magicPointsBoost > (Number(cultItem.actor?.data.data.attributes?.magicPoints?.value) || 0)
+      magicPointsBoost > (Number(cultItem.actor?.system.attributes?.magicPoints?.value) || 0)
     ) {
       return localize("RQG.Dialog.runeMagicChat.validationNotEnoughMagicPoints");
     } else {
@@ -277,30 +277,32 @@ export class RuneMagic extends AbstractEmbeddedItem {
    * Given a rune spell and an actor, returns the runes that are possible to use for casting that spell.
    */
   static getEligibleRunes(runeMagicItem: RqgItem): RqgItem[] {
-    assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
+    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
 
     // The cult from where the spell was learned
-    const cult = runeMagicItem.actor?.items.get(runeMagicItem.data.data.cultId);
-    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
+    const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId);
+    assertItemType(cult?.type, ItemTypeEnum.Cult);
 
     // Get the name of the "magic" rune.
     const magicRuneName = getGame().settings.get(systemId, "magicRuneName");
 
     let usableRuneNames: string[];
-    if (runeMagicItem.data.data.runes.includes(magicRuneName)) {
+    if (runeMagicItem.system.runes.includes(magicRuneName)) {
       // Actor can use any of the cult's runes to cast
       // And some cults have the same rune more than once, so de-dupe them
-      usableRuneNames = [...new Set(cult.data.data.runes)];
+      // @ts-expect-error system
+      usableRuneNames = [...new Set(cult.system.runes)];
     } else {
       // Actor can use any of the Rune Magic Spell's runes to cast
-      usableRuneNames = [...new Set(runeMagicItem.data.data.runes)];
+      // @ts-expect-error system
+      usableRuneNames = [...new Set(runeMagicItem.system.runes)];
     }
 
     let runesForCasting: RqgItem[] = [];
     // Get the actor's versions of the runes, which will have their "chance"
     usableRuneNames.forEach((runeName: string) => {
       const actorRune = runeMagicItem.actor?.items.getName(runeName);
-      assertItemType(actorRune?.data.type, ItemTypeEnum.Rune);
+      assertItemType(actorRune?.type, ItemTypeEnum.Rune);
       runesForCasting.push(actorRune);
     });
 
@@ -312,8 +314,8 @@ export class RuneMagic extends AbstractEmbeddedItem {
       return undefined;
     }
     return runeMagicItems.reduce((strongest: RqgItem, current: RqgItem) => {
-      const strongestRuneChance = (strongest.data.data as RuneDataPropertiesData).chance ?? 0;
-      const currentRuneChance = (current.data.data as RuneDataPropertiesData).chance ?? 0;
+      const strongestRuneChance = (strongest.system as RuneDataPropertiesData).chance ?? 0;
+      const currentRuneChance = (current.system as RuneDataPropertiesData).chance ?? 0;
       return strongestRuneChance > currentRuneChance ? strongest : current;
     });
   }
@@ -325,11 +327,11 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runeItem: RqgItem,
     runeMagicItem: RqgItem
   ): Promise<void> {
-    assertItemType(runeItem.data.type, ItemTypeEnum.Rune);
-    assertItemType(runeMagicItem.data.type, ItemTypeEnum.RuneMagic);
-    const cult = runeMagicItem.actor?.items.get(runeMagicItem.data.data.cultId ?? "");
-    assertItemType(cult?.data.type, ItemTypeEnum.Cult);
-    const isOneUse = runeMagicItem.data.data.isOneUse;
+    assertItemType(runeItem.type, ItemTypeEnum.Rune);
+    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
+    const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId ?? "");
+    assertItemType(cult?.type, ItemTypeEnum.Cult);
+    const isOneUse = runeMagicItem.system.isOneUse;
 
     switch (result) {
       case ResultEnum.Critical:
@@ -399,16 +401,16 @@ export class RuneMagic extends AbstractEmbeddedItem {
     cult: RqgItem,
     isOneUse: boolean
   ) {
-    assertItemType(cult.data.type, ItemTypeEnum.Cult);
-    assertActorType(actor?.data.type, ActorTypeEnum.Character);
+    assertItemType(cult.type, ItemTypeEnum.Cult);
+    assertActorType(actor?.type, ActorTypeEnum.Character);
     // At this point if the current Rune Points or Magic Points are zero
     // it's too late. That validation happened earlier.
-    const newRunePointTotal = (cult.data.data.runePoints.value || 0) - runePoints;
-    const newMagicPointTotal = (actor?.data.data.attributes.magicPoints.value || 0) - magicPoints;
-    let newRunePointMaxTotal = cult.data.data.runePoints.max || 0;
+    const newRunePointTotal = (cult.system.runePoints.value || 0) - runePoints;
+    const newMagicPointTotal = (actor?.system.attributes.magicPoints.value || 0) - magicPoints;
+    let newRunePointMaxTotal = cult.system.runePoints.max || 0;
     if (isOneUse) {
       newRunePointMaxTotal -= runePoints;
-      if (newRunePointMaxTotal < (cult.data.data.runePoints.max || 0)) {
+      if (newRunePointMaxTotal < (cult.system.runePoints.max || 0)) {
         ui.notifications?.info(
           localize("RQG.Dialog.runeMagicChat.SpentOneUseRunePoints", {
             actorName: actor?.name,

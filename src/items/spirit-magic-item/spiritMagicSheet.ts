@@ -1,10 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
-  SpiritMagicDataProperties,
-  SpiritMagicDataPropertiesData,
-} from "../../data-model/item-data/spiritMagicData";
-import { assertItemType, getGameUser } from "../../system/util";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
+import { getGameUser } from "../../system/util";
+import { RqgItemSheet } from "../RqgItemSheet";
 import {
   SpellConcentrationEnum,
   SpellDurationEnum,
@@ -12,17 +8,12 @@ import {
 } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
 import { RqgItem } from "../rqgItem";
+import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 
-interface SpiritMagicSheetData extends RqgItemSheetData {
-  isEmbedded: boolean;
-  data: SpiritMagicDataProperties; // Actually contains more...complete with effects, flags etc
-  spiritMagicData: SpiritMagicDataPropertiesData;
-  sheetSpecific: {
-    ranges: SpellRangeEnum[];
-    durations: SpellDurationEnum[];
-    types: SpellConcentrationEnum[];
-    journalEntryName: string;
-  };
+interface SpiritMagicSheetData {
+  ranges: SpellRangeEnum[];
+  durations: SpellDurationEnum[];
+  types: SpellConcentrationEnum[];
 }
 
 export class SpiritMagicSheet extends RqgItemSheet<
@@ -31,10 +22,10 @@ export class SpiritMagicSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.SpiritMagic],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.SpiritMagic],
       template: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
       width: 450,
-      height: 450,
+      height: 500,
       tabs: [
         {
           navSelector: ".item-sheet-nav-tabs",
@@ -45,52 +36,44 @@ export class SpiritMagicSheet extends RqgItemSheet<
     });
   }
 
-  getData(): SpiritMagicSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.SpiritMagic);
+  getData(): SpiritMagicSheetData & EffectsItemSheetData {
+    const system = duplicate(this.document.system);
 
-    const spiritMagicData = itemData.data;
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      spiritMagicData: itemData.data,
-      sheetSpecific: {
-        ranges: Object.values(SpellRangeEnum),
-        durations: Object.values(SpellDurationEnum),
-        types: Object.values(SpellConcentrationEnum),
-        journalEntryName: spiritMagicData.descriptionRqidLink.name,
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
+      isEditable: this.isEditable,
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      system: system,
+      isEmbedded: this.document.isEmbedded,
+      effects: this.document.effects,
+
+      ranges: Object.values(SpellRangeEnum),
+      durations: Object.values(SpellDurationEnum),
+      types: Object.values(SpellConcentrationEnum),
     };
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     // Set a concentration value if there isn't one already
-    if (formData["data.duration"] === SpellDurationEnum.Temporal) {
-      formData["data.concentration"] = formData["data.concentration"]
-        ? formData["data.concentration"]
+    if (formData["system.duration"] === SpellDurationEnum.Temporal) {
+      formData["system.concentration"] = formData["system.concentration"]
+        ? formData["system.concentration"]
         : SpellConcentrationEnum.Active;
     } else {
       // Generally only Temporal spells have concentration
-      formData["data.concentration"] = "";
+      formData["system.concentration"] = "";
     }
 
     // ... except Focused spells that always are concentration active
-    if (formData["data.duration"] === SpellDurationEnum.Focused) {
-      formData["data.concentration"] = SpellConcentrationEnum.Active;
+    if (formData["system.duration"] === SpellDurationEnum.Focused) {
+      formData["system.concentration"] = SpellConcentrationEnum.Active;
     }
 
     // ... and Special Duration spells that always are concentration passive
-    if (formData["data.duration"] === SpellDurationEnum.Special) {
-      formData["data.concentration"] = SpellConcentrationEnum.Passive;
+    if (formData["system.duration"] === SpellDurationEnum.Special) {
+      formData["system.concentration"] = SpellConcentrationEnum.Passive;
     }
 
     return super._updateObject(event, formData);

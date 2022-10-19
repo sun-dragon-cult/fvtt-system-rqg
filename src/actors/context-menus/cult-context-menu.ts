@@ -32,7 +32,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Cult),
     }),
     icon: ContextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: (el: JQuery) => !!getRequiredDomDataset(el, "item-id"),
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = itemId && actor.items.get(itemId);

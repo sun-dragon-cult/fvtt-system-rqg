@@ -1,35 +1,37 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form autocomplete="off">
   <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" title="{{name}}" />
 
-    <div class="item-sheet-header-img">
-      <img src="{{data.img}}" data-edit="img" title="{{data.name}}" />
-    </div>
+    <div class="flex-column gap03rem">
 
-    <div class="name-parts-2-equal" data-target-drop-property="occupationJournalLink">
-      <div>
-        <label for="occupation-{{data._id}}">{{localize "RQG.Item.Occupation.Occupation"}}</label>
-        <input type="text"
-            id="occupation-{{data._id}}"
-            name="data.occupation"
-            value="{{occupationData.occupation}}">
-      </div>
+      <div class="property-line">
+        <div class="label-above">
+          <label for="occupation-{{id}}">{{localize "RQG.Item.Occupation.Occupation"}}</label>
+          <input
+            id="occupation-{{id}}"
+            name="system.occupation"
+            value="{{system.occupation}}"
+            type="text"
+          >
+        </div>
 
-      <div class="paren-head">
-        <label for="region-{{data._id}}">{{localize "RQG.Item.Occupation.Specialization"}}</label>
-        <div>
-          ( <input type="text" id="region-{{data._id}}" name="data.specialization" value="{{occupationData.specialization}}"> )
+        <div class="label-above">
+          <label for="region-{{id}}">{{localize "RQG.Item.Occupation.Specialization"}}</label>
+          <div>
+            ( <input type="text" id="region-{{id}}" name="system.specialization"
+                     value="{{system.specialization}}"> )
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="name-parts-2-equal">
+
       {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
-          rqidLink=occupationData.occupationRqidLink
-          parentField="occupationRqidLink"
-          dropTypes="JournalEntry"
-          showDeleteFromPropertyName="occupationRqidLink"
-          showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+        rqidLink=system.occupationRqidLink
+        parentField="occupationRqidLink"
+        dropTypes="JournalEntry"
+        showDeleteFromPropertyName="occupationRqidLink"
+        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+        showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
       }}
     </div>
 
@@ -40,115 +42,113 @@
     {{!-- Sheet Tab Navigation --}}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="occupation">{{localize "RQG.Item.SheetTab.Occupation"}}</a>
-      {{#if isGM}}
-      <a class="item" data-tab="gm">{{localize "RQG.Item.SheetTab.GM"}}</a>
-      {{#unless isEmbedded}}
-      <a class="item" data-tab="active-effects">{{localize "RQG.Item.SheetTab.ActiveEffects"}}</a>
-      {{/unless}}
-      {{/if}}
     </nav>
 
     <section class="sheet-body">
       {{!-- Occupation Tab --}}
       <div class="tab" data-group="primary" data-tab="occupation">
 
-        <div class="item-sheet-properties">
+        <div class="key-value-grid">
 
           <label>{{localize "RQG.Item.Occupation.Homelands"}}</label>
           <div class="drop-target" data-target-drop-property="homelandRqidLinks">
             <div style="display: flex; flex-wrap: wrap;">
-              {{#if sheetSpecific.homelandsJoined}}
-              {{sheetSpecific.homelandsJoined}}
+              {{#if homelandsJoined}}
+                {{homelandsJoined}}
               {{else}}
-              {{localize "RQG.Item.Occupation.AllHomelands"}}
+                {{localize "RQG.Item.Occupation.AllHomelands"}}
               {{/if}}
             </div>
           </div>
 
-          <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}} <i id="btn-edit-occupational-skills-{{data._id}}" class="fas fa-edit"></i></label>
+          <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}} <i
+            id="btn-edit-occupational-skills-{{id}}" class="fas fa-edit"></i></label>
           <div>
-            <div id="occupational-skill-display-{{data._id}}" style="display: block;">
-              {{{sheetSpecific.skillsJoined}}}
+            <div id="occupational-skill-display-{{id}}" style="display: block;">
+              {{{skillsJoined}}}
             </div>
-            <div class="drop-target" 
-                 data-target-drop-property="occupationalSkillRqidLinks" 
+            <div class="drop-target"
+                 data-target-drop-property="occupationalSkillRqidLinks"
                  data-expected-drop-types="Item"
-                 style="display: none;" 
-                 id="occupational-skill-edit-{{data._id}}">
-              <div style="display: flex; flex-wrap: wrap;" name="occupationalSkill">
-              {{#each occupationData.occupationalSkills}}
-                <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
-                  <i class="fas fa-times icon"
-                      data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
-                      title="{{localize 'RQG.Item.RqgItem.RqidLinkDelete' rqid=this.skillRqidLink.rqid name=this.skillRqidLink.name}}"></i>
+                 style="display: none;"
+                 id="occupational-skill-edit-{{id}}">
+              <div style="display: flex; flex-wrap: wrap;">
+                {{#each system.occupationalSkills}}
+                  <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
+                    <i class="fas fa-times icon"
+                       data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
+                       title="{{localize 'RQG.Item.RqgItem.RqidLinkDelete' rqid=this.skillRqidLink.rqid
+                                         name=this.skillRqidLink.name}}"></i>
 
-                  {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-                    rqidLink=this.skillRqidLink
-                  }}
-                  <div>
-                    <input
-                      type="number"
-                      min="-100"
-                      max="100"
-                      id="bonus-{{@index}}"
-                      data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                      title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
-                      value="{{this.bonus}}">%                  
+                    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                      rqidLink=this.skillRqidLink
+                    }}
+                    <div>
+                      <input
+                        type="number"
+                        min="-100"
+                        max="100"
+                        id="bonus-{{@index}}"
+                        data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                        title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
+                        value="{{this.bonus}}">%
+                    </div>
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="income-skill-{{@index}}"
+                        data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                        title="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
+                        {{checked this.incomeSkill}}>
+                      <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}</label>
+                    </div>
                   </div>
-                  <div>
-                    <input
-                      type="checkbox"
-                      id="income-skill-{{@index}}"
-                      data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                      title="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
-                      {{checked this.incomeSkill}}>
-                    <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}</label>                  
-                  </div>
-                </div>
-              {{/each}}
+                {{/each}}
               </div>
             </div>
           </div>
 
 
-          <label for="standard-of-living-{{data._id}}">{{localize "RQG.Item.Occupation.StandardOfLiving"}}</label>
-          <select id="standard-of-living-{{data._id}}" name="data.standardOfLiving">
-            {{#select occupationData.standardOfLiving}}
-            {{#each sheetSpecific.standardsOfLiving}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.Occupation.StandardOfLivingEnum." this)}}</option>
-            {{/each}}
+          <label for="standard-of-living-{{id}}">{{localize "RQG.Item.Occupation.StandardOfLiving"}}</label>
+          <select id="standard-of-living-{{id}}" name="system.standardOfLiving">
+            {{#select system.standardOfLiving}}
+              {{#each standardsOfLiving}}
+                <option value="{{this}}">{{localize (concat "RQG.Item.Occupation.StandardOfLivingEnum." this)}}</option>
+              {{/each}}
             {{/select}}
           </select>
 
-          <label for="base-income-{{data._id}}">{{localize "RQG.Item.Occupation.BaseIncome"}}</label>
+          <label for="base-income-{{id}}">{{localize "RQG.Item.Occupation.BaseIncome"}}</label>
           <div>
-            <input  type="number" id="base-income-{{data._id}}" name="data.baseIncome" min="0" value="{{occupationData.baseIncome}}">
+            <input type="number" id="base-income-{{id}}" name="system.baseIncome" min="0"
+                   value="{{system.baseIncome}}">
             &nbsp;
             {{localize "RQG.Item.Gear.LunarsAbbr"}}
           </div>
 
-          <label for="base-income-notes-{{data._id}}">{{localize "RQG.Item.Occupation.BaseIncomeNotes"}}</label>
-          <input type="text" id="base-income-notes-{{data._id}}" name="data.baseIncomeNotes" value="{{occupationData.baseIncomeNotes}}">
+          <label for="base-income-notes-{{id}}">{{localize "RQG.Item.Occupation.BaseIncomeNotes"}}</label>
+          <input type="text" id="base-income-notes-{{id}}" name="system.baseIncomeNotes"
+                 value="{{system.baseIncomeNotes}}">
 
           <label>{{localize "RQG.Item.Occupation.CultLinks"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=occupationData.cultRqidLinks
+            rqidLinkArray=system.cultRqidLinks
             parentField="cultRqidLinks"
             dropTypes="cult"
             showDeleteFromPropertyName="cultRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
           }}
 
-          <label for="ransom-{{data._id}}">{{localize "RQG.Item.Occupation.Ransom"}}</label>
+          <label for="ransom-{{id}}">{{localize "RQG.Item.Occupation.Ransom"}}</label>
           <div>
-            <input  type="number" id="ransom-{{data._id}}" name="data.ransom" min="0" value="{{occupationData.ransom}}">
+            <input type="number" id="ransom-{{id}}" name="data.ransom" min="0" value="{{system.ransom}}">
             &nbsp;
             {{localize "RQG.Item.Gear.LunarsAbbr"}}
           </div>
 
           <label>{{localize "RQG.Item.Occupation.StartingEquipmentLinks"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
-            rqidLinkArray=occupationData.startingEquipmentRqidLinks
+            rqidLinkArray=system.startingEquipmentRqidLinks
             parentField="startingEquipmentRqidLinks"
             dropTypes="armor,gear,weapon"
             showDeleteFromPropertyName="startingEquipmentRqidLinks"
@@ -156,22 +156,6 @@
           }}
         </div>
       </div>
-
-      {{!-- GM Tab --}}
-      <div class="tab" data-group="primary" data-tab="gm">
-
-        <label>{{localize "RQG.Item.Gear.GMNotes"}} {{editor content=passionData.gmNotes target="data.gmNotes"
-          button=true owner=owner editable=editable}}
-        </label>
-      </div>
-
-      {{!-- Active Effects Tab --}}
-      <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
-
-      </div>
     </section>
-
   </main>
-
 </form>

@@ -25,13 +25,33 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("currency", (value, unit) => {
-    return `${new Intl.NumberFormat().format(value)} ${unit}`;
+    return `${new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: value % 1 ? 2 : 0, // 0 or 2 decimals
+      maximumFractionDigits: 2,
+    }).format(value)} ${unit}`;
+  });
+
+  Handlebars.registerHelper("multiplyCurrency", (quantity, value, unit) => {
+    const total = Number(quantity) * Number(value);
+    return `${new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: value % 1 ? 2 : 0, // 0 or 2 decimals
+      maximumFractionDigits: 2,
+    }).format(total)} ${unit}`;
+  });
+
+  Handlebars.registerHelper("decimalMultiply", (quantity, value, decimals) => {
+    const fractionDigits = isNaN(decimals) ? undefined : Number(decimals);
+    const total = Number(quantity) * Number(value);
+    return `${new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: 2,
+    }).format(total)}`;
   });
 
   Handlebars.registerHelper("itemname", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
     const item = actor && actor.items.get(itemId);
-    return item ? item.data.name : "---";
+    return item ? item.name : "---";
   });
 
   Handlebars.registerHelper("localizeitemtype", (typeName) => {
@@ -45,29 +65,27 @@ export const registerHandlebarsHelpers = function () {
     if (!item) {
       return "---";
     }
-    if (item.data.type !== ItemTypeEnum.Skill) {
+    if (item.type !== ItemTypeEnum.Skill) {
       const msg = `Handlebar helper "skillname" called with an item that is not a skill`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, item, actor);
     }
-    const specialization = item.data.data.specialization
-      ? ` (${item.data.data.specialization})`
-      : "";
-    return `${item.data.data.skillName}${specialization}`;
+    const specialization = item.system.specialization ? ` (${item.system.specialization})` : "";
+    return `${item.system.skillName}${specialization}`;
   });
 
   Handlebars.registerHelper("skillchance", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
     const item = actor && actor.items.get(itemId);
     // @ts-ignore chance
-    return item ? item.data.data.chance : "---";
+    return item ? item.system.chance : "---";
   });
 
   Handlebars.registerHelper("experiencedclass", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
     const item = actor && actor.items.get(itemId);
     // @ts-ignore hasExperience
-    return item && item.data.data.hasExperience ? "experienced" : "";
+    return item && item.system.hasExperience ? "experienced" : "";
   });
 
   Handlebars.registerHelper("quantity", (itemId, actorId, tokenId) => {
@@ -76,12 +94,12 @@ export const registerHandlebarsHelpers = function () {
     if (!item) {
       return "---";
     }
-    if (!hasOwnProperty(item.data.data, "quantity")) {
+    if (!hasOwnProperty(item.system, "quantity")) {
       const msg = `Handlebar helper quantity was called with an item without quantity propery`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
-    return item.data.data.quantity;
+    return item.system.quantity;
   });
   Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
     if (!runeName) {
@@ -106,10 +124,6 @@ export const registerHandlebarsHelpers = function () {
       "defaultItemIconSettings"
     );
     return defaultItemIconSettings[itemType];
-  });
-
-  Handlebars.registerHelper("enrichHtml", (content: string): string => {
-    return TextEditor.enrichHTML(content);
   });
 
   Handlebars.registerHelper("equippedIcon", (equippedStatus: EquippedStatus): string => {

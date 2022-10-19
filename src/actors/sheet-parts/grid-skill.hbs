@@ -2,9 +2,9 @@
 <div>
     <input type="checkbox"
         class="wizard-choice-input"
-        data-rqid="{{skill.data.flags.rqg.documentRqidFlags.id}}"
+        data-rqid="{{skill.flags.rqg.documentRqidFlags.id}}"
         data-for-choice="{{forChoice}}"
-        {{#if (lookup skill.data.data.choice checkedProperty)}}checked{{/if}} {{!-- TODO this needs to be made generic.  See rune-selector --}}
+        {{#if (lookup skill.system.choice checkedProperty)}}checked{{/if}} {{!-- TODO this needs to be made generic.  See rune-selector --}}
         title="{{localize "RQG.Actor.Skill.ImportSkillCheckboxTitle" skillName=skill.name}}"
         />
 </div>
@@ -12,20 +12,20 @@
 <div data-item-id="{{skill.id}}"
     title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}"
     class="skill contextmenu item"
-    {{#if skill.data.data.descriptionRqidLink.rqid}}data-rqid-link="{{skill.data.data.descriptionRqidLink.rqid}}"{{/if}}>
+    {{#if skill.system.descriptionRqidLink.rqid}}data-rqid-link="{{skill.system.descriptionRqidLink.rqid}}"{{/if}}>
     <img class="item" src="{{skill.img}}">
 </div>
 <div data-item-id="{{skill.id}}"
         class="skill contextmenu item" data-item-roll
         title="{{localize "RQG.Game.RollTitle"}}">
-        {{skill.data.data.skillName}}{{#if skill.data.data.specialization}} ({{skill.data.data.specialization}}){{/if}}
-    {{#each skill.data.data.runes}}
+        {{skill.system.skillName}}{{#if skill.system.specialization}} ({{skill.system.specialization}}){{/if}}
+    {{#each skill.system.runes}}
     <img class="rune" src="{{runeImg this}}" title="{{this}}">
     {{/each}}
 </div>
 <div data-item-id="{{skill.id}}"
-    class="skill contextmenu item {{#if skill.data.data.hasExperience}}experienced{{/if}}"
+    class="skill contextmenu item {{#if skill.system.hasExperience}}experienced{{/if}}"
     data-item-roll
     title="{{localize "RQG.Game.RollTitle"}}">
-<span class="text-right nowrap">{{#if asBonus}}+{{/if}}{{skill.data.data.chance}}%</span>
+<span class="text-right nowrap">{{#if asBonus}}+{{/if}}{{skill.system.chance}}%</span>
 </div>

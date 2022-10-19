@@ -1,7 +1,6 @@
-{{!-- {{json ownedItems}} --}}
 <h2 class="flex-row">{{localize 'RQG.Actor.Passion.Passions'}}</h2>
 <div class="grid passions item-list">
-  {{#each ownedItems.passion}}
+  {{#each embeddedItems.passion}}
   <div class="grid {{#if ../wizard}}passion-select{{else}}passion{{/if}} item">
     <div data-item-id="{{id}}" data-item-roll class="passion contextmenu img item"
       title="{{localize 'RQG.Game.RollTitle'}}">
@@ -9,10 +8,10 @@
       <div>
         <input type="checkbox"
           class="wizard-choice-input"
-          data-rqid="{{this.data.flags.rqg.documentRqidFlags.id}}"
+          data-rqid="{{flags.rqg.documentRqidFlags.id}}"
           data-for-choice="{{../forChoice}}"
-          {{#if (lookup this.data.data.choice ../checkedProperty)}}checked{{/if}}
-          title="{{localize "RQG.Actor.Passion.ImportPassionCheckboxTitle" passionName=this.name}}" />
+          {{#if (lookup system.choice ../checkedProperty)}}checked{{/if}}
+          title="{{localize "RQG.Actor.Passion.ImportPassionCheckboxTitle" passionName=name}}" />
       </div>
       {{/if}}
       <img src="{{img}}">
@@ -22,12 +21,12 @@
       {{name}}
     </div>
     <div data-item-id="{{id}}" data-item-roll
-      class="passion contextmenu item {{#if data.data.hasExperience}}experienced{{/if}}"
+      class="passion contextmenu item {{#if system.hasExperience}}experienced{{/if}}"
       title="{{localize 'RQG.Game.RollTitle'}}">
-      {{this.data.data.chance}}%
+      {{system.chance}}%
     </div>
     <details data-item-id="{{id}}" class="description passion contextmenu item">
-      <summary>{{localize "RQG.Actor.Passion.BackStory"}}</summary>{{{enrichHtml this.data.data.description}}}
+      <summary>{{localize "RQG.Actor.Passion.BackStory"}}</summary>{{{system.enrichedDescription}}}
     </details>
   </div>
   {{/each}}

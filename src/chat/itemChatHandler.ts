@@ -46,7 +46,7 @@ export class ItemChatHandler {
     const templateData = {
       ...flags,
       chance: itemChance + modifier,
-      chatHeading: localizeItemType(item?.data.type) + ": " + item?.name,
+      chatHeading: localizeItemType(item?.type) + ": " + item?.name,
     };
 
     let html = await renderTemplate("systems/rqg/chat/itemChatHandler.hbs", templateData);
@@ -71,7 +71,7 @@ export class ItemChatHandler {
     assertChatMessageFlagType(flags.type, "itemChat");
     const item = await getDocumentFromUuid<RqgItem>(flags.chat.itemUuid);
 
-    if (!item || !("chance" in item.data.data) || item.data.data.chance == null) {
+    if (!item || !("chance" in item.system) || item.system.chance == null) {
       const msg = localize("RQG.Item.Notification.ItemWithIdDoesNotHaveChanceError", {
         itemId: item?.id,
         actorName: item?.parent?.name,
@@ -79,7 +79,7 @@ export class ItemChatHandler {
       throw new RqgError(msg, item);
     }
 
-    const itemChance = item?.data.data.chance ?? 0;
+    const itemChance = item?.system.chance ?? 0;
     const modifier = convertFormValueToInteger(flags.formData.modifier);
     return { itemChance: itemChance, modifier: modifier };
   }

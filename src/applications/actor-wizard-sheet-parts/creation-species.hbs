@@ -2,7 +2,7 @@
   {{localize "RQG.ActorCreation.Nav.0-Species"}}
 </h1>
 
-<div class="item-sheet-properties">
+<div class="key-value-grid">
   <label>{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}:</label>
   <select name="selectedSpeciesTemplateId">
     {{#select species.selectedSpeciesTemplate.id}}
@@ -14,9 +14,9 @@
   </select>
   <label>{{localize "RQG.ActorCreation.Step0.SpeciesDescription"}}:</label>
   <div>
-    {{#if species.selectedSpeciesTemplate.data.data.background.speciesRqidLink}}
+    {{#if species.selectedSpeciesTemplate.system.background.speciesRqidLink}}
     {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-      rqidLink=species.selectedSpeciesTemplate.data.data.background.speciesRqidLink
+      rqidLink=species.selectedSpeciesTemplate.system.background.speciesRqidLink
     }}
     {{/if}}
   </div>
@@ -28,31 +28,31 @@
   <div class="characteristics" style="margin-bottom: 0.75rem;">
     <div class="flex-column">
       <label class="norse">{{localize "RQG.Actor.Characteristics.strength"}}</label>
-      {{species.selectedSpeciesTemplate.data.data.characteristics.strength.formula}}
+      {{species.selectedSpeciesTemplate.system.characteristics.strength.formula}}
     </div>
     <div class="flex-column">
       <label class="norse">{{localize "RQG.Actor.Characteristics.constitution"}}</label>
-      {{species.selectedSpeciesTemplate.data.data.characteristics.constitution.formula}}
+      {{species.selectedSpeciesTemplate.system.characteristics.constitution.formula}}
     </div>
     <div class="flex-column">
       <label class="norse">{{localize "RQG.Actor.Characteristics.size"}}</label>
-      {{species.selectedSpeciesTemplate.data.data.characteristics.size.formula}}
+      {{species.selectedSpeciesTemplate.system.characteristics.size.formula}}
     </div>
     <div class="flex-column">
       <label class="norse">{{localize "RQG.Actor.Characteristics.dexterity"}}</label>
-      {{species.selectedSpeciesTemplate.data.data.characteristics.dexterity.formula}}
+      {{species.selectedSpeciesTemplate.system.characteristics.dexterity.formula}}
     </div>
     <div class="flex-column">
       <label class="norse">{{localize "RQG.Actor.Characteristics.intelligence"}}</label>
-      {{species.selectedSpeciesTemplate.data.data.characteristics.intelligence.formula}}
+      {{species.selectedSpeciesTemplate.system.characteristics.intelligence.formula}}
     </div>
     <div class="flex-column">
       <label class="norse">{{localize "RQG.Actor.Characteristics.power"}}</label>
-      {{species.selectedSpeciesTemplate.data.data.characteristics.power.formula}}
+      {{species.selectedSpeciesTemplate.system.characteristics.power.formula}}
     </div>
     <div class="flex-column">
       <label class="norse">{{localize "RQG.Actor.Characteristics.charisma"}}</label>
-      {{species.selectedSpeciesTemplate.data.data.characteristics.charisma.formula}}
+      {{species.selectedSpeciesTemplate.system.characteristics.charisma.formula}}
     </div>
   </div>
 
@@ -65,7 +65,7 @@
       </span>
     </h2>
     <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.speciesBackground}}style="display: none;"{{/unless}}>
-      {{{enrichHtml species.selectedSpeciesTemplate.data.data.background.biography}}}
+      {{{enrichHtml species.selectedSpeciesTemplate.system.background.biography}}}
     </section>
   </article>
 
@@ -96,7 +96,7 @@
         <div class="tab skills" data-group="species-item-selection" data-tab="skills">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesSkills"}}</h2>
           {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs"
-          ownedItems=speciesTemplateItems
+          embeddedItems=speciesTemplateItems
           wizard="true"
           checkedProperty="speciesPresent"
           forChoice="species"
@@ -106,25 +106,25 @@
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesRunes"}}</h2>
           <div class="flex-row flex-wrap">
             {{>"systems/rqg/actors/sheet-parts/runes-elemental.hbs"
-            ownedItems=speciesTemplateItems
+            embeddedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
             checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/runes-power.hbs"
-            ownedItems=speciesTemplateItems
+            embeddedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
             checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/runes-form.hbs"
-            ownedItems=speciesTemplateItems
+            embeddedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
             checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/runes-condition.hbs"
-            ownedItems=speciesTemplateItems
+            embeddedItems=speciesTemplateItems
             wizard="true"
             forChoice="species"
             checkedProperty="speciesPresent"
@@ -135,7 +135,7 @@
         <div class="tab passions" data-group="species-item-selection" data-tab="passions">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesPassions"}}</h2>
           {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
-          ownedItems=speciesTemplateItems
+          embeddedItems=speciesTemplateItems
           wizard="true"
           checkedProperty="speciesPresent"
           forChoice="species"

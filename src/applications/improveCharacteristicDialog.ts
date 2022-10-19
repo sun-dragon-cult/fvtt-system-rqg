@@ -24,8 +24,8 @@ export async function showImproveCharacteristicDialog(
   // Priests & God-talkers get a 20% bonus, p276 & p278
   const cultStandingBonus = actor.items.some(
     (i) =>
-      i.data.type === ItemTypeEnum.Cult &&
-      [CultRankEnum.GodTalker, CultRankEnum.RunePriest].includes(i.data.data.rank)
+      i.type === ItemTypeEnum.Cult &&
+      [CultRankEnum.GodTalker, CultRankEnum.RunePriest].includes(i.system.rank)
   )
     ? 20
     : 0;

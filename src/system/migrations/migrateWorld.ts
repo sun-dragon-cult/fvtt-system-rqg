@@ -17,7 +17,8 @@ import { migrateWorldDialog } from "../../applications/migrateWorldDialog";
  * Perform a system migration for the entire World, applying migrations for what is in it
  */
 export async function migrateWorld(): Promise<void> {
-  const systemVersion = getGame().system.data.version;
+  // @ts-expect-error v10
+  const systemVersion = getGame().system.version;
   const worldVersion = getGame().settings.get(systemId, "worldMigrationVersion");
   if (systemVersion !== worldVersion) {
     await migrateWorldDialog(systemVersion);

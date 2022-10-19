@@ -1,37 +1,34 @@
 <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} item-list">
   <h2 class="fullrow">{{localize "RQG.Actor.Rune.Form"}}</h2>
 
-  {{#with ownedItems.rune.form.Man}}
-    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
-        rune=this
-        wizard=../wizard 
-        forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+  {{#with embeddedItems.rune.form.Man}}
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+      rune=this
+      wizard=../wizard
+      forChoice=../forChoice
+      checkedProperty=../checkedProperty}}
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
-  {{#with ownedItems.rune.form.Beast}}
-    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
-        rune=this
-        wizard=../wizard 
-        forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+  {{#with embeddedItems.rune.form.Beast}}
+    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+      rune=this
+      wizard=../wizard
+      forChoice=../forChoice
+      checkedProperty=../checkedProperty}}
   {{/with}}
 
-  {{#each ownedItems.rune.form}}
-  {{#unless (eq @key "Man")}}
-  {{#unless (eq @key "Beast")}}
-  {{#with this}}
-    {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs" 
-        rune=this
-        wizard=../wizard 
-        forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  {{/with}}
-  {{/unless}}
-  {{/unless}}
+  {{#each embeddedItems.rune.form}}
+    {{#unless (eq @key "Man")}}
+      {{#unless (eq @key "Beast")}}
+        {{#with this}}
+          {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+            rune=this
+            wizard=../wizard
+            forChoice=../forChoice
+            checkedProperty=../checkedProperty}}
+
+        {{/with}}
+      {{/unless}}
+    {{/unless}}
   {{/each}}
 </div>

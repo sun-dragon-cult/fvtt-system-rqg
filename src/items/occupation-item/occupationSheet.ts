@@ -1,24 +1,21 @@
 import {
   OccupationalSkill,
-  OccupationDataProperties,
-  OccupationDataPropertiesData,
   OccupationDataSourceData,
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertItemType, getDomDataset, getGameUser, localize } from "../../system/util";
+import { getDomDataset, getGameUser, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
-import { RqgItemSheet, RqgItemSheetData } from "../RqgItemSheet";
-import { HomelandDataSource } from "../../data-model/item-data/homelandData";
+import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
+import { DocumentSheetData } from "../shared/sheetInterfaces";
 
-export interface OccupationSheetData extends RqgItemSheetData {
-  isEmbedded: boolean; // There might be no reason to actually embed Occupation items!
-  data: OccupationDataProperties;
-  occupationData: OccupationDataPropertiesData;
-  sheetSpecific: {};
+export interface OccupationSheetData {
+  homelandsJoined: string;
+  standardsOfLiving: StandardOfLivingEnum[];
+  skillsJoined: string;
 }
 
 export class OccupationSheet extends RqgItemSheet<
@@ -27,9 +24,9 @@ export class OccupationSheet extends RqgItemSheet<
 > {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
-      classes: [systemId, "sheet", ItemTypeEnum.Occupation],
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Occupation],
       template: "systems/rqg/items/occupation-item/occupationSheet.hbs",
-      width: 550,
+      width: 500,
       height: 650,
       tabs: [
         {
@@ -41,37 +38,29 @@ export class OccupationSheet extends RqgItemSheet<
     });
   }
 
-  getData(): OccupationSheetData | ItemSheet.Data {
-    const itemData = this.document.data.toObject(false);
-    assertItemType(itemData.type, ItemTypeEnum.Occupation);
+  getData(): OccupationSheetData & DocumentSheetData {
+    const system = duplicate(this.document.system);
 
     return {
-      cssClass: this.isEditable ? "editable" : "locked",
-      editable: this.isEditable,
-      limited: this.document.limited,
-      owner: this.document.isOwner,
-      isEmbedded: this.document.isEmbedded,
-      options: this.options,
-      data: itemData,
-      occupationData: itemData.data,
-      sheetSpecific: {
-        homelandsJoined: itemData.data.homelands.join(", "),
-        standardsOfLiving: Object.values(StandardOfLivingEnum),
-        skillsJoined: itemData.data.occupationalSkills
-          .map((skill) => {
-            const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;
-            if (skill.incomeSkill) {
-              return `<span class="incomeSkillText">${skill.skillRqidLink?.name} ${bonus}</span>`;
-            } else {
-              return `<span>${skill.skillRqidLink?.name} ${bonus}</span>`;
-            }
-          })
-          .join(", "),
-      },
+      id: this.document.id ?? "",
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
+      isEditable: this.isEditable,
       isGM: getGameUser().isGM,
-      ownerId: this.document.actor?.id,
-      uuid: this.document.uuid,
-      supportedLanguages: CONFIG.supportedLanguages,
+      system: system,
+
+      homelandsJoined: system.homelands.join(", "),
+      standardsOfLiving: Object.values(StandardOfLivingEnum),
+      skillsJoined: system.occupationalSkills
+        .map((skill: any) => {
+          const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;
+          if (skill.incomeSkill) {
+            return `<span class="incomeSkillText">${skill.skillRqidLink?.name} ${bonus}</span>`;
+          } else {
+            return `<span>${skill.skillRqidLink?.name} ${bonus}</span>`;
+          }
+        })
+        .join(", "),
     };
   }
 
@@ -81,7 +70,7 @@ export class OccupationSheet extends RqgItemSheet<
       //@ts-ignore dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
-        const occSkills = (this.item.data.data as OccupationDataSourceData).occupationalSkills;
+        const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
             //@ts-ignore value
@@ -92,12 +81,12 @@ export class OccupationSheet extends RqgItemSheet<
           this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
-              "data.occupationalSkills": occSkills,
+              "system.occupationalSkills": occSkills,
             },
           ]);
         } else {
           this.item.update({
-            "data.occupationalSkills": occSkills,
+            "system.occupationalSkills": occSkills,
           });
         }
       }
@@ -108,7 +97,7 @@ export class OccupationSheet extends RqgItemSheet<
       //@ts-ignore dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
-        const occSkills = (this.item.data.data as OccupationDataSourceData).occupationalSkills;
+        const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
             //@ts-ignore checked
@@ -119,21 +108,21 @@ export class OccupationSheet extends RqgItemSheet<
           this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
-              "data.occupationalSkills": occSkills,
+              "system.occupationalSkills": occSkills,
             },
           ]);
         } else {
           this.item.update({
-            "data.occupationalSkills": occSkills,
+            "system.occupationalSkills": occSkills,
           });
         }
       }
     }
 
-    const specializationFormatted = formData["data.specialization"]
-      ? ` (${formData["data.specialization"]})`
+    const specializationFormatted = formData["system.specialization"]
+      ? ` (${formData["system.specialization"]})`
       : "";
-    const newName = formData["data.occupation"] + specializationFormatted;
+    const newName = formData["system.occupation"] + specializationFormatted;
     if (newName) {
       // If there's nothing in the occupation or region, don't rename
       formData["name"] = newName;
@@ -159,24 +148,25 @@ export class OccupationSheet extends RqgItemSheet<
           // Note that if there are duplicate skills, like "Craft (...)",
           // deleting one of them will delete all of them.
           let rqidToDelete = getDomDataset(ev, "delete-occupational-skill-rqid");
-          const thisOccupation = this.item.data.data as OccupationDataSourceData;
-          const occSkills = thisOccupation.occupationalSkills.filter(function (skill) {return skill.skillRqidLink?.rqid !== rqidToDelete});
+          const thisOccupation = this.item.system as OccupationDataSourceData;
+          const occSkills = thisOccupation.occupationalSkills.filter(function (skill) {
+            return skill.skillRqidLink?.rqid !== rqidToDelete;
+          });
 
           if (this.item.isEmbedded) {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
               {
                 _id: this.item.id,
-                "data.occupationalSkills": occSkills,
+                "system.occupationalSkills": occSkills,
               },
             ]);
           } else {
             await this.item.update({
-              "data.occupationalSkills": occSkills,
+              "system.occupationalSkills": occSkills,
             });
           }
-
         });
-    });
+      });
   }
 
   private toggleSkillEdit(forceEdit = false) {
@@ -202,8 +192,7 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   protected async _onDrop(event: DragEvent): Promise<void> {
-
-    const thisOccupation = this.item.data.data as OccupationDataSourceData;
+    const thisOccupation = this.item.system as OccupationDataSourceData;
 
     let droppedDocumentData;
     try {
@@ -226,26 +215,26 @@ export class OccupationSheet extends RqgItemSheet<
         // For this one we're just saving the name of the homeland, without the region
         // to an array of strings.
         const homelands = thisOccupation.homelands;
-        const newHomeland = (droppedItem.data as HomelandDataSource).data.homeland;
+        const newHomeland = droppedItem.system.homeland;
         if (!homelands.includes(newHomeland)) {
           homelands.push(newHomeland);
           if (this.item.isEmbedded) {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
               {
                 _id: this.item.id,
-                "data.homelands": homelands,
+                "system.homelands": homelands,
               },
             ]);
           } else {
             await this.item.update({
-              "data.homelands": homelands,
+              "system.homelands": homelands,
             });
           }
         }
         return;
       }
 
-      // Skills require special handling here (rather than in RqgItemSheet) because 
+      // Skills require special handling here (rather than in RqgItemSheet) because
       // we will associate the skill with a bonus
       if (droppedItem.type === ItemTypeEnum.Skill) {
         let droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
@@ -271,12 +260,12 @@ export class OccupationSheet extends RqgItemSheet<
             await this.item.actor?.updateEmbeddedDocuments("Item", [
               {
                 _id: this.item.id,
-                "data.occupationalSkills": occSkills,
+                "system.occupationalSkills": occSkills,
               },
             ]);
           } else {
             await this.item.update({
-              "data.occupationalSkills": occSkills,
+              "system.occupationalSkills": occSkills,
             });
           }
         } else {
@@ -290,7 +279,6 @@ export class OccupationSheet extends RqgItemSheet<
     }
 
     await super._onDrop(event);
-
   }
 }
 

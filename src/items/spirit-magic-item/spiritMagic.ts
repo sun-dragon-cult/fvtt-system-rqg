@@ -15,7 +15,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
   // }
 
   static async toChat(spiritMagic: RqgItem): Promise<void> {
-    assertItemType(spiritMagic.data.type, ItemTypeEnum.SpiritMagic);
+    assertItemType(spiritMagic.type, ItemTypeEnum.SpiritMagic);
 
     const flags: SpiritMagicChatFlags = {
       type: "spiritMagicChat",
@@ -26,7 +26,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
         itemUuid: spiritMagic.uuid,
       },
       formData: {
-        level: spiritMagic.data.data.points.toString(),
+        level: spiritMagic.system.points.toString(),
         boost: "",
       },
     };
@@ -50,7 +50,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
     const mpCost = options.level + options.boost;
     const result = await spiritMagicItem._roll(
       localize("RQG.Dialog.spiritMagicChat.Cast", { spellName: spiritMagicItem.name }),
-      (spiritMagicItem.actor?.data.data.characteristics.power.value ?? 0) * 5,
+      (spiritMagicItem.actor?.system.characteristics.power.value ?? 0) * 5,
       0,
       ChatMessage.getSpeaker({ actor: spiritMagicItem.actor ?? undefined })
     );
@@ -63,13 +63,10 @@ export class SpiritMagic extends AbstractEmbeddedItem {
     level: number,
     boost: number
   ): string | undefined {
-    assertItemType(spiritMagicItem.data.type, ItemTypeEnum.SpiritMagic);
-    if (level > spiritMagicItem.data.data.points) {
+    assertItemType(spiritMagicItem.type, ItemTypeEnum.SpiritMagic);
+    if (level > spiritMagicItem.system.points) {
       return localize("RQG.Dialog.spiritMagicChat.CantCastSpellAboveLearnedLevel");
-    } else if (
-      level + boost >
-      (spiritMagicItem.actor?.data.data.attributes.magicPoints.value || 0)
-    ) {
+    } else if (level + boost > (spiritMagicItem.actor?.system.attributes.magicPoints.value || 0)) {
       return localize("RQG.Dialog.spiritMagicChat.NotEnoughMagicPoints");
     } else {
       return;

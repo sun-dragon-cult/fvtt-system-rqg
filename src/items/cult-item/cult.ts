@@ -16,7 +16,7 @@ export class Cult extends AbstractEmbeddedItem {
    */
   static onDeleteItem(actor: RqgActor, cultItem: RqgItem, options: any, userId: string): any[] {
     const cultRuneMagicItems = actor.items.filter(
-      (i) => i.data.type === ItemTypeEnum.RuneMagic && i.data.data.cultId === cultItem._id
+      (i) => i.type === ItemTypeEnum.RuneMagic && i.system.cultId === cultItem._id
     );
     return cultRuneMagicItems.map((i) => {
       return { _id: i._id, "data.cultId": "" };

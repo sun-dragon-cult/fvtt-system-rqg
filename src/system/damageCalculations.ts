@@ -9,8 +9,8 @@ import { DeepPartial } from "snowpack";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { assertItemType, RqgError } from "./util";
 import { RqgItem } from "../items/rqgItem";
-import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { RqgActor } from "../actors/rqgActor";
 
 export interface DamageEffects {
   hitLocationUpdates: DeepPartial<HitLocationDataProperties>;
@@ -32,7 +32,7 @@ export class DamageCalculations {
     damage: number,
     applyDamageToTotalHp: boolean,
     hitLocationData: ItemData,
-    actorData: ActorData,
+    actor: RqgActor,
     speakerName: string
   ): DamageEffects {
     assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
@@ -40,7 +40,7 @@ export class DamageCalculations {
       return DamageCalculations.calcLimbDamageEffects(
         hitLocationData,
         damage,
-        actorData,
+        actor,
         applyDamageToTotalHp,
         speakerName
       );
@@ -48,7 +48,7 @@ export class DamageCalculations {
       return DamageCalculations.calcLocationDamageEffects(
         hitLocationData,
         damage,
-        actorData,
+        actor,
         applyDamageToTotalHp,
         speakerName
       );
@@ -57,14 +57,14 @@ export class DamageCalculations {
 
   private static applyDamageToActorTotalHp(
     damage: number,
-    actorData: ActorData
+    actor: RqgActor
   ): DeepPartial<RqgActorDataSource> {
-    const currentTotalHp = actorData.data.attributes.hitPoints.value;
+    const currentTotalHp = actor.system.attributes.hitPoints.value;
     const actorUpdateData: DeepPartial<RqgActorDataSource> = {
       data: { attributes: { hitPoints: { value: 0 } } },
     };
     if (currentTotalHp == null) {
-      const msg = `Actor ${actorData.name} don't have a calculated hitpoint value`;
+      const msg = `Actor ${actor.name} don't have a calculated hitpoint value`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, actorUpdateData);
     }
@@ -75,7 +75,7 @@ export class DamageCalculations {
   private static calcLimbDamageEffects(
     hitLocationData: ItemData,
     fullDamage: number,
-    actorData: ActorData,
+    actor: RqgActor,
     applyDamageToTotalHp: boolean,
     speakerName: string
   ): DamageEffects {
@@ -146,7 +146,7 @@ export class DamageCalculations {
       data: { wounds: wounds },
     } as any);
     if (applyDamageToTotalHp) {
-      mergeObject(damageEffects.actorUpdates, this.applyDamageToActorTotalHp(damage, actorData));
+      mergeObject(damageEffects.actorUpdates, this.applyDamageToActorTotalHp(damage, actor));
     }
     return damageEffects;
   }
@@ -154,7 +154,7 @@ export class DamageCalculations {
   private static calcLocationDamageEffects(
     hitLocationData: ItemData,
     damage: number,
-    actorData: ActorData,
+    actor: RqgActor,
     applyDamageToTotalHp: boolean,
     speakerName: string
   ): DamageEffects {
@@ -195,10 +195,9 @@ export class DamageCalculations {
       totalDamage >= hpMax &&
       totalDamage < hpMax * 3
     ) {
-      const attachedLimbs = actorData.items.filter(
+      const attachedLimbs = actor.items.filter(
         (i: RqgItem) =>
-          i.data.type === ItemTypeEnum.HitLocation &&
-          i.data.data.connectedTo === hitLocationData.name
+          i.type === ItemTypeEnum.HitLocation && i.system.connectedTo === hitLocationData.name
       );
       damageEffects.uselessLegs = attachedLimbs.map((limb) => {
         return {
@@ -237,23 +236,23 @@ export class DamageCalculations {
     }
 
     if (applyDamageToTotalHp) {
-      mergeObject(damageEffects.actorUpdates, this.applyDamageToActorTotalHp(damage, actorData));
+      mergeObject(damageEffects.actorUpdates, this.applyDamageToActorTotalHp(damage, actor));
     }
     return damageEffects;
   }
 
-  static getCombinedActorHealth(actorData: ActorData): ActorHealthState {
-    const totalHitPoints = actorData.data.attributes.hitPoints.value;
+  static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
+    const totalHitPoints = actor.system.attributes.hitPoints.value;
     if (totalHitPoints == null) {
-      const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actorData.name}`;
+      const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actor.name}`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg, actorData);
+      throw new RqgError(msg, actor);
     }
-    let maxHitPoints = actorData.data.attributes.hitPoints.max;
+    let maxHitPoints = actor.system.attributes.hitPoints.max;
     if (maxHitPoints == null) {
-      const msg = `Actor max hit points value ${maxHitPoints} is missing in actor ${actorData.name}`;
+      const msg = `Actor max hit points value ${maxHitPoints} is missing in actor ${actor.name}`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg, actorData);
+      throw new RqgError(msg, actor);
     }
     const baseHealth: ActorHealthState = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
 
@@ -262,11 +261,11 @@ export class DamageCalculations {
     } else if (totalHitPoints <= 2) {
       return "unconscious";
     } else {
-      return actorData.items.reduce((acc: ActorHealthState, item: RqgItem) => {
-        if (item.data.type !== ItemTypeEnum.HitLocation) {
+      return actor.items.reduce((acc: ActorHealthState, item: RqgItem) => {
+        if (item.type !== ItemTypeEnum.HitLocation) {
           return acc;
         } else {
-          const actorHealthImpact = item.data.data.actorHealthImpact;
+          const actorHealthImpact = item.system.actorHealthImpact;
           return actorHealthStatuses.indexOf(actorHealthImpact) > actorHealthStatuses.indexOf(acc)
             ? actorHealthImpact
             : acc;

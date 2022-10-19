@@ -35,7 +35,7 @@ export class Rune extends AbstractEmbeddedItem {
     runeItem: RqgItem,
     options: { modifier: number }
   ): Promise<ResultEnum | undefined> {
-    const chance: number = Number((runeItem?.data.data as any).chance) || 0;
+    const chance: number = Number((runeItem?.system as any).chance) || 0;
     let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: runeItem.name });
     if (options.modifier && options.modifier !== 0) {
       flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {
@@ -49,13 +49,13 @@ export class Rune extends AbstractEmbeddedItem {
   }
 
   static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {
-    if (rune.data.type === ItemTypeEnum.Rune) {
+    if (rune.type === ItemTypeEnum.Rune) {
       const chanceResult = updates.find((r) => r["data.chance"] != null || r?.data?.chance != null);
       if (!chanceResult) {
         return;
       }
-      if (rune.data.data.opposingRune) {
-        const opposingRune = actor.items.getName(rune.data.data.opposingRune);
+      if (rune.system.opposingRune) {
+        const opposingRune = actor.items.getName(rune.system.opposingRune);
         const chance = chanceResult["data.chance"] || chanceResult.data.chance;
         if (opposingRune && chance) {
           // While editing a rune it's possible to have incomplete data, ignore in that case.
@@ -70,8 +70,8 @@ export class Rune extends AbstractEmbeddedItem {
     newChance: number,
     updates: object[]
   ) {
-    assertItemType(opposingRune?.data.type, ItemTypeEnum.Rune);
-    const opposingRuneChance = opposingRune.data.data.chance;
+    assertItemType(opposingRune?.type, ItemTypeEnum.Rune);
+    const opposingRuneChance = opposingRune.system.chance;
     if (newChance + opposingRuneChance !== 100) {
       updates.push({
         _id: opposingRune.id,
