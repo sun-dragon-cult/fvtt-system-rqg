@@ -4,7 +4,7 @@ type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 data:
   runes:
-    - Earth (element)
+    - Death (power)
   points: 1
   isStackable: false
   isRitual: true
