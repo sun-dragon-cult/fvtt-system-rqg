@@ -1,5 +1,5 @@
 @use "variables";
-@use "dialog/rqidEditor/rqidEditor";
+@use "applications/rqidEditor/rqidEditor";
 @use "items/itemsheets";
 @use "actors/actorsheets";
 
@@ -922,7 +922,7 @@ body {
 
 .key-value-grid {
   display: grid;
-  grid-template-columns: auto 2fr;
+  grid-template-columns: auto 1fr;
   grid-gap: 0.5em;
   align-items: center;
   justify-items: flex-start;

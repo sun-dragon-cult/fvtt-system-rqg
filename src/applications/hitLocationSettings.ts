@@ -11,7 +11,7 @@ export class HitLocationSettings extends FormApplication {
     return mergeObject(super.defaultOptions, {
       id: "hit-location-settings-dialog",
       title: localize("RQG.Settings.HitLocations.dialogTitle"),
-      template: "./systems/rqg/dialog/hitLocationSettings.hbs",
+      template: "./systems/rqg/applications/hitLocationSettings.hbs",
       classes: ["form", "hit-location-settings"],
       width: 600,
       closeOnSubmit: false,

@@ -22,10 +22,13 @@ export async function requestSkillSpecializationDialog(
   );
   // @ts-ignore link - fel typ på descriptionJournal?
   const link = descriptionJournal ? TextEditor.enrichHTML(descriptionJournal.link) : "";
-  const contentHtml = await renderTemplate("systems/rqg/dialog/requestSkillSpecialization.hbs", {
-    skillName: skillItem.system.skillName,
-    skillDescriptionLink: link,
-  });
+  const contentHtml = await renderTemplate(
+    "systems/rqg/applications/requestSkillSpecialization.hbs",
+    {
+      skillName: skillItem.system.skillName,
+      skillDescriptionLink: link,
+    }
+  );
 
   const requestSpecializationDialog = new RqgAsyncDialog<string>(
     localize("RQG.Dialog.requestSkillSpecialization.title"),

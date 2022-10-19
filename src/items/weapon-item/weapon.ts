@@ -219,7 +219,9 @@ export class Weapon extends AbstractEmbeddedItem {
             true
           );
         } else {
-          const sameSkillAlreadyOnActor = actor.items.find((i: RqgItem) => i.name === skill.name);
+          const sameSkillAlreadyOnActor = actor.items.find(
+            (i: RqgItem) => i.name === skill.name && i.type === ItemTypeEnum.Skill
+          );
           const embeddedWeaponSkill = sameSkillAlreadyOnActor
             ? [sameSkillAlreadyOnActor]
             : await actor.createEmbeddedDocuments("Item", [skill.data]);

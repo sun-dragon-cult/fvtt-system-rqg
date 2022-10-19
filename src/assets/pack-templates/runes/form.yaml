@@ -71,7 +71,7 @@ data:
   runeType: form
   minorRunes: []
   isMastered: false
-  opposingRune:
+  opposingRune: ${{openSystem.content.rune.man}}$ (${{openSystem.content.runeType.form}}$)
   descriptionRqidLink:
     rqid: je..man-form
     name: ${{openSystem.content.rune.man}}$

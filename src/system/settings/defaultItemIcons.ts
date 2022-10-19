@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { IconSettingsData } from "../../dialog/defaultItemIconSettings";
+import { IconSettingsData } from "../../applications/defaultItemIconSettings";
 
 export const defaultItemIconsObject: IconSettingsData = {
   [ItemTypeEnum.Armor]: "systems/rqg/assets/images/items/armor.svg",

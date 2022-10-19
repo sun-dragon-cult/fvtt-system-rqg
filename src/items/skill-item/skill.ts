@@ -9,7 +9,7 @@ import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { ResultEnum } from "../../data-model/shared/ability";
 import { systemId } from "../../system/config";
 import { RqgActor } from "../../actors/rqgActor";
-import { requestSkillSpecializationDialog } from "../../dialog/requestSkillSpecialization";
+import { requestSkillSpecializationDialog } from "../../applications/requestSkillSpecialization";
 import { concatenateSkillName } from "./concatenateSkillName";
 
 export class Skill extends AbstractEmbeddedItem {

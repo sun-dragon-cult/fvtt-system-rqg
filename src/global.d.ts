@@ -10,7 +10,7 @@ import {
   RqgJournalEntryFlags,
   RqgRollTableFlags,
 } from "./data-model/shared/rqgDocumentFlags";
-import { IconSettingsData } from "./dialog/defaultItemIconSettings";
+import { IconSettingsData } from "./applications/defaultItemIconSettings";
 
 declare global {
   interface DocumentClassConfig {
