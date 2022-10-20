@@ -21,7 +21,10 @@ export async function requestSkillSpecializationDialog(
     true
   );
   // @ts-ignore link - fel typ på descriptionJournal?
-  const link = descriptionJournal ? TextEditor.enrichHTML(descriptionJournal.link) : "";
+  const link = descriptionJournal
+    ? // @ts-expect-error async
+      await TextEditor.enrichHTML(descriptionJournal.link, { async: true })
+    : "";
   const contentHtml = await renderTemplate(
     "systems/rqg/applications/requestSkillSpecialization.hbs",
     {

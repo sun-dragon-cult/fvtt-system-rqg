@@ -3,14 +3,11 @@ import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "../system/config";
 import { assertItemType, getDocumentTypes, getGame, localize } from "../system/util";
-import { SkillCategoryEnum, SkillDataSource } from "../data-model/item-data/skillData";
+import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqgItem } from "../items/rqgItem";
-import { HomelandDataSource } from "../data-model/item-data/homelandData";
-import { RuneDataSource } from "../data-model/item-data/runeData";
-import { PassionDataSource } from "../data-model/item-data/passionData";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { Rqid } from "../system/api/rqidApi";
 
@@ -116,10 +113,12 @@ export class ActorWizard extends FormApplication {
 
     if (!this.homeland.homelands) {
       // Don't get these every time
-      const homelands = await Rqid.fromRqidRegexBest(/.*homeland.*/, "i", worldLanguage);
-      this.homeland.homelands = homelands.filter(
-        (i) => (i as RqgItem).type === ItemTypeEnum.Homeland
-      ) as RqgItem[];
+      const homelands = (await Rqid.fromRqidRegexBest(
+        /.*homeland.*/,
+        "i",
+        worldLanguage
+      )) as RqgItem[];
+      this.homeland.homelands = homelands.filter((i) => i.type === ItemTypeEnum.Homeland);
     }
 
     if (this.actor) {
@@ -165,12 +164,22 @@ export class ActorWizard extends FormApplication {
       }
     });
 
+    // enrich biography for purposes of sheet
+    if (this.species.selectedSpeciesTemplate?.system.background.biography) {
+      this.species.selectedSpeciesTemplate.system.background.biography =
+        await TextEditor.enrichHTML(
+          this.species.selectedSpeciesTemplate?.system.background.biography,
+          // @ts-expect-error async
+          { async: true }
+        );
+    }
+
     // put choices on selected homeland journal rqidLinks for purposes of sheet
-    const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
-    const homelandRqidLinks = selectedHomeland?.data?.cultureJournalRqidLinks.concat(
-      ...selectedHomeland?.data?.tribeJournalRqidLinks,
-      ...selectedHomeland?.data?.clanJournalRqidLinks,
-      ...selectedHomeland?.data?.cultRqidLinks
+    const selectedHomeland = this.homeland.selectedHomeland;
+    const homelandRqidLinks = selectedHomeland?.system?.cultureJournalRqidLinks.concat(
+      ...selectedHomeland?.system?.tribeJournalRqidLinks,
+      ...selectedHomeland?.system?.clanJournalRqidLinks,
+      ...selectedHomeland?.system?.cultRqidLinks
     );
     if (homelandRqidLinks) {
       homelandRqidLinks.forEach((rqidLink: RqidLink | CreationChoice) => {
@@ -183,20 +192,18 @@ export class ActorWizard extends FormApplication {
     }
 
     const homelandRunes: RqgItem[] = [];
-    if (selectedHomeland?.data?.runeRqidLinks) {
-      for (const runeRqidLink of selectedHomeland?.data?.runeRqidLinks) {
-        const rune = await Rqid.fromRqid(runeRqidLink.rqid);
-        // @ts-expect-error type
+    if (selectedHomeland?.system?.runeRqidLinks) {
+      for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks) {
+        const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RqgItem | undefined;
         assertItemType(rune?.type, ItemTypeEnum.Rune);
-        (rune.data as RuneDataSource).data.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
-        (rune.data as RuneDataSource).data.hasExperience = false;
+        rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
+        rune.system.hasExperience = false;
         const associatedChoice = this.choices[runeRqidLink.rqid];
         if (associatedChoice) {
           // put choice on homeland runes for purposes of sheet
-          //@ts-ignore choice TODO Is choice a temporary property?
           rune.system.choice = associatedChoice;
         }
-        homelandRunes.push(rune as RqgItem); // Already asserted
+        homelandRunes.push(rune);
       }
       // put runes on homeland for purposes of sheet
       //@ts-ignore runes
@@ -204,10 +211,9 @@ export class ActorWizard extends FormApplication {
     }
 
     const homelandSkills: RqgItem[] = [];
-    if (selectedHomeland?.data?.skillRqidLinks) {
-      for (const skillRqidLink of selectedHomeland?.data?.skillRqidLinks) {
-        const skill = await Rqid.fromRqid(skillRqidLink.rqid);
-        // @ts-expect-error type
+    if (selectedHomeland?.system?.skillRqidLinks) {
+      for (const skillRqidLink of selectedHomeland?.system?.skillRqidLinks) {
+        const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as RqgItem | undefined;
         assertItemType(skill?.type, ItemTypeEnum.Skill);
         const associatedChoice = this.choices[skillRqidLink.rqid];
         if (associatedChoice) {
@@ -216,14 +222,22 @@ export class ActorWizard extends FormApplication {
           skill.system.choice = associatedChoice;
         }
         if (skillRqidLink.bonus) {
-          const skillDataSource = skill.data as SkillDataSource;
-          skillDataSource.data.baseChance = 0;
-          skillDataSource.data.gainedChance = 0;
-          skillDataSource.data.hasExperience = false;
-          skillDataSource.data.chance = skillRqidLink.bonus;
+          skill.system.baseChance = 0;
+          skill.system.gainedChance = 0;
+          skill.system.hasExperience = false;
+          skill.system.chance = skillRqidLink.bonus;
         }
-        homelandSkills.push(skill as RqgItem); // Already asserted
+        homelandSkills.push(skill);
       }
+    }
+
+    // enrich homeland wizard instructions for purposes of sheet
+    if (selectedHomeland?.system.wizardInstructions) {
+      selectedHomeland.system.wizardInstructions = await TextEditor.enrichHTML(
+        selectedHomeland.system.wizardInstructions,
+        // @ts-expect-error async
+        { async: true }
+      );
     }
 
     // Create an object similar to the one from ActorSheet organizeEmbeddedItems
@@ -241,13 +255,12 @@ export class ActorWizard extends FormApplication {
     itemTypes[ItemTypeEnum.Skill] = skills;
 
     const homelandPassions: RqgItem[] = [];
-    if (selectedHomeland?.data?.passionRqidLinks) {
-      for (const passionRqidLink of selectedHomeland?.data?.passionRqidLinks) {
-        const passion = await Rqid.fromRqid(passionRqidLink.rqid);
-        // @ts-expect-error type
+    if (selectedHomeland?.system?.passionRqidLinks) {
+      for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks) {
+        const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as RqgItem | undefined;
         assertItemType(passion?.type, ItemTypeEnum.Passion);
         const associatedChoice = this.choices[passionRqidLink.rqid];
-        (passion.data as PassionDataSource).data.hasExperience = false;
+        passion.system.hasExperience = false;
         if (associatedChoice) {
           // put choice on homeland passions for purposes of sheet
           //@ts-ignore choice
@@ -316,15 +329,15 @@ export class ActorWizard extends FormApplication {
       });
     });
 
-    this.form?.querySelectorAll(".collabsible-header").forEach((el) => {
+    this.form?.querySelectorAll(".collapsible-header").forEach((el) => {
       el.addEventListener("click", (ev) => {
-        const wrapper = (ev.target as HTMLElement).closest(".collabsible-wrapper") as HTMLElement;
+        const wrapper = (ev.target as HTMLElement).closest(".collapsible-wrapper") as HTMLElement;
         const wasOpen = wrapper.dataset.open === "true";
-        const wrapperName = wrapper.dataset.collabsibleName;
+        const wrapperName = wrapper.dataset.collapsibleName;
         if (wrapperName) {
           this.collapsibleOpenStates[wrapperName] = !wasOpen;
         }
-        const body = $(wrapper as HTMLElement).find(".collabsible-wrapper-body")[0];
+        const body = $(wrapper as HTMLElement).find(".collapsible-wrapper-body")[0];
         $(body).slideToggle(300);
         const plus = $(wrapper as HTMLElement).find(".fa-plus-square")[0];
         plus?.classList.toggle("no-display");
@@ -388,7 +401,7 @@ export class ActorWizard extends FormApplication {
 
     if (templateChars) {
       const update = {
-        data: {
+        system: {
           attributes: {
             move: this.species.selectedSpeciesTemplate?.system.attributes.move,
           },
@@ -434,16 +447,15 @@ export class ActorWizard extends FormApplication {
     await this.actor.deleteEmbeddedDocuments("Item", existingHitLocationIds);
 
     // add hit locations from template to actor
-    const addHitLocations = this.species.selectedSpeciesTemplate?.items
-      .filter((h) => h.type === ItemTypeEnum.HitLocation)
-      // @ts-expect-error system
-      .map((h) => h.toObject().system);
+    const addHitLocations = this.species.selectedSpeciesTemplate?.items.filter(
+      (h) => h.type === ItemTypeEnum.HitLocation
+    );
     if (addHitLocations) {
       //@ts-ignore addHitLocations
       await this.actor.createEmbeddedDocuments("Item", addHitLocations);
     }
 
-    this.species.selectedSpeciesTemplate?.data.items.forEach((i) => {
+    this.species.selectedSpeciesTemplate?.items.forEach((i) => {
       const rqidFlags = i.getFlag(systemId, documentRqidFlags);
       if (!rqidFlags?.id) {
         console.warn("NO RQID!", i);
@@ -451,16 +463,16 @@ export class ActorWizard extends FormApplication {
       }
 
       if (i.type === ItemTypeEnum.Skill) {
-        const skill = i.data as SkillDataSource;
+        const skillData = i.system;
         if (!this.choices[rqidFlags.id]) {
           // Adding a new choice that hasn't existed before so it should be checked.
           this.choices[rqidFlags.id] = new CreationChoice();
           this.choices[rqidFlags.id].rqid = rqidFlags.id;
-          this.choices[rqidFlags.id].speciesValue = skill.data.baseChance;
+          this.choices[rqidFlags.id].speciesValue = skillData.baseChance;
           this.choices[rqidFlags.id].speciesPresent = true;
         } else {
           // The old template and the new template both have the same item
-          this.choices[rqidFlags.id].speciesValue = skill.data.baseChance;
+          this.choices[rqidFlags.id].speciesValue = skillData.baseChance;
           if (checkAll) {
             this.choices[rqidFlags.id].speciesPresent = true;
           }
@@ -468,16 +480,16 @@ export class ActorWizard extends FormApplication {
       }
       if (i.type === ItemTypeEnum.Rune || i.type === ItemTypeEnum.Passion) {
         // Rune or Passion
-        const ability = i.system as IAbility;
+        const abilityData = i.system as IAbility;
         if (this.choices[rqidFlags.id] === undefined) {
           // Adding a new choice that hasn't existed before so it should be checked.
           this.choices[rqidFlags.id] = new CreationChoice();
           this.choices[rqidFlags.id].rqid = rqidFlags.id;
-          this.choices[rqidFlags.id].speciesValue = ability.chance || 0;
+          this.choices[rqidFlags.id].speciesValue = abilityData.chance || 0;
           this.choices[rqidFlags.id].speciesPresent = true;
         } else {
           // The old template and the new template both have the same item
-          this.choices[rqidFlags.id].speciesValue = ability.chance || 0;
+          this.choices[rqidFlags.id].speciesValue = abilityData.chance || 0;
           if (checkAll) {
             this.choices[rqidFlags.id].speciesPresent = true;
           }
@@ -509,10 +521,10 @@ export class ActorWizard extends FormApplication {
         ?.id,
     });
 
-    const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
+    const selectedHomeland = this.homeland.selectedHomeland;
 
     if (selectedHomeland) {
-      selectedHomeland.data.cultureJournalRqidLinks.forEach((journalRqidLink) => {
+      selectedHomeland.system.cultureJournalRqidLinks.forEach((journalRqidLink: RqidLink) => {
         if (this.choices[journalRqidLink.rqid] === undefined) {
           // adding a new choice that hasn't existed before, but Culture JournalEntries shouldn't be checked by default
           this.choices[journalRqidLink.rqid] = new CreationChoice();
@@ -522,7 +534,7 @@ export class ActorWizard extends FormApplication {
         }
       });
 
-      selectedHomeland.data.tribeJournalRqidLinks.forEach((journalRqidLink) => {
+      selectedHomeland.system.tribeJournalRqidLinks.forEach((journalRqidLink: RqidLink) => {
         if (this.choices[journalRqidLink.rqid] === undefined) {
           // adding a new choice that hasn't existed before, but Tribe JournalEntries shouldn't be checked by default
           this.choices[journalRqidLink.rqid] = new CreationChoice();
@@ -532,7 +544,7 @@ export class ActorWizard extends FormApplication {
         }
       });
 
-      selectedHomeland.data.clanJournalRqidLinks.forEach((journalRqidLink) => {
+      selectedHomeland.system.clanJournalRqidLinks.forEach((journalRqidLink: RqidLink) => {
         if (this.choices[journalRqidLink.rqid] === undefined) {
           // adding a new choice that hasn't existed before, but Clan JournalEntries shouldn't be checked by default
           this.choices[journalRqidLink.rqid] = new CreationChoice();
@@ -542,7 +554,7 @@ export class ActorWizard extends FormApplication {
         }
       });
 
-      selectedHomeland.data.cultRqidLinks.forEach((cultRqidLink) => {
+      selectedHomeland.system.cultRqidLinks.forEach((cultRqidLink: RqidLink) => {
         if (this.choices[cultRqidLink.rqid] === undefined) {
           // adding a new choice that hasn't existed before, but Cult Items shouldn't be checked by default
           this.choices[cultRqidLink.rqid] = new CreationChoice();
@@ -552,7 +564,7 @@ export class ActorWizard extends FormApplication {
         }
       });
 
-      selectedHomeland.data.skillRqidLinks.forEach((skillRqidLink) => {
+      selectedHomeland.system.skillRqidLinks.forEach((skillRqidLink: RqidLink) => {
         if (this.choices[skillRqidLink.rqid] === undefined) {
           // adding a new choice that hasn't existed before, check Skill Items by default since MOST of them will be used
           this.choices[skillRqidLink.rqid] = new CreationChoice();
@@ -564,7 +576,7 @@ export class ActorWizard extends FormApplication {
         this.choices[skillRqidLink.rqid].homelandValue = skillRqidLink.bonus || 0;
       });
 
-      selectedHomeland.data.runeRqidLinks.forEach((runeRqidLink) => {
+      selectedHomeland.system.runeRqidLinks.forEach((runeRqidLink: RqidLink) => {
         if (this.choices[runeRqidLink.rqid] === undefined) {
           // adding a new choice that hasn't existed before, check Rune Items by default since there's usually only ONE
           this.choices[runeRqidLink.rqid] = new CreationChoice();
@@ -576,7 +588,7 @@ export class ActorWizard extends FormApplication {
         this.choices[runeRqidLink.rqid].homelandValue = 10;
       });
 
-      selectedHomeland.data.passionRqidLinks.forEach((passionRqidLink) => {
+      selectedHomeland.system.passionRqidLinks.forEach((passionRqidLink: RqidLink) => {
         if (this.choices[passionRqidLink.rqid] === undefined) {
           // adding a new choice that hasn't existed before, check Passion Items by default
           this.choices[passionRqidLink.rqid] = new CreationChoice();
@@ -606,22 +618,22 @@ export class ActorWizard extends FormApplication {
             if (this.choices[key].present()) {
               if (actorItem.type === ItemTypeEnum.Skill) {
                 assertItemType(actorItem.type, ItemTypeEnum.Skill);
-                const existingSkill = actorItem.data as SkillDataSource;
+                const existingSkillData = actorItem.system;
                 const newBaseChance = this.choices[key].totalValue();
-                if (existingSkill.data.baseChance !== newBaseChance)
+                if (existingSkillData.baseChance !== newBaseChance)
                   // Item exists on the actor and has a different baseChance, so update it.
                   updates.push({
                     _id: actorItem.id,
-                    data: { baseChance: newBaseChance },
+                    system: { baseChance: newBaseChance },
                   });
               }
               if (actorItem.type === ItemTypeEnum.Rune || actorItem.type === ItemTypeEnum.Passion) {
-                const existingAbility = actorItem.system as IAbility;
+                const existingAbilityData = actorItem.system as IAbility;
                 const newChance = this.choices[key].totalValue();
-                if (existingAbility.chance !== newChance) {
+                if (existingAbilityData.chance !== newChance) {
                   updates.push({
                     _id: actorItem.id,
-                    data: { chance: newChance },
+                    system: { chance: newChance },
                   });
                 }
               }
@@ -651,8 +663,9 @@ export class ActorWizard extends FormApplication {
 
         // Copy Skills, Runes, and Passions from the Actor template
         if (this.choices[key].speciesPresent) {
-          let itemsToAddFromTemplate = [(await Rqid.fromRqid(key)) as RqgItem];
-          if (!itemsToAddFromTemplate || itemsToAddFromTemplate.length === 0) {
+          const item = (await Rqid.fromRqid(key)) as RqgItem | undefined;
+          let itemsToAddFromTemplate = item ? [item] : undefined;
+          if (!itemsToAddFromTemplate) {
             // Didn't find items by rqid, so just take what's on the Species Template
             itemsToAddFromTemplate =
               this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key) || [];
@@ -666,20 +679,18 @@ export class ActorWizard extends FormApplication {
             for (const templateItem of itemsToAddFromTemplate) {
               // Item exists on the template and has been chosen but does not exist on the actor, so add it
               if (templateItem.type === ItemTypeEnum.Skill) {
-                (templateItem.data as SkillDataSource).data.baseChance =
-                  this.choices[key].totalValue();
-                (templateItem.data as SkillDataSource).data.hasExperience = false;
+                templateItem.system.baseChance = this.choices[key].totalValue();
+                templateItem.system.hasExperience = false;
               }
               if (templateItem.type === ItemTypeEnum.Rune) {
-                (templateItem.data as RuneDataSource).data.chance = this.choices[key].totalValue();
-                (templateItem.data as RuneDataSource).data.hasExperience = false;
+                templateItem.system.chance = this.choices[key].totalValue();
+                templateItem.system.hasExperience = false;
               }
               if (templateItem.type === ItemTypeEnum.Passion) {
-                (templateItem.data as PassionDataSource).data.chance =
-                  this.choices[key].totalValue();
-                (templateItem.data as PassionDataSource).data.hasExperience = false;
+                templateItem.system.chance = this.choices[key].totalValue();
+                templateItem.system.hasExperience = false;
               }
-              adds.push(templateItem.data);
+              adds.push(templateItem);
             }
           }
         }
@@ -690,21 +701,18 @@ export class ActorWizard extends FormApplication {
           if (itemToAddFromHomeland instanceof RqgItem) {
             // Item exists on the template and has been chosen but does not exist on the actor, so add it
             if (itemToAddFromHomeland.type === ItemTypeEnum.Skill) {
-              (itemToAddFromHomeland.data as SkillDataSource).data.baseChance =
-                this.choices[key].totalValue();
-              (itemToAddFromHomeland.data as SkillDataSource).data.hasExperience = false;
+              itemToAddFromHomeland.system.baseChance = this.choices[key].totalValue();
+              itemToAddFromHomeland.system.hasExperience = false;
             }
             if (itemToAddFromHomeland.type === ItemTypeEnum.Rune) {
-              (itemToAddFromHomeland.data as RuneDataSource).data.chance =
-                this.choices[key].totalValue();
-              (itemToAddFromHomeland.data as RuneDataSource).data.hasExperience = false;
+              itemToAddFromHomeland.system.chance = this.choices[key].totalValue();
+              itemToAddFromHomeland.system.hasExperience = false;
             }
             if (itemToAddFromHomeland.type === ItemTypeEnum.Passion) {
-              (itemToAddFromHomeland.data as PassionDataSource).data.chance =
-                this.choices[key].totalValue();
-              (itemToAddFromHomeland.data as PassionDataSource).data.hasExperience = false;
+              itemToAddFromHomeland.system.chance = this.choices[key].totalValue();
+              itemToAddFromHomeland.system.hasExperience = false;
             }
-            adds.push(itemToAddFromHomeland.data);
+            adds.push(itemToAddFromHomeland); // TODO or itemToAddFromHomeland.toObject() ??
           }
         }
 
@@ -712,45 +720,44 @@ export class ActorWizard extends FormApplication {
         let cultsEligibleToAdd: RqidLink[] = [];
 
         if (this.homeland.selectedHomeland) {
-          cultsEligibleToAdd = (this.homeland.selectedHomeland?.data as HomelandDataSource).data
-            .cultRqidLinks;
+          cultsEligibleToAdd = this.homeland.selectedHomeland?.system.cultRqidLinks;
         }
 
         if (cultsEligibleToAdd.map((c) => c.rqid).includes(key)) {
           if (this.choices[key].homelandCultChosen) {
             const cult = await Rqid.fromRqid(key);
             if (cult) {
-              adds.push(cult.data);
+              adds.push(cult);
             }
           }
         }
       }
     }
-    //@ts-ignore adds // TODO fix "adds" typing
+    //@ts-expect-errors adds // TODO fix "adds" typing
     await this.actor.createEmbeddedDocuments("Item", adds);
     await this.actor.updateEmbeddedDocuments("Item", updates);
     await this.actor.deleteEmbeddedDocuments("Item", deletes);
 
-    const selectedHomeland = this.homeland.selectedHomeland?.data as HomelandDataSource;
+    const selectedHomelandData = this.homeland.selectedHomeland?.system;
 
     const selectedCultureRqidLinks: RqidLink[] = [];
     const selectedTribeRqidLinks: RqidLink[] = [];
     const selectedClanRqidLinks: RqidLink[] = [];
 
-    if (selectedHomeland) {
-      selectedHomeland.data.cultureJournalRqidLinks.forEach((rqidLink) => {
+    if (selectedHomelandData) {
+      selectedHomelandData.cultureJournalRqidLinks.forEach((rqidLink: RqidLink) => {
         if (this.choices[rqidLink.rqid].homelandCultureChosen) {
           selectedCultureRqidLinks.push(rqidLink);
         }
       });
 
-      selectedHomeland.data.tribeJournalRqidLinks.forEach((rqidLink) => {
+      selectedHomelandData.tribeJournalRqidLinks.forEach((rqidLink: RqidLink) => {
         if (this.choices[rqidLink.rqid].homelandTribeChosen) {
           selectedTribeRqidLinks.push(rqidLink);
         }
       });
 
-      selectedHomeland.data.clanJournalRqidLinks.forEach((rqidLink) => {
+      selectedHomelandData.clanJournalRqidLinks.forEach((rqidLink: RqidLink) => {
         if (this.choices[rqidLink.rqid].homelandClanChosen) {
           selectedClanRqidLinks.push(rqidLink);
         }
@@ -759,10 +766,10 @@ export class ActorWizard extends FormApplication {
 
     // This is just always going to replace the Culture RqidLinks
     await this.actor.update({
-      data: {
+      system: {
         background: {
-          homelandJournalRqidLink: selectedHomeland?.data?.homelandJournalRqidLink,
-          regionJournalRqidLink: selectedHomeland?.data?.regionJournalRqidLink,
+          homelandJournalRqidLink: selectedHomelandData?.homelandJournalRqidLink,
+          regionJournalRqidLink: selectedHomelandData?.regionJournalRqidLink,
           cultureJournalRqidLinks: selectedCultureRqidLinks,
           tribeJournalRqidLinks: selectedTribeRqidLinks,
           clanJournalRqidLinks: selectedClanRqidLinks,

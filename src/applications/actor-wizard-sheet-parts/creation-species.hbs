@@ -8,19 +8,18 @@
     {{#select species.selectedSpeciesTemplate.id}}
     <option value="">{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}</option>
     {{#each species.speciesTemplates}}
-    <option value="{{this.id}}">{{this.name}}</option>
+    <option value="{{id}}">{{name}}</option>
     {{/each}}
     {{/select}}
   </select>
   <label>{{localize "RQG.ActorCreation.Step0.SpeciesDescription"}}:</label>
   <div>
     {{#if species.selectedSpeciesTemplate.system.background.speciesRqidLink}}
-    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
-      rqidLink=species.selectedSpeciesTemplate.system.background.speciesRqidLink
-    }}
+      {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+        rqidLink=species.selectedSpeciesTemplate.system.background.speciesRqidLink
+      }}
     {{/if}}
   </div>
-
 </div>
 
 <div>
@@ -56,28 +55,28 @@
     </div>
   </div>
 
-  <article class="collabsible-wrapper" data-collabsible-name="speciesBackground" data-open="{{collapsibleOpenStates.speciesBackground}}">
-    <h2 class="collabsible-header">
+  <article class="collapsible-wrapper" data-collapsible-name="speciesBackground" data-open="{{collapsibleOpenStates.speciesBackground}}">
+    <h2 class="collapsible-header">
       <span class="toggle-icon">
         <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesBackground}}no-display{{/if}}"></i>
         <i class="far fa-minus-square {{#unless collapsibleOpenStates.speciesBackground}}no-display{{/unless}}"></i>
         {{localize "RQG.ActorCreation.Step0.BackgroundAndNotes"}}
       </span>
     </h2>
-    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.speciesBackground}}style="display: none;"{{/unless}}>
-      {{{enrichHtml species.selectedSpeciesTemplate.system.background.biography}}}
+    <section class="collapsible-wrapper-body" {{#unless collapsibleOpenStates.speciesBackground}}style="display: none;"{{/unless}}>
+      {{{species.selectedSpeciesTemplate.system.background.biography}}}
     </section>
   </article>
 
-  <article class="collabsible-wrapper" data-collabsible-name="speciesAdvanced" data-open="{{collapsibleOpenStates.speciesAdvanced}}">
-    <h2 class="collabsible-header">
+  <article class="collapsible-wrapper" data-collapsible-name="speciesAdvanced" data-open="{{collapsibleOpenStates.speciesAdvanced}}">
+    <h2 class="collapsible-header">
       <span class="toggle-icon">
         <i class="far fa-plus-square {{#if collapsibleOpenStates.speciesAdvanced}}no-display{{/if}}"></i>
         <i class="far fa-minus-square {{#unless collapsibleOpenStates.speciesAdvanced}}no-display{{/unless}}"></i>
         {{localize "RQG.ActorCreation.AdvancedOptions"}}
       </span>
     </h2>
-    <section class="collabsible-wrapper-body" {{#unless collapsibleOpenStates.speciesAdvanced}}style="display: none;"{{/unless}} >
+    <section class="collapsible-wrapper-body" {{#unless collapsibleOpenStates.speciesAdvanced}}style="display: none;"{{/unless}} >
 
       <nav class="species-tabs item-sheet-nav-tabs tabs" data-group="species-item-selection">
         <a class="item" data-group="species-item-selection" data-tab="skills">
@@ -96,38 +95,38 @@
         <div class="tab skills" data-group="species-item-selection" data-tab="skills">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesSkills"}}</h2>
           {{> "systems/rqg/actors/sheet-parts/skills-tab.hbs"
-          embeddedItems=speciesTemplateItems
-          wizard="true"
-          checkedProperty="speciesPresent"
-          forChoice="species"
+            embeddedItems=speciesTemplateItems
+            wizard="true"
+            checkedProperty="speciesPresent"
+            forChoice="species"
           }}
         </div>
         <div class="tab runes" data-group="species-item-selection" data-tab="runes">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesRunes"}}</h2>
           <div class="flex-row flex-wrap">
             {{>"systems/rqg/actors/sheet-parts/runes-elemental.hbs"
-            embeddedItems=speciesTemplateItems
-            wizard="true"
-            forChoice="species"
-            checkedProperty="speciesPresent"
+              embeddedItems=speciesTemplateItems
+              wizard="true"
+              forChoice="species"
+              checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/runes-power.hbs"
-            embeddedItems=speciesTemplateItems
-            wizard="true"
-            forChoice="species"
-            checkedProperty="speciesPresent"
+              embeddedItems=speciesTemplateItems
+              wizard="true"
+              forChoice="species"
+              checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/runes-form.hbs"
-            embeddedItems=speciesTemplateItems
-            wizard="true"
-            forChoice="species"
-            checkedProperty="speciesPresent"
+              embeddedItems=speciesTemplateItems
+              wizard="true"
+              forChoice="species"
+              checkedProperty="speciesPresent"
             }}
             {{>"systems/rqg/actors/sheet-parts/runes-condition.hbs"
-            embeddedItems=speciesTemplateItems
-            wizard="true"
-            forChoice="species"
-            checkedProperty="speciesPresent"
+              embeddedItems=speciesTemplateItems
+              wizard="true"
+              forChoice="species"
+              checkedProperty="speciesPresent"
             }}
           </div>
 
@@ -135,10 +134,10 @@
         <div class="tab passions" data-group="species-item-selection" data-tab="passions">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesPassions"}}</h2>
           {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
-          embeddedItems=speciesTemplateItems
-          wizard="true"
-          checkedProperty="speciesPresent"
-          forChoice="species"
+            embeddedItems=speciesTemplateItems
+            wizard="true"
+            checkedProperty="speciesPresent"
+            forChoice="species"
           }}
         </div>
       </section>
