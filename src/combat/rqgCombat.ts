@@ -11,8 +11,8 @@ export class RqgCombat extends Combat {
   }
 
   _sortCombatants(a: Combatant, b: Combatant): number {
-    const ia = Number.isNumeric(a.initiative) ? a.initiative : 9999;
-    const ib = Number.isNumeric(b.initiative) ? b.initiative : 9999;
+    const ia = Number.isNumeric(a.initiative) ? a.initiative : Infinity;
+    const ib = Number.isNumeric(b.initiative) ? b.initiative : Infinity;
     const ci = ia - ib;
     if (ci !== 0) {
       return ci; // Sort on lowest Strike Rank (initiative)

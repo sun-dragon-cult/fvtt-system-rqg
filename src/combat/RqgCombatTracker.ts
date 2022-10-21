@@ -7,7 +7,8 @@ export class RqgCombatTracker extends CombatTracker {
   }
 
   async _onToggleDefeatedStatus(combatant: Combatant): Promise<void> {
-    let isDefeated = !combatant.data.defeated;
+    // @ts-expect-errors isDefeated
+    const isDefeated = !combatant.isDefeated;
     const otherCombatantsSharingToken = getCombatantsSharingToken(combatant);
     await super._onToggleDefeatedStatus(combatant);
     for (const cb of otherCombatantsSharingToken) {
@@ -25,7 +26,7 @@ export class RqgCombatTracker extends CombatTracker {
           const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
           if (combatant) {
             // @ts-ignore
-            await this.viewed!.createEmbeddedDocuments("Combatant", [combatant.data]);
+            await this.viewed!.createEmbeddedDocuments("Combatant", [combatant]);
           }
         },
       },
@@ -60,27 +61,27 @@ export class RqgCombatTracker extends CombatTracker {
 }
 
 // Called from the renderCombatTracker Hook
-export function renderCombatTracker(app: any, html: any, data: any): void {
-  const currentCombat = data.combats[data.currentIndex - 1];
+export function renderCombatTracker(app: RqgCombatTracker, html: any, data: any): void {
+  const currentCombat = data.combats[data.currentIndex - 1] as Combat | undefined;
   if (currentCombat) {
     html.find(".combatant").each(async (i: number, el: HTMLElement) => {
-      const combId = getRequiredDomDataset($(el as HTMLElement), "combatant-id");
-      const combatant = currentCombat.data.combatants.find((c: Combatant) => c.id === combId);
-      if (!combatant.actor) {
+      const combId = getRequiredDomDataset(el, "combatant-id");
+      const combatant = currentCombat.combatants.find((c: Combatant) => c.id === combId);
+      if (!combatant?.actor) {
         ui.notifications?.warn(
           localize("RQG.Foundry.CombatTracker.CombatantWithoutActor", {
-            combatantName: combatant.name,
+            combatantName: combatant?.name ?? localize("RQG.Foundry.CombatTracker.UnknownName"),
           })
         );
       }
-      const readOnly = combatant.actor?.isOwner ? "" : "readonly";
+      const readOnly = combatant?.actor?.isOwner ? "" : "readonly";
       const initDiv = el.getElementsByClassName("token-initiative")[0];
-      const valueString = combatant.initiative ? `value=${combatant.initiative}` : "";
+      const valueString = combatant?.initiative ? `value=${combatant.initiative}` : "";
       initDiv.innerHTML = `<input type="number" min="1" max="12" ${valueString} ${readOnly}>`;
 
-      initDiv.addEventListener("change", async (e) => {
+      initDiv.addEventListener("change", async (e: Event) => {
         const inputElement = e.target as HTMLInputElement;
-        const combatantId = getRequiredDomDataset($(el as HTMLElement), "combatant-id");
+        const combatantId = getRequiredDomDataset(el, "combatant-id");
         await currentCombat.setInitiative(combatantId, Number(inputElement.value));
       });
     });

@@ -6,7 +6,5 @@ export function getCombatantsSharingToken(combatant: Combatant): any {
   const combatantTokenIds = combatant.actor
     .getActiveTokens(false, true)
     .map((t: TokenDocument) => t.id);
-  return combatant.parent.combatants.filter((cb: any) =>
-    combatantTokenIds.includes(cb.data.tokenId)
-  );
+  return combatant.parent.combatants.filter((cb: any) => combatantTokenIds.includes(cb.tokenId));
 }
