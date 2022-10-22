@@ -1,6 +1,6 @@
 import { logMisconfiguration, RqgError } from "../system/util";
 import { EffectChangeData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
-import { RqgActor } from "./rqgActor";
+import { RqgActor } from "../actors/rqgActor";
 
 export class RqgActiveEffect extends ActiveEffect {
   static init() {
@@ -11,14 +11,14 @@ export class RqgActiveEffect extends ActiveEffect {
    * Apply an RqgActiveEffect that uses a CUSTOM application mode.
    */
   _applyCustom(actor: RqgActor, change: EffectChangeData): any {
-    const [affectedItemType, itemName, path] = change.key.split(":"); // ex hitLocation:head:data.armorPoints
+    const [affectedItemType, itemName, path] = change.key.split(":"); // ex hitLocation:Head:system.naturalAp
     const items: Item[] = actor.items.filter(
       (i: Item) => i.type === affectedItemType && i.name === itemName
     );
     if (items.length === 1) {
       // Found one and only one item that should be affected (Happy path)
       const affectedItem = items[0];
-      const currentValue: number = getProperty(items[0], path) || 0;
+      const currentValue: number = getProperty(affectedItem, path) || 0;
       const changeValue: number = Number(change.value) || 0;
       try {
         foundry.utils.setProperty(affectedItem, path, changeValue + currentValue);
