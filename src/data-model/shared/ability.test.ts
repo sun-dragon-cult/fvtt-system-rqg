@@ -2,10 +2,8 @@ import { Ability, ResultEnum } from "./ability";
 
 describe("Evaluate Roll Result", () => {
   beforeEach(() => {
-    //@ts-ignore
-    global.game = { settings: {} };
-    //@ts-ignore
-    global.game.settings.get = jest.fn(() => true); // Enable hyper criticals etc
+    (global as any).game = { settings: {} };
+    (global as any).game.settings.get = jest.fn(() => true); // Enable hyper criticals etc
   });
 
   describe.each`

@@ -5,10 +5,10 @@ import {
   HitLocationHealthState,
 } from "../data-model/item-data/hitLocationData";
 import { CharacterDataSource } from "../data-model/actor-data/rqgActorData";
-import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { RqgActor } from "../actors/rqgActor";
+import { RqgItem } from "../items/rqgItem";
 
 export interface HealingEffects {
   /** Updates to the hitlocation item's wounds, health and actor health impact */
@@ -26,32 +26,32 @@ export class HealingCalculations {
   static healWound(
     healPoints: number,
     healWoundIndex: number,
-    hitLocationData: ItemData,
+    hitLocation: RqgItem,
     actor: RqgActor
   ): HealingEffects {
-    assertItemType(hitLocationData.type, ItemTypeEnum.HitLocation);
+    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const healingEffects: HealingEffects = {
       hitLocationUpdates: {},
       actorUpdates: {},
       usefulLegs: [], // Not used yet
     };
-    if (!Number.isInteger(healWoundIndex) || hitLocationData.data.wounds.length <= healWoundIndex) {
+    if (!Number.isInteger(healWoundIndex) || hitLocation.system.wounds.length <= healWoundIndex) {
       const msg = `Trying to heal a wound that doesn't exist.`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg, healWoundIndex, hitLocationData);
+      throw new RqgError(msg, healWoundIndex, hitLocation);
     }
 
-    const hpValue = hitLocationData.data.hitPoints.value;
-    const hpMax = hitLocationData.data.hitPoints.max;
+    const hpValue = hitLocation.system.hitPoints.value;
+    const hpMax = hitLocation.system.hitPoints.max;
     if (hpValue == null || hpMax == null) {
-      const msg = `Hitlocation ${hitLocationData.name} don't have hp value or max`;
+      const msg = `Hitlocation ${hitLocation.name} don't have hp value or max`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg, hitLocationData);
+      throw new RqgError(msg, hitLocation);
     }
-    const wounds = hitLocationData.data.wounds.slice();
+    const wounds = hitLocation.system.wounds.slice();
     let hitLocationHealthState: HitLocationHealthState =
-      hitLocationData.data.hitLocationHealthState || "healthy";
-    let actorHealthImpact: ActorHealthState = hitLocationData.data.actorHealthImpact || "healthy";
+      hitLocation.system.hitLocationHealthState || "healthy";
+    let actorHealthImpact: ActorHealthState = hitLocation.system.actorHealthImpact || "healthy";
 
     if (healPoints >= 6 && hitLocationHealthState === "severed") {
       hitLocationHealthState = "wounded"; // Remove the "severed" state, but the actual state will be calculated below
@@ -74,8 +74,7 @@ export class HealingCalculations {
     }
 
     mergeObject(healingEffects.hitLocationUpdates, {
-      data: {
-        // TODO system?? or what
+      system: {
         wounds: wounds,
         actorHealthImpact: actorHealthImpact,
         hitLocationHealthState: hitLocationHealthState,
@@ -92,7 +91,7 @@ export class HealingCalculations {
 
     const totalHpAfter = Math.min(actorTotalHp + healPoints, actorMaxHp);
     mergeObject(healingEffects.actorUpdates, {
-      data: { attributes: { hitPoints: { value: totalHpAfter } } },
+      system: { attributes: { hitPoints: { value: totalHpAfter } } },
     });
 
     return healingEffects;

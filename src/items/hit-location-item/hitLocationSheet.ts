@@ -148,13 +148,7 @@ export class HitLocationSheet extends RqgItemSheet<
       damage = Math.max(0, damage - armorPoints);
     }
     const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
-      DamageCalculations.addWound(
-        damage,
-        applyDamageToTotalHp,
-        hitLocation.data,
-        actor,
-        speakerName
-      );
+      DamageCalculations.addWound(damage, applyDamageToTotalHp, hitLocation, actor, speakerName);
 
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
     actorUpdates && (await actor.update(actorUpdates as any)); // TODO fix type
@@ -174,7 +168,7 @@ export class HitLocationSheet extends RqgItemSheet<
       await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken);
     } else {
       const activeTokens = actor.getActiveTokens(true);
-      const sceneTokens = getGame().scenes?.active?.data.tokens;
+      const sceneTokens = getGame().scenes?.active?.tokens;
       if (activeTokens.length && sceneTokens) {
         const token = sceneTokens.find((t) => t.id === activeTokens[0].id);
         token && (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
@@ -254,7 +248,7 @@ export class HitLocationSheet extends RqgItemSheet<
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,
-      hitLocation.data,
+      hitLocation,
       actor
     );
 
@@ -289,8 +283,6 @@ export class HitLocationSheet extends RqgItemSheet<
   }
 
   static async setTokenEffect(token: RqgToken): Promise<void> {
-    // // TODO testing testing - lägg i nån CONFIG?
-
     const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
       new Map([
         ["shock", CONFIG.statusEffects[14]],
