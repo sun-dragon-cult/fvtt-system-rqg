@@ -175,7 +175,7 @@ export class Weapon extends AbstractEmbeddedItem {
 
     return {
       _id: child.id,
-      data: {
+      system: {
         projectileId: projectileId,
         usage: {
           oneHand: { skillId: oneHandSkillId },
@@ -278,15 +278,15 @@ export class Weapon extends AbstractEmbeddedItem {
     // Decrease quantity of linked projectile if shooting
     if (
       projectileItemData?.type === ItemTypeEnum.Weapon &&
-      projectileItemData.data.quantity &&
-      projectileItemData.data.quantity > 0 &&
+      projectileItemData.system.quantity &&
+      projectileItemData.system.quantity > 0 &&
       usage === "missile" &&
       !["parry", "special"].includes(damageType ?? "")
     ) {
-      originalAmmoQty = projectileItemData.data.quantity;
+      originalAmmoQty = projectileItemData.system.quantity;
       const updateData: DeepPartial<ItemDataSource> = {
         _id: projectileItemData._id,
-        data: { quantity: --projectileItemData.data.quantity },
+        system: { quantity: --projectileItemData.system.quantity },
       };
       await weaponItem.actor?.updateEmbeddedDocuments("Item", [updateData]);
     }
@@ -304,8 +304,8 @@ export class Weapon extends AbstractEmbeddedItem {
     // Prevent using weapons with projectile quantity 0
     if (
       projectileItemData?.type === ItemTypeEnum.Weapon &&
-      projectileItemData.data.quantity != null &&
-      projectileItemData.data.quantity <= 0
+      projectileItemData.system.quantity != null &&
+      projectileItemData.system.quantity <= 0
     ) {
       if (originalAmmoQty > 0) {
         ui.notifications?.warn(

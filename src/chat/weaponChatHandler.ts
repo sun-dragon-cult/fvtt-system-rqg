@@ -141,7 +141,7 @@ export class WeaponChatHandler {
     // Initiate an update of the embedded weapon defaultUsage to store the preferred usage for next attack
     fromUuid(flags.chat.weaponUuid).then((weapon: any) => {
       weapon?.actor?.updateEmbeddedDocuments("Item", [
-        { _id: weapon.id, data: { defaultUsage: flags.formData.usage } },
+        { _id: weapon.id, system: { defaultUsage: flags.formData.usage } },
       ]);
     });
   }

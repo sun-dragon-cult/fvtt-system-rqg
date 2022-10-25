@@ -18,12 +18,12 @@ export interface SpiritMagicDataPropertiesData extends SpiritMagicDataSourceData
 
 export interface SpiritMagicDataSource {
   type: ItemTypeEnum.SpiritMagic;
-  data: SpiritMagicDataSourceData;
+  system: SpiritMagicDataSourceData;
 }
 
 export interface SpiritMagicDataProperties {
   type: ItemTypeEnum.SpiritMagic;
-  data: SpiritMagicDataPropertiesData;
+  system: SpiritMagicDataPropertiesData;
 }
 
 export const defaultSpiritMagicData: SpiritMagicDataSourceData = {

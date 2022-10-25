@@ -272,17 +272,17 @@ export async function submitImproveAbilityDialog(
     //@ts-ignore abilityData.gainedChance
     let newGainedChance: number = Number(abilityData.gainedChance) + gain;
     await actor.updateEmbeddedDocuments("Item", [
-      { _id: item.id, data: { hasExperience: false, gainedChance: newGainedChance } },
+      { _id: item.id, system: { hasExperience: false, gainedChance: newGainedChance } },
     ]);
   } else {
     let newChance: number = Number(abilityData.chance) + gain;
     await actor.updateEmbeddedDocuments("Item", [
-      { _id: item.id, data: { hasExperience: false, chance: newChance } },
+      { _id: item.id, system: { hasExperience: false, chance: newChance } },
     ]);
     if (adapter.isRune) {
       assertItemType(item?.type, ItemTypeEnum.Rune);
       await actor.updateEmbeddedDocuments("Item", [
-        { _id: item.id, data: { hasExperience: false, chance: newChance } },
+        { _id: item.id, system: { hasExperience: false, chance: newChance } },
       ]);
     }
   }

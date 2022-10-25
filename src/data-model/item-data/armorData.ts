@@ -52,12 +52,12 @@ export interface ArmorDataPropertiesData extends ArmorDataSourceData {}
 
 export interface ArmorDataSource {
   type: ItemTypeEnum.Armor;
-  data: ArmorDataSourceData;
+  system: ArmorDataSourceData;
 }
 
 export interface ArmorDataProperties {
   type: ItemTypeEnum.Armor;
-  data: ArmorDataPropertiesData;
+  system: ArmorDataPropertiesData;
 }
 
 export const defaultArmorData: ArmorDataSourceData = {

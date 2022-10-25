@@ -8,8 +8,8 @@ export async function changeRuneExperienceFieldName(itemData: ItemData): Promise
   const updateData: ItemUpdate = {};
   if (itemData.type === ItemTypeEnum.Rune) {
     // Always remove "experience" from runes
-    updateData.data = { [`${deleteKeyPrefix}experience`]: null };
-    if (itemData.data.hasExperience == null) {
+    updateData.system = { [`${deleteKeyPrefix}experience`]: null };
+    if (itemData.system.hasExperience == null) {
       // @ts-ignore experience
       updateData.data.hasExperience = itemData.experience ?? false;
     }

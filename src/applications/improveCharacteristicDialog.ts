@@ -270,11 +270,11 @@ export async function submitImproveCharacteristicDialog(
 
   //update
   const charUpdate: any = {
-    data: { characteristics: { [char.name]: { value: char.value + gain } } },
+    system: { characteristics: { [char.name]: { value: char.value + gain } } },
   };
 
   if (char.hasExperience) {
-    charUpdate.data.characteristics[char.name].hasExperience = false;
+    charUpdate.system.characteristics[char.name].hasExperience = false;
   }
 
   await actor.update(charUpdate);

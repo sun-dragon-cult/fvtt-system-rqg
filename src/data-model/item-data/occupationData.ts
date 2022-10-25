@@ -34,12 +34,12 @@ export interface OccupationDataPropertiesData extends OccupationDataSourceData {
 
 export interface OccupationDataSource {
   type: ItemTypeEnum.Occupation;
-  data: OccupationDataSourceData;
+  system: OccupationDataSourceData;
 }
 
 export interface OccupationDataProperties {
   type: ItemTypeEnum.Occupation;
-  data: OccupationDataSourceData;
+  system: OccupationDataSourceData;
 }
 
 export const defaultOccupationData: OccupationDataSourceData = {

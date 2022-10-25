@@ -205,7 +205,7 @@ export class RqgItem extends Item {
       if (hasOwnProperty(this.system, "canGetExperience") && this.system.canGetExperience) {
         if (!this.system.hasExperience) {
           await this.actor?.updateEmbeddedDocuments("Item", [
-            { _id: this.id, data: { hasExperience: true } },
+            { _id: this.id, system: { hasExperience: true } },
           ]);
           const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
             actorName: this.actor?.name,
@@ -225,7 +225,7 @@ export class RqgItem extends Item {
   }
 
   protected _onCreate(
-    data: RqgItem["data"]["_source"],
+    itemData: RqgItem["data"]["_source"],
     options: DocumentModificationOptions,
     userId: string
   ): void {
@@ -233,14 +233,14 @@ export class RqgItem extends Item {
       systemId,
       "defaultItemIconSettings"
     );
-    const item = data._id ? getGame().items?.get(data._id) : undefined;
+    const item = itemData._id ? getGame().items?.get(itemData._id) : undefined;
     // @ts-expect-errors Foundry v10
     const defaultIcon = foundry.documents.BaseItem.DEFAULT_ICON;
 
     if (item?.data.img === defaultIcon) {
       const updateData: any = {
-        img: defaultItemIconSettings[data.type],
-        "data.namePrefix": data.name,
+        img: defaultItemIconSettings[itemData.type],
+        "data.namePrefix": itemData.name,
       };
 
       // Set default rqid data for new items
@@ -253,13 +253,13 @@ export class RqgItem extends Item {
         },
       };
 
-      if (data.type === ItemTypeEnum.Passion) {
-        updateData.data = { subject: data.name };
+      if (itemData.type === ItemTypeEnum.Passion) {
+        updateData.data = { subject: itemData.name };
       }
 
       item?.update(updateData);
     }
-    return super._onCreate(data, options, userId);
+    return super._onCreate(itemData, options, userId);
   }
 
   static async updateDocuments(updates: any[], context: any): Promise<any> {

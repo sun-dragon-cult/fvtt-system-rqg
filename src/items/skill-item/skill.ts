@@ -121,7 +121,7 @@ export class Skill extends AbstractEmbeddedItem {
         updateData = {
           _id: skillItem.id,
           name: concatenateSkillName(skillItem.system.skillName, answer),
-          data: { specialization: answer },
+          system: { specialization: answer },
         };
       }
     } catch (e) {

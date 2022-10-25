@@ -6,12 +6,13 @@ import { deleteKeyPrefix } from "../../util";
 export async function renameLearnedToGainedChance(itemData: ItemData): Promise<ItemUpdate> {
   let updateData = {};
   // @ts-ignore learnedChance
-  if (itemData.type === ItemTypeEnum.Skill && itemData.data?.learnedChance != null) {
+  if (itemData.type === ItemTypeEnum.Skill && itemData?.learnedChance != null) {
     // @ts-ignore learnedChance
     const learnedChance = itemData.data.learnedChance;
 
     updateData = {
       data: {
+        // @ts-expect-error itemData.data.baseChance TODO fix in migration PR
         gainedChance: Math.max(0, (learnedChance || 0) - itemData.data.baseChance),
         [`${deleteKeyPrefix}learnedChance`]: null,
       },

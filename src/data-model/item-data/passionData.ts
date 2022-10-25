@@ -26,12 +26,12 @@ export interface PassionDataPropertiesData extends PassionDataSourceData {}
 
 export interface PassionDataSource {
   type: ItemTypeEnum.Passion;
-  data: PassionDataSourceData;
+  system: PassionDataSourceData;
 }
 
 export interface PassionDataProperties {
   type: ItemTypeEnum.Passion;
-  data: PassionDataPropertiesData;
+  system: PassionDataPropertiesData;
 }
 
 export const defaultPassionData: PassionDataSourceData = {

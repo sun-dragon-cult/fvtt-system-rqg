@@ -125,10 +125,10 @@ async function getCharacteristicUpdate(
   characteristic: string,
   formula: string,
   speakerName?: string
-): Promise<DeepPartial<ActorDataConstructorData>> {
+): Promise<DeepPartial<ActorDataConstructorData & { system: any }>> {
   if (!formula) {
     return {
-      data: { characteristics: { [characteristic]: { value: "" } } },
+      system: { characteristics: { [characteristic]: { value: "" } } },
     };
   }
 
@@ -145,7 +145,7 @@ async function getCharacteristicUpdate(
     activateChatTab();
   }
   return {
-    data: { characteristics: { [characteristic]: { value: Number(r.total) } } },
+    system: { characteristics: { [characteristic]: { value: Number(r.total) } } },
   };
 }
 

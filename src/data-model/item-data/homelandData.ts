@@ -21,12 +21,12 @@ export interface HomelandDataPropertiesData extends HomelandDataSourceData {}
 
 export interface HomelandDataSource {
   type: ItemTypeEnum.Homeland;
-  data: HomelandDataSourceData;
+  system: HomelandDataSourceData;
 }
 
 export interface HomelandDataProperties {
   type: ItemTypeEnum.Homeland;
-  data: HomelandDataSourceData;
+  system: HomelandDataSourceData;
 }
 
 export const defaultHomelandData: HomelandDataSourceData = {

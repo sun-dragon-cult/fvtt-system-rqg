@@ -10,7 +10,7 @@ export async function migrateItemDummy(itemData: ItemData): Promise<ItemUpdate> 
   if (false && itemData.type === ItemTypeEnum.Armor) {
     updateData = {
       name: "newName",
-      data: {
+      system: {
         namePrefix: "newNamePrefix",
       },
     };

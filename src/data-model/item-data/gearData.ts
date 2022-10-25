@@ -8,12 +8,12 @@ export interface GearDataPropertiesData extends GearDataSourceData {}
 
 export interface GearDataSource {
   type: ItemTypeEnum.Gear;
-  data: GearDataSourceData;
+  system: GearDataSourceData;
 }
 
 export interface GearDataProperties {
   type: ItemTypeEnum.Gear;
-  data: GearDataPropertiesData;
+  system: GearDataPropertiesData;
 }
 
 export const defaultGearData: GearDataSourceData = {

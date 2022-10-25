@@ -1056,9 +1056,9 @@ export class RqgActorSheet extends ActorSheet<
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid
             );
-            await this.actor.update({ data: { [deleteFromPropertyName]: newValueArray } });
+            await this.actor.update({ system: { [deleteFromPropertyName]: newValueArray } });
           } else {
-            await this.actor.update({ data: { [deleteFromPropertyName]: "" } });
+            await this.actor.update({ system: { [deleteFromPropertyName]: "" } });
           }
         });
       });
@@ -1193,18 +1193,18 @@ export class RqgActorSheet extends ActorSheet<
             targetPropertyRqidLinkArray.push(newLink);
             targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
             await this.actor.update({
-              data: { [targetPropertyName]: targetPropertyRqidLinkArray },
+              system: { [targetPropertyName]: targetPropertyRqidLinkArray },
             });
           }
         } else {
           // Property is a single RqidLink, not an array
-          await this.actor.update({ data: { [targetPropertyName]: newLink } });
+          await this.actor.update({ system: { [targetPropertyName]: newLink } });
         }
       } else {
         // Property does not already exist
         // TODO: Should we ensure that the Actor template actually is allowed
         // to have a property of the name contained in targetPropertyName?
-        await this.actor.update({ data: { [targetPropertyName]: newLink } });
+        await this.actor.update({ system: { [targetPropertyName]: newLink } });
       }
     }
   }
@@ -1405,7 +1405,6 @@ export class RqgActorSheet extends ActorSheet<
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
       return false;
     }
-    // @ts-expect-error system TODO bug?
     if (!incomingItemDataSource.system.hasOwnProperty("quantity")) {
       ui.notifications?.error(
         localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError")
@@ -1443,13 +1442,13 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-ignore quantity
       newTargetQty += Number(existingItem.system.quantity);
       const targetUpdate = await this.actor.updateEmbeddedDocuments("Item", [
-        { _id: existingItem.id, data: { quantity: newTargetQty } },
+        { _id: existingItem.id, system: { quantity: newTargetQty } },
       ]);
       if (targetUpdate) {
         if (newSourceQty > 0) {
           // update with new source quantity
           return (await sourceActor.updateEmbeddedDocuments("Item", [
-            { _id: incomingItemDataSource._id, data: { quantity: newSourceQty } },
+            { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
           ])) as RqgItem[];
         } else {
           // delete source item
@@ -1466,7 +1465,7 @@ export class RqgActorSheet extends ActorSheet<
         if (newSourceQty > 0) {
           // update with new source quantity
           return (await sourceActor.updateEmbeddedDocuments("Item", [
-            { _id: incomingItemDataSource._id, data: { quantity: newSourceQty } },
+            { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
           ])) as RqgItem[];
         } else {
           // delete source item

@@ -29,14 +29,14 @@
           itemName=adapter.incomingItemDataSource.name
           targetActor=adapter.targetActor.name
           sourceActor=adapter.sourceActor.name
-          maxQty=adapter.incomingItemDataSource.data.quantity
+          maxQty=adapter.incomingItemDataSource.system.quantity
         }}</p>
       <input
         name="numtotransfer"
         type="number"
         min="0"
-        max="{{adapter.incomingItemDataSource.data.quantity}}"
-        value="{{adapter.incomingItemDataSource.data.quantity}}"
+        max="{{adapter.incomingItemDataSource.system.quantity}}"
+        value="{{adapter.incomingItemDataSource.system.quantity}}"
       />
     {{else}}
       <p>{{localize

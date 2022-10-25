@@ -50,13 +50,15 @@ export class Rune extends AbstractEmbeddedItem {
 
   static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {
     if (rune.type === ItemTypeEnum.Rune) {
-      const chanceResult = updates.find((r) => r["data.chance"] != null || r?.data?.chance != null);
+      const chanceResult = updates.find(
+        (r) => r["system.chance"] != null || r?.system?.chance != null
+      );
       if (!chanceResult) {
         return;
       }
       if (rune.system.opposingRune) {
         const opposingRune = actor.items.getName(rune.system.opposingRune);
-        const chance = chanceResult["data.chance"] || chanceResult.data.chance;
+        const chance = chanceResult["system.chance"] || chanceResult.system.chance;
         if (opposingRune && chance) {
           // While editing a rune it's possible to have incomplete data, ignore in that case.
           this.adjustOpposingRuneChance(opposingRune, chance, updates);
@@ -75,7 +77,7 @@ export class Rune extends AbstractEmbeddedItem {
     if (newChance + opposingRuneChance !== 100) {
       updates.push({
         _id: opposingRune.id,
-        data: { chance: 100 - newChance },
+        system: { chance: 100 - newChance },
       });
     }
   }

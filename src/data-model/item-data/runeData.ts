@@ -30,12 +30,12 @@ export interface RuneDataPropertiesData extends RuneDataSourceData {}
 
 export interface RuneDataSource {
   type: ItemTypeEnum.Rune;
-  data: RuneDataSourceData;
+  system: RuneDataSourceData;
 }
 
 export interface RuneDataProperties {
   type: ItemTypeEnum.Rune;
-  data: RuneDataPropertiesData;
+  system: RuneDataPropertiesData;
 }
 
 export const defaultRuneData: RuneDataSourceData = {

@@ -38,12 +38,12 @@ export interface SkillDataPropertiesData extends SkillDataSourceData {
 
 export interface SkillDataSource {
   type: ItemTypeEnum.Skill;
-  data: SkillDataSourceData;
+  system: SkillDataSourceData;
 }
 
 export interface SkillDataProperties {
   type: ItemTypeEnum.Skill;
-  data: SkillDataPropertiesData;
+  system: SkillDataPropertiesData;
 }
 
 export const defaultSkillData: SkillDataSourceData = {

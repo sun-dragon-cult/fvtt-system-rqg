@@ -15,7 +15,9 @@ import { systemId } from "../config";
 
 export type ItemUpdate =
   | object &
-      DeepPartial<ItemDataConstructorData | (ItemDataConstructorData & Record<string, unknown>)>;
+      DeepPartial<ItemDataConstructorData | (ItemDataConstructorData & Record<string, unknown>)> & {
+        system?: any;
+      };
 
 export type ActorUpdate =
   | object &

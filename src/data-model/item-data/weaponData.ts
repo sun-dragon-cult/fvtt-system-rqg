@@ -70,12 +70,12 @@ export interface WeaponDataPropertiesData extends WeaponDataSourceData {}
 
 export interface WeaponDataSource {
   type: ItemTypeEnum.Weapon;
-  data: WeaponDataSourceData;
+  system: WeaponDataSourceData;
 }
 
 export interface WeaponDataProperties {
   type: ItemTypeEnum.Weapon;
-  data: WeaponDataPropertiesData;
+  system: WeaponDataPropertiesData;
 }
 
 export const defaultWeaponData: WeaponDataSourceData = {

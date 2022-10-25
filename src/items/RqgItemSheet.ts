@@ -99,18 +99,18 @@ export class RqgItemSheet<
             );
             if (this.item.isEmbedded) {
               await this.item.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, data: { [deleteFromPropertyName]: newValueArray } },
+                { _id: this.item.id, system: { [deleteFromPropertyName]: newValueArray } },
               ]);
             } else {
-              await this.item.update({ data: { [deleteFromPropertyName]: newValueArray } });
+              await this.item.update({ system: { [deleteFromPropertyName]: newValueArray } });
             }
           } else {
             if (this.item.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, data: { [deleteFromPropertyName]: new RqidLink() } },
+                { _id: this.item.id, system: { [deleteFromPropertyName]: new RqidLink() } },
               ]);
             } else {
-              await this.item.update({ data: { [deleteFromPropertyName]: new RqidLink() } });
+              await this.item.update({ system: { [deleteFromPropertyName]: new RqidLink() } });
             }
           }
         });
@@ -133,19 +133,19 @@ export class RqgItemSheet<
             }
             if (this.item.isEmbedded) {
               await this.item.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, data: { [editPropertyName]: updateProperty } },
+                { _id: this.item.id, system: { [editPropertyName]: updateProperty } },
               ]);
             } else {
-              await this.item.update({ data: { [editPropertyName]: updateProperty } });
+              await this.item.update({ system: { [editPropertyName]: updateProperty } });
             }
           } else {
             (updateProperty as RqidLink).bonus = Number((el as HTMLInputElement).value);
             if (this.item.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, data: { [editPropertyName]: updateProperty } },
+                { _id: this.item.id, system: { [editPropertyName]: updateProperty } },
               ]);
             } else {
-              await this.item.update({ data: { [editPropertyName]: updateProperty } });
+              await this.item.update({ system: { [editPropertyName]: updateProperty } });
             }
           }
         });
@@ -230,12 +230,12 @@ export class RqgItemSheet<
                 await this.item.actor?.updateEmbeddedDocuments("Item", [
                   {
                     _id: this.item.id,
-                    data: { [targetPropertyName]: targetPropertyRqidLinkArray },
+                    system: { [targetPropertyName]: targetPropertyRqidLinkArray },
                   },
                 ]);
             } else {
               (event as RqidLinkDragEvent).RqidLinkDropResult = await this.item.update({
-                data: { [targetPropertyName]: targetPropertyRqidLinkArray },
+                system: { [targetPropertyName]: targetPropertyRqidLinkArray },
               });
             }
           }
@@ -244,11 +244,11 @@ export class RqgItemSheet<
           if (this.item.isEmbedded) {
             (event as RqidLinkDragEvent).RqidLinkDropResult =
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, data: { [targetPropertyName]: newLink } },
+                { _id: this.item.id, system: { [targetPropertyName]: newLink } },
               ]);
           } else {
             (event as RqidLinkDragEvent).RqidLinkDropResult = await this.item.update({
-              data: { [targetPropertyName]: newLink },
+              system: { [targetPropertyName]: newLink },
             });
           }
         }

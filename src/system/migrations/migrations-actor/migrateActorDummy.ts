@@ -8,7 +8,7 @@ export function migrateActorDummy(actorData: ActorData): ActorUpdate {
   let updateData = {};
   if (false && actorData.type === ActorTypeEnum.Character) {
     updateData = {
-      data: {
+      system: {
         background: {
           // @ts-expect-errors system ???
           species: (actorData.background as any).race,

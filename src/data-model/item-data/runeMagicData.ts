@@ -21,12 +21,12 @@ export interface RuneMagicDataPropertiesData extends RuneMagicDataSourceData {
 
 export interface RuneMagicDataSource {
   type: ItemTypeEnum.RuneMagic;
-  data: RuneMagicDataSourceData;
+  system: RuneMagicDataSourceData;
 }
 
 export interface RuneMagicDataProperties {
   type: ItemTypeEnum.RuneMagic;
-  data: RuneMagicDataPropertiesData;
+  system: RuneMagicDataPropertiesData;
 }
 
 export const defaultRuneMagicData: RuneMagicDataSourceData = {

@@ -26,7 +26,6 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
     equippedStatus: "notCarried",
     price: defaultPriceData,
   };
-  // @ts-expect-error system
   const physicalItemDatas = itemDatas.filter((i) => hasOwnProperty(i.system, "physicalItemType"));
   let physicalItemNodes: LocationNode[] = physicalItemDatas
     .filter(
@@ -147,25 +146,19 @@ function searchTree(node: LocationNode, location: string): LocationNode | null {
 
 function hasLoop(initialItem: ItemDataSource, physicalItems: ItemDataSource[]): boolean {
   let currentItem = physicalItems.find(
-    // @ts-expect-error system
     (i) => hasOwnProperty(i.system, "location") && initialItem.name === i.system.location
   );
   let isLoop: boolean = false;
   while (
-    // @ts-expect-error system
     hasOwnProperty(currentItem?.system, "location") &&
-    // @ts-expect-error system
     currentItem?.system?.location &&
     !isLoop
   ) {
     isLoop =
-      // @ts-expect-error system
       hasOwnProperty(initialItem.system, "location") &&
-      // @ts-expect-error system
       initialItem.system.location === currentItem?.name;
     currentItem = physicalItems.find(
       (i) =>
-        // @ts-expect-error system
         hasOwnProperty(currentItem?.system, "location") && i.name === currentItem?.system.location
     );
   }

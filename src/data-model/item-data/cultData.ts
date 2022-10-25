@@ -36,12 +36,12 @@ export interface CultDataPropertiesData extends CultDataSourceData {}
 
 export interface CultDataSource {
   type: ItemTypeEnum.Cult;
-  data: CultDataSourceData;
+  system: CultDataSourceData;
 }
 
 export interface CultDataProperties {
   type: ItemTypeEnum.Cult;
-  data: CultDataPropertiesData;
+  system: CultDataPropertiesData;
 }
 
 export const defaultCultData: CultDataSourceData = {

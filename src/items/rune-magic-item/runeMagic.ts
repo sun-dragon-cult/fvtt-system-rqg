@@ -210,7 +210,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       }
       updateData = {
         _id: runeMagicItem.id,
-        data: { cultId: cultId },
+        system: { cultId: cultId },
       };
     }
     return updateData;
@@ -422,11 +422,11 @@ export class RuneMagic extends AbstractEmbeddedItem {
     }
     const updateCultItemRunePoints: DeepPartial<ItemDataSource> = {
       _id: cult?.id,
-      data: { runePoints: { value: newRunePointTotal, max: newRunePointMaxTotal } },
+      system: { runePoints: { value: newRunePointTotal, max: newRunePointMaxTotal } },
     };
     await actor?.updateEmbeddedDocuments("Item", [updateCultItemRunePoints]);
     const updateActorMagicPoints = {
-      data: { attributes: { magicPoints: { value: newMagicPointTotal } } },
+      system: { attributes: { magicPoints: { value: newMagicPointTotal } } },
     };
     await actor?.update(updateActorMagicPoints);
   }
