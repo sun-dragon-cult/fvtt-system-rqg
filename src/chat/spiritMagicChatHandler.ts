@@ -21,7 +21,7 @@ export class SpiritMagicChatHandler {
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
-    const flags = chatMessage.data.flags.rqg;
+    const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "spiritMagicChat");
     const spiritMagicItem = (await getRequiredDocumentFromUuid(flags.chat.itemUuid)) as RqgItem;
     const { level, boost } = await SpiritMagicChatHandler.getFormDataFromFlags(flags);

@@ -33,7 +33,7 @@ export class WeaponChatHandler {
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
-    const flags = chatMessage.data.flags.rqg;
+    const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "weaponChat");
     const weaponItem = (await getRequiredDocumentFromUuid(flags.chat.weaponUuid)) as
       | RqgItem

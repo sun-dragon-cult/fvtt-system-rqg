@@ -24,7 +24,7 @@ export class ItemChatHandler {
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
-    const flags = chatMessage.data.flags.rqg;
+    const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "itemChat");
     const item = (await getRequiredDocumentFromUuid(flags.chat.itemUuid)) as RqgItem | undefined;
     requireValue(item, "Couldn't find item on item chat message");

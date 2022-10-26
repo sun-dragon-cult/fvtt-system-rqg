@@ -25,8 +25,8 @@ export class RqgActor extends Actor {
       makeDefault: true,
     });
   }
-  public system!: CharacterDataPropertiesData; // v10 type workaround
-  public prototypeToken!: PrototypeTokenData; // v10 type workaround
+  declare system: CharacterDataPropertiesData; // v10 type workaround
+  declare prototypeToken: PrototypeTokenData; // v10 type workaround
 
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects

@@ -116,7 +116,7 @@ export class RqgItem extends Item {
     });
   }
 
-  public system: any; // TODO workaround tryout
+  declare system: any; // v10 type workaround
 
   public async toChat(): Promise<void> {
     if (!this.isEmbedded) {

@@ -56,7 +56,7 @@ export class CharacteristicChatHandler {
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
-    const flags = chatMessage.data.flags.rqg;
+    const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "characteristicChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);
@@ -108,7 +108,7 @@ export class CharacteristicChatHandler {
       characteristicName === "power" &&
       !actor.system.characteristics.power.hasExperience
     ) {
-      await actor.update({ "data.characteristics.power.hasExperience": true });
+      await actor.update({ "system.characteristics.power.hasExperience": true });
       const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
         actorName: actor.name,
         itemName: localizeCharacteristic("power"),

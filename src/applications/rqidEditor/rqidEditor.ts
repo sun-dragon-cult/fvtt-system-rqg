@@ -53,14 +53,14 @@ export class RqidEditor extends FormApplication {
       const worldDocumentInfo = worldDocuments.map((d) => ({
         priority: d.data.flags.rqg.documentRqidFlags.priority,
         // @ts-ignore
-        link: TextEditor.enrichHTML(d.link),
+        link: TextEditor.enrichHTML(d.link), // TODO make async and change map
         // @ts-ignore
         folder: d?.folder?.name,
       }));
       const compendiumDocumentInfo = compendiumDocuments.map((d) => ({
         priority: d.data.flags.rqg.documentRqidFlags.priority,
         // @ts-ignore
-        link: TextEditor.enrichHTML(d.link),
+        link: TextEditor.enrichHTML(d.link), // TODO make async and change map
         // @ts-expect-error compendium
         compendium: `${d.compendium?.metadata?.label} ⇒ ${
           // @ts-expect-error compendium  v9 => package, v10 => packageName

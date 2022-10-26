@@ -43,7 +43,7 @@ export class ReputationChatHandler {
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
-    const flags = chatMessage.data.flags.rqg;
+    const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "reputationChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
     const token = await getDocumentFromUuid<TokenDocument>(flags.chat.tokenUuid);

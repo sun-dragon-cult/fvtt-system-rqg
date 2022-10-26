@@ -12,6 +12,8 @@ import { ItemChatHandler } from "./itemChatHandler";
 import { SpiritMagicChatHandler } from "./spiritMagicChatHandler";
 import { RuneMagicChatHandler } from "./runeMagicChatHandler";
 import { WeaponChatHandler } from "./weaponChatHandler";
+import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
+import { systemId } from "../system/config";
 
 export type ChatMessageType = keyof typeof chatHandlerMap;
 
@@ -45,6 +47,8 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
+  declare flags: { [systemId]: RqgChatMessageFlags }; // v10 type workaround
+
   private static addChatListeners(html: HTMLElement): void {
     html.addEventListener("submit", RqgChatMessage.formSubmitHandler);
     html.addEventListener("input", RqgChatMessage.inputChangeHandler);
@@ -56,10 +60,10 @@ export class RqgChatMessage extends ChatMessage {
       return; // Only handle inputs etc that are tagged with "data-handle-change"
     }
     const { chatMessageId } = RqgChatMessage.getChatMessageInfo(inputEvent);
-    const chatMessage = getGame().messages?.get(chatMessageId);
+    const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage;
     requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
 
-    const flags = chatMessage.data.flags.rqg;
+    const flags = chatMessage.flags.rqg;
     requireValue(flags, "No rqg flags found on chat message");
     const chatMessageType = flags?.type;
     requireValue(chatMessageType, "Found chatmessage without chat message type");
@@ -106,7 +110,7 @@ export class RqgChatMessage extends ChatMessage {
     setTimeout(() => (clickedButton.disabled = false), 1000); // Prevent double clicks
 
     const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
-    const flags = chatMessage?.data.flags.rqg;
+    const flags = chatMessage?.flags.rqg;
     requireValue(flags, "Couldn't find flags on chatmessage");
 
     const chatMessageType = flags.type;
@@ -125,7 +129,7 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   public async doRoll(): Promise<void> {
-    const flags = this.data.flags.rqg;
+    const flags = this.flags.rqg;
     requireValue(flags, "No rqg flags found on chat message");
     const chatMessageType = flags.type;
     await chatHandlerMap[chatMessageType].rollFromChat(this);

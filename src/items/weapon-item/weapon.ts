@@ -99,12 +99,12 @@ export class Weapon extends AbstractEmbeddedItem {
         return;
 
       case "damageRoll":
-        assertChatMessageFlagType(options.chatMessage.data.flags.rqg?.type, "weaponChat");
+        assertChatMessageFlagType(options.chatMessage.flags.rqg?.type, "weaponChat");
         const damageRollType = options.actionValue as DamageRollTypeEnum; // TODO improve typing
         await Weapon.damageRoll(
           weaponItem,
           options.usageType,
-          convertFormValueToString(options.chatMessage.data.flags.rqg?.formData.combatManeuverName),
+          convertFormValueToString(options.chatMessage.flags.rqg?.formData.combatManeuverName),
 
           damageRollType,
           speaker
@@ -224,7 +224,8 @@ export class Weapon extends AbstractEmbeddedItem {
           );
           const embeddedWeaponSkill = sameSkillAlreadyOnActor
             ? [sameSkillAlreadyOnActor]
-            : await actor.createEmbeddedDocuments("Item", [skill.data]);
+            : // @ts-expect-error skill
+              await actor.createEmbeddedDocuments("Item", [skill]);
           embeddedSkillId = embeddedWeaponSkill[0].id ?? "";
         }
       } catch (e) {
@@ -262,36 +263,36 @@ export class Weapon extends AbstractEmbeddedItem {
     const damageType = combatManeuver?.damageType;
     const specialDamageTypeDescription =
       damageType === "special" ? combatManeuver?.description || undefined : undefined;
-    const flags = chatMessage.data.flags.rqg;
+    const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "weaponChat");
 
     flags.chat.specialDamageTypeText =
       specialDamageTypeDescription ??
       CONFIG.RQG.combatManeuvers.get(combatManeuver?.name ?? "")?.specialDescriptionHtml;
 
-    const projectileItemData = weaponItem.system.isProjectileWeapon
-      ? weaponItem.actor?.items.get(weaponItem.system.projectileId)?.data
-      : weaponItem.data; // Thrown (or melee)
+    const projectileItem = weaponItem.system.isProjectileWeapon
+      ? weaponItem.actor?.items.get(weaponItem.system.projectileId)
+      : weaponItem; // Thrown (or melee)
 
     let originalAmmoQty: number = 0;
 
     // Decrease quantity of linked projectile if shooting
     if (
-      projectileItemData?.type === ItemTypeEnum.Weapon &&
-      projectileItemData.system.quantity &&
-      projectileItemData.system.quantity > 0 &&
+      projectileItem?.type === ItemTypeEnum.Weapon &&
+      projectileItem.system.quantity &&
+      projectileItem.system.quantity > 0 &&
       usage === "missile" &&
       !["parry", "special"].includes(damageType ?? "")
     ) {
-      originalAmmoQty = projectileItemData.system.quantity;
+      originalAmmoQty = projectileItem.system.quantity;
       const updateData: DeepPartial<ItemDataSource> = {
-        _id: projectileItemData._id,
-        system: { quantity: --projectileItemData.system.quantity },
+        _id: projectileItem.id,
+        system: { quantity: --projectileItem.system.quantity },
       };
       await weaponItem.actor?.updateEmbeddedDocuments("Item", [updateData]);
     }
 
-    if (usage === "missile" && !projectileItemData) {
+    if (usage === "missile" && !projectileItem) {
       ui.notifications?.warn(
         localize("RQG.Dialog.weaponChat.OutOfAmmoWarn", {
           projectileName: "---",
@@ -303,20 +304,20 @@ export class Weapon extends AbstractEmbeddedItem {
 
     // Prevent using weapons with projectile quantity 0
     if (
-      projectileItemData?.type === ItemTypeEnum.Weapon &&
-      projectileItemData.system.quantity != null &&
-      projectileItemData.system.quantity <= 0
+      projectileItem?.type === ItemTypeEnum.Weapon &&
+      projectileItem.system.quantity != null &&
+      projectileItem.system.quantity <= 0
     ) {
       if (originalAmmoQty > 0) {
         ui.notifications?.warn(
           localize("RQG.Dialog.weaponChat.UsedLastOfAmmoWarn", {
-            projectileName: projectileItemData.name,
+            projectileName: projectileItem.name,
           })
         );
       } else {
         ui.notifications?.warn(
           localize("RQG.Dialog.weaponChat.OutOfAmmoWarn", {
-            projectileName: projectileItemData.name,
+            projectileName: projectileItem.name,
             combatManeuverName: combatManeuver?.name,
           })
         );
@@ -491,14 +492,19 @@ export class Weapon extends AbstractEmbeddedItem {
 
     // Render the chat message which combines the dice roll with the drawn results
     messageData.content = await renderTemplate(CONFIG.RollTable.resultTemplate, {
-      // @ts-expect-error is "documents" in current foundry versions
-      description: TextEditor.enrichHTML(fumbleTable.data.description, { documents: true }),
+      //@ts-expect-error description
+      description: await TextEditor.enrichHTML(fumbleTable.description, {
+        // @ts-expect-error documents
+        documents: true,
+        async: true,
+      }),
       results: draw.results.map((r: any) => {
         // TODO fix typing
         r.text = r.getChatText();
         return r;
       }),
-      rollHTML: fumbleTable.data.displayRoll ? await draw.roll.render() : null,
+      // @ts-expect-errors displayRoll
+      rollHTML: fumbleTable.displayRoll ? await draw.roll.render() : null,
       table: fumbleTable,
     });
 

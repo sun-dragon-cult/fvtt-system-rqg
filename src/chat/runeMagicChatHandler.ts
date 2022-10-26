@@ -27,7 +27,7 @@ export class RuneMagicChatHandler {
    * Called from {@link RqgChatMessage.doRoll}
    */
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
-    const flags = chatMessage.data.flags.rqg;
+    const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "runeMagicChat");
     const runeMagicItem = await getRequiredDocumentFromUuid<RqgItem | undefined>(
       flags.chat.itemUuid
