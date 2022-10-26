@@ -2,7 +2,7 @@
   <div class="key-value-grid">
     <label for="rqid-editor">{{localize "RQG.RQGSystem.rqid"}}</label>
     <div class="input-button">
-      <input type="text" id="rqid-editor" name="flags.rqg.documentRqidFlags.id" value="{{data.flags.rqg.documentRqidFlags.id}}" />
+      <input type="text" id="rqid-editor" name="flags.rqg.documentRqidFlags.id" value="{{flags.rqg.documentRqidFlags.id}}" />
       <a title="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}" data-generate-default-rqid><i class="fas fa-plus"></i></a>
     </div>
 
@@ -10,7 +10,7 @@
     <select
       id="rqidLang-editor"
       name="flags.rqg.documentRqidFlags.lang">
-      {{#select data.flags.rqg.documentRqidFlags.lang}}
+      {{#select flags.rqg.documentRqidFlags.lang}}
         {{#each supportedLanguages}}
           <option value="{{@key}}">{{this}} ({{@key}})</option>
         {{/each}}
@@ -22,15 +22,15 @@
       type="number"
       id="rqidPriority-editor"
       name="flags.rqg.documentRqidFlags.priority"
-      value="{{data.flags.rqg.documentRqidFlags.priority}}"
+      value="{{flags.rqg.documentRqidFlags.priority}}"
     />
   </div>
 
   <fieldset class="key-value-grid">
     <legend>Info</legend>
-    {{#if data.flags.rqg.documentRqidFlags.id}}
+    {{#if flags.rqg.documentRqidFlags.id}}
     <label>{{localize "RQG.RQGSystem.OtherDocumentsHeader"}}</label>
-    <div>
+    <div class="fullwidth">
       <details>
         <summary>{{localize 'RQG.RQGSystem.DocsInWorld' count=worldDuplicates}}{{#if warnDuplicateWorldPriority}} <span class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}</summary>
         <table>
@@ -105,11 +105,11 @@
     </a>
   </div>
 
-  {{#if data.flags.rqg.documentRqidFlags.id}}
+  {{#if flags.rqg.documentRqidFlags.id}}
   <label>{{localize "RQG.RQGSystem.GetDocumentLikeThis"}}</label>
   <div class="input-button">
     <input type="text"
-      value='await game.system.api.rqid.fromRqid("{{data.flags.rqg.documentRqidFlags.id}}","{{data.flags.rqg.documentRqidFlags.lang}}")'
+      value='await game.system.api.rqid.fromRqid("{{flags.rqg.documentRqidFlags.id}}","{{flags.rqg.documentRqidFlags.lang}}")'
       readonly>
     <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
       <i class="fas fa-copy"></i>

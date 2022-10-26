@@ -30,9 +30,11 @@ export class RqidEditor extends FormApplication {
   async getData(): Promise<any> {
     const appData: any = {};
 
-    const documentRqid: string | undefined = this.document.data?.flags?.rqg?.documentRqidFlags?.id;
+    // @ts-expect-error flags
+    const documentRqid: string | undefined = this.document?.flags?.rqg?.documentRqidFlags?.id;
     const documentLang: string | undefined =
-      this.document.data?.flags?.rqg?.documentRqidFlags?.lang;
+      // @ts-expect-error flags
+      this.document?.flags?.rqg?.documentRqidFlags?.lang;
     if (documentRqid && documentLang) {
       const rqidDocumentPrefix = documentRqid.split(".")[0];
       const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
@@ -50,33 +52,47 @@ export class RqidEditor extends FormApplication {
         documentLang,
         "packs"
       );
-      const worldDocumentInfo = worldDocuments.map((d) => ({
-        priority: d.data.flags.rqg.documentRqidFlags.priority,
-        // @ts-ignore
-        link: TextEditor.enrichHTML(d.link), // TODO make async and change map
-        // @ts-ignore
-        folder: d?.folder?.name,
-      }));
-      const compendiumDocumentInfo = compendiumDocuments.map((d) => ({
-        priority: d.data.flags.rqg.documentRqidFlags.priority,
-        // @ts-ignore
-        link: TextEditor.enrichHTML(d.link), // TODO make async and change map
-        // @ts-expect-error compendium
-        compendium: `${d.compendium?.metadata?.label} ⇒ ${
-          // @ts-expect-error compendium  v9 => package, v10 => packageName
-          d.compendium?.metadata?.packageName ?? d.compendium?.metadata?.package
-        }`,
-      }));
+
+      const worldDocumentInfo: Document<any, any>[] = [];
+      for (const d of worldDocuments) {
+        // @ts-expect-error async
+        const link = await TextEditor.enrichHTML(d.link, { async: true });
+        worldDocumentInfo.push({
+          // @ts-expect-error flags
+          priority: d.flags?.rqg.documentRqidFlags.priority,
+          link: link,
+          // @ts-ignore
+          folder: d.folder?.name,
+        });
+      }
+
+      const compendiumDocumentInfo: Document<any, any>[] = [];
+      for (const d of compendiumDocuments) {
+        // @ts-expect-error async
+        const link = await TextEditor.enrichHTML(d.link, { async: true });
+        compendiumDocumentInfo.push({
+          // @ts-expect-error flags
+          priority: d.flags?.rqg.documentRqidFlags.priority,
+          link: link,
+          // @ts-expect-error compendium
+          compendium: `${d.compendium?.metadata?.label} ⇒ ${
+            // @ts-expect-error compendium  v9 => package, v10 => packageName
+            d.compendium?.metadata?.packageName ?? d.compendium?.metadata?.package
+          }`,
+        });
+      }
 
       const uniqueWorldPriorityCount = new Set(
-        worldDocuments.map((d) => d.data.flags.rqg.documentRqidFlags.priority)
+        // @ts-expect-error flags
+        worldDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority)
       ).size;
       if (uniqueWorldPriorityCount !== worldDocuments.length) {
         appData.warnDuplicateWorldPriority = true;
       }
 
       const uniqueCompendiumPriorityCount = new Set(
-        compendiumDocuments.map((d) => d.data.flags.rqg.documentRqidFlags.priority)
+        // @ts-expect-error flags
+        compendiumDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority)
       ).size;
       if (uniqueCompendiumPriorityCount !== compendiumDocuments.length) {
         appData.warnDuplicateCompendiumPriority = true;
@@ -93,11 +109,10 @@ export class RqidEditor extends FormApplication {
     appData.parentId = this.document?.parent?.id ?? "";
     // @ts-expect-error uuid
     appData.uuid = this.document.uuid;
-    appData.data = {
-      flags: {
-        rqg: {
-          documentRqidFlags: this.document.data?.flags?.rqg?.documentRqidFlags,
-        },
+    appData.flags = {
+      rqg: {
+        // @ts-expect-error flags
+        documentRqidFlags: this.document?.flags?.rqg?.documentRqidFlags,
       },
     };
 

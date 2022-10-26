@@ -152,6 +152,10 @@ body {
     gap: 0.1rem;
   }
 
+  .fullwidth {
+    width: 100%;
+  }
+
   .warning {
     outline: 2px dashed var(--rqg-color-enc-warning);
     background-color: var(--rqg-color-enc-warning);
