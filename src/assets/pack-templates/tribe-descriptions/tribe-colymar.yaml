@@ -1,10 +1,20 @@
 name: 'Tribe: Colymar'
-content: |-
-  <h2>Tribe: Colymar</h2>
-  <p>Just as Sartar is the default Homeland for adventurers in
-  Dragon Pass, the Colymar is the default tribe for adventurers
-  from Sartar.</p>
-  <p>More information will be available in future module releases!</p>
+pages:
+  - name: 'Tribe: Colymar'
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        <h2>Tribe: Colymar</h2>
+        <p>Just as Sartar is the default Homeland for adventurers in
+        Dragon Pass, the Colymar is the default tribe for adventurers
+        from Sartar.</p>
+        <p>More information will be available in future module releases!</p>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

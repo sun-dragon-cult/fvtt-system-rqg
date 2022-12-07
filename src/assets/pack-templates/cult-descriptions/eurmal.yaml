@@ -1,13 +1,22 @@
 # eurmal
 name: ${{openSystem.content.cult.eurmal.name}}$
-img: systems/rqg/assets/images/items/cult.svg
-content: >
-  ${{openSystem.content.journalEntryType.cultDescription.title}}$
-  <h2>${{openSystem.content.cult.eurmal.name}}$, ${{openSystem.content.cult.eurmal.tagline}}$</h2>
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/illusion.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/disorder.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/illusion.svg" height="70">
-  ${{openSystem.content.cult.eurmal.descriptionHtml}}$
+pages:
+  - name: ${{openSystem.content.cult.eurmal.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.cultDescription.title}}$
+        <h2>${{openSystem.content.cult.eurmal.name}}$, ${{openSystem.content.cult.eurmal.tagline}}$</h2>
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/illusion.svg" height="70">
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/disorder.svg" height="70">
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/illusion.svg" height="70">
+        ${{openSystem.content.cult.eurmal.descriptionHtml}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

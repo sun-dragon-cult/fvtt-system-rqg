@@ -1,9 +1,21 @@
 # insight
 name: ${{openSystem.content.skill.insight.skillName}}$
-img: systems/rqg/assets/images/skills/insight.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.insight.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.insight.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/insight.svg" height="70">
+        ${{openSystem.content.skill.insight.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +25,22 @@ flags:
 ---
 # listen
 name: ${{openSystem.content.skill.listen.skillName}}$
-img: systems/rqg/assets/images/skills/listen.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.listen.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.listen.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/listen.svg" height="70">
+        ${{openSystem.content.skill.listen.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -26,10 +50,22 @@ flags:
 ---
 # scan
 name: ${{openSystem.content.skill.scan.skillName}}$
-img: systems/rqg/assets/images/skills/scan.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.scan.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.scan.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/scan.svg" height="70">
+        ${{openSystem.content.skill.scan.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -39,10 +75,22 @@ flags:
 ---
 # search
 name: ${{openSystem.content.skill.search.skillName}}$
-img: systems/rqg/assets/images/skills/search.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.search.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.search.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/search.svg" height="70">
+        ${{openSystem.content.skill.search.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -52,10 +100,22 @@ flags:
 ---
 # track
 name: ${{openSystem.content.skill.track.skillName}}$
-img: systems/rqg/assets/images/skills/track.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.track.description}}$<hr><blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.track.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/track.svg" height="70">
+        ${{openSystem.content.skill.track.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

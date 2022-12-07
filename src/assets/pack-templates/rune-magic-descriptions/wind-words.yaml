@@ -1,11 +1,20 @@
 # wind-words
 name: ${{openSystem.content.runeMagic.windWords.name}}$
-img: systems/rqg/assets/images/items/rune-magic.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/air.svg" height="70">
-  ${{openSystem.content.runeMagic.windWords.description}}$
+pages:
+  - name: ${{openSystem.content.runeMagic.windWords.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/air.svg" height="70">
+        ${{openSystem.content.runeMagic.windWords.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

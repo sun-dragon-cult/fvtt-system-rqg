@@ -1,10 +1,19 @@
 # spirit-armor-enchantment
 name: ${{openSystem.content.runeMagic.spiritArmorEnchantment.name}}$
-img: systems/rqg/assets/images/items/rune-magic.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/magic.svg" height="70">
-  ${{openSystem.content.runeMagic.spiritArmorEnchantment.description}}$
+pages:
+  - name: ${{openSystem.content.runeMagic.spiritArmorEnchantment.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/magic.svg" height="70">
+        ${{openSystem.content.runeMagic.spiritArmorEnchantment.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

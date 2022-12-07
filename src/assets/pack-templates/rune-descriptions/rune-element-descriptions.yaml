@@ -1,9 +1,18 @@
 # air
 name: ${{openSystem.content.runeDescription.airElement.name}}$
-img: systems/rqg/assets/images/runes/air.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/air.svg" height="175"></p>${{openSystem.content.runeDescription.airElement.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.airElement.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/air.svg" height="175"></p>${{openSystem.content.runeDescription.airElement.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +22,19 @@ flags:
 ---
 # darkness
 name: ${{openSystem.content.runeDescription.darknessElement.name}}$
-img: systems/rqg/assets/images/runes/darkness.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/darkness.svg" height="175"></p>${{openSystem.content.runeDescription.earthElement.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.darknessElement.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/darkness.svg" height="175"></p>${{openSystem.content.runeDescription.darknessElement.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -26,10 +44,19 @@ flags:
 ---
 # earth
 name: ${{openSystem.content.runeDescription.earthElement.name}}$
-img: systems/rqg/assets/images/runes/earth.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/earth.svg" height="175"></p>${{openSystem.content.runeDescription.earthElement.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.earthElement.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/earth.svg" height="175"></p>${{openSystem.content.runeDescription.earthElement.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -39,10 +66,19 @@ flags:
 ---
 # fireSky
 name: ${{openSystem.content.runeDescription.fireSkyElement.name}}$
-img: systems/rqg/assets/images/runes/fire_sky.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fire_sky.svg" height="175"></p>${{openSystem.content.runeDescription.fireSkyElement.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.fireSkyElement.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fire_sky.svg" height="175"></p>${{openSystem.content.runeDescription.fireSkyElement.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -52,10 +88,19 @@ flags:
 ---
 # moon
 name: ${{openSystem.content.runeDescription.moonElement.name}}$
-img: systems/rqg/assets/images/runes/moon_full.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/moon_full.svg" height="175"></p>${{openSystem.content.runeDescription.moonElement.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.moonElement.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/moon_full.svg" height="175"></p>${{openSystem.content.runeDescription.moonElement.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -65,10 +110,19 @@ flags:
 ---
 # water
 name: ${{openSystem.content.runeDescription.waterElement.name}}$
-img: systems/rqg/assets/images/runes/water.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/water.svg" height="175"></p>${{openSystem.content.runeDescription.waterElement.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.waterElement.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/water.svg" height="175"></p>${{openSystem.content.runeDescription.waterElement.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

@@ -1,13 +1,22 @@
 # daka-fal
 name: ${{openSystem.content.cult.dakaFal.name}}$
-img: systems/rqg/assets/images/items/cult.svg
-content: >
-  ${{openSystem.content.journalEntryType.cultDescription.title}}$
-  <h2>${{openSystem.content.cult.dakaFal.name}}$, ${{openSystem.content.cult.dakaFal.tagline}}$</h2>
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/man.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/spirit.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/man.svg" height="70">
-  ${{openSystem.content.cult.dakaFal.descriptionHtml}}$
+pages:
+  - name: ${{openSystem.content.cult.dakaFal.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.cultDescription.title}}$
+        <h2>${{openSystem.content.cult.dakaFal.name}}$, ${{openSystem.content.cult.dakaFal.tagline}}$</h2>
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/man.svg" height="70">
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/spirit.svg" height="70">
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/man.svg" height="70">
+        ${{openSystem.content.cult.dakaFal.descriptionHtml}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

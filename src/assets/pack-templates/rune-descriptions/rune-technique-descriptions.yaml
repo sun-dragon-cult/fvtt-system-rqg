@@ -1,44 +1,84 @@
 # combine
 name: ${{openSystem.content.runeDescription.combineTechnique.name}}$
-img: systems/rqg/assets/images/runes/combine.svg
+pages:
+  - name: ${{openSystem.content.runeDescription.combineTechnique.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/combine.svg" height="175"></p>${{openSystem.content.runeDescription.combineTechnique.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..combine-technique
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/combine.svg" height="175"></p>${{openSystem.content.runeDescription.combineTechnique.description}}$
 ---
 # command
 name: ${{openSystem.content.runeDescription.commandTechnique.name}}$
-img: systems/rqg/assets/images/runes/command.svg
+pages:
+  - name: ${{openSystem.content.runeDescription.commandTechnique.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/command.svg" height="175"></p>${{openSystem.content.runeDescription.commandTechnique.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..command-technique
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/command.svg" height="175"></p>${{openSystem.content.runeDescription.commandTechnique.description}}$
 ---
 # dispel
 name: ${{openSystem.content.runeDescription.dispelTechnique.name}}$
-img: systems/rqg/assets/images/runes/dispel.svg
+pages:
+  - name: ${{openSystem.content.runeDescription.dispelTechnique.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/dispel.svg" height="175"></p>${{openSystem.content.runeDescription.dispelTechnique.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..dispel-technique
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/dispel.svg" height="175"></p>${{openSystem.content.runeDescription.dispelTechnique.description}}$
 ---
 # separate
 name: ${{openSystem.content.runeDescription.separateTechnique.name}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.separateTechnique.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/separate.svg" height="175"></p>${{openSystem.content.runeDescription.separateTechnique.description}}$
+    sort: 0
+    flags: {}
 img: systems/rqg/assets/images/runes/separate.svg
 flags:
   rqg:
@@ -46,32 +86,47 @@ flags:
       id: je..separate-technique
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/separate.svg" height="175"></p>${{openSystem.content.runeDescription.separateTechnique.description}}$
 ---
 # summon
 name: ${{openSystem.content.runeDescription.summonTechnique.name}}$
-img: systems/rqg/assets/images/runes/summon.svg
+pages:
+  - name: ${{openSystem.content.runeDescription.summonTechnique.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/summon.svg" height="175"></p>${{openSystem.content.runeDescription.summonTechnique.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..summon-technique
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/summon.svg" height="175"></p>${{openSystem.content.runeDescription.summonTechnique.description}}$
 ---
 # tap
 name: ${{openSystem.content.runeDescription.tapTechnique.name}}$
-img: systems/rqg/assets/images/runes/tap.svg
+pages:
+  - name: ${{openSystem.content.runeDescription.tapTechnique.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/tap.svg" height="175"></p>${{openSystem.content.runeDescription.tapTechnique.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..tap-technique
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/tap.svg" height="175"></p>${{openSystem.content.runeDescription.tapTechnique.description}}$

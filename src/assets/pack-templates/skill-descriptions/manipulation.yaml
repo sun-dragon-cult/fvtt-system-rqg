@@ -1,9 +1,21 @@
 # conceal
 name: ${{openSystem.content.skill.conceal.skillName}}$
-img: systems/rqg/assets/images/skills/conceal.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.conceal.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.alchemy.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/conceal.svg" height="70">
+        ${{openSystem.content.skill.conceal.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +25,22 @@ flags:
 ---
 # craft
 name: ${{openSystem.content.skill.craft.skillName}}$
-img: systems/rqg/assets/images/skills/craft.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.craft.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.craft.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/craft.svg" height="70">
+        ${{openSystem.content.skill.craft.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -26,10 +50,22 @@ flags:
 ---
 # devise
 name: ${{openSystem.content.skill.devise.skillName}}$
-img: systems/rqg/assets/images/skills/devise.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.devise.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.devise.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/devise.svg" height="70">
+        ${{openSystem.content.skill.devise.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -39,10 +75,22 @@ flags:
 ---
 # play instrument
 name: ${{openSystem.content.skill.playInstrument.skillName}}$
-img: systems/rqg/assets/images/skills/play-instrument.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.playInstrument.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.playInstrument.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/play-instrument.svg" height="70">
+        ${{openSystem.content.skill.playInstrument.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -52,10 +100,22 @@ flags:
 ---
 # sleight
 name: ${{openSystem.content.skill.sleight.skillName}}$
-img: systems/rqg/assets/images/skills/sleight.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.sleight.description}}$<hr><blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.sleight.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/sleight.svg" height="70">
+        ${{openSystem.content.skill.sleight.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
