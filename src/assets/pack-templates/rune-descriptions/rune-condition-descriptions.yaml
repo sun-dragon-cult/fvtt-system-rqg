@@ -1,9 +1,19 @@
 # fate
 name: ${{openSystem.content.runeDescription.fateCondition.name}}$
-img: systems/rqg/assets/images/runes/fate.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fate.svg" height="175"></p>${{openSystem.content.runeDescription.fateCondition.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.fateCondition.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fate.svg" height="175">
+        ${{openSystem.content.runeDescription.fateCondition.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +23,20 @@ flags:
 ---
 # infinity
 name: ${{openSystem.content.runeDescription.infinityCondition.name}}$
-img: systems/rqg/assets/images/runes/infinity.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/infinity.svg" height="175"></p>${{openSystem.content.runeDescription.infinityCondition.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.infinityCondition.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/infinity.svg" height="175">
+        ${{openSystem.content.runeDescription.infinityCondition.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -26,10 +46,20 @@ flags:
 ---
 # law
 name: ${{openSystem.content.runeDescription.lawCondition.name}}$
-img: systems/rqg/assets/images/runes/law.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/law.svg" height="175"></p>${{openSystem.content.runeDescription.lawCondition.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.lawCondition.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/law.svg" height="175">
+        ${{openSystem.content.runeDescription.lawCondition.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -39,10 +69,20 @@ flags:
 ---
 # light
 name: ${{openSystem.content.runeDescription.lightCondition.name}}$
-img: systems/rqg/assets/images/runes/light.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/light.svg" height="175"></p>${{openSystem.content.runeDescription.lightCondition.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.lightCondition.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/light.svg" height="175">
+        ${{openSystem.content.runeDescription.lightCondition.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -52,10 +92,20 @@ flags:
 ---
 # luck
 name: ${{openSystem.content.runeDescription.luckCondition.name}}$
-img: systems/rqg/assets/images/runes/luck.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/luck.svg" height="175"></p>${{openSystem.content.runeDescription.luckCondition.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.luckCondition.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/luck.svg" height="175">
+        ${{openSystem.content.runeDescription.luckCondition.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -65,10 +115,20 @@ flags:
 ---
 # magic
 name: ${{openSystem.content.runeDescription.magicCondition.name}}$
-img: systems/rqg/assets/images/runes/magic.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/magic.svg" height="175"></p>${{openSystem.content.runeDescription.magicCondition.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.magicCondition.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/magic.svg" height="175">
+        ${{openSystem.content.runeDescription.magicCondition.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -78,10 +138,20 @@ flags:
 ---
 # mastery
 name: ${{openSystem.content.runeDescription.masteryCondition.name}}$
-img: systems/rqg/assets/images/runes/mastery.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/mastery.svg" height="175"></p>${{openSystem.content.runeDescription.masteryCondition.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.masteryCondition.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/mastery.svg" height="175">
+        ${{openSystem.content.runeDescription.masteryCondition.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

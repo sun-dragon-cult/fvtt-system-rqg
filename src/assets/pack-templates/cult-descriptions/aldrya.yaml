@@ -1,13 +1,22 @@
 # aldrya
 name: ${{openSystem.content.cult.aldrya.name}}$
-img: systems/rqg/assets/images/items/cult.svg
-content: >
-  ${{openSystem.content.journalEntryType.cultDescription.title}}$
-  <h2>${{openSystem.content.cult.aldrya.name}}$, ${{openSystem.content.cult.aldrya.tagline}}$</h2>
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/plant.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/earth.svg" height="70">
-  ${{openSystem.content.cult.aldrya.descriptionHtml}}$
+pages:
+  - name: ${{openSystem.content.cult.aldrya.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.cultDescription.title}}$
+          <h2>${{openSystem.content.cult.aldrya.name}}$, ${{openSystem.content.cult.aldrya.tagline}}$</h2>
+          <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
+          <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/plant.svg" height="70">
+          <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/earth.svg" height="70">
+          ${{openSystem.content.cult.aldrya.descriptionHtml}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

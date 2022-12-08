@@ -1,9 +1,21 @@
 # hide
 name: ${{openSystem.content.skill.hide.skillName}}$
-img: systems/rqg/assets/images/skills/hide.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.hide.description}}$<hr><blockquote>${{openSystem.content.skillCategory.stealth.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.hide.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/hide.svg" height="70">
+        ${{openSystem.content.skill.hide.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.stealth.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +25,22 @@ flags:
 ---
 # moveQuietly
 name: ${{openSystem.content.skill.moveQuietly.skillName}}$
-img: systems/rqg/assets/images/skills/move-quietly.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.moveQuietly.description}}$<hr><blockquote>${{openSystem.content.skillCategory.stealth.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.moveQuietly.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/move-quietly.svg" height="70">
+        ${{openSystem.content.skill.moveQuietly.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.stealth.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

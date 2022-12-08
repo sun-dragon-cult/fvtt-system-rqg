@@ -1101,7 +1101,7 @@
         "settingHint": "The RQG system version this world has been migrated to."
       }
     },
-    "Migration" : {
+    "Migration": {
       "Dialog": {
         "windowTitle": "Migrating world data",
         "header": "Please backup your world!",
@@ -1109,7 +1109,7 @@
         "migrationTime": "The migration can take some time if you have a large world, but please be patient and do not shut the system down before it is finished.",
         "btnMigrate": "Migrate world \"{worldTitle}\" to version {systemVersion}"
       },
-      "applyingMigration" : "Applying World Migration to version {systemVersion}. Please be patient and do not close your game or shut down your server.",
+      "applyingMigration": "Applying World Migration to version {systemVersion}. Please be patient and do not close your game or shut down your server.",
       "migrationFinished": "World Migration to version {systemVersion} completed!",
       "actors": "Step 1 / 4 - Migrating {count} actors",
       "items": "Step 2 / 4 - Migrating {count} world items",
@@ -1286,8 +1286,8 @@
         "name": "Rune",
         "title": "<h3>Rune</h3><br/>"
       },
-        "runeMagicDescription": {
-         "name": "Rune Magic",
+      "runeMagicDescription": {
+        "name": "Rune Magic",
         "title": "<h3>Rune Magic</h3><br/>"
       },
       "skillDescription": {
@@ -1358,7 +1358,7 @@
       "summon": "Summon",
       "tap": "Tap",
       "truth": "Truth",
-      "water" : "Water"
+      "water": "Water"
     },
     "runeDescription": {
       "airElement": {
@@ -1497,171 +1497,171 @@
     "runeMagic": {
       "absorption": {
         "name": "Absorption",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Ernalda</i></p><p>Each point absorbs 1 point of attacking Rune magic or 2 points of spirit magic directed at the target, converting those points into magic points that can be used as normal by the caster (no matter who the target is). It only works on spells it equals or is greater than. When the spell ends, the magic points vanish.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Ernalda</i></p><p>Each point absorbs 1 point of attacking Rune magic or 2 points of spirit magic directed at the target, converting those points into magic points that can be used as normal by the caster (no matter who the target is). It only works on spells it equals or is greater than. When the spell ends, the magic points vanish.</p>"
       },
       "analyzeMagic": {
         "name": "Analyze Magic",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Lhankor Mhy</i></p><p>Gives a true statement about at least one function of a single magical item, entity, or substance. Each additional Rune point spent reveals another statement about the subject.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Lhankor Mhy</i></p><p>Gives a true statement about at least one function of a single magical item, entity, or substance. Each additional Rune point spent reveals another statement about the subject.</p>"
       },
       "arousePassion": {
         "name": "Arouse Passion",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Ernalda</i></p><p>Adds +20% to one of the target’s Passions, can create a new temporary Passion at 20%. Each point stacked adds +20% to the Passion.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Ernalda</i></p><p>Adds +20% to one of the target’s Passions, can create a new temporary Passion at 20%. Each point stacked adds +20% to the Passion.</p>"
       },
       "axisMundi": {
         "name": "Axis Mundi",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Daka Fal, Waha</i></p><p>Creates a holy sanctuary with a 10-meter radius per Rune point which:</p><ul><li>Allows ancestral spirits to appear without a Visibility spell.</li><li>Acts as a beacon for spirits.</li><li>Protects the shaman who created it, acting as a protective circle.</li><li>Acts as a locus for the transition of an assistant shaman to a full shaman.</li><li>Attracts cult-aligned spirits to participate in Holy Day ceremonies and celebrations.</li><li>Lasts for 15 minutes plus an additional 15 minutes per magic point stacked with the spell.</li></ul>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Daka Fal, Waha</i></p><p>Creates a holy sanctuary with a 10-meter radius per Rune point which:</p><ul><li>Allows ancestral spirits to appear without a Visibility spell.</li><li>Acts as a beacon for spirits.</li><li>Protects the shaman who created it, acting as a protective circle.</li><li>Acts as a locus for the transition of an assistant shaman to a full shaman.</li><li>Attracts cult-aligned spirits to participate in Holy Day ceremonies and celebrations.</li><li>Lasts for 15 minutes plus an additional 15 minutes per magic point stacked with the spell.</li></ul>"
       },
       "axeTrance": {
         "name": "Axe Trance",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Babeester Gor</i></p><p>Each magic point spent with this spell increases one of the caster’s Axe skills by +10%. This can be combined with other weapon-enhancing spells, but not Berserker or Fanaticism. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using an axe in combat, the spell’s effect ends.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Babeester Gor</i></p><p>Each magic point spent with this spell increases one of the caster’s Axe skills by +10%. This can be combined with other weapon-enhancing spells, but not Berserker or Fanaticism. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using an axe in combat, the spell’s effect ends.</p>"
       },
       "ban": {
         "name": "Ban",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1 or 3<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Can only be cast by Chief or High Priest. Forbids target from participating in worship at the caster’s temple or shrine for three years (1 pt.) or until the target is dead (3 pts.).</p>"
+        "description": "<p><i><b>Cost:</b> 1 or 3<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Can only be cast by Chief or High Priest. Forbids target from participating in worship at the caster’s temple or shrine for three years (1 pt.) or until the target is dead (3 pts.).</p>"
       },
       "bearsSkin": {
         "name": "Bear's Skin",
-        "description": "<h3>Rune Magic</h3> <p><i><b>Cost:</b> 3<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla</i></p><p>Target grows a coat of fur, adding +6 to SIZ and 4 points of armor to all hit locations. This may increase damage bonus and hit points. Cannot be combined with worn armor. Can only be cast on Odayla worshipers and allied cults.</p>"
+        "description": " <p><i><b>Cost:</b> 3<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla</i></p><p>Target grows a coat of fur, adding +6 to SIZ and 4 points of armor to all hit locations. This may increase damage bonus and hit points. Cannot be combined with worn armor. Can only be cast on Odayla worshipers and allied cults.</p>"
       },
       "bearsStrength": {
         "name": "Bear's Strength",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla, Orlanth Thunderous</i></p><p>Target’s STR doubles, adding +10% to Agility, Manipulation, and weapon and shield skills. Can only be cast on Odayla worshipers. Moves damage bonus up one step (none to 1D4, 1D4 to 1D6, then to 2D6, etc.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla, Orlanth Thunderous</i></p><p>Target’s STR doubles, adding +10% to Agility, Manipulation, and weapon and shield skills. Can only be cast on Odayla worshipers. Moves damage bonus up one step (none to 1D4, 1D4 to 1D6, then to 2D6, etc.</p>"
       },
       "becomeOtherSex": {
         "name": "Become (Other Sex)",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 3<br><b>Type:</b> Self<br><b>Cults:</b> Eurmal</i></p><p>Changes the target’s body and appearance to a that of another sex but has no other effect on characteristics or skills. The caster may choose to reduce their SIZ, to a minimum of 1.</p>"
+        "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Self<br><b>Cults:</b> Eurmal</i></p><p>Changes the target’s body and appearance to a that of another sex but has no other effect on characteristics or skills. The caster may choose to reduce their SIZ, to a minimum of 1.</p>"
       },
       "berserker": {
         "name": "Berserker",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> Babeester Gor, Storm Bull</i></p><p>Target goes berserk, forgetting all but the need to kill their enemies. It cannot be cast on someone under the Fanaticism spell, and the spells will not combine. Berserker has the following effects:</p><ul><li>Increases the target’s attack skill rating with hand weapons by half again.</li><li>Increases CON by half again (increasing hit points).</li><li>Bestows 2 points of Countermagic.</li><li>Protection from incapacitation, shock, unconsciousness, or exhaustion while the spell is in effect. If subject to these, they take effect when the spell has expired.</li><li>All CON rolls succeed unless a 96–00 is rolled.</li><li>Against Chaos (having the Chaos Rune or from Chaotic origins) the attack rating is doubled and Countermagic is increased to 4 points.</li><li>A Berserker cannot cast magic, Dodge, or parry attacks.</li></ul><p>To shake free of the spell, the Berserker must roll INT×1 or Meditate successfully. A Chalana Arroy initiate can bring them out of the berserk fury with a CHA×5 roll. When the spell expires, the Berserker is incapacitated, as if they have fallen into a deep sleep. They may be woken through normal means.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Babeester Gor, Storm Bull</i></p><p>Target goes berserk, forgetting all but the need to kill their enemies. It cannot be cast on someone under the Fanaticism spell, and the spells will not combine. Berserker has the following effects:</p><ul><li>Increases the target’s attack skill rating with hand weapons by half again.</li><li>Increases CON by half again (increasing hit points).</li><li>Bestows 2 points of Countermagic.</li><li>Protection from incapacitation, shock, unconsciousness, or exhaustion while the spell is in effect. If subject to these, they take effect when the spell has expired.</li><li>All CON rolls succeed unless a 96–00 is rolled.</li><li>Against Chaos (having the Chaos Rune or from Chaotic origins) the attack rating is doubled and Countermagic is increased to 4 points.</li><li>A Berserker cannot cast magic, Dodge, or parry attacks.</li></ul><p>To shake free of the spell, the Berserker must roll INT×1 or Meditate successfully. A Chalana Arroy initiate can bring them out of the berserk fury with a CHA×5 roll. When the spell expires, the Berserker is incapacitated, as if they have fallen into a deep sleep. They may be woken through normal means.</p>"
       },
       "bindGhost": {
         "name": "Bind Ghost",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Binds a spirit of a willing and dying Humakti into the targeted area as a ghost. Requires one round of successful spirit combat.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Binds a spirit of a willing and dying Humakti into the targeted area as a ghost. Requires one round of successful spirit combat.</p>"
       },
       "bindingEnchantment": {
         "name": "Binding Enchantment",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Creates a magic item capable of holding a spirit or other entity. Must be enchanted with 1 point of permanent POW per type of characteristic possessed by the desired entity.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Creates a magic item capable of holding a spirit or other entity. Must be enchanted with 1 point of permanent POW per type of characteristic possessed by the desired entity.</p>"
       },
       "blastEarth": {
         "name": "Blast Earth",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Babeester Gor, Ernalda, Maran Gor</i></p><p>Affects one square meter per Rune point spent, doubled with each additional point beyond 1. No plants will flower, bear fruit, or grow in the area affected for one full year.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Babeester Gor, Ernalda, Maran Gor</i></p><p>Affects one square meter per Rune point spent, doubled with each additional point beyond 1. No plants will flower, bear fruit, or grow in the area affected for one full year.</p>"
       },
       "blessCrops": {
         "name": "Bless Crops",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Ernalda</i></p><p>Blesses a hide of land (an area equivalent to the amount that can feed and support a single family), improving the farmer’s skill and their income from that land.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Ernalda</i></p><p>Blesses a hide of land (an area equivalent to the amount that can feed and support a single family), improving the farmer’s skill and their income from that land.</p>"
       },
       "blessWoad": {
         "name": "Bless Woad",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Only castable by a Wind Lord of Orlanth on High Holy Days. Creates a pot of holy woad (1 pt. armor and magical protection per Rune point spent).</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Only castable by a Wind Lord of Orlanth on High Holy Days. Creates a pot of holy woad (1 pt. armor and magical protection per Rune point spent).</p>"
       },
       "catseye": {
         "name": "Catseye",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Yelmalio, Yinkin</i></p><p>Target sees in the dark, like a cat, if some degree of light exists. Eyes look catlike and reflect light as a cat’s does. Lasts 12 hours.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Yelmalio, Yinkin</i></p><p>Target sees in the dark, like a cat, if some degree of light exists. Eyes look catlike and reflect light as a cat’s does. Lasts 12 hours.</p>"
       },
       "charisma": {
         "name": "Charisma",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Ernalda, Yinkin</i></p><p>Doubles CHA; adds +20% to Communication and Magic skills.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Ernalda, Yinkin</i></p><p>Doubles CHA; adds +20% to Communication and Magic skills.</p>"
       },
       "clairvoyance": {
         "name": "Clairvoyance",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Allows the caster, while in a trance state, to see and hear any location within five kilometers as if they were there. The caster must have previously been to the location.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Allows the caster, while in a trance state, to see and hear any location within five kilometers as if they were there. The caster must have previously been to the location.</p>"
       },
       "claws": {
         "name": "Claws",
-        "description": "<h3>Rune Spell</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla, Yinkin</i></p><p>This can only be cast by and upon initiates of Odayla or Yinkin. Target gains clawed hands, with the following effects:</p><ul><li>1D6 damage plus damage bonus.</li><li>Chance to hit is equal to normal Fist attack.</li><li>Target can claw twice per round, 5 strike ranks apart.</li><li>Gain +50% to Climb.</li></ul>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla, Yinkin</i></p><p>This can only be cast by and upon initiates of Odayla or Yinkin. Target gains clawed hands, with the following effects:</p><ul><li>1D6 damage plus damage bonus.</li><li>Chance to hit is equal to normal Fist attack.</li><li>Target can claw twice per round, 5 strike ranks apart.</li><li>Gain +50% to Climb.</li></ul>"
       },
       "cloudCall": {
         "name": "Cloud Call",
-        "description": "<h3>Rune Spell</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Thunderous</i></p><p>Summons or creates cloud cover for all visible sky, increasing chance of rain by 20% per Rune point spent.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Thunderous</i></p><p>Summons or creates cloud cover for all visible sky, increasing chance of rain by 20% per Rune point spent.</p>"
       },
       "comfortSong": {
         "name": "Comfort Song",
-        "description": "<h3>Rune Spell</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Chalana Arroy</i></p><p>This Song of Power causes those in earshot to feel comfort from pain and distress. Incapacitated adventurers can continue fighting while this song is being sung.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Chalana Arroy</i></p><p>This Song of Power causes those in earshot to feel comfort from pain and distress. Incapacitated adventurers can continue fighting while this song is being sung.</p>"
       },
       "commandCultSpiritElemental": {
         "name": "Command Cult Spirit (Elemental)",
-        "description": "<h3>Rune Spell</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> All</i></p><p>The Rune used depends on the type of elemental to be commanded. Enables the caster to command any of their cult’s spirits or elementals if they overcome its POW. A cult spirit or elemental not controlled with this spell behaves according to its natural inclination, until destroyed or the spell expires.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> All</i></p><p>The Rune used depends on the type of elemental to be commanded. Enables the caster to command any of their cult’s spirits or elementals if they overcome its POW. A cult spirit or elemental not controlled with this spell behaves according to its natural inclination, until destroyed or the spell expires.</p>"
       },
       "commandWorshipers": {
         "name": "Command Worshipers",
-        "description": "<h3>Rune Spell</h3<p><i><b>Cost:</b> 2<br><b>Type:</b> Ritual<br><b>Cults:</b> Orlanth Rex</i></p><p>Causes all affiliated Orlanthi worshipers within a five-kilometer radius to gather within two days.</p>"
+        "description": "<i><b>Cost:</b> 2<br><b>Type:</b> Ritual<br><b>Cults:</b> Orlanth Rex</i></p><p>Causes all affiliated Orlanthi worshipers within a five-kilometer radius to gather within two days.</p>"
       },
       "createFissure": {
         "name": "Create Fissure",
-        "description": "<h3>Rune Spell</h3<p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Maran Gor</i></p><p>Creates a chasm 5 meters long, 5 meters deep, and 1 meter wide for each Rune point spent. If used against a wall or structure, that structure suffers 1D6 points of damage. If formed under a target, the target must make a DEX×3 roll to avoid falling in. See @JournalEntry[DUMMY]{Falling}"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Maran Gor</i></p><p>Creates a chasm 5 meters long, 5 meters deep, and 1 meter wide for each Rune point spent. If used against a wall or structure, that structure suffers 1D6 points of damage. If formed under a target, the target must make a DEX×3 roll to avoid falling in. See @JournalEntry[DUMMY]{Falling}"
       },
       "createMarket": {
         "name": "Create Market",
-        "description": "<h3>Rune Spell</h3><p><i><b>Cost:</b> 3+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Requires four wands. Creates a neutral trading ground 10 meters square, warded against vs. those with hostile intent. This provides the benefits of @JournalEntry[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Countermagic} 1,  @JournalEntry[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Spirit Screen} 2, and does 1D3 points of damage (ignoring armor) to a random hit location of an unwelcome intruder. Additional Rune points spent can increase the magical effects by the same amounts per point, or they can increase the size of the market by a multiple equal to those points spent. Lasts eight weeks.</p>"
+        "description": "<p><i><b>Cost:</b> 3+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Requires four wands. Creates a neutral trading ground 10 meters square, warded against vs. those with hostile intent. This provides the benefits of @JournalEntry[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Countermagic} 1,  @JournalEntry[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Spirit Screen} 2, and does 1D3 points of damage (ignoring armor) to a random hit location of an unwelcome intruder. Additional Rune points spent can increase the magical effects by the same amounts per point, or they can increase the size of the market by a multiple equal to those points spent. Lasts eight weeks.</p>"
       },
       "cureAllDisease": {
         "name": "Cure All Disease",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Cures any diseases the target suffers (but not the damage taken).</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Cures any diseases the target suffers (but not the damage taken).</p>"
       },
       "cureChaosWound": {
         "name": "Cure Chaos Wound",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Cures a wound or disease inflicted by Chaos, but must be stacked with another healing spell. Provides all magic points needed to cast the other spell.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Cures a wound or disease inflicted by Chaos, but must be stacked with another healing spell. Provides all magic points needed to cast the other spell.</p>"
       },
       "curePoison": {
         "name": "Cure Poison",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Neutralizes any poison the target is suffering from (but not the damage taken).</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Neutralizes any poison the target is suffering from (but not the damage taken).</p>"
       },
       "darkWalk": {
         "name": "Dark Walk",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Argan Argar, Orlanth Adventurous</i></p><p>Allows the user to be totally invisible and soundless in darkness and shadow to anyone within range.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Argan Argar, Orlanth Adventurous</i></p><p>Allows the user to be totally invisible and soundless in darkness and shadow to anyone within range.</p>"
       },
       "detectHonor": {
         "name": "Detect Honor",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Instant<br><b>Cults:</b> Orlanth Rex</i></p><p>Determines whether the target is currently honorable by Orlanthi standards.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Instant<br><b>Cults:</b> Orlanth Rex</i></p><p>Determines whether the target is currently honorable by Orlanthi standards.</p>"
       },
       "detectTruth": {
         "name": "Detect Truth",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Humakt</i></p><p>Allows the caster to tell whether anyone within a five-meter radius of the spell’s target site is speaking untruths.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Humakt</i></p><p>Allows the caster to tell whether anyone within a five-meter radius of the spell’s target site is speaking untruths.</p>"
       },
       "discorporation": {
         "name": "Discorporation",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Daka Fal, Waha</i></p><p>An hour-long ritual that allows the caster to enter spirit form and enter the Spirit World. Requires a successful Meditate roll in addition to the casting roll. Traveling more than five kilometers from the caster’s body requires another Rune point per five kilometers, spent when the spell is cast. See @JournalEntry[DUMMY]{Discorporation} for more information.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Daka Fal, Waha</i></p><p>An hour-long ritual that allows the caster to enter spirit form and enter the Spirit World. Requires a successful Meditate roll in addition to the casting roll. Traveling more than five kilometers from the caster’s body requires another Rune point per five kilometers, spent when the spell is cast. See @JournalEntry[DUMMY]{Discorporation} for more information.</p>"
       },
       "dismissElementalType": {
         "name": "Dismiss Elemental (type)",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Instant<br><b>Cults:</b> Ernalda (Earth), Orlanth (Air), Seven Mothers (all but Air), Waha (Earth)</i></p><p>The Rune depends on the type of elemental to be dismissed. Dismisses a cult spirit (usually an elemental) of the type listed.</p><ul><li>With 1 Rune point, the caster can try to dismiss a small elemental.</li><li>With 2 Rune points, the caster can try to dismiss a medium elemental.</li><li>With 3 Rune points, the caster can try to dismiss a large elemental.</li></ul> <p>The caster of the spell must overcome the POW of the elemental for the spell to work.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Instant<br><b>Cults:</b> Ernalda (Earth), Orlanth (Air), Seven Mothers (all but Air), Waha (Earth)</i></p><p>The Rune depends on the type of elemental to be dismissed. Dismisses a cult spirit (usually an elemental) of the type listed.</p><ul><li>With 1 Rune point, the caster can try to dismiss a small elemental.</li><li>With 2 Rune points, the caster can try to dismiss a medium elemental.</li><li>With 3 Rune points, the caster can try to dismiss a large elemental.</li></ul> <p>The caster of the spell must overcome the POW of the elemental for the spell to work.</p>"
       },
       "dismissMagic": {
         "name": "Dismiss Magic",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Instant<br><b>Cults:</b> All</i></p><p>Each point cancels 2 points of spirit magic or 1 point of Rune magic.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Instant<br><b>Cults:</b> All</i></p><p>Each point cancels 2 points of spirit magic or 1 point of Rune magic.</p>"
       },
       "divination": {
         "name": "Divination",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Each point lets the caster to ask a simple question of their deity and receive an answer of up to ten words. One hour to cast.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Each point lets the caster to ask a simple question of their deity and receive an answer of up to ten words. One hour to cast.</p>"
       },
       "earthShield": {
         "name": "Earth Shield",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 3<br><b>Type:</b> Touch<br><b>Cults:</b> Babeester Gor, Ernalda, Orlanth Adventurous</i></p><p>Gives a shield infinite armor points for the duration.</p>"
+        "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Touch<br><b>Cults:</b> Babeester Gor, Ernalda, Orlanth Adventurous</i></p><p>Gives a shield infinite armor points for the duration.</p>"
       },
       "earthpower": {
         "name": "Earthpower",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 3+<br><b>Type:</b> Self, Instant<br><b>Cults:</b> Ernalda</i></p><p>Draw 1 point of POW or 1D8 magic points from the earth per additional Rune point spent.</p>"
+        "description": "<p><i><b>Cost:</b> 3+<br><b>Type:</b> Self, Instant<br><b>Cults:</b> Ernalda</i></p><p>Draw 1 point of POW or 1D8 magic points from the earth per additional Rune point spent.</p>"
       },
       "extension": {
         "name": "Extension",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> All</i></p><p>Increases another Rune spell’s duration. At 1 point, the spell lasts an hour. For 2 points, a day. For 3 points it lasts a week.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> All</i></p><p>Increases another Rune spell’s duration. At 1 point, the spell lasts an hour. For 2 points, a day. For 3 points it lasts a week.</p>"
       },
       "faceChaos": {
         "name": "Face Chaos",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous, Storm Bull</i></p><p>The target of the spell does not flee or faint if fighting Chaos. Each extra Rune point affects one more target. If the target is affected by the Demoralize spell, they fight at half chance.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous, Storm Bull</i></p><p>The target of the spell does not flee or faint if fighting Chaos. Each extra Rune point affects one more target. If the target is affected by the Demoralize spell, they fight at half chance.</p>"
       },
       "fear": {
         "name": "Fear",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Zorak Zoran</i></p><p>This spell causes intense, incapacitating fear to well up within the target. The caster must overcome the POW of the target. The degree of success on that roll determine the exact effect of this spell. The effects of Fear cannot be dispelled.</p><h4>Fear Effects</h4><ul><li><b>Critical:</b> Victim dies of fear.</li><li><b>Special Success:</b> Victim collapses for 20 minus CON full turns and must make a CON×5 roll or die as above.</li><li><b>Success:</b> Victim is [Demoralized](/rules/spirit-magic-spells.html#demoralize) for 20 minus CON melee rounds.</li><li><b>Failure:</b> Intelligent beings are unaffected.</br>Unintelligent creatures, including animals, are [Demoralized](/rules/spirit-magic-spells.html#demoralize) for 20 minus CON melee rounds.</li><li><b>Fumble:</b> Victim is unaffected.</p></ul>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Zorak Zoran</i></p><p>This spell causes intense, incapacitating fear to well up within the target. The caster must overcome the POW of the target. The degree of success on that roll determine the exact effect of this spell. The effects of Fear cannot be dispelled.</p><h4>Fear Effects</h4><ul><li><b>Critical:</b> Victim dies of fear.</li><li><b>Special Success:</b> Victim collapses for 20 minus CON full turns and must make a CON×5 roll or die as above.</li><li><b>Success:</b> Victim is [Demoralized](/rules/spirit-magic-spells.html#demoralize) for 20 minus CON melee rounds.</li><li><b>Failure:</b> Intelligent beings are unaffected.</br>Unintelligent creatures, including animals, are [Demoralized](/rules/spirit-magic-spells.html#demoralize) for 20 minus CON melee rounds.</li><li><b>Fumble:</b> Victim is unaffected.</p></ul>"
       },
       "fearless": {
         "name": "Fearless",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Target gains immunity to fear, including magical fear such as from Demoralize, Fear, or Madness, or from foes that cause fear-like effects.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Target gains immunity to fear, including magical fear such as from Demoralize, Fear, or Madness, or from foes that cause fear-like effects.</p>"
       },
       "findEnemy": {
         "name": "Find Enemy",
-        "description": "<h3>Rune Magic</h3> <p><i><b>Cost:</b> 1<br><b>Cults:</b> All</i></p><p>Alerts the caster to anyone in range that intends to harm them.</p>"
+        "description": " <p><i><b>Cost:</b> 1<br><b>Cults:</b> All</i></p><p>Alerts the caster to anyone in range that intends to harm them.</p>"
       },
       "findGrain": {
         "name": "Find Grain",
@@ -1669,382 +1669,382 @@
       },
       "findMagic": {
         "name": "Find Magic",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Lhankor Mhy</i></p><p>Identifies the presence of magic within range, causing it to glow visibly to the caster, unless blocked by three or more meters of stone, soil, or metal.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Lhankor Mhy</i></p><p>Identifies the presence of magic within range, causing it to glow visibly to the caster, unless blocked by three or more meters of stone, soil, or metal.</p>"
       },
       "flight": {
         "name": "Flight",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Issaries, Orlanth Adventurous</i></p><p>Transports one object (including caster) weighing up to SIZ 6 through the air for duration of the spell. Each extra Rune point adds +6 to SIZ. Flying objects have Movement 12 and control their own flight.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Issaries, Orlanth Adventurous</i></p><p>Transports one object (including caster) weighing up to SIZ 6 through the air for duration of the spell. Each extra Rune point adds +6 to SIZ. Flying objects have Movement 12 and control their own flight.</p>"
       },
       "harmony": {
         "name": "Harmony",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Chalana Arroy</i></p><p>Prevents anyone from becoming violent within three meters of the caster per point spent. To act violently in this space requires a resistance roll of caster’s POW compared to the resistance table. Anyone within range whose POW would be overcome is affected. Counteracts emotion-affecting spells (Demoralize or Fanaticism) weaker than the Harmony spell (how many points spent in it). Harmony can be boosted with magic points to make it more powerful to overcome other spells.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Chalana Arroy</i></p><p>Prevents anyone from becoming violent within three meters of the caster per point spent. To act violently in this space requires a resistance roll of caster’s POW compared to the resistance table. Anyone within range whose POW would be overcome is affected. Counteracts emotion-affecting spells (Demoralize or Fanaticism) weaker than the Harmony spell (how many points spent in it). Harmony can be boosted with magic points to make it more powerful to overcome other spells.</p>"
       },
       "healBody": {
         "name": "Heal Body",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 3<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy, Babeester Gor, Eiritha, Ernalda, Orlanth Adventurous</i></p><p>Heals all the damage the target suffered, regardless of hit location(s).</p>"
+        "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy, Babeester Gor, Eiritha, Ernalda, Orlanth Adventurous</i></p><p>Heals all the damage the target suffered, regardless of hit location(s).</p>"
       },
       "healWound": {
         "name": "Heal Wound",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> All</i></p><p>Heals hit points equal to the magic points spent.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> All</i></p><p>Heals hit points equal to the magic points spent.</p>"
       },
       "healingTrance": {
         "name": "Healing Trance",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Duration<br><b>Cults:</b> Chalana Arroy</i></p><p>Target falls into a deep sleep, healing eight times faster than normal. Both caster and target remain asleep until target is entirely healed.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Duration<br><b>Cults:</b> Chalana Arroy</i></p><p>Target falls into a deep sleep, healing eight times faster than normal. Both caster and target remain asleep until target is entirely healed.</p>"
       },
       "illusionarySound": {
         "name": "Illusionary Sound",
-        "description": "<h3>Rune Magic</h3> <p><i><b>Cost:</b> 1+<br><b>Cults:</b> Eurmal</i></p><p>Creates a stationary sound with the nature, duration, and intent chosen by the caster. More points increase the range and volume.</p>"
+        "description": " <p><i><b>Cost:</b> 1+<br><b>Cults:</b> Eurmal</i></p><p>Creates a stationary sound with the nature, duration, and intent chosen by the caster. More points increase the range and volume.</p>"
       },
       "impedeChaos": {
         "name": "Impede Chaos",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Storm Bull</i></p><p>The target of this spell becomes difficult for Chaos creatures to hit. For each point stacked in the spell, subtract –20% from the attack skill of any Chaos creature attacking the target. Impede Chaos has no effect against non-Chaotic opponents.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Storm Bull</i></p><p>The target of this spell becomes difficult for Chaos creatures to hit. For each point stacked in the spell, subtract –20% from the attack skill of any Chaos creature attacking the target. Impede Chaos has no effect against non-Chaotic opponents.</p>"
       },
       "increaseDecreaseWind": {
         "name": "Increase/Decrease Wind",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth</i></p><p>Increases the STR of wind for 100 meters around the caster. Each additional point adds +1D6 STR or 100 meters more.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth</i></p><p>Increases the STR of wind for 100 meters around the caster. Each additional point adds +1D6 STR or 100 meters more.</p>"
       },
       "inviolable": {
         "name": "Inviolable",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Ernalda</i></p><p>Affects any Ernalda or Orlanth cultist within three meters of the caster. Cancels Demoralize, Fanaticism, and other emotion-affecting magic on them, calm and avoiding violence if possible.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Ernalda</i></p><p>Affects any Ernalda or Orlanth cultist within three meters of the caster. Cancels Demoralize, Fanaticism, and other emotion-affecting magic on them, calm and avoiding violence if possible.</p>"
       },
       "knowledge": {
         "name": "Knowledge",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Lhankor Mhy</i></p><p>Allows the caster to read the history of an item.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Lhankor Mhy</i></p><p>Allows the caster to read the history of an item.</p>"
       },
       "leap": {
         "name": "Leap",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Target can jump up to six meters high or six meters away for the duration. Each extra point adds +6 meters to the distance.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Target can jump up to six meters high or six meters away for the duration. Each extra point adds +6 meters to the distance.</p>"
       },
       "lie": {
         "name": "Lie",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Self, Instant<br><b>Cults:</b> Eurmal</i></p><p>The caster may utter a lie, no matter how outrageous, that any listener believes. Lasts until proven false (minimum one melee round). Listeners must understand the language spoken, unless the lie is nonverbal, such as a feint or misleading gesture.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Self, Instant<br><b>Cults:</b> Eurmal</i></p><p>The caster may utter a lie, no matter how outrageous, that any listener believes. Lasts until proven false (minimum one melee round). Listeners must understand the language spoken, unless the lie is nonverbal, such as a feint or misleading gesture.</p>"
       },
       "lightning": {
         "name": "Lightning",
-        "description": "<h3>Rune Magic</h3> <p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Summons a blast of lightning, doing 1D6 per Rune point to a single hit location if the target’s POW is overcome by the caster. Physical armor does not protect against the damage, but magic armor or protection does.</p>"
+        "description": " <p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Summons a blast of lightning, doing 1D6 per Rune point to a single hit location if the target’s POW is overcome by the caster. Physical armor does not protect against the damage, but magic armor or protection does.</p>"
       },
       "lock": {
         "name": "Lock",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Locks a door, gate, hatch, chest, etc. with a STR equal to the number of magic points used. It must be cast upon a closable door, and the spell does not increase its armor or durability in any way. It takes one hour to cast per point but lasts eight weeks. This spell is often stacked with Passage.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Locks a door, gate, hatch, chest, etc. with a STR equal to the number of magic points used. It must be cast upon a closable door, and the spell does not increase its armor or durability in any way. It takes one hour to cast per point but lasts eight weeks. This spell is often stacked with Passage.</p>"
       },
       "madness": {
         "name": "Madness",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Instant<br><b>Cults:</b> Seven Mothers</i></p><p>If the target’s POW is overcome by the caster, the target suffers effects based on the degree of success:</p><ul><li><b>Critical:</b> Target goes insane and is incapacitated for 30 minus POW days, permanently losing 1D4 points INT.</li><li><b>Special Success:</b> Target attacks nearest person as if Fanatic for the next 30 minus POW minutes.</li><li><b>Success:</b> Victim collapses for 30 minus POW minutes and cannot be awakened.</li><li><b>Failure/Fumble:</b> No effect.</li></ul>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Instant<br><b>Cults:</b> Seven Mothers</i></p><p>If the target’s POW is overcome by the caster, the target suffers effects based on the degree of success:</p><ul><li><b>Critical:</b> Target goes insane and is incapacitated for 30 minus POW days, permanently losing 1D4 points INT.</li><li><b>Special Success:</b> Target attacks nearest person as if Fanatic for the next 30 minus POW minutes.</li><li><b>Success:</b> Victim collapses for 30 minus POW minutes and cannot be awakened.</li><li><b>Failure/Fumble:</b> No effect.</li></ul>"
       },
       "magicPointEnchantment": {
         "name": "Magic Point Enchantment",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Cast on an item to make it store magic points for spellcasting. Each point cast takes one hour and lets it store 1D10 magic points. Takes one melee round to store 1 magic point in an item.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Cast on an item to make it store magic points for spellcasting. Each point cast takes one hour and lets it store 1D10 magic points. Takes one melee round to store 1 magic point in an item.</p>"
       },
       "matrixCreation": {
         "name": "Matrix Creation",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Stores a spirit magic or Rune spell into an item at the cost of 1 point of permanent POW per point of the spell. Anyone wielding the item can use it by spending the magic point cost (if needed) and succeeding in a POW×5 roll. Matrixes for Rune spells must be recharged with a Worship roll in a temple.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Stores a spirit magic or Rune spell into an item at the cost of 1 point of permanent POW per point of the spell. Anyone wielding the item can use it by spending the magic point cost (if needed) and succeeding in a POW×5 roll. Matrixes for Rune spells must be recharged with a Worship roll in a temple.</p>"
       },
       "mindblast": {
         "name": "Mindblast",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Instant<br><b>Cults:</b> Seven Mothers</i></p><p>Destroys the INT of the target if the caster overcomes the target’s POW. Effect lasts days equal to 1/2 the caster’s POW (round up). It cannot be dispelled. If the caster rolls a special success in overcoming the target’s POW, the attack also causes 1D6+2 damage to the target’s head hit location. Armor does not protect against this damage, though magical protection will.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Instant<br><b>Cults:</b> Seven Mothers</i></p><p>Destroys the INT of the target if the caster overcomes the target’s POW. Effect lasts days equal to 1/2 the caster’s POW (round up). It cannot be dispelled. If the caster rolls a special success in overcoming the target’s POW, the attack also causes 1D6+2 damage to the target’s head hit location. Armor does not protect against this damage, though magical protection will.</p>"
       },
       "mindRead": {
         "name": "Mind Read",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Caster can read the conscious thoughts of the target without their consent, though the target can tell what is happening. The caster must overcome the target’s POW for the spell to operate.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Caster can read the conscious thoughts of the target without their consent, though the target can tell what is happening. The caster must overcome the target’s POW for the spell to operate.</p>"
       },
       "mistCloud": {
         "name": "Mist Cloud",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Creates a bubble of natural-looking mist two meters in diameter around the caster for every Rune point spent. Visibility within or through the mist is limited to one meter.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Creates a bubble of natural-looking mist two meters in diameter around the caster for every Rune point spent. Visibility within or through the mist is limited to one meter.</p>"
       },
       "morale": {
         "name": "Morale",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Creates a field around the caster and their unit like a Fanaticism spell, without the restrictions on dodging and parrying. Lasts until sunrise or sunset, whichever comes first.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Creates a field around the caster and their unit like a Fanaticism spell, without the restrictions on dodging and parrying. Lasts until sunrise or sunset, whichever comes first.</p>"
       },
       "multispell": {
         "name": "Multispell",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Self<br><b>Cults:</b> All</i></p><p>Allows combining two spirit magic spells, casting them together on their highest strike rank. Continues for the Multispell’s entire duration: so every melee round, the caster can cast two spirit magic spells. Each extra Rune point adds one spell.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Self<br><b>Cults:</b> All</i></p><p>Allows combining two spirit magic spells, casting them together on their highest strike rank. Continues for the Multispell’s entire duration: so every melee round, the caster can cast two spirit magic spells. Each extra Rune point adds one spell.</p>"
       },
       "oath": {
         "name": "Oath",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2+<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Each person involved spends magic points, forming a pact: oathbreakers suffer a Sever Spirit spell with magic points equal to the total magic points spent in Oath. Each extra Rune point adds one person to the oath. Lasts until broken.</p>"
+        "description": "<p><i><b>Cost:</b> 2+<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Each person involved spends magic points, forming a pact: oathbreakers suffer a Sever Spirit spell with magic points equal to the total magic points spent in Oath. Each extra Rune point adds one person to the oath. Lasts until broken.</p>"
       },
       "passage": {
         "name": "Passage",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Opens a door, gate, etc. that has been locked, or one magically sealed if enough points are used. When cast with Lock, each point allows one additional person to open the targeted door, lid, lock, etc. besides the caster.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Opens a door, gate, etc. that has been locked, or one magically sealed if enough points are used. When cast with Lock, each point allows one additional person to open the targeted door, lid, lock, etc. besides the caster.</p>"
       },
       "pathWatch": {
         "name": "Path Watch",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Self, Duration<br><b>Cults:</b> Issaries</i></p><p>Must be laid upon a known path or visible road to be traveled on by the caster. Alerts them to the direction and number (not type) of all enemies and traps within a 100-meter radius of the caster while they are on the path or immediately adjacent to it. Lasts while the road lasts and while the caster stays awake.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Self, Duration<br><b>Cults:</b> Issaries</i></p><p>Must be laid upon a known path or visible road to be traveled on by the caster. Alerts them to the direction and number (not type) of all enemies and traps within a 100-meter radius of the caster while they are on the path or immediately adjacent to it. Lasts while the road lasts and while the caster stays awake.</p>"
       },
       "reconstruction": {
         "name": "Reconstruction",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 3<br><b>Cults:</b> Lhankor Mhy</i></p><p>Causes any 15-minute sequence from the past to replay for the caster’s senses, while they are in the immediate area in which it took place. The user must state the time and date of the vision.</p>"
+        "description": "<p><i><b>Cost:</b> 3<br><b>Cults:</b> Lhankor Mhy</i></p><p>Causes any 15-minute sequence from the past to replay for the caster’s senses, while they are in the immediate area in which it took place. The user must state the time and date of the vision.</p>"
       },
       "reflection": {
         "name": "Reflection",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Eurmal, Seven Mothers</i></p><p>Reflects spells which fail to overcome the POW of the protected being. The next strike rank, the reflected spells attack their caster. The POW of the reflected attack spell are equal to the caster’s at the time the spell was originally cast. Each point stacked with this spell reflects 2 points of spirit magic, or 1 point of Rune magic. Reflection does not work if the incoming spell is too powerful.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Eurmal, Seven Mothers</i></p><p>Reflects spells which fail to overcome the POW of the protected being. The next strike rank, the reflected spells attack their caster. The POW of the reflected attack spell are equal to the caster’s at the time the spell was originally cast. Each point stacked with this spell reflects 2 points of spirit magic, or 1 point of Rune magic. Reflection does not work if the incoming spell is too powerful.</p>"
       },
       "regrowLimb": {
         "name": "Regrow Limb",
-        "description": "<h3>Rune Magic</h3> <p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Permanent<br><b>Cults:</b> Chalana Arroy, Ernalda, Issaries, Seven Mothers</i></p><p>Regrows a severed or mangled limb, taking a full season to restore it to full functionality and hit points.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Permanent<br><b>Cults:</b> Chalana Arroy, Ernalda, Issaries, Seven Mothers</i></p><p>Regrows a severed or mangled limb, taking a full season to restore it to full functionality and hit points.</p>"
       },
       "restoreHealth": {
         "name": "Restore Health",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Each Rune point spent restores one lost characteristic point (other than those lost to death).</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Each Rune point spent restores one lost characteristic point (other than those lost to death).</p>"
       },
       "resurrect": {
         "name": "Resurrect",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 3<br><b>Type:</b> Ritual<br><b>Cults:</b> Chalana Arroy, Daka Fal</i></p><p>Restores a dead person to life once the body has been healed to at least 3 hit points using healing magic. If the body’s death was due to disease, the possessing disease spirit must be banished from the body first.</p><p>Once cast, the caster must defeat the spirit of the deceased in spirit combat. If the caster is successful, the spirit returns to its body and lives anew. If the caster fails, the spirit passes beyond hope of recovery. Each day the body is dead beyond the first day, the deceased loses 1D3 points each to STR, CON, and DEX. If any of these characteristics is reduced to 0, the adventurer cannot return to life.</p><p>Anyone dead beyond seven days is beyond the ability to be brought back by this spell, and it is the province of the gods whether they are able to return to the Middle World.</p>"
+        "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Ritual<br><b>Cults:</b> Chalana Arroy, Daka Fal</i></p><p>Restores a dead person to life once the body has been healed to at least 3 hit points using healing magic. If the body’s death was due to disease, the possessing disease spirit must be banished from the body first.</p><p>Once cast, the caster must defeat the spirit of the deceased in spirit combat. If the caster is successful, the spirit returns to its body and lives anew. If the caster fails, the spirit passes beyond hope of recovery. Each day the body is dead beyond the first day, the deceased loses 1D3 points each to STR, CON, and DEX. If any of these characteristics is reduced to 0, the adventurer cannot return to life.</p><p>Anyone dead beyond seven days is beyond the ability to be brought back by this spell, and it is the province of the gods whether they are able to return to the Middle World.</p>"
       },
       "safe": {
         "name": "Safe",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Duration<br><b>Cults:</b> Argan Argar</i></p><p>Cast upon a container or opening to bar unwanted passage, must be boosted with magic points. Anyone other than the caster opening the secured container or crossing the passage is attacked by those magic points. If the trespasser’s POW is overcome, they take 1D6 points of hit point damage and are forced back. Lasts eight weeks.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Duration<br><b>Cults:</b> Argan Argar</i></p><p>Cast upon a container or opening to bar unwanted passage, must be boosted with magic points. Anyone other than the caster opening the secured container or crossing the passage is attacked by those magic points. If the trespasser’s POW is overcome, they take 1D6 points of hit point damage and are forced back. Lasts eight weeks.</p>"
       },
       "sanctify": {
         "name": "Sanctify",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Riual<br><b>Cults:</b> All</i></p><p>This blesses the volume of a 10-meter-radius volume, usually a sphere half above and below ground (for Earth cults this is a cube). Cult members can perform ceremonies within this area as if in a temple, including replenishing Rune points.</p><p>The boundary shimmers slightly in full daylight, but is not detectable by touch or Darksense. Anyone within any portion of the sanctified area is considered completely within it. The caster is instantly alerted if non-initiates, spells, or spirits enter the area.</p><p>When ceremonies cease, the spell ends. Additional Rune points increase its area by half again (2 points protects a 15-meter radius, 3 points a 22.5-meter radius, etc.).</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Riual<br><b>Cults:</b> All</i></p><p>This blesses the volume of a 10-meter-radius volume, usually a sphere half above and below ground (for Earth cults this is a cube). Cult members can perform ceremonies within this area as if in a temple, including replenishing Rune points.</p><p>The boundary shimmers slightly in full daylight, but is not detectable by touch or Darksense. Anyone within any portion of the sanctified area is considered completely within it. The caster is instantly alerted if non-initiates, spells, or spirits enter the area.</p><p>When ceremonies cease, the spell ends. Additional Rune points increase its area by half again (2 points protects a 15-meter radius, 3 points a 22.5-meter radius, etc.).</p>"
       },
       "severSpirit": {
         "name": "Sever Spirit",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 3<br><b>Type:</b> Instant<br><b>Cults:</b> Humakt</i></p><p>Attacks the bond between the body and spirit of the target. Target must succeed in a POW vs. POW resistance roll or die. If unsuccessful, they suffer 1D6 hit points of general damage.</p>"
+        "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Instant<br><b>Cults:</b> Humakt</i></p><p>Attacks the bond between the body and spirit of the target. Target must succeed in a POW vs. POW resistance roll or die. If unsuccessful, they suffer 1D6 hit points of general damage.</p>"
       },
       "shakeEarth": {
         "name": "Shake Earth",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Maran Gor</i></p><p>Causes a small earthquake: magic points spent determine its area of effect and Rune points its severity. Affects one square meter per magic point, exponentially (1 magic point = 1 square meter, 2 magic points = 4 square meters, etc.). Everyone in the area reduces all Agility and Manipulation skills by –5% per point and must succeed in a DEX×5 roll each round or fall down, modified by the above penalty.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Maran Gor</i></p><p>Causes a small earthquake: magic points spent determine its area of effect and Rune points its severity. Affects one square meter per magic point, exponentially (1 magic point = 1 square meter, 2 magic points = 4 square meters, etc.). Everyone in the area reduces all Agility and Manipulation skills by –5% per point and must succeed in a DEX×5 roll each round or fall down, modified by the above penalty.</p>"
       },
       "shield": {
         "name": "Shield",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Many</i></p><p>The Rune varies by cult. Every point of Shield gives the wearer 2 points of magical armor and 2 points of Countermagic. The effects are cumulative with Protection or Countermagic.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Many</i></p><p>The Rune varies by cult. Every point of Shield gives the wearer 2 points of magical armor and 2 points of Countermagic. The effects are cumulative with Protection or Countermagic.</p>"
       },
       "slash": {
         "name": "Slash",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch<br><b>Cults:</b> Babeester Gor</i></p><p>Must be cast on a one- or two-handed axe. Each point spent adds +1D6 to the weapon’s damage. This additional damage is added after any effect from a special or critical attack.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch<br><b>Cults:</b> Babeester Gor</i></p><p>Must be cast on a one- or two-handed axe. Each point spent adds +1D6 to the weapon’s damage. This additional damage is added after any effect from a special or critical attack.</p>"
       },
       "soulSight": {
         "name": "Soul Sight",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> All</i></p><p>Allows the recipient to see both the POW aura of living beings and to magically know the actual current magic points of other entities and creatures, including the amount devoted to currently in-effect spells.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> All</i></p><p>Allows the recipient to see both the POW aura of living beings and to magically know the actual current magic points of other entities and creatures, including the amount devoted to currently in-effect spells.</p>"
       },
       "spellTrading": {
         "name": "Spell Trading",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Issaries</i></p><p>This spell can only be cast in an Issaries market and requires a symbolic token item to be exchanged. Allows the caster to trade a single use of any Rune magic (except this one!) in exchange for a single use of any Rune spell known by another priest of any cult. Costs Rune points equal to 2 plus the Rune point cost of the spell to be traded.</p><p>Roll 1D100 when cast: a roll of 01–95 indicates success, failure means the spell immediately takes effect (but is still traded) on the person it is being traded to.</p><p>The new spell ‘owner’ uses the already-spent Rune points when they cast the spell and the original owner’s Rune affinity rating (even if lower than the new owner’s), so take note of these. The Rune points for the spell do not count against the new owner’s own maximum.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Issaries</i></p><p>This spell can only be cast in an Issaries market and requires a symbolic token item to be exchanged. Allows the caster to trade a single use of any Rune magic (except this one!) in exchange for a single use of any Rune spell known by another priest of any cult. Costs Rune points equal to 2 plus the Rune point cost of the spell to be traded.</p><p>Roll 1D100 when cast: a roll of 01–95 indicates success, failure means the spell immediately takes effect (but is still traded) on the person it is being traded to.</p><p>The new spell ‘owner’ uses the already-spent Rune points when they cast the spell and the original owner’s Rune affinity rating (even if lower than the new owner’s), so take note of these. The Rune points for the spell do not count against the new owner’s own maximum.</p>"
       },
       "spiritArmorEnchantment": {
         "name": "Spirit Armor Enchantment",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Creates 1D3 points armor against damage taken in spirit combat per permanent POW point sacrificed. Takes one hour to cast.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Creates 1D3 points armor against damage taken in spirit combat per permanent POW point sacrificed. Takes one hour to cast.</p>"
       },
       "spiritBlock": {
         "name": "Spirit Block",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> All</i></p><p>Helps protect the recipient from attack by spirits. Each point of this spell acts as spiritual armor and absorbs 2 points of magic point damage done to the caster in spirit combat.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> All</i></p><p>Helps protect the recipient from attack by spirits. Each point of this spell acts as spiritual armor and absorbs 2 points of magic point damage done to the caster in spirit combat.</p>"
       },
       "summonCultSpirit": {
         "name": "Summon Cult Spirit",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br> <b>Cults:</b> All</i></p><p>The caster’s deity sends a cult spirit to their aid. Its size depends on the number of Rune points spent. As a rule, greater deities have more sizes and types of cult spirits. The summoned entity arrives at the end of the round, on strike rank 12. This spell may be cast simultaneously with Command Cult Spirit.</p><p>Summon Elemental is a specific example of this spell, but many other variants exist.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br> <b>Cults:</b> All</i></p><p>The caster’s deity sends a cult spirit to their aid. Its size depends on the number of Rune points spent. As a rule, greater deities have more sizes and types of cult spirits. The summoned entity arrives at the end of the round, on strike rank 12. This spell may be cast simultaneously with Command Cult Spirit.</p><p>Summon Elemental is a specific example of this spell, but many other variants exist.</p>"
       },
       "summonElementalType": {
         "name": "Summon Elemental (type)",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Temporal<br><b>Cults:</b> Ernalda (Earth), Orlanth (Air), Seven Mothers (all but Air), Waha (Earth)</i></p><p>The Rune used depends on the type of elemental summoned. When cast, the deity sends an elemental of the Rune’s type. Elementals come in three sizes: small (1 pt.), medium (2 pts.), and large (3 pts.). The elemental’s size depends on how many Rune points are stacked with the spell (limited by the maximum size of elemental available to the cult).</p><p>Once summoned, the elemental follows its natural inclinations unless bound by a Command spell. The gamemaster should determine this if it is not apparent. Unless bound by a Command spell, the elemental may not attack unless attacked, and remains until it is physically destroyed, or 15 minutes have passed, whichever of these conditions comes first.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Temporal<br><b>Cults:</b> Ernalda (Earth), Orlanth (Air), Seven Mothers (all but Air), Waha (Earth)</i></p><p>The Rune used depends on the type of elemental summoned. When cast, the deity sends an elemental of the Rune’s type. Elementals come in three sizes: small (1 pt.), medium (2 pts.), and large (3 pts.). The elemental’s size depends on how many Rune points are stacked with the spell (limited by the maximum size of elemental available to the cult).</p><p>Once summoned, the elemental follows its natural inclinations unless bound by a Command spell. The gamemaster should determine this if it is not apparent. Unless bound by a Command spell, the elemental may not attack unless attacked, and remains until it is physically destroyed, or 15 minutes have passed, whichever of these conditions comes first.</p>"
       },
       "summonHealingSpirit": {
         "name": "Summon Healing Spirit",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Cults:</b> Chalana Arroy</i></p><p>Summons a healing spirit with POW depending on its size:</p><ul><li>Small (1 pt.): 3D6 POW/magic points</li><li>Medium (2 pts.): 3D6+6 POW/magic points</li><li>Large (3 pts.): 4D6+6 POW/magic points</li></ul><p>Spirit can heal 1 hit point per magic point for one person per 24 hours, taking one hour to heal them.</p>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Chalana Arroy</i></p><p>Summons a healing spirit with POW depending on its size:</p><ul><li>Small (1 pt.): 3D6 POW/magic points</li><li>Medium (2 pts.): 3D6+6 POW/magic points</li><li>Large (3 pts.): 4D6+6 POW/magic points</li></ul><p>Spirit can heal 1 hit point per magic point for one person per 24 hours, taking one hour to heal them.</p>"
       },
       "sunbright": {
         "name": "Sunbright",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> Yelmalio</i></p><p>Creates a 60-meter radius circle of light around the target. If unwilling, target’s POW must be defeated in a resistance roll. Has the effect of full daylight, affecting cave trolls and Demoralizing trollkin, vampires, ghouls, and undead as per the Demoralize spell. Serves as a Shimmer 2 spell. Darkness elementals suffer 1D3 damage per round from this spell. If cast directly on one and defeating its POW in a resistance roll, the elemental is banished.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Yelmalio</i></p><p>Creates a 60-meter radius circle of light around the target. If unwilling, target’s POW must be defeated in a resistance roll. Has the effect of full daylight, affecting cave trolls and Demoralizing trollkin, vampires, ghouls, and undead as per the Demoralize spell. Serves as a Shimmer 2 spell. Darkness elementals suffer 1D3 damage per round from this spell. If cast directly on one and defeating its POW in a resistance roll, the elemental is banished.</p>"
       },
       "sureshot": {
         "name": "Sureshot",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Foundchild, Yelm</i></p><p>Cast upon a missile weapon. If successful, the next attack within range always hits unless a 96–00 is rolled for the attack. Special and critical successes are as per the attacker’s skill. Attacks made with this spell do not count for experience, and the spell cannot be combined with Speedart or Firearrow. If it is used with Multimissile, Sureshot only affects the first/original missile.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Foundchild, Yelm</i></p><p>Cast upon a missile weapon. If successful, the next attack within range always hits unless a 96–00 is rolled for the attack. Special and critical successes are as per the attacker’s skill. Attacks made with this spell do not count for experience, and the spell cannot be combined with Speedart or Firearrow. If it is used with Multimissile, Sureshot only affects the first/original missile.</p>"
       },
       "swordTrance": {
         "name": "Sword Trance",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Self<br><b>Cults:</b> Humakt</i></p><p>Each magic point spent with this spell increases one of the caster’s Sword skills by +10%. This can be combined with other weapon-enhancing spells, but not Berserker or Fanaticism. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using a sword in combat, the spell’s effect ends.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Self<br><b>Cults:</b> Humakt</i></p><p>Each magic point spent with this spell increases one of the caster’s Sword skills by +10%. This can be combined with other weapon-enhancing spells, but not Berserker or Fanaticism. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using a sword in combat, the spell’s effect ends.</p>"
       },
       "teleportation": {
         "name": "Teleportation",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 3+<br><b>Type:</b> Self or Touch, Instant<br><b>Cults:</b> Orlanth Adventurous</i></p><p>The caster can teleport to visible spot, either with their eyes or through the eyes of an allied spirit. Each additional Rune point enables one extra living thing to be teleported at the same time, provided they are touching the caster. Unwilling targets must be defeated in a POW resistance roll.</p>"
+        "description": "<p><i><b>Cost:</b> 3+<br><b>Type:</b> Self or Touch, Instant<br><b>Cults:</b> Orlanth Adventurous</i></p><p>The caster can teleport to visible spot, either with their eyes or through the eyes of an allied spirit. Each additional Rune point enables one extra living thing to be teleported at the same time, provided they are touching the caster. Unwilling targets must be defeated in a POW resistance roll.</p>"
       },
       "translate": {
         "name": "Translate",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Lhankor Mhy</i></p><p>Translates all words touched by the user’s index finger at normal reading speed, leaving an impression of the meaning afterwards. Does not translate languages the reader does not know.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Lhankor Mhy</i></p><p>Translates all words touched by the user’s index finger at normal reading speed, leaving an impression of the meaning afterwards. Does not translate languages the reader does not know.</p>"
       },
       "truespeak": {
         "name": "Truespeak",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Target can only speak truth, answering all questions and in a literal manner. Caster must overcome target’s POW with each question or target may speak freely. Target may remain quiet.</p>"
+        "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Target can only speak truth, answering all questions and in a literal manner. Caster must overcome target’s POW with each question or target may speak freely. Target may remain quiet.</p>"
       },
       "trueSword": {
         "name": "True Sword",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Humakt</i></p><p>Doubles the damage of the weapon it is cast upon (usually a sword) by rolling twice and combining totals. The wielder’s damage modifier is not doubled.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Humakt</i></p><p>Doubles the damage of the weapon it is cast upon (usually a sword) by rolling twice and combining totals. The wielder’s damage modifier is not doubled.</p>"
       },
       "turnUndead": {
         "name": "Turn Undead",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Humakt</i></p><p>Affects one undead per point. Roll the caster’s POW vs. the target’s magic points:</p><ul><li><b>Critical:</b> Undead destroyed, released, or otherwise ended.</li><li><b>Special:</b> Undead paralyzed for 20 melee rounds minus INT (minimum 1, skeletons inactive for 20 rounds).</li><li><b>Success:</b> Undead flees, if possible. If not, see <b>Special</b>.</li><li><b>Failure:</b> The undead is Befuddled.</li><li><b>Fumble:</b> No effect.</li></ul>"
+        "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Humakt</i></p><p>Affects one undead per point. Roll the caster’s POW vs. the target’s magic points:</p><ul><li><b>Critical:</b> Undead destroyed, released, or otherwise ended.</li><li><b>Special:</b> Undead paralyzed for 20 melee rounds minus INT (minimum 1, skeletons inactive for 20 rounds).</li><li><b>Success:</b> Undead flees, if possible. If not, see <b>Special</b>.</li><li><b>Failure:</b> The undead is Befuddled.</li><li><b>Fumble:</b> No effect.</li></ul>"
       },
       "warding": {
         "name": "Warding",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>This ritual creates an area of safety for those inside. Four wands arranged in a rough rectangle define the area’s boundary. These can be made of any material and must be placed to enclose a maximum area of up to 100 square meters (typically 10×10 meters). The spell extends into the air for three meters above the wands, and underground to the depth of the wands. The stakes need not be visible to work; some casters bury them completely.</p><p>The spell connects these wands invisibly to form a barrier detectable only by magical means. The protection effects activate when physical or spirit enemies of the caster cross the barrier, or when a spell is cast across the barrier from the outside. When this happens, a loud noise (a keening, whistling, booming, etc.) begins, which can be suppressed by the casting priest.</p><p>Each point of Warding (up to 4) counts as 1 point of Countermagic against spells cast across the barrier, 2 points of spirit armor against outside spirits, and does 1D3 damage, ignoring armor, to one hit location of any corporeal enemy unwise enough to cross the boundary.</p><p>Each stacked point of Warding increases the area protected by another 100 square meters.</p><p>The Warding spell remains in effect until one of the wands is removed. Anyone but the caster that attempts to touch the stakes is affected by the Warding, but after suffering the effect, the person can then remove the stakes.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>This ritual creates an area of safety for those inside. Four wands arranged in a rough rectangle define the area’s boundary. These can be made of any material and must be placed to enclose a maximum area of up to 100 square meters (typically 10×10 meters). The spell extends into the air for three meters above the wands, and underground to the depth of the wands. The stakes need not be visible to work; some casters bury them completely.</p><p>The spell connects these wands invisibly to form a barrier detectable only by magical means. The protection effects activate when physical or spirit enemies of the caster cross the barrier, or when a spell is cast across the barrier from the outside. When this happens, a loud noise (a keening, whistling, booming, etc.) begins, which can be suppressed by the casting priest.</p><p>Each point of Warding (up to 4) counts as 1 point of Countermagic against spells cast across the barrier, 2 points of spirit armor against outside spirits, and does 1D3 damage, ignoring armor, to one hit location of any corporeal enemy unwise enough to cross the boundary.</p><p>Each stacked point of Warding increases the area protected by another 100 square meters.</p><p>The Warding spell remains in effect until one of the wands is removed. Anyone but the caster that attempts to touch the stakes is affected by the Warding, but after suffering the effect, the person can then remove the stakes.</p>"
       },
       "windWords": {
         "name": "Wind Words",
-        "description": "<h3>Rune Magic</h3><p><i><b>Cost:</b> 1<br><b>Cults:</b> Lhankor Mhy, Orlanth Adventurous</i></p><p>Causes the wind to bring conversations to the caster’s ears, as if standing next to the speaker.</p>"
+        "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Lhankor Mhy, Orlanth Adventurous</i></p><p>Causes the wind to bring conversations to the caster’s ears, as if standing next to the speaker.</p>"
       }
     },
     "runeType": {
-      "condition" : "condition",
-      "element" : "element",
-      "form" : "form",
-      "power" : "power",
-      "technique" : "technique"
+      "condition": "condition",
+      "element": "element",
+      "form": "form",
+      "power": "power",
+      "technique": "technique"
     },
     "spiritMagic": {
       "befuddle": {
         "name": "Befuddle",
         "description": "<p>Target is confused and can only defend until directly attacked.</p>"
       },
-      "bladesharp" : {
+      "bladesharp": {
         "name": "Bladesharp",
         "description": "Adds +5% to hit and +1 damage per point to an edged weapon. Magic damage can harm magical creatures. Incompatible with Fireblade."
       },
-      "bludgeon" : {
+      "bludgeon": {
         "name": "Bludgeon",
         "description": "<p>Adds +5% to hit and +1 damage per point to a blunt weapon. Magic damage can harm magical creatures.</p>"
       },
-      "coordination" : {
+      "coordination": {
         "name": "Coordination",
         "description": "<p>Increases target’s DEX by +3, modifying strike ranks by –1 and adding +5% to all Agility, Manipulation, Stealth, and Weapon category skills.</p>"
       },
-      "countermagic" : {
+      "countermagic": {
         "name": "Countermagic",
         "description": "<p>Blocks 1 point of spirit magic for every point of Countermagic or 1 point of Rune magic per every 2 points of Countermagic.</p>"
       },
-      "demoralize" : {
+      "demoralize": {
         "name": "Demoralize",
         "description": "<p>Target will try to retreat if possible; if not, target attacks at half chance.</p>"
       },
-      "detectEnemies" : {
+      "detectEnemies": {
         "name": "Detect Enemies",
         "description": "<p>This spell gives the approximate direction and distance from the caster of any being intending to harm them, or it detects and locates a specific individual on whom the caster concentrates. The effects of the spell cannot be resisted.</p><p>The sensing effect is stopped by one or more meters of a dense substance such as stone, metal, or earth.</p>"
       },
-      "detectSubstance" : {
+      "detectSubstance": {
         "name": "Detect (substance)",
         "description": "<p>Represents many spells. Points to the closest thing of the specific type, causing it to glow brightly to everyone, unless blocked by 1 meter of dirt, stone, metal, etc.</p>"
       },
-      "detectUndead" : {
+      "detectUndead": {
         "name": "Detect Undead",
         "description": "<p>Detects the existence of undead creatures such as zombies, mummies, and vampires, and gives the direction and distance from the caster. The spell discerns between undead of human size (SIZ 3–21), and those of large size (SIZ 22+). Undead creatures of SIZ 2 or smaller do not register. It does not tell what type of undead is being detected.</p><p>The sensing effect is stopped by one or more meters of a dense substance such as stone, metal, or earth.</p>"
       },
-      "dispelMagic" : {
+      "dispelMagic": {
         "name": "Dispel Magic",
         "description": "<p>Cancels 1 point of spirit magic per point of Dispel Magic or 1 point of Rune magic per every 2 points of Dispel Magic.</p>"
       },
-      "disruption" : {
+      "disruption": {
         "name": "Disruption",
         "description": "<p>If target’s POW is overcome, does 1D3 damage to a random hit location, no armor protection.</p>"
       },
-      "distraction" : {
+      "distraction": {
         "name": "Distraction",
         "description": "<p>Forces targeted spirit to attack the caster instead of anyone else.</p>"
       },
-      "dullblade" : {
+      "dullblade": {
         "name": "Dullblade",
         "description": "<p>Each magic point spent reduces any weapon’s damage by 1 point and modifies its attack chance by –5%. It has no effect on natural weapons. If used against a weapon with a spirit, the caster must overcome the spirit’s magic points in a resistance roll.</p>"
       },
-      "extinguish" : {
+      "extinguish": {
         "name": "Extinguish",
         "description": "<p>Puts out a fire. 1 point extinguishes a torch or lantern, 2 a small campfire, 3 a large campfire, etc.</p>"
       },
-      "fanaticism" : {
+      "fanaticism": {
         "name": "Fanaticism",
         "description": "<p>Target increases their chance to hit by half again but cannot parry. Dodge is halved.</p>"
       },
-      "farsee" : {
+      "farsee": {
         "name": "Farsee",
         "description": "<p>Each magic point halves the apparent distance as seen by the caster to the rest of the universe.</p>"
       },
-      "firearrow" : {
+      "firearrow": {
         "name": "Firearrow",
         "description": "<p>Cast upon a missile (arrow, stone, etc.) that does 3D6 damage (instead of the weapon’s actual damage) plus ½ damage bonus. Cannot impale, and the missile is consumed by the fire. Armor offers protection, but it can ignite flammable material. Incompatible with Multimissile and Speedart.</p>"
       },
-      "fireblade" : {
+      "fireblade": {
         "name": "Fireblade",
         "description": "<p>Cast on an edged weapon or spear, does 3D6 damage (instead of the weapon’s actual damage) plus damage bonus. Magic resistance does not work against it. The weapon is unharmed. Incompatible with Bladesharp.</p>"
       },
-      "forget" : {
+      "forget": {
         "name": "Forget",
         "description": "<p>Causes the subject to forget what happened ten rounds before and after the casting. Takes effect five minutes after the spell is cast.</p>"
       },
-      "glamour" : {
+      "glamour": {
         "name": "Glamour",
         "description": "<p>Increases CHA by +8. Increases spirit combat damage by one step, increases all Communication and Magic category skills by +10%.</p>"
       },
-      "glue" : {
+      "glue": {
         "name": "Glue",
         "description": "<p>Creates a small glob of magical glue, STR equal to the magic points spent ×10. Can be broken with a successful resistance roll. Does not work on living organic matteRanged (50m), and objects glued must be at rest.</p>"
       },
-      "heal" : {
+      "heal": {
         "name": "Heal",
         "description": "<p>Each magic point heals 1 hit point in a designated hit location. Can be used multiple times.</p>"
       },
-      "ignite" : {
+      "ignite": {
         "name": "Ignite",
         "description": "<p>This spell ignites anything normally flammable. It creates a small fire that can set such things alight such as a torch, a thatched roof, or a dry backpack. Skin cannot be ignited. Hair or fur can be, but only if the caster overcomes the target’s POW.</p>"
       },
-      "lantern" : {
+      "lantern": {
         "name": "Lantern",
         "description": "<p>Cast on a flat surface, creates a 12-meter glowing radius.</p>"
       },
-      "light" : {
+      "light": {
         "name": "Light",
         "description": "<p>Cast on an object, lights everything within a 10-meter radius.</p>"
       },
-      "mobility" : {
+      "mobility": {
         "name": "Mobility",
         "description": "<p>Doubles the Movement speed of the target and modifies their strike rank by –1.</p>"
       },
-      "multimissile" : {
+      "multimissile": {
         "name": "Multimissile",
         "description": "<p>Each point cast creates a magical duplicate of an original missile. Roll attacks separately. The first is the original. Any later missiles cannot impale but can do critical damage. Can be cast upon a missile and does not activate until fired within the duration. Incompatible with Speedart and Firearrow.</p>"
       },
-      "protection" : {
+      "protection": {
         "name": "Protection",
         "description": "<p>Each magic point acts as 1 armor point to the whole body.</p>"
       },
-      "repair" : {
+      "repair": {
         "name": "Repair",
         "description": "<p>Repairs broken objects, each point restoring 1D10 hit points if applicable, if all pieces are present. Item shows a seam and is reduced by 1 hit point permanently.</p>"
       },
-      "secondSight" : {
+      "secondSight": {
         "name": "Second Sight",
         "description": "<p>Allows the target to view the POW aura of living beings and spirits and gauge their relative strength.</p>"
       },
-      "shimmer" : {
+      "shimmer": {
         "name": "Shimmer",
         "description": "<p>Blurs the air around the target, making them harder to hit. Reduces attacks against them by –5% per point. Incompatible with Countermagic, Protection, and Spirit Screen.</p>"
       },
-      "silence" : {
+      "silence": {
         "name": "Silence",
         "description": "<p>Quiets inadvertent noise made by the target such as by movement, breathing, etc. Does not quiet intentional noise (speaking, casting a spell, attacking, etc.). If used for stealth, a Move Quietly roll is still required, and a fumble indicates target makes noise.</p>"
       },
-      "sleep" : {
+      "sleep": {
         "name": "Sleep",
         "description": "<p>If the caster can overcome the target’s POW, target falls asleep for the spell’s duration, not awakening unless attacked or otherwise strongly disturbed. Only known to Chalana Arroy.</p>"
       },
-      "slow" : {
+      "slow": {
         "name": "Slow",
         "description": "<p>Halves the target’s move rate and adds +1 to their strike rank.</p>"
       },
-      "speedart" : {
+      "speedart": {
         "name": "Speedart",
         "description": "<p>When cast on a missile weapon, adds +15% to its attack chance and +3 damage when next used (within duration). Magic damage can harm magical creatures.</p>"
       },
-      "spiritBinding" : {
+      "spiritBinding": {
         "name": "Spirit Binding",
         "description": "<p>Binds a spirit into a familiar or inanimate object permanently or until the binder’s death. Binding into an object requires a magical ritual called a Binding Enchantment, and a living animal must have been bred for the purpose. No cults teach this spell, only shamans do so.</p>"
       },
-      "spiritScreen" : {
+      "spiritScreen": {
         "name": "Spirit Screen",
         "description": "<p>Each magic point absorbs 1 point of spiritual damage in spirit combat.</p>"
       },
-      "strength" : {
+      "strength": {
         "name": "Strength",
         "description": "<p>Increases target’s STR by +8, raising damage bonus by one step (0 to 1D4, 1D4 to 1D6, 1D6 to 2D6) and increasing Agility and Manipulation category skills by +10%. Incompatible with Vigor.</p>"
       },
-      "vigor" : {
+      "vigor": {
         "name": "Vigor",
         "description": "<p>Adds +3 to target’s CON, increasing hit points by +3 and hit points per location by +1. Incompatible with Strength.</p>"
       },
@@ -2164,7 +2164,7 @@
       },
       "hide": {
         "skillName": "Hide",
-        "description" : "<p>Using available cover, including shadows, misty areas, etc., to hide from others. Hide is opposed by Scan.</p>"
+        "description": "<p>Using available cover, including shadows, misty areas, etc., to hide from others. Hide is opposed by Scan.</p>"
       },
       "homelandLore": {
         "skillName": "Homeland Lore",
@@ -2237,11 +2237,11 @@
         "skillName": "Plant Lore",
         "description": "<p>Identifying and using plants for medicinal and other purposes.</p>"
       },
-      "playInstrument" : {
+      "playInstrument": {
         "skillName": "Play Instrument",
         "description": "<p>Being able to play a musical instrument, whether in a performance or for one’s own pleasure. Also includes general maintenance and a repertoire of suitable music.</p>"
       },
-      "prepareCorpse" : {
+      "prepareCorpse": {
         "skillName": "Prepare Corpse",
         "description": "<p>Properly laying out a corpse, preparing it for the final rites and knowing traditional death rituals or spells.</p>"
       },
@@ -2368,7 +2368,7 @@
       },
       "stealth": {
         "name": "Stealth",
-        "description" : "<h3>Stealth Skills</h3><p>Adventurers use Stealth skills to conceal themselves from hostile eyes. The aura of a high POW (which draws attention) is not helpful in such situations; small SIZ and good DEX and INT enhance the skills.</p>"
+        "description": "<h3>Stealth Skills</h3><p>Adventurers use Stealth skills to conceal themselves from hostile eyes. The aura of a high POW (which draws attention) is not helpful in such situations; small SIZ and good DEX and INT enhance the skills.</p>"
       },
       "weapon": {
         "name": "Weapon",
@@ -2381,7 +2381,7 @@
         "specialization": {
           "smallAxe": "Small Axe",
           "battleAxe": "Battle Axe",
-          "offhand"  : "Offhand"
+          "offhand": "Offhand"
         }
       },
       "1h-dagger": {
@@ -2389,14 +2389,14 @@
         "specialization": {
           "dagger": "Dagger",
           "sickle": "Sickle",
-          "offhand"  : "Offhand"
+          "offhand": "Offhand"
         }
       },
       "1h-hammer": {
         "name": "1H Hammer",
         "specialization": {
           "warHammer": "War Hammer",
-          "offhand"  : "Offhand"
+          "offhand": "Offhand"
         }
       },
       "1h-mace": {
@@ -2406,7 +2406,7 @@
           "heavyMace": "Heavy Mace",
           "lightMace": "Light Mace",
           "singlestick": "Singlestick",
-          "offhand"  : "Offhand"
+          "offhand": "Offhand"
         }
       },
       "1h-spear": {
@@ -2415,7 +2415,7 @@
           "javelin": "Javelin",
           "lance": "Lance",
           "shortspear": "Shortspear",
-          "offhand"  : "Offhand"
+          "offhand": "Offhand"
         }
       },
       "1h-sword": {
@@ -2425,7 +2425,7 @@
           "kopis": "Kopis",
           "rapier": "Rapier",
           "shortsword": "Shortsword",
-          "offhand"  : "Offhand"
+          "offhand": "Offhand"
         }
       },
       "2h-axe": {
@@ -2488,7 +2488,7 @@
           "claw": "Claw",
           "fist": "Fist",
           "heavyCestus": "Heavy Cestus",
-          "lightCestus"  : "Light Cestus"
+          "lightCestus": "Light Cestus"
         }
       },
       "gore": {
@@ -2561,6 +2561,4 @@
       }
     }
   }
-
-
 }

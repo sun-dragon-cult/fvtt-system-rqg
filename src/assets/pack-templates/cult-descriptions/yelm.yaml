@@ -1,14 +1,23 @@
 # yelm
 name: ${{openSystem.content.cult.yelm.name}}$
-img: systems/rqg/assets/images/items/cult.svg
-content: >
-  ${{openSystem.content.journalEntryType.cultDescription.title}}$
-  ${{openSystem.content.cult.yelm.tagline}}$</h2>
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fire_sky.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fire_sky.svg" height="70">
-  <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/harmony.svg" height="70">
-  ${{openSystem.content.cult.yelm.descriptionHtml}}$
+pages:
+  - name: ${{openSystem.content.cult.yelm.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.cultDescription.title}}$
+        ${{openSystem.content.cult.yelm.tagline}}$</h2>
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fire_sky.svg" height="70">
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fire_sky.svg" height="70">
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/harmony.svg" height="70">
+        ${{openSystem.content.cult.yelm.descriptionHtml}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

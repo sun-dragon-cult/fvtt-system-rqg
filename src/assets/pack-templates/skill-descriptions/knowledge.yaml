@@ -1,9 +1,21 @@
 # alchemy
 name: ${{openSystem.content.skill.alchemy.skillName}}$
-img: systems/rqg/assets/images/skills/alchemy.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.alchemy.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.alchemy.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/alchemy.svg" height="70">
+        ${{openSystem.content.skill.alchemy.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +25,22 @@ flags:
 ---
 # animal lore
 name: ${{openSystem.content.skill.animalLore.skillName}}$
-img: systems/rqg/assets/images/skills/animal-lore.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.animalLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.animalLore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/animal-lore.svg" height="70">
+        ${{openSystem.content.skill.animalLore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -26,10 +50,22 @@ flags:
 ---
 # battle
 name: ${{openSystem.content.skill.battle.skillName}}$
-img: systems/rqg/assets/images/skills/battle.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.battle.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.battle.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/battle.svg" height="70">
+        ${{openSystem.content.skill.battle.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -39,10 +75,22 @@ flags:
 ---
 # bureaucracy
 name: ${{openSystem.content.skill.bureaucracy.skillName}}$
-img: systems/rqg/assets/images/skills/bureaucracy.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.bureaucracy.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.bureaucracy.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/bureaucracy.svg" height="70">
+        ${{openSystem.content.skill.bureaucracy.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -52,10 +100,22 @@ flags:
 ---
 # celestial-lore
 name: ${{openSystem.content.skill.celestialLore.skillName}}$
-img: systems/rqg/assets/images/skills/celestial-lore.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.celestialLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.celestialLore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/celestial-lore.svg" height="70">
+        ${{openSystem.content.skill.celestialLore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -65,10 +125,22 @@ flags:
 ---
 # cult-lore
 name: ${{openSystem.content.skill.cultLore.skillName}}$
-img: systems/rqg/assets/images/passion/devotion.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.cultLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.cultLore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/passion/devotion.svg" height="70">
+        ${{openSystem.content.skill.cultLore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -78,10 +150,22 @@ flags:
 ---
 # customs
 name: ${{openSystem.content.skill.customs.skillName}}$
-img: systems/rqg/assets/images/skills/customs.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.customs.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.customs.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/customs.svg" height="70">
+        ${{openSystem.content.skill.customs.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -91,10 +175,22 @@ flags:
 ---
 # elder-race-lore
 name: ${{openSystem.content.skill.elderRaceLore.skillName}}$
-img: systems/rqg/assets/images/skills/elder-race-lore.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.elderRaceLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.elderRaceLore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/elder-race-lore.svg" height="70">
+        ${{openSystem.content.skill.elderRaceLore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -104,10 +200,22 @@ flags:
 ---
 # evaluate
 name: ${{openSystem.content.skill.evaluate.skillName}}$
-img: systems/rqg/assets/images/skills/evaluate.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.evaluate.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.evaluate.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/evaluate.svg" height="70">
+        ${{openSystem.content.skill.evaluate.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -117,10 +225,22 @@ flags:
 ---
 # farm
 name: ${{openSystem.content.skill.farm.skillName}}$
-img: systems/rqg/assets/images/skills/farm.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.farm.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.farm.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/farm.svg" height="70">
+        ${{openSystem.content.skill.farm.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -130,10 +250,22 @@ flags:
 ---
 # first-aid
 name: ${{openSystem.content.skill.firstAid.skillName}}$
-img: systems/rqg/assets/images/skills/first-aid.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.firstAid.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.firstAid.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/first-aid.svg" height="70">
+        ${{openSystem.content.skill.firstAid.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -143,10 +275,22 @@ flags:
 ---
 # game
 name: ${{openSystem.content.skill.game.skillName}}$
-img: systems/rqg/assets/images/skills/game.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.game.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.game.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/game.svg" height="70">
+        ${{openSystem.content.skill.game.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -156,10 +300,22 @@ flags:
 ---
 # herd
 name: ${{openSystem.content.skill.herd.skillName}}$
-img: systems/rqg/assets/images/skills/herd.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.herd.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.herd.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/herd.svg" height="70">
+        ${{openSystem.content.skill.herd.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -169,10 +325,22 @@ flags:
 ---
 # homeland-lore
 name: ${{openSystem.content.skill.homelandLore.skillName}}$
-img: systems/rqg/assets/images/skills/homeland-lore.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.homelandLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.homelandLore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/homeland-lore.svg" height="70">
+        ${{openSystem.content.skill.homelandLore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -182,10 +350,22 @@ flags:
 ---
 # library-use
 name: ${{openSystem.content.skill.libraryUse.skillName}}$
-img: systems/rqg/assets/images/skills/library-use.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.libraryUse.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.libraryUse.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/library-use.svg" height="70">
+        ${{openSystem.content.skill.libraryUse.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -195,10 +375,22 @@ flags:
 ---
 # lore
 name: ${{openSystem.content.skill.lore.skillName}}$
-img: systems/rqg/assets/images/skills/lore.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.lore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.lore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/lore.svg" height="70">
+        ${{openSystem.content.skill.lore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -208,10 +400,22 @@ flags:
 ---
 # manage-household
 name: ${{openSystem.content.skill.manageHousehold.skillName}}$
-img: systems/rqg/assets/images/skills/manage-household.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.manageHousehold.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.manageHousehold.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/manage-household.svg" height="70">
+        ${{openSystem.content.skill.manageHousehold.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -221,10 +425,22 @@ flags:
 ---
 # mineral-lore
 name: ${{openSystem.content.skill.mineralLore.skillName}}$
-img: systems/rqg/assets/images/skills/mineral-lore.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.mineralLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.mineralLore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/mineral-lore.svg" height="70">
+        ${{openSystem.content.skill.mineralLore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -234,10 +450,22 @@ flags:
 ---
 # peaceful-cut
 name: ${{openSystem.content.skill.peacefulCut.skillName}}$
-img: systems/rqg/assets/images/skills/peaceful-cut.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.peacefulCut.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.peacefulCut.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/peaceful-cut.svg" height="70">
+        ${{openSystem.content.skill.peacefulCut.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -247,10 +475,22 @@ flags:
 ---
 # plant-lore
 name: ${{openSystem.content.skill.plantLore.skillName}}$
-img: systems/rqg/assets/images/skills/plant-lore.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.plantLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.plantLore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/plant-lore.svg" height="70">
+        ${{openSystem.content.skill.plantLore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -260,10 +500,22 @@ flags:
 ---
 # read-write
 name: ${{openSystem.content.skill.readWrite.skillName}}$
-img: systems/rqg/assets/images/skills/read-write.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.readWrite.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.readWrite.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/read-write.svg" height="70">
+        ${{openSystem.content.skill.readWrite.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -273,10 +525,22 @@ flags:
 ---
 # shiphandling
 name: ${{openSystem.content.skill.shiphandling.skillName}}$
-img: systems/rqg/assets/images/skills/shiphandling.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.shiphandling.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.shiphandling.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/shiphandling.svg" height="70">
+        ${{openSystem.content.skill.shiphandling.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -286,10 +550,22 @@ flags:
 ---
 # survival
 name: ${{openSystem.content.skill.survival.skillName}}$
-img: systems/rqg/assets/images/skills/survival.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.survival.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.survival.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/survival.svg" height="70">
+        ${{openSystem.content.skill.survival.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -299,10 +575,22 @@ flags:
 ---
 # treat-disease
 name: ${{openSystem.content.skill.treatDisease.skillName}}$
-img: systems/rqg/assets/images/skills/treat-disease.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.treatDisease.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.treatDisease.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/treat-disease.svg" height="70">
+        ${{openSystem.content.skill.treatDisease.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -312,10 +600,22 @@ flags:
 ---
 # treat-poison
 name: ${{openSystem.content.skill.treatPoison.skillName}}$
-img: systems/rqg/assets/images/skills/treat-poison.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.treatPoison.description}}$<hr><blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.treatPoison.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/treat-poison.svg" height="70">
+        ${{openSystem.content.skill.treatPoison.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

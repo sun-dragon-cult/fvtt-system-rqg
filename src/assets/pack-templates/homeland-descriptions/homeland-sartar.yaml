@@ -1,8 +1,18 @@
 name: 'Homeland: Sartar'
-content: >
-  <h2>Homeland: Sartar</h2>
-  <p>Sartar is the default homeland for adventurers, a mountainous kingdom made up of Storm-worshiping hill tribes united by the royal house of Sartar. Sartar recently liberated itself from the Lunar Empire, and in doing so began the Hero Wars. It is ruled by Kallyr Starbrow, and is a hotbed of magical questing, petty feuds, and would-be Heroes.</p>
-  <p>Others consider Sartarites to be quarrelsome, reckless, and fiercely independent. Most are devoted to Orlanth and Ernalda and hate the Lunar Empire with a burning passion.</p>
+pages:
+  - name: 'Homeland: Sartar'
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        <h2>Homeland: Sartar</h2>
+        <p>Sartar is the default homeland for adventurers, a mountainous kingdom made up of Storm-worshiping hill tribes united by the royal house of Sartar. Sartar recently liberated itself from the Lunar Empire, and in doing so began the Hero Wars. It is ruled by Kallyr Starbrow, and is a hotbed of magical questing, petty feuds, and would-be Heroes.</p>
+        <p>Others consider Sartarites to be quarrelsome, reckless, and fiercely independent. Most are devoted to Orlanth and Ernalda and hate the Lunar Empire with a burning passion.</p>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

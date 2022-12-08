@@ -1,9 +1,21 @@
 # boat
 name: ${{openSystem.content.skill.boat.skillName}}$
-img: systems/rqg/assets/images/skills/boat.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.boat.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.boat.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/boat.svg" height="70">
+        ${{openSystem.content.skill.boat.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +25,22 @@ flags:
 ---
 # climb
 name: ${{openSystem.content.skill.climb.skillName}}$
-img: systems/rqg/assets/images/skills/climb.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.climb.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.climb.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/climb.svg" height="70">
+        ${{openSystem.content.skill.climb.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -26,10 +50,22 @@ flags:
 ---
 # dodge
 name: ${{openSystem.content.skill.dodge.skillName}}$
-img: systems/rqg/assets/images/skills/dodge.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.dodge.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.dodge.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/dodge.svg" height="70">
+        ${{openSystem.content.skill.dodge.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -39,10 +75,22 @@ flags:
 ---
 # drive-chariot
 name: ${{openSystem.content.skill.driveChariot.skillName}}$
-img: systems/rqg/assets/images/skills/drive.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.driveChariot.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.driveChariot.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/drive.svg" height="70">
+        ${{openSystem.content.skill.driveChariot.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -52,10 +100,22 @@ flags:
 ---
 # jump
 name: ${{openSystem.content.skill.jump.skillName}}$
-img: systems/rqg/assets/images/skills/jump.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.jump.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.jump.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/jump.svg" height="70">
+        ${{openSystem.content.skill.jump.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -65,10 +125,22 @@ flags:
 ---
 # ride
 name: ${{openSystem.content.skill.ride.skillName}}$
-img: systems/rqg/assets/images/skills/ride.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.ride.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.ride.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/ride.svg" height="70">
+        ${{openSystem.content.skill.ride.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -78,10 +150,22 @@ flags:
 ---
 # swim
 name: ${{openSystem.content.skill.swim.skillName}}$
-img: systems/rqg/assets/images/skills/swim.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.swim.description}}$<hr><blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.swim.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/swim.svg" height="70">
+        ${{openSystem.content.skill.swim.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

@@ -1,9 +1,18 @@
 # dullblade
 name: ${{openSystem.content.spiritMagic.dullblade.name}}$
-img: systems/rqg/assets/images/items/spirit-magic.svg
-content: >
-  ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-  ${{openSystem.content.spiritMagic.dullblade.description}}$
+pages:
+  - name: ${{openSystem.content.spiritMagic.dullblade.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
+        ${{openSystem.content.spiritMagic.dullblade.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

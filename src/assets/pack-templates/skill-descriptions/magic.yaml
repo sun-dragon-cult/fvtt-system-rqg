@@ -1,9 +1,21 @@
 # meditate
 name: ${{openSystem.content.skill.meditate.skillName}}$
-img: systems/rqg/assets/images/skills/meditate.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.meditate.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.alchemy.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/meditate.svg" height="70">
+        ${{openSystem.content.skill.meditate.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +25,22 @@ flags:
 ---
 # prepare-corpse
 name: ${{openSystem.content.skill.prepareCorpse.skillName}}$
-img: systems/rqg/assets/images/skills/prepare-corpse.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.prepareCorpse.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.prepareCorpse.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/prepare-corpse.svg" height="70">
+        ${{openSystem.content.skill.prepareCorpse.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -26,10 +50,22 @@ flags:
 ---
 # sense-assassin
 name: ${{openSystem.content.skill.senseAssassin.skillName}}$
-img: systems/rqg/assets/images/skills/sense-assassin.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.senseAssassin.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.senseAssassin.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/sense-assassin.svg" height="70">
+        ${{openSystem.content.skill.senseAssassin.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -39,10 +75,22 @@ flags:
 ---
 # sense-chaos
 name: ${{openSystem.content.skill.senseChaos.skillName}}$
-img: systems/rqg/assets/images/skills/sense-chaos.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.senseChaos.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.senseChaos.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/sense-chaos.svg" height="70">
+        ${{openSystem.content.skill.senseChaos.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -52,10 +100,22 @@ flags:
 ---
 # spirit-combat
 name: ${{openSystem.content.skill.spiritCombat.skillName}}$
-img: systems/rqg/assets/images/skills/spirit-combat.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.spiritCombat.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.spiritCombat.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/spirit-combat.svg" height="70">
+        ${{openSystem.content.skill.spiritCombat.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -65,10 +125,22 @@ flags:
 ---
 # spirit-dance
 name: ${{openSystem.content.skill.spiritDance.skillName}}$
-img: systems/rqg/assets/images/skills/spirit-dance.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.spiritDance.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.spiritDance.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/spirit-dance.svg" height="70">
+        ${{openSystem.content.skill.spiritDance.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -78,10 +150,22 @@ flags:
 ---
 # spirit-lore
 name: ${{openSystem.content.skill.spiritLore.skillName}}$
-img: systems/rqg/assets/images/skills/spirit-lore.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.spiritLore.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.spiritLore.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/spirit-lore.svg" height="70">
+        ${{openSystem.content.skill.spiritLore.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -91,10 +175,22 @@ flags:
 ---
 # spirit travel
 name: ${{openSystem.content.skill.spiritTravel.skillName}}$
-img: systems/rqg/assets/images/skills/spirit-travel.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.spiritTravel.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.spiritTravel.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/spirit-travel.svg" height="70">
+        ${{openSystem.content.skill.spiritTravel.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -104,10 +200,22 @@ flags:
 ---
 # understand-herd-beast
 name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
-img: systems/rqg/assets/images/skills/understand-herd-beast.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.understandHerdBeast.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/understand-herd-beast.svg" height="70">
+        ${{openSystem.content.skill.understandHerdBeast.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -117,10 +225,22 @@ flags:
 ---
 # worship
 name: ${{openSystem.content.skill.worship.skillName}}$
-img: systems/rqg/assets/images/skills/worship.svg
-content: >
-  ${{openSystem.content.journalEntryType.skillDescription.title}}$
-  ${{openSystem.content.skill.worship.description}}$<hr><blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+pages:
+  - name: ${{openSystem.content.skill.worship.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/worship.svg" height="70">
+        ${{openSystem.content.skill.worship.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.magic.description}}$</blockquote>
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

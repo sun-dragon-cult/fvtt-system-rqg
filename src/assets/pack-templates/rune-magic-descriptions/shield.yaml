@@ -1,9 +1,18 @@
 # shield
 name: ${{openSystem.content.runeMagic.shield.name}}$
-img: systems/rqg/assets/images/items/rune-magic.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
-  ${{openSystem.content.runeMagic.shield.description}}$
+pages:
+  - name: ${{openSystem.content.runeMagic.shield.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{openSystem.content.runeMagic.shield.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:

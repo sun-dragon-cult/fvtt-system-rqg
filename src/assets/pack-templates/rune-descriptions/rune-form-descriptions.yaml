@@ -1,9 +1,19 @@
 # beast
 name: ${{openSystem.content.runeDescription.beastForm.name}}$
-img: systems/rqg/assets/images/runes/beast.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/beast.svg" height="175"></p>${{openSystem.content.runeDescription.beastForm.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.beastForm.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/beast.svg" height="175">
+        ${{openSystem.content.runeDescription.beastForm.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -13,10 +23,20 @@ flags:
 ---
 # chaos
 name: ${{openSystem.content.runeDescription.chaosForm.name}}$
-img: systems/rqg/assets/images/runes/chaos.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/chaos.svg" height="175"></p>${{openSystem.content.runeDescription.chaosForm.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.chaosForm.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/chaos.svg" height="175">
+        ${{openSystem.content.runeDescription.chaosForm.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -26,10 +46,20 @@ flags:
 ---
 # dragonewt
 name: ${{openSystem.content.runeDescription.dragonewtForm.name}}$
-img: systems/rqg/assets/images/runes/dragonewt.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/dragonewt.svg" height="175"></p>${{openSystem.content.runeDescription.dragonewtForm.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.dragonewtForm.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/dragonewt.svg" height="175">
+        ${{openSystem.content.runeDescription.dragonewtForm.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -39,10 +69,20 @@ flags:
 ---
 # man
 name: ${{openSystem.content.runeDescription.manForm.name}}$
-img: systems/rqg/assets/images/runes/man.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/man.svg" height="175"></p>${{openSystem.content.runeDescription.manForm.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.manForm.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/man.svg" height="175">
+        ${{openSystem.content.runeDescription.manForm.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -52,10 +92,20 @@ flags:
 ---
 # plant
 name: ${{openSystem.content.runeDescription.plantForm.name}}$
-img: systems/rqg/assets/images/runes/plant.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/plant.svg" height="175"></p>${{openSystem.content.runeDescription.plantForm.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.plantForm.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/plant.svg" height="175">
+        ${{openSystem.content.runeDescription.plantForm.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
@@ -65,10 +115,20 @@ flags:
 ---
 # spirit
 name: ${{openSystem.content.runeDescription.spiritForm.name}}$
-img: systems/rqg/assets/images/runes/spirit.svg
-content: >
-  ${{openSystem.content.journalEntryType.runeDescription.title}}$
-  <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/spirit.svg" height="175"></p>${{openSystem.content.runeDescription.spiritForm.description}}$
+pages:
+  - name: ${{openSystem.content.runeDescription.spiritForm.name}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/spirit.svg" height="175">
+        ${{openSystem.content.runeDescription.spiritForm.description}}$
+    sort: 0
+    flags: {}
 flags:
   rqg:
     documentRqidFlags:
