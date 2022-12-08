@@ -302,8 +302,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     // Get the actor's versions of the runes, which will have their "chance"
     usableRuneNames.forEach((runeName: string) => {
       const actorRune = runeMagicItem.actor?.items.getName(runeName);
-      assertItemType(actorRune?.type, ItemTypeEnum.Rune);
-      runesForCasting.push(actorRune);
+      actorRune && runesForCasting.push(actorRune);
     });
 
     return runesForCasting;
