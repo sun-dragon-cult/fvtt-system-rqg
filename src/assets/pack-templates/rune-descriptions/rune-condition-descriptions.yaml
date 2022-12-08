@@ -10,7 +10,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fate.svg" height="175"></p>${{openSystem.content.runeDescription.fateCondition.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fate.svg" height="175">
+        ${{openSystem.content.runeDescription.fateCondition.description}}$
     sort: 0
     flags: {}
 flags:
@@ -32,7 +33,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/infinity.svg" height="175"></p>${{openSystem.content.runeDescription.infinityCondition.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/infinity.svg" height="175">
+        ${{openSystem.content.runeDescription.infinityCondition.description}}$
     sort: 0
     flags: {}
 flags:
@@ -54,7 +56,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/law.svg" height="175"></p>${{openSystem.content.runeDescription.lawCondition.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/law.svg" height="175">
+        ${{openSystem.content.runeDescription.lawCondition.description}}$
     sort: 0
     flags: {}
 flags:
@@ -76,7 +79,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/light.svg" height="175"></p>${{openSystem.content.runeDescription.lightCondition.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/light.svg" height="175">
+        ${{openSystem.content.runeDescription.lightCondition.description}}$
     sort: 0
     flags: {}
 flags:
@@ -98,7 +102,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/luck.svg" height="175"></p>${{openSystem.content.runeDescription.luckCondition.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/luck.svg" height="175">
+        ${{openSystem.content.runeDescription.luckCondition.description}}$
     sort: 0
     flags: {}
 flags:
@@ -119,8 +124,9 @@ pages:
     text:
       format: 1
       content: >
-       ${{openSystem.content.journalEntryType.runeDescription.title}}$
-      <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/magic.svg" height="175"></p>${{openSystem.content.runeDescription.magicCondition.description}}$
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/magic.svg" height="175">
+        ${{openSystem.content.runeDescription.magicCondition.description}}$
     sort: 0
     flags: {}
 flags:
@@ -141,8 +147,9 @@ pages:
     text:
       format: 1
       content: >
-       ${{openSystem.content.journalEntryType.runeDescription.title}}$
-      <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/mastery.svg" height="175"></p>${{openSystem.content.runeDescription.masteryCondition.description}}$
+        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/mastery.svg" height="175">
+        ${{openSystem.content.runeDescription.masteryCondition.description}}$
     sort: 0
     flags: {}
 flags:

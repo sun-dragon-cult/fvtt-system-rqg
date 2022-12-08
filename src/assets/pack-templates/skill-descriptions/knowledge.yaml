@@ -11,7 +11,7 @@ pages:
       content: >
         ${{openSystem.content.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/alchemy.svg" height="70">
-        ${{openSystem.content.skillCategory.alchemy.description}}$
+        ${{openSystem.content.skill.alchemy.description}}$
         <hr>
         <blockquote>${{openSystem.content.skillCategory.knowledge.description}}$</blockquote>
     sort: 0

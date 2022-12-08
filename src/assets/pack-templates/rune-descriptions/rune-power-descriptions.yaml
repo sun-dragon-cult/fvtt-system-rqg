@@ -10,7 +10,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/death.svg" height="175"></p>${{openSystem.content.runeDescription.deathPower.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/death.svg" height="175">
+        ${{openSystem.content.runeDescription.deathPower.description}}$
     sort: 0
     flags: {}
 flags:
@@ -32,7 +33,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/disorder.svg" height="175"></p>${{openSystem.content.runeDescription.disorderPower.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/disorder.svg" height="175">
+        ${{openSystem.content.runeDescription.disorderPower.description}}$
     sort: 0
     flags: {}
 flags:
@@ -54,7 +56,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fertility.svg" height="175"></p>${{openSystem.content.runeDescription.fertilityPower.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fertility.svg" height="175">
+        ${{openSystem.content.runeDescription.fertilityPower.description}}$
     sort: 0
     flags: {}
 flags:
@@ -76,7 +79,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/harmony.svg" height="175"></p>${{openSystem.content.runeDescription.harmonyPower.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/harmony.svg" height="175">
+        ${{openSystem.content.runeDescription.harmonyPower.description}}$
     sort: 0
     flags: {}
 flags:
@@ -98,7 +102,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/illusion.svg" height="175"></p>${{openSystem.content.runeDescription.illusionPower.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/illusion.svg" height="175">
+        ${{openSystem.content.runeDescription.illusionPower.description}}$
     sort: 0
     flags: {}
 flags:
@@ -120,7 +125,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/movement_change.svg" height="175"></p>${{openSystem.content.runeDescription.movementPower.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/movement_change.svg" height="175">
+        ${{openSystem.content.runeDescription.movementPower.description}}$
     sort: 0
     flags: {}
 flags:
@@ -142,7 +148,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/stasis.svg" height="175"></p>${{openSystem.content.runeDescription.stasisPower.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/stasis.svg" height="175">
+        ${{openSystem.content.runeDescription.stasisPower.description}}$
     sort: 0
     flags: {}
 flags:
@@ -164,7 +171,8 @@ pages:
       format: 1
       content: >
         ${{openSystem.content.journalEntryType.runeDescription.title}}$
-        <p><img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/truth.svg" height="175"></p>${{openSystem.content.runeDescription.truthPower.description}}$
+        <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/truth.svg" height="175">
+        ${{openSystem.content.runeDescription.truthPower.description}}$
     sort: 0
     flags: {}
 flags:
