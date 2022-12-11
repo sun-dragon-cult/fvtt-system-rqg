@@ -7,7 +7,7 @@ export class RqgPause extends Pause {
 
   static get defaultOptions(): Options {
     return mergeObject(super.defaultOptions, {
-      template: "systems/rqg/foundryUi/pause.hbs",
+      template: "systems/rqg/foundryUi/rqgPause.hbs",
     });
   }
 

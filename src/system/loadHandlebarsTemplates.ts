@@ -61,7 +61,7 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
 
     // Interface
-    "systems/rqg/foundryUi/pause.hbs",
+    "systems/rqg/foundryUi/rqgPause.hbs",
   ];
 
   return loadTemplates(templatePaths);

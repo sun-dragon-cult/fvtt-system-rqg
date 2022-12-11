@@ -10,13 +10,14 @@ import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/m
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
 import { cacheAvailableRunes, getGame } from "./system/util";
-import { RqgPause } from "./foundryUi/pause";
+import { RqgPause } from "./foundryUi/rqgPause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
 import { RqgJournalSheet } from "./journals/rqgJournalSheet";
 import { RqgRollTableConfig } from "./rollTables/rqgRollTableConfig";
 import { RqgCompendiumDirectory } from "./foundryUi/rqgCompendiumDirectory";
+import { RqgHotbar } from "./foundryUi/rqgHotbar";
 
 Hooks.once("init", async () => {
   console.log(
@@ -63,6 +64,7 @@ Hooks.once("init", async () => {
   RqgActor.init();
   RqgItem.init();
   RqgPause.init();
+  RqgHotbar.init();
   RqgCompendiumDirectory.init();
 
   // @ts-expect-error

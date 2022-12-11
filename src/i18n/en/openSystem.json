@@ -969,6 +969,15 @@
         }
       }
     },
+    "Hotbar": {
+      "MacroName": {
+        "ToChat": "Use {name}",
+        "ToChatEmbedded": "Use {name} ({actor})",
+        "RollTable": "Roll table {name}",
+        "ToggleSheet": "Display Sheet {name}",
+        "ToggleSheetEmbedded": "Display Sheet {name} ({actor})"
+      }
+    },
     "Foundry": {
       "ActiveEffect": {
         "Header": "🐛Active Effects🧪",
