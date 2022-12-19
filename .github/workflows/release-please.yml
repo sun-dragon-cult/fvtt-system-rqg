@@ -1,0 +1,64 @@
+name: Create PR or Build Release
+on:
+  push:
+    branches:
+      - master
+permissions: {}
+jobs:
+  maybe-release:
+    permissions:
+      contents: write
+      pull-requests: write
+
+    env:
+      manifest-file: system.json # Must match the manifest file name declared in Foundry
+      system-name: rqg # Must match the system / module name property in the manifest file
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release Please
+        id: release
+        uses: google-github-actions/release-please-action@v3
+        with:
+          command: manifest
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+
+      - name: Checkout repo
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v3
+
+      - name: Install Node
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          check-latest: true
+
+      - name: Init dependencies
+        if: ${{ steps.release.outputs.release_created }}
+        run: yarn install
+
+      - name: Build project
+        if: ${{ steps.release.outputs.release_created }}
+        run: yarn build
+
+      - name: Create Zip
+        if: ${{ steps.release.outputs.release_created }}
+        id: create_zip
+        run: |
+          mv dist /tmp/${{ env.system-name }}
+          cd /tmp/${{ env.system-name }}
+          zip -r ../${{ env.system-name }}.zip *
+          ls -al /tmp
+
+      - name: Add the manifest json file & zipped system/module to Release Assets
+        if: ${{ steps.release.outputs.release_created }}
+        uses: xresloader/upload-to-github-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "src/${{ env.manifest-file }};/tmp/${{ env.system-name }}.zip"
+          release_id: ${{ steps.release.outputs.id }}
+          overwrite: true
+          verbose: true

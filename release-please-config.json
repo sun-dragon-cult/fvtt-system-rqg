@@ -1,0 +1,24 @@
+{
+  "plugins": [],
+  "prerelease": true,
+  "bootstrap-sha": "b2d1dd481dbd5d860f7dab06cdfc8c7059ffe588",
+  "packages": {
+    ".": {
+      "releaseType": "node",
+      "pull-request-header": ":robot: Release candidate PR :rocket:",
+      "changelogPath": "CHANGELOG.md",
+      "versioning": "default",
+      "options": {
+
+      },
+      "extra-files": [
+        "src/system.json",
+        {
+          "type": "json",
+          "path": "src/system.json",
+          "jsonpath": "$.version"
+        }
+      ]
+    }
+  }
+}

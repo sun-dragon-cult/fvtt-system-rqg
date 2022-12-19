@@ -242,6 +242,7 @@
     "minimum": 9,
     "verified": 10
   },
+  "release-please-start": "x-release-please-start-version",
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
   "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v1.18.0/rqg.zip",
