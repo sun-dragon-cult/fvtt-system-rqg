@@ -117,7 +117,7 @@ export const skillMenuOptions = (
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
     }),
     icon: ContextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: (el: JQuery) => !!getRequiredDomDataset(el, "item-id"),
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
