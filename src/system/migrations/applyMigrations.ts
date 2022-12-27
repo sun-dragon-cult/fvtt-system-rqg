@@ -5,11 +5,7 @@ import {
   ActorDataConstructorData,
   ActorDataSource,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import {
-  ItemData,
-  SceneData,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-
+import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { systemId } from "../config";
 
@@ -64,8 +60,8 @@ async function migrateWorldActors(
         actor.toObject() as any,
         itemMigrations,
         actorMigrations
-      ); // TODO fix type
-      if (!foundry.utils.isObjectEmpty(updates)) {
+      ); // @ts-expect-error foundry.utils.isEmpty
+      if (!foundry.utils.isEmpty(updates)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updates);
         console.log(`RQG | Migrating Actor document ${actor.name}`, convertedUpdates);
         await actor.update(convertedUpdates, { enforceTypes: false });
@@ -98,8 +94,9 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
   const step = 100 / itemCount;
   for (let item of itemArray) {
     try {
-      const updateData = await migrateItemData(item.data, itemMigrations);
-      if (!foundry.utils.isObjectEmpty(updateData)) {
+      const updateData = await migrateItemData((item as any).toObject(), itemMigrations);
+      // @ts-expect-error foundry.utils.isEmpty
+      if (!foundry.utils.isEmpty(updateData)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
         console.log(`RQG | Migrating Item document ${item.name}`, convertedUpdates);
         await item.update(convertedUpdates, { enforceTypes: false });
@@ -135,8 +132,9 @@ async function migrateWorldScenes(
   const step = 100 / scenesCount;
   for (let scene of scenes) {
     try {
-      const updateData = await migrateSceneData(scene.data, itemMigrations, actorMigrations);
-      if (!foundry.utils.isObjectEmpty(updateData)) {
+      const updateData = await migrateSceneData(scene, itemMigrations, actorMigrations);
+      // @ts-expect-error foundry.utils.isEmpty
+      if (!foundry.utils.isEmpty(updateData)) {
         const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
         console.log(`RQG | Migrating Scene document ${scene.name}`, convertedUpdates);
         await scene.update(convertedUpdates, { enforceTypes: false });
@@ -229,7 +227,7 @@ async function migrateCompendium(
           updateData = await migrateItemData(doc.toObject(), itemMigrations);
           break;
         case "Scene":
-          updateData = await migrateSceneData(doc.data, itemMigrations, actorMigrations);
+          updateData = await migrateSceneData(doc as Scene, itemMigrations, actorMigrations);
           break;
       }
 
@@ -241,7 +239,8 @@ async function migrateCompendium(
       }
 
       // Save the entry, if data was changed
-      if (foundry.utils.isObjectEmpty(updateData)) {
+      // @ts-expect-error
+      if (foundry.utils.isEmpty(updateData)) {
         continue;
       }
       const convertedUpdates = convertDeleteKeyToFoundrySyntax(updateData);
@@ -279,10 +278,11 @@ async function migrateActorData(
     let hasItemUpdates = false;
     const items = await Promise.all(
       actorData.items.map(async (item: any) => {
-        let itemUpdate = await migrateItemData(item, itemMigrations, actorData); // TODO item is mistyped?? ItemDataSource or ItemData?
+        let itemUpdate = await migrateItemData(item, itemMigrations, actorData); // TODO item is already item.toObject()
 
         // Update the Owned Item
-        if (!isObjectEmpty(itemUpdate)) {
+        // @ts-expect-error foundry.util.isEmpty
+        if (!foundry.utils.isEmpty(itemUpdate)) {
           hasItemUpdates = true;
           return mergeObject(item, itemUpdate, { enforceTypes: false, inplace: false });
         } else {
@@ -313,7 +313,7 @@ function getActiveEffectsToDelete(actorData: Partial<ActorDataSource>): string[]
 /* -------------------------------------------- */
 
 async function migrateItemData(
-  itemData: ItemData,
+  itemData: ItemData, // TODO called with item.toObject(), type better!
   itemMigrations: ItemMigration[],
   owningActorData?: ActorData
 ): Promise<ItemUpdate> {
@@ -327,7 +327,7 @@ async function migrateItemData(
 /* -------------------------------------------- */
 
 async function migrateSceneData(
-  scene: SceneData,
+  scene: Scene,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[]
 ): Promise<object> {

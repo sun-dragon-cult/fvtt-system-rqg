@@ -9,7 +9,7 @@ export async function renameDragonewt(itemData: ItemData): Promise<ItemUpdate> {
   }
   if (itemData.name === "Dragonnewt (form)") {
     updateData.name = "Dragonewt (form)";
-    updateData.data = { rune: "Dragonewt" };
+    updateData.system = { rune: "Dragonewt" };
   }
 
   return updateData;

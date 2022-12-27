@@ -11,7 +11,7 @@ export async function changeRuneExperienceFieldName(itemData: ItemData): Promise
     updateData.system = { [`${deleteKeyPrefix}experience`]: null };
     if (itemData.system.hasExperience == null) {
       // @ts-ignore experience
-      updateData.data.hasExperience = itemData.experience ?? false;
+      updateData.system.hasExperience = itemData.experience ?? false;
     }
   }
   return updateData;

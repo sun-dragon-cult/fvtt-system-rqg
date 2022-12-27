@@ -25,7 +25,7 @@ export function getSameLocationUpdates(
       newLocationUpdate
     );
     // @ts-ignore physicalItem location
-    item.data.location = newLocationUpdate["data.location"];
+    item.system.location = newLocationUpdate["data.location"];
   }
 
   const sameLocationItemIds = getOtherItemIdsInSameLocationTree(

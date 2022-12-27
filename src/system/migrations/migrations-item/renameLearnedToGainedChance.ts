@@ -8,12 +8,11 @@ export async function renameLearnedToGainedChance(itemData: ItemData): Promise<I
   // @ts-ignore learnedChance
   if (itemData.type === ItemTypeEnum.Skill && itemData?.learnedChance != null) {
     // @ts-ignore learnedChance
-    const learnedChance = itemData.data.learnedChance;
+    const learnedChance = itemData.system.learnedChance;
 
     updateData = {
-      data: {
-        // @ts-expect-error itemData.data.baseChance TODO fix in migration PR
-        gainedChance: Math.max(0, (learnedChance || 0) - itemData.data.baseChance),
+      system: {
+        gainedChance: Math.max(0, (learnedChance || 0) - itemData.system.baseChance),
         [`${deleteKeyPrefix}learnedChance`]: null,
       },
     };

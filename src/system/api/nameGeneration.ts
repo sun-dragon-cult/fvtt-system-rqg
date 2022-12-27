@@ -19,20 +19,20 @@ export class nameGeneration {
    *
    * Generate 1 name using the default constraints:
    * ```
-   * await game.system.api.names.Generate("je.names-sartarite-female")
+   * await game.system.api.names.Generate("je..names-sartarite-female")
    * ```
    * Generate 10 names using the default constraints:
    * ```
-   * await game.system.api.names.Generate("je.names-sartarite-female", 10)
+   * await game.system.api.names.Generate("je..names-sartarite-female", 10)
    * ```
    * Generate 20 names overriding some of the properties of the default constraints
    * ```
-   * await game.system.api.names.Generate("je.names-sartarite-female", 20, {maxAttempts: 5, allowDuplicates: false,})
+   * await game.system.api.names.Generate("je..names-sartarite-female", 20, {maxAttempts: 5, allowDuplicates: false,})
    * ```
    *
    * RollTable Examples:
    * ```
-   * await game.system.api.names.Generate("rt.names-sartarite-male", 20)
+   * await game.system.api.names.Generate("rt..names-sartarite-male", 20)
    * ```
    */
   static async Generate(

@@ -7,9 +7,10 @@ export async function moveRuneIcons(itemData: ItemData): Promise<ItemUpdate> {
       /(?:systems\/rqg\/assets\/runes\/|modules.*-rqg\/assets\/images\/runes\/|modules\/rqg-core\/assets\/runes\/)(.*)/g
     )
     .next();
-  const fileName = runeIconFileNameMatch?.done
-    ? undefined
-    : (runeIconFileNameMatch!.value[1] as string);
+  const fileName =
+    !runeIconFileNameMatch || runeIconFileNameMatch.done
+      ? undefined
+      : (runeIconFileNameMatch!.value[1] as string);
 
   if (fileName) {
     return {

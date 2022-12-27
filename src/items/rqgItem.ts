@@ -225,7 +225,7 @@ export class RqgItem extends Item {
   }
 
   protected _onCreate(
-    itemData: RqgItem["data"]["_source"],
+    itemData: RqgItem["system"]["_source"],
     options: DocumentModificationOptions,
     userId: string
   ): void {
@@ -237,7 +237,7 @@ export class RqgItem extends Item {
     // @ts-expect-errors Foundry v10
     const defaultIcon = foundry.documents.BaseItem.DEFAULT_ICON;
 
-    if (item?.data.img === defaultIcon) {
+    if (item?.img === defaultIcon) {
       const updateData: any = {
         img: defaultItemIconSettings[itemData.type],
         "data.namePrefix": itemData.name,
@@ -254,7 +254,7 @@ export class RqgItem extends Item {
       };
 
       if (itemData.type === ItemTypeEnum.Passion) {
-        updateData.data = { subject: itemData.name };
+        updateData.system = { subject: itemData.name };
       }
 
       item?.update(updateData);
