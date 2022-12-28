@@ -1,4 +1,33 @@
-# [1.18.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.17.0...v1.18.0) (2022-09-20)
+# Changelog
+
+## [2.0.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/rqg-v1.18.0...rqg-v2.0.0) (2022-12-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Drop support for Foundry 9 and earlier. This release will only work on Foundry 10+
+
+### Features
+
+* Improve handling of Hotbar macros for dropped documents ([16df25c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/16df25c8531f6e1081e6b00769ef3768980b11b4)), closes [#373](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/373)
+* make skill items player editable ([2a4bab4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2a4bab4989f29ed65030e043810cba04b13f93b7)), closes [#404](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/404)
+
+
+### Bug Fixes
+
+* add packs folder to git repo ([d64aa77](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d64aa77b3390a2d6ae4522b5792fdd1c7f1213a4))
+* casting R spell with a cult that has a rune the actor lacks crashes ([ea97a2e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ea97a2e378cc0067bf110cc147db828f72848925)), closes [#400](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/400)
+* man rune is missing opposed rune (beast) ([79bc858](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/79bc8581c32c7e853536155e40545e9d4acfaceb)), closes [#387](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/387)
+* rune Magic spell "Axe Trance" should have death instead of earth rune ([01786a3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/01786a3b8af3287060ec9f0d0f7ae73997834810)), closes [#386](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/386)
+* species template "human" contains a fire rune, should be fire/sky ([e6d50b2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e6d50b23697ade087306e33362563b0fd3901845)), closes [#388](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/388)
+
+
+### Miscellaneous Chores
+
+* update readme ([507e372](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/507e372319a369848bd37043d9ddff26a5423890))
+
+
+## [1.18.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.17.0...v1.18.0) (2022-09-20)
 
 
 ### Bug Fixes
@@ -29,7 +58,7 @@
 
 
 
-# [1.17.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.16.0...v1.17.0) (2022-09-01)
+## [1.17.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.16.0...v1.17.0) (2022-09-01)
 
 
 ### Bug Fixes
@@ -44,7 +73,7 @@
 
 
 
-# [1.16.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.15.0...v1.16.0) (2022-08-24)
+## [1.16.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.15.0...v1.16.0) (2022-08-24)
 
 
 ### Bug Fixes
@@ -81,7 +110,7 @@
 
 
 
-# [1.15.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.14.0...v1.15.0) (2022-08-12)
+## [1.15.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.14.0...v1.15.0) (2022-08-12)
 
 
 ### Bug Fixes
@@ -133,7 +162,7 @@
 
 
 
-# [1.14.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.13.0...v1.14.0) (2022-03-06)
+## [1.14.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.13.0...v1.14.0) (2022-03-06)
 
 
 ### Bug Fixes
@@ -162,7 +191,7 @@
 
 
 
-# [1.13.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.12.0...v1.13.0) (2022-02-01)
+## [1.13.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.12.0...v1.13.0) (2022-02-01)
 
 
 ### Bug Fixes
@@ -198,7 +227,7 @@
 
 
 
-# [1.12.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.11.0...v1.12.0) (2021-12-21)
+## [1.12.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.11.0...v1.12.0) (2021-12-21)
 
 
 ### Bug Fixes
@@ -217,41 +246,13 @@
 
 
 
-# [1.11.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.10.1...v1.11.0) (2021-12-09)
+## [1.11.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.10.1...v1.11.0) (2021-12-09)
 
 
 ### Features
 
 * add all runes ([ec1cb00](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ec1cb00))
 
-
-
-
-## [2.0.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/rqg-v1.18.0...rqg-v2.0.0) (2022-12-27)
-
-
-### ⚠ BREAKING CHANGES
-
-* Drop support for Foundry 9 and earlier. This release will only work on Foundry 10+
-
-### Features
-
-* Improve handling of Hotbar macros for dropped documents ([16df25c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/16df25c8531f6e1081e6b00769ef3768980b11b4)), closes [#373](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/373)
-* make skill items player editable ([2a4bab4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2a4bab4989f29ed65030e043810cba04b13f93b7)), closes [#404](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/404)
-
-
-### Bug Fixes
-
-* add packs folder to git repo ([d64aa77](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d64aa77b3390a2d6ae4522b5792fdd1c7f1213a4))
-* casting R spell with a cult that has a rune the actor lacks crashes ([ea97a2e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ea97a2e378cc0067bf110cc147db828f72848925)), closes [#400](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/400)
-* man rune is missing opposed rune (beast) ([79bc858](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/79bc8581c32c7e853536155e40545e9d4acfaceb)), closes [#387](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/387)
-* rune Magic spell "Axe Trance" should have death instead of earth rune ([01786a3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/01786a3b8af3287060ec9f0d0f7ae73997834810)), closes [#386](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/386)
-* species template "human" contains a fire rune, should be fire/sky ([e6d50b2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e6d50b23697ade087306e33362563b0fd3901845)), closes [#388](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/388)
-
-
-### Miscellaneous Chores
-
-* update readme ([507e372](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/507e372319a369848bd37043d9ddff26a5423890))
 
 ## [1.10.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.10.0...v1.10.1) (2021-12-07)
 
@@ -264,7 +265,7 @@
 
 
 
-# [1.10.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.9.0...v1.10.0) (2021-12-05)
+## [1.10.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.9.0...v1.10.0) (2021-12-05)
 
 
 ### Bug Fixes
@@ -282,7 +283,7 @@
 
 
 
-# [1.9.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.1...v1.9.0) (2021-11-29)
+## [1.9.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.1...v1.9.0) (2021-11-29)
 
 
 ### Features
@@ -302,7 +303,7 @@
 
 
 
-# [1.8.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.0-7868c28...v1.8.0) (2021-11-23)
+## [1.8.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v1.8.0-7868c28...v1.8.0) (2021-11-23)
 
 
 ### Bug Fixes
@@ -330,7 +331,7 @@
 
 
 
-# [1.8.0-7868c28](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.8.0-23e10a4...v1.8.0-7868c28) (2021-11-03)
+## [1.8.0-7868c28](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.8.0-23e10a4...v1.8.0-7868c28) (2021-11-03)
 
 
 ### Features
@@ -340,7 +341,7 @@
 
 
 
-# [1.8.0-23e10a4](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.7.0...v1.8.0-23e10a4) (2021-11-01)
+## [1.8.0-23e10a4](https://github.com/Sun-Dragon-Cult/fvtt-system-rqg/compare/v1.7.0...v1.8.0-23e10a4) (2021-11-01)
 
 
 ### Bug Fixes
@@ -392,7 +393,7 @@
 
 
 
-# [1.7.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.6.0...v1.7.0) (2021-09-23)
+## [1.7.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.6.0...v1.7.0) (2021-09-23)
 
 
 ### Features
@@ -406,7 +407,7 @@
 
 
 
-# [1.6.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.5.0...v1.6.0) (2021-09-16)
+## [1.6.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.5.0...v1.6.0) (2021-09-16)
 
 
 ### Bug Fixes
@@ -422,7 +423,7 @@
 
 
 
-# [1.5.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.4.0...v1.5.0) (2021-09-15)
+## [1.5.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.4.0...v1.5.0) (2021-09-15)
 
 
 ### Bug Fixes
@@ -438,7 +439,7 @@
 
 
 
-# [1.4.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.3.0...v1.4.0) (2021-09-15)
+## [1.4.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.3.0...v1.4.0) (2021-09-15)
 
 
 ### Bug Fixes
@@ -454,7 +455,7 @@
 
 
 
-# [1.3.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.2.0...v1.3.0) (2021-09-14)
+## [1.3.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.2.0...v1.3.0) (2021-09-14)
 
 
 ### Bug Fixes
@@ -471,7 +472,7 @@
 
 
 
-# [1.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.1.0...v1.2.0) (2021-09-12)
+## [1.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.1.0...v1.2.0) (2021-09-12)
 
 
 ### Bug Fixes
@@ -498,7 +499,7 @@
 
 
 
-# [1.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.1.0...v1.2.0) (2021-09-12)
+## [1.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.1.0...v1.2.0) (2021-09-12)
 
 
 ### Bug Fixes
@@ -524,7 +525,7 @@
 
 
 
-# [1.1.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.0.2...v1.1.0) (2021-08-27)
+## [1.1.0](https://github.com/wakeand/fvtt-system-rqg/compare/v1.0.2...v1.1.0) (2021-08-27)
 
 
 ### Bug Fixes
@@ -575,7 +576,7 @@
 
 
 
-# [1.0.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.19.0...v1.0.0) (2021-08-09)
+## [1.0.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.19.0...v1.0.0) (2021-08-09)
 
 
 ### Bug Fixes
@@ -623,7 +624,7 @@
 
 
 
-# [0.19.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.18.0...v0.19.0) (2021-06-17)
+## [0.19.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.18.0...v0.19.0) (2021-06-17)
 
 
 ### Bug Fixes
@@ -642,7 +643,7 @@
 
 
 
-# [0.18.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.17.0...v0.18.0) (2021-05-11)
+## [0.18.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.17.0...v0.18.0) (2021-05-11)
 
 
 ### Bug Fixes
@@ -672,7 +673,7 @@
 
 
 
-# [0.17.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.16.0...v0.17.0) (2021-04-23)
+## [0.17.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.16.0...v0.17.0) (2021-04-23)
 
 
 ### Bug Fixes
@@ -691,7 +692,7 @@
 
 
 
-# [0.16.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.15.0...v0.16.0) (2021-04-20)
+## [0.16.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.15.0...v0.16.0) (2021-04-20)
 
 
 ### Bug Fixes
@@ -714,7 +715,7 @@
 
 
 
-# [0.15.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.14.0...v0.15.0) (2021-03-09)
+## [0.15.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.14.0...v0.15.0) (2021-03-09)
 
 
 ### Bug Fixes
@@ -729,7 +730,7 @@
 
 
 
-# [0.14.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.13.1...v0.14.0) (2021-03-06)
+## [0.14.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.13.1...v0.14.0) (2021-03-06)
 
 
 ### Bug Fixes
@@ -763,7 +764,7 @@
 
 
 
-# [0.12.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.11.0...v0.12.0) (2021-02-26)
+## [0.12.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.11.0...v0.12.0) (2021-02-26)
 
 
 ### Features
@@ -773,7 +774,7 @@
 
 
 
-# [0.11.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.10.0...v0.11.0) (2021-02-23)
+## [0.11.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.10.0...v0.11.0) (2021-02-23)
 
 
 ### Bug Fixes
@@ -792,7 +793,7 @@
 
 
 
-# [0.10.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.9.0...v0.10.0) (2021-02-17)
+## [0.10.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.9.0...v0.10.0) (2021-02-17)
 
 
 ### Bug Fixes
@@ -810,7 +811,7 @@
 
 
 
-# [0.9.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.8.0...v0.9.0) (2021-02-14)
+## [0.9.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.8.0...v0.9.0) (2021-02-14)
 
 
 ### Bug Fixes
@@ -832,7 +833,7 @@
 
 
 
-# [0.8.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.7.0...v0.8.0) (2021-02-10)
+## [0.8.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.7.0...v0.8.0) (2021-02-10)
 
 
 ### Bug Fixes
@@ -850,7 +851,7 @@
 
 
 
-# [0.7.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.6.1...v0.7.0) (2021-02-02)
+## [0.7.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.6.1...v0.7.0) (2021-02-02)
 
 
 ### Features
@@ -874,7 +875,7 @@
 
 
 
-# [0.6.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.5.0...v0.6.0) (2021-01-20)
+## [0.6.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.5.0...v0.6.0) (2021-01-20)
 
 
 ### Bug Fixes
@@ -921,7 +922,7 @@
 
 
 
-# [0.5.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.4.0...v0.5.0) (2020-11-17)
+## [0.5.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.4.0...v0.5.0) (2020-11-17)
 
 
 ### Bug Fixes
@@ -939,7 +940,7 @@
 
 
 
-# [0.4.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.3.0...v0.4.0) (2020-11-09)
+## [0.4.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.3.0...v0.4.0) (2020-11-09)
 
 
 ### Bug Fixes
@@ -955,7 +956,7 @@
 
 
 
-# [0.3.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.2.0...v0.3.0) (2020-10-22)
+## [0.3.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.2.0...v0.3.0) (2020-10-22)
 
 
 ### Bug Fixes
@@ -982,7 +983,7 @@
 
 
 
-# [0.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.1.11...v0.2.0) (2020-09-16)
+## [0.2.0](https://github.com/wakeand/fvtt-system-rqg/compare/v0.1.11...v0.2.0) (2020-09-16)
 
 
 ### Features

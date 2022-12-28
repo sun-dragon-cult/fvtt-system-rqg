@@ -21,12 +21,16 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
+  "primaryTokenAttribute": "attributes.hitPoints.value",
+  "secondaryTokenAttribute": "attributes.magicPoints.value",
+  "gridDistance": 1.5,
+  "gridUnits": "m",
+  "compatibility": {
+    "minimum": 10,
+    "verified": 10
+  },
   "packs": [
     {
       "name": "rqid-macros-en",
@@ -232,21 +236,11 @@
       "path": "i18n/en/openSystem.json"
     }
   ],
-  "primaryTokenAttribute": "attributes.hitPoints.value",
-  "secondaryTokenAttribute": "attributes.magicPoints.value",
-  "gridDistance": 1.5,
-  "gridUnits": "m",
-  "minimumCoreVersion": "9",
-  "compatibleCoreVersion": "9",
-  "compatibility": {
-    "minimum": 9,
-    "verified": 10
-  },
   "release-please-start": "x-release-please-start-version",
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
   "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v2.0.0/rqg.zip",
-  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v2.0.0/readme.md",
-  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/v2.0.0/CHANGELOG.md",
+  "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/README.md",
+  "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/CHANGELOG.md",
   "bugs": "https://github.com/sun-dragon-cult/foundry-vtt-rqg/issues"
 }

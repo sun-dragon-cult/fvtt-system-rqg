@@ -1,16 +1,14 @@
 {
   "plugins": [],
-  "prerelease": true,
-  "bootstrap-sha": "b2d1dd481dbd5d860f7dab06cdfc8c7059ffe588",
+  "bootstrap-sha": "4b5622b9992b4bad81f4bd3ea08dc760e70b3f58",
+  "include-component-in-tag": false,
   "packages": {
     ".": {
       "releaseType": "node",
       "pull-request-header": ":robot: Release candidate PR :rocket:",
       "changelogPath": "CHANGELOG.md",
       "versioning": "default",
-      "options": {
-
-      },
+      "options": {},
       "extra-files": [
         "src/system.json",
         {
