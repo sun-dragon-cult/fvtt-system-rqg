@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.0.0...v2.0.1) (2022-12-28)
+
+
+### Bug Fixes
+
+* update release config ([0f246e4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0f246e4b7c2b5ca92617461098c22bafb469edec))
+* update release config to make system.json links work ([8539f18](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8539f187d32b820d45af7179d88dae761c8308c4))
+
 ## [2.0.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/rqg-v1.18.0...rqg-v2.0.0) (2022-12-27)
 
 
