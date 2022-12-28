@@ -1,5 +1,33 @@
 # Changelog
 
+## [3.0.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.0.0...v3.0.0) (2022-12-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Drop support for Foundry 9 and earlier. This release will only work on Foundry 10+
+
+### Features
+
+* Improve handling of Hotbar macros for dropped documents ([16df25c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/16df25c8531f6e1081e6b00769ef3768980b11b4)), closes [#373](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/373)
+* make skill items player editable ([2a4bab4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2a4bab4989f29ed65030e043810cba04b13f93b7)), closes [#404](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/404)
+
+
+### Bug Fixes
+
+* add packs folder to git repo ([d64aa77](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d64aa77b3390a2d6ae4522b5792fdd1c7f1213a4))
+* casting R spell with a cult that has a rune the actor lacks crashes ([ea97a2e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ea97a2e378cc0067bf110cc147db828f72848925)), closes [#400](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/400)
+* man rune is missing opposed rune (beast) ([79bc858](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/79bc8581c32c7e853536155e40545e9d4acfaceb)), closes [#387](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/387)
+* rune Magic spell "Axe Trance" should have death instead of earth rune ([01786a3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/01786a3b8af3287060ec9f0d0f7ae73997834810)), closes [#386](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/386)
+* species template "human" contains a fire rune, should be fire/sky ([e6d50b2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e6d50b23697ade087306e33362563b0fd3901845)), closes [#388](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/388)
+* update release config to make system.json links work ([8539f18](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8539f187d32b820d45af7179d88dae761c8308c4))
+* weapon skill links can auto link to non skill items ([b2d1dd4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b2d1dd481dbd5d860f7dab06cdfc8c7059ffe588)), closes [#377](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/377)
+
+
+### Miscellaneous Chores
+
+* update readme ([507e372](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/507e372319a369848bd37043d9ddff26a5423890))
+
 ## [2.0.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/rqg-v1.18.0...rqg-v2.0.0) (2022-12-27)
 
 
