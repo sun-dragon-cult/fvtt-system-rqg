@@ -1,6 +1,6 @@
 {
   "plugins": [],
-  "bootstrap-sha": "4b5622b9992b4bad81f4bd3ea08dc760e70b3f58",
+  "bootstrap-sha": "7781f8fa556965cbcbad085579815cde8cef5c1a",
   "include-component-in-tag": false,
   "packages": {
     ".": {
