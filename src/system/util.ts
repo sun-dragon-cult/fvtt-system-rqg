@@ -395,7 +395,7 @@ export async function cacheAvailableRunes(): Promise<AvailableRuneCache[]> {
 function getRuneIndexData(
   pack: CompendiumCollection<CompendiumCollection.Metadata>
 ): AvailableRuneCache[] {
-  return pack.index.reduce((acc, indexData) => {
+  return pack.index.reduce((acc: AvailableRuneCache[], indexData) => {
     // @ts-expect-error flags
     if (indexData?.flags?.rqg?.documentRqidFlags?.id?.startsWith("i.rune.")) {
       acc.push({
