@@ -478,34 +478,6 @@ export function moveCursorToEnd(el: HTMLInputElement) {
   }
 }
 
-/**
- * Used as a workaround since mergeObject removes keys that have the foundry "update remove key syntax" `-=key`
- * To mark keys for removal add the deleteKeyPrefix like this `[`${deleteKeyPrefix}key`]: null` and run this just before update.
- */
-export function convertDeleteKeyToFoundrySyntax(obj: object): object {
-  const resultObj: any = {};
-  if (obj == null) {
-    return obj;
-  }
-  if (getType(obj) === "string") {
-    // Don't split strings into character arrays
-    return obj;
-  }
-  for (let [key, value] of Object.entries(obj)) {
-    key = key.replace(new RegExp(`^${deleteKeyPrefix}`), "-="); // Only replace deleteKeyPrefix (--=) at the start of a key
-    if (getType(value) === "Object") {
-      resultObj[key] = convertDeleteKeyToFoundrySyntax(value);
-    } else if (getType(value) === "Array") {
-      resultObj[key] = value.map((v: any) => convertDeleteKeyToFoundrySyntax(v));
-    } else {
-      resultObj[key] = value;
-    }
-  }
-  return resultObj;
-}
-
-export const deleteKeyPrefix = "--=";
-
 export function localize(key: string, data?: Record<string, unknown>): string {
   const result = getGame().i18n.format(key, data);
   if (result === key) {

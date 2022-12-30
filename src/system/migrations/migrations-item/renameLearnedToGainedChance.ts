@@ -1,7 +1,6 @@
 import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ItemUpdate } from "../applyMigrations";
-import { deleteKeyPrefix } from "../../util";
 
 export async function renameLearnedToGainedChance(itemData: ItemData): Promise<ItemUpdate> {
   let updateData = {};
@@ -13,7 +12,7 @@ export async function renameLearnedToGainedChance(itemData: ItemData): Promise<I
     updateData = {
       system: {
         gainedChance: Math.max(0, (learnedChance || 0) - itemData.system.baseChance),
-        [`${deleteKeyPrefix}learnedChance`]: null,
+        [`-=learnedChance`]: null,
       },
     };
   }

@@ -167,7 +167,8 @@ const mockCONFIG = {
 };
 global.CONFIG = mockCONFIG;
 
-// Copied from foundry 0.7.9
+// Copied from Foundry 10.291
+
 function mockMergeObject(
   original,
   other = {},
@@ -178,6 +179,7 @@ function mockMergeObject(
     recursive = true,
     inplace = true,
     enforceTypes = false,
+    performDeletions = false,
   } = {},
   _d = 0
 ) {
@@ -185,95 +187,118 @@ function mockMergeObject(
   if (!(original instanceof Object) || !(other instanceof Object)) {
     throw new Error("One of original or other are not Objects!");
   }
-  let depth = _d + 1;
+  const options = {
+    insertKeys,
+    insertValues,
+    overwrite,
+    recursive,
+    inplace,
+    enforceTypes,
+    performDeletions,
+  };
 
-  // Maybe copy the original data at depth 0
-  if (!inplace && _d === 0) original = duplicate(original);
-
-  // Enforce object expansion at depth 0
-  if (_d === 0 && Object.keys(original).some((k) => /\./.test(k)))
-    original = expandObject(original);
-  if (_d === 0 && Object.keys(other).some((k) => /\./.test(k))) other = expandObject(other);
-
-  // Iterate over the other object
-  for (let [k, v] of Object.entries(other)) {
-    let tv = getType(v);
-
-    // Prepare to delete
-    let toDelete = false;
-    if (k.startsWith("-=")) {
-      k = k.slice(2);
-      toDelete = v === null;
-    }
-
-    // Get the existing object
-    let x = original[k];
-    let has = original.hasOwnProperty(k);
-    let tx = getType(x);
-
-    // Ensure that inner objects exist
-    if (!has && tv === "Object") {
-      x = original[k] = {};
-      has = true;
-      tx = "Object";
-    }
-
-    // Case 1 - Key exists
-    if (has) {
-      // 1.1 - Recursively merge an inner object
-      if (tv === "Object" && tx === "Object" && recursive) {
-        mergeObject(
-          x,
-          v,
-          {
-            insertKeys: insertKeys,
-            insertValues: insertValues,
-            overwrite: overwrite,
-            inplace: true,
-            enforceTypes: enforceTypes,
-          },
-          depth
-        );
-      }
-
-      // 1.2 - Remove an existing key
-      else if (toDelete) {
-        delete original[k];
-      }
-
-      // 1.3 - Overwrite existing value
-      else if (overwrite) {
-        if (tx && tv !== tx && enforceTypes) {
-          throw new Error(`Mismatched data types encountered during object merge.`);
-        }
-        original[k] = v;
-      }
-
-      // 1.4 - Insert new value
-      else if (x === undefined && insertValues) {
-        original[k] = v;
-      }
-    }
-
-    // Case 2 - Key does not exist
-    else if (!toDelete) {
-      let canInsert = (depth === 1 && insertKeys) || (depth > 1 && insertValues);
-      if (canInsert) original[k] = v;
-    }
+  // Special handling at depth 0
+  if (_d === 0) {
+    if (Object.keys(other).some((k) => /\./.test(k))) other = expandObject(other);
+    if (Object.keys(original).some((k) => /\./.test(k))) {
+      const expanded = expandObject(original);
+      if (inplace) {
+        Object.keys(original).forEach((k) => delete original[k]);
+        Object.assign(original, expanded);
+      } else original = expanded;
+    } else if (!inplace) original = deepClone(original);
   }
 
-  // Return the object for use
+  // Iterate over the other object
+  for (let k of Object.keys(other)) {
+    const v = other[k];
+    if (original.hasOwnProperty(k)) _mergeUpdate(original, k, v, options, _d + 1);
+    else _mergeInsert(original, k, v, options, _d + 1);
+  }
   return original;
 }
 
-function mockGetType(token) {
-  const tof = typeof token;
-  if (tof === "object") {
-    if (token === null) return "null";
-    let cn = token.constructor.name;
-    if (["String", "Number", "Boolean", "Array", "Set"].includes(cn)) return cn;
-    else if (/^HTML/.test(cn)) return "HTMLElement";
-    else return "Object";
+function _mergeInsert(original, k, v, { insertKeys, insertValues, performDeletions } = {}, _d) {
+  // Delete a key
+  if (k.startsWith("-=") && performDeletions) {
+    delete original[k.slice(2)];
+    return;
   }
-  return tof;
+
+  const canInsert = (_d <= 1 && insertKeys) || (_d > 1 && insertValues);
+  if (!canInsert) return;
+
+  // Recursively create simple objects
+  if (v?.constructor === Object) {
+    original[k] = mergeObject({}, v, { insertKeys: true, inplace: true, performDeletions });
+    return;
+  }
+
+  // Insert a key
+  original[k] = v;
+}
+
+function _mergeUpdate(
+  original,
+  k,
+  v,
+  { insertKeys, insertValues, enforceTypes, overwrite, recursive, performDeletions } = {},
+  _d
+) {
+  const x = original[k];
+  const tv = getType(v);
+  const tx = getType(x);
+
+  // Recursively merge an inner object
+  if (tv === "Object" && tx === "Object" && recursive) {
+    return mockMergeObject(
+      x,
+      v,
+      {
+        insertKeys,
+        insertValues,
+        overwrite,
+        enforceTypes,
+        performDeletions,
+        inplace: true,
+      },
+      _d
+    );
+  }
+
+  // Overwrite an existing value
+  if (overwrite) {
+    if (tx !== "undefined" && tv !== tx && enforceTypes) {
+      throw new Error(`Mismatched data types encountered during object merge.`);
+    }
+    original[k] = v;
+  }
+}
+
+function mockGetType(variable) {
+  // Primitive types, handled with simple typeof check
+  const typeOf = typeof variable;
+  if (typeOf !== "object") return typeOf;
+
+  // Special cases of object
+  if (variable === null) return "null";
+  if (!variable.constructor) return "Object"; // Object with the null prototype.
+  if (variable.constructor.name === "Object") return "Object"; // simple objects
+
+  // Match prototype instances
+  const prototypes = [
+    [Array, "Array"],
+    [Set, "Set"],
+    [Map, "Map"],
+    [Promise, "Promise"],
+    [Error, "Error"],
+    // [Color, "number"], // Don't mock Color to avoid adding even more Foundry code - not used in tests
+  ];
+  if ("HTMLElement" in globalThis) prototypes.push([globalThis.HTMLElement, "HTMLElement"]);
+  for (const [cls, type] of prototypes) {
+    if (variable instanceof cls) return type;
+  }
+
+  // Unknown Object type
+  return "Object";
 }
