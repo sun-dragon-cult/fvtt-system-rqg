@@ -39,4 +39,3 @@ flags:
       id: je..species-description-human
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
-

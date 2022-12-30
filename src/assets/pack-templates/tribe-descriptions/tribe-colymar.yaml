@@ -1,6 +1,6 @@
-name: 'Tribe: Colymar'
+name: "Tribe: Colymar"
 pages:
-  - name: 'Tribe: Colymar'
+  - name: "Tribe: Colymar"
     type: text
     title:
       show: false

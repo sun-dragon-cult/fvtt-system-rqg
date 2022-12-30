@@ -1,5 +1,4 @@
 .rqg.item-sheet {
-
   // Tabbed Navigation for Item Sheets
   .item-sheet-nav-tabs {
     border-top: 1px solid var(--color-border-dark);
@@ -17,7 +16,7 @@
     }
 
     .item.active {
-      background-color: var(--rqg-color-main);;
+      background-color: var(--rqg-color-main);
       color: white;
     }
 
@@ -53,7 +52,7 @@
       }
 
       .long {
-        width: 100%
+        width: 100%;
       }
     }
 
@@ -62,7 +61,8 @@
       align-self: end;
     }
 
-    input, select {
+    input,
+    select {
       background-color: #f5deb3;
     }
 
@@ -91,7 +91,6 @@
       display: block;
     }
   }
-
 
   .skill-sheet-grid {
     display: grid;
@@ -141,4 +140,3 @@
     font-style: italic;
   }
 }
-

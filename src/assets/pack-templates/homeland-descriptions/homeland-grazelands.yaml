@@ -1,6 +1,6 @@
-name: 'Homeland: Grazelands'
+name: "Homeland: Grazelands"
 pages:
-  - name: 'Homeland: Grazelands'
+  - name: "Homeland: Grazelands"
     type: text
     title:
       show: false

@@ -11,11 +11,11 @@ data:
   hasExperience: false
   runes: []
 flags:
-    rqg:
-      documentRqidFlags:
-        id: i.skill.demo-sword-skill
-        lang: ${{openSystem.lang}}$
-        priority: ${{openSystem.prio}}$
+  rqg:
+    documentRqidFlags:
+      id: i.skill.demo-sword-skill
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
 ---
 name: Demo Arrows
 type: weapon

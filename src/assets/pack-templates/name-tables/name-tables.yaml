@@ -1,4 +1,4 @@
-name: 'Name Parts: Of Place Colymar'
+name: "Name Parts: Of Place Colymar"
 img: icons/svg/d20-grey.svg
 results:
   - _id: ZbmQ2VlyniFpcCgE
@@ -121,7 +121,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: 'Name Parts: Epithet'
+name: "Name Parts: Epithet"
 img: icons/svg/d20-grey.svg
 results:
   - _id: sWBiO61vlBWCKyQ4
@@ -256,12 +256,12 @@ flags:
       lang: en
       priority: 0
 ---
-name: 'Names: Sartarite, Male'
+name: "Names: Sartarite, Male"
 img: icons/svg/d20-grey.svg
 results:
   - _id: CBeZ88vA9DHoySto
     type: 0
-    text: '{{je.names-sartarite-male}}'
+    text: "{{je.names-sartarite-male}}"
     weight: 1
     range:
       - 1
@@ -273,7 +273,7 @@ results:
     rangeH: 1
   - _id: b96Vp429C9qquTP0
     type: 0
-    text: '{{rt.name-parts-descriptor}} {{je.names-sartarite-male}}'
+    text: "{{rt.name-parts-descriptor}} {{je.names-sartarite-male}}"
     weight: 1
     range:
       - 2
@@ -285,7 +285,7 @@ results:
     rangeH: 2
   - _id: PiZrj3oqHpkVr4qY
     type: 0
-    text: '{{je.names-sartarite-male}} son of {{je.names-sartarite-male}}'
+    text: "{{je.names-sartarite-male}} son of {{je.names-sartarite-male}}"
     weight: 1
     range:
       - 3
@@ -297,7 +297,7 @@ results:
     rangeH: 3
   - _id: XuyUwYECePEYG22R
     type: 0
-    text: '{{je.names-sartarite-male}} of {{rt.name-parts-of-place-colymar}}'
+    text: "{{je.names-sartarite-male}} of {{rt.name-parts-of-place-colymar}}"
     weight: 1
     range:
       - 4
@@ -309,7 +309,7 @@ results:
     rangeH: 4
   - _id: aXztDDimDoNLwWcj
     type: 0
-    text: '{{je.names-sartarite-male}} {{rt.name-parts-epithet}}'
+    text: "{{je.names-sartarite-male}} {{rt.name-parts-epithet}}"
     weight: 1
     range:
       - 5
@@ -331,7 +331,7 @@ flags:
       lang: en
       priority: 0
 ---
-name: 'Name Parts: Descriptor'
+name: "Name Parts: Descriptor"
 img: icons/svg/d20-grey.svg
 results:
   - _id: 9H135Xa0sYuZ3kle

@@ -1,6 +1,6 @@
-name: 'Names: Sartarite, Female'
+name: "Names: Sartarite, Female"
 pages:
-  - name: 'Names: Sartarite, Female'
+  - name: "Names: Sartarite, Female"
     type: text
     title:
       show: false
@@ -18,9 +18,9 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: 'Help: Name Generation'
+name: "Help: Name Generation"
 pages:
-  - name: 'Help: Name Generation'
+  - name: "Help: Name Generation"
     type: text
     title:
       show: false
@@ -99,9 +99,9 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: 'Names: Sartarite, Male'
+name: "Names: Sartarite, Male"
 pages:
-  - name: 'Names: Sartarite, Male'
+  - name: "Names: Sartarite, Male"
     type: text
     title:
       show: false

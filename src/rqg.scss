@@ -534,10 +534,10 @@ body {
       grid-template-columns: [col-start] 30px 30px auto min-content [col-end];
 
       // Alternating row background
-      >*:nth-child(8n + 1),
-      >*:nth-child(8n + 2),
-      >*:nth-child(8n + 3),
-      >*:nth-child(8n + 4) {
+      > *:nth-child(8n + 1),
+      > *:nth-child(8n + 2),
+      > *:nth-child(8n + 3),
+      > *:nth-child(8n + 4) {
         background: var(--rqg-table-alternate-background);
       }
     }
@@ -703,7 +703,7 @@ body {
   }
 
   &.chat-content {
-    &>* {
+    & > * {
       margin-top: 5px;
       margin-bottom: 5px;
     }
@@ -852,7 +852,6 @@ body {
     text-shadow: 1px 1px 2px var(--rqg-color-main), 0 0 1em var(--rqg-color-main-bg),
       0 0 0.2em var(--rqg-color-main-bg);
 
-
     margin: 0;
     //font-size: 2em;
     font-weight: normal;
@@ -865,9 +864,6 @@ body {
   }
 }
 
-
-
-
 .rqidlink {
   vertical-align: middle;
   margin: 0.5rem;
@@ -878,7 +874,7 @@ body {
 }
 
 .rqid-content-link {
-  background: #DDD;
+  background: #ddd;
   padding: 1px 4px;
   border: 1px solid var(--color-border-dark-tertiary);
   color: var(--color-text-dark-inactive);
@@ -901,7 +897,6 @@ body {
   .wizard-choice-input {
     align-self: center;
   }
-
 }
 
 .rune-selector {
@@ -995,7 +990,6 @@ body {
       mix-blend-mode: normal; // TODO remove when character sheet css is extracted
       opacity: 0.8;
     }
-
   }
 
   div.drop-target {

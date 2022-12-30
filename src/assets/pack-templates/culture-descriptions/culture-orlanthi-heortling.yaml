@@ -1,6 +1,6 @@
-name: 'Culture: Orlanthi (Heortling)'
+name: "Culture: Orlanthi (Heortling)"
 pages:
-  - name: 'Culture: Orlanthi (Heortling)'
+  - name: "Culture: Orlanthi (Heortling)"
     type: text
     title:
       show: false

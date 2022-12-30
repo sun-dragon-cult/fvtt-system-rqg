@@ -1,6 +1,6 @@
-name: 'Clan: Varmandi'
+name: "Clan: Varmandi"
 pages:
-  - name: 'Clan: Varmandi'
+  - name: "Clan: Varmandi"
     type: text
     title:
       show: false

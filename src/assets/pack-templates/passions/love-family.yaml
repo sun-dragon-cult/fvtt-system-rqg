@@ -4,8 +4,8 @@ img: systems/rqg/assets/images/passion/loyalty.svg
 data:
   passion: Love
   subject: Family
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   chance: 60
   canGetExperience: true
   hasExperience: false

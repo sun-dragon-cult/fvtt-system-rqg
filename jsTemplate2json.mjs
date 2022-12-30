@@ -15,5 +15,7 @@ const template = {
 fs.writeFile("./dist/template.json", JSON.stringify(template), (err) => {
   if (err) return console.log(err);
   console.log("Converted template.js -> template.json");
-  fs.rm("./dist/template.js", (err) => { if (err) return console.log(err)});
+  fs.rm("./dist/template.js", (err) => {
+    if (err) return console.log(err);
+  });
 });

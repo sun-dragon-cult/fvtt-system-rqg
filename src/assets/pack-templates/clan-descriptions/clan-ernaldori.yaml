@@ -1,6 +1,6 @@
-name: 'Clan: Ernaldori'
+name: "Clan: Ernaldori"
 pages:
-  - name: 'Clan: Ernaldori'
+  - name: "Clan: Ernaldori"
     type: text
     title:
       show: false

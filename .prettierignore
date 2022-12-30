@@ -7,3 +7,6 @@ yarn.lock
 yarn-error.log
 
 packs/
+
+**/*.hbs
+CHANGELOG.md

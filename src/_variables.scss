@@ -5,14 +5,10 @@
   --rqg-secondary-color: #5c8322;
   --rqg-table-alternate-background: rgba(0, 0, 0, 0.08);
 
-  --rqg-background-tab-active:
-    linear-gradient(purple 0%, #e60000 90%),
-    linear-gradient(to right, #711771 0%, #d6d63a 90%),
-    url(assets/images/ui/stonetexture2.jpg);
+  --rqg-background-tab-active: linear-gradient(purple 0%, #e60000 90%),
+    linear-gradient(to right, #711771 0%, #d6d63a 90%), url(assets/images/ui/stonetexture2.jpg);
 
-  --rqg-box-shadow-tab-active:
-    inset 2px 2px 7px 2px black,
-    0 0 8px 0 #d9dc17,
+  --rqg-box-shadow-tab-active: inset 2px 2px 7px 2px black, 0 0 8px 0 #d9dc17,
     -3px -3px 7px 2px black;
   --rqg-box-shadow-profile-img: 1px 1px 30px 5px #4c3b1ad6, -1px -1px 9px 5px #e2cb9ded;
   --rqg-box-shadow-grid-header: inset 0 0 20px 7px var(--rqg-color-main-bg);
@@ -23,7 +19,6 @@
   --rqg-color-enc-bg: #d8b16e;
   --rqg-color-enc-warning: #ff640045;
   --rqg-color-enc-legend: #e4cc9d;
-
 
   --rqg-color-invalid-journal: #e4b5ad; //Regular journal in chat message is: #7a7971
 
@@ -71,7 +66,7 @@
   //--color-border-dark-primary: #191813;
   //--color-border-dark-secondary: #23221d;
   //--color-border-dark-tertiary: #4b4a44;
-  --color-border-highlight: var(--rqg-color-main-bg);  // #ff6400;
+  --color-border-highlight: var(--rqg-color-main-bg); // #ff6400;
   --color-border-highlight-alt: var(--rqg-color-main-bg); // #ff0000;
   //--color-bg-btn-minor-inactive: #c9c7b8;
   //--color-bg-btn-minor-active: #b5b3a4;

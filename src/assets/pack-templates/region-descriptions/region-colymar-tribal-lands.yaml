@@ -1,6 +1,6 @@
-name: 'Region: Colymar Tribal Lands'
+name: "Region: Colymar Tribal Lands"
 pages:
-  - name: 'Region: Colymar Tribal Lands'
+  - name: "Region: Colymar Tribal Lands"
     type: text
     title:
       show: false

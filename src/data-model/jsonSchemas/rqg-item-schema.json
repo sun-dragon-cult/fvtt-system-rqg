@@ -181,22 +181,15 @@
       }
     }
   ],
-  "required": [
-    "name",
-    "type",
-    "data",
-    "flags"
-  ],
+  "required": ["name", "type", "data", "flags"],
   "additionalProperties": false,
 
   "$defs": {
-
     "rqidDef": {
       "type": "string",
       "pattern": "^a\\.character\\.[a-z\\d-]+$|^i\\.(armor|cult|gear|hit-location|homeland|occupation|passion|rune|rune-magic|skill|spirit-magic|weapon)\\.[a-z\\d-]+$|^je\\.\\.[a-z\\d-]+$|^rt\\.\\.[a-z\\d-]+$",
       "description": "A valid rqid"
     },
-
 
     "rqidLinkDef": {
       "type": "object",
@@ -208,12 +201,9 @@
           "type": "string"
         }
       },
-      "required": [
-        "rqid"
-      ],
+      "required": ["rqid"],
       "additionalProperties": false
     },
-
 
     "resourceDef": {
       "type": "object",
@@ -225,12 +215,9 @@
           "type": "integer"
         }
       },
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "additionalProperties": false
     },
-
 
     "flags": {
       "type": "object",
@@ -262,36 +249,23 @@
                   ]
                 }
               },
-              "required": [
-                "id",
-                "lang",
-                "priority"
-              ],
+              "required": ["id", "lang", "priority"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "documentRqidFlags"
-          ]
+          "required": ["documentRqidFlags"]
         }
       },
-      "required": [
-        "rqg"
-      ],
+      "required": ["rqg"],
       "additionalProperties": false
     },
-
 
     "physicalItemProperties": {
       "type": "object",
       "properties": {
         "physicalItemType": {
           "type": "string",
-          "enum": [
-            "unique",
-            "currency",
-            "consumable"
-          ]
+          "enum": ["unique", "currency", "consumable"]
         },
         "quantity": {
           "type": "number",
@@ -345,11 +319,7 @@
         },
         "equippedStatus": {
           "type": "string",
-          "enum": [
-            "notCarried",
-            "carried",
-            "equipped"
-          ],
+          "enum": ["notCarried", "carried", "equipped"],
           "default": "carried"
         },
         "price": {
@@ -364,13 +334,9 @@
           }
         }
       },
-      "required": [
-        "equippedStatus",
-        "encumbrance"
-      ],
+      "required": ["equippedStatus", "encumbrance"],
       "additionalProperties": false
     },
-
 
     "spellItemProperties": {
       "type": "object",
@@ -380,31 +346,15 @@
         },
         "castingRange": {
           "type": "string",
-          "enum": [
-            "null",
-            "self",
-            "touch",
-            "ranged",
-            "special"
-          ]
+          "enum": ["null", "self", "touch", "ranged", "special"]
         },
         "duration": {
           "type": "string",
-          "enum": [
-            "null",
-            "instant",
-            "temporal",
-            "focused",
-            "permanent",
-            "special"
-          ]
+          "enum": ["null", "instant", "temporal", "focused", "permanent", "special"]
         },
         "concentration": {
           "type": "string",
-          "enum": [
-            "passive",
-            "active"
-          ]
+          "enum": ["passive", "active"]
         },
         "isRitual": {
           "type": "boolean"
@@ -416,15 +366,9 @@
           "$ref": "#/$defs/rqidLinkDef"
         }
       },
-      "required": [
-        "points",
-        "isRitual",
-        "isEnchantment",
-        "concentration"
-      ],
+      "required": ["points", "isRitual", "isEnchantment", "concentration"],
       "additionalProperties": false
     },
-
 
     "combatManeuverDef": {
       "type": "object",
@@ -434,13 +378,7 @@
         },
         "damageType": {
           "type": "string",
-          "enum": [
-            "crush",
-            "slash",
-            "impale",
-            "parry",
-            "special"
-          ]
+          "enum": ["crush", "slash", "impale", "parry", "special"]
         },
         "description": {
           "oneOf": [
@@ -453,13 +391,9 @@
           ]
         }
       },
-      "required": [
-        "name",
-        "damageType"
-      ],
+      "required": ["name", "damageType"],
       "additionalProperties": false
     },
-
 
     "usageDef": {
       "type": "object",
@@ -505,7 +439,6 @@
       "additionalProperties": false
     },
 
-
     "armorItem": {
       "properties": {
         "size": {
@@ -534,14 +467,9 @@
           "default": 0
         }
       },
-      "required": [
-        "material",
-        "absorbs",
-        "moveQuietlyPenalty"
-      ],
+      "required": ["material", "absorbs", "moveQuietlyPenalty"],
       "additionalProperties": "#/$defs/physicalItemProperties"
     },
-
 
     "cultItem": {
       "properties": {
@@ -613,18 +541,14 @@
           ]
         }
       },
-      "required": [
-        "tagline"
-      ],
+      "required": ["tagline"],
       "additionalProperties": false
     },
-
 
     "gearItem": {
       "properties": {},
       "additionalProperties": "#/$defs/physicalItemProperties"
     },
-
 
     "hitLocationItem": {
       "properties": {
@@ -654,33 +578,17 @@
         },
         "hitLocationHealthState": {
           "type": "string",
-          "enum": [
-            "healthy",
-            "wounded",
-            "useless",
-            "severed"
-          ],
+          "enum": ["healthy", "wounded", "useless", "severed"],
           "default": "healthy"
         },
         "actorHealthImpact": {
           "type": "string",
-          "enum": [
-            "healthy",
-            "wounded",
-            "shock",
-            "unconscious",
-            "dead"
-          ],
+          "enum": ["healthy", "wounded", "shock", "unconscious", "dead"],
           "default": "healthy"
         },
         "hitLocationType": {
           "type": "string",
-          "enum": [
-            "limb",
-            "head",
-            "chest",
-            "abdomen"
-          ]
+          "enum": ["limb", "head", "chest", "abdomen"]
         },
         "connectedTo": {
           "type": "null"
@@ -694,9 +602,7 @@
         }
       },
       "then": {
-        "required": [
-          "connectedTo"
-        ],
+        "required": ["connectedTo"],
         "properties": {
           "connectedTo": {
             "type": "string"
@@ -715,7 +621,6 @@
       "additionalProperties": false
     },
 
-
     "runeItem": {
       "properties": {
         "descriptionRqidLink": {
@@ -731,10 +636,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "rqid",
-            "name"
-          ]
+          "required": ["rqid", "name"]
         },
         "rune": {
           "type": "string"
@@ -753,19 +655,10 @@
         },
         "runeType": {
           "type": "string",
-          "enum": [
-            "element",
-            "power",
-            "form",
-            "condition",
-            "technique"
-          ]
+          "enum": ["element", "power", "form", "condition", "technique"]
         },
         "opposingRune": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "minorRunes": {
           "type": "array",
@@ -778,14 +671,9 @@
           "default": false
         }
       },
-      "required": [
-        "rune",
-        "chance",
-        "runeType"
-      ],
+      "required": ["rune", "chance", "runeType"],
       "additionalProperties": false
     },
-
 
     "runeMagicItem": {
       "properties": {
@@ -803,14 +691,9 @@
           "default": false
         }
       },
-      "required": [
-        "runes",
-        "isStackable",
-        "isOneUse"
-      ],
+      "required": ["runes", "isStackable", "isOneUse"],
       "additionalProperties": "#/$defs/spellItemProperties"
     },
-
 
     "skillItem": {
       "properties": {
@@ -827,10 +710,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "rqid",
-            "name"
-          ]
+          "required": ["rqid", "name"]
         },
         "category": {
           "type": "string",
@@ -896,7 +776,6 @@
       "additionalProperties": false
     },
 
-
     "spiritMagicItem": {
       "properties": {
         "isVariable": {
@@ -923,12 +802,9 @@
           "default": false
         }
       },
-      "required": [
-        "isVariable"
-      ],
+      "required": ["isVariable"],
       "additionalProperties": "#/$defs/spellItemProperties"
     },
-
 
     "weaponItem": {
       "type": "object",
@@ -1027,12 +903,7 @@
           "comment": "Use only for missile weapons"
         }
       },
-      "required": [
-        "usage",
-        "hitPoints",
-        "hitPointLocation",
-        "isNatural"
-      ],
+      "required": ["usage", "hitPoints", "hitPointLocation", "isNatural"],
       "additionalProperties": "#/$defs/physicalItemProperties"
     }
   }
