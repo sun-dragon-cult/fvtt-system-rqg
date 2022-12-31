@@ -62,7 +62,11 @@ export class PassionSheet extends RqgItemSheet<
   protected _updateObject(event: Event, formData: any): Promise<any> {
     const subject = formData["system.subject"] ? ` (${formData["system.subject"]})` : "";
     formData["name"] = formData["system.passion"] + subject;
-    formData["img"] = PassionSheet.passionImgUrl.get(formData["system.passion"]);
+
+    if (Object.values(PassionsEnum).includes(formData["system.passion"])) {
+      formData["img"] = PassionSheet.passionImgUrl.get(formData["system.passion"]);
+    }
+
     return super._updateObject(event, formData);
   }
 }

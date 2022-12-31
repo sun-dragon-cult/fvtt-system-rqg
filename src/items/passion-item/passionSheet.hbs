@@ -1,18 +1,12 @@
 <form autocomplete="off">
   <header class="item-sheet-header">
-    <img src="{{img}}" title="{{name}}" />
+    <img src="{{img}}" data-edit="img" title="{{name}}" />
     <div class="property-line">
       <div class="label-above">
         <label for="passion-{{id}}">{{localize "RQG.Item.Passion.Name"}}</label><br>
-        <select id="passion-{{id}}" name="system.passion">
-          {{#select system.passion}}
-            {{#each passionTypes}}
-              <option
-                value="{{localize (concat 'RQG.Item.Passion.PassionEnum.' this)}}"
-              >{{this}}</option>
-            {{/each}}
-          {{/select}}
-        </select>
+        <input type="text" id="passion-{{id}}" name="system.passion" value="{{system.passion}}"
+            list="passionTypes"
+            placeholder="{{localize "RQG.Item.Passion.NamePlaceholder"}}">
       </div>
 
       <div class="label-above parens">
@@ -79,4 +73,10 @@
       </div>
     </section>
   </main>
+
+    <datalist id="passionTypes">
+    {{#each passionTypes}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
 </form>

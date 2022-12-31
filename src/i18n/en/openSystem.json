@@ -782,6 +782,7 @@
       },
       "Passion": {
         "Name": "Name",
+        "NamePlaceholder": "Passion Type",
         "Passion": "Passion",
         "Subject": "Subject",
         "Chance": "Chance",

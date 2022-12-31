@@ -12,6 +12,7 @@ export enum PassionsEnum {
   Love = "Love",
   Gluttony = "Gluttony",
   Vanity = "Vanity",
+  Custom = "",
 }
 
 export interface PassionDataSourceData extends IAbility {
@@ -35,7 +36,7 @@ export interface PassionDataProperties {
 }
 
 export const defaultPassionData: PassionDataSourceData = {
-  passion: PassionsEnum.Love,
+  passion: PassionsEnum.Custom,
   subject: "",
   description: "",
   gmNotes: "",
