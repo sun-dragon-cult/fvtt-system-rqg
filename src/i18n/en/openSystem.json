@@ -278,6 +278,8 @@
       },
       "Passion": {
         "Passions": "Passions",
+        "AddNewPassionTip": "Add New Passion",
+        "NewPassionName": "New Passion",
         "BackStory": "Back Story",
         "ImportPassionCheckboxTitle": "Import Passion: \"{passionName}\""
       },
