@@ -114,7 +114,7 @@ export const passionMenuOptions = (
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion),
     }),
     icon: ContextMenuRunes.Delete,
-    condition: () => getGameUser().isGM,
+    condition: () => true,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);
