@@ -604,19 +604,15 @@ body {
     text-shadow: 0 0 0.5em red, 0 0 1.5em yellow;
   }
 
-  [data-characteristic-roll],
-  [data-damage-roll],
-  [data-item-roll],
+  .contextmenu {
+    cursor: context-menu;
+  }
+
   [data-item-equipped-toggle],
   [data-item-heal-wound],
   [data-item-add-wound],
-  [data-rqid-link],
-  [data-weapon-roll],
-  [data-reputation-roll],
-  [data-rune-magic-roll] {
-    &:hover {
-      box-shadow: 12px 12px 16px 0 rgba(0, 0, 0, 0.25), -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
-    }
+  {
+    cursor: pointer;
 
     &:active {
       box-shadow: -8px -8px 16px 0 rgba(0, 0, 0, 0.25), 11px 12px 12px 0 rgba(255, 255, 255, 0.3),
@@ -624,12 +620,28 @@ body {
     }
   }
 
-  .contextmenu {
-    cursor: context-menu;
+  [data-characteristic-roll],
+  [data-damage-roll],
+  [data-item-roll],
+  [data-weapon-roll],
+  [data-reputation-roll],
+  [data-rune-magic-roll],
+  [data-spirit-magic-roll] {
+    cursor: url("./assets/images/ui/cursor-roll.svg") 1 10, pointer;
+
+    &:active {
+      box-shadow: -8px -8px 16px 0 rgba(0, 0, 0, 0.25), 11px 12px 12px 0 rgba(255, 255, 255, 0.3),
+      inset 4px 4px 5px 0px rgba(0, 0, 0, 0.25);
+    }
   }
 
   [data-rqid-link] {
-    cursor: help;
+    cursor: url("./assets/images/ui/cursor-description.svg") 1 10, pointer;
+
+    &:active {
+      box-shadow: -8px -8px 16px 0 rgba(0, 0, 0, 0.25), 11px 12px 12px 0 rgba(255, 255, 255, 0.3),
+      inset 4px 4px 5px 0px rgba(0, 0, 0, 0.25);
+    }
   }
 
   #context-menu {
