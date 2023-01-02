@@ -1071,7 +1071,7 @@ export class RqgActorSheet extends ActorSheet<
           systemId,
           "defaultItemIconSettings"
         );
-        const newPassionName = localize("RQG.Actor.Passion.NewPassionName");
+        const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
         let passion = {
           name: newPassionName,
           type: "passion",
@@ -1079,7 +1079,7 @@ export class RqgActorSheet extends ActorSheet<
           system: { passion: newPassionName },
         };
         //@ts-ignore
-        await Item.createDocuments([passion], { parent: this.actor });
+        await Item.createDocuments([passion], { parent: this.actor, renderSheet: true });
       });
     });
   }
