@@ -1062,6 +1062,26 @@ export class RqgActorSheet extends ActorSheet<
           }
         });
       });
+
+    // Add Passion button
+    htmlElement?.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
+      el.addEventListener("click", async () => {
+        console.log("CLICK");
+        const defaultItemIconSettings: any = getGame().settings.get(
+          systemId,
+          "defaultItemIconSettings"
+        );
+        const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
+        let passion = {
+          name: newPassionName,
+          type: "passion",
+          img: defaultItemIconSettings["passion"],
+          system: { passion: newPassionName },
+        };
+        //@ts-ignore
+        await Item.createDocuments([passion], { parent: this.actor, renderSheet: true });
+      });
+    });
   }
 
   static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {
