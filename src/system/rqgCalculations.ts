@@ -14,7 +14,12 @@ export class RqgCalculations {
   }
 
   public static hitPoints(con: number, siz: number, pow: number): number {
-    return con + RqgCalculations.linearMod(siz) / 5 + RqgCalculations.flattenedMod(pow) / 5;
+    let hp = con + RqgCalculations.linearMod(siz) / 5 + RqgCalculations.flattenedMod(pow) / 5;
+    if (hp < 3) {
+      // HP floor since 1 or 2 is unconscious.
+      hp = 3;
+    }
+    return hp;
   }
 
   public static damageBonus(str: number, siz: number): string {

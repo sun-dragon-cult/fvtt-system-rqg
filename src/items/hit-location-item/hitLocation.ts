@@ -39,22 +39,27 @@ export class HitLocation extends AbstractEmbeddedItem {
 
     item.system.armorPoints = item.system.naturalAp + armorAbsorption;
 
-    // Calc HP
-    const totalHp = actorData.attributes.hitPoints.max;
-    if (totalHp == null) {
-      const msg = localize("RQG.Item.Notification.ActorDoesNotHaveMaxHpError");
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, actor);
-    }
-    // Remove any healed wounds
-    // @ts-expect-error system
-    item.system.wounds = item.system.wounds.filter((w) => w > 0);
+    if (actorData.attributes.hitPoints !== undefined) {
+      // Calc HP
+      const totalHp = actorData.attributes.hitPoints?.max;
+      if (totalHp == null) {
+        const msg = localize("RQG.Item.Notification.ActorDoesNotHaveMaxHpError");
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, actor);
+      }
+      // Remove any healed wounds
+      // @ts-expect-error system
+      item.system.wounds = item.system.wounds.filter((w) => w > 0);
 
-    item.system.hitPoints.max = HitLocation.hitPointsPerLocation(totalHp, item.system.baseHpDelta);
-    item.system.hitPoints.value = item.system.wounds.reduce(
-      (acc: number, w: number) => acc - w,
-      item.system.hitPoints.max
-    );
+      item.system.hitPoints.max = HitLocation.hitPointsPerLocation(
+        totalHp,
+        item.system.baseHpDelta
+      );
+      item.system.hitPoints.value = item.system.wounds.reduce(
+        (acc: number, w: number) => acc - w,
+        item.system.hitPoints.max
+      );
+    }
 
     return item;
   }

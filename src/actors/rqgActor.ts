@@ -13,6 +13,7 @@ import { systemId } from "../system/config";
 import { ResultEnum } from "../data-model/shared/ability";
 import { Rqid } from "../system/api/rqidApi";
 import { PrototypeTokenData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { Resource } from "../data-model/shared/resource";
 
 export class RqgActor extends Actor {
   static init() {
@@ -42,7 +43,17 @@ export class RqgActor extends Actor {
     super.prepareEmbeddedDocuments();
     const actorSystem = this.system;
     const { con, siz, pow } = this.actorCharacteristics();
-    actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+    if (con !== null) {
+      if (actorSystem.attributes.hitPoints !== undefined) {
+        actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+      } else {
+        actorSystem.attributes.hitPoints = new Resource();
+        actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+        actorSystem.attributes.hitPoints.value = actorSystem.attributes.hitPoints.max;
+      }
+    } else {
+      actorSystem.attributes.hitPoints = undefined;
+    }
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
     );

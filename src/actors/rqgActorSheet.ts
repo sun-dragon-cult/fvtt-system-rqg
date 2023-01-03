@@ -563,7 +563,7 @@ export class RqgActorSheet extends ActorSheet<
     return {
       health:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.HitLocation),
+        this.actor.system.characteristics.constitution.value !== null,
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
@@ -608,32 +608,45 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
-    let maxHitPoints = this.actor.system.attributes.hitPoints.max;
-    requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
-    if (
-      formData["system.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
-      formData["system.attributes.hitPoints.value"] > maxHitPoints
-    ) {
-      formData["system.attributes.hitPoints.value"] = maxHitPoints;
+    if (formData["system.characteristics.constitution.value"] !== null) {
+      let maxHitPoints = this.actor.system.attributes.hitPoints?.max;
+      // requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
+      if (maxHitPoints === undefined) {
+        // Actor had No CON but has been given CON, so we need to add hit points which will be recalculated later.
+        formData["system.attributes.hitPoints.value"] = 0;
+      } else {
+        if (
+          formData["system.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
+          formData["system.attributes.hitPoints.value"] > maxHitPoints
+        ) {
+          formData["system.attributes.hitPoints.value"] = maxHitPoints;
+        }
+      }
     }
 
+    const hpTmp = this.actor.system.attributes.hitPoints?.value;
     // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
-    const hpTmp = this.actor.system.attributes.hitPoints.value;
-    this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
-
+    if (this.actor.system.attributes.hitPoints !== undefined) {
+      this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
+    }
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
     if (newHealth !== this.actor.system.attributes.health) {
       // @ts-ignore wait for foundry-vtt-types issue #1165
       const speakerName = this.token?.name || this.actor.prototypeToken.name;
       let message;
       // TODO v10 any
-      if (newHealth === "dead" && !this.actor.effects.find((e: any) => e.system.label === "dead")) {
+      if (
+        newHealth === "dead" &&
+        // @ts-ignore
+        !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "dead")
+      ) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
       }
       if (
         newHealth === "unconscious" &&
         // TODO v10 any
-        !this.actor.effects.find((e: any) => e.system.label === "unconscious")
+        // @ts-ignore
+        !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "unconscious")
       ) {
         message = `${speakerName} faints from lack of hitpoints!`;
       }
@@ -647,7 +660,9 @@ export class RqgActorSheet extends ActorSheet<
         });
     }
 
-    this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
+    if (this.actor.system.attributes.hitPoints !== undefined) {
+      this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
+    }
     if (this.token) {
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       const tokenHealthBefore = this.token?.actor?.system.attributes.health;
@@ -656,7 +671,6 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       HitLocationSheet.setTokenEffect(this.token.object as RqgToken, tokenHealthBefore);
     }
-
     formData["system.attributes.health"] = newHealth;
 
     return super._updateObject(event, formData);

@@ -173,11 +173,13 @@ export async function initializeAllCharacteristics(
 
 /** Sets actor's current hitPoints.value to the hitPoints.max */
 async function initializeCurrentDerivedAttributes(actor: RqgActor) {
-  const hpUpdate = {
-    "system.attributes.hitPoints.value": actor.system.attributes.hitPoints.max,
-    "system.attributes.magicPoints.value": actor.system.attributes.magicPoints.max,
-  };
-  await actor.update(hpUpdate);
+  if (actor.system.attributes.hitPoints !== undefined) {
+    const hpUpdate = {
+      "system.attributes.hitPoints.value": actor.system.attributes.hitPoints.max,
+      "system.attributes.magicPoints.value": actor.system.attributes.magicPoints.max,
+    };
+    await actor.update(hpUpdate);
+  }
 }
 
 function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: Characteristic } {

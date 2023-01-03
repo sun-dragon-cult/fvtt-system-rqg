@@ -35,6 +35,11 @@ export class HealingCalculations {
       actorUpdates: {},
       usefulLegs: [], // Not used yet
     };
+
+    if (actor.system.attributes.hitPoints === undefined) {
+      return healingEffects;
+    }
+
     if (!Number.isInteger(healWoundIndex) || hitLocation.system.wounds.length <= healWoundIndex) {
       const msg = `Trying to heal a wound that doesn't exist.`;
       ui.notifications?.error(msg);
