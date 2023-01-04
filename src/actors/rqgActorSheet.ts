@@ -611,7 +611,7 @@ export class RqgActorSheet extends ActorSheet<
     if (formData["system.characteristics.constitution.value"] !== null) {
       let maxHitPoints = this.actor.system.attributes.hitPoints?.max;
       // requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
-      if (maxHitPoints === undefined) {
+      if (maxHitPoints == null) {
         // Actor had No CON but has been given CON, so we need to add hit points which will be recalculated later.
         formData["system.attributes.hitPoints.value"] = 0;
       } else {
@@ -626,7 +626,7 @@ export class RqgActorSheet extends ActorSheet<
 
     const hpTmp = this.actor.system.attributes.hitPoints?.value;
     // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
-    if (this.actor.system.attributes.hitPoints !== undefined) {
+    if (this.actor.system.attributes.hitPoints != null) {
       this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
     }
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
@@ -660,7 +660,7 @@ export class RqgActorSheet extends ActorSheet<
         });
     }
 
-    if (this.actor.system.attributes.hitPoints !== undefined) {
+    if (this.actor.system.attributes.hitPoints != null) {
       this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
     }
     if (this.token) {

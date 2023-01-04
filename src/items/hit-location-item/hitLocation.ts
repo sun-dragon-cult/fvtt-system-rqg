@@ -39,7 +39,7 @@ export class HitLocation extends AbstractEmbeddedItem {
 
     item.system.armorPoints = item.system.naturalAp + armorAbsorption;
 
-    if (actorData.attributes.hitPoints !== undefined) {
+    if (actorData.attributes.hitPoints != null) {
       // Calc HP
       const totalHp = actorData.attributes.hitPoints?.max;
       if (totalHp == null) {

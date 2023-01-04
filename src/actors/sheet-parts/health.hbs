@@ -1,6 +1,7 @@
-<div class="health">
-  <h2 class="flex-col">{{localize "RQG.Actor.Health.Health"}}</h2>
   {{#if showUiSection.health}}
+  <div class="health">
+  <h2 class="flex-col">{{localize "RQG.Actor.Health.Health"}}</h2>
+
     <div class="flex-row nowrap flex-align-center">
       <label>{{localize "RQG.Actor.Health.TotalHitPoints"}}
         <input
@@ -45,9 +46,6 @@
     {{else}}
       <p>{{localize "RQG.Actor.Health.NoHitLocations"}}</p>
     {{/if}}
-  {{else}}
-    <div class="flex-row nowrap flex-align-center">
-      <p>{{localize "RQG.Actor.Health.NoHitPoints"}}</p>
-    </div>
-  {{/if}}
+
 </div>
+{{/if}}

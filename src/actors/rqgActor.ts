@@ -44,7 +44,7 @@ export class RqgActor extends Actor {
     const actorSystem = this.system;
     const { con, siz, pow } = this.actorCharacteristics();
     if (con !== null) {
-      if (actorSystem.attributes.hitPoints !== undefined) {
+      if (actorSystem.attributes.hitPoints != null) {
         actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
       } else {
         actorSystem.attributes.hitPoints = new Resource();

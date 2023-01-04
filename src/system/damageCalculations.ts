@@ -56,7 +56,7 @@ export class DamageCalculations {
   }
 
   private static applyDamageToActorTotalHp(damage: number, actor: RqgActor): DeepPartial<RqgActor> {
-    if (actor.system.attributes.hitPoints !== undefined) {
+    if (actor.system.attributes.hitPoints != null) {
       const currentTotalHp = actor.system.attributes.hitPoints.value;
       const actorUpdateData: DeepPartial<RqgActor> = {
         system: { attributes: { hitPoints: { value: 0 } } },
@@ -243,7 +243,7 @@ export class DamageCalculations {
   }
 
   static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
-    if (actor.system.attributes.hitPoints !== undefined) {
+    if (actor.system.attributes.hitPoints != null) {
       const totalHitPoints = actor.system.attributes.hitPoints.value;
       if (totalHitPoints == null) {
         const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actor.name}`;
