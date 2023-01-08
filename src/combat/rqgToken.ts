@@ -1,7 +1,13 @@
+import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import { TokenDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/tokenData";
+import { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
+import { getGame } from "../system/util";
+import { initializeAllCharacteristics } from "../actors/context-menus/characteristic-context-menu";
 import { getCombatantsSharingToken } from "./combatant-utils";
 
 export class RqgToken extends Token {
   static init() {
+    // @ts-expect-error
     CONFIG.Token.objectClass = RqgToken;
   }
 
@@ -26,6 +32,24 @@ export class RqgToken extends Token {
         const li = tracker.querySelector(`.combatant[data-combatant-id="${cb.id}"]`);
         if (li) li.classList.remove("hover");
       });
+    }
+  }
+
+  // @ts-expect-error
+  protected _onCreate(
+    options: PropertiesToSource<TokenDataProperties>,
+    docModOptions: DocumentModificationOptions,
+    userId: string
+  ): void {
+    super._onCreate(options, docModOptions);
+    if (userId === getGame().user?.id) {
+      //@ts-ignore actorLink
+      if (!this.document.actorLink) {
+        console.log("UNLINKED ACTOR");
+        if (this.actor) {
+          initializeAllCharacteristics(this.actor, true);
+        }
+      }
     }
   }
 }
