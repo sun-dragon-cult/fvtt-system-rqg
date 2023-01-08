@@ -95,7 +95,7 @@ data:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.uHPTu384VHQI8RUt
+      skillOrigin: Compendium.rqg.skills-weapons-en.zlwavjjwUgkfSqx3
       combatManeuvers:
         - name: Cut
           damageType: slash
