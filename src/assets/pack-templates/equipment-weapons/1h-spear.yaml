@@ -1,0 +1,251 @@
+name: Lance
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-spear.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.lance
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.eT1Wtz0RWkeq60G2
+      combatManeuvers:
+        - name: Thrust
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d10+1
+      minStrength: 9
+      minDexterity: 7
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.hw81IOi4PUvl4maS
+      combatManeuvers:
+        - name: Thrust
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d10+1
+      minStrength: 9
+      minDexterity: 7
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 10
+    max: 10
+  hitPointLocation:
+  encumbrance: 3
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Short Spear
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-spear.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.short-spear
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.CIXYxzkBZd5RGJx7
+      combatManeuvers:
+        - name: Thrust
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d6+1
+      minStrength: 9
+      minDexterity: 7
+      strikeRank: 2
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.JDXeX3DWBwy4Z9j8
+      combatManeuvers:
+        - name: Thrust
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d6+1
+      minStrength: 9
+      minDexterity: 7
+      strikeRank: 2
+    twoHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.RgY6W1u54NyqKa17
+      combatManeuvers:
+        - name: Thrust
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d8+1
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 1
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.r24yk70r505De5dy
+      combatManeuvers:
+        - name: Throw
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d6+1
+      minStrength: 9
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 10
+    max: 10
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 1
+  range: 20
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: true
+  isRangedWeapon: false
+---
+name: Javelin
+type: weapon
+img: systems/rqg/assets/images/weapons/javelin.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.javelin
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.p6Mm8PuFkfpy0MHS
+      combatManeuvers:
+        - name: Thrust
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d6
+      minStrength: 9
+      minDexterity: 9
+      strikeRank: 2
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.CIU0BzsssqKImNW9
+      combatManeuvers:
+        - name: Thrust
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d6
+      minStrength: 9
+      minDexterity: 9
+      strikeRank: 2
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.794y0cyfzCa5eYPf
+      combatManeuvers:
+        - name: Throw
+          damageType: impale
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d10
+      minStrength: 9
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 8
+    max: 8
+  hitPointLocation:
+  encumbrance: 1
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 1
+  range: 20
+  isProjectile: true
+  isProjectileWeapon: false
+  isThrownWeapon: true
+  isRangedWeapon: false

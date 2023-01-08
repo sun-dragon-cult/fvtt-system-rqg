@@ -1,0 +1,255 @@
+name: Small Axe
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-axe.svg
+flags:
+  rqg:
+    documentRqidFlags:
+    id: i.weapon.small-axe
+    priority: ${{openSystem.prio}}$
+    lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.84644z0nkD89R1mz
+      combatManeuvers:
+        - name: Cut
+          damageType: slash
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d6+1
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.kEcxA1G7J8xva450
+      combatManeuvers:
+        - name: Cut
+          damageType: slash
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d6+1
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.9wyEGCc77PiUb9Nl
+      combatManeuvers:
+        - name: Throw
+          damageType: impale
+          description:
+      damage: 1d6
+      minStrength: 9
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 1
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 20
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: true
+  isRangedWeapon: false
+---
+name: Throwing Axe
+type: weapon
+img: systems/rqg/assets/images/weapons/thrown-axe.svg
+flags:
+  rqg:
+    documentRqidFlags:
+    id: i.weapon.throwing-axe
+    priority: ${{openSystem.prio}}$
+    lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.84644z0nkD89R1mz
+      combatManeuvers:
+        - name: Cut
+          damageType: slash
+          description:
+          placeholder: Enter description of how this attack works, or get normal damage
+            buttons (no special handling of critical success damage etc.)
+        - name: Parry
+          damageType: parry
+          description:
+          placeholder: Enter description of how this attack works, or get normal damage
+            buttons (no special handling of critical success damage etc.)
+      damage: 1d6+1
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.kEcxA1G7J8xva450
+      combatManeuvers:
+        - name: Cut
+          damageType: slash
+          description:
+          placeholder: Enter description of how this attack works, or get normal damage
+            buttons (no special handling of critical success damage etc.)
+        - name: Parry
+          damageType: parry
+          description:
+          placeholder: Enter description of how this attack works, or get normal damage
+            buttons (no special handling of critical success damage etc.)
+      damage: 1d6+1
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.9wyEGCc77PiUb9Nl
+      combatManeuvers:
+        - name: Thrust
+          damageType: impale
+          description:
+          placeholder: Enter description of how this attack works, or get normal damage
+            buttons (no special handling of critical success damage etc.)
+      damage: 1d6
+      minStrength: 9
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 1
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 1
+  isContainer: false
+  price:
+    real: 6
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 20
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: true
+  isRangedWeapon: false
+---
+name: Battle Axe
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-axe.svg
+flags:
+  rqg:
+    documentRqidFlags:
+    id: i.weapon.battle-axe
+    priority: ${{openSystem.prio}}$
+    lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.UVRB26QZsPwm1U9R
+      combatManeuvers:
+        - name: Cut
+          damageType: slash
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d8+2
+      minStrength: 13
+      minDexterity: 7
+      strikeRank: 3
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.XZcWh57Y8C89pbdm
+      combatManeuvers:
+        - name: Cut
+          damageType: slash
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d8+2
+      minStrength: 13
+      minDexterity: 7
+      strikeRank: 3
+    twoHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.xhY8SCSzzBhwV1Pk
+      combatManeuvers:
+        - name: Cut
+          damageType: slash
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+      damage: 1d8+2
+      minStrength: 9
+      minDexterity: 7
+      strikeRank: 3
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 8
+    max: 8
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false

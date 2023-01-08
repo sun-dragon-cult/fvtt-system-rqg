@@ -1,0 +1,335 @@
+name: Heavy Mace
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-mace.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.heavy-mace
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.YuCJ36yojE4Qs25C
+      combatManeuvers:
+        - name: Bash
+          damageType: crush
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d8+2
+      minStrength: 13
+      minDexterity: 7
+      strikeRank: 3
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.QXhkkRzyGFB7kZ7c
+      combatManeuvers:
+        - name: Bash
+          damageType: crush
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d8+2
+      minStrength: 13
+      minDexterity: 7
+      strikeRank: 3
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 10
+    max: 10
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Wooden Club
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-mace.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.wooden-club
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.irLs49KOoB7L09BV
+      combatManeuvers:
+        - name: Bash
+          damageType: crush
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.1XdL64sXhBB8xsu9
+      combatManeuvers:
+        - name: Bash
+          damageType: crush
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 4
+    max: 4
+  hitPointLocation:
+  encumbrance: 0.5
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Singlestick
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-mace.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.singlestick
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.77uhCIMhxvbbnx2h
+      combatManeuvers:
+        - name: Bash
+          damageType: crush
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: 90
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.5cYD08n9APE69XPz
+      combatManeuvers:
+        - name: Bash
+          damageType: crush
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: 90
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 5
+    max: 5
+  hitPointLocation:
+  encumbrance: 0.5
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Light Mace
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-mace.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.light-mace
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.9H741jTUGwGD77ai
+      combatManeuvers:
+        - name: Bash
+          damageType: crush
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6+2
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 3
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.3CyELNX1lpG6h8UG
+      combatManeuvers:
+        - name: Bash
+          damageType: crush
+          description:
+        - name: Parry
+          damageType: parry
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6+2
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 3
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 1
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false

@@ -89,6 +89,13 @@
       "type": "Actor"
     },
     {
+      "name": "equipment-weapons-en",
+      "label": "Weapons | en",
+      "system": "rqg",
+      "path": "assets/packs/equipment-weapons-en.db",
+      "type": "Item"
+    },
+    {
       "name": "name-bases-en",
       "label": "Name Bases | en",
       "system": "rqg",
