@@ -35,11 +35,7 @@ export class RqgToken extends Token {
     }
   }
 
-  //TODO: When upgrading @league-of-foundry-developers/foundry-vtt-types
-  //we can remove the ts-nocheck at the top of this file.
-  //In the meantime this allows us to get the userId which is now the third
-  //parameter.  We need it to ensure that we don't initialize the unlinked
-  //Actor for every logged in user.
+  // @ts-expect-error 
   protected _onCreate(
     options: PropertiesToSource<TokenDataProperties>,
     docModOptions: DocumentModificationOptions,
