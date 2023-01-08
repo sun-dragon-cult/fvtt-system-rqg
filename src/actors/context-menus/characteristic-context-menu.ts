@@ -123,7 +123,7 @@ export const characteristicMenuOptions = (
 
 async function getCharacteristicUpdate(
   characteristic: string,
-  formula: string,
+  formula: string | undefined,
   speakerName?: string
 ): Promise<DeepPartial<ActorDataConstructorData & { system: any }>> {
   if (!formula) {

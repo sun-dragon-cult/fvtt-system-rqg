@@ -130,7 +130,14 @@ export class RqgActor extends Actor {
     attributes.health = DamageCalculations.getCombinedActorHealth(this);
   }
 
-  private calcMaxEncumbrance(str: number, con: number, carryingFactor: number | undefined): number {
+  private calcMaxEncumbrance(
+    str: number | undefined,
+    con: number | undefined,
+    carryingFactor: number | undefined
+  ): number {
+    if (!str || !con) {
+      return 0;
+    }
     return Math.round(Math.min(str, (str + con) / 2) * (carryingFactor ?? 1));
   }
 
@@ -257,13 +264,13 @@ export class RqgActor extends Actor {
 
   // Return shorthand access to actor data & characteristics
   private actorCharacteristics(): {
-    str: number;
-    con: number;
-    siz: number;
-    dex: number;
-    int: number;
-    pow: number;
-    cha: number;
+    str: number | undefined;
+    con: number | undefined;
+    siz: number | undefined;
+    dex: number | undefined;
+    int: number | undefined;
+    pow: number | undefined;
+    cha: number | undefined;
   } {
     const characteristics = this.system.characteristics;
     const str = characteristics.strength.value;

@@ -5,25 +5,38 @@ type LookupTableEntry<T> = {
 };
 
 export class RqgCalculations {
-  public static dexSR(dex: number): number | undefined {
+  public static dexSR(dex: number | undefined): number | undefined {
+    if (dex == null) {
+      return undefined;
+    }
     return this.lookup<number | undefined>(dex, dexSrTable);
   }
 
-  public static sizSR(siz: number): number | undefined {
+  public static sizSR(siz: number | undefined): number | undefined {
+    if (siz == null) {
+      return undefined;
+    }
     return this.lookup<number | undefined>(siz, sizSrTable);
   }
 
-  public static hitPoints(con: number, siz: number, pow: number): number {
-    let hp = con + RqgCalculations.linearMod(siz) / 5 + RqgCalculations.flattenedMod(pow) / 5;
-    if (hp < 3) {
+  public static hitPoints(
+    con: number | undefined,
+    siz: number | undefined,
+    pow: number | undefined
+  ): number | undefined {
+    let hp =
+      con != null && siz != null && pow != null
+        ? con + RqgCalculations.linearMod(siz) / 5 + RqgCalculations.flattenedMod(pow) / 5
+        : undefined;
+    if (hp && hp < 3) {
       // HP floor since 1 or 2 is unconscious.
       hp = 3;
     }
     return hp;
   }
 
-  public static damageBonus(str: number, siz: number): string {
-    if (str == null && siz == null) {
+  public static damageBonus(str: number | undefined, siz: number | undefined): string {
+    if (str == null || siz == null) {
       return "0";
     }
     const combined = str + siz;
@@ -35,7 +48,10 @@ export class RqgCalculations {
     }
   }
 
-  public static spiritCombatDamage(pow: number, cha: number): string {
+  public static spiritCombatDamage(pow: number | undefined, cha: number | undefined): string {
+    if (pow == null || cha == null) {
+      return "0";
+    }
     const combined = pow + cha;
     if (combined <= 40) {
       return this.lookup<string>(combined, spiritCombatDamageTable);
@@ -45,17 +61,17 @@ export class RqgCalculations {
     }
   }
 
-  public static healingRate(con: number): number {
-    return Math.ceil(con / 6);
+  public static healingRate(con: number | undefined): number {
+    return con ? Math.ceil(con / 6) : 0;
   }
 
   public static skillCategoryModifiers(
-    str: number,
-    siz: number,
-    dex: number,
-    int: number,
-    pow: number,
-    cha: number,
+    str: number | undefined,
+    siz: number | undefined,
+    dex: number | undefined,
+    int: number | undefined,
+    pow: number | undefined,
+    cha: number | undefined,
     isCreature: boolean
   ) {
     if (isCreature) {
@@ -115,12 +131,18 @@ export class RqgCalculations {
     };
   }
 
-  public static linearMod(value: number): number {
+  public static linearMod(value: number | undefined): number {
+    if (value == null) {
+      return 0;
+    }
     return (Math.ceil(value / 4) - 3) * 5;
   }
 
-  public static flattenedMod(value: number): number {
-    return value <= 4 ? -5 : value <= 16 ? 0 : (Math.ceil(value / 4) - 4) * 5;
+  public static flattenedMod(value: number | undefined): number {
+    if (value == null) {
+      return 0;
+    }
+    return value ? (value <= 4 ? -5 : value <= 16 ? 0 : (Math.ceil(value / 4) - 4) * 5) : 0;
   }
 
   private static lookup<T>(v: number, table: LookupTableEntry<T>[]): T {

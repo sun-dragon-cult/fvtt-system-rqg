@@ -76,12 +76,16 @@ export class CharacteristicChatHandler {
 
   public static async roll(
     characteristicName: string,
-    characteristicValue: number,
+    characteristicValue: number | undefined,
     difficulty: number,
     modifier: number,
     actor: RqgActor,
     speaker: ChatSpeakerDataProperties
   ): Promise<void> {
+    if (characteristicValue == null) {
+      return;
+    }
+
     const translationKeyDifficulty = difficulty === 0.5 ? 0 : difficulty;
     const localizedDifficulty = localize(`RQG.Game.RollDifficulty.${translationKeyDifficulty}`);
     let flavor = localize("RQG.Dialog.characteristicChat.RollFlavor", {

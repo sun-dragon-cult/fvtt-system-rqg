@@ -293,7 +293,7 @@ export class RqgActorSheet extends ActorSheet<
 
   private getFreeInt(spiritMagicPointSum: number): number {
     return (
-      this.actor.system.characteristics.intelligence.value -
+      (this.actor.system.characteristics.intelligence.value ?? 0) -
       spiritMagicPointSum -
       this.actor.items.filter(
         (i: RqgItem) =>
@@ -527,8 +527,8 @@ export class RqgActorSheet extends ActorSheet<
       assertItemType(weapon.type, ItemTypeEnum.Weapon);
 
       let usages = weapon.system.usage;
-      let actorStr = actor.system.characteristics.strength.value;
-      let actorDex = actor.system.characteristics.dexterity.value;
+      let actorStr = actor.system.characteristics.strength.value ?? 0;
+      let actorDex = actor.system.characteristics.dexterity.value ?? 0;
       for (const key in usages) {
         let usage = usages[key];
         if (usage.skillId) {
