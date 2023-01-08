@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { TokenDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/tokenData";
 import { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
@@ -8,6 +7,7 @@ import { getCombatantsSharingToken } from "./combatant-utils";
 
 export class RqgToken extends Token {
   static init() {
+    // @ts-expect-error
     CONFIG.Token.objectClass = RqgToken;
   }
 
@@ -35,7 +35,7 @@ export class RqgToken extends Token {
     }
   }
 
-  // @ts-expect-error 
+  // @ts-expect-error
   protected _onCreate(
     options: PropertiesToSource<TokenDataProperties>,
     docModOptions: DocumentModificationOptions,
@@ -47,7 +47,7 @@ export class RqgToken extends Token {
       if (!this.document.actorLink) {
         console.log("UNLINKED ACTOR");
         if (this.actor) {
-          initializeAllCharacteristics(this.actor, false);
+          initializeAllCharacteristics(this.actor, true);
         }
       }
     }
