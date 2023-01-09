@@ -104,7 +104,7 @@ export class CompendiumPack {
           function (match: string, key: string) {
             const translation = lookup(dictionary, key);
 
-            if (!translation) {
+            if (translation == null) {
               console.error(match, "translation key missing in language", lang);
             } else {
               localizationMatchCount++;

@@ -1128,7 +1128,7 @@
       "compendiums": "Step 4 / 4 - Migrating {count} compendiums"
     }
   },
-  "prio": 1,
+  "prio": 0,
   "lang": "en",
   "content": {
     "cult": {
