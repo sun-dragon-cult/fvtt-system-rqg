@@ -20,4 +20,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.restore-health
-      lang: ${{SS.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

@@ -1,0 +1,68 @@
+name: Pole Lasso
+type: weapon
+img: systems/rqg/assets/images/weapons/lasso.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.pole-lasso
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.c4xz834y4y58vjnH
+      combatManeuvers:
+        - name: Grapple
+          damageType: special
+          description:
+      damage:
+      minStrength: 9
+      minDexterity: 13
+  description:
+  gmNotes:
+  hitPoints:
+    value: 4
+    max: 4
+  hitPointLocation:
+  encumbrance: 3
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 1
+  range: 3
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: true

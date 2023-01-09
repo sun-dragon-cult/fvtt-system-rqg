@@ -1,10 +1,10 @@
-name: Dagger Axe
+name: Composite Bow
 type: weapon
-img: systems/rqg/assets/images/weapons/2h-axe.svg
+img: systems/rqg/assets/images/weapons/bowman.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.weapon.dagger-axe
+      id: i.weapon.composite-bow
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
@@ -27,102 +27,27 @@ data:
       strikeRank: 0
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.9hry1aMvBvVCAZM3
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.9aEgM4UKZQfFddMD
       combatManeuvers:
-        - name: Cut
-          damageType: slash
+        - name: Shoot
+          damageType: impale
           description:
-        - name: Parry
-          damageType: parry
-          description:
-      damage: 3d6
+      damage: 1d8+1
       minStrength: 13
       minDexterity: 9
-      strikeRank: 1
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
   description:
   gmNotes:
   hitPoints:
-    value: 10
-    max: 10
-  hitPointLocation:
-  encumbrance: 3
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Great Axe
-type: weapon
-img: systems/rqg/assets/images/weapons/2h-axe.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.great-axe
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.SEJtC7C6UhrKrcAV
-      combatManeuvers:
-        - name: Cut
-          damageType: slash
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-      damage: 2d6+2
-      minStrength: 11
-      minDexterity: 7
-      strikeRank: 2
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 10
-    max: 10
+    value: 7
+    max: 7
   hitPointLocation:
   encumbrance: 2
   location:
@@ -135,20 +60,20 @@ data:
     estimated: 0
   isNatural: false
   equippedStatus: carried
-  rate: null
-  range: 0
+  rate: 0
+  range: 100
   isProjectile: false
-  isProjectileWeapon: false
+  isProjectileWeapon: true
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Great Hammer
+name: Elf Bow
 type: weapon
-img: systems/rqg/assets/images/weapons/2h-hammer.svg
+img: systems/rqg/assets/images/weapons/bowman.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.weapon.great-hammer
+      id: i.weapon.elf-bow
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
@@ -171,615 +96,27 @@ data:
       strikeRank: 0
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.8an9DP6Kts02NkFu
-      combatManeuvers:
-        - name: Bash
-          damageType: crush
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-      damage: 2d6+2
-      minStrength: 9
-      minDexterity: 9
-      strikeRank: 1
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
     missile:
       skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 5
-    max: 5
-  hitPointLocation:
-  encumbrance: 3
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Maul
-type: weapon
-img: systems/rqg/assets/images/weapons/2h-hammer.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.maul
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.aR2CR7aiPmNAoBYN
+      skillOrigin: Compendium.rqg.skills-weapons.zhMTFSWh768z6Jnk
       combatManeuvers:
-        - name: Bash
-          damageType: crush
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-        - name: Knockback
-          damageType: special
-          description:
-      damage: 2d8
-      minStrength: 11
-      minDexterity: 7
-      strikeRank: 1
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 12
-    max: 12
-  hitPointLocation:
-  encumbrance: 3
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Mace
-type: weapon
-img: systems/rqg/assets/images/weapons/2h-mace.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.mace
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.cY0ZAU37y7ElrIWc
-      combatManeuvers:
-        - name: Bash
-          damageType: crush
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-        - name: Knockback
-          damageType: special
-          description:
-      damage: 1d8+2
-      minStrength: 9
-      minDexterity: 7
-      strikeRank: 3
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 10
-    max: 10
-  hitPointLocation:
-  encumbrance: 2
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Rhomphaia
-type: weapon
-img: systems/rqg/assets/images/weapons/2h-sword.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.rhomphaia
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.P5fq02SPVgRRVyca
-      combatManeuvers:
-        - name: Cut
-          damageType: slash
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-      damage: 2d6+2
-      minStrength: 11
-      minDexterity: 9
-      strikeRank: 2
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 10
-    max: 10
-  hitPointLocation:
-  encumbrance: 2
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: GreatSword
-type: weapon
-img: systems/rqg/assets/images/weapons/2h-sword.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.greatsword
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.oaqCx2G0z8i6nFdA
-      combatManeuvers:
-        - name: Cut
-          damageType: slash
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-      damage: 2d8
-      minStrength: 11
-      minDexterity: 13
-      strikeRank: 1
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 12
-    max: 12
-  hitPointLocation:
-  encumbrance: 2
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Sickle-sword
-type: weapon
-img: systems/rqg/assets/images/weapons/2h-sword.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.sickle-sword
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.4p6P3lLzd9E22WKe
-      combatManeuvers:
-        - name: Cut
-          damageType: slash
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-      damage: 1d10+1
-      minStrength: 9
-      minDexterity: 9
-      strikeRank: 2
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 12
-    max: 12
-  hitPointLocation:
-  encumbrance: 1
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Long Spear
-type: weapon
-img: systems/rqg/assets/images/weapons/2h-spear.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.long-spear
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.x9Cj4g9vfO64Uxia
-      combatManeuvers:
-        - name: Thrust
+        - name: Shoot
           damageType: impale
           description:
-        - name: Parry
-          damageType: parry
-          description:
-      damage: 1d10+1
-      minStrength: 9
-      minDexterity: 7
-      strikeRank: 0
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 10
-    max: null
-  hitPointLocation:
-  encumbrance: 3
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Pike
-type: weapon
-img: systems/rqg/assets/images/weapons/2h-spear.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.pike
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.GKqFmE4XASes5k97
-      combatManeuvers:
-        - name: Thrust
-          damageType: impale
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-      damage: 2d6+1
-      minStrength: 11
-      minDexterity: 7
-      strikeRank: 0
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description:
-  gmNotes:
-  hitPoints:
-    value: 12
-    max: 12
-  hitPointLocation:
-  encumbrance: 3
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: null
-  range: 0
-  isProjectile: false
-  isProjectileWeapon: false
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Quarterstaff
-type: weapon
-img: systems/rqg/assets/images/weapons/quarterstaff.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.quarterstaff
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.A7268y2J3MxcMmzv
-      combatManeuvers:
-        - name: Bash
-          damageType: crush
-          description:
-        - name: Parry
-          damageType: parry
-          description:
-        - name: Knockback
-          damageType: special
-          description:
-      damage: 1d8
+      damage: 1d18+1
       minStrength: 9
       minDexterity: 9
-      strikeRank: 0
-    missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
   description:
   gmNotes:
   hitPoints:
-    value: 8
-    max: 8
+    value: 6
+    max: 6
   hitPointLocation:
   encumbrance: 2
   location:
@@ -792,9 +129,486 @@ data:
     estimated: 0
   isNatural: false
   equippedStatus: carried
-  rate: null
-  range: 0
+  rate: 0
+  range: 80
   isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Self Bow
+type: weapon
+img: systems/rqg/assets/images/weapons/bowman.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.self-bow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.EcDI8nmAyfshQL10
+      combatManeuvers:
+        - name: Shoot
+          damageType: impale
+          description:
+      damage: 1d6+1
+      minStrength: 9
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 9
+    max: 9
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 80
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+  ---
+  name: Arbalest
+type: weapon
+img: systems/rqg/assets/images/weapons/crossbow.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.arbalest
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.CVruhytNFN3sfNaM
+      combatManeuvers:
+        - name: Shoot
+          damageType: impale
+          description:
+      damage: 3d6+1
+      minStrength: 13
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 10
+    max: 10
+  hitPointLocation:
+  encumbrance: 3
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 5
+  range: 150
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Heavy Crossbow
+type: weapon
+img: systems/rqg/assets/images/weapons/crossbow.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.heavy-crossbow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.6tN59Is4NdkZMJF5
+      combatManeuvers:
+        - name: Shoot
+          damageType: impale
+          description:
+      damage: 2d6+2
+      minStrength: 11
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 10
+    max: 10
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 3
+  range: 120
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Light Crossbow
+type: weapon
+img: systems/rqg/assets/images/weapons/crossbow.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.light-crossbow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.SL7I4vZ0pKwO714W
+      combatManeuvers:
+        - name: Shoot
+          damageType: impale
+          description:
+      damage: 2d4+2
+      minStrength: 7
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 2
+  range: 100
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Repeating Crossbow
+type: weapon
+img: systems/rqg/assets/images/weapons/crossbow.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.repeating-crossbow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.OTEuqGbfafup9W49
+      combatManeuvers:
+        - name: Shoot
+          damageType: impale
+          description:
+      damage: 2d4+2
+      minStrength: 7
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 1
+  range: 100
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---  
+name: Arrows
+type: weapon
+img: systems/rqg/assets/images/weapons/arrows.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.arrows
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description: "<p>Bow Arrows</p>"
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation:
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 20
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate:
+  range: 0
+  isProjectile: true
   isProjectileWeapon: false
   isThrownWeapon: false
   isRangedWeapon: false
+  projectileId:
+---
+name: Crossbow Bolts
+type: weapon
+img: systems/rqg/assets/images/weapons/bolts.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.crossbow-bolts
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description: "<p>Crossbow Bolts</p>"
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation:
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 20
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate:
+  range: 0
+  isProjectile: true
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+  projectileId:

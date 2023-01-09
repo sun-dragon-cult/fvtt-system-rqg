@@ -1,10 +1,10 @@
-name: Sling
+name: Atlatl - Dart
 type: weapon
-img: systems/rqg/assets/images/weapons/sling.svg
+img: systems/rqg/assets/images/weapons/atlatl.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.weapon.sling
+      id: i.weapon.atlatl-dart
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
@@ -35,90 +35,21 @@ data:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.M66Aa8Cij2s4Xc3P
+      skillOrigin: Compendium.rqg.skills-weapons.OyDJcTa37nCfWgYe
       combatManeuvers:
         - name: Throw
-          damageType: crush
+          damageType: impale
           description:
-      damage: 1d8
-      minStrength: null
+      damage: 2d6
+      minStrength: 7
       minDexterity: 9
   description:
   gmNotes:
   hitPoints:
-    value:
-    max:
-  hitPointLocation: '---'
-  encumbrance: 1
-  location:
-  attunedTo:
-  physicalItemType: unique
-  quantity: 1
-  isContainer: false
-  price:
-    real: 0
-    estimated: 0
-  isNatural: false
-  equippedStatus: carried
-  rate: 0
-  range: 80
-  isProjectile: false
-  isProjectileWeapon: true
-  isThrownWeapon: false
-  isRangedWeapon: false
----
-name: Staff Sling
-type: weapon
-img: systems/rqg/assets/images/weapons/sling.svg
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.weapon.staff-sling
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
-data:
-  usage:
-    oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
-      damage:
-      minStrength: 0
-      minDexterity: 0
-      strikeRank: 0
-    missile:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.8qozzHxXWC57R1B0
-      combatManeuvers:
-        - name: Throw
-          damageType: crush
-          description:
-      damage: 1d10
-      minStrength: 9
-      minDexterity: 9
-  description:
-  gmNotes:
-  hitPoints:
-    value: 8
-    max: 8
+    value: 6
+    max: 6
   hitPointLocation:
-  encumbrance: 2
+  encumbrance: 0.5
   location:
   attunedTo:
   physicalItemType: unique
@@ -130,19 +61,19 @@ data:
   isNatural: false
   equippedStatus: carried
   rate: 1
-  range: 100
+  range: 30
   isProjectile: false
   isProjectileWeapon: true
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Sling Stones
+name: Atlatl - Javelin
 type: weapon
-img: systems/rqg/assets/images/weapons/sling-stones.svg
+img: systems/rqg/assets/images/weapons/atlatl.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.weapon.sling-stones
+      id: i.weapon.atlatl-javelin
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
@@ -150,7 +81,7 @@ data:
     oneHand:
       skillId:
       skillOrigin:
-      combatManeuvers: []
+      combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
@@ -158,7 +89,7 @@ data:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers: []
+      combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
@@ -166,39 +97,112 @@ data:
     twoHand:
       skillId:
       skillOrigin:
-      combatManeuvers: []
+      combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin:
-      combatManeuvers: []
-      damage:
-      minStrength: 0
-      minDexterity: 0
-  description: <p>Sling pellets</p>
+      skillOrigin: Compendium.rqg.skills-weapons.OyDJcTa37nCfWgYe
+      combatManeuvers:
+        - name: Throw
+          damageType: impale
+          description:
+      damage: 1d10+1d6
+      minStrength: 7
+      minDexterity: 9
+  description:
   gmNotes:
   hitPoints:
-    value: 0
-    max:
+    value: 6
+    max: 6
   hitPointLocation:
-  encumbrance: 0.1
+  encumbrance: 0.5
   location:
   attunedTo:
-  physicalItemType: consumable
-  quantity: 10
+  physicalItemType: unique
+  quantity: 1
   isContainer: false
   price:
     real: 0
     estimated: 0
   isNatural: false
-  equippedStatus: equipped
-  rate:
-  range: 0
-  isProjectile: true
-  isProjectileWeapon: false
+  equippedStatus: carried
+  rate: 1
+  range: 30
+  isProjectile: false
+  isProjectileWeapon: true
   isThrownWeapon: false
   isRangedWeapon: false
-  projectileId:
+---
+name: Dart
+type: weapon
+img: systems/rqg/assets/images/weapons/dart.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.dart
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.UfrGc8zwcTmE1HPv
+      combatManeuvers:
+        - name: Throw
+          damageType: impale
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 4
+    max: 4
+  hitPointLocation:
+  encumbrance: 0.5
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 20
+  isProjectile: true
+  isProjectileWeapon: false
+  isThrownWeapon: true
+  isRangedWeapon: false
+  # Javelin is in spears
+  # Short Spear is in spears
