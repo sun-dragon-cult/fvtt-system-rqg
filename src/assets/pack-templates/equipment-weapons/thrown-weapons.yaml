@@ -4,9 +4,9 @@ img: systems/rqg/assets/images/weapons/thrown-axe.svg
 flags:
   rqg:
     documentRqidFlags:
-    id: i.weapon.throwing-axe
-    priority: ${{openSystem.prio}}$
-    lang: ${{openSystem.lang}}$
+      id: i.weapon.throwing-axe
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 data:
   usage:
     oneHand:

@@ -204,8 +204,8 @@ data:
   isProjectileWeapon: true
   isThrownWeapon: false
   isRangedWeapon: false
-  ---
-  name: Arbalest
+---
+name: Arbalest
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:

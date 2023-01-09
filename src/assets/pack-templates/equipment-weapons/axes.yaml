@@ -4,9 +4,9 @@ img: systems/rqg/assets/images/weapons/1h-axe.svg
 flags:
   rqg:
     documentRqidFlags:
-    id: i.weapon.small-axe
-    priority: ${{openSystem.prio}}$
-    lang: ${{openSystem.lang}}$
+      id: i.weapon.small-axe
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 data:
   usage:
     oneHand:
@@ -85,9 +85,9 @@ img: systems/rqg/assets/images/weapons/1h-axe.svg
 flags:
   rqg:
     documentRqidFlags:
-    id: i.weapon.battle-axe
-    priority: ${{openSystem.prio}}$
-    lang: ${{openSystem.lang}}$
+      id: i.weapon.battle-axe
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
 data:
   usage:
     oneHand:

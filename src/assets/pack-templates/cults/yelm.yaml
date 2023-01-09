@@ -12,8 +12,8 @@ data:
   holyDays:
   runes:
     - ${{openSystem.content.runeDescription.fertilityPower.name}}$
-    - ${{openSystem.content.runeDescription.fireskyElement.name}}$
-    - ${{openSystem.content.runeDescription.fireskyElement.name}}$
+    - ${{openSystem.content.runeDescription.fireSkyElement.name}}$
+    - ${{openSystem.content.runeDescription.fireSkyElement.name}}$
     - ${{openSystem.content.runeDescription.deathPower.name}}$
   descriptionRqidLink:
     rqid: je..yelm
