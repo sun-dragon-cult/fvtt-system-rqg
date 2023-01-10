@@ -25,7 +25,7 @@ describe("healing", () => {
   it("should be correct for healing smaller wounds", () => {
     // --- Arrange ---
     const healPoints = 2;
-    const actorTotalHp = mockActor.system.attributes.hitPoints?.value!; // 15
+    const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
 
     applyTestDamage(1, true, mockLeftLeg, mockActor);
     applyTestDamage(healPoints, true, mockLeftLeg, mockActor);
@@ -136,7 +136,7 @@ describe("healing", () => {
     // --- Arrange ---
     const chestDamage = 2;
     const legDamage = 3;
-    const actorTotalHp = mockActor.system.attributes.hitPoints?.value!; // 15
+    const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
 
     applyTestDamage(chestDamage, true, mockChest, mockActor);
     applyTestDamage(legDamage, true, mockLeftLeg, mockActor);
@@ -213,7 +213,7 @@ describe("healing", () => {
   it("should remove 'useless' state from limb when HP > 0", () => {
     // --- Arrange ---
     const legDamage = mockLeftLeg.system.hitPoints.max!; // 5
-    const actorTotalHp = mockActor.system.attributes.hitPoints?.value!; // 15
+    const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
 
     applyTestDamage(legDamage, true, mockLeftLeg, mockActor);
     expect(mockLeftLeg.system.hitLocationHealthState).toBe("useless");
