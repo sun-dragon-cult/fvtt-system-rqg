@@ -562,8 +562,7 @@ export class RqgActorSheet extends ActorSheet<
   private getUiSectionVisibility(): UiSections {
     return {
       health:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.system.characteristics.constitution.value !== null,
+        CONFIG.RQG.debug.showAllUiSections || this.actor.system.attributes.hitPoints.max != null,
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
@@ -608,36 +607,29 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
-    if (formData["system.characteristics.constitution.value"] !== null) {
-      let maxHitPoints = this.actor.system.attributes.hitPoints?.max;
-      // requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
-      if (maxHitPoints == null) {
-        // Actor had No CON but has been given CON, so we need to add hit points which will be recalculated later.
-        formData["system.attributes.hitPoints.value"] = 0;
-      } else {
-        if (
-          formData["system.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
-          formData["system.attributes.hitPoints.value"] > maxHitPoints
-        ) {
-          formData["system.attributes.hitPoints.value"] = maxHitPoints;
-        }
-      }
+    let maxHitPoints = this.actor.system.attributes.hitPoints.max;
+
+    if (
+      formData["system.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
+      (formData["system.attributes.hitPoints.value"] ?? 0) >= (maxHitPoints ?? 0)
+    ) {
+      formData["system.attributes.hitPoints.value"] = maxHitPoints;
     }
 
-    const hpTmp = this.actor.system.attributes.hitPoints?.value;
     // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
-    if (this.actor.system.attributes.hitPoints != null) {
-      this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
-    }
+    const hpTmp = this.actor.system.attributes.hitPoints.value;
+
+    this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
     if (newHealth !== this.actor.system.attributes.health) {
-      // @ts-ignore wait for foundry-vtt-types issue #1165
-      const speakerName = this.token?.name || this.actor.prototypeToken.name;
+      // @ts-expect-error this.token should be TokenDocument, but is typed as Token
+      const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
+      const speakerName = speaker.alias;
       let message;
       // TODO v10 any
       if (
         newHealth === "dead" &&
-        // @ts-ignore
+        // @ts-expect-error
         !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "dead")
       ) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
@@ -645,7 +637,7 @@ export class RqgActorSheet extends ActorSheet<
       if (
         newHealth === "unconscious" &&
         // TODO v10 any
-        // @ts-ignore
+        // @ts-expect-error
         !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "unconscious")
       ) {
         message = `${speakerName} faints from lack of hitpoints!`;
@@ -653,16 +645,14 @@ export class RqgActorSheet extends ActorSheet<
       message &&
         ChatMessage.create({
           user: getGameUser().id,
-          speaker: { alias: speakerName },
+          speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
         });
     }
 
-    if (this.actor.system.attributes.hitPoints != null) {
-      this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
-    }
+    this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
     if (this.token) {
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       const tokenHealthBefore = this.token?.actor?.system.attributes.health;

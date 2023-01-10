@@ -39,9 +39,9 @@ export class HitLocation extends AbstractEmbeddedItem {
 
     item.system.armorPoints = item.system.naturalAp + armorAbsorption;
 
-    if (actorData.attributes.hitPoints != null) {
+    if (actorData.attributes.hitPoints.max != null) {
       // Calc HP
-      const totalHp = actorData.attributes.hitPoints?.max;
+      const totalHp = actorData.attributes.hitPoints.max;
       if (totalHp == null) {
         const msg = localize("RQG.Item.Notification.ActorDoesNotHaveMaxHpError");
         ui.notifications?.error(msg);

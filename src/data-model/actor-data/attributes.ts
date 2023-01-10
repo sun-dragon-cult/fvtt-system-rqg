@@ -13,7 +13,7 @@ export enum LocomotionEnum {
 export class Attributes {
   constructor(
     public magicPoints: Resource,
-    public hitPoints: Resource | undefined,
+    public hitPoints: Resource,
 
     public move: {
       currentLocomotion: LocomotionEnum;

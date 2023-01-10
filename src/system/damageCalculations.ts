@@ -56,7 +56,7 @@ export class DamageCalculations {
   }
 
   private static applyDamageToActorTotalHp(damage: number, actor: RqgActor): DeepPartial<RqgActor> {
-    if (actor.system.attributes.hitPoints != null) {
+    if (actor.system.attributes.hitPoints.max != null) {
       const currentTotalHp = actor.system.attributes.hitPoints.value;
       const actorUpdateData: DeepPartial<RqgActor> = {
         system: { attributes: { hitPoints: { value: 0 } } },
@@ -243,39 +243,34 @@ export class DamageCalculations {
   }
 
   static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
-    if (actor.system.attributes.hitPoints != null) {
-      const totalHitPoints = actor.system.attributes.hitPoints.value;
-      if (totalHitPoints == null) {
-        const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actor.name}`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, actor);
-      }
-      let maxHitPoints = actor.system.attributes.hitPoints.max;
-      if (maxHitPoints == null) {
-        const msg = `Actor max hit points value ${maxHitPoints} is missing in actor ${actor.name}`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, actor);
-      }
-      const baseHealth: ActorHealthState = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
+    let maxHitPoints = actor.system.attributes.hitPoints.max;
 
-      if (totalHitPoints <= 0) {
-        return "dead";
-      } else if (totalHitPoints <= 2) {
-        return "unconscious";
-      } else {
-        return actor.items.reduce((acc: ActorHealthState, item: RqgItem) => {
-          if (item.type !== ItemTypeEnum.HitLocation) {
-            return acc;
-          } else {
-            const actorHealthImpact = item.system.actorHealthImpact;
-            return actorHealthStatuses.indexOf(actorHealthImpact) > actorHealthStatuses.indexOf(acc)
-              ? actorHealthImpact
-              : acc;
-          }
-        }, baseHealth);
-      }
+    if (maxHitPoints == null) {
+      return "healthy";
     }
+    const totalHitPoints = actor.system.attributes.hitPoints.value;
+    if (totalHitPoints == null) {
+      const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actor.name}`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, actor);
+    }
+    const baseHealth: ActorHealthState = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
 
-    return "healthy";
+    if (totalHitPoints <= 0) {
+      return "dead";
+    } else if (totalHitPoints <= 2) {
+      return "unconscious";
+    } else {
+      return actor.items.reduce((acc: ActorHealthState, item: RqgItem) => {
+        if (item.type !== ItemTypeEnum.HitLocation) {
+          return acc;
+        } else {
+          const actorHealthImpact = item.system.actorHealthImpact;
+          return actorHealthStatuses.indexOf(actorHealthImpact) > actorHealthStatuses.indexOf(acc)
+            ? actorHealthImpact
+            : acc;
+        }
+      }, baseHealth);
+    }
   }
 }

@@ -36,7 +36,7 @@ export class HealingCalculations {
       usefulLegs: [], // Not used yet
     };
 
-    if (actor.system.attributes.hitPoints == null) {
+    if (actor.system.attributes.hitPoints.max == null) {
       return healingEffects;
     }
 
