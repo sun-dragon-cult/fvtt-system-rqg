@@ -1,0 +1,22 @@
+name: Medium Quiver
+type: gear
+img: systems/rqg/assets/images/gear/quiver.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.medium-quiver
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: "<p>Holds two dozen arrows. A leather, wooden, or stiffened cloth container used for carrying arrows or crossbow bolts. Worn slung low on the hip, at the waist, or over the back.</p>"
+  gmNotes:
+  quantity: 1
+  price:
+    real: 12
+    estimated: 0
+  encumbrance: 1.0
+  equippedStatus: carried
+  location:
+  isContainer: true
+  attunedTo:
+  physicalItemType: unique

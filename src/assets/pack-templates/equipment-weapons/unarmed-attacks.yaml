@@ -71,7 +71,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 10
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -155,7 +155,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 20
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -166,13 +166,13 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Claw
+name: Claw (Metal)
 type: weapon
 img: systems/rqg/assets/images/weapons/claw.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.weapon.claw
+      id: i.weapon.claw-metal
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
@@ -239,7 +239,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 25
     estimated: 0
   isNatural: false
   equippedStatus: carried

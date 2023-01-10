@@ -1,10 +1,10 @@
-name: Small Shield
+name: Small Wooden Shield
 type: weapon
 img: systems/rqg/assets/images/weapons/small-shield.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.weapon.small-shield
+      id: i.weapon.small-wooden-shield
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
@@ -65,7 +65,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 4
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -77,13 +77,13 @@ data:
   isRangedWeapon: false
   projectileId:
 ---
-name: Medium Shield
+name: Medium Wooden Shield
 type: weapon
 img: systems/rqg/assets/images/weapons/medium-shield.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.weapon.medium-shield
+      id: i.weapon.medium-wooden-shield
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
@@ -144,7 +144,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 12
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -156,13 +156,13 @@ data:
   isRangedWeapon: false
   projectileId:
 ---
-name: Large Shield
+name: Large Wooden Shield
 type: weapon
 img: systems/rqg/assets/images/weapons/large-shield.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.weapon.large-shield
+      id: i.weapon.large-wooden-shield
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
@@ -223,7 +223,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 40
     estimated: 0
   isNatural: false
   equippedStatus: carried

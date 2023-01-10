@@ -71,7 +71,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 20
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -143,7 +143,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 15
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -218,7 +218,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 20
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -302,7 +302,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 20
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -386,7 +386,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 10
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -470,7 +470,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 1
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -629,7 +629,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 25
     estimated: 0
   isNatural: false
   equippedStatus: carried
@@ -704,7 +704,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 5
     estimated: 0
   isNatural: false
   equippedStatus: carried

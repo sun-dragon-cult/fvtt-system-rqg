@@ -56,7 +56,7 @@ data:
   quantity: 1
   isContainer: false
   price:
-    real: 0
+    real: 7
     estimated: 0
   isNatural: false
   equippedStatus: carried
