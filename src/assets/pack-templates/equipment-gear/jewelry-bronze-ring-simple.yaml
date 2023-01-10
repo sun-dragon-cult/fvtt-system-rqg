@@ -1,0 +1,22 @@
+name: Simple Bronze Ring
+type: gear
+img: systems/rqg/assets/images/gear/ring.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.simple-bronze-ring
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: <p>A simple bronze ring.</p>
+  gmNotes:
+  quantity: 1
+  price:
+    real: 1
+    estimated: 0
+  encumbrance: 0.0
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

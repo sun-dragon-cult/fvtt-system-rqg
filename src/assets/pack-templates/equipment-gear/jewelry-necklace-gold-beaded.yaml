@@ -1,0 +1,22 @@
+name: Beaded Gold Necklace
+type: gear
+img: systems/rqg/assets/images/gear/pearl-necklace.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.beaded-gold-necklace
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: <p>A necklace of beads made from gold.</p>
+  gmNotes:
+  quantity: 1
+  price:
+    real: 300
+    estimated: 0
+  encumbrance: 0.0
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

@@ -1,0 +1,22 @@
+name: Esrolian Dress 
+type: gear
+img: systems/rqg/assets/images/gear/dress.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.esrolian-dress
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: "<p>The flounced and pleated bell-shaped skirt worn by noble women and priestesses. Price: 15–35 L depending on decoration and style.</p>"
+  gmNotes:
+  quantity: 1
+  price:
+    real: 15
+    estimated: 0
+  encumbrance: 0.5
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

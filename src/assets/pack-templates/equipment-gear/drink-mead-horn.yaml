@@ -1,0 +1,22 @@
+name: Horn of Mead
+type: gear
+img: systems/rqg/assets/images/gear/beer-horn.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.horn-of-mead
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: <p>A single serving of mead.</p>
+  gmNotes:
+  quantity: 1
+  price:
+    real: 0.1
+    estimated: 0
+  encumbrance: 0.1
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

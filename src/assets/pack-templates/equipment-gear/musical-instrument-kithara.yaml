@@ -1,0 +1,22 @@
+name: Kithara
+type: gear
+img: systems/rqg/assets/images/gear/lyre.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.kithara
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: "<p>A stringed instrument with a deep wooden sound box.</p>"
+  gmNotes:
+  quantity: 1
+  price:
+    real: 50
+    estimated: 0
+  encumbrance: 3.0
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

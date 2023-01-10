@@ -1,0 +1,22 @@
+name: Stone Hammer
+type: gear
+img: systems/rqg/assets/images/gear/hammer-break.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.stone-hammer
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: "<p>A stringed instrument with a deep wooden sound box.</p>"
+  gmNotes:
+  quantity: 1
+  price:
+    real: 0.4
+    estimated: 0
+  encumbrance: 0.5
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

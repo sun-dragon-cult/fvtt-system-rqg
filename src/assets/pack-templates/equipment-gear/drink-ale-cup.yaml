@@ -1,0 +1,22 @@
+name: Two Cups of Ale
+type: gear
+img: systems/rqg/assets/images/gear/beer-stein.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.two-cups-of-ale
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: <p>Two cups of ale.</p>
+  gmNotes:
+  quantity: 1
+  price:
+    real: 0.1
+    estimated: 0
+  encumbrance: 0.2
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

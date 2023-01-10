@@ -96,6 +96,13 @@
       "type": "Item"
     },
     {
+      "name": "equipment-gear-en",
+      "label": "Equipment, Gear | en",
+      "system": "rqg",
+      "path": "assets/packs/equipment-gear-en.db",
+      "type": "Item"
+    },
+    {
       "name": "equipment-weapons-en",
       "label": "Equipment, Weapons | en",
       "system": "rqg",

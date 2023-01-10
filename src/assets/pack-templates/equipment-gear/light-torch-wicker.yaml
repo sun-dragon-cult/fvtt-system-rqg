@@ -1,0 +1,22 @@
+name: Wicker Torch
+type: gear
+img: systems/rqg/assets/images/gear/primitive-torch.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.wicker-torch
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: "<p>A rough torch made of dried twigs, woven together.</p>"
+  gmNotes:
+  quantity: 5
+  price:
+    real: 0.1
+    estimated: 0
+  encumbrance: 1.0
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: consumable

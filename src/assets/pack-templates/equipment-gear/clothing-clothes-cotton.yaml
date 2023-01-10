@@ -1,0 +1,22 @@
+name: Cotton Clothing 
+type: gear
+img: systems/rqg/assets/images/gear/clothes.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.cotton-clothing
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: <p>Men typically wear either belted long tunics, or short tunics and skirts. Women typically wear tunics and wrap-around skirts. Many men forego the tunic during the summer heat. During the winter, cloaks and robes or breeches provide warmth.</p>
+  gmNotes:
+  quantity: 1
+  price:
+    real: 2
+    estimated: 0
+  encumbrance: 0.5
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

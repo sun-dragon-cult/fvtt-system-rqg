@@ -1,0 +1,22 @@
+name: Galana (pony)
+type: gear
+img: systems/rqg/assets/images/gear/horse-head.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.galana-pony
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: <p>A single serving of mead.</p>
+  gmNotes:
+  quantity: 1
+  price:
+    real: 100
+    estimated: 0
+  encumbrance: 0
+  equippedStatus: notCarried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique
