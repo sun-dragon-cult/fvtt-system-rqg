@@ -254,8 +254,7 @@
         "Wounds": "Wounds",
         "HealWound": "Heal Wound",
         "AddWound": "Add Wound",
-        "NoHitPoints": "This entity does not have Hit Points.",
-        "NoHitLocations": "This entity does not have Hit Locations."
+        "NoHitLocations": "This character does not have any hit locations, please add some."
       },
       "Nav": {
         "Combat": "Combat",
