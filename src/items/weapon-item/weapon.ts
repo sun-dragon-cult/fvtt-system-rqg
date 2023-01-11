@@ -354,7 +354,8 @@ export class Weapon extends AbstractEmbeddedItem {
     );
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     let damageBonusFormula: string =
-      weaponItem.actor?.system.attributes.damageBonus !== "0"
+      weaponItem.actor?.system.attributes.damageBonus !== "0" &&
+      weaponItem.actor?.system.attributes.damageBonus != null
         ? `${weaponItem.actor?.system.attributes.damageBonus}`
         : "";
 

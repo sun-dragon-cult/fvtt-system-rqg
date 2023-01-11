@@ -1,6 +1,13 @@
 <h2>Combat</h2>
 <div class="flex-row flex-align-center">
-  <label data-damage-roll="{{system.attributes.damageBonus}}">{{localize "RQG.Actor.Combat.DamageBonus"}} {{system.attributes.damageBonus}}</label>
+  <label data-damage-roll="{{system.attributes.damageBonus}}">
+    {{localize "RQG.Actor.Combat.DamageBonus"}}: 
+    {{#if system.attributes.damageBonus}}
+      {{system.attributes.damageBonus}}
+    {{else}}
+      {{localize "RQG.Actor.Combat.NoPhysicalDamage"}}
+    {{/if}}
+  </label>
 </div>
 <div class="grid combat item-list">
   <div class="headings"></div>

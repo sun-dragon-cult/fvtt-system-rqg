@@ -22,9 +22,9 @@ export class RqgCalculations {
     return hp;
   }
 
-  public static damageBonus(str: number, siz: number): string {
-    if (str == null && siz == null) {
-      return "0";
+  public static damageBonus(str: number | undefined, siz: number | undefined): string | undefined {
+    if (str == null || siz == null) {
+      return undefined;
     }
     const combined = str + siz;
     if (combined <= 40) {
