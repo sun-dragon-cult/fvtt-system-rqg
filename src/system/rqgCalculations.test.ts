@@ -80,3 +80,20 @@ describe("hit points calculations are correct for", () => {
     expect(hp).toBe(12);
   });
 });
+
+describe("damage bonus calculations are correct for", () => {
+  it("normal character", () => {
+    const hp = RqgCalculations.damageBonus(18, 18);
+    expect(hp).toBe("1d6");
+  });
+
+  it("No STR", () => {
+    const hp = RqgCalculations.damageBonus(undefined, 18);
+    expect(hp).toBe("0");
+  });
+
+  it("No SIZ", () => {
+    const hp = RqgCalculations.damageBonus(32, undefined);
+    expect(hp).toBe("0");
+  });
+});
