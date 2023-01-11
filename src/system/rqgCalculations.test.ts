@@ -53,3 +53,47 @@ describe("Skill Category Modifiers are correct for", () => {
     });
   });
 });
+
+describe("hit points calculations are correct for", () => {
+  it("normal character", () => {
+    const hp = RqgCalculations.hitPoints(11, 7, 13);
+    expect(hp).toBe(10);
+  });
+
+  it("spirit without con", () => {
+    const hp = RqgCalculations.hitPoints(undefined, undefined, 13);
+    expect(hp).toBe(undefined);
+  });
+
+  it("Elemental without str", () => {
+    const hp = RqgCalculations.hitPoints(18, undefined, 17);
+    expect(hp).toBe(19); // TODO should not have CON but HP - model elementals with CON ?
+  });
+
+  it("Sprul-pa no total HP", () => {
+    const hp = RqgCalculations.hitPoints(undefined, 11, 7);
+    expect(hp).toBe(undefined);
+  });
+
+  it("Ghoul without pow", () => {
+    const hp = RqgCalculations.hitPoints(11, 13, undefined);
+    expect(hp).toBe(12);
+  });
+});
+
+describe("damage bonus calculations are correct for", () => {
+  it("normal character", () => {
+    const hp = RqgCalculations.damageBonus(18, 18);
+    expect(hp).toBe("1d6");
+  });
+
+  it("No STR", () => {
+    const hp = RqgCalculations.damageBonus(undefined, 18);
+    expect(hp).toBe("0");
+  });
+
+  it("No SIZ", () => {
+    const hp = RqgCalculations.damageBonus(32, undefined);
+    expect(hp).toBe("0");
+  });
+});

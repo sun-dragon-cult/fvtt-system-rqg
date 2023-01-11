@@ -253,7 +253,8 @@
         "ArmorPointsAbbr": "AP",
         "Wounds": "Wounds",
         "HealWound": "Heal Wound",
-        "AddWound": "Add Wound"
+        "AddWound": "Add Wound",
+        "NoHitLocations": "This character does not have any hit locations, please add some."
       },
       "Nav": {
         "Combat": "Combat",

@@ -293,7 +293,7 @@ export class RqgActorSheet extends ActorSheet<
 
   private getFreeInt(spiritMagicPointSum: number): number {
     return (
-      this.actor.system.characteristics.intelligence.value -
+      (this.actor.system.characteristics.intelligence.value ?? 0) -
       spiritMagicPointSum -
       this.actor.items.filter(
         (i: RqgItem) =>
@@ -527,8 +527,8 @@ export class RqgActorSheet extends ActorSheet<
       assertItemType(weapon.type, ItemTypeEnum.Weapon);
 
       let usages = weapon.system.usage;
-      let actorStr = actor.system.characteristics.strength.value;
-      let actorDex = actor.system.characteristics.dexterity.value;
+      let actorStr = actor.system.characteristics.strength.value ?? 0;
+      let actorDex = actor.system.characteristics.dexterity.value ?? 0;
       for (const key in usages) {
         let usage = usages[key];
         if (usage.skillId) {
@@ -563,7 +563,8 @@ export class RqgActorSheet extends ActorSheet<
     return {
       health:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.HitLocation),
+        this.actor.system.attributes.hitPoints.max != null ||
+        this.actor.items.some((i) => i.type === ItemTypeEnum.HitLocation),
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
@@ -609,38 +610,44 @@ export class RqgActorSheet extends ActorSheet<
 
   protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
     let maxHitPoints = this.actor.system.attributes.hitPoints.max;
-    requireValue(maxHitPoints, "Actor does not have max hitpoints set.", this.actor);
+
     if (
       formData["system.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
-      formData["system.attributes.hitPoints.value"] > maxHitPoints
+      (formData["system.attributes.hitPoints.value"] ?? 0) >= (maxHitPoints ?? 0)
     ) {
       formData["system.attributes.hitPoints.value"] = maxHitPoints;
     }
 
     // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
     const hpTmp = this.actor.system.attributes.hitPoints.value;
-    this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
 
+    this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
     if (newHealth !== this.actor.system.attributes.health) {
-      // @ts-ignore wait for foundry-vtt-types issue #1165
-      const speakerName = this.token?.name || this.actor.prototypeToken.name;
+      // @ts-expect-error this.token should be TokenDocument, but is typed as Token
+      const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
+      const speakerName = speaker.alias;
       let message;
       // TODO v10 any
-      if (newHealth === "dead" && !this.actor.effects.find((e: any) => e.system.label === "dead")) {
+      if (
+        newHealth === "dead" &&
+        // @ts-expect-error
+        !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "dead")
+      ) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
       }
       if (
         newHealth === "unconscious" &&
         // TODO v10 any
-        !this.actor.effects.find((e: any) => e.system.label === "unconscious")
+        // @ts-expect-error
+        !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "unconscious")
       ) {
         message = `${speakerName} faints from lack of hitpoints!`;
       }
       message &&
         ChatMessage.create({
           user: getGameUser().id,
-          speaker: { alias: speakerName },
+          speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
           type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
@@ -656,7 +663,6 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
       HitLocationSheet.setTokenEffect(this.token.object as RqgToken, tokenHealthBefore);
     }
-
     formData["system.attributes.health"] = newHealth;
 
     return super._updateObject(event, formData);
