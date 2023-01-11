@@ -1,20 +1,20 @@
-name: Horn of Mead
+name: Bowl of Meat Stew
 type: gear
-img: systems/rqg/assets/images/gear/beer-horn.svg
+img: systems/rqg/assets/images/gear/bowl.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.gear.horn-of-mead
+      id: i.gear.bowl-of-meat-stew
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>A single serving of mead.</p>
+  description: <p>Pork, chicken or mutton cooked with root vegetables served with flatbread. Often heavily spiced.</p>
   gmNotes:
   quantity: 1
   price:
     real: 0.1
     estimated: 0
-  encumbrance: 0.1
+  encumbrance: 0.2
   equippedStatus: carried
   location:
   isContainer: false

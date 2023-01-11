@@ -14,7 +14,7 @@ data:
   price:
     real: 1
     estimated: 0
-  encumbrance: 0.0
+  encumbrance: 0.5
   equippedStatus: carried
   location:
   isContainer: false

@@ -1,0 +1,22 @@
+name: Bridle
+type: gear
+img: systems/rqg/assets/images/gear/horse-head.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.bridle
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: "<p>Headgear used to direct a horse or other mount while riding. They are usually made of tough leather, and may have a bit, nose-rings, horn connections, or a nose band. Bridles must be correctly designed for a species and fitted properly to the specific animal.</p>"
+  gmNotes:
+  quantity: 1
+  price:
+    real: 2
+    estimated: 0
+  encumbrance: 1.5
+  equippedStatus: carried
+  location:
+  isContainer: true
+  attunedTo:
+  physicalItemType: unique

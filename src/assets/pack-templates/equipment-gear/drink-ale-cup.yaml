@@ -19,4 +19,4 @@ data:
   location:
   isContainer: false
   attunedTo:
-  physicalItemType: unique
+  physicalItemType: consumable

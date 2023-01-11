@@ -1,0 +1,22 @@
+name: Saddle
+type: gear
+img: systems/rqg/assets/images/gear/saddle.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.saddle
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  description: "<p>Horned or hornless, with or without trees; saddles vary tremendously by region. All, however, are designed to let a person ride with some degree of comfort and stability. Price: 8+ L.</p>"
+  gmNotes:
+  quantity: 1
+  price:
+    real: 8
+    estimated: 0
+  encumbrance: 5.0
+  equippedStatus: carried
+  location:
+  isContainer: true
+  attunedTo:
+  physicalItemType: unique
