@@ -42,7 +42,10 @@
         <div data-characteristic="{{key}}" class="flex-column {{#if characteristic.hasExperience}}experienced{{/if}}">
           <label class="resource-label norse characteristic contextmenu" data-characteristic-roll data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
           {{#if @root.isGM}}
-            <input type="number" min="0" max="99" name="system.characteristics.{{key}}.value" value="{{characteristic.value}}">
+            <input type="number" name="system.characteristics.{{key}}.value" 
+                   min="0" max="99" 
+                   value="{{characteristic.value}}"
+                   class="{{lookup ../characteristicRanks key}}">
             <input type="text" name="system.characteristics.{{key}}.formula" value="{{characteristic.formula}}">
           {{else}}
             <div class="value characteristic contextmenu" data-characteristic-roll>{{characteristic.value}}</div>

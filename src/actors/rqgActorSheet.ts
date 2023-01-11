@@ -46,6 +46,7 @@ import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDoc
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ActorSheetData } from "../items/shared/sheetInterfaces";
+import { Characteristics } from "src/data-model/actor-data/characteristics";
 
 interface UiSections {
   health: boolean;
@@ -98,6 +99,8 @@ interface CharacterSheetData {
   locomotionModes: { [a: string]: string };
 
   currencyTotals: any;
+
+  characteristicRanks: any;
 
   showUiSection: UiSections;
   actorWizardFeatureFlag: boolean;
@@ -201,10 +204,47 @@ export class RqgActorSheet extends ActorSheet<
 
       currencyTotals: this.calcCurrencyTotals(),
 
+      characteristicRanks: await this.rankCharacteristics(),
+      // characteristicRanks: {strength: "blah-str", constitution: "blah-con"},
+
       // UI toggles
       showUiSection: this.getUiSectionVisibility(),
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
     };
+  }
+
+  private async rankCharacteristics(): Promise<any> {
+    const result = {} as { [key: string]: string };
+    for (const characteristic of Object.keys(this.actor.system.characteristics)) {
+      let rankClass = "characteristic-rank-";
+      const char = this.actor.system.characteristics[characteristic as keyof Characteristics];
+      const minRoll = new Roll(char.formula);
+      const minTotal = await minRoll.evaluate({ minimize: true }).total;
+      const maxRoll = new Roll(char.formula);
+      const maxTotal = await maxRoll.evaluate({ maximize: true }).total;
+
+      if (minTotal == null || maxTotal == null) {
+        // cannot evaluate
+        result.characteristic = "";
+        continue;
+      }
+
+      if (char.value < minTotal) {
+        result[characteristic] = rankClass + "low";
+        continue;
+      }
+
+      if (char.value > maxTotal) {
+        result[characteristic] = rankClass + "high";
+        continue;
+      }
+
+      // the tens value of the percentage of the value compared to the maxTotal
+      const rank = Math.floor(((char.value - minTotal) / (maxTotal - minTotal)) * 10);
+
+      result[characteristic] = rankClass + rank;
+    }
+    return result;
   }
 
   private calcCurrencyTotals(): any {
