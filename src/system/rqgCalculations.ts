@@ -21,11 +21,11 @@ export class RqgCalculations {
 
   public static hitPoints(
     con: number | undefined,
-    siz: number | undefined,
-    pow: number | undefined
+    siz: number | undefined = 0,
+    pow: number | undefined = 0
   ): number | undefined {
     let hp =
-      con != null && siz != null && pow != null
+      con != null
         ? con + RqgCalculations.linearMod(siz) / 5 + RqgCalculations.flattenedMod(pow) / 5
         : undefined;
     if (hp && hp < 3) {
@@ -132,17 +132,19 @@ export class RqgCalculations {
   }
 
   public static linearMod(value: number | undefined): number {
-    if (value == null) {
+    if (!value) {
+      // undefined or 0
       return 0;
     }
     return (Math.ceil(value / 4) - 3) * 5;
   }
 
   public static flattenedMod(value: number | undefined): number {
-    if (value == null) {
+    if (!value) {
+      // undefined or 0
       return 0;
     }
-    return value ? (value <= 4 ? -5 : value <= 16 ? 0 : (Math.ceil(value / 4) - 4) * 5) : 0;
+    return value <= 4 ? -5 : value <= 16 ? 0 : (Math.ceil(value / 4) - 4) * 5;
   }
 
   private static lookup<T>(v: number, table: LookupTableEntry<T>[]): T {

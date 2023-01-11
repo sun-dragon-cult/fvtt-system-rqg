@@ -562,7 +562,9 @@ export class RqgActorSheet extends ActorSheet<
   private getUiSectionVisibility(): UiSections {
     return {
       health:
-        CONFIG.RQG.debug.showAllUiSections || this.actor.system.attributes.hitPoints.max != null,
+        CONFIG.RQG.debug.showAllUiSections ||
+        this.actor.system.attributes.hitPoints.max != null ||
+        this.actor.items.some((i) => i.type === ItemTypeEnum.HitLocation),
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
