@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.fist.name}}$
   specialization: ${{openSystem.content.weaponSkill.fist.specialization.claw}}$
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -30,7 +30,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.fist.name}}$
   specialization: ${{openSystem.content.weaponSkill.fist.specialization.heavyCestus}}$
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -53,7 +53,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.fist.name}}$
   specialization: ${{openSystem.content.weaponSkill.fist.specialization.lightCestus}}$
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []

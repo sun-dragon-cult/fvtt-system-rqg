@@ -6,7 +6,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-hammer.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-hammer.specialization.warHammer}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []

@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-dagger.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-dagger.specialization.dagger}}$
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -30,7 +30,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-dagger.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-dagger.specialization.sickle}}$)
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
