@@ -218,9 +218,9 @@ export class RqgActorSheet extends ActorSheet<
     for (const characteristic of Object.keys(this.actor.system.characteristics)) {
       let rankClass = "characteristic-rank-";
       const char = this.actor.system.characteristics[characteristic as keyof Characteristics];
-      const minRoll = new Roll(char.formula);
+      const minRoll = new Roll(char.formula || "");
       const minTotal = await minRoll.evaluate({ minimize: true }).total;
-      const maxRoll = new Roll(char.formula);
+      const maxRoll = new Roll(char.formula || "");
       const maxTotal = await maxRoll.evaluate({ maximize: true }).total;
 
       if (minTotal == null || maxTotal == null) {
@@ -229,18 +229,18 @@ export class RqgActorSheet extends ActorSheet<
         continue;
       }
 
-      if (char.value < minTotal) {
+      if (char?.value < minTotal) {
         result[characteristic] = rankClass + "low";
         continue;
       }
 
-      if (char.value > maxTotal) {
+      if (char?.value > maxTotal) {
         result[characteristic] = rankClass + "high";
         continue;
       }
 
       // the tens value of the percentage of the value compared to the maxTotal
-      const rank = Math.floor(((char.value - minTotal) / (maxTotal - minTotal)) * 10);
+      const rank = Math.floor(((char?.value - minTotal) / (maxTotal - minTotal)) * 10);
 
       result[characteristic] = rankClass + rank;
     }
