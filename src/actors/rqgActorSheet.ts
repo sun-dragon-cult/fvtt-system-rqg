@@ -223,18 +223,18 @@ export class RqgActorSheet extends ActorSheet<
       const maxRoll = new Roll(char.formula || "");
       const maxTotal = await maxRoll.evaluate({ maximize: true }).total;
 
-      if (minTotal == null || maxTotal == null) {
+      if (minTotal == null || maxTotal == null || char == null || char.value == null) {
         // cannot evaluate
         result.characteristic = "";
         continue;
       }
 
-      if (char?.value < minTotal) {
+      if (char.value < minTotal) {
         result[characteristic] = rankClass + "low";
         continue;
       }
 
-      if (char?.value > maxTotal) {
+      if (char.value > maxTotal) {
         result[characteristic] = rankClass + "high";
         continue;
       }
