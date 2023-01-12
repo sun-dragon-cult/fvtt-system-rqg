@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.shield.name}}$
   specialization: ${{openSystem.content.weaponSkill.shield.specialization.large}}$
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -30,7 +30,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.shield.name}}$
   specialization: ${{openSystem.content.weaponSkill.shield.specialization.medium}}$
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -53,7 +53,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.shield.name}}$
   specialization: ${{openSystem.content.weaponSkill.shield.specialization.small}}$
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []

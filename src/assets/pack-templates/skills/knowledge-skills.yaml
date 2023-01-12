@@ -195,7 +195,7 @@ data:
   category: knowledge
   skillName: ${{openSystem.content.skill.farm.skillName}}$
   specialization:
-  baseChance: 5
+  baseChance: 10
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:

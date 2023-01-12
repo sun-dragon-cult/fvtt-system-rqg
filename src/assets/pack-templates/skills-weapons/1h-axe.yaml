@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-axe.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-axe.specialization.battleAxe}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -30,7 +30,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-axe.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-axe.specialization.smallAxe}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []

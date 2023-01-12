@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.battleAxe}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -30,7 +30,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.daggerAxe}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -53,7 +53,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.greatAxe}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -76,7 +76,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-hammer.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-hammer.specialization.greatHammer}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -99,7 +99,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-hammer.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-hammer.specialization.maul}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -122,7 +122,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-mace.name}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -145,7 +145,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.longspear}}$
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -168,7 +168,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.pike}}$
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -191,7 +191,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.shortspear}}$
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -214,7 +214,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.greatsword}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -237,7 +237,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.rhomphaia}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -260,7 +260,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
   specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.sickle-sword}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -283,7 +283,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.quarterstaff.name}}$
   specialization:
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
