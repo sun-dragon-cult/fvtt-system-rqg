@@ -115,7 +115,7 @@ export const characteristicMenuOptions = (
     callback: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
-        await initializeAllCharacteristics(actor);
+        await initializeAllCharacteristics(actor, getGame().user?.isGM);
       }
     },
   },

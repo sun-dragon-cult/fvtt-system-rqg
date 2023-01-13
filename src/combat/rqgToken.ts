@@ -45,7 +45,6 @@ export class RqgToken extends Token {
     if (userId === getGame().user?.id) {
       //@ts-ignore actorLink
       if (!this.document.actorLink) {
-        console.log("UNLINKED ACTOR");
         if (this.actor) {
           initializeAllCharacteristics(this.actor, true);
         }
