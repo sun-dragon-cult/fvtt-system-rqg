@@ -240,7 +240,7 @@ export class RqgActorSheet extends ActorSheet<
       }
 
       // the tens value of the percentage of the value compared to the maxTotal
-      const rank = Math.floor(((char?.value - minTotal) / (maxTotal - minTotal)) * 10);
+      const rank = Math.floor(((char.value - minTotal) / (maxTotal - minTotal)) * 10);
 
       result[characteristic] = rankClass + rank;
     }
