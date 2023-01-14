@@ -84,7 +84,13 @@ export const characteristicMenuOptions = (
       const characteristic = actor.system.characteristics[charName];
       (characteristic as any).name = charName; // TODO adding extra properties that's not on type Characteristic
       const speakerName = token?.name ?? actor.prototypeToken.name ?? "";
-      showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
+      if (
+        characteristic != null &&
+        characteristic.value != null &&
+        Number.isNumeric(characteristic.value)
+      ) {
+        showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
+      }
     },
   },
   {
@@ -98,13 +104,7 @@ export const characteristicMenuOptions = (
       requireValue(characteristic, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
       const confirmed = await confirmInitializeDialog(actor.name ?? "", characteristic);
       if (confirmed) {
-        const updateData = await getCharacteristicUpdate(
-          characteristic,
-          actor.system.characteristics[characteristic].formula,
-          actor.name ?? getGameUser().name ?? ""
-        );
-        await actor.update(updateData);
-        await initializeCurrentDerivedAttributes(actor);
+        await initializeCharacteristic(actor, characteristic);
       }
     },
   },
@@ -115,7 +115,7 @@ export const characteristicMenuOptions = (
     callback: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
-        await initializeAllCharacteristics(actor, getGame().user?.isGM);
+        await initializeAllCharacteristics(actor);
       }
     },
   },
@@ -134,10 +134,9 @@ export const characteristicMenuOptions = (
 
 async function getCharacteristicUpdate(
   characteristic: string,
-  formula: string | undefined,
-  speakerName?: string
+  formula: string | undefined
 ): Promise<DeepPartial<ActorDataConstructorData & { system: any }>> {
-  if (!formula) {
+  if (!formula || !Roll.validate(formula)) {
     return {
       system: { characteristics: { [characteristic]: { value: "" } } },
     };
@@ -145,25 +144,33 @@ async function getCharacteristicUpdate(
 
   const r = new Roll(formula, {});
   await r.evaluate({ async: true });
-  if (speakerName) {
-    await r.toMessage({
-      speaker: { alias: speakerName },
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: localize("RQG.ContextMenu.InitializeResultChat", {
-        char: localizeCharacteristic(characteristic),
-      }),
-    });
-    activateChatTab();
-  }
   return {
     system: { characteristics: { [characteristic]: { value: Number(r.total) } } },
   };
 }
 
-export async function initializeAllCharacteristics(
+export async function initializeCharacteristic(
   actor: RqgActor,
-  silent: boolean = false
+  characteristic: string
 ): Promise<void> {
+  if (!actor.isOwner || characteristic == null) {
+    return;
+  }
+
+  const char = actor.system.characteristics[characteristic as keyof Characteristics];
+
+  let formula = char.formula;
+
+  if (char == null || char.formula == null || char.formula === "" || !Roll.validate(char.formula)) {
+    formula = undefined;
+  }
+
+  const updateData = await getCharacteristicUpdate(characteristic, formula);
+  await actor.update(updateData);
+  await initializeCurrentDerivedAttributes(actor);
+}
+
+export async function initializeAllCharacteristics(actor: RqgActor): Promise<void> {
   let updateData = {};
 
   if (!actor.isOwner) {
@@ -171,11 +178,20 @@ export async function initializeAllCharacteristics(
   }
 
   for (const characteristic of Object.keys(actor.system.characteristics)) {
-    const update = await getCharacteristicUpdate(
-      characteristic,
-      actor.system.characteristics[characteristic as keyof Characteristics].formula,
-      silent ? undefined : actor.name ?? getGameUser().name ?? ""
-    );
+    const char = actor.system.characteristics[characteristic as keyof Characteristics];
+
+    if (char == null) {
+      continue;
+    }
+
+    let update = {};
+
+    if (char.formula == null || !Roll.validate(char.formula)) {
+      update = await getCharacteristicUpdate(characteristic, undefined);
+    } else {
+      update = await getCharacteristicUpdate(characteristic, char.formula);
+    }
+
     mergeObject(updateData, update);
   }
   await actor.update(updateData);
@@ -198,37 +214,44 @@ export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<v
     return;
   }
 
-  const averages = {} as { [key: string]: number };
+  const averages = {} as { [key: string]: number | undefined };
 
   let updateData = {};
 
   for (const characteristic of Object.keys(actor.system.characteristics)) {
     const char = actor.system.characteristics[characteristic as keyof Characteristics];
 
-    if (!char) {
+    if (char == null) {
       continue;
     }
 
-    const diceExpression = char.formula || "";
-
-    if (!averages[diceExpression]) {
-      const rolls = await Roll.simulate(diceExpression, 10000);
-      let avg = rolls.reduce((a, b) => a + b) / rolls.length;
-      const fraction = avg % 1;
-      // Round generously because many dice expressions produce a mean right around X.5 or X.0
-      if (fraction > 0.4 && fraction < 0.6) {
-        avg = Math.ceil(avg);
+    if (char.formula == null || char.formula == "" || !Roll.validate(char.formula)) {
+      // no existing or valid formula
+      averages["cannot average"] == undefined;
+    } else if (!averages[char.formula]) {
+      let avg = 0;
+      if (Number.isNumeric(char.formula)) {
+        // formula is literal number
+        avg = Number.parseInt(char.formula);
       } else {
-        avg = Math.round(avg);
+        // formula is dice expression
+        const rolls = await Roll.simulate(char.formula, 5000);
+        avg = rolls.reduce((a, b) => a + b) / rolls.length;
+        const fraction = avg % 1;
+        // Round generously because many dice expressions produce a mean right around X.5 or X.0
+        if (fraction > 0.4 && fraction < 0.6) {
+          avg = Math.ceil(avg);
+        } else {
+          avg = Math.round(avg);
+        }
       }
 
-      averages[diceExpression] = avg;
+      averages[char.formula] = avg;
     }
 
     const update = await getCharacteristicUpdate(
       characteristic,
-      averages[char.formula || ""].toString(),
-      ""
+      averages[char.formula || "cannot average"]?.toString()
     );
     mergeObject(updateData, update);
   }

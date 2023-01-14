@@ -218,12 +218,31 @@ export class RqgActorSheet extends ActorSheet<
     for (const characteristic of Object.keys(this.actor.system.characteristics)) {
       let rankClass = "characteristic-rank-";
       const char = this.actor.system.characteristics[characteristic as keyof Characteristics];
+
+      if (char == null || char.value == null || char.formula == null || char.formula == "") {
+        // cannot evaluate
+        result.characteristic = "";
+        continue;
+      }
+
+      if (Number.isNumeric(char.formula)) {
+        // formula is a literal number and does not need evaluation
+        result.characteristic = "";
+        continue;
+      }
+
+      if (!Roll.validate(char.formula)) {
+        // formula is not valid and cannnot be evaluated
+        result.characteristic = "";
+        continue;
+      }
+
       const minRoll = new Roll(char.formula || "");
       const minTotal = await minRoll.evaluate({ minimize: true }).total;
       const maxRoll = new Roll(char.formula || "");
       const maxTotal = await maxRoll.evaluate({ maximize: true }).total;
 
-      if (minTotal == null || maxTotal == null || char == null || char.value == null) {
+      if (minTotal == null || maxTotal == null) {
         // cannot evaluate
         result.characteristic = "";
         continue;

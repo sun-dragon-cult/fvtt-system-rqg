@@ -180,7 +180,7 @@ export class RqgActor extends Actor {
       this.updateEmbeddedDocuments("ActiveEffect", effectsOriginUpdates);
 
     if (!this.prototypeToken.actorLink) {
-      initializeAllCharacteristics(this, true);
+      initializeAllCharacteristics(this);
     }
   }
 
