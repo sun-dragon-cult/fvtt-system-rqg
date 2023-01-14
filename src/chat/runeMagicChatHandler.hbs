@@ -28,9 +28,9 @@
               <input data-handle-change type="radio" id="select-rune-{{this._id}}" name="selectedRuneId" value="{{this.id}}" {{#if (eq
               this.id ../formData.selectedRuneId)}}checked{{/if}}>
 
-              <span title="{{this.name}}"><img class="rune" src="{{runeImg this.name}}"> {{this.system.rune}}</span>
+              <span data-tooltip="{{this.name}}"><img class="rune" src="{{runeImg this.name}}"> {{this.system.rune}}</span>
 
-              <span {{#if this.system.hasExperience}}class="experienced" title="{{localize "RQG.Dialog.runeMagicChat.RuneHasExperienceTitle"}}"{{/if}}>
+              <span {{#if this.system.hasExperience}}class="experienced" data-tooltip="{{localize "RQG.Dialog.runeMagicChat.RuneHasExperienceTitle"}}"{{/if}}>
                 {{this.system.chance}}%
               </span>
             </label>
@@ -45,11 +45,11 @@
           {{!-- TODO: Rune Magic Spells should have a minimum Rune Point Cost and possibly an optional maximum.
                 https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/142
 
-                put this back in: {{#unless itemData.data.isStackable}}readonly="readonly" title="Not Stackable"
+                put this back in: {{#unless itemData.data.isStackable}}readonly="readonly" data-tooltip="Not Stackable"
             {{/unless}} --}}
           <input data-handle-change class="chat-number-input{{#if isOneUse}} warning{{/if}}" type="text" value="{{formData.runePointCost}}"
             name="runePointCost"  />
-            {{#if isOneUse}}<span title="{{localize "RQG.Dialog.runeMagicChat.OneUseWarningTip"}}">{{localize "RQG.Dialog.runeMagicChat.OneUseWarning"}}</span>{{/if}}
+            {{#if isOneUse}}<span data-tooltip="{{localize "RQG.Dialog.runeMagicChat.OneUseWarningTip"}}">{{localize "RQG.Dialog.runeMagicChat.OneUseWarning"}}</span>{{/if}}
         </div>
       </div>
       <div class="flexrow chat-option">

@@ -13,12 +13,12 @@
     </div>
     <div data-item-id="{{spiritCombatSkillData.id}}"
          class="skill contextmenu"
-         data-item-roll title="{{localize "RQG.Game.RollTitle"}}">
+         data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">
       {{localize "RQG.Actor.Combat.SpiritCombat"}}
     </div>
     <div data-item-id="{{spiritCombatSkillData.id}}"
          class="skill contextmenu"
-         data-item-roll title="{{localize "RQG.Game.RollTitle"}}"><span
+         data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}"><span
       class="text-right {{#if spiritCombatSkillData.system.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData.id @root.id @root.tokenId}}%</span>
     </div>
   </div>

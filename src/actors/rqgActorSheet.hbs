@@ -2,7 +2,7 @@
   <div class="mainbackground"></div>
   {{!-- Sheet Header --}}
   <header class="sheet-header">
-    <img class="profile-img {{#if (eq img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{img}}" data-edit="img" title="{{name}}">
+    <img class="profile-img {{#if (eq img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{img}}" data-edit="img" data-tooltip="{{name}}">
     <div>
       <div class="topheaderline">
         <h1 class="charname"><input name="name" type="text" value="{{name}}"></h1>

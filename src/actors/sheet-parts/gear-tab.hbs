@@ -1,8 +1,8 @@
 <nav class="gear-tabs tabs" data-group="gear-view">
-  <h3 class="item" title="{{localize "RQG.Actor.Gear.ViewByItemType"}}" data-group="gear-view" data-tab="by-item-type">
+  <h3 class="item" data-tooltip="{{localize "RQG.Actor.Gear.ViewByItemType"}}" data-group="gear-view" data-tab="by-item-type">
     <img src="{{gearViewIcon 'byItemType'}}"> {{localize "RQG.Actor.Gear.ViewByItemType"}}
   </h3>
-  <h3 class="item" title="{{localize "RQG.Actor.Gear.ViewByLocation"}}" data-group="gear-view" data-tab="by-location">
+  <h3 class="item" data-tooltip="{{localize "RQG.Actor.Gear.ViewByLocation"}}" data-group="gear-view" data-tab="by-location">
     <img src="{{gearViewIcon 'byLocation'}}"> {{localize "RQG.Actor.Gear.ViewByLocation"}}
   </h3>
 </nav>
@@ -57,7 +57,7 @@
               </div>
               <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
                 <img class="equipped-status text-center"
-                     title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                     data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
                      src="{{equippedIcon system.equippedStatus}}">
               </div>
               <div data-item-id="{{id}}" class="gear contextmenu item">
@@ -85,7 +85,7 @@
             {{#each embeddedItems.currency}}
               <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
               <div data-item-id="{{id}}" class="gear contextmenu item"
-                   title="{{system.price.conversion}}">{{name}}</div>
+                   data-tooltip="{{system.price.conversion}}">{{name}}</div>
               <div data-item-id="{{id}}" class="gear contextmenu item">
                 <span class="text-right"><input type="number" min="0" max="999999"
                                                 data-item-edit-value="system.quantity"
@@ -101,7 +101,7 @@
               </div>
               <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
                 <img class="equipped-status text-center"
-                     title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                     data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
                      src="{{equippedIcon system.equippedStatus}}">
               </div>
               <div data-item-id="{{id}}" class="gear contextmenu item">
@@ -151,7 +151,7 @@
                 </div>
                 <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
                   <img class="equipped-status text-center"
-                       title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                       data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
                        src="{{equippedIcon system.equippedStatus}}">
                 </div>
                 <div data-item-id="{{id}}" class="gear contextmenu item">
@@ -193,7 +193,7 @@
                 {{#if skillId}}
                   <div class="usagecell
                         {{#if unusable}} warning{{/if}}"
-                        {{#if unusable}}title="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
+                        {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
                   >
                   {{skillchance skillId @root.id @root.tokenId}}%&nbsp; {{skillname skillId @root.id @root.tokenId}}
                   </div>
@@ -216,7 +216,7 @@
                 {{#each system.usage}}
                   {{#if skillId}}
                     <div class="usagecell {{#if underMinSTR}} warning{{/if}}"
-                         {{#if underMinSTR}}title="{{localize "RQG.Actor.Combat.StrMinNotMetTip"}}"{{/if}}>
+                         {{#if underMinSTR}}data-tooltip="{{localize "RQG.Actor.Combat.StrMinNotMetTip"}}"{{/if}}>
                       {{#if minStrength}}{{minStrength}}{{else}}—{{/if}}
                     </div>
                   {{/if}}
@@ -228,7 +228,7 @@
                 {{#each system.usage}}
                   {{#if skillId}}
                     <div class="usagecell {{#if underMinDEX}} warning{{/if}}"
-                         {{#if underMinDEX}}title="{{localize "RQG.Actor.Combat.DexMinNotMetTip"}}"{{/if}}>
+                         {{#if underMinDEX}}data-tooltip="{{localize "RQG.Actor.Combat.DexMinNotMetTip"}}"{{/if}}>
                       {{#if minDexterity}}{{minDexterity}}{{else}}—{{/if}}
                     </div>
                   {{/if}}
@@ -246,7 +246,7 @@
             </div>
             <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
               <img class="equipped-status text-center"
-                   title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                   data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
                    src="{{equippedIcon system.equippedStatus}}">
             </div>
             <div data-item-id="{{id}}" class="gear contextmenu item">
@@ -294,7 +294,7 @@
           </div>
           <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
             <img class="equipped-status text-center"
-                 title="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                 data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
                  src="{{equippedIcon system.equippedStatus}}">
           </div>
           <div data-item-id="{{id}}" class="gear contextmenu item">

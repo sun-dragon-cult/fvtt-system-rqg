@@ -1,6 +1,6 @@
 <form autocomplete="off">
   <header class="item-sheet-header">
-    <img src="{{img}}" data-edit="img" title="{{name}}" />
+    <img src="{{img}}" data-edit="img" data-tooltip="{{name}}" />
 
     <div class="flex-column gap03rem">
       <div class="property-line">
@@ -65,7 +65,7 @@
                 name="system.hasExperience"
                 {{checked system.hasExperience}}
                 type="checkbox"
-                title="{{localize 'RQG.Item.Skill.HasExperienceQ'}}"
+                data-tooltip="{{localize 'RQG.Item.Skill.HasExperienceQ'}}"
               >
             {{/if}}
           </span>
@@ -116,7 +116,7 @@
           <label for="runes-{{id}}">{{localize "RQG.Item.Skill.SorceryRunes"}}</label>
           <div class="img-name-grid bordered">
             {{#each system.runes}}
-              <img class="rune" src="{{runeImg this}}" title="{{this}}">
+              <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
               <input type="text" name="system.runes" value="{{this}}">
             {{/each}}
             <input

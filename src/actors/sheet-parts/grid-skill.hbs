@@ -5,27 +5,27 @@
         data-rqid="{{skill.flags.rqg.documentRqidFlags.id}}"
         data-for-choice="{{forChoice}}"
         {{#if (lookup skill.system.choice checkedProperty)}}checked{{/if}} {{!-- TODO this needs to be made generic.  See rune-selector --}}
-        title="{{localize "RQG.Actor.Skill.ImportSkillCheckboxTitle" skillName=skill.name}}"
+        data-tooltip="{{localize "RQG.Actor.Skill.ImportSkillCheckboxTitle" skillName=skill.name}}"
         />
 </div>
 {{/if}}
 <div data-item-id="{{skill.id}}"
-    title="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}"
+    data-tooltip="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}"
     class="skill contextmenu item"
     {{#if skill.system.descriptionRqidLink.rqid}}data-rqid-link="{{skill.system.descriptionRqidLink.rqid}}"{{/if}}>
     <img class="item" src="{{skill.img}}">
 </div>
 <div data-item-id="{{skill.id}}"
         class="skill contextmenu item" data-item-roll
-        title="{{localize "RQG.Game.RollTitle"}}">
+        data-tooltip="{{localize "RQG.Game.RollTitle"}}">
         {{skill.system.skillName}}{{#if skill.system.specialization}} ({{skill.system.specialization}}){{/if}}
     {{#each skill.system.runes}}
-    <img class="rune" src="{{runeImg this}}" title="{{this}}">
+    <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
     {{/each}}
 </div>
 <div data-item-id="{{skill.id}}"
     class="skill contextmenu item {{#if skill.system.hasExperience}}experienced{{/if}}"
     data-item-roll
-    title="{{localize "RQG.Game.RollTitle"}}">
+    data-tooltip="{{localize "RQG.Game.RollTitle"}}">
 <span class="text-right nowrap">{{#if asBonus}}+{{/if}}{{skill.system.chance}}%</span>
 </div>
