@@ -360,6 +360,7 @@
       "ToggleExperience": "Toggle Experience",
       "InitializeCharacteristic": "Initialize Characteristic",
       "InitializeAllCharacteristics": "Initialize All Characteristics",
+      "SetAllCharacteristicsToAverage": "Set All Characteristics to Average",
       "InitializeResultChat": "Initialize {char}",
       "OverwriteCharacteristicDialogTitle": "Overwrite {characteristicName} on {actorName}?",
       "OverwriteCharacteristicDialog": "Do you want to overwrite the current value of {characteristicName}? This will cause a recalculation of any derived attributes like Hit Points, Magic Points, Strike Ranks, and skill Categories that depend upon {characteristicName}.",

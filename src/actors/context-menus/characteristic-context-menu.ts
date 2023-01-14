@@ -119,6 +119,17 @@ export const characteristicMenuOptions = (
       }
     },
   },
+  {
+    name: localize("RQG.ContextMenu.SetAllCharacteristicsToAverage"),
+    icon: ContextMenuRunes.SetAllCharacteristicsToAverage,
+    condition: (): boolean => !!getGame().user?.isGM,
+    callback: async () => {
+      const confirmed = await confirmInitializeDialog(actor.name ?? "");
+      if (confirmed) {
+        await setAllCharacteristicsToAverage(actor);
+      }
+    },
+  },
 ];
 
 async function getCharacteristicUpdate(
@@ -180,6 +191,49 @@ async function initializeCurrentDerivedAttributes(actor: RqgActor) {
     };
     await actor.update(hpUpdate);
   }
+}
+
+export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<void> {
+  if (!actor.isOwner) {
+    return;
+  }
+
+  const averages = {} as { [key: string]: number };
+
+  let updateData = {};
+
+  for (const characteristic of Object.keys(actor.system.characteristics)) {
+    const char = actor.system.characteristics[characteristic as keyof Characteristics];
+
+    if (!char) {
+      continue;
+    }
+
+    const diceExpression = char.formula || "";
+
+    if (!averages[diceExpression]) {
+      const rolls = await Roll.simulate(diceExpression, 10000);
+      let avg = rolls.reduce((a, b) => a + b) / rolls.length;
+      const fraction = avg % 1;
+      // Round generously because many dice expressions produce a mean right around X.5 or X.0
+      if (fraction > 0.4 && fraction < 0.6) {
+        avg = Math.ceil(avg);
+      } else {
+        avg = Math.round(avg);
+      }
+
+      averages[diceExpression] = avg;
+    }
+
+    const update = await getCharacteristicUpdate(
+      characteristic,
+      averages[char.formula || ""].toString(),
+      ""
+    );
+    mergeObject(updateData, update);
+  }
+  await actor.update(updateData);
+  await initializeCurrentDerivedAttributes(actor);
 }
 
 function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: Characteristic } {
