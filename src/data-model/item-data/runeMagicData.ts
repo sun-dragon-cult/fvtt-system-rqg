@@ -1,6 +1,5 @@
 import { ItemTypeEnum } from "./itemTypes";
 import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
-import { RqidLink } from "../shared/rqidLink";
 
 export interface RuneMagicDataSourceData extends Spell {
   /** The cult this rune magic is learned from and where to draw rune points */
@@ -30,7 +29,7 @@ export interface RuneMagicDataProperties {
 }
 
 export const defaultRuneMagicData: RuneMagicDataSourceData = {
-  descriptionRqidLink: new RqidLink(),
+  descriptionRqidLink: undefined,
   cultId: "",
   runes: [],
   points: 0,

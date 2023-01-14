@@ -757,7 +757,7 @@
         "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
         "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
         "DroppedItemWrongType": "This field expects an item of type(s) {allowedDropTypes} and the dropped item was {type}",
-        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with id ${id} does not have an RQID and cannot be dropped onto this sheet.",
+        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with uuid {uuid} does not have an RQID and cannot be dropped onto this sheet.",
         "ItemNotUnique": "{actorName} already has a {documentType} '{documentName}' and duplicates are not allowed"
       },
       "Occupation": {
@@ -804,8 +804,6 @@
         }
       },
       "RqgItem": {
-        "RqidLinkTitle": "RQG System ID (rqid) link to \"{rqid}\"",
-        "RqidLinkDelete": "Delete RQG System ID (rqid) link to \"{name}\" (\"{rqid}\")",
         "ShowInfoCircle": {
           "DropToConnectJournal": "Drop a Journal Entry on this field to connect.",
           "DropToReplaceJournal": "Drop a Journal Entry on this field to replace.",
@@ -1000,8 +998,8 @@
         "UnknownName": "Unknown"
       },
       "ContentLink": {
-        "CompendiumNameTitle": "Compendium [{compendiumName}]",
-        "WorldJournalEntry": "World Journal Entry",
+        "RqidLinkTitle": "{documentName}<small> {documentType}</small><br><small>rqid: {rqid}</small>",
+        "RqidLinkDelete": "Delete link to \"{name}\"<br><small>rqid: {rqid}</small>",
         "DropToConnectJournal": "Drop a journal entry on this item to connect a description.",
         "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."
       }

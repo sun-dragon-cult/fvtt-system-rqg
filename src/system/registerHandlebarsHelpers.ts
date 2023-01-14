@@ -5,12 +5,13 @@ import {
   getGame,
   hasOwnProperty,
   localize,
+  localizeItemType,
   RqgError,
 } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
-import { RqidLink } from "../data-model/shared/rqidLink";
 import { systemId } from "./config";
+import { Rqid } from "./api/rqidApi";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -162,19 +163,20 @@ export const registerHandlebarsHelpers = function () {
     }
   });
 
-  Handlebars.registerHelper("rqidLinkImage", function (rqidLink: RqidLink) {
-    if (rqidLink.documentType === "JournalEntry") {
-      return `<i class="fas fa-book-open"></i>`;
-    }
+  Handlebars.registerHelper("rqidLinkTooltip", function (rqid: string) {
+    const documentName = Rqid.getDocumentName(rqid);
+    const itemType =
+      documentName === "Item"
+        ? (Rqid.getDocumentType(rqid) as ItemTypeEnum | undefined)
+        : undefined;
+    return localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
+      rqid: rqid,
+      documentName: getGame().i18n.localize(`DOCUMENT.${documentName}`),
+      documentType: itemType ? localizeItemType(itemType) : "",
+    });
+  });
 
-    if (rqidLink.documentType === "Item" && rqidLink.itemType) {
-      const iconSettings: any = getGame().settings.get(systemId, "defaultItemIconSettings");
-      // TODO use the first part of the rqid instead
-      if (iconSettings[rqidLink.itemType]) {
-        return `<img src="${iconSettings[rqidLink.itemType]}">`;
-      }
-    }
-
-    return `<i class="fas fa-suitcase"></i>`;
+  Handlebars.registerHelper("rqidLinkIcon", function (rqid: string) {
+    return Rqid.getRqidIcon(rqid) || "";
   });
 };

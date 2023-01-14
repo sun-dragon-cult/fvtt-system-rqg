@@ -12,7 +12,7 @@ export enum RuneTypeEnum {
 }
 
 export interface RuneDataSourceData extends IAbility {
-  descriptionRqidLink: RqidLink;
+  descriptionRqidLink: RqidLink | undefined;
   /** The name of the rune, Moon for example */
   rune: string;
   runeType: RuneTypeEnum;
@@ -39,7 +39,7 @@ export interface RuneDataProperties {
 }
 
 export const defaultRuneData: RuneDataSourceData = {
-  descriptionRqidLink: new RqidLink(),
+  descriptionRqidLink: undefined,
   rune: "",
   chance: 0,
   canGetExperience: true,

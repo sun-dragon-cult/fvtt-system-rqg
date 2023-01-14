@@ -1201,14 +1201,20 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     if (droppedDocument && targetPropertyName) {
-      const newLink = new RqidLink();
-      newLink.rqid = droppedDocument.getFlag(systemId, documentRqidFlags)?.id ?? "";
-      newLink.name = droppedDocument.name ?? "";
-      newLink.documentType = droppedDocumentData.type;
-      if (droppedDocument instanceof Item) {
-        newLink.itemType = droppedDocument.type;
-      }
+      const droppedDocumentRqid = droppedDocument.getFlag(systemId, documentRqidFlags)?.id;
+      const droppedDocumentInstanceName = droppedDocument.name;
 
+      if (!droppedDocumentRqid || !droppedDocumentInstanceName) {
+        ui.notifications?.warn(
+          localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
+            type: droppedDocumentData.type,
+            name: droppedDocument?.name,
+            uuid: droppedDocumentData.uuid,
+          })
+        );
+        return;
+      }
+      const newLink = new RqidLink(droppedDocumentRqid, droppedDocumentInstanceName);
       const targetProperty = getProperty(this.actor.system, targetPropertyName);
 
       if (targetProperty) {

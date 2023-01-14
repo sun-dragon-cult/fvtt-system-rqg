@@ -16,11 +16,10 @@ export async function requestSkillSpecializationDialog(
 
   const worldLanguage = getGame().settings.get(systemId, "worldLanguage");
   const descriptionJournal = await Rqid.fromRqid(
-    skillItem.system.descriptionRqidLink.rqid,
+    skillItem.system.descriptionRqidLink?.rqid,
     worldLanguage,
     true
   );
-  // @ts-ignore link - fel typ på descriptionJournal?
   const link = descriptionJournal
     ? // @ts-expect-error async
       await TextEditor.enrichHTML(descriptionJournal.link, { async: true })

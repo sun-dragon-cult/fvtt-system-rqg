@@ -32,5 +32,5 @@ export interface Spell {
   isRitual: boolean;
   /** Requires POW sacrifice by caster (possibly from others see core book p249) */
   isEnchantment: boolean;
-  descriptionRqidLink: RqidLink;
+  descriptionRqidLink: RqidLink | undefined;
 }
