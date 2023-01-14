@@ -39,6 +39,11 @@ body {
   src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
 
+// Hide LastPass input icon
+[data-lastpass-icon-root], [data-lastpass-root] {
+  display: none !important;
+}
+
 .norse {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
   font-variant: small-caps;
