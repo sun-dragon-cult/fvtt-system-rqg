@@ -70,9 +70,13 @@ export const characteristicMenuOptions = (
     }),
     icon: ContextMenuRunes.Improve,
     condition: (el: JQuery): boolean => {
-      const { name: characteristicName } = getCharacteristic(actor, el);
+      const { name: characteristicName, value: char } = getCharacteristic(actor, el);
       // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
       // You cannot train INT or increase it via experience
+
+      if (char == null || char.value == null || !Number.isNumeric(char.value)) {
+        return false;
+      }
 
       const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
       return trainable.includes(characteristicName);
@@ -96,7 +100,18 @@ export const characteristicMenuOptions = (
   {
     name: localize("RQG.ContextMenu.InitializeCharacteristic"),
     icon: ContextMenuRunes.InitializeCharacteristics,
-    condition: (): boolean => !!getGame().user?.isGM,
+    condition: (el: JQuery): boolean => {
+      if (!getGame().user?.isGM) {
+        return false;
+      } else {
+        const { value: char } = getCharacteristic(actor, el);
+        if (char.formula != null && Roll.validate(char.formula)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
     callback: async (el: JQuery) => {
       const characteristic = getDomDataset(el, "characteristic") as
         | keyof Characteristics
@@ -105,6 +120,13 @@ export const characteristicMenuOptions = (
       const confirmed = await confirmInitializeDialog(actor.name ?? "", characteristic);
       if (confirmed) {
         await initializeCharacteristic(actor, characteristic);
+
+        ui.notifications?.info(
+          localize("RQG.ContextMenu.CharacteristicInitialized", {
+            characteristicName: localizeCharacteristic(characteristic),
+            actorName: actor.name,
+          })
+        );
       }
     },
   },
@@ -116,6 +138,9 @@ export const characteristicMenuOptions = (
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
         await initializeAllCharacteristics(actor);
+        ui.notifications?.info(
+          localize("RQG.ContextMenu.AllCharacteristicsInitialized", { actorName: actor.name })
+        );
       }
     },
   },
@@ -127,6 +152,9 @@ export const characteristicMenuOptions = (
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
         await setAllCharacteristicsToAverage(actor);
+        ui.notifications?.info(
+          localize("RQG.ContextMenu.AllCharacteristicsSetToAverage", { actorName: actor.name })
+        );
       }
     },
   },
