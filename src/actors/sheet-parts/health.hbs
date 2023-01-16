@@ -1,7 +1,8 @@
-  {{#if showUiSection.health}}
+{{#if showUiSection.health}}
   <div class="health">
-  <h2 class="flex-col">{{localize "RQG.Actor.Health.Health"}}</h2>
+    <h2 class="flex-col">{{localize "RQG.Actor.Health.Health"}}</h2>
 
+    {{#if system.characteristics.constitution.value}}
     <div class="flex-row nowrap flex-align-center">
       <label>{{localize "RQG.Actor.Health.TotalHitPoints"}}
         <input
@@ -13,7 +14,8 @@
         > / {{system.attributes.hitPoints.max}}
       </label>
       <label class="text-right">{{localize "RQG.Actor.Health.HealingRatePerWeek" healingRate=system.attributes.healingRate }}</label>
-    </div>
+    {{/if}}
+  </div>
     {{#if embeddedItems.hitLocation}}
     <div class="grid hit-location item-list">
       <div class="headings"></div>
@@ -47,5 +49,5 @@
       <p>{{localize "RQG.Actor.Health.NoHitLocations"}}</p>
     {{/if}}
 
-</div>
+  </div>
 {{/if}}
