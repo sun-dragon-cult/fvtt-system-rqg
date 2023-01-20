@@ -46,7 +46,7 @@ export class RqgToken extends Token {
       //@ts-ignore actorLink
       if (!this.document.actorLink) {
         if (this.actor) {
-          initializeAllCharacteristics(this.actor, true);
+          initializeAllCharacteristics(this.actor);
         }
       }
     }
