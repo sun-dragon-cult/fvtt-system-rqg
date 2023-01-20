@@ -13,7 +13,7 @@ export enum CultRankEnum {
 }
 
 export interface CultDataSourceData {
-  descriptionRqidLink: RqidLink;
+  descriptionRqidLink: RqidLink | undefined;
   rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
   runePoints: Resource;
   tagline: string;
@@ -45,7 +45,7 @@ export interface CultDataProperties {
 }
 
 export const defaultCultData: CultDataSourceData = {
-  descriptionRqidLink: new RqidLink(),
+  descriptionRqidLink: undefined,
   rank: CultRankEnum.LayMember,
   runePoints: { value: 0, max: 0 },
   tagline: "",

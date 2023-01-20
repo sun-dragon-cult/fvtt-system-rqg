@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.bow.name}}$
   specialization: ${{openSystem.content.weaponSkill.bow.specialization.compositeBow}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -30,7 +30,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.bow.name}}$
   specialization: ${{openSystem.content.weaponSkill.bow.specialization.elfBow}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -53,7 +53,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.bow.name}}$
   specialization: ${{openSystem.content.weaponSkill.bow.specialization.selfBow}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -76,7 +76,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.crossbow.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbow.specialization.arbalest}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -99,7 +99,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.crossbow.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbow.specialization.heavyCrossbow}}$
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -122,7 +122,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.crossbow.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbow.specialization.lightCrossbow}}$
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -145,7 +145,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.crossbow.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbow.specialization.repeatingCrossbow}}$
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -168,7 +168,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.javelin.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelin.specialization.dart}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -191,7 +191,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.javelin.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelin.specialization.javelin}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -214,7 +214,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.javelin.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelin.specialization.shortspear}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -237,7 +237,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.lasso.name}}$
   specialization: ${{openSystem.content.weaponSkill.lasso.specialization.poleLasso}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -260,7 +260,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.sling.name}}$
   specialization: ${{openSystem.content.weaponSkill.sling.specialization.sling}}$
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -283,7 +283,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.sling.name}}$
   specialization: ${{openSystem.content.weaponSkill.sling.specialization.staffSling}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -306,7 +306,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
   specialization:
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -329,7 +329,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
   specialization:
   baseChance: 5
-  learnedChance: 5
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -352,7 +352,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.thrownRock.name}}$
   specialization:
   baseChance: 15
-  learnedChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []

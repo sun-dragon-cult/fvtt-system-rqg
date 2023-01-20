@@ -38,7 +38,7 @@ export class SpiritMagicChatHandler {
     const spiritMagicItem = await getRequiredDocumentFromUuid<RqgItem>(flags.chat.itemUuid);
     const templateData = {
       ...flags,
-      chance: actor.system.characteristics.power.value * 5,
+      chance: (actor.system.characteristics.power.value ?? 0) * 5,
       chatHeading: localize("RQG.Dialog.spiritMagicChat.ChatFlavor", {
         name: spiritMagicItem?.name,
       }),

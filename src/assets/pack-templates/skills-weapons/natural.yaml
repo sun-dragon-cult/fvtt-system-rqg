@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.bite.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -30,7 +30,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.headButt.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -53,7 +53,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.fist.name}}$
   specialization: ${{openSystem.content.weaponSkill.fist.name}}$
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -76,7 +76,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.gore.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -99,7 +99,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.grapple.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -122,7 +122,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.hug.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -144,8 +144,8 @@ data:
   category: meleeWeapons
   skillName: ${{openSystem.content.skill.meleeWeapon.skillName}}$
   specialization:
-  baseChance: 25
-  learnedChance: 25
+  baseChance: 15
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -168,7 +168,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.rip.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -191,7 +191,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -214,7 +214,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.sting.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -237,7 +237,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.trample.name}}$
   specialization:
   baseChance: 25
-  learnedChance: 25
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []

@@ -18,7 +18,7 @@ export enum SkillCategoryEnum {
 }
 
 export interface SkillDataSourceData extends IAbility {
-  descriptionRqidLink: RqidLink;
+  descriptionRqidLink: RqidLink | undefined;
   category: SkillCategoryEnum;
   skillName: string;
   specialization: string;
@@ -47,7 +47,7 @@ export interface SkillDataProperties {
 }
 
 export const defaultSkillData: SkillDataSourceData = {
-  descriptionRqidLink: new RqidLink(),
+  descriptionRqidLink: undefined,
   category: SkillCategoryEnum.Magic,
   skillName: "",
   specialization: "",

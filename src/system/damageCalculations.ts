@@ -56,17 +56,21 @@ export class DamageCalculations {
   }
 
   private static applyDamageToActorTotalHp(damage: number, actor: RqgActor): DeepPartial<RqgActor> {
-    const currentTotalHp = actor.system.attributes.hitPoints.value;
-    const actorUpdateData: DeepPartial<RqgActor> = {
-      system: { attributes: { hitPoints: { value: 0 } } },
-    };
-    if (currentTotalHp == null) {
-      const msg = `Actor ${actor.name} don't have a calculated hitpoint value`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, actorUpdateData);
+    if (actor.system.attributes.hitPoints.max != null) {
+      const currentTotalHp = actor.system.attributes.hitPoints.value;
+      const actorUpdateData: DeepPartial<RqgActor> = {
+        system: { attributes: { hitPoints: { value: 0 } } },
+      };
+      if (currentTotalHp == null) {
+        const msg = `Actor ${actor.name} don't have a calculated hitpoint value`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, actorUpdateData);
+      }
+      actorUpdateData.system!.attributes!.hitPoints!.value = currentTotalHp - damage;
+      return actorUpdateData;
     }
-    actorUpdateData.system!.attributes!.hitPoints!.value = currentTotalHp - damage;
-    return actorUpdateData;
+
+    return {} as DeepPartial<RqgActor>;
   }
 
   private static calcLimbDamageEffects(
@@ -239,15 +243,14 @@ export class DamageCalculations {
   }
 
   static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
+    let maxHitPoints = actor.system.attributes.hitPoints.max;
+
+    if (maxHitPoints == null) {
+      return "healthy";
+    }
     const totalHitPoints = actor.system.attributes.hitPoints.value;
     if (totalHitPoints == null) {
       const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actor.name}`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, actor);
-    }
-    let maxHitPoints = actor.system.attributes.hitPoints.max;
-    if (maxHitPoints == null) {
-      const msg = `Actor max hit points value ${maxHitPoints} is missing in actor ${actor.name}`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, actor);
     }

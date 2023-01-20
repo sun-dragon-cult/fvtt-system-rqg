@@ -112,6 +112,8 @@ export const RQG_CONFIG = {
 
   dblClickTimeout: 250, // Timeout for differentiating between single & double clicks
 
+  minTotalHitPoints: 3, // The minimum hit points for an actor.
+
   rqid: {
     prefixes: {
       // TODO remove from here, is defined in class Rqid

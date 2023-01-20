@@ -8,43 +8,22 @@ export class Rqid {
   public static init(): void {
     // Include rqid flags in index for compendium packs
 
-    // @ts-expect-error release
-    if (getGame().release.generation >= 10) {
-      // @ts-expect-error compendiumIndexFields
-      CONFIG.Actor.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CONFIG.Cards.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CONFIG.Item.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CONFIG.JournalEntry.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CONFIG.Macro.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CONFIG.Playlist.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CONFIG.RollTable.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CONFIG.Scene.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-    } else {
-      // Foundry 9
-      // @ts-expect-error compendiumIndexFields
-      CompendiumCollection.INDEX_FIELDS.Actor.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CompendiumCollection.INDEX_FIELDS.Cards.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CompendiumCollection.INDEX_FIELDS.Item.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CompendiumCollection.INDEX_FIELDS.JournalEntry.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CompendiumCollection.INDEX_FIELDS.Macro.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CompendiumCollection.INDEX_FIELDS.Playlist.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CompendiumCollection.INDEX_FIELDS.RollTable.push("flags.rqg.documentRqidFlags");
-      // @ts-expect-error compendiumIndexFields
-      CompendiumCollection.INDEX_FIELDS.Scene.push("flags.rqg.documentRqidFlags");
-    }
+    // @ts-expect-error compendiumIndexFields
+    CONFIG.Actor.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+    // @ts-expect-error compendiumIndexFields
+    CONFIG.Cards.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+    // @ts-expect-error compendiumIndexFields
+    CONFIG.Item.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+    // @ts-expect-error compendiumIndexFields
+    CONFIG.JournalEntry.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+    // @ts-expect-error compendiumIndexFields
+    CONFIG.Macro.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+    // @ts-expect-error compendiumIndexFields
+    CONFIG.Playlist.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+    // @ts-expect-error compendiumIndexFields
+    CONFIG.RollTable.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
+    // @ts-expect-error compendiumIndexFields
+    CONFIG.Scene.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
   }
 
   /**
@@ -85,7 +64,7 @@ export class Rqid {
   }
 
   /**
-   * Returns all documents whith an rqid matching the regex and matching the document type
+   * Returns all documents with an rqid matching the regex and matching the document type
    * and language, from the specified scope. The valid values for scope are:
    *
    * * **match**: same logic as fromRqid function,
@@ -93,13 +72,13 @@ export class Rqid {
    * * **world**: only search in world,
    * * **packs**: only search in compendium packs
    * @param rqidRegex regex used on the rqid
-   * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
+   * @param rqidDocumentName the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
    * @param scope defines where it will look
    */
   public static async fromRqidRegexAll(
     rqidRegex: RegExp | undefined,
-    rqidDocumentType: string, // like "i", "a", "je"
+    rqidDocumentName: string, // like "i", "a", "je"
     lang: string = "en",
     scope: "match" | "all" | "world" | "packs" = "match"
   ): Promise<Document<any, any>[]> {
@@ -110,12 +89,12 @@ export class Rqid {
 
     let worldDocuments: Document<any, any>[] = [];
     if (["match", "all", "world"].includes(scope)) {
-      worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentType, lang);
+      worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang);
       result.splice(0, 0, ...worldDocuments);
     }
 
     if (["match", "all", "packs"].includes(scope)) {
-      let packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentType, lang);
+      let packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang);
 
       if (scope === "match") {
         const worldDocumentRqids = [
@@ -137,17 +116,17 @@ export class Rqid {
    * language, with the highest priority documents in the World taking precedence over
    * any documents in compendium packs.
    * @param rqidRegex regex used on the rqid
-   * @param rqidDocumentType the first part of the wanted rqid, for example "i", "a", "je"
+   * @param rqidDocumentName the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
    */
   public static async fromRqidRegexBest(
     rqidRegex: RegExp | undefined,
-    rqidDocumentType: string, // like "i", "a", "je"
+    rqidDocumentName: string, // like "i", "a", "je"
     lang: string = "en"
   ): Promise<Document<any, any>[]> {
     const matchingDocuments = await this.fromRqidRegexAll(
       rqidRegex,
-      rqidDocumentType,
+      rqidDocumentName,
       lang,
       "match"
     );
@@ -244,7 +223,7 @@ export class Rqid {
       return "";
     }
 
-    const rqidDocumentString = Rqid.getRqidDocumentString(document);
+    const rqidDocumentString = Rqid.getRqidDocumentName(document);
     // @ts-expect-error v10
     const documentSubType = toKebabCase(document.type ?? "");
     let rqidIdentifier = "";
@@ -380,14 +359,14 @@ export class Rqid {
    */
   private static async documentsFromWorld(
     rqidRegex: RegExp | undefined,
-    rqidDocumentType: string,
+    rqidDocumentName: string,
     lang: string
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
     }
 
-    const gameProperty = Rqid.getGameProperty(`${rqidDocumentType}..`);
+    const gameProperty = Rqid.getGameProperty(`${rqidDocumentName}..`);
     const candidateDocuments = (getGame() as any)[gameProperty]?.filter(
       (d: Document<any, any>) =>
         rqidRegex.test(d.getFlag(systemId, documentRqidFlags)?.id) &&
@@ -512,6 +491,41 @@ export class Rqid {
     );
   }
 
+  public static getRqidIcon(rqid: string | undefined): string | undefined {
+    const rqidDocumentString = rqid?.split(".")[0];
+
+    // Use RQG default item type images for item documents
+    if (rqidDocumentString === "i") {
+      const itemType = Rqid.getDocumentType(rqid);
+      const iconSettings: any = getGame().settings.get(systemId, "defaultItemIconSettings");
+      const defaultItemIcon = itemType && iconSettings[itemType];
+      if (defaultItemIcon) {
+        // TODO If undefined then the rqid is invalid since all items need a type
+        return `<img src="${defaultItemIcon}"/>`;
+      }
+    }
+
+    // Use Foundry default document images
+    const configPart =
+      rqidDocumentString && Rqid.documentLinkIconsConfigName.get(rqidDocumentString);
+    if (!rqidDocumentString || !configPart) {
+      return undefined;
+    }
+    const linkIcon = (CONFIG as any)[configPart]?.sidebarIcon ?? "fas fa-fingerprint";
+    return `<i class="${linkIcon}"></i>`;
+  }
+
+  private static readonly documentLinkIconsConfigName = new Map([
+    ["a", "Actor"],
+    ["c", "Cards"],
+    ["i", "Item"],
+    ["je", "JournalEntry"],
+    ["m", "Macro"],
+    ["p", "Playlist"],
+    ["rt", "RollTable"],
+    ["s", "Scene"],
+  ]);
+
   /**
    * Sort a list of indexCandidates on rqid priority - the highest first.
    */
@@ -523,11 +537,11 @@ export class Rqid {
   }
 
   /**
-   *   Translates the first part of a rqid to what those documents are called in the `game` object.
+   *   Translates the first part of a rqid (rqidDocumentName) to what those documents are called in the `game` object.
    */
-  private static getGameProperty(rqid: string): string {
-    const rqidDocument = rqid.split(".")[0];
-    const gameProperty = Rqid.gamePropertyLookup[rqidDocument];
+  private static getGameProperty(rqid: string | undefined): string {
+    const rqidDocumentName = rqid?.split(".")[0];
+    const gameProperty = rqidDocumentName && Rqid.gamePropertyLookup[rqidDocumentName];
     if (!gameProperty) {
       const msg = "Tried to convert rqid with non existing document type";
       throw new RqgError(msg, rqid);
@@ -535,7 +549,7 @@ export class Rqid {
     return gameProperty;
   }
 
-  private static readonly gamePropertyLookup: { [key: string]: string } = {
+  private static readonly gamePropertyLookup: { [rqidDocumentName: string]: string } = {
     a: "actors",
     c: "cards",
     i: "items",
@@ -547,11 +561,11 @@ export class Rqid {
   };
 
   /**
-   *   Translates the first part of a rqid to a document type (like "Item").
+   *   Translates the first part of a rqid to a Foundry document name (like "Item").
    */
-  private static getDocumentName(rqid: string): string {
-    const rqidDocument = rqid.split(".")[0];
-    const documentName = Rqid.documentNameLookup[rqidDocument];
+  public static getDocumentName(rqid: string | undefined): string {
+    const rqidDocumentName = rqid?.split(".")[0];
+    const documentName = rqidDocumentName && Rqid.documentNameLookup[rqidDocumentName];
     if (!documentName) {
       const msg = "Tried to convert rqid with non existing document type";
       throw new RqgError(msg, rqid);
@@ -559,7 +573,7 @@ export class Rqid {
     return documentName;
   }
 
-  private static readonly documentNameLookup: { [key: string]: string } = {
+  private static readonly documentNameLookup: { [rqidDocumentName: string]: string } = {
     a: "Actor",
     c: "Card",
     i: "Item",
@@ -571,10 +585,18 @@ export class Rqid {
   };
 
   /**
+   * Get the document type from the rqid if it exists. For example i.skill.act returns "skill".
+   * Does not check if the type is valid in the system.
+   */
+  public static getDocumentType(rqid: string | undefined): string | undefined {
+    return rqid?.split(".")[1];
+  }
+
+  /**
    * Get the first part of a rqid (like "i") from a Document.
    */
-  private static getRqidDocumentString(document: Document<any, any>): string {
-    const documentString = Rqid.rqidDocumentStringLookup[document.documentName];
+  private static getRqidDocumentName(document: Document<any, any>): string {
+    const documentString = Rqid.rqidDocumentNameLookup[document.documentName];
     if (!documentString) {
       const msg = "Tried to convert a unsupported document to rqid";
       throw new RqgError(msg, document);
@@ -585,7 +607,9 @@ export class Rqid {
   /**
    *  Reverse lookup from DocumentType to rqidDocument ("Item" -> "i").
    */
-  private static readonly rqidDocumentStringLookup: { [key: string]: string } = Object.entries(
-    Rqid.documentNameLookup
-  ).reduce((acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }), {});
+  private static readonly rqidDocumentNameLookup: { [documentName: string]: string } =
+    Object.entries(Rqid.documentNameLookup).reduce(
+      (acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }),
+      {}
+    );
 }

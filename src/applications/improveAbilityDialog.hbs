@@ -1,7 +1,7 @@
 <form>
     <h1>
         {{#if adapter.img}}
-        <img class="item" src="{{adapter.img}}" title="{{adapter.name}}" style="padding-right: 10px;" />
+        <img class="item" src="{{adapter.img}}" data-tooltip="{{adapter.name}}" style="padding-right: 10px;" />
         {{/if}}
         {{localize "RQG.Dialog.improveAbilityDialog.header" name=adapter.name}}
     </h1>

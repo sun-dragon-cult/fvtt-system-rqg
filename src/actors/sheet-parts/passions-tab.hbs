@@ -1,13 +1,13 @@
 <h2 class="flex-row">
   <span>{{localize 'RQG.Actor.Passion.Passions'}}</span>
-  <a title="{{localize 'RQG.Actor.Passion.AddNewPassionTip'}}" data-passion-add><i class="fas fa-plus"></i></a>
+  <a data-tooltip="{{localize 'RQG.Actor.Passion.AddNewPassionTip'}}" data-passion-add><i class="fas fa-plus"></i></a>
 </h2>
 
 <div class="grid passions item-list">
   {{#each embeddedItems.passion}}
   <div class="grid {{#if ../wizard}}passion-select{{else}}passion{{/if}} item">
     <div data-item-id="{{id}}" data-item-roll class="passion contextmenu img item"
-      title="{{localize 'RQG.Game.RollTitle'}}">
+      data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
       {{#if ../wizard}}
       <div>
         <input type="checkbox"
@@ -15,18 +15,18 @@
           data-rqid="{{flags.rqg.documentRqidFlags.id}}"
           data-for-choice="{{../forChoice}}"
           {{#if (lookup system.choice ../checkedProperty)}}checked{{/if}}
-          title="{{localize "RQG.Actor.Passion.ImportPassionCheckboxTitle" passionName=name}}" />
+          data-tooltip="{{localize "RQG.Actor.Passion.ImportPassionCheckboxTitle" passionName=name}}" />
       </div>
       {{/if}}
       <img src="{{img}}">
     </div>
     <div data-item-id="{{id}}" data-item-roll class="passion contextmenu item"
-      title="{{localize 'RQG.Game.RollTitle'}}">
+      data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
       {{name}}
     </div>
     <div data-item-id="{{id}}" data-item-roll
       class="passion contextmenu item {{#if system.hasExperience}}experienced{{/if}}"
-      title="{{localize 'RQG.Game.RollTitle'}}">
+      data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
       {{system.chance}}%
     </div>
     <details data-item-id="{{id}}" class="description passion contextmenu item">

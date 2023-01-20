@@ -1,6 +1,6 @@
 export interface Characteristic {
-  value: number;
-  formula: string;
+  value: number | undefined;
+  formula: string | undefined;
   hasExperience?: boolean;
 }
 

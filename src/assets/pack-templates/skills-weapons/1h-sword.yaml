@@ -7,7 +7,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-sword.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-sword.specialization.broadsword}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -30,7 +30,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-sword.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-sword.specialization.kopis}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -53,7 +53,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-sword.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-sword.specialization.rapier}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []
@@ -76,7 +76,7 @@ data:
   skillName: ${{openSystem.content.weaponSkill.1h-sword.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-sword.specialization.shortsword}}$
   baseChance: 10
-  learnedChance: 10
+  gainedChance: 0
   canGetExperience: true
   hasExperience: false
   runes: []

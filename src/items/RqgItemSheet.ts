@@ -107,10 +107,10 @@ export class RqgItemSheet<
           } else {
             if (this.item.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [deleteFromPropertyName]: new RqidLink() } },
+                { _id: this.item.id, system: { [deleteFromPropertyName]: undefined } },
               ]);
             } else {
-              await this.item.update({ system: { [deleteFromPropertyName]: new RqidLink() } });
+              await this.item.update({ system: { [deleteFromPropertyName]: undefined } });
             }
           }
         });
@@ -200,7 +200,7 @@ export class RqgItemSheet<
       const msg = localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
         type: droppedDocumentData.type,
         name: droppedDocument?.name,
-        id: droppedDocumentData.id,
+        uuid: droppedDocumentData.uuid,
       });
       ui.notifications?.warn(msg);
       console.warn(msg, event);
@@ -208,14 +208,7 @@ export class RqgItemSheet<
     }
 
     if (droppedDocument && targetPropertyName) {
-      const newLink = new RqidLink();
-      newLink.rqid = droppedItemRqid;
-      newLink.name = droppedDocument.name ?? "";
-      newLink.documentType = droppedDocumentData.type;
-      if (droppedDocument instanceof Item) {
-        newLink.itemType = droppedDocument.type;
-      }
-
+      const newLink = new RqidLink(droppedItemRqid, droppedDocument.name ?? "");
       const targetProperty = getProperty(this.item.system, targetPropertyName);
 
       if (targetProperty) {

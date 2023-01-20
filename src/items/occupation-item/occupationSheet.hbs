@@ -1,6 +1,6 @@
 <form autocomplete="off">
   <header class="item-sheet-header">
-    <img src="{{img}}" data-edit="img" title="{{name}}" />
+    <img src="{{img}}" data-edit="img" data-tooltip="{{name}}" />
 
     <div class="flex-column gap03rem">
 
@@ -77,7 +77,7 @@
                   <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
                     <i class="fas fa-times icon"
                        data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
-                       title="{{localize 'RQG.Item.RqgItem.RqidLinkDelete' rqid=this.skillRqidLink.rqid
+                       data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.skillRqidLink.rqid
                                          name=this.skillRqidLink.name}}"></i>
 
                     {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
@@ -90,7 +90,7 @@
                         max="100"
                         id="bonus-{{@index}}"
                         data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                        title="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
+                        data-tooltip="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
                         value="{{this.bonus}}">%
                     </div>
                     <div>
@@ -98,7 +98,7 @@
                         type="checkbox"
                         id="income-skill-{{@index}}"
                         data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                        title="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
+                        data-tooltip="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
                         {{checked this.incomeSkill}}>
                       <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}</label>
                     </div>

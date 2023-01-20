@@ -39,6 +39,11 @@ body {
   src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
 }
 
+// Hide LastPass input icon
+[data-lastpass-icon-root], [data-lastpass-root] {
+  display: none !important;
+}
+
 .norse {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
   font-variant: small-caps;
@@ -628,7 +633,7 @@ body {
     cursor: context-menu;
   }
 
-  [data-rqid-link] {
+  [data-rqid-link][data-document-type="JournalEntry"] {
     cursor: help;
   }
 
@@ -873,14 +878,19 @@ body {
   }
 }
 
+// Almost a copy if Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
 .rqid-content-link {
   background: #ddd;
   padding: 1px 4px;
   border: 1px solid var(--color-border-dark-tertiary);
-  color: var(--color-text-dark-inactive);
-  border-radius: 2px;
+  border-radius: 2px 9px 9px 2px;
   white-space: nowrap;
   word-break: break-all;
+
+  i {
+    color: var(--color-text-dark-inactive);
+    margin-right: 0.25em;
+  }
 
   img {
     border: none;

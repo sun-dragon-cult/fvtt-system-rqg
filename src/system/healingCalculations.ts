@@ -35,19 +35,14 @@ export class HealingCalculations {
       actorUpdates: {},
       usefulLegs: [], // Not used yet
     };
+
     if (!Number.isInteger(healWoundIndex) || hitLocation.system.wounds.length <= healWoundIndex) {
       const msg = `Trying to heal a wound that doesn't exist.`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, healWoundIndex, hitLocation);
     }
 
-    const hpValue = hitLocation.system.hitPoints.value;
-    const hpMax = hitLocation.system.hitPoints.max;
-    if (hpValue == null || hpMax == null) {
-      const msg = `Hitlocation ${hitLocation.name} don't have hp value or max`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, hitLocation);
-    }
+    const hpMax = hitLocation.system.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
     const wounds = hitLocation.system.wounds.slice();
     let hitLocationHealthState: HitLocationHealthState =
       hitLocation.system.hitLocationHealthState || "healthy";
@@ -81,13 +76,8 @@ export class HealingCalculations {
       },
     });
 
-    const actorTotalHp = actor.system.attributes.hitPoints.value;
-    const actorMaxHp = actor.system.attributes.hitPoints.max;
-    if (actorTotalHp == null || actorMaxHp == null) {
-      const msg = `Couldn't find actor total hp (max or current value)`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, actor);
-    }
+    const actorTotalHp = actor.system.attributes.hitPoints.value ?? 0;
+    const actorMaxHp = actor.system.attributes.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
 
     const totalHpAfter = Math.min(actorTotalHp + healPoints, actorMaxHp);
     mergeObject(healingEffects.actorUpdates, {

@@ -253,7 +253,8 @@
         "ArmorPointsAbbr": "AP",
         "Wounds": "Wounds",
         "HealWound": "Heal Wound",
-        "AddWound": "Add Wound"
+        "AddWound": "Add Wound",
+        "NoHitLocations": "This character does not have any hit locations, please add some."
       },
       "Nav": {
         "Combat": "Combat",
@@ -358,7 +359,11 @@
       "DeleteItem": "Delete {itemType}",
       "ToggleExperience": "Toggle Experience",
       "InitializeCharacteristic": "Initialize Characteristic",
+      "CharacteristicInitialized": "Initialized {characteristicName} for {actorName}",
       "InitializeAllCharacteristics": "Initialize All Characteristics",
+      "AllCharacteristicsInitialized": "All Characteristics Initialized for {actorName}",
+      "SetAllCharacteristicsToAverage": "Set All Characteristics to Average",
+      "AllCharacteristicsSetToAverage": "All Characteristics set to Average for {actorName}",
       "InitializeResultChat": "Initialize {char}",
       "OverwriteCharacteristicDialogTitle": "Overwrite {characteristicName} on {actorName}?",
       "OverwriteCharacteristicDialog": "Do you want to overwrite the current value of {characteristicName}? This will cause a recalculation of any derived attributes like Hit Points, Magic Points, Strike Ranks, and skill Categories that depend upon {characteristicName}.",
@@ -756,7 +761,7 @@
         "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
         "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
         "DroppedItemWrongType": "This field expects an item of type(s) {allowedDropTypes} and the dropped item was {type}",
-        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with id ${id} does not have an RQID and cannot be dropped onto this sheet.",
+        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with uuid {uuid} does not have an RQID and cannot be dropped onto this sheet.",
         "ItemNotUnique": "{actorName} already has a {documentType} '{documentName}' and duplicates are not allowed"
       },
       "Occupation": {
@@ -803,8 +808,6 @@
         }
       },
       "RqgItem": {
-        "RqidLinkTitle": "RQG System ID (rqid) link to \"{rqid}\"",
-        "RqidLinkDelete": "Delete RQG System ID (rqid) link to \"{name}\" (\"{rqid}\")",
         "ShowInfoCircle": {
           "DropToConnectJournal": "Drop a Journal Entry on this field to connect.",
           "DropToReplaceJournal": "Drop a Journal Entry on this field to replace.",
@@ -999,8 +1002,8 @@
         "UnknownName": "Unknown"
       },
       "ContentLink": {
-        "CompendiumNameTitle": "Compendium [{compendiumName}]",
-        "WorldJournalEntry": "World Journal Entry",
+        "RqidLinkTitle": "{documentName}<small> {documentType}</small><br><small>rqid: {rqid}</small>",
+        "RqidLinkDelete": "Delete link to \"{name}\"<br><small>rqid: {rqid}</small>",
         "DropToConnectJournal": "Drop a journal entry on this item to connect a description.",
         "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."
       }

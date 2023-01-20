@@ -4,43 +4,40 @@
       class="rqid-content-link"
       data-rqid-link="{{rqidLink.rqid}}"
       data-document-type="{{rqidLink.documentType}}"
-      title="{{localize 'RQG.Item.RqgItem.RqidLinkTitle' rqid=rqidLink.rqid}}"
-    >
-      {{{rqidLinkImage rqidLink}}}
-      {{rqidLink.name}}
-    </a>
+      data-tooltip="{{rqidLinkTooltip rqidLink.rqid}}"
+    >{{{rqidLinkIcon rqidLink.rqid}}}{{rqidLink.name}}</a>
 
-  {{#if showBonus}}
-    {{#if editBonusPropertyName}}
-      +
-      <input type="number" value="{{rqidLink.bonus}}"
-          style="text-align: right; width: 25px;"
-          data-edit-bonus-property-name="{{editBonusPropertyName}}"
-          data-rqid="{{rqidLink.rqid}}">%
-    {{else}}
-      <span>+{{rqidLink.bonus}}%</span>
+    {{#if showBonus}}
+      {{#if editBonusPropertyName}}
+        +
+        <input type="number" value="{{rqidLink.bonus}}"
+               style="text-align: right; width: 25px;"
+               data-edit-bonus-property-name="{{editBonusPropertyName}}"
+               data-rqid="{{rqidLink.rqid}}">%
+      {{else}}
+        <span>+{{rqidLink.bonus}}%</span>
+      {{/if}}
     {{/if}}
-  {{/if}}
 
-  {{#if rqidLink.rqid}}
-    {{#if showDeleteFromPropertyName}}
-      <i
-        class="fas fa-times icon"
-        data-delete-rqid="{{rqidLink.rqid}}"
-        data-delete-from-property="{{showDeleteFromPropertyName}}"
-        title="{{localize 'RQG.Item.RqgItem.RqidLinkDelete' rqid=rqidLink.rqid name=rqidLink.name}}"
-      ></i>
+    {{#if rqidLink.rqid}}
+      {{#if showDeleteFromPropertyName}}
+        <i
+          class="fas fa-times icon"
+          data-delete-rqid="{{rqidLink.rqid}}"
+          data-delete-from-property="{{showDeleteFromPropertyName}}"
+          data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=rqidLink.rqid name=rqidLink.name}}"
+        ></i>
+      {{/if}}
     {{/if}}
-  {{/if}}
 
-  {{#if rqidLink.rqid}}
-    {{#if showInfoCircleReplace}}
-      <i
-        class="fas fa-info-circle icon"
-        title="{{localize showInfoCircleReplace}}"
-      ></i>
+    {{#if rqidLink.rqid}}
+      {{#if showInfoCircleReplace}}
+        <i
+          class="fas fa-info-circle icon"
+          data-tooltip="{{localize showInfoCircleReplace}}"
+        ></i>
+      {{/if}}
     {{/if}}
-  {{/if}}
 
   </div>
 
@@ -49,7 +46,7 @@
   {{#if showInfoCircleConnect}}
     <i
       class="fas fa-info-circle icon"
-      title="{{localize showInfoCircleConnect}}"
+      data-tooltip="{{localize showInfoCircleConnect}}"
     ></i>
   {{/if}}
 

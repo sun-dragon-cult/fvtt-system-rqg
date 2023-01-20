@@ -1,43 +1,53 @@
-<div class="health">
-  <h2 class="flex-col">{{localize "RQG.Actor.Health.Health"}}</h2>
-  <div class="flex-row nowrap flex-align-center">
-    <label>{{localize "RQG.Actor.Health.TotalHitPoints"}}
-      <input
-        type="number"
-        min="-99"
-        max="99"
-        name="system.attributes.hitPoints.value"
-        value="{{system.attributes.hitPoints.value}}"
-      > / {{system.attributes.hitPoints.max}}
-    </label>
-    <label class="text-right">{{localize "RQG.Actor.Health.HealingRatePerWeek" healingRate=system.attributes.healingRate }}</label>
+{{#if showUiSection.health}}
+  <div class="health">
+    <h2 class="flex-col">{{localize "RQG.Actor.Health.Health"}}</h2>
+
+    {{#if system.characteristics.constitution.value}}
+    <div class="flex-row nowrap flex-align-center">
+      <label>{{localize "RQG.Actor.Health.TotalHitPoints"}}
+        <input
+          type="number"
+          min="-99"
+          max="99"
+          name="system.attributes.hitPoints.value"
+          value="{{system.attributes.hitPoints.value}}"
+        > / {{system.attributes.hitPoints.max}}
+      </label>
+      <label class="text-right">{{localize "RQG.Actor.Health.HealingRatePerWeek" healingRate=system.attributes.healingRate }}</label>
+    {{/if}}
   </div>
-  <div class="grid hit-location item-list">
-    <div class="headings"></div>
-    <div class="head1-4">{{localize "RQG.Actor.Health.HitLocation"}}</div>
-    <div class="head5"><span class="text-center">{{localize "RQG.Actor.Health.HitPointsAbbr"}}</span></div>
-    <div class="head6"><span class="text-right">{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span></div>
-    <div class="head7">{{localize "RQG.Actor.Health.Wounds"}}</div>
-    {{#each embeddedItems.hitLocation}}
-      <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieFrom}}</span></div>
-      <div class="hit-location contextmenu item" data-item-id="{{id}}">-</div>
-      <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieTo}}</span></div>
-      <div class="hit-location contextmenu item" data-item-id="{{id}}">
-        {{name}}
-        {{#unless (eq system.hitLocationHealthState "healthy")}}
-          <i>&nbsp;{{toLowerCase (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState))}}</i>
-        {{/unless}}
-      </div>
-      <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right nowrap">{{system.hitPoints.value}} / {{system.hitPoints.max}}</span></div>
-      <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.armorPoints}}</span></div>
-      <div class="hit-location contextmenu item" data-item-id="{{id}}">
-        <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}" class="text-right nowrap">
-          {{#each system.wounds}}
-          <i class="fas fa-notes-medical"></i> {{this}}
-          {{/each}}
+    {{#if embeddedItems.hitLocation}}
+    <div class="grid hit-location item-list">
+      <div class="headings"></div>
+      <div class="head1-4">{{localize "RQG.Actor.Health.HitLocation"}}</div>
+      <div class="head5"><span class="text-center">{{localize "RQG.Actor.Health.HitPointsAbbr"}}</span></div>
+      <div class="head6"><span class="text-right">{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span></div>
+      <div class="head7">{{localize "RQG.Actor.Health.Wounds"}}</div>
+      {{#each embeddedItems.hitLocation}}
+        <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieFrom}}</span></div>
+        <div class="hit-location contextmenu item" data-item-id="{{id}}">-</div>
+        <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieTo}}</span></div>
+        <div class="hit-location contextmenu item" data-item-id="{{id}}">
+          {{name}}
+          {{#unless (eq system.hitLocationHealthState "healthy")}}
+            <i>&nbsp;{{toLowerCase (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState))}}</i>
+          {{/unless}}
         </div>
-        <div class="ml-5 text-right" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></div>
-      </div>
-    {{/each}}
+        <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right nowrap">{{system.hitPoints.value}} / {{system.hitPoints.max}}</span></div>
+        <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.armorPoints}}</span></div>
+        <div class="hit-location contextmenu item" data-item-id="{{id}}">
+          <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}" class="text-right nowrap">
+            {{#each system.wounds}}
+            <i class="fas fa-notes-medical"></i> {{this}}
+            {{/each}}
+          </div>
+          <div class="ml-5 text-right" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></div>
+        </div>
+      {{/each}}
+    </div>
+    {{else}}
+      <p>{{localize "RQG.Actor.Health.NoHitLocations"}}</p>
+    {{/if}}
+
   </div>
-</div>
+{{/if}}

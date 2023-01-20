@@ -3,7 +3,7 @@
     <label for="rqid-editor">{{localize "RQG.RQGSystem.rqid"}}</label>
     <div class="input-button">
       <input type="text" id="rqid-editor" name="flags.rqg.documentRqidFlags.id" value="{{flags.rqg.documentRqidFlags.id}}" />
-      <a title="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}" data-generate-default-rqid><i class="fas fa-plus"></i></a>
+      <a data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}" data-generate-default-rqid><i class="fas fa-plus"></i></a>
     </div>
 
     <label for="rqidLang-editor">{{localize "RQG.RQGSystem.rqidLang"}}</label>
@@ -74,7 +74,7 @@
   <label>{{localize "RQG.RQGSystem.FoundryId"}}</label>
   <div class="input-button">
     <input type="text" value="{{id}}" readonly>
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+    <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>
   </div>
@@ -83,7 +83,7 @@
     <label>{{localize "RQG.RQGSystem.ParentFoundryId"}}</label>
     <div class="input-button">
       <input type="text" value="{{parentId}}" readonly>
-      <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+      <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
         <i class="fas fa-copy"></i>
       </a>
     </div>
@@ -92,7 +92,7 @@
   <label>{{localize "RQG.RQGSystem.FoundryUuid"}}</label>
   <div class="input-button">
     <input type="text" value="{{uuid}}" readonly>
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+    <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>
   </div>
@@ -100,7 +100,7 @@
   <label>{{localize "RQG.RQGSystem.GetThisDocument"}}</label>
   <div class="input-button">
     <input type="text" value='await fromUuid("{{uuid}}")' readonly>
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+    <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>
   </div>
@@ -111,7 +111,7 @@
     <input type="text"
       value='await game.system.api.rqid.fromRqid("{{flags.rqg.documentRqidFlags.id}}","{{flags.rqg.documentRqidFlags.lang}}")'
       readonly>
-    <a title="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+    <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
       <i class="fas fa-copy"></i>
     </a>
   </div>

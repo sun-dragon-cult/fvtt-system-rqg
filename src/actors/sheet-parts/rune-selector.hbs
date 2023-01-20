@@ -7,7 +7,7 @@
             {{#if this.choice}}
               {{#if (lookup this.choice ../checkedProperty)}}checked{{/if}}
             {{/if}}
-            title="{{localize ../title name=name}}"
+            data-tooltip="{{localize ../title name=name}}"
         >
     {{> "systems/rqg/actors/sheet-parts/grid-rune.hbs"
         rune=this

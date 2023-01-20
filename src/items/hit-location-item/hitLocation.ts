@@ -40,12 +40,7 @@ export class HitLocation extends AbstractEmbeddedItem {
     item.system.armorPoints = item.system.naturalAp + armorAbsorption;
 
     // Calc HP
-    const totalHp = actorData.attributes.hitPoints.max;
-    if (totalHp == null) {
-      const msg = localize("RQG.Item.Notification.ActorDoesNotHaveMaxHpError");
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, actor);
-    }
+    const totalHp = actorData.attributes.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
     // Remove any healed wounds
     // @ts-expect-error system
     item.system.wounds = item.system.wounds.filter((w) => w > 0);

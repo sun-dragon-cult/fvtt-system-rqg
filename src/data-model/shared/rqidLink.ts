@@ -3,12 +3,16 @@ import { getDomDataset } from "../../system/util";
 
 export class RqidLink {
   /** The rqid to link to */
-  rqid: string = "";
+  readonly rqid: string;
   /** Display name of the link */
-  name: string = "";
-  documentType: string = ""; // TODO not necessary - part of the rqid
-  itemType?: string; // TODO not necessary - part of the rqid
+  readonly name: string;
+
   bonus: number | undefined; // TODO Should not be here.
+
+  constructor(rqid: string, name: string) {
+    this.rqid = rqid;
+    this.name = name;
+  }
 
   // Handle rqid links
   static async addRqidLinkClickHandlers(html: JQuery): Promise<void> {

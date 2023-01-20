@@ -1,6 +1,5 @@
 import { ItemTypeEnum } from "./itemTypes";
 import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
-import { RqidLink } from "../shared/rqidLink";
 
 export interface SpiritMagicDataSourceData extends Spell {
   /** Can the caster decide the number of magic points used */
@@ -27,7 +26,7 @@ export interface SpiritMagicDataProperties {
 }
 
 export const defaultSpiritMagicData: SpiritMagicDataSourceData = {
-  descriptionRqidLink: new RqidLink(),
+  descriptionRqidLink: undefined,
   points: 0,
   isVariable: false,
   isRitual: false,

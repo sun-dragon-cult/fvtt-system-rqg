@@ -5,6 +5,7 @@ export enum ContextMenuRunes {
   Improve = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/mastery.svg"></div>',
   InitializeCharacteristics = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/fertility.svg"></div>',
   InitializeAllCharacteristics = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/fertility.svg"></div>',
+  SetAllCharacteristicsToAverage = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/stasis.svg"></div>',
   Edit = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/movement_change.svg"></div>',
   Delete = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/death.svg"></div>',
   ViewDescription = '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/truth.svg"></div>',

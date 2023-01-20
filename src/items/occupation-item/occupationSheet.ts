@@ -245,9 +245,7 @@ export class OccupationSheet extends RqgItemSheet<
           let occSkill = new OccupationalSkill();
           occSkill.bonus = 0;
           occSkill.incomeSkill = false;
-          occSkill.skillRqidLink = new RqidLink();
-          occSkill.skillRqidLink.name = droppedItem.name || "";
-          occSkill.skillRqidLink.rqid = droppedRqid?.id;
+          occSkill.skillRqidLink = new RqidLink(droppedRqid?.id, droppedItem.name || "");
 
           let occSkills = thisOccupation.occupationalSkills;
 

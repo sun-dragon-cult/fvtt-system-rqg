@@ -17,7 +17,7 @@ export class OccupationalSkill {
 
 export interface OccupationDataSourceData {
   occupation: string;
-  occupationRqidLink: RqidLink;
+  occupationRqidLink: RqidLink | undefined;
   specialization: string;
   homelands: string[]; // The user can drop Homeland items on here but it will just save the data.homeland in this string array
   occupationalSkills: OccupationalSkill[];
@@ -44,7 +44,7 @@ export interface OccupationDataProperties {
 
 export const defaultOccupationData: OccupationDataSourceData = {
   occupation: "",
-  occupationRqidLink: new RqidLink(),
+  occupationRqidLink: undefined,
   specialization: "",
   homelands: [],
   occupationalSkills: [],

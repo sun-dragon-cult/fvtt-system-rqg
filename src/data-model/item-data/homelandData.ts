@@ -3,9 +3,9 @@ import { RqidLink } from "../shared/rqidLink";
 
 export interface HomelandDataSourceData {
   homeland: string;
-  homelandJournalRqidLink: RqidLink;
+  homelandJournalRqidLink: RqidLink | undefined;
   region: string;
-  regionJournalRqidLink: RqidLink;
+  regionJournalRqidLink: RqidLink | undefined;
   cultureJournalRqidLinks: RqidLink[];
   tribeJournalRqidLinks: RqidLink[];
   clanJournalRqidLinks: RqidLink[];
@@ -31,9 +31,9 @@ export interface HomelandDataProperties {
 
 export const defaultHomelandData: HomelandDataSourceData = {
   homeland: "",
-  homelandJournalRqidLink: new RqidLink(),
+  homelandJournalRqidLink: undefined,
   region: "",
-  regionJournalRqidLink: new RqidLink(),
+  regionJournalRqidLink: undefined,
   cultureJournalRqidLinks: [],
   tribeJournalRqidLinks: [],
   clanJournalRqidLinks: [],
