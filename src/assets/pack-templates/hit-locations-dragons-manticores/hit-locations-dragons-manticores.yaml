@@ -1,0 +1,199 @@
+name: Tail
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 1
+  dieTo: 2
+  baseHpDelta: -1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-tail
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Right Hind Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 3
+  dieTo: 4
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-right-hind-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Hind Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 5
+  dieTo: 6
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-left-hind-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Hindquarter
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 7
+  dieTo: 8
+  baseHpDelta: 1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: abdomen
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-hindquarter
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Forequarter
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 9
+  dieTo: 10
+  baseHpDelta: 1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: chest
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-forequarter
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Right Wing
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 11
+  dieTo: 12
+  baseHpDelta: -1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Chest
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-right-wing
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Wing
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 13
+  dieTo: 14
+  baseHpDelta: -1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Chest
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-left-wing
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Right Foreleg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 15
+  dieTo: 16
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Chest
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-right-foreleg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Foreleg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 17
+  dieTo: 18
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Chest
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-left-foreleg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Head
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 19
+  dieTo: 20
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: head
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.dragons-manticores-head
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

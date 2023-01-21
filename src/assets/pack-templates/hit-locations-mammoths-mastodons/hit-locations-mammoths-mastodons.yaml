@@ -1,29 +1,69 @@
-name: Head
+name: Right Hind Leg
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  dieFrom: 19
-  dieTo: 20
-  baseHpDelta: 0
+  dieFrom: 1
+  dieTo: 2
+  baseHpDelta: -1
   naturalAp: 0
   wounds: []
-  hitLocationType: head
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.mammoths-mastodons-right-hind-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Hind Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 3
+  dieTo: 4
+  baseHpDelta: -1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.mammoths-mastodons-left-hind-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Hindquarter
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 5
+  dieTo: 7
+  baseHpDelta: 1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: abdomen
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.head-human
+      id: i.hit-location.mammoths-mastodons-hindquarter
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Chest
+name: Forequarter
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  dieFrom: 12
-  dieTo: 12
+  dieFrom: 8
+  dieTo: 10
   baseHpDelta: 1
   naturalAp: 0
   wounds: []
@@ -34,106 +74,86 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.chest-human
+      id: i.hit-location.mammoths-mastodons-forequarter
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Abdomen
+name: Right Foreleg
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
-  dieFrom: 9
-  dieTo: 11
-  baseHpDelta: 0
+  dieFrom: 11
+  dieTo: 13
+  baseHpDelta: -1
   naturalAp: 0
   wounds: []
-  hitLocationType: abdomen
+  hitLocationType: limb
+  connectedTo: Chest
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.mammoths-mastodons-right-foreleg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Foreleg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 14
+  dieTo: 16
+  baseHpDelta: -1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Chest
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.mammoths-mastodons-left-foreleg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Trunk
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 17
+  dieTo: 17
+  baseHpDelta: -3
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Head
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.mammoths-mastodons-trunk
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Head
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 18
+  dieTo: 20
+  baseHpDelta: 1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: head
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.abdomen-human
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
----
-name: Left Arm
-type: hitLocation
-img: systems/rqg/assets/images/items/hit-location.svg
-data:
-  dieFrom: 16
-  dieTo: 18
-  baseHpDelta: -1
-  naturalAp: 0
-  wounds: []
-  hitLocationType: limb
-  connectedTo: Chest
-  hitLocationHealthState: healthy
-  actorHealthImpact: healthy
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.hit-location.left-arm-human
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
----
-name: Right Arm
-type: hitLocation
-img: systems/rqg/assets/images/items/hit-location.svg
-data:
-  dieFrom: 13
-  dieTo: 15
-  baseHpDelta: -1
-  naturalAp: 0
-  wounds: []
-  hitLocationType: limb
-  connectedTo: Chest
-  hitLocationHealthState: healthy
-  actorHealthImpact: healthy
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.hit-location.right-arm-human
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
----
-name: Left Leg
-type: hitLocation
-img: systems/rqg/assets/images/items/hit-location.svg
-data:
-  dieFrom: 5
-  dieTo: 8
-  baseHpDelta: 0
-  naturalAp: 0
-  wounds: []
-  hitLocationType: limb
-  connectedTo: Abdomen
-  hitLocationHealthState: healthy
-  actorHealthImpact: healthy
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.hit-location.left-leg-human
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
----
-name: Right Leg
-type: hitLocation
-img: systems/rqg/assets/images/items/hit-location.svg
-data:
-  dieFrom: 1
-  dieTo: 4
-  baseHpDelta: 0
-  naturalAp: 0
-  wounds: []
-  hitLocationType: limb
-  connectedTo: Abdomen
-  hitLocationHealthState: healthy
-  actorHealthImpact: healthy
-flags:
-  rqg:
-    documentRqidFlags:
-      id: i.hit-location.right-leg-human
+      id: i.hit-location.mammoths-mastodons-head
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

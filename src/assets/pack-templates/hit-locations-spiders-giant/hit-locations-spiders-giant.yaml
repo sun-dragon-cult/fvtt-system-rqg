@@ -1,0 +1,199 @@
+name: Right Hind Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 1
+  dieTo: 1
+  baseHpDelta: -2
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-right-hind-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Hind Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 2
+  dieTo: 2
+  baseHpDelta: -2
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-left-hind-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Right Center Rear Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 3
+  dieTo: 3
+  baseHpDelta: -2
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-right-center-rear-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Center Rear Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 4
+  dieTo: 4
+  baseHpDelta: -2
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-left-center-rear-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Abdomen
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 5
+  dieTo: 8
+  baseHpDelta: 1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: abdomen
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-abdomen
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Right Center Front Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 9
+  dieTo: 10
+  baseHpDelta: -2
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-right-center-front-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Center Front Leg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 11
+  dieTo: 12
+  baseHpDelta: -2
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-left-center-front-leg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Right Foreleg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 13
+  dieTo: 14
+  baseHpDelta: -2
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-right-foreleg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Left Foreleg
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 15
+  dieTo: 16
+  baseHpDelta: -2
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: Abdomen
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-left-foreleg
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: Head
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+data:
+  dieFrom: 17
+  dieTo: 20
+  baseHpDelta: 1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: head
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.spiders-head
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
