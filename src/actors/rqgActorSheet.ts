@@ -169,10 +169,10 @@ export class RqgActorSheet extends ActorSheet<
 
       embeddedItems: await RqgActorSheet.organizeEmbeddedItems(this.actor),
 
-      spiritCombatSkillData: this.actor.getBestEmbeddedItemByRqid(
+      spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
         CONFIG.RQG.skillRqid.spiritCombat
       ),
-      dodgeSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.dodge),
+      dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge),
 
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance

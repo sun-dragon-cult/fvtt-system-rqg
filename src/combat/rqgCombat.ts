@@ -29,6 +29,7 @@ export class RqgCombat extends Combat {
     const actorADex = a.actor.system.characteristics.dexterity.value ?? 0;
     const actorBDex = b.actor.system.characteristics.dexterity.value ?? 0;
     const cDex = actorBDex - actorADex;
+    // TODO Need to mark somehow that the DEX is equal so that the attacks actually occur simultaneously
     if (cDex !== 0) {
       return cDex; // Sort on highest DEX
     }

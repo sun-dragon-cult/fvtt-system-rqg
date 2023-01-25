@@ -4,6 +4,18 @@ import { getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
+// TODO Look into enhancing typing of rqid strings like this
+export type RqidString =
+  | `${string}.${string}.${string}`
+  | `${string}.${string}.${string}.${string}.${string}.${string}`;
+
+/**
+ * Handles rqid ids. These IDs are a string that is constructed like `i.skill.act`.
+ * The first part (rqidDocumentName) is a shorthand to the foundry Document names (like Item, Actor) for the supported documents. See Rqid.documentNameLookup
+ * The second part (document type) is the same as the document type in Foundry (like weapon, skill, etc). Can be empty.
+ * The third part ()
+ *
+ */
 export class Rqid {
   public static init(): void {
     // Include rqid flags in index for compendium packs
@@ -259,10 +271,15 @@ export class Rqid {
   /**
    * Render the sheet of the documents the rqid points to and brings it to top.
    */
-  public static async renderRqidDocument(rqid: string) {
+  public static async renderRqidDocument(rqid: string, anchor?: string): Promise<void> {
     const document = await Rqid.fromRqid(rqid);
-    // @ts-ignore all rqid supported documents have sheet
-    document?.sheet?.render(true, { focus: true });
+    if (document != null && rqid.split(".")?.[3] === "jp") {
+      const journal = document.parent;
+      journal?.sheet.goToPage(document.id, anchor);
+    } else {
+      // @ts-ignore all rqid supported documents have sheet
+      document?.sheet?.render(true, { focus: true });
+    }
   }
 
   /**
@@ -319,13 +336,15 @@ export class Rqid {
     if (!rqid) {
       return undefined;
     }
+    const documentRqid = Rqid.documentRqid(rqid);
+    const embeddedDocumentsRqid = Rqid.embeddedDocumentRqid(rqid);
 
     const candidateDocuments: Document<any, any>[] = (getGame() as any)[
-      this.getGameProperty(rqid)
+      this.getGameProperty(documentRqid)
     ]?.contents
       .filter(
         (doc: Document<any, any>) =>
-          doc.getFlag(systemId, documentRqidFlags)?.id === rqid &&
+          doc.getFlag(systemId, documentRqidFlags)?.id === documentRqid &&
           doc.getFlag(systemId, documentRqidFlags)?.lang === lang
       )
       .sort(Rqid.compareRqidPrio);
@@ -350,7 +369,18 @@ export class Rqid {
       // TODO Or should this be handled in the compendium browser eventually?
       console.warn(msg + "  Duplicate items: ", candidateDocuments);
     }
-    return highestPrioDocuments[0];
+    return this.getEmbeddedOrProvidedDocument(highestPrioDocuments[0], embeddedDocumentsRqid);
+  }
+
+  private static getEmbeddedOrProvidedDocument(document: any, embeddedDocumentsRqid: string) {
+    if (
+      embeddedDocumentsRqid &&
+      typeof document.getBestEmbeddedDocumentByRqid === "function" // Not all documents support embedded rqid documents
+    ) {
+      return document.getBestEmbeddedDocumentByRqid(embeddedDocumentsRqid);
+    } else {
+      return document;
+    }
   }
 
   /**
@@ -373,7 +403,7 @@ export class Rqid {
         d.getFlag(systemId, documentRqidFlags)?.lang === lang
     );
 
-    if (candidateDocuments === undefined) {
+    if (candidateDocuments == null) {
       return [];
     }
 
@@ -392,7 +422,9 @@ export class Rqid {
     if (!rqid) {
       return undefined;
     }
-    const documentName = Rqid.getDocumentName(rqid);
+    const documentRqid = Rqid.documentRqid(rqid);
+    const embeddedDocumentsRqid = Rqid.embeddedDocumentRqid(rqid);
+    const documentName = Rqid.getDocumentName(documentRqid);
     const indexCandidates: { pack: any; indexData: any }[] = [];
 
     for (const pack of getGame().packs) {
@@ -404,7 +436,7 @@ export class Rqid {
         // TODO fix typing when upgrading type versions!
         const indexInstances: any[] = (pack.index as any).filter(
           (i: any) =>
-            i?.flags?.rqg?.documentRqidFlags?.id === rqid &&
+            i?.flags?.rqg?.documentRqidFlags?.id === documentRqid &&
             i?.flags?.rqg?.documentRqidFlags?.lang === lang // &&
         );
         indexInstances.forEach((i) => indexCandidates.push({ pack: pack, indexData: i }));
@@ -431,7 +463,8 @@ export class Rqid {
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
       console.warn(msg + "  Duplicate items: ", result);
     }
-    return await result[0].pack.getDocument(result[0].indexData._id);
+    const highestPrioDocument = await result[0].pack.getDocument(result[0].indexData._id);
+    return this.getEmbeddedOrProvidedDocument(highestPrioDocument, embeddedDocumentsRqid);
   }
 
   /**
@@ -440,13 +473,13 @@ export class Rqid {
    */
   private static async documentsFromPacks(
     rqidRegex: RegExp,
-    rqidDocumentType: string,
+    rqidDocumentName: string,
     lang: string
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
       return [];
     }
-    const documentName = Rqid.getDocumentName(`${rqidDocumentType}..fake-rqid`);
+    const documentName = Rqid.getDocumentName(`${rqidDocumentName}..fake-rqid`);
     const candidateDocuments: Document<any, any>[] = [];
 
     for (const pack of getGame().packs) {
@@ -520,6 +553,7 @@ export class Rqid {
     ["c", "Cards"],
     ["i", "Item"],
     ["je", "JournalEntry"],
+    ["jp", "JournalEntryPage"],
     ["m", "Macro"],
     ["p", "Playlist"],
     ["rt", "RollTable"],
@@ -578,6 +612,7 @@ export class Rqid {
     c: "Card",
     i: "Item",
     je: "JournalEntry",
+    jp: "JournalEntryPage", // Only allowed as embedded in JournalEntry
     m: "Macro",
     p: "Playlist",
     rt: "RollTable",
@@ -612,4 +647,21 @@ export class Rqid {
       (acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }),
       {}
     );
+
+  /**
+   * Get the main level document rqid from a rqid that could contain a reference
+   * to an embedded document such as `a.character.nisse.i.skill.act` -> `a.character.nisse`
+   */
+  private static documentRqid(rqid: string): string {
+    return rqid.split(".").slice(0, 3).join(".");
+  }
+
+  /**
+   * Get the embedded level document rqid from a rqid
+   * such as `a.character.nisse.i.skill.act` -> `i.skill.act`. Will return an empty string
+   * if no embedded rqid exists
+   */
+  private static embeddedDocumentRqid(rqid: string): string {
+    return rqid.split(".").slice(3, 6).join(".");
+  }
 }

@@ -606,7 +606,7 @@ export class ActorWizard extends FormApplication {
     const adds = [];
     const deletes: string[] = [];
     for (const key in this.choices) {
-      let existingItems = this.actor.getEmbeddedItemsByRqid(key);
+      let existingItems = this.actor.getEmbeddedDocumentsByRqid(key);
       if (existingItems.length > 0) {
         for (const actorItem of existingItems) {
           // Handle Skills, Runes, and Passions, which use the .present property of the choice
@@ -668,7 +668,7 @@ export class ActorWizard extends FormApplication {
           if (!itemsToAddFromTemplate) {
             // Didn't find items by rqid, so just take what's on the Species Template
             itemsToAddFromTemplate =
-              this.species.selectedSpeciesTemplate?.getEmbeddedItemsByRqid(key) || [];
+              this.species.selectedSpeciesTemplate?.getEmbeddedDocumentsByRqid(key) || [];
             console.log(
               `Actor Species Template had an item with rqid "${key} that was not found in by rqid. Using item from the Actor Species Template.`,
               itemsToAddFromTemplate
