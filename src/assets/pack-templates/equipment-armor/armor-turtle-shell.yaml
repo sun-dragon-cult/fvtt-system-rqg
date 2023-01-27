@@ -1,0 +1,25 @@
+name: ${{openSystem.content.gear.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.TurtleShell}}$)
+type: armor
+img: systems/rqg/assets/images/armor/cuirass.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-cuirass-turtle-shell
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+  armorType: ${{openSystem.content.gear.armor.cuirass}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.TurtleShell}}$
+  absorbs: 4
+  encumbrance: 1
+  price:
+    real: 15
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:

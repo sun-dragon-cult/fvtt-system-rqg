@@ -1,0 +1,210 @@
+name: ${{openSystem.content.gear.armor.compositeHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+type: armor
+img: systems/rqg/assets/images/armor/composite-helmet.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-composite-helm-bronze-plate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.head}}$
+  armorType: ${{openSystem.content.gear.armor.compositeHelm}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
+  absorbs: 3
+  encumbrance: 0.5
+  price:
+    real: 11
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.openHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+type: armor
+img: systems/rqg/assets/images/armor/open-helmet.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-open-helm-bronze-plate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.head}}$
+  armorType: ${{openSystem.content.gear.armor.openHelm}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
+  absorbs: 4
+  encumbrance: 1
+  price:
+    real: 20
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.closedHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+type: armor
+img: systems/rqg/assets/images/armor/closed-helmet.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-closed-helm-bronze-plate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.head}}$
+  armorType: ${{openSystem.content.gear.armor.closedHelm}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
+  absorbs: 5
+  encumbrance: 1
+  price:
+    real: 30
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.fullHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+type: armor
+img: systems/rqg/assets/images/armor/full-helmet.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-full-helm-bronze-plate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.head}}$
+  armorType: ${{openSystem.content.gear.armor.fullHelm}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
+  absorbs: 6
+  encumbrance: 2
+  price:
+    real: 50
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.vambraces}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+type: armor
+img: systems/rqg/assets/images/armor/vambraces.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-vambraces-bronze-plate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
+    - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
+  armorType: ${{openSystem.content.gear.armor.vambraces}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
+  absorbs: 6
+  encumbrance: 2
+  price:
+    real: 100
+    estimated: 0
+  moveQuietlyPenalty: 10
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+type: armor
+img: systems/rqg/assets/images/armor/cuirass.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-cuirass-bronze-plate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+  armorType: ${{openSystem.content.gear.armor.cuirass}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
+  absorbs: 6
+  encumbrance: 3
+  price:
+    real: 175
+    estimated: 0
+  moveQuietlyPenalty: 15
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.hauberk}}$ (Segmented ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+type: armor
+img: systems/rqg/assets/images/armor/hauberk.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-hauberk-segmented-bronze-plate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+  armorType: ${{openSystem.content.gear.armor.hauberk}}$
+  material: Segmented ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
+  absorbs: 6
+  encumbrance: 5
+  price:
+    real: 300
+    estimated: 0
+  moveQuietlyPenalty: 50
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.greaves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+type: armor
+img: systems/rqg/assets/images/armor/greaves.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-greaves-bronze-plate
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
+    - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
+  armorType: ${{openSystem.content.gear.armor.greaves}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
+  absorbs: 6
+  encumbrance: 2
+  price:
+    real: 120
+    estimated: 0
+  moveQuietlyPenalty: 15
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:

@@ -623,7 +623,7 @@
           "StuddedLeather": "Studded Leather",
           "BronzePlate": "Bronze Plate",
           "BronzeSegmentedPlate": "Segmented Bronze Plate",
-          "BronzeDiscPlate": "Disc Bronze Plate",
+          "DiskPlate": "Disk Plate",
           "LightScale": "Light Scale",
           "HeavyScale": "Heavy Scale",
           "Cuirboilli": "Cuirboilli",
@@ -2572,6 +2572,36 @@
       },
       "trample": {
         "name": "Trample"
+      }
+    },
+    "gear": {
+      "armor": {
+        "hood": "Hood",
+        "broadBrimmedHat": "Broad-brimmed Hat",
+        "cap": "Cap",
+        "compositeHelm": "Composite Helm",
+        "openHelm": "Open Helm",
+        "closedHelm": "Closed Helm",
+        "fullHelm": "Full Helm",
+        "sleeves": "Sleeves",
+        "vambraces": "Vambraces",
+        "cuirass": "Cuirass",
+        "linothorax": "Linothorax",
+        "hauberk": "Hauberk",
+        "skirt": "Skirt",
+        "pants": "Pants",
+        "greaves": "Greaves"
+      }
+    },
+    "hitLocation": {
+      "humanoid": {
+        "head": "Head",
+        "leftArm": "Left Arm",
+        "rightArm": "Right Arm",
+        "chest": "Chest",
+        "abdomen": "Abdomen",
+        "leftLeg": "Left Leg",
+        "rightLeg": "Right Leg"
       }
     }
   }

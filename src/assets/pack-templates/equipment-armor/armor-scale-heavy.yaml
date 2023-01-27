@@ -1,0 +1,106 @@
+
+name: ${{openSystem.content.gear.armor.sleeves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$)
+type: armor
+img: systems/rqg/assets/images/armor/vambraces.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-sleeves-heavy-scale
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
+    - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
+  armorType: ${{openSystem.content.gear.armor.sleeves}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$
+  absorbs: 5
+  encumbrance: 3
+  price:
+    real: 50
+    estimated: 0
+  moveQuietlyPenalty: 15
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$)
+type: armor
+img: systems/rqg/assets/images/armor/cuirass.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-cuirass-heavy-scale
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+  armorType: ${{openSystem.content.gear.armor.cuirass}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$
+  absorbs: 5
+  encumbrance: 3
+  price:
+    real: 40
+    estimated: 0
+  moveQuietlyPenalty: 25
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.hauberk}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$)
+type: armor
+img: systems/rqg/assets/images/armor/hauberk.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-hauberk-heavy-scale
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+  armorType: ${{openSystem.content.gear.armor.hauberk}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$
+  absorbs: 5
+  encumbrance: 3
+  price:
+    real: 65
+    estimated: 0
+  moveQuietlyPenalty: 25
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:
+---
+name: ${{openSystem.content.gear.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$)
+type: armor
+img: systems/rqg/assets/images/armor/skirt.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-skirt-heavy-scale
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+  armorType: ${{openSystem.content.gear.armor.skirt}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$
+  absorbs: 5
+  encumbrance: 3
+  price:
+    real: 60
+    estimated: 0
+  moveQuietlyPenalty: 30
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description:

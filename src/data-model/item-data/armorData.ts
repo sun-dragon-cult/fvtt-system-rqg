@@ -24,7 +24,7 @@ export const materialTranslationKeys = [
   "RQG.Item.Armor.ArmorMaterial.HeavyLeather",
   "RQG.Item.Armor.ArmorMaterial.StuddedLeather",
   "RQG.Item.Armor.ArmorMaterial.BronzePlate",
-  "RQG.Item.Armor.ArmorMaterial.BronzeDiscPlate",
+  "RQG.Item.Armor.ArmorMaterial.DiskPlate",
   "RQG.Item.Armor.ArmorMaterial.BronzeSegmentedPlate",
   "RQG.Item.Armor.ArmorMaterial.LightScale",
   "RQG.Item.Armor.ArmorMaterial.HeavyScale",
