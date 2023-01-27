@@ -32,12 +32,17 @@ export class RqgActor extends Actor {
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
   prepareBaseData(): void {
+    console.time("prepareBaseData");
+
     super.prepareBaseData();
     // Set this here before Active effects to allow POW crystals to boost it.
     this.system.attributes.magicPoints.max = this.system.characteristics.power.value;
+    console.timeEnd("prepareBaseData");
   }
 
   prepareEmbeddedDocuments(): void {
+    console.time("prepareEmbeddedDocuments");
+
     // @ts-expect-error Foundry 9
     super.prepareEmbeddedDocuments();
     const actorSystem = this.system;
@@ -47,19 +52,23 @@ export class RqgActor extends Actor {
     this.items.forEach((item) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
     );
+    console.timeEnd("prepareEmbeddedDocuments");
   }
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
    */
   applyActiveEffects(): void {
+    console.time("applyActiveEffects");
     super.applyActiveEffects();
+    console.timeEnd("applyActiveEffects");
   }
 
   /**
    * Apply final transformations to the Actor data after all effects have been applied
    */
   prepareDerivedData(): void {
+    console.time("prepareDerivedData");
     super.prepareDerivedData();
     const attributes = this.system.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
@@ -118,6 +127,7 @@ export class RqgActor extends Actor {
     attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
 
     attributes.health = DamageCalculations.getCombinedActorHealth(this);
+    console.timeEnd("prepareDerivedData");
   }
 
   private calcMaxEncumbrance(
@@ -165,6 +175,8 @@ export class RqgActor extends Actor {
   // Entity-specific actions that should occur when the Entity is first created
   // @ts-ignore
   protected _onCreate(actorData: ActorData, options: DocumentModificationOptions, userId: string) {
+    console.log("*** RqgActor _onCreate", actorData, options, userId);
+
     super._onCreate(actorData as any, options, userId); // TODO type bug ??
 
     // There might be effects with a different actor.id but same itemData.id if the actor
@@ -199,6 +211,7 @@ export class RqgActor extends Actor {
     options: DocumentModificationOptions,
     userId: string
   ): void {
+    console.log("_preCreateEmbeddedDocuments");
     if (embeddedName === "Item" && getGame().user?.id === userId) {
       result.forEach((d) => {
         // @ts-ignore
@@ -214,6 +227,15 @@ export class RqgActor extends Actor {
     options: DocumentModificationOptions,
     userId: string
   ): void {
+    console.log(
+      "*** RqgActor _onCreateEmbeddedDocuments",
+      embeddedName,
+      documents,
+      result,
+      options,
+      userId
+    );
+
     if (embeddedName === "Item" && getGame().user?.id === userId) {
       documents.forEach((d: any) => {
         // TODO any bailout - fix types!

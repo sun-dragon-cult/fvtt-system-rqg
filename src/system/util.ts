@@ -280,6 +280,7 @@ export function cleanIntegerString(value: FormDataEntryValue | null): string {
  * @deprecated use uuid instead
  */
 export function getActorFromIds(actorId: string | null, tokenId: string | null): RqgActor | null {
+  // TODO *** DELETE ME ***
   // @ts-ignore for foundry 9
   const token = canvas.layers
     .find((l) => l.name === "TokenLayer")
@@ -452,18 +453,13 @@ export class RqgError implements Error {
   }
 }
 
-// Temporary fix to get both v8 & v9 compatability
 export function getDocumentTypes(): {
   [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
 } {
-  if (getGame().system.entityTypes) {
-    return getGame().system.entityTypes; // v8
-  } else {
-    // @ts-ignore
-    return getGame().system.documentTypes as {
-      [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
-    }; // v9
-  }
+  // @ts-expect-error documentTypes
+  return getGame().system.documentTypes as {
+    [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
+  };
 }
 
 export function moveCursorToEnd(el: HTMLInputElement) {

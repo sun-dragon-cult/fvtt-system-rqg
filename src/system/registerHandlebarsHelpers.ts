@@ -75,10 +75,33 @@ export const registerHandlebarsHelpers = function () {
     return `${item.system.skillName}${specialization}`;
   });
 
-  Handlebars.registerHelper("skillchance", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    // @ts-ignore chance
+  /**
+   * Takes an uuid directly to an embedded item (only)
+   * or an uuid to an actor and an id to an embedded item on that actor
+   */
+  Handlebars.registerHelper("skillchance", (...args) => {
+    const uuid = args?.[0];
+    const embeddedSkillId = typeof args?.[1] === "string" ? args[1] : undefined;
+
+    if (!uuid) {
+      const msg = `Handlebar helper "skillchance" called with an empty uuid`;
+      ui.notifications?.error(msg);
+      console.log("RQG | ", msg, arguments);
+      return "🐛";
+    }
+
+    // @ts-expect-error fromUuidSync
+    const itemOrActor = fromUuidSync(uuid);
+    const item =
+      embeddedSkillId && itemOrActor.documentName === "Actor"
+        ? itemOrActor.getEmbeddedDocument("Item", embeddedSkillId)
+        : itemOrActor;
+    if (item.documentName !== "Item") {
+      const msg = `Expected item but got ${item.documentName}`;
+      ui.notifications?.error(msg);
+      console.log("RQG | ", msg, item, arguments);
+      return "🐛";
+    }
     return item ? item.system.chance : "---";
   });
 

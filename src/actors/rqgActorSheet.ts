@@ -63,6 +63,7 @@ interface UiSections {
 }
 
 interface CharacterSheetData {
+  uuid: string;
   /** reorganized for presentation TODO type it better */
   embeddedItems: any;
 
@@ -155,9 +156,9 @@ export class RqgActorSheet extends ActorSheet<
     const dexStrikeRank = system.attributes.dexStrikeRank;
 
     return {
-      id: this.document.id ?? "",
-      tokenId: this.document?.token?.id ?? undefined, // TODO check if different from actorData.token.id - if not the use data
-      // tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
+      uuid: this.document.uuid,
+      id: this.document.id ?? "", // TODO @deprecated – remove
+      tokenId: this.document?.token?.id ?? undefined, // TODO @deprecated – removecheck if different from actorData.token.id - if not the use data
 
       name: this.document.name ?? "",
       img: this.document.img ?? "",
@@ -205,7 +206,6 @@ export class RqgActorSheet extends ActorSheet<
       currencyTotals: this.calcCurrencyTotals(),
 
       characteristicRanks: await this.rankCharacteristics(),
-      // characteristicRanks: {strength: "blah-str", constitution: "blah-con"},
 
       // UI toggles
       showUiSection: this.getUiSectionVisibility(),
@@ -715,11 +715,11 @@ export class RqgActorSheet extends ActorSheet<
 
     this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
     if (this.token) {
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       const tokenHealthBefore = this.token?.actor?.system.attributes.health;
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       this.token.actor.system.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       HitLocationSheet.setTokenEffect(this.token.object as RqgToken, tokenHealthBefore);
     }
     formData["system.attributes.health"] = newHealth;
@@ -738,18 +738,18 @@ export class RqgActorSheet extends ActorSheet<
     new ContextMenu(
       html,
       ".characteristic.contextmenu",
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       characteristicMenuOptions(this.actor, this.token)
     );
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor));
     new ContextMenu(html, ".hit-location.contextmenu", hitLocationMenuOptions(this.actor));
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
     new ContextMenu(
       html,
       ".spirit-magic.contextmenu",
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       spiritMagicMenuOptions(this.actor)
     );
     new ContextMenu(html, ".cult.contextmenu", cultMenuOptions(this.actor));
@@ -801,7 +801,7 @@ export class RqgActorSheet extends ActorSheet<
                   ],
                 },
                 this.actor,
-                // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+                // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
                 this.token
               );
             }
@@ -818,7 +818,7 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+          // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
           const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
           await ReputationChatHandler.roll(
             this.actor.system.background.reputation ?? 0,
@@ -831,7 +831,7 @@ export class RqgActorSheet extends ActorSheet<
             if (clickCount === 1) {
               await ReputationChatHandler.show(
                 this.actor,
-                // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+                // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
                 this.token
               );
             }
