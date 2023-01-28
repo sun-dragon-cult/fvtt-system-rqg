@@ -1,4 +1,4 @@
-name: Plain Hide Dress 
+name: ${{openSystem.content.equipment.gear.clothesDressHidePlain}}$ 
 type: gear
 img: systems/rqg/assets/images/gear/dress.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>A plain dress made from hide.</p>
+  description: ${{openSystem.content.equipment.gear.clothesDressHidePlainDescription}}$ 
   gmNotes:
   quantity: 1
   price:

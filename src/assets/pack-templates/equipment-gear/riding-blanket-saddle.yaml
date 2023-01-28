@@ -1,4 +1,4 @@
-name: Saddle Blanket
+name: ${{openSystem.content.equipment.gear.blanketSaddle}}$
 type: gear
 img: systems/rqg/assets/images/gear/blanket.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: "<p>A woven wool or bison-hide blanket, to stop chafing and make it easier to bear a saddle and rider.</p>"
+  description: ${{openSystem.content.equipment.gear.blanketSaddleDescription}}$
   gmNotes:
   quantity: 1
   price:

@@ -1,4 +1,4 @@
-name: Simple Bronze Ring
+name: ${{openSystem.content.equipment.gear.jewelryRingBronzeSimple}}$
 type: gear
 img: systems/rqg/assets/images/gear/ring.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>A simple bronze ring.</p>
+  description: ${{openSystem.content.equipment.gear.jewelryRingBronzeSimpleDescription}}$
   gmNotes:
   quantity: 1
   price:

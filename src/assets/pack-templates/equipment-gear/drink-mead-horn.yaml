@@ -1,4 +1,4 @@
-name: Horn of Mead
+name: ${{openSystem.content.equipment.gear.drinkMeadHorn}}$
 type: gear
 img: systems/rqg/assets/images/gear/beer-horn.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>A single serving of mead.</p>
+  description: ${{openSystem.content.equipment.gear.drinkMeadHornDescription}}$
   gmNotes:
   quantity: 1
   price:

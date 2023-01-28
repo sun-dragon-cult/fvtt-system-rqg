@@ -1,4 +1,4 @@
-name: Wool Clothing 
+name: ${{openSystem.content.equipment.gear.clothesWool}}$ 
 type: gear
 img: systems/rqg/assets/images/gear/clothes.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>Men typically wear either belted long tunics, or short tunics and skirts. Women typically wear tunics and wrap-around skirts. Many men forego the tunic during the summer heat. During the winter, cloaks and robes or breeches provide warmth.</p>
+  description: ${{openSystem.content.equipment.gear.clothesWool}}$
   gmNotes:
   quantity: 1
   price:

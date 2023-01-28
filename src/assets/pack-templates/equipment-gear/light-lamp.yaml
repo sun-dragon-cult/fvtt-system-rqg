@@ -1,4 +1,4 @@
-name: Lamp
+name: ${{openSystem.content.equipment.gear.lightLamp}}$
 type: gear
 img: systems/rqg/assets/images/gear/magic-lamp.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: "<p>This is a clay or bronze lamp used to burn olive oil or clarified butter. Often highly decorated. The area illuminated by a lamp depends on its size and construction. Price: 1-2 L.</p>"
+  description: ${{openSystem.content.equipment.gear.lightLampDescription}}$
   gmNotes:
   quantity: 1
   price:

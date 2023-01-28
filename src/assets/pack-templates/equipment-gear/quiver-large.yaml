@@ -1,4 +1,4 @@
-name: Large Quiver
+name: ${{openSystem.content.equipment.gear.quiverLarge}}$
 type: gear
 img: systems/rqg/assets/images/gear/quiver.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: "<p>Holds 40 arrows. A leather, wooden, or stiffened cloth container used for carrying arrows or crossbow bolts. Worn slung low on the hip, at the waist, or over the back.</p>"
+  description: ${{openSystem.content.equipment.gear.quiverLargeDescription}}$
   gmNotes:
   quantity: 1
   price:

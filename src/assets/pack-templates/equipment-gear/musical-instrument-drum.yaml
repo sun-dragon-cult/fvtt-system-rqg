@@ -1,4 +1,4 @@
-name: Drum
+name: ${{openSystem.content.equipment.gear.instrumentDrum}}$
 type: gear
 img: systems/rqg/assets/images/gear/djembe.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: "<p>A wood or bronze drum with a stretched animal skin head.</p>"
+  description: ${{openSystem.content.equipment.gear.instrumentDrumDescription}}$
   gmNotes:
   quantity: 1
   price:

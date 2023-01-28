@@ -1,4 +1,4 @@
-name: Wool Winter Cloak 
+name: ${{openSystem.content.equipment.gear.cloakWoolWinter}}$ 
 type: gear
 img: systems/rqg/assets/images/gear/cloak.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>Long winter cloaks are common protection against wind and night chills. The cloak is normally pinned over the shoulder with a fibula.</p>
+  description: ${{openSystem.content.equipment.gear.cloakWoolWinterDescription}}$
   gmNotes:
   quantity: 1
   price:

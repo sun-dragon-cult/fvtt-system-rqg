@@ -1,4 +1,4 @@
-name: Wicker Torch
+name: ${{openSystem.content.equipment.gear.lightTorchWicker}}$
 type: gear
 img: systems/rqg/assets/images/gear/primitive-torch.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: "<p>A rough torch made of dried twigs, woven together.</p>"
+  description: ${{openSystem.content.equipment.gear.lightTorchWickerDescription}}$
   gmNotes:
   quantity: 5
   price:

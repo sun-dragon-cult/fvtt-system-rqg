@@ -1,4 +1,4 @@
-name: Beaded Gold Necklace
+name: ${{openSystem.content.equipment.gear.jewelryNecklaceGoldBeaded}}$
 type: gear
 img: systems/rqg/assets/images/gear/pearl-necklace.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>A necklace of beads made from gold.</p>
+  description: ${{openSystem.content.equipment.gear.jewelryNecklaceGoldBeadedDescription}}$
   gmNotes:
   quantity: 1
   price:

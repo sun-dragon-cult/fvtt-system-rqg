@@ -1,4 +1,4 @@
-name: Stone Hammer
+name: ${{openSystem.content.equipment.gear.toolHammerStone}}$
 type: gear
 img: systems/rqg/assets/images/gear/hammer-break.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: "<p>A stringed instrument with a deep wooden sound box.</p>"
+  description: ${{openSystem.content.equipment.gear.toolHammerStoneDescription}}$
   gmNotes:
   quantity: 1
   price:

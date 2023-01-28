@@ -1,4 +1,4 @@
-name: Saddle
+name: ${{openSystem.content.equipment.gear.ridingSaddle}}$
 type: gear
 img: systems/rqg/assets/images/gear/saddle.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: "<p>Horned or hornless, with or without trees; saddles vary tremendously by region. All, however, are designed to let a person ride with some degree of comfort and stability. Price: 8+ L.</p>"
+  description: ${{openSystem.content.equipment.gear.ridingSaddleDescription}}$
   gmNotes:
   quantity: 1
   price:

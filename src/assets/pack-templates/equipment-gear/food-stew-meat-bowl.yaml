@@ -1,4 +1,4 @@
-name: Bowl of Meat Stew
+name: ${{openSystem.content.equipment.gear.foodStewMeatBowl}}$
 type: gear
 img: systems/rqg/assets/images/gear/bowl.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>Pork, chicken or mutton cooked with root vegetables served with flatbread. Often heavily spiced.</p>
+  description: ${{openSystem.content.equipment.gear.foodStewMeatBowl}}$
   gmNotes:
   quantity: 1
   price:

@@ -1,4 +1,4 @@
-name: Bowl of Clearwine
+name: ${{openSystem.content.equipment.gear.drinkClearwineBowl}}$
 type: gear
 img: systems/rqg/assets/images/gear/bowl.svg
 flags:
@@ -8,7 +8,7 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
-  description: <p>A single serving of clearwine, the famous wine that gives its name to the capital city of the Colymar tribe.</p>
+  description: ${{openSystem.content.equipment.gear.drinkClearwineBowl}}$
   gmNotes:
   quantity: 1
   price:
