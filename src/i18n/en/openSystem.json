@@ -2574,7 +2574,7 @@
         "name": "Trample"
       }
     },
-    "gear": {
+    "equipment": {
       "armor": {
         "hood": "Hood",
         "broadBrimmedHat": "Broad-brimmed Hat",
@@ -2588,9 +2588,35 @@
         "cuirass": "Cuirass",
         "linothorax": "Linothorax",
         "hauberk": "Hauberk",
+        "segmented": "Segmented",
         "skirt": "Skirt",
         "pants": "Pants",
-        "greaves": "Greaves"
+        "greaves": "Greaves",
+        "description": {
+          "cuirboilli": "<p>Cuirboilli is leather treated with boiling wax, hardening it almost to the resiliency of metal.</p>",
+          "heavyLeather": "<p>Heavy leather is the thickness of a shoe sole and provides two points of protection.  Unlike normal leather, heavy leather cannot be worn under other armor.</p>",
+          "leather": "<p>Instead of leather, this item could be made of quilted or thick cloth.  Leather is very common in most of Glorantha.</p>",
+          "linen": "<p>Laminated or quilted cloth, this is built up of many layers until it is stiff and hard. It is often reinforced with metal plates or scales. Linen armor is used less and less as metal becomes more common, but it is still used to equip militia and the like.</p>",
+          "quilted": "<p>Quilted armor is made up of several layers of quilted leather.</p>",
+          "segmentedBronzePlate": "<p>This armor covers the chest and abdomen and is made up of a cuirass and three or four sets of curved lower protection plates. The pieces are fastened together by thongs that allow movement.</p>",
+          "ringMail": "<p>Metal rings butted together and sewn to leather.</p>",
+          "heavyScale": "<p>This armor consists of hundreds of bronze plates that have been laced together and then fastened onto a backing.</p>",
+          "lightScale": "<p>This armor consists of hundreds of boiled leather plates that have been laced together. The plates are often lacquered. It is lighter and less expensive than a heavy scale hauberk.</p>",
+          "underLayer": "<p>This armor be worn under any other armor, with a cumulative encumbrance penalty.</p>",
+          "vambraces": "<p>Vambraces are like greaves, but protect the forearm. These are considered to cover the entire limb, although the actual armor which goes by these names only covers the area between elbow and hand.</p>",
+          "greaves": "<p>These are plates molded to protect the lower leg. They either “spring” into shape or are strapped on. They are heavy and make sprinting difficult. These are considered to cover the entire limb, although the actual armor which goes by these names only covers the area between knee and foot.</p>",
+          "cuirass": "<p>A cuirass is a chestpiece of front and back plates joined together by leather straps.</p>",
+          "hauberk": "<p>A hauberk is like a shirt or tunic and covers the chest and abdomen.</p>",
+          "diskPlateBronze": "<p>This consists of disks and square bronze plates on the front and back, connected by side and shoulder pieces. The plates are often highly decorated. It protects the chest.</p>",
+          "pants": "<p>Pants or Trews cover the legs and abdomen.</p>",
+          "skirtStuddedLeather": "<p>This skirt of studded leather strips protects the abdomen.</p>",
+          "linothorax": "<p>A stiff shirt that covers the chest and abdomen.</p>",
+          "compositeHelm": "<p>This leather helmet has metal plates or boar tusks riveted on to it.</p>",
+          "openHelm": "<p>This is a conical metal helmet with bronze cheek-pieces attached. It is usually decorated with plumes and feathers.</p>",
+          "closedHelm": "<p>This metal helmet has a pair of cheekpieces and a neck guard. In the front is a nasal bar that protects the eyes and nose.</p>",
+          "fullHelm": "<p>This close-fitting helmet has elongated cheek-pieces to protect the wearer’s mouth and throat. A nose guard protects the nose and eyes. It offers excellent all-round protection but severely limits vision and hearing, as well as being hot and stuffy to wear for long periods.</p>",
+          "turtleShellCuirass": "<p>This chestpiece of turtleshell, wood, and bronze is popular within the Humakt cult, who associate it with their hero Hiia Swordsman.</p>"
+        }
       }
     },
     "hitLocation": {

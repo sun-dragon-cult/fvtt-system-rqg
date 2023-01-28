@@ -1,4 +1,4 @@
-name: ${{openSystem.content.gear.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.RingMail}}$)
+name: ${{openSystem.content.equipment.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.RingMail}}$)
 type: armor
 img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
@@ -10,7 +10,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
-  armorType: ${{openSystem.content.gear.armor.cuirass}}$
+  armorType: ${{openSystem.content.equipment.armor.cuirass}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.RingMail}}$
   absorbs: 4
   encumbrance: 1
@@ -22,9 +22,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.ringMail}}$ ${{openSystem.content.equipment.armor.description.cuirass}}$
 ---
-name: ${{openSystem.content.gear.armor.hauberk}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.RingMail}}$)
+name: ${{openSystem.content.equipment.armor.hauberk}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.RingMail}}$)
 type: armor
 img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
@@ -37,7 +37,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.gear.armor.hauberk}}$
+  armorType: ${{openSystem.content.equipment.armor.hauberk}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.RingMail}}$
   absorbs: 4
   encumbrance: 2
@@ -49,4 +49,4 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.ringMail}}$ ${{openSystem.content.equipment.armor.description.hauberk}}$

@@ -1,4 +1,4 @@
-name: ${{openSystem.content.gear.armor.compositeHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.compositeHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/composite-helmet.svg
 flags:
@@ -10,7 +10,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
-  armorType: ${{openSystem.content.gear.armor.compositeHelm}}$
+  armorType: ${{openSystem.content.equipment.armor.compositeHelm}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
   absorbs: 3
   encumbrance: 0.5
@@ -22,9 +22,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.compositeHelm}}$
 ---
-name: ${{openSystem.content.gear.armor.openHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+name: ${{openSystem.content.equipment.armor.openHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
 type: armor
 img: systems/rqg/assets/images/armor/open-helmet.svg
 flags:
@@ -36,7 +36,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
-  armorType: ${{openSystem.content.gear.armor.openHelm}}$
+  armorType: ${{openSystem.content.equipment.armor.openHelm}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
   absorbs: 4
   encumbrance: 1
@@ -48,9 +48,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.openHelm}}$
 ---
-name: ${{openSystem.content.gear.armor.closedHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+name: ${{openSystem.content.equipment.armor.closedHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
 type: armor
 img: systems/rqg/assets/images/armor/closed-helmet.svg
 flags:
@@ -62,7 +62,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
-  armorType: ${{openSystem.content.gear.armor.closedHelm}}$
+  armorType: ${{openSystem.content.equipment.armor.closedHelm}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
   absorbs: 5
   encumbrance: 1
@@ -74,9 +74,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.closedHelm}}$
 ---
-name: ${{openSystem.content.gear.armor.fullHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+name: ${{openSystem.content.equipment.armor.fullHelm}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
 type: armor
 img: systems/rqg/assets/images/armor/full-helmet.svg
 flags:
@@ -88,7 +88,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
-  armorType: ${{openSystem.content.gear.armor.fullHelm}}$
+  armorType: ${{openSystem.content.equipment.armor.fullHelm}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
   absorbs: 6
   encumbrance: 2
@@ -100,9 +100,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.fullHelm}}$
 ---
-name: ${{openSystem.content.gear.armor.vambraces}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+name: ${{openSystem.content.equipment.armor.vambraces}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
 type: armor
 img: systems/rqg/assets/images/armor/vambraces.svg
 flags:
@@ -115,7 +115,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
     - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
-  armorType: ${{openSystem.content.gear.armor.vambraces}}$
+  armorType: ${{openSystem.content.equipment.armor.vambraces}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
   absorbs: 6
   encumbrance: 2
@@ -127,9 +127,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.vambraces}}$
 ---
-name: ${{openSystem.content.gear.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+name: ${{openSystem.content.equipment.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
 type: armor
 img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
@@ -141,7 +141,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
-  armorType: ${{openSystem.content.gear.armor.cuirass}}$
+  armorType: ${{openSystem.content.equipment.armor.cuirass}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
   absorbs: 6
   encumbrance: 3
@@ -153,9 +153,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.cuirass}}$
 ---
-name: ${{openSystem.content.gear.armor.hauberk}}$ (Segmented ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+name: ${{openSystem.content.equipment.armor.segmented}}$ (Segmented ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
 type: armor
 img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
@@ -168,7 +168,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.gear.armor.hauberk}}$
+  armorType: ${{openSystem.content.equipment.armor.hauberk}}$
   material: Segmented ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
   absorbs: 6
   encumbrance: 5
@@ -180,9 +180,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.segmentedBronzePlate}}$
 ---
-name: ${{openSystem.content.gear.armor.greaves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
+name: ${{openSystem.content.equipment.armor.greaves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$)
 type: armor
 img: systems/rqg/assets/images/armor/greaves.svg
 flags:
@@ -195,7 +195,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
     - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
-  armorType: ${{openSystem.content.gear.armor.greaves}}$
+  armorType: ${{openSystem.content.equipment.armor.greaves}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.BronzePlate}}$
   absorbs: 6
   encumbrance: 2
@@ -207,4 +207,4 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.greaves}}$

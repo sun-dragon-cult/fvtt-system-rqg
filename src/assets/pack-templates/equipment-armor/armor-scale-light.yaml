@@ -1,4 +1,4 @@
-name: ${{openSystem.content.gear.armor.sleeves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
+name: ${{openSystem.content.equipment.armor.sleeves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/vambraces.svg
 flags:
@@ -11,7 +11,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
     - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
-  armorType: ${{openSystem.content.gear.armor.sleeves}}$
+  armorType: ${{openSystem.content.equipment.armor.sleeves}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$
   absorbs: 4
   encumbrance: 2
@@ -23,9 +23,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.lightScale}}$
 ---
-name: ${{openSystem.content.gear.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
+name: ${{openSystem.content.equipment.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
@@ -37,7 +37,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
-  armorType: ${{openSystem.content.gear.armor.cuirass}}$
+  armorType: ${{openSystem.content.equipment.armor.cuirass}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$
   absorbs: 4
   encumbrance: 1
@@ -49,9 +49,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.lightScale}}$ ${{openSystem.content.equipment.armor.description.cuirass}}$
 ---
-name: ${{openSystem.content.gear.armor.hauberk}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
+name: ${{openSystem.content.equipment.armor.hauberk}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
@@ -64,7 +64,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.gear.armor.hauberk}}$
+  armorType: ${{openSystem.content.equipment.armor.hauberk}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$
   absorbs: 4
   encumbrance: 2
@@ -76,9 +76,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.lightScale}}$ ${{openSystem.content.equipment.armor.description.hauberk}}$
 ---
-name: ${{openSystem.content.gear.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
+name: ${{openSystem.content.equipment.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/skirt.svg
 flags:
@@ -90,7 +90,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.gear.armor.skirt}}$
+  armorType: ${{openSystem.content.equipment.armor.skirt}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$
   absorbs: 4
   encumbrance: 2
@@ -102,4 +102,4 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.lightScale}}$

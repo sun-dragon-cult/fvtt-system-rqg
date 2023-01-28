@@ -1,4 +1,4 @@
-name: ${{openSystem.content.gear.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.StuddedLeather}}$)
+name: ${{openSystem.content.equipment.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.StuddedLeather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/skirt.svg
 flags:
@@ -10,7 +10,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.gear.armor.skirt}}$
+  armorType: ${{openSystem.content.equipment.armor.skirt}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.StuddedLeather}}$
   absorbs: 3
   encumbrance: 1
@@ -22,4 +22,4 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.skirtStuddedLeather}}$

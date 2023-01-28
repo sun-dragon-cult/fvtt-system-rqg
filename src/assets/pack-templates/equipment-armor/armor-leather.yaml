@@ -1,4 +1,4 @@
-name: ${{openSystem.content.gear.armor.hood}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.hood}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/hood.svg
 flags:
@@ -10,7 +10,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
-  armorType: ${{openSystem.content.gear.armor.hood}}$
+  armorType: ${{openSystem.content.equipment.armor.hood}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
   encumbrance: 0.5
@@ -22,9 +22,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.leather}}$ ${{openSystem.content.equipment.armor.description.underLayer}}$
 ---
-name: ${{openSystem.content.gear.armor.broadBrimmedHat}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.broadBrimmedHat}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/broad-brimmed-hat.svg
 flags:
@@ -36,7 +36,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
-  armorType: ${{openSystem.content.gear.armor.broadBrimmedHat}}$
+  armorType: ${{openSystem.content.equipment.armor.broadBrimmedHat}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
   encumbrance: 0.5
@@ -48,9 +48,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.leather}}$
 ---
-name: ${{openSystem.content.gear.armor.cap}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.cap}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/composite-helmet.svg
 flags:
@@ -62,7 +62,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
-  armorType: ${{openSystem.content.gear.armor.cap}}$
+  armorType: ${{openSystem.content.equipment.armor.cap}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 2
   encumbrance: 0.5
@@ -74,9 +74,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.leather}}$
 ---
-name: ${{openSystem.content.gear.armor.vambraces}}$ ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.vambraces}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/vambraces.svg
 flags:
@@ -89,7 +89,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
     - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
-  armorType: ${{openSystem.content.gear.armor.vambraces}}$
+  armorType: ${{openSystem.content.equipment.armor.vambraces}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
   encumbrance: 0
@@ -101,9 +101,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:  
+  description: ${{openSystem.content.equipment.armor.description.leather}}$ ${{openSystem.content.equipment.armor.description.vambraces}}$ ${{openSystem.content.equipment.armor.description.underLayer}}$
 ---
-name: ${{openSystem.content.gear.armor.cuirass}}$ ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
@@ -115,7 +115,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
-  armorType: ${{openSystem.content.gear.armor.cuirass}}$
+  armorType: ${{openSystem.content.equipment.armor.cuirass}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
   encumbrance: 1
@@ -127,9 +127,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.leather}}$ ${{openSystem.content.equipment.armor.description.cuirass}}$ ${{openSystem.content.equipment.armor.description.underLayer}}$
 ---
-name: ${{openSystem.content.gear.armor.hauberk}}$ ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.hauberk}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
@@ -142,7 +142,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.gear.armor.hauberk}}$
+  armorType: ${{openSystem.content.equipment.armor.hauberk}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
   encumbrance: 0.5
@@ -154,9 +154,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.leather}}$ ${{openSystem.content.equipment.armor.description.hauberk}}$ ${{openSystem.content.equipment.armor.description.underLayer}}$
 ---
-name: ${{openSystem.content.gear.armor.skirt}}$ ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/skirt.svg
 flags:
@@ -168,7 +168,7 @@ flags:
 data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.gear.armor.skirt}}$
+  armorType: ${{openSystem.content.equipment.armor.skirt}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
   encumbrance: 0
@@ -180,9 +180,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.leather}}$ ${{openSystem.content.equipment.armor.description.underLayer}}$
 ---
-name: ${{openSystem.content.gear.armor.pants}}$ ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.pants}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/pants.svg
 flags:
@@ -196,7 +196,7 @@ data:
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
     - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
-  armorType: ${{openSystem.content.gear.armor.pants}}$
+  armorType: ${{openSystem.content.equipment.armor.pants}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
   encumbrance: 0
@@ -208,9 +208,9 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description:  ${{openSystem.content.equipment.armor.description.leather}}$ ${{openSystem.content.equipment.armor.description.pants}}$ ${{openSystem.content.equipment.armor.description.underLayer}}$
 ---
-name: ${{openSystem.content.gear.armor.greaves}}$ ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
+name: ${{openSystem.content.equipment.armor.greaves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor
 img: systems/rqg/assets/images/armor/greaves.svg
 flags:
@@ -223,7 +223,7 @@ data:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
     - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
-  armorType: ${{openSystem.content.gear.armor.greaves}}$
+  armorType: ${{openSystem.content.equipment.armor.greaves}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
   encumbrance: 0
@@ -235,4 +235,4 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:
+  description: ${{openSystem.content.equipment.armor.description.leather}}$ ${{openSystem.content.equipment.armor.description.greaves}}$ ${{openSystem.content.equipment.armor.description.underLayer}}$
