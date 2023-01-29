@@ -49,68 +49,31 @@ export const registerHandlebarsHelpers = function () {
     }).format(total)}`;
   });
 
-  Handlebars.registerHelper("itemname", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    return item ? item.name : "---";
-  });
-
   Handlebars.registerHelper("localizeitemtype", (typeName) => {
     const itemType: ItemTypeEnum = typeName;
     return RqgItem.localizeItemTypeName(itemType);
   });
 
-  Handlebars.registerHelper("skillname", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    if (!item) {
-      return "---";
-    }
-    if (item.type !== ItemTypeEnum.Skill) {
-      const msg = `Handlebar helper "skillname" called with an item that is not a skill`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, item, actor);
-    }
-    const specialization = item.system.specialization ? ` (${item.system.specialization})` : "";
-    return `${item.system.skillName}${specialization}`;
+  Handlebars.registerHelper("skillname", (...args) => {
+    return applyFnToItemFromHandlebarsArgs(args, (item) => {
+      const specialization = item.system.specialization ? ` (${item.system.specialization})` : "";
+      return `${item.system.skillName}${specialization}`;
+    });
   });
 
   /**
    * Takes an uuid directly to an embedded item (only)
    * or an uuid to an actor and an id to an embedded item on that actor
    */
-  Handlebars.registerHelper("skillchance", (...args) => {
-    const uuid = args?.[0];
-    const embeddedSkillId = typeof args?.[1] === "string" ? args[1] : undefined;
+  Handlebars.registerHelper("skillchance", (...args) =>
+    applyFnToItemFromHandlebarsArgs(args, (item) => (item ? item.system.chance : "---"))
+  );
 
-    if (!uuid) {
-      const msg = `Handlebar helper "skillchance" called with an empty uuid`;
-      ui.notifications?.error(msg);
-      console.log("RQG | ", msg, arguments);
-      return "🐛";
-    }
-
-    // @ts-expect-error fromUuidSync
-    const itemOrActor = fromUuidSync(uuid);
-    const item =
-      embeddedSkillId && itemOrActor.documentName === "Actor"
-        ? itemOrActor.getEmbeddedDocument("Item", embeddedSkillId)
-        : itemOrActor;
-    if (item.documentName !== "Item") {
-      const msg = `Expected item but got ${item.documentName}`;
-      ui.notifications?.error(msg);
-      console.log("RQG | ", msg, item, arguments);
-      return "🐛";
-    }
-    return item ? item.system.chance : "---";
-  });
-
-  Handlebars.registerHelper("experiencedclass", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    // @ts-ignore hasExperience
-    return item && item.system.hasExperience ? "experienced" : "";
-  });
+  Handlebars.registerHelper("experiencedclass", (...args) =>
+    applyFnToItemFromHandlebarsArgs(args, (item) =>
+      item && item.system.hasExperience ? "experienced" : ""
+    )
+  );
 
   Handlebars.registerHelper("quantity", (itemId, actorId, tokenId) => {
     const actor = getActorFromIds(actorId, tokenId);
@@ -203,3 +166,42 @@ export const registerHandlebarsHelpers = function () {
     return Rqid.getRqidIcon(rqid) || "";
   });
 };
+
+function applyFnToItemFromHandlebarsArgs(
+  handlebarsArgs: any[],
+  fn: (item: RqgItem) => string
+): string {
+  const uuid = handlebarsArgs?.[0];
+  const embeddedSkillId = typeof handlebarsArgs?.[1] === "string" ? handlebarsArgs[1] : undefined;
+
+  if (!uuid) {
+    const msg = `Handlebar helper called with an empty uuid`;
+    ui.notifications?.error(msg);
+    console.error("RQG | ", msg, arguments);
+    return "🐛";
+  }
+
+  // @ts-expect-error fromUuidSync
+  const itemActorOrToken = fromUuidSync(uuid);
+  if (!itemActorOrToken) {
+    const msg = `Handlebar helper couldn't find item or actor`;
+    ui.notifications?.error(msg);
+    console.error("RQG | ", msg, arguments);
+    return "🐛";
+  }
+
+  const itemOrActor =
+    itemActorOrToken.documentName === "Token" ? itemActorOrToken.actor : itemActorOrToken;
+
+  const item =
+    embeddedSkillId && itemOrActor.documentName === "Actor"
+      ? itemOrActor.getEmbeddedDocument("Item", embeddedSkillId)
+      : itemOrActor;
+  if (item.documentName !== "Item") {
+    const msg = `Handlebar helper expected item but got ${item.documentName}`;
+    ui.notifications?.error(msg);
+    console.error("RQG | ", msg, item, arguments);
+    return "🐛";
+  }
+  return fn(item);
+}

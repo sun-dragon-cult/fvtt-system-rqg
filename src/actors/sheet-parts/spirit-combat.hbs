@@ -19,7 +19,7 @@
     <div data-item-id="{{spiritCombatSkillData.id}}"
          class="skill contextmenu"
          data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}"><span
-      class="text-right {{#if spiritCombatSkillData.system.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData.uuid}}%</span>
+      class="text-right {{experiencedclass spiritCombatSkillData.uuid}}">{{skillchance spiritCombatSkillData.uuid}}%</span>
     </div>
   </div>
   {{/if}}

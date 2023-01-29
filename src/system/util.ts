@@ -287,7 +287,7 @@ export function getActorFromIds(actorId: string | null, tokenId: string | null):
     // @ts-ignore for foundry 9
     ?.ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
   const actor = actorId ? getGame().actors?.get(actorId) ?? null : null;
-  return token ? token.document.getActor() : actor;
+  return token ? token.document.actor : actor; // TODO Fixed here as well as in the handlebars helper
 }
 
 // A convenience getter that calls fromUuid and types the Document to what is requested.

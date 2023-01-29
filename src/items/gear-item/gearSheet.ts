@@ -29,6 +29,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
     const system = duplicate(this.document.system);
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isGM: getGameUser().isGM,

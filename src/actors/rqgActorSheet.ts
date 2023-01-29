@@ -741,24 +741,17 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       characteristicMenuOptions(this.actor, this.token)
     );
-    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor));
     new ContextMenu(html, ".hit-location.contextmenu", hitLocationMenuOptions(this.actor));
     // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
-    new ContextMenu(
-      html,
-      ".spirit-magic.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      spiritMagicMenuOptions(this.actor)
-    );
+    new ContextMenu(html, ".spirit-magic.contextmenu", spiritMagicMenuOptions(this.actor));
     new ContextMenu(html, ".cult.contextmenu", cultMenuOptions(this.actor));
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor));
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".skill.contextmenu", skillMenuOptions(this.actor, this.token));
     new ContextMenu(html, ".gear.contextmenu", gearMenuOptions(this.actor));
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".passion.contextmenu", passionMenuOptions(this.actor, this.token));
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action

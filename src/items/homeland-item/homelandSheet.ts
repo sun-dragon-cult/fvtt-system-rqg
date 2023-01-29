@@ -33,6 +33,7 @@ export class HomelandSheet extends RqgItemSheet<
 
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,

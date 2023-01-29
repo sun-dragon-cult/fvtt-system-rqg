@@ -195,7 +195,7 @@
                         {{#if unusable}} warning{{/if}}"
                         {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
                   >
-                    {{skillchance @root.uuid skillId}}%&nbsp; {{skillname skillId @root.id @root.tokenId}}
+                    {{skillchance @root.uuid skillId}}%&nbsp; {{skillname @root.uuid skillId}}
                   </div>
                 {{/if}}
               {{/each}}

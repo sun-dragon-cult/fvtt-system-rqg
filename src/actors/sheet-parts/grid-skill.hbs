@@ -24,7 +24,7 @@
   {{/each}}
 </div>
 <div data-item-id="{{skill.id}}"
-     class="skill contextmenu item {{#if skill.system.hasExperience}}experienced{{/if}}"
+     class="skill contextmenu item {{experiencedclass skill.uuid}}"
      data-item-roll
      data-tooltip="{{localize "RQG.Game.RollTitle"}}">
   <span class="text-right nowrap">{{#if asBonus}}+{{/if}}{{skill.system.chance}}%</span>
