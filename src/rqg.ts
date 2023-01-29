@@ -71,14 +71,6 @@ Hooks.once("init", async () => {
   TextEditorHooks.init();
 
   // @ts-expect-error
-  Journal.unregisterSheet("core", JournalSheet);
-  // @ts-expect-error
-  Journal.registerSheet(systemId, RqgJournalSheet as any, {
-    label: "Journal Sheet",
-    makeDefault: true,
-  });
-
-  // @ts-expect-error
   RollTables.unregisterSheet("core", RollTableConfig);
   // @ts-expect-error
   RollTables.registerSheet(systemId, RqgRollTableConfig as any, {
