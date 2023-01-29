@@ -2672,14 +2672,186 @@
       }
     },
     "hitLocation": {
-      "humanoid": {
-        "head": "Head",
+      "beetle": {
+        "rightHindLeg": "Right Hind Leg",
+        "rightCenterLeg": "Right Center Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "leftCenterLeg": "Left Center Leg",
+        "abdomen": "Abdomen",
+        "thorax": "Thorax",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "birdFlying": {
+        "tail": "Tail",
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      },
+      "birdRunning": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      },
+      "centaur": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
         "leftArm": "Left Arm",
         "rightArm": "Right Arm",
-        "chest": "Chest",
-        "abdomen": "Abdomen",
+        "head": "Head"
+      },
+      "dragonManticore": {
+        "tail": "Tail",
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "dragonsnailOneHeaded": {
+        "shell": "Shell",
+        "forebody": "Forebody",
+        "head": "Head"
+      },
+      "dragonsnailTwoHeaded": {
+        "shell": "Shell",
+        "forebody": "Forebody",
+        "rightHead": "Right Head",
+        "leftHead": "Left Head"
+      },
+      "fourLeggedAnimal": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "fourLeggedAnimalWinged": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "gorp": {
+        "body": "Body"
+      },
+      "harpy": {
+        "rightLeg": "Right Leg",
         "leftLeg": "Left Leg",
-        "rightLeg": "Right Leg"
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      },
+      "humanoid": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightArm": "Right Arm",
+        "leftArm": "Left Arm",
+        "head": "Head"
+      },
+      "humanoidWinged": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "rightArm": "Right Arm",
+        "leftArm": "Left Arm",
+        "head": "Head"
+      },
+      "mammothMastodon": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "trunk": "Trunk",
+        "head": "Head"
+      },
+      "serpent": {
+        "tail": "Tail",
+        "body": "Body",
+        "head": "Head"
+      },
+      "serpentWinged": {
+        "tail": "Tail",
+        "body": "Body",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      },
+      "spiderGiant": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "rightCenterRearLeg": "Right Center Rear Leg",
+        "leftCenterRearLeg": "Left Center Rear Leg",
+        "abdomen": "Abdomen",
+        "rightCenterFrontLeg": "Right Center Front Leg",
+        "leftCenterFrontLeg": "Left Center Front Leg",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "walktapus": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightArm": "Right Arm",
+        "leftArm": "Left Arm",
+        "tentacle1": "Tentacle 1",
+        "tentacle2": "Tentacle 2",
+        "tentacle3": "Tentacle 3",
+        "tentacle4": "Tentacle 4",
+        "tentacle5": "Tentacle 5",
+        "tentacle6": "Tentacle 6",
+        "tentacle7": "Tentacle 7",
+        "tentacle8": "Tentacle 8",
+        "head": "Head"
+      },
+      "wyvern": {
+        "tail": "Tail",
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
       }
     }
   }

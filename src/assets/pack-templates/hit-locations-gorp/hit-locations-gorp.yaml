@@ -1,4 +1,4 @@
-name: Body
+name: ${{openSystem.content.hitLocation.gorp.body}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:

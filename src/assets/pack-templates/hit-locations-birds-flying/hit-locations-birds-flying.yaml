@@ -1,4 +1,4 @@
-name: Tail
+name: ${{openSystem.content.hitLocation.birdFlying.tail}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -8,7 +8,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Abdomen
+  connectedTo: ${{openSystem.content.hitLocation.birdFlying.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -18,7 +18,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Right Hind Leg
+name: ${{openSystem.content.hitLocation.birdFlying.rightLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -28,7 +28,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Abdomen
+  connectedTo: ${{openSystem.content.hitLocation.birdFlying.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -38,7 +38,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Left Hind Leg
+name: ${{openSystem.content.hitLocation.birdFlying.leftLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -48,7 +48,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Abdomen
+  connectedTo: ${{openSystem.content.hitLocation.birdFlying.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -58,7 +58,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Abdomen
+name: ${{openSystem.content.hitLocation.birdFlying.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -78,7 +78,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Chest
+name: ${{openSystem.content.hitLocation.birdFlying.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -98,7 +98,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Right Wing
+name: ${{openSystem.content.hitLocation.birdFlying.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -108,7 +108,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Chest
+  connectedTo: ${{openSystem.content.hitLocation.birdFlying.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -118,7 +118,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Left Wing
+name: ${{openSystem.content.hitLocation.birdFlying.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -128,7 +128,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Chest
+  connectedTo: ${{openSystem.content.hitLocation.birdFlying.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -138,7 +138,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Head
+name: ${{openSystem.content.hitLocation.birdFlying.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:

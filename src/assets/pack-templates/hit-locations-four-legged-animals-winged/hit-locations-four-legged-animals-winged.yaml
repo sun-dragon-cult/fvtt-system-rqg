@@ -1,4 +1,4 @@
-name: Right Hind Leg
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.rightHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -8,7 +8,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Abdomen
+  connectedTo: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -18,7 +18,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Left Hind Leg
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.leftHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -28,7 +28,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Abdomen
+  connectedTo: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -38,7 +38,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Hindquarter
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.hindquarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -58,7 +58,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Forequarter
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.forequarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -78,7 +78,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Right Wing
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -88,7 +88,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Chest
+  connectedTo: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -98,7 +98,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Left Wing
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -108,7 +108,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Chest
+  connectedTo: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -118,7 +118,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Right Foreleg
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.rightForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -128,7 +128,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Chest
+  connectedTo: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -138,7 +138,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Left Foreleg
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.leftForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
@@ -148,7 +148,7 @@ data:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: Chest
+  connectedTo: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
@@ -158,7 +158,7 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-name: Head
+name: ${{openSystem.content.hitLocation.fourLeggedAnimalWinged.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 data:
