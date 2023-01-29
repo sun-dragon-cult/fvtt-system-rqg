@@ -275,21 +275,6 @@ export function cleanIntegerString(value: FormDataEntryValue | null): string {
   return value.replaceAll(nonIntegerRegEx, "");
 }
 
-/**
- * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
- * @deprecated use uuid instead
- */
-export function getActorFromIds(actorId: string | null, tokenId: string | null): RqgActor | null {
-  // TODO *** DELETE ME ***
-  // @ts-ignore for foundry 9
-  const token = canvas.layers
-    .find((l) => l.name === "TokenLayer")
-    // @ts-ignore for foundry 9
-    ?.ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
-  const actor = actorId ? getGame().actors?.get(actorId) ?? null : null;
-  return token ? token.document.actor : actor; // TODO Fixed here as well as in the handlebars helper
-}
-
 // A convenience getter that calls fromUuid and types the Document to what is requested.
 export async function getDocumentFromUuid<T>(
   documentUuid: string | undefined

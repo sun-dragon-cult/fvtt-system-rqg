@@ -17,9 +17,9 @@
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item">{{name}}
           {{#if system.isProjectileWeapon}}
-            ({{quantity system.projectileId @root.id @root.tokenId}})
+            ({{quantity @root.uuid system.projectileId}})
           {{else if system.isThrownWeapon}}
-            [{{quantity system.projectileId @root.id @root.tokenId}}]
+            [{{quantity @root.uuid system.projectileId}}]
           {{else if system.isProjectile}}
             [{{system.quantity}}]
           {{/if}}
@@ -98,9 +98,9 @@
 
   {{#each embeddedItems.weapon}}
     {{#if system.isNatural}}
-      <div data-item-id="{{_id}}" data-weapon-roll class="combat contextmenu"><img class="item" src="{{img}}"></div>
-      <div data-item-id="{{_id}}" data-weapon-roll class="combat contextmenu">{{name}}</div>
-      <div data-item-id="{{_id}}" data-weapon-roll class="combat contextmenu"></div>
+      <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu"><img class="item" src="{{img}}"></div>
+      <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu">{{name}}</div>
+      <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu"></div>
       <div>
           <span class="flex-column text-right">
             {{#each system.usage}}

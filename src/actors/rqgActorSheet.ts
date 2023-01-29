@@ -1124,7 +1124,6 @@ export class RqgActorSheet extends ActorSheet<
     // Add Passion button
     htmlElement?.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
       el.addEventListener("click", async () => {
-        console.log("CLICK");
         const defaultItemIconSettings: any = getGame().settings.get(
           systemId,
           "defaultItemIconSettings"

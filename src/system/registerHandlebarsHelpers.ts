@@ -1,6 +1,5 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import {
-  getActorFromIds,
   getAvailableRunes,
   getGame,
   hasOwnProperty,
@@ -75,19 +74,20 @@ export const registerHandlebarsHelpers = function () {
     )
   );
 
-  Handlebars.registerHelper("quantity", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    if (!item) {
-      return "---";
-    }
-    if (!hasOwnProperty(item.system, "quantity")) {
-      const msg = `Handlebar helper quantity was called with an item without quantity propery`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, item);
-    }
-    return item.system.quantity;
+  Handlebars.registerHelper("quantity", (...args) => {
+    return applyFnToItemFromHandlebarsArgs(args, (item) => {
+      if (!item) {
+        return "---";
+      }
+      if (!hasOwnProperty(item.system, "quantity")) {
+        const msg = `Handlebar helper quantity was called with an item without quantity property`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, item);
+      }
+      return item.system.quantity;
+    });
   });
+
   Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
     if (!runeName) {
       return;

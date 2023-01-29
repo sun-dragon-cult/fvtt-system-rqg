@@ -175,8 +175,6 @@ export class RqgActor extends Actor {
   // Entity-specific actions that should occur when the Entity is first created
   // @ts-ignore
   protected _onCreate(actorData: ActorData, options: DocumentModificationOptions, userId: string) {
-    console.log("*** RqgActor _onCreate", actorData, options, userId);
-
     super._onCreate(actorData as any, options, userId); // TODO type bug ??
 
     // There might be effects with a different actor.id but same itemData.id if the actor
@@ -211,7 +209,6 @@ export class RqgActor extends Actor {
     options: DocumentModificationOptions,
     userId: string
   ): void {
-    console.log("_preCreateEmbeddedDocuments");
     if (embeddedName === "Item" && getGame().user?.id === userId) {
       result.forEach((d) => {
         // @ts-ignore
@@ -227,15 +224,6 @@ export class RqgActor extends Actor {
     options: DocumentModificationOptions,
     userId: string
   ): void {
-    console.log(
-      "*** RqgActor _onCreateEmbeddedDocuments",
-      embeddedName,
-      documents,
-      result,
-      options,
-      userId
-    );
-
     if (embeddedName === "Item" && getGame().user?.id === userId) {
       documents.forEach((d: any) => {
         // TODO any bailout - fix types!
