@@ -57,7 +57,7 @@
           <label>{{localize "RQG.Item.Skill.CategoryModifier" category=(localize (concat 'RQG.Actor.Skill.SkillCategory.' system.category) ) }}</label>
           <label for="base-chance-{{id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
 
-          <span class="skill {{#if system.hasExperience}}experienced{{/if}}">
+          <span class="skill {{experiencedclass uuid}}">
             {{system.chance}}%
             {{#if system.canGetExperience}}
               <input
