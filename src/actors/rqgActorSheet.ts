@@ -364,7 +364,7 @@ export class RqgActorSheet extends ActorSheet<
   private getLoadedMissileSr(dexSr: number | undefined): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const loadedMissileSr = [
-      ["1", reloadIcon, "5", reloadIcon, "10"],
+      ["1", reloadIcon, "6", reloadIcon, "11"],
       ["1", reloadIcon, "7", reloadIcon],
       ["2", reloadIcon, "9"],
       ["3", reloadIcon, "11"],

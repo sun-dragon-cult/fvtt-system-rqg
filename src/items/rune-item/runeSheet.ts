@@ -4,7 +4,7 @@ import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import { DocumentSheetData, EffectsItemSheetData, ItemSheetData } from "../shared/sheetInterfaces";
+import { ItemSheetData } from "../shared/sheetInterfaces";
 
 interface RuneSheetData {
   allRunes: AvailableRuneCache[];

@@ -1,12 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import {
-  assertItemType,
-  getGameUser,
-  getRequiredDomDataset,
-  localize,
-  RqgError,
-} from "../../system/util";
+import { assertItemType, getRequiredDomDataset, localize, RqgError } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
