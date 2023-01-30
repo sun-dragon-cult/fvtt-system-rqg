@@ -17,9 +17,9 @@
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item">{{name}}
           {{#if system.isProjectileWeapon}}
-            ({{quantity system.projectileId @root.id @root.tokenId}})
+            ({{quantity @root.uuid system.projectileId}})
           {{else if system.isThrownWeapon}}
-            [{{quantity system.projectileId @root.id @root.tokenId}}]
+            [{{quantity @root.uuid system.projectileId}}]
           {{else if system.isProjectile}}
             [{{system.quantity}}]
           {{/if}}
@@ -42,7 +42,7 @@
                       {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
                       data-skill-id="{{skillId}}">
                   {{localize (concat "RQG.Game.WeaponUsage." @key)}}
-                  <span class="{{experiencedclass skillId @root.id @root.tokenId}}">{{skillchance skillId @root.id @root.tokenId}}%</span>
+                  <span class="{{experiencedclass @root.uuid skillId}}">{{skillchance @root.uuid skillId}}%</span>
                 </div>
               {{/if}}
             {{/each}}
@@ -105,9 +105,9 @@
           <span class="flex-column text-right">
             {{#each system.usage}}
               {{#if skillId}}
-                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass skillId @root.id @root.tokenId}}"
+                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass @root.uuid skillId}}"
                       data-skill-id="{{skillId}}" data-item-id="{{../id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.RollChat"}}">
-                      {{skillchance skillId @root.id @root.tokenId}}%
+                      {{skillchance @root.uuid skillId}}%
                 </span>
               {{/if}}
             {{/each}}
@@ -170,8 +170,8 @@
     </div>
     <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu">{{localize "RQG.Actor.Combat.Dodge"}}</div>
     <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
-    <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu {{experiencedclass dodgeSkillData.id @root.id @root.tokenId}}">
-      <span class="text-right">{{skillchance dodgeSkillData.id @root.id @root.tokenId}}%</span>
+    <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu {{experiencedclass dodgeSkillData.uuid}}">
+      <span class="text-right">{{skillchance dodgeSkillData.uuid}}%</span>
     </div>
     <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
     <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>

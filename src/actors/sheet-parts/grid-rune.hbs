@@ -23,7 +23,7 @@
     {{rune.system.rune}}
 </div>
 <div data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-        class="rune contextmenu item {{#if rune.system.hasExperience}}experienced{{/if}}"
+        class="rune contextmenu item {{experiencedclass rune.uuid}}"
         data-item-id="{{rune.id}}"
         data-item-roll>
     <span class="text-right">{{rune.system.chance}}%</span>

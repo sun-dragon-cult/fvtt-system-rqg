@@ -4,13 +4,12 @@ import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import { DocumentSheetData } from "../shared/sheetInterfaces";
+import { DocumentSheetData, EffectsItemSheetData, ItemSheetData } from "../shared/sheetInterfaces";
 
 interface RuneSheetData {
   allRunes: AvailableRuneCache[];
   runeTypes: RuneTypeEnum[];
 }
-
 export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
@@ -28,7 +27,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     });
   }
 
-  getData(): RuneSheetData & DocumentSheetData {
+  getData(): RuneSheetData & ItemSheetData {
     const system = duplicate(this.document.system);
 
     if (!system.rune) {
@@ -37,10 +36,12 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
 
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isGM: getGameUser().isGM,
       system: system,
+      isEmbedded: this.document.isEmbedded,
       allRunes: getAvailableRunes(),
       runeTypes: Object.values(RuneTypeEnum),
     };

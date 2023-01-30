@@ -275,20 +275,6 @@ export function cleanIntegerString(value: FormDataEntryValue | null): string {
   return value.replaceAll(nonIntegerRegEx, "");
 }
 
-/**
- * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
- * @deprecated use uuid instead
- */
-export function getActorFromIds(actorId: string | null, tokenId: string | null): RqgActor | null {
-  // @ts-ignore for foundry 9
-  const token = canvas.layers
-    .find((l) => l.name === "TokenLayer")
-    // @ts-ignore for foundry 9
-    ?.ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
-  const actor = actorId ? getGame().actors?.get(actorId) ?? null : null;
-  return token ? token.document.getActor() : actor;
-}
-
 // A convenience getter that calls fromUuid and types the Document to what is requested.
 export async function getDocumentFromUuid<T>(
   documentUuid: string | undefined
@@ -452,18 +438,13 @@ export class RqgError implements Error {
   }
 }
 
-// Temporary fix to get both v8 & v9 compatability
 export function getDocumentTypes(): {
   [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
 } {
-  if (getGame().system.entityTypes) {
-    return getGame().system.entityTypes; // v8
-  } else {
-    // @ts-ignore
-    return getGame().system.documentTypes as {
-      [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
-    }; // v9
-  }
+  // @ts-expect-error documentTypes
+  return getGame().system.documentTypes as {
+    [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
+  };
 }
 
 export function moveCursorToEnd(el: HTMLInputElement) {

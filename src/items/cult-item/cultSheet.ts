@@ -38,6 +38,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
 
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,

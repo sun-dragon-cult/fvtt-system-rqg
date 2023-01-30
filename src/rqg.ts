@@ -18,6 +18,7 @@ import { RqgRollTableConfig } from "./rollTables/rqgRollTableConfig";
 import { RqgCompendiumDirectory } from "./foundryUi/rqgCompendiumDirectory";
 import { RqgHotbar } from "./foundryUi/rqgHotbar";
 import { TextEditorHooks } from "./foundryUi/textEditorHooks";
+import { RqgJournalEntry } from "./journals/rqgJournalEntry";
 
 Hooks.once("init", async () => {
   console.log(
@@ -66,15 +67,8 @@ Hooks.once("init", async () => {
   RqgPause.init();
   RqgHotbar.init();
   RqgCompendiumDirectory.init();
+  RqgJournalEntry.init();
   TextEditorHooks.init();
-
-  // @ts-expect-error
-  Journal.unregisterSheet("core", JournalSheet);
-  // @ts-expect-error
-  Journal.registerSheet(systemId, RqgJournalSheet as any, {
-    label: "Journal Sheet",
-    makeDefault: true,
-  });
 
   // @ts-expect-error
   RollTables.unregisterSheet("core", RollTableConfig);
