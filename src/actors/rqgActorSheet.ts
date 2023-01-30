@@ -156,10 +156,8 @@ export class RqgActorSheet extends ActorSheet<
     const dexStrikeRank = system.attributes.dexStrikeRank;
 
     return {
+      id: this.document.id ?? "",
       uuid: this.document.uuid,
-      id: this.document.id ?? "", // TODO @deprecated – remove
-      tokenId: this.document?.token?.id ?? undefined, // TODO @deprecated – removecheck if different from actorData.token.id - if not the use data
-
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,

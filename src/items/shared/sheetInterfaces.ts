@@ -2,6 +2,7 @@
 
 export interface DocumentSheetData {
   id: string;
+  uuid: string;
   name: string;
   img: string;
   /** game.user.isGM */
@@ -13,7 +14,6 @@ export interface DocumentSheetData {
 }
 
 export interface ActorSheetData extends DocumentSheetData {
-  tokenId?: string;
   isPC: boolean;
   /** Add `document.effects` here */
   effects: unknown;
@@ -22,8 +22,6 @@ export interface ActorSheetData extends DocumentSheetData {
 export interface ItemSheetData extends DocumentSheetData {
   /** Used, among other things, to decide if Active Effects tab should be shown */
   isEmbedded: boolean;
-  /** The uuid to this item instance */
-  uuid: string;
 }
 
 export interface EffectsItemSheetData extends ItemSheetData {
