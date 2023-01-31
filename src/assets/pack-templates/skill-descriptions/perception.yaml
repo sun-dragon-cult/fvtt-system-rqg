@@ -122,3 +122,28 @@ flags:
       id: je..track
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
+---
+# Elfsense
+name: ${{openSystem.content.skill.elfsense.skillName}}$
+pages:
+  - name: ${{openSystem.content.skill.elfsense.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/other-sense.svg" height="70">
+        ${{openSystem.content.skill.elfsense.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+    sort: 0
+    flags: {}
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..elfsense
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

@@ -123,3 +123,24 @@ flags:
       id: i.skill.track-by-scent
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
+---
+#Elfsense
+name: ${{openSystem.content.skill.elfsense.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/other-sense.svg
+data:
+  category: perception
+  skillName: ${{openSystem.content.skill.elfsense.skillName}}$
+  specialization:
+  baseChance: 5
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..elfsense
+    name: ${{openSystem.content.skill.elfsense.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.elfsense
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

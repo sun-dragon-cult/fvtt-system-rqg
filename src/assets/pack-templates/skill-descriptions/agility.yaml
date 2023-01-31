@@ -148,6 +148,31 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
+# ski
+name: ${{openSystem.content.skill.ski.skillName}}$
+pages:
+  - name: ${{openSystem.content.skill.ski.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/ski.svg" height="70">
+        ${{openSystem.content.skill.ski.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+    sort: 0
+    flags: {}
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..ski
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
 # swim
 name: ${{openSystem.content.skill.swim.skillName}}$
 pages:

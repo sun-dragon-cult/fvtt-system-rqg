@@ -130,6 +130,27 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
+# ski
+name: ${{openSystem.content.skill.ski.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/ski.svg
+data:
+  category: agility
+  skillName: ${{openSystem.content.skill.ski.skillName}}$
+  specialization:
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..ski
+    name: ${{openSystem.content.skill.ski.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.ski
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
 # swim
 name: ${{openSystem.content.skill.swim.skillName}}$
 type: skill

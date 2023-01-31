@@ -89,6 +89,13 @@
       "type": "Actor"
     },
     {
+      "name": "bestiary-en",
+      "label": "Bestiary | en",
+      "system": "rqg",
+      "path": "assets/packs/bestiary-en.db",
+      "type": "Actor"
+    },
+    {
       "name": "equipment-armor-en",
       "label": "Equipment, Armor | en",
       "system": "rqg",

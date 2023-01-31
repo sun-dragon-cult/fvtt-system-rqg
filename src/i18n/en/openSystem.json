@@ -2152,6 +2152,10 @@
         "skillName": "Elder Race Lore",
         "description": "<p>This skill quantifies knowledge of an Elder Race. The lore of each Elder Race must be learned separately.</p>"
       },
+      "elfsense": {
+        "skillName": "Elfsense",
+        "description": "<p>This sense permits the elf, by touch, to detect the health and emotional state of the target and whether it is stressed or in pain. It also gives the elf details about soil—such as its nutrients, moisture, and overall quality</p>"
+      },
       "evaluate": {
         "skillName": "Evaluate",
         "description": "<p>Estimating the worth of artifacts, goods, and valuable natural materials.</p>"
@@ -2326,6 +2330,10 @@
       "survival": {
         "skillName": "Survival",
         "description": "<p>Surviving in a rural or wilderness environment, including foraging, building a fire, and finding shelter. This can also be used to conceal one’s tracks, making Track rolls necessary to follow.</p>"
+      },
+      "ski": {
+        "skillName": "Ski",
+        "description": "<p>Movement over snow by cross-country skiing. Green elves are known to practice skiing in this way.</p>"
       },
       "swim": {
         "skillName": "Swim",
