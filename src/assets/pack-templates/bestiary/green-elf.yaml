@@ -1,0 +1,154 @@
+---
+name: Green Elf
+type: character
+img: icons/svg/mystery-man.svg
+system:
+  characteristics:
+    strength:
+      value: 11
+      formula: 2d6+4
+    constitution:
+      value: 11
+      formula: 3d6
+    size:
+      value: 11
+      formula: 3d6
+    dexterity:
+      value: 14
+      formula: 3d6+3
+    intelligence:
+      value: 17
+      formula: 3d6+6
+    power:
+      value: 13
+      formula: 2d6+6
+      hasExperience: false
+    charisma:
+      value: 11
+      formula: 3d6
+  background:
+    species: Aldryami (Green Elf)
+    occupation: ''
+    homeland: sartar
+    cultureJournalRqidLinks: []
+    tribeJournalRqidLinks: []
+    clanJournalRqidLinks: []
+    birthyear:
+    age:
+    gender: ''
+    town: ''
+    tribe: ''
+    clan: ''
+    reputation:
+    standardOfLiving: ''
+    baseIncome:
+    ransom:
+    ransomDetails: ''
+    biography: ''
+  allies: |-
+    <h1>Aldryami (Elves)</h1>
+    <p>The race known as the Aldryami consists of elves, dryads, pixies, and runners. They belong to the vegetable kingdom. Essentially mobile plants, Aldryami are significantly different from other humanoids and beasts.</p>
+    <p>Aldryami commonly associate in forest communities. Since all claim descent from (and actively engage in worship of ) the goddess Aldrya, the members of these mixed forest communities are collectively named after her&mdash;Aldryami.</p>
+    <p>Elves come in various races, identified as colors by humans, dependent upon the type of forest in which they are found. The green elves are native to coniferous trees, the brown to deciduous temperate forests, the yellow to tropical jungle, and the red to ferns and other primitive plants.</p>
+    <p>The primary Rune of the Aldryami is the Plant Form Rune.</p>
+    <h1>Green Elves</h1>
+    <p>The green elves, or vronkali, were the most important elf type in the Great Darkness but have lost ground since then. Green elves are of male or female gender, and do not breed with dryads. They do not sleep in winter but experience a daily period of rest. Green elves are associated with coniferous forests. They inhabit cool temperate lands. In snow, they can ski cross-country with carved magic wooden shoes. In warmer lands, they often share their forests with brown elves.</p>
+    <p>A green elf typically weighs about 65 kilograms and stands a little over 170 centimeters tall.</p>
+    <p><strong>Special Notes</strong>: Like the trolls, their eternal enemies, green elves are vulnerable to the &ldquo;new metal&rdquo; iron and cannot handle it. Any damage from an iron weapon penetrating their armor will do twice the normal damage.</p>
+    <p><strong>Armor:</strong>&nbsp;Green elves have no natural armor but often wear 2-point armor made of treated bark or other plant materials. They often wear cloaks made of leaves that add +20% to their Hide skill in an appropriate forest. They generally prefer to Dodge rather than parry.</p>
+    <p><strong>Skills:</strong>&nbsp;Climb 85%, Conceal 45%, Dodge 65%, Elfsense 55%, Elf Lore 50%, First Aid 50%, Hide 50%, Listen 50%, Move Quietly 50%, Plant Lore 75%, Sing 55%, Ski 60%, Spirit Combat 55%, Track 55%, Worship (elf deity) 50%.</p>
+    <p><strong>Languages:</strong>&nbsp;Speak Aldryami 50%, Speak Tradetalk 15%. Passions: Hate (Mostali) 60%, Hate (Uz) 60%, Loyalty (Forest) 60%.</p>
+    <p><strong>Runes:</strong>&nbsp;Earth or Fire/Sky 60%, Plant 75%. Special Rune Magic: Arrow Trance.</p>
+    <p><strong>Magic:</strong>&nbsp;All elves worship Aldrya. Other common gods include Babeester Gor, Chalana Arroy, Ernalda, Flamal, and Yelmalio. Common spirit magic is Heal and Speedart.</p>
+  attributes:
+    magicPoints:
+      value: 13
+    hitPoints:
+      value: 11
+    move:
+      currentLocomotion: walk
+      walk:
+        value: 8
+        carryingFactor: 1
+      swim:
+        value: 2
+        carryingFactor: 0.5
+      fly: {}
+    heroPoints: 0
+    isCreature: true
+    health: healthy
+prototypeToken:
+  name: Green Elf
+  displayName: 0
+  actorLink: false
+  texture:
+    src: icons/svg/mystery-man.svg
+    scaleX: 1
+    scaleY: 1
+    offsetX: 0
+    offsetY: 0
+    rotation: 0
+    tint:
+  width: 1
+  height: 1
+  lockRotation: false
+  rotation: 0
+  alpha: 1
+  disposition: -1
+  displayBars: 0
+  bar1:
+    attribute: attributes.hitPoints.value
+  bar2:
+    attribute: attributes.magicPoints.value
+  light:
+    alpha: 0.5
+    angle: 360
+    bright: 0
+    color:
+    coloration: 1
+    dim: 0
+    attenuation: 0.5
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    animation:
+      type:
+      speed: 5
+      intensity: 5
+      reverse: false
+    darkness:
+      min: 0
+      max: 1
+  sight:
+    enabled: false
+    range:
+    angle: 360
+    visionMode: basic
+    color:
+    attenuation: 0.1
+    brightness: 0
+    saturation: 0
+    contrast: 0
+  detectionModes: []
+  flags: {}
+  randomImg: false
+items:
+- "|{{ skills/agility-skills.yaml i.skill.ski [baseChance: 10, gainedChance: 15] }}|"
+- "|{{ skills/agility-skills.yaml i.skill.dodge [baseChance: 40, gainedChance: 45] }}|"
+- "|{{ pc-runes/pc-runes.yaml i.rune.fire-sky-element [chance: 60] }}|"
+effects: []
+folder:
+sort: 0
+ownership:
+  default: 0
+  OGu9DZ439mXiuTD3: 3
+flags: {}
+_stats:
+  systemId: rqg
+  systemVersion: 2.0.1
+  coreVersion: '10.291'
+  createdTime: 1675007267643
+  modifiedTime: 1675030781012
+  lastModifiedBy: OGu9DZ439mXiuTD3
+_id: XSEswGYxqBWDeBnH

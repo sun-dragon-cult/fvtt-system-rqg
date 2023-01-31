@@ -56,7 +56,8 @@ export class CompendiumPack {
     const filenames = fs.readdirSync(dirPath);
     const filePaths = filenames.map((filename) => path.resolve(dirPath, filename));
     const parsedData: unknown[] = filePaths.map((filePath) => {
-      const yamlString = fs.readFileSync(filePath, "utf-8");
+      let yamlString = fs.readFileSync(filePath, "utf-8");
+      yamlString = includePackYaml(yamlString);
       const packSources: CompendiumSource = (() => {
         try {
           return yaml.loadAll(yamlString);
@@ -183,4 +184,48 @@ function lookup(dict: any, key: string): string {
 
 export function isObject(value: unknown): boolean {
   return typeof value === "object" && value !== null;
+}
+
+function includePackYaml(yamlString: string): string {
+  const tokenRegex = /\"\|{{\s*([\w+.\/-]+)\s+([\w.-]+)\s+\[([^\[]*)\]\s+}}\|\"/gm;
+
+  const match = yamlString.match(tokenRegex);
+
+  const yaml = yamlString.replace(tokenRegex, function (match: string, ...args) {
+    let packName = args[0];
+    let rqid = args[1];
+    let overrides = args[2].split(",").map((item: string) => item.trim());
+
+    const packTemplate = path.resolve("./src/assets/pack-templates/" + packName);
+
+    let packTemplateYamlString = fs.readFileSync(packTemplate, "utf-8");
+
+    let packEntries = packTemplateYamlString.split("---");
+
+    for (const entry of packEntries) {
+      if (entry.includes(rqid)) {
+        // Add two spaces to every line to indent it properly
+        let cleanEntry = entry.replace(/\r/, "").replace(/[\n]/gm, "\n  ");
+
+        for (const override of overrides) {
+          const split = override.split(":").map((item: string) => item.trim());
+          const overrideRegex = new RegExp(`(${split[0]}:\\s*)(.)`, "m");
+          cleanEntry = cleanEntry.replace(overrideRegex, function (match: string, ...args) {
+            const overridden = args[0] + split[1];
+            return overridden;
+          });
+        }
+        return cleanEntry;
+      }
+    }
+
+    // Didn't find an entry
+    console.error(
+      `Did not find an entry in the pack ${packName} with an RQID of ${rqid} to match the token ${match}`
+    );
+
+    return "";
+  });
+
+  return yaml;
 }
