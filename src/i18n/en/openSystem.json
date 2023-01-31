@@ -2391,7 +2391,7 @@
     },
     "weaponSkill": {
       "1h-axe": {
-        "name": "1H Axe",
+        "name": "1H Axes",
         "specialization": {
           "smallAxe": "Small Axe",
           "battleAxe": "Battle Axe",
@@ -2399,7 +2399,7 @@
         }
       },
       "1h-dagger": {
-        "name": "1H Dagger",
+        "name": "1H Daggers",
         "specialization": {
           "dagger": "Dagger",
           "sickle": "Sickle",
@@ -2407,14 +2407,14 @@
         }
       },
       "1h-hammer": {
-        "name": "1H Hammer",
+        "name": "1H Hammers",
         "specialization": {
           "warHammer": "War Hammer",
           "offhand": "Offhand"
         }
       },
       "1h-mace": {
-        "name": "1H Mace",
+        "name": "1H Maces",
         "specialization": {
           "club": "Club",
           "heavyMace": "Heavy Mace",
@@ -2424,7 +2424,7 @@
         }
       },
       "1h-spear": {
-        "name": "1H Spear",
+        "name": "1H Spears",
         "specialization": {
           "javelin": "Javelin",
           "lance": "Lance",
@@ -2433,7 +2433,7 @@
         }
       },
       "1h-sword": {
-        "name": "1H Sword",
+        "name": "1H Swords",
         "specialization": {
           "broadsword": "Broadsword",
           "kopis": "Kopis",
@@ -2443,7 +2443,7 @@
         }
       },
       "2h-axe": {
-        "name": "2H Axe",
+        "name": "2H Axes",
         "specialization": {
           "battleAxe": "Battle Axe",
           "daggerAxe": "Dagger Axe",
@@ -2451,7 +2451,7 @@
         }
       },
       "2h-hammer": {
-        "name": "2H Hammer",
+        "name": "2H Hammers",
         "specialization": {
           "greatHammer": "Great Hammer",
           "maul": "Maul"
@@ -2461,7 +2461,7 @@
         "name": "2H Mace"
       },
       "2h-spear": {
-        "name": "2H Spear",
+        "name": "2H Spears",
         "specialization": {
           "longspear": "Longspear",
           "pike": "Pike",
@@ -2469,7 +2469,7 @@
         }
       },
       "2h-sword": {
-        "name": "2H Sword",
+        "name": "2H Swords",
         "specialization": {
           "greatsword": "Greatsword",
           "rhomphaia": "Rhomphaia",
@@ -2480,7 +2480,7 @@
         "name": "Bite"
       },
       "bow": {
-        "name": "Bow",
+        "name": "Bows",
         "specialization": {
           "compositeBow": "Composite Bow",
           "elfBow": "Elf Bow",
@@ -2488,7 +2488,7 @@
         }
       },
       "crossbow": {
-        "name": "Crossbow",
+        "name": "Crossbows",
         "specialization": {
           "arbalest": "Arbalest",
           "heavyCrossbow": "Heavy Crossbow",
@@ -2497,7 +2497,7 @@
         }
       },
       "fist": {
-        "name": "Fist",
+        "name": "Fists",
         "specialization": {
           "claw": "Claw",
           "fist": "Fist",
@@ -2518,7 +2518,7 @@
         "name": "Hug"
       },
       "javelin": {
-        "name": "Javelin",
+        "name": "Javelins",
         "specialization": {
           "dart": "Dart",
           "javelin": "Javelin",
@@ -2529,7 +2529,7 @@
         "name": "Kick"
       },
       "lasso": {
-        "name": "Lasso",
+        "name": "Lassos",
         "specialization": {
           "poleLasso": "Pole Lasso"
         }
@@ -2544,14 +2544,14 @@
         "name": "Rip"
       },
       "sling": {
-        "name": "Sling",
+        "name": "Slings",
         "specialization": {
           "sling": "Sling",
           "staffSling": "Staff Sling"
         }
       },
       "shield": {
-        "name": "Shield",
+        "name": "Shields",
         "specialization": {
           "large": "Large",
           "medium": "Medium",
