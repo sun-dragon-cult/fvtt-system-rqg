@@ -1,11 +1,11 @@
 # 1h-dagger-dagger
-name: ${{openSystem.content.weaponSkill.1h-dagger.name}}$ (${{openSystem.content.weaponSkill.1h-dagger.specialization.dagger}}$)
+name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.dagger}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/knife.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-dagger.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-dagger.specialization.dagger}}$
+  skillName: ${{openSystem.content.weaponSkill.1h-daggers.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-daggers.specialization.dagger}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -17,18 +17,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.1h-dagger-dagger
+      id: i.skill.1h-daggers-dagger
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 1h-dagger-sickle
-name: ${{openSystem.content.weaponSkill.1h-dagger.name}}$ (${{openSystem.content.weaponSkill.1h-dagger.specialization.sickle}}$)
+name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.sickle}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/sickle.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-dagger.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-dagger.specialization.sickle}}$)
+  skillName: ${{openSystem.content.weaponSkill.1h-daggers.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-daggers.specialization.sickle}}$)
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -40,6 +40,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.1h-dagger-sickle
+      id: i.skill.1h-daggers-sickle
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

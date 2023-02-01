@@ -1,11 +1,11 @@
 # 2h-axe-battle-axe
-name: ${{openSystem.content.weaponSkill.2h-axe.name}}$ (${{openSystem.content.weaponSkill.2h-axe.specialization.battleAxe}}$)
+name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.battleAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-axe.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.battleAxe}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-axes.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-axes.specialization.battleAxe}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -17,18 +17,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-axe-battle-axe
+      id: i.skill.2h-axes-battle-axe
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-axe-dagger-axe
-name: ${{openSystem.content.weaponSkill.2h-axe.name}}$ (${{openSystem.content.weaponSkill.2h-axe.specialization.daggerAxe}}$)
+name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.daggerAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-axe.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.daggerAxe}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-axes.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-axes.specialization.daggerAxe}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -40,18 +40,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-axe-dagger-axe
+      id: i.skill.2h-axes-dagger-axe
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-axe-great-axe
-name: ${{openSystem.content.weaponSkill.2h-axe.name}}$ (${{openSystem.content.weaponSkill.2h-axe.specialization.greatAxe}}$)
+name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.greatAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-axe.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-axe.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-axe.specialization.greatAxe}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-axes.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-axes.specialization.greatAxe}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -63,18 +63,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-axe-great-axe
+      id: i.skill.2h-axes-great-axe
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-hammer-great-hammer
-name: ${{openSystem.content.weaponSkill.2h-hammer.name}}$ (${{openSystem.content.weaponSkill.2h-hammer.specialization.greatHammer}}$)
+name: ${{openSystem.content.weaponSkill.2h-hammers.name}}$ (${{openSystem.content.weaponSkill.2h-hammers.specialization.greatHammer}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-hammer.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-hammer.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-hammer.specialization.greatHammer}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-hammers.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-hammers.specialization.greatHammer}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -86,18 +86,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-hammer-great-hammer
+      id: i.skill.2h-hammers-great-hammer
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-hammer-maul
-name: ${{openSystem.content.weaponSkill.2h-hammer.name}}$ (${{openSystem.content.weaponSkill.2h-hammer.specialization.maul}}$)
+name: ${{openSystem.content.weaponSkill.2h-hammers.name}}$ (${{openSystem.content.weaponSkill.2h-hammers.specialization.maul}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-hammer.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-hammer.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-hammer.specialization.maul}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-hammers.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-hammers.specialization.maul}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -109,7 +109,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-hammer-maul
+      id: i.skill.2h-hammers-maul
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
@@ -137,13 +137,13 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # 2h-spear-longspear
-name: ${{openSystem.content.weaponSkill.2h-spear.name}}$ (${{openSystem.content.weaponSkill.2h-spear.specialization.longspear}}$)
+name: ${{openSystem.content.weaponSkill.2h-spears.name}}$ (${{openSystem.content.weaponSkill.2h-spears.specialization.longspear}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.longspear}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-spears.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-spears.specialization.longspear}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -155,18 +155,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-spear-longspear
+      id: i.skill.2h-spears-longspear
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-spear-pike
-name: ${{openSystem.content.weaponSkill.2h-spear.name}}$ (${{openSystem.content.weaponSkill.2h-spear.specialization.pike}}$)
+name: ${{openSystem.content.weaponSkill.2h-spears.name}}$ (${{openSystem.content.weaponSkill.2h-spears.specialization.pike}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.pike}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-spears.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-spears.specialization.pike}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -178,18 +178,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-spear-pike
+      id: i.skill.2h-spears-pike
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-spear-shortspear
-name: ${{openSystem.content.weaponSkill.2h-spear.name}}$ (${{openSystem.content.weaponSkill.2h-spear.specialization.shortspear}}$)
+name: ${{openSystem.content.weaponSkill.2h-spears.name}}$ (${{openSystem.content.weaponSkill.2h-spears.specialization.shortspear}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-spear.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-spear.specialization.shortspear}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-spears.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-spears.specialization.shortspear}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -201,18 +201,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-spear-shortspear
+      id: i.skill.2h-spears-shortspear
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-sword-greatsword
-name: ${{openSystem.content.weaponSkill.2h-sword.name}}$ (${{openSystem.content.weaponSkill.2h-sword.specialization.greatsword}}$)
+name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.greatsword}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.greatsword}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-swords.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-swords.specialization.greatsword}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -224,18 +224,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-sword-greatsword
+      id: i.skill.2h-swords-greatsword
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-sword-rhomphaia
-name: ${{openSystem.content.weaponSkill.2h-sword.name}}$ (${{openSystem.content.weaponSkill.2h-sword.specialization.rhomphaia}}$)
+name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.rhomphaia}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.rhomphaia}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-swords.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-swords.specialization.rhomphaia}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -247,18 +247,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-sword-rhomphaia
+      id: i.skill.2h-swords-rhomphaia
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 2h-sword-sickle-sword
-name: ${{openSystem.content.weaponSkill.2h-sword.name}}$ (${{openSystem.content.weaponSkill.2h-sword.specialization.sickle-sword}}$)
+name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.sickle-sword}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-sword.name}}$
-  specialization: ${{openSystem.content.weaponSkill.2h-sword.specialization.sickle-sword}}$
+  skillName: ${{openSystem.content.weaponSkill.2h-swords.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-swords.specialization.sickle-sword}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -270,7 +270,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-sword-sickle-sword
+      id: i.skill.2h-swords-sickle-sword
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---

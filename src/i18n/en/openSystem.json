@@ -2225,7 +2225,7 @@
       },
       "meleeWeapon": {
         "skillName": "Melee Weapon",
-        "description": "<p>Each melee weapon has its own specific skill. An adventurer may use their melee weapon skill to attack and parry with that weapon, unless otherwise indicated.</p><p>Melee weapons are listed by category. An adventurer can use any other melee weapons in the same weapon category (such as 1H Axe, Fist, 1H Sword, etc.) at 1/2 the skill rating of the best skill the adventurer has in that category.</p>"
+        "description": "<p>Each melee weapon has its own specific skill. An adventurer may use their melee weapon skill to attack and parry with that weapon, unless otherwise indicated.</p><p>Melee weapons are listed by category. An adventurer can use any other melee weapons in the same weapon category (such as 1H Axes, Fists, 1H Swords, etc.) at 1/2 the skill rating of the best skill the adventurer has in that category.</p>"
       },
       "mineralLore": {
         "skillName": "Mineral Lore",
@@ -2390,7 +2390,7 @@
       }
     },
     "weaponSkill": {
-      "1h-axe": {
+      "1h-axes": {
         "name": "1H Axes",
         "specialization": {
           "smallAxe": "Small Axe",
@@ -2398,7 +2398,7 @@
           "offhand": "Offhand"
         }
       },
-      "1h-dagger": {
+      "1h-daggers": {
         "name": "1H Daggers",
         "specialization": {
           "dagger": "Dagger",
@@ -2406,14 +2406,14 @@
           "offhand": "Offhand"
         }
       },
-      "1h-hammer": {
+      "1h-hammers": {
         "name": "1H Hammers",
         "specialization": {
           "warHammer": "War Hammer",
           "offhand": "Offhand"
         }
       },
-      "1h-mace": {
+      "1h-maces": {
         "name": "1H Maces",
         "specialization": {
           "club": "Club",
@@ -2423,7 +2423,7 @@
           "offhand": "Offhand"
         }
       },
-      "1h-spear": {
+      "1h-spears": {
         "name": "1H Spears",
         "specialization": {
           "javelin": "Javelin",
@@ -2432,7 +2432,7 @@
           "offhand": "Offhand"
         }
       },
-      "1h-sword": {
+      "1h-swords": {
         "name": "1H Swords",
         "specialization": {
           "broadsword": "Broadsword",
@@ -2442,7 +2442,7 @@
           "offhand": "Offhand"
         }
       },
-      "2h-axe": {
+      "2h-axes": {
         "name": "2H Axes",
         "specialization": {
           "battleAxe": "Battle Axe",
@@ -2450,7 +2450,7 @@
           "greatAxe": "Great Axe"
         }
       },
-      "2h-hammer": {
+      "2h-hammers": {
         "name": "2H Hammers",
         "specialization": {
           "greatHammer": "Great Hammer",
@@ -2460,7 +2460,7 @@
       "2h-mace": {
         "name": "2H Mace"
       },
-      "2h-spear": {
+      "2h-spears": {
         "name": "2H Spears",
         "specialization": {
           "longspear": "Longspear",
@@ -2468,7 +2468,7 @@
           "shortspear": "Shortspear"
         }
       },
-      "2h-sword": {
+      "2h-swords": {
         "name": "2H Swords",
         "specialization": {
           "greatsword": "Greatsword",
@@ -2479,7 +2479,7 @@
       "bite": {
         "name": "Bite"
       },
-      "bow": {
+      "bows": {
         "name": "Bows",
         "specialization": {
           "compositeBow": "Composite Bow",
@@ -2487,7 +2487,7 @@
           "selfBow": "Self Bow"
         }
       },
-      "crossbow": {
+      "crossbows": {
         "name": "Crossbows",
         "specialization": {
           "arbalest": "Arbalest",
@@ -2496,13 +2496,14 @@
           "repeatingCrossbow": "Repeating Crossbow"
         }
       },
-      "fist": {
+      "fists": {
         "name": "Fists",
         "specialization": {
           "claw": "Claw",
           "fist": "Fist",
           "heavyCestus": "Heavy Cestus",
-          "lightCestus": "Light Cestus"
+          "lightCestus": "Light Cestus",
+          "rip": "Rip"
         }
       },
       "gore": {
@@ -2517,7 +2518,7 @@
       "hug": {
         "name": "Hug"
       },
-      "javelin": {
+      "javelins": {
         "name": "Javelins",
         "specialization": {
           "dart": "Dart",
@@ -2528,7 +2529,7 @@
       "kick": {
         "name": "Kick"
       },
-      "lasso": {
+      "lassos": {
         "name": "Lassos",
         "specialization": {
           "poleLasso": "Pole Lasso"
@@ -2540,17 +2541,14 @@
       "rearAndPlunge": {
         "name": "Rear & Plunge"
       },
-      "rip": {
-        "name": "Rip"
-      },
-      "sling": {
+      "slings": {
         "name": "Slings",
         "specialization": {
           "sling": "Sling",
           "staffSling": "Staff Sling"
         }
       },
-      "shield": {
+      "shields": {
         "name": "Shields",
         "specialization": {
           "large": "Large",

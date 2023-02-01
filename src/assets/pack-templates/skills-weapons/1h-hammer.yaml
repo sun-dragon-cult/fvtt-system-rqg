@@ -1,10 +1,10 @@
-name: ${{openSystem.content.weaponSkill.1h-hammer.name}}$ (${{openSystem.content.weaponSkill.1h-hammer.specialization.warHammer}}$)
+name: ${{openSystem.content.weaponSkill.1h-hammers.name}}$ (${{openSystem.content.weaponSkill.1h-hammers.specialization.warHammer}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-warhammer.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-hammer.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-hammer.specialization.warHammer}}$
+  skillName: ${{openSystem.content.weaponSkill.1h-hammers.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-hammers.specialization.warHammer}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -16,6 +16,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.1h-hammer-war-hammer
+      id: i.skill.1h-hammers-war-hammer
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
