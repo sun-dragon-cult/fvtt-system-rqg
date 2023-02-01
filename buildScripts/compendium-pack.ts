@@ -2,7 +2,14 @@ import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
 import * as crypto from "crypto";
-import { i18nDir, outDir, packsMetadata, translationsFileName } from "./buildPacks";
+import { escapeRegex } from "../src/system/util";
+import {
+  i18nDir,
+  outDir,
+  packsMetadata,
+  packTemplateDir,
+  translationsFileName,
+} from "./buildPacks";
 
 export interface PackMetadata {
   system: string;
@@ -56,11 +63,11 @@ export class CompendiumPack {
     const filenames = fs.readdirSync(dirPath);
     const filePaths = filenames.map((filename) => path.resolve(dirPath, filename));
     const parsedData: unknown[] = filePaths.map((filePath) => {
-      let yamlString = fs.readFileSync(filePath, "utf-8");
-      yamlString = includePackYaml(yamlString);
+      const yamlString = fs.readFileSync(filePath, "utf-8");
+      const yamlStringWithIncludes = includePackYaml(yamlString);
       const packSources: CompendiumSource = (() => {
         try {
-          return yaml.loadAll(yamlString);
+          return yaml.loadAll(yamlStringWithIncludes);
         } catch (error) {
           if (error instanceof Error) {
             throw PackError(`File ${filePath} could not be parsed: ${error.message}`);
@@ -192,24 +199,25 @@ function includePackYaml(yamlString: string): string {
   const match = yamlString.match(tokenRegex);
 
   const yaml = yamlString.replace(tokenRegex, function (match: string, ...args) {
-    let packName = args[0];
-    let rqid = args[1];
-    let overrides = args[2].split(",").map((item: string) => item.trim());
+    const packName = args[0];
+    const rqid = args[1];
+    const overrides = args[2].split(",").map((item: string) => item.trim());
 
-    const packTemplate = path.resolve("./src/assets/pack-templates/" + packName);
+    const packTemplate = path.resolve(packTemplateDir + "/" + packName);
 
-    let packTemplateYamlString = fs.readFileSync(packTemplate, "utf-8");
+    const packTemplateYamlString = fs.readFileSync(packTemplate, "utf-8");
 
-    let packEntries = packTemplateYamlString.split("---");
+    const packEntries = packTemplateYamlString.split("---");
 
     for (const entry of packEntries) {
+      const rqidRegex = new RegExp(`\s+id:\s*${escapeRegex(rqid)}`);
       if (entry.includes(rqid)) {
         // Add two spaces to every line to indent it properly
         let cleanEntry = entry.replace(/\r/, "").replace(/[\n]/gm, "\n  ");
 
         for (const override of overrides) {
           const split = override.split(":").map((item: string) => item.trim());
-          const overrideRegex = new RegExp(`(${split[0]}:\\s*)(.)`, "m");
+          const overrideRegex = new RegExp(`(${escapeRegex(split[0])}:\\s*)(.)`, "m");
           cleanEntry = cleanEntry.replace(overrideRegex, function (match: string, ...args) {
             const overridden = args[0] + split[1];
             return overridden;

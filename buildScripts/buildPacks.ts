@@ -7,7 +7,7 @@ export const translationsFileName = "openSystem";
 export const outDir = path.resolve(process.cwd(), "src/assets/packs");
 export const packsMetadata = JSON.parse(fs.readFileSync(path.resolve("./src/system.json"), "utf-8"))
   .packs as PackMetadata[];
-const packTemplateDir = "./src/assets/pack-templates";
+export const packTemplateDir = "./src/assets/pack-templates";
 const targetLanguages = fs.readdirSync(i18nDir).filter((file) => {
   return fs.statSync(path.join(i18nDir, file)).isDirectory();
 });
