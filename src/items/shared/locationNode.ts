@@ -1,7 +1,7 @@
 import { defaultPriceData, IPhysicalItem } from "../../data-model/item-data/IPhysicalItem";
 import { hasOwnProperty, localize, RqgError } from "../../system/util";
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { RqgItem } from "../rqgItem";
 
 export type LocationNode = IPhysicalItem & {
   // For the grouping of physical items in a tree structure
@@ -10,7 +10,7 @@ export type LocationNode = IPhysicalItem & {
   contains: LocationNode[];
 };
 
-export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNode {
+export function createItemLocationTree(items: RqgItem[]): LocationNode {
   let locationTree: LocationNode = {
     name: "",
     id: "",
@@ -26,18 +26,17 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
     equippedStatus: "notCarried",
     price: defaultPriceData,
   };
-  const physicalItemDatas = itemDatas.filter((i) => hasOwnProperty(i.system, "physicalItemType"));
-  let physicalItemNodes: LocationNode[] = physicalItemDatas
-    .filter(
-      // TODO v10 any
-      (itemData: any) => !(itemData.type === ItemTypeEnum.Weapon && itemData.system.isNatural)
-    ) // TODO v10 any
-    .map((itemData: any) => {
+  const physicalItems = items.filter((i) => hasOwnProperty(i.system, "physicalItemType"));
+  let physicalItemNodes: LocationNode[] = physicalItems
+    .filter((item) => !(item.type === ItemTypeEnum.Weapon && item.system.isNatural))
+    .map((item) => {
       const itemLocation =
-        (hasOwnProperty(itemData.system, "location") && itemData.system.location) || "";
+        (hasOwnProperty(item.system, "location") &&
+          ((item.system.location as string) || undefined)) ||
+        "";
       // Placing an item inside itself is not allowed - count it as root level
-      let location = itemLocation === itemData.name ? "" : itemLocation;
-      if (hasLoop(itemData, physicalItemDatas)) {
+      let location = itemLocation === item.name ? "" : itemLocation;
+      if (hasLoop(item, physicalItems)) {
         ui.notifications?.warn(
           localize("RQG.Item.Notification.CircularGearLocationWarning", {
             itemLocation: itemLocation,
@@ -45,11 +44,9 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
         );
         location = "";
       }
-      const containingItem = physicalItemDatas.find(
-        // @ts-ignore
-        (p) => itemData.system.location && p.name === itemData.system.location
+      const containingItem = physicalItems.find(
+        (p) => item.system.location && p.name === item.system.location
       );
-      // @ts-ignore
       if (containingItem && !containingItem.system.isContainer) {
         ui.notifications?.warn(
           localize("RQG.Item.Notification.ItemIsNotContainerWarning", {
@@ -59,24 +56,24 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
         location = "";
       }
       return {
-        name: itemData.name,
-        id: itemData._id,
+        name: item.name,
+        id: item.id,
         location: location,
-        description: (itemData.system as any).description,
-        gmNotes: (itemData.system as any).gmNotes,
-        attunedTo: (itemData.system as any).attunedTo,
+        description: item.system.description,
+        gmNotes: item.system.gmNotes,
+        attunedTo: item.system.attunedTo,
         contains: [],
-        isContainer: (itemData.system as any).isContainer,
-        physicalItemType: (itemData.system as any).physicalItemType,
-        encumbrance: (itemData.system as any).encumbrance,
-        equippedStatus: (itemData.system as any).equippedStatus,
-        quantity: (itemData.system as any).quantity || 1,
-        price: (itemData.system as any).price,
+        isContainer: item.system.isContainer,
+        physicalItemType: item.system.physicalItemType,
+        encumbrance: item.system.encumbrance,
+        equippedStatus: item.system.equippedStatus,
+        quantity: item.system.quantity || 1,
+        price: item.system.price,
       };
     });
 
   // 1) Add all "virtual" nodes (locations that don't match an item name)
-  const itemNames = physicalItemDatas.map((i) => i.name);
+  const itemNames = physicalItems.map((i) => i.name);
   const virtualNodesMap: Map<string, LocationNode> = physicalItemNodes
     .filter(
       (node) =>
@@ -123,7 +120,7 @@ export function createItemLocationTree(itemDatas: ItemDataSource[]): LocationNod
   if (!retriesLeft) {
     console.error(
       "RQG | Physical Item Location algorithm did not finish. remaining items:",
-      physicalItemDatas
+      physicalItems
     );
   }
 
@@ -144,7 +141,7 @@ function searchTree(node: LocationNode, location: string): LocationNode | null {
   return null;
 }
 
-function hasLoop(initialItem: ItemDataSource, physicalItems: ItemDataSource[]): boolean {
+function hasLoop(initialItem: RqgItem, physicalItems: RqgItem[]): boolean {
   let currentItem = physicalItems.find(
     (i) => hasOwnProperty(i.system, "location") && initialItem.name === i.system.location
   );
@@ -165,11 +162,8 @@ function hasLoop(initialItem: ItemDataSource, physicalItems: ItemDataSource[]): 
   return isLoop;
 }
 
-export function getOtherItemIdsInSameLocationTree(
-  itemName: string,
-  itemsDatas: ItemDataSource[]
-): string[] {
-  const itemLocationTree = createItemLocationTree(itemsDatas);
+export function getOtherItemIdsInSameLocationTree(itemName: string, items: RqgItem[]): string[] {
+  const itemLocationTree = createItemLocationTree(items);
   let rootNode = searchTree(itemLocationTree, itemName);
   while (rootNode && rootNode.location) {
     rootNode = searchTree(itemLocationTree, rootNode.location);
@@ -179,16 +173,16 @@ export function getOtherItemIdsInSameLocationTree(
     ui.notifications?.error(msg);
     throw new RqgError(msg, itemLocationTree);
   }
-  const itemIds = getDescendants([], rootNode);
+  const itemIds = getDescendants(rootNode);
   return itemIds.map((id) => id);
 }
 
-function getDescendants(ids: string[], node: LocationNode): string[] {
+function getDescendants(node: LocationNode | null, ids: string[] = []): string[] {
   if (node) {
     if (node.id) {
       ids.push(node.id);
     }
-    ids.concat(node.contains.flatMap((n) => getDescendants(ids, n)));
+    ids.concat(node.contains.flatMap((n) => getDescendants(n, ids)));
   }
   return ids;
 }

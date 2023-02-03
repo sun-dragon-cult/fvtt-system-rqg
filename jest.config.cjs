@@ -1,5 +1,5 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  setupFiles: ["./src/mocks/foundryMockFunctions.js"],
+  setupFiles: ["./src/test/test-setup.js","./src/mocks/foundryMockFunctions.js"],
 };

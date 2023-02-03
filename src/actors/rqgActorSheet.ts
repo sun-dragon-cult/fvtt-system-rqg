@@ -178,7 +178,7 @@ export class RqgActorSheet extends ActorSheet<
       characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character
       loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
       unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
-      itemLocationTree: createItemLocationTree(this.actor.items.toObject()), // physical items reorganised as a tree of items containing items
+      itemLocationTree: createItemLocationTree(this.actor.items.contents), // physical items reorganised as a tree of items containing items
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
