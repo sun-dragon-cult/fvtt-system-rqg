@@ -1,6 +1,6 @@
 import { locationNodeTreeOfMockItems, mockItems } from "../../mocks/mockLocationItems";
 import { createItemLocationTree, getOtherItemIdsInSameLocationTree } from "./locationNode";
-// import { mockModulePartially } from "../../test/helpers";
+import { RqgItem } from "../rqgItem";
 
 describe("Location Tree calculations", () => {
   beforeEach(() => {
@@ -10,71 +10,28 @@ describe("Location Tree calculations", () => {
         error(_msg: string, _other?: any) {},
       },
     };
-
-    // (global as any).localize = () => "Mockityy";
-
-    // const utilModul: any = jest.createMockFromModule("util");
-    // utilModul.localize = () => "Makadam";
-
-    // , () => ({
-    //   __esModule: true,
-    //   localize: jest.fn(() => "Mocito"),
-    // }));
-
-    // import { localize } from "util";
-    //
-    // localize.mockImplementation(() => "it's mocked");
-
-    // mockModulePartially("../../system/util", () => ({
-    //   localize: jest.fn().mockImplementation(() => "mocked translation"),
-    // }));
-
-    // jest.mock("../../system/util", () => {
-    //   const originalUtil = jest.requireActual("../../system/util");
-    //   return {
-    //     __esModule: true,
-    //     ...originalUtil,
-    //     localize: jest.fn((key: string, data: any) => "mocked translation"),
-    //   };
-    // });
   });
 
   describe("createItemLocationTree", () => {
     it("should create a correct location tree", () => {
       // --- Arrange ---
+      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
 
       // --- Act ---
-      const constructedItemTree = createItemLocationTree(JSON.parse(JSON.stringify(mockItems)));
+      const constructedItemTree = createItemLocationTree(items);
 
       // --- Assert ---
       expect(constructedItemTree).toStrictEqual(locationNodeTreeOfMockItems);
     });
-
-    // it("should handle item loops", () => {
-    //   // --- Arrange ---
-    //   // const utilSpy = jest.spyOn(util, "localize");
-    //   // utilSpy.mockReturnValue("mocked localization");
-    //
-    //   const mockItemsWithLoop = JSON.parse(JSON.stringify(mockItems));
-    //   const container = mockItemsWithLoop.find((i: RqgItem) => i.name === "Belt Pouch");
-    //   container.system.location = "White stone"; // set location to an item inside itself
-    //   // --- Act ---
-    //   const constructedItemTree = createItemLocationTree(mockItemsWithLoop);
-    //
-    //   // --- Assert ---
-    //   expect(constructedItemTree).toStrictEqual(locationNodeTreeOfMockItems);
-    // });
   });
 
   describe("getOtherItemIdsInSameLocationTree", () => {
     it("should return all physical items in the same tree from virtual location", () => {
       // --- Arrange ---
+      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
 
       // --- Act ---
-      const result = getOtherItemIdsInSameLocationTree(
-        "Belt",
-        JSON.parse(JSON.stringify(mockItems))
-      );
+      const result = getOtherItemIdsInSameLocationTree("Belt", items);
 
       // --- Assert ---
       expect(result).toStrictEqual([
@@ -94,9 +51,10 @@ describe("Location Tree calculations", () => {
 
     it("should return all physical items in the same tree from item inside container", () => {
       // --- Arrange ---
+      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
 
       // --- Act ---
-      const result = getOtherItemIdsInSameLocationTree("White stone", mockItems);
+      const result = getOtherItemIdsInSameLocationTree("White stone", items);
 
       // --- Assert ---
       expect(result).toStrictEqual([
@@ -116,9 +74,10 @@ describe("Location Tree calculations", () => {
 
     it("should return itself only for items without location", () => {
       // --- Arrange ---
+      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
 
       // --- Act ---
-      const result = getOtherItemIdsInSameLocationTree("Dagger", mockItems);
+      const result = getOtherItemIdsInSameLocationTree("Dagger", items);
 
       // --- Assert ---
       expect(result).toStrictEqual(["W5bUaf9Hg61ZAM1y"]);
