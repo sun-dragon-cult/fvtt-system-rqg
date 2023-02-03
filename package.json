@@ -12,7 +12,7 @@
     "bundle": "yarn snowpack build",
     "build:template": "node jsTemplate2json.mjs",
     "checktypescript": "tsc --noEmit",
-    "test": "node --no-warnings --experimental-vm-modules $( [ -f ./node_modules/.bin/jest ] && echo ./node_modules/.bin/jest || which jest )",
+    "test": "jest",
     "prepare": "husky install"
   },
   "author": "",
