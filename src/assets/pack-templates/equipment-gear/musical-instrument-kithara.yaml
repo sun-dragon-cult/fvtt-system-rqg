@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/gear/lyre.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.gear.kithara
+      id: i.gear.musical-instrument-kithara
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
