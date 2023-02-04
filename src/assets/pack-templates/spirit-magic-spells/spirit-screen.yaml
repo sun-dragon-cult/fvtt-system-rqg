@@ -9,11 +9,11 @@ data:
   duration: temporal
   concentration: passive
   descriptionRqidLink:
-    rqid: je..spiritScreen
+    rqid: je..spirit-screen
     name: ${{openSystem.content.spiritMagic.spiritScreen.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.spirit-magic.spiritScreen
+      id: i.spirit-magic.spirit-screen
       lang: ${openSystem.lang}}$
       priority: ${openSystem.prio}}$

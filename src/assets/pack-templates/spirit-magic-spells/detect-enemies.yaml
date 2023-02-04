@@ -9,11 +9,11 @@ data:
   duration: focused
   concentration: active
   descriptionRqidLink:
-    rqid: je..detectEnemies
+    rqid: je..detect-enemies
     name: ${{openSystem.content.spiritMagic.detectEnemies.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.spirit-magic.detectEnemies
+      id: i.spirit-magic.detect-enemies
       lang: ${openSystem.lang}}$
       priority: ${openSystem.prio}}$

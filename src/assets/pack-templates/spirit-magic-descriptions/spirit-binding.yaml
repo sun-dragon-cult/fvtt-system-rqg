@@ -16,6 +16,6 @@ pages:
 flags:
   rqg:
     documentRqidFlags:
-      id: je..spiritBinding
+      id: je..spirit-binding
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

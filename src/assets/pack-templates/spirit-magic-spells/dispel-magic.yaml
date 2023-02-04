@@ -9,11 +9,11 @@ data:
   duration: instant
   concentration:
   descriptionRqidLink:
-    rqid: je..dispelMagic
+    rqid: je..dispel-magic
     name: ${{openSystem.content.spiritMagic.dispelMagic.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.spirit-magic.dispelMagic
+      id: i.spirit-magic.dispel-magic
       lang: ${openSystem.lang}}$
       priority: ${openSystem.prio}}$

@@ -9,11 +9,11 @@ data:
   duration: focused
   concentration: active
   descriptionRqidLink:
-    rqid: je..detectUndead
+    rqid: je..detect-undead
     name: ${{openSystem.content.spiritMagic.detectUndead.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.spirit-magic.detectUndead
+      id: i.spirit-magic.detect-undead
       lang: ${openSystem.lang}}$
       priority: ${openSystem.prio}}$

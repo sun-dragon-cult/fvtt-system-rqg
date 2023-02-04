@@ -16,6 +16,6 @@ pages:
 flags:
   rqg:
     documentRqidFlags:
-      id: je..spiritScreen
+      id: je..spirit-screen
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

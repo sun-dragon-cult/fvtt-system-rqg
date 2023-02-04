@@ -9,11 +9,11 @@ data:
   duration: temporal
   concentration: passive
   descriptionRqidLink:
-    rqid: je..secondSight
+    rqid: je..second-sight
     name: ${{openSystem.content.spiritMagic.secondSight.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.spirit-magic.secondSight
+      id: i.spirit-magic.second-sight
       lang: ${openSystem.lang}}$
       priority: ${openSystem.prio}}$
