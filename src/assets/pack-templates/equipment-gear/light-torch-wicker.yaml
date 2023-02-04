@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/gear/primitive-torch.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.gear.wicker-torch
+      id: i.gear.light-wicker-torch
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:

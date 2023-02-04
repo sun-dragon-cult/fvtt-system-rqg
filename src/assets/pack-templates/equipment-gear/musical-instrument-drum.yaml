@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/gear/djembe.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.gear.drum
+      id: i.gear.musical-instrument-drum
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
