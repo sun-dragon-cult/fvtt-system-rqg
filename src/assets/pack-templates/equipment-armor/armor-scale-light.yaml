@@ -84,7 +84,7 @@ img: systems/rqg/assets/images/armor/skirt.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-skirt-light-leather
+      id: i.armor.armor-skirt-light-scale
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 data:
