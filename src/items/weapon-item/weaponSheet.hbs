@@ -180,11 +180,9 @@
                           <label>{{localize "RQG.Item.Weapon.Range"}} <input type="number" min="0" max="999"
                                                                              name="system.range"
                                                                              value="{{system.range}}"></label><br>
-                          {{!-- <label>Rate <input type="number" min="0" max="99" name="data.rate"
-                              value="{{weaponData.rate}}"></label><br>--}}
                           <label>{{localize "RQG.Item.Weapon.Rate"}}
                             <select name="system.rate">
-                              {{#select weaponData.rate}} {{#each rateOfFire}}
+                              {{#select system.rate}} {{#each rateOfFire}}
                                 <option value="{{this}}">{{@key}}</option>
                               {{/each}} {{/select}}
                             </select>
