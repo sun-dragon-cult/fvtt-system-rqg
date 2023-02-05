@@ -1,4 +1,4 @@
-name: Composite Bow
+name: ${{openSystem.content.weapon.compositeBow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/bowman.svg
 flags:
@@ -37,7 +37,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.9aEgM4UKZQfFddMD
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 1d8+1
@@ -67,7 +67,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Elf Bow
+name: ${{openSystem.content.weapon.elfBow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/bowman.svg
 flags:
@@ -106,7 +106,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.zhMTFSWh768z6Jnk
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 1d18+1
@@ -136,7 +136,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Self Bow
+name: ${{openSystem.content.weapon.selfBow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/bowman.svg
 flags:
@@ -175,7 +175,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.EcDI8nmAyfshQL10
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 1d6+1
@@ -205,7 +205,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Arbalest
+name: ${{openSystem.content.weapon.arbalest}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:
@@ -244,7 +244,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.CVruhytNFN3sfNaM
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 3d6+1
@@ -272,7 +272,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Heavy Crossbow
+name: ${{openSystem.content.weapon.heavyCrossbow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:
@@ -311,7 +311,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.6tN59Is4NdkZMJF5
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 2d6+2
@@ -341,7 +341,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Light Crossbow
+name: ${{openSystem.content.weapon.lightCrossbow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:
@@ -380,7 +380,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.SL7I4vZ0pKwO714W
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 2d4+2
@@ -410,7 +410,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Repeating Crossbow
+name: ${{openSystem.content.weapon.repeatingCrossbow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:
@@ -449,7 +449,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.OTEuqGbfafup9W49
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 2d4+2
@@ -479,7 +479,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---  
-name: Arrows
+name: ${{openSystem.content.weapon.arrows}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/arrows.svg
 flags:
@@ -546,7 +546,7 @@ data:
   isRangedWeapon: false
   projectileId:
 ---
-name: Crossbow Bolts
+name: ${{openSystem.content.weapon.crossbowBolts}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/bolts.svg
 flags:

@@ -1,4 +1,4 @@
-name: Pole Lasso
+name: ${{openSystem.content.weapon.poleLasso}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/lasso.svg
 flags:
@@ -37,7 +37,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.c4xz834y4y58vjnH
       combatManeuvers:
-        - name: Grapple
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
           damageType: special
           description:
       damage:

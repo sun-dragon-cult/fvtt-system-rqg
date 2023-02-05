@@ -1,4 +1,4 @@
-name: Atlatl - Dart
+name: ${{openSystem.content.weapon.atlatlDart}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/atlatl.svg
 flags:
@@ -37,7 +37,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.OyDJcTa37nCfWgYe
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 2d6
@@ -67,7 +67,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Atlatl - Javelin
+name: ${{openSystem.content.weapon.atlatlJavelin}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/atlatl.svg
 flags:
@@ -106,7 +106,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.OyDJcTa37nCfWgYe
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 1d10+1d6
@@ -136,7 +136,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Dart
+name: ${{openSystem.content.weapon.dart}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/dart.svg
 flags:
@@ -175,7 +175,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.UfrGc8zwcTmE1HPv
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 1d6

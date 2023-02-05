@@ -26,7 +26,7 @@ data:
       strikeRank:
       skillOrigin:
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
       damage: 1d8
       minStrength: 0
@@ -161,13 +161,13 @@ data:
     oneHand:
       skillOrigin: Compendium.rqg.demo-items.l1ppQI75agqD5w3e
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -177,13 +177,13 @@ data:
     offHand:
       skillOrigin: Compendium.rqg.demo-items.l1ppQI75agqD5w3e
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -279,7 +279,7 @@ data:
     missile:
       skillOrigin: Compendium.rqg.demo-items.wlxabuWq6ImK7mTR
       combatManeuvers:
-        - name: Shoot
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 1d3

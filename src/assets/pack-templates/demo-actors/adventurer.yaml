@@ -1435,7 +1435,7 @@ items:
           skillId: RU6jvy1QyOruzRaj
           skillOrigin: Compendium.world.demo.m4iPSwobJeMwSWWO
           combatManeuvers:
-            - name: Shoot
+            - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
               damageType: impale
               description: null
               placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
@@ -1576,15 +1576,15 @@ items:
           skillId: wpQd8MIxLr964goo
           skillOrigin: Compendium.world.demo.0y8EJrILhFOyKYde
           combatManeuvers:
-            - name: Cut
+            - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
               damageType: slash
               description: null
               placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
-            - name: Parry
+            - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
               damageType: parry
               description: null
               placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
-            - name: Knockback
+            - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
               damageType: special
               description: null
               placeholder: |-
@@ -1610,15 +1610,15 @@ items:
           skillId: null
           skillOrigin: null
           combatManeuvers:
-            - name: Cut
+            - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
               damageType: slash
               description: null
               placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
-            - name: Parry
+            - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
               damageType: parry
               description: null
               placeholder: Enter description of how this attack works, or get normal damage buttons (no special handling of critical success damage etc.)
-            - name: Knockback
+            - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
               damageType: special
               description: null
               placeholder: |-

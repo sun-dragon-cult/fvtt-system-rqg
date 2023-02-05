@@ -1,4 +1,4 @@
-name: Sling
+name: ${{openSystem.content.weapon.sling}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/sling.svg
 flags:
@@ -37,7 +37,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.M66Aa8Cij2s4Xc3P
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush
           description:
       damage: 1d8
@@ -67,7 +67,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Staff Sling
+name: ${{openSystem.content.weapon.staffSling}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/sling.svg
 flags:
@@ -106,7 +106,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.8qozzHxXWC57R1B0
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush
           description:
       damage: 1d10
@@ -136,7 +136,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Sling Stones
+name: ${{openSystem.content.weapon.slingStones}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/sling-stones.svg
 flags:

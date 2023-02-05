@@ -1,4 +1,4 @@
-name: Dagger
+name: ${{openSystem.content.weapon.dagger}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/knife.svg
 flags:
@@ -13,13 +13,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.PjvC1dz217j2g6tO
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4+2
@@ -30,13 +30,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.JlYB7H68q8TfOcID
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4+2
@@ -55,7 +55,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.ye3Y3Hmbots30qLD
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 1d4
@@ -85,7 +85,7 @@ data:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: Dagger, Parrying
+name: ${{openSystem.content.weapon.parryingDagger}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/knife.svg
 flags:
@@ -100,13 +100,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.PjvC1dz217j2g6tO
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4+2
@@ -117,13 +117,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.JlYB7H68q8TfOcID
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4+2
@@ -169,7 +169,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Dagger, Throwing
+name: ${{openSystem.content.weapon.throwingDagger}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/thrown-dagger.svg
 flags:
@@ -184,13 +184,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.PjvC1dz217j2g6tO
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4
@@ -201,13 +201,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.JlYB7H68q8TfOcID
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4
@@ -226,7 +226,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.ye3Y3Hmbots30qLD
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 1d4
@@ -256,7 +256,7 @@ data:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: Sickle
+name: ${{openSystem.content.weapon.sickle}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/sickle.svg
 flags:
@@ -271,10 +271,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.Y40OY819a2230cZk
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -285,10 +285,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.J5hQIQITdgxSag11
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -334,7 +334,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Broadsword
+name: ${{openSystem.content.weapon.broadsword}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 flags:
@@ -349,13 +349,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons-en.zlwavjjwUgkfSqx3
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d8+1
@@ -366,13 +366,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.BJ82o0lOKV1969Mg
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d8+1
@@ -418,7 +418,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Kopis
+name: ${{openSystem.content.weapon.kopis}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 flags:
@@ -433,10 +433,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.KTQ1xvw7YLOxOn37
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d8+1
@@ -447,10 +447,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.i6aUz6rO4QvA4m0p
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d8+1
@@ -496,7 +496,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Rapier
+name: ${{openSystem.content.weapon.rapier}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 flags:
@@ -511,13 +511,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.DDodZQhdAH5rK0Gv
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -528,13 +528,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.jKIgjWuh8xepz4nS
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -580,7 +580,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Shortsword
+name: ${{openSystem.content.weapon.shortsword}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 flags:
@@ -595,13 +595,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.t45m4tub484LBXuV
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -612,13 +612,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.Nvj6Y6q2833Iml07
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -664,7 +664,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Greatsword
+name: ${{openSystem.content.weapon.greatsword}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 flags:
@@ -695,10 +695,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.oaqCx2G0z8i6nFdA
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 2d8
@@ -736,7 +736,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Rhomphaia
+name: ${{openSystem.content.weapon.romphaia}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 flags:
@@ -767,10 +767,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.P5fq02SPVgRRVyca
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 2d6+2
@@ -808,7 +808,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Sickle-Sword (Moonsword)
+name: ${{openSystem.content.weapon.sickleSwordMoonsword}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 flags:
@@ -839,10 +839,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.4p6P3lLzd9E22WKe
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10+1

@@ -1,4 +1,4 @@
-name: Light Cestus
+name: ${{openSystem.content.weapon.lightCestus}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/cestus.svg
 flags:
@@ -16,10 +16,10 @@ data:
         - name: Hit
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d3+1
@@ -33,10 +33,10 @@ data:
         - name: Hit
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d3+1
@@ -82,7 +82,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Heavy Cestus
+name: ${{openSystem.content.weapon.heavyCestus}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/cestus.svg
 flags:
@@ -100,10 +100,10 @@ data:
         - name: Hit
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d3+2
@@ -117,10 +117,10 @@ data:
         - name: Hit
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d3+2
@@ -166,7 +166,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Claw (Metal)
+name: ${{openSystem.content.weapon.clawMetal}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/claw.svg
 flags:
@@ -181,13 +181,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.BZaTB9EsMEbZ8dWI
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4+1
@@ -198,13 +198,13 @@ data:
       skillId:
       skillOrigin:
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4+1
@@ -250,7 +250,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Fist
+name: ${{openSystem.content.weapon.fist}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/fist.svg
 flags:
@@ -265,13 +265,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.mfuP53IYK6SlDNY7
       combatManeuvers:
-        - name: Punch
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Punch}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d3
@@ -282,13 +282,13 @@ data:
       skillId:
       skillOrigin:
       combatManeuvers:
-        - name: Punch
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Punch}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d3
@@ -334,7 +334,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Grapple
+name: ${{openSystem.content.weapon.grapple}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/grab.svg
 flags:
@@ -349,7 +349,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.ImY1JgAPh59X5vbX
       combatManeuvers:
-        - name: Grapple
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
           damageType: special
           description:
       damage:
@@ -360,15 +360,9 @@ data:
       skillId:
       skillOrigin:
       combatManeuvers:
-        - name: Grapple
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
           damageType: special
           description:
-          placeholder: |-
-            <details>
-                    <summary>Grapple rules</summary>
-                    <p>.....</p>
-
-                    </details>
       damage:
       minStrength: null
       minDexterity: null
@@ -412,7 +406,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Kick
+name: ${{openSystem.content.weapon.kick}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/kick.svg
 flags:
@@ -427,10 +421,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
       combatManeuvers:
-        - name: Kick
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Kick}}$
           damageType: crush
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -441,10 +435,10 @@ data:
       skillId:
       skillOrigin:
       combatManeuvers:
-        - name: Kick
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Kick}}$
           damageType: crush
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -490,7 +484,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Head Butt
+name: ${{openSystem.content.weapon.headButt}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/head-butt.svg
 flags:
@@ -508,7 +502,7 @@ data:
         - name: Head Butt
           damageType: crush
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -522,7 +516,7 @@ data:
         - name: Head Butt
           damageType: crush
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -568,7 +562,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Trample
+name: ${{openSystem.content.weapon.trample}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/trample.svg
 flags:
@@ -586,7 +580,7 @@ data:
         - name: Trample
           damageType: crush
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -600,7 +594,7 @@ data:
         - name: Trample
           damageType: crush
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6

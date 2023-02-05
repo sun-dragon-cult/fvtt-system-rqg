@@ -1,4 +1,4 @@
-name: Throwing Axe
+name: ${{openSystem.content.weapon.throwingAxe}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/thrown-axe.svg
 flags:
@@ -13,16 +13,12 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.84644z0nkD89R1mz
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-          placeholder: Enter description of how this attack works, or get normal damage
-            buttons (no special handling of critical success damage etc.)
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-          placeholder: Enter description of how this attack works, or get normal damage
-            buttons (no special handling of critical success damage etc.)
       damage: 1d6+1
       minStrength: 7
       minDexterity: 7
@@ -31,16 +27,12 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.kEcxA1G7J8xva450
       combatManeuvers:
-        - name: Cut
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-          placeholder: Enter description of how this attack works, or get normal damage
-            buttons (no special handling of critical success damage etc.)
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-          placeholder: Enter description of how this attack works, or get normal damage
-            buttons (no special handling of critical success damage etc.)
       damage: 1d6+1
       minStrength: 7
       minDexterity: 7
@@ -57,11 +49,9 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.9wyEGCc77PiUb9Nl
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-          placeholder: Enter description of how this attack works, or get normal damage
-            buttons (no special handling of critical success damage etc.)
       damage: 1d6
       minStrength: 9
       minDexterity: 9
@@ -89,7 +79,7 @@ data:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: Rock
+name: ${{openSystem.content.weapon.rock}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/rock.svg
 flags:
@@ -128,7 +118,7 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.5AfkO7MrjYqHm9Ay
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush
           description:
       damage: 1d4

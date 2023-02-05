@@ -1,4 +1,4 @@
-name: Javelin
+name: ${{openSystem.content.weapon.javelin}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/javelin.svg
 flags:
@@ -13,10 +13,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.p6Mm8PuFkfpy0MHS
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6
@@ -27,10 +27,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.CIU0BzsssqKImNW9
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6
@@ -49,10 +49,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.794y0cyfzCa5eYPf
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10
@@ -82,7 +82,7 @@ data:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: Short Spear
+name: ${{openSystem.content.weapon.shortSpear}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-spear.svg
 flags:
@@ -97,10 +97,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.CIXYxzkBZd5RGJx7
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -111,10 +111,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.JDXeX3DWBwy4Z9j8
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -125,10 +125,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.RgY6W1u54NyqKa17
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d8+1
@@ -139,10 +139,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.r24yk70r505De5dy
       combatManeuvers:
-        - name: Throw
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -172,7 +172,7 @@ data:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: Lance
+name: ${{openSystem.content.weapon.lance}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-spear.svg
 flags:
@@ -187,10 +187,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.eT1Wtz0RWkeq60G2
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10+1
@@ -201,10 +201,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.hw81IOi4PUvl4maS
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10+1
@@ -250,7 +250,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Pike
+name: ${{openSystem.content.weapon.pike}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 flags:
@@ -281,10 +281,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.GKqFmE4XASes5k97
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 2d6+1
@@ -322,7 +322,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Long Spear
+name: ${{openSystem.content.weapon.longSpear}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 flags:
@@ -353,10 +353,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.x9Cj4g9vfO64Uxia
       combatManeuvers:
-        - name: Thrust
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10+1

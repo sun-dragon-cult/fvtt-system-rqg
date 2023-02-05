@@ -1,4 +1,4 @@
-name: War Hammer
+name: ${{openSystem.content.weapon.warHammer}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-warhammer.svg
 flags:
@@ -13,13 +13,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.arewOJ1QiSrq4BX2
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6+2
@@ -30,13 +30,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.Pj1Yegt5SVTcWWww
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6+2
@@ -82,7 +82,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Great Hammer
+name: ${{openSystem.content.weapon.greatHammer}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-hammer.svg
 flags:
@@ -113,10 +113,10 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.8an9DP6Kts02NkFu
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 2d6+2
@@ -154,7 +154,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Maul
+name: ${{openSystem.content.weapon.maul}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-hammer.svg
 flags:
@@ -185,13 +185,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.aR2CR7aiPmNAoBYN
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 2d8
@@ -229,7 +229,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Heavy Mace
+name: ${{openSystem.content.weapon.heavyMace}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-mace.svg
 flags:
@@ -244,13 +244,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.YuCJ36yojE4Qs25C
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d8+2
@@ -261,13 +261,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.QXhkkRzyGFB7kZ7c
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d8+2
@@ -313,7 +313,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Light Mace
+name: ${{openSystem.content.weapon.lightMace}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-mace.svg
 flags:
@@ -328,13 +328,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.9H741jTUGwGD77ai
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6+2
@@ -345,13 +345,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.3CyELNX1lpG6h8UG
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6+2
@@ -397,7 +397,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Singlestick
+name: ${{openSystem.content.weapon.singlestick}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-mace.svg
 flags:
@@ -412,13 +412,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.77uhCIMhxvbbnx2h
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -429,13 +429,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.5cYD08n9APE69XPz
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -481,7 +481,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Wooden Club
+name: ${{openSystem.content.weapon.woodenClub}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-mace.svg
 flags:
@@ -496,13 +496,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.irLs49KOoB7L09BV
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -513,13 +513,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.1XdL64sXhBB8xsu9
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d6
@@ -565,7 +565,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Mace, Two-Handed
+name: ${{openSystem.content.weapon.twoHandedMace}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-mace.svg
 flags:
@@ -596,13 +596,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.cY0ZAU37y7ElrIWc
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d8+2
@@ -640,7 +640,7 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: Quarterstaff
+name: ${{openSystem.content.weapon.quarterstaff}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/quarterstaff.svg
 flags:
@@ -671,13 +671,13 @@ data:
       skillId:
       skillOrigin: Compendium.rqg.skills-weapons.A7268y2J3MxcMmzv
       combatManeuvers:
-        - name: Bash
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
           description:
-        - name: Parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
-        - name: Knockback
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
           description:
       damage: 1d8
