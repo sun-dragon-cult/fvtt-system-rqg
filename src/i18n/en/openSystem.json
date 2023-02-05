@@ -2867,6 +2867,16 @@
       "forest": "Forest",
       "mostali": "Mostali",
       "uz": "Uz"
+    },
+    "bestiary": {
+      "bison": {
+        "name": "Bison",
+        "species": "Bison praxus"
+      },
+      "greenElf": {
+        "name": "Aldryami (Green Elf)",
+        "species": "Dendro sapien vronkalum"
+      }
     }
   }
 }

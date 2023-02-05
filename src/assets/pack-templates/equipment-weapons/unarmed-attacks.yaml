@@ -489,3 +489,159 @@ data:
   isProjectileWeapon: false
   isThrownWeapon: false
   isRangedWeapon: false
+---
+name: Head Butt
+type: weapon
+img: systems/rqg/assets/images/weapons/head-butt.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.head-butt
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      combatManeuvers:
+        - name: Head Butt
+          damageType: crush
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers:
+        - name: Head Butt
+          damageType: crush
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation: leg
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: true
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: Trample
+type: weapon
+img: systems/rqg/assets/images/weapons/trample.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.trample
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      combatManeuvers:
+        - name: Trample
+          damageType: crush
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers:
+        - name: Trample
+          damageType: crush
+          description:
+        - name: Knockback
+          damageType: special
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation: leg
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: true
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false

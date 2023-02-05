@@ -1,5 +1,5 @@
 ---
-name: Green Elf
+name: ${{openSystem.content.bestiary.greenElf.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,7 +27,7 @@ system:
       value: 11
       formula: 3d6
   background:
-    species: Aldryami (Green Elf)
+    species: ${{openSystem.content.bestiary.greenElf.species}}$
     occupation: ''
     homeland: sartar
     cultureJournalRqidLinks: []
@@ -83,7 +83,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: Green Elf
+  name: ${{openSystem.content.bestiary.greenElf.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -182,17 +182,9 @@ items:
 - "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.uz}}$), subject:	${{openSystem.content.passionSubject.uz}}$	]}}|"
 - "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ name: ${{openSystem.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{openSystem.content.passionSubject.forest}}$), subject: 	${{openSystem.content.passionSubject.forest}}$	]}}|"
 effects: []
-folder:
-sort: 0
-ownership:
-  default: 0
-  OGu9DZ439mXiuTD3: 3
-flags: {}
-_stats:
-  systemId: rqg
-  systemVersion: 2.0.1
-  coreVersion: '10.291'
-  createdTime: 1675007267643
-  modifiedTime: 1675030781012
-  lastModifiedBy: OGu9DZ439mXiuTD3
-_id: XSEswGYxqBWDeBnH
+flags:
+  rqg:
+    documentRqidFlags:
+      id: a.character.aldryami-green-elf
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
