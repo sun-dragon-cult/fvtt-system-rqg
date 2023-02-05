@@ -285,6 +285,13 @@
       "type": "Item"
     },
     {
+      "name": "passions-base-en",
+      "label": "Passions, Base | en",
+      "system": "rqg",
+      "path": "assets/packs/passions-base-en.db",
+      "type": "Item"
+    },
+    {
       "name": "pc-runes-en",
       "label": "Runes (Player Character) | en",
       "system": "rqg",

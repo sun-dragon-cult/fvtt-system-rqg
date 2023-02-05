@@ -2861,6 +2861,12 @@
         "leftWing": "Left Wing",
         "head": "Head"
       }
+    },
+    "passionSubject": {
+      "family": "Family",
+      "forest": "Forest",
+      "mostali": "Mostali",
+      "uz": "Uz"
     }
   }
 }

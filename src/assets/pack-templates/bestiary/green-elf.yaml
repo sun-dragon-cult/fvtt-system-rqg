@@ -46,6 +46,11 @@ system:
     ransomDetails: ''
     biography: ''
   allies: |-
+    <h1>Finishing Details</h1>  
+    <ul>
+      <li>Choose Earth or Fire/Sky Rune (Earth is default)</li>
+      <li>Add one or more cults, see below</li>
+    </ul>
     <h1>Aldryami (Elves)</h1>
     <p>The race known as the Aldryami consists of elves, dryads, pixies, and runners. They belong to the vegetable kingdom. Essentially mobile plants, Aldryami are significantly different from other humanoids and beasts.</p>
     <p>Aldryami commonly associate in forest communities. Since all claim descent from (and actively engage in worship of ) the goddess Aldrya, the members of these mixed forest communities are collectively named after her&mdash;Aldryami.</p>
@@ -173,6 +178,9 @@ items:
 - "|{{	equipment-weapons/shield.yaml	i.weapon.small-wooden-shield	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/spears.yaml	i.weapon.long-spear	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/swords-daggers.yaml	i.weapon.shortsword	[ equippedStatus: 	equipped	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.mostali}}$), subject:	${{openSystem.content.passionSubject.mostali}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.uz}}$), subject:	${{openSystem.content.passionSubject.uz}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ name: ${{openSystem.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{openSystem.content.passionSubject.forest}}$), subject: 	${{openSystem.content.passionSubject.forest}}$	]}}|"
 effects: []
 folder:
 sort: 0
