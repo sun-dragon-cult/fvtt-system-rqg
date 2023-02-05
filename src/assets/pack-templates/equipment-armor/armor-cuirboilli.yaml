@@ -23,7 +23,7 @@ data:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description: ${{openSystem.content.equipment.armor.descriptionMaterial.cuirboilli}}$ ${{openSystem.content.equipment.armor.descriptionType.vambraces}}$
+  description: ${{openSystem.content.equipment.armor.description.cuirboilli}}$ ${{openSystem.content.equipment.armor.description.vambraces}}$
 ---
 name: ${{openSystem.content.equipment.armor.greaves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Cuirboilli}}$)
 type: armor

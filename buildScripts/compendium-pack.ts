@@ -194,14 +194,14 @@ export function isObject(value: unknown): boolean {
 }
 
 function includePackYaml(yamlString: string): string {
-  const tokenRegex = /\"\|{{\s*([\w+.\/-]+)\s+([\w.-]+)\s+\[([^\[]*)\]\s+}}\|\"/gm;
+  const tokenRegex = /\"\|{{\s*([\w+.\/-]+)\s+([\w.-]+)\s+\[\s+([^\[]*)?\]\s*}}\|\"/gm;
 
   const match = yamlString.match(tokenRegex);
 
   const yaml = yamlString.replace(tokenRegex, function (match: string, ...args) {
     const packName = args[0];
     const rqid = args[1];
-    const overrides = args[2].split(",").map((item: string) => item.trim());
+    const overrides = args[2]?.split(",").map((item: string) => item.trim());
 
     const packTemplate = path.resolve(packTemplateDir + "/" + packName);
 
@@ -215,14 +215,17 @@ function includePackYaml(yamlString: string): string {
         // Add two spaces to every line to indent it properly
         let cleanEntry = entry.replace(/\r/, "").replace(/[\n]/gm, "\n  ");
 
-        for (const override of overrides) {
-          const split = override.split(":").map((item: string) => item.trim());
-          const overrideRegex = new RegExp(`(${escapeRegex(split[0])}:\\s*)(.)`, "m");
-          cleanEntry = cleanEntry.replace(overrideRegex, function (match: string, ...args) {
-            const overridden = args[0] + split[1];
-            return overridden;
-          });
+        if (overrides) {
+          for (const override of overrides) {
+            const split = override.split(":").map((item: string) => item.trim());
+            const overrideRegex = new RegExp(`(${escapeRegex(split[0])}:\\s*)(.+)`, "m");
+            cleanEntry = cleanEntry.replace(overrideRegex, function (match: string, ...args) {
+              const overridden = args[0] + split[1];
+              return overridden;
+            });
+          }
         }
+
         return cleanEntry;
       }
     }

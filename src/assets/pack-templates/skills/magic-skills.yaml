@@ -60,8 +60,8 @@ flags:
       id: i.skill.sense-assassin
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-# sense-chaos
 ---
+# sense-chaos
 name: ${{openSystem.content.skill.senseChaos.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sense-chaos.svg
