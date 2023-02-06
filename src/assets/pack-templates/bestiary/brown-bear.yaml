@@ -45,12 +45,7 @@ system:
     ransom:
     ransomDetails: ''
     biography: ''
-  allies: |-
-    <p>The bison is a surly and intractable beast, save in the presence of its rider. Its thick skin gives it some protection and its basic attack is the charge. They also butt and trample.</p>
-    <p>Occasionally (5% chance), there will be a white bison in a herd. White bison hides are extremely valuable (300&ndash;2,000 L, depending on condition). However, white bison are sacred to the White Bull Society, an inter-tribal Praxian society.</p>
-    <p>Bison riders are one of the Five Great Tribes of Prax.</p>
-    <p><strong>Armor</strong>:&nbsp;3-point hide.</p>
-    <p>A bison cannot head butt and trample in the same melee round.</p>
+  allies: ${{openSystem.content.bestiary.brownBear.notes}}$
   attributes:
     magicPoints:
       value: 13

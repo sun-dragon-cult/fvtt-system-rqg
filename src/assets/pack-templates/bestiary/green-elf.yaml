@@ -45,26 +45,7 @@ system:
     ransom:
     ransomDetails: ''
     biography: ''
-  allies: |-
-    <h1>Finishing Details</h1>  
-    <ul>
-      <li>Choose Earth or Fire/Sky Rune (Earth is default)</li>
-      <li>Add one or more cults, see below</li>
-    </ul>
-    <h1>Aldryami (Elves)</h1>
-    <p>The race known as the Aldryami consists of elves, dryads, pixies, and runners. They belong to the vegetable kingdom. Essentially mobile plants, Aldryami are significantly different from other humanoids and beasts.</p>
-    <p>Aldryami commonly associate in forest communities. Since all claim descent from (and actively engage in worship of ) the goddess Aldrya, the members of these mixed forest communities are collectively named after her&mdash;Aldryami.</p>
-    <p>Elves come in various races, identified as colors by humans, dependent upon the type of forest in which they are found. The green elves are native to coniferous trees, the brown to deciduous temperate forests, the yellow to tropical jungle, and the red to ferns and other primitive plants.</p>
-    <p>The primary Rune of the Aldryami is the Plant Form Rune.</p>
-    <h1>Green Elves</h1>
-    <p>The green elves, or vronkali, were the most important elf type in the Great Darkness but have lost ground since then. Green elves are of male or female gender, and do not breed with dryads. They do not sleep in winter but experience a daily period of rest. Green elves are associated with coniferous forests. They inhabit cool temperate lands. In snow, they can ski cross-country with carved magic wooden shoes. In warmer lands, they often share their forests with brown elves.</p>
-    <p>A green elf typically weighs about 65 kilograms and stands a little over 170 centimeters tall.</p>
-    <p><strong>Special Notes</strong>: Like the trolls, their eternal enemies, green elves are vulnerable to the &ldquo;new metal&rdquo; iron and cannot handle it. Any damage from an iron weapon penetrating their armor will do twice the normal damage.</p>
-    <p><strong>Armor:</strong>&nbsp;Green elves have no natural armor but often wear 2-point armor made of treated bark or other plant materials. They often wear cloaks made of leaves that add +20% to their Hide skill in an appropriate forest. They generally prefer to Dodge rather than parry.</p>
-    <p><strong>Skills:</strong>&nbsp;Climb 85%, Conceal 45%, Dodge 65%, Elfsense 55%, Elf Lore 50%, First Aid 50%, Hide 50%, Listen 50%, Move Quietly 50%, Plant Lore 75%, Sing 55%, Ski 60%, Spirit Combat 55%, Track 55%, Worship (elf deity) 50%.</p>
-    <p><strong>Languages:</strong>&nbsp;Speak Aldryami 50%, Speak Tradetalk 15%. Passions: Hate (Mostali) 60%, Hate (Uz) 60%, Loyalty (Forest) 60%.</p>
-    <p><strong>Runes:</strong>&nbsp;Earth or Fire/Sky 60%, Plant 75%. Special Rune Magic: Arrow Trance.</p>
-    <p><strong>Magic:</strong>&nbsp;All elves worship Aldrya. Other common gods include Babeester Gor, Chalana Arroy, Ernalda, Flamal, and Yelmalio. Common spirit magic is Heal and Speedart.</p>
+  allies: ${{openSystem.content.bestiary.greenElf.notes}}$
   attributes:
     magicPoints:
       value: 13
@@ -154,7 +135,7 @@ items:
 - "|{{	spirit-magic-spells/heal.yaml	i.spirit-magic.heal	[		]}}|"
 - "|{{	spirit-magic-spells/speedart.yaml	i.spirit-magic.speedart	[		]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.climb	[ gainedChance:	45	]}}|"
-- "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	37	]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	44	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.ski	[ gainedChance:	60	]}}|"
 - "|{{	skills/communication-skills.yaml	i.skill.sing	[ gainedChance:	45	]}}|"
 - "|{{	skills/communication-skills.yaml	i.skill.speak-language	[ gainedChance:	50	]}}|"

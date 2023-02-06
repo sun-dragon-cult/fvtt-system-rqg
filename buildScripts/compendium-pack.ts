@@ -210,8 +210,8 @@ function includePackYaml(yamlString: string): string {
     const packEntries = packTemplateYamlString.split("---");
 
     for (const entry of packEntries) {
-      const rqidRegex = new RegExp(`\s+id:\s*${escapeRegex(rqid)}`);
-      if (entry.includes(rqid)) {
+      const rqidRegex = new RegExp(`^\\s*id:\\s+${escapeRegex(rqid)}$`, "m");
+      if (entry.match(rqidRegex)) {
         // Add two spaces to every line to indent it properly
         let cleanEntry = entry.replace(/\r/, "").replace(/[\n]/gm, "\n  ");
 
