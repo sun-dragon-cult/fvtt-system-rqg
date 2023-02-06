@@ -2973,6 +2973,11 @@
         "name": "Tusker",
         "species": "Sus paracaballus",
         "notes": "<p>Tuskers are gigantic boars as big as buffalo, ridden only by tusk riders. These beasts are fierce and ill-tempered but love their masters beyond all comprehension.</p><p><strong>Armor:</strong> 4-point hide.</p><p><strong>Skills</strong>: Track by Scent 50%.</p><p><strong>Note</strong>: A tusker cannot gore and trample the same opponent in the same melee round.</p>"
+      },
+      "wolf": {
+        "name": "Wolf",
+        "species": "Canis lupus",
+        "notes": "<p>Wolves hunt in packs ranging from under a dozen individuals to up to 40 or more. If too many wolves are wounded or killed in a fight, the pack will slink off, unless starving. Wolves fight cooperatively. Several wolves may attack the same target, ensuring that most of them will not be parried or dodged. Or one or two large wolves may attempt to knock the target down—when it falls over, other wolves rush to attack.</p><p><strong>Armor</strong>: 2-point fur.</p><p><strong>Skills</strong>: Dodge 30%, Search 60%, Track 80%.</p>"
       }
     }
   }
