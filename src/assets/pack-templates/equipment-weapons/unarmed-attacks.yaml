@@ -639,3 +639,291 @@ data:
   isProjectileWeapon: false
   isThrownWeapon: false
   isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.bite}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/bite.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.bite
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bite}}$
+          damageType: crush
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bite}}$
+          damageType: crush
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation: leg
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: true
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.rearAndPlunge}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/trample.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.rear-and-plunge
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Trample}}$
+          damageType: crush
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Trample}}$
+          damageType: crush
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation: leg
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: true
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.claw}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/claw.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.claw
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
+          damageType: cut
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
+          damageType: crush
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation: leg
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: true
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.hug}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/grab.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.hug
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.hug}}$
+          damageType: crush
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.hug}}$
+          damageType: crush
+          description:
+      damage: 1d6
+      minStrength: null
+      minDexterity: null
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation: leg
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: true
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false

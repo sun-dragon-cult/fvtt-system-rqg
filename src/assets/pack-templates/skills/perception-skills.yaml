@@ -124,6 +124,27 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
+#scent-intruder
+name: ${{openSystem.content.skill.scentIntruder.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/track-by-scent.svg
+data:
+  category: perception
+  skillName: ${{openSystem.content.skill.scentIntruder.skillName}}$
+  specialization: 
+  baseChance: 5
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..scent-intruder
+    name: ${{openSystem.content.skill.scentIntruder.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.scent-intruder
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
 #Elfsense
 name: ${{openSystem.content.skill.elfsense.skillName}}$
 type: skill

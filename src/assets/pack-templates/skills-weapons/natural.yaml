@@ -250,3 +250,26 @@ flags:
       id: i.skill.trample
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
+---
+# claw
+name: ${{openSystem.content.weaponSkill.claw.name}}$
+type: skill
+img: systems/rqg/assets/images/weapons/claw.svg
+data:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.claw.name}}$
+  specialization:
+  baseChance: 25
+  gainedChance: 0
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.claw
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
