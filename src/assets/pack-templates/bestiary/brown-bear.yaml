@@ -130,9 +130,9 @@ items:
 - "|{{	skills-weapons/natural.yaml	i.skill.bite	[ gainedChance:	25	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.claw	[ gainedChance:	25	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.hug	[ gainedChance:	10	]}}|"
-- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.hug	[ equippedStatus: 	equipped	]}}|"
-- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.claw	[ equippedStatus: 	equipped	]}}|"
-- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.bite	[ equippedStatus: 	equipped	]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.hug	[ equippedStatus: 	equipped, damage: 5d6	]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.claw	[ equippedStatus: 	equipped, damage: 1d6	]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.bite	[ equippedStatus: 	equipped, damage: 1d8	]}}|"
 effects: []
 folder:
 sort: 0
