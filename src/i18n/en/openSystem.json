@@ -966,6 +966,7 @@
           "Thrust": "Thrust",
           "Cut": "Cut",
           "Claw": "Claw",
+          "Gore": "Gore",
           "Bash": "Bash",
           "Parry": "Parry",
           "Grapple": "Grapple",
@@ -2651,6 +2652,7 @@
       "trample": "Trample",
       "bite": "Bite",
       "claw": "Claw",
+      "gore": "Gore",
       "rip": "Rip",
       "hug": "Hug",
       "rearAndPlunge": "Rear and Plunge"
@@ -2966,6 +2968,11 @@
         "name": "Shadowcat",
         "species": "Lynx umbrosus",
         "notes": "<p>Shadowcats are dark-colored felines which range from the size of a housecat to that of a lynx. They are very quick and quiet, and are also known as shimmer cats because they are extremely hard to hit.</p><p>Shadowcats are social animals that hunt in groups that encircle their prey from different directions. They are domesticated by the Orlanthi to herd livestock and to hunt. They rarely attack humans or other large predators. However, when cornered or threatened, they will attack fiercely, jumping onto a foe and holding with the forefeet while biting and ripping with both hind legs at once.</p><p>In Dragon Pass, shadowcats are also called alynxes. All are sacred to Orlanth.</p><strong>Armor</strong>: None.<p><strong>Skills</strong>: Dodge 50%, Hide 75%, Move Quietly 90%.</p><p><strong>Note</strong>: A shadowcat first attacks with both claws and its bite simultaneously. If both claws hit, the shadowcat hangs on and rips with its hind claws on the next round, while continuing to bite.</p>"
+      },
+      "tusker": {
+        "name": "Tusker",
+        "species": "Sus paracaballus",
+        "notes": "<p>Tuskers are gigantic boars as big as buffalo, ridden only by tusk riders. These beasts are fierce and ill-tempered but love their masters beyond all comprehension.</p><p><strong>Armor:</strong> 4-point hide.</p><p><strong>Skills</strong>: Track by Scent 50%.</p><p><strong>Note</strong>: A tusker cannot gore and trample the same opponent in the same melee round.</p>"
       }
     }
   }

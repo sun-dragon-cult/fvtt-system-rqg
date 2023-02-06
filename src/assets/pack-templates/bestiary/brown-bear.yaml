@@ -48,9 +48,9 @@ system:
   allies: ${{openSystem.content.bestiary.brownBear.notes}}$
   attributes:
     magicPoints:
-      value: 13
-    hitPoints:
       value: 11
+    hitPoints:
+      value: 17
     move:
       currentLocomotion: walk
       walk:

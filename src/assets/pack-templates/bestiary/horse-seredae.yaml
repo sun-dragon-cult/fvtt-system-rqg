@@ -48,13 +48,13 @@ system:
   allies: ${{openSystem.content.bestiary.horseSeredae.notes}}$
   attributes:
     magicPoints:
-      value: 13
-    hitPoints:
       value: 11
+    hitPoints:
+      value: 17
     move:
       currentLocomotion: walk
       walk:
-        value: 8
+        value: 12
         carryingFactor: 1
       swim:
         value: 2
