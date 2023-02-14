@@ -36,7 +36,11 @@ export class PassionSheet extends RqgItemSheet<
       width: 450,
       height: 500,
       tabs: [
-        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "passion" },
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "passion",
+        },
       ],
     });
   }

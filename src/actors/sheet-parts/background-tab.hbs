@@ -63,10 +63,10 @@
 
       {{#if actorWizardFeatureFlag}}
         <label></label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
             rqidLink=system.background.speciesRqidLink
-            parentField="background.speciesRqidLink"
-            dropTypes="JournalEntry"
+            dropzoneData="background.speciesRqidLink"
+            dropDocumentName="JournalEntry"
             showDeleteFromPropertyName="background.speciesRqidLink"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
@@ -209,10 +209,10 @@
 
       {{#if actorWizardFeatureFlag}}
         <label></label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
             rqidLink=system.background.currentOccupationRqidLink
-            parentField="background.currentOccupationRqidLink"
-            dropTypes="Item"
+            dropzoneData="background.currentOccupationRqidLink"
+            dropDocumentName="Item"
             showDeleteFromPropertyName="background.currentOccupationRqidLink"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceOccupation"
@@ -273,50 +273,50 @@
       <div class="key-value-grid">
 
         <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
           rqidLink=system.background.homelandJournalRqidLink
-          parentField="background.homelandJournalRqidLink"
-          dropTypes="JournalEntry"
+          dropzoneData="background.homelandJournalRqidLink"
+          dropDocumentName="JournalEntry"
           showDeleteFromPropertyName="background.homelandJournalRqidLink"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         }}
 
         <label>{{localize "RQG.Actor.Background.Region"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+        {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
           rqidLink=system.background.regionJournalRqidLink
-          parentField="background.regionJournalRqidLink"
-          dropTypes="JournalEntry"
+          dropzoneData="background.regionJournalRqidLink"
+          dropDocumentName="JournalEntry"
           showDeleteFromPropertyName="background.regionJournalRqidLink"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         }}
 
         <label>{{localize "RQG.Actor.Background.Cultures"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
           rqidLinkArray=system.background.cultureJournalRqidLinks
-          parentField="background.cultureJournalRqidLinks"
-          dropTypes="JournalEntry"
+          dropzoneData="background.cultureJournalRqidLinks"
+          dropDocumentName="JournalEntry"
           showDeleteFromPropertyName="background.cultureJournalRqidLinks"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         }}
 
         <label>{{localize "RQG.Actor.Background.Tribes"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
           rqidLinkArray=system.background.tribeJournalRqidLinks
-          parentField="background.tribeJournalRqidLinks"
-          dropTypes="JournalEntry"
+          dropzoneData="background.tribeJournalRqidLinks"
+          dropDocumentName="JournalEntry"
           showDeleteFromPropertyName="background.tribeJournalRqidLinks"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         }}
 
         <label>{{localize "RQG.Actor.Background.Clans"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
           rqidLinkArray=system.background.clanJournalRqidLinks
-          parentField="background.clanJournalRqidLinks"
-          dropTypes="JournalEntry"
+          dropzoneData="background.clanJournalRqidLinks"
+          dropDocumentName="JournalEntry"
           showDeleteFromPropertyName="background.clanJournalRqidLinks"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"

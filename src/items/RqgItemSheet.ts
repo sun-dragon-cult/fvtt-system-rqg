@@ -9,17 +9,38 @@ import {
 } from "../system/util";
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
+import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+import { RqgItem } from "./rqgItem";
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
   Data extends object = ItemSheet.Data<Options>
 > extends ItemSheet<Options, Data> {
+  static get defaultOptions(): ItemSheet.Options {
+    return mergeObject(super.defaultOptions, {
+      width: 960,
+      height: 800,
+      dragDrop: [
+        {
+          dragSelector: ".item",
+          dropSelector: "[data-dropzone]",
+        },
+      ],
+    });
+  }
+
   get title(): string {
     return `${localizeItemType(this.object.type)}: ${this.object.name}`;
   }
 
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
+
+    // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
+    html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+      elem.addEventListener("dragenter", this._onDragEnter);
+      elem.addEventListener("dragleave", this._onDragLeave);
+    });
 
     // Edit Item Active Effect
     $(this.form!)
@@ -97,20 +118,22 @@ export class RqgItemSheet<
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid
             );
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
+            // @ts-expect-error isEmbedded
+            if (this.isEmbedded) {
+              await this.actor?.updateEmbeddedDocuments("Item", [
                 { _id: this.item.id, system: { [deleteFromPropertyName]: newValueArray } },
               ]);
             } else {
               await this.item.update({ system: { [deleteFromPropertyName]: newValueArray } });
             }
           } else {
-            if (this.item.isEmbedded) {
+            // @ts-expect-error isEmbedded
+            if (this.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [deleteFromPropertyName]: undefined } },
+                { _id: this.item.id, system: { [deleteFromPropertyName]: "" } },
               ]);
             } else {
-              await this.item.update({ system: { [deleteFromPropertyName]: undefined } });
+              await this.item.update({ system: { [deleteFromPropertyName]: "" } });
             }
           }
         });
@@ -151,99 +174,195 @@ export class RqgItemSheet<
       });
   }
 
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+  _onDragEnter(event: DragEvent): void {
+    const dropZone = event.currentTarget as Element | null; // Target the event handler was attached to
+    const relatedTarget = event.relatedTarget as Element | null; // EventTarget the pointer exited from
+    if (dropZone && (dropZone === relatedTarget || relatedTarget?.contains(dropZone))) {
+      event.preventDefault(); // Allow the drag to be dropped
+      dropZone.classList.add("drag-hover");
+    }
+  }
 
-    let droppedDocumentData;
-    try {
-      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-    } catch (err) {
-      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
+  _onDragLeave(event: DragEvent): void {
+    const dropZone = event.currentTarget as Element | null; // Target the event handler was attached to
+    const relatedTarget = event.relatedTarget as Element | null; // EventTarget the pointer exited from
+    // Workaround for Chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=68629
+    const sameShadowDom = dropZone?.getRootNode() === relatedTarget?.getRootNode();
+    if (sameShadowDom && !dropZone?.contains(relatedTarget)) {
+      // event.preventDefault(); // Allow the drag to be dropped
+      dropZone && dropZone.classList.remove("drag-hover");
+    }
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<void> {
+    const dropZone = event.currentTarget as Element | null;
+    if (dropZone) {
+      event.preventDefault(); // Allow the drag to be dropped
+      dropZone.classList.remove("drag-hover");
+    }
+
+    // @ts-expect-error getDragEventData
+    const droppedDocumentData = TextEditor.getDragEventData(event);
+    const allowedDropDocumentTypes =
+      getDomDataset(event, "dropzone-document-types")
+        ?.split(",")
+        .filter((t) => t !== "") ?? [];
+    const allowedDropDocumentName = getDomDataset(event, "dropzone-document-name");
+    const dropzoneData = getDomDataset(event, "dropzone");
+
+    if (!this.isCorrectDocumentName(droppedDocumentData.type, allowedDropDocumentName)) {
       return;
     }
 
-    const targetPropertyName = getDomDataset(event, "target-drop-property");
+    switch (
+      droppedDocumentData.type // type is actually documentName
+    ) {
+      case "Item": {
+        // @ts-expect-error implementation
+        const droppedDocument = await Item.implementation.fromDropData(droppedDocumentData);
 
-    const dropTypes = getDomDataset(event, "expected-drop-types")?.split(",");
-
-    let droppedDocument: Item | JournalEntry | undefined = undefined;
-
-    if (droppedDocumentData.type === "Item") {
-      droppedDocument = await Item.fromDropData(droppedDocumentData);
-    }
-
-    if (droppedDocumentData.type === "JournalEntry") {
-      droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
-    }
-
-    if (dropTypes && dropTypes.length > 0) {
-      if (
-        !(
-          dropTypes.includes(droppedDocumentData.type) ||
-          dropTypes.includes((droppedDocument as Item).type)
-        )
-      ) {
-        const msg = localize("RQG.Item.Notification.DroppedItemWrongType", {
-          allowedDropTypes: dropTypes.join(", "),
-          type: droppedDocumentData.type,
-        });
-        ui.notifications?.warn(msg);
-        console.warn(msg, event);
+        // TODO inserted rqid check ??? always demand rqid ???
+        if (
+          this.isCorrectDocumentType(droppedDocument, allowedDropDocumentTypes) &&
+          this.hasRqid(droppedDocument)
+        ) {
+          await this._onDropItem(droppedDocument as RqgItem, dropzoneData);
+        }
         return;
       }
-    }
+      case "JournalEntry": {
+        // @ts-expect-error implementation
+        const droppedDocument = await JournalEntry.implementation.fromDropData(droppedDocumentData);
 
-    const droppedItemRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id;
+        if (
+          this.isCorrectDocumentType(droppedDocument, allowedDropDocumentTypes) &&
+          this.hasRqid(droppedDocument)
+        ) {
+          await this._onDropJournalEntry(droppedDocument as JournalEntry, dropzoneData);
+        }
+        return;
+      }
+
+      default:
+        // This will warn about not supported Document Name
+        this.isCorrectDocumentName(droppedDocumentData.type, "Item, JournalEntry");
+    }
+  }
+
+  private isCorrectDocumentName(
+    documentName: string | undefined,
+    allowedDocumentName: string | undefined
+  ): boolean {
+    if (allowedDocumentName && allowedDocumentName !== documentName) {
+      const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
+        // TODO check content
+        allowedDocumentName: allowedDocumentName, // TODO translation of document names how to do it?
+        documentName: documentName,
+      });
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
+      console.warn(`RQG | ${msg}`);
+      return false;
+    }
+    return true;
+  }
+
+  private isCorrectDocumentType(
+    document: Document<any, any>,
+    allowedDocumentTypes: string[] | undefined
+  ): boolean {
+    if (allowedDocumentTypes?.length && !allowedDocumentTypes.includes((document as any)?.type)) {
+      const msg = localize("RQG.Item.Notification.DroppedWrongDocumentType", {
+        allowedDropTypes: allowedDocumentTypes.join(", "),
+        type: (document as any)?.type,
+      });
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
+      console.warn(`RQG | ${msg}`);
+      return false;
+    }
+    return true;
+  }
+
+  private hasRqid(document: Document<any, any> | undefined): boolean {
+    const droppedItemRqid = document?.getFlag(systemId, documentRqidFlags)?.id;
 
     if (!droppedItemRqid) {
       const msg = localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
-        type: droppedDocumentData.type,
-        name: droppedDocument?.name,
-        uuid: droppedDocumentData.uuid,
+        type: (document as any).type,
+        name: document?.name,
+        uuid: (document as any).uuid,
       });
-      ui.notifications?.warn(msg);
-      console.warn(msg, event);
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
+      console.warn(`RQG | ${msg}`);
+      return false;
+    }
+    return true;
+  }
+
+  async _onDropItem(droppedItem: RqgItem, targetPropertyName: string | undefined): Promise<void> {
+    await this.addRqidLink(droppedItem, targetPropertyName);
+  }
+
+  async _onDropJournalEntry(
+    droppedJournal: JournalEntry,
+    targetPropertyName: string | undefined
+  ): Promise<void> {
+    await this.addRqidLink(droppedJournal, targetPropertyName);
+  }
+
+  /**
+   * Update the targetPropertyName of this item with a RqidLink to the droppedDocument.
+   * */
+  private async addRqidLink(
+    droppedDocument: Document<any, any>,
+    targetPropertyName: string | undefined
+  ): Promise<void> {
+    const droppedItemRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id;
+    const targetProperty = getProperty(this.item.system, targetPropertyName ?? "");
+
+    // Should really check if this.item has a property like targetPropertyName,
+    // but !hasOwnProperty(this.item.system, targetPropertyName) won't work if the default value is undefined.
+    if (!targetPropertyName) {
+      console.error(
+        `RQG | Programming error – empty targetPropertyName (data-dropzone)`,
+        targetPropertyName,
+        this.item
+      );
       return;
     }
 
-    if (droppedDocument && targetPropertyName) {
-      const newLink = new RqidLink(droppedItemRqid, droppedDocument.name ?? "");
-      const targetProperty = getProperty(this.item.system, targetPropertyName);
+    const newLink = new RqidLink(droppedItemRqid, droppedDocument.name ?? "");
 
-      if (targetProperty) {
-        (event as RqidLinkDragEvent).TargetPropertyName = targetPropertyName;
-        if (Array.isArray(targetProperty)) {
-          const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
-          if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
-            targetPropertyRqidLinkArray.push(newLink);
-            targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
-            if (this.item.isEmbedded) {
-              (event as RqidLinkDragEvent).RqidLinkDropResult =
-                await this.item.actor?.updateEmbeddedDocuments("Item", [
-                  {
-                    _id: this.item.id,
-                    system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-                  },
-                ]);
-            } else {
-              (event as RqidLinkDragEvent).RqidLinkDropResult = await this.item.update({
-                system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-              });
-            }
-          }
+    if (Array.isArray(targetProperty)) {
+      const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
+      if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
+        targetPropertyRqidLinkArray.push(newLink);
+        targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
+        if (this.item.isEmbedded) {
+          await this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
+              system: { [targetPropertyName]: targetPropertyRqidLinkArray },
+            },
+          ]);
         } else {
-          // Property is a single RqidLink, not an array
-          if (this.item.isEmbedded) {
-            (event as RqidLinkDragEvent).RqidLinkDropResult =
-              await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [targetPropertyName]: newLink } },
-              ]);
-          } else {
-            (event as RqidLinkDragEvent).RqidLinkDropResult = await this.item.update({
-              system: { [targetPropertyName]: newLink },
-            });
-          }
+          await this.item.update({
+            system: { [targetPropertyName]: targetPropertyRqidLinkArray },
+          });
         }
+      }
+    } else {
+      // Property is a single RqidLink, not an array
+      if (this.item.isEmbedded) {
+        await this.actor?.updateEmbeddedDocuments("Item", [
+          { _id: this.item.id, system: { [targetPropertyName]: newLink } },
+        ]);
+      } else {
+        await this.item.update({
+          system: { [targetPropertyName]: newLink },
+        });
       }
     }
   }

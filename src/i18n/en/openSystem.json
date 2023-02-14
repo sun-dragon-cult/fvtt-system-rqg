@@ -759,8 +759,9 @@
         "PleaseDropOnTarget": "You can't drop that here.  Look for an appropriate target.",
         "ErrorParsingItemData": "Error parsing Item Data",
         "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
-        "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
-        "DroppedItemWrongType": "This field expects an item of type(s) {allowedDropTypes} and the dropped item was {type}",
+        "MustHaveRqidToDrop": "The document you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
+        "DroppedWrongDocumentType": "This field expects a document of type(s) {allowedDropTypes} and the dropped document was {type}",
+        "DroppedWrongDocumentName": "This field expects a {allowedDocumentName} and the dropped document was {documentName}",
         "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with uuid {uuid} does not have an RQID and cannot be dropped onto this sheet.",
         "ItemNotUnique": "{actorName} already has a {documentType} '{documentName}' and duplicates are not allowed"
       },

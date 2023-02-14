@@ -141,8 +141,9 @@ body {
     display: none;
   }
 
+
   .drag-hover {
-    outline: forestgreen dashed 5px;
+    box-shadow: inset 0px 0px 20px 7px #ff6400; // TODO set a nice color
   }
 
   .gap1rem {

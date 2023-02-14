@@ -69,13 +69,4 @@ export class RuneMagicSheet extends RqgItemSheet<
     formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
-
-  public activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-    this.form?.addEventListener("drop", this._onDrop.bind(this));
-  }
-
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    return super._onDrop(event);
-  }
 }

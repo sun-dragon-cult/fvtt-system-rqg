@@ -56,11 +56,4 @@ export class HomelandSheet extends RqgItemSheet<
     }
     return super._updateObject(event, formData);
   }
-
-  public activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-    const form = this.form as HTMLFormElement;
-
-    form.addEventListener("drop", this._onDrop.bind(this));
-  }
 }
