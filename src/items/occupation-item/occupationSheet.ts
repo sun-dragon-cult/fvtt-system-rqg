@@ -4,13 +4,14 @@ import {
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getDomDataset, getGameUser, localize } from "../../system/util";
+import { getDomDataset, getGameUser } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { DocumentSheetData } from "../shared/sheetInterfaces";
+import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 
 export interface OccupationSheetData {
   homelandsJoined: string;
@@ -191,7 +192,18 @@ export class OccupationSheet extends RqgItemSheet<
     }
   }
 
-  async _onDropItem(droppedItem: RqgItem, targetPropertyName: string | undefined): Promise<void> {
+  async _onDropItem(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
+    // @ts-expect-error fromDropData
+    const droppedItem = await Item.implementation.fromDropData(data);
+
+    if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {
+      return false;
+    }
+
     if (droppedItem.type === ItemTypeEnum.Homeland) {
       // For this one we're just saving the name of the homeland, without the region
       // to an array of strings.
@@ -212,7 +224,7 @@ export class OccupationSheet extends RqgItemSheet<
           });
         }
       }
-      return;
+      return [this.item];
     }
 
     if (droppedItem.type === ItemTypeEnum.Skill) {
@@ -251,9 +263,9 @@ export class OccupationSheet extends RqgItemSheet<
         console.log("Dropped skill did not have an Rqid");
       }
       // Return now so we don't handle his at the RqgItemSheet._onDrop
-      return;
+      return [this.item];
     }
 
-    await super._onDropItem(droppedItem, targetPropertyName);
+    return await super._onDropItem(event, data);
   }
 }

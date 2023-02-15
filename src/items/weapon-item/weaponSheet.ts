@@ -5,6 +5,7 @@ import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
   assertItemType,
+  getDomDataset,
   getGameUser,
   getRequiredDomDataset,
   localize,
@@ -14,6 +15,7 @@ import { damageType } from "../../data-model/item-data/weaponData";
 import { Weapon } from "./weapon";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 
 interface WeaponSheetData {
   defaultCombatManeuverNames: string[];
@@ -255,18 +257,25 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
    * Update the skillOriginId with the dropped skill.
    * This will change to use rqid instead.
    */
-  async _onDropItem(droppedItem: RqgItem, usage: string | undefined): Promise<void> {
+  async _onDropItem(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
+    // @ts-expect-error fromDropData
+    const droppedItem = await Item.implementation.fromDropData(data);
+    const usage = getDomDataset(event, "dropzone");
+
+    if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {
+      return false;
+    }
     if (
-      !(
-        droppedItem.documentName === "Item" &&
-        droppedItem.type === ItemTypeEnum.Skill &&
-        [
-          SkillCategoryEnum.MeleeWeapons,
-          SkillCategoryEnum.MissileWeapons,
-          SkillCategoryEnum.NaturalWeapons,
-          SkillCategoryEnum.Shields,
-        ].includes(droppedItem.system.category)
-      )
+      ![
+        SkillCategoryEnum.MeleeWeapons,
+        SkillCategoryEnum.MissileWeapons,
+        SkillCategoryEnum.NaturalWeapons,
+        SkillCategoryEnum.Shields,
+      ].includes(droppedItem.system.category)
     ) {
       // TODO translate
       const msg = localize(
@@ -275,7 +284,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn(`RQG | ${msg}`);
-      return;
+      return false;
     }
     const originSkillId = droppedItem.uuid || "";
     if (this.item.isOwned) {
@@ -291,5 +300,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         [`system.usage.${usage}.skillOrigin`]: originSkillId,
       });
     }
+    return [this.item];
   }
 }

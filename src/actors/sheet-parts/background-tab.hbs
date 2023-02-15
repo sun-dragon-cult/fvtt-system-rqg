@@ -209,10 +209,8 @@
 
       {{#if actorWizardFeatureFlag}}
         <label></label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+        {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
             rqidLink=system.background.currentOccupationRqidLink
-            dropzoneData="background.currentOccupationRqidLink"
-            dropDocumentName="Item"
             showDeleteFromPropertyName="background.currentOccupationRqidLink"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceOccupation"
