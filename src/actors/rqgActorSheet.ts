@@ -1249,6 +1249,9 @@ export class RqgActorSheet extends ActorSheet<
         return this._onDropJournalEntry(event, data);
       case "Folder":
         return this._onDropFolder(event, data);
+      default:
+        // This will warn about not supported Document Name
+        isAllowedDocumentName(data.type, "Active Effects, Actor, Item, JournalEntry, Folder");
     }
   }
 
