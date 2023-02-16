@@ -4,7 +4,7 @@ import {
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getDomDataset, getGameUser } from "../../system/util";
+import { assertHtmlElement, getDomDataset, getGameUser } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
@@ -172,15 +172,22 @@ export class OccupationSheet extends RqgItemSheet<
 
   private toggleSkillEdit(forceEdit = false) {
     const form = this.form as HTMLFormElement;
-    const displaySkills = form.querySelector(
-      "#occupational-skill-display-" + this.item.id
-    ) as HTMLElement;
-    const editSkills = form.querySelector(
-      "#occupational-skill-edit-" + this.item.id
-    ) as HTMLElement;
-    const btnEdit = form.querySelector(
-      "#btn-edit-occupational-skills-" + this.item.id
-    ) as HTMLElement;
+    const displaySkills = form.querySelector("#occupational-skill-display-" + this.item.id);
+    assertHtmlElement(displaySkills);
+    const editSkills = form.querySelector("#occupational-skill-edit-" + this.item.id);
+    assertHtmlElement(editSkills);
+    const btnEdit = form.querySelector("#btn-edit-occupational-skills-" + this.item.id);
+    assertHtmlElement(btnEdit);
+    if (!displaySkills || !editSkills || !btnEdit) {
+      console.error(
+        "RQG | Didn't find HtmlElements in toggleSkillEdit",
+        form,
+        displaySkills,
+        editSkills,
+        btnEdit
+      );
+      return;
+    }
     if (displaySkills?.style.display === "block" || forceEdit) {
       displaySkills.style.display = "none";
       editSkills.style.display = "block";

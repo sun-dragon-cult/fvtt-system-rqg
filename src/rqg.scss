@@ -143,7 +143,7 @@ body {
 
 
   .drag-hover {
-    box-shadow: inset 0px 0px 20px 7px #ff6400; // TODO set a nice color
+    box-shadow: inset 0px 0px 20px 7px var(--rqg-secondary-color);
   }
 
   .gap1rem {

@@ -1,25 +1,35 @@
-import { getDomDataset, localize } from "../system/util";
+import { assertHtmlElement, getDomDataset, localize } from "../system/util";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../system/config";
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../data-model/shared/rqidLink";
 
 export function onDragEnter(event: DragEvent): void {
-  const dropZone = event.currentTarget as Element | null; // Target the event handler was attached to
-  const relatedTarget = event.relatedTarget as Element | null; // EventTarget the pointer exited from
-  if (dropZone && (dropZone === relatedTarget || relatedTarget?.contains(dropZone))) {
+  const dropZone = event.currentTarget; // Target the event handler was attached to
+  const relatedTarget = event.relatedTarget; // EventTarget the pointer exited from
+  assertHtmlElement(dropZone);
+  assertHtmlElement(relatedTarget);
+
+  if (
+    dropZone &&
+    (dropZone === relatedTarget ||
+      relatedTarget?.contains(dropZone) ||
+      dropZone?.contains(relatedTarget))
+  ) {
     event.preventDefault(); // Allow the drag to be dropped
     dropZone.classList.add("drag-hover");
   }
 }
 
 export function onDragLeave(event: DragEvent): void {
-  const dropZone = event.currentTarget as Element | null; // Target the event handler was attached to
-  const relatedTarget = event.relatedTarget as Element | null; // EventTarget the pointer exited from
+  const dropZone = event.currentTarget; // Target the event handler was attached to
+  const relatedTarget = event.relatedTarget; // EventTarget the pointer exited from
+  assertHtmlElement(dropZone);
+  assertHtmlElement(relatedTarget);
+
   // Workaround for Chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=68629
   const sameShadowDom = dropZone?.getRootNode() === relatedTarget?.getRootNode();
   if (sameShadowDom && !dropZone?.contains(relatedTarget)) {
-    // event.preventDefault(); // Allow the drag to be dropped
     dropZone && dropZone.classList.remove("drag-hover");
   }
 }

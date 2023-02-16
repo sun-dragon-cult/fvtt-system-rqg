@@ -18,6 +18,7 @@ import { createItemLocationTree, LocationNode } from "../items/shared/locationNo
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
 import { RqgActor } from "./rqgActor";
 import {
+  assertHtmlElement,
   assertItemType,
   getDocumentTypes,
   getDomDataset,
@@ -757,8 +758,9 @@ export class RqgActorSheet extends ActorSheet<
 
     // Roll actor Characteristic
     htmlElement.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
-      const characteristicName = (el.closest("[data-characteristic]") as HTMLElement)?.dataset
-        .characteristic;
+      const closestDataCharacteristic = el.closest("[data-characteristic]");
+      assertHtmlElement(closestDataCharacteristic);
+      const characteristicName = closestDataCharacteristic?.dataset.characteristic;
 
       let clickCount = 0;
       const actorCharacteristics = this.actor.system.characteristics;
@@ -1209,11 +1211,8 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected async _onDrop(event: DragEvent): Promise<unknown> {
-    const dropZone = event.currentTarget as Element | null;
-    if (dropZone) {
-      event.preventDefault(); // Allow the drag to be dropped // TODO bara om det finns en dropzon? & behövs den alls?
-      dropZone.classList.remove("drag-hover");
-    }
+    event.preventDefault(); // Allow the drag to be dropped
+    this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
 
     // @ts-expect-error getDragEventData
     const data = TextEditor.getDragEventData(event);

@@ -2,7 +2,13 @@ import { RqgActor } from "../actors/rqgActor";
 import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "../system/config";
-import { assertItemType, getDocumentTypes, getGame, localize } from "../system/util";
+import {
+  assertHtmlElement,
+  assertItemType,
+  getDocumentTypes,
+  getGame,
+  localize,
+} from "../system/util";
 import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { IAbility } from "../data-model/shared/ability";
@@ -331,9 +337,12 @@ export class ActorWizard extends FormApplication {
 
     this.form?.querySelectorAll(".collapsible-header").forEach((el) => {
       el.addEventListener("click", (ev) => {
-        const wrapper = (ev.target as HTMLElement).closest(".collapsible-wrapper") as HTMLElement;
-        const wasOpen = wrapper.dataset.open === "true";
-        const wrapperName = wrapper.dataset.collapsibleName;
+        const target = ev.target;
+        assertHtmlElement(target);
+        const wrapper = target?.closest(".collapsible-wrapper");
+        assertHtmlElement(wrapper);
+        const wasOpen = wrapper?.dataset.open === "true";
+        const wrapperName = wrapper?.dataset.collapsibleName;
         if (wrapperName) {
           this.collapsibleOpenStates[wrapperName] = !wasOpen;
         }
@@ -367,8 +376,7 @@ export class ActorWizard extends FormApplication {
   }
 
   async _updateObject(event: Event, formData?: object): Promise<unknown> {
-    const target = event.target as HTMLElement;
-
+    const target = event.target;
     if (target instanceof HTMLSelectElement) {
       const select = target as HTMLSelectElement;
       if (select.name === "selectedSpeciesTemplateId") {

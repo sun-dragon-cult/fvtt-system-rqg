@@ -11,6 +11,7 @@ import {
   requireValue,
   getRequiredRqgActorFromUuid,
   localizeItemType,
+  assertHtmlElement,
 } from "../system/util";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
@@ -90,7 +91,9 @@ export class ItemChatHandler {
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
     assertChatMessageFlagType(flags.type, "itemChat");
-    const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
+    const target = ev.target;
+    assertHtmlElement(target);
+    const form = target?.closest<HTMLFormElement>("form") ?? undefined;
     const formData = new FormData(form);
 
     flags.formData.modifier = cleanIntegerString(formData.get("modifier"));

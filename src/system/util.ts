@@ -26,7 +26,8 @@ export function getDomDataset(
   dataset: string
 ): string | undefined {
   const elem = getHTMLElement(el);
-  const closestElement = elem?.closest(`[data-${dataset}]`) as HTMLElement;
+  const closestElement = elem?.closest(`[data-${dataset}]`);
+  assertHtmlElement(closestElement);
   return closestElement?.dataset[toCamelCase(dataset)];
 }
 
@@ -207,6 +208,16 @@ export function assertChatMessageFlagType<T extends ChatMessageType>(
     const msg = `Got unexpected chat message type in assert, ${chatMessageType} ≠ ${type}`;
     ui.notifications?.error(msg);
     throw new RqgError(msg);
+  }
+}
+
+export function assertHtmlElement<T extends HTMLElement>(
+  eventTarget: EventTarget | null | undefined
+): asserts eventTarget is T | null | undefined {
+  if (eventTarget != null && !(eventTarget instanceof HTMLElement)) {
+    const msg = "RQG | Programming error - expected a HTMLElement but got something else";
+    ui.notifications?.warn(msg);
+    throw new RqgError(msg, eventTarget);
   }
 }
 

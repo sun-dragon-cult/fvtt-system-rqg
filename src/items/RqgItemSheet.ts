@@ -189,11 +189,8 @@ export class RqgItemSheet<
   }
 
   protected async _onDrop(event: DragEvent): Promise<unknown> {
-    const dropZone = event.currentTarget as Element | null;
-    if (dropZone) {
-      event.preventDefault(); // Allow the drag to be dropped TODO remove??
-      dropZone.classList.remove("drag-hover");
-    }
+    event.preventDefault(); // Allow the drag to be dropped
+    this.render(true); // Get rid of any remaining drag-hover classes
 
     // @ts-expect-error getDragEventData
     const droppedDocumentData = TextEditor.getDragEventData(event);
