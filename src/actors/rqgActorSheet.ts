@@ -1281,7 +1281,7 @@ export class RqgActorSheet extends ActorSheet<
         return false;
       }
       await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
-      return true; // TODO what to return?
+      return [item];
     }
 
     if (!item.parent) {
@@ -1330,7 +1330,7 @@ export class RqgActorSheet extends ActorSheet<
       hasRqid(droppedJournal)
     ) {
       await updateRqidLink(this.actor, targetPropertyName, droppedJournal);
-      return true; // TODO what should be returned here? [this.actor];
+      return [droppedJournal];
     }
     return false;
   }

@@ -1,4 +1,11 @@
-import { assertHtmlElement, getDomDataset, localize } from "../system/util";
+import {
+  assertHtmlElement,
+  getDomDataset,
+  getGame,
+  localize,
+  localizeDocumentName,
+  localizeItemType,
+} from "../system/util";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../system/config";
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
@@ -39,10 +46,11 @@ export function isAllowedDocumentName(
   allowedDocumentName: string | undefined
 ): boolean {
   if (allowedDocumentName && allowedDocumentName !== documentName) {
+    const translatedDocumentName = localizeDocumentName(documentName);
+    const translatedAllowedDocumentName = localizeDocumentName(allowedDocumentName);
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
-      // TODO check content
-      allowedDocumentName: allowedDocumentName, // TODO translation of document names how to do it?
-      documentName: documentName,
+      allowedDocumentName: translatedAllowedDocumentName,
+      documentName: translatedDocumentName,
     });
     // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
@@ -57,9 +65,15 @@ export function isAllowedDocumentType(
   allowedDocumentTypes: string[] | undefined
 ): boolean {
   if (allowedDocumentTypes?.length && !allowedDocumentTypes.includes((document as any)?.type)) {
+    const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
+    const listFormatter = new Intl.ListFormat(userLanguage, { style: "long", type: "disjunction" });
+
+    const translatedAllowedDocumentTypes = listFormatter.format(
+      allowedDocumentTypes.map((d: any) => localizeItemType(d)) // TODO assumes the document in a Item. Ok for now?
+    );
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentType", {
-      allowedDropTypes: allowedDocumentTypes.join(", "),
-      type: (document as any)?.type,
+      allowedDropTypes: translatedAllowedDocumentTypes,
+      type: localizeItemType((document as any)?.type),
     });
     // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });

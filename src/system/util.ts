@@ -484,6 +484,10 @@ export function localizeItemType(itemType: ItemTypeEnum): string {
   return localize("ITEM.Type" + itemType.titleCase());
 }
 
+export function localizeDocumentName(documentName: string | undefined): string {
+  return documentName ? localize("DOCUMENT." + documentName) : "";
+}
+
 /**
  * Formats the value as a modifier, ie negative numbers have a "-" and zero or positive numbers have a "+"
  * @param value The value to format
