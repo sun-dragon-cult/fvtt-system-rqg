@@ -1,5 +1,6 @@
 import {
   assertChatMessageFlagType,
+  assertHtmlElement,
   cleanIntegerString,
   convertFormValueToInteger,
   getDocumentFromUuid,
@@ -73,7 +74,9 @@ export class SpiritMagicChatHandler {
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
     assertChatMessageFlagType(flags.type, "spiritMagicChat");
-    const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
+    const target = ev.target;
+    assertHtmlElement(target);
+    const form = target?.closest<HTMLFormElement>("form") ?? undefined;
     const formData = new FormData(form);
 
     flags.formData.level = cleanIntegerString(formData.get("level"));

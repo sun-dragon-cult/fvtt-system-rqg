@@ -58,15 +58,4 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     formData["system.chance"] = Number(formData["system.chance"]);
     return super._updateObject(event, formData);
   }
-
-  public activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-    const form = this.form as HTMLFormElement;
-
-    form.addEventListener("drop", this._onDrop.bind(this));
-  }
-
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    return super._onDrop(event);
-  }
 }

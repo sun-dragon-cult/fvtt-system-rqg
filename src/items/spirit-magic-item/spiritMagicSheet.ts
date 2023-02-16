@@ -79,13 +79,4 @@ export class SpiritMagicSheet extends RqgItemSheet<
 
     return super._updateObject(event, formData);
   }
-
-  public activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-    (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
-  }
-
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    await super._onDrop(event);
-  }
 }

@@ -4,6 +4,7 @@ import {
   activateChatTab,
   assertActorType,
   assertChatMessageFlagType,
+  assertHtmlElement,
   cleanIntegerString,
   convertFormValueToInteger,
   getDocumentFromUuid,
@@ -111,7 +112,9 @@ export class ReputationChatHandler {
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
     assertChatMessageFlagType(flags.type, "reputationChat");
-    const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
+    const target = ev.target;
+    assertHtmlElement(target);
+    const form = target?.closest<HTMLFormElement>("form") ?? undefined;
     const formData = new FormData(form);
     flags.formData.modifier = cleanIntegerString(formData.get("modifier"));
   }

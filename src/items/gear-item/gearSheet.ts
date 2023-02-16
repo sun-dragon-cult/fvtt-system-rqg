@@ -20,7 +20,11 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       width: 450,
       height: 500,
       tabs: [
-        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "gear" },
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "gear",
+        },
       ],
     });
   }

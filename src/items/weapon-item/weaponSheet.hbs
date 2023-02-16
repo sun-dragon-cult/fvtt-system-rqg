@@ -73,7 +73,9 @@
 
         <div class="flex-row flex-wrap">
           {{#each system.usage}}
-            <fieldset data-dropzone="{{@key}}">
+            <fieldset data-dropzone="{{@key}}"
+                      data-dropzone-document-name="Item"
+                      data-dropzone-document-types="skill">
               <div> {{!-- Make dragenter work despite flex--}}
               <legend>{{@key}}</legend>
               {{#if combatManeuvers}}

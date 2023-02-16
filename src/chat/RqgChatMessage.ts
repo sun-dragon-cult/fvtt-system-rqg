@@ -1,6 +1,7 @@
 import { ReputationChatHandler } from "./reputationChatHandler";
 import { CharacteristicChatHandler } from "./characteristicChatHandler";
 import {
+  assertHtmlElement,
   getGame,
   getRequiredDomDataset,
   localize,
@@ -56,7 +57,9 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   private static async inputChangeHandler(inputEvent: Event): Promise<void> {
-    if ((inputEvent.target as HTMLElement)?.dataset.handleChange == null) {
+    const target = inputEvent.target;
+    assertHtmlElement(target);
+    if (target?.dataset.handleChange == null) {
       return; // Only handle inputs etc that are tagged with "data-handle-change"
     }
     const { chatMessageId } = RqgChatMessage.getChatMessageInfo(inputEvent);

@@ -4,6 +4,7 @@ import { RqgActor } from "../actors/rqgActor";
 import {
   activateChatTab,
   assertChatMessageFlagType,
+  assertHtmlElement,
   cleanIntegerString,
   convertFormValueToInteger,
   formatModifier,
@@ -185,7 +186,9 @@ export class CharacteristicChatHandler {
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
     assertChatMessageFlagType(flags.type, "characteristicChat");
-    const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
+    const target = ev.target;
+    assertHtmlElement(target);
+    const form = target?.closest<HTMLFormElement>("form") ?? undefined;
     const formData = new FormData(form);
 
     flags.formData.difficulty = formData.get("difficulty") ?? "";

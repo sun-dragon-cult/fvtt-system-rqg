@@ -4,13 +4,14 @@ import {
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getDomDataset, getGameUser, localize } from "../../system/util";
+import { assertHtmlElement, getDomDataset, getGameUser } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { DocumentSheetData } from "../shared/sheetInterfaces";
+import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 
 export interface OccupationSheetData {
   homelandsJoined: string;
@@ -135,7 +136,6 @@ export class OccupationSheet extends RqgItemSheet<
     super.activateListeners(html);
     const form = this.form as HTMLFormElement;
 
-    form.addEventListener("drop", this._onDrop.bind(this));
     form
       .querySelector("#btn-edit-occupational-skills-" + this.item.id)
       ?.addEventListener("click", () => {
@@ -172,15 +172,22 @@ export class OccupationSheet extends RqgItemSheet<
 
   private toggleSkillEdit(forceEdit = false) {
     const form = this.form as HTMLFormElement;
-    const displaySkills = form.querySelector(
-      "#occupational-skill-display-" + this.item.id
-    ) as HTMLElement;
-    const editSkills = form.querySelector(
-      "#occupational-skill-edit-" + this.item.id
-    ) as HTMLElement;
-    const btnEdit = form.querySelector(
-      "#btn-edit-occupational-skills-" + this.item.id
-    ) as HTMLElement;
+    const displaySkills = form.querySelector("#occupational-skill-display-" + this.item.id);
+    assertHtmlElement(displaySkills);
+    const editSkills = form.querySelector("#occupational-skill-edit-" + this.item.id);
+    assertHtmlElement(editSkills);
+    const btnEdit = form.querySelector("#btn-edit-occupational-skills-" + this.item.id);
+    assertHtmlElement(btnEdit);
+    if (!displaySkills || !editSkills || !btnEdit) {
+      console.error(
+        "RQG | Didn't find HtmlElements in toggleSkillEdit",
+        form,
+        displaySkills,
+        editSkills,
+        btnEdit
+      );
+      return;
+    }
     if (displaySkills?.style.display === "block" || forceEdit) {
       displaySkills.style.display = "none";
       editSkills.style.display = "block";
@@ -192,103 +199,80 @@ export class OccupationSheet extends RqgItemSheet<
     }
   }
 
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    const thisOccupation = this.item.system as OccupationDataSourceData;
+  async _onDropItem(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
+    // @ts-expect-error fromDropData
+    const droppedItem = await Item.implementation.fromDropData(data);
 
-    let droppedDocumentData;
-    try {
-      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-    } catch (err) {
-      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
-      return;
+    if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {
+      return false;
     }
 
-    if (droppedDocumentData.type === "Item") {
-      const droppedItem = (await Item.fromDropData(droppedDocumentData)) as RqgItem;
-
-      if (droppedItem === undefined) {
-        return;
-      }
-
-      // Homelands require special handling here (rather than in RqgItemSheet) becase
-      // we are just storing the name of the homeland in an array.
-      if (droppedItem.type === ItemTypeEnum.Homeland) {
-        // For this one we're just saving the name of the homeland, without the region
-        // to an array of strings.
-        const homelands = thisOccupation.homelands;
-        const newHomeland = droppedItem.system.homeland;
-        if (!homelands.includes(newHomeland)) {
-          homelands.push(newHomeland);
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "system.homelands": homelands,
-              },
-            ]);
-          } else {
-            await this.item.update({
+    if (droppedItem.type === ItemTypeEnum.Homeland) {
+      // For this one we're just saving the name of the homeland, without the region
+      // to an array of strings.
+      const homelands = this.item.system.homelands;
+      const newHomeland = droppedItem.system.homeland;
+      if (!homelands.includes(newHomeland)) {
+        homelands.push(newHomeland);
+        if (this.item.isEmbedded) {
+          await this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
               "system.homelands": homelands,
-            });
-          }
+            },
+          ]);
+        } else {
+          await this.item.update({
+            "system.homelands": homelands,
+          });
         }
-        return;
       }
+      return [this.item];
+    }
 
+    if (droppedItem.type === ItemTypeEnum.Skill) {
       // Skills require special handling here (rather than in RqgItemSheet) because
       // we will associate the skill with a bonus
-      if (droppedItem.type === ItemTypeEnum.Skill) {
-        let droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
+      let droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
 
-        if (droppedRqid && droppedRqid.id) {
-          console.log(droppedRqid);
+      if (droppedRqid && droppedRqid.id) {
+        let occSkill = new OccupationalSkill();
+        occSkill.bonus = 0;
+        occSkill.incomeSkill = false;
+        occSkill.skillRqidLink = new RqidLink(droppedRqid?.id, droppedItem.name || "");
 
-          let occSkill = new OccupationalSkill();
-          occSkill.bonus = 0;
-          occSkill.incomeSkill = false;
-          occSkill.skillRqidLink = new RqidLink(droppedRqid?.id, droppedItem.name || "");
+        let occSkills = this.item.system.occupationalSkills;
 
-          let occSkills = thisOccupation.occupationalSkills;
+        // this is intentionally NOT checking for duplicate skills
+        // since an Occupation might have generic skills more than once,
+        // for example Craft(...)
+        occSkills.push(occSkill);
 
-          // this is intentionally NOT checking for duplicate skills
-          // since an Occupation might have generic skills more than once,
-          // for example Craft(...)
-          occSkills.push(occSkill);
-
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
-              {
-                _id: this.item.id,
-                "system.occupationalSkills": occSkills,
-              },
-            ]);
-          } else {
-            await this.item.update({
+        if (this.item.isEmbedded) {
+          await this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
               "system.occupationalSkills": occSkills,
-            });
-          }
+            },
+          ]);
         } else {
-          // see #315 and this situation should be handled however we decide
-          // to generally handle dropping things that do not have rqids
-          console.log("Dropped skill did not have an Rqid");
+          await this.item.update({
+            "system.occupationalSkills": occSkills,
+          });
         }
-        // Return now so we don't handle his at the RqgItemSheet._onDrop
-        return;
+      } else {
+        // see #315 and this situation should be handled however we decide
+        // to generally handle dropping things that do not have rqids
+        console.log("Dropped skill did not have an Rqid");
       }
+      // Return now so we don't handle his at the RqgItemSheet._onDrop
+      return [this.item];
     }
 
-    await super._onDrop(event);
+    return await super._onDropItem(event, data);
   }
-}
-
-function ensureJournal(droppedItemData: any, target: string): boolean {
-  if (droppedItemData.type !== "JournalEntry") {
-    ui.notifications?.warn(
-      localize("RQG.Item.Notification.CanOnlyDropJournalEntryOnThisTargetWarning", {
-        target: localize("RQG.Item.Occupation." + target),
-      })
-    );
-    return false;
-  }
-  return true;
 }

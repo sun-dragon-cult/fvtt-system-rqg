@@ -1,4 +1,4 @@
-import { SkillCategoryEnum, SkillDataProperties } from "../data-model/item-data/skillData";
+import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
@@ -18,13 +18,13 @@ import { createItemLocationTree, LocationNode } from "../items/shared/locationNo
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
 import { RqgActor } from "./rqgActor";
 import {
+  assertHtmlElement,
   assertItemType,
   getDocumentTypes,
   getDomDataset,
   getGame,
   getGameUser,
   getRequiredDomDataset,
-  getRequiredRqgActorFromUuid,
   hasOwnProperty,
   localize,
   requireValue,
@@ -41,12 +41,20 @@ import { ReputationChatHandler } from "../chat/reputationChatHandler";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ActorSheetData } from "../items/shared/sheetInterfaces";
 import { Characteristics } from "src/data-model/actor-data/characteristics";
+import {
+  getAllowedDropDocumentTypes,
+  hasRqid,
+  isAllowedDocumentName,
+  isAllowedDocumentType,
+  onDragEnter,
+  onDragLeave,
+  updateRqidLink,
+} from "../documents/dragDrop";
 
 interface UiSections {
   health: boolean;
@@ -144,7 +152,7 @@ export class RqgActorSheet extends ActorSheet<
           initial: "by-item-type",
         },
       ],
-      dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
+      dragDrop: [{ dragSelector: ".item-list .item", dropSelector: "[data-dropzone]" }],
     });
   }
 
@@ -461,18 +469,6 @@ export class RqgActorSheet extends ActorSheet<
       .sort((a: any, b: any) => b.chance - a.chance);
   }
 
-  private getSkillDataByName(name: String): SkillDataProperties | undefined {
-    const skillItem = this.actor.items.find(
-      (i: RqgItem) => i.name === name && i.type === ItemTypeEnum.Skill
-    );
-
-    if (!skillItem) {
-      return;
-    }
-    assertItemType(skillItem.type, ItemTypeEnum.Skill);
-    return skillItem.system;
-  }
-
   /**
    * Take the embedded items of the actor and rearrange them for presentation.
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
@@ -732,6 +728,11 @@ export class RqgActorSheet extends ActorSheet<
       return;
     }
     const htmlElement = html[0];
+    // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
+    htmlElement.parentElement?.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+      elem.addEventListener("dragenter", this._onDragEnter);
+      elem.addEventListener("dragleave", this._onDragLeave);
+    });
 
     new ContextMenu(
       html,
@@ -757,8 +758,9 @@ export class RqgActorSheet extends ActorSheet<
 
     // Roll actor Characteristic
     htmlElement.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
-      const characteristicName = (el.closest("[data-characteristic]") as HTMLElement)?.dataset
-        .characteristic;
+      const closestDataCharacteristic = el.closest("[data-characteristic]");
+      assertHtmlElement(closestDataCharacteristic);
+      const characteristicName = closestDataCharacteristic?.dataset.characteristic;
 
       let clickCount = 0;
       const actorCharacteristics = this.actor.system.characteristics;
@@ -1133,8 +1135,11 @@ export class RqgActorSheet extends ActorSheet<
           img: defaultItemIconSettings["passion"],
           system: { passion: newPassionName },
         };
-        //@ts-ignore
-        await Item.createDocuments([passion], { parent: this.actor, renderSheet: true });
+        // @ts-expect-error implementation
+        await Item.implementation.createDocuments([passion], {
+          parent: this.actor,
+          renderSheet: true,
+        });
       });
     });
   }
@@ -1197,106 +1202,64 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  // TODO Move somewhere else!
-  // TODO Compare to new foundry implementation!!!
-  static async showJournalEntry(id: string, packName?: string): Promise<void> {
-    let entity;
-
-    // Compendium Link
-    if (packName) {
-      const pack = getGame().packs?.get(packName);
-      entity = id && pack ? await pack.getDocument(id) : undefined;
-
-      // World Entity Link
-    } else {
-      const collection = getGame().journal;
-      requireValue(collection, "game.journal not yet initialised");
-      // const collection = CONFIG.JournalEntry.collection.instance;
-      entity = collection.get(id);
-    }
-    if (!entity) {
-      const msg = `No journal with id [${id}] and packName ${packName} when showing it.`;
-      ui.notifications?.warn(msg);
-      console.warn(msg);
-      return;
-    }
-    requireValue(entity.sheet, "journal entry entity.sheet not present");
-    entity.sheet.render(true);
+  _onDragEnter(event: DragEvent): void {
+    onDragEnter(event);
   }
 
-  protected async _onDrop(event: RqidLinkDragEvent): Promise<void> {
-    super._onDrop(event);
+  _onDragLeave(event: DragEvent): void {
+    onDragLeave(event);
+  }
 
-    let droppedDocumentData;
-    try {
-      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-    } catch (err) {
-      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData")); // TODO generic notification for all actors, items,  etc
-      return;
+  protected async _onDrop(event: DragEvent): Promise<unknown> {
+    event.preventDefault(); // Allow the drag to be dropped
+    this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
+
+    // @ts-expect-error getDragEventData
+    const data = TextEditor.getDragEventData(event);
+    const allowedDropDocumentName = getDomDataset(event, "dropzone-document-name");
+
+    if (!isAllowedDocumentName(data.type, allowedDropDocumentName)) {
+      return false;
     }
 
-    const targetPropertyName = getDomDataset(event, "target-drop-property");
+    const actor = this.actor;
 
-    const dropTypes = getDomDataset(event, "expected-drop-types")?.split(","); // TODO is not used ???
+    /**
+     * A hook event that fires when some useful data is dropped onto an ActorSheet.
+     * @function dropActorSheetData
+     * @memberof hookEvents
+     * @param {Actor} actor      The Actor
+     * @param {ActorSheet} sheet The ActorSheet application
+     * @param {object} data      The data that has been dropped onto the sheet
+     */
+    const allowed = Hooks.call("dropActorSheetData", actor, this, data);
+    if (allowed === false) return;
 
-    let droppedDocument: Item | JournalEntry | undefined = undefined;
-
-    if (droppedDocumentData.type === "Item") {
-      droppedDocument = await Item.fromDropData(droppedDocumentData);
-    }
-
-    if (droppedDocumentData.type === "JournalEntry") {
-      droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
-    }
-
-    if (droppedDocument && targetPropertyName) {
-      const droppedDocumentRqid = droppedDocument.getFlag(systemId, documentRqidFlags)?.id;
-      const droppedDocumentInstanceName = droppedDocument.name;
-
-      if (!droppedDocumentRqid || !droppedDocumentInstanceName) {
-        ui.notifications?.warn(
-          localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
-            type: droppedDocumentData.type,
-            name: droppedDocument?.name,
-            uuid: droppedDocumentData.uuid,
-          })
-        );
-        return;
-      }
-      const newLink = new RqidLink(droppedDocumentRqid, droppedDocumentInstanceName);
-      const targetProperty = getProperty(this.actor.system, targetPropertyName);
-
-      if (targetProperty) {
-        event.TargetPropertyName = targetPropertyName;
-        if (Array.isArray(targetProperty)) {
-          const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
-          if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
-            targetPropertyRqidLinkArray.push(newLink);
-            targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
-            await this.actor.update({
-              system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-            });
-          }
-        } else {
-          // Property is a single RqidLink, not an array
-          await this.actor.update({ system: { [targetPropertyName]: newLink } });
-        }
-      } else {
-        // Property does not already exist
-        // TODO: Should we ensure that the Actor template actually is allowed
-        // to have a property of the name contained in targetPropertyName?
-        await this.actor.update({ system: { [targetPropertyName]: newLink } });
-      }
+    // Handle different data types (document names)
+    switch (data.type) {
+      case "ActiveEffect":
+        return this._onDropActiveEffect(event, data);
+      case "Actor":
+        return this._onDropActor(event, data);
+      case "Item":
+        return this._onDropItem(event, data);
+      case "JournalEntry":
+        return this._onDropJournalEntry(event, data);
+      case "Folder":
+        return this._onDropFolder(event, data);
+      default:
+        // This will warn about not supported Document Name
+        isAllowedDocumentName(data.type, "Active Effects, Actor, Item, JournalEntry, Folder");
     }
   }
 
-  protected async _onDropItem(event: DragEvent, data: any): Promise<unknown> {
-    // data is technically "ActorSheet.DropData.Item", but that doesn't expose ".actorId",
-    // and it didn't seem useful to have it typed that way
-
-    // It seems a player will not be able to copy an item to an Actor sheet
-    // unless they are the owner.  It will error gracefully after this, but
-    // this gives a better error.
+  // @ts-expect-error parameter types
+  async _onDropItem(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    // A player will not be able to copy an item to an Actor sheet
+    // unless they are the owner.
     if (!this.actor.isOwner) {
       ui.notifications?.warn(
         localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name })
@@ -1304,17 +1267,23 @@ export class RqgActorSheet extends ActorSheet<
       return false;
     }
 
-    // You can drop Items anywhere because we know what to do with them.
-    const item = await Item.fromDropData(data);
-
-    if (!item) {
-      ui.notifications?.error(localize("RQG.Actor.Notification.DraggedItemNotFoundError"));
-      return false;
+    // @ts-expect-error fromDropData
+    const item = (await Item.implementation.fromDropData(data)) as RqgItem;
+    const itemData = item.toObject();
+    // Handle item sorting within the same Actor
+    if (this.actor.uuid === item.parent?.uuid) {
+      return this._onSortItem(event, itemData) ?? false;
     }
 
-    const itemData = item?.toObject();
+    if (item.type === ItemTypeEnum.Occupation) {
+      if (!hasRqid(item)) {
+        return false;
+      }
+      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
+      return [item];
+    }
 
-    if (!data.actorId) {
+    if (!item.parent) {
       // Dropped from Sidebar
       // if (itemData.type === ItemTypeEnum.RuneMagic) {
       //   assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
@@ -1323,34 +1292,12 @@ export class RqgActorSheet extends ActorSheet<
       return this._onDropItemCreate(itemData);
     }
 
-    if (!itemData) {
-      ui.notifications?.error(
-        localize("RQG.Actor.Notification.CantMakeItemDataSourceError", { itemId: item.id })
-      );
-      return false;
-    }
-
-    // Check if the actor is the owner of the item
-    // If so change the sort order
     const targetActor = this.actor;
-    if (!targetActor) {
-      return false;
-    }
+    const sourceActor = item.parent;
 
-    let sameActor =
-      data.actorId === targetActor.id ||
-      (targetActor.isToken && data.tokenId === targetActor.token?.id);
-
-    if (sameActor) {
-      return this._onSortItem(event, itemData) ?? [];
-    }
-
-    const sourceActor =
-      getGame().actors?.get(data.actorId) ??
-      (await getRequiredRqgActorFromUuid<RqgActor>(data.actorId));
-
-    if (!sourceActor) {
-      return false;
+    // Handle item sorting within the same Actor
+    if (targetActor.uuid === sourceActor?.uuid) {
+      return this._onSortItem(event, itemData) ?? false;
     }
 
     if (
@@ -1366,6 +1313,25 @@ export class RqgActorSheet extends ActorSheet<
       //(runes, skills, passions, etc) from one Actor to another
       return await this.confirmCopyIntangibleItem(itemData, sourceActor);
     }
+  }
+
+  async _onDropJournalEntry(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
+    // @ts-expect-error fromDropData
+    const droppedJournal = await JournalEntry.implementation.fromDropData(data);
+    const targetPropertyName = getDomDataset(event, "dropzone");
+
+    if (
+      isAllowedDocumentType(droppedJournal, allowedDropDocumentTypes) &&
+      hasRqid(droppedJournal)
+    ) {
+      await updateRqidLink(this.actor, targetPropertyName, droppedJournal);
+      return [droppedJournal];
+    }
+    return false;
   }
 
   private async confirmCopyIntangibleItem(
