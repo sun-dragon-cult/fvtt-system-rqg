@@ -37,7 +37,7 @@ command: |-
 
           console.debug(
             "Existing rqid Flags in compendium",
-            pack.metadata.package,
+            pack.metadata.packageName,
             pack.metadata.name,
             rqidFlags
           );

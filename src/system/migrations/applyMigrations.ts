@@ -157,7 +157,8 @@ async function migrateWorldCompendiumPacks(
   actorMigrations: ActorMigration[]
 ): Promise<void> {
   let progress = 0;
-  const packs = getGame().packs.contents.filter((p) => p.metadata.package !== systemId); // Exclude system packs
+  // @ts-expect-error packageName
+  const packs = getGame().packs.contents.filter((p) => p.metadata.packageName !== systemId); // Exclude system packs
   const packsCount = packs?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.compendiums", {
     count: packsCount,
@@ -170,7 +171,8 @@ async function migrateWorldCompendiumPacks(
   }
   const step = 100 / packsCount;
   for (let pack of packs) {
-    if (pack.metadata.package !== "world") {
+    // @ts-expect-error packageType
+    if (pack.metadata.packageType !== "world") {
       continue;
     }
     // @ts-expect-error type
