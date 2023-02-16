@@ -205,10 +205,8 @@ export class RqgItemSheet<
     ) {
       case "Item":
         return await this._onDropItem(event, droppedDocumentData);
-
       case "JournalEntry":
         return await this._onDropJournalEntry(event, droppedDocumentData);
-
       default:
         // This will warn about not supported Document Name
         isAllowedDocumentName(droppedDocumentData.type, "Item, JournalEntry");

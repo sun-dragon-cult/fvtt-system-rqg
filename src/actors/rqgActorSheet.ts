@@ -1239,7 +1239,6 @@ export class RqgActorSheet extends ActorSheet<
     switch (data.type) {
       case "ActiveEffect":
         return this._onDropActiveEffect(event, data);
-
       case "Actor":
         return this._onDropActor(event, data);
       case "Item":
