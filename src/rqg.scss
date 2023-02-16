@@ -607,7 +607,14 @@ body {
   }
 
   .experienced {
-    text-shadow: 0 0 0.5em red, 0 0 1.5em yellow;
+    text-shadow: -1px 1px 1px var(--rqg-light-outline),
+      1px -1px 1px var(--rqg-light-outline),
+      1px 1px 1px var(--rqg-light-outline),
+      -1px -1px 1px var(--rqg-light-outline),
+      0 0 1em var(--rqg-highlight),
+      0 0 0.6em var(--rqg-highlight),
+      0 0 0.4em var(--rqg-highlight);
+    font-weight: bold;
   }
 
   [data-characteristic-roll],
