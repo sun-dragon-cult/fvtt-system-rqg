@@ -47,11 +47,9 @@ import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ActorSheetData } from "../items/shared/sheetInterfaces";
 import { Characteristics } from "src/data-model/actor-data/characteristics";
 import {
+  extractDropInfo,
   getAllowedDropDocumentNames,
-  getAllowedDropDocumentTypes,
-  hasRqid,
   isAllowedDocumentNames,
-  isAllowedDocumentType,
   onDragEnter,
   onDragLeave,
   updateRqidLink,
@@ -1278,16 +1276,24 @@ export class RqgActorSheet extends ActorSheet<
       return false;
     }
 
-    // @ts-expect-error fromDropData
-    const item = (await Item.implementation.fromDropData(data)) as RqgItem;
-    const itemData = item.toObject();
+    const {
+      droppedDocument: item,
+      isAllowedToDrop,
+      hasRqid,
+    } = await extractDropInfo<RqgItem>(event, data);
+
+    if (!isAllowedToDrop) {
+      return false;
+    }
+
+    const itemData = item?.toObject();
     // Handle item sorting within the same Actor
-    if (this.actor.uuid === item.parent?.uuid) {
+    if (this.actor.uuid === item?.parent?.uuid) {
       return this._onSortItem(event, itemData) ?? false;
     }
 
     if (item.type === ItemTypeEnum.Occupation) {
-      if (!hasRqid(item)) {
+      if (!hasRqid) {
         return false;
       }
       await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
@@ -1329,16 +1335,15 @@ export class RqgActorSheet extends ActorSheet<
   async _onDropJournalEntry(
     event: DragEvent,
     data: { type: string; uuid: string }
-  ): Promise<boolean | RqgItem[]> {
-    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    // @ts-expect-error fromDropData
-    const droppedJournal = await JournalEntry.implementation.fromDropData(data);
-    const targetPropertyName = getDomDataset(event, "dropzone");
+  ): Promise<boolean | JournalEntry[]> {
+    const {
+      droppedDocument: droppedJournal,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+      hasRqid,
+    } = await extractDropInfo<JournalEntry>(event, data);
 
-    if (
-      isAllowedDocumentType(droppedJournal, allowedDropDocumentTypes) &&
-      hasRqid(droppedJournal)
-    ) {
+    if (isAllowedToDrop && hasRqid) {
       await updateRqidLink(this.actor, targetPropertyName, droppedJournal);
       return [droppedJournal];
     }
@@ -1348,13 +1353,17 @@ export class RqgActorSheet extends ActorSheet<
   async _onDropJournalEntryPage(
     event: DragEvent,
     data: { type: string; uuid: string }
-  ): Promise<boolean | RqgItem[]> {
-    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
-    // @ts-expect-error fromDropData
-    const droppedPage = await cls?.implementation.fromDropData(data as any);
-    const targetPropertyName = getDomDataset(event, "dropzone");
-    if (isAllowedDocumentType(droppedPage, allowedDropDocumentTypes) && hasRqid(droppedPage)) {
+    // @ts-expect-error JournalEntryPage
+  ): Promise<boolean | JournalEntryPage[]> {
+    const {
+      droppedDocument: droppedPage,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+      hasRqid,
+      // @ts-expect-error JournalEntryPage
+    } = await extractDropInfo<JournalEntryPage>(event, data);
+
+    if (isAllowedToDrop && hasRqid) {
       await updateRqidLink(this.actor, targetPropertyName, droppedPage);
       return [droppedPage];
     }

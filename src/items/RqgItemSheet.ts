@@ -1,24 +1,15 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import {
-  getDomDataset,
-  getGame,
-  getRequiredDomDataset,
-  localize,
-  localizeItemType,
-} from "../system/util";
+import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 import { RqgItem } from "./rqgItem";
 import {
+  extractDropInfo,
   getAllowedDropDocumentNames,
-  getAllowedDropDocumentTypes,
-  hasRqid,
   isAllowedDocumentNames,
-  isAllowedDocumentType,
   onDragEnter,
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
-import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
@@ -225,12 +216,14 @@ export class RqgItemSheet<
     event: DragEvent,
     data: { type: string; uuid: string }
   ): Promise<boolean | RqgItem[]> {
-    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    const targetPropertyName = getDomDataset(event, "dropzone");
-    // @ts-expect-error fromDropData
-    const droppedItem = await Item.implementation.fromDropData(data);
+    const {
+      droppedDocument: droppedItem,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+      hasRqid,
+    } = await extractDropInfo<RqgItem>(event, data);
 
-    if (isAllowedDocumentType(droppedItem, allowedDropDocumentTypes) && hasRqid(droppedItem)) {
+    if (isAllowedToDrop && hasRqid) {
       await updateRqidLink(this.item, targetPropertyName, droppedItem);
       return [this.item];
     }
@@ -241,15 +234,14 @@ export class RqgItemSheet<
     event: DragEvent,
     data: { type: string; uuid: string }
   ): Promise<boolean | RqgItem[]> {
-    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    // @ts-expect-error fromDropData
-    const droppedJournal = await JournalEntry.implementation.fromDropData(data);
-    const targetPropertyName = getDomDataset(event, "dropzone");
+    const {
+      droppedDocument: droppedJournal,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+      hasRqid,
+    } = await extractDropInfo<JournalEntry>(event, data);
 
-    if (
-      isAllowedDocumentType(droppedJournal, allowedDropDocumentTypes) &&
-      hasRqid(droppedJournal)
-    ) {
+    if (isAllowedToDrop && hasRqid) {
       await updateRqidLink(this.item, targetPropertyName, droppedJournal);
       return [this.item];
     }
@@ -260,12 +252,15 @@ export class RqgItemSheet<
     event: DragEvent,
     data: { type: string; uuid: string }
   ): Promise<boolean | RqgItem[]> {
-    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
-    // @ts-expect-error fromDropData
-    const droppedPage = await cls?.implementation.fromDropData(data as any);
-    const targetPropertyName = getDomDataset(event, "dropzone");
-    if (isAllowedDocumentType(droppedPage, allowedDropDocumentTypes) && hasRqid(droppedPage)) {
+    const {
+      droppedDocument: droppedPage,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+      hasRqid,
+      // @ts-expect-error JournalEntryPage
+    } = await extractDropInfo<JournalEntryPage>(event, data);
+
+    if (isAllowedToDrop && hasRqid) {
       await updateRqidLink(this.item, targetPropertyName, droppedPage);
       return [this.item];
     }
