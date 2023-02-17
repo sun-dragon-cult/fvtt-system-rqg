@@ -7,7 +7,7 @@
 
         <div class="label-above"
              data-dropzone="homelandJournalRqidLink"
-             data-dropzone-document-name="JournalEntry">
+             data-dropzone-document-names="JournalEntry, JournalEntryPage">
           <label for="homeland-{{id}}">{{localize "RQG.Item.Homeland.Homeland"}}</label>
           <input type="text"
                  id="homeland-{{id}}"
@@ -25,7 +25,7 @@
 
         <div class="label-above parens"
              data-dropzone="regionJournalRqidLink"
-             data-dropzone-document-name="JournalEntry">
+             data-dropzone-document-names="JournalEntry, JournalEntryPage">
           <label for="region-{{id}}">{{localize "RQG.Item.Homeland.Region"}}</label>
           <div>
             ( <input type="text" id="region-{{id}}" name="system.region" value="{{system.region}}"> )
@@ -62,7 +62,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.cultureJournalRqidLinks
             dropzoneData="cultureJournalRqidLinks"
-            dropDocumentName="JournalEntry"
+            dropDocumentNames="JournalEntry, JournalEntryPage"
             showDeleteFromPropertyName="cultureJournalRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           }}
@@ -71,7 +71,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.tribeJournalRqidLinks
             dropzoneData="tribeJournalRqidLinks"
-            dropDocumentName="JournalEntry"
+            dropDocumentNames="JournalEntry, JournalEntryPage"
             showDeleteFromPropertyName="tribeJournalRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           }}
@@ -80,7 +80,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.clanJournalRqidLinks
             dropzoneData="clanJournalRqidLinks"
-            dropDocumentName="JournalEntry"
+            dropDocumentNames="JournalEntry, JournalEntryPage"
             showDeleteFromPropertyName="clanJournalRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
           }}
@@ -89,7 +89,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.cultRqidLinks
             dropzoneData="cultRqidLinks"
-            dropDocumentName="Item"
+            dropDocumentNames="Item"
             dropDocumentTypes="cult"
             showDeleteFromPropertyName="cultRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
@@ -99,7 +99,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.skillRqidLinks
             dropzoneData="skillRqidLinks"
-            dropDocumentName="Item"
+            dropDocumentNames="Item"
             dropDocumentTypes="skill"
             showDeleteFromPropertyName="skillRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
@@ -111,7 +111,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.runeRqidLinks
             dropzoneData="runeRqidLinks"
-            dropDocumentName="Item"
+            dropDocumentNames="Item"
             dropDocumentTypes="rune"
             showDeleteFromPropertyName="runeRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
@@ -121,7 +121,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.passionRqidLinks
             dropzoneData="passionRqidLinks"
-            dropDocumentName="Item"
+            dropDocumentNames="Item"
             dropDocumentTypes="passion"
             showDeleteFromPropertyName="passionRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectPassion"

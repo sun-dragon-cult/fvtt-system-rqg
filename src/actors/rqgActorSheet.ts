@@ -47,14 +47,16 @@ import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ActorSheetData } from "../items/shared/sheetInterfaces";
 import { Characteristics } from "src/data-model/actor-data/characteristics";
 import {
+  getAllowedDropDocumentNames,
   getAllowedDropDocumentTypes,
   hasRqid,
-  isAllowedDocumentName,
+  isAllowedDocumentNames,
   isAllowedDocumentType,
   onDragEnter,
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
+import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 interface UiSections {
   health: boolean;
@@ -1216,9 +1218,9 @@ export class RqgActorSheet extends ActorSheet<
 
     // @ts-expect-error getDragEventData
     const data = TextEditor.getDragEventData(event);
-    const allowedDropDocumentName = getDomDataset(event, "dropzone-document-name");
+    const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
 
-    if (!isAllowedDocumentName(data.type, allowedDropDocumentName)) {
+    if (!isAllowedDocumentNames(data.type, allowedDropDocumentNames)) {
       return false;
     }
 
@@ -1245,11 +1247,20 @@ export class RqgActorSheet extends ActorSheet<
         return this._onDropItem(event, data);
       case "JournalEntry":
         return this._onDropJournalEntry(event, data);
+      case "JournalEntryPage":
+        return this._onDropJournalEntryPage(event, data);
       case "Folder":
         return this._onDropFolder(event, data);
       default:
         // This will warn about not supported Document Name
-        isAllowedDocumentName(data.type, "Active Effects, Actor, Item, JournalEntry, Folder");
+        isAllowedDocumentNames(data.type, [
+          "ActiveEffect",
+          "Actor",
+          "Item",
+          "JournalEntry",
+          "JournalEntryPage",
+          "Folder",
+        ]);
     }
   }
 
@@ -1330,6 +1341,22 @@ export class RqgActorSheet extends ActorSheet<
     ) {
       await updateRqidLink(this.actor, targetPropertyName, droppedJournal);
       return [droppedJournal];
+    }
+    return false;
+  }
+
+  async _onDropJournalEntryPage(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
+    const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
+    // @ts-expect-error fromDropData
+    const droppedPage = await cls?.implementation.fromDropData(data as any);
+    const targetPropertyName = getDomDataset(event, "dropzone");
+    if (isAllowedDocumentType(droppedPage, allowedDropDocumentTypes) && hasRqid(droppedPage)) {
+      await updateRqidLink(this.actor, targetPropertyName, droppedPage);
+      return [droppedPage];
     }
     return false;
   }

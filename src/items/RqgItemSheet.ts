@@ -9,9 +9,10 @@ import {
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 import { RqgItem } from "./rqgItem";
 import {
+  getAllowedDropDocumentNames,
   getAllowedDropDocumentTypes,
   hasRqid,
-  isAllowedDocumentName,
+  isAllowedDocumentNames,
   isAllowedDocumentType,
   onDragEnter,
   onDragLeave,
@@ -195,9 +196,9 @@ export class RqgItemSheet<
 
     // @ts-expect-error getDragEventData
     const droppedDocumentData = TextEditor.getDragEventData(event);
-    const allowedDropDocumentName = getDomDataset(event, "dropzone-document-name");
+    const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
 
-    if (!isAllowedDocumentName(droppedDocumentData.type, allowedDropDocumentName)) {
+    if (!isAllowedDocumentNames(droppedDocumentData.type, allowedDropDocumentNames)) {
       return;
     }
 
@@ -212,7 +213,11 @@ export class RqgItemSheet<
         return await this._onDropJournalEntryPage(event, droppedDocumentData);
       default:
         // This will warn about not supported Document Name
-        isAllowedDocumentName(droppedDocumentData.type, "Item, JournalEntry");
+        isAllowedDocumentNames(droppedDocumentData.type, [
+          "Item",
+          "JournalEntry",
+          "JournalEntryPage",
+        ]);
     }
   }
 

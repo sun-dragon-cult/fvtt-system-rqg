@@ -41,15 +41,23 @@ export function onDragLeave(event: DragEvent): void {
   }
 }
 
-export function isAllowedDocumentName(
+export function isAllowedDocumentNames(
   documentName: string | undefined,
-  allowedDocumentName: string | undefined
+  allowedDocumentNames: string[] | undefined
 ): boolean {
-  if (allowedDocumentName && allowedDocumentName !== documentName) {
+  if (
+    !documentName ||
+    (allowedDocumentNames?.length && !allowedDocumentNames.includes(documentName))
+  ) {
     const translatedDocumentName = localizeDocumentName(documentName);
-    const translatedAllowedDocumentName = localizeDocumentName(allowedDocumentName);
+    const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
+    const listFormatter = new Intl.ListFormat(userLanguage, { style: "long", type: "disjunction" });
+
+    const translatedAllowedDocumentNames =
+      allowedDocumentNames &&
+      listFormatter.format(allowedDocumentNames.map((d: any) => localizeDocumentName(d)) ?? "");
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
-      allowedDocumentName: translatedAllowedDocumentName,
+      allowedDocumentName: translatedAllowedDocumentNames, // TODO change translation key to `allowedDocumentNames`
       documentName: translatedDocumentName,
     });
     // @ts-expect-error console
@@ -166,9 +174,18 @@ export async function updateRqidLink(
 }
 
 export function getAllowedDropDocumentTypes(event: DragEvent) {
+  return convertStringToArray(getDomDataset(event, "dropzone-document-types"));
+}
+
+export function getAllowedDropDocumentNames(event: DragEvent) {
+  return convertStringToArray(getDomDataset(event, "dropzone-document-names"));
+}
+
+function convertStringToArray(commaSeparatedString: string | undefined): string[] {
   return (
-    getDomDataset(event, "dropzone-document-types")
+    commaSeparatedString
       ?.split(",")
-      .filter((t) => t !== "") ?? []
+      .map((s) => s.trim())
+      .filter((s) => s) ?? []
   );
 }
