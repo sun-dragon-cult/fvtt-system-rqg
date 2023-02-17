@@ -2,6 +2,7 @@ import {
   assertHtmlElement,
   getDomDataset,
   getGame,
+  hasOwnProperty,
   localize,
   localizeDocumentName,
   localizeItemType,
@@ -41,15 +42,23 @@ export function onDragLeave(event: DragEvent): void {
   }
 }
 
-export function isAllowedDocumentName(
+export function isAllowedDocumentNames(
   documentName: string | undefined,
-  allowedDocumentName: string | undefined
+  allowedDocumentNames: string[] | undefined
 ): boolean {
-  if (allowedDocumentName && allowedDocumentName !== documentName) {
+  if (
+    !documentName ||
+    (allowedDocumentNames?.length && !allowedDocumentNames.includes(documentName))
+  ) {
     const translatedDocumentName = localizeDocumentName(documentName);
-    const translatedAllowedDocumentName = localizeDocumentName(allowedDocumentName);
+    const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
+    const listFormatter = new Intl.ListFormat(userLanguage, { style: "long", type: "disjunction" });
+
+    const translatedAllowedDocumentNames =
+      allowedDocumentNames &&
+      listFormatter.format(allowedDocumentNames.map((d: any) => localizeDocumentName(d)) ?? "");
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
-      allowedDocumentName: translatedAllowedDocumentName,
+      allowedDocumentName: translatedAllowedDocumentNames, // TODO change translation key to `allowedDocumentNames`
       documentName: translatedDocumentName,
     });
     // @ts-expect-error console
@@ -61,10 +70,14 @@ export function isAllowedDocumentName(
 }
 
 export function isAllowedDocumentType(
-  document: Document<any, any>,
+  document: Document<any, any> | undefined,
   allowedDocumentTypes: string[] | undefined
 ): boolean {
-  if (allowedDocumentTypes?.length && !allowedDocumentTypes.includes((document as any)?.type)) {
+  if (
+    allowedDocumentTypes?.length && // Is anything required
+    hasOwnProperty(document, "type") && // Does this Document have a type
+    !allowedDocumentTypes.includes(document?.type as string) // Does the type match
+  ) {
     const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
     const listFormatter = new Intl.ListFormat(userLanguage, { style: "long", type: "disjunction" });
 
@@ -73,7 +86,7 @@ export function isAllowedDocumentType(
     );
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentType", {
       allowedDropTypes: translatedAllowedDocumentTypes,
-      type: localizeItemType((document as any)?.type),
+      type: localizeItemType(document?.type as any),
     });
     // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
@@ -103,13 +116,20 @@ export function hasRqid(document: Document<any, any> | undefined): boolean {
 /**
  * Update the targetDocument property called what targetPropertyName contains
  * with a RqidLink to the droppedDocument.
+ * TODO always construct an embedded rqid?
  */
 export async function updateRqidLink(
   targetDocument: Document<any, any>,
   targetPropertyName: string | undefined,
   droppedDocument: Document<any, any>
 ): Promise<void> {
-  const droppedItemRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id;
+  const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
+  const parentDocumentRqid = droppedDocument.isEmbedded
+    ? droppedDocument.parent.getFlag(systemId, documentRqidFlags)?.id ?? ""
+    : "";
+  const fullDocumentRqid =
+    (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
+
   // @ts-expect-error system
   const targetProperty = getProperty(targetDocument?.system, targetPropertyName ?? "");
 
@@ -124,7 +144,7 @@ export async function updateRqidLink(
     return;
   }
 
-  const newLink = new RqidLink(droppedItemRqid, droppedDocument.name ?? "");
+  const newLink = new RqidLink(fullDocumentRqid, droppedDocument.name ?? "");
 
   if (Array.isArray(targetProperty)) {
     const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
@@ -159,9 +179,44 @@ export async function updateRqidLink(
 }
 
 export function getAllowedDropDocumentTypes(event: DragEvent) {
+  return convertStringToArray(getDomDataset(event, "dropzone-document-types"));
+}
+
+export function getAllowedDropDocumentNames(event: DragEvent) {
+  return convertStringToArray(getDomDataset(event, "dropzone-document-names"));
+}
+
+export async function extractDropInfo<T extends Document<any, any>>(
+  event: DragEvent,
+  data: { type: string; uuid: string }
+): Promise<{
+  droppedDocument: T; // Can be undefined, but then isAllowedToDrop is false
+  dropZoneData: string | undefined;
+  isAllowedToDrop: boolean;
+  hasRqid: boolean;
+}> {
+  const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
+  const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
+  // @ts-expect-error fromDropData
+  const droppedDocument = await cls?.implementation.fromDropData(data as any);
+  const dropZoneData = getDomDataset(event, "dropzone");
+  const isAllowedDropDocumentType = isAllowedDocumentType(
+    droppedDocument,
+    allowedDropDocumentTypes
+  );
+  return {
+    droppedDocument: droppedDocument,
+    dropZoneData: dropZoneData,
+    isAllowedToDrop: droppedDocument && isAllowedDropDocumentType,
+    hasRqid: hasRqid(droppedDocument),
+  };
+}
+
+function convertStringToArray(commaSeparatedString: string | undefined): string[] {
   return (
-    getDomDataset(event, "dropzone-document-types")
+    commaSeparatedString
       ?.split(",")
-      .filter((t) => t !== "") ?? []
+      .map((s) => s.trim())
+      .filter((s) => s) ?? []
   );
 }

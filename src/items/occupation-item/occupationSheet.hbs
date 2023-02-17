@@ -28,7 +28,7 @@
       {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
         rqidLink=system.occupationRqidLink
         dropzoneData="occupationRqidLink"
-        dropDocumentName="JournalEntry"
+        dropDocumentNames="JournalEntry, JournalEntryPage"
         showDeleteFromPropertyName="occupationRqidLink"
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
@@ -136,7 +136,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.cultRqidLinks
             dropzoneData="cultRqidLinks"
-            dropDocumentName="Item"
+            dropDocumentNames="Item"
             dropDocumentTypes="cult"
             showDeleteFromPropertyName="cultRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
@@ -153,7 +153,7 @@
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.startingEquipmentRqidLinks
             dropzoneData="startingEquipmentRqidLinks"
-            dropDocumentName="Item"
+            dropDocumentNames="Item"
             dropDocumentTypes="armor,gear,weapon"
             showDeleteFromPropertyName="startingEquipmentRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
