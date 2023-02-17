@@ -17,6 +17,7 @@ import {
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
+import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
@@ -207,6 +208,8 @@ export class RqgItemSheet<
         return await this._onDropItem(event, droppedDocumentData);
       case "JournalEntry":
         return await this._onDropJournalEntry(event, droppedDocumentData);
+      case "JournalEntryPage":
+        return await this._onDropJournalEntryPage(event, droppedDocumentData);
       default:
         // This will warn about not supported Document Name
         isAllowedDocumentName(droppedDocumentData.type, "Item, JournalEntry");
@@ -243,6 +246,22 @@ export class RqgItemSheet<
       hasRqid(droppedJournal)
     ) {
       await updateRqidLink(this.item, targetPropertyName, droppedJournal);
+      return [this.item];
+    }
+    return false;
+  }
+
+  async _onDropJournalEntryPage(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
+    const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
+    // @ts-expect-error fromDropData
+    const droppedPage = await cls?.implementation.fromDropData(data as any);
+    const targetPropertyName = getDomDataset(event, "dropzone");
+    if (isAllowedDocumentType(droppedPage, allowedDropDocumentTypes) && hasRqid(droppedPage)) {
+      await updateRqidLink(this.item, targetPropertyName, droppedPage);
       return [this.item];
     }
     return false;

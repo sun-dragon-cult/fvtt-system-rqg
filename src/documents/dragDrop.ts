@@ -103,13 +103,20 @@ export function hasRqid(document: Document<any, any> | undefined): boolean {
 /**
  * Update the targetDocument property called what targetPropertyName contains
  * with a RqidLink to the droppedDocument.
+ * TODO always construct an embedded rqid?
  */
 export async function updateRqidLink(
   targetDocument: Document<any, any>,
   targetPropertyName: string | undefined,
   droppedDocument: Document<any, any>
 ): Promise<void> {
-  const droppedItemRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id;
+  const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
+  const parentDocumentRqid = droppedDocument.isEmbedded
+    ? droppedDocument.parent.getFlag(systemId, documentRqidFlags)?.id ?? ""
+    : "";
+  const fullDocumentRqid =
+    (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
+
   // @ts-expect-error system
   const targetProperty = getProperty(targetDocument?.system, targetPropertyName ?? "");
 
@@ -124,7 +131,7 @@ export async function updateRqidLink(
     return;
   }
 
-  const newLink = new RqidLink(droppedItemRqid, droppedDocument.name ?? "");
+  const newLink = new RqidLink(fullDocumentRqid, droppedDocument.name ?? "");
 
   if (Array.isArray(targetProperty)) {
     const targetPropertyRqidLinkArray = targetProperty as RqidLink[];

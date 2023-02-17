@@ -275,9 +275,10 @@ export class Rqid {
     const document = await Rqid.fromRqid(rqid);
     if (document != null && rqid.split(".")?.[3] === "jp") {
       const journal = document.parent;
+      await journal?.sheet?._render(true, { focus: true });
       journal?.sheet.goToPage(document.id, anchor);
     } else {
-      // @ts-ignore all rqid supported documents have sheet
+      // @ts-expect-error all rqid supported documents have sheet
       document?.sheet?.render(true, { focus: true });
     }
   }
