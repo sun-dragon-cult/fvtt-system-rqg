@@ -5,6 +5,7 @@ import { RqgItem } from "./rqgItem";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
+  hasRqid,
   isAllowedDocumentNames,
   onDragEnter,
   onDragLeave,
@@ -220,10 +221,9 @@ export class RqgItemSheet<
       droppedDocument: droppedItem,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      hasRqid,
     } = await extractDropInfo<RqgItem>(event, data);
 
-    if (isAllowedToDrop && hasRqid) {
+    if (isAllowedToDrop && hasRqid(droppedItem)) {
       await updateRqidLink(this.item, targetPropertyName, droppedItem);
       return [this.item];
     }
@@ -238,10 +238,9 @@ export class RqgItemSheet<
       droppedDocument: droppedJournal,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      hasRqid,
     } = await extractDropInfo<JournalEntry>(event, data);
 
-    if (isAllowedToDrop && hasRqid) {
+    if (isAllowedToDrop && hasRqid(droppedJournal)) {
       await updateRqidLink(this.item, targetPropertyName, droppedJournal);
       return [this.item];
     }
@@ -256,11 +255,10 @@ export class RqgItemSheet<
       droppedDocument: droppedPage,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      hasRqid,
       // @ts-expect-error JournalEntryPage
     } = await extractDropInfo<JournalEntryPage>(event, data);
 
-    if (isAllowedToDrop && hasRqid) {
+    if (isAllowedToDrop && hasRqid(droppedPage)) {
       await updateRqidLink(this.item, targetPropertyName, droppedPage);
       return [this.item];
     }

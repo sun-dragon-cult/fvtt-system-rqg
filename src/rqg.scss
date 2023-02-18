@@ -266,6 +266,14 @@ body {
     }
   }
 
+  button.sort {
+    line-height: unset;
+    width: 1.8em;
+    i {
+      margin-left: -2px; // center the icon
+    }
+  }
+
   .grid {
     display: grid;
     grid-template-rows: [row-start] min-content [row-end];
@@ -401,7 +409,7 @@ body {
       }
 
       // Set-token-SR-in-combat button
-      button {
+      button.sr {
         height: 1.5rem;
         line-height: unset;
         width: unset;

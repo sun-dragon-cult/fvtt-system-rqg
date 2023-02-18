@@ -215,7 +215,8 @@
         "SR": "SR",
         "Dodge": "Dodge",
         "SpiritCombat": "Spirit Combat",
-        "SpiritCombatDamage": "Spirit Combat Damage"
+        "SpiritCombatDamage": "Spirit Combat Damage",
+        "SetSRInCombatTracker": "Set SR in combat tracker"
       },
       "Gear": {
         "ViewByItemType": "View by Item Type",
@@ -1128,6 +1129,9 @@
       "items": "Step 2 / 4 - Migrating {count} world items",
       "scenes": "Step 3 / 4 - Migrating {count} scenes",
       "compendiums": "Step 4 / 4 - Migrating {count} compendiums"
+    },
+    "UI": {
+      "SortItems": "Sort items alphabetically"
     }
   },
   "prio": 0,

@@ -193,7 +193,6 @@ export async function extractDropInfo<T extends Document<any, any>>(
   droppedDocument: T; // Can be undefined, but then isAllowedToDrop is false
   dropZoneData: string | undefined;
   isAllowedToDrop: boolean;
-  hasRqid: boolean;
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
   const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
@@ -208,7 +207,6 @@ export async function extractDropInfo<T extends Document<any, any>>(
     droppedDocument: droppedDocument,
     dropZoneData: dropZoneData,
     isAllowedToDrop: droppedDocument && isAllowedDropDocumentType,
-    hasRqid: hasRqid(droppedDocument),
   };
 }
 

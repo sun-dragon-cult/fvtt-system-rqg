@@ -21,7 +21,6 @@ import {
   assertHtmlElement,
   assertItemType,
   getDocumentTypes,
-  getDomDataset,
   getGame,
   getGameUser,
   getRequiredDomDataset,
@@ -49,12 +48,12 @@ import { Characteristics } from "src/data-model/actor-data/characteristics";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
+  hasRqid,
   isAllowedDocumentNames,
   onDragEnter,
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
-import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 interface UiSections {
   health: boolean;
@@ -575,7 +574,6 @@ export class RqgActorSheet extends ActorSheet<
         );
       })
     );
-
     itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
       assertItemType(weapon.type, ItemTypeEnum.Weapon);
 
@@ -608,6 +606,10 @@ export class RqgActorSheet extends ActorSheet<
         }
       }
     });
+    itemTypes[ItemTypeEnum.Passion].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Weapon].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Gear].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Armor].sort((a: any, b: any) => a.sort - b.sort);
 
     return itemTypes;
   }
@@ -1020,6 +1022,12 @@ export class RqgActorSheet extends ActorSheet<
       el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
+    // Sort Items alphabetically
+    htmlElement?.querySelectorAll<HTMLElement>("[data-sort-items]").forEach((el) => {
+      const itemType = getRequiredDomDataset(el, "sort-items");
+      el.addEventListener("click", () => RqgActorSheet.sortItems(this.actor, itemType));
+    });
+
     // Cycle the equipped state of a physical Item
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -1276,11 +1284,7 @@ export class RqgActorSheet extends ActorSheet<
       return false;
     }
 
-    const {
-      droppedDocument: item,
-      isAllowedToDrop,
-      hasRqid,
-    } = await extractDropInfo<RqgItem>(event, data);
+    const { droppedDocument: item, isAllowedToDrop } = await extractDropInfo<RqgItem>(event, data);
 
     if (!isAllowedToDrop) {
       return false;
@@ -1293,7 +1297,7 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     if (item.type === ItemTypeEnum.Occupation) {
-      if (!hasRqid) {
+      if (!hasRqid(item)) {
         return false;
       }
       await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
@@ -1340,10 +1344,9 @@ export class RqgActorSheet extends ActorSheet<
       droppedDocument: droppedJournal,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      hasRqid,
     } = await extractDropInfo<JournalEntry>(event, data);
 
-    if (isAllowedToDrop && hasRqid) {
+    if (isAllowedToDrop && hasRqid(droppedJournal)) {
       await updateRqidLink(this.actor, targetPropertyName, droppedJournal);
       return [droppedJournal];
     }
@@ -1359,11 +1362,10 @@ export class RqgActorSheet extends ActorSheet<
       droppedDocument: droppedPage,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      hasRqid,
       // @ts-expect-error JournalEntryPage
     } = await extractDropInfo<JournalEntryPage>(event, data);
 
-    if (isAllowedToDrop && hasRqid) {
+    if (isAllowedToDrop && hasRqid(droppedPage)) {
       await updateRqidLink(this.actor, targetPropertyName, droppedPage);
       return [droppedPage];
     }
@@ -1582,5 +1584,26 @@ export class RqgActorSheet extends ActorSheet<
 
   _openActorWizard() {
     new ActorWizard(this.actor, {}).render(true);
+  }
+
+  private static async sortItems(actor: RqgActor, itemType: string): Promise<void> {
+    const itemsToSort = actor.items.filter((i) => i.type === itemType);
+    itemsToSort.sort((a: RqgItem, b: RqgItem) => {
+      return (a.name ?? "").localeCompare(b.name ?? "");
+    });
+
+    itemsToSort.map((item: RqgItem, index) => {
+      index === 0
+        ? // @ts-expect-error sort
+          (item.sort = CONST.SORT_INTEGER_DENSITY)
+        : // @ts-expect-error sort
+          (item.sort = itemsToSort[index - 1].sort + CONST.SORT_INTEGER_DENSITY);
+    });
+    const updateData = itemsToSort.map((item) => ({
+      _id: item.id,
+      // @ts-expect-error sort
+      sort: item.sort,
+    }));
+    await actor.updateEmbeddedDocuments("Item", updateData);
   }
 }
