@@ -7,6 +7,14 @@
       <div class="topheaderline">
         <h1 class="charname"><input name="name" type="text" value="{{name}}"></h1>
         <div class="flex-row gap1rem">
+          <div class="cult">
+            <b data-rqid-link="{{mainCultDescriptionLink}}">{{mainCult}}
+              {{#if hasMultipleCults}}
+                <i class="fa fa-plus-circle x-small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
+              {{/if}}
+            </b><br>
+            <span class="x-small-size">{{mainCultRank}}</span>
+          </div>
           {{#unless (eq system.attributes.health "healthy")}}<i>{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}
           {{#if characterElementRunes}}
             <div class="flex-row gap01rem">

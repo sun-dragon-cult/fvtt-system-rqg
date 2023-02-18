@@ -86,6 +86,10 @@ interface CharacterSheetData {
   healthStatuses: typeof actorHealthStatuses;
 
   // Other data needed for the sheet
+  mainCult: string;
+  mainCultRank: string;
+  mainCultDescriptionLink: string;
+  hasMultipleCults: boolean;
   /** Array of element runes with > 0% chance */
   characterElementRunes: RuneDataSource[];
   characterPowerRunes: RuneDataSource[];
@@ -161,6 +165,14 @@ export class RqgActorSheet extends ActorSheet<
     const system = duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = system.attributes.dexStrikeRank;
+    const cults = this.actor.items
+      .filter((i) => i.type === ItemTypeEnum.Cult)
+      .sort((a: RqgItem, b: RqgItem) => b.system.runePoints.max - a.system.runePoints.max);
+    const mainCultItem: RqgItem | undefined = cults[0];
+    const mainCultRank = mainCultItem?.system?.rank;
+    const mainCultRankTranslation = mainCultRank
+      ? localize("RQG.Actor.RuneMagic.CultRank." + mainCultRank)
+      : "";
 
     return {
       id: this.document.id ?? "",
@@ -180,6 +192,10 @@ export class RqgActorSheet extends ActorSheet<
       ),
       dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge),
 
+      mainCult: mainCultItem?.name ?? "",
+      mainCultRank: mainCultRankTranslation,
+      mainCultDescriptionLink: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
+      hasMultipleCults: cults.length > 1,
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
       characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character

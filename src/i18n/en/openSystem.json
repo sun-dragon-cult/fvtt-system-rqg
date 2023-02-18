@@ -1131,7 +1131,8 @@
       "compendiums": "Step 4 / 4 - Migrating {count} compendiums"
     },
     "UI": {
-      "SortItems": "Sort items alphabetically"
+      "SortItems": "Sort items alphabetically",
+      "MultipleCults": "Character has more cults,<br> see Rune Magic Tab"
     }
   },
   "prio": 0,
