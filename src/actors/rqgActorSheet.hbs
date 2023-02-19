@@ -7,15 +7,17 @@
       <div class="topheaderline">
         <h1 class="charname"><input name="name" type="text" value="{{name}}"></h1>
         <div class="flex-row gap1rem">
-          <div class="cult">
-            <b data-rqid-link="{{mainCultDescriptionLink}}">{{mainCult}}
-              {{#if hasMultipleCults}}
-                <i class="fa fa-plus-circle x-small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
-              {{/if}}
-            </b><br>
-            <span class="x-small-size">{{mainCultRank}}</span>
-          </div>
           {{#unless (eq system.attributes.health "healthy")}}<i>{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}
+          <div>
+            <div class="cult contextmenu item" data-item-id="{{mainCult.id}}" data-rqid-link="{{mainCult.descriptionRqid}}">
+              <b>{{mainCult.name}}
+                {{#if mainCult.hasMultipleCults}}
+                  <i class="fa fa-plus-circle x-small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
+                {{/if}}
+              </b><br>
+              <span class="x-small-size">{{mainCult.rank}}</span>
+            </div>
+          </div>
           {{#if characterElementRunes}}
             <div class="flex-row gap01rem">
               {{#each characterElementRunes}}

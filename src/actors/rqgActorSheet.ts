@@ -69,6 +69,14 @@ interface UiSections {
   activeEffects: boolean;
 }
 
+interface MainCult {
+  name: string;
+  id: string;
+  rank: string;
+  descriptionRqid: string;
+  hasMultipleCults: boolean;
+}
+
 interface CharacterSheetData {
   uuid: string;
   /** reorganized for presentation TODO type it better */
@@ -86,10 +94,7 @@ interface CharacterSheetData {
   healthStatuses: typeof actorHealthStatuses;
 
   // Other data needed for the sheet
-  mainCult: string;
-  mainCultRank: string;
-  mainCultDescriptionLink: string;
-  hasMultipleCults: boolean;
+  mainCult: MainCult;
   /** Array of element runes with > 0% chance */
   characterElementRunes: RuneDataSource[];
   characterPowerRunes: RuneDataSource[];
@@ -165,14 +170,6 @@ export class RqgActorSheet extends ActorSheet<
     const system = duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = system.attributes.dexStrikeRank;
-    const cults = this.actor.items
-      .filter((i) => i.type === ItemTypeEnum.Cult)
-      .sort((a: RqgItem, b: RqgItem) => b.system.runePoints.max - a.system.runePoints.max);
-    const mainCultItem: RqgItem | undefined = cults[0];
-    const mainCultRank = mainCultItem?.system?.rank;
-    const mainCultRankTranslation = mainCultRank
-      ? localize("RQG.Actor.RuneMagic.CultRank." + mainCultRank)
-      : "";
 
     return {
       id: this.document.id ?? "",
@@ -192,10 +189,7 @@ export class RqgActorSheet extends ActorSheet<
       ),
       dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge),
 
-      mainCult: mainCultItem?.name ?? "",
-      mainCultRank: mainCultRankTranslation,
-      mainCultDescriptionLink: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
-      hasMultipleCults: cults.length > 1,
+      mainCult: this.getMainCultInfo(),
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
       characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character
@@ -318,6 +312,24 @@ export class RqgActorSheet extends ActorSheet<
       curr.system.price.conversion = conv;
     });
     return result;
+  }
+
+  private getMainCultInfo(): MainCult {
+    const cults = this.actor.items
+      .filter((i) => i.type === ItemTypeEnum.Cult)
+      .sort((a: RqgItem, b: RqgItem) => b.system.runePoints.max - a.system.runePoints.max);
+    const mainCultItem: RqgItem | undefined = cults[0];
+    const mainCultRank = mainCultItem?.system?.rank;
+    const mainCultRankTranslation = mainCultRank
+      ? localize("RQG.Actor.RuneMagic.CultRank." + mainCultRank)
+      : "";
+    return {
+      name: mainCultItem?.name ?? "",
+      id: mainCultItem.id ?? "",
+      rank: mainCultRankTranslation,
+      descriptionRqid: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
+      hasMultipleCults: cults.length > 1,
+    };
   }
 
   private getPhysicalItemLocations(): string[] {
