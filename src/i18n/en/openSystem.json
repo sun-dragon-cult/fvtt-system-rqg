@@ -345,6 +345,7 @@
         "SpiritMagic": "Spirit Magic",
         "CHALimitFormula": "{points} Points of Spirit Magic with {CHALimit} CHA Limit",
         "Name": "Name",
+        "SpellFocus": "Focus",
         "Points": "Points",
         "Variable": "Variable",
         "Range": "Range",

@@ -8,13 +8,14 @@
   <div class="headings"></div>
   <div class="head1"><button class="sort" data-sort-items="spiritMagic" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
   <div class="head2">{{localize "RQG.Actor.SpiritMagic.Name"}}</div>
-  <div class="head3"><span class="text-right">{{localize "RQG.Actor.SpiritMagic.Points"}}</span></div>
-  <div class="head4">{{localize "RQG.Actor.SpiritMagic.Variable"}}</div>
-  <div class="head5">{{localize "RQG.Actor.SpiritMagic.Range"}}</div>
-  <div class="head6">{{localize "RQG.Actor.SpiritMagic.Duration"}}</div>
-  <div class="head7">{{localize "RQG.Actor.SpiritMagic.Concentration"}}</div>
-  <div class="head8">{{localize "RQG.Actor.SpiritMagic.Ritual"}}</div>
-  <div class="head9">{{localize "RQG.Actor.SpiritMagic.Enchantment"}}</div>
+  <div class="head3">{{localize "RQG.Actor.SpiritMagic.SpellFocus"}}</div>
+  <div class="head4"><span class="text-right">{{localize "RQG.Actor.SpiritMagic.Points"}}</span></div>
+  <div class="head5">{{localize "RQG.Actor.SpiritMagic.Variable"}}</div>
+  <div class="head6">{{localize "RQG.Actor.SpiritMagic.Range"}}</div>
+  <div class="head7">{{localize "RQG.Actor.SpiritMagic.Duration"}}</div>
+  <div class="head8">{{localize "RQG.Actor.SpiritMagic.Concentration"}}</div>
+  <div class="head9">{{localize "RQG.Actor.SpiritMagic.Ritual"}}</div>
+  <div class="head10">{{localize "RQG.Actor.SpiritMagic.Enchantment"}}</div>
   {{#each embeddedItems.spiritMagic}}
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
@@ -25,6 +26,11 @@
       class="spirit-magic contextmenu item"
       data-spirit-magic-roll>
       {{name}}{{#if system.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
+    </div>
+    <div data-item-id="{{id}}"
+         class="spirit-magic contextmenu item"
+         data-spirit-magic-roll>
+      {{system.spellFocus}}
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
