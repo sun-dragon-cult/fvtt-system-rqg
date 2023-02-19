@@ -634,10 +634,12 @@ export class RqgActorSheet extends ActorSheet<
         }
       }
     });
-    itemTypes[ItemTypeEnum.Passion].sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.Weapon].sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.Gear].sort((a: any, b: any) => a.sort - b.sort);
     itemTypes[ItemTypeEnum.Armor].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Gear].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Passion].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.RuneMagic].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.SpiritMagic].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Weapon].sort((a: any, b: any) => a.sort - b.sort);
 
     return itemTypes;
   }
