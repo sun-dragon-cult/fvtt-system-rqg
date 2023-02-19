@@ -138,7 +138,7 @@ items:
 - "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	44	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.ski	[ gainedChance:	60	]}}|"
 - "|{{	skills/communication-skills.yaml	i.skill.sing	[ gainedChance:	45	]}}|"
-- "|{{	skills/communication-skills.yaml	i.skill.speak-language	[ gainedChance:	50	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.speak-language-aldryami	[ gainedChance:	50	]}}|"
 - "|{{	skills/knowledge-skills.yaml	i.skill.elder-race-lore	[ gainedChance:	45	]}}|"
 - "|{{	skills/knowledge-skills.yaml	i.skill.first-aid	[ gainedChance:	40	]}}|"
 - "|{{	skills/knowledge-skills.yaml	i.skill.plant-lore	[ gainedChance:	70	]}}|"

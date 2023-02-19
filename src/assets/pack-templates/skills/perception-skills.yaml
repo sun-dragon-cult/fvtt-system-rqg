@@ -165,3 +165,45 @@ flags:
       id: i.skill.elfsense
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
+---
+# Earthsense scan
+name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/scan.svg
+data:
+  category: perception
+  skillName: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+  specialization:
+  baseChance: 25
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..earthsense-scan
+    name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.earthsense-scan
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# Earthsense search
+name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/search.svg
+data:
+  category: perception
+  skillName: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+  specialization:
+  baseChance: 25
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..earthsense-search
+    name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.earthsense-search
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

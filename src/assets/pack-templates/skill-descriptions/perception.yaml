@@ -172,3 +172,53 @@ flags:
       id: je..elfsense
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
+---
+# Earthsense scan
+name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+pages:
+  - name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/scan.svg" height="70">
+        ${{openSystem.content.skill.earthsenseScan.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+    sort: 0
+    flags: {}
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..earthsense-scan
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# Earthsense search
+name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+pages:
+  - name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+    type: text
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/search.svg" height="70">
+        ${{openSystem.content.skill.earthsenseSearch.description}}$
+        <hr>
+        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+    sort: 0
+    flags: {}
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..earthsense-search
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

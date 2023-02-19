@@ -163,6 +163,90 @@ data:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
+name: ${{openSystem.content.weapon.battleAxeIron}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/1h-axe.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.battle-axe-iron
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.UVRB26QZsPwm1U9R
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+          damageType: slash
+          description:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+          damageType: parry
+          description:
+      damage: 1d8+2
+      minStrength: 13
+      minDexterity: 7
+      strikeRank: 3
+    offHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.XZcWh57Y8C89pbdm
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+          damageType: slash
+          description:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+          damageType: parry
+          description:
+      damage: 1d8+2
+      minStrength: 13
+      minDexterity: 7
+      strikeRank: 3
+    twoHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons.xhY8SCSzzBhwV1Pk
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+          damageType: slash
+          description:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+          damageType: parry
+          description:
+      damage: 1d8+2
+      minStrength: 9
+      minDexterity: 7
+      strikeRank: 3
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description: ${{openSystem.RQG.content.weapon.ironDescription}}$
+  gmNotes:
+  hitPoints:
+    value: 12
+    max: 12
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 1400
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: null
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
 name: ${{openSystem.content.weapon.greatAxe}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-axe.svg

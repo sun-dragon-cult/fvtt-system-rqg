@@ -630,7 +630,8 @@
           "RingMail": "Ring Mail",
           "TurtleShell": "Turtle Shell",
           "Quilted": "Quilted",
-          "Linen": "Linen"
+          "Linen": "Linen",
+          "Iron": "Iron"
         }
       },
       "Cult": {
@@ -1316,11 +1317,17 @@
       }
     },
     "language": {
+      "aldryami": {
+        "name": "Aldryami"
+      },
       "esrolian": {
         "name": "Esrolian"
       },
       "heortling": {
         "name": "Heortling"
+      },
+      "mostali": {
+        "name": "Mostali"
       },
       "newPelorian": {
         "name": "New Pelorian"
@@ -2281,6 +2288,10 @@
         "skillName": "Scan",
         "description": "<p>Observing an area for any signs of movement. Generally, this is used in opposition to the Hide skill.</p>"
       },
+      "earthsenseScan": {
+        "skillName": "Earthsense Scan",
+        "description": "<p>Observing an area for any signs of movement. Generally, this is used in opposition to the Hide skill.</p><p>Dwarfs have a sense, unique to them, called “Earthsense.” It is like long-distance touch, and permits them to sense heat, air pressure, and air currents with remarkable accuracy. They can maneuver in the dark using Earthsense, calculate their depth beneath the surface, sense moving objects, and even measure the size and shape of a cave system by simply standing in a corner of it and sensing the air currents. Thus, a dwarf can travel swiftly through an unfamiliar cave system, trusting their “feel” as to what tunnels lead where. Long-range Earthsense is defined as Earthsense Scan, and close-range Earthsense is Earthsense Search.</p>"
+      },
       "scentIntruder": {
         "skillName": "Scent Intruder",
         "description": "<p>This creature may not tack by scent, but they have a chance of noticing intruders by scent.</p>"
@@ -2288,6 +2299,10 @@
       "search": {
         "skillName": "Search",
         "description": "<p>Scrutinizing an area to find a concealed or lost object or door. The skill used to oppose this is Conceal.</p>"
+      },
+      "earthsenseSearch": {
+        "skillName": "Earthsense Search",
+        "description": "<p>Scrutinizing an area to find a concealed or lost object or door. The skill used to oppose this is Conceal.</p><p>Dwarfs have a sense, unique to them, called “Earthsense.” It is like long-distance touch, and permits them to sense heat, air pressure, and air currents with remarkable accuracy. They can maneuver in the dark using Earthsense, calculate their depth beneath the surface, sense moving objects, and even measure the size and shape of a cave system by simply standing in a corner of it and sensing the air currents. Thus, a dwarf can travel swiftly through an unfamiliar cave system, trusting their “feel” as to what tunnels lead where. Long-range Earthsense is defined as Earthsense Scan, and close-range Earthsense is Earthsense Search.</p>"
       },
       "senseAssassin": {
         "skillName": "Sense Assassin",
@@ -2592,8 +2607,10 @@
       }
     },
     "weapon": {
+      "ironDescription": "<p>Any damage from an iron weapno to an elf or troll (and some of their kindred races) that penetrates armor is doubled. Can strike creatures immune to normal weapons.</p>",
       "smallAxe": "Small Axe",
       "battleAxe": "Battle Axe",
+      "battleAxeIron": "Battle Axe, Iron",
       "greatAxe": "Great Axe",
       "daggerAxe": "Dagger Axe",
       "compositeBow": "Composite Bow",
@@ -2606,6 +2623,7 @@
       "arrows": "Arrows",
       "crossbowBolts": "Crossbow Bolts",
       "warHammer": "War Hammer",
+      "warHammerIron": "War Hammer, Iron",
       "greatHammer": "Great Hammer",
       "maul": "Maul",
       "heavyMace": "Heavy Mace",
@@ -2675,6 +2693,8 @@
         "skirt": "Skirt",
         "pants": "Pants",
         "greaves": "Greaves",
+        "unenchantedHeavyDwarfChainmail": "Unenchanted Heavy Dwarf Chainmail",
+        "unenchantedDwarfHelmet": "Unenchanted Heavy Dwarf Closed Helmet",
         "description": {
           "cuirboilli": "<p>Cuirboilli is leather treated with boiling wax, hardening it almost to the resiliency of metal.</p>",
           "heavyLeather": "<p>Heavy leather is the thickness of a shoe sole and provides two points of protection.  Unlike normal leather, heavy leather cannot be worn under other armor.</p>",
@@ -2698,7 +2718,9 @@
           "openHelm": "<p>This is a conical metal helmet with bronze cheek-pieces attached. It is usually decorated with plumes and feathers.</p>",
           "closedHelm": "<p>This metal helmet has a pair of cheekpieces and a neck guard. In the front is a nasal bar that protects the eyes and nose.</p>",
           "fullHelm": "<p>This close-fitting helmet has elongated cheek-pieces to protect the wearer’s mouth and throat. A nose guard protects the nose and eyes. It offers excellent all-round protection but severely limits vision and hearing, as well as being hot and stuffy to wear for long periods.</p>",
-          "turtleShellCuirass": "<p>This chestpiece of turtleshell, wood, and bronze is popular within the Humakt cult, who associate it with their hero Hiia Swordsman.</p>"
+          "turtleShellCuirass": "<p>This chestpiece of turtleshell, wood, and bronze is popular within the Humakt cult, who associate it with their hero Hiia Swordsman.</p>",
+          "unenchantedHeavyDwarfChainmail": "<p>Coat of unenchanted heavy dwarf iron chainmail (9 pts.).  Wearer has a 60% chance of being unaffected by any spell cast at them, cumulative with other iron worn.</p>",
+          "unenchantedDwarfHelmet": "<p>Closed helmet of unenchanted dwarf iron (9 pts).  Wearer has a 10% chance of being unaffected by any spell cast at them, cumulative with other iron worn.</p>"
         }
       },
       "gear": {
@@ -2938,6 +2960,8 @@
       }
     },
     "passionSubject": {
+      "aldryami": "Aldryami",
+      "casteDuties": "Caste Duties",
       "family": "Family",
       "forest": "Forest",
       "mostali": "Mostali",
@@ -3001,6 +3025,11 @@
         "name": "Horse (Seredae)",
         "species": "Equus caballus",
         "notes": "<p>Hippogriff was the favorite child of King Griffin, and an ally to Splendid Yamsur, the eldest son of Yelm. Splendid Yamsur and Hippogriff had taken solemn oaths of friendship together, but in several fights, Hippogriff was hurt and abandoned by her erstwhile friend.</p><p>Hippogriff underwent a series of painful and humiliating experiences during the Gods War and the Great Darkness. First, she met Storm Bull in raging battle, and her proud fangs were broken out of her mouth. In a fight with Maran Gor, the Earthshaker, Hippogriff ’s legs were broken. Her bronze claws were ripped from her feet, but Yamsur was able to replace them with hooves. The greatest defeat was when Zorak Zoran tore off her golden wings, laughing as he robbed her of ever returning to the sky. But most humiliating was when this once great godling was taken and broken by a mortal, Hyalor Horsebreaker.</p><p>Hyalor was a leader among men and a believer in the long-disappeared Sun. He claimed descent from Splendid Yamsur, who was slain by the Devil. Hyalor claimed that he was freeing her crippled spirit from Death and wished to make an alliance. He rescued her by changing her name and her identity. Even so, man got the better of the bargain. She was called Hippoi, or simply “horse”. Ever since then, her descendants have worked more for man than man has worked for horse. When the Sun rose again, Hyalor was ready to accept him, having survived the Darkness through great faith and courage. The horse, already used to slavery, leapt to meet her old master. The pair together received great bounty at the Dawn, and their herds and numbers increased greatly with the blessings of Yelm.</p><p>Dragon Pass is home to some of the finest horse breeders in Glorantha, the Grazeland Pony Breeders. For other peoples, horses are valuable and an indicator of wealth. Horses with the size, stamina and skill of a trained warhorse are few and far between. They are also quite expensive.</p><h1>Seredae</h1><p>The most common horse in Peloria, Pent, and Kralorela, the sered is the second-most common horse in Dragon Pass. They are a small-headed breed with a seemingly limitless variety of colors, ranging from noble black and white, through common duns and browns, to mixtures like dapple greys and piebald. Most have some appearance of stripes.</p><p><strong>Characteristics</strong>: Seredae have normal horse characteristics.</p><p><strong>Note</strong>: The average sered cannot carry a heavily armored warrior into battle.</p><p><strong>Note</strong>: A horse may attack once in a melee round. A ridden non-warhorse normally makes no attacks on behalf of its rider, but may attack something threatening it directly, such as a serpent.</p><p><strong>Armor</strong>: 1-point hide.</p><p><strong>Skills</strong>: Climb 30%, Dodge 25%, Jump 75%, Listen 40%, Scan 30%, Scent Intruder 30%, Swim 50%.</p>"
+      },
+      "mostali": {
+        "name": "Mostali (Dwarf)",
+        "species": "Mostali lithanthropus",
+        "notes": "<p>Also called dwarfs, the Mostali claim descent from Mostal the Maker, a primeval deity said to have created the World. The dwarfs have a long and ancient history, most of which is unknown to humanity. They are pragmatic and stoic, happy with practical matters and unafraid of hard work, and are conservative and secretive to an extreme. Their hard religion offers them personal immortality. The official dwarf religion is a sorcery of a limited, but practical, variety.</p><p>The Mostali are locked in eternal war with the elves (dating from the early Gods War) and are no friends to trolls. The enmity of elf and dwarf predates the current form of both species and reaches back to their creation. The byword of their relationships with other intelligent beings is always mutual distrust.</p><p>The dwarfs are divided into occupational castes that often behave like separate species. Only the soldier caste—the Iron Dwarfs—is regularly seen outside their underground cities. The iron discipline and unyielding attitude of dwarf culture is inhuman in its rigidity. Most humans cannot understand their machine-like state of mind. Apparently, many dwarfs cannot either, for there is a significant rate of desertion from the ranks. These are considered heretics by conventional dwarfs, and in some places, they form whole societies.</p><p>The Mostali were the first to discover iron and were the first to learn to work it. They have created many other constructs to aid them, from gargoyles and the stone giants called jolanti, to even more exotic constructs like the Alchemical Transformer and the Cannon Cult.</p><p><strong>Armor</strong>: Coat of unenchanted heavy dwarf iron chainmail (9 pts.) and full helm (9 pts.). The dwarf has a 70% chance of being unaffected by any spell cast at them.</p><p><strong>Skills</strong>: Craft (Iron) 65%, Dodge 35%, Earthsense Scan 50%, Earthsense Search 50%, Mineral Lore 35%.</p><p><strong>Languages</strong>: Speak Mostali 50%, Read/Write Mostali 50%.</p><p><strong>Passions</strong>: Devotion (caste duties) 60%, Hate (Aldryami) 60%, Hate (Uz) 60%.</p><p><strong>Runes</strong>: All dwarfs have the Earth and Stasis Runes at 80% or higher.</p><p><strong>Magic</strong>: Dwarfs use dwarf sorcery (see the [Glorantha Bestiary(https://www.chaosium.com/runequest-glorantha-bestiary-hardcover/)]). An Iron dwarf wearing unenchanted armor does not cast spells in combat.</p><p><strong>Enchanged Iron Weapons</strong>: Damage against an elf or troll that penetrates armor is doubled. Can strike creatures immune to normal weapons.</p><p><strong>Note</strong>: The dwarf crossbow is a repeater. It fires once a round without needing to reload, until all five quarrels in the clip have been expended. It takes three rounds to refill the clip.<p>"
       },
       "shadowcat": {
         "name": "Shadowcat",

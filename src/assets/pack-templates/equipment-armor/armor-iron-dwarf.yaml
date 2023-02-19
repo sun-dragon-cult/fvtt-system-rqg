@@ -1,0 +1,56 @@
+name: ${{openSystem.content.equipment.armor.unenchantedHeavyDwarfChainmail}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Iron}}$)
+type: armor
+img: systems/rqg/assets/images/armor/chain-mail.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-unenchanted-heavy-dwarf-chainmail-iron
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
+    - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+    - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
+    - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
+  armorType: ${{openSystem.content.equipment.armor.unenchantedHeavyDwarfChainmail}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Iron}}$
+  absorbs: 9
+  encumbrance: 12
+  price:
+    real: 8400
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 7
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.unenchantedHeavyDwarfChainmail}}$
+---
+name: ${{openSystem.content.equipment.armor.unenchantedDwarfHelmet}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Iron}}$)
+type: armor
+img: systems/rqg/assets/images/armor/closed-helmet.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-unenchanted-dwarf-helmet-iron
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+data:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.head}}$
+  armorType: ${{openSystem.content.equipment.armor.closedHelm}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Iron}}$
+  absorbs: 9
+  encumbrance: 2
+  price:
+    real: 1400
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 7
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.unenchantedDwarfHelmet}}$

@@ -1,3 +1,27 @@
+# read-write-aldryami
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.aldryami.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.aldryami.name}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-aldryami
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
 # read-write-esrolian
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.esrolian.name}}$)
 type: skill
@@ -43,6 +67,30 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.skill.read-write-heortling
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# read-write-mostali
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.mostali.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+data:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.mostali.name}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-mostali
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
@@ -163,6 +211,27 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.skill.read-write-tradetalk
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# speak-language-aldryami
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.aldryami.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.aldryami.name}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-aldryami
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---

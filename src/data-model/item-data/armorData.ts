@@ -33,6 +33,7 @@ export const materialTranslationKeys = [
   "RQG.Item.Armor.ArmorMaterial.TurtleShell",
   "RQG.Item.Armor.ArmorMaterial.Quilted",
   "RQG.Item.Armor.ArmorMaterial.Linen",
+  "RQG.Item.Armor.ArmorMaterial.Iron",
 ];
 
 export interface ArmorDataSourceData extends IPhysicalItem {
