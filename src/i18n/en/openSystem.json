@@ -2944,6 +2944,7 @@
       "uz": "Uz"
     },
     "bestiary": {
+      "spiritDescriptionGeneral": "",
       "brownBear": {
         "name": "Brown Bear",
         "species": "Ursus arctos",
@@ -2953,6 +2954,16 @@
         "name": "Bison",
         "species": "Bison praxus",
         "notes": "<p>The bison is a surly and intractable beast, save in the presence of its rider. Its thick skin gives it some protection and its basic attack is the charge. They also butt and trample.</p><p>Occasionally (5% chance), there will be a white bison in a herd. White bison hides are extremely valuable (300&ndash;2,000 L, depending on condition). However, white bison are sacred to the White Bull Society, an inter-tribal Praxian society.</p><p>Bison riders are one of the Five Great Tribes of Prax.</p><p><strong>Armor</strong>:&nbsp;3-point hide.</p><p><strong>Note</strong>: A bison cannot head butt and trample in the same melee round.</p>"
+      },
+      "diseaseSpirit": {
+        "name": "Disease Spirit",
+        "species": "",
+        "notes": "<p>Spirits of disease are specifically bound to the service of the Mother of Disease and have a special type of spirit combat.</p><p>Their initial spirit combat attack is normal. But if the disease spirit succeeds in an attack when the victim fails, the spirit can try to infect the target with any of the diseases it is carrying. This infection requires another roll overcoming the target’s Spirit Combat skill, as if the disease spirit was trying to possess the victim. If successful, this does not force the victim’s spirit from the body but infects the victim with the acute form of any disease carried. A second success infects the victim with the next degree of the disease (see RQG p154).</p><p>If the victim manages to defeat the spirit and drives it off or destroys it, the victim gains immediate immunity to any disease carried by the spirit for a year. Exposure to those diseases will not affect the character. They also will steal 1D3 POW directly from the spirit, subtracted from the spirit’s characteristic POW. This stolen POW is not diseased in any way and adds to the characteristic POW, as if a POW gain roll had been made.</p>"
+      },
+      "ghost": {
+        "name": "Ghost",
+        "species": "",
+        "notes": "<p>Ghosts are the spirits of the restless dead. Ghosts found on the Middle World are always tied to a specific site or object, and either cannot leave or must return if they do leave.</p><p>Ghosts come in many forms. Some can change shape, and the most common form is a dark cloud, especially in daylight. Others can take multiple human forms, assume beast shapes, change gender, or even remove body parts and send them roaming about. Possession is a common general trait of ghosts, but many desire direct interaction with mortals. An encounter with a ghost can leave a lingering or permanent effect, depending on the suffering of the victim and degree of success of the ghost. Some types of ghosts are passive or even pleasant.</p><p>Ghosts can become visible at will and engage intruders in spirit combat. If a ghost reduces a foe to 0 magic points, it will possess the victim. Even if a ghost possesses someone, it remains tied to its site and may not leave.</p><p>Most ghosts are malign and hate the living. They are frequently insane. Ghosts possess INT, POW, and CHA.</p>"
       },
       "greenElf": {
         "name": "Aldryami (Green Elf)",
