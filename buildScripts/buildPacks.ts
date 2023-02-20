@@ -23,7 +23,13 @@ const templatePacks = templatePackDirPaths.map((dirPath) => CompendiumPack.loadY
 const translatedPacks: CompendiumPack[] = [];
 templatePacks.forEach((pack) => {
   targetLanguages.forEach((lang) => {
-    translatedPacks.push(pack.translate(lang));
+    try {
+      translatedPacks.push(pack.translate(lang));
+    } catch (error) {
+      if (error instanceof Error) {
+        throw PackError(`Error translating pack ${pack.name} to ${lang}: \n\n${error.message}`);
+      }
+    }
   });
 });
 

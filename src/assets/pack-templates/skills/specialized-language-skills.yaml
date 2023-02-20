@@ -277,6 +277,27 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
+# speak-language-mostali
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.mostali.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+data:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.mostali.name}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-mostali
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
 # speak-language-new-pelorian
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$)
 type: skill

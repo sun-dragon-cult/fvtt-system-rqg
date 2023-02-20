@@ -48,7 +48,7 @@ data:
   hitPoints:
     value:
     max:
-  hitPointLocation: '---'
+  hitPointLocation: 
   encumbrance: 1
   location:
   attunedTo:

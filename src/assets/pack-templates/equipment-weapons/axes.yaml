@@ -223,7 +223,7 @@ data:
       damage:
       minStrength: 0
       minDexterity: 0
-  description: ${{openSystem.RQG.content.weapon.ironDescription}}$
+  description: ${{openSystem.content.weapon.ironDescription}}$
   gmNotes:
   hitPoints:
     value: 12

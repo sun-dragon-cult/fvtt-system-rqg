@@ -207,3 +207,45 @@ flags:
       id: i.skill.earthsense-search
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
+---
+# Darksense scan
+name: ${{openSystem.content.skill.darksenseScan.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/scan.svg
+data:
+  category: perception
+  skillName: ${{openSystem.content.skill.darksenseScan.skillName}}$
+  specialization:
+  baseChance: 25
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..darksense-scan
+    name: ${{openSystem.content.skill.darksenseScan.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.darksense-scan
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# Darksense search
+name: ${{openSystem.content.skill.darksenseSearch.skillName}}$
+type: skill
+img: systems/rqg/assets/images/skills/search.svg
+data:
+  category: perception
+  skillName: ${{openSystem.content.skill.darksenseSearch.skillName}}$
+  specialization:
+  baseChance: 25
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..darksense-search
+    name: ${{openSystem.content.skill.darksenseSearch.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.darksense-search
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

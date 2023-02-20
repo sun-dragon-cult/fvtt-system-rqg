@@ -70,6 +70,7 @@ export class CompendiumPack {
           return yaml.loadAll(yamlStringWithIncludes);
         } catch (error) {
           if (error instanceof Error) {
+            console.log(yamlStringWithIncludes);
             throw PackError(`File ${filePath} could not be parsed: ${error.message}`);
           }
         }
@@ -105,24 +106,31 @@ export class CompendiumPack {
       ),
     };
     const localisedPackDir = `${this.packDir}-${lang}.db`;
-    const localisedData = this.data.map((d) =>
-      JSON.parse(
-        JSON.stringify(d).replace(
-          /\$\{\{ ?([\w-.]+) ?\}\}\$/g,
-          function (match: string, key: string) {
-            const translation = lookup(dictionary, key);
+    const localisedData = this.data.map((d) => {
+      const translated = JSON.stringify(d).replace(
+        /\$\{\{ ?([\w-.]+) ?\}\}\$/g,
+        function (match: string, key: string) {
+          const translation = lookup(dictionary, key);
 
-            if (translation == null) {
-              console.error(match, "translation key missing in language", lang);
-            } else {
-              localizationMatchCount++;
-            }
-
-            return translation ?? match;
+          if (translation == null) {
+            console.error(match, "translation key missing in language", lang);
+          } else {
+            localizationMatchCount++;
           }
-        )
-      )
-    );
+
+          return translation ?? match;
+        }
+      );
+      try {
+        const parsed = JSON.parse(translated);
+
+        return parsed;
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(`Unable to parse translated JSON ${translated}\n\n${error.message}`);
+        }
+      }
+    });
 
     const translatedPack = new CompendiumPack(localisedPackDir, localisedData, false); // clone this CompendiumPack
     return translatedPack;
