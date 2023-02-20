@@ -2,6 +2,7 @@ import { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import {
   assertChatMessageFlagType,
+  assertHtmlElement,
   assertItemType,
   cleanIntegerString,
   convertFormValueToInteger,
@@ -123,7 +124,9 @@ export class WeaponChatHandler {
     ev: SubmitEvent | InputEvent | Event
   ): void {
     assertChatMessageFlagType(flags.type, "weaponChat");
-    const form = (ev.target as HTMLElement)?.closest<HTMLFormElement>("form") ?? undefined;
+    const target = ev.target;
+    assertHtmlElement(target);
+    const form = target?.closest<HTMLFormElement>("form") ?? undefined;
     const formData = new FormData(form);
 
     // combatManeuverName (on the buttons) is not included in the formdata. Get it from what button caused the form to be submitted instead.

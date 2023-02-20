@@ -33,6 +33,7 @@ export class HomelandSheet extends RqgItemSheet<
 
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
@@ -54,12 +55,5 @@ export class HomelandSheet extends RqgItemSheet<
       formData["name"] = newName;
     }
     return super._updateObject(event, formData);
-  }
-
-  public activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-    const form = this.form as HTMLFormElement;
-
-    form.addEventListener("drop", this._onDrop.bind(this));
   }
 }

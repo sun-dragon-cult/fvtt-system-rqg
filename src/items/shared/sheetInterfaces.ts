@@ -2,6 +2,7 @@
 
 export interface DocumentSheetData {
   id: string;
+  uuid: string;
   name: string;
   img: string;
   /** game.user.isGM */
@@ -13,7 +14,6 @@ export interface DocumentSheetData {
 }
 
 export interface ActorSheetData extends DocumentSheetData {
-  tokenId?: string;
   isPC: boolean;
   /** Add `document.effects` here */
   effects: unknown;

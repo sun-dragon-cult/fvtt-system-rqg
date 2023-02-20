@@ -1,5 +1,8 @@
 <h2 class="flex-row">
-  <span>{{localize 'RQG.Actor.Passion.Passions'}}</span>
+  <span>
+    <button class="sort" data-sort-items="passion" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button>
+    {{localize 'RQG.Actor.Passion.Passions'}}
+  </span>
   <a data-tooltip="{{localize 'RQG.Actor.Passion.AddNewPassionTip'}}" data-passion-add><i class="fas fa-plus"></i></a>
 </h2>
 
@@ -25,7 +28,7 @@
       {{name}}
     </div>
     <div data-item-id="{{id}}" data-item-roll
-      class="passion contextmenu item {{#if system.hasExperience}}experienced{{/if}}"
+      class="passion contextmenu item {{experiencedclass uuid}}"
       data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
       {{system.chance}}%
     </div>

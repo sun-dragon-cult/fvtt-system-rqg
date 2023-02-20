@@ -20,7 +20,11 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       width: 450,
       height: 500,
       tabs: [
-        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "gear" },
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "gear",
+        },
       ],
     });
   }
@@ -29,6 +33,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
     const system = duplicate(this.document.system);
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isGM: getGameUser().isGM,

@@ -1,11 +1,11 @@
 # shield-large
-name: ${{openSystem.content.weaponSkill.shield.name}}$ (${{openSystem.content.weaponSkill.shield.specialization.small}}$)
+name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.large}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/large-shield.svg
 data:
   category: shields
-  skillName: ${{openSystem.content.weaponSkill.shield.name}}$
-  specialization: ${{openSystem.content.weaponSkill.shield.specialization.large}}$
+  skillName: ${{openSystem.content.weaponSkill.shields.name}}$
+  specialization: ${{openSystem.content.weaponSkill.shields.specialization.large}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -17,18 +17,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.shield-large
+      id: i.skill.shields-large
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # shield-medium
-name: ${{openSystem.content.weaponSkill.shield.name}}$ (${{openSystem.content.weaponSkill.shield.specialization.small}}$)
+name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.medium}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/medium-shield.svg
 data:
   category: shields
-  skillName: ${{openSystem.content.weaponSkill.shield.name}}$
-  specialization: ${{openSystem.content.weaponSkill.shield.specialization.medium}}$
+  skillName: ${{openSystem.content.weaponSkill.shields.name}}$
+  specialization: ${{openSystem.content.weaponSkill.shields.specialization.medium}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -40,18 +40,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.shield-medium
+      id: i.skill.shields-medium
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # shield-small
-name: ${{openSystem.content.weaponSkill.shield.name}}$ (${{openSystem.content.weaponSkill.shield.specialization.small}}$)
+name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.small}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/small-shield.svg
 data:
   category: shields
-  skillName: ${{openSystem.content.weaponSkill.shield.name}}$
-  specialization: ${{openSystem.content.weaponSkill.shield.specialization.small}}$
+  skillName: ${{openSystem.content.weaponSkill.shields.name}}$
+  specialization: ${{openSystem.content.weaponSkill.shields.specialization.small}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -63,6 +63,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.shield-small
+      id: i.skill.shields-small
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

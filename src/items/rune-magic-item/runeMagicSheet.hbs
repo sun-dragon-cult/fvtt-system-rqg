@@ -24,10 +24,10 @@
 
       </div>
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
         rqidLink=system.descriptionRqidLink
-        parentField="descriptionRqidLink"
-        dropTypes="JournalEntry"
+        dropzoneData="descriptionRqidLink"
+        dropDocumentNames="JournalEntry, JournalEntryPage"
         showDeleteFromPropertyName="descriptionRqidLink"
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"

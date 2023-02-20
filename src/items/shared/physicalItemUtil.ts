@@ -11,10 +11,9 @@ export function getSameLocationUpdates(
   if ("isNatural" in physicalItem.system && physicalItem.system.isNatural) {
     return []; // natural weapons don't have location and are excluded from the LocationTree
   }
-  const actorObject = actor.toObject();
-  const actorEmbeddedItems = actorObject.items;
+  const actorEmbeddedItems = actor.items.contents;
 
-  const newLocationUpdate = updates.find((u: any) => u["data.location"] != null) as any;
+  const newLocationUpdate = updates.find((u: any) => u["system.location"] != null) as any;
   if (newLocationUpdate) {
     // Change location of the item that is sent to getOtherItemIdsInSameLocationTree
     const item = actorEmbeddedItems.find((i: any) => i._id === newLocationUpdate._id);
@@ -24,8 +23,7 @@ export function getSameLocationUpdates(
       actorEmbeddedItems,
       newLocationUpdate
     );
-    // @ts-ignore physicalItem location
-    item.system.location = newLocationUpdate["data.location"];
+    item.system.location = newLocationUpdate["system.location"];
   }
 
   const sameLocationItemIds = getOtherItemIdsInSameLocationTree(
@@ -33,19 +31,18 @@ export function getSameLocationUpdates(
     actorEmbeddedItems
   );
 
-  const equippedStatusUpdate: any = updates.find((u: any) => u["data.equippedStatus"]);
+  const equippedStatusUpdate: any = updates.find((u: any) => u["system.equippedStatus"]);
   const equippedStatusOfOtherWithSameLocation = sameLocationItemIds.length
-    ? // @ts-ignore equippedStatus does exist
-      actor.items.get(sameLocationItemIds[0])!.system.equippedStatus
+    ? actor.items.get(sameLocationItemIds[0])!.system.equippedStatus
     : undefined;
   const newEquippedStatus = equippedStatusUpdate
-    ? equippedStatusUpdate["data.equippedStatus"] // Change equippedStatus of all in same location group
+    ? equippedStatusUpdate["system.equippedStatus"] // Change equippedStatus of all in same location group
     : equippedStatusOfOtherWithSameLocation; // Set item equippedStatus of newly changes location item to same as the locations group has
   return sameLocationItemIds.reduce((acc: any[], id: string) => {
     if (newEquippedStatus) {
       acc.push({
         _id: id,
-        "data.equippedStatus": newEquippedStatus,
+        "system.equippedStatus": newEquippedStatus,
       });
     }
     return acc;

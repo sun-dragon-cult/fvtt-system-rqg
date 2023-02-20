@@ -1,25 +1,46 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { systemId } from "../system/config";
-import {
-  getDomDataset,
-  getGame,
-  getRequiredDomDataset,
-  localize,
-  localizeItemType,
-} from "../system/util";
-import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
+import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
+import { RqgItem } from "./rqgItem";
+import {
+  extractDropInfo,
+  getAllowedDropDocumentNames,
+  hasRqid,
+  isAllowedDocumentNames,
+  onDragEnter,
+  onDragLeave,
+  updateRqidLink,
+} from "../documents/dragDrop";
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
   Data extends object = ItemSheet.Data<Options>
 > extends ItemSheet<Options, Data> {
+  static get defaultOptions(): ItemSheet.Options {
+    return mergeObject(super.defaultOptions, {
+      width: 960,
+      height: 800,
+      dragDrop: [
+        {
+          dragSelector: ".item",
+          dropSelector: "[data-dropzone]",
+        },
+      ],
+    });
+  }
+
   get title(): string {
     return `${localizeItemType(this.object.type)}: ${this.object.name}`;
   }
 
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
+
+    // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
+    html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+      elem.addEventListener("dragenter", this._onDragEnter);
+      elem.addEventListener("dragleave", this._onDragLeave);
+    });
 
     // Edit Item Active Effect
     $(this.form!)
@@ -97,20 +118,22 @@ export class RqgItemSheet<
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid
             );
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
+            // @ts-expect-error isEmbedded
+            if (this.isEmbedded) {
+              await this.actor?.updateEmbeddedDocuments("Item", [
                 { _id: this.item.id, system: { [deleteFromPropertyName]: newValueArray } },
               ]);
             } else {
               await this.item.update({ system: { [deleteFromPropertyName]: newValueArray } });
             }
           } else {
-            if (this.item.isEmbedded) {
+            // @ts-expect-error isEmbedded
+            if (this.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [deleteFromPropertyName]: undefined } },
+                { _id: this.item.id, system: { [deleteFromPropertyName]: "" } },
               ]);
             } else {
-              await this.item.update({ system: { [deleteFromPropertyName]: undefined } });
+              await this.item.update({ system: { [deleteFromPropertyName]: "" } });
             }
           }
         });
@@ -122,7 +145,6 @@ export class RqgItemSheet<
         const editRqid = getRequiredDomDataset($(el), "rqid");
         const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
         el.addEventListener("change", async () => {
-          console.log("CHANGE!", editRqid, editPropertyName);
           let updateProperty = getProperty(this.item.system, editPropertyName);
           if (Array.isArray(updateProperty)) {
             const updateRqidLink = (updateProperty as RqidLink[]).find(
@@ -152,101 +174,95 @@ export class RqgItemSheet<
       });
   }
 
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    super._onDrop(event);
+  _onDragEnter(event: DragEvent): void {
+    onDragEnter(event);
+  }
 
-    let droppedDocumentData;
-    try {
-      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-    } catch (err) {
-      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData"));
+  _onDragLeave(event: DragEvent): void {
+    onDragLeave(event);
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<unknown> {
+    event.preventDefault(); // Allow the drag to be dropped
+    this.render(true); // Get rid of any remaining drag-hover classes
+
+    // @ts-expect-error getDragEventData
+    const droppedDocumentData = TextEditor.getDragEventData(event);
+    const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
+
+    if (!isAllowedDocumentNames(droppedDocumentData.type, allowedDropDocumentNames)) {
       return;
     }
 
-    const targetPropertyName = getDomDataset(event, "target-drop-property");
-
-    const dropTypes = getDomDataset(event, "expected-drop-types")?.split(",");
-
-    let droppedDocument: Item | JournalEntry | undefined = undefined;
-
-    if (droppedDocumentData.type === "Item") {
-      droppedDocument = await Item.fromDropData(droppedDocumentData);
+    switch (
+      droppedDocumentData.type // type is actually documentName
+    ) {
+      case "Item":
+        return await this._onDropItem(event, droppedDocumentData);
+      case "JournalEntry":
+        return await this._onDropJournalEntry(event, droppedDocumentData);
+      case "JournalEntryPage":
+        return await this._onDropJournalEntryPage(event, droppedDocumentData);
+      default:
+        // This will warn about not supported Document Name
+        isAllowedDocumentNames(droppedDocumentData.type, [
+          "Item",
+          "JournalEntry",
+          "JournalEntryPage",
+        ]);
     }
+  }
 
-    if (droppedDocumentData.type === "JournalEntry") {
-      droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
+  async _onDropItem(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const {
+      droppedDocument: droppedItem,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+    } = await extractDropInfo<RqgItem>(event, data);
+
+    if (isAllowedToDrop && hasRqid(droppedItem)) {
+      await updateRqidLink(this.item, targetPropertyName, droppedItem);
+      return [this.item];
     }
+    return false;
+  }
 
-    if (dropTypes && dropTypes.length > 0) {
-      if (
-        !(
-          dropTypes.includes(droppedDocumentData.type) ||
-          dropTypes.includes((droppedDocument as Item).type)
-        )
-      ) {
-        const msg = localize("RQG.Item.Notification.DroppedItemWrongType", {
-          allowedDropTypes: dropTypes.join(", "),
-          type: droppedDocumentData.type,
-        });
-        ui.notifications?.warn(msg);
-        console.warn(msg, event);
-        return;
-      }
+  async _onDropJournalEntry(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const {
+      droppedDocument: droppedJournal,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+    } = await extractDropInfo<JournalEntry>(event, data);
+
+    if (isAllowedToDrop && hasRqid(droppedJournal)) {
+      await updateRqidLink(this.item, targetPropertyName, droppedJournal);
+      return [this.item];
     }
+    return false;
+  }
 
-    const droppedItemRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id;
+  async _onDropJournalEntryPage(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const {
+      droppedDocument: droppedPage,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+      // @ts-expect-error JournalEntryPage
+    } = await extractDropInfo<JournalEntryPage>(event, data);
 
-    if (!droppedItemRqid) {
-      const msg = localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
-        type: droppedDocumentData.type,
-        name: droppedDocument?.name,
-        uuid: droppedDocumentData.uuid,
-      });
-      ui.notifications?.warn(msg);
-      console.warn(msg, event);
-      return;
+    if (isAllowedToDrop && hasRqid(droppedPage)) {
+      await updateRqidLink(this.item, targetPropertyName, droppedPage);
+      return [this.item];
     }
-
-    if (droppedDocument && targetPropertyName) {
-      const newLink = new RqidLink(droppedItemRqid, droppedDocument.name ?? "");
-      const targetProperty = getProperty(this.item.system, targetPropertyName);
-
-      if (targetProperty) {
-        (event as RqidLinkDragEvent).TargetPropertyName = targetPropertyName;
-        if (Array.isArray(targetProperty)) {
-          const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
-          if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
-            targetPropertyRqidLinkArray.push(newLink);
-            targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
-            if (this.item.isEmbedded) {
-              (event as RqidLinkDragEvent).RqidLinkDropResult =
-                await this.item.actor?.updateEmbeddedDocuments("Item", [
-                  {
-                    _id: this.item.id,
-                    system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-                  },
-                ]);
-            } else {
-              (event as RqidLinkDragEvent).RqidLinkDropResult = await this.item.update({
-                system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-              });
-            }
-          }
-        } else {
-          // Property is a single RqidLink, not an array
-          if (this.item.isEmbedded) {
-            (event as RqidLinkDragEvent).RqidLinkDropResult =
-              await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [targetPropertyName]: newLink } },
-              ]);
-          } else {
-            (event as RqidLinkDragEvent).RqidLinkDropResult = await this.item.update({
-              system: { [targetPropertyName]: newLink },
-            });
-          }
-        }
-      }
-    }
+    return false;
   }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
@@ -254,9 +270,4 @@ export class RqgItemSheet<
     addRqidSheetHeaderButton(systemHeaderButtons, this);
     return systemHeaderButtons;
   }
-}
-
-export class RqidLinkDragEvent extends DragEvent {
-  RqidLinkDropResult: any;
-  TargetPropertyName: string = "";
 }

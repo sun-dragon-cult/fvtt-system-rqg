@@ -1,6 +1,6 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
+import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import {
-  getActorFromIds,
   getAvailableRunes,
   getGame,
   hasOwnProperty,
@@ -49,59 +49,42 @@ export const registerHandlebarsHelpers = function () {
     }).format(total)}`;
   });
 
-  Handlebars.registerHelper("itemname", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    return item ? item.name : "---";
-  });
-
   Handlebars.registerHelper("localizeitemtype", (typeName) => {
     const itemType: ItemTypeEnum = typeName;
     return RqgItem.localizeItemTypeName(itemType);
   });
 
-  Handlebars.registerHelper("skillname", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    if (!item) {
-      return "---";
-    }
-    if (item.type !== ItemTypeEnum.Skill) {
-      const msg = `Handlebar helper "skillname" called with an item that is not a skill`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, item, actor);
-    }
-    const specialization = item.system.specialization ? ` (${item.system.specialization})` : "";
-    return `${item.system.skillName}${specialization}`;
+  Handlebars.registerHelper("skillname", (...args) => {
+    return applyFnToItemFromHandlebarsArgs(args, (item) => {
+      const specialization = item.system.specialization ? ` (${item.system.specialization})` : "";
+      return `${item.system.skillName}${specialization}`;
+    });
   });
 
-  Handlebars.registerHelper("skillchance", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    // @ts-ignore chance
-    return item ? item.system.chance : "---";
+  Handlebars.registerHelper("skillchance", (...args) =>
+    applyFnToItemFromHandlebarsArgs(args, (item) => (item ? item.system.chance : "---"))
+  );
+
+  Handlebars.registerHelper("experiencedclass", (...args) =>
+    applyFnToItemFromHandlebarsArgs(args, (item) =>
+      item && item.system.hasExperience ? "experienced" : ""
+    )
+  );
+
+  Handlebars.registerHelper("quantity", (...args) => {
+    return applyFnToItemFromHandlebarsArgs(args, (item) => {
+      if (!item) {
+        return "---";
+      }
+      if (!hasOwnProperty(item.system, "quantity")) {
+        const msg = `Handlebar helper quantity was called with an item without quantity property`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, item);
+      }
+      return item.system.quantity;
+    });
   });
 
-  Handlebars.registerHelper("experiencedclass", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    // @ts-ignore hasExperience
-    return item && item.system.hasExperience ? "experienced" : "";
-  });
-
-  Handlebars.registerHelper("quantity", (itemId, actorId, tokenId) => {
-    const actor = getActorFromIds(actorId, tokenId);
-    const item = actor && actor.items.get(itemId);
-    if (!item) {
-      return "---";
-    }
-    if (!hasOwnProperty(item.system, "quantity")) {
-      const msg = `Handlebar helper quantity was called with an item without quantity propery`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, item);
-    }
-    return item.system.quantity;
-  });
   Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
     if (!runeName) {
       return;
@@ -180,3 +163,57 @@ export const registerHandlebarsHelpers = function () {
     return Rqid.getRqidIcon(rqid) || "";
   });
 };
+
+/**
+ * Find the referenced embedded item and apply a function with that item as parameter.
+ * Takes either an uuid directly to an embedded item: `{{helpername itemUuid}}`
+ * or an uuid to an actor and an id to an embedded item on that actor: `{{helpername actorUuid embeddedItemId}}`
+ */
+function applyFnToItemFromHandlebarsArgs(
+  handlebarsArgs: any[],
+  fn: (item: RqgItem) => string
+): string {
+  const uuid = handlebarsArgs?.[0];
+  const embeddedItemId = typeof handlebarsArgs?.[1] === "string" ? handlebarsArgs[1] : undefined;
+
+  if (!uuid) {
+    const msg = `Handlebars helper called with an empty uuid`;
+    ui.notifications?.error(msg);
+    console.error("RQG | ", msg, arguments);
+    return "🐛";
+  }
+
+  // @ts-expect-error fromUuidSync
+  const itemActorOrToken = fromUuidSync(uuid) as Document<any, any> | undefined;
+  if (!itemActorOrToken) {
+    const msg = `Handlebars helper couldn't find item or actor`;
+    ui.notifications?.error(msg);
+    console.error("RQG | ", msg, arguments);
+    return "🐛";
+  }
+
+  const itemOrActor =
+    itemActorOrToken.documentName === "Token"
+      ? (itemActorOrToken as TokenDocument).actor
+      : itemActorOrToken;
+
+  const item =
+    embeddedItemId && itemOrActor?.documentName === "Actor"
+      ? itemOrActor.getEmbeddedDocument("Item", embeddedItemId)
+      : itemOrActor;
+
+  if (embeddedItemId && item?.documentName !== "Item") {
+    const msg = `Handlebars helper couldn't find embedded item in ${itemOrActor?.name}`;
+    ui.notifications?.error(msg);
+    console.error("RQG | ", msg, item, arguments);
+    return "🐛";
+  }
+
+  if (item?.documentName !== "Item") {
+    const msg = `Handlebars helper expected item but got ${item?.documentName} called ${item?.name}`;
+    ui.notifications?.error(msg);
+    console.error("RQG | ", msg, item, arguments);
+    return "🐛";
+  }
+  return fn(item as RqgItem);
+}

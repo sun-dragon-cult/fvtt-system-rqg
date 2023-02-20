@@ -23,10 +23,10 @@
         </div>
       </div>
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
         rqidLink=system.descriptionRqidLink
-        parentField="descriptionRqidLink"
-        dropTypes="JournalEntry"
+        dropzoneData="descriptionRqidLink"
+        dropDocumentNames="JournalEntry, JournalEntryPage"
         showDeleteFromPropertyName="descriptionRqidLink"
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
@@ -57,7 +57,7 @@
           <label>{{localize "RQG.Item.Skill.CategoryModifier" category=(localize (concat 'RQG.Actor.Skill.SkillCategory.' system.category) ) }}</label>
           <label for="base-chance-{{id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
 
-          <span class="skill {{#if system.hasExperience}}experienced{{/if}}">
+          <span class="skill {{experiencedclass uuid}}">
             {{system.chance}}%
             {{#if system.canGetExperience}}
               <input

@@ -27,7 +27,8 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
 
     const sortedSystemPacks = getGame().packs.reduce(
       (acc: any[], pack: CompendiumCollection<CompendiumCollection.Metadata>) => {
-        if (pack.metadata.package !== systemId) {
+        // @ts-expect-error packageName
+        if (pack.metadata.packageName !== systemId) {
           return acc;
         }
         const langMatch = pack.metadata.name.match(splitRegex);
@@ -48,7 +49,7 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
     let packs = getGame().packs.filter((p: any) => {
       const hasAccess = getGame().user?.isGM || !p.private;
 
-      if (p.metadata.package !== systemId) {
+      if (p.metadata.packageName !== systemId) {
         return hasAccess; // Include all non system packs the user should have access to
       }
 

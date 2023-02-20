@@ -1,11 +1,11 @@
 # bow-composite-bow
-name: ${{openSystem.content.weaponSkill.bow.name}}$ (${{openSystem.content.weaponSkill.bow.specialization.compositeBow}}$)
+name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.bow.name}}$
-  specialization: ${{openSystem.content.weaponSkill.bow.specialization.compositeBow}}$
+  skillName: ${{openSystem.content.weaponSkill.bows.name}}$
+  specialization: ${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -17,18 +17,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.bow-composite-bow
+      id: i.skill.bows-composite-bow
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # bow-elf-bow
-name: ${{openSystem.content.weaponSkill.bow.name}}$ (${{openSystem.content.weaponSkill.bow.specialization.elfBow}}$)
+name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.bow.name}}$
-  specialization: ${{openSystem.content.weaponSkill.bow.specialization.elfBow}}$
+  skillName: ${{openSystem.content.weaponSkill.bows.name}}$
+  specialization: ${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -40,18 +40,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.bow-elf-bow
+      id: i.skill.bows-elf-bow
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # bow-self-bow
-name: ${{openSystem.content.weaponSkill.bow.name}}$ (${{openSystem.content.weaponSkill.bow.specialization.selfBow}}$)
+name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.bow.name}}$
-  specialization: ${{openSystem.content.weaponSkill.bow.specialization.selfBow}}$
+  skillName: ${{openSystem.content.weaponSkill.bows.name}}$
+  specialization: ${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -63,18 +63,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.bow-self-bow
+      id: i.skill.bows-self-bow
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # crossbow-arbalest
-name: ${{openSystem.content.weaponSkill.crossbow.name}}$ (${{openSystem.content.weaponSkill.crossbow.specialization.arbalest}}$)
+name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.crossbow.name}}$
-  specialization: ${{openSystem.content.weaponSkill.crossbow.specialization.arbalest}}$
+  skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
+  specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -86,18 +86,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.crossbow-arbalest
+      id: i.skill.crossbows-arbalest
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # crossbow-heavy-crossbow
-name: ${{openSystem.content.weaponSkill.crossbow.name}}$ (${{openSystem.content.weaponSkill.crossbow.specialization.heavyCrossbow}}$)
+name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.crossbow.name}}$
-  specialization: ${{openSystem.content.weaponSkill.crossbow.specialization.heavyCrossbow}}$
+  skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
+  specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -109,18 +109,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.crossbow-heavy-crossbow
+      id: i.skill.crossbows-heavy-crossbow
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # crossbow-light-crossbow
-name: ${{openSystem.content.weaponSkill.crossbow.name}}$ (${{openSystem.content.weaponSkill.crossbow.specialization.lightCrossbow}}$)
+name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.crossbow.name}}$
-  specialization: ${{openSystem.content.weaponSkill.crossbow.specialization.lightCrossbow}}$
+  skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
+  specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -132,18 +132,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.crossbow-light-crossbow
+      id: i.skill.crossbows-light-crossbow
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # crossbow-repeating-crossbow
-name: ${{openSystem.content.weaponSkill.crossbow.name}}$ (${{openSystem.content.weaponSkill.crossbow.specialization.repeatingCrossbow}}$)
+name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.crossbow.name}}$
-  specialization: ${{openSystem.content.weaponSkill.crossbow.specialization.repeatingCrossbow}}$
+  skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
+  specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -155,18 +155,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.crossbow-repeating-crossbow
+      id: i.skill.crossbows-repeating-crossbow
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # javelin-dart
-name: ${{openSystem.content.weaponSkill.javelin.name}}$ (${{openSystem.content.weaponSkill.javelin.specialization.dart}}$)
+name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.dart}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/dart.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.javelin.name}}$
-  specialization: ${{openSystem.content.weaponSkill.javelin.specialization.dart}}$
+  skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
+  specialization: ${{openSystem.content.weaponSkill.javelins.specialization.dart}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -178,18 +178,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.javelin-dart
+      id: i.skill.javelins-dart
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # javelin-javelin
-name: ${{openSystem.content.weaponSkill.javelin.name}}$ (${{openSystem.content.weaponSkill.javelin.specialization.javelin}}$)
+name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.javelin.name}}$
-  specialization: ${{openSystem.content.weaponSkill.javelin.specialization.javelin}}$
+  skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
+  specialization: ${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -201,18 +201,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.javelin-javelin
+      id: i.skill.javelins-javelin
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # javelin-shortspear
-name: ${{openSystem.content.weaponSkill.javelin.name}}$ (${{openSystem.content.weaponSkill.javelin.specialization.shortspear}}$)
+name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.javelin.name}}$
-  specialization: ${{openSystem.content.weaponSkill.javelin.specialization.shortspear}}$
+  skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
+  specialization: ${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -224,18 +224,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.javelin-shortspear
+      id: i.skill.javelins-shortspear
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # lasso-pole-lasso
-name: ${{openSystem.content.weaponSkill.lasso.name}}$ (${{openSystem.content.weaponSkill.lasso.specialization.poleLasso}}$)
+name: ${{openSystem.content.weaponSkill.lassos.name}}$ (${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/lasso.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.lasso.name}}$
-  specialization: ${{openSystem.content.weaponSkill.lasso.specialization.poleLasso}}$
+  skillName: ${{openSystem.content.weaponSkill.lassos.name}}$
+  specialization: ${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -247,18 +247,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.lasso-pole-lasso
+      id: i.skill.lassos-pole-lasso
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # sling-sling
-name: ${{openSystem.content.weaponSkill.sling.name}}$ (${{openSystem.content.weaponSkill.sling.specialization.sling}}$)
+name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.sling}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.sling.name}}$
-  specialization: ${{openSystem.content.weaponSkill.sling.specialization.sling}}$
+  skillName: ${{openSystem.content.weaponSkill.slings.name}}$
+  specialization: ${{openSystem.content.weaponSkill.slings.specialization.sling}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -270,18 +270,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.sling-sling
+      id: i.skill.slings-sling
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # sling-staff-sling
-name: ${{openSystem.content.weaponSkill.sling.name}}$ (${{openSystem.content.weaponSkill.sling.specialization.staffSling}}$)
+name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
 data:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.sling.name}}$
-  specialization: ${{openSystem.content.weaponSkill.sling.specialization.staffSling}}$
+  skillName: ${{openSystem.content.weaponSkill.slings.name}}$
+  specialization: ${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -293,7 +293,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.sling-staff-sling
+      id: i.skill.slings-staff-sling
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---

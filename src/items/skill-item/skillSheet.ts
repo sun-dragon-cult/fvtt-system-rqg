@@ -20,7 +20,11 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       width: 450,
       height: 500,
       tabs: [
-        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "skill" },
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "skill",
+        },
       ],
     });
   }
@@ -35,6 +39,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
 
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
@@ -62,14 +67,5 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     runes = runes.filter((r: any) => r); // Remove empty
     formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
-  }
-
-  public activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-    (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
-  }
-
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    return super._onDrop(event);
   }
 }

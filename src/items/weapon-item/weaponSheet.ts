@@ -5,6 +5,7 @@ import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
   assertItemType,
+  getDomDataset,
   getGameUser,
   getRequiredDomDataset,
   localize,
@@ -14,6 +15,7 @@ import { damageType } from "../../data-model/item-data/weaponData";
 import { Weapon } from "./weapon";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 
 interface WeaponSheetData {
   defaultCombatManeuverNames: string[];
@@ -33,14 +35,12 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       template: "systems/rqg/items/weapon-item/weaponSheet.hbs",
       width: 960,
       height: 800,
-      dragDrop: [
-        {
-          dragSelector: ".item",
-          dropSelector: "[data-dropzone]",
-        },
-      ],
       tabs: [
-        { navSelector: ".item-sheet-nav-tabs", contentSelector: ".sheet-body", initial: "weapon" },
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "weapon",
+        },
       ],
     });
   }
@@ -245,14 +245,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
-    const that = this;
-
-    // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
-    html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
-      elem.addEventListener("dragenter", that._onDragEnter);
-      elem.addEventListener("dragleave", that._onDragLeave);
-    });
-
     html[0].querySelectorAll<HTMLElement>("[data-delete-skill]").forEach((elem) => {
       elem.addEventListener("click", async () => {
         const use = getRequiredDomDataset(elem, "delete-skill");
@@ -261,66 +253,53 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     });
   }
 
-  _onDragEnter(event: DragEvent): void {
-    const dropZone = event.currentTarget as Element | null; // Target the event handler was attached to
-    const relatedTarget = event.relatedTarget as Element | null; // EventTarget the pointer exited from
+  /**
+   * Update the skillOriginId with the dropped skill.
+   * This will change to use rqid instead.
+   */
+  async _onDropItem(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
+    // @ts-expect-error fromDropData
+    const droppedItem = await Item.implementation.fromDropData(data);
+    const usage = getDomDataset(event, "dropzone");
 
-    if ((dropZone && dropZone === relatedTarget) || dropZone?.contains(relatedTarget)) {
-      event.preventDefault();
-      dropZone.classList.add("drag-hover");
+    if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {
+      return false;
     }
-  }
-
-  _onDragLeave(event: DragEvent): void {
-    const dropZone = event.currentTarget as Element | null; // Target the event handler was attached to
-    const relatedTarget = event.relatedTarget as Element | null; // EventTarget the pointer exited from
-    // Workaround for Chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=68629
-    const sameShadowDom = dropZone?.getRootNode() === relatedTarget?.getRootNode();
-    if (sameShadowDom && !dropZone?.contains(relatedTarget)) {
-      event.preventDefault();
-      dropZone && dropZone.classList.remove("drag-hover");
+    if (
+      ![
+        SkillCategoryEnum.MeleeWeapons,
+        SkillCategoryEnum.MissileWeapons,
+        SkillCategoryEnum.NaturalWeapons,
+        SkillCategoryEnum.Shields,
+      ].includes(droppedItem.system.category)
+    ) {
+      // TODO translate
+      const msg = localize(
+        "The item must be a weapon skill (category melee, shield or natural weapon)"
+      );
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
+      console.warn(`RQG | ${msg}`);
+      return false;
     }
-  }
-
-  async _onDrop(event: DragEvent): Promise<void> {
-    const usage = getRequiredDomDataset(event, "dropzone");
-    const dropzone = (event.target as HTMLElement)?.closest("[data-dropzone]");
-    dropzone && dropzone.classList.remove("drag-hover");
-    // Try to extract the data
-    let droppedItemData;
-    try {
-      droppedItemData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-    } catch (err) {
-      return;
+    const originSkillId = droppedItem.uuid || "";
+    if (this.item.isOwned) {
+      const weaponItem = this.item;
+      assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
+      const embeddedSkillId = await Weapon.embedLinkedSkill("", originSkillId, this.actor!);
+      await this.item.update({
+        [`system.usage.${usage}.skillId`]: embeddedSkillId,
+        [`system.usage.${usage}.skillOrigin`]: originSkillId,
+      });
+    } else {
+      await this.item.update({
+        [`system.usage.${usage}.skillOrigin`]: originSkillId,
+      });
     }
-    if (droppedItemData.type === "Item") {
-      const droppedItem = (await Item.fromDropData(droppedItemData)) as RqgItem;
-      if (
-        droppedItem.type === ItemTypeEnum.Skill &&
-        (droppedItem.system.category === SkillCategoryEnum.MeleeWeapons ||
-          droppedItem.system.category === SkillCategoryEnum.MissileWeapons ||
-          droppedItem.system.category === SkillCategoryEnum.NaturalWeapons ||
-          droppedItem.system.category === SkillCategoryEnum.Shields)
-      ) {
-        const originSkillId = droppedItem.uuid || "";
-        if (this.item.isOwned) {
-          const weaponItem = this.item;
-          assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
-          const embeddedSkillId = await Weapon.embedLinkedSkill("", originSkillId, this.actor!);
-          await this.item.update({
-            [`system.usage.${usage}.skillId`]: embeddedSkillId,
-            [`system.usage.${usage}.skillOrigin`]: originSkillId,
-          });
-        } else {
-          await this.item.update({
-            [`system.usage.${usage}.skillOrigin`]: originSkillId,
-          });
-        }
-      } else {
-        ui.notifications?.warn(
-          "The item must be a weapon skill (category melee, shield or natural weapon)"
-        );
-      }
-    }
+    return [this.item];
   }
 }

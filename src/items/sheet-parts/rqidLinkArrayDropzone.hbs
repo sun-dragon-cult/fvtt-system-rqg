@@ -1,0 +1,20 @@
+<div class="drop-target item-sheet-rqid-link"
+     data-dropzone="{{dropzoneData}}"
+     data-dropzone-document-types="{{dropDocumentTypes}}"
+     data-dropzone-document-names="{{dropDocumentNames}}">
+  <div style="display: flex; flex-wrap: wrap;">
+    {{#each rqidLinkArray}}
+      {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+        rqidLink=this
+        showDeleteFromPropertyName=../showDeleteFromPropertyName
+        showBonus=../showBonus
+        editBonusPropertyName=../editBonusPropertyName
+      }}
+    {{/each}}
+    {{#unless rqidLinkArray.length}}
+      {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+        showInfoCircleConnect=showInfoCircleConnect
+      }}
+    {{/unless}}
+  </div>
+</div>

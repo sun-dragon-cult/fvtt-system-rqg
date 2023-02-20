@@ -26,7 +26,8 @@ export function getDomDataset(
   dataset: string
 ): string | undefined {
   const elem = getHTMLElement(el);
-  const closestElement = elem?.closest(`[data-${dataset}]`) as HTMLElement;
+  const closestElement = elem?.closest(`[data-${dataset}]`);
+  assertHtmlElement(closestElement);
   return closestElement?.dataset[toCamelCase(dataset)];
 }
 
@@ -210,6 +211,16 @@ export function assertChatMessageFlagType<T extends ChatMessageType>(
   }
 }
 
+export function assertHtmlElement<T extends HTMLElement>(
+  eventTarget: EventTarget | null | undefined
+): asserts eventTarget is T | null | undefined {
+  if (eventTarget != null && !(eventTarget instanceof HTMLElement)) {
+    const msg = "RQG | Programming error - expected a HTMLElement but got something else";
+    ui.notifications?.warn(msg);
+    throw new RqgError(msg, eventTarget);
+  }
+}
+
 export function requireValue(val: unknown, errorMessage: string, ...debugData: any): asserts val {
   if (val == null) {
     ui.notifications?.error(errorMessage);
@@ -273,20 +284,6 @@ export function cleanIntegerString(value: FormDataEntryValue | null): string {
 
   const nonIntegerRegEx = /(?!^[+-])[^0-9]/g;
   return value.replaceAll(nonIntegerRegEx, "");
-}
-
-/**
- * Find actor given an actor and a token id. This can be a synthetic token actor or a "real" one.
- * @deprecated use uuid instead
- */
-export function getActorFromIds(actorId: string | null, tokenId: string | null): RqgActor | null {
-  // @ts-ignore for foundry 9
-  const token = canvas.layers
-    .find((l) => l.name === "TokenLayer")
-    // @ts-ignore for foundry 9
-    ?.ownedTokens.find((t: Token) => t.id === tokenId); // TODO Finds the first - what if there are more than one
-  const actor = actorId ? getGame().actors?.get(actorId) ?? null : null;
-  return token ? token.document.getActor() : actor;
 }
 
 // A convenience getter that calls fromUuid and types the Document to what is requested.
@@ -452,18 +449,13 @@ export class RqgError implements Error {
   }
 }
 
-// Temporary fix to get both v8 & v9 compatability
 export function getDocumentTypes(): {
   [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
 } {
-  if (getGame().system.entityTypes) {
-    return getGame().system.entityTypes; // v8
-  } else {
-    // @ts-ignore
-    return getGame().system.documentTypes as {
-      [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
-    }; // v9
-  }
+  // @ts-expect-error documentTypes
+  return getGame().system.documentTypes as {
+    [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
+  };
 }
 
 export function moveCursorToEnd(el: HTMLInputElement) {
@@ -490,6 +482,10 @@ export function localize(key: string, data?: Record<string, unknown>): string {
 
 export function localizeItemType(itemType: ItemTypeEnum): string {
   return localize("ITEM.Type" + itemType.titleCase());
+}
+
+export function localizeDocumentName(documentName: string | undefined): string {
+  return documentName ? localize("DOCUMENT." + documentName) : "";
 }
 
 /**

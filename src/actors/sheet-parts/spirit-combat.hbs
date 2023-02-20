@@ -1,26 +1,30 @@
-<div>
-  <h2>{{localize "RQG.Actor.Combat.SpiritCombat"}}</h2>
-  <div class="flex-row nowrap flex-align-center">
-    <label data-damage-roll="{{system.attributes.spiritCombatDamage}}">{{localize "RQG.Actor.Combat.SpiritCombatDamage"}}
-      {{system.attributes.spiritCombatDamage}}</label>
+{{#if (or spiritCombatSkillData (ne system.attributes.spiritCombatDamage "0") )}}
+  <div>
+    <h2>{{localize "RQG.Actor.Combat.SpiritCombat"}}</h2>
+    {{#if (ne system.attributes.spiritCombatDamage "0")}}
+      <div class="flex-row nowrap flex-align-center">
+        <label data-damage-roll="{{system.attributes.spiritCombatDamage}}">{{localize "RQG.Actor.Combat.SpiritCombatDamage"}}
+          {{system.attributes.spiritCombatDamage}}</label>
+      </div>
+    {{/if}}
+    {{#if spiritCombatSkillData}}
+      <div class="grid spirit-combat">
+        <div data-item-id="{{spiritCombatSkillData.id}}"
+             class="skill contextmenu"
+             {{#if spiritCombatSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{spiritCombatSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
+          <img class="item" src="{{spiritCombatSkillData.img}}">
+        </div>
+        <div data-item-id="{{spiritCombatSkillData.id}}"
+             class="skill contextmenu"
+             data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">
+          {{localize "RQG.Actor.Combat.SpiritCombat"}}
+        </div>
+        <div data-item-id="{{spiritCombatSkillData.id}}"
+             class="skill contextmenu"
+             data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}"><span
+          class="text-right {{experiencedclass spiritCombatSkillData.uuid}}">{{skillchance spiritCombatSkillData.uuid}}%</span>
+        </div>
+      </div>
+    {{/if}}
   </div>
-  {{#if spiritCombatSkillData}}
-  <div class="grid spirit-combat">
-    <div data-item-id="{{spiritCombatSkillData.id}}"
-         class="skill contextmenu"
-         {{#if spiritCombatSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{spiritCombatSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
-      <img class="item" src="{{spiritCombatSkillData.img}}">
-    </div>
-    <div data-item-id="{{spiritCombatSkillData.id}}"
-         class="skill contextmenu"
-         data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">
-      {{localize "RQG.Actor.Combat.SpiritCombat"}}
-    </div>
-    <div data-item-id="{{spiritCombatSkillData.id}}"
-         class="skill contextmenu"
-         data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}"><span
-      class="text-right {{#if spiritCombatSkillData.system.hasExperience}}experienced{{/if}}">{{skillchance spiritCombatSkillData.id @root.id @root.tokenId}}%</span>
-    </div>
-  </div>
-  {{/if}}
-</div>
+{{/if}}

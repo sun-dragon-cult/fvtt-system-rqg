@@ -25,10 +25,10 @@
       </div>
 
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkTarget.hbs"
+      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
         rqidLink=system.occupationRqidLink
-        parentField="occupationRqidLink"
-        dropTypes="JournalEntry"
+        dropzoneData="occupationRqidLink"
+        dropDocumentNames="JournalEntry, JournalEntryPage"
         showDeleteFromPropertyName="occupationRqidLink"
         showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
         showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
@@ -51,7 +51,9 @@
         <div class="key-value-grid">
 
           <label>{{localize "RQG.Item.Occupation.Homelands"}}</label>
-          <div class="drop-target" data-target-drop-property="homelandRqidLinks">
+          <div class="drop-target"
+               data-dropzone="homelandRqidLinks"
+               data-dropzone-document-types="homeland">
             <div style="display: flex; flex-wrap: wrap;">
               {{#if homelandsJoined}}
                 {{homelandsJoined}}
@@ -63,13 +65,13 @@
 
           <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}} <i
             id="btn-edit-occupational-skills-{{id}}" class="fas fa-edit"></i></label>
-          <div>
+          <div class="drop-target"
+               data-dropzone="occupationalSkillRqidLinks"
+               data-dropzone-document-types="skill">
             <div id="occupational-skill-display-{{id}}" style="display: block;">
               {{{skillsJoined}}}
             </div>
-            <div class="drop-target"
-                 data-target-drop-property="occupationalSkillRqidLinks"
-                 data-expected-drop-types="Item"
+            <div
                  style="display: none;"
                  id="occupational-skill-edit-{{id}}">
               <div style="display: flex; flex-wrap: wrap;">
@@ -131,10 +133,11 @@
                  value="{{system.baseIncomeNotes}}">
 
           <label>{{localize "RQG.Item.Occupation.CultLinks"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.cultRqidLinks
-            parentField="cultRqidLinks"
-            dropTypes="cult"
+            dropzoneData="cultRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="cult"
             showDeleteFromPropertyName="cultRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
           }}
@@ -147,10 +150,11 @@
           </div>
 
           <label>{{localize "RQG.Item.Occupation.StartingEquipmentLinks"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayTarget.hbs"
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.startingEquipmentRqidLinks
-            parentField="startingEquipmentRqidLinks"
-            dropTypes="armor,gear,weapon"
+            dropzoneData="startingEquipmentRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="armor,gear,weapon"
             showDeleteFromPropertyName="startingEquipmentRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
           }}

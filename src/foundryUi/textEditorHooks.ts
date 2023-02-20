@@ -9,6 +9,7 @@ export class TextEditorHooks {
 
     async function enricher(match: RegExpMatchArray, options: any): Promise<HTMLElement> {
       const rqid = match[1] as string | undefined;
+      const anchor = match[2] as string | undefined;
       const linkName = match[3] as string | undefined;
       const linkIcon = Rqid.getRqidIcon(rqid);
       const documentName = rqid && Rqid.getDocumentName(rqid);
@@ -21,8 +22,10 @@ export class TextEditorHooks {
       a.dataset.tooltip = localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
         rqid: rqid,
         documentName: getGame().i18n.localize(`DOCUMENT.${documentName}`),
+        documentType: Rqid.getDocumentType(rqid),
       });
       a.dataset.rqidLink = rqid;
+      a.dataset.anchor = anchor;
       a.innerHTML = `${linkIcon}${linkName}`;
       return a;
     }

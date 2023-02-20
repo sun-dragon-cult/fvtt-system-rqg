@@ -38,6 +38,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
 
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
@@ -64,14 +65,5 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     runes = runes.filter((r: any) => r); // Remove empty
     formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
-  }
-
-  public activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-    (this.form as HTMLElement).addEventListener("drop", this._onDrop.bind(this));
-  }
-
-  protected async _onDrop(event: DragEvent): Promise<void> {
-    await super._onDrop(event);
   }
 }

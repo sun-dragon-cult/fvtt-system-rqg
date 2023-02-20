@@ -3,6 +3,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
 import {
   assertChatMessageFlagType,
+  assertHtmlElement,
   assertItemType,
   cleanIntegerString,
   convertFormValueToInteger,
@@ -144,7 +145,9 @@ export class RuneMagicChatHandler {
    */
   public static updateFlagsFromForm(flags: RqgChatMessageFlags, ev: Event): void {
     assertChatMessageFlagType(flags.type, "runeMagicChat");
-    const form = (ev.target as HTMLElement)?.closest("form") as HTMLFormElement;
+    const target = ev.target;
+    assertHtmlElement(target);
+    const form = target?.closest<HTMLFormElement>("form") ?? undefined;
     const formData = new FormData(form);
 
     flags.formData.runePointCost = cleanIntegerString(formData.get("runePointCost"));

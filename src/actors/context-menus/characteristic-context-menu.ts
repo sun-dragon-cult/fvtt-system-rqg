@@ -2,10 +2,8 @@ import { CharacteristicChatHandler } from "../../chat/characteristicChatHandler"
 import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
-  activateChatTab,
   getDomDataset,
   getGame,
-  getGameUser,
   localize,
   localizeCharacteristic,
   requireValue,

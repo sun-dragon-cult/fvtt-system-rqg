@@ -283,11 +283,14 @@ export class RqgActor extends Actor {
     }
   }
 
-  public getEmbeddedItemsByRqid(rqid: string): RqgItem[] {
+  /**
+   * Only handles embedded Items
+   */
+  public getEmbeddedDocumentsByRqid(rqid: string): RqgItem[] {
     return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
   }
 
-  public getBestEmbeddedItemByRqid(rqid: string): RqgItem | undefined {
-    return this.getEmbeddedItemsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
+  public getBestEmbeddedDocumentByRqid(rqid: string): RqgItem | undefined {
+    return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 }

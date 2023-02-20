@@ -45,13 +45,13 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # fist
-name: ${{openSystem.content.weaponSkill.fist.name}}$ (${{openSystem.content.weaponSkill.fist.specialization.fist}}$)
+name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.fist}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/fist.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.fist.name}}$
-  specialization: ${{openSystem.content.weaponSkill.fist.name}}$
+  skillName: ${{openSystem.content.weaponSkill.fists.name}}$
+  specialization: ${{openSystem.content.weaponSkill.fists.name}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -63,7 +63,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.fist-fist
+      id: i.skill.fists-fists
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
@@ -160,13 +160,13 @@ flags:
       priority: ${{openSystem.prio}}$
 ---
 # rip
-name: ${{openSystem.content.weaponSkill.rip.name}}$
+name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.rip}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/claw.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.rip.name}}$
-  specialization:
+  skillName: ${{openSystem.content.weaponSkill.fists.name}}$
+  specialization: ${{openSystem.content.weaponSkill.fists.specialization.rip}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -178,7 +178,7 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.fist-rip
+      id: i.skill.fists-rip
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---

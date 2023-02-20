@@ -1,11 +1,11 @@
 # 1h-spear-javelin
-name: ${{openSystem.content.weaponSkill.1h-spear.name}}$ (${{openSystem.content.weaponSkill.1h-spear.specialization.javelin}}$)
+name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.javelin}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-spear.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-spear.specialization.javelin}}$
+  skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.javelin}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -17,18 +17,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.1h-spear-javelin
+      id: i.skill.1h-spears-javelin
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 1h-spear-lance
-name: ${{openSystem.content.weaponSkill.1h-spear.name}}$ (${{openSystem.content.weaponSkill.1h-spear.specialization.lance}}$)
+name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.lance}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-spear.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-spear.specialization.lance}}$
+  skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.lance}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -40,18 +40,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.1h-spear-lance
+      id: i.skill.1h-spears-lance
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 1h-spear-shortspear
-name: ${{openSystem.content.weaponSkill.1h-spear.name}}$ (${{openSystem.content.weaponSkill.1h-spear.specialization.shortspear}}$)
+name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.shortspear}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-spear.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-spear.specialization.shortspear}}$
+  skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.shortspear}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -63,6 +63,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.1h-spear-shortspear
+      id: i.skill.1h-spears-shortspear
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

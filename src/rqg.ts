@@ -14,11 +14,11 @@ import { RqgPause } from "./foundryUi/rqgPause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
-import { RqgJournalSheet } from "./journals/rqgJournalSheet";
 import { RqgRollTableConfig } from "./rollTables/rqgRollTableConfig";
 import { RqgCompendiumDirectory } from "./foundryUi/rqgCompendiumDirectory";
 import { RqgHotbar } from "./foundryUi/rqgHotbar";
 import { TextEditorHooks } from "./foundryUi/textEditorHooks";
+import { RqgJournalEntry } from "./journals/rqgJournalEntry";
 
 Hooks.once("init", async () => {
   console.log(
@@ -67,15 +67,8 @@ Hooks.once("init", async () => {
   RqgPause.init();
   RqgHotbar.init();
   RqgCompendiumDirectory.init();
+  RqgJournalEntry.init();
   TextEditorHooks.init();
-
-  // @ts-expect-error
-  Journal.unregisterSheet("core", JournalSheet);
-  // @ts-expect-error
-  Journal.registerSheet(systemId, RqgJournalSheet as any, {
-    label: "Journal Sheet",
-    makeDefault: true,
-  });
 
   // @ts-expect-error
   RollTables.unregisterSheet("core", RollTableConfig);
@@ -89,7 +82,6 @@ Hooks.once("init", async () => {
   registerHandlebarsHelpers();
   registerRqgSystemSettings();
 
-  // run game.system.api.migrate() to force a new migration
   (getGame().system as any).api = {
     // installModules: installModules,
     migrate: applyDefaultWorldMigrations,

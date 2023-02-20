@@ -1,4 +1,4 @@
-<form autocomplete="off">
+<form autocomplete="off" data-dropzone>
   <div class="mainbackground"></div>
   {{!-- Sheet Header --}}
   <header class="sheet-header">
@@ -8,6 +8,16 @@
         <h1 class="charname"><input name="name" type="text" value="{{name}}"></h1>
         <div class="flex-row gap1rem">
           {{#unless (eq system.attributes.health "healthy")}}<i>{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}
+          <div>
+            <div class="cult contextmenu item" data-item-id="{{mainCult.id}}" data-rqid-link="{{mainCult.descriptionRqid}}">
+              <b>{{mainCult.name}}
+                {{#if mainCult.hasMultipleCults}}
+                  <i class="fa fa-plus-circle x-small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
+                {{/if}}
+              </b><br>
+              <span class="x-small-size">{{mainCult.rank}}</span>
+            </div>
+          </div>
           {{#if characterElementRunes}}
             <div class="flex-row gap01rem">
               {{#each characterElementRunes}}
@@ -42,8 +52,8 @@
         <div data-characteristic="{{key}}" class="flex-column {{#if characteristic.hasExperience}}experienced{{/if}}">
           <label class="resource-label norse characteristic contextmenu" data-characteristic-roll data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
           {{#if @root.isGM}}
-            <input type="number" name="system.characteristics.{{key}}.value" 
-                   min="0" max="99" 
+            <input type="number" name="system.characteristics.{{key}}.value"
+                   min="0" max="99"
                    value="{{characteristic.value}}"
                    class="{{lookup ../characteristicRanks key}}">
             <input type="text" name="system.characteristics.{{key}}.formula" value="{{characteristic.formula}}">

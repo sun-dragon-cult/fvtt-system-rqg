@@ -1,4 +1,4 @@
-import { SkillCategoryEnum, SkillDataProperties } from "../data-model/item-data/skillData";
+import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
@@ -18,13 +18,12 @@ import { createItemLocationTree, LocationNode } from "../items/shared/locationNo
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
 import { RqgActor } from "./rqgActor";
 import {
+  assertHtmlElement,
   assertItemType,
   getDocumentTypes,
-  getDomDataset,
   getGame,
   getGameUser,
   getRequiredDomDataset,
-  getRequiredRqgActorFromUuid,
   hasOwnProperty,
   localize,
   requireValue,
@@ -41,12 +40,20 @@ import { ReputationChatHandler } from "../chat/reputationChatHandler";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { RqidLinkDragEvent } from "../items/RqgItemSheet";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ActorSheetData } from "../items/shared/sheetInterfaces";
 import { Characteristics } from "src/data-model/actor-data/characteristics";
+import {
+  extractDropInfo,
+  getAllowedDropDocumentNames,
+  hasRqid,
+  isAllowedDocumentNames,
+  onDragEnter,
+  onDragLeave,
+  updateRqidLink,
+} from "../documents/dragDrop";
 
 interface UiSections {
   health: boolean;
@@ -62,7 +69,16 @@ interface UiSections {
   activeEffects: boolean;
 }
 
+interface MainCult {
+  name: string;
+  id: string;
+  rank: string;
+  descriptionRqid: string;
+  hasMultipleCults: boolean;
+}
+
 interface CharacterSheetData {
+  uuid: string;
   /** reorganized for presentation TODO type it better */
   embeddedItems: any;
 
@@ -78,6 +94,7 @@ interface CharacterSheetData {
   healthStatuses: typeof actorHealthStatuses;
 
   // Other data needed for the sheet
+  mainCult: MainCult;
   /** Array of element runes with > 0% chance */
   characterElementRunes: RuneDataSource[];
   characterPowerRunes: RuneDataSource[];
@@ -143,7 +160,7 @@ export class RqgActorSheet extends ActorSheet<
           initial: "by-item-type",
         },
       ],
-      dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
+      dragDrop: [{ dragSelector: ".item-list .item", dropSelector: "[data-dropzone]" }],
     });
   }
 
@@ -156,9 +173,7 @@ export class RqgActorSheet extends ActorSheet<
 
     return {
       id: this.document.id ?? "",
-      tokenId: this.document?.token?.id ?? undefined, // TODO check if different from actorData.token.id - if not the use data
-      // tokenId: this.token?.id, // TODO check if different from actorData.token.id - if not the use data
-
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
@@ -169,17 +184,18 @@ export class RqgActorSheet extends ActorSheet<
 
       embeddedItems: await RqgActorSheet.organizeEmbeddedItems(this.actor),
 
-      spiritCombatSkillData: this.actor.getBestEmbeddedItemByRqid(
+      spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
         CONFIG.RQG.skillRqid.spiritCombat
       ),
-      dodgeSkillData: this.actor.getBestEmbeddedItemByRqid(CONFIG.RQG.skillRqid.dodge),
+      dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge),
 
+      mainCult: this.getMainCultInfo(),
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
       characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character
       loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
       unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
-      itemLocationTree: createItemLocationTree(this.actor.items.toObject()), // physical items reorganised as a tree of items containing items
+      itemLocationTree: createItemLocationTree(this.actor.items.contents), // physical items reorganised as a tree of items containing items
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
@@ -205,7 +221,6 @@ export class RqgActorSheet extends ActorSheet<
       currencyTotals: this.calcCurrencyTotals(),
 
       characteristicRanks: await this.rankCharacteristics(),
-      // characteristicRanks: {strength: "blah-str", constitution: "blah-con"},
 
       // UI toggles
       showUiSection: this.getUiSectionVisibility(),
@@ -299,6 +314,24 @@ export class RqgActorSheet extends ActorSheet<
     return result;
   }
 
+  private getMainCultInfo(): MainCult {
+    const cults = this.actor.items
+      .filter((i) => i.type === ItemTypeEnum.Cult)
+      .sort((a: RqgItem, b: RqgItem) => b.system.runePoints.max - a.system.runePoints.max);
+    const mainCultItem: RqgItem | undefined = cults[0];
+    const mainCultRank = mainCultItem?.system?.rank;
+    const mainCultRankTranslation = mainCultRank
+      ? localize("RQG.Actor.RuneMagic.CultRank." + mainCultRank)
+      : "";
+    return {
+      name: mainCultItem?.name ?? "",
+      id: mainCultItem?.id ?? "",
+      rank: mainCultRankTranslation,
+      descriptionRqid: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
+      hasMultipleCults: cults.length > 1,
+    };
+  }
+
   private getPhysicalItemLocations(): string[] {
     // Used for DataList input dropdown
     const physicalItems: RqgItem[] = this.actor.items.filter((i: RqgItem) =>
@@ -366,7 +399,7 @@ export class RqgActorSheet extends ActorSheet<
   private getLoadedMissileSr(dexSr: number | undefined): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const loadedMissileSr = [
-      ["1", reloadIcon, "5", reloadIcon, "10"],
+      ["1", reloadIcon, "6", reloadIcon, "11"],
       ["1", reloadIcon, "7", reloadIcon],
       ["2", reloadIcon, "9"],
       ["3", reloadIcon, "11"],
@@ -461,18 +494,6 @@ export class RqgActorSheet extends ActorSheet<
         return acc;
       }, [])
       .sort((a: any, b: any) => b.chance - a.chance);
-  }
-
-  private getSkillDataByName(name: String): SkillDataProperties | undefined {
-    const skillItem = this.actor.items.find(
-      (i: RqgItem) => i.name === name && i.type === ItemTypeEnum.Skill
-    );
-
-    if (!skillItem) {
-      return;
-    }
-    assertItemType(skillItem.type, ItemTypeEnum.Skill);
-    return skillItem.system;
   }
 
   /**
@@ -581,7 +602,6 @@ export class RqgActorSheet extends ActorSheet<
         );
       })
     );
-
     itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
       assertItemType(weapon.type, ItemTypeEnum.Weapon);
 
@@ -614,6 +634,12 @@ export class RqgActorSheet extends ActorSheet<
         }
       }
     });
+    itemTypes[ItemTypeEnum.Armor].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Gear].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Passion].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.RuneMagic].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.SpiritMagic].sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Weapon].sort((a: any, b: any) => a.sort - b.sort);
 
     return itemTypes;
   }
@@ -715,11 +741,11 @@ export class RqgActorSheet extends ActorSheet<
 
     this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
     if (this.token) {
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       const tokenHealthBefore = this.token?.actor?.system.attributes.health;
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       this.token.actor.system.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       HitLocationSheet.setTokenEffect(this.token.object as RqgToken, tokenHealthBefore);
     }
     formData["system.attributes.health"] = newHealth;
@@ -734,31 +760,29 @@ export class RqgActorSheet extends ActorSheet<
       return;
     }
     const htmlElement = html[0];
+    // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
+    htmlElement.parentElement?.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+      elem.addEventListener("dragenter", this._onDragEnter);
+      elem.addEventListener("dragleave", this._onDragLeave);
+    });
 
     new ContextMenu(
       html,
       ".characteristic.contextmenu",
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       characteristicMenuOptions(this.actor, this.token)
     );
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor));
     new ContextMenu(html, ".hit-location.contextmenu", hitLocationMenuOptions(this.actor));
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
-    new ContextMenu(
-      html,
-      ".spirit-magic.contextmenu",
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
-      spiritMagicMenuOptions(this.actor)
-    );
+    new ContextMenu(html, ".spirit-magic.contextmenu", spiritMagicMenuOptions(this.actor));
     new ContextMenu(html, ".cult.contextmenu", cultMenuOptions(this.actor));
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor));
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".skill.contextmenu", skillMenuOptions(this.actor, this.token));
     new ContextMenu(html, ".gear.contextmenu", gearMenuOptions(this.actor));
-    // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
     new ContextMenu(html, ".passion.contextmenu", passionMenuOptions(this.actor, this.token));
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
@@ -766,8 +790,9 @@ export class RqgActorSheet extends ActorSheet<
 
     // Roll actor Characteristic
     htmlElement.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
-      const characteristicName = (el.closest("[data-characteristic]") as HTMLElement)?.dataset
-        .characteristic;
+      const closestDataCharacteristic = el.closest("[data-characteristic]");
+      assertHtmlElement(closestDataCharacteristic);
+      const characteristicName = closestDataCharacteristic?.dataset.characteristic;
 
       let clickCount = 0;
       const actorCharacteristics = this.actor.system.characteristics;
@@ -801,7 +826,7 @@ export class RqgActorSheet extends ActorSheet<
                   ],
                 },
                 this.actor,
-                // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+                // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
                 this.token
               );
             }
@@ -818,7 +843,7 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+          // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
           const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
           await ReputationChatHandler.roll(
             this.actor.system.background.reputation ?? 0,
@@ -831,7 +856,7 @@ export class RqgActorSheet extends ActorSheet<
             if (clickCount === 1) {
               await ReputationChatHandler.show(
                 this.actor,
-                // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+                // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
                 this.token
               );
             }
@@ -1027,6 +1052,12 @@ export class RqgActorSheet extends ActorSheet<
       el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
+    // Sort Items alphabetically
+    htmlElement?.querySelectorAll<HTMLElement>("[data-sort-items]").forEach((el) => {
+      const itemType = getRequiredDomDataset(el, "sort-items");
+      el.addEventListener("click", () => RqgActorSheet.sortItems(this.actor, itemType));
+    });
+
     // Cycle the equipped state of a physical Item
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -1131,7 +1162,6 @@ export class RqgActorSheet extends ActorSheet<
     // Add Passion button
     htmlElement?.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
       el.addEventListener("click", async () => {
-        console.log("CLICK");
         const defaultItemIconSettings: any = getGame().settings.get(
           systemId,
           "defaultItemIconSettings"
@@ -1143,8 +1173,11 @@ export class RqgActorSheet extends ActorSheet<
           img: defaultItemIconSettings["passion"],
           system: { passion: newPassionName },
         };
-        //@ts-ignore
-        await Item.createDocuments([passion], { parent: this.actor, renderSheet: true });
+        // @ts-expect-error implementation
+        await Item.implementation.createDocuments([passion], {
+          parent: this.actor,
+          renderSheet: true,
+        });
       });
     });
   }
@@ -1207,106 +1240,73 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  // TODO Move somewhere else!
-  // TODO Compare to new foundry implementation!!!
-  static async showJournalEntry(id: string, packName?: string): Promise<void> {
-    let entity;
-
-    // Compendium Link
-    if (packName) {
-      const pack = getGame().packs?.get(packName);
-      entity = id && pack ? await pack.getDocument(id) : undefined;
-
-      // World Entity Link
-    } else {
-      const collection = getGame().journal;
-      requireValue(collection, "game.journal not yet initialised");
-      // const collection = CONFIG.JournalEntry.collection.instance;
-      entity = collection.get(id);
-    }
-    if (!entity) {
-      const msg = `No journal with id [${id}] and packName ${packName} when showing it.`;
-      ui.notifications?.warn(msg);
-      console.warn(msg);
-      return;
-    }
-    requireValue(entity.sheet, "journal entry entity.sheet not present");
-    entity.sheet.render(true);
+  _onDragEnter(event: DragEvent): void {
+    onDragEnter(event);
   }
 
-  protected async _onDrop(event: RqidLinkDragEvent): Promise<void> {
-    super._onDrop(event);
+  _onDragLeave(event: DragEvent): void {
+    onDragLeave(event);
+  }
 
-    let droppedDocumentData;
-    try {
-      droppedDocumentData = JSON.parse(event.dataTransfer!.getData("text/plain"));
-    } catch (err) {
-      ui.notifications?.error(localize("RQG.Item.Notification.ErrorParsingItemData")); // TODO generic notification for all actors, items,  etc
-      return;
+  protected async _onDrop(event: DragEvent): Promise<unknown> {
+    event.preventDefault(); // Allow the drag to be dropped
+    this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
+
+    // @ts-expect-error getDragEventData
+    const data = TextEditor.getDragEventData(event);
+    const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
+
+    if (!isAllowedDocumentNames(data.type, allowedDropDocumentNames)) {
+      return false;
     }
 
-    const targetPropertyName = getDomDataset(event, "target-drop-property");
+    const actor = this.actor;
 
-    const dropTypes = getDomDataset(event, "expected-drop-types")?.split(","); // TODO is not used ???
+    /**
+     * A hook event that fires when some useful data is dropped onto an ActorSheet.
+     * @function dropActorSheetData
+     * @memberof hookEvents
+     * @param {Actor} actor      The Actor
+     * @param {ActorSheet} sheet The ActorSheet application
+     * @param {object} data      The data that has been dropped onto the sheet
+     */
+    const allowed = Hooks.call("dropActorSheetData", actor, this, data);
+    if (allowed === false) return;
 
-    let droppedDocument: Item | JournalEntry | undefined = undefined;
-
-    if (droppedDocumentData.type === "Item") {
-      droppedDocument = await Item.fromDropData(droppedDocumentData);
-    }
-
-    if (droppedDocumentData.type === "JournalEntry") {
-      droppedDocument = await JournalEntry.fromDropData(droppedDocumentData);
-    }
-
-    if (droppedDocument && targetPropertyName) {
-      const droppedDocumentRqid = droppedDocument.getFlag(systemId, documentRqidFlags)?.id;
-      const droppedDocumentInstanceName = droppedDocument.name;
-
-      if (!droppedDocumentRqid || !droppedDocumentInstanceName) {
-        ui.notifications?.warn(
-          localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
-            type: droppedDocumentData.type,
-            name: droppedDocument?.name,
-            uuid: droppedDocumentData.uuid,
-          })
-        );
-        return;
-      }
-      const newLink = new RqidLink(droppedDocumentRqid, droppedDocumentInstanceName);
-      const targetProperty = getProperty(this.actor.system, targetPropertyName);
-
-      if (targetProperty) {
-        event.TargetPropertyName = targetPropertyName;
-        if (Array.isArray(targetProperty)) {
-          const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
-          if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
-            targetPropertyRqidLinkArray.push(newLink);
-            targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
-            await this.actor.update({
-              system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-            });
-          }
-        } else {
-          // Property is a single RqidLink, not an array
-          await this.actor.update({ system: { [targetPropertyName]: newLink } });
-        }
-      } else {
-        // Property does not already exist
-        // TODO: Should we ensure that the Actor template actually is allowed
-        // to have a property of the name contained in targetPropertyName?
-        await this.actor.update({ system: { [targetPropertyName]: newLink } });
-      }
+    // Handle different data types (document names)
+    switch (data.type) {
+      case "ActiveEffect":
+        return this._onDropActiveEffect(event, data);
+      case "Actor":
+        return this._onDropActor(event, data);
+      case "Item":
+        return this._onDropItem(event, data);
+      case "JournalEntry":
+        return this._onDropJournalEntry(event, data);
+      case "JournalEntryPage":
+        return this._onDropJournalEntryPage(event, data);
+      case "Folder":
+        return this._onDropFolder(event, data);
+      default:
+        // This will warn about not supported Document Name
+        isAllowedDocumentNames(data.type, [
+          "ActiveEffect",
+          "Actor",
+          "Item",
+          "JournalEntry",
+          "JournalEntryPage",
+          "Folder",
+        ]);
     }
   }
 
-  protected async _onDropItem(event: DragEvent, data: any): Promise<unknown> {
-    // data is technically "ActorSheet.DropData.Item", but that doesn't expose ".actorId",
-    // and it didn't seem useful to have it typed that way
-
-    // It seems a player will not be able to copy an item to an Actor sheet
-    // unless they are the owner.  It will error gracefully after this, but
-    // this gives a better error.
+  // @ts-expect-error parameter types
+  async _onDropItem(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | RqgItem[]> {
+    // A player will not be able to copy an item to an Actor sheet
+    // unless they are the owner.
     if (!this.actor.isOwner) {
       ui.notifications?.warn(
         localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name })
@@ -1314,17 +1314,27 @@ export class RqgActorSheet extends ActorSheet<
       return false;
     }
 
-    // You can drop Items anywhere because we know what to do with them.
-    const item = await Item.fromDropData(data);
+    const { droppedDocument: item, isAllowedToDrop } = await extractDropInfo<RqgItem>(event, data);
 
-    if (!item) {
-      ui.notifications?.error(localize("RQG.Actor.Notification.DraggedItemNotFoundError"));
+    if (!isAllowedToDrop) {
       return false;
     }
 
     const itemData = item?.toObject();
+    // Handle item sorting within the same Actor
+    if (this.actor.uuid === item?.parent?.uuid) {
+      return this._onSortItem(event, itemData) ?? false;
+    }
 
-    if (!data.actorId) {
+    if (item.type === ItemTypeEnum.Occupation) {
+      if (!hasRqid(item)) {
+        return false;
+      }
+      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
+      return [item];
+    }
+
+    if (!item.parent) {
       // Dropped from Sidebar
       // if (itemData.type === ItemTypeEnum.RuneMagic) {
       //   assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
@@ -1333,34 +1343,12 @@ export class RqgActorSheet extends ActorSheet<
       return this._onDropItemCreate(itemData);
     }
 
-    if (!itemData) {
-      ui.notifications?.error(
-        localize("RQG.Actor.Notification.CantMakeItemDataSourceError", { itemId: item.id })
-      );
-      return false;
-    }
-
-    // Check if the actor is the owner of the item
-    // If so change the sort order
     const targetActor = this.actor;
-    if (!targetActor) {
-      return false;
-    }
+    const sourceActor = item.parent;
 
-    let sameActor =
-      data.actorId === targetActor.id ||
-      (targetActor.isToken && data.tokenId === targetActor.token?.id);
-
-    if (sameActor) {
-      return this._onSortItem(event, itemData) ?? [];
-    }
-
-    const sourceActor =
-      getGame().actors?.get(data.actorId) ??
-      (await getRequiredRqgActorFromUuid<RqgActor>(data.actorId));
-
-    if (!sourceActor) {
-      return false;
+    // Handle item sorting within the same Actor
+    if (targetActor.uuid === sourceActor?.uuid) {
+      return this._onSortItem(event, itemData) ?? false;
     }
 
     if (
@@ -1376,6 +1364,42 @@ export class RqgActorSheet extends ActorSheet<
       //(runes, skills, passions, etc) from one Actor to another
       return await this.confirmCopyIntangibleItem(itemData, sourceActor);
     }
+  }
+
+  async _onDropJournalEntry(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+  ): Promise<boolean | JournalEntry[]> {
+    const {
+      droppedDocument: droppedJournal,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+    } = await extractDropInfo<JournalEntry>(event, data);
+
+    if (isAllowedToDrop && hasRqid(droppedJournal)) {
+      await updateRqidLink(this.actor, targetPropertyName, droppedJournal);
+      return [droppedJournal];
+    }
+    return false;
+  }
+
+  async _onDropJournalEntryPage(
+    event: DragEvent,
+    data: { type: string; uuid: string }
+    // @ts-expect-error JournalEntryPage
+  ): Promise<boolean | JournalEntryPage[]> {
+    const {
+      droppedDocument: droppedPage,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+      // @ts-expect-error JournalEntryPage
+    } = await extractDropInfo<JournalEntryPage>(event, data);
+
+    if (isAllowedToDrop && hasRqid(droppedPage)) {
+      await updateRqidLink(this.actor, targetPropertyName, droppedPage);
+      return [droppedPage];
+    }
+    return false;
   }
 
   private async confirmCopyIntangibleItem(
@@ -1590,5 +1614,26 @@ export class RqgActorSheet extends ActorSheet<
 
   _openActorWizard() {
     new ActorWizard(this.actor, {}).render(true);
+  }
+
+  private static async sortItems(actor: RqgActor, itemType: string): Promise<void> {
+    const itemsToSort = actor.items.filter((i) => i.type === itemType);
+    itemsToSort.sort((a: RqgItem, b: RqgItem) => {
+      return (a.name ?? "").localeCompare(b.name ?? "");
+    });
+
+    itemsToSort.map((item: RqgItem, index) => {
+      index === 0
+        ? // @ts-expect-error sort
+          (item.sort = CONST.SORT_INTEGER_DENSITY)
+        : // @ts-expect-error sort
+          (item.sort = itemsToSort[index - 1].sort + CONST.SORT_INTEGER_DENSITY);
+    });
+    const updateData = itemsToSort.map((item) => ({
+      _id: item.id,
+      // @ts-expect-error sort
+      sort: item.sort,
+    }));
+    await actor.updateEmbeddedDocuments("Item", updateData);
   }
 }

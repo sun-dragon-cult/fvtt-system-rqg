@@ -1,11 +1,11 @@
 # 1h-axe-battle-axe
-name: ${{openSystem.content.weaponSkill.1h-axe.name}}$ (${{openSystem.content.weaponSkill.1h-axe.specialization.battleAxe}}$)
+name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-axe.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-axe.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-axe.specialization.battleAxe}}$
+  skillName: ${{openSystem.content.weaponSkill.1h-axes.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -17,18 +17,18 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.1h-axe-battle-axe
+      id: i.skill.1h-axes-battle-axe
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
 # 1h-axe-small-axe
-name: ${{openSystem.content.weaponSkill.1h-axe.name}}$ (${{openSystem.content.weaponSkill.1h-axe.specialization.smallAxe}}$)
+name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.smallAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-axe.svg
 data:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-axe.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-axe.specialization.smallAxe}}$
+  skillName: ${{openSystem.content.weaponSkill.1h-axes.name}}$
+  specialization: ${{openSystem.content.weaponSkill.1h-axes.specialization.smallAxe}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -40,6 +40,6 @@ data:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.1h-axe-small-axe
+      id: i.skill.1h-axes-small-axe
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

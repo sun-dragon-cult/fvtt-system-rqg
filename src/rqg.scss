@@ -141,8 +141,9 @@ body {
     display: none;
   }
 
+
   .drag-hover {
-    outline: forestgreen dashed 5px;
+    box-shadow: inset 0px 0px 20px 7px var(--rqg-secondary-color);
   }
 
   .gap1rem {
@@ -262,6 +263,14 @@ body {
         margin-left: 16px;
         margin-right: 16px;
       }
+    }
+  }
+
+  button.sort {
+    line-height: unset;
+    width: 1.8em;
+    i {
+      margin-left: -2px; // center the icon
     }
   }
 
@@ -389,7 +398,7 @@ body {
     &.combat {
       grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
 
-      // Alternating row background
+      // Alternating row background for 6 columns
       > *:nth-child(12n + 14),
       > *:nth-child(12n + 15),
       > *:nth-child(12n + 16),
@@ -400,7 +409,7 @@ body {
       }
 
       // Set-token-SR-in-combat button
-      button {
+      button.sr {
         height: 1.5rem;
         line-height: unset;
         width: unset;
@@ -419,18 +428,19 @@ body {
     }
 
     &.spiritmagic {
-      grid-template-columns: [col-start] 30px auto repeat(7, min-content) [col-end];
+      grid-template-columns: [col-start] 30px auto auto repeat(7, min-content) [col-end];
 
-      // Alternating row background for 9 columns
-      > *:nth-child(18n + 20),
-      > *:nth-child(18n + 21),
-      > *:nth-child(18n + 22),
-      > *:nth-child(18n + 23),
-      > *:nth-child(18n + 24),
-      > *:nth-child(18n + 25),
-      > *:nth-child(18n + 26),
-      > *:nth-child(18n + 27),
-      > *:nth-child(18n + 28) {
+      // Alternating row background for 10 columns
+      > *:nth-child(20n + 22),
+      > *:nth-child(20n + 23),
+      > *:nth-child(20n + 24),
+      > *:nth-child(20n + 25),
+      > *:nth-child(20n + 26),
+      > *:nth-child(20n + 27),
+      > *:nth-child(20n + 28),
+      > *:nth-child(20n + 29),
+      > *:nth-child(20n + 30),
+      > *:nth-child(20n + 31) {
         background: var(--rqg-table-alternate-background);
       }
     }
@@ -606,7 +616,14 @@ body {
   }
 
   .experienced {
-    text-shadow: 0 0 0.5em red, 0 0 1.5em yellow;
+    text-shadow: -1px 1px 1px var(--rqg-light-outline),
+      1px -1px 1px var(--rqg-light-outline),
+      1px 1px 1px var(--rqg-light-outline),
+      -1px -1px 1px var(--rqg-light-outline),
+      0 0 1em var(--rqg-highlight),
+      0 0 0.6em var(--rqg-highlight),
+      0 0 0.4em var(--rqg-highlight);
+    font-weight: bold;
   }
 
   [data-characteristic-roll],
@@ -633,7 +650,7 @@ body {
     cursor: context-menu;
   }
 
-  [data-rqid-link][data-document-type="JournalEntry"] {
+  [data-rqid-link^="je"] {
     cursor: help;
   }
 

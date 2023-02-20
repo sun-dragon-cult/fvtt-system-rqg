@@ -215,7 +215,8 @@
         "SR": "SR",
         "Dodge": "Dodge",
         "SpiritCombat": "Spirit Combat",
-        "SpiritCombatDamage": "Spirit Combat Damage"
+        "SpiritCombatDamage": "Spirit Combat Damage",
+        "SetSRInCombatTracker": "Set SR in combat tracker"
       },
       "Gear": {
         "ViewByItemType": "View by Item Type",
@@ -344,6 +345,7 @@
         "SpiritMagic": "Spirit Magic",
         "CHALimitFormula": "{points} Points of Spirit Magic with {CHALimit} CHA Limit",
         "Name": "Name",
+        "SpellFocus": "Focus",
         "Points": "Points",
         "Variable": "Variable",
         "Range": "Range",
@@ -758,10 +760,9 @@
         "CanOnlyDropJournalEntryWarning": "You can only drop a Journal Entry onto a {itemType} Sheet",
         "CanOnlyDropJournalEntryOnThisTargetWarning": "You can only drop a Journal Entry onto the {target} Journal target.",
         "PleaseDropOnTarget": "You can't drop that here.  Look for an appropriate target.",
-        "ErrorParsingItemData": "Error parsing Item Data",
         "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
-        "MustHaveRqidToDrop": "The item you dropped does not have an RQG System ID (rqid). Check the \"RQG System\" tab of the Item sheet.",
-        "DroppedItemWrongType": "This field expects an item of type(s) {allowedDropTypes} and the dropped item was {type}",
+        "DroppedWrongDocumentType": "This field expects a document of type(s) {allowedDropTypes} and the dropped document was {type}",
+        "DroppedWrongDocumentName": "This field expects a {allowedDocumentName} and the dropped document was {documentName}",
         "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with uuid {uuid} does not have an RQID and cannot be dropped onto this sheet.",
         "ItemNotUnique": "{actorName} already has a {documentType} '{documentName}' and duplicates are not allowed"
       },
@@ -1135,6 +1136,10 @@
       "items": "Step 2 / 4 - Migrating {count} world items",
       "scenes": "Step 3 / 4 - Migrating {count} scenes",
       "compendiums": "Step 4 / 4 - Migrating {count} compendiums"
+    },
+    "UI": {
+      "SortItems": "Sort items alphabetically",
+      "MultipleCults": "Character has more cults,<br> see Rune Magic Tab"
     }
   },
   "prio": 0,
@@ -2241,7 +2246,7 @@
       },
       "meleeWeapon": {
         "skillName": "Melee Weapon",
-        "description": "<p>Each melee weapon has its own specific skill. An adventurer may use their melee weapon skill to attack and parry with that weapon, unless otherwise indicated.</p><p>Melee weapons are listed by category. An adventurer can use any other melee weapons in the same weapon category (such as 1H Axe, Fist, 1H Sword, etc.) at 1/2 the skill rating of the best skill the adventurer has in that category.</p>"
+        "description": "<p>Each melee weapon has its own specific skill. An adventurer may use their melee weapon skill to attack and parry with that weapon, unless otherwise indicated.</p><p>Melee weapons are listed by category. An adventurer can use any other melee weapons in the same weapon category (such as 1H Axes, Fists, 1H Swords, etc.) at 1/2 the skill rating of the best skill the adventurer has in that category.</p>"
       },
       "mineralLore": {
         "skillName": "Mineral Lore",
@@ -2433,31 +2438,31 @@
       "iron": "Iron"
     },
     "weaponSkill": {
-      "1h-axe": {
-        "name": "1H Axe",
+      "1h-axes": {
+        "name": "1H Axes",
         "specialization": {
           "smallAxe": "Small Axe",
           "battleAxe": "Battle Axe",
           "offhand": "Offhand"
         }
       },
-      "1h-dagger": {
-        "name": "1H Dagger",
+      "1h-daggers": {
+        "name": "1H Daggers",
         "specialization": {
           "dagger": "Dagger",
           "sickle": "Sickle",
           "offhand": "Offhand"
         }
       },
-      "1h-hammer": {
-        "name": "1H Hammer",
+      "1h-hammers": {
+        "name": "1H Hammers",
         "specialization": {
           "warHammer": "War Hammer",
           "offhand": "Offhand"
         }
       },
-      "1h-mace": {
-        "name": "1H Mace",
+      "1h-maces": {
+        "name": "1H Maces",
         "specialization": {
           "club": "Club",
           "heavyMace": "Heavy Mace",
@@ -2466,8 +2471,8 @@
           "offhand": "Offhand"
         }
       },
-      "1h-spear": {
-        "name": "1H Spear",
+      "1h-spears": {
+        "name": "1H Spears",
         "specialization": {
           "javelin": "Javelin",
           "lance": "Lance",
@@ -2475,8 +2480,8 @@
           "offhand": "Offhand"
         }
       },
-      "1h-sword": {
-        "name": "1H Sword",
+      "1h-swords": {
+        "name": "1H Swords",
         "specialization": {
           "broadsword": "Broadsword",
           "kopis": "Kopis",
@@ -2485,16 +2490,16 @@
           "offhand": "Offhand"
         }
       },
-      "2h-axe": {
-        "name": "2H Axe",
+      "2h-axes": {
+        "name": "2H Axes",
         "specialization": {
           "battleAxe": "Battle Axe",
           "daggerAxe": "Dagger Axe",
           "greatAxe": "Great Axe"
         }
       },
-      "2h-hammer": {
-        "name": "2H Hammer",
+      "2h-hammers": {
+        "name": "2H Hammers",
         "specialization": {
           "greatHammer": "Great Hammer",
           "maul": "Maul"
@@ -2503,16 +2508,16 @@
       "2h-mace": {
         "name": "2H Mace"
       },
-      "2h-spear": {
-        "name": "2H Spear",
+      "2h-spears": {
+        "name": "2H Spears",
         "specialization": {
           "longspear": "Longspear",
           "pike": "Pike",
           "shortspear": "Shortspear"
         }
       },
-      "2h-sword": {
-        "name": "2H Sword",
+      "2h-swords": {
+        "name": "2H Swords",
         "specialization": {
           "greatsword": "Greatsword",
           "rhomphaia": "Rhomphaia",
@@ -2522,16 +2527,16 @@
       "bite": {
         "name": "Bite"
       },
-      "bow": {
-        "name": "Bow",
+      "bows": {
+        "name": "Bows",
         "specialization": {
           "compositeBow": "Composite Bow",
           "elfBow": "Elf Bow",
           "selfBow": "Self Bow"
         }
       },
-      "crossbow": {
-        "name": "Crossbow",
+      "crossbows": {
+        "name": "Crossbows",
         "specialization": {
           "arbalest": "Arbalest",
           "heavyCrossbow": "Heavy Crossbow",
@@ -2539,13 +2544,14 @@
           "repeatingCrossbow": "Repeating Crossbow"
         }
       },
-      "fist": {
-        "name": "Fist",
+      "fists": {
+        "name": "Fists",
         "specialization": {
           "claw": "Claw",
           "fist": "Fist",
           "heavyCestus": "Heavy Cestus",
-          "lightCestus": "Light Cestus"
+          "lightCestus": "Light Cestus",
+          "rip": "Rip"
         }
       },
       "gore": {
@@ -2563,8 +2569,8 @@
       "hug": {
         "name": "Hug"
       },
-      "javelin": {
-        "name": "Javelin",
+      "javelins": {
+        "name": "Javelins",
         "specialization": {
           "dart": "Dart",
           "javelin": "Javelin",
@@ -2574,8 +2580,8 @@
       "kick": {
         "name": "Kick"
       },
-      "lasso": {
-        "name": "Lasso",
+      "lassos": {
+        "name": "Lassos",
         "specialization": {
           "poleLasso": "Pole Lasso"
         }
@@ -2586,18 +2592,15 @@
       "rearAndPlunge": {
         "name": "Rear & Plunge"
       },
-      "rip": {
-        "name": "Rip"
-      },
-      "sling": {
-        "name": "Sling",
+      "slings": {
+        "name": "Slings",
         "specialization": {
           "sling": "Sling",
           "staffSling": "Staff Sling"
         }
       },
-      "shield": {
-        "name": "Shield",
+      "shields": {
+        "name": "Shields",
         "specialization": {
           "large": "Large",
           "medium": "Medium",
