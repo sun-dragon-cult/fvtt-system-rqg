@@ -325,7 +325,7 @@ export class RqgActorSheet extends ActorSheet<
       : "";
     return {
       name: mainCultItem?.name ?? "",
-      id: mainCultItem.id ?? "",
+      id: mainCultItem?.id ?? "",
       rank: mainCultRankTranslation,
       descriptionRqid: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
       hasMultipleCults: cults.length > 1,
