@@ -17,15 +17,15 @@ system:
       value: 4
       formula: 1d6
     intelligence:
-      value: 
-      formula: 
+      value:
+      formula:
     power:
       value: 11
       formula: 3d6
       hasExperience: false
     charisma:
-      value: 
-      formula: 
+      value:
+      formula:
   background:
     species: ${{openSystem.content.bestiary.tusker.species}}$
     occupation: ''
@@ -138,7 +138,7 @@ sort: 0
 ownership:
   default: 0
   OGu9DZ439mXiuTD3: 3
-flags: 
+flags:
   rqg:
     documentRqidFlags:
       id: a.character.tusker
