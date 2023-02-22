@@ -1,5 +1,49 @@
 # Changelog
 
+## [2.1.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.0.1...v2.1.0) (2023-02-22)
+
+
+### Features
+
+* add a rqidLink TextEditor.enrichHtml plugin ([09af1a7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/09af1a713c7cf38a75cac9fa740a2174603a47ac)), closes [#301](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/301)
+* add context menu to top row cult field ([cc090a1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/cc090a1a16431b2244996e43ad50cccb859ae7b0)), closes [#351](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/351)
+* allow players to add Passions ([#411](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/411)) ([1df8232](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1df823232cea355e55071264e0ae987134101585))
+* evaluate Initialized Characteristics ([#422](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/422)) ([ca27fed](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca27fedd18a827683253ffebbac1564bc5efa4b4)), closes [#420](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/420)
+* extend rqid to handle embedded documents ([b3470b6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b3470b6f946d09ccc4fbf1608edd23ae33eb8143)), closes [#353](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/353)
+* hide dead actor health for spirits [#74](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/74) ([#421](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/421)) ([e18caa9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e18caa90b3b01354798e5da3f7f472aa89a10ebe))
+* hide Spirit Combat damage if not applicable ([c293cc8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c293cc86427b7dc8c48c2728f177a7541c35963c)), closes [#467](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/467)
+* initialize Actor for new Token if Actor is unlinked ([#416](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/416)) ([ba843cf](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ba843cf298e08c1ca593229fb97f5d827d7d0aa7))
+* initialize Characteristics to Average Value ([#429](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/429)) ([92c14ce](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/92c14ced07a35b34e960caa5a507d2b13103fd65)), closes [#419](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/419)
+* make it possible to create arbitrarily named passions ([#409](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/409)) ([7dbfb91](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7dbfb9152a752a3620b237107e2275a25a85804d))
+* make it possible to drop journal entry page on rqid link field ([#474](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/474)) ([92829ef](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/92829efcf99b287b64bdc66b6b0af1dc20250d32)), closes [#473](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/473)
+* make it possible to rearrange physical items order ([05b1f81](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/05b1f81cd534568f0c5349f31fc3712da64c8626)), closes [#451](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/451)
+* make more item types sortable ([f6bf470](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f6bf4708e21992b39923695d57cdcc1d34c3bce6)), closes [#454](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/454)
+* show cult on top row in actor sheet ([c52be59](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c52be59433ad52c5d9706579c7685b1d2fcbedb2)), closes [#351](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/351)
+* show spirit magic spell "focus" on spirit magic tab ([2796978](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/279697823ebb29e1dcb410edc013a8d0d45141ad)), closes [#453](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/453)
+* silent Initialize All Characteristics for GM ([#428](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/428)) ([7a97c35](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7a97c35cbabbd7a53190e54fd7d63ce6d335c04e)), closes [#418](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/418)
+* use foundry tooltips instead of browser title ([b341265](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b341265b2686ac7a8653e55301b06facc5945d8d)), closes [#430](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/430)
+
+
+### Bug Fixes
+
+* combatants are not sorted according to DEX when SR (initiative) is missing ([1b1a65e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1b1a65ebd5801a417f87794f2d3c981cd8fcca46)), closes [#461](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/461)
+* errors in compendium data ([8f088ab](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8f088ab447a6fa06f20a0ac1b8d0370d29393149)), closes [#458](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/458)
+* experience marker has too little contrast ([49142bf](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/49142bf49e9af4cc084b14cbe968288f2aa1b956)), closes [#470](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/470)
+* hide total HP for creatures without CON but with hit locations[#437](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/437) ([f84a4be](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f84a4bedd241c00b03da499acf7566a65263ccfd))
+* lastPass adds icon to combat tracker SR input ([5accc1a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5accc1a0d7319c0d36942ff54b23315c6235d1f2)), closes [#431](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/431)
+* lastPass adds icon to combat tracker SR input ([9b4901e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/9b4901e9b890464d0f3921cc96989dc5b4d701cc)), closes [#431](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/431)
+* make drag-n-drop work again[#385](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/385) ([#472](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/472)) ([cbf6182](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/cbf618228fcea9e65ce672d8606199086dc17fb7))
+* missile S/MR SR is wrong ([69efc5f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/69efc5f337950c32ad731f18090bddba962549a2)), closes [#427](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/427)
+* not possible to select Rate of fire on missile weapon item ([70e840a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/70e840a9ede39fa6d0f000109c2dea6aabaf0ed9)), closes [#464](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/464)
+* null formula causes error ([#433](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/433)) ([96fd8d2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/96fd8d2b0cf034e69c2fb0a1ef4ee210e7d8df2d))
+* null on `mainCult.id` ([24a249b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/24a249be70154755758e9f98f0539dd63fcd5e63))
+* pack metadata package is renamed to packageName in v10 ([c4d995e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c4d995e2528313e4ea411e813f9ee3bcc9b0282a)), closes [#471](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/471)
+* physical item location have stopped working properly ([a081ce5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a081ce5406cc4bc1b9fc11154cb243aceab803b2)), closes [#460](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/460)
+* rename weapon skill categories to plural ([79a305f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/79a305f4a4fa4ecab36c98556d58f0c5cfac54d2)), closes [#426](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/426)
+* renderRqidDocument does not open journal if rqid is a JournalEntryPage ([92829ef](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/92829efcf99b287b64bdc66b6b0af1dc20250d32))
+* skill Base Chances ([#425](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/425)) ([7fcf241](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7fcf2414ceb564fca4a55fc7d046f3fa5f7d5667)), closes [#412](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/412)
+* slow opening of unlinked tokens actor sheet, use UUID instead of actor/token ([31caf38](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/31caf380115110512abcc40eb8c297a21cde0e54)), closes [#383](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/383)
+
 ## [2.0.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.0.0...v2.0.1) (2022-12-28)
 
 
