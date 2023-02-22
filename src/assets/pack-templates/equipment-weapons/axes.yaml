@@ -11,7 +11,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.7y2pS7puytf4xfV4
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.84644z0nkD89R1mz
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -25,14 +25,8 @@ system:
       strikeRank: 4
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.kEcxA1G7J8xva450
+      skillOrigin:
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
-          damageType: slash
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
       damage: 1d6+1
       minStrength: 7
       minDexterity: 7
@@ -47,7 +41,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.9wyEGCc77PiUb9Nl
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9wyEGCc77PiUb9Nl
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -92,7 +86,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.UVRB26QZsPwm1U9R
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UVRB26QZsPwm1U9R
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -106,21 +100,15 @@ system:
       strikeRank: 3
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.XZcWh57Y8C89pbdm
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
-          damageType: slash
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
-      damage: 1d8+2
-      minStrength: 13
-      minDexterity: 7
-      strikeRank: 3
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength:
+      minDexterity:
+      strikeRank:
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.xhY8SCSzzBhwV1Pk
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.xhY8SCSzzBhwV1Pk
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -176,7 +164,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.UVRB26QZsPwm1U9R
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UVRB26QZsPwm1U9R
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -190,21 +178,15 @@ system:
       strikeRank: 3
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.XZcWh57Y8C89pbdm
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
-          damageType: slash
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
+      skillOrigin:
+      combatManeuvers: []
       damage: 1d8+2
       minStrength: 13
       minDexterity: 7
       strikeRank: 3
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.xhY8SCSzzBhwV1Pk
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.xhY8SCSzzBhwV1Pk
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -276,7 +258,7 @@ system:
       strikeRank: 0
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.SEJtC7C6UhrKrcAV
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.SEJtC7C6UhrKrcAV
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -348,7 +330,7 @@ system:
       strikeRank: 0
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.9hry1aMvBvVCAZM3
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9hry1aMvBvVCAZM3
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash

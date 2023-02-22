@@ -11,7 +11,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.wJ8ZcCBfYlRPLGZ9
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.wJ8ZcCBfYlRPLGZ9
       combatManeuvers:
         - name: Hit
           damageType: crush
@@ -29,16 +29,7 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: Hit
-          damageType: crush
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
-          description:
+      combatManeuvers: []
       damage: 1d3+1
       minStrength: 7
       minDexterity: null
@@ -95,7 +86,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.DtW3cU9ecTCu5e97
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.DtW3cU9ecTCu5e97
       combatManeuvers:
         - name: Hit
           damageType: crush
@@ -113,16 +104,7 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: Hit
-          damageType: crush
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
-          description:
+      combatManeuvers: []
       damage: 1d3+2
       minStrength: 11
       minDexterity: null
@@ -179,7 +161,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.BZaTB9EsMEbZ8dWI
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.BZaTB9EsMEbZ8dWI
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -197,16 +179,7 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
-          damageType: slash
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
-          damageType: impale
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
+      combatManeuvers: []
       damage: 1d4+1
       minStrength: 7
       minDexterity: 9
@@ -263,7 +236,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.mfuP53IYK6SlDNY7
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.mfuP53IYK6SlDNY7
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Punch}}$
           damageType: crush
@@ -281,16 +254,7 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Punch}}$
-          damageType: crush
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
-          description:
+      combatManeuvers: []
       damage: 1d3
       minStrength: null
       minDexterity: null
@@ -347,7 +311,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.ImY1JgAPh59X5vbX
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.ImY1JgAPh59X5vbX
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
           damageType: special
@@ -419,7 +383,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KPHB0ZZXT78AGl0X
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Kick}}$
           damageType: crush
@@ -434,14 +398,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Kick}}$
-          damageType: crush
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4
@@ -497,7 +455,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.fBlSeCd7CTRlmFpD
       combatManeuvers:
         - name: Head Butt
           damageType: crush
@@ -512,14 +470,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: Head Butt
-          damageType: crush
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4
@@ -575,7 +527,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KPHB0ZZXT78AGl0X
       combatManeuvers:
         - name: Trample
           damageType: crush
@@ -590,14 +542,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: Trample
-          damageType: crush
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4
@@ -653,7 +599,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.eQtAZbMgHj2WwLvr
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bite}}$
           damageType: crush
@@ -665,11 +611,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bite}}$
-          damageType: crush
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4
@@ -725,7 +668,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.nDme6LPr9hhcSfeB
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Trample}}$
           damageType: crush
@@ -737,11 +680,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Trample}}$
-          damageType: crush
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4
@@ -797,7 +737,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.BZaTB9EsMEbZ8dWI
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
           damageType: cut
@@ -809,11 +749,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
-          damageType: crush
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4
@@ -869,7 +806,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KPHB0ZZXT78AGl0X
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Hug}}$
           damageType: crush
@@ -881,11 +818,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Hug}}$
-          damageType: crush
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4
@@ -941,7 +875,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.YWqbb02DrCq5iaEz
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
           damageType: cut
@@ -953,11 +887,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
-          damageType: crush
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4
@@ -1013,7 +944,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.FiNe2lN0aNW5qaxr
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Gore}}$
           damageType: cut
@@ -1025,11 +956,8 @@ system:
     offHand:
       skillId:
       skillOrigin:
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Gore}}$
-          damageType: cut
-          description:
-      damage: 1d6
+      combatManeuvers: []
+      damage:
       minStrength: null
       minDexterity: null
       strikeRank: 4

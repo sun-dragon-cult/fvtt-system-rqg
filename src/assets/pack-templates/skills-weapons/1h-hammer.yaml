@@ -1,4 +1,5 @@
 name: ${{openSystem.content.weaponSkill.1h-hammers.name}}$ (${{openSystem.content.weaponSkill.1h-hammers.specialization.warHammer}}$)
+_id: arewOJ1QiSrq4BX2
 type: skill
 img: systems/rqg/assets/images/weapons/1h-warhammer.svg
 system:

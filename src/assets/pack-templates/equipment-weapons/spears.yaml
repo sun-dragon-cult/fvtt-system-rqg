@@ -11,7 +11,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.p6Mm8PuFkfpy0MHS
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.p6Mm8PuFkfpy0MHS
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
@@ -25,14 +25,8 @@ system:
       strikeRank: 2
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.CIU0BzsssqKImNW9
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
-          damageType: impale
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
+      skillOrigin:
+      combatManeuvers: []
       damage: 1d6
       minStrength: 9
       minDexterity: 9
@@ -47,7 +41,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.794y0cyfzCa5eYPf
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.794y0cyfzCa5eYPf
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -95,7 +89,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.CIXYxzkBZd5RGJx7
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.CIXYxzkBZd5RGJx7
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
@@ -109,21 +103,15 @@ system:
       strikeRank: 2
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.JDXeX3DWBwy4Z9j8
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
-          damageType: impale
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
+      skillOrigin:
+      combatManeuvers: []
       damage: 1d6+1
       minStrength: 9
       minDexterity: 7
       strikeRank: 2
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.RgY6W1u54NyqKa17
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.RgY6W1u54NyqKa17
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
@@ -137,7 +125,7 @@ system:
       strikeRank: 1
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.r24yk70r505De5dy
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.r24yk70r505De5dy
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -185,7 +173,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.eT1Wtz0RWkeq60G2
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.eT1Wtz0RWkeq60G2
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
@@ -199,14 +187,8 @@ system:
       strikeRank: 0
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.hw81IOi4PUvl4maS
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
-          damageType: impale
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
+      skillOrigin:
+      combatManeuvers: []
       damage: 1d10+1
       minStrength: 9
       minDexterity: 7
@@ -279,7 +261,7 @@ system:
       strikeRank: 0
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.GKqFmE4XASes5k97
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.GKqFmE4XASes5k97
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
@@ -351,7 +333,7 @@ system:
       strikeRank: 0
     twoHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.x9Cj4g9vfO64Uxia
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.x9Cj4g9vfO64Uxia
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale

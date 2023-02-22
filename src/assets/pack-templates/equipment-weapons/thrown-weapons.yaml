@@ -11,7 +11,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.84644z0nkD89R1mz
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.84644z0nkD89R1mz
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -25,14 +25,8 @@ system:
       strikeRank: 4
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.kEcxA1G7J8xva450
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
-          damageType: slash
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
+      skillOrigin:
+      combatManeuvers: []
       damage: 1d6+1
       minStrength: 7
       minDexterity: 7
@@ -47,7 +41,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.9wyEGCc77PiUb9Nl
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9wyEGCc77PiUb9Nl
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
@@ -116,7 +110,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.5AfkO7MrjYqHm9Ay
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.5AfkO7MrjYqHm9Ay
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush

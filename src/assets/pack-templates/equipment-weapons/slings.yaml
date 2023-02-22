@@ -35,7 +35,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.M66Aa8Cij2s4Xc3P
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.M66Aa8Cij2s4Xc3P
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush
@@ -104,7 +104,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.8qozzHxXWC57R1B0
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.8qozzHxXWC57R1B0
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush

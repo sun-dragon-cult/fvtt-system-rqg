@@ -84,13 +84,14 @@ export class CompendiumPack {
   }
 
   private finalize(docSource: CompendiumSource) {
-    docSource._id = crypto
-      .createHash("md5")
-      .update(this.name + docSource.name) // Has to be unique - use the pack and document name (like "cults-enOrlanth")
-      .digest("base64")
-      .replace(/[\+=\/]/g, "")
-      .substring(0, 16);
-
+    if (!docSource._id) {
+      docSource._id = crypto
+        .createHash("md5")
+        .update(this.name + docSource.name) // Has to be unique - use the pack and document name (like "cults-enOrlanth")
+        .digest("base64")
+        .replace(/[\+=\/]/g, "")
+        .substring(0, 16);
+    }
     return JSON.stringify(docSource);
   }
 

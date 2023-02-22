@@ -35,7 +35,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.c4xz834y4y58vjnH
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.c4xz834y4y58vjnH
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
           damageType: special

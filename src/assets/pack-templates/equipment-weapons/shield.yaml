@@ -11,7 +11,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.2U6x8opZA2du08Be
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.2U6A8opZA2du08Be
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
@@ -25,14 +25,8 @@ system:
       strikeRank: 3
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.Q1iz413nV3cfxXs1
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
-          damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
+      skillOrigin:
+      combatManeuvers: []
       damage: 1d3
       minStrength: 5
       minDexterity:
@@ -90,7 +84,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.u95ZVt0636VqW5Pe
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.u95ZVt0636VqW5Pe
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
@@ -104,14 +98,8 @@ system:
       strikeRank: 3
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.4UADeOCOnD9MOlWH
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
-          damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
+      skillOrigin:
+      combatManeuvers: []
       damage: 1d4
       minStrength: 9
       minDexterity:
@@ -169,7 +157,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.GknxFLc7hBNJ5s0l
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.GknxFLc7hBNJ5s0l
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
@@ -183,14 +171,8 @@ system:
       strikeRank: 3
     offHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.4apEfLV4T0cntKWe
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
-          damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
-          damageType: special
+      skillOrigin:
+      combatManeuvers: []
       damage: 1d6
       minStrength: 12
       minDexterity:

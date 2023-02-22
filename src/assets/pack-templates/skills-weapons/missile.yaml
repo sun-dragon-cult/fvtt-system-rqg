@@ -1,5 +1,6 @@
 # bow-composite-bow
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$)
+_id: 9aEgM4UKZQfFddMD
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
@@ -23,6 +24,7 @@ flags:
 ---
 # bow-elf-bow
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$)
+_id: zhMTFSWh768z6Jnk
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
@@ -46,6 +48,7 @@ flags:
 ---
 # bow-self-bow
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$)
+_id: EcDI8nmAyfshQL10
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
@@ -69,6 +72,7 @@ flags:
 ---
 # crossbow-arbalest
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$)
+_id: CVruhytNFN3sfNaM
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 system:
@@ -92,6 +96,7 @@ flags:
 ---
 # crossbow-heavy-crossbow
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$)
+_id: 6tN59Is4NdkZMJF5
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 system:
@@ -115,6 +120,7 @@ flags:
 ---
 # crossbow-light-crossbow
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$)
+_id: SL7I4vZ0pKwO714W
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 system:
@@ -138,6 +144,7 @@ flags:
 ---
 # crossbow-repeating-crossbow
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$)
+_id: OTEuqGbfafup9W49
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 system:
@@ -161,6 +168,7 @@ flags:
 ---
 # javelin-dart
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.dart}}$)
+_id: UfrGc8zwcTmE1HPv
 type: skill
 img: systems/rqg/assets/images/weapons/dart.svg
 system:
@@ -184,6 +192,7 @@ flags:
 ---
 # javelin-javelin
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$)
+_id: 794y0cyfzCa5eYPf
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
 system:
@@ -207,6 +216,7 @@ flags:
 ---
 # javelin-shortspear
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$)
+_id: r24yk70r505De5dy
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
 system:
@@ -230,6 +240,7 @@ flags:
 ---
 # lasso-pole-lasso
 name: ${{openSystem.content.weaponSkill.lassos.name}}$ (${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$)
+_id: c4xz834y4y58vjnH
 type: skill
 img: systems/rqg/assets/images/weapons/lasso.svg
 system:
@@ -253,6 +264,7 @@ flags:
 ---
 # sling-sling
 name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.sling}}$)
+_id: M66Aa8Cij2s4Xc3P
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
 system:
@@ -276,6 +288,7 @@ flags:
 ---
 # sling-staff-sling
 name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$)
+_id: 8qozzHxXWC57R1B0
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
 system:
@@ -299,6 +312,7 @@ flags:
 ---
 # thrown-axe
 name: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
+_id: 9wyEGCc77PiUb9Nl
 type: skill
 img: systems/rqg/assets/images/weapons/thrown-axe.svg
 system:
@@ -322,6 +336,7 @@ flags:
 ---
 # thrown-dagger
 name: ${{openSystem.content.weaponSkill.thrownDagger.name}}$
+_id: ye3Y3Hmbots30qLD
 type: skill
 img: systems/rqg/assets/images/weapons/thrown-dagger.svg
 system:
@@ -345,6 +360,7 @@ flags:
 ---
 # thrown-rock
 name: ${{openSystem.content.weaponSkill.thrownRock.name}}$
+_id: 5AfkO7MrjYqHm9Ay
 type: skill
 img: systems/rqg/assets/images/weapons/rock.svg
 system:

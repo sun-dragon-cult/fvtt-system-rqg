@@ -35,7 +35,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.9aEgM4UKZQfFddMD
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9aEgM4UKZQfFddMD
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -104,7 +104,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.zhMTFSWh768z6Jnk
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.zhMTFSWh768z6Jnk
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -173,7 +173,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.EcDI8nmAyfshQL10
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.EcDI8nmAyfshQL10
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -242,7 +242,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.CVruhytNFN3sfNaM
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.CVruhytNFN3sfNaM
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -309,7 +309,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.6tN59Is4NdkZMJF5
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.6tN59Is4NdkZMJF5
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -378,7 +378,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.SL7I4vZ0pKwO714W
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.SL7I4vZ0pKwO714W
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -447,7 +447,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons.OTEuqGbfafup9W49
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.OTEuqGbfafup9W49
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
