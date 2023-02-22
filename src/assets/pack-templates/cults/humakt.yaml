@@ -2,7 +2,7 @@
 name: ${{openSystem.content.cult.humakt.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
-data:
+system:
   cultName: ${{openSystem.content.cult.humakt.name}}$
   rank: layMember
   runePoints:

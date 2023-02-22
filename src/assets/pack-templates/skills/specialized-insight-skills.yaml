@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.insight.skillName}}$ (${{openSystem.content.skill.insight.specialization.human}}$)
 type: skill
 img: systems/rqg/assets/images/skills/insight.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.insight.skillName}}$
   specialization: ${{openSystem.content.skill.insight.specialization.human}}$

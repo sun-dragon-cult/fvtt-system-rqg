@@ -1,7 +1,7 @@
 name: ${{openSystem.content.hitLocation.harpy.rightLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 1
   dieTo: 2
   baseHpDelta: -1
@@ -21,7 +21,7 @@ flags:
 name: ${{openSystem.content.hitLocation.harpy.leftLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 3
   dieTo: 4
   baseHpDelta: -1
@@ -41,7 +41,7 @@ flags:
 name: ${{openSystem.content.hitLocation.harpy.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 5
   dieTo: 7
   baseHpDelta: 0
@@ -61,7 +61,7 @@ flags:
 name: ${{openSystem.content.hitLocation.harpy.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 8
   dieTo: 9
   baseHpDelta: 1
@@ -81,7 +81,7 @@ flags:
 name: ${{openSystem.content.hitLocation.harpy.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 10
   dieTo: 13
   baseHpDelta: 0
@@ -101,7 +101,7 @@ flags:
 name: ${{openSystem.content.hitLocation.harpy.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 14
   dieTo: 17
   baseHpDelta: 0
@@ -121,7 +121,7 @@ flags:
 name: ${{openSystem.content.hitLocation.harpy.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 18
   dieTo: 20
   baseHpDelta: 1

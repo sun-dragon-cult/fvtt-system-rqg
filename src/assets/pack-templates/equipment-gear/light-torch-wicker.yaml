@@ -7,7 +7,7 @@ flags:
       id: i.gear.light-wicker-torch
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   description: ${{openSystem.content.equipment.gear.lightTorchWickerDescription}}$
   gmNotes:
   quantity: 5

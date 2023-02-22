@@ -1,7 +1,7 @@
 name: Sartar (Colymar Tribal Lands)
 type: homeland
 img: systems/rqg/assets/images/items/homeland.svg
-data:
+system:
   homeland: Sartar
   namePrefix: Sartar
   homelandJournalRqidLink:

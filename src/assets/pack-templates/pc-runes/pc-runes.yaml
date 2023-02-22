@@ -1,7 +1,7 @@
 name: ${{openSystem.content.rune.air}}$ (${{openSystem.content.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/air.svg
-data:
+system:
   rune: ${{openSystem.content.rune.air}}$
   chance: 0
   hasExperience: false
@@ -24,7 +24,7 @@ flags:
 name: ${{openSystem.content.rune.darkness}}$ (${{openSystem.content.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/darkness.svg
-data:
+system:
   rune: ${{openSystem.content.rune.darkness}}$
   chance: 0
   hasExperience: false
@@ -47,7 +47,7 @@ flags:
 name: ${{openSystem.content.rune.earth}}$ (${{openSystem.content.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/earth.svg
-data:
+system:
   rune: ${{openSystem.content.rune.earth}}$
   chance: 0
   hasExperience: false
@@ -70,7 +70,7 @@ flags:
 name: ${{openSystem.content.rune.fireSky}}$ (${{openSystem.content.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/fire_sky.svg
-data:
+system:
   rune: ${{openSystem.content.rune.fireSky}}$
   chance: 0
   hasExperience: false
@@ -93,7 +93,7 @@ flags:
 name: ${{openSystem.content.rune.moon}}$ (${{openSystem.content.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/moon_full.svg
-data:
+system:
   rune: ${{openSystem.content.rune.moon}}$
   chance: 0
   hasExperience: false
@@ -114,7 +114,7 @@ flags:
 name: ${{openSystem.content.rune.water}}$ (${{openSystem.content.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/water.svg
-data:
+system:
   rune: ${{openSystem.content.rune.water}}$
   chance: 0
   hasExperience: false
@@ -137,7 +137,7 @@ flags:
 name: ${{openSystem.content.rune.beast}}$ (${{openSystem.content.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/beast.svg
-data:
+system:
   rune: ${{openSystem.content.rune.beast}}$
   chance: 50
   hasExperience: false
@@ -158,7 +158,7 @@ flags:
 name: ${{openSystem.content.rune.man}}$ (${{openSystem.content.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/man.svg
-data:
+system:
   rune: ${{openSystem.content.rune.man}}$
   chance: 50
   hasExperience: false
@@ -179,7 +179,7 @@ flags:
 name: ${{openSystem.content.rune.death}}$ (${{openSystem.content.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/death.svg
-data:
+system:
   rune: ${{openSystem.content.rune.death}}$
   chance: 50
   hasExperience: false
@@ -200,7 +200,7 @@ flags:
 name: ${{openSystem.content.rune.disorder}}$ (${{openSystem.content.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/disorder.svg
-data:
+system:
   rune: ${{openSystem.content.rune.disorder}}$
   chance: 50
   hasExperience: false
@@ -221,7 +221,7 @@ flags:
 name: ${{openSystem.content.rune.fertility}}$ (${{openSystem.content.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/fertility.svg
-data:
+system:
   rune: ${{openSystem.content.rune.fertility}}$
   chance: 50
   hasExperience: false
@@ -242,7 +242,7 @@ flags:
 name: ${{openSystem.content.rune.harmony}}$ (${{openSystem.content.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/harmony.svg
-data:
+system:
   rune: ${{openSystem.content.rune.harmony}}$
   chance: 50
   hasExperience: false
@@ -263,7 +263,7 @@ flags:
 name: ${{openSystem.content.rune.illusion}}$ (${{openSystem.content.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/illusion.svg
-data:
+system:
   rune: ${{openSystem.content.rune.illusion}}$
   chance: 50
   hasExperience: false
@@ -284,7 +284,7 @@ flags:
 name: ${{openSystem.content.rune.movement}}$ (${{openSystem.content.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/movement_change.svg
-data:
+system:
   rune: ${{openSystem.content.rune.movement}}$
   chance: 50
   hasExperience: false
@@ -305,7 +305,7 @@ flags:
 name: ${{openSystem.content.rune.stasis}}$ (${{openSystem.content.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/stasis.svg
-data:
+system:
   rune: ${{openSystem.content.rune.stasis}}$
   chance: 50
   hasExperience: false
@@ -326,7 +326,7 @@ flags:
 name: ${{openSystem.content.rune.truth}}$ (${{openSystem.content.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/truth.svg
-data:
+system:
   rune: ${{openSystem.content.rune.truth}}$
   chance: 50
   hasExperience: false

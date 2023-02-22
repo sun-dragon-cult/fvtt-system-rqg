@@ -7,7 +7,7 @@ flags:
       id: i.armor.armor-composite-helm-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
   armorType: ${{openSystem.content.equipment.armor.compositeHelm}}$
@@ -33,7 +33,7 @@ flags:
       id: i.armor.armor-open-helm-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
   armorType: ${{openSystem.content.equipment.armor.openHelm}}$
@@ -59,7 +59,7 @@ flags:
       id: i.armor.armor-closed-helm-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
   armorType: ${{openSystem.content.equipment.armor.closedHelm}}$
@@ -85,7 +85,7 @@ flags:
       id: i.armor.armor-full-helm-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
   armorType: ${{openSystem.content.equipment.armor.fullHelm}}$
@@ -111,7 +111,7 @@ flags:
       id: i.armor.armor-vambraces-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
     - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
@@ -138,7 +138,7 @@ flags:
       id: i.armor.armor-cuirass-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
   armorType: ${{openSystem.content.equipment.armor.cuirass}}$
@@ -164,7 +164,7 @@ flags:
       id: i.armor.armor-hauberk-segmented-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
@@ -191,7 +191,7 @@ flags:
       id: i.armor.armor-greaves-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
     - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$

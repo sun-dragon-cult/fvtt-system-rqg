@@ -2,7 +2,7 @@
 name: ${{openSystem.content.runeMagic.morale.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
-data:
+system:
   rqid: rune-magic-morale
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$

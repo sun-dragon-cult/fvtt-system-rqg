@@ -1,7 +1,7 @@
 name: ${{openSystem.content.hitLocation.humanoidWinged.rightLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 1
   dieTo: 3
   baseHpDelta: 0
@@ -21,7 +21,7 @@ flags:
 name: ${{openSystem.content.hitLocation.humanoidWinged.leftLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 4
   dieTo: 6
   baseHpDelta: 0
@@ -41,7 +41,7 @@ flags:
 name: ${{openSystem.content.hitLocation.humanoidWinged.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 7
   dieTo: 9
   baseHpDelta: 0
@@ -61,7 +61,7 @@ flags:
 name: ${{openSystem.content.hitLocation.humanoidWinged.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 10
   dieTo: 10
   baseHpDelta: 1
@@ -81,7 +81,7 @@ flags:
 name: ${{openSystem.content.hitLocation.humanoidWinged.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 11
   dieTo: 12
   baseHpDelta: -1
@@ -101,7 +101,7 @@ flags:
 name: ${{openSystem.content.hitLocation.humanoidWinged.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 13
   dieTo: 14
   baseHpDelta: -1
@@ -121,7 +121,7 @@ flags:
 name: ${{openSystem.content.hitLocation.humanoidWinged.rightArm}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 15
   dieTo: 16
   baseHpDelta: -1
@@ -141,7 +141,7 @@ flags:
 name: ${{openSystem.content.hitLocation.humanoidWinged.leftArm}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 17
   dieTo: 18
   baseHpDelta: -1
@@ -161,7 +161,7 @@ flags:
 name: ${{openSystem.content.hitLocation.humanoidWinged.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 19
   dieTo: 20
   baseHpDelta: 0

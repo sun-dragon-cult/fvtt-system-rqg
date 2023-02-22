@@ -7,7 +7,7 @@ flags:
       id: i.gear.light-lamp
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   description: ${{openSystem.content.equipment.gear.lightLampDescription}}$
   gmNotes:
   quantity: 1

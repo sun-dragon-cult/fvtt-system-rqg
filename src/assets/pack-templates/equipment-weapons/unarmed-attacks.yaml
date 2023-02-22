@@ -7,7 +7,7 @@ flags:
       id: i.weapon.light-cestus
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -91,7 +91,7 @@ flags:
       id: i.weapon.heavy-cestus
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -175,7 +175,7 @@ flags:
       id: i.weapon.claw-metal
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -259,7 +259,7 @@ flags:
       id: i.weapon.fist
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -343,7 +343,7 @@ flags:
       id: i.weapon.grapple
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -415,7 +415,7 @@ flags:
       id: i.weapon.kick
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -493,7 +493,7 @@ flags:
       id: i.weapon.head-butt
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -571,7 +571,7 @@ flags:
       id: i.weapon.trample
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -649,7 +649,7 @@ flags:
       id: i.weapon.bite
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -721,7 +721,7 @@ flags:
       id: i.weapon.rear-and-plunge
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -793,7 +793,7 @@ flags:
       id: i.weapon.claw
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -865,7 +865,7 @@ flags:
       id: i.weapon.hug
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -937,7 +937,7 @@ flags:
       id: i.weapon.rip
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -1009,7 +1009,7 @@ flags:
       id: i.weapon.gore
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:

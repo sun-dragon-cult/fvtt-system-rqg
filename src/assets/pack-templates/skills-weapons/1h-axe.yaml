@@ -2,7 +2,7 @@
 name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-axe.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-axes.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$
@@ -25,7 +25,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.smallAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-axe.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-axes.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-axes.specialization.smallAxe}}$

@@ -7,12 +7,12 @@ flags:
       id: i.armor.armor-linothorax-quilted-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
   armorType: ${{openSystem.content.equipment.armor.linothorax}}$
-  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Quilted}}$ 
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Quilted}}$
   absorbs: 2
   encumbrance: 1
   price:

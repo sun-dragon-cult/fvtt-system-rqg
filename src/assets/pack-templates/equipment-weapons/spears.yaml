@@ -7,7 +7,7 @@ flags:
       id: i.weapon.javelin
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -91,7 +91,7 @@ flags:
       id: i.weapon.short-spear
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -181,7 +181,7 @@ flags:
       id: i.weapon.lance
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -259,7 +259,7 @@ flags:
       id: i.weapon.pike
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -331,7 +331,7 @@ flags:
       id: i.weapon.long-spear
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:

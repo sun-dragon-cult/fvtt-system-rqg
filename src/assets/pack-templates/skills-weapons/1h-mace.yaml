@@ -2,7 +2,7 @@
 name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.club}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-mace.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-maces.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-maces.specialization.club}}$
@@ -25,7 +25,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.heavyMace}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-mace.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-maces.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-maces.specialization.heavyMace}}$
@@ -48,7 +48,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.lightMace}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-mace.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-maces.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-maces.specialization.lightMace}}$)
@@ -71,7 +71,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.singlestick}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-mace.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-maces.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-maces.specialization.singlestick}}$

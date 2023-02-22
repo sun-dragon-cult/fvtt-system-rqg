@@ -1,7 +1,7 @@
 name: ${{openSystem.content.hitLocation.dragonManticore.tail}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 1
   dieTo: 2
   baseHpDelta: -1
@@ -21,7 +21,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.rightHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 3
   dieTo: 4
   baseHpDelta: 0
@@ -41,7 +41,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.leftHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 5
   dieTo: 6
   baseHpDelta: 0
@@ -61,7 +61,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.hindquarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 7
   dieTo: 8
   baseHpDelta: 1
@@ -81,7 +81,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.forequarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 9
   dieTo: 10
   baseHpDelta: 1
@@ -101,7 +101,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 11
   dieTo: 12
   baseHpDelta: -1
@@ -121,7 +121,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 13
   dieTo: 14
   baseHpDelta: -1
@@ -141,7 +141,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.rightForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 15
   dieTo: 16
   baseHpDelta: 0
@@ -161,7 +161,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.leftForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 17
   dieTo: 18
   baseHpDelta: 0
@@ -181,7 +181,7 @@ flags:
 name: ${{openSystem.content.hitLocation.dragonManticore.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 19
   dieTo: 20
   baseHpDelta: 0

@@ -1,4 +1,4 @@
-name: ${{openSystem.content.equipment.gear.cloakWoolWinter}}$ 
+name: ${{openSystem.content.equipment.gear.cloakWoolWinter}}$
 type: gear
 img: systems/rqg/assets/images/gear/cloak.svg
 flags:
@@ -7,7 +7,7 @@ flags:
       id: i.gear.wool-winter-cloak
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   description: ${{openSystem.content.equipment.gear.cloakWoolWinterDescription}}$
   gmNotes:
   quantity: 1

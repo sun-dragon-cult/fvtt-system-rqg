@@ -2,7 +2,7 @@
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.bows.name}}$
   specialization: ${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$
@@ -25,7 +25,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.bows.name}}$
   specialization: ${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$
@@ -48,7 +48,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.bows.name}}$
   specialization: ${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$
@@ -71,7 +71,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$
@@ -94,7 +94,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$
@@ -117,7 +117,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$
@@ -140,7 +140,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$
@@ -163,7 +163,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.dart}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/dart.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelins.specialization.dart}}$
@@ -186,7 +186,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$
@@ -209,7 +209,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$
@@ -232,7 +232,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.lassos.name}}$ (${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/lasso.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.lassos.name}}$
   specialization: ${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$
@@ -255,7 +255,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.sling}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.slings.name}}$
   specialization: ${{openSystem.content.weaponSkill.slings.specialization.sling}}$
@@ -278,7 +278,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.slings.name}}$
   specialization: ${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$
@@ -301,7 +301,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/thrown-axe.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
   specialization:
@@ -324,7 +324,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.thrownDagger.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/thrown-dagger.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
   specialization:
@@ -347,7 +347,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.thrownRock.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/rock.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.thrownRock.name}}$
   specialization:

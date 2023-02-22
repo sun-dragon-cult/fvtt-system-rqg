@@ -7,7 +7,7 @@ flags:
       id: i.weapon.war-hammer
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -91,7 +91,7 @@ flags:
       id: i.weapon.war-hammer-iron
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -175,7 +175,7 @@ flags:
       id: i.weapon.great-hammer
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -247,7 +247,7 @@ flags:
       id: i.weapon.maul
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -322,7 +322,7 @@ flags:
       id: i.weapon.heavy-mace
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -406,7 +406,7 @@ flags:
       id: i.weapon.light-mace
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -490,7 +490,7 @@ flags:
       id: i.weapon.singlestick
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -574,7 +574,7 @@ flags:
       id: i.weapon.wooden-club
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -658,7 +658,7 @@ flags:
       id: i.weapon.mace-two-handed
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -733,7 +733,7 @@ flags:
       id: i.weapon.quarterstaff
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:

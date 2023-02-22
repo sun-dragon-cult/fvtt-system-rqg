@@ -7,7 +7,7 @@ flags:
       id: i.gear.horn-of-mead
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   description: ${{openSystem.content.equipment.gear.drinkMeadHornDescription}}$
   gmNotes:
   quantity: 1

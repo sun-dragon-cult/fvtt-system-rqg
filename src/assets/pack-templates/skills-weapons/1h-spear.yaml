@@ -2,7 +2,7 @@
 name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.javelin}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.javelin}}$
@@ -25,7 +25,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.lance}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.lance}}$
@@ -48,7 +48,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.shortspear}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.shortspear}}$

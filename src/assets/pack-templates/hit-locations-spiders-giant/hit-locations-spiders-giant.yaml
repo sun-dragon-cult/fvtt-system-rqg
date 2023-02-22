@@ -1,7 +1,7 @@
 name: ${{openSystem.content.hitLocation.spiderGiant.rightHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 1
   dieTo: 1
   baseHpDelta: -2
@@ -21,7 +21,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.leftHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 2
   dieTo: 2
   baseHpDelta: -2
@@ -41,7 +41,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.rightCenterRearLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 3
   dieTo: 3
   baseHpDelta: -2
@@ -61,7 +61,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.leftCenterRearLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 4
   dieTo: 4
   baseHpDelta: -2
@@ -81,7 +81,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 5
   dieTo: 8
   baseHpDelta: 1
@@ -101,7 +101,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.rightCenterFrontLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 9
   dieTo: 10
   baseHpDelta: -2
@@ -121,7 +121,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.leftCenterFrontLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 11
   dieTo: 12
   baseHpDelta: -2
@@ -141,7 +141,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.rightForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 13
   dieTo: 14
   baseHpDelta: -2
@@ -161,7 +161,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.leftForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 15
   dieTo: 16
   baseHpDelta: -2
@@ -181,7 +181,7 @@ flags:
 name: ${{openSystem.content.hitLocation.spiderGiant.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 17
   dieTo: 20
   baseHpDelta: 1

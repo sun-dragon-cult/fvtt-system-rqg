@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.alchemy.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/alchemy.svg
-data:
+system:
   category: knowledge
   skillName: Alchemy
   specialization:
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.animalLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/animal-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.animalLore.skillName}}$
   specialization:
@@ -44,7 +44,7 @@ flags:
 name: ${{openSystem.content.skill.bureaucracy.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/bureaucracy.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.bureaucracy.skillName}}$
   specialization:
@@ -65,7 +65,7 @@ flags:
 name: ${{openSystem.content.skill.battle.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/battle.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.battle.skillName}}$
   specialization:
@@ -86,7 +86,7 @@ flags:
 name: ${{openSystem.content.skill.celestialLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/celestial-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.celestialLore.skillName}}$
   specialization:
@@ -107,7 +107,7 @@ flags:
 name: ${{openSystem.content.skill.cultLore.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/passion/devotion.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.cultLore.skillName}}$
   specialization: "..."
@@ -128,7 +128,7 @@ flags:
 name: ${{openSystem.content.skill.customs.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.customs.skillName}}$
   specialization: "..."
@@ -149,7 +149,7 @@ flags:
 name: ${{openSystem.content.skill.elderRaceLore.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/elder-race-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.elderRaceLore.skillName}}$
   specialization: "..."
@@ -170,7 +170,7 @@ flags:
 name: ${{openSystem.content.skill.evaluate.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/evaluate.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.evaluate.skillName}}$
   specialization:
@@ -191,7 +191,7 @@ flags:
 name: ${{openSystem.content.skill.farm.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/farm.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.farm.skillName}}$
   specialization:
@@ -212,7 +212,7 @@ flags:
 name: ${{openSystem.content.skill.firstAid.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/first-aid.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.firstAid.skillName}}$
   specialization:
@@ -233,7 +233,7 @@ flags:
 name: ${{openSystem.content.skill.game.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/game.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.game.skillName}}$
   specialization:
@@ -254,7 +254,7 @@ flags:
 name: ${{openSystem.content.skill.herd.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/herd.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.herd.skillName}}$
   specialization:
@@ -275,7 +275,7 @@ flags:
 name: ${{openSystem.content.skill.homelandLore.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
   specialization: "..."
@@ -296,7 +296,7 @@ flags:
 name: ${{openSystem.content.skill.libraryUse.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/library-use.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.libraryUse.skillName}}$
   specialization:
@@ -317,7 +317,7 @@ flags:
 name: ${{openSystem.content.skill.lore.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.lore.skillName}}$
   specialization: "..."
@@ -338,7 +338,7 @@ flags:
 name: ${{openSystem.content.skill.manageHousehold.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/manage-household.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.manageHousehold.skillName}}$
   specialization:
@@ -359,7 +359,7 @@ flags:
 name: ${{openSystem.content.skill.mineralLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/mineral-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.mineralLore.skillName}}$
   specialization:
@@ -380,7 +380,7 @@ flags:
 name: ${{openSystem.content.skill.peacefulCut.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/peaceful-cut.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.peacefulCut.skillName}}$
   specialization:
@@ -401,7 +401,7 @@ flags:
 name: ${{openSystem.content.skill.plantLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/plant-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.plantLore.skillName}}$
   specialization:
@@ -421,7 +421,7 @@ flags:
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
-data:
+system:
   rqid: skill-read-write
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -445,7 +445,7 @@ flags:
 name: ${{openSystem.content.skill.survival.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/survival.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.survival.skillName}}$
   specialization:
@@ -466,7 +466,7 @@ flags:
 name: ${{openSystem.content.skill.shiphandling.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/shiphandling.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.shiphandling.skillName}}$
   specialization:
@@ -487,7 +487,7 @@ flags:
 name: ${{openSystem.content.skill.treatDisease.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/treat-disease.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.treatDisease.skillName}}$
   specialization:
@@ -508,7 +508,7 @@ flags:
 name: ${{openSystem.content.skill.treatPoison.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/treat-poison.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.treatPoison.skillName}}$
   specialization:

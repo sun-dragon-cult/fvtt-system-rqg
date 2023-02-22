@@ -1,7 +1,7 @@
 name: ${{openSystem.content.rune.combine}}$ (${{openSystem.content.runeType.technique}}$)
 type: rune
 img: systems/rqg/assets/images/runes/combine.svg
-data:
+system:
   rune: ${{openSystem.content.rune.combine}}$
   chance: 50
   hasExperience: false
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.rune.command}}$ (${{openSystem.content.runeType.technique}}$)
 type: rune
 img: systems/rqg/assets/images/runes/command.svg
-data:
+system:
   rune: ${{openSystem.content.rune.command}}$
   chance: 50
   hasExperience: false
@@ -48,7 +48,7 @@ flags:
 name: ${{openSystem.content.rune.dispel}}$ (${{openSystem.content.runeType.technique}}$)
 type: rune
 img: systems/rqg/assets/images/runes/dispel.svg
-data:
+system:
   rune: ${{openSystem.content.rune.dispel}}$
   chance: 50
   hasExperience: false
@@ -70,7 +70,7 @@ flags:
 name: ${{openSystem.content.rune.separate}}$ (${{openSystem.content.runeType.technique}}$)
 type: rune
 img: systems/rqg/assets/images/runes/separate.svg
-data:
+system:
   rune: ${{openSystem.content.rune.separate}}$
   chance: 50
   hasExperience: false
@@ -92,7 +92,7 @@ flags:
 name: ${{openSystem.content.rune.summon}}$ (${{openSystem.content.runeType.technique}}$)
 type: rune
 img: systems/rqg/assets/images/runes/summon.svg
-data:
+system:
   rune: ${{openSystem.content.rune.summon}}$
   chance: 50
   hasExperience: false
@@ -114,7 +114,7 @@ flags:
 name: ${{openSystem.content.rune.tap}}$ (${{openSystem.content.runeType.technique}}$)
 type: rune
 img: systems/rqg/assets/images/runes/tap.svg
-data:
+system:
   rune: ${{openSystem.content.rune.tap}}$
   chance: 50
   hasExperience: false

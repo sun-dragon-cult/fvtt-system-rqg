@@ -7,7 +7,7 @@ flags:
       id: i.weapon.atlatl-dart
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -76,7 +76,7 @@ flags:
       id: i.weapon.atlatl-javelin
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -145,7 +145,7 @@ flags:
       id: i.weapon.dart
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:

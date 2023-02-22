@@ -1,7 +1,7 @@
 name: ${{openSystem.content.rune.fate}}$ (${{openSystem.content.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/fate.svg
-data:
+system:
   rune: ${{openSystem.content.rune.fate}}$
   chance: 0
   hasExperience: false
@@ -22,7 +22,7 @@ flags:
 name: ${{openSystem.content.rune.infinity}}$ (${{openSystem.content.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/infinity.svg
-data:
+system:
   rune: ${{openSystem.content.rune.infinity}}$
   chance: 0
   hasExperience: false
@@ -43,7 +43,7 @@ flags:
 name: ${{openSystem.content.rune.law}}$ (${{openSystem.content.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/law.svg
-data:
+system:
   rune: ${{openSystem.content.rune.law}}$
   chance: 0
   hasExperience: false
@@ -64,7 +64,7 @@ flags:
 name: ${{openSystem.content.rune.light}}$ (${{openSystem.content.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/light.svg
-data:
+system:
   rune: ${{openSystem.content.rune.light}}$
   chance: 0
   hasExperience: false
@@ -85,7 +85,7 @@ flags:
 name: ${{openSystem.content.rune.luck}}$ (${{openSystem.content.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/luck.svg
-data:
+system:
   rune: ${{openSystem.content.rune.luck}}$
   chance: 0
   hasExperience: false
@@ -106,7 +106,7 @@ flags:
 name: ${{openSystem.content.rune.magic}}$ (${{openSystem.content.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/magic.svg
-data:
+system:
   rune: ${{openSystem.content.rune.magic}}$
   chance: 0
   hasExperience: false
@@ -127,7 +127,7 @@ flags:
 name: ${{openSystem.content.rune.mastery}}$ (${{openSystem.content.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/mastery.svg
-data:
+system:
   rune: ${{openSystem.content.rune.mastery}}$
   chance: 0
   hasExperience: false

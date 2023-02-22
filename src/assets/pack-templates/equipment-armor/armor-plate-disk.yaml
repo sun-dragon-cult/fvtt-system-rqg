@@ -7,7 +7,7 @@ flags:
       id: i.armor.armor-cuirass-disk-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
   armorType: ${{openSystem.content.equipment.armor.cuirass}}$

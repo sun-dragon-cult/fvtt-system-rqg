@@ -2,7 +2,7 @@
 name: ${{openSystem.content.spiritMagic.bladesharp.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
-data:
+system:
   points: 1
   isVariable: true
   castingRange: touch

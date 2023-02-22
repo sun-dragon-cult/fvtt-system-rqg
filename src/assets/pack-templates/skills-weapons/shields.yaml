@@ -2,7 +2,7 @@
 name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.large}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/large-shield.svg
-data:
+system:
   category: shields
   skillName: ${{openSystem.content.weaponSkill.shields.name}}$
   specialization: ${{openSystem.content.weaponSkill.shields.specialization.large}}$
@@ -25,7 +25,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.medium}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/medium-shield.svg
-data:
+system:
   category: shields
   skillName: ${{openSystem.content.weaponSkill.shields.name}}$
   specialization: ${{openSystem.content.weaponSkill.shields.specialization.medium}}$
@@ -48,7 +48,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.small}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/small-shield.svg
-data:
+system:
   category: shields
   skillName: ${{openSystem.content.weaponSkill.shields.name}}$
   specialization: ${{openSystem.content.weaponSkill.shields.specialization.small}}$

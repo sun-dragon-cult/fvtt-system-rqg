@@ -2,7 +2,7 @@
 name: ${{openSystem.content.weaponSkill.bite.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/bite.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.bite.name}}$
   specialization:
@@ -25,7 +25,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.headButt.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/head-butt.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.headButt.name}}$
   specialization:
@@ -48,7 +48,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.fist}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/fist.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.name}}$
@@ -71,7 +71,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.gore.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/head-butt.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.gore.name}}$
   specialization:
@@ -94,7 +94,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.grapple.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/grab.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.grapple.name}}$
   specialization:
@@ -117,7 +117,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.hug.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/grab.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.hug.name}}$
   specialization:
@@ -140,7 +140,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.kick.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/kick.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.skill.meleeWeapon.skillName}}$
   specialization:
@@ -163,7 +163,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.rip}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/claw.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.specialization.rip}}$
@@ -186,7 +186,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/rear-plunge.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
   specialization:
@@ -209,7 +209,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.sting.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/sting.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.sting.name}}$
   specialization:
@@ -232,7 +232,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.trample.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/trample.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.trample.name}}$
   specialization:
@@ -255,7 +255,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.claw.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/claw.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.claw.name}}$
   specialization:

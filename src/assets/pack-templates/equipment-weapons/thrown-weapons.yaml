@@ -7,7 +7,7 @@ flags:
       id: i.weapon.throwing-axe
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -88,7 +88,7 @@ flags:
       id: i.weapon.rock
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -129,7 +129,7 @@ data:
   hitPoints:
     value:
     max:
-  hitPointLocation: 
+  hitPointLocation:
   encumbrance: 0.25
   location:
   attunedTo:

@@ -1,7 +1,7 @@
 name: Demo Sword Skill
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
-data:
+system:
   category: meleeWeapons
   skillName: Demo Sword Skill
   specialization:
@@ -20,7 +20,7 @@ flags:
 name: Demo Arrows
 type: weapon
 img: systems/rqg/assets/images/weapons/arrows.svg
-data:
+system:
   usage:
     missile:
       strikeRank:
@@ -65,7 +65,7 @@ flags:
 name: Demo Rune Spell
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
-data:
+system:
   runes:
     - Air (element)
     - Harmony (power)
@@ -87,7 +87,7 @@ flags:
 name: Demo Cult
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
-data:
+system:
   rank: layMember
   runePoints:
     value: 0
@@ -110,7 +110,7 @@ flags:
 name: Demo Food Rations
 type: gear
 img: systems/rqg/assets/images/skills/farm.svg
-data:
+system:
   description:
   gmNotes:
   quantity: 5
@@ -133,7 +133,7 @@ flags:
 name: Demo Coins
 type: gear
 img: systems/rqg/assets/images/equipped/not_carried.svg
-data:
+system:
   description:
   gmNotes:
   quantity: 10
@@ -156,7 +156,7 @@ flags:
 name: Demo Sword
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
-data:
+system:
   usage:
     oneHand:
       skillOrigin: Compendium.rqg.demo-items.l1ppQI75agqD5w3e
@@ -223,7 +223,7 @@ flags:
 name: Demo Armor Pants (Leather)
 type: armor
 img: systems/rqg/assets/images/armor/pants.svg
-data:
+system:
   description:
   gmNotes:
   size: 10
@@ -255,7 +255,7 @@ flags:
 name: Demo Bow Skill
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
-data:
+system:
   category: missileWeapons
   skillName: Demo Bow Skill
   specialization:
@@ -274,7 +274,7 @@ flags:
 name: Demo Bow
 type: weapon
 img: systems/rqg/assets/images/weapons/bowman.svg
-data:
+system:
   usage:
     missile:
       skillOrigin: Compendium.rqg.demo-items.wlxabuWq6ImK7mTR
@@ -320,7 +320,7 @@ flags:
 name: Demo Spirit Magic
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
-data:
+system:
   points: 1
   isVariable: false
   isEnchantment: false
@@ -341,7 +341,7 @@ flags:
 name: Demo Bag
 type: gear
 img: systems/rqg/assets/images/skills/first-aid.svg
-data:
+system:
   description:
   gmNotes:
   quantity: 1
@@ -364,7 +364,7 @@ flags:
 name: Love (RQG)
 type: passion
 img: systems/rqg/assets/images/passion/love.svg
-data:
+system:
   passion: Love
   subject: RQG
   description:

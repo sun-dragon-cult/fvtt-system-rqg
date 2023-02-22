@@ -7,7 +7,7 @@ flags:
       id: i.armor.armor-hood-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
   armorType: ${{openSystem.content.equipment.armor.hood}}$
@@ -33,7 +33,7 @@ flags:
       id: i.armor.armor-broad-brimmed-hat-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
   armorType: ${{openSystem.content.equipment.armor.broadBrimmedHat}}$
@@ -59,7 +59,7 @@ flags:
       id: i.armor.armor-cap-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
   armorType: ${{openSystem.content.equipment.armor.cap}}$
@@ -85,7 +85,7 @@ flags:
       id: i.armor.armor-vambraces-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
     - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
@@ -112,7 +112,7 @@ flags:
       id: i.armor.armor-cuirass-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
   armorType: ${{openSystem.content.equipment.armor.cuirass}}$
@@ -138,7 +138,7 @@ flags:
       id: i.armor.armor-hauberk-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
@@ -165,7 +165,7 @@ flags:
       id: i.armor.armor-skirt-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
   armorType: ${{openSystem.content.equipment.armor.skirt}}$
@@ -191,7 +191,7 @@ flags:
       id: i.armor.armor-pants-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
@@ -219,7 +219,7 @@ flags:
       id: i.armor.armor-greaves-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
     - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$

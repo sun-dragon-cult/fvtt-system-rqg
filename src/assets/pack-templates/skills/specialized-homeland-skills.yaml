@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.esrolia.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
   specialization: ${{openSystem.content.homeland.esrolia.name}}$
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.grazelands.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
   specialization: ${{openSystem.content.homeland.grazelands.name}}$
@@ -44,7 +44,7 @@ flags:
 name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.lunarTarsh.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
   specialization: ${{openSystem.content.homeland.lunarTarsh.name}}$
@@ -65,7 +65,7 @@ flags:
 name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.oldTarsh.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
   specialization: ${{openSystem.content.homeland.oldTarsh.name}}$
@@ -86,7 +86,7 @@ flags:
 name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.prax.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
   specialization: ${{openSystem.content.homeland.prax.name}}$
@@ -107,7 +107,7 @@ flags:
 name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.sartar.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
   specialization: ${{openSystem.content.homeland.sartar.name}}$

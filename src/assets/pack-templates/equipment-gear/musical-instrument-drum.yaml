@@ -7,7 +7,7 @@ flags:
       id: i.gear.musical-instrument-drum
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   description: ${{openSystem.content.equipment.gear.instrumentDrumDescription}}$
   gmNotes:
   quantity: 1

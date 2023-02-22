@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.insight.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/insight.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.insight.skillName}}$
   specialization: "..."
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.listen.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/listen.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.listen.skillName}}$
   specialization:
@@ -44,7 +44,7 @@ flags:
 name: ${{openSystem.content.skill.scan.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/scan.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.scan.skillName}}$
   specialization:
@@ -65,7 +65,7 @@ flags:
 name: ${{openSystem.content.skill.search.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/search.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.search.skillName}}$
   specialization:
@@ -86,7 +86,7 @@ flags:
 name: ${{openSystem.content.skill.track.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/track.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.track.skillName}}$
   specialization:
@@ -107,7 +107,7 @@ flags:
 name: ${{openSystem.content.skill.track.skillName}}$ (${{openSystem.content.skill.track.specialization.scent}}$)
 type: skill
 img: systems/rqg/assets/images/skills/track-by-scent.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.track.skillName}}$
   specialization: ${{openSystem.content.skill.track.specialization.scent}}$
@@ -128,10 +128,10 @@ flags:
 name: ${{openSystem.content.skill.scentIntruder.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/track-by-scent.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.scentIntruder.skillName}}$
-  specialization: 
+  specialization:
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -149,7 +149,7 @@ flags:
 name: ${{openSystem.content.skill.elfsense.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/other-sense.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.elfsense.skillName}}$
   specialization:
@@ -170,7 +170,7 @@ flags:
 name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/scan.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.earthsenseScan.skillName}}$
   specialization:
@@ -191,7 +191,7 @@ flags:
 name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/search.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
   specialization:
@@ -212,7 +212,7 @@ flags:
 name: ${{openSystem.content.skill.darksenseScan.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/scan.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.darksenseScan.skillName}}$
   specialization:
@@ -233,7 +233,7 @@ flags:
 name: ${{openSystem.content.skill.darksenseSearch.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/search.svg
-data:
+system:
   category: perception
   skillName: ${{openSystem.content.skill.darksenseSearch.skillName}}$
   specialization:

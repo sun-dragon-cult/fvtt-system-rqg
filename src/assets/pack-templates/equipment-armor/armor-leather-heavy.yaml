@@ -7,7 +7,7 @@ flags:
       id: i.armor.armor-cuirass-heavy-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
   armorType: ${{openSystem.content.equipment.armor.cuirass}}$
@@ -33,7 +33,7 @@ flags:
       id: i.armor.armor-hauberk-heavy-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.chest}}$
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
@@ -60,7 +60,7 @@ flags:
       id: i.armor.armor-pants-heavy-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$

@@ -2,7 +2,7 @@
 name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.broadsword}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-swords.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-swords.specialization.broadsword}}$
@@ -25,7 +25,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.kopis}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-swords.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-swords.specialization.kopis}}$
@@ -48,7 +48,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.rapier}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-swords.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-swords.specialization.rapier}}$
@@ -71,7 +71,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.shortsword}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-swords.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-swords.specialization.shortsword}}$

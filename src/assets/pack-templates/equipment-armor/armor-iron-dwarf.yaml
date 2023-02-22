@@ -7,7 +7,7 @@ flags:
       id: i.armor.armor-unenchanted-heavy-dwarf-chainmail-iron
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
@@ -38,7 +38,7 @@ flags:
       id: i.armor.armor-unenchanted-dwarf-helmet-iron
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.head}}$
   armorType: ${{openSystem.content.equipment.armor.closedHelm}}$

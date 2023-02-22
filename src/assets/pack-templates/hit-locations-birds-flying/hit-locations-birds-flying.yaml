@@ -1,7 +1,7 @@
 name: ${{openSystem.content.hitLocation.birdFlying.tail}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 1
   dieTo: 1
   baseHpDelta: -2
@@ -21,7 +21,7 @@ flags:
 name: ${{openSystem.content.hitLocation.birdFlying.rightLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 2
   dieTo: 4
   baseHpDelta: -1
@@ -41,7 +41,7 @@ flags:
 name: ${{openSystem.content.hitLocation.birdFlying.leftLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 5
   dieTo: 7
   baseHpDelta: -1
@@ -61,7 +61,7 @@ flags:
 name: ${{openSystem.content.hitLocation.birdFlying.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 8
   dieTo: 9
   baseHpDelta: 0
@@ -81,7 +81,7 @@ flags:
 name: ${{openSystem.content.hitLocation.birdFlying.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 10
   dieTo: 12
   baseHpDelta: 1
@@ -101,7 +101,7 @@ flags:
 name: ${{openSystem.content.hitLocation.birdFlying.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 13
   dieTo: 14
   baseHpDelta: 0
@@ -121,7 +121,7 @@ flags:
 name: ${{openSystem.content.hitLocation.birdFlying.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 15
   dieTo: 16
   baseHpDelta: 0
@@ -141,7 +141,7 @@ flags:
 name: ${{openSystem.content.hitLocation.birdFlying.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 17
   dieTo: 20
   baseHpDelta: 0

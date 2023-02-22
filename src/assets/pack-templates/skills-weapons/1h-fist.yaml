@@ -2,7 +2,7 @@
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.claw}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/claw.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.specialization.claw}}$
@@ -25,7 +25,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.heavyCestus}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/cestus.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.specialization.heavyCestus}}$
@@ -48,7 +48,7 @@ flags:
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.lightCestus}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/cestus.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.specialization.lightCestus}}$

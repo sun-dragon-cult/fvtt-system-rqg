@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.act.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/act.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.act.skillName}}$
   specialization:
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.art.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/art.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.art.skillName}}$
   specialization:
@@ -44,7 +44,7 @@ flags:
 name: ${{openSystem.content.skill.bargain.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/bargain.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.bargain.skillName}}$
   specialization:
@@ -65,7 +65,7 @@ flags:
 name: ${{openSystem.content.skill.charm.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/charm.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.charm.skillName}}$
   specialization:
@@ -86,7 +86,7 @@ flags:
 name: ${{openSystem.content.skill.dance.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/dance.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.dance.skillName}}$
   specialization:
@@ -107,7 +107,7 @@ flags:
 name: ${{openSystem.content.skill.disguise.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/disguise.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.disguise.skillName}}$
   specialization:
@@ -128,7 +128,7 @@ flags:
 name: ${{openSystem.content.skill.fastTalk.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.fastTalk.skillName}}$
   specialization:
@@ -149,7 +149,7 @@ flags:
 name: ${{openSystem.content.skill.intimidate.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/intimidate.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.intimidate.skillName}}$
   specialization:
@@ -170,7 +170,7 @@ flags:
 name: ${{openSystem.content.skill.intrigue.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/intrigue.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.intrigue.skillName}}$
   specialization:
@@ -191,7 +191,7 @@ flags:
 name: ${{openSystem.content.skill.orate.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/orate.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.orate.skillName}}$
   specialization:
@@ -212,7 +212,7 @@ flags:
 name: ${{openSystem.content.skill.sing.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sing.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.sing.skillName}}$
   specialization:
@@ -233,7 +233,7 @@ flags:
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: "..."

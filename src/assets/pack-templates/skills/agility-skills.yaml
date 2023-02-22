@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.boat.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/boat.svg
-data:
+system:
   category: agility
   skillName: ${{openSystem.content.skill.boat.skillName}}$
   specialization:
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.climb.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/climb.svg
-data:
+system:
   category: agility
   skillName: ${{openSystem.content.skill.climb.skillName}}$
   specialization:
@@ -44,7 +44,7 @@ flags:
 name: ${{openSystem.content.skill.dodge.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/dodge.svg
-data:
+system:
   rqid: skill-dodge
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -68,7 +68,7 @@ flags:
 name: ${{openSystem.content.skill.driveChariot.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/drive.svg
-data:
+system:
   category: agility
   skillName: ${{openSystem.content.skill.driveChariot.skillName}}$
   specialization: Chariot
@@ -89,7 +89,7 @@ flags:
 name: ${{openSystem.content.skill.jump.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/jump.svg
-data:
+system:
   rqid: skill-jump
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -113,7 +113,7 @@ flags:
 name: ${{openSystem.content.skill.ride.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/ride.svg
-data:
+system:
   category: agility
   skillName: ${{openSystem.content.skill.ride.skillName}}$
   specialization: "..."
@@ -134,7 +134,7 @@ flags:
 name: ${{openSystem.content.skill.ski.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/ski.svg
-data:
+system:
   category: agility
   skillName: ${{openSystem.content.skill.ski.skillName}}$
   specialization:
@@ -155,7 +155,7 @@ flags:
 name: ${{openSystem.content.skill.swim.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/swim.svg
-data:
+system:
   category: agility
   skillName: ${{openSystem.content.skill.swim.skillName}}$
   specialization:

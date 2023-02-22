@@ -1,7 +1,7 @@
 name: ${{openSystem.content.weaponSkill.1h-hammers.name}}$ (${{openSystem.content.weaponSkill.1h-hammers.specialization.warHammer}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-warhammer.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-hammers.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-hammers.specialization.warHammer}}$

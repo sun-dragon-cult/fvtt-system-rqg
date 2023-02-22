@@ -1,7 +1,7 @@
 name: ${{openSystem.content.hitLocation.serpentWinged.tail}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 1
   dieTo: 4
   baseHpDelta: 0
@@ -21,7 +21,7 @@ flags:
 name: ${{openSystem.content.hitLocation.serpentWinged.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 5
   dieTo: 8
   baseHpDelta: 0
@@ -41,7 +41,7 @@ flags:
 name: ${{openSystem.content.hitLocation.serpentWinged.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 9
   dieTo: 12
   baseHpDelta: 1
@@ -61,7 +61,7 @@ flags:
 name: ${{openSystem.content.hitLocation.serpentWinged.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 13
   dieTo: 14
   baseHpDelta: -1
@@ -81,7 +81,7 @@ flags:
 name: ${{openSystem.content.hitLocation.serpentWinged.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 15
   dieTo: 16
   baseHpDelta: -1
@@ -101,7 +101,7 @@ flags:
 name: ${{openSystem.content.hitLocation.serpentWinged.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 17
   dieTo: 20
   baseHpDelta: 0

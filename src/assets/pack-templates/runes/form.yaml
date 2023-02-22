@@ -1,7 +1,7 @@
 name: ${{openSystem.content.rune.beast}}$ (${{openSystem.content.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/beast.svg
-data:
+system:
   rune: ${{openSystem.content.rune.beast}}$
   chance: 50
   hasExperience: false
@@ -22,7 +22,7 @@ flags:
 name: ${{openSystem.content.rune.chaos}}$ (${{openSystem.content.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/chaos.svg
-data:
+system:
   rune: ${{openSystem.content.rune.chaos}}$
   chance: 50
   hasExperience: false
@@ -43,7 +43,7 @@ flags:
 name: ${{openSystem.content.rune.dragonewt}}$ (${{openSystem.content.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/dragonewt.svg
-data:
+system:
   rune: ${{openSystem.content.rune.dragonewt}}$
   chance: 50
   hasExperience: false
@@ -64,7 +64,7 @@ flags:
 name: ${{openSystem.content.rune.man}}$ (${{openSystem.content.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/man.svg
-data:
+system:
   rune: ${{openSystem.content.rune.man}}$
   chance: 50
   hasExperience: false
@@ -85,7 +85,7 @@ flags:
 name: ${{openSystem.content.rune.plant}}$ (${{openSystem.content.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/plant.svg
-data:
+system:
   rune: ${{openSystem.content.rune.plant}}$
   chance: 50
   hasExperience: false
@@ -106,7 +106,7 @@ flags:
 name: ${{openSystem.content.rune.spirit}}$ (${{openSystem.content.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/spirit.svg
-data:
+system:
   rune: ${{openSystem.content.rune.spirit}}$
   chance: 50
   hasExperience: false

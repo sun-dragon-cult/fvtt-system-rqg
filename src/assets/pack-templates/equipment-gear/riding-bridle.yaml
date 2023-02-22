@@ -7,7 +7,7 @@ flags:
       id: i.gear.bridle
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   description: ${{openSystem.content.equipment.gear.ridingBridleDescription}}$
   gmNotes:
   quantity: 1

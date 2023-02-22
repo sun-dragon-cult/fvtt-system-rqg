@@ -7,7 +7,7 @@ flags:
       id: i.weapon.dagger
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -94,7 +94,7 @@ flags:
       id: i.weapon.dagger-parrying
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -178,7 +178,7 @@ flags:
       id: i.weapon.dagger-throwing
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -265,7 +265,7 @@ flags:
       id: i.weapon.sickle
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -343,7 +343,7 @@ flags:
       id: i.weapon.broadsword
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -427,7 +427,7 @@ flags:
       id: i.weapon.kopis
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -505,7 +505,7 @@ flags:
       id: i.weapon.rapier
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -589,7 +589,7 @@ flags:
       id: i.weapon.shortsword
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -673,7 +673,7 @@ flags:
       id: i.weapon.greatsword
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -745,7 +745,7 @@ flags:
       id: i.weapon.rhomphaia
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -817,7 +817,7 @@ flags:
       id: i.weapon.sickle-sword-moonsword
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:

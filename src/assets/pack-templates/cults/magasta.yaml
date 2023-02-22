@@ -2,7 +2,7 @@
 name: ${{openSystem.content.cult.magasta.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
-data:
+system:
   cultName: ${{openSystem.content.cult.magasta.name}}$
   rank: layMember
   runePoints:

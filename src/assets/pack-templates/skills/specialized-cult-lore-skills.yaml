@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.cultLore.skillName}}$ (${{openSystem.content.cult.orlanth.name}}$)
 type: skill
 img: systems/rqg/assets/images/passion/devotion.svg
-data:
+system:
   category: knowledge
   skillName: ${{openSystem.content.skill.cultLore.skillName}}$
   specialization: ${{openSystem.content.cult.orlanth.name}}$

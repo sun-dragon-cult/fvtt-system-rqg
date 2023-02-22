@@ -2,7 +2,7 @@
 name: ${{openSystem.content.runeMagic.reflection.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
-data:
+system:
   runes:
     - Moon (element)
     - Illusion (power)

@@ -7,7 +7,7 @@ flags:
       id: i.armor.armor-vambraces-cuirboilli
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
     - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
@@ -34,7 +34,7 @@ flags:
       id: i.armor.armor-greaves-cuirboilli
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   hitLocations:
     - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
     - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$

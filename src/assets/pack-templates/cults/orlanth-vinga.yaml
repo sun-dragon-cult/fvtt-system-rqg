@@ -2,7 +2,7 @@
 name: ${{openSystem.content.cult.orlanth.subcult.vinga.name}}$ (${{openSystem.content.cult.orlanth.name}}$)
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
-data:
+system:
   cultName: ${{openSystem.content.cult.orlanth.name}}$
   subcults: ${{openSystem.content.cult.orlanth.subcult.vinga.name}}$
   rank: layMember

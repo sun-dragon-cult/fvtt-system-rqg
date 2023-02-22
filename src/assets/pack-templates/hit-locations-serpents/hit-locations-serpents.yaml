@@ -1,7 +1,7 @@
 name: ${{openSystem.content.hitLocation.serpent.tail}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 1
   dieTo: 6
   baseHpDelta: 0
@@ -21,7 +21,7 @@ flags:
 name: ${{openSystem.content.hitLocation.serpent.body}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 7
   dieTo: 14
   baseHpDelta: 1
@@ -41,7 +41,7 @@ flags:
 name: ${{openSystem.content.hitLocation.serpent.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
-data:
+system:
   dieFrom: 15
   dieTo: 20
   baseHpDelta: 0

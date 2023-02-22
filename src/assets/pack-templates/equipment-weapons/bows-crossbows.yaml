@@ -7,7 +7,7 @@ flags:
       id: i.weapon.composite-bow
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -76,7 +76,7 @@ flags:
       id: i.weapon.elf-bow
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -145,7 +145,7 @@ flags:
       id: i.weapon.self-bow
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -214,7 +214,7 @@ flags:
       id: i.weapon.arbalest
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -281,7 +281,7 @@ flags:
       id: i.weapon.heavy-crossbow
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -350,7 +350,7 @@ flags:
       id: i.weapon.light-crossbow
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -419,7 +419,7 @@ flags:
       id: i.weapon.repeating-crossbow
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -478,7 +478,7 @@ data:
   isProjectileWeapon: true
   isThrownWeapon: false
   isRangedWeapon: false
----  
+---
 name: ${{openSystem.content.weapon.arrows}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/arrows.svg
@@ -488,7 +488,7 @@ flags:
       id: i.weapon.arrows
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
@@ -555,7 +555,7 @@ flags:
       id: i.weapon.crossbow-bolts
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-data:
+system:
   usage:
     oneHand:
       skillId:
