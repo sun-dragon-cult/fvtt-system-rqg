@@ -16,6 +16,6 @@ pages:
 flags:
   rqg:
     documentRqidFlags:
-      id: je..detectUndead
+      id: je..detect-undead
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -1,8 +1,9 @@
 # bite
 name: ${{openSystem.content.weaponSkill.bite.name}}$
+_id: eQtAZbMgHj2WwLvr
 type: skill
 img: systems/rqg/assets/images/weapons/bite.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.bite.name}}$
   specialization:
@@ -23,9 +24,10 @@ flags:
 ---
 # head-butt
 name: ${{openSystem.content.weaponSkill.headButt.name}}$
+_id: fBlSeCd7CTRlmFpD
 type: skill
 img: systems/rqg/assets/images/weapons/head-butt.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.headButt.name}}$
   specialization:
@@ -46,9 +48,10 @@ flags:
 ---
 # fist
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.fist}}$)
+_id: mfuP53IYK6SlDNY7
 type: skill
 img: systems/rqg/assets/images/weapons/fist.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.name}}$
@@ -69,9 +72,10 @@ flags:
 ---
 # gore
 name: ${{openSystem.content.weaponSkill.gore.name}}$
+_id: FiNe2lN0aNW5qaxr
 type: skill
 img: systems/rqg/assets/images/weapons/head-butt.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.gore.name}}$
   specialization:
@@ -92,9 +96,10 @@ flags:
 ---
 # grapple
 name: ${{openSystem.content.weaponSkill.grapple.name}}$
+_id: ImY1JgAPh59X5vbX
 type: skill
 img: systems/rqg/assets/images/weapons/grab.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.grapple.name}}$
   specialization:
@@ -115,9 +120,10 @@ flags:
 ---
 # hug
 name: ${{openSystem.content.weaponSkill.hug.name}}$
+_id: rGoljoNmBLbaskDe
 type: skill
 img: systems/rqg/assets/images/weapons/grab.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.hug.name}}$
   specialization:
@@ -138,9 +144,10 @@ flags:
 ---
 # kick
 name: ${{openSystem.content.weaponSkill.kick.name}}$
+_id: KPHB0ZZXT78AGl0X
 type: skill
 img: systems/rqg/assets/images/weapons/kick.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.skill.meleeWeapon.skillName}}$
   specialization:
@@ -161,9 +168,10 @@ flags:
 ---
 # rip
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.rip}}$)
+_id: YWqbb02DrCq5iaEz
 type: skill
 img: systems/rqg/assets/images/weapons/claw.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.specialization.rip}}$
@@ -184,9 +192,10 @@ flags:
 ---
 # rear-and-plunge
 name: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
+_id: nDme6LPr9hhcSfeB
 type: skill
 img: systems/rqg/assets/images/weapons/rear-plunge.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
   specialization:
@@ -207,9 +216,10 @@ flags:
 ---
 # sting
 name: ${{openSystem.content.weaponSkill.sting.name}}$
+_id: iC9yWimabq6c5YmP
 type: skill
 img: systems/rqg/assets/images/weapons/sting.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.sting.name}}$
   specialization:
@@ -230,9 +240,10 @@ flags:
 ---
 # trample
 name: ${{openSystem.content.weaponSkill.trample.name}}$
+_id: AuwLKY4rMgDCQLtG
 type: skill
 img: systems/rqg/assets/images/weapons/trample.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.trample.name}}$
   specialization:
@@ -248,5 +259,29 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.skill.trample
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# claw
+name: ${{openSystem.content.weaponSkill.claw.name}}$
+_id: eAJiOz0y7JodyJhN
+type: skill
+img: systems/rqg/assets/images/weapons/claw.svg
+system:
+  category: meleeWeapons
+  skillName: ${{openSystem.content.weaponSkill.claw.name}}$
+  specialization:
+  baseChance: 25
+  gainedChance: 0
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..melee-weapon
+    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.claw
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

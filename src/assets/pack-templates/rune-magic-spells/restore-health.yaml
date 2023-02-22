@@ -2,7 +2,7 @@
 name: ${{openSystem.content.runeMagic.restoreHealth.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
-data:
+system:
   runes:
     - Fertility (power)
     - Harmony (power)
@@ -20,4 +20,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.restore-health
-      lang: ${{SS.lang}}$
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

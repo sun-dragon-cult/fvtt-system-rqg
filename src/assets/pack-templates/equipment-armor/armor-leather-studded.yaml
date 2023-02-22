@@ -1,0 +1,25 @@
+name: ${{openSystem.content.equipment.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.StuddedLeather}}$)
+type: armor
+img: systems/rqg/assets/images/armor/skirt.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-skirt-studded-leather
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+  armorType: ${{openSystem.content.equipment.armor.skirt}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.StuddedLeather}}$
+  absorbs: 3
+  encumbrance: 1
+  price:
+    real: 20
+    estimated: 0
+  moveQuietlyPenalty: 5
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.skirtStuddedLeather}}$

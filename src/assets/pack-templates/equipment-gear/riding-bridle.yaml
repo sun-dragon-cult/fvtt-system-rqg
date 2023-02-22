@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.ridingBridle}}$
+type: gear
+img: systems/rqg/assets/images/gear/horse-head.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.bridle
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.ridingBridleDescription}}$
+  gmNotes:
+  quantity: 1
+  price:
+    real: 2
+    estimated: 0
+  encumbrance: 1.5
+  equippedStatus: carried
+  location:
+  isContainer: true
+  attunedTo:
+  physicalItemType: unique

@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.foodStewMeatBowl}}$
+type: gear
+img: systems/rqg/assets/images/gear/bowl.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.bowl-of-meat-stew
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.foodStewMeatBowl}}$
+  gmNotes:
+  quantity: 1
+  price:
+    real: 0.1
+    estimated: 0
+  encumbrance: 0.2
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: consumable

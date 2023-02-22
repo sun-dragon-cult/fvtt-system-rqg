@@ -2,7 +2,7 @@
 name: ${{openSystem.content.spiritMagic.fireblade.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
-data:
+system:
   points: 4
   isVariable: false
   castingRange: touch

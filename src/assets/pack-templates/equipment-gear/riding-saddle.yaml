@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.ridingSaddle}}$
+type: gear
+img: systems/rqg/assets/images/gear/saddle.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.saddle
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.ridingSaddleDescription}}$
+  gmNotes:
+  quantity: 1
+  price:
+    real: 8
+    estimated: 0
+  encumbrance: 5.0
+  equippedStatus: carried
+  location:
+  isContainer: true
+  attunedTo:
+  physicalItemType: unique

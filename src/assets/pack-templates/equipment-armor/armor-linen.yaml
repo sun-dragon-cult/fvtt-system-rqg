@@ -1,0 +1,52 @@
+name: ${{openSystem.content.equipment.armor.linothorax}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Linen}}$)
+type: armor
+img: systems/rqg/assets/images/armor/hauberk.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-linothorax-linen
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+  armorType: ${{openSystem.content.equipment.armor.linothorax}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Linen}}$
+  absorbs: 3
+  encumbrance: 1
+  price:
+    real: 30
+    estimated: 0
+  moveQuietlyPenalty: 5
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.linen}}$ ${{openSystem.content.equipment.armor.description.linothorax}}$
+---
+name: ${{openSystem.content.equipment.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Linen}}$)
+type: armor
+img: systems/rqg/assets/images/armor/skirt.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-skirt-linen
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+  armorType: ${{openSystem.content.equipment.armor.skirt}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Linen}}$
+  absorbs: 3
+  encumbrance: 1
+  price:
+    real: 20
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.linen}}$

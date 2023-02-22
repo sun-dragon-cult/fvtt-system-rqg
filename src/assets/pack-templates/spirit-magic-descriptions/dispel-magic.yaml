@@ -16,6 +16,6 @@ pages:
 flags:
   rqg:
     documentRqidFlags:
-      id: je..dispelMagic
+      id: je..dispel-magic
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -2,18 +2,18 @@
 name: ${{openSystem.content.spiritMagic.spiritBinding.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
-data:
+system:
   points: 1
   isVariable: false
   castingRange: ranged
   duration: permanent
   concentration:
   descriptionRqidLink:
-    rqid: je..spiritBinding
+    rqid: je..spirit-binding
     name: ${{openSystem.content.spiritMagic.spiritBinding.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.spirit-magic.spiritBinding
+      id: i.spirit-magic.spirit-binding
       lang: ${openSystem.lang}}$
       priority: ${openSystem.prio}}$

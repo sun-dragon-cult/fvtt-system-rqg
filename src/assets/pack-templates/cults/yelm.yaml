@@ -2,7 +2,7 @@
 name: ${{openSystem.content.cult.yelm.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
-data:
+system:
   cultName: ${{openSystem.content.cult.yelm.name}}$
   rank: layMember
   runePoints:

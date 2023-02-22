@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.worship.skillName}}$ (${{openSystem.content.cult.orlanth.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/worship.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.worship.skillName}}$
   specialization: ${{openSystem.content.cult.orlanth.name}}$

@@ -1,7 +1,7 @@
 name: Loyalty (Varmandi Clan)
 type: passion
 img: systems/rqg/assets/images/passion/loyalty.svg
-data:
+system:
   passion: Loyalty
   subject: Varmandi Clan
   description:

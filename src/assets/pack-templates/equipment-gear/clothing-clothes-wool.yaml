@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.clothesWool}}$
+type: gear
+img: systems/rqg/assets/images/gear/clothes.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.wool-clothing
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.clothesWool}}$
+  gmNotes:
+  quantity: 1
+  price:
+    real: 3
+    estimated: 0
+  encumbrance: 0.5
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

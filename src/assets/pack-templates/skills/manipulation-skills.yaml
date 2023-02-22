@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.conceal.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/conceal.svg
-data:
+system:
   category: manipulation
   skillName: ${{openSystem.content.skill.conceal.skillName}}$
   specialization:
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.craft.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/craft.svg
-data:
+system:
   category: manipulation
   skillName: ${{openSystem.content.skill.craft.skillName}}$
   specialization: "..."
@@ -44,7 +44,7 @@ flags:
 name: ${{openSystem.content.skill.devise.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/devise.svg
-data:
+system:
   category: manipulation
   skillName: ${{openSystem.content.skill.devise.skillName}}$
   specialization:
@@ -65,7 +65,7 @@ flags:
 name: ${{openSystem.content.skill.playInstrument.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/play-instrument.svg
-data:
+system:
   category: manipulation
   skillName: ${{openSystem.content.skill.playInstrument.skillName}}$
   specialization: "..."
@@ -86,7 +86,7 @@ flags:
 name: ${{openSystem.content.skill.sleight.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sleight.svg
-data:
+system:
   category: manipulation
   skillName: ${{openSystem.content.skill.sleight.skillName}}$
   specialization:

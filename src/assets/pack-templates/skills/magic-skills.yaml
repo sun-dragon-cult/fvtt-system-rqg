@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.meditate.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/meditate.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.meditate.skillName}}$
   specialization:
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.prepareCorpse.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/prepare-corpse.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.prepareCorpse.skillName}}$
   specialization:
@@ -44,7 +44,7 @@ flags:
 name: ${{openSystem.content.skill.senseAssassin.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sense-assassin.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.senseAssassin.skillName}}$
   specialization:
@@ -60,12 +60,12 @@ flags:
       id: i.skill.sense-assassin
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
-# sense-chaos
 ---
+# sense-chaos
 name: ${{openSystem.content.skill.senseChaos.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sense-chaos.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.senseChaos.skillName}}$
   specialization:
@@ -86,7 +86,7 @@ flags:
 name: ${{openSystem.content.skill.spiritCombat.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-combat.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.spiritCombat.skillName}}$
   specialization:
@@ -107,7 +107,7 @@ flags:
 name: ${{openSystem.content.skill.spiritDance.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-dance.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.spiritDance.skillName}}$
   specialization:
@@ -128,7 +128,7 @@ flags:
 name: ${{openSystem.content.skill.spiritLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-lore.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.spiritLore.skillName}}$
   specialization:
@@ -149,7 +149,7 @@ flags:
 name: ${{openSystem.content.skill.spiritTravel.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-travel.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.spiritTravel.skillName}}$
   specialization:
@@ -170,7 +170,7 @@ flags:
 name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/understand-herd-beast.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
   specialization:
@@ -191,7 +191,7 @@ flags:
 name: ${{openSystem.content.skill.worship.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/worship.svg
-data:
+system:
   category: magic
   skillName: ${{openSystem.content.skill.worship.skillName}}$
   specialization: "..."

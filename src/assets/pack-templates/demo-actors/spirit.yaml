@@ -1,7 +1,7 @@
 name: Demo Spirit
 type: character
 img: systems/rqg/assets/images/items/spirit-magic.svg
-data:
+system:
   characteristics:
     strength:
       value: null
@@ -91,7 +91,7 @@ items:
   - name: Spirit Combat
     type: skill
     img: systems/rqg/assets/images/skills/spirit-combat.svg
-    data:
+    system:
       category: magic
       skillName: Spirit Combat
       specialization: null

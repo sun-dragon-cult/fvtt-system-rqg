@@ -625,14 +625,15 @@
           "StuddedLeather": "Studded Leather",
           "BronzePlate": "Bronze Plate",
           "BronzeSegmentedPlate": "Segmented Bronze Plate",
-          "BronzeDiscPlate": "Disc Bronze Plate",
+          "DiskPlate": "Disk Plate",
           "LightScale": "Light Scale",
           "HeavyScale": "Heavy Scale",
           "Cuirboilli": "Cuirboilli",
           "RingMail": "Ring Mail",
           "TurtleShell": "Turtle Shell",
           "Quilted": "Quilted",
-          "Linen": "Linen"
+          "Linen": "Linen",
+          "Iron": "Iron"
         }
       },
       "Cult": {
@@ -962,16 +963,21 @@
         "Rate": "Rate",
         "SameDataAsOneHand": "Same Data as One Hand",
         "combatManeuver": {
+          "Bite": "Bite",
           "Throw": "Throw",
           "Shoot": "Shoot",
           "Thrust": "Thrust",
           "Cut": "Cut",
+          "Claw": "Claw",
+          "Gore": "Gore",
+          "Hug": "Hug",
           "Bash": "Bash",
           "Parry": "Parry",
           "Grapple": "Grapple",
           "Knockback": "Knockback",
           "Punch": "Punch",
-          "Kick": "Kick"
+          "Kick": "Kick",
+          "Trample": "Trample"
         }
       }
     },
@@ -1319,11 +1325,17 @@
       }
     },
     "language": {
+      "aldryami": {
+        "name": "Aldryami"
+      },
       "esrolian": {
         "name": "Esrolian"
       },
       "heortling": {
         "name": "Heortling"
+      },
+      "mostali": {
+        "name": "Mostali"
       },
       "newPelorian": {
         "name": "New Pelorian"
@@ -2157,6 +2169,10 @@
         "skillName": "Elder Race Lore",
         "description": "<p>This skill quantifies knowledge of an Elder Race. The lore of each Elder Race must be learned separately.</p>"
       },
+      "elfsense": {
+        "skillName": "Elfsense",
+        "description": "<p>This sense permits the elf, by touch, to detect the health and emotional state of the target and whether it is stressed or in pain. It also gives the elf details about soil—such as its nutrients, moisture, and overall quality</p>"
+      },
       "evaluate": {
         "skillName": "Evaluate",
         "description": "<p>Estimating the worth of artifacts, goods, and valuable natural materials.</p>"
@@ -2280,9 +2296,29 @@
         "skillName": "Scan",
         "description": "<p>Observing an area for any signs of movement. Generally, this is used in opposition to the Hide skill.</p>"
       },
+      "darksenseScan": {
+        "skillName": "Darksense Scan",
+        "description": "<p>Observing an area for any signs of movement. Generally, this is used in opposition to the Hide skill.</p><p>Trolls can move in the darkest night, due to their stygian origin. They use &quot;Darksense,&quot; a perception not available to other races. Darksense combines hearing, smelling, feeling, and some non-specific sensing abilities, and allows trolls to maneuver as though humans in sunshine. Though trolls hate the light, that element does no direct harm to most trolls. Cave trolls and trollkin, however, are affected by light. Trolls have a clear-cut advantage over humans (and most other foes) in the darkness. The gamemaster should read the rules about fighting in the dark whenever adventurers encounter trolls. Darksense is broken into two skills: Darksense Scan and Darksense Search.</p>"
+      },
+      "earthsenseScan": {
+        "skillName": "Earthsense Scan",
+        "description": "<p>Observing an area for any signs of movement. Generally, this is used in opposition to the Hide skill.</p><p>Dwarfs have a sense, unique to them, called &quot;Earthsense.&quot; It is like long-distance touch, and permits them to sense heat, air pressure, and air currents with remarkable accuracy. They can maneuver in the dark using Earthsense, calculate their depth beneath the surface, sense moving objects, and even measure the size and shape of a cave system by simply standing in a corner of it and sensing the air currents. Thus, a dwarf can travel swiftly through an unfamiliar cave system, trusting their &quot;feel&quot; as to what tunnels lead where. Long-range Earthsense is defined as Earthsense Scan, and close-range Earthsense is Earthsense Search.</p>"
+      },
+      "scentIntruder": {
+        "skillName": "Scent Intruder",
+        "description": "<p>This creature may not tack by scent, but they have a chance of noticing intruders by scent.</p>"
+      },
       "search": {
         "skillName": "Search",
         "description": "<p>Scrutinizing an area to find a concealed or lost object or door. The skill used to oppose this is Conceal.</p>"
+      },
+      "darksenseSearch": {
+        "skillName": "Darksense Search",
+        "description": "<p>Scrutinizing an area to find a concealed or lost object or door. The skill used to oppose this is Conceal.</p><p>Trolls can move in the darkest night, due to their stygian origin. They use &quot;Darksense,&quot a perception not available to other races. Darksense combines hearing, smelling, feeling, and some non-specific sensing abilities, and allows trolls to maneuver as though humans in sunshine. Though trolls hate the light, that element does no direct harm to most trolls. Cave trolls and trollkin, however, are affected by light. Trolls have a clear-cut advantage over humans (and most other foes) in the darkness. The gamemaster should read the rules about fighting in the dark whenever adventurers encounter trolls. Darksense is broken into two skills: Darksense Scan and Darksense Search.</p>"
+      },
+      "earthsenseSearch": {
+        "skillName": "Earthsense Search",
+        "description": "<p>Scrutinizing an area to find a concealed or lost object or door. The skill used to oppose this is Conceal.</p><p>Dwarfs have a sense, unique to them, called &quot;Earthsense.&quot; It is like long-distance touch, and permits them to sense heat, air pressure, and air currents with remarkable accuracy. They can maneuver in the dark using Earthsense, calculate their depth beneath the surface, sense moving objects, and even measure the size and shape of a cave system by simply standing in a corner of it and sensing the air currents. Thus, a dwarf can travel swiftly through an unfamiliar cave system, trusting their &quot;feel&quot; as to what tunnels lead where. Long-range Earthsense is defined as Earthsense Scan, and close-range Earthsense is Earthsense Search.</p>"
       },
       "senseAssassin": {
         "skillName": "Sense Assassin",
@@ -2331,6 +2367,10 @@
       "survival": {
         "skillName": "Survival",
         "description": "<p>Surviving in a rural or wilderness environment, including foraging, building a fire, and finding shelter. This can also be used to conceal one’s tracks, making Track rolls necessary to follow.</p>"
+      },
+      "ski": {
+        "skillName": "Ski",
+        "description": "<p>Movement over snow by cross-country skiing. Green elves are known to practice skiing in this way.</p>"
       },
       "swim": {
         "skillName": "Swim",
@@ -2393,6 +2433,9 @@
         "name": "Weapon",
         "description": "<p>All Melee Weapon, Missile Weapon, and Shield skills use the Manipulation skill category modifier and are either specialized by a specific type of weapon (such as Broadsword) or a more general category (1-Handed Axes, for example).</p><p>All Weapon and Shield skills can be improved by experience.</p>"
       }
+    },
+    "craftSpecialization": {
+      "iron": "Iron"
     },
     "weaponSkill": {
       "1h-axes": {
@@ -2520,6 +2563,9 @@
       "headButt": {
         "name": "Head Butt"
       },
+      "claw": {
+        "name": "Claw"
+      },
       "hug": {
         "name": "Hug"
       },
@@ -2575,6 +2621,453 @@
       },
       "trample": {
         "name": "Trample"
+      }
+    },
+    "weapon": {
+      "ironDescription": "<p>Any damage from an iron weapon to an elf or troll (and some of their kindred races) that penetrates armor is doubled. Can strike creatures immune to normal weapons.</p>",
+      "smallAxe": "Small Axe",
+      "battleAxe": "Battle Axe",
+      "battleAxeIron": "Battle Axe, Iron",
+      "greatAxe": "Great Axe",
+      "daggerAxe": "Dagger Axe",
+      "compositeBow": "Composite Bow",
+      "elfBow": "Elf Bow",
+      "selfBow": "Self Bow",
+      "arbalest": "Arbalest",
+      "heavyCrossbow": "Heavy Crossbow",
+      "lightCrossbow": "Light Crossbow",
+      "repeatingCrossbow": "Repeating Crossbow",
+      "arrows": "Arrows",
+      "crossbowBolts": "Crossbow Bolts",
+      "warHammer": "War Hammer",
+      "warHammerIron": "War Hammer, Iron",
+      "greatHammer": "Great Hammer",
+      "maul": "Maul",
+      "heavyMace": "Heavy Mace",
+      "lightMace": "Light Mace",
+      "singlestick": "Singlestick",
+      "woodenClub": "Wooden Club",
+      "twoHandedMace": "Two Handed Mace",
+      "quarterstaff": "Quarterstaff",
+      "atlatlDart": "Atlatl Dart",
+      "atlatlJavelin": "Atlatl Javelin",
+      "dart": "Dart",
+      "poleLasso": "Pole Lasso",
+      "smallWoodenShield": "Small Wooden Shield",
+      "mediumWoodenShield": "Medium Wooden Shield",
+      "largeWoodenShield": "Large Wooden Shield",
+      "sling": "Sling",
+      "staffSling": "Staff Sling",
+      "slingStones": "Sling Stones",
+      "javelin": "Javelin",
+      "shortSpear": "Short Spear",
+      "lance": "Lance",
+      "pike": "Pike",
+      "longSpear": "Long Spear",
+      "dagger": "Dagger",
+      "parryingDagger": "Parrying Dagger",
+      "throwingDagger": "Throwing Dagger",
+      "sickle": "Sickle",
+      "broadsword": "Broadsword",
+      "kopis": "Kopis",
+      "rapier": "Rapier",
+      "shortsword": "Shortsword",
+      "greatsword": "Greatsword",
+      "romphaia": "Rhomphaia",
+      "sickleSwordMoonsword": "Sickle Sword (Moonsword)",
+      "throwingAxe": "Throwing Axe",
+      "rock": "Rock",
+      "lightCestus": "Light Cestus",
+      "heavyCestus": "Heavy Cestus",
+      "clawMetal": "Claw (Metal)",
+      "fist": "Fist",
+      "grapple": "Grapple",
+      "kick": "Kick",
+      "headButt": "Head Butt",
+      "trample": "Trample",
+      "bite": "Bite",
+      "claw": "Claw",
+      "gore": "Gore",
+      "rip": "Rip",
+      "hug": "Hug",
+      "rearAndPlunge": "Rear and Plunge"
+    },
+    "equipment": {
+      "armor": {
+        "hood": "Hood",
+        "broadBrimmedHat": "Broad-brimmed Hat",
+        "cap": "Cap",
+        "compositeHelm": "Composite Helm",
+        "openHelm": "Open Helm",
+        "closedHelm": "Closed Helm",
+        "fullHelm": "Full Helm",
+        "sleeves": "Sleeves",
+        "vambraces": "Vambraces",
+        "cuirass": "Cuirass",
+        "linothorax": "Linothorax",
+        "hauberk": "Hauberk",
+        "segmented": "Segmented",
+        "skirt": "Skirt",
+        "pants": "Pants",
+        "greaves": "Greaves",
+        "unenchantedHeavyDwarfChainmail": "Unenchanted Heavy Dwarf Chainmail",
+        "unenchantedDwarfHelmet": "Unenchanted Heavy Dwarf Closed Helmet",
+        "description": {
+          "cuirboilli": "<p>Cuirboilli is leather treated with boiling wax, hardening it almost to the resiliency of metal.</p>",
+          "heavyLeather": "<p>Heavy leather is the thickness of a shoe sole and provides two points of protection.  Unlike normal leather, heavy leather cannot be worn under other armor.</p>",
+          "leather": "<p>Instead of leather, this item could be made of quilted or thick cloth.  Leather is very common in most of Glorantha.</p>",
+          "linen": "<p>Laminated or quilted cloth, this is built up of many layers until it is stiff and hard. It is often reinforced with metal plates or scales. Linen armor is used less and less as metal becomes more common, but it is still used to equip militia and the like.</p>",
+          "quilted": "<p>Quilted armor is made up of several layers of quilted leather.</p>",
+          "segmentedBronzePlate": "<p>This armor covers the chest and abdomen and is made up of a cuirass and three or four sets of curved lower protection plates. The pieces are fastened together by thongs that allow movement.</p>",
+          "ringMail": "<p>Metal rings butted together and sewn to leather.</p>",
+          "heavyScale": "<p>This armor consists of hundreds of bronze plates that have been laced together and then fastened onto a backing.</p>",
+          "lightScale": "<p>This armor consists of hundreds of boiled leather plates that have been laced together. The plates are often lacquered. It is lighter and less expensive than a heavy scale hauberk.</p>",
+          "underLayer": "<p>This armor be worn under any other armor, with a cumulative encumbrance penalty.</p>",
+          "vambraces": "<p>Vambraces are like greaves, but protect the forearm. These are considered to cover the entire limb, although the actual armor which goes by these names only covers the area between elbow and hand.</p>",
+          "greaves": "<p>These are plates molded to protect the lower leg. They either “spring” into shape or are strapped on. They are heavy and make sprinting difficult. These are considered to cover the entire limb, although the actual armor which goes by these names only covers the area between knee and foot.</p>",
+          "cuirass": "<p>A cuirass is a chestpiece of front and back plates joined together by leather straps.</p>",
+          "hauberk": "<p>A hauberk is like a shirt or tunic and covers the chest and abdomen.</p>",
+          "diskPlateBronze": "<p>This consists of disks and square bronze plates on the front and back, connected by side and shoulder pieces. The plates are often highly decorated. It protects the chest.</p>",
+          "pants": "<p>Pants or Trews cover the legs and abdomen.</p>",
+          "skirtStuddedLeather": "<p>This skirt of studded leather strips protects the abdomen.</p>",
+          "linothorax": "<p>A stiff shirt that covers the chest and abdomen.</p>",
+          "compositeHelm": "<p>This leather helmet has metal plates or boar tusks riveted on to it.</p>",
+          "openHelm": "<p>This is a conical metal helmet with bronze cheek-pieces attached. It is usually decorated with plumes and feathers.</p>",
+          "closedHelm": "<p>This metal helmet has a pair of cheekpieces and a neck guard. In the front is a nasal bar that protects the eyes and nose.</p>",
+          "fullHelm": "<p>This close-fitting helmet has elongated cheek-pieces to protect the wearer’s mouth and throat. A nose guard protects the nose and eyes. It offers excellent all-round protection but severely limits vision and hearing, as well as being hot and stuffy to wear for long periods.</p>",
+          "turtleShellCuirass": "<p>This chestpiece of turtleshell, wood, and bronze is popular within the Humakt cult, who associate it with their hero Hiia Swordsman.</p>",
+          "unenchantedHeavyDwarfChainmail": "<p>Coat of unenchanted heavy dwarf iron chainmail (9 pts.).  Wearer has a 60% chance of being unaffected by any spell cast at them, cumulative with other iron worn.</p>",
+          "unenchantedDwarfHelmet": "<p>Closed helmet of unenchanted dwarf iron (9 pts).  Wearer has a 10% chance of being unaffected by any spell cast at them, cumulative with other iron worn.</p>"
+        }
+      },
+      "gear": {
+        "cloakGrass": "Grass Cloak",
+        "cloakGrassDescription": "<p>This sleeveless cape is made of woven grass and worn to protect against rain and sun.</p>",
+        "cloakWoolWinter": "Wool Winter Cloak",
+        "cloakWoolWinterDescription": " <p>Long winter cloaks are common protection against wind and night chills. The cloak is normally pinned over the shoulder with a fibula.</p>",
+        "clothesCotton": "Cotton Clothes",
+        "clothesCottonDescription": "<p>Men typically wear either belted long tunics, or short tunics and skirts. Women typically wear tunics and wrap-around skirts. Many men forego the tunic during the summer heat. During the winter, cloaks and robes or breeches provide warmth.</p>",
+        "clothesWool": "Wool Clothes",
+        "clothesWoolDescription": "<p>Men typically wear either belted long tunics, or short tunics and skirts. Women typically wear tunics and wrap-around skirts. Many men forego the tunic during the summer heat. During the winter, cloaks and robes or breeches provide warmth.</p>",
+        "clothesDressEsrolian": "Esrolian Dress",
+        "clothesDressEsrolianDescription": "<p>The flounced and pleated bell-shaped skirt worn by noble women and priestesses. Price: 15-35 L depending on decoration and style.</p>",
+        "clothesDressHidePlain": "Plain Hide Dress",
+        "clothesDressHidePlainDescription": "<p>A plain dress made from hide.</p>",
+        "drinkAleCup": "Two Cups of Ale",
+        "drinkAleCupDescription": "<p>Two cups of ale.</p>",
+        "drinkClearwineBowl": "Bowl of Clearwine",
+        "drinkClearwineBowlDescription": "<p>A single serving of clearwine, the famous wine that gives its name to the capital city of the Colymar tribe.</p>",
+        "drinkMeadHorn": "Horn of Mead",
+        "drinkMeadHornDescription": "<p>A single serving of mead.</p>",
+        "foodStewMeatBowl": "Bowl of Meat Stew",
+        "foodStewMeatBowlDescription": "<p>Pork, chicken or mutton cooked with root vegetables served with flatbread. Often heavily spiced.</p>",
+        "horseRidingPonyGalana": "Galana (Pony)",
+        "horseRidingPonyGalanaDescription": "<p>This is the most common horse breed in Dragon Pass, Kethaela, Maniria, Ralios, and Talastar. Notably, this tough big-headed breed is used to swiftly pull chariots over the roadless, broken ground. They are dun to brown, usually with tails and manes being darker than the body color.</p>",
+        "jewelryRingBronzeSimple": "Simple Bronze Ring",
+        "jewelryRingBronzeSimpleDescription": "<p>A simple bronze ring.</p>",
+        "jewelryNecklaceGoldBeaded": "Beaded Gold Necklace",
+        "jewelryNecklaceGoldBeadedDescription": "<p>A necklace of beads made from gold.</p>",
+        "lightLamp": "Lamp",
+        "lightLampDescription": "<p>This is a clay or bronze lamp used to burn olive oil or clarified butter. Often highly decorated. The area illuminated by a lamp depends on its size and construction. Price: 1-2 L.</p>",
+        "lightTorchWicker": "Wicker Torch",
+        "lightTorchWickerDescription": "<p>A rough torch made of dried twigs, woven together.</p>",
+        "instrumentDrum": "Drum",
+        "instrumentDrumDescription": "<p>A wood or bronze drum with a stretched animal skin head.</p>",
+        "instrumentKithara": "Kithara",
+        "instrumentKitharaDescription": "<p>A stringed instrument with a deep wooden sound box.</p>",
+        "quiverLarge": "Large Quiver",
+        "quiverLargeDescription": "<p>Holds 40 arrows. A leather, wooden, or stiffened cloth container used for carrying arrows or crossbow bolts. Worn slung low on the hip, at the waist, or over the back.</p>",
+        "quiverMedium": "Medium Quiver",
+        "quiverMediumDescription": "<p>Holds two dozen arrows. A leather, wooden, or stiffened cloth container used for carrying arrows or crossbow bolts. Worn slung low on the hip, at the waist, or over the back.</p>",
+        "quiverSmall": "Small Quiver",
+        "quiverSmallDescription": "<p>Holds a dozen arrows. A leather, wooden, or stiffened cloth container used for carrying arrows or crossbow bolts. Worn slung low on the hip, at the waist, or over the back.</p>",
+        "blanketSaddle": "Saddle Blanket",
+        "blanketSaddleDescription": "<p>A woven wool or bison-hide blanket, to stop chafing and make it easier to bear a saddle and rider.</p>",
+        "ridingBridle": "Bridle",
+        "ridingBridleDescription": "<p>Headgear used to direct a horse or other mount while riding. They are usually made of tough leather, and may have a bit, nose-rings, horn connections, or a nose band. Bridles must be correctly designed for a species and fitted properly to the specific animal.</p>",
+        "ridingSaddle": "Saddle",
+        "ridingSaddleDescription": "<p>Horned or hornless, with or without trees; saddles vary tremendously by region. All, however, are designed to let a person ride with some degree of comfort and stability. Price: 8+ L.</p>",
+        "toolHammerStone": "Stone Hammer",
+        "toolHammerStoneDescription": "<p>A cheap stone hammer.</p>",
+        "toolRope15m": "Rope, 15m",
+        "toolRope15mDescription": "<p>Made from hemp or other plant fibers. More rarely made of corded leather.</p>"
+      }
+    },
+    "hitLocation": {
+      "beetle": {
+        "rightHindLeg": "Right Hind Leg",
+        "rightCenterLeg": "Right Center Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "leftCenterLeg": "Left Center Leg",
+        "abdomen": "Abdomen",
+        "thorax": "Thorax",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "birdFlying": {
+        "tail": "Tail",
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      },
+      "birdRunning": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      },
+      "centaur": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "leftArm": "Left Arm",
+        "rightArm": "Right Arm",
+        "head": "Head"
+      },
+      "dragonManticore": {
+        "tail": "Tail",
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "dragonsnailOneHeaded": {
+        "shell": "Shell",
+        "forebody": "Forebody",
+        "head": "Head"
+      },
+      "dragonsnailTwoHeaded": {
+        "shell": "Shell",
+        "forebody": "Forebody",
+        "rightHead": "Right Head",
+        "leftHead": "Left Head"
+      },
+      "fourLeggedAnimal": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "fourLeggedAnimalWinged": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "gorp": {
+        "body": "Body"
+      },
+      "harpy": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      },
+      "humanoid": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightArm": "Right Arm",
+        "leftArm": "Left Arm",
+        "head": "Head"
+      },
+      "humanoidWinged": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "rightArm": "Right Arm",
+        "leftArm": "Left Arm",
+        "head": "Head"
+      },
+      "mammothMastodon": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "hindquarter": "Hindquarter",
+        "forequarter": "Forequarter",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "trunk": "Trunk",
+        "head": "Head"
+      },
+      "serpent": {
+        "tail": "Tail",
+        "body": "Body",
+        "head": "Head"
+      },
+      "serpentWinged": {
+        "tail": "Tail",
+        "body": "Body",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      },
+      "spiderGiant": {
+        "rightHindLeg": "Right Hind Leg",
+        "leftHindLeg": "Left Hind Leg",
+        "rightCenterRearLeg": "Right Center Rear Leg",
+        "leftCenterRearLeg": "Left Center Rear Leg",
+        "abdomen": "Abdomen",
+        "rightCenterFrontLeg": "Right Center Front Leg",
+        "leftCenterFrontLeg": "Left Center Front Leg",
+        "rightForeleg": "Right Foreleg",
+        "leftForeleg": "Left Foreleg",
+        "head": "Head"
+      },
+      "walktapus": {
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightArm": "Right Arm",
+        "leftArm": "Left Arm",
+        "tentacle1": "Tentacle 1",
+        "tentacle2": "Tentacle 2",
+        "tentacle3": "Tentacle 3",
+        "tentacle4": "Tentacle 4",
+        "tentacle5": "Tentacle 5",
+        "tentacle6": "Tentacle 6",
+        "tentacle7": "Tentacle 7",
+        "tentacle8": "Tentacle 8",
+        "head": "Head"
+      },
+      "wyvern": {
+        "tail": "Tail",
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "abdomen": "Abdomen",
+        "chest": "Chest",
+        "rightWing": "Right Wing",
+        "leftWing": "Left Wing",
+        "head": "Head"
+      }
+    },
+    "passionSubject": {
+      "aldryami": "Aldryami",
+      "casteDuties": "Caste Duties",
+      "family": "Family",
+      "forest": "Forest",
+      "mostali": "Mostali",
+      "matriarch": "Matriarch",
+      "uz": "Uz"
+    },
+    "bestiary": {
+      "spiritDescriptionGeneral": "",
+      "airElementalNotes": "<h1>Air Elementals (Umbroli)</h1><p>Air elementals (commonly called umbroli or sylphs) resemble mobile whirlwinds. All can raise a wind; even the smallest can lift and throw small objects. The largest can throw human-sized objects or can carry them aloft in the air.</p><p><strong>Abilities</strong>: An air elemental can carry objects or people with a total SIZ equal to or less than the air elemental’s STR. It can create a breeze or a small whirlwind. An air elemental can increase a sailing ship’s speed by filling the sails. An air elemental may blow arrows or other missile weapons off course.</p><p><strong>Attack</strong>: An air elemental attacks by taking a character caught within it and throwing them to the top of their height, then dropping them. Damage done is 1D6 plus 1D6 per 3 meters of fall. A small air elemental can do a maximum of 2D6 damage, but a medium air elemental can do 3D6 damage and a large air elemental does 5D6. An adventurer may try to resist by pitting their STR against that of the elemental. If the character resists, they stay on the ground.</p><p>If there is more than one target within the area covered by the elemental, it may divide its STR equally among the targets and overcome each STR on an individual basis. Thus, a large air elemental with a STR of 30, having three targets within one area, can attack each target with a STR of 10. If it works against one, but not against the others, then one victim goes flying while the others stay on the ground. If so commanded, it will attack only one target, leaving the others alone.</p><p>Adventurers may choose to attack or cast spells at an air elemental instead of resisting, in hopes that the air elemental will be destroyed in mid-toss, causing only half damage for the toss. The characters will be tossed, however.</p><p><strong>Note</strong>: More powerful and sentient air elementals are also called umbroli and are living winds. The strongest umbroli are minor gods, such as the Seven Winds of Dragon Pass, and are worshiped by local clans and tribes.<p>",
+      "airElementalSmall": {
+        "name": "Air Elemental, Small",
+        "species": ""
+      },
+      "airElementalMedium": {
+        "name": "Air Elemental, Medium",
+        "species": ""
+      },
+      "airElementalLarge": {
+        "name": "Air Elemental, Large",
+        "species": ""
+      },
+      "brownBear": {
+        "name": "Brown Bear",
+        "species": "Ursus arctos",
+        "notes": "<p>Three types of bear can be found in the Dragon Pass area. The common black bear, the larger brown bear, and an even larger white bear variant. All bears are omnivorous, and many types show no fear of humans.</p><p><strong>Armor</strong>: 3-point skin and fur</p><p><strong>Note</strong>: A bear may either bite and claw twice or bite and hug in a round. If it chooses to bite and hug, both attacks must be against the same foe. If it bites and claws twice, it may attack up to three separate foes.</p>"
+      },
+      "bison": {
+        "name": "Bison",
+        "species": "Bison praxus",
+        "notes": "<p>The bison is a surly and intractable beast, save in the presence of its rider. Its thick skin gives it some protection and its basic attack is the charge. They also butt and trample.</p><p>Occasionally (5% chance), there will be a white bison in a herd. White bison hides are extremely valuable (300&ndash;2,000 L, depending on condition). However, white bison are sacred to the White Bull Society, an inter-tribal Praxian society.</p><p>Bison riders are one of the Five Great Tribes of Prax.</p><p><strong>Armor</strong>:&nbsp;3-point hide.</p><p><strong>Note</strong>: A bison cannot head butt and trample in the same melee round.</p>"
+      },
+      "diseaseSpirit": {
+        "name": "Disease Spirit",
+        "species": "",
+        "notes": "<p>Spirits of disease are specifically bound to the service of the Mother of Disease and have a special type of spirit combat.</p><p>Their initial spirit combat attack is normal. But if the disease spirit succeeds in an attack when the victim fails, the spirit can try to infect the target with any of the diseases it is carrying. This infection requires another roll overcoming the target’s Spirit Combat skill, as if the disease spirit was trying to possess the victim. If successful, this does not force the victim’s spirit from the body but infects the victim with the acute form of any disease carried. A second success infects the victim with the next degree of the disease (see RQG p154).</p><p>If the victim manages to defeat the spirit and drives it off or destroys it, the victim gains immediate immunity to any disease carried by the spirit for a year. Exposure to those diseases will not affect the character. They also will steal 1D3 POW directly from the spirit, subtracted from the spirit’s characteristic POW. This stolen POW is not diseased in any way and adds to the characteristic POW, as if a POW gain roll had been made.</p>"
+      },
+      "earthElementalNotes": "<h1>Earth Elementals (Talosi)</h1><p>Earth elementals (commonly called talosi or gnomes) can shape the earth in almost any way: they can create pits, tunnels, or walls, expel objects, and even plow fields. An earth elemental cannot be summoned or travel through areas floored by quarried stone or solid rock. However, it likes very rocky soil. An earth elemental moves directly through the earth, leaving a trail of overturned and ground dirt behind it. It cannot leave the soil and looks like a whirlpool or pulse in the earth itself.</p><p><strong>Abilities</strong>: An earth elemental can open pits in the soil, make tunnels, and find buried objects. It can also be used for holding objects stuck into the dirt, keeping loose tunnel roofs from falling, or forming mounds and ridges in the soil (no larger than the elemental’s volume). An earth elemental has many homely uses such as uprooting tree trunks, plowing fields, and clearing foundations for homes. In war, an earth elemental could be used to undermine or build fortifications. Earth elementals are perhaps the most generally useful elemental.</p><p>An earth elemental can carry a person and &quot;swim&quot; through the soil if it has STR enough to carry that person. There is no air underground, and an individual being carried must make CON rolls or suffocate. The earth elemental can only do this with an unresisting passenger. An earth elemental can carry several people if its STR is sufficient.</p><p><strong>Attack</strong>: In combat, the earth elemental uses its volume to engulf its opponents, opening a pit beneath a foe with a maximum volume equal to its own volume. It can engulf about half of one human-sized victim per cubic meter of volume.</p><p>The depth of the pit depends on the size of the elemental. A small earth elemental simply engulfs the victim’s legs. A medium earth elemental can swallow a victim entirely. A large earth elemental can swallow its victim and an average sized mount completely, engulfing all hit locations. In this case, the victim also will asphyxiate (as per the suffocation rules) unless they break free.</p><p>After burying a victim, the earth elemental closes the pit, doing the earth elemental’s damage modifier (figured by the earth elemental’s STR×2 rather than STR+SIZ) as damage to all hit locations engulfed. An earth elemental can only attack in this manner in dirt or rocky soils (not in sand or soft loam), and can only attack once in a given spot, because the pulverized dirt is too fine for a second attack.</p><p>The victim is held by the earth elemental in any case and must overcome the elemental’s STR with their own to break free and crawl out of its grip. If an earth elemental lacks any damage bonus, or attacks a victim in unsuitable soil, it will swallow the victim as described above, without causing damage. The victim must still resist STR vs. STR to pull free of the earth elemental’s grip.</p><p><strong>Note</strong>: More powerful and sentient Earth elementals are the lesser goddesses and gods of the Earth and have countless names. They are worshiped by local communities.</p>",
+      "earthElementalSmall": {
+        "name": "Earth Elemental, Small",
+        "species": ""
+      },
+      "earthElementalMedium": {
+        "name": "Earth Elemental, Medium",
+        "species": ""
+      },
+      "earthElementalLarge": {
+        "name": "Earth Elemental, Large",
+        "species": ""
+      },
+      "elementalGeneralNotes": "<h1>General Properties of Elementals</h1><p>Most elementals are incomplete entities possessing only STR, SIZ, and POW. Their hit points are related to their SIZ, as explained later. An elemental’s SIZ is expressed as a volume rather than a characteristic number: for example, an elemental would be described of having a SIZ of 3 cubic meters (meters3).</p><p>If a point value is needed for an elemental’s SIZ, the elemental’s hit points may be used as its SIZ. Thus, if an elemental with 10 hit points climbed into a box and was lifted by an adventurer, its SIZ could be treated as if it were 10.</p><p>Most elementals lack INT and are not truly sentient. They are capable of being controlled by spells, but when left on their own, they will simply do whatever is natural: fire elementals burn flammable materials within reach, water elementals flee to the lowest possible spot, earth elementals sink into the soil, darkness elementals flee light, and air elementals breeze around.</p><p>Many elementals are servants of the gods, and priests of certain deities learn to control appropriate elementals. The greatest elementals are self-aware and sentient and are often worshiped as part of a cult.</p><p>All elementals can be struck in combat with ordinary weapons, breaking up their physical form and eventually disrupting them. They have only one hit location and no armor. When an elemental has been reduced to 0 hit points, it dissolves. Its spirit returns to its realm, from where it may be summoned again to inhabit another volume of material.</p>",
+      "ghost": {
+        "name": "Ghost",
+        "species": "",
+        "notes": "<p>Ghosts are the spirits of the restless dead. Ghosts found on the Middle World are always tied to a specific site or object, and either cannot leave or must return if they do leave.</p><p>Ghosts come in many forms. Some can change shape, and the most common form is a dark cloud, especially in daylight. Others can take multiple human forms, assume beast shapes, change gender, or even remove body parts and send them roaming about. Possession is a common general trait of ghosts, but many desire direct interaction with mortals. An encounter with a ghost can leave a lingering or permanent effect, depending on the suffering of the victim and degree of success of the ghost. Some types of ghosts are passive or even pleasant.</p><p>Ghosts can become visible at will and engage intruders in spirit combat. If a ghost reduces a foe to 0 magic points, it will possess the victim. Even if a ghost possesses someone, it remains tied to its site and may not leave.</p><p>Most ghosts are malign and hate the living. They are frequently insane. Ghosts possess INT, POW, and CHA.</p>"
+      },
+      "greenElf": {
+        "name": "Aldryami (Green Elf)",
+        "species": "Dendro sapien vronkalum",
+        "notes": "<h1>Finishing Details</h1><ul>  <li>Choose Earth or Fire/Sky Rune (Earth is default)</li>  <li>Add one or more cults, see below</li></ul><h1>Aldryami (Elves)</h1><p>The race known as the Aldryami consists of elves, dryads, pixies, and runners. They belong to the vegetable kingdom. Essentially mobile plants, Aldryami are significantly different from other humanoids and beasts.</p><p>Aldryami commonly associate in forest communities. Since all claim descent from (and actively engage in worship of) the goddess Aldrya, the members of these mixed forest communities are collectively named after her&mdash;Aldryami.</p><p>Elves come in various races, identified as colors by humans, dependent upon the type of forest in which they are found. The green elves are native to coniferous trees, the brown to deciduous temperate forests, the yellow to tropical jungle, and the red to ferns and other primitive plants.</p><p>The primary Rune of the Aldryami is the Plant Form Rune.</p><h1>Green Elves</h1><p>The green elves, or vronkali, were the most important elf type in the Great Darkness but have lost ground since then. Green elves are of male or female gender, and do not breed with dryads. They do not sleep in winter but experience a daily period of rest. Green elves are associated with coniferous forests. They inhabit cool temperate lands. In snow, they can ski cross-country with carved magic wooden shoes. In warmer lands, they often share their forests with brown elves.</p><p>A green elf typically weighs about 65 kilograms and stands a little over 170 centimeters tall.</p><p><strong>Special Notes</strong>: Like the trolls, their eternal enemies, green elves are vulnerable to the &ldquo;new metal&rdquo; iron and cannot handle it. Any damage from an iron weapon penetrating their armor will do twice the normal damage.</p><p><strong>Armor:</strong>&nbsp;Green elves have no natural armor but often wear 2-point armor made of treated bark or other plant materials. They often wear cloaks made of leaves that add +20% to their Hide skill in an appropriate forest. They generally prefer to Dodge rather than parry.</p><p><strong>Skills:</strong>&nbsp;Climb 85%, Conceal 45%, Dodge 65%, Elfsense 55%, Elf Lore 50%, First Aid 50%, Hide 50%, Listen 50%, Move Quietly 50%, Plant Lore 75%, Sing 55%, Ski 60%, Spirit Combat 55%, Track 55%, Worship (elf deity) 50%.</p><p><strong>Languages:</strong>&nbsp;Speak Aldryami 50%, Speak Tradetalk 15%. Passions: Hate (Mostali) 60%, Hate (Uz) 60%, Loyalty (Forest) 60%.</p><p><strong>Runes:</strong>&nbsp;Earth or Fire/Sky 60%, Plant 75%. Special Rune Magic: Arrow Trance.</p><p><strong>Magic:</strong>&nbsp;All elves worship Aldrya. Other common gods include Babeester Gor, Chalana Arroy, Ernalda, Flamal, and Yelmalio. Common spirit magic is Heal and Speedart.</p>"
+      },
+      "horseSeredae": {
+        "name": "Horse (Seredae)",
+        "species": "Equus caballus",
+        "notes": "<p>Hippogriff was the favorite child of King Griffin, and an ally to Splendid Yamsur, the eldest son of Yelm. Splendid Yamsur and Hippogriff had taken solemn oaths of friendship together, but in several fights, Hippogriff was hurt and abandoned by her erstwhile friend.</p><p>Hippogriff underwent a series of painful and humiliating experiences during the Gods War and the Great Darkness. First, she met Storm Bull in raging battle, and her proud fangs were broken out of her mouth. In a fight with Maran Gor, the Earthshaker, Hippogriff ’s legs were broken. Her bronze claws were ripped from her feet, but Yamsur was able to replace them with hooves. The greatest defeat was when Zorak Zoran tore off her golden wings, laughing as he robbed her of ever returning to the sky. But most humiliating was when this once great godling was taken and broken by a mortal, Hyalor Horsebreaker.</p><p>Hyalor was a leader among men and a believer in the long-disappeared Sun. He claimed descent from Splendid Yamsur, who was slain by the Devil. Hyalor claimed that he was freeing her crippled spirit from Death and wished to make an alliance. He rescued her by changing her name and her identity. Even so, man got the better of the bargain. She was called Hippoi, or simply &quot;horse&quot;. Ever since then, her descendants have worked more for man than man has worked for horse. When the Sun rose again, Hyalor was ready to accept him, having survived the Darkness through great faith and courage. The horse, already used to slavery, leapt to meet her old master. The pair together received great bounty at the Dawn, and their herds and numbers increased greatly with the blessings of Yelm.</p><p>Dragon Pass is home to some of the finest horse breeders in Glorantha, the Grazeland Pony Breeders. For other peoples, horses are valuable and an indicator of wealth. Horses with the size, stamina and skill of a trained warhorse are few and far between. They are also quite expensive.</p><h1>Seredae</h1><p>The most common horse in Peloria, Pent, and Kralorela, the sered is the second-most common horse in Dragon Pass. They are a small-headed breed with a seemingly limitless variety of colors, ranging from noble black and white, through common duns and browns, to mixtures like dapple greys and piebald. Most have some appearance of stripes.</p><p><strong>Characteristics</strong>: Seredae have normal horse characteristics.</p><p><strong>Note</strong>: The average sered cannot carry a heavily armored warrior into battle.</p><p><strong>Note</strong>: A horse may attack once in a melee round. A ridden non-warhorse normally makes no attacks on behalf of its rider, but may attack something threatening it directly, such as a serpent.</p><p><strong>Armor</strong>: 1-point hide.</p><p><strong>Skills</strong>: Climb 30%, Dodge 25%, Jump 75%, Listen 40%, Scan 30%, Scent Intruder 30%, Swim 50%.</p>"
+      },
+      "mostali": {
+        "name": "Mostali (Dwarf)",
+        "species": "Mostali lithanthropus",
+        "notes": "<p>Also called dwarfs, the Mostali claim descent from Mostal the Maker, a primeval deity said to have created the World. The dwarfs have a long and ancient history, most of which is unknown to humanity. They are pragmatic and stoic, happy with practical matters and unafraid of hard work, and are conservative and secretive to an extreme. Their hard religion offers them personal immortality. The official dwarf religion is a sorcery of a limited, but practical, variety.</p><p>The Mostali are locked in eternal war with the elves (dating from the early Gods War) and are no friends to trolls. The enmity of elf and dwarf predates the current form of both species and reaches back to their creation. The byword of their relationships with other intelligent beings is always mutual distrust.</p><p>The dwarfs are divided into occupational castes that often behave like separate species. Only the soldier caste—the Iron Dwarfs—is regularly seen outside their underground cities. The iron discipline and unyielding attitude of dwarf culture is inhuman in its rigidity. Most humans cannot understand their machine-like state of mind. Apparently, many dwarfs cannot either, for there is a significant rate of desertion from the ranks. These are considered heretics by conventional dwarfs, and in some places, they form whole societies.</p><p>The Mostali were the first to discover iron and were the first to learn to work it. They have created many other constructs to aid them, from gargoyles and the stone giants called jolanti, to even more exotic constructs like the Alchemical Transformer and the Cannon Cult.</p><p><strong>Armor</strong>: Coat of unenchanted heavy dwarf iron chainmail (9 pts.) and full helm (9 pts.). The dwarf has a 70% chance of being unaffected by any spell cast at them.</p><p><strong>Skills</strong>: Craft (Iron) 65%, Dodge 35%, Earthsense Scan 50%, Earthsense Search 50%, Mineral Lore 35%.</p><p><strong>Languages</strong>: Speak Mostali 50%, Read/Write Mostali 50%.</p><p><strong>Passions</strong>: Devotion (caste duties) 60%, Hate (Aldryami) 60%, Hate (Uz) 60%.</p><p><strong>Runes</strong>: All dwarfs have the Earth and Stasis Runes at 80% or higher.</p><p><strong>Magic</strong>: Dwarfs use dwarf sorcery (see the [Glorantha Bestiary(https://www.chaosium.com/runequest-glorantha-bestiary-hardcover/)]). An Iron dwarf wearing unenchanted armor does not cast spells in combat.</p><p><strong>Enchanged Iron Weapons</strong>: Damage against an elf or troll that penetrates armor is doubled. Can strike creatures immune to normal weapons.</p><p><strong>Note</strong>: The dwarf crossbow is a repeater. It fires once a round without needing to reload, until all five quarrels in the clip have been expended. It takes three rounds to refill the clip.<p>"
+      },
+      "shadowcat": {
+        "name": "Shadowcat",
+        "species": "Lynx umbrosus",
+        "notes": "<p>Shadowcats are dark-colored felines which range from the size of a housecat to that of a lynx. They are very quick and quiet, and are also known as shimmer cats because they are extremely hard to hit.</p><p>Shadowcats are social animals that hunt in groups that encircle their prey from different directions. They are domesticated by the Orlanthi to herd livestock and to hunt. They rarely attack humans or other large predators. However, when cornered or threatened, they will attack fiercely, jumping onto a foe and holding with the forefeet while biting and ripping with both hind legs at once.</p><p>In Dragon Pass, shadowcats are also called alynxes. All are sacred to Orlanth.</p><strong>Armor</strong>: None.<p><strong>Skills</strong>: Dodge 50%, Hide 75%, Move Quietly 90%.</p><p><strong>Note</strong>: A shadowcat first attacks with both claws and its bite simultaneously. If both claws hit, the shadowcat hangs on and rips with its hind claws on the next round, while continuing to bite.</p>"
+      },
+      "tusker": {
+        "name": "Tusker",
+        "species": "Sus paracaballus",
+        "notes": "<p>Tuskers are gigantic boars as big as buffalo, ridden only by tusk riders. These beasts are fierce and ill-tempered but love their masters beyond all comprehension.</p><p><strong>Armor:</strong> 4-point hide.</p><p><strong>Skills</strong>: Track by Scent 50%.</p><p><strong>Note</strong>: A tusker cannot gore and trample the same opponent in the same melee round.</p>"
+      },
+      "uzko": {
+        "name": "Uzko (Dark Troll)",
+        "species": "Styganthropus uzko",
+        "notes": "<h1>Uz (Trolls)</h1><p>Trolls are principally a mountain-dwelling race, at perpetual war with elves and dwarfs, and dealing with mankind as the occasion demands. The dispersion of trolls was so great during the Gods War and since the Dawning, that several distinct breeds arose, as well as one blasphemous crossbreed with man, the tusk riders. All trolls have an aversion to iron, the &quot;poison metal,&quot; refusing to handle it and taking double damage from weapons forged of it.</p><p>The trolls call themselves Uz, a word which can be translated as &quot;the folk.&quot; More specifically, Uz is the living part of Kyger Litor that is also the incarnation of all trolldom. Uz is a mundane appendage of the great Darkness goddess, who has further powers in her own worlds beyond the reach of Uz.</p><p><h1>Dark Trolls (Uzko)</h1><p>Dark trolls are the current basic stock of the uz, deferring only to Mistress Race trolls for positions of authority. They are fully intelligent and use all weapons and magic. Their Darksense is not as good as that of the Mistress Race, but to compensate they have eyes which—though farsighted and colorblind—are useful in open spaces, heights, and depths.</p><p>They have a sense of smell far superior to that of the Mistress Race. Females generally have two breasts. In ancient times, before the Curse of Kin, dark troll females occasionally bore twins or triplets. Since the Trollkin Curse, trolls have decreed that all multiple births are trollkin.</p><p>About 30% of any normal troll community consists of dark trolls, the remainder being trollkin with a smattering of great trolls. Many wild troll families consist of dark trolls only. Both great trolls and trollkin are born to dark troll mothers, though the reverse is not true.</p><p>An average male dark troll stands 185-190 centimeters tall and weighs around 130 kilograms. The average female is somewhat larger, standing 190-195 centimeters tall and weighing about 155 kilograms. Stronger than humans, they tend to fight with heavy clubs and maces after performing an ambush from the shadows with slings.</p><p>Characteristics given here are for male dark trolls. The females, who rarely need to leave their dwellings, have 3D6+10 SIZ.</p><p><strong>Armor</strong>: 1-point skin. May wear any armor, hit locations chart assumes a light scale hauberk (4 pts.), cuirboilli greaves and vambraces (each 3 pts.), and an open helm (4 pts.).</p><p><strong>Skills</strong>: Climb 40%, Darksense Scan 45%, Darksense Search 35%, Dodge 35%, Hide 40%, Intimidate 35%, Jump 40%, Listen 40%, Move Quietly 40%, Spirit Combat 40%.</p><p><strong>Languages</strong>: Speak Darktongue 50%.</p><p><strong>Passions</strong>: Hate (Aldryami) 60%, Hate (Mostali) 60%, Love (family) 60%, Loyalty (matriarch) 60%.</p><p><strong>Runes</strong>: All trolls have the Darkness Rune of at least 60%.</p><p><strong>Special Rune Magic</strong>: As per cult.</p><p><strong>Magic</strong>: Dark trolls worship a pantheon of Darkness deities headed by Kyger Litor. Zorak Zoran is an important war god for trolls. All magics are available to them although most trolls only have Rune magic and spirit magic.</p>"
+      },
+      "wolf": {
+        "name": "Wolf",
+        "species": "Canis lupus",
+        "notes": "<p>Wolves hunt in packs ranging from under a dozen individuals to up to 40 or more. If too many wolves are wounded or killed in a fight, the pack will slink off, unless starving. Wolves fight cooperatively. Several wolves may attack the same target, ensuring that most of them will not be parried or dodged. Or one or two large wolves may attempt to knock the target down—when it falls over, other wolves rush to attack.</p><p><strong>Armor</strong>: 2-point fur.</p><p><strong>Skills</strong>: Dodge 30%, Search 60%, Track 80%.</p>"
       }
     }
   }

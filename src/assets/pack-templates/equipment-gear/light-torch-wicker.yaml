@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.lightTorchWicker}}$
+type: gear
+img: systems/rqg/assets/images/gear/primitive-torch.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.light-wicker-torch
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.lightTorchWickerDescription}}$
+  gmNotes:
+  quantity: 5
+  price:
+    real: 0.1
+    estimated: 0
+  encumbrance: 1.0
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: consumable

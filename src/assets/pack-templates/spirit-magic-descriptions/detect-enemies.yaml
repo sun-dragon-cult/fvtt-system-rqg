@@ -16,6 +16,6 @@ pages:
 flags:
   rqg:
     documentRqidFlags:
-      id: je..detectEnemies
+      id: je..detect-enemies
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

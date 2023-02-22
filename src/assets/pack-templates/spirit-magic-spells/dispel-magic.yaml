@@ -2,18 +2,18 @@
 name: ${{openSystem.content.spiritMagic.dispelMagic.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
-data:
+system:
   points: 1
   isVariable: true
   castingRange: ranged
   duration: instant
   concentration:
   descriptionRqidLink:
-    rqid: je..dispelMagic
+    rqid: je..dispel-magic
     name: ${{openSystem.content.spiritMagic.dispelMagic.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.spirit-magic.dispelMagic
+      id: i.spirit-magic.dispel-magic
       lang: ${openSystem.lang}}$
       priority: ${openSystem.prio}}$

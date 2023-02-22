@@ -2,7 +2,14 @@ import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
 import * as crypto from "crypto";
-import { i18nDir, outDir, packsMetadata, translationsFileName } from "./buildPacks";
+import { escapeRegex } from "../src/system/util";
+import {
+  i18nDir,
+  outDir,
+  packsMetadata,
+  packTemplateDir,
+  translationsFileName,
+} from "./buildPacks";
 
 export interface PackMetadata {
   system: string;
@@ -57,11 +64,13 @@ export class CompendiumPack {
     const filePaths = filenames.map((filename) => path.resolve(dirPath, filename));
     const parsedData: unknown[] = filePaths.map((filePath) => {
       const yamlString = fs.readFileSync(filePath, "utf-8");
+      const yamlStringWithIncludes = includePackYaml(yamlString);
       const packSources: CompendiumSource = (() => {
         try {
-          return yaml.loadAll(yamlString);
+          return yaml.loadAll(yamlStringWithIncludes);
         } catch (error) {
           if (error instanceof Error) {
+            console.log(yamlStringWithIncludes);
             throw PackError(`File ${filePath} could not be parsed: ${error.message}`);
           }
         }
@@ -75,13 +84,14 @@ export class CompendiumPack {
   }
 
   private finalize(docSource: CompendiumSource) {
-    docSource._id = crypto
-      .createHash("md5")
-      .update(this.name + docSource.name) // Has to be unique - use the pack and document name (like "cults-enOrlanth")
-      .digest("base64")
-      .replace(/[\+=\/]/g, "")
-      .substring(0, 16);
-
+    if (!docSource._id) {
+      docSource._id = crypto
+        .createHash("md5")
+        .update(this.name + docSource.name) // Has to be unique - use the pack and document name (like "cults-enOrlanth")
+        .digest("base64")
+        .replace(/[\+=\/]/g, "")
+        .substring(0, 16);
+    }
     return JSON.stringify(docSource);
   }
 
@@ -97,24 +107,31 @@ export class CompendiumPack {
       ),
     };
     const localisedPackDir = `${this.packDir}-${lang}.db`;
-    const localisedData = this.data.map((d) =>
-      JSON.parse(
-        JSON.stringify(d).replace(
-          /\$\{\{ ?([\w-.]+) ?\}\}\$/g,
-          function (match: string, key: string) {
-            const translation = lookup(dictionary, key);
+    const localisedData = this.data.map((d) => {
+      const translated = JSON.stringify(d).replace(
+        /\$\{\{ ?([\w-.]+) ?\}\}\$/g,
+        function (match: string, key: string) {
+          const translation = lookup(dictionary, key);
 
-            if (!translation) {
-              console.error(match, "translation key missing in language", lang);
-            } else {
-              localizationMatchCount++;
-            }
-
-            return translation ?? match;
+          if (translation == null) {
+            console.error(match, "translation key missing in language", lang);
+          } else {
+            localizationMatchCount++;
           }
-        )
-      )
-    );
+
+          return translation ?? match;
+        }
+      );
+      try {
+        const parsed = JSON.parse(translated);
+
+        return parsed;
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(`Unable to parse translated JSON ${translated}\n\n${error.message}`);
+        }
+      }
+    });
 
     const translatedPack = new CompendiumPack(localisedPackDir, localisedData, false); // clone this CompendiumPack
     return translatedPack;
@@ -183,4 +200,52 @@ function lookup(dict: any, key: string): string {
 
 export function isObject(value: unknown): boolean {
   return typeof value === "object" && value !== null;
+}
+
+function includePackYaml(yamlString: string): string {
+  const tokenRegex = /\"\|{{\s*([\w+.\/-]+)\s+([\w.-]+)\s+\[\s+([^\[]*)?\]\s*}}\|\"/gm;
+
+  const match = yamlString.match(tokenRegex);
+
+  const yaml = yamlString.replace(tokenRegex, function (match: string, ...args) {
+    const packName = args[0];
+    const rqid = args[1];
+    const overrides = args[2]?.split(",").map((item: string) => item.trim());
+
+    const packTemplate = path.resolve(packTemplateDir + "/" + packName);
+
+    const packTemplateYamlString = fs.readFileSync(packTemplate, "utf-8");
+
+    const packEntries = packTemplateYamlString.split("---");
+
+    for (const entry of packEntries) {
+      const rqidRegex = new RegExp(`^\\s*id:\\s+${escapeRegex(rqid)}$`, "m");
+      if (entry.match(rqidRegex)) {
+        // Add two spaces to every line to indent it properly
+        let cleanEntry = entry.replace(/\r/, "").replace(/[\n]/gm, "\n  ");
+
+        if (overrides) {
+          for (const override of overrides) {
+            const split = override.split(":").map((item: string) => item.trim());
+            const overrideRegex = new RegExp(`(${escapeRegex(split[0])}:\\s*)(.+)`, "m");
+            cleanEntry = cleanEntry.replace(overrideRegex, function (match: string, ...args) {
+              const overridden = args[0] + split[1];
+              return overridden;
+            });
+          }
+        }
+
+        return cleanEntry;
+      }
+    }
+
+    // Didn't find an entry
+    console.error(
+      `Did not find an entry in the pack ${packName} with an RQID of ${rqid} to match the token ${match}`
+    );
+
+    return "";
+  });
+
+  return yaml;
 }

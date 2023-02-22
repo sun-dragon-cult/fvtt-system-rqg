@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.drinkAleCup}}$
+type: gear
+img: systems/rqg/assets/images/gear/beer-stein.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.two-cups-of-ale
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.drinkAleCupDescription}}$
+  gmNotes:
+  quantity: 1
+  price:
+    real: 0.1
+    estimated: 0
+  encumbrance: 0.2
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: consumable

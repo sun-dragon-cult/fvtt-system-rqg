@@ -2,18 +2,18 @@
 name: ${{openSystem.content.spiritMagic.detectSubstance.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
-data:
+system:
   points: 1
   isVariable: false
   castingRange: ranged
   duration: focused
   concentration: active
   descriptionRqidLink:
-    rqid: je..detectSubstance
+    rqid: je..detect-substance
     name: ${{openSystem.content.spiritMagic.detectSubstance.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.spirit-magic.detectSubstance
+      id: i.spirit-magic.detect-substance
       lang: ${openSystem.lang}}$
       priority: ${openSystem.prio}}$

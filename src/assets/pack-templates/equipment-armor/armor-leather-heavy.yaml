@@ -1,0 +1,80 @@
+name: ${{openSystem.content.equipment.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyLeather}}$)
+type: armor
+img: systems/rqg/assets/images/armor/cuirass.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-cuirass-heavy-leather
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+  armorType: ${{openSystem.content.equipment.armor.cuirass}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyLeather}}$
+  absorbs: 2
+  encumbrance: 1
+  price:
+    real: 20
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.heavyLeather}}$ ${{openSystem.content.equipment.armor.description.cuirass}}$
+---
+name: ${{openSystem.content.equipment.armor.hauberk}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyLeather}}$)
+type: armor
+img: systems/rqg/assets/images/armor/hauberk.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-hauberk-heavy-leather
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+  armorType: ${{openSystem.content.equipment.armor.hauberk}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyLeather}}$
+  absorbs: 2
+  encumbrance: 1
+  price:
+    real: 40
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.heavyLeather}}$ ${{openSystem.content.equipment.armor.description.hauberk}}$
+---
+name: ${{openSystem.content.equipment.armor.pants}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyLeather}}$)
+type: armor
+img: systems/rqg/assets/images/armor/pants.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-pants-heavy-leather
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+    - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
+    - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
+  armorType: ${{openSystem.content.equipment.armor.pants}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.HeavyLeather}}$
+  absorbs: 2
+  encumbrance: 1
+  price:
+    real: 20
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.heavyLeather}}$ ${{openSystem.content.equipment.armor.description.pants}}$

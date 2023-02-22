@@ -1,8 +1,9 @@
 # 1h-spear-javelin
 name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.javelin}}$)
+_id: p6Mm8PuFkfpy0MHS
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.javelin}}$
@@ -23,9 +24,10 @@ flags:
 ---
 # 1h-spear-lance
 name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.lance}}$)
+_id: eT1Wtz0RWkeq60G2
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.lance}}$
@@ -46,9 +48,10 @@ flags:
 ---
 # 1h-spear-shortspear
 name: ${{openSystem.content.weaponSkill.1h-spears.name}}$ (${{openSystem.content.weaponSkill.1h-spears.specialization.shortspear}}$)
+_id: CIXYxzkBZd5RGJx7
 type: skill
 img: systems/rqg/assets/images/weapons/1h-spear.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.1h-spears.name}}$
   specialization: ${{openSystem.content.weaponSkill.1h-spears.specialization.shortspear}}$

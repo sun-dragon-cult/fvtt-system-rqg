@@ -1,8 +1,32 @@
+# read-write-aldryami
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.aldryami.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+system:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.aldryami.name}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-aldryami
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
 # read-write-esrolian
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.esrolian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
-data:
+system:
   rqid: skill-read-write
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -26,7 +50,7 @@ flags:
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.heortling.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
-data:
+system:
   rqid: skill-read-write
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -46,11 +70,35 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
+# read-write-mostali
+name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.mostali.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/read-write.svg
+system:
+  rqid: skill-read-write
+  rqidPriority: ${{openSystem.prio}}$
+  rqidLang: ${{openSystem.lang}}$
+  category: knowledge
+  skillName: ${{openSystem.content.skill.readWrite.skillName}}$
+  specialization: ${{openSystem.content.language.mostali.name}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..read-write
+    name: ${{openSystem.content.skill.readWrite.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.read-write-mostali
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
 # read-write-new-pelorian
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
-data:
+system:
   rqid: skill-read-write
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -74,7 +122,7 @@ flags:
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.praxian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
-data:
+system:
   rqid: skill-read-write
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -98,7 +146,7 @@ flags:
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.pureHorseTongue.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
-data:
+system:
   rqid: skill-read-write
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -122,7 +170,7 @@ flags:
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.tarshite.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
-data:
+system:
   rqid: skill-read-write
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -146,7 +194,7 @@ flags:
 name: ${{openSystem.content.skill.readWrite.skillName}}$ (${{openSystem.content.language.tradetalk.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/read-write.svg
-data:
+system:
   rqid: skill-read-write
   rqidPriority: ${{openSystem.prio}}$
   rqidLang: ${{openSystem.lang}}$
@@ -166,11 +214,32 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
+# speak-language-aldryami
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.aldryami.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+system:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.aldryami.name}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-aldryami
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
 # speak-language-esrolian
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.esrolian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.esrolian.name}}$
@@ -191,7 +260,7 @@ flags:
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.heortling.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.heortling.name}}$
@@ -208,11 +277,32 @@ flags:
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
+# speak-language-mostali
+name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.mostali.name}}$)
+type: skill
+img: systems/rqg/assets/images/skills/speak.svg
+system:
+  category: communication
+  skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  specialization: ${{openSystem.content.language.mostali.name}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: true
+  descriptionRqidLink:
+    rqid: je..speak-language
+    name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.speak-language-mostali
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
 # speak-language-new-pelorian
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.newPelorian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.newPelorian.name}}$
@@ -233,7 +323,7 @@ flags:
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.praxian.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.praxian.name}}$
@@ -254,7 +344,7 @@ flags:
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.pureHorseTongue.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.pureHorseTongue.name}}$
@@ -275,7 +365,7 @@ flags:
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.stormspeech.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.stormspeech.name}}$
@@ -296,7 +386,7 @@ flags:
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.tarshite.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.tarshite.name}}$
@@ -317,7 +407,7 @@ flags:
 name: ${{openSystem.content.skill.speakLanguage.skillName}}$ (${{openSystem.content.language.tradetalk.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/speak.svg
-data:
+system:
   category: communication
   skillName: ${{openSystem.content.skill.speakLanguage.skillName}}$
   specialization: ${{openSystem.content.language.tradetalk.name}}$

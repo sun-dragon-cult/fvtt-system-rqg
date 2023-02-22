@@ -1,8 +1,9 @@
 # fist-claw
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.claw}}$)
+_id: BZaTB9EsMEbZ8dWI
 type: skill
 img: systems/rqg/assets/images/weapons/claw.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.specialization.claw}}$
@@ -23,9 +24,10 @@ flags:
 ---
 # fist-heavy-cestus
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.heavyCestus}}$)
+_id: DtW3cU9ecTCu5e97
 type: skill
 img: systems/rqg/assets/images/weapons/cestus.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.specialization.heavyCestus}}$
@@ -46,9 +48,10 @@ flags:
 ---
 # fist-light-cestus
 name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.lightCestus}}$)
+_id: wJ8ZcCBfYlRPLGZ9
 type: skill
 img: systems/rqg/assets/images/weapons/cestus.svg
-data:
+system:
   category: meleeWeapons
   skillName: ${{openSystem.content.weaponSkill.fists.name}}$
   specialization: ${{openSystem.content.weaponSkill.fists.specialization.lightCestus}}$

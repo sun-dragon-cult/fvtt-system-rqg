@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.clothesDressHidePlain}}$
+type: gear
+img: systems/rqg/assets/images/gear/dress.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.plain-hide-dress
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.clothesDressHidePlainDescription}}$
+  gmNotes:
+  quantity: 1
+  price:
+    real: 1
+    estimated: 0
+  encumbrance: 0.5
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

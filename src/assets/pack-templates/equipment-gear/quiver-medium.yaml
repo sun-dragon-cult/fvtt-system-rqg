@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.quiverMedium}}$
+type: gear
+img: systems/rqg/assets/images/gear/quiver.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.medium-quiver
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.quiverMediumDescription}}$
+  gmNotes:
+  quantity: 1
+  price:
+    real: 12
+    estimated: 0
+  encumbrance: 1.0
+  equippedStatus: carried
+  location:
+  isContainer: true
+  attunedTo:
+  physicalItemType: unique

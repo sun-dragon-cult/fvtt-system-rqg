@@ -1,0 +1,614 @@
+name: ${{openSystem.content.weapon.compositeBow}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/bowman.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.composite-bow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9aEgM4UKZQfFddMD
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+          damageType: impale
+          description:
+      damage: 1d8+1
+      minStrength: 13
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 7
+    max: 7
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 150
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 100
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.elfBow}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/bowman.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.elf-bow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.zhMTFSWh768z6Jnk
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+          damageType: impale
+          description:
+      damage: 1d18+1
+      minStrength: 9
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 80
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.selfBow}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/bowman.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.self-bow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.EcDI8nmAyfshQL10
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+          damageType: impale
+          description:
+      damage: 1d6+1
+      minStrength: 9
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 9
+    max: 9
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 50
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 80
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.arbalest}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/crossbow.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.arbalest
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.CVruhytNFN3sfNaM
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+          damageType: impale
+          description:
+      damage: 3d6+1
+      minStrength: 13
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 10
+    max: 10
+  hitPointLocation:
+  encumbrance: 3
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 150
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 5
+  range: 150
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.heavyCrossbow}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/crossbow.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.heavy-crossbow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.6tN59Is4NdkZMJF5
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+          damageType: impale
+          description:
+      damage: 2d6+2
+      minStrength: 11
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 10
+    max: 10
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 100
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 3
+  range: 120
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.lightCrossbow}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/crossbow.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.light-crossbow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.SL7I4vZ0pKwO714W
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+          damageType: impale
+          description:
+      damage: 2d4+2
+      minStrength: 7
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 80
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 2
+  range: 100
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.repeatingCrossbow}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/crossbow.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.repeating-crossbow
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.OTEuqGbfafup9W49
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+          damageType: impale
+          description:
+      damage: 2d4+2
+      minStrength: 7
+      minDexterity: 7
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 1
+  range: 100
+  isProjectile: false
+  isProjectileWeapon: true
+  isThrownWeapon: false
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.arrows}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/arrows.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.arrows
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description: "<p>Bow Arrows</p>"
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation:
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 20
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate:
+  range: 0
+  isProjectile: true
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+  projectileId:
+---
+name: ${{openSystem.content.weapon.crossbowBolts}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/bolts.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.crossbow-bolts
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description: "<p>Crossbow Bolts</p>"
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation:
+  encumbrance: 0
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 20
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate:
+  range: 0
+  isProjectile: true
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+  projectileId:

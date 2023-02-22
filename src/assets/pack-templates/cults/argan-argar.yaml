@@ -2,7 +2,7 @@
 name: ${{openSystem.content.cult.arganArgar.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
-data:
+system:
   rank: layMember
   runePoints:
     value: 0

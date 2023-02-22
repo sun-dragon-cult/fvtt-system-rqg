@@ -1,0 +1,19 @@
+name: ${{openSystem.content.hitLocation.gorp.body}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 1
+  dieTo: 20
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: abdomen
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.gorp-body
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

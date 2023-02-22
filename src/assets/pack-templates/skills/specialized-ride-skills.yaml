@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.ride.skillName}}$ (${{openSystem.content.skill.ride.specialization.bison}}$)
 type: skill
 img: systems/rqg/assets/images/skills/ride.svg
-data:
+system:
   category: agility
   skillName: ${{openSystem.content.skill.ride.skillName}}$
   specialization: ${{openSystem.content.skill.ride.specialization.bison}}$
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.ride.skillName}}$ (${{openSystem.content.skill.ride.specialization.horse}}$)
 type: skill
 img: systems/rqg/assets/images/skills/ride.svg
-data:
+system:
   category: agility
   skillName: ${{openSystem.content.skill.ride.skillName}}$
   specialization: ${{openSystem.content.skill.ride.specialization.horse}}$

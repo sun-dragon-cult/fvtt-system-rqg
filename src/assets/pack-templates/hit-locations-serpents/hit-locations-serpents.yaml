@@ -1,0 +1,59 @@
+name: ${{openSystem.content.hitLocation.serpent.tail}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 1
+  dieTo: 6
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: limb
+  connectedTo: ${{openSystem.content.hitLocation.serpent.body}}$
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.serpents-tail
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.hitLocation.serpent.body}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 7
+  dieTo: 14
+  baseHpDelta: 1
+  naturalAp: 0
+  wounds: []
+  hitLocationType: abdomen
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.serpents-body
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+name: ${{openSystem.content.hitLocation.serpent.head}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 15
+  dieTo: 20
+  baseHpDelta: 0
+  naturalAp: 0
+  wounds: []
+  hitLocationType: head
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.serpents-head
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

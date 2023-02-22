@@ -7,7 +7,7 @@ export const translationsFileName = "openSystem";
 export const outDir = path.resolve(process.cwd(), "src/assets/packs");
 export const packsMetadata = JSON.parse(fs.readFileSync(path.resolve("./src/system.json"), "utf-8"))
   .packs as PackMetadata[];
-const packTemplateDir = "./src/assets/pack-templates";
+export const packTemplateDir = "./src/assets/pack-templates";
 const targetLanguages = fs.readdirSync(i18nDir).filter((file) => {
   return fs.statSync(path.join(i18nDir, file)).isDirectory();
 });
@@ -23,7 +23,13 @@ const templatePacks = templatePackDirPaths.map((dirPath) => CompendiumPack.loadY
 const translatedPacks: CompendiumPack[] = [];
 templatePacks.forEach((pack) => {
   targetLanguages.forEach((lang) => {
-    translatedPacks.push(pack.translate(lang));
+    try {
+      translatedPacks.push(pack.translate(lang));
+    } catch (error) {
+      if (error instanceof Error) {
+        throw PackError(`Error translating pack ${pack.name} to ${lang}: \n\n${error.message}`);
+      }
+    }
   });
 });
 

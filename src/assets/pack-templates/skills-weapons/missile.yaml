@@ -1,8 +1,9 @@
 # bow-composite-bow
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$)
+_id: 9aEgM4UKZQfFddMD
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.bows.name}}$
   specialization: ${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$
@@ -23,9 +24,10 @@ flags:
 ---
 # bow-elf-bow
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$)
+_id: zhMTFSWh768z6Jnk
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.bows.name}}$
   specialization: ${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$
@@ -46,9 +48,10 @@ flags:
 ---
 # bow-self-bow
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$)
+_id: EcDI8nmAyfshQL10
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.bows.name}}$
   specialization: ${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$
@@ -69,9 +72,10 @@ flags:
 ---
 # crossbow-arbalest
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$)
+_id: CVruhytNFN3sfNaM
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$
@@ -92,9 +96,10 @@ flags:
 ---
 # crossbow-heavy-crossbow
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$)
+_id: 6tN59Is4NdkZMJF5
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$
@@ -115,9 +120,10 @@ flags:
 ---
 # crossbow-light-crossbow
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$)
+_id: SL7I4vZ0pKwO714W
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$
@@ -138,9 +144,10 @@ flags:
 ---
 # crossbow-repeating-crossbow
 name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$)
+_id: OTEuqGbfafup9W49
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
   specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$
@@ -161,9 +168,10 @@ flags:
 ---
 # javelin-dart
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.dart}}$)
+_id: UfrGc8zwcTmE1HPv
 type: skill
 img: systems/rqg/assets/images/weapons/dart.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelins.specialization.dart}}$
@@ -184,9 +192,10 @@ flags:
 ---
 # javelin-javelin
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$)
+_id: 794y0cyfzCa5eYPf
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$
@@ -207,9 +216,10 @@ flags:
 ---
 # javelin-shortspear
 name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$)
+_id: r24yk70r505De5dy
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
   specialization: ${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$
@@ -230,9 +240,10 @@ flags:
 ---
 # lasso-pole-lasso
 name: ${{openSystem.content.weaponSkill.lassos.name}}$ (${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$)
+_id: c4xz834y4y58vjnH
 type: skill
 img: systems/rqg/assets/images/weapons/lasso.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.lassos.name}}$
   specialization: ${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$
@@ -253,9 +264,10 @@ flags:
 ---
 # sling-sling
 name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.sling}}$)
+_id: M66Aa8Cij2s4Xc3P
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.slings.name}}$
   specialization: ${{openSystem.content.weaponSkill.slings.specialization.sling}}$
@@ -276,9 +288,10 @@ flags:
 ---
 # sling-staff-sling
 name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$)
+_id: 8qozzHxXWC57R1B0
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.slings.name}}$
   specialization: ${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$
@@ -299,9 +312,10 @@ flags:
 ---
 # thrown-axe
 name: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
+_id: 9wyEGCc77PiUb9Nl
 type: skill
 img: systems/rqg/assets/images/weapons/thrown-axe.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
   specialization:
@@ -322,9 +336,10 @@ flags:
 ---
 # thrown-dagger
 name: ${{openSystem.content.weaponSkill.thrownDagger.name}}$
+_id: ye3Y3Hmbots30qLD
 type: skill
 img: systems/rqg/assets/images/weapons/thrown-dagger.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
   specialization:
@@ -345,9 +360,10 @@ flags:
 ---
 # thrown-rock
 name: ${{openSystem.content.weaponSkill.thrownRock.name}}$
+_id: 5AfkO7MrjYqHm9Ay
 type: skill
 img: systems/rqg/assets/images/weapons/rock.svg
-data:
+system:
   category: missileWeapons
   skillName: ${{openSystem.content.weaponSkill.thrownRock.name}}$
   specialization:

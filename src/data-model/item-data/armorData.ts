@@ -24,7 +24,7 @@ export const materialTranslationKeys = [
   "RQG.Item.Armor.ArmorMaterial.HeavyLeather",
   "RQG.Item.Armor.ArmorMaterial.StuddedLeather",
   "RQG.Item.Armor.ArmorMaterial.BronzePlate",
-  "RQG.Item.Armor.ArmorMaterial.BronzeDiscPlate",
+  "RQG.Item.Armor.ArmorMaterial.DiskPlate",
   "RQG.Item.Armor.ArmorMaterial.BronzeSegmentedPlate",
   "RQG.Item.Armor.ArmorMaterial.LightScale",
   "RQG.Item.Armor.ArmorMaterial.HeavyScale",
@@ -33,6 +33,7 @@ export const materialTranslationKeys = [
   "RQG.Item.Armor.ArmorMaterial.TurtleShell",
   "RQG.Item.Armor.ArmorMaterial.Quilted",
   "RQG.Item.Armor.ArmorMaterial.Linen",
+  "RQG.Item.Armor.ArmorMaterial.Iron",
 ];
 
 export interface ArmorDataSourceData extends IPhysicalItem {

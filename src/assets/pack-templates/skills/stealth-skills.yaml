@@ -2,7 +2,7 @@
 name: ${{openSystem.content.skill.hide.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/hide.svg
-data:
+system:
   category: stealth
   skillName: ${{openSystem.content.skill.hide.skillName}}$
   specialization:
@@ -23,7 +23,7 @@ flags:
 name: ${{openSystem.content.skill.moveQuietly.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/move-quietly.svg
-data:
+system:
   category: stealth
   skillName: ${{openSystem.content.skill.moveQuietly.skillName}}$
   specialization:

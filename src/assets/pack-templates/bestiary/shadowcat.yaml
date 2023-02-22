@@ -1,0 +1,150 @@
+---
+name: ${{openSystem.content.bestiary.shadowcat.name}}$
+type: character
+img: icons/svg/mystery-man.svg
+system:
+  characteristics:
+    strength:
+      value: 7
+      formula: 2d6
+    constitution:
+      value: 13
+      formula: 2d6+6
+    size:
+      value: 4
+      formula: 1d6
+    dexterity:
+      value: 23
+      formula: 3d6+12
+    intelligence:
+      value:
+      formula:
+    power:
+      value: 19
+      formula: 2d6+12
+      hasExperience: false
+    charisma:
+      value:
+      formula:
+  background:
+    species: ${{openSystem.content.bestiary.shadowcat.species}}$
+    occupation: ''
+    homeland: ''
+    cultureJournalRqidLinks: []
+    tribeJournalRqidLinks: []
+    clanJournalRqidLinks: []
+    birthyear:
+    age:
+    gender: ''
+    town: ''
+    tribe: ''
+    clan: ''
+    reputation:
+    standardOfLiving: ''
+    baseIncome:
+    ransom:
+    ransomDetails: ''
+    biography: ''
+  allies: ${{openSystem.content.bestiary.shadowcat.notes}}$
+  attributes:
+    magicPoints:
+      value: 19
+    hitPoints:
+      value: 12
+    move:
+      currentLocomotion: walk
+      walk:
+        value: 10
+        carryingFactor: 1
+      swim:
+        value: 2
+        carryingFactor: 0.5
+      fly: {}
+    heroPoints: 0
+    isCreature: true
+    health: healthy
+prototypeToken:
+  name: ${{openSystem.content.bestiary.shadowcat.name}}$
+  displayName: 0
+  actorLink: false
+  texture:
+    src: icons/svg/mystery-man.svg
+    scaleX: 1
+    scaleY: 1
+    offsetX: 0
+    offsetY: 0
+    rotation: 0
+    tint:
+  width: 1
+  height: 1
+  lockRotation: false
+  rotation: 0
+  alpha: 1
+  disposition: -1
+  displayBars: 0
+  bar1:
+    attribute: attributes.hitPoints.value
+  bar2:
+    attribute: attributes.magicPoints.value
+  light:
+    alpha: 0.5
+    angle: 360
+    bright: 0
+    color:
+    coloration: 1
+    dim: 0
+    attenuation: 0.5
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    animation:
+      type:
+      speed: 5
+      intensity: 5
+      reverse: false
+    darkness:
+      min: 0
+      max: 1
+  sight:
+    enabled: false
+    range:
+    angle: 360
+    visionMode: basic
+    color:
+    attenuation: 0.1
+    brightness: 0
+    saturation: 0
+    contrast: 0
+  detectionModes: []
+  flags: {}
+  randomImg: false
+items:
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-hind-leg	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-hind-leg	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-hindquarter	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-forequarter	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-foreleg	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-foreleg	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-head	[		]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	4	]}}|"
+- "|{{	skills/stealth-skills.yaml	i.skill.hide	[ gainedChance:	65	]}}|"
+- "|{{	skills/stealth-skills.yaml	i.skill.move-quietly	[ gainedChance:	80	]}}|"
+- "|{{	skills-weapons/natural.yaml	i.skill.bite	[ gainedChance:	15	]}}|"
+- "|{{	skills-weapons/natural.yaml	i.skill.claw	[ gainedChance:	25	]}}|"
+- "|{{	skills-weapons/natural.yaml	i.skill.fists-rip	[ gainedChance:	55	]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.claw	[ equippedStatus: 	equipped,	damage: 1d6 ]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.rip	[ equippedStatus: 	equipped,	damage: 3d6 ]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.bite	[ equippedStatus: 	equipped,	damage: 1d6 ]}}|"
+effects: []
+folder:
+sort: 0
+ownership:
+  default: 0
+  OGu9DZ439mXiuTD3: 3
+flags:
+  rqg:
+    documentRqidFlags:
+      id: a.character.shadowcat
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$

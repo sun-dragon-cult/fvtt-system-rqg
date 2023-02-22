@@ -1,24 +1,24 @@
-# regrow-limb
-name: ${{openSystem.content.runeMagic.restoreHealth.name}}$
+# regrowLimb
+name: ${{openSystem.content.runeMagic.regrowLimb.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
-data:
+system:
   runes:
     - Fertility (power)
-    - Harmony (power)
-    - Man (form)
-  points: 1
+    - Movement (power)
+    - Moon (element)
+  points: 2
   castingRange: touch
-  duration: instant
-  isStackable: true
+  duration: permanent
+  isStackable: false
   isOneUse: false
   chance: 0
   descriptionRqidLink:
-    rqid: je..restore-health
-    name: ${{openSystem.content.runeMagic.restoreHealth.name}}$
+    rqid: je..regrow-limb
+    name: ${{openSystem.content.runeMagic.regrowLimb.name}}$
 flags:
   rqg:
     documentRqidFlags:
-      id: i.rune-magic.restore-health
+      id: i.rune-magic.regrow-limb
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

@@ -1,0 +1,53 @@
+name: ${{openSystem.content.equipment.armor.vambraces}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Cuirboilli}}$)
+type: armor
+img: systems/rqg/assets/images/armor/vambraces.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-vambraces-cuirboilli
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
+    - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
+  armorType: ${{openSystem.content.equipment.armor.vambraces}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Cuirboilli}}$
+  absorbs: 3
+  encumbrance: 1
+  price:
+    real: 30
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.cuirboilli}}$ ${{openSystem.content.equipment.armor.description.vambraces}}$
+---
+name: ${{openSystem.content.equipment.armor.greaves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Cuirboilli}}$)
+type: armor
+img: systems/rqg/assets/images/armor/greaves.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-greaves-cuirboilli
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
+    - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
+  armorType: ${{openSystem.content.equipment.armor.greaves}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Cuirboilli}}$
+  absorbs: 3
+  encumbrance: 1
+  price:
+    real: 40
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.cuirboilli}}$ ${{openSystem.content.equipment.armor.description.greaves}}$

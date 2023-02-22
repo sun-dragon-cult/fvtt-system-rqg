@@ -1,0 +1,26 @@
+name: ${{openSystem.content.equipment.armor.linothorax}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Quilted}}$)
+type: armor
+img: systems/rqg/assets/images/armor/hauberk.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.armor.armor-linothorax-quilted-leather
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  hitLocations:
+    - ${{openSystem.content.hitLocation.humanoid.chest}}$
+    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
+  armorType: ${{openSystem.content.equipment.armor.linothorax}}$
+  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Quilted}}$
+  absorbs: 2
+  encumbrance: 1
+  price:
+    real: 20
+    estimated: 0
+  moveQuietlyPenalty: 0
+  size: 11
+  isContainer: false
+  physicalItemType: unique
+  equippedStatus: carried
+  description: ${{openSystem.content.equipment.armor.description.quilted}}$ ${{openSystem.content.equipment.armor.description.linothorax}}$ ${{openSystem.content.equipment.armor.description.underLayer}}$

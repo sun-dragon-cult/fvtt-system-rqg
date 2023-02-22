@@ -1,7 +1,7 @@
 name: Love (Family)
 type: passion
 img: systems/rqg/assets/images/passion/loyalty.svg
-data:
+system:
   passion: Love
   subject: Family
   description: ""

@@ -1,0 +1,218 @@
+name: ${{openSystem.content.weapon.smallWoodenShield}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/small-shield.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.small-wooden-shield
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.2U6A8opZA2du08Be
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+          damageType: parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+          damageType: crush
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+          damageType: special
+      damage: 1d3
+      minStrength: 5
+      minDexterity:
+      strikeRank: 3
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage: 1d3
+      minStrength: 5
+      minDexterity:
+      strikeRank: 3
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 8
+    max: 8
+  hitPointLocation:
+  encumbrance: 1
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 4
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate:
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+  projectileId:
+---
+name: ${{openSystem.content.weapon.mediumWoodenShield}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/medium-shield.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.medium-wooden-shield
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.u95ZVt0636VqW5Pe
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+          damageType: parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+          damageType: crush
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+          damageType: special
+      damage: 1d4
+      minStrength: 9
+      minDexterity:
+      strikeRank: 3
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage: 1d4
+      minStrength: 9
+      minDexterity:
+      strikeRank: 3
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 12
+    max: 12
+  hitPointLocation:
+  encumbrance: 2
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 12
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate:
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: false
+  isRangedWeapon: false
+  projectileId:
+---
+name: ${{openSystem.content.weapon.largeWoodenShield}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/large-shield.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.large-wooden-shield
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.GknxFLc7hBNJ5s0l
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+          damageType: parry
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+          damageType: crush
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+          damageType: special
+      damage: 1d6
+      minStrength: 12
+      minDexterity:
+      strikeRank: 3
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage: 1d6
+      minStrength: 12
+      minDexterity:
+      strikeRank: 3
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+  description:
+  gmNotes:
+  hitPoints:
+    value: 16
+    max: 16
+  hitPointLocation:
+  encumbrance: 3
+  location:
+  attunedTo:
+  physicalItemType: unique
+  quantity: 1
+  isContainer: false
+  price:
+    real: 40
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate:
+  range: 0
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: falseS
+  isRangedWeapon: false
+  projectileId:

@@ -1,0 +1,22 @@
+name: ${{openSystem.content.equipment.gear.instrumentKithara}}$
+type: gear
+img: systems/rqg/assets/images/gear/lyre.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.gear.musical-instrument-kithara
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  description: ${{openSystem.content.equipment.gear.instrumentKitharaDescription}}$
+  gmNotes:
+  quantity: 1
+  price:
+    real: 50
+    estimated: 0
+  encumbrance: 3.0
+  equippedStatus: carried
+  location:
+  isContainer: false
+  attunedTo:
+  physicalItemType: unique

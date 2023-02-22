@@ -16,6 +16,6 @@ pages:
 flags:
   rqg:
     documentRqidFlags:
-      id: je..secondSight
+      id: je..second-sight
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$

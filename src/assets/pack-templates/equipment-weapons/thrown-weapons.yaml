@@ -1,0 +1,143 @@
+name: ${{openSystem.content.weapon.throwingAxe}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/thrown-axe.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.throwing-axe
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.84644z0nkD89R1mz
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+          damageType: slash
+          description:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+          damageType: parry
+          description:
+      damage: 1d6+1
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 4
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage: 1d6+1
+      minStrength: 7
+      minDexterity: 7
+      strikeRank: 4
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: []
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9wyEGCc77PiUb9Nl
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+          damageType: impale
+          description:
+      damage: 1d6
+      minStrength: 9
+      minDexterity: 9
+  description:
+  gmNotes:
+  hitPoints:
+    value: 6
+    max: 6
+  hitPointLocation:
+  encumbrance: 1
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 1
+  isContainer: false
+  price:
+    real: 15
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 20
+  isProjectile: false
+  isProjectileWeapon: false
+  isThrownWeapon: true
+  isRangedWeapon: false
+---
+name: ${{openSystem.content.weapon.rock}}$
+type: weapon
+img: systems/rqg/assets/images/weapons/rock.svg
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.weapon.rock
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+system:
+  usage:
+    oneHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    offHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    twoHand:
+      skillId:
+      skillOrigin:
+      combatManeuvers: [ ]
+      damage:
+      minStrength: 0
+      minDexterity: 0
+      strikeRank: 0
+    missile:
+      skillId:
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.5AfkO7MrjYqHm9Ay
+      combatManeuvers:
+        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+          damageType: crush
+          description:
+      damage: 1d4
+      minStrength: null
+      minDexterity: null
+  description:
+  gmNotes:
+  hitPoints:
+    value:
+    max:
+  hitPointLocation:
+  encumbrance: 0.25
+  location:
+  attunedTo:
+  physicalItemType: consumable
+  quantity: 1
+  isContainer: false
+  price:
+    real: 0
+    estimated: 0
+  isNatural: false
+  equippedStatus: carried
+  rate: 0
+  range: 20
+  isProjectile: true
+  isProjectileWeapon: false
+  isThrownWeapon: true
+  isRangedWeapon: false
