@@ -6,43 +6,45 @@
     <div>
       <div class="topheaderline">
         <h1 class="charname"><input name="name" type="text" value="{{name}}"></h1>
-        <div class="flex-row gap1rem">
-          {{#unless (eq system.attributes.health "healthy")}}<i>{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}
-          <div>
+        <div>
+          <div class="flex-row-end gap1rem">
+            {{#unless (eq system.attributes.health "healthy")}}<i>{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}
+            {{#if characterElementRunes}}
+              <div class="flex-row gap01rem">
+                {{#each characterElementRunes}}
+                  <div class="rune contextmenu item" data-item-id="{{id}}">
+                    <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                  </div>
+                {{/each}}
+              </div>
+            {{/if}}
+            {{#if characterPowerRunes}}
+              <div class="flex-row gap01rem">
+                {{#each characterPowerRunes}}
+                <div class="rune contextmenu item" data-item-id="{{id}}">
+                  <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                </div>
+                {{/each}}
+              </div>
+            {{/if}}
+            {{#if characterFormRunes}}
+              <div class="flex-row gap01rem">
+                {{#each characterFormRunes}}
+                <div class="rune contextmenu item" data-item-id="{{id}}">
+                  <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                </div>
+                {{/each}}
+              </div>
+            {{/if}}
+          </div>
+          {{#if mainCult.id}}
             <div class="cult contextmenu item" data-item-id="{{mainCult.id}}" data-rqid-link="{{mainCult.descriptionRqid}}">
               <b>{{mainCult.name}}
                 {{#if mainCult.hasMultipleCults}}
                   <i class="fa fa-plus-circle x-small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
                 {{/if}}
-              </b><br>
+              </b>
               <span class="x-small-size">{{mainCult.rank}}</span>
-            </div>
-          </div>
-          {{#if characterElementRunes}}
-            <div class="flex-row gap01rem">
-              {{#each characterElementRunes}}
-                <div class="rune contextmenu item" data-item-id="{{id}}">
-                  <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
-                </div>
-              {{/each}}
-            </div>
-          {{/if}}
-          {{#if characterPowerRunes}}
-            <div class="flex-row gap01rem">
-              {{#each characterPowerRunes}}
-              <div class="rune contextmenu item" data-item-id="{{id}}">
-                <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
-              </div>
-              {{/each}}
-            </div>
-          {{/if}}
-          {{#if characterFormRunes}}
-            <div class="flex-row gap01rem">
-              {{#each characterFormRunes}}
-              <div class="rune contextmenu item" data-item-id="{{id}}">
-                <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
-              </div>
-              {{/each}}
             </div>
           {{/if}}
         </div>
