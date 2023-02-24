@@ -36,7 +36,11 @@
       height: fit-content;
 
       .cult {
+        max-width: 20rem;
         line-height: 1rem;
+        text-align: end;
+        margin-bottom: 5px;
+        font-size: var(--font-size-16);
       }
     }
 
