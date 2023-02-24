@@ -39,11 +39,10 @@
           </div>
           {{#if mainCult.id}}
             <div class="cult contextmenu item" data-item-id="{{mainCult.id}}" data-rqid-link="{{mainCult.descriptionRqid}}">
-              <b>{{mainCult.name}}
-                {{#if mainCult.hasMultipleCults}}
-                  <i class="fa fa-plus-circle x-small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
-                {{/if}}
-              </b>
+              {{mainCult.name}}
+              {{#if mainCult.hasMultipleCults}}
+                <i class="fa fa-plus-circle small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
+              {{/if}}
               <span class="x-small-size">{{mainCult.rank}}</span>
             </div>
           {{/if}}
