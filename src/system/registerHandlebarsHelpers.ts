@@ -183,8 +183,14 @@ function applyFnToItemFromHandlebarsArgs(
     return "🐛";
   }
 
-  // @ts-expect-error fromUuidSync
-  const itemActorOrToken = fromUuidSync(uuid) as Document<any, any> | undefined;
+  let itemActorOrToken;
+  try {
+    // @ts-expect-error fromUuidSync
+    itemActorOrToken = fromUuidSync(uuid) as Document<any, any> | undefined;
+  } catch (e) {
+    // This uuid can't be retrieved synchronously (it's in a compendium) Fail gracefully.
+    return "�";
+  }
   if (!itemActorOrToken) {
     const msg = `Handlebars helper couldn't find item or actor`;
     ui.notifications?.error(msg);
