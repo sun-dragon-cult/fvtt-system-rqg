@@ -35,7 +35,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.OyDJcTa37nCfWgYe
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.jpOyJYC2ctmY2N8U
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -104,7 +104,7 @@ system:
       strikeRank: 0
     missile:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.OyDJcTa37nCfWgYe
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9Pu3rVnoTp4cHjhn
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale

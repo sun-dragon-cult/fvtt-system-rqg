@@ -2539,6 +2539,13 @@
       "bite": {
         "name": "Bite"
       },
+      "atlatl": {
+        "name": "Atlatls",
+        "specialization": {
+          "dart": "Dart",
+          "javelin": "Javelin"
+        }
+      },
       "bows": {
         "name": "Bows",
         "specialization": {
