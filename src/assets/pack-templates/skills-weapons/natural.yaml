@@ -149,7 +149,7 @@ type: skill
 img: systems/rqg/assets/images/weapons/kick.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+  skillName: ${{openSystem.content.weaponSkill.kick.name}}$
   specialization:
   baseChance: 15
   gainedChance: 0

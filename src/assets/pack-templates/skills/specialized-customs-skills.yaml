@@ -1,11 +1,11 @@
-# customs-esrolia
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.esrolia.name}}$)
+# esrolian
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.esrolian}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 system:
   category: knowledge
   skillName: ${{openSystem.content.skill.customs.skillName}}$
-  specialization: ${{openSystem.content.homeland.esrolia.name}}$
+  specialization: ${{openSystem.content.culture.esrolian}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
@@ -15,18 +15,18 @@ system:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.customs-esrolia
+      id: i.skill.customs-esrolian
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
-# customs-grazelands
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.grazelands.name}}$)
+# heortling
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.heortling}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 system:
   category: knowledge
   skillName: ${{openSystem.content.skill.customs.skillName}}$
-  specialization: ${{openSystem.content.homeland.grazelands.name}}$
+  specialization: ${{openSystem.content.culture.heortling}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
@@ -36,18 +36,18 @@ system:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.customs-grazelands
+      id: i.skill.customs-heortling
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
-# customs-lunar-tarsh
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.lunarTarsh.name}}$)
+# bison-tribe
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.bisonTribe}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 system:
   category: knowledge
   skillName: ${{openSystem.content.skill.customs.skillName}}$
-  specialization: ${{openSystem.content.homeland.lunarTarsh.name}}$
+  specialization: ${{openSystem.content.culture.bisonTribe}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
@@ -57,18 +57,18 @@ system:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.customs-lunar-tarsh
+      id: i.skill.customs-bison-tribe
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
-# customs-old-tarsh
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.oldTarsh.name}}$)
+# high-llama-tribe
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.highLlamaTribe}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 system:
   category: knowledge
   skillName: ${{openSystem.content.skill.customs.skillName}}$
-  specialization: ${{openSystem.content.homeland.oldTarsh.name}}$
+  specialization: ${{openSystem.content.culture.highLlamaTribe}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
@@ -78,18 +78,18 @@ system:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.customs-old-tarsh
+      id: i.skill.customs-high-llama-tribe
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
-# customs-prax
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.prax.name}}$)
+# impala-tribe
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.impalaTribe}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 system:
   category: knowledge
   skillName: ${{openSystem.content.skill.customs.skillName}}$
-  specialization: ${{openSystem.content.homeland.prax.name}}$
+  specialization: ${{openSystem.content.culture.impalaTribe}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
@@ -99,18 +99,18 @@ system:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.customs-prax
+      id: i.skill.customs-impala-tribe
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 ---
-# customs-sartar
-name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.homeland.sartar.name}}$)
+# sable-tribe
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.sableTribe}}$)
 type: skill
 img: systems/rqg/assets/images/skills/customs.svg
 system:
   category: knowledge
   skillName: ${{openSystem.content.skill.customs.skillName}}$
-  specialization: ${{openSystem.content.homeland.sartar.name}}$
+  specialization: ${{openSystem.content.culture.sableTribe}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
@@ -120,6 +120,90 @@ system:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.customs-sartar
+      id: i.skill.customs-sable-tribe
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# pol-joni
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.poljoni}}$)
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+system:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.culture.poljoni}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{openSystem.content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-pol-joni
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# grazeland-pony-breeders
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.grazelandPonyBreeders}}$)
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+system:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.culture.grazelandPonyBreeders}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{openSystem.content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-grazeland-pony-breeders
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# lunar-provincial
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.lunarProvincial}}$)
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+system:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.culture.lunarProvincial}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{openSystem.content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-lunar-provincial
+      priority: ${{openSystem.prio}}$
+      lang: ${{openSystem.lang}}$
+---
+# tarshite
+name: ${{openSystem.content.skill.customs.skillName}}$ (${{openSystem.content.culture.tarshite}}$)
+type: skill
+img: systems/rqg/assets/images/skills/customs.svg
+system:
+  category: knowledge
+  skillName: ${{openSystem.content.skill.customs.skillName}}$
+  specialization: ${{openSystem.content.culture.tarshite}}$
+  baseChance: 0
+  gainedChance: 0
+  canGetExperience: false
+  descriptionRqidLink:
+    rqid: je..customs
+    name: ${{openSystem.content.skill.customs.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.customs-tarshite
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$

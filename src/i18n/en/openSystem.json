@@ -1276,6 +1276,18 @@
       "description": "Combat fumble rolls",
       "range1-4Html": "Cannot parry next melee round."
     },
+    "culture": {
+      "esrolian": "Esrolian",
+      "heortling": "Heortling",
+      "bisonTribe": "Bison Tribe",
+      "highLlamaTribe": "High Llama Tribe",
+      "impalaTribe": "Impala Tribe",
+      "sableTribe": "Sable Tribe",
+      "poljoni": "Pol-Joni",
+      "grazelandPonyBreeders": "Grazeland Pony Breeders",
+      "lunarProvincial": "Lunar Provincial",
+      "tarshite": "Tarshite"
+    },
     "homeland": {
       "esrolia": {
         "name": "Esrolia",
@@ -2979,6 +2991,8 @@
     "passionSubject": {
       "aldryami": "Aldryami",
       "casteDuties": "Caste Duties",
+      "clan": "Clan",
+      "tribe": "Tribe",
       "family": "Family",
       "forest": "Forest",
       "mostali": "Mostali",
@@ -3043,6 +3057,16 @@
         "name": "Horse (Seredae)",
         "species": "Equus caballus",
         "notes": "<p>Hippogriff was the favorite child of King Griffin, and an ally to Splendid Yamsur, the eldest son of Yelm. Splendid Yamsur and Hippogriff had taken solemn oaths of friendship together, but in several fights, Hippogriff was hurt and abandoned by her erstwhile friend.</p><p>Hippogriff underwent a series of painful and humiliating experiences during the Gods War and the Great Darkness. First, she met Storm Bull in raging battle, and her proud fangs were broken out of her mouth. In a fight with Maran Gor, the Earthshaker, Hippogriff ’s legs were broken. Her bronze claws were ripped from her feet, but Yamsur was able to replace them with hooves. The greatest defeat was when Zorak Zoran tore off her golden wings, laughing as he robbed her of ever returning to the sky. But most humiliating was when this once great godling was taken and broken by a mortal, Hyalor Horsebreaker.</p><p>Hyalor was a leader among men and a believer in the long-disappeared Sun. He claimed descent from Splendid Yamsur, who was slain by the Devil. Hyalor claimed that he was freeing her crippled spirit from Death and wished to make an alliance. He rescued her by changing her name and her identity. Even so, man got the better of the bargain. She was called Hippoi, or simply &quot;horse&quot;. Ever since then, her descendants have worked more for man than man has worked for horse. When the Sun rose again, Hyalor was ready to accept him, having survived the Darkness through great faith and courage. The horse, already used to slavery, leapt to meet her old master. The pair together received great bounty at the Dawn, and their herds and numbers increased greatly with the blessings of Yelm.</p><p>Dragon Pass is home to some of the finest horse breeders in Glorantha, the Grazeland Pony Breeders. For other peoples, horses are valuable and an indicator of wealth. Horses with the size, stamina and skill of a trained warhorse are few and far between. They are also quite expensive.</p><h1>Seredae</h1><p>The most common horse in Peloria, Pent, and Kralorela, the sered is the second-most common horse in Dragon Pass. They are a small-headed breed with a seemingly limitless variety of colors, ranging from noble black and white, through common duns and browns, to mixtures like dapple greys and piebald. Most have some appearance of stripes.</p><p><strong>Characteristics</strong>: Seredae have normal horse characteristics.</p><p><strong>Note</strong>: The average sered cannot carry a heavily armored warrior into battle.</p><p><strong>Note</strong>: A horse may attack once in a melee round. A ridden non-warhorse normally makes no attacks on behalf of its rider, but may attack something threatening it directly, such as a serpent.</p><p><strong>Armor</strong>: 1-point hide.</p><p><strong>Skills</strong>: Climb 30%, Dodge 25%, Jump 75%, Listen 40%, Scan 30%, Scent Intruder 30%, Swim 50%.</p>"
+      },
+      "humanBase": {
+        "name": "Human (Base)",
+        "species": "Homo sapiens sapiens",
+        "notes": "<p><strong>Note:</strong>This is template for a base human that does not have &quot;Homeland Cultural Skill Bonuses&quot; applied. See RQG p 60-63. To make a template for a new homeland, you can import this template to your world, rename it, and edit each skill with a Homeland Cultural Skill Bonus. In the Skill Definition tab of the skill sheet, change the &quot;Base Chance&quot; to add the Homeland Cultural Skill Bonus. Now you can duplicate your new template and rename it to make PCs or NPCs from that homeland.</p><p>Glorantha has four major human races and several minor ones. There is a good deal of racially motivated prejudice, discrimination, and intolerance in Glorantha, none of it with any more reason than racism on Earth. However, communications between regions is limited in Glorantha, and most people have never seen persons of different racial stocks than their own. When several races share the same region, however, racism in all its ugly forms is just as likely as it is on Earth. Several cruel Gloranthan cultures even enslave persons of different races.</p><p>Three of Glorantha&rsquo;s four major human racial types roughly correspond to Earthly equivalents, but the fourth is unique.</p><ul><li>Agimori: a dark-skinned race native to Pamaltela.</li><li>Veldang: a blue-skinned race with no Earthly equivalent. Their skin is not bright blue, but slate colored. The Veldang are native to Pamaltela, where they are found in Zamokil and Fonrit.</li><li>Vithelans: they resemble Earth&rsquo;s East Asians. They inhabit the East Isles, Kralorela, Teshnos, and Vormain.</li><li>Wareran: a fair to olive-skinned race that inhabit most of Genertela, and Umathela in Pamaltela.</li></ul><p>Other minor human or semi-human races also exist, including the green-skinned amphibious Waertagi, pygmies in Pamaltela and Prax, and the Teleono people, who are one of six colors. The presence of non-human and semi-human beings on Glorantha can lead to interesting assumptions. A person encountering another human of a different race for the first time may assume that he is seeing a creature of a different species altogether, with suspicion and fear engendered thereby.</p>"
+      },
+      "humanSartarite": {
+        "name": "Human (Sartarite)",
+        "species": "Homo sapiens sapiens",
+        "notes": "<p><strong>Note:</strong>This is template for a human that has the &quot;Homeland Cultural Skill Bonuses&quot; for Sartar applied. See RQG p 60-63. Import this template to your world and you can duplicate it and rename it to make Sartarite PCs or NPCs.</p><p>Glorantha has four major human races and several minor ones. There is a good deal of racially motivated prejudice, discrimination, and intolerance in Glorantha, none of it with any more reason than racism on Earth. However, communications between regions is limited in Glorantha, and most people have never seen persons of different racial stocks than their own. When several races share the same region, however, racism in all its ugly forms is just as likely as it is on Earth. Several cruel Gloranthan cultures even enslave persons of different races.</p><p>Three of Glorantha&rsquo;s four major human racial types roughly correspond to Earthly equivalents, but the fourth is unique.</p><ul><li>Agimori: a dark-skinned race native to Pamaltela.</li><li>Veldang: a blue-skinned race with no Earthly equivalent. Their skin is not bright blue, but slate colored. The Veldang are native to Pamaltela, where they are found in Zamokil and Fonrit.</li><li>Vithelans: they resemble Earth&rsquo;s East Asians. They inhabit the East Isles, Kralorela, Teshnos, and Vormain.</li><li>Wareran: a fair to olive-skinned race that inhabit most of Genertela, and Umathela in Pamaltela.</li></ul><p>Other minor human or semi-human races also exist, including the green-skinned amphibious Waertagi, pygmies in Pamaltela and Prax, and the Teleono people, who are one of six colors. The presence of non-human and semi-human beings on Glorantha can lead to interesting assumptions. A person encountering another human of a different race for the first time may assume that he is seeing a creature of a different species altogether, with suspicion and fear engendered thereby.</p>"
       },
       "mostali": {
         "name": "Mostali (Dwarf)",

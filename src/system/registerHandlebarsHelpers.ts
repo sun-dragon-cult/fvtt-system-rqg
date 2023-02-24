@@ -187,7 +187,6 @@ function applyFnToItemFromHandlebarsArgs(
   const itemActorOrToken = fromUuidSync(uuid) as Document<any, any> | undefined;
   if (!itemActorOrToken) {
     const msg = `Handlebars helper couldn't find item or actor`;
-    ui.notifications?.error(msg);
     console.error("RQG | ", msg, arguments);
     return "🐛";
   }
@@ -204,14 +203,12 @@ function applyFnToItemFromHandlebarsArgs(
 
   if (embeddedItemId && item?.documentName !== "Item") {
     const msg = `Handlebars helper couldn't find embedded item in ${itemOrActor?.name}`;
-    ui.notifications?.error(msg);
     console.error("RQG | ", msg, item, arguments);
     return "🐛";
   }
 
   if (item?.documentName !== "Item") {
     const msg = `Handlebars helper expected item but got ${item?.documentName} called ${item?.name}`;
-    ui.notifications?.error(msg);
     console.error("RQG | ", msg, item, arguments);
     return "🐛";
   }
