@@ -195,7 +195,11 @@
                         {{#if unusable}} warning{{/if}}"
                         {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
                   >
-                    {{skillchance @root.uuid skillId}}%&nbsp; {{skillname @root.uuid skillId}}
+                    <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass @root.uuid skillId}}"
+                          data-skill-id="{{skillId}}" data-item-id="{{../id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.RollChat"}}">
+                          {{skillchance @root.uuid skillId}}%
+                    </span>                    
+                    &nbsp; {{skillname @root.uuid skillId}}
                   </div>
                 {{/if}}
               {{/each}}
