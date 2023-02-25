@@ -11,8 +11,8 @@ system:
       value: 
       formula: 
     size:
-      value: 
-      formula: 
+      value: 29
+      formula: 3d6_18
     dexterity:
       value: 
       formula: 
@@ -45,12 +45,12 @@ system:
     ransom:
     ransomDetails: ''
     biography: ''
-  allies: ${{openSystem.content.bestiary.earthElementalNotes}}$ ${{openSystem.content.bestiary.elementalGeneralNotes}}$
+  allies: ${{openSystem.content.bestiary.elementalHitPointsNote}}$ ${{openSystem.content.bestiary.earthElementalNotes}}$ ${{openSystem.content.bestiary.elementalGeneralNotes}}$
   attributes:
     magicPoints:
       value: 20
     hitPoints:
-      value: 
+      value: 0
     move:
       currentLocomotion: swim
       walk:
