@@ -17,9 +17,15 @@
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item">{{name}}
           {{#if system.isProjectileWeapon}}
-            ({{quantity @root.uuid system.projectileId}})
+            ({{#if system.ammoNotSelected}}
+              <span data-tooltip="{{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedTip"}}">
+                {{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert"}}
+              </span>
+            {{else}}
+              {{system.selectedAmmo}}
+            {{/if}})
           {{else if system.isThrownWeapon}}
-            [{{quantity @root.uuid system.projectileId}}]
+            [{{system.thrownWeaponQuantity}}]
           {{else if system.isProjectile}}
             [{{system.quantity}}]
           {{/if}}
