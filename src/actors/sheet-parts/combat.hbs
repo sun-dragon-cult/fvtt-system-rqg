@@ -16,13 +16,21 @@
       {{#unless system.isNatural}}
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item"><img class="item" src="{{img}}"></div>
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item">{{name}}
-          {{#if system.isProjectileWeapon}}
-            ({{quantity @root.uuid system.projectileId}})
-          {{else if system.isThrownWeapon}}
-            [{{quantity @root.uuid system.projectileId}}]
-          {{else if system.isProjectile}}
-            [{{system.quantity}}]
-          {{/if}}
+            {{#if system.isProjectileWeapon}}
+              ({{#if system.ammoNotSelected}}
+                <span class="invalid" data-tooltip="{{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedTip"}}">
+                  {{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert"}}
+                </span>
+              {{else}}
+                <span data-tooltip="{{system.projectileName}}">
+                  {{system.projectileQuantity}}
+                </span>
+              {{/if}})
+            {{else if system.isThrownWeapon}}
+              [{{system.quantity}}]
+            {{else if system.isProjectile}}
+              [{{system.quantity}}]
+            {{/if}}
         </div>
         <div data-item-id="{{id}}" class="combat contextmenu item">
           {{#if system.hitPointLocation}}

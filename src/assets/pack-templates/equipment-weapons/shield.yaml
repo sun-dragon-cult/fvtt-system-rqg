@@ -213,6 +213,6 @@ system:
   range: 0
   isProjectile: false
   isProjectileWeapon: false
-  isThrownWeapon: falseS
+  isThrownWeapon: false
   isRangedWeapon: false
   projectileId:

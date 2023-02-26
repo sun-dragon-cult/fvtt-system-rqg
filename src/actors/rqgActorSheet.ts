@@ -633,6 +633,13 @@ export class RqgActorSheet extends ActorSheet<
           }
         }
       }
+
+      weapon.system.ammoNotSelected = !weapon.system.projectileId;
+      const projectile = actor.items.find((i) => i.id === weapon.system.projectileId);
+      if (projectile) {
+        weapon.system.projectileQuantity = projectile.system.quantity;
+        weapon.system.projectileName = projectile.name;
+      }
     });
     itemTypes[ItemTypeEnum.Armor].sort((a: any, b: any) => a.sort - b.sort);
     itemTypes[ItemTypeEnum.Gear].sort((a: any, b: any) => a.sort - b.sort);
