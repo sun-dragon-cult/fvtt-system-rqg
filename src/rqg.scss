@@ -413,6 +413,10 @@ body {
         background: var(--rqg-table-alternate-background);
       }
 
+      .invalid {
+        color: var(--rqg-highlight);
+      }
+
       // Set-token-SR-in-combat button
       button.sr {
         height: 1.5rem;

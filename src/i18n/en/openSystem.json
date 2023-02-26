@@ -217,7 +217,7 @@
         "SpiritCombat": "Spirit Combat",
         "SpiritCombatDamage": "Spirit Combat Damage",
         "SetSRInCombatTracker": "Set SR in combat tracker",
-        "ProjectileWeaponAmmoNotSelectedAlert": "🏹",
+        "ProjectileWeaponAmmoNotSelectedAlert": "no ammo",
         "ProjectileWeaponAmmoNotSelectedTip": "Edit this weapon to select ammunition!"
       },
       "Gear": {

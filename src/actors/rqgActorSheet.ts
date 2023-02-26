@@ -634,18 +634,11 @@ export class RqgActorSheet extends ActorSheet<
         }
       }
 
-      if (weapon.system.projectileId) {
-        const projectile = actor.items.find((i) => i.id === weapon.system.projectileId);
-        if (projectile) {
-          if (weapon.system.isProjectileWeapon) {
-            weapon.system.selectedAmmo = projectile.name;
-          }
-          if (weapon.system.isThrownWeapon) {
-            weapon.system.thrownWeaponQuantity = projectile.system.quantity;
-          }
-        }
-      } else {
-        weapon.system.ammoNotSelected = "No Ammo Selected";
+      weapon.system.ammoNotSelected = !weapon.system.projectileId;
+      const projectile = actor.items.find((i) => i.id === weapon.system.projectileId);
+      if (projectile) {
+        weapon.system.projectileQuantity = projectile.system.quantity;
+        weapon.system.projectileName = projectile.name;
       }
     });
     itemTypes[ItemTypeEnum.Armor].sort((a: any, b: any) => a.sort - b.sort);
