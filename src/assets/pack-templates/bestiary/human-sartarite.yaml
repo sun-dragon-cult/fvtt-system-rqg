@@ -1,0 +1,229 @@
+name: ${{openSystem.content.bestiary.humanSartarite.name}}$
+type: character
+img: icons/svg/mystery-man.svg
+system:
+  characteristics:
+    strength:
+      value: 12
+      formula: 3d6
+    constitution:
+      value: 13
+      formula: 3d6
+    size:
+      value: 15
+      formula: 2d6+6
+    dexterity:
+      value: 12
+      formula: 3d6
+    intelligence:
+      value: 10
+      formula: 2d6+6
+    power:
+      value: 15
+      formula: 3d6
+      hasExperience: false
+    charisma:
+      value: 12
+      formula: 3d6
+  background:
+    species: ${{openSystem.content.bestiary.humanSartarite.species}}$
+    speciesRqidLink:
+      rqid: je..species-description-human
+      name: Human
+      documentType: JournalEntry
+    occupation: ""
+    homeland: sartar
+    cultureJournalRqidLinks: []
+    tribeJournalRqidLinks: []
+    clanJournalRqidLinks: []
+    birthyear:
+    age:
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
+    reputation:
+    standardOfLiving: ""
+    baseIncome:
+    ransom:
+    ransomDetails: ""
+    biography:       
+  allies: ${{openSystem.content.bestiary.humanSartarite.notes}}$
+  attributes:
+    magicPoints:
+      value: 15
+    hitPoints:
+      value: 14
+    move:
+      currentLocomotion: walk
+      walk:
+        value: 8
+        carryingFactor: 1
+      swim:
+        value: 2
+        carryingFactor: 0.5
+      fly: {}
+    heroPoints: 0
+    isCreature: false
+    health: healthy
+token:
+  name: ${{openSystem.content.bestiary.humanSartarite.name}}$
+  img: icons/svg/mystery-man.svg
+  displayName: 0
+  actorLink: true
+  width: 1
+  height: 1
+  scale: 1
+  mirrorX: false
+  mirrorY: false
+  lockRotation: false
+  rotation: 0
+  alpha: 1
+  vision: false
+  dimSight: 0
+  brightSight: 0
+  sightAngle: 0
+  light:
+    alpha: 0.5
+    angle: 0
+    bright: 0
+    coloration: 1
+    dim: 0
+    gradual: true
+    luminosity: 0.5
+    saturation: 0
+    contrast: 0
+    shadows: 0
+    animation:
+      speed: 5
+      intensity: 5
+      reverse: false
+    darkness:
+      min: 0
+      max: 1
+  disposition: -1
+  displayBars: 0
+  bar1:
+    attribute: attributes.hitPoints.value
+  bar2:
+    attribute: attributes.magicPoints.value
+  flags: {}
+  randomImg: false
+items:
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-leg	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-leg	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-abdomen	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-chest	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-arm	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-arm	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-head	[ naturalAp: 1		]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.air-element	[ chance:	10	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.darkness-element	[ chance:	0	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.earth-element	[ chance:	0	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.fire-sky-element	[ chance:	0	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.moon-element	[ chance:	0	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.water-element	[ chance:	0	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.beast-form	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.man-form	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.death-power	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.disorder-power	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.fertility-power	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.harmony-power	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.truth-power	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.illusion-power	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.movement-power	[ chance:	50	]}}|"
+- "|{{	pc-runes/pc-runes.yaml	i.rune.stasis-power	[ chance:	50	]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.boat	[ gainedChance:	0	]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.climb	[ gainedChance:	0	]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	0	]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.drive-chariot	[ gainedChance:	0	]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.jump	[ gainedChance:	0	]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.ride	[ baseChance: 15	]}}|"
+- "|{{	skills/agility-skills.yaml	i.skill.swim	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.act	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.art	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.bargain	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.charm	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.dance	[ baseChance: 15	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.disguise	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.fast-talk	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.intimidate	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.intrigue	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.orate	[ gainedChance:	0	]}}|"
+- "|{{	skills/communication-skills.yaml	i.skill.sing	[ baseChance: 20	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.alchemy	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.animal-lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.bureaucracy	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.battle	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.celestial-lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.cult-lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.customs	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.elder-race-lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.evaluate	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.farm	[ baseChance: 30	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.first-aid	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.game	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.herd	[ baseChance: 15	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.homeland-lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.library-use	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.manage-household	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.mineral-lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.peaceful-cut	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.plant-lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.read-write	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.survival	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.shiphandling	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.treat-disease	[ gainedChance:	0	]}}|"
+- "|{{	skills/knowledge-skills.yaml	i.skill.treat-poison	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.meditate	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.prepare-corpse	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.sense-assassin	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.sense-chaos	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.spirit-combat	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.spirit-dance	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.spirit-lore	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.spirit-travel	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.understand-herd-beast	[ gainedChance:	0	]}}|"
+- "|{{	skills/magic-skills.yaml	i.skill.worship	[ gainedChance:	0	]}}|"
+- "|{{	skills/manipulation-skills.yaml	i.skill.conceal	[ gainedChance:	0	]}}|"
+- "|{{	skills/manipulation-skills.yaml	i.skill.craft	[ gainedChance:	0	]}}|"
+- "|{{	skills/manipulation-skills.yaml	i.skill.devise	[ gainedChance:	0	]}}|"
+- "|{{	skills/manipulation-skills.yaml	i.skill.play-instrument	[ gainedChance:	0	]}}|"
+- "|{{	skills/manipulation-skills.yaml	i.skill.sleight	[ gainedChance:	0	]}}|"
+- "|{{	skills/perception-skills.yaml	i.skill.insight	[ gainedChance:	0	]}}|"
+- "|{{	skills/perception-skills.yaml	i.skill.listen	[ gainedChance:	0	]}}|"
+- "|{{	skills/perception-skills.yaml	i.skill.scan	[ gainedChance:	0	]}}|"
+- "|{{	skills/perception-skills.yaml	i.skill.search	[ gainedChance:	0	]}}|"
+- "|{{	skills/perception-skills.yaml	i.skill.track	[ gainedChance:	0	]}}|"
+- "|{{	skills/specialized-customs-skills.yaml	i.skill.customs-heortling	[ baseChance: 25	]}}|"
+- "|{{	skills/specialized-homeland-skills.yaml	i.skill.homeland-lore-sartar	[ baseChance: 30	]}}|"
+- "|{{	skills/specialized-language-skills.yaml	i.skill.read-write-heortling	[ gainedChance:	0	]}}|"
+- "|{{	skills/specialized-language-skills.yaml	i.skill.speak-language-heortling	[ baseChance: 50	]}}|"
+- "|{{	skills/specialized-language-skills.yaml	i.skill.speak-language-tradetalk	[ baseChance: 10	]}}|"
+- "|{{	skills/stealth-skills.yaml	i.skill.hide	[ gainedChance:	0	]}}|"
+- "|{{	skills/stealth-skills.yaml	i.skill.move-quietly	[ gainedChance:	0	]}}|"
+- "|{{	skills-weapons/1h-axe.yaml	i.skill.1h-axes-battle-axe	[ baseChance: 25	]}}|"
+- "|{{	skills-weapons/1h-dagger.yaml	i.skill.1h-daggers-dagger	[ baseChance: 25	]}}|"
+- "|{{	skills-weapons/1h-spear.yaml	i.skill.1h-spears-shortspear	[ baseChance: 15	]}}|"
+- "|{{	skills-weapons/1h-sword.yaml	i.skill.1h-swords-broadsword	[ baseChance: 25	]}}|"
+- "|{{	skills-weapons/missile.yaml	i.skill.bows-composite-bow	[ baseChance: 15	]}}|"
+- "|{{	skills-weapons/missile.yaml	i.skill.javelins-javelin	[ baseChance: 20	]}}|"
+- "|{{	skills-weapons/missile.yaml	i.skill.slings-sling	[ baseChance: 15	]}}|"
+- "|{{	skills-weapons/natural.yaml	i.skill.fists-fists	[ gainedChance:	0	]}}|"
+- "|{{	skills-weapons/natural.yaml	i.skill.grapple	[ gainedChance:	0	]}}|"
+- "|{{	skills-weapons/natural.yaml	i.skill.kick	[ gainedChance:	0	]}}|"
+- "|{{	skills-weapons/shields.yaml	i.skill.shields-large	[ baseChance: 25	]}}|"
+- "|{{	skills-weapons/shields.yaml	i.skill.shields-medium	[ baseChance: 30	]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.fist	[ equippedStatus: 	equipped	]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.grapple	[ equippedStatus: 	equipped	]}}|"
+- "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.kick	[ equippedStatus: 	equipped	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{openSystem.content.passionSubject.clan}}$), subject: ${{openSystem.content.passionSubject.clan}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{openSystem.content.passionSubject.tribe}}$), subject: ${{openSystem.content.passionSubject.tribe}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.love-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Love}}$ (${{openSystem.content.passionSubject.family}}$), subject: ${{openSystem.content.passionSubject.family}}$	]}}|"
+flags:
+  rqg:
+    documentRqidFlags:
+      id: a.character.species-template-human-base
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$

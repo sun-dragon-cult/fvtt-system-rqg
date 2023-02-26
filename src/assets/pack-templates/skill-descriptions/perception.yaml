@@ -94,7 +94,7 @@ pages:
 flags:
   rqg:
     documentRqidFlags:
-      id: je..track
+      id: je..scent-intruder
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---

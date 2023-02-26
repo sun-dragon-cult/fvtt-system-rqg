@@ -527,7 +527,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.AuwLKY4rMgDCQLtG
       combatManeuvers:
         - name: Trample
           damageType: crush
@@ -806,7 +806,7 @@ system:
   usage:
     oneHand:
       skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KPHB0ZZXT78AGl0X
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.rGoljoNmBLbaskDe
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Hug}}$
           damageType: crush

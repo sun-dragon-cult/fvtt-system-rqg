@@ -1,3 +1,51 @@
+# atlatls-dart
+name: ${{openSystem.content.weaponSkill.atlatls.name}}$ (${{openSystem.content.weaponSkill.atlatls.specialization.dart}}$)
+_id: jpOyJYC2ctmY2N8U
+type: skill
+img: systems/rqg/assets/images/weapons/bowman.svg
+system:
+  category: missileWeapons
+  skillName: ${{openSystem.content.weaponSkill.atlatls.name}}$
+  specialization: ${{openSystem.content.weaponSkill.atlatls.specialization.dart}}$
+  baseChance: 5
+  gainedChance: 0
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..missile-weapon
+    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.atlatls-dart
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
+# atlatls-javelin
+name: ${{openSystem.content.weaponSkill.atlatls.name}}$ (${{openSystem.content.weaponSkill.atlatls.specialization.javelin}}$)
+_id: 9Pu3rVnoTp4cHjhn
+type: skill
+img: systems/rqg/assets/images/weapons/bowman.svg
+system:
+  category: missileWeapons
+  skillName: ${{openSystem.content.weaponSkill.atlatls.name}}$
+  specialization: ${{openSystem.content.weaponSkill.atlatls.specialization.javelin}}$
+  baseChance: 5
+  gainedChance: 0
+  canGetExperience: true
+  hasExperience: false
+  runes: []
+  descriptionRqidLink:
+    rqid: je..missile-weapon
+    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.skill.atlatls-javelin
+      lang: ${{openSystem.lang}}$
+      priority: ${{openSystem.prio}}$
+---
 # bow-composite-bow
 name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$)
 _id: 9aEgM4UKZQfFddMD

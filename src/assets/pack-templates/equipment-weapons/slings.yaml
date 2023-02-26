@@ -194,7 +194,7 @@ system:
     real: 0
     estimated: 0
   isNatural: false
-  equippedStatus: equipped
+  equippedStatus: carried
   rate:
   range: 0
   isProjectile: true
