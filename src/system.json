@@ -21,12 +21,8 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
@@ -77,20 +73,6 @@
       "system": "rqg",
       "path": "assets/packs/culture-descriptions-en.db",
       "type": "JournalEntry"
-    },
-    {
-      "name": "demo-items-en",
-      "label": "Demo | en",
-      "system": "rqg",
-      "path": "assets/packs/demo-items-en.db",
-      "type": "Item"
-    },
-    {
-      "name": "demo-actors-en",
-      "label": "Demo Actors | en",
-      "system": "rqg",
-      "path": "assets/packs/demo-actors-en.db",
-      "type": "Actor"
     },
     {
       "name": "bestiary-en",

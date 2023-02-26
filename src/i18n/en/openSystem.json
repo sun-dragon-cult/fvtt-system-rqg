@@ -2539,7 +2539,7 @@
       "bite": {
         "name": "Bite"
       },
-      "atlatl": {
+      "atlatls": {
         "name": "Atlatls",
         "specialization": {
           "dart": "Dart",

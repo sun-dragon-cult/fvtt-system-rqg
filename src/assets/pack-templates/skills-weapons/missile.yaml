@@ -1,12 +1,12 @@
-# atlatl-dart
-name: ${{openSystem.content.weaponSkill.atlatl.name}}$ (${{openSystem.content.weaponSkill.atlatl.specialization.dart}}$)
+# atlatls-dart
+name: ${{openSystem.content.weaponSkill.atlatls.name}}$ (${{openSystem.content.weaponSkill.atlatls.specialization.dart}}$)
 _id: jpOyJYC2ctmY2N8U
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.atlatl.name}}$
-  specialization: ${{openSystem.content.weaponSkill.atlatl.specialization.dart}}$
+  skillName: ${{openSystem.content.weaponSkill.atlatls.name}}$
+  specialization: ${{openSystem.content.weaponSkill.atlatls.specialization.dart}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -22,15 +22,15 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-# atlatl-javelin
-name: ${{openSystem.content.weaponSkill.atlatl.name}}$ (${{openSystem.content.weaponSkill.atlatl.specialization.javelin}}$)
+# atlatls-javelin
+name: ${{openSystem.content.weaponSkill.atlatls.name}}$ (${{openSystem.content.weaponSkill.atlatls.specialization.javelin}}$)
 _id: 9Pu3rVnoTp4cHjhn
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.atlatl.name}}$
-  specialization: ${{openSystem.content.weaponSkill.atlatl.specialization.javelin}}$
+  skillName: ${{openSystem.content.weaponSkill.atlatls.name}}$
+  specialization: ${{openSystem.content.weaponSkill.atlatls.specialization.javelin}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
