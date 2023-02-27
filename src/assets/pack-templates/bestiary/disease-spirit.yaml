@@ -50,7 +50,7 @@ system:
     magicPoints:
       value: 11
     hitPoints:
-      value: 
+      value: 0
     move:
       currentLocomotion: walk
       walk:
