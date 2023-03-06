@@ -16,13 +16,14 @@ export default {
   ],
   external: ["template.json"],
   exclude: ["**/src/assets/pack-templates/**/*"],
-  optimize: {
-    entrypoints: ["rqg.js", "template.js"],
-    splitting: false,
-    bundle: true,
-    minify: true,
-    target: "es2020",
-  },
+  // optimize: {
+  //   // TODO Seems to sometimes create illegal names for minified documents
+  //   entrypoints: ["rqg.js", "template.js"],
+  //   splitting: false,
+  //   bundle: true,
+  //   minify: true,
+  //   target: "es2020",
+  // },
   packageOptions: {},
   devOptions: {
     out: "dist/",
