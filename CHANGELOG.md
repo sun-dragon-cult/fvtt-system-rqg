@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.1.0...v2.1.1) (2023-03-06)
+
+
+### Bug Fixes
+
+* bestiary import errors/warnings: Actor hit points value null is missing ([#493](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/493)) ([ae71ad8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ae71ad83e7936ccbf8ba745ee90951ef3b7a16a8))
+* can't open actors from compendium ([ee6a15b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ee6a15b33fed8a6f5fa46285e36c09c791945d0a)), closes [#479](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/479)
+* cannot edit Rune items ([577ef5a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/577ef5abaa963dc6b2da1d4f848b68c818f5eb0d)), closes [#485](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/485)
+* experience Checks should show anywhere a skill is displayed ([#494](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/494)) ([5a2803f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5a2803f52fc1d04deb9dd2e2695611aeae4609c7))
+* Human-Template-include-items, Minor Compendium Errors, Multiple rqids with je..track ([#486](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/486)) ([42811ba](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/42811bad708109ee3d16e57c84ddbc52cb699489))
+* long cult names break layout ([#478](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/478)) ([f54f253](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f54f25325dc5020bdb08324794b84ba3a67f5491)), closes [#477](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/477)
+* opening the elder race sheets from bestiary throws error ([#495](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/495)) ([7f0b4e4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7f0b4e4fbbe782e3cd04e43add0e2d4e716c4d48))
+
 ## [2.1.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.0.1...v2.1.0) (2023-02-22)
 
 
