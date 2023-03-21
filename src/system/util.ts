@@ -160,6 +160,24 @@ export function logMisconfiguration(msg: string, notify: boolean, ...debugData: 
 }
 
 /**
+ * Type guard used for filtering arrays to remove undefined & null values.
+ *
+ *  Example: `arr.filter(isDefined)`
+ */
+export function isDefined<T>(argument: T | undefined | null): argument is T {
+  return argument != null;
+}
+
+/**
+ * Type guard used for filtering arrays to remove falsy values.
+ *
+ * Example: `arr.filter(isTruthy)`
+ */
+export function isTruthy<T>(argument: T | undefined | null): argument is T {
+  return !!argument;
+}
+
+/**
  * Check if obj has property prop and narrow type of obj if so.
  */
 export function hasOwnProperty<X extends {} | undefined, Y extends PropertyKey>(

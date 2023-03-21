@@ -15,7 +15,7 @@ import {
   usersIdsThatOwnActor,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getSameLocationUpdates } from "../shared/physicalItemUtil";
+import { getLocationRelatedUpdates, mergeArrayByProperty } from "../shared/physicalItemUtil";
 import { DamageRollTypeEnum, WeaponChatHandler } from "../../chat/weaponChatHandler";
 import { WeaponChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ResultEnum } from "../../data-model/shared/ability";
@@ -130,7 +130,11 @@ export class Weapon extends AbstractEmbeddedItem {
 
   static preUpdateItem(actor: RqgActor, weapon: RqgItem, updates: object[], options: any): void {
     if (weapon.type === ItemTypeEnum.Weapon) {
-      updates.push(...getSameLocationUpdates(actor, weapon, updates));
+      mergeArrayByProperty(
+        updates,
+        getLocationRelatedUpdates(actor.items.contents, weapon, updates),
+        "_id"
+      );
     }
   }
 

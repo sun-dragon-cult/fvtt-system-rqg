@@ -12,9 +12,8 @@ import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-men
 import { cultMenuOptions } from "./context-menus/cult-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menus/rune-context-menu";
-import { equippedStatuses } from "../data-model/item-data/IPhysicalItem";
+import { EquippedStatus, equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
-import { createItemLocationTree, LocationNode } from "../items/shared/locationNode";
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
 import { RqgActor } from "./rqgActor";
 import {
@@ -54,6 +53,8 @@ import {
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
+import { ItemTree } from "../items/shared/ItemTree";
+import { LocationItemNodeData } from "../items/shared/locationItemNode";
 
 interface UiSections {
   health: boolean;
@@ -104,7 +105,7 @@ interface CharacterSheetData {
   /** (html) Precalculated missile weapon SRs if not loaded at start of round */
   unloadedMissileSr: string[];
   /** physical items reorganised as a tree of items containing items */
-  itemLocationTree: LocationNode;
+  itemLocationTree: LocationItemNodeData;
   /** list of pow-crystals */
   powCrystals: { name: string; size: number }[];
   spiritMagicPointSum: number;
@@ -121,6 +122,7 @@ interface CharacterSheetData {
 
   showUiSection: UiSections;
   actorWizardFeatureFlag: boolean;
+  itemLoopMessage: string | undefined;
 }
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
@@ -170,6 +172,7 @@ export class RqgActorSheet extends ActorSheet<
     const system = duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = system.attributes.dexStrikeRank;
+    const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
     return {
       id: this.document.id ?? "",
@@ -195,7 +198,7 @@ export class RqgActorSheet extends ActorSheet<
       characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character
       loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
       unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
-      itemLocationTree: createItemLocationTree(this.actor.items.contents), // physical items reorganised as a tree of items containing items
+      itemLocationTree: itemTree.toSheetData(),
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
@@ -210,7 +213,7 @@ export class RqgActorSheet extends ActorSheet<
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
       homelands: Object.values(HomeLandEnum),
-      locations: this.getPhysicalItemLocations(),
+      locations: itemTree.getPhysicalItemLocations(),
       healthStatuses: [...actorHealthStatuses],
       locomotionModes: {
         [LocomotionEnum.Walk]: "Walk",
@@ -225,6 +228,7 @@ export class RqgActorSheet extends ActorSheet<
       // UI toggles
       showUiSection: this.getUiSectionVisibility(),
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
+      itemLoopMessage: itemTree.loopMessage, // TODO add more text "There is a loop..."
     };
   }
 
@@ -330,25 +334,6 @@ export class RqgActorSheet extends ActorSheet<
       descriptionRqid: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
       hasMultipleCults: cults.length > 1,
     };
-  }
-
-  private getPhysicalItemLocations(): string[] {
-    // Used for DataList input dropdown
-    const physicalItems: RqgItem[] = this.actor.items.filter((i: RqgItem) =>
-      hasOwnProperty(i.system, "physicalItemType")
-    );
-    return [
-      ...new Set([
-        // Make a unique list of names of container items and "free text" locations
-        ...this.actor.items.reduce((acc: string[], i: RqgItem) => {
-          if (hasOwnProperty(i.system, "isContainer") && i.system.isContainer && i.name) {
-            acc.push(i.name);
-          }
-          return acc;
-        }, []),
-        ...physicalItems.map((i: RqgItem) => (i.system as any).location ?? ""),
-      ]),
-    ];
   }
 
   private getSpiritMagicPointSum(): number {
@@ -1069,6 +1054,23 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", async () => {
+        if (itemId.startsWith("virtual:")) {
+          const [_, itemEquippedStatus, itemName] = itemId.split(":"); // TODO possible bug with names containing :
+          const newEquippedStatus =
+            equippedStatuses[
+              (equippedStatuses.indexOf(itemEquippedStatus as EquippedStatus) + 1) %
+                equippedStatuses.length
+            ];
+          const affectedItems = new ItemTree(
+            this.actor.items.contents
+          ).getOtherItemIdsInSameLocationTree(itemName);
+          const updates = affectedItems.map((id) => ({
+            _id: id,
+            system: { equippedStatus: newEquippedStatus },
+          }));
+          await this.actor.updateEmbeddedDocuments("Item", updates);
+          return;
+        }
         const item = this.actor.items.get(itemId);
         if (!item || !("equippedStatus" in item.system)) {
           const msg = `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`;

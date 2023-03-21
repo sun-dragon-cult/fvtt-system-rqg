@@ -2,8 +2,9 @@
 **/.DS_Store
 .run/
 # Project exclude paths
-/dist/
-/node_modules/
+dist/
+node_modules/
+coverage/
 
 src/assets/packs/*
 !src/assets/packs/.gitignore

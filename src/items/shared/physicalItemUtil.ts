@@ -1,50 +1,150 @@
-import { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../rqgItem";
-import { getOtherItemIdsInSameLocationTree } from "./locationNode";
-import { localize, requireValue } from "../../system/util";
+import { localize, RqgError } from "../../system/util";
+import { ItemTree } from "./ItemTree";
+import { EquippedStatus } from "../../data-model/item-data/IPhysicalItem";
 
-export function getSameLocationUpdates(
-  actor: RqgActor,
+/**
+ * Only update the content of a bag if the changed item is the bag itself and that change
+ * is the equippedStatus.
+ */
+export function getLocationRelatedUpdates(
+  actorEmbeddedItems: RqgItem[],
   physicalItem: RqgItem,
-  updates: object[]
+  updates: object[] // TODO Error what if not all updates have the same location !
 ): any[] {
   if ("isNatural" in physicalItem.system && physicalItem.system.isNatural) {
     return []; // natural weapons don't have location and are excluded from the LocationTree
   }
-  const actorEmbeddedItems = actor.items.contents;
 
-  const newLocationUpdate = updates.find((u: any) => u["system.location"] != null) as any;
-  if (newLocationUpdate) {
-    // Change location of the item that is sent to getOtherItemIdsInSameLocationTree
-    const item = actorEmbeddedItems.find((i: any) => i._id === newLocationUpdate._id);
-    requireValue(
-      item,
-      localize("RQG.Item.Notification.LocationDidntFindItem"),
-      actorEmbeddedItems,
-      newLocationUpdate
+  const equippedStatusUpdate: any = updates.find(
+    (u: any) => u._id === physicalItem.id && u["system.equippedStatus"]
+  );
+  const equippedStatusUpdateValue =
+    equippedStatusUpdate && equippedStatusUpdate?.["system.equippedStatus"];
+
+  const locationUpdate: any = updates.find(
+    (u: any) => u._id === physicalItem.id && u["system.location"]
+  );
+  const locationUpdateValue = locationUpdate && locationUpdate?.["system.location"];
+
+  const mergedUpdates: any[] = [];
+  if (equippedStatusUpdateValue) {
+    mergeArrayByProperty(
+      mergedUpdates,
+      getChangedEquippedStatusRelatedUpdates(
+        physicalItem,
+        actorEmbeddedItems,
+        equippedStatusUpdateValue
+      ),
+      "_id"
     );
-    item.system.location = newLocationUpdate["system.location"];
   }
 
-  const sameLocationItemIds = getOtherItemIdsInSameLocationTree(
-    physicalItem.name ?? "",
-    actorEmbeddedItems
-  );
+  if (locationUpdateValue) {
+    mergeArrayByProperty(
+      mergedUpdates,
+      getChangedLocationRelatedChanges(
+        actorEmbeddedItems,
+        physicalItem,
+        locationUpdateValue,
+        equippedStatusUpdateValue
+      ),
+      "_id"
+    );
+  }
 
-  const equippedStatusUpdate: any = updates.find((u: any) => u["system.equippedStatus"]);
-  const equippedStatusOfOtherWithSameLocation = sameLocationItemIds.length
-    ? actor.items.get(sameLocationItemIds[0])!.system.equippedStatus
-    : undefined;
-  const newEquippedStatus = equippedStatusUpdate
-    ? equippedStatusUpdate["system.equippedStatus"] // Change equippedStatus of all in same location group
-    : equippedStatusOfOtherWithSameLocation; // Set item equippedStatus of newly changes location item to same as the locations group has
-  return sameLocationItemIds.reduce((acc: any[], id: string) => {
-    if (newEquippedStatus) {
-      acc.push({
-        _id: id,
-        "system.equippedStatus": newEquippedStatus,
-      });
+  return mergedUpdates;
+}
+
+function getChangedEquippedStatusRelatedUpdates(
+  physicalItem: RqgItem,
+  actorEmbeddedItems: RqgItem[],
+  equippedStatusUpdateValue: EquippedStatus | undefined
+): any[] {
+  let containedItemUpdates = [];
+
+  const sameLocationItemIds = new ItemTree(actorEmbeddedItems).getOtherItemIdsInSameLocationTree(
+    physicalItem.name ?? ""
+  );
+  containedItemUpdates = sameLocationItemIds.map((id: string) => ({
+    _id: id,
+    "system.equippedStatus": equippedStatusUpdateValue,
+  }));
+
+  return containedItemUpdates;
+}
+
+function getChangedLocationRelatedChanges(
+  actorEmbeddedItems: RqgItem[],
+  physicalItem: RqgItem,
+  locationUpdateValue: string | undefined,
+  equippedStatusUpdateValue: EquippedStatus | undefined
+): any[] {
+  let containedItemUpdates: any[] = [];
+
+  const updatedItem = actorEmbeddedItems.find((i) => i.id === physicalItem.id);
+
+  if (!updatedItem) {
+    const msg = localize("RQG.Item.Notification.CantFindItem"); // TODO *** Fix translation
+    ui.notifications?.error(msg);
+    throw new RqgError(msg, actorEmbeddedItems);
+  }
+  updatedItem.system.location = locationUpdateValue; // Mimic the change that is about to happen so the tree can be searched
+  const itemTree = new ItemTree(actorEmbeddedItems);
+  const container = itemTree.getContainerNodeOfItem(physicalItem.name ?? "");
+  if (container) {
+    if (container.id !== updatedItem.id) {
+      const sameLocationItemIds = new ItemTree(
+        actorEmbeddedItems
+      ).getOtherItemIdsInSameLocationTree(physicalItem.name ?? "");
+
+      mergeArrayByProperty(
+        containedItemUpdates,
+        sameLocationItemIds.reduce((updates: any[], id: string) => {
+          if (!id.startsWith("virtual:")) {
+            updates.push({
+              _id: id,
+              "system.equippedStatus": container.equippedStatus, // set equipped status to what the container has
+            });
+          }
+          return updates;
+        }, []),
+        "_id"
+      );
     }
-    return acc;
-  }, []);
+  }
+
+  if (physicalItem.system.isContainer) {
+    const sameLocationItemIds = new ItemTree(actorEmbeddedItems).getItemIdsDirectlyInSameContainer(
+      physicalItem.name ?? ""
+    );
+
+    mergeArrayByProperty(
+      containedItemUpdates,
+      sameLocationItemIds.reduce((acc: any[], id: string) => {
+        if (equippedStatusUpdateValue) {
+          acc.push({
+            _id: id,
+            "system.location": locationUpdateValue,
+          });
+        }
+        return acc;
+      }, []),
+      "_id"
+    );
+  }
+
+  return containedItemUpdates;
+}
+
+// TODO move to utils?
+// TODO assume prop is "_id"?
+export function mergeArrayByProperty<T>(target: T[], source: T[], prop: string): T[] {
+  source.forEach((sourceProp: any) => {
+    const targetProp = target.find((targetElement: any) => {
+      return sourceProp[prop] === targetElement[prop];
+    });
+    targetProp ? Object.assign(targetProp, sourceProp) : target.push(sourceProp);
+  });
+  return target;
 }

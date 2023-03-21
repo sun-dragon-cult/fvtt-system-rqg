@@ -245,7 +245,8 @@
         "HitPointsAbbr": "HP",
         "Absorbs": "Absorbs",
         "HitLocations": "Hit Locations",
-        "MoveQuietlyPenalty": "- Move Quietly"
+        "MoveQuietlyPenalty": "- Move Quietly",
+        "LocationLoop": "The item locations have a loop involving {loopItems}."
       },
       "Health": {
         "Health": "Health",
