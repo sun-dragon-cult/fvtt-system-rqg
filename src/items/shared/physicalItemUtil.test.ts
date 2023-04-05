@@ -1,9 +1,10 @@
 import { RqgItem } from "../rqgItem";
 import { mockItems } from "../../mocks/mockLocationItems";
-import { getLocationRelatedUpdates, mergeArrayByProperty } from "./physicalItemUtil";
+import { getLocationRelatedUpdates } from "./physicalItemUtil";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
 import { ItemTree } from "./ItemTree";
+import { mergeArraysById } from "../../system/util";
 
 describe("getLocationRelatedUpdates", () => {
   describe("equipped status change", () => {
@@ -20,7 +21,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      mergeArrayByProperty(updates, relatedUpdates, "_id");
+      mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
       expect(JSON.parse(JSON.stringify(updates))).toStrictEqual([
@@ -44,7 +45,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      mergeArrayByProperty(updates, relatedUpdates, "_id");
+      mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
       expect(JSON.parse(JSON.stringify(updates))).toStrictEqual([
@@ -118,7 +119,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      mergeArrayByProperty(updates, relatedUpdates, "_id");
+      mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
       expect(JSON.parse(JSON.stringify(updates))).toStrictEqual([
@@ -156,7 +157,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      const test = mergeArrayByProperty(updates, relatedUpdates, "_id");
+      const test = mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
       expect(test).toStrictEqual([
@@ -191,7 +192,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      mergeArrayByProperty(updates, relatedUpdates, "_id");
+      mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
       expect(updates).toContainEqual({
@@ -219,7 +220,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      mergeArrayByProperty(updates, relatedUpdates, "_id");
+      mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
       expect(updates).toStrictEqual([
@@ -243,7 +244,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      mergeArrayByProperty(updates, relatedUpdates, "_id");
+      mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
       expect(JSON.parse(JSON.stringify(updates))).toStrictEqual([
@@ -289,7 +290,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      mergeArrayByProperty(updates, relatedUpdates, "_id");
+      mergeArraysById(updates, relatedUpdates);
 
       // Get the node of a tree as it would be after the update
       const virtualNode = itemTree.getContainerNodeOfItem("C");
@@ -362,7 +363,7 @@ describe("getLocationRelatedUpdates", () => {
 
       // --- Act ---
       const relatedUpdates = getLocationRelatedUpdates(items, changedItem, updates);
-      mergeArrayByProperty(updates, relatedUpdates, "_id");
+      mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
       expect(updates).toStrictEqual([

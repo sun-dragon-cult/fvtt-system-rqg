@@ -160,6 +160,19 @@ export function logMisconfiguration(msg: string, notify: boolean, ...debugData: 
 }
 
 /**
+ * Given two arrays with objects containing a `_id` prop, merge the objects with the same _id
+ */
+export function mergeArraysById<T>(target: T[], source: T[]): T[] {
+  source.forEach((sourceProp: any) => {
+    const targetProp = target.find((targetElement: any) => {
+      return sourceProp._id === targetElement._id;
+    });
+    targetProp ? Object.assign(targetProp, sourceProp) : target.push(sourceProp);
+  });
+  return target;
+}
+
+/**
  * Type guard used for filtering arrays to remove undefined & null values.
  *
  *  Example: `arr.filter(isDefined)`

@@ -1055,7 +1055,7 @@ export class RqgActorSheet extends ActorSheet<
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", async () => {
         if (itemId.startsWith("virtual:")) {
-          const [_, itemEquippedStatus, itemName] = itemId.split(":"); // TODO possible bug with names containing :
+          const [_, itemEquippedStatus, itemName] = itemId.split(":");
           const newEquippedStatus =
             equippedStatuses[
               (equippedStatuses.indexOf(itemEquippedStatus as EquippedStatus) + 1) %

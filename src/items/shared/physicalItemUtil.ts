@@ -1,5 +1,5 @@
 import { RqgItem } from "../rqgItem";
-import { localize, RqgError } from "../../system/util";
+import { localize, mergeArraysById, RqgError } from "../../system/util";
 import { ItemTree } from "./ItemTree";
 import { EquippedStatus } from "../../data-model/item-data/IPhysicalItem";
 
@@ -29,27 +29,25 @@ export function getLocationRelatedUpdates(
 
   const mergedUpdates: any[] = [];
   if (equippedStatusUpdateValue) {
-    mergeArrayByProperty(
+    mergeArraysById(
       mergedUpdates,
       getChangedEquippedStatusRelatedUpdates(
         physicalItem,
         actorEmbeddedItems,
         equippedStatusUpdateValue
-      ),
-      "_id"
+      )
     );
   }
 
   if (locationUpdateValue) {
-    mergeArrayByProperty(
+    mergeArraysById(
       mergedUpdates,
       getChangedLocationRelatedChanges(
         actorEmbeddedItems,
         physicalItem,
         locationUpdateValue,
         equippedStatusUpdateValue
-      ),
-      "_id"
+      )
     );
   }
 
@@ -98,7 +96,7 @@ function getChangedLocationRelatedChanges(
         actorEmbeddedItems
       ).getOtherItemIdsInSameLocationTree(physicalItem.name ?? "");
 
-      mergeArrayByProperty(
+      mergeArraysById(
         containedItemUpdates,
         sameLocationItemIds.reduce((updates: any[], id: string) => {
           if (!id.startsWith("virtual:")) {
@@ -108,8 +106,7 @@ function getChangedLocationRelatedChanges(
             });
           }
           return updates;
-        }, []),
-        "_id"
+        }, [])
       );
     }
   }
@@ -119,7 +116,7 @@ function getChangedLocationRelatedChanges(
       physicalItem.name ?? ""
     );
 
-    mergeArrayByProperty(
+    mergeArraysById(
       containedItemUpdates,
       sameLocationItemIds.reduce((acc: any[], id: string) => {
         if (equippedStatusUpdateValue) {
@@ -129,22 +126,9 @@ function getChangedLocationRelatedChanges(
           });
         }
         return acc;
-      }, []),
-      "_id"
+      }, [])
     );
   }
 
   return containedItemUpdates;
-}
-
-// TODO move to utils?
-// TODO assume prop is "_id"?
-export function mergeArrayByProperty<T>(target: T[], source: T[], prop: string): T[] {
-  source.forEach((sourceProp: any) => {
-    const targetProp = target.find((targetElement: any) => {
-      return sourceProp[prop] === targetElement[prop];
-    });
-    targetProp ? Object.assign(targetProp, sourceProp) : target.push(sourceProp);
-  });
-  return target;
 }
