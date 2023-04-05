@@ -1,5 +1,6 @@
 global.mergeObject = jest.fn((...args) => mockMergeObject(...args));
 global.getType = jest.fn((...args) => mockGetType(...args));
+global.getProperty = jest.fn((...args) => mockGetProperty(...args));
 
 const mockCONFIG = {
   statusEffects: [
@@ -218,6 +219,50 @@ function mockMergeObject(
   return original;
 }
 
+function expandObject(obj, _d = 0) {
+  if (_d > 100) throw new Error("Maximum object expansion depth exceeded");
+
+  // Recursive expansion function
+  function _expand(value) {
+    if (value instanceof Object) {
+      if (Array.isArray(value)) return value.map(_expand);
+      else return expandObject(value, _d + 1);
+    }
+    return value;
+  }
+
+  // Expand all object keys
+  const expanded = {};
+  for (let [k, v] of Object.entries(obj)) {
+    setProperty(expanded, k, _expand(v));
+  }
+  return expanded;
+}
+
+function setProperty(object, key, value) {
+  let target = object;
+  let changed = false;
+
+  // Convert the key to an object reference if it contains dot notation
+  if (key.indexOf(".") !== -1) {
+    let parts = key.split(".");
+    key = parts.pop();
+    target = parts.reduce((o, i) => {
+      if (!o.hasOwnProperty(i)) o[i] = {};
+      return o[i];
+    }, object);
+  }
+
+  // Update the target
+  if (target[key] !== value) {
+    changed = true;
+    target[key] = value;
+  }
+
+  // Return changed status
+  return changed;
+}
+
 function _mergeInsert(original, k, v, { insertKeys, insertValues, performDeletions } = {}, _d) {
   // Delete a key
   if (k.startsWith("-=") && performDeletions) {
@@ -301,4 +346,16 @@ function mockGetType(variable) {
 
   // Unknown Object type
   return "Object";
+}
+
+function mockGetProperty(object, key) {
+  if (!key) return undefined;
+  let target = object;
+  for (let p of key.split(".")) {
+    const t = getType(target);
+    if (!(t === "Object" || t === "Array")) return undefined;
+    if (p in target) target = target[p];
+    else return undefined;
+  }
+  return target;
 }

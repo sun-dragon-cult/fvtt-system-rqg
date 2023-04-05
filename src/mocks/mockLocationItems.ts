@@ -1,5 +1,5 @@
 import { RqgItem } from "src/items/rqgItem";
-import { LocationNode } from "../items/shared/locationNode";
+import { LocationItemNodeData } from "../items/shared/locationItemNode";
 
 // Mock contains derived values
 export const mockItems = [
@@ -9,11 +9,6 @@ export const mockItems = [
     name: "Air (element)",
     type: "rune",
     sort: 100000,
-    flags: {
-      core: {
-        sourceId: "Item.xlY1f0Vb11SjOMJ7",
-      },
-    },
     img: "systems/rqg/assets/images/runes/air.svg",
     effects: [],
     folder: null,
@@ -37,14 +32,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "nH6sNyskGcolvMwP",
@@ -52,11 +39,6 @@ export const mockItems = [
     name: "Beast (form)",
     type: "rune",
     sort: 200000,
-    flags: {
-      core: {
-        sourceId: "Item.xPnDk7Ssf0ID4D9v",
-      },
-    },
     img: "systems/rqg/assets/images/runes/beast.svg",
     effects: [],
     folder: null,
@@ -80,14 +62,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "5nCvQCfdxkh2gZn6",
@@ -95,11 +69,6 @@ export const mockItems = [
     name: "Darkness (element)",
     type: "rune",
     sort: 800000,
-    flags: {
-      core: {
-        sourceId: "Item.GdKcEwzStCyZyuOu",
-      },
-    },
     img: "systems/rqg/assets/images/runes/darkness.svg",
     effects: [],
     folder: null,
@@ -123,14 +92,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "mfE0YrdpvkDNpZg4",
@@ -138,11 +99,6 @@ export const mockItems = [
     name: "Death (power)",
     type: "rune",
     sort: 900000,
-    flags: {
-      core: {
-        sourceId: "Item.ZuuVlrxvDiAdrq4h",
-      },
-    },
     img: "systems/rqg/assets/images/runes/death.svg",
     effects: [],
     folder: null,
@@ -166,14 +122,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "ro3qEtDnHLlY9Noy",
@@ -181,11 +129,6 @@ export const mockItems = [
     name: "Disorder (power)",
     type: "rune",
     sort: 1000000,
-    flags: {
-      core: {
-        sourceId: "Item.pbUIc2rfqGyvJkn8",
-      },
-    },
     img: "systems/rqg/assets/images/runes/disorder.svg",
     effects: [],
     folder: null,
@@ -209,14 +152,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "C3la4vV4J5BoTrVP",
@@ -224,11 +159,6 @@ export const mockItems = [
     name: "Earth (element)",
     type: "rune",
     sort: 1400000,
-    flags: {
-      core: {
-        sourceId: "Item.JgUlD7iVWlsn6Oop",
-      },
-    },
     img: "systems/rqg/assets/images/runes/earth.svg",
     effects: [],
     folder: null,
@@ -252,14 +182,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "yx6qD6JGAgGmeMQL",
@@ -267,11 +189,6 @@ export const mockItems = [
     name: "Fertility (power)",
     type: "rune",
     sort: 1700000,
-    flags: {
-      core: {
-        sourceId: "Item.58himlGrm0FJRgK4",
-      },
-    },
     img: "systems/rqg/assets/images/runes/fertility.svg",
     effects: [],
     folder: null,
@@ -295,14 +212,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "BLjXdz5tIcWcgUht",
@@ -310,16 +219,6 @@ export const mockItems = [
     name: "Fire/Sky (element)",
     type: "rune",
     sort: 1800000,
-    flags: {
-      core: {
-        sourceId: "Item.tvzIKt8NsuAEVYTM",
-      },
-      rqg: {
-        documentRqidFlags: {
-          id: "i.rune.fire-sky-element",
-        },
-      },
-    },
     img: "systems/rqg/assets/images/runes/fire_sky.svg",
     effects: [],
     folder: null,
@@ -343,14 +242,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "t2jlaoQ97gMBtgi6",
@@ -358,11 +249,6 @@ export const mockItems = [
     name: "Harmony (power)",
     type: "rune",
     sort: 1900000,
-    flags: {
-      core: {
-        sourceId: "Item.BO4EoltGErqMhK3y",
-      },
-    },
     img: "systems/rqg/assets/images/runes/harmony.svg",
     effects: [],
     folder: null,
@@ -386,14 +272,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "Rvqsjxdbb65lE5YH",
@@ -401,11 +279,6 @@ export const mockItems = [
     name: "Illusion (power)",
     type: "rune",
     sort: 3800000,
-    flags: {
-      core: {
-        sourceId: "Item.KpRRRlDOIMYCt4Wa",
-      },
-    },
     img: "systems/rqg/assets/images/runes/illusion.svg",
     effects: [],
     folder: null,
@@ -429,14 +302,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "eq9OXxU6aoOlgBwC",
@@ -444,11 +309,6 @@ export const mockItems = [
     name: "Man (form)",
     type: "rune",
     sort: 2400000,
-    flags: {
-      core: {
-        sourceId: "Item.eqPyKQusOZElr8Jt",
-      },
-    },
     img: "systems/rqg/assets/images/runes/man.svg",
     effects: [],
     folder: null,
@@ -472,14 +332,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "QzwY1OhQhQ5mH5oS",
@@ -487,18 +339,6 @@ export const mockItems = [
     name: "Moon (element)",
     type: "rune",
     sort: 2600000,
-    flags: {
-      core: {
-        sourceId: "Item.FtW387vRmXlSYove",
-      },
-      rqg: {
-        documentRqidFlags: {
-          id: "",
-          lang: "en",
-          priority: null,
-        },
-      },
-    },
     img: "systems/rqg/assets/images/runes/moon_full.svg",
     effects: [],
     folder: null,
@@ -522,14 +362,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.290",
-      createdTime: null,
-      modifiedTime: 1670177030367,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "qT4TozNKucLQRKOu",
@@ -537,11 +369,6 @@ export const mockItems = [
     name: "Movement (power)",
     type: "rune",
     sort: 2700000,
-    flags: {
-      core: {
-        sourceId: "Item.AOhMDHa8AWy23eZX",
-      },
-    },
     img: "systems/rqg/assets/images/runes/movement_change.svg",
     effects: [],
     folder: null,
@@ -565,14 +392,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670721450298,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "dRJQoX28ZVCJ2hc6",
@@ -580,11 +399,6 @@ export const mockItems = [
     name: "Stasis (power)",
     type: "rune",
     sort: 3200000,
-    flags: {
-      core: {
-        sourceId: "Item.dxGJnydcrPLTZ4t8",
-      },
-    },
     img: "systems/rqg/assets/images/runes/stasis.svg",
     effects: [],
     folder: null,
@@ -608,14 +422,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "pOiLGo9Cu0MYgSuw",
@@ -623,11 +429,6 @@ export const mockItems = [
     name: "Truth (power)",
     type: "rune",
     sort: 3500000,
-    flags: {
-      core: {
-        sourceId: "Item.XrPXLzt7gjwqjOvw",
-      },
-    },
     img: "systems/rqg/assets/images/runes/truth.svg",
     effects: [],
     folder: null,
@@ -651,14 +452,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "iq2sigyQ6Yj6Hyzp",
@@ -666,11 +459,6 @@ export const mockItems = [
     name: "Water (element)",
     type: "rune",
     sort: 3900000,
-    flags: {
-      core: {
-        sourceId: "Item.3v1aE3DQR790KFSL",
-      },
-    },
     img: "systems/rqg/assets/images/runes/water.svg",
     effects: [],
     folder: null,
@@ -694,14 +482,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "gv1wUqCVlG3ya2lB",
@@ -709,11 +489,6 @@ export const mockItems = [
     name: "Climb",
     type: "skill",
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.xhTWgziWQKDEDE9V",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Climb.jpeg",
     effects: [],
     folder: null,
@@ -737,14 +512,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "LXnVmVkdkRvHoMU6",
@@ -753,9 +520,6 @@ export const mockItems = [
     type: "skill",
     sort: 50000,
     flags: {
-      core: {
-        sourceId: "Item.r3sREIohJN9mCRr0",
-      },
       rqg: {
         documentRqidFlags: {
           id: "i.skill.dodge",
@@ -787,14 +551,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "L5HmHEqMw6h78qjt",
@@ -803,9 +559,6 @@ export const mockItems = [
     type: "skill",
     sort: 75000,
     flags: {
-      core: {
-        sourceId: "Item.gp6jwemJ49BFLcpi",
-      },
       rqg: {
         documentRqidFlags: {
           id: "i.skill.jump",
@@ -837,14 +590,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "YfhL5OsNqEJVUHml",
@@ -852,11 +597,6 @@ export const mockItems = [
     name: "Ride (Horse)",
     type: "skill",
     sort: -50000,
-    flags: {
-      core: {
-        sourceId: "Item.w12yU1mjdu18OUrN",
-      },
-    },
     img: "systems/rqg/assets/images/skills/ride.svg",
     effects: [],
     folder: null,
@@ -880,14 +620,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "7GIGhIuQlQefBFld",
@@ -895,11 +627,6 @@ export const mockItems = [
     name: "Swim",
     type: "skill",
     sort: 25000,
-    flags: {
-      core: {
-        sourceId: "Item.rfJ6RxYUwfQPYEfl",
-      },
-    },
     img: "modules/game-icons-net/whitebackground/water-splash.svg",
     effects: [],
     folder: null,
@@ -923,14 +650,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "951JcpK98JiFkOM1",
@@ -938,11 +657,6 @@ export const mockItems = [
     name: "Meditate",
     type: "skill",
     sort: 100000,
-    flags: {
-      core: {
-        sourceId: "Item.axePUmnXN3VN02Oe",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Meditate.png",
     effects: [],
     folder: null,
@@ -966,14 +680,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "1UgUa4YnoIO5Rjfq",
@@ -982,9 +688,6 @@ export const mockItems = [
     type: "skill",
     sort: 175000,
     flags: {
-      core: {
-        sourceId: "Item.drNiBzZTRGkWAefy",
-      },
       rqg: {
         documentRqidFlags: {
           id: "i.skill.spirit-combat",
@@ -1016,14 +719,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "TjYkdOL79xtgwL2U",
@@ -1031,11 +726,6 @@ export const mockItems = [
     name: "Worship Etyries",
     type: "skill",
     sort: 123438,
-    flags: {
-      core: {
-        sourceId: "Item.hOiuhZOUmrRR0zem",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Worship.jpg",
     effects: [],
     folder: null,
@@ -1059,14 +749,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "R0teCyuL8HwSsIGH",
@@ -1074,11 +756,6 @@ export const mockItems = [
     name: "Insight own species",
     type: "skill",
     sort: 100000,
-    flags: {
-      core: {
-        sourceId: "Item.2hTg8a5OpYoUBGAM",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Insight.jpg",
     effects: [],
     folder: null,
@@ -1102,14 +779,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "gZAeMDtS81f5twBS",
@@ -1117,11 +786,6 @@ export const mockItems = [
     name: "Listen",
     type: "skill",
     sort: 200000,
-    flags: {
-      core: {
-        sourceId: "Item.au0uKaXGIB8KBcql",
-      },
-    },
     img: "systems/rqg/assets/images/skills/listen.svg",
     effects: [],
     folder: null,
@@ -1145,14 +809,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "7MppPCHLL0faZ1As",
@@ -1160,11 +816,6 @@ export const mockItems = [
     name: "Scan",
     type: "skill",
     sort: 150000,
-    flags: {
-      core: {
-        sourceId: "Item.pqIfgW7SQHfBxkW2",
-      },
-    },
     img: "systems/rqg/assets/images/skills/scan.svg",
     effects: [],
     folder: null,
@@ -1188,14 +839,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "gJSMDe3fa1DlYYMH",
@@ -1203,11 +846,6 @@ export const mockItems = [
     name: "Search",
     type: "skill",
     sort: 125000,
-    flags: {
-      core: {
-        sourceId: "Item.eI12sLgfcjqOUrnA",
-      },
-    },
     img: "systems/rqg/assets/images/skills/search.svg",
     effects: [],
     folder: null,
@@ -1231,14 +869,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "plQuSp5VcC0J0Ihx",
@@ -1246,11 +876,6 @@ export const mockItems = [
     name: "Track",
     type: "skill",
     sort: 137500,
-    flags: {
-      core: {
-        sourceId: "Item.lSuZ3Q2Z9TGqj2ow",
-      },
-    },
     img: "systems/rqg/assets/images/skills/track.svg",
     effects: [],
     folder: null,
@@ -1274,14 +899,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "plL8Eizd98CaYtCS",
@@ -1289,11 +906,6 @@ export const mockItems = [
     name: "Bargain",
     type: "skill",
     sort: -49999,
-    flags: {
-      core: {
-        sourceId: "Item.eBjufD1qHfod71cN",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Bargain.jpg",
     effects: [],
     folder: null,
@@ -1317,14 +929,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "nH1r5Vh0dW2Agq2R",
@@ -1332,11 +936,6 @@ export const mockItems = [
     name: "Charm",
     type: "skill",
     sort: -199999,
-    flags: {
-      core: {
-        sourceId: "Item.LHRKUG5aIt61t4AZ",
-      },
-    },
     img: "systems/rqg/assets/images/skills/charm.svg",
     effects: [],
     folder: null,
@@ -1360,14 +959,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "cT7yE39lF6ZO4IVY",
@@ -1375,11 +966,6 @@ export const mockItems = [
     name: "Disguise",
     type: "skill",
     sort: -124999,
-    flags: {
-      core: {
-        sourceId: "Item.MNAMEZC1UV1zHdpP",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Disguise.jpg",
     effects: [],
     folder: null,
@@ -1403,14 +989,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "NZRVuKK3q6tOc2f8",
@@ -1418,11 +996,6 @@ export const mockItems = [
     name: "Dance",
     type: "skill",
     sort: -149999,
-    flags: {
-      core: {
-        sourceId: "Item.lRjc3ZaDn8iVqW8X",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/dancer.jpeg",
     effects: [],
     folder: null,
@@ -1446,14 +1019,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "2vRI1FzqidSAsxCZ",
@@ -1461,11 +1026,6 @@ export const mockItems = [
     name: "Intrigue",
     type: "skill",
     sort: -299999,
-    flags: {
-      core: {
-        sourceId: "Item.c4Yf2eH9qOsJMqxp",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Intrigue.png",
     effects: [],
     folder: null,
@@ -1489,14 +1049,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "EXzbjtmfqfohPWhr",
@@ -1504,11 +1056,6 @@ export const mockItems = [
     name: "Orate",
     type: "skill",
     sort: -174999,
-    flags: {
-      core: {
-        sourceId: "Item.thpejlI6yKZthxiI",
-      },
-    },
     img: "systems/rqg/assets/images/skills/orate.svg",
     effects: [],
     folder: null,
@@ -1532,14 +1079,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "WkhCnROLHUmQxTSl",
@@ -1547,11 +1086,6 @@ export const mockItems = [
     name: "Speak Other Language Tarshite",
     type: "skill",
     sort: -142186,
-    flags: {
-      core: {
-        sourceId: "Item.A90X6cLkXvOAzD7G",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Speak%20Other%20Laguage.png",
     effects: [],
     folder: null,
@@ -1575,14 +1109,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "xmNkuMQKO33uQWjE",
@@ -1590,12 +1116,6 @@ export const mockItems = [
     name: "Speak Own Language (New Pelorian)",
     type: "skill",
     sort: 100001,
-    flags: {
-      core: {
-        sheetClass: "rqg.SkillSheet",
-        sourceId: "Item.Hn4HkTARBrpVWB00",
-      },
-    },
     img: "systems/rqg/assets/images/skills/speak.svg",
     effects: [],
     folder: null,
@@ -1619,14 +1139,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "ZgoPLVllSfNxVdQt",
@@ -1634,11 +1146,6 @@ export const mockItems = [
     name: "Speak Other Language Trade Talk",
     type: "skill",
     sort: -142186,
-    flags: {
-      core: {
-        sourceId: "Item.A90X6cLkXvOAzD7G",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Speak%20Other%20Laguage.png",
     effects: [],
     folder: null,
@@ -1662,14 +1169,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "g43POGLCLeOH5rDN",
@@ -1677,11 +1176,6 @@ export const mockItems = [
     name: "Conceal",
     type: "skill",
     sort: 100000,
-    flags: {
-      core: {
-        sourceId: "Item.NXCWUSyqetiIcwQr",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Conceal.png",
     effects: [],
     folder: null,
@@ -1705,14 +1199,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "TAAIfE98FXJ7TTLW",
@@ -1720,11 +1206,6 @@ export const mockItems = [
     name: "Devise",
     type: "skill",
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.Vv49VFbvcDoTouRQ",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Device.jpg",
     effects: [],
     folder: null,
@@ -1748,14 +1229,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "usBDS8OIt6YYgPOa",
@@ -1763,11 +1236,6 @@ export const mockItems = [
     name: "Sleight",
     type: "skill",
     sort: -100000,
-    flags: {
-      core: {
-        sourceId: "Item.9eQGLec7Rjlwsamo",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Sleight%27.jpg",
     effects: [],
     folder: null,
@@ -1791,14 +1259,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "XKNoEW8TK3MsnXpK",
@@ -1806,11 +1266,6 @@ export const mockItems = [
     name: "2H Mace (quarterstaff)",
     type: "skill",
     sort: 300000,
-    flags: {
-      core: {
-        sourceId: "Item.qehnIgKCfC05BeUD",
-      },
-    },
     img: "systems/rqg/assets/images/weapons/2h-axe.svg",
     effects: [],
     folder: null,
@@ -1834,14 +1289,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670661302098,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "EVviYTsRZHWDjxjx",
@@ -1849,11 +1296,6 @@ export const mockItems = [
     name: "1H Sword kopis",
     type: "skill",
     sort: 1500000,
-    flags: {
-      core: {
-        sourceId: "Item.XlekpW7muFg4nhw7",
-      },
-    },
     img: "systems/rqg/assets/images/weapons/2h-axe.svg",
     effects: [],
     folder: null,
@@ -1877,14 +1319,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "mR08gtXZIIrVuBwj",
@@ -1892,11 +1326,6 @@ export const mockItems = [
     name: "Dagger",
     type: "skill",
     sort: 425000,
-    flags: {
-      core: {
-        sourceId: "Item.tbPfOnvtOyDamUHS",
-      },
-    },
     img: "systems/rqg/assets/images/weapons/2h-axe.svg",
     effects: [],
     folder: null,
@@ -1920,14 +1349,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "PPZ0QsnAJCVSnhTL",
@@ -1935,11 +1356,6 @@ export const mockItems = [
     name: "Hide",
     type: "skill",
     sort: 100000,
-    flags: {
-      core: {
-        sourceId: "Item.ogEIWm372Y0SpENn",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Hide.jpg",
     effects: [],
     folder: null,
@@ -1963,14 +1379,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "tQ3CZQLTU1U5sbcw",
@@ -1979,9 +1387,6 @@ export const mockItems = [
     type: "skill",
     sort: 200000,
     flags: {
-      core: {
-        sourceId: "Item.WtDxmsqTSdwVkfGJ",
-      },
       rqg: {
         documentRqidFlags: {
           id: "i.skill.move-quietly",
@@ -2013,14 +1418,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "oG9ivGccAWFIoRZk",
@@ -2028,11 +1425,6 @@ export const mockItems = [
     name: "Bureaucrazy",
     type: "skill",
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.iGrWF69Ai77rPh5V",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Bureaucrazy.jpg",
     effects: [],
     folder: null,
@@ -2056,14 +1448,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "GGTHmfbNIrvBuZDZ",
@@ -2071,11 +1455,6 @@ export const mockItems = [
     name: "Celestial Lore",
     type: "skill",
     sort: -150000,
-    flags: {
-      core: {
-        sourceId: "Item.5EAudRWf1RRTOhiY",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Celestial.jpeg",
     effects: [],
     folder: null,
@@ -2099,14 +1478,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "xpPaJ7iZKBCFtWGz",
@@ -2114,11 +1485,6 @@ export const mockItems = [
     name: "Cult Lore Etyries",
     type: "skill",
     sort: -200000,
-    flags: {
-      core: {
-        sourceId: "Item.Rcvhbh1irNirnboR",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Cult.jpg",
     effects: [],
     folder: null,
@@ -2142,14 +1508,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "A6IkPcvtXTPAynjz",
@@ -2157,11 +1515,6 @@ export const mockItems = [
     name: "Customs local",
     type: "skill",
     sort: 150000,
-    flags: {
-      core: {
-        sourceId: "Item.523Bbow4bMwA48BK",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/custom.png",
     effects: [],
     folder: null,
@@ -2185,14 +1538,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "2tZgMBKwplStHSMG",
@@ -2200,11 +1545,6 @@ export const mockItems = [
     name: "Evaluate",
     type: "skill",
     sort: 175000,
-    flags: {
-      core: {
-        sourceId: "Item.Kp5jnaJWMGOvMbga",
-      },
-    },
     img: "systems/rqg/assets/images/skills/evaluate.svg",
     effects: [],
     folder: null,
@@ -2228,14 +1568,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "EQ4BojqKbGvshiLE",
@@ -2243,11 +1575,6 @@ export const mockItems = [
     name: "Farm",
     type: "skill",
     sort: 125000,
-    flags: {
-      core: {
-        sourceId: "Item.9Fw6zn0FGwMdICqs",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Farm.png",
     effects: [],
     folder: null,
@@ -2271,14 +1598,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "3e95N4iMxbRndDl0",
@@ -2286,11 +1605,6 @@ export const mockItems = [
     name: "Homeland Lore Tarsh (own)",
     type: "skill",
     sort: 115625,
-    flags: {
-      core: {
-        sourceId: "Item.mwCLSfdf21pYuANX",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Homeland.png",
     effects: [],
     folder: null,
@@ -2314,14 +1628,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "RJAIogTXK3tXO4lV",
@@ -2329,11 +1635,6 @@ export const mockItems = [
     name: "Library Use",
     type: "skill",
     sort: 131250,
-    flags: {
-      core: {
-        sourceId: "Item.gX73iJMQtnFaEmiM",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Libery.png",
     effects: [],
     folder: null,
@@ -2357,14 +1658,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "1cgOdNVQeFfrbg5j",
@@ -2372,11 +1665,6 @@ export const mockItems = [
     name: "Manage Household",
     type: "skill",
     sort: 156250,
-    flags: {
-      core: {
-        sourceId: "Item.Lq3K9lKIEbZedGb2",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Household.png",
     effects: [],
     folder: null,
@@ -2400,14 +1688,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "gxt5cAc1WvpCzGTx",
@@ -2415,11 +1695,6 @@ export const mockItems = [
     name: "Peaceful Cut",
     type: "skill",
     sort: 159375,
-    flags: {
-      core: {
-        sourceId: "Item.RL6W1udqr03RKyLW",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Peaceful%20cut.png",
     effects: [],
     folder: null,
@@ -2443,14 +1718,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "6SMl2WZ8JxSI3GJt",
@@ -2458,11 +1725,6 @@ export const mockItems = [
     name: "Plant Lore",
     type: "skill",
     sort: 118750,
-    flags: {
-      core: {
-        sourceId: "Item.09lhk9Jqg5aUJPIL",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Plantlore.jpg",
     effects: [],
     folder: null,
@@ -2486,14 +1748,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "yC7eNxc80DWBWH1E",
@@ -2501,11 +1755,6 @@ export const mockItems = [
     name: "Read/Write New Pelorian",
     type: "skill",
     sort: 400000,
-    flags: {
-      core: {
-        sourceId: "Item.5C9zdZqnOVUGfeO5",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Read%20Write.jpg",
     effects: [],
     folder: null,
@@ -2529,14 +1778,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "ZrmqMbvf6rSPHgXV",
@@ -2544,11 +1785,6 @@ export const mockItems = [
     name: "Survival",
     type: "skill",
     sort: 157813,
-    flags: {
-      core: {
-        sourceId: "Item.OEemc1IS3EvAJOct",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Skill%20icons/Survival.png",
     effects: [],
     folder: null,
@@ -2572,14 +1808,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "UTUZRv7hu342En1Y",
@@ -2587,11 +1815,6 @@ export const mockItems = [
     name: "Devotion (Etyries)",
     type: "passion",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.NWUfHj46RLWQ6DIJ",
-      },
-    },
     img: "systems/rqg/assets/images/passion/devotion.svg",
     effects: [],
     folder: null,
@@ -2607,14 +1830,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "u6BnW6RWuj05put1",
@@ -2622,11 +1837,6 @@ export const mockItems = [
     name: "Loyalty (Talford)",
     type: "passion",
     sort: 300001,
-    flags: {
-      core: {
-        sourceId: "Item.h7TCzKeipEKgkwIw",
-      },
-    },
     img: "systems/rqg/assets/images/passion/loyalty.svg",
     effects: [],
     folder: null,
@@ -2642,14 +1852,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "28e3lBsRWJFioAKp",
@@ -2657,11 +1859,6 @@ export const mockItems = [
     name: "Love (Family)",
     type: "passion",
     sort: 400001,
-    flags: {
-      core: {
-        sourceId: "Item.wF3V3GAsnFM9hoxn",
-      },
-    },
     img: "systems/rqg/assets/images/passion/love.svg",
     effects: [],
     folder: null,
@@ -2677,14 +1874,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "XV8nqmGnkfVmlWvZ",
@@ -2692,11 +1881,6 @@ export const mockItems = [
     name: "Loyalty (Dykene)",
     type: "passion",
     sort: 300001,
-    flags: {
-      core: {
-        sourceId: "Item.h7TCzKeipEKgkwIw",
-      },
-    },
     img: "systems/rqg/assets/images/passion/loyalty.svg",
     effects: [],
     folder: null,
@@ -2712,14 +1896,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "CAcjRc5wXrxxeWFy",
@@ -2727,11 +1903,6 @@ export const mockItems = [
     name: "Fear (Undead)",
     type: "passion",
     sort: 500001,
-    flags: {
-      core: {
-        sourceId: "Item.kTqttepdBqgv3iLA",
-      },
-    },
     img: "systems/rqg/assets/images/passion/fear.svg",
     effects: [],
     folder: null,
@@ -2748,14 +1919,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670721251547,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "XLp6TPl0ow5GmJ5v",
@@ -2763,11 +1926,6 @@ export const mockItems = [
     name: "Loyalty (Red Emperor)",
     type: "passion",
     sort: 300001,
-    flags: {
-      core: {
-        sourceId: "Item.h7TCzKeipEKgkwIw",
-      },
-    },
     img: "systems/rqg/assets/images/passion/loyalty.svg",
     effects: [],
     folder: null,
@@ -2783,14 +1941,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "t4zVT94CI7xyZo8k",
@@ -2798,11 +1948,6 @@ export const mockItems = [
     name: "Etyries",
     type: "cult",
     sort: 100000,
-    flags: {
-      core: {
-        sourceId: "Item.cYeeX0cqOx5yxRWl",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/images/Gods/Etyries.jpg",
     effects: [],
     folder: null,
@@ -2814,7 +1959,7 @@ export const mockItems = [
       },
       tagline: "LUNAR GODDESS OF TRADE",
       holyDays:
-        '<p style="box-sizing: border-box; user-select: text; color: #191813;">&nbsp;Each season,&nbsp; Movement Week, Wild Day</p>\n<p style="box-sizing: border-box; user-select: text; color: #191813;"><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">The High Holy Day of&nbsp;</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SpellingErrorV2 SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; background-image: url(\'&amp;quot;img_367930462461613422507442_3&amp;quot;\'); background-position: 0% 100%; background-repeat: repeat-x; border-bottom: 1px solid transparent; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">Etyries</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">&nbsp;is&nbsp;</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SpellingErrorV2 SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; background-image: url(\'&amp;quot;img_367930462461613422507442_4&amp;quot;\'); background-position: 0% 100%; background-repeat: repeat-x; border-bottom: 1px solid transparent; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">Wildday</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">&nbsp;(Full Moon) of both weeks of Sacred Time.</span></span><span class="EOP SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; color: windowtext; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:160,&quot;335559740&quot;:259}">&nbsp;</span></p>',
+        '<p style="box-sizing: border-box; user-select: text; color: #191813;">&nbsp;Each season,&nbsp; Movement Week, Wild Day</p>\n<p style="box-sizing: border-box; user-select: text; color: #191813;"><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">The High Holy Day of&nbsp;</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SpellingErrorV2 SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; background-position: 0% 100%; background-repeat: repeat-x; border-bottom: 1px solid transparent; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">Etyries</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">&nbsp;is&nbsp;</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SpellingErrorV2 SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; background-image: url(\'&amp;quot;img_367930462461613422507442_4&amp;quot;\'); background-position: 0% 100%; background-repeat: repeat-x; border-bottom: 1px solid transparent; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">Wildday</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">&nbsp;(Full Moon) of both weeks of Sacred Time.</span></span><span class="EOP SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; color: windowtext; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:160,&quot;335559740&quot;:259}">&nbsp;</span></p>',
       gifts: "",
       geases: "",
       runes: ["Movement (power)", "Moon (element)"],
@@ -2830,14 +1975,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670721449898,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "DwdOHx5K0RSLFUke",
@@ -2845,11 +1982,6 @@ export const mockItems = [
     name: "Communication (condition)",
     type: "rune",
     sort: 4000000,
-    flags: {
-      core: {
-        sourceId: "Item.ZOAbq26ILvGSr1nu",
-      },
-    },
     img: "systems/rqg/assets/images/runes/communication_trade.svg",
     effects: [],
     folder: null,
@@ -2873,14 +2005,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "wgxymkmA2MIspQQr",
@@ -2888,11 +2012,6 @@ export const mockItems = [
     name: "Path Watch",
     type: "runeMagic",
     sort: 10900000,
-    flags: {
-      core: {
-        sourceId: "Item.t2XdnX0yCtynrXXk",
-      },
-    },
     img: "systems/rqg/assets/images/items/rune-magic.svg",
     effects: [],
     folder: null,
@@ -2919,14 +2038,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "C7kKKigjNkKv1xCJ",
@@ -2934,11 +2045,6 @@ export const mockItems = [
     name: "Extension",
     type: "runeMagic",
     sort: 6000000,
-    flags: {
-      core: {
-        sourceId: "Item.4nlPKyHmIfLy5iVv",
-      },
-    },
     img: "systems/rqg/assets/images/items/rune-magic.svg",
     effects: [],
     folder: null,
@@ -2965,14 +2071,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "SskhhW89pfcKS28W",
@@ -2980,11 +2078,6 @@ export const mockItems = [
     name: "Heal Wound",
     type: "runeMagic",
     sort: 7600000,
-    flags: {
-      core: {
-        sourceId: "Item.GRFhUrU1zWCttbbR",
-      },
-    },
     img: "systems/rqg/assets/images/items/rune-magic.svg",
     effects: [],
     folder: null,
@@ -3012,14 +2105,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "8Hu2fc0jk36Qi92W",
@@ -3027,11 +2112,6 @@ export const mockItems = [
     name: "Quarterstaff",
     type: "weapon",
     sort: 500000,
-    flags: {
-      core: {
-        sourceId: "Item.HvmvNSSZ6X17nc7O",
-      },
-    },
     img: "icons/weapons/staves/staff-simple.webp",
     effects: [],
     folder: null,
@@ -3119,14 +2199,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670659996104,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "W5bUaf9Hg61ZAM1y",
@@ -3134,11 +2206,6 @@ export const mockItems = [
     name: "Dagger",
     type: "weapon",
     sort: 200000,
-    flags: {
-      core: {
-        sourceId: "Item.lXy9KXJXL9Bu9uz0",
-      },
-    },
     img: "icons/weapons/daggers/dagger-double-engraved-black.webp",
     effects: [],
     folder: null,
@@ -3224,14 +2291,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "vAaxEpgS2ANAfxet",
@@ -3239,11 +2298,6 @@ export const mockItems = [
     name: "Wood stauet",
     type: "gear",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.kgFzr1CNQYBAvqt9",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Art/Etyries%20statuet.jpeg",
     effects: [],
     folder: null,
@@ -3266,14 +2320,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "usb4lsNHnRLDmX0c",
@@ -3281,18 +2327,6 @@ export const mockItems = [
     name: "Leather Vambraces  (Leather)",
     type: "armor",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.B8sD8874Wi36BvNx",
-      },
-      rqg: {
-        documentRqidFlags: {
-          id: "i.armor.leather-vambraces-leather",
-          lang: "en",
-          priority: null,
-        },
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Armor/Leather%20Greaves.jpg",
     effects: [
       {
@@ -3357,14 +2391,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1673812039651,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "yD3LiqU8rKv8yW1P",
@@ -3372,11 +2398,6 @@ export const mockItems = [
     name: "Leather Greaves  (Leather)",
     type: "armor",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.T1yXT50afQGTX6WJ",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Armor/Leather%20Greaves.jpg",
     effects: [
       {
@@ -3441,14 +2462,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "TNR9fCbTgIXZaKol",
@@ -3456,11 +2469,6 @@ export const mockItems = [
     name: "Backpack",
     type: "gear",
     sort: 11800000,
-    flags: {
-      core: {
-        sourceId: "Item.GqMhEcu4i6XIZhAD",
-      },
-    },
     img: "icons/containers/bags/pack-leather-white-tan.webp",
     effects: [],
     folder: null,
@@ -3482,14 +2490,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "gA6WIvluiRKy2aDX",
@@ -3497,11 +2497,6 @@ export const mockItems = [
     name: "Blanket (hide",
     type: "gear",
     sort: 200001,
-    flags: {
-      core: {
-        sourceId: "Item.oOXUKskjb5H2WUE7",
-      },
-    },
     img: "systems/dnd5e/icons/items/inventory/cloth-green.jpg",
     effects: [],
     folder: null,
@@ -3523,14 +2518,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "d4rnVSjAw9mFcf5n",
@@ -3538,11 +2525,6 @@ export const mockItems = [
     name: "Fire Starter",
     type: "gear",
     sort: 300001,
-    flags: {
-      core: {
-        sourceId: "Item.cJiHGa7kDZnjvQ6z",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Firestarter.jpg",
     effects: [],
     folder: null,
@@ -3564,14 +2546,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "1EioaN5VZLp4VYzY",
@@ -3579,11 +2553,6 @@ export const mockItems = [
     name: "Broad-brimmed Hat  (Leather)",
     type: "armor",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.cevpAwMU5YYh5Rdt",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Cloth/Leather%20Hat.jpg",
     effects: [
       {
@@ -3647,14 +2616,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "fjntX1iBePUGdaZP",
@@ -3662,11 +2623,6 @@ export const mockItems = [
     name: "Head",
     type: "hitLocation",
     sort: 300001,
-    flags: {
-      core: {
-        sourceId: "Item.jO3IL97l7nRR9dcP",
-      },
-    },
     img: "icons/svg/mystery-man.svg",
     effects: [],
     folder: null,
@@ -3688,14 +2644,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670660103933,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "QReuujsEvDWvTWDW",
@@ -3703,11 +2651,6 @@ export const mockItems = [
     name: "Right Arm",
     type: "hitLocation",
     sort: 600001,
-    flags: {
-      core: {
-        sourceId: "Item.zNMN2CQWqMSsNMCI",
-      },
-    },
     img: "icons/svg/mystery-man.svg",
     effects: [],
     folder: null,
@@ -3729,14 +2672,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "sSH30UhYWAKHZJBe",
@@ -3744,11 +2679,6 @@ export const mockItems = [
     name: "Chest",
     type: "hitLocation",
     sort: 200001,
-    flags: {
-      core: {
-        sourceId: "Item.5CgqA5ZsD66ap18b",
-      },
-    },
     img: "icons/svg/mystery-man.svg",
     effects: [],
     folder: null,
@@ -3770,14 +2700,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "hXXDTWswJsqdC7VV",
@@ -3785,11 +2707,6 @@ export const mockItems = [
     name: "Abdomen",
     type: "hitLocation",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.x07MzgRYcFdZbLdz",
-      },
-    },
     img: "icons/svg/mystery-man.svg",
     effects: [],
     folder: null,
@@ -3811,14 +2728,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "IwUO0xNU8gRm23PH",
@@ -3826,11 +2735,6 @@ export const mockItems = [
     name: "Left Leg",
     type: "hitLocation",
     sort: 500001,
-    flags: {
-      core: {
-        sourceId: "Item.3wz7Q6uuDqUGAYCo",
-      },
-    },
     img: "icons/svg/mystery-man.svg",
     effects: [],
     folder: null,
@@ -3852,14 +2756,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "J0WxWb7aXnDzoYHn",
@@ -3867,11 +2763,6 @@ export const mockItems = [
     name: "Right Leg",
     type: "hitLocation",
     sort: 700001,
-    flags: {
-      core: {
-        sourceId: "Item.6vE9x5ini21ii9F5",
-      },
-    },
     img: "icons/svg/mystery-man.svg",
     effects: [],
     folder: null,
@@ -3893,14 +2784,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "OLwQEIo1vhFdAWvg",
@@ -3908,11 +2791,6 @@ export const mockItems = [
     name: "Belt Pouch",
     type: "gear",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.hipSX43UmxeQdyjZ",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Cloth/Pouch.jpg",
     effects: [],
     folder: null,
@@ -3934,14 +2812,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027397,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "eEqVuEQLtkY6Lfpm",
@@ -3949,11 +2819,6 @@ export const mockItems = [
     name: "Lunars",
     type: "gear",
     sort: 11700000,
-    flags: {
-      core: {
-        sourceId: "Item.DhCrrrWtD5GNytso",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Money/lunar.webp",
     effects: [],
     folder: null,
@@ -3975,14 +2840,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "ifk062JyG0wziIRs",
@@ -3990,11 +2847,6 @@ export const mockItems = [
     name: "Dragon Armor Greaves  (Dragon Hide and Scales)",
     type: "armor",
     sort: 400000,
-    flags: {
-      core: {
-        sourceId: "Item.VFUF3ymVFhHxpsP9",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Armor/Dragon%20armor%20greavs.jpg",
     effects: [],
     folder: null,
@@ -4021,14 +2873,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "WfOQlBxEMTzKoQaN",
@@ -4036,12 +2880,6 @@ export const mockItems = [
     name: "Dragon Armor Hauberk  (Dragon Hide and Bone)",
     type: "armor",
     sort: 150000,
-    flags: {
-      "gm-notes": {},
-      core: {
-        sourceId: "Item.Oqamax4lsUbi7t3E",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Armor/Dragonscale%20armor.jpg",
     effects: [
       {
@@ -4103,14 +2941,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "olzPns2WbDvtGEr5",
@@ -4118,11 +2948,6 @@ export const mockItems = [
     name: "Dragon Armor Vambraces  (Dragon Hide and Scales)",
     type: "armor",
     sort: 200000,
-    flags: {
-      core: {
-        sourceId: "Item.H1ue84IxJw01mDQi",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Armor/Dragon%20Armor%20vambracers.jpg",
     effects: [
       {
@@ -4183,14 +3008,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "Vc9wwC1qVkar4bGy",
@@ -4198,11 +3015,6 @@ export const mockItems = [
     name: "Dragon Helm  (Dragon Hide and Scales)",
     type: "armor",
     sort: 300000,
-    flags: {
-      core: {
-        sourceId: "Item.R5XNlTHjYhVhLgSj",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Armor/Dragon%20Armor%20helm.png",
     effects: [
       {
@@ -4267,14 +3079,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "Ki1vchwJ6bRn2DM5",
@@ -4282,11 +3086,6 @@ export const mockItems = [
     name: "Exchange Spells",
     type: "runeMagic",
     sort: 6000000,
-    flags: {
-      core: {
-        sourceId: "Item.HDG4pU5eqRD2ueTM",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/runes/moon_full.svg",
     effects: [],
     folder: null,
@@ -4313,14 +3112,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "K1DYnXZAVLb26bZM",
@@ -4328,11 +3119,6 @@ export const mockItems = [
     name: "Mindbridge",
     type: "runeMagic",
     sort: 10200000,
-    flags: {
-      core: {
-        sourceId: "Item.I8pmJxlObhOrZFrp",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/runes/harmony.svg",
     effects: [],
     folder: null,
@@ -4359,14 +3145,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "EXiPEvCtCfjDP50I",
@@ -4374,11 +3152,6 @@ export const mockItems = [
     name: "Scroll (X6)",
     type: "gear",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.ljkMsPjz3GyyC69m",
-      },
-    },
     img: "icons/sundries/documents/document-sealed-white-orange.webp",
     effects: [],
     folder: null,
@@ -4401,14 +3174,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "EUbd4OxPBxzPkTNu",
@@ -4416,11 +3181,6 @@ export const mockItems = [
     name: "Juwlery (c3)",
     type: "gear",
     sort: 100000,
-    flags: {
-      core: {
-        sourceId: "Item.h2dawQnRY1pwqFhv",
-      },
-    },
     img: "icons/equipment/neck/amulet-round-gold-blue.webp",
     effects: [],
     folder: null,
@@ -4442,14 +3202,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "Bx4UevFj87K7Sr0l",
@@ -4457,11 +3209,6 @@ export const mockItems = [
     name: "Juwelery (c4)",
     type: "gear",
     sort: 200000,
-    flags: {
-      core: {
-        sourceId: "Item.uEq4hgCHl7PmOi8S",
-      },
-    },
     img: "icons/equipment/neck/amulet-round-engraved-gold.webp",
     effects: [],
     folder: null,
@@ -4483,14 +3230,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "sYZQvfM8xUUB4SCK",
@@ -4498,11 +3237,6 @@ export const mockItems = [
     name: "Green Crystal (001)",
     type: "gear",
     sort: 200001,
-    flags: {
-      core: {
-        sourceId: "Item.KzUhJvcCofHyEVV1",
-      },
-    },
     img: "icons/commodities/gems/gem-faceted-diamond-green.webp",
     effects: [],
     folder: null,
@@ -4525,14 +3259,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027397,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "SzgUep8142bt8eQs",
@@ -4540,11 +3266,6 @@ export const mockItems = [
     name: "Jar with Rhino Fat",
     type: "gear",
     sort: 100001,
-    flags: {
-      core: {
-        sourceId: "Item.u9saMosv6RksdoRu",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Art/Clay%20jar.jpg",
     effects: [],
     folder: null,
@@ -4567,14 +3288,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "ckIxs5CYkhZ1R66P",
@@ -4582,11 +3295,6 @@ export const mockItems = [
     name: "Dress, Esrolian",
     type: "gear",
     sort: 200001,
-    flags: {
-      core: {
-        sourceId: "Item.ULPDgQcyae5DNRJD",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Cloth/Bodice.jpg",
     effects: [],
     folder: null,
@@ -4609,14 +3317,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "JDdR2V2pNhmFGQMF",
@@ -4624,11 +3324,6 @@ export const mockItems = [
     name: "Wheels",
     type: "gear",
     sort: 11900000,
-    flags: {
-      core: {
-        sourceId: "Item.GFCaN2SruQZkQsrN",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Money/wheel.webp",
     effects: [],
     folder: null,
@@ -4651,14 +3346,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670661279763,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "ooNoB57WRR4k2F5A",
@@ -4666,11 +3353,6 @@ export const mockItems = [
     name: "Animal Lore",
     type: "skill",
     sort: 100000,
-    flags: {
-      core: {
-        sourceId: "Item.w3ldoatiPniEndML",
-      },
-    },
     img: "systems/rqg/assets/images/skills/animal-lore.svg",
     effects: [],
     folder: null,
@@ -4694,14 +3376,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "tUif8OQvcrZsU6o0",
@@ -4709,11 +3383,6 @@ export const mockItems = [
     name: "1H Axe (small)",
     type: "skill",
     sort: 3100000,
-    flags: {
-      core: {
-        sourceId: "Item.0tUeTA1FuUGjyBHU",
-      },
-    },
     img: "systems/rqg/assets/images/weapons/2h-axe.svg",
     effects: [],
     folder: null,
@@ -4737,14 +3406,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "mStphCh0yVYetzCn",
@@ -4752,11 +3413,6 @@ export const mockItems = [
     name: "Left Arm",
     type: "hitLocation",
     sort: 400001,
-    flags: {
-      core: {
-        sourceId: "Item.kcUcKmz1Rg4S5tQx",
-      },
-    },
     img: "icons/svg/mystery-man.svg",
     effects: [],
     folder: null,
@@ -4778,14 +3434,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "2iDIddO75JYf3pHO",
@@ -4793,11 +3441,6 @@ export const mockItems = [
     name: "White stone",
     type: "gear",
     sort: 11000000,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.dead-unpowered-crystalsgems.yyHdLuUZEhM7pRpA",
-      },
-    },
     img: "https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/Images/Items/Juvelery/Agate.JPG",
     effects: [],
     folder: null,
@@ -4819,14 +3462,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027397,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "StPcfMyAsE5XBXvZ",
@@ -4834,11 +3469,6 @@ export const mockItems = [
     name: "Yellow stone",
     type: "gear",
     sort: 11100000,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.dead-unpowered-crystalsgems.PahfusaMmFGa1Xep",
-      },
-    },
     img: "icons/commodities/gems/gem-rough-oval-red.webp",
     effects: [],
     folder: null,
@@ -4860,14 +3490,6 @@ export const mockItems = [
     ownership: {
       default: 0,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027397,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "AuhWW0yzh3cXfRBO",
@@ -4878,11 +3500,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.ylm39uDhgvjJMklp",
-      },
-    },
     system: {
       description: "<p>Fr&aring;n Barbarerna i fortet</p>",
       gmNotes: "",
@@ -4902,14 +3519,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "0VaAelPU81Bqyaub",
@@ -4920,15 +3529,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.JMOCwAOsja3cqFo7",
-      },
-      cf: {
-        id: "temp_ppg74t9sq98",
-        color: "#2ed15f",
-      },
-    },
     system: {
       category: "knowledge",
       skillName: "First Aid",
@@ -4951,14 +3551,6 @@ export const mockItems = [
       NFaoGv43GQrcy7OY: 3,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "YUxlJYh4iwRc2dIx",
@@ -4969,16 +3561,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      cf: {
-        id: null,
-        path: "Passions",
-        color: "#e96d07",
-      },
-      core: {
-        sourceId: "Compendium.world.passions.P5DFxQjC0Z559sSX",
-      },
-    },
     system: {
       passion: "Honor",
       subject: "",
@@ -4992,14 +3574,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "XIdEoFUrhmi2Ct0G",
@@ -5010,15 +3584,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 12400000,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.dead-unpowered-crystalsgems.JB1u3HkaRgbXSK2x",
-      },
-      cf: {
-        id: "temp_d0u8im90tji",
-        color: "#000000",
-      },
-    },
     system: {
       description: "",
       gmNotes: "<p>MP storing crystal 9</p>",
@@ -5037,14 +3602,6 @@ export const mockItems = [
     ownership: {
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
-    },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670661293442,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
     },
   },
   {
@@ -5085,15 +3642,6 @@ export const mockItems = [
     ],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.dead-unpowered-crystalsgems.JB1u3HkaRgbXSK2x",
-      },
-      cf: {
-        id: "temp_d0u8im90tji",
-        color: "#000000",
-      },
-    },
     system: {
       description: "",
       gmNotes: "<p>MP storing crystal 9</p>",
@@ -5113,14 +3661,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "ZRXs9iyuw5s4Gqyq",
@@ -5131,19 +3671,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      cf: {
-        id: null,
-        path: "Passions",
-        color: "#e96d07",
-      },
-      core: {
-        sourceId: "Compendium.world.passions.ejvUKfiOVDxxp05e",
-      },
-      "scene-packer": {
-        hash: "5f0ad6d5339c7055e0a62eb93bf1d00e4386ced6",
-      },
-    },
     system: {
       passion: "Loyalty",
       subject: "Horgarth Temple",
@@ -5157,14 +3684,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "NSgMhRDGS9mvkXLd",
@@ -5175,19 +3694,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      cf: {
-        id: null,
-        path: "Passions",
-        color: "#e96d07",
-      },
-      core: {
-        sourceId: "Compendium.world.passions.ejvUKfiOVDxxp05e",
-      },
-      "scene-packer": {
-        hash: "5f0ad6d5339c7055e0a62eb93bf1d00e4386ced6",
-      },
-    },
     system: {
       passion: "Loyalty",
       subject: "Etyries Temple Mirins Cross",
@@ -5201,14 +3707,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "SqQSIJij90aS5PMe",
@@ -5219,14 +3717,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 12000000,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.currency.xiSdIKzmG49plRpi",
-      },
-      "scene-packer": {
-        hash: "bbca8e245121b221733c231af3d69f2ae80a3623",
-      },
-    },
     system: {
       description:
         "<p>The dwarves invented copper coins, but they were&nbsp;adopted by Issaries to facilitate trade between peoples. The&nbsp;copper coin is called a clack, or often just a copper. It takes&nbsp;ten clacks to equal one lunar.</p>\n<p>&nbsp; &nbsp; 160=1enc</p>",
@@ -5247,14 +3737,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "8bXE4wnw2x4k5xIZ",
@@ -5265,14 +3747,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.juwelery.R0PFroNQtSJBwmGs",
-      },
-      "scene-packer": {
-        hash: "d04174534d6640e369d50bd9d2f789d48e3bc9b8",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -5292,14 +3766,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027397,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "yhaiwP709wdQCfqZ",
@@ -5310,14 +3776,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.juwelery.R0PFroNQtSJBwmGs",
-      },
-      "scene-packer": {
-        hash: "d04174534d6640e369d50bd9d2f789d48e3bc9b8",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -5337,14 +3795,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027397,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "1gMonRQJ6QkQ1esw",
@@ -5355,14 +3805,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.juwelery.R0PFroNQtSJBwmGs",
-      },
-      "scene-packer": {
-        hash: "d04174534d6640e369d50bd9d2f789d48e3bc9b8",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -5382,14 +3824,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027398,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "zXULpTSS29qm80KV",
@@ -5400,14 +3834,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.dead-unpowered-crystalsgems.OUxodhd25V5kXDmR",
-      },
-      "scene-packer": {
-        hash: "8e16218a3da28faeefa0dc4fa48284b82a988deb",
-      },
-    },
     system: {
       description: "",
       gmNotes: "<p>Good Red Red CRYSTAL unpowered (25)</p>",
@@ -5427,14 +3853,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027398,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "HMjxQ1Hm6M4goGMs",
@@ -5445,14 +3863,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.dead-unpowered-crystalsgems.KStLTUfCdkRlq3KZ",
-      },
-      "scene-packer": {
-        hash: "2136f4c0c780f9d089e8a36ab69e28e0e91b1711",
-      },
-    },
     system: {
       description: "",
       gmNotes: "<p>Good Light Blue stone unpowered (27)</p>",
@@ -5472,14 +3882,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027398,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "jMqa0tXFNF8lvELV",
@@ -5490,14 +3892,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.dead-unpowered-crystalsgems.HwYnGejHsQ6IbEEg",
-      },
-      "scene-packer": {
-        hash: "a577fed794f9b8563d808f561b39d385b2220c44",
-      },
-    },
     system: {
       description: null,
       gmNotes: "<p>Semi-precious&nbsp; Red ston (73-76)</p>",
@@ -5517,14 +3911,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027398,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "aOC34zYXU8taKCHc",
@@ -5535,14 +3921,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.Ba87f9acGjJGpzVa",
-      },
-      "scene-packer": {
-        hash: "196c819bb899ab6068cc6c696c69b948300578d2",
-      },
-    },
     system: {
       points: 1,
       isVariable: true,
@@ -5566,14 +3944,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.290",
-      createdTime: null,
-      modifiedTime: 1670117178516,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "buXiFb6oOucG2WOX",
@@ -5584,14 +3954,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.LDozuvM0vSjnVrM3",
-      },
-      "scene-packer": {
-        hash: "4cc1859a97915d1d4d8a4b4c7538c63a5beec2a4",
-      },
-    },
     system: {
       points: 1,
       isVariable: false,
@@ -5615,14 +3977,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "m6gkPCW2gHTSGmTW",
@@ -5633,14 +3987,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.3TRLrZpuq1DECrVC",
-      },
-      "scene-packer": {
-        hash: "b6f0dc3cc68e7f498beabfc844c19b972f9fd72e",
-      },
-    },
     system: {
       points: 3,
       isVariable: true,
@@ -5664,14 +4010,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "paNfDZzgVpCdNSjm",
@@ -5682,14 +4020,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.YhGq951dAUD4qTUg",
-      },
-      "scene-packer": {
-        hash: "cfd2ad51954d8c7a07ce56a50e5e3d96faed1874",
-      },
-    },
     system: {
       points: 1,
       isVariable: true,
@@ -5713,14 +4043,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "3NZcRqRO1pHpYKQF",
@@ -5731,14 +4053,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.f8zulhnmW1FpkNTH",
-      },
-      "scene-packer": {
-        hash: "828d995dac371d8b30c0f268c1f194c54b2528cf",
-      },
-    },
     system: {
       points: 4,
       isVariable: true,
@@ -5762,14 +4076,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "03KRqkjVb2sojoT3",
@@ -5780,14 +4086,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.LDozuvM0vSjnVrM3",
-      },
-      "scene-packer": {
-        hash: "ade7929a28838a46cba49dba18cdf1dd4829a55d",
-      },
-    },
     system: {
       points: 1,
       isVariable: true,
@@ -5811,14 +4109,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "zzoLwpC3i2YCPtb7",
@@ -5829,14 +4119,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Item.RKFDULiM0MSSV9k7",
-      },
-      "scene-packer": {
-        hash: "2bd25071ceb67c3e837ede2caf5caecdbad14d10",
-      },
-    },
     system: {
       points: 2,
       isVariable: false,
@@ -5860,14 +4142,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "UHP2sXZumDDjRY0f",
@@ -5878,14 +4152,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "51d7f5b547382bce982cc6814a20bb460a981794",
-      },
-      core: {
-        sourceId: "Item.MrwJKnrv9ZMddrzz",
-      },
-    },
     system: {
       description: "<p>@Actor[Q3cpiv5GdZslkHnJ]{Riding Horse}</p>",
       gmNotes: "",
@@ -5906,14 +4172,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "HWyauKANACXUEg7f",
@@ -5924,18 +4182,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      cf: {
-        id: "temp_a9dt4r7xlbc",
-        color: "#000000",
-      },
-      core: {
-        sourceId: "Compendium.world.weapons.Fo2y5dXXLNEhriI8",
-      },
-      "scene-packer": {
-        hash: "18a54eea0dce24152108d63d3cb0cce1c1cedefb",
-      },
-    },
     system: {
       usage: {
         oneHand: {
@@ -6015,14 +4261,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670719859708,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "zGSY3vp3VZLEV9wa",
@@ -6033,11 +4271,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "50018bc38361e49c2a3fea7f366ab6111e9a2e0d",
-      },
-    },
     system: {
       category: "missileWeapons",
       skillName: "Crossbow",
@@ -6059,14 +4292,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1670660514632,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "aGR485BMdDOJ7XXE",
@@ -6077,19 +4302,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 400000,
-    flags: {
-      core: {
-        sourceId: "Item.EKV1jG9eeas6hOZB",
-      },
-      "scene-packer": {
-        sourceId: "Compendium.world.crossbow-bolts.0MsX9EG1EU6nc7B5",
-        hash: "2e5e4d6dd3aced02b071d1c0640e8e6baffda48d",
-      },
-      cf: {
-        id: "temp_moi3q5k78m",
-        color: "#000000",
-      },
-    },
     system: {
       usage: {
         oneHand: {
@@ -6160,14 +4372,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1674956482765,
-      lastModifiedBy: "dlMsFV1VZWo3b9Ia",
-    },
   },
   {
     _id: "tEsS5d8Xrqp65nf6",
@@ -6178,20 +4382,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "5fd9952e8a6484939cc7db0fc5a201e9a8632770",
-      },
-      rqg: {
-        documentRqidFlags: {
-          lang: "en",
-          priority: 999999,
-        },
-      },
-      core: {
-        sourceId: "Item.c4vHnOCT9whM7ubc",
-      },
-    },
     system: {
       homeland: "Tarsh",
       region: "Talford",
@@ -6219,14 +4409,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "m1WS7dwBAieGc7VQ",
@@ -6237,14 +4419,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 12300000,
-    flags: {
-      core: {
-        sourceId: "Item.xk6uCWWziNFHk4hI",
-      },
-      "scene-packer": {
-        hash: "3e8820a6d45958e1cfff283e193dc686b653d17d",
-      },
-    },
     system: {
       description:
         "<p>A silver crown with 3 Crystals, very stylish</p>\n<ul>\n<li>Protection 4 matrix</li>\n<li>21MP crystal</li>\n<li>spirit screen 4 matrix</li>\n</ul>\n<p>&nbsp;</p>",
@@ -6266,14 +4440,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "5nVuDD1MrqNuFakq",
@@ -6284,20 +4450,6 @@ export const mockItems = [
     effects: [],
     folder: "FSPcegMDLZGuDV9f",
     sort: 12100000,
-    flags: {
-      "scene-packer": {
-        hash: "063efb7b65d0657bb5d233dbfa4f5b2e00efb359",
-      },
-      rqg: {
-        documentRqidFlags: {
-          lang: "en",
-          priority: 999999,
-        },
-      },
-      core: {
-        sourceId: "Item.XDDACRvUSCN8CY05",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -6318,14 +4470,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "xW4gkaqtKj37FW9x",
@@ -6336,20 +4480,6 @@ export const mockItems = [
     effects: [],
     folder: "FSPcegMDLZGuDV9f",
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "b07b6ac27ab207e83493852d31fbde0eeffd1455",
-      },
-      rqg: {
-        documentRqidFlags: {
-          lang: "en",
-          priority: 999999,
-        },
-      },
-      core: {
-        sourceId: "Item.NIntD3cni3g1vPBI",
-      },
-    },
     system: {
       description: "<p>Mechanical clock made by Remmie the Tinker in Brinespring Aggar</p>",
       gmNotes:
@@ -6371,14 +4501,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "wpFe18rUbo15DD81",
@@ -6389,20 +4511,6 @@ export const mockItems = [
     effects: [],
     folder: "FSPcegMDLZGuDV9f",
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "223be680085b6aaf4cb378bab5c16375f5999ad6",
-      },
-      rqg: {
-        documentRqidFlags: {
-          lang: "en",
-          priority: 999999,
-        },
-      },
-      core: {
-        sourceId: "Item.B8DblNHltuUewRnr",
-      },
-    },
     system: {
       description: "<p>Aggar Beer</p>",
       gmNotes: "",
@@ -6423,14 +4531,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "5VM1RdHVhH5yBKDj",
@@ -6441,14 +4541,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 11600000,
-    flags: {
-      core: {
-        sourceId: "Item.HInj8WmSgvTJR9Oy",
-      },
-      "scene-packer": {
-        hash: "ea0a0a7073d5c50393febd1e757859d79b56d803",
-      },
-    },
     system: {
       description:
         "<p>A torch has one end wrapped in cloth and dipped in pitch or a similar flammable substance. It can be lit with fl int and tinder in one round and will burn for two hour. A torch illuminates a three metre radius. If used as a weapon, it is considered a club (wielded with a &ndash;10% penalty), except that it does not infl ict normal damage &ndash; instead, it infl icts 1D4 fire damage and a fumble or critical hit will also extinguish the brand.</p>",
@@ -6469,14 +4561,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "9F3aTbMhR6iutg8l",
@@ -6487,15 +4571,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.starter-set-rqg.skills-weapons.84644z0nkD89R1mz",
-      },
-      "scene-packer": {
-        sourceId: "Compendium.starter-set-rqg.skills-weapons.84644z0nkD89R1mz",
-        hash: "f054f40853fb7323e19923794aa641afec398db7",
-      },
-    },
     system: {
       category: "meleeWeapons",
       skillName: "1H Axe",
@@ -6518,14 +4593,6 @@ export const mockItems = [
       Yv1t6GRRZA8Juixh: 3,
       XUt89dZ6CTeQnQrN: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "0EvJ5H6He6SgYrlQ",
@@ -6536,15 +4603,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.starter-set-rqg.skills-weapons.kEcxA1G7J8xva450",
-      },
-      "scene-packer": {
-        sourceId: "Compendium.starter-set-rqg.skills-weapons.kEcxA1G7J8xva450",
-        hash: "e93ad1c4c9561c3c90ca8b8123cfe8b8387aeed7",
-      },
-    },
     system: {
       category: "meleeWeapons",
       skillName: "1H Axe",
@@ -6567,14 +4625,6 @@ export const mockItems = [
       Yv1t6GRRZA8Juixh: 3,
       XUt89dZ6CTeQnQrN: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "iXJEGtojGWHIlXEJ",
@@ -6585,11 +4635,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "670d0e28a345e350c57fa9963a4ea72305405d00",
-      },
-    },
     system: {
       category: "missileWeapons",
       skillName: "Thrown Axe",
@@ -6611,14 +4656,6 @@ export const mockItems = [
       default: 0,
       XUt89dZ6CTeQnQrN: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "zvQ0oYn4fQGTiMz4",
@@ -6629,11 +4666,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "d77190da3bbd2e350d9e66bacebb4dccf2d89274",
-      },
-    },
     system: {
       category: "meleeWeapons",
       skillName: "1H Axe",
@@ -6655,14 +4687,6 @@ export const mockItems = [
       default: 0,
       XUt89dZ6CTeQnQrN: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "zItZKrYhvBAKoI5U",
@@ -6673,11 +4697,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "97037cd928c2815986fc343183b146d0dcb0796d",
-      },
-    },
     system: {
       category: "meleeWeapons",
       skillName: "1H Axe",
@@ -6699,14 +4718,6 @@ export const mockItems = [
       default: 0,
       XUt89dZ6CTeQnQrN: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "3xzwu9SMz2eeCPq9",
@@ -6717,11 +4728,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "6a16c4216e8f13d4e28cf96d927367192a58b450",
-      },
-    },
     system: {
       category: "meleeWeapons",
       skillName: "2H Axe",
@@ -6743,14 +4749,6 @@ export const mockItems = [
       default: 0,
       XUt89dZ6CTeQnQrN: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "sNE37cBcMGVtUBr0",
@@ -6761,14 +4759,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.skills-basic.qxHemdeONJOYFe25",
-      },
-      "scene-packer": {
-        hash: "814abb5267a68481121b7e2ed1a0499941bcb0c7",
-      },
-    },
     system: {
       category: "knowledge",
       skillName: "Treat Disease",
@@ -6790,14 +4780,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "EX9Gx8ObABhFltGw",
@@ -6808,14 +4790,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.skills-basic.KgZ7zBQhZhw2Of59",
-      },
-      "scene-packer": {
-        hash: "3863f478a2727bd6565ff13a038d49fb0a22f1d8",
-      },
-    },
     system: {
       category: "knowledge",
       skillName: "Treat Poison",
@@ -6836,14 +4810,6 @@ export const mockItems = [
     ownership: {
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
-    },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
     },
   },
   {
@@ -6877,14 +4843,6 @@ export const mockItems = [
     ],
     folder: "lm14L84U8eh9B6Rr",
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "311c4b75a20c03628aa201d17f019180e35c8454",
-      },
-      core: {
-        sourceId: "Item.WJ60BpTgQ8l5l51V",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -6911,14 +4869,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "NTkX2hh65UH1GBJZ",
@@ -6929,14 +4879,6 @@ export const mockItems = [
     effects: [],
     folder: "lm14L84U8eh9B6Rr",
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "7f69052b1e1de28f2b00ffe4b3902b8a36601959",
-      },
-      core: {
-        sourceId: "Item.qfZSmhY3sRqc6h5C",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -6963,14 +4905,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "YFEpAHn6KDNwRznf",
@@ -6981,14 +4915,6 @@ export const mockItems = [
     effects: [],
     folder: "lm14L84U8eh9B6Rr",
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "7b329941eb0fa7c5c418e98c2538ae93d285fb6c",
-      },
-      core: {
-        sourceId: "Item.jAwsjareOajrMk3D",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -7015,14 +4941,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "OdsIiSPM8makbpen",
@@ -7033,14 +4951,6 @@ export const mockItems = [
     effects: [],
     folder: "lm14L84U8eh9B6Rr",
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "b67c365a0cc6a96c147c086633f39c361f9ff4bf",
-      },
-      core: {
-        sourceId: "Item.WAQMIZkzwx6Fht5U",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -7067,14 +4977,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "FUIi9O7oag36Lmgf",
@@ -7085,14 +4987,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      core: {
-        sourceId: "Compendium.world.juwelery.KwwGmIpLRqmz5zK5",
-      },
-      "scene-packer": {
-        hash: "903f5d6e6413751e5b65dbc977aaae9b88659d4f",
-      },
-    },
     system: {
       description: "",
       gmNotes: "",
@@ -7112,14 +5006,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     _id: "NiGVLYhLusGq1YJh",
@@ -7130,14 +5016,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "7c3d72fce451321c2c3cdb08aeea4e655e436557",
-      },
-      core: {
-        sourceId: "Item.58txVybhBKKXTYbh",
-      },
-    },
     system: {
       description:
         '<p><span style="font-size: 14px;">Costume jewelry that serves as a deed</span></p>',
@@ -7159,14 +5037,6 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: null,
-      modifiedTime: 1675203027398,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     _id: "rncfp0hxm6Nxy888",
@@ -7177,20 +5047,6 @@ export const mockItems = [
     effects: [],
     folder: null,
     sort: 0,
-    flags: {
-      "scene-packer": {
-        hash: "6fecafcde8ae101beca95686b4d00c4cb390cfd6",
-      },
-      rqg: {
-        documentRqidFlags: {
-          lang: "en",
-          priority: 999999,
-        },
-      },
-      core: {
-        sourceId: "Item.B4cHSIv3ZGPpFYLJ",
-      },
-    },
     system: {
       category: "manipulation",
       skillName: "Lumberjack",
@@ -7211,31 +5067,11 @@ export const mockItems = [
       default: 0,
       Yv1t6GRRZA8Juixh: 3,
     },
-    _stats: {
-      systemId: null,
-      systemVersion: null,
-      coreVersion: null,
-      createdTime: null,
-      modifiedTime: null,
-      lastModifiedBy: null,
-    },
   },
   {
     name: "Sleep",
     type: "spiritMagic",
     img: "systems/rqg/assets/images/items/spirit-magic.svg",
-    flags: {
-      rqg: {
-        documentRqidFlags: {
-          id: "i.spirit-magic.sleep",
-          lang: "${openSystem.lang}}$",
-          priority: "${openSystem.prio}}$",
-        },
-      },
-      core: {
-        sourceId: "Compendium.rqg.spirit-magic-spells-en.rYVYhKOMtfYR6Rt6",
-      },
-    },
     _id: "880JIG5iwGQEouKs",
     id: "880JIG5iwGQEouKs",
     system: {
@@ -7262,31 +5098,11 @@ export const mockItems = [
       default: 0,
       H7FI0onp6UuNNDpi: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.290",
-      createdTime: 1670116380326,
-      modifiedTime: 1670116380326,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     name: "Bludgeon",
     type: "spiritMagic",
     img: "systems/rqg/assets/images/items/spirit-magic.svg",
-    flags: {
-      rqg: {
-        documentRqidFlags: {
-          id: "i.spirit-magic.bludgeon",
-          lang: "${openSystem.lang}}$",
-          priority: "${openSystem.prio}}$",
-        },
-      },
-      core: {
-        sourceId: "Compendium.rqg.spirit-magic-spells-en.TASqcRMMk7ng2MPN",
-      },
-    },
     _id: "CpkWbh9H2GT5eXb1",
     id: "CpkWbh9H2GT5eXb1",
     system: {
@@ -7313,31 +5129,11 @@ export const mockItems = [
       default: 0,
       H7FI0onp6UuNNDpi: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.290",
-      createdTime: 1670116596659,
-      modifiedTime: 1670116612875,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     name: "Demo Sword",
     type: "weapon",
     img: "systems/rqg/assets/images/weapons/1h-sword.svg",
-    flags: {
-      rqg: {
-        documentRqidFlags: {
-          id: "i.weapon.demo-sword",
-          lang: "en",
-          priority: "0",
-        },
-      },
-      core: {
-        sourceId: "Compendium.rqg.demo-items-en.SuMt2ydmDeioPYdX",
-      },
-    },
     _id: "ePfn4kaBDcZdexrW",
     id: "ePfn4kaBDcZdexrW",
     system: {
@@ -7456,31 +5252,11 @@ export const mockItems = [
       default: 0,
       H7FI0onp6UuNNDpi: 3,
     },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: 1670568279986,
-      modifiedTime: 1670568325903,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
   },
   {
     name: "Demo Sword Skill",
     type: "skill",
     img: "systems/rqg/assets/images/weapons/1h-sword.svg",
-    flags: {
-      rqg: {
-        documentRqidFlags: {
-          id: "i.skill.demo-sword-skill",
-          lang: "en",
-          priority: "0",
-        },
-      },
-      core: {
-        sourceId: "Compendium.rqg.demo-items-en.WroYhXGAfTOWLGbG",
-      },
-    },
     _id: "R9Qm6UJerPXZ9GcX",
     id: "R9Qm6UJerPXZ9GcX",
     system: {
@@ -7504,14 +5280,6 @@ export const mockItems = [
     ownership: {
       default: 0,
       H7FI0onp6UuNNDpi: 3,
-    },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "1.18.0",
-      coreVersion: "10.291",
-      createdTime: 1670568285707,
-      modifiedTime: 1670568285707,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
     },
   },
   {
@@ -7561,7 +5329,6 @@ export const mockItems = [
         },
         origin: null,
         tint: null,
-        flags: {},
       },
     ],
     folder: null,
@@ -7570,26 +5337,6 @@ export const mockItems = [
       default: 2,
       H7FI0onp6UuNNDpi: 3,
       tJp6AYL7sxLFucef: 2,
-    },
-    flags: {
-      rqg: {
-        documentRqidFlags: {
-          lang: "en",
-          priority: 999999,
-          id: "i.gear.shiny-crystal",
-        },
-      },
-      core: {
-        sourceId: "Item.brBt5ldnE0WoWHa5",
-      },
-    },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: 1660929676225,
-      modifiedTime: 1672786657179,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
     },
     _id: "b7KKpzicF7iiaWFQ",
     id: "b7KKpzicF7iiaWFQ",
@@ -7621,25 +5368,6 @@ export const mockItems = [
       default: 0,
       H7FI0onp6UuNNDpi: 3,
     },
-    flags: {
-      rqg: {
-        documentRqidFlags: {
-          lang: "en",
-          priority: 999999,
-        },
-      },
-      core: {
-        sourceId: "Item.zC5fw5iq6116AA02",
-      },
-    },
-    _stats: {
-      systemId: "rqg",
-      systemVersion: "2.0.1",
-      coreVersion: "10.291",
-      createdTime: 1674465093598,
-      modifiedTime: 1674465167454,
-      lastModifiedBy: "H7FI0onp6UuNNDpi",
-    },
     _id: "r5aLbz8kWKrj77qW",
     id: "r5aLbz8kWKrj77qW",
   },
@@ -7660,6 +5388,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "equipped",
           gmNotes: "",
           id: "usb4lsNHnRLDmX0c",
+          isVirtual: false,
           isContainer: false,
           location: "under Armor",
           name: "Leather Vambraces  (Leather)",
@@ -7679,6 +5408,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "equipped",
           gmNotes: "",
           id: "yD3LiqU8rKv8yW1P",
+          isVirtual: false,
           isContainer: false,
           location: "under Armor",
           name: "Leather Greaves  (Leather)",
@@ -7692,10 +5422,11 @@ export const locationNodeTreeOfMockItems = {
       ],
       description: "",
       encumbrance: 0,
-      equippedStatus: "notCarried",
+      equippedStatus: "equipped",
       gmNotes: "",
-      id: "",
-      isContainer: false,
+      id: "virtual:equipped:under Armor",
+      isVirtual: true,
+      isContainer: true,
       location: "",
       name: "under Armor",
       physicalItemType: "unique",
@@ -7720,6 +5451,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "",
               id: "sYZQvfM8xUUB4SCK",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "Green Crystal (001)",
@@ -7738,6 +5470,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "<p>Semi-precious White stone unpowered (69-72)</p>",
               id: "2iDIddO75JYf3pHO",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "White stone",
@@ -7756,6 +5489,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "<p>Flawed yellow stone unpowered (45-47)</p>",
               id: "StPcfMyAsE5XBXvZ",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "Yellow stone",
@@ -7774,6 +5508,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "",
               id: "8bXE4wnw2x4k5xIZ",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "Juwlery X25",
@@ -7792,6 +5527,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "",
               id: "yhaiwP709wdQCfqZ",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "Juwlery x26",
@@ -7810,6 +5546,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "",
               id: "1gMonRQJ6QkQ1esw",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "Juwlery x27",
@@ -7828,6 +5565,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "<p>Good Red Red CRYSTAL unpowered (25)</p>",
               id: "zXULpTSS29qm80KV",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "Red stone x28",
@@ -7846,6 +5584,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "<p>Good Light Blue stone unpowered (27)</p>",
               id: "HMjxQ1Hm6M4goGMs",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "Blue stone x29",
@@ -7864,6 +5603,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "<p>Semi-precious&nbsp; Red ston (73-76)</p>",
               id: "jMqa0tXFNF8lvELV",
+              isVirtual: false,
               isContainer: false,
               location: "Belt Pouch",
               name: "Red stone x30",
@@ -7883,6 +5623,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "carried",
               gmNotes: "<p>1-10L</p>",
               id: "NiGVLYhLusGq1YJh",
+              isVirtual: false,
               isContainer: true,
               location: "Belt Pouch",
               name: "Costume Jewelery",
@@ -7899,6 +5640,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "carried",
           gmNotes: "",
           id: "OLwQEIo1vhFdAWvg",
+          isVirtual: false,
           isContainer: true,
           location: "Belt",
           name: "Belt Pouch",
@@ -7912,10 +5654,11 @@ export const locationNodeTreeOfMockItems = {
       ],
       description: "",
       encumbrance: 0,
-      equippedStatus: "notCarried",
+      equippedStatus: "carried",
       gmNotes: "",
-      id: "",
-      isContainer: false,
+      id: "virtual:carried:Belt",
+      isVirtual: true,
+      isContainer: true,
       location: "",
       name: "Belt",
       physicalItemType: "unique",
@@ -7937,6 +5680,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "equipped",
           gmNotes: "",
           id: "ifk062JyG0wziIRs",
+          isVirtual: false,
           isContainer: false,
           location: "armor",
           name: "Dragon Armor Greaves  (Dragon Hide and Scales)",
@@ -7953,6 +5697,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "equipped",
           gmNotes: "",
           id: "WfOQlBxEMTzKoQaN",
+          isVirtual: false,
           isContainer: false,
           location: "armor",
           name: "Dragon Armor Hauberk  (Dragon Hide and Bone)",
@@ -7968,6 +5713,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "equipped",
           gmNotes: "",
           id: "olzPns2WbDvtGEr5",
+          isVirtual: false,
           isContainer: false,
           location: "armor",
           name: "Dragon Armor Vambraces  (Dragon Hide and Scales)",
@@ -7978,10 +5724,11 @@ export const locationNodeTreeOfMockItems = {
       ],
       description: "",
       encumbrance: 0,
-      equippedStatus: "notCarried",
+      equippedStatus: "equipped",
       gmNotes: "",
-      id: "",
-      isContainer: false,
+      id: "virtual:equipped:armor",
+      isVirtual: true,
+      isContainer: true,
       location: "",
       name: "armor",
       physicalItemType: "unique",
@@ -8002,6 +5749,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "carried",
           gmNotes: "",
           id: "b7KKpzicF7iiaWFQ",
+          isVirtual: false,
           isContainer: true,
           location: "backen",
           name: "Shiny crystal",
@@ -8015,10 +5763,11 @@ export const locationNodeTreeOfMockItems = {
       ],
       description: "",
       encumbrance: 0,
-      equippedStatus: "notCarried",
+      equippedStatus: "carried",
       gmNotes: "",
-      id: "",
-      isContainer: false,
+      id: "virtual:carried:backen",
+      isVirtual: true,
+      isContainer: true,
       location: "",
       name: "backen",
       physicalItemType: "unique",
@@ -8036,6 +5785,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: "",
       id: "8Hu2fc0jk36Qi92W",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Quarterstaff",
@@ -8055,6 +5805,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: "",
       id: "W5bUaf9Hg61ZAM1y",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Dagger",
@@ -8073,6 +5824,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "carried",
       gmNotes: "",
       id: "1EioaN5VZLp4VYzY",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Broad-brimmed Hat  (Leather)",
@@ -8092,6 +5844,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: "",
       id: "Vc9wwC1qVkar4bGy",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Dragon Helm  (Dragon Hide and Scales)",
@@ -8110,6 +5863,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: "",
       id: "AuhWW0yzh3cXfRBO",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Silver armring",
@@ -8128,6 +5882,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: "<p>MP storing crystal 9</p>",
       id: "XIdEoFUrhmi2Ct0G",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Red Crystal 9mp",
@@ -8146,6 +5901,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: "<p>MP storing crystal 9</p>",
       id: "tLjqVmF6yvmrPE8w",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Blue Crystal 9mp",
@@ -8168,6 +5924,7 @@ export const locationNodeTreeOfMockItems = {
           gmNotes:
             "<p>This clock can measure time and is a wonder of tech.</p>\n<p>The Clock is valuble to Lhankor Mhy and Mostali, its requires a successful Device to operate.</p>",
           id: "xW4gkaqtKj37FW9x",
+          isVirtual: false,
           isContainer: false,
           location: "Riding Horse",
           name: "Mechanic clock",
@@ -8186,6 +5943,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "notCarried",
           gmNotes: "",
           id: "wpFe18rUbo15DD81",
+          isVirtual: false,
           isContainer: false,
           location: "Riding Horse",
           name: "Small Keg  (liter)",
@@ -8204,6 +5962,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "notCarried",
           gmNotes: "",
           id: "FUIi9O7oag36Lmgf",
+          isVirtual: false,
           isContainer: false,
           location: "Riding Horse",
           name: "Armring",
@@ -8225,6 +5984,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "gA6WIvluiRKy2aDX",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Blanket (hide",
@@ -8243,6 +6003,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "d4rnVSjAw9mFcf5n",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Fire Starter",
@@ -8261,6 +6022,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "eEqVuEQLtkY6Lfpm",
+              isVirtual: false,
               isContainer: true,
               location: "Backpack",
               name: "Lunars",
@@ -8280,6 +6042,7 @@ export const locationNodeTreeOfMockItems = {
               gmNotes:
                 '<p><span style="color: #3c4043; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; letter-spacing: 0.2px; font-size: 12pt;">Scroll: Written in Esrolian/ Elasa Script</span><br style="color: #3c4043; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; letter-spacing: 0.2px; background-color: #ffffff;" /><span style="color: #3c4043; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; letter-spacing: 0.2px; font-size: 12pt;">Scroll of Great Knowledge</span><br style="color: #3c4043; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; letter-spacing: 0.2px; background-color: #ffffff;" /><span style="color: #3c4043; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; letter-spacing: 0.2px; font-size: 12pt;">Assiciated with Lankhor Mhy</span><br style="color: #3c4043; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; letter-spacing: 0.2px; background-color: #ffffff;" /><span style="color: #3c4043; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; letter-spacing: 0.2px; font-size: 12pt;">Magic Scroll and when read it will give the reader +15% Bonus in all Knowledge Skills</span></p>\n<p><span style="color: #3c4043; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; letter-spacing: 0.2px; font-size: 12pt;">Value 3000L</span></p>',
               id: "EXiPEvCtCfjDP50I",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Scroll (X6)",
@@ -8298,6 +6061,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "EUbd4OxPBxzPkTNu",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Juwlery (c3)",
@@ -8316,6 +6080,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "Bx4UevFj87K7Sr0l",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Juwelery (c4)",
@@ -8335,6 +6100,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "SzgUep8142bt8eQs",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Jar with Rhino Fat",
@@ -8354,6 +6120,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "ckIxs5CYkhZ1R66P",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Dress, Esrolian",
@@ -8373,6 +6140,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "JDdR2V2pNhmFGQMF",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Wheels",
@@ -8392,6 +6160,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "SqQSIJij90aS5PMe",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Clacks",
@@ -8410,6 +6179,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "5nVuDD1MrqNuFakq",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Sleeping Drog POT:15",
@@ -8429,6 +6199,7 @@ export const locationNodeTreeOfMockItems = {
               equippedStatus: "notCarried",
               gmNotes: "",
               id: "vAaxEpgS2ANAfxet",
+              isVirtual: false,
               isContainer: false,
               location: "Backpack",
               name: "Wood stauet",
@@ -8445,6 +6216,7 @@ export const locationNodeTreeOfMockItems = {
           equippedStatus: "notCarried",
           gmNotes: "",
           id: "TNR9fCbTgIXZaKol",
+          isVirtual: false,
           isContainer: true,
           location: "Riding Horse",
           name: "Backpack",
@@ -8461,6 +6233,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "notCarried",
       gmNotes: "",
       id: "UHP2sXZumDDjRY0f",
+      isVirtual: false,
       isContainer: true,
       location: "",
       name: "Riding Horse",
@@ -8480,6 +6253,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: "",
       id: "HWyauKANACXUEg7f",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Light Crossbow.",
@@ -8499,6 +6273,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: "<p>Price: 10 L per dozen.</p>",
       id: "aGR485BMdDOJ7XXE",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Barbed Bolts",
@@ -8519,6 +6294,7 @@ export const locationNodeTreeOfMockItems = {
       gmNotes:
         "<p>Crown of Protection</p>\n<p>Three combined power storage crystals with&nbsp; a combined power of 21.&nbsp;There are also a Protection 4 Matrix and a Spirit Screen 4 Matrix in the Crown</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>",
       id: "m1WS7dwBAieGc7VQ",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Crown (X20) /21 mp",
@@ -8538,6 +6314,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "notCarried",
       gmNotes: "",
       id: "5VM1RdHVhH5yBKDj",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Torches, Wicker 2hrs",
@@ -8556,6 +6333,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "notCarried",
       gmNotes: "",
       id: "0AWfM3btiXFoHLFz",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Magic (Protection 1)",
@@ -8574,6 +6352,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "notCarried",
       gmNotes: "",
       id: "NTkX2hh65UH1GBJZ",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Magic (Protection 2)",
@@ -8592,6 +6371,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "notCarried",
       gmNotes: "",
       id: "YFEpAHn6KDNwRznf",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Magic (Protection 3)",
@@ -8610,6 +6390,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "notCarried",
       gmNotes: "",
       id: "OdsIiSPM8makbpen",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Magic (Protection 4)",
@@ -8628,6 +6409,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "equipped",
       gmNotes: null,
       id: "ePfn4kaBDcZdexrW",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Demo Sword",
@@ -8646,6 +6428,7 @@ export const locationNodeTreeOfMockItems = {
       equippedStatus: "carried",
       gmNotes: "",
       id: "r5aLbz8kWKrj77qW",
+      isVirtual: false,
       isContainer: false,
       location: "",
       name: "Styrke",
@@ -8659,10 +6442,11 @@ export const locationNodeTreeOfMockItems = {
   ],
   description: "",
   encumbrance: 0,
-  equippedStatus: "notCarried",
+  equippedStatus: "carried",
   gmNotes: "",
   id: "",
-  isContainer: false,
+  isVirtual: true,
+  isContainer: true,
   location: "",
   name: "",
   physicalItemType: "unique",
@@ -8671,4 +6455,4 @@ export const locationNodeTreeOfMockItems = {
     real: 0,
   },
   quantity: 1,
-} as LocationNode;
+} as LocationItemNodeData;

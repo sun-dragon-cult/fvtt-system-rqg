@@ -7,6 +7,8 @@
   </h3>
 </nav>
 
+{{#if itemLoopMessage}}<h2 class="warning">{{itemLoopMessage}}</h2>{{/if}}
+
 <section class="gear-body">
   {{!-- View by location --}}
   <div class="tab by-location" data-group="gear-view" data-tab="by-location">
@@ -198,7 +200,7 @@
                     <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass @root.uuid skillId}}"
                           data-skill-id="{{skillId}}" data-item-id="{{../id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.RollChat"}}">
                           {{skillchance @root.uuid skillId}}%
-                    </span>                    
+                    </span>
                     &nbsp; {{skillname @root.uuid skillId}}
                   </div>
                 {{/if}}
