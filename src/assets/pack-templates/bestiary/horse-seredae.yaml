@@ -17,15 +17,15 @@ system:
       value: 11
       formula: 3d6
     intelligence:
-      value: 
-      formula: 
+      value:
+      formula:
     power:
       value: 11
       formula: 3d6
       hasExperience: false
     charisma:
-      value: 
-      formula: 
+      value:
+      formula:
   background:
     species: ${{openSystem.content.bestiary.horseSeredae.species}}$
     occupation: ''
@@ -55,7 +55,7 @@ system:
       currentLocomotion: walk
       walk:
         value: 12
-        carryingFactor: 1
+        carryingFactor: 2
       swim:
         value: 2
         carryingFactor: 0.5
@@ -148,7 +148,7 @@ sort: 0
 ownership:
   default: 0
   OGu9DZ439mXiuTD3: 3
-flags: 
+flags:
   rqg:
     documentRqidFlags:
       id: a.character.horse-seredae

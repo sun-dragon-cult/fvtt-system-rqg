@@ -47,7 +47,7 @@ system:
     baseIncome:
     ransom:
     ransomDetails: ""
-    biography:       
+    biography:
   allies: ${{openSystem.content.bestiary.humanBase.notes}}$
   attributes:
     magicPoints:
@@ -110,13 +110,13 @@ token:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-leg	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-leg	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-abdomen	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-chest	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-arm	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-arm	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-head	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-leg	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-leg	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-abdomen	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-chest	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-arm	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-arm	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-head	[ 		]}}|"
 - "|{{	pc-runes/pc-runes.yaml	i.rune.air-element	[ chance:	0	]}}|"
 - "|{{	pc-runes/pc-runes.yaml	i.rune.darkness-element	[ chance:	0	]}}|"
 - "|{{	pc-runes/pc-runes.yaml	i.rune.earth-element	[ chance:	0	]}}|"
