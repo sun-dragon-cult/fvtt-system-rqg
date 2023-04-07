@@ -60,13 +60,16 @@ export class SpiritMagic extends AbstractEmbeddedItem {
 
   public static validateRollData(
     spiritMagicItem: RqgItem,
-    level: number,
-    boost: number
+    level: number | undefined,
+    boost: number | undefined
   ): string | undefined {
     assertItemType(spiritMagicItem.type, ItemTypeEnum.SpiritMagic);
-    if (level > spiritMagicItem.system.points) {
+    if (level == null || level > spiritMagicItem.system.points) {
       return localize("RQG.Dialog.spiritMagicChat.CantCastSpellAboveLearnedLevel");
-    } else if (level + boost > (spiritMagicItem.actor?.system.attributes.magicPoints.value || 0)) {
+    } else if (
+      boost == null ||
+      level + boost > (spiritMagicItem.actor?.system.attributes.magicPoints.value || 0)
+    ) {
       return localize("RQG.Dialog.spiritMagicChat.NotEnoughMagicPoints");
     } else {
       return;

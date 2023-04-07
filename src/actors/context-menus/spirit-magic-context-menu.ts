@@ -29,7 +29,12 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollQuick"),
     icon: ContextMenuRunes.RollQuick,
-    condition: () => true,
+    condition: (el: JQuery) => {
+      const itemId = getDomDataset(el, "item-id");
+      const item = (itemId && actor.items.get(itemId)) || undefined;
+      assertItemType(item?.type, ItemTypeEnum.SpiritMagic);
+      return !item.system.isVariable || item.system.points === 1;
+    },
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = (itemId && actor.items.get(itemId)) || undefined;
@@ -37,7 +42,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       if (item.system.isVariable && item.system.points > 1) {
         await item.toChat();
       } else {
-        await item?.abilityRoll();
+        await item?.abilityRoll({ level: item.system.points, boost: 0 });
       }
     },
   },

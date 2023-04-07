@@ -910,7 +910,10 @@ export class RqgActorSheet extends ActorSheet<
           if (runeMagicItem.system.points > 1) {
             await runeMagicItem.toChat();
           } else {
-            await runeMagicItem.abilityRoll();
+            await runeMagicItem.abilityRoll({
+              runePointCost: 1,
+              magicPointBoost: 0,
+            });
           }
 
           clickCount = 0;

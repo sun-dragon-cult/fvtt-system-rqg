@@ -258,13 +258,14 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
   public static validateData(
     cultItem: RqgItem,
-    runePointCost: number,
-    magicPointsBoost: number
+    runePointCost: number | undefined,
+    magicPointsBoost: number | undefined
   ): string {
     assertItemType(cultItem?.type, ItemTypeEnum.Cult);
-    if (runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
+    if (runePointCost == null || runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
       return getGame().i18n.format("RQG.Dialog.runeMagicChat.validationNotEnoughRunePoints");
     } else if (
+      magicPointsBoost == null ||
       magicPointsBoost > (Number(cultItem.actor?.system.attributes?.magicPoints?.value) || 0)
     ) {
       return localize("RQG.Dialog.runeMagicChat.validationNotEnoughMagicPoints");
