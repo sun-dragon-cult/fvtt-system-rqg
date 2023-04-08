@@ -4,7 +4,7 @@ type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
   points: 1
-  isVariable: true
+  isVariable: false
   castingRange: ranged
   duration: instant
   concentration:

@@ -171,7 +171,7 @@ system:
   armorType: ${{openSystem.content.equipment.armor.skirt}}$
   material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Leather}}$
   absorbs: 1
-  encumbrance: 0
+  encumbrance: 0.5
   price:
     real: 10
     estimated: 0

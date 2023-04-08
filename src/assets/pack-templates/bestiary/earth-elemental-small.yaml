@@ -8,23 +8,23 @@ system:
       value: 10
       formula: 1d6+6
     constitution:
-      value: 
-      formula: 
+      value:
+      formula:
     size:
       value: 6
       formula: 1d6+2
     dexterity:
-      value: 
-      formula: 
+      value:
+      formula:
     intelligence:
-      value: 
-      formula: 
+      value:
+      formula:
     power:
       value: 11
       formula: 3d6
       hasExperience: false
     charisma:
-      value: 
+      value:
       formula:
   background:
     species: ${{openSystem.content.bestiary.earthElementalMedium.species}}$
@@ -54,7 +54,7 @@ system:
     move:
       currentLocomotion: swim
       walk:
-        value: 
+        value:
         carryingFactor: 1
       swim:
         value: 3
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.airElementalSmall.name}}$
+  name: ${{openSystem.content.bestiary.earthElementalSmall.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -126,7 +126,7 @@ sort: 0
 ownership:
   default: 0
   OGu9DZ439mXiuTD3: 3
-flags: 
+flags:
   rqg:
     documentRqidFlags:
       id: a.character.earth-elemental-small
