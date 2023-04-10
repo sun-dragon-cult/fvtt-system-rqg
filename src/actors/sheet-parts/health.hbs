@@ -26,8 +26,8 @@
         </button>
         {{localize "RQG.Actor.Health.HitLocation"}}
       </div>
-      <div class="head5 text-right"><span class="text-right">{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span></div>
-      <div class="head6 text-right"><span class="text-center">{{localize "RQG.Actor.Health.HitPointsAbbr"}}</span></div>
+      <div class="head5 text-right"><span>{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span></div>
+      <div class="head6 text-right"><span>{{localize "RQG.Actor.Health.HitPointsAbbr"}}</span></div>
       <div class="head7 text-right">{{localize "RQG.Actor.Health.Wounds"}}</div>
       {{#each embeddedItems.hitLocation}}
         <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieFrom}}</span></div>
@@ -40,7 +40,7 @@
           {{/unless}}
         </div>
         <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.armorPoints}}</span></div>
-        <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right nowrap{{#unless (eq system.hitPoints.value system.hitPoints.max)}} strike{{/unless}}">{{system.hitPoints.max}}</span>{{#unless (eq system.hitPoints.value system.hitPoints.max)}} <span class="text-right">{{system.hitPoints.value}}{{/unless}}</span></div>
+        <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right nowrap{{#unless (eq system.hitPoints.value system.hitPoints.max)}} strike{{/unless}}">{{system.hitPoints.max}}</span>{{#unless (eq system.hitPoints.value system.hitPoints.max)}} <span class="text-right">{{system.hitPoints.value}}</span>{{/unless}}</div>
         <div class="hit-location contextmenu item" data-item-id="{{id}}">
           <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}" class="text-right nowrap">
             {{#each system.wounds}}
