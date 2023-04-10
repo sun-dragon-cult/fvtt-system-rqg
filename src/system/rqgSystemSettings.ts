@@ -22,6 +22,23 @@ export const registerRqgSystemSettings = function () {
     default: hitLocationNamesObject,
   });
 
+  getGame().settings.register(systemId, "sortHitLocationsLowToHigh", {
+    name: "RQG.Settings.SortHitLocationsLowToHigh.settingName",
+    hint: "RQG.Settings.SortHitLocationsLowToHigh.settingHint",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: false,
+    // Rerender all actor sheets the user has open
+    onChange: () => {
+      Object.values(ui.windows).forEach((a: any) => {
+        if (a?.document?.type === "character") {
+          a.render();
+        }
+      });
+    },
+  });
+
   getGame().settings.registerMenu(systemId, "defaultItemIconSettings", {
     name: "RQG.Settings.DefaultItemIcons.settingName",
     label: "RQG.Settings.DefaultItemIcons.settingLabel",

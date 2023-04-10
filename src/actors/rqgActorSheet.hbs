@@ -8,7 +8,7 @@
         <h1 class="charname"><input name="name" type="text" value="{{name}}"></h1>
         <div>
           <div class="flex-row-end gap1rem">
-            {{#unless (eq system.attributes.health "healthy")}}<i>{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}
+            {{#unless (eq system.attributes.health "healthy")}}<i class="wounded">{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}
             {{#if characterElementRunes}}
               <div class="flex-row gap01rem">
                 {{#each characterElementRunes}}
