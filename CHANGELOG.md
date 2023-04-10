@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.1.2](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.1.1...v2.1.2) (2023-04-10)
+
+
+### Bug Fixes
+
+* double click rune spell blanks magic points and rune points ([75dfd0e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/75dfd0efa5cc2d0aac07b44af3098f08d0863c6e))
+* human Templates should not have natural armor ([3918306](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3918306829228a84981fb60ab92c935740e17977))
+* make AP/HP presentation consistent with paper character sheet ([#518](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/518)) ([86f84be](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/86f84be5f9cc3ed70f911a345b704c4e71de570e)), closes [#517](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/517)
+* sorting items changes equipped status ([231618f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/231618ff796db6143aad45e3ddc88ac15c0024b9)), closes [#496](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/496)
+* various compendium errors ([86dbcfc](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/86dbcfce487dfa0730703fb449ad41b909ad59b1)), closes [#515](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/515)
+
 ## [2.1.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.1.0...v2.1.1) (2023-03-06)
 
 
