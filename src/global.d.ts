@@ -53,6 +53,7 @@ declare global {
       "rqg.fumbleRollTable": string;
       "rqg.worldMigrationVersion": string;
       "rqg.hitLocations": Object;
+      "rqg.sortHitLocationsLowToHigh": boolean;
       "rqg.magicRuneName": string;
       "rqg.defaultItemIconSettings": IconSettingsData;
       "rqg.actor-wizard-feature-flag": boolean;

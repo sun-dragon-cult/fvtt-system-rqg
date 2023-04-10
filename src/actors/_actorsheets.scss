@@ -173,6 +173,10 @@
       font-size: 35px;
       font-weight: bold;
     }
+
+    .wounded {
+      color: var(--rqg-highlight);
+    }
   }
 
   .characteristics {
@@ -257,6 +261,42 @@
       font-style: italic;
     }
   }
+
+  .health {
+
+    .strike  {
+      text-decoration:none;position:relative;
+
+      &::before {
+        top: 45%;
+        background: var(--rqg-highlight);
+        opacity: 0.55;
+        content: "";
+        width: 150%;
+        position: absolute;
+        height: 0.2em;
+        border-radius: 1em;
+        left: -30%;
+        white-space: nowrap;
+        display: block;
+        transform: rotate(-45deg);
+      }
+    }
+
+    .health-state {
+      color: var(--rqg-highlight)
+
+    }
+
+    .wounded {
+      background-color: var(--rqg-color-enc-warning);
+      border-color: var(--rqg-highlight);
+    }
+
+  }
+
+
+
 
   .grid.location-row {
     display: grid;

@@ -551,9 +551,15 @@ export class RqgActorSheet extends ActorSheet<
     };
 
     // Sort the hit locations
-    itemTypes[ItemTypeEnum.HitLocation].sort(
-      (a: any, b: any) => b.system.dieFrom - a.system.dieFrom
-    );
+    if (getGame().settings.get(systemId, "sortHitLocationsLowToHigh")) {
+      itemTypes[ItemTypeEnum.HitLocation].sort(
+        (a: any, b: any) => a.system.dieFrom - b.system.dieFrom
+      );
+    } else {
+      itemTypes[ItemTypeEnum.HitLocation].sort(
+        (a: any, b: any) => b.system.dieFrom - a.system.dieFrom
+      );
+    }
 
     // Enrich Cult texts for holyDays, gifts, geases, subCults
     await Promise.all(
@@ -988,6 +994,22 @@ export class RqgActorSheet extends ActorSheet<
         }
       });
     });
+
+    // Flip hit location sort order
+    htmlElement
+      ?.querySelectorAll<HTMLElement>("[data-flip-sort-hitlocation-setting]")
+      .forEach((el) => {
+        el.addEventListener("click", async (ev: MouseEvent) => {
+          const currentValue = getGame().settings.get(systemId, "sortHitLocationsLowToHigh");
+          await getGame().settings.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
+          // Rerender all actor sheets the user has open
+          Object.values(ui.windows).forEach((a: any) => {
+            if (a?.document?.type === ActorTypeEnum.Character) {
+              a.render();
+            }
+          });
+        });
+      });
 
     // Set Token SR in Combat Tracker
     htmlElement?.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el: HTMLElement) => {

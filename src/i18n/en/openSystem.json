@@ -258,7 +258,8 @@
         "Wounds": "Wounds",
         "HealWound": "Heal Wound",
         "AddWound": "Add Wound",
-        "NoHitLocations": "This character does not have any hit locations, please add some."
+        "NoHitLocations": "This character does not have any hit locations, please add some.",
+        "FlipSortOrder": "Reverse the order of the hit locations"
       },
       "Nav": {
         "Combat": "Combat",
@@ -1089,6 +1090,10 @@
         "settingLabel": "Configure Available Hit Location Names",
         "settingHint": "The hit location names are used in dropdowns for armor coverage and when naming a new hit location.",
         "addLocationPlaceholder": "Add another hitlocation"
+      },
+      "SortHitLocationsLowToHigh": {
+        "settingName": "Sort Hitlocations Low to High",
+        "settingHint": "Activating this setting sorts the character hitlocation in the same way as stat blocks are sorted with the lowest die number first. The setting can be toggled in the actor sheet Health table."
       },
       "DefaultItemIcons": {
         "dialogTitle": "Default Item Icon Settings",
