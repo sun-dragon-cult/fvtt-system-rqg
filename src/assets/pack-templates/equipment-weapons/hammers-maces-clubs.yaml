@@ -10,7 +10,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: arewOJ1QiSrq4BX2
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.arewOJ1QiSrq4BX2
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -85,7 +85,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: arewOJ1QiSrq4BX2
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.arewOJ1QiSrq4BX2
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -176,7 +176,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: 8an9DP6Kts02NkFu
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.8an9DP6Kts02NkFu
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -248,7 +248,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: aR2CR7aiPmNAoBYN
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.aR2CR7aiPmNAoBYN
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -307,7 +307,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: YuCJ36yojE4Qs25C
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.YuCJ36yojE4Qs25C
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -382,7 +382,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: 9H741jTUGwGD77ai
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9H741jTUGwGD77ai
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -457,7 +457,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: 77uhCIMhxvbbnx2h
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.77uhCIMhxvbbnx2h
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -532,7 +532,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: irLs49KOoB7L09BV
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.irLs49KOoB7L09BV
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -623,7 +623,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: cY0ZAU37y7ElrIWc
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.cY0ZAU37y7ElrIWc
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
@@ -698,7 +698,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: A7268y2J3MxcMmzv
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.A7268y2J3MxcMmzv
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$

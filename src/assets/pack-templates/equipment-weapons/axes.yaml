@@ -10,7 +10,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: 84644z0nkD89R1mz
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.84644z0nkD89R1mz
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -40,7 +40,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
+      skillId: 9wyEGCc77PiUb9Nl
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9wyEGCc77PiUb9Nl
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
@@ -85,7 +85,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: UVRB26QZsPwm1U9R
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UVRB26QZsPwm1U9R
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -107,7 +107,7 @@ system:
       minDexterity:
       strikeRank:
     twoHand:
-      skillId:
+      skillId: xhY8SCSzzBhwV1Pk
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.xhY8SCSzzBhwV1Pk
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -163,7 +163,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: UVRB26QZsPwm1U9R
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UVRB26QZsPwm1U9R
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -185,7 +185,7 @@ system:
       minDexterity: 7
       strikeRank: 3
     twoHand:
-      skillId:
+      skillId: xhY8SCSzzBhwV1Pk
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.xhY8SCSzzBhwV1Pk
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -257,7 +257,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: SEJtC7C6UhrKrcAV
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.SEJtC7C6UhrKrcAV
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -329,7 +329,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: 9hry1aMvBvVCAZM3
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9hry1aMvBvVCAZM3
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$

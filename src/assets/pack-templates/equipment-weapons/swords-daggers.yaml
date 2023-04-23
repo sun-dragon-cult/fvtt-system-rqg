@@ -322,8 +322,8 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-en.uHPTu384VHQI8RUt
+      skillId: uHPTu384VHQI8RUt
+      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.uHPTu384VHQI8RUt
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -397,7 +397,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: KTQ1xvw7YLOxOn37
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KTQ1xvw7YLOxOn37
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -469,7 +469,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: DDodZQhdAH5rK0Gv
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.DDodZQhdAH5rK0Gv
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -544,7 +544,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: t45m4tub484LBXuV
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.t45m4tub484LBXuV
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -635,7 +635,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: oaqCx2G0z8i6nFdA
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.oaqCx2G0z8i6nFdA
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -707,7 +707,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: P5fq02SPVgRRVyca
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.P5fq02SPVgRRVyca
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -779,7 +779,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: 4p6P3lLzd9E22WKe
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.4p6P3lLzd9E22WKe
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$

@@ -34,7 +34,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
+      skillId: jpOyJYC2ctmY2N8U
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.jpOyJYC2ctmY2N8U
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
@@ -103,7 +103,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
+      skillId: 9Pu3rVnoTp4cHjhn
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9Pu3rVnoTp4cHjhn
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
@@ -172,7 +172,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
+      skillId: UfrGc8zwcTmE1HPv
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UfrGc8zwcTmE1HPv
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
