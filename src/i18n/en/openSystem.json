@@ -711,6 +711,11 @@
           "useless": "Useless",
           "severed": "Severed"
         },
+        "Modifier": {
+          "normal": "Normal",
+          "low": "Low",
+          "high": "High"
+        },
         "Notification": {
           "CantFindHitLocation": "Couldn't find hitlocation with itemId [{hitLocationItemId}] on actor ${actorName} to show add wound dialog.",
           "HitLocationDoesNotHaveCalculatedArmor": "Hit location {hitLocationName} doesn't have a calculated total armor point",

@@ -162,10 +162,11 @@ export class HitLocationSheet extends RqgItemSheet<
     // }
 
     const content: string = await renderTemplate(
-      "systems/rqg/items/hit-location-item/hitLocationCard.hbs",
+      "systems/rqg/items/hit-location-item/hitLocationResultCard.hbs",
       {
         actor: actor,
         hitLocation: rolledHitLocation,
+        modifier: modifier,
       }
     );
 
