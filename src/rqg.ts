@@ -97,4 +97,26 @@ Hooks.once("ready", async () => {
   }
   // Make sure the cache of available runes is preloaded
   await cacheAvailableRunes();
+
+  // Register image directories with Moulinette
+  // @ts-ignore moulinette
+  if (getGame().moulinette) {
+    console.log("Registering Chaosium Images with Moulinette");
+    // @ts-ignore moulinette
+    getGame().moulinette.sources.push({
+      type: "images",
+      publisher: "Chaosium",
+      pack: "Runes, Black",
+      source: "data",
+      path: "systems/rqg/assets/images/runes",
+    });
+    // @ts-ignore moulinette
+    getGame().moulinette.sources.push({
+      type: "images",
+      publisher: "Chaosium",
+      pack: "Runes, White",
+      source: "data",
+      path: "systems/rqg/assets/images/runes-white",
+    });
+  }
 });
