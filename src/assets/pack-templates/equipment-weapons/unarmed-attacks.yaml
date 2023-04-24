@@ -10,7 +10,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: wJ8ZcCBfYlRPLGZ9
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.wJ8ZcCBfYlRPLGZ9
       combatManeuvers:
         - name: Hit
@@ -85,7 +85,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: DtW3cU9ecTCu5e97
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.DtW3cU9ecTCu5e97
       combatManeuvers:
         - name: Hit
@@ -160,7 +160,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: BZaTB9EsMEbZ8dWI
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.BZaTB9EsMEbZ8dWI
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
@@ -235,7 +235,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: mfuP53IYK6SlDNY7
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.mfuP53IYK6SlDNY7
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Punch}}$
@@ -310,7 +310,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: ImY1JgAPh59X5vbX
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.ImY1JgAPh59X5vbX
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
@@ -382,7 +382,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: KPHB0ZZXT78AGl0X
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KPHB0ZZXT78AGl0X
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Kick}}$
@@ -454,7 +454,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: fBlSeCd7CTRlmFpD
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.fBlSeCd7CTRlmFpD
       combatManeuvers:
         - name: Head Butt
@@ -526,7 +526,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: AuwLKY4rMgDCQLtG
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.AuwLKY4rMgDCQLtG
       combatManeuvers:
         - name: Trample
@@ -598,7 +598,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: eQtAZbMgHj2WwLvr
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.eQtAZbMgHj2WwLvr
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bite}}$
@@ -667,7 +667,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: nDme6LPr9hhcSfeB
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.nDme6LPr9hhcSfeB
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Trample}}$
@@ -736,7 +736,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: BZaTB9EsMEbZ8dWI
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.BZaTB9EsMEbZ8dWI
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
@@ -805,7 +805,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: rGoljoNmBLbaskDe
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.rGoljoNmBLbaskDe
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Hug}}$
@@ -874,7 +874,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: YWqbb02DrCq5iaEz
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.YWqbb02DrCq5iaEz
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
@@ -943,7 +943,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: FiNe2lN0aNW5qaxr
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.FiNe2lN0aNW5qaxr
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Gore}}$

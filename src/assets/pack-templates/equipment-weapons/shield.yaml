@@ -10,7 +10,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: 2U6A8opZA2du08Be
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.2U6A8opZA2du08Be
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
@@ -83,7 +83,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: u95ZVt0636VqW5Pe
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.u95ZVt0636VqW5Pe
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
@@ -156,7 +156,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: GknxFLc7hBNJ5s0l
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.GknxFLc7hBNJ5s0l
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$

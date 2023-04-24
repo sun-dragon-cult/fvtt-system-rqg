@@ -10,7 +10,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: p6Mm8PuFkfpy0MHS
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.p6Mm8PuFkfpy0MHS
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
@@ -40,7 +40,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
+      skillId: 794y0cyfzCa5eYPf
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.794y0cyfzCa5eYPf
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
@@ -88,7 +88,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: CIXYxzkBZd5RGJx7
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.CIXYxzkBZd5RGJx7
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
@@ -124,7 +124,7 @@ system:
       minDexterity: 7
       strikeRank: 1
     missile:
-      skillId:
+      skillId: r24yk70r505De5dy
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.r24yk70r505De5dy
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
@@ -172,7 +172,7 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
+      skillId: eT1Wtz0RWkeq60G2
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.eT1Wtz0RWkeq60G2
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
@@ -260,7 +260,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: GKqFmE4XASes5k97
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.GKqFmE4XASes5k97
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
@@ -332,7 +332,7 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
+      skillId: x9Cj4g9vfO64Uxia
       skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.x9Cj4g9vfO64Uxia
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
