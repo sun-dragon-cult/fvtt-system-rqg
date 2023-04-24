@@ -20,10 +20,23 @@
     {{#if embeddedItems.hitLocation}}
     <div class="grid hit-location item-list">
       <div class="headings"></div>
-      <div class="head1-4">
-        <button class="sort" data-flip-sort-hitlocation-setting data-tooltip="{{localize "RQG.Actor.Health.FlipSortOrder"}}" style="width: 1.3rem; padding-top: 2px; margin-top: -2px;">
-          <i class="fas fa-sort"></i>
+      <div class="head1">
+        <button class="sort" 
+            data-flip-sort-hitlocation-setting 
+            data-tooltip="{{localize "RQG.Actor.Health.FlipSortOrder"}}">
+          <i class="fas fa-sort" style="width: 14px;"></i>
         </button>
+      </div>
+      <div class="head2">
+      </div>
+      <div class="head3">
+        <button class="roll" 
+            data-roll-hit-location 
+            data-tooltip="{{localize "RQG.Actor.Health.RollHitLocation"}}">
+          <i class="fa-regular fa-dice-d20"></i>
+        </button>
+      </div>
+      <div class="head4">
         {{localize "RQG.Actor.Health.HitLocation"}}
       </div>
       <div class="head5 text-right"><span>{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span></div>

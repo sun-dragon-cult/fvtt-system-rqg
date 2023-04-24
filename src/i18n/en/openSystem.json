@@ -259,7 +259,8 @@
         "HealWound": "Heal Wound",
         "AddWound": "Add Wound",
         "NoHitLocations": "This character does not have any hit locations, please add some.",
-        "FlipSortOrder": "Reverse the order of the hit locations"
+        "FlipSortOrder": "Reverse the order of the hit locations",
+        "RollHitLocation": "Roll Hit Location"
       },
       "Nav": {
         "Combat": "Combat",

@@ -13,6 +13,7 @@ import { systemId } from "../system/config";
 import { ResultEnum } from "../data-model/shared/ability";
 import { Rqid } from "../system/api/rqidApi";
 import { PrototypeTokenData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { HitLocation } from "src/items/hit-location-item/hitLocation";
 
 export class RqgActor extends Actor {
   static init() {
