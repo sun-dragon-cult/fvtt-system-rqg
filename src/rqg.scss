@@ -13,16 +13,19 @@ body {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   box-shadow: 0 0 1px #999 inset;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb {
   outline: none;
   border-radius: 3px;
   background: var(--rqg-color-main-bg);
   border: 1px solid var(--rqg-color-main);
 }
+
 :root {
   scrollbar-width: thin;
   scrollbar-color: var(--rqg-color-main-bg) #111;
@@ -79,6 +82,10 @@ body {
 
 .x-small-size {
   font-size: x-small;
+}
+
+.app .compendium.directory img[src$=".svg"] {
+  filter: invert(0.9); // Make svg images black (dark grey) to match text color in compendiums
 }
 
 .rqg {
@@ -271,9 +278,33 @@ body {
     }
   }
 
+  img[src$=".svg"] {
+    filter: invert(0.9); // Make svg images black (dark grey) to enable blend modes and match styling
+  }
+
+  img.rune {
+    height: 20px;
+    border: none;
+    margin: 0;
+    mix-blend-mode: overlay;
+  }
+
+  img.rune-dark {
+    height: 20px;
+    border: none;
+    margin: 0;
+  }
+
+  img.item {
+    height: 26px;
+    border: none;
+    vertical-align: inherit;
+  }
+
   button.sort {
     line-height: unset;
     width: 1.8em;
+
     i {
       margin-left: -2px; // center the icon
     }
@@ -427,9 +458,11 @@ body {
 
       .usage {
         line-height: 1.5rem;
+
         &.missile {
           line-height: 3rem;
         }
+
         &.default-usage {
           font-weight: bold;
         }
@@ -601,6 +634,7 @@ body {
 
       .img {
         grid-row: 1 / -1;
+
         img {
           mix-blend-mode: soft-light;
         }
@@ -626,12 +660,12 @@ body {
 
   .experienced {
     text-shadow: -1px 1px 1px var(--rqg-light-outline),
-      1px -1px 1px var(--rqg-light-outline),
-      1px 1px 1px var(--rqg-light-outline),
-      -1px -1px 1px var(--rqg-light-outline),
-      0 0 1em var(--rqg-highlight),
-      0 0 0.6em var(--rqg-highlight),
-      0 0 0.4em var(--rqg-highlight);
+    1px -1px 1px var(--rqg-light-outline),
+    1px 1px 1px var(--rqg-light-outline),
+    -1px -1px 1px var(--rqg-light-outline),
+    0 0 1em var(--rqg-highlight),
+    0 0 0.6em var(--rqg-highlight),
+    0 0 0.4em var(--rqg-highlight);
     font-weight: bold;
   }
 
@@ -651,7 +685,7 @@ body {
 
     &:active {
       box-shadow: -8px -8px 16px 0 rgba(0, 0, 0, 0.25), 11px 12px 12px 0 rgba(255, 255, 255, 0.3),
-        inset 4px 4px 5px 0px rgba(0, 0, 0, 0.25);
+      inset 4px 4px 5px 0px rgba(0, 0, 0, 0.25);
     }
   }
 
@@ -674,14 +708,17 @@ body {
     font-variant: normal;
     letter-spacing: normal;
     font-weight: normal;
+
     ol {
       padding-top: 5px;
       padding-bottom: 5px;
       padding-right: 5px;
     }
+
     li.context-item {
       white-space: nowrap;
       padding-top: 3px;
+
       .context-icon {
         fill: white;
         width: 30px;
@@ -692,6 +729,7 @@ body {
         bottom: -4px;
         filter: invert(1);
       }
+
       .context-icon-img {
         height: 16pt;
       }
@@ -718,6 +756,7 @@ body {
       max-width: 100vw; // Make sure the edit button always is viewable
     }
   }
+
   .tox.tox-tinymce {
     min-height: 200px;
   }
@@ -751,12 +790,15 @@ body {
       .active {
         box-shadow: 0 0 0.5em red;
       }
+
       h3 {
         margin-bottom: -6px;
       }
+
       input[type="submit"] {
         margin-top: 5px;
       }
+
       .damage {
         writing-mode: tb;
         transform: rotate(180deg);
@@ -806,25 +848,6 @@ body {
     width: inherit;
     background-color: #ffffff10;
   }
-}
-
-.rqg img.rune {
-  height: 20px;
-  border: none;
-  margin: 0;
-  mix-blend-mode: overlay;
-}
-
-.rqg img.rune-dark {
-  height: 20px;
-  border: none;
-  margin: 0;
-}
-
-.rqg img.item {
-  height: 26px;
-  border: none;
-  vertical-align: inherit;
 }
 
 .rqg.sheet img.equipped-status {
@@ -881,7 +904,7 @@ body {
   figcaption {
     font-size: 3rem;
     text-shadow: 1px 1px 2px var(--rqg-color-main), 0 0 1em var(--rqg-color-main-bg),
-      0 0 0.2em var(--rqg-color-main-bg);
+    0 0 0.2em var(--rqg-color-main-bg);
 
     margin: 0;
     //font-size: 2em;
