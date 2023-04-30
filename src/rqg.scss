@@ -84,8 +84,8 @@ body {
   font-size: x-small;
 }
 
-.rqg img[src$=".svg"],
-.app .compendium.directory img[src$=".svg"] {
+.rqg img[src^="systems/rqg/assets/images"][src$=".svg"],
+.app .compendium.directory img[src^="systems/rqg/assets/images"][src$=".svg"] {
   filter: invert(0.9); // Make svg images black (dark grey) to match text color in compendiums and sheets
 }
 
