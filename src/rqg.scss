@@ -84,8 +84,9 @@ body {
   font-size: x-small;
 }
 
+.rqg img[src$=".svg"],
 .app .compendium.directory img[src$=".svg"] {
-  filter: invert(0.9); // Make svg images black (dark grey) to match text color in compendiums
+  filter: invert(0.9); // Make svg images black (dark grey) to match text color in compendiums and sheets
 }
 
 .rqg {
@@ -276,10 +277,6 @@ body {
         margin-right: 16px;
       }
     }
-  }
-
-  img[src$=".svg"] {
-    filter: invert(0.9); // Make svg images black (dark grey) to enable blend modes and match styling
   }
 
   img.rune {
