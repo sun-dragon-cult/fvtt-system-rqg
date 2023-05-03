@@ -283,16 +283,19 @@ export class HitLocationSheet extends RqgItemSheet<
     }
   }
 
+  static findEffect(health: ActorHealthState): { id: string; label: string; icon: string } {
+    const effect = CONFIG.statusEffects.find((e) => e.id === health);
+    requireValue(effect, `Required statusEffect ${health} is missing`); // TODO translate message
+    return effect;
+  }
+
   static async setTokenEffect(token: RqgToken): Promise<void> {
     const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
       new Map([
-        ["shock", CONFIG.statusEffects[14]],
-        ["unconscious", CONFIG.statusEffects[1]],
-        ["dead", CONFIG.statusEffects[0]],
+        ["shock", HitLocationSheet.findEffect("shock")],
+        ["unconscious", HitLocationSheet.findEffect("unconscious")],
+        ["dead", HitLocationSheet.findEffect("dead")],
       ]);
-
-    // TODO map to actorHealth - sync actorHealth names to statusEffects names?
-    // TODO create a CONFIG.RQG.statusEffects that contain AE ?
 
     if (!token.actor) {
       ui.notifications?.warn(localize("RQG.Item.HitLocation.Notification.NoActorOnTokenWarn"));

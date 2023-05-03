@@ -19,6 +19,7 @@ import { RqgCompendiumDirectory } from "./foundryUi/rqgCompendiumDirectory";
 import { RqgHotbar } from "./foundryUi/rqgHotbar";
 import { TextEditorHooks } from "./foundryUi/textEditorHooks";
 import { RqgJournalEntry } from "./journals/rqgJournalEntry";
+import { getTokenStatusEffects } from "./system/tokenStatusEffects";
 
 Hooks.once("init", async () => {
   console.log(
@@ -56,6 +57,9 @@ Hooks.once("init", async () => {
     turnTime: 0, // Don't advance time per combatant
     roundTime: 12, // Melee round
   };
+
+  CONFIG.statusEffects = getTokenStatusEffects();
+
   Rqid.init();
   RqgChatMessage.init();
   RqgActiveEffect.init();
