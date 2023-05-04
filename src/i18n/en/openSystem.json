@@ -300,6 +300,7 @@
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
         "CultRankLabel": "Cult Rank",
         "RunePoints": "Rune Points",
+        "HolyDays": "Holy Days",
         "Gifts": "Gifts",
         "Geases": "Geases",
         "SubCults": "Sub Cults",
@@ -641,7 +642,10 @@
         }
       },
       "Cult": {
-        "Name": "Cult Name",
+        "AddNewSubCult": "Add new Sub Cult",
+        "Name": "Name",
+        "Deity": "Deity",
+        "CultName": "Cult Name",
         "CultTagline": "Cult Tagline",
         "AddNewRunePlaceholder": "Add new rune",
         "Runes": "Runes",
@@ -766,7 +770,7 @@
         "PleaseDropOnTarget": "You can't drop that here.  Look for an appropriate target.",
         "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
         "DroppedWrongDocumentType": "This field expects a document of type(s) {allowedDropTypes} and the dropped document was {type}",
-        "DroppedWrongDocumentName": "This field expects a {allowedDocumentName} and the dropped document was {documentName}",
+        "DroppedWrongDocumentName": "This field expects a {allowedDocumentNames} and the dropped document was {documentName}",
         "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with uuid {uuid} does not have an RQID and cannot be dropped onto this sheet.",
         "ItemNotUnique": "{actorName} already has a {documentType} '{documentName}' and duplicates are not allowed"
       },
@@ -866,11 +870,12 @@
       "SheetTab": {
         "ActiveEffects": "Active Effects",
         "Armor": "Armor",
-        "Cult": "Cult",
-        "CultStanding": "Cult Standing",
+        "Cults": "Cults",
+        "Deity": "Deity",
         "Description": "Description",
         "GMNotes": "GM Notes",
         "Gear": "Gear",
+        "GiftsAndGeases": "Gifts & Geases",
         "HitLocation": "Hit Location",
         "HitLocationDefinition": "Hit Location Definition",
         "Homeland": "Homeland",
@@ -1129,6 +1134,32 @@
         "settingName": "World Migration Version",
         "settingHint": "The RQG system version this world has been migrated to."
       }
+    },
+    "TokenEffects": {
+      "StatusProtection1": "Protection 1",
+      "StatusProtection2": "Protection 2",
+      "StatusProtection3": "Protection 3",
+      "StatusProtection4": "Protection 4",
+      "StatusStrength": "Strength",
+      "StatusBefuddled": "Befuddled",
+      "StatusBladesharp": "Bladesharp",
+      "StatusBludgeon": "Bludgeon",
+      "StatusCoordination": "Coordination",
+      "StatusCountermagic": "Countermagic",
+      "StatusDullblade": "Dullblade",
+      "StatusFanaticism": "Fanaticism",
+      "StatusFireblade": "Fireblade",
+      "StatusGlamour": "Glamour",
+      "StatusGlue": "Glue",
+      "StatusIronhand": "Ironhand",
+      "StatusLantern": "Lantern",
+      "StatusLight": "Light",
+      "StatusMobility": "Mobility",
+      "StatusParry": "Parry",
+      "StatusShimmer": "Shimmer",
+      "StatusSlow": "Slow",
+      "StatusSpiritScreen": "Spirit Screen",
+      "StatusVigor": "Vigor"
     },
     "Migration": {
       "Dialog": {

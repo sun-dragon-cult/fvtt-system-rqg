@@ -13,7 +13,7 @@
               <div class="flex-row gap01rem">
                 {{#each characterElementRunes}}
                   <div class="rune contextmenu item" data-item-id="{{id}}">
-                    <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                    <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
                   </div>
                 {{/each}}
               </div>
@@ -22,7 +22,7 @@
               <div class="flex-row gap01rem">
                 {{#each characterPowerRunes}}
                 <div class="rune contextmenu item" data-item-id="{{id}}">
-                  <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                  <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
                 </div>
                 {{/each}}
               </div>
@@ -31,14 +31,14 @@
               <div class="flex-row gap01rem">
                 {{#each characterFormRunes}}
                 <div class="rune contextmenu item" data-item-id="{{id}}">
-                  <img class="rune" src="{{img}}" {{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                  <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
                 </div>
                 {{/each}}
               </div>
             {{/if}}
           </div>
           {{#if mainCult.id}}
-            <div class="cult contextmenu item" data-item-id="{{mainCult.id}}" data-rqid-link="{{mainCult.descriptionRqid}}">
+            <div class="cult contextmenu item" data-item-id="{{mainCult.id}}"{{#if mainCult.descriptionRqid}} data-rqid-link="{{mainCult.descriptionRqid}}"{{/if}}>
               {{mainCult.name}}
               {{#if mainCult.hasMultipleCults}}
                 <i class="fa fa-plus-circle small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
@@ -50,7 +50,7 @@
       </div>
       <div class="characteristics">
         {{#each system.characteristics as | characteristic key |}}
-        <div data-characteristic="{{key}}" class="flex-column {{#if characteristic.hasExperience}}experienced{{/if}}">
+        <div data-characteristic="{{key}}" class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}">
           <label class="resource-label norse characteristic contextmenu" data-characteristic-roll data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
           {{#if @root.isGM}}
             <input type="number" name="system.characteristics.{{key}}.value"

@@ -10,37 +10,45 @@
 {{/each}}
 <div class="item-list">
   {{#each embeddedItems.cult}}
-    <div class="item" style="margin-bottom: 1.5rem" data-item-id="{{id}}">
-      <h2 class="cult contextmenu"
-          {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-        {{name}}
-        {{#each system.runes}}
-          <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
-        {{/each}}
-        <span class="small-size">{{system.tagline}}</span>
-      </h2>
-      <div class="flex-row flex-wrap gap1rem cult contextmenu">
-    <span>
-      <b>{{localize "RQG.Actor.RuneMagic.CultRankLabel"}}</b> {{localize
-      (concat "RQG.Actor.RuneMagic.CultRank." system.rank)}}<br>
-      <b>{{localize "RQG.Actor.RuneMagic.RunePoints"}}</b> <input type="number" min="0" max="99"
-                                                                  data-item-edit-value="system.runePoints.value"
-                                                                  value="{{system.runePoints.value}}">/{{system.runePoints.max}}
-    </span>
-        <span>{{{system.enrichedHolyDays}}}</span>
-        {{#if system.enrichedGeases}}
-          <span><b>{{localize "RQG.Actor.RuneMagic.Gifts"}}</b>{{{system.enrichedGifts}}}</span>
-        {{/if}}
-        {{#if system.enrichedGeases}}
-          <span><b>{{localize "RQG.Actor.RuneMagic.Geases"}}</b>{{{system.enrichedGeases}}}</span>
-        {{/if}}
-        {{#if system.enrichedSubCults}}
-          <span><b>{{localize "RQG.Actor.RuneMagic.SubCults"}}</b>{{{system.enrichedSubCults}}}</span>
-        {{/if}}
-      </div>
+    <section class="item" style="margin-bottom: 1.5rem" data-item-id="{{id}}">
+      <header {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+        <h2 class="cult contextmenu">
+          {{system.deity}}
+          {{#each system.runes}}
+            <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
+          {{/each}}
+        </h2>
+        <div class="flex-row gap1rem cult contextmenu">
+          <span>
+            <b>{{localize "RQG.Actor.RuneMagic.RunePoints"}}</b>
+            <input type="number" min="0" max="99"
+                   data-item-edit-value="system.runePoints.value"
+                   value="{{system.runePoints.value}}">/{{system.runePoints.max}}
+          </span>
+          {{#if system.enrichedHolyDays}}
+            <span><b>{{localize "RQG.Actor.RuneMagic.HolyDays"}}</b>{{{system.enrichedHolyDays}}}</span>
+          {{/if}}
+          {{#if system.enrichedGeases}}
+            <span><b>{{localize "RQG.Actor.RuneMagic.Gifts"}}</b>{{{system.enrichedGifts}}}</span>
+          {{/if}}
+          {{#if system.enrichedGeases}}
+            <span><b>{{localize "RQG.Actor.RuneMagic.Geases"}}</b>{{{system.enrichedGeases}}}</span>
+          {{/if}}
+          <div class="flex-column" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+            {{#each system.joinedCults}}
+              <div><b>{{cultName}} – {{localize (concat "RQG.Actor.RuneMagic.CultRank." rank)}}</b>
+                {{#if tagline}}<br><i>{{tagline}}</i>{{/if}}</b>
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      </header>
       <div class="grid rune-magic item-list">
         <div class="headings"></div>
-        <div class="head1"><button class="sort" data-sort-items="runeMagic" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+        <div class="head1">
+          <button class="sort" data-sort-items="runeMagic" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i
+            class="fas fa-arrow-down-a-z"></i></button>
+        </div>
         <div class="head2">{{localize "RQG.Actor.RuneMagic.RuneSpell"}}</div>
         <div class="head3">{{localize "RQG.Actor.RuneMagic.Points"}}</div>
         <div class="head4"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Range"}}</span></div>
@@ -110,7 +118,7 @@
           {{/if}}
         {{/each}}
       </div>
-    </div>
+    </section>
   {{/each}}
 </div>
 

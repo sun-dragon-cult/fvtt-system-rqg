@@ -139,4 +139,19 @@
     font-weight: bold;
     font-style: italic;
   }
+
+  &.cult {
+    .joined-cult {
+      background-color: #d8b16e61;
+      padding: 0.5rem;
+
+      a {
+        margin: 1rem;
+      }
+    }
+
+    button.add-cult {
+      margin-top: 1rem;
+    }
+  }
 }

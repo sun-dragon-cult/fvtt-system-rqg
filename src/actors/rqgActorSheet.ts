@@ -19,6 +19,7 @@ import { RqgActor } from "./rqgActor";
 import {
   assertHtmlElement,
   assertItemType,
+  formatListByWorldLanguage,
   getDocumentTypes,
   getGame,
   getGameUser,
@@ -323,14 +324,13 @@ export class RqgActorSheet extends ActorSheet<
       .filter((i) => i.type === ItemTypeEnum.Cult)
       .sort((a: RqgItem, b: RqgItem) => b.system.runePoints.max - a.system.runePoints.max);
     const mainCultItem: RqgItem | undefined = cults[0];
-    const mainCultRank = mainCultItem?.system?.rank;
-    const mainCultRankTranslation = mainCultRank
-      ? localize("RQG.Actor.RuneMagic.CultRank." + mainCultRank)
-      : "";
+    const mainCultRankTranslation = mainCultItem?.system?.joinedCults.map((c: any) =>
+      c.rank ? localize("RQG.Actor.RuneMagic.CultRank." + c.rank) : ""
+    );
     return {
       name: mainCultItem?.name ?? "",
       id: mainCultItem?.id ?? "",
-      rank: mainCultRankTranslation,
+      rank: formatListByWorldLanguage(mainCultRankTranslation),
       descriptionRqid: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
       hasMultipleCults: cults.length > 1,
     };
@@ -571,10 +571,6 @@ export class RqgActorSheet extends ActorSheet<
         // @ts-expect-error async
         cult.system.enrichedGifts = await TextEditor.enrichHTML(cult.system.gifts, { async: true });
         cult.system.enrichedGeases = await TextEditor.enrichHTML(cult.system.geases, {
-          // @ts-expect-error async
-          async: true,
-        });
-        cult.system.enrichedSubCults = await TextEditor.enrichHTML(cult.system.subCults, {
           // @ts-expect-error async
           async: true,
         });

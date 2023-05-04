@@ -562,3 +562,46 @@ export function activateChatTab() {
 export function systemProp(): string {
   return (getGame() as any).data.release.generation > 9 ? "system" : "data";
 }
+
+/**
+ * The type of Intl.ListFormat type
+ */
+export type ListFormatType = "disjunction" | "conjunction" | "unit";
+
+/**
+ * Convert a list of strings to a string using language sensitive formatting. Use the rqg world language setting.
+ *
+ * Output can look like `one, two, and three` given `["one", "two", "three"]`
+ */
+export function formatListByWorldLanguage(
+  list: string[],
+  concatType: ListFormatType = "conjunction"
+): string {
+  const worldLanguage = (getGame().settings.get(systemId, "worldLanguage") as string) ?? "en";
+  return formatListByLanguage(worldLanguage, list, concatType);
+}
+
+/**
+ * Convert a list of strings to a string using language sensitive formatting. Use the user language setting.
+ *
+ * Output can look like `one, two, and three` given `["one", "two", "three"]`
+ */
+export function formatListByUserLanguage(
+  list: string[],
+  concatType: ListFormatType = "conjunction"
+): string {
+  const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
+  return formatListByLanguage(userLanguage, list, concatType);
+}
+
+function formatListByLanguage(
+  language: string,
+  list: string[] | undefined,
+  concatType: ListFormatType
+): string {
+  if (!list) {
+    return "";
+  }
+  const listFormatter = new Intl.ListFormat(language, { style: "long", type: concatType });
+  return listFormatter.format(list);
+}
