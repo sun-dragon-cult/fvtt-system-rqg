@@ -3,12 +3,14 @@ name: ${{openSystem.content.cult.stormBull.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  cultName: ${{openSystem.content.cult.stormBull.name}}$
-  rank: layMember
+  deity: ${{openSystem.content.cult.stormBull.name}}$
+  joinedCults:
+    - cultName: ${{openSystem.content.cult.stormBull.name}}$
+      tagline: ${{openSystem.content.cult.stormBull.tagline}}$
+      rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.stormBull.tagline}}$
   holyDays:
   runes:
     - ${{openSystem.content.runeDescription.airElement.name}}$

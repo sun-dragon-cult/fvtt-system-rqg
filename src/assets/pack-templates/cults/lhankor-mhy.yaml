@@ -3,12 +3,14 @@ name: ${{openSystem.content.cult.lhankorMhy.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  cultName: ${{openSystem.content.cult.lhankorMhy.name}}$
-  rank: layMember
+  deity: ${{openSystem.content.cult.lhankorMhy.name}}$
+  joinedCults:
+    - cultName: ${{openSystem.content.cult.lhankorMhy.name}}$
+      tagline: ${{openSystem.content.cult.lhankorMhy.tagline}}$
+      rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.lhankorMhy.tagline}}$
   holyDays:
   runes:
     - ${{openSystem.content.runeDescription.truthPower.name}}$
