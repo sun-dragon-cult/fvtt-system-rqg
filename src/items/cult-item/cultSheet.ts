@@ -9,9 +9,9 @@ import {
   formatListByWorldLanguage,
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { RqgItem } from "../rqgItem";
+import type { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces";
 
 interface CultSheetData {
   allRunes: AvailableRuneCache[];

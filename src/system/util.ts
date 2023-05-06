@@ -1,8 +1,8 @@
-import { RqgActor } from "../actors/rqgActor";
+import type { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
-import { ChatMessageType } from "../chat/RqgChatMessage";
+import type { ChatMessageType } from "../chat/RqgChatMessage";
 import { systemId } from "./config";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
