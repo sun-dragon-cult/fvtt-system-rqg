@@ -1,7 +1,7 @@
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { LocationItemNode, LocationItemNodeData } from "./locationItemNode";
-import { getGame, isDefined, localize } from "../../system/util";
+import { formatListByUserLanguage, isDefined, localize } from "../../system/util";
 
 export class ItemTree {
   /** Map container name to a list of content names */
@@ -113,13 +113,8 @@ export class ItemTree {
     if (this.loopNodes.length === 0) {
       return "";
     }
-    const userLanguage =
-      typeof game !== "undefined" // TODO how make mockable - this is just for testing
-        ? (getGame().settings.get("core", "language") as string) ?? "en"
-        : "en";
-    const formatter = new Intl.ListFormat(userLanguage, { style: "long", type: "conjunction" });
-
-    return localize("RQG.Actor.Gear.LocationLoop", { loopItems: formatter.format(this.loopNodes) });
+    const loopItemString = formatListByUserLanguage(this.loopNodes);
+    return localize("RQG.Actor.Gear.LocationLoop", { loopItems: loopItemString });
   }
 
   /**

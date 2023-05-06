@@ -3,12 +3,14 @@ name: ${{openSystem.content.cult.aldrya.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  cultName: ${{openSystem.content.cult.aldrya.name}}$
-  rank: layMember
+  deity: ${{openSystem.content.cult.aldrya.name}}$
+  joinedCults:
+    - cultName: ${{openSystem.content.cult.aldrya.name}}$
+      tagline: ${{openSystem.content.cult.aldrya.tagline}}$
+      rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.aldrya.tagline}}$
   holyDays:
   runes:
     - ${{openSystem.content.runeDescription.earthElement.name}}$

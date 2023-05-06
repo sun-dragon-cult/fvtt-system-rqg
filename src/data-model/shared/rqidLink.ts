@@ -20,7 +20,13 @@ export class RqidLink {
       const rqid = getDomDataset(el, "rqid-link");
       const anchor = getDomDataset(el, "anchor");
       if (rqid) {
-        el.addEventListener("click", async () => {
+        el.addEventListener("click", async (ev) => {
+          const targetRqidLink = getDomDataset(ev, "rqid-link");
+          const targetUuid = getDomDataset(ev, "uuid");
+
+          if (ev.target instanceof HTMLInputElement || targetUuid || targetRqidLink !== rqid) {
+            return; // exclude inputs and embedded uuid & rqid links
+          }
           await Rqid.renderRqidDocument(rqid, anchor);
         });
       }

@@ -1,5 +1,6 @@
 import {
   assertHtmlElement,
+  formatListByUserLanguage,
   getDomDataset,
   getGame,
   hasOwnProperty,
@@ -51,14 +52,16 @@ export function isAllowedDocumentNames(
     (allowedDocumentNames?.length && !allowedDocumentNames.includes(documentName))
   ) {
     const translatedDocumentName = localizeDocumentName(documentName);
-    const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
-    const listFormatter = new Intl.ListFormat(userLanguage, { style: "long", type: "disjunction" });
+    const translatedAllowedDocumentNames = allowedDocumentNames
+      ? allowedDocumentNames.map((d: any) => localizeDocumentName(d))
+      : [];
+    const allowedDocumentNamesString = formatListByUserLanguage(
+      translatedAllowedDocumentNames,
+      "disjunction"
+    );
 
-    const translatedAllowedDocumentNames =
-      allowedDocumentNames &&
-      listFormatter.format(allowedDocumentNames.map((d: any) => localizeDocumentName(d)) ?? "");
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
-      allowedDocumentName: translatedAllowedDocumentNames, // TODO change translation key to `allowedDocumentNames`
+      allowedDocumentNames: allowedDocumentNamesString,
       documentName: translatedDocumentName,
     });
     // @ts-expect-error console
@@ -78,14 +81,16 @@ export function isAllowedDocumentType(
     hasOwnProperty(document, "type") && // Does this Document have a type
     !allowedDocumentTypes.includes(document?.type as string) // Does the type match
   ) {
-    const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
-    const listFormatter = new Intl.ListFormat(userLanguage, { style: "long", type: "disjunction" });
+    const translatedAllowedDocumentTypes = allowedDocumentTypes.map(
+      (d: any) => localizeItemType(d) // TODO assumes the document in a Item. Ok for now?
+    );
 
-    const translatedAllowedDocumentTypes = listFormatter.format(
-      allowedDocumentTypes.map((d: any) => localizeItemType(d)) // TODO assumes the document in a Item. Ok for now?
+    const allowedDocumentTypesString = formatListByUserLanguage(
+      translatedAllowedDocumentTypes,
+      "disjunction"
     );
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentType", {
-      allowedDropTypes: translatedAllowedDocumentTypes,
+      allowedDropTypes: allowedDocumentTypesString,
       type: localizeItemType(document?.type as any),
     });
     // @ts-expect-error console

@@ -3,12 +3,14 @@ name: ${{openSystem.content.cult.dakaFal.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  cultName: ${{openSystem.content.cult.dakaFal.name}}$
-  rank: layMember
+  deity: ${{openSystem.content.cult.dakaFal.name}}$
+  joinedCults:
+    - cultName: ${{openSystem.content.cult.dakaFal.name}}$
+      tagline: ${{openSystem.content.cult.dakaFal.tagline}}$
+      rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.dakaFal.tagline}}$
   holyDays:
   runes:
     - ${{openSystem.content.runeDescription.manForm.name}}$

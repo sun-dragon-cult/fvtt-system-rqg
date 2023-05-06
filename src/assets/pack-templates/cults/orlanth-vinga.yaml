@@ -3,13 +3,14 @@ name: ${{openSystem.content.cult.orlanth.subcult.vinga.name}}$ (${{openSystem.co
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  cultName: ${{openSystem.content.cult.orlanth.name}}$
-  subcults: ${{openSystem.content.cult.orlanth.subcult.vinga.name}}$
-  rank: layMember
+  deity: ${{openSystem.content.cult.orlanth.name}}$
+  joinedCults:
+    - cultName: ${{openSystem.content.cult.orlanth.subcult.vinga.name}}$
+      tagline: ${{openSystem.content.cult.orlanth.subcult.vinga.tagline}}$
+      rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.orlanth.subcult.vinga.tagline}}$
   holyDays: ${{openSystem.content.cult.orlanth.holyDays}}$
   runes:
     - ${{openSystem.content.runeDescription.movementPower.name}}$

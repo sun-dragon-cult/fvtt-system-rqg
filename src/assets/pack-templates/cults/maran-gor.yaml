@@ -3,12 +3,14 @@ name: ${{openSystem.content.cult.maranGor.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  cultName: ${{openSystem.content.cult.maranGor.name}}$
-  rank: layMember
+  deity: ${{openSystem.content.cult.maranGor.name}}$
+  joinedCults:
+    - cultName: ${{openSystem.content.cult.maranGor.name}}$
+      tagline: ${{openSystem.content.cult.maranGor.tagline}}$
+      rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.maranGor.tagline}}$
   holyDays:
   runes:
     - ${{openSystem.content.runeDescription.deathPower.name}}$

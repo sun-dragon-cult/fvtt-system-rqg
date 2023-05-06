@@ -3,12 +3,14 @@ name: ${{openSystem.content.cult.waha.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  cultName: ${{openSystem.content.cult.waha.name}}$
-  rank: layMember
+  deity: ${{openSystem.content.cult.waha.name}}$
+  joinedCults:
+    - cultName: ${{openSystem.content.cult.waha.name}}$
+      tagline: ${{openSystem.content.cult.waha.tagline}}$
+      rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.waha.tagline}}$
   holyDays:
   runes:
     - ${{openSystem.content.runeDescription.manForm.name}}$

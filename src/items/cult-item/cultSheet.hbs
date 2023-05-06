@@ -6,25 +6,19 @@
 
       <div class="property-line">
         <div class="label-above">
-          <label for="name-{{id}}">{{localize "RQG.Item.Cult.Name"}}</label>
+          <label for="deity-{{id}}">{{localize "RQG.Item.Cult.Deity"}}</label>
           <input
-            id="name-{{id}}"
+            id="deity-{{id}}"
             type="text"
-            name="name"
-            value="{{name}}"
-            placeholder="{{localize "RQG.Item.Cult.Name"}}"
+            name="system.deity"
+            value="{{system.deity}}"
+            placeholder="{{localize "RQG.Item.Cult.Deity"}}"
           />
         </div>
 
-        <div class="label-above long">
-          <label for="tagline-{{id}}">{{localize "RQG.Item.Cult.CultTagline"}}</label>
-          <input
-            id="tagline-{{id}}"
-            type="text"
-            name="system.tagline"
-            value="{{system.tagline}}"
-            placeholder="{{localize "RQG.Item.Cult.CultTagline"}}"
-          />
+        <div class="label-above">
+          <label for="name-{{id}}">{{localize "RQG.Item.Cult.Name"}}</label><br>
+          {{name}}
         </div>
       </div>
 
@@ -41,15 +35,16 @@
   <main>
     {{! Sheet Tab Navigation }}
     <nav class="item-sheet-nav-tabs" data-group="primary">
+      <a class="item" data-tab="deity">{{localize "RQG.Item.SheetTab.Deity"}}</a>
       {{#if isEmbedded}}
-        <a class="item" data-tab="cult-standing">{{localize "RQG.Item.SheetTab.CultStanding"}}</a>
+        <a class="item" data-tab="giftsandgeases">{{localize "RQG.Item.SheetTab.GiftsAndGeases"}}</a>
       {{/if}}
-      <a class="item" data-tab="cult">{{localize "RQG.Item.SheetTab.Cult"}}</a>
+      <a class="item" data-tab="cults">{{localize "RQG.Item.SheetTab.Cults"}}</a>
     </nav>
 
     <section class="sheet-body">
-      {{! Cult Standing Tab }}
-      <div class="tab" data-group="primary" data-tab="cult-standing">
+      {{! Deity Tab }}
+      <div class="tab" data-group="primary" data-tab="deity">
         <div class="key-value-grid">
           <label for="rune-points-value-{{id}}">{{localize "RQG.Item.Cult.RunePoints"}}</label>
           <div>
@@ -70,53 +65,6 @@
           />
           </div>
 
-          <label for="cult-rank-{{id}}">{{localize "RQG.Item.Cult.CultRank"}}</label>
-          <select name="system.rank">
-            {{#select system.rank}}
-              {{#each ranksEnum}}
-                <option value="{{this}}">{{localize
-                  (concat "RQG.Actor.RuneMagic.CultRank." this)
-                }}</option>
-              {{/each}}
-            {{/select}}
-          </select>
-
-          <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGifts"}}</label>
-          <div class="editor-container">
-            {{editor
-              enrichedGifts
-              target="system.gifts"
-              button=true
-              editable=isEditable
-            }}
-          </div>
-
-          <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGeases"}}</label>
-          <div class="editor-container">
-            {{editor
-              enrichedGeases
-              target="system.geases"
-              button=true
-              editable=isEditable
-            }}
-          </div>
-
-          <label class="editor-label">{{localize "RQG.Item.Cult.ActorsSubCults"}}</label>
-          <div class="editor-container">
-            {{editor
-              enrichedSubCults
-              target="system.subCults"
-              button=true
-              editable=isEditable
-            }}
-          </div>
-
-        </div>
-      </div>
-
-      {{! Cult Tab }}
-      <div class="tab" data-group="primary" data-tab="cult">
-        <div class="key-value-grid">
           <label for="runes-{{id}}">{{localize "RQG.Item.Cult.Runes"}}</label>
           <div class="img-name-grid bordered">
             {{#each system.runes}}
@@ -142,6 +90,73 @@
             }}
           </div>
         </div>
+      </div>
+
+      {{! Gifts and Geases Tab }}
+      <div class="tab" data-group="primary" data-tab="giftsandgeases">
+        <div class="key-value-grid">
+          <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGifts"}}</label>
+          <div class="editor-container">
+            {{editor
+              enrichedGifts
+              target="system.gifts"
+              button=true
+              editable=isEditable
+            }}
+          </div>
+
+          <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGeases"}}</label>
+          <div class="editor-container">
+            {{editor
+              enrichedGeases
+              target="system.geases"
+              button=true
+              editable=isEditable
+            }}
+          </div>
+        </div>
+      </div>
+
+      {{! Cults Tab }}
+      <div class="tab" data-group="primary" data-tab="cults">
+        <div class="flex-column gap1rem">
+          {{#each system.joinedCults}}
+            <div class="flex-row flex-align-center joined-cult">
+              <div class="key-value-grid fullwidth">
+                <label for="cultName-{{@index}}-{{id}}">{{localize "RQG.Item.Cult.CultName"}}</label>
+                <input
+                  id="tagline-{{@index}}-{{id}}"
+                  type="text"
+                  name="system.joinedCults.cultName"
+                  value="{{this.cultName}}"
+                  placeholder="{{../system.deity}}"
+                />
+
+                <label for="tagline-{{@index}}-{{id}}">{{localize "RQG.Item.Cult.CultTagline"}}</label>
+                <input
+                  id="tagline-{{@index}}-{{id}}"
+                  type="text"
+                  name="system.joinedCults.tagline"
+                  value="{{this.tagline}}"
+                />
+
+                <label for="cult-rank-{{@index}}-{{id}}">{{localize "RQG.Item.Cult.CultRank"}}</label>
+                <select name="system.joinedCults.rank" id="cult-rank-{{@index}}-{{id}}">
+                  {{#select this.rank}}
+                    {{#each @root.ranksEnum}}
+                      <option value="{{this}}">{{localize
+                        (concat "RQG.Actor.RuneMagic.CultRank." this)
+                      }}</option>
+                    {{/each}}
+                  {{/select}}
+                </select>
+              </div>
+              <a data-tooltip="Delete Cult" data-delete-cult="{{@index}}"><i class="fas fa-trash"></i></a>
+            </div>
+          {{/each}}
+        </div>
+
+        <button class="add-cult" data-add-cult>{{localize "RQG.Item.Cult.AddNewSubCult"}}</button>
       </div>
     </section>
   </main>

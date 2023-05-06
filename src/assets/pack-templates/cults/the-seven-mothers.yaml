@@ -3,12 +3,14 @@ name: ${{openSystem.content.cult.theSevenMothers.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  cultName: ${{openSystem.content.cult.theSevenMothers.name}}$
-  rank: layMember
+  deity: ${{openSystem.content.cult.theSevenMothers.name}}$
+  joinedCults:
+    - cultName: ${{openSystem.content.cult.theSevenMothers.name}}$
+      tagline: ${{openSystem.content.cult.theSevenMothers.tagline}}$
+      rank: layMember
   runePoints:
     value: 0
     max: 0
-  tagline: ${{openSystem.content.cult.theSevenMothers.tagline}}$
   holyDays:
   runes:
     - ${{openSystem.content.runeDescription.moonElement.name}}$

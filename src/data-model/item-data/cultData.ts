@@ -12,23 +12,28 @@ export enum CultRankEnum {
   HighPriest = "highPriest",
 }
 
-export interface CultDataSourceData {
-  descriptionRqidLink: RqidLink | undefined;
-  rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
-  runePoints: Resource;
+export interface JoinedCult {
+  cultName: string | undefined; // For cults with subcults (like Orlanth & Yelm) others should have the Deity name
   tagline: string;
+  rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
+  // cultSkills: string[]; // TODO #204 +++ Link to system wide id...
+  // favouredPassions: string[]; // TODO Link to system wide id...
+  // cultEnchantments: string[]; // TODO Link to system wide id...
+  // cultStartingSkills: cultStartingSkill[] // TODO #204 +++ list of skills with base chance mod, see occupation
+  // cultSpiritMagic: string[]; // TODO Link to system wide id...
+}
+
+export interface CultDataSourceData {
+  deity: string | undefined;
+  descriptionRqidLink: RqidLink | undefined;
+  runePoints: Resource;
   holyDays: string;
   gifts: string;
   geases: string;
   runes: string[];
-  // cultSkills: string[]; // TODO Link to system wide id...
-  // cultStartingSkills: cultStartingSkill[] // TODO list of skills with base chance mod, see occupation
-  // favouredPassions: string[]; // TODO Link to system wide id...
-  // cultSpiritMagic: string[]; // TODO Link to system wide id...
   // prohibitedCultSpiritMagic: string[]; // TODO Link to system wide id...
-  // cultRuneMagic: string[]; // TODO Link to system wide id...
-  // cultEnchantments: string[]; // TODO Link to system wide id...
-  subCults: string;
+  // cultRuneMagic: string[]; // TODO #153 +++ Link to system wide id...
+  joinedCults: JoinedCult[]; // Even cults without specific sub cults needs an entry here.
 }
 
 // --- Derived Data ---
@@ -45,13 +50,18 @@ export interface CultDataProperties {
 }
 
 export const defaultCultData: CultDataSourceData = {
+  deity: undefined,
+  joinedCults: [
+    {
+      cultName: "",
+      tagline: "",
+      rank: CultRankEnum.LayMember,
+    },
+  ],
   descriptionRqidLink: undefined,
-  rank: CultRankEnum.LayMember,
   runePoints: { value: 0, max: 0 },
-  tagline: "",
   holyDays: "",
   gifts: "",
   geases: "",
   runes: [],
-  subCults: "",
 };
