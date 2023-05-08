@@ -12,6 +12,57 @@ export enum CultRankEnum {
   HighPriest = "highPriest",
 }
 
+const defaultCommonRuneMagic: RqidLink[] = [
+  {
+    rqid: "i.rune-magic.command-cult-spirit-elemental",
+    name: "Command Cult Spirit (Elemental)",
+  },
+  {
+    rqid: "i.rune-magic.dismiss-magic",
+    name: "Dismiss Magic",
+  },
+  {
+    rqid: "i.rune-magic.divination",
+    name: "Divination",
+  },
+  {
+    rqid: "i.rune-magic.extension",
+    name: "Extension",
+  },
+  {
+    rqid: "i.rune-magic.find-enemy",
+    name: "Find Enemy",
+  },
+  {
+    rqid: "i.rune-magic.heal-wound",
+    name: "Heal Wound",
+  },
+  {
+    rqid: "i.rune-magic.multispell",
+    name: "Multispell",
+  },
+  {
+    rqid: "i.rune-magic.sanctify",
+    name: "Sanctify",
+  },
+  {
+    rqid: "i.rune-magic.soul-sight",
+    name: "Soul Sight",
+  },
+  {
+    rqid: "i.rune-magic.spirit-block",
+    name: "Spirit Block",
+  },
+  {
+    rqid: "i.rune-magic.summon-cult-spirit",
+    name: "Summon Cult Spirit",
+  },
+  {
+    rqid: "i.rune-magic.warding",
+    name: "Warding",
+  },
+];
+
 export interface JoinedCult {
   cultName: string | undefined; // For cults with subcults (like Orlanth & Yelm) others should have the Deity name
   tagline: string;
@@ -31,6 +82,7 @@ export interface CultDataSourceData {
   gifts: string;
   geases: string;
   runes: string[];
+  commonRuneMagicRqidLinks: RqidLink[]; // List of runeMagic spells that should be embedded together with the cult
   // prohibitedCultSpiritMagic: string[]; // TODO Link to system wide id...
   // cultRuneMagic: string[]; // TODO #153 +++ Link to system wide id...
   joinedCults: JoinedCult[]; // Even cults without specific sub cults needs an entry here.
@@ -58,6 +110,7 @@ export const defaultCultData: CultDataSourceData = {
       rank: CultRankEnum.LayMember,
     },
   ],
+  commonRuneMagicRqidLinks: defaultCommonRuneMagic,
   descriptionRqidLink: undefined,
   runePoints: { value: 0, max: 0 },
   holyDays: "",
