@@ -10,11 +10,11 @@ import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import { activateChatTab, getGame, hasOwnProperty, localize, RqgError } from "../system/util";
-import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
-import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { ResultEnum, ResultMessage } from "../data-model/shared/ability";
 
 export class RqgItem extends Item {
@@ -108,7 +108,10 @@ export class RqgItem extends Item {
 
       if (RqgItem.isRuneMagicWithoutCult(document)) {
         ui.notifications?.warn(
-          `${document.parent.name} has to join a cult before learning the ${document.name} rune magic spell`
+          localize("RQG.Actor.RuneMagic.EmbeddingRuneMagicWithoutCultWarning", {
+            characterName: document.parent.name,
+            spellName: document.name,
+          })
         );
         return false;
       }
@@ -263,10 +266,16 @@ export class RqgItem extends Item {
   }
 
   static async updateDocuments(updates: any[], context: any): Promise<any> {
+    // @ts-expect-error foundry 10
+    if (isEmpty(updates)) {
+      return [];
+    }
+
     const { parent, pack, ...options } = context;
     if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
-        if (u) {
+        // @ts-expect-error foundry 10
+        if (!isEmpty(u)) {
           const document = parent.items.get(u._id);
           if (!document || document.documentName !== "Item") {
             const msg = "couldn't find item document from result";

@@ -295,6 +295,7 @@
         "Power": "Power"
       },
       "RuneMagic": {
+        "EmbeddingRuneMagicWithoutCultWarning": "{characterName} has to join a cult before learning the {spellName} rune magic spell",
         "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
         "DeleteRuneMagicSpellTitle": "Delete Rune Magic Spell",
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
