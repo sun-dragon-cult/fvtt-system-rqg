@@ -19,6 +19,31 @@ system:
   descriptionRqidLink:
     rqid: je..storm-bull
     name: ${{openSystem.content.cult.stormBull.name}}$
+  commonRuneMagicRqidLinks:
+    - name: Command Cult Spirit (Elemental)
+      rqid: i.rune-magic.command-cult-spirit-elemental
+    - name: Dismiss Magic
+      rqid: i.rune-magic.dismiss-magic
+    - name: Divination
+      rqid: i.rune-magic.divination
+    - name: Extension
+      rqid: i.rune-magic.extension
+    - name: Find Enemy
+      rqid: i.rune-magic.find-enemy
+    - name: Heal Wound
+      rqid: i.rune-magic.heal-wound
+    - name: Multispell
+      rqid: i.rune-magic.multispell
+    - name: Sanctify
+      rqid: i.rune-magic.sanctify
+    - name: Soul Sight
+      rqid: i.rune-magic.soul-sight
+    - name: Spirit Block
+      rqid: i.rune-magic.spirit-block
+    - name: Summon Cult Spirit
+      rqid: i.rune-magic.summon-cult-spirit
+    - name: Warding
+      rqid: i.rune-magic.warding
 flags:
   rqg:
     documentRqidFlags:

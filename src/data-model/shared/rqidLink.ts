@@ -7,7 +7,7 @@ export class RqidLink {
   /** Display name of the link */
   readonly name: string;
 
-  bonus: number | undefined; // TODO Should not be here.
+  bonus?: number | undefined; // TODO Should not be here.
 
   constructor(rqid: string, name: string) {
     this.rqid = rqid;

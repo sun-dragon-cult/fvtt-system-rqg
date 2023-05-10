@@ -193,7 +193,12 @@ export class RuneMagic extends AbstractEmbeddedItem {
     const actorCults = actor.items.filter((i) => i.type === ItemTypeEnum.Cult);
     assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
 
-    if (!runeMagicItem.system.cultId) {
+    // Do not ask what cult should get the RuneMagic item if it is already attached to a cult from the actor
+    // (used in Cult Item for attaching common rune magic automatically)
+    if (
+      !runeMagicItem.system.cultId &&
+      actorCults.some((cult) => cult.id === runeMagicItem.system.cultId)
+    ) {
       let cultId;
       // If the actor only has one cult then attach this runeMagic to that Cult
       if (actorCults.length === 1 && actorCults[0].id) {

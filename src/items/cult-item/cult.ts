@@ -2,8 +2,10 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../rqgItem";
-import { assertItemType, RqgError } from "../../system/util";
+import { assertItemType, isTruthy, RqgError } from "../../system/util";
 import { deriveCultItemName } from "./cultHelpers";
+import { Rqid } from "../../system/api/rqidApi";
+import { RqidLink } from "../../data-model/shared/rqidLink";
 
 export class Cult extends AbstractEmbeddedItem {
   // public static init() {
@@ -36,29 +38,70 @@ export class Cult extends AbstractEmbeddedItem {
   ): Promise<any> {
     assertItemType(child.type, ItemTypeEnum.Cult);
 
-    const matchingActorCult = actor.items.filter(
+    const matchingDeityInActorCults = actor.items.filter(
       (i) => i.type === ItemTypeEnum.Cult && i.system.deity === child.system.deity
     );
-    if (matchingActorCult.length > 2) {
-      throw new RqgError("Actor should not have multiple Cults with same Deity", [actor, child]);
+
+    switch (matchingDeityInActorCults.length) {
+      case 1:
+        // This is a new deity to the actor
+        await Cult.embedCommonRuneMagic(child);
+        return;
+
+      case 2:
+        // Actor already has this deity - add the joinedCults from the new and old Cult items
+        await actor.deleteEmbeddedDocuments("Item", [child.id!]);
+        const newJoinedCults = [
+          ...matchingDeityInActorCults[0].system.joinedCults,
+          ...child.system.joinedCults,
+        ];
+        const newCultItemName = deriveCultItemName(
+          matchingDeityInActorCults[0].system.deity,
+          newJoinedCults.map((c) => c.cultName)
+        );
+
+        return {
+          _id: matchingDeityInActorCults[0].id,
+          name: newCultItemName,
+          system: {
+            joinedCults: newJoinedCults,
+          },
+        };
+
+      default:
+        // 0 (failed embed) or multiple cults with same deity
+        const msg = "Actor should not have multiple Cults with same Deity";
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, [actor, child]);
     }
-    if (matchingActorCult.length === 2) {
-      await actor.deleteEmbeddedDocuments("Item", [child.id!]);
-      const newJoinedCults = [
-        ...matchingActorCult[0].system.joinedCults,
-        ...child.system.joinedCults,
-      ];
-      const newCultItemName = deriveCultItemName(
-        matchingActorCult[0].system.deity,
-        newJoinedCults.map((c) => c.cultName)
-      );
-      return {
-        _id: matchingActorCult[0].id,
-        name: newCultItemName,
-        system: {
-          joinedCults: newJoinedCults,
-        },
-      };
+  }
+
+  public static async embedCommonRuneMagic(cult: RqgItem): Promise<void> {
+    const actor = cult.parent;
+    if (!actor) {
+      const msg = "Bug - tried to embed linked common rune magic on a cult that is not embedded";
+      console.error(`RQG | ${msg}`, cult);
+      ui?.notifications?.error(`${msg}`);
+      throw new RqgError(msg, [cult]);
     }
+    if (!cult.id) {
+      const msg = "Bug - tried to embed linked common rune magic with a cult that does not have id";
+      console.error(`RQG | ${msg}`, cult);
+      ui?.notifications?.error(`${msg}`);
+      throw new RqgError(msg, [cult]);
+    }
+
+    const runeMagicItems = await Promise.all(
+      cult.system.commonRuneMagicRqidLinks.map(
+        async (rqidLink: RqidLink) => (await Rqid.fromRqid(rqidLink.rqid)) as RqgItem
+      )
+    );
+
+    const connectedRuneMagicItems = runeMagicItems.filter(isTruthy).map((rm: RqgItem) => {
+      rm.system.cultId = cult.id!;
+      return rm.toObject(false);
+    });
+
+    await actor.createEmbeddedDocuments("Item", connectedRuneMagicItems as any);
   }
 }

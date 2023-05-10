@@ -295,6 +295,7 @@
         "Power": "Power"
       },
       "RuneMagic": {
+        "EmbeddingRuneMagicWithoutCultWarning": "{characterName} has to join a cult before learning the {spellName} rune magic spell",
         "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
         "DeleteRuneMagicSpellTitle": "Delete Rune Magic Spell",
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
@@ -654,7 +655,8 @@
         "CultRank": "Cult Rank",
         "ActorsGifts": "Actor's Gifts",
         "ActorsGeases": "Actor's Geases",
-        "ActorsSubCults": "Actor's Sub-Cults"
+        "ActorsSubCults": "Actor's Sub-Cults",
+        "CommonRuneMagic": "Common Rune Magic"
       },
       "EquippedStatus": {
         "notCarried": "Not Carried",
@@ -827,6 +829,8 @@
           "DropToReplacePassion": "Drop a Passion Item on this field to replace.",
           "DropToConnectRune": "Drop a Rune Item on this field to connect.",
           "DropToReplaceRune": "Drop a Rune Item on this field to replace.",
+          "DropToConnectRuneMagic": "Drop a Rune Magic Item on this field to connect.",
+          "DropToReplaceRuneMagic": "Drop a Rune Magic Item on this field to replace.",
           "DropToConnectSkill": "Drop a Skill Item on this field to connect.",
           "DropToReplaceSkill": "Drop a Skill Item on this field to replace.",
           "DropToConnectOccupation": "Drop an Occupation Item on this field to connect.",

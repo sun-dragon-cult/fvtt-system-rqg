@@ -80,6 +80,16 @@
               style="grid-column: 1 / span 2;">
           </div>
 
+          <label>{{localize "RQG.Item.Cult.CommonRuneMagic"}}</label>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+            rqidLinkArray=system.commonRuneMagicRqidLinks
+            dropzoneData="commonRuneMagicRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="runeMagic"
+            showDeleteFromPropertyName="commonRuneMagicRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRuneMagic"
+          }}
+
           <label class="editor-label">{{localize "RQG.Item.Cult.HolyDays"}}</label>
           <div class="editor-container">
             {{editor

@@ -19,6 +19,13 @@ system:
   descriptionRqidLink:
     rqid: je..eurmal
     name: ${{openSystem.content.cult.eurmal.name}}$
+  commonRuneMagicRqidLinks:
+    - name: Divination
+      rqid: i.rune-magic.divination
+    - name: Extension
+      rqid: i.rune-magic.extension
+    - name: Multispell
+      rqid: i.rune-magic.multispell
 flags:
   rqg:
     documentRqidFlags:
