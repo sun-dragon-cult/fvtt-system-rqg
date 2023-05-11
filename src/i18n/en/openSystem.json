@@ -1011,7 +1011,8 @@
         "Disabled": "Disabled",
         "StartTime": "Start Time",
         "KeyValueMode": "Key - Value - Mode",
-        "NewActiveEffectName": "New Active Effect"
+        "NewActiveEffectName": "New Active Effect",
+        "TargetItemNotFound": "Could not find any embedded item with rqid {rqid} on actor {actorName}. Please either add a {itemName} item with that rqid or modify the item that has this active effect"
       },
       "CombatTracker": {
         "DuplicateCombatant": "Duplicate Combatant",

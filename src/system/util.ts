@@ -155,8 +155,10 @@ export function escapeRegex(string: string): string {
 export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
   // TODO only for GM? getGame().user.isGM &&
   console.warn(`RQG | ${msg}`, debugData);
-
-  notify && ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`);
+  if (notify) {
+    // @ts-expect-error console
+    ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`, { console: false });
+  }
 }
 
 /**
