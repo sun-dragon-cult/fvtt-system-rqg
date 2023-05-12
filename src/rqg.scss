@@ -308,6 +308,14 @@ body {
     }
   }
 
+  button.roll {
+    line-height: unset;
+    width: 1.8em;
+    i {
+      margin-left: -2px; // center the icon
+    }
+  }
+
   .grid {
     display: grid;
     grid-template-rows: [row-start] min-content [row-end];
@@ -563,13 +571,13 @@ body {
     &.hit-location {
       grid-template-columns: [col-start] repeat(3, min-content) repeat(4, auto) [col-end];
 
-      > *:nth-child(14n + 13),
-      > *:nth-child(14n + 14),
-      > *:nth-child(14n + 15),
       > *:nth-child(14n + 16),
       > *:nth-child(14n + 17),
       > *:nth-child(14n + 18),
-      > *:nth-child(14n + 19) {
+      > *:nth-child(14n + 19),
+      > *:nth-child(14n + 20),
+      > *:nth-child(14n + 21),
+      > *:nth-child(14n + 22) {
         background: var(--rqg-table-alternate-background);
       }
     }

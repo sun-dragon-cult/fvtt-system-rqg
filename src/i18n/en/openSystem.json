@@ -259,7 +259,8 @@
         "HealWound": "Heal Wound",
         "AddWound": "Add Wound",
         "NoHitLocations": "This character does not have any hit locations, please add some.",
-        "FlipSortOrder": "Reverse the order of the hit locations"
+        "FlipSortOrder": "Reverse the order of the hit locations",
+        "RollHitLocation": "Roll Hit Location"
       },
       "Nav": {
         "Combat": "Combat",
@@ -715,6 +716,11 @@
           "wounded": "Wounded",
           "useless": "Useless",
           "severed": "Severed"
+        },
+        "Modifier": {
+          "normal": "Normal",
+          "low": "Low",
+          "high": "High"
         },
         "Notification": {
           "CantFindHitLocation": "Couldn't find hitlocation with itemId [{hitLocationItemId}] on actor ${actorName} to show add wound dialog.",

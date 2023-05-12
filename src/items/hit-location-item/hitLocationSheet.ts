@@ -23,6 +23,9 @@ import { RqgItem } from "../rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
+import { dirxml } from "console";
+import { HitLocation } from "./hitLocation";
+import { exit } from "process";
 
 interface HitLocationSheetData {
   allHitLocations: string[];
@@ -65,6 +68,115 @@ export class HitLocationSheet extends RqgItemSheet<
       hitLocationTypes: Object.values(HitLocationTypesEnum),
       hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
     };
+  }
+
+  static async showRollHitLocationDialog(actor: RqgActor, speakerName: string): Promise<void> {
+    console.log("CLICK SHOW ROLL HIT LOCATION DIALOG");
+
+    const dialogContentHtml = await renderTemplate(
+      "systems/rqg/items/hit-location-item/hitLocationRoll.hbs",
+      {}
+    );
+
+    new Dialog(
+      {
+        title: "Roll Hit Location on " + actor.name,
+        content: dialogContentHtml,
+        default: "normal",
+        buttons: {
+          normal: {
+            icon: '<i class="fa-solid fa-person"></i>',
+            label: "Normal (1d20)",
+            callback: async (html: JQuery | HTMLElement) =>
+              await HitLocationSheet.rollHitLocation(html as JQuery, actor, speakerName, "normal"),
+          },
+          low: {
+            icon: '<i class="fa-solid fa-down"></i><i class="fa-solid fa-person"></i>',
+            label: "Low (1d10)",
+            callback: async (html: JQuery | HTMLElement) =>
+              await HitLocationSheet.rollHitLocation(html as JQuery, actor, speakerName, "low"),
+          },
+          high: {
+            icon: '<i class="fa-solid fa-up"></i><i class="fa-solid fa-person"></i>',
+            label: "High (1d10+10)",
+            callback: async (html: JQuery | HTMLElement) =>
+              await HitLocationSheet.rollHitLocation(html as JQuery, actor, speakerName, "high"),
+          },
+        },
+      },
+      { width: 500 }
+    ).render(true);
+  }
+
+  private static async rollHitLocation(
+    html: JQuery,
+    actor: RqgActor,
+    speakerName: string,
+    modifier: string
+  ) {
+    console.log(speakerName + "Clicks  ROLL HIT LOCATION " + modifier);
+
+    let diceExpr = "1d20";
+
+    if (modifier === "low") {
+      diceExpr = "1d10";
+    }
+
+    if (modifier === "high") {
+      diceExpr = "1d10+10";
+    }
+
+    const hitLocationRoll = new Roll(diceExpr);
+
+    // await hitLocationRoll.toMessage({
+    //   speaker: { alias: speakerName },
+    //   type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+    //   flavor: `<h3>Hit Location Roll on ${actor.name}</h3><p>Something</p>`,
+    // });
+
+    const rollHtml = await hitLocationRoll.render();
+
+    const hitLocationRollTotal = hitLocationRoll.total || 0;
+
+    const actorHitLocations = actor.items.filter(
+      (i) => i.type === ItemTypeEnum.HitLocation
+    ) as RqgItem[];
+
+    console.log("HIT LOCATIONS", actorHitLocations);
+
+    let rolledHitLocation: RqgItem | null = null;
+
+    for (const hitLoc of actorHitLocations) {
+      if (
+        hitLoc.system.dieFrom <= hitLocationRollTotal &&
+        hitLoc.system.dieTo >= hitLocationRollTotal
+      ) {
+        rolledHitLocation = hitLoc;
+        break;
+      }
+    }
+
+    // if (!rolledHitLocation) {
+    //   ui.notifications?.error("Hit Location not found");
+    //   exit;
+    // }
+
+    const content: string = await renderTemplate(
+      "systems/rqg/items/hit-location-item/hitLocationResultCard.hbs",
+      {
+        actor: actor,
+        hitLocation: rolledHitLocation,
+        modifier: modifier,
+      }
+    );
+
+    await ChatMessage.create({
+      user: getGame().user?.id,
+      speaker: { alias: speakerName },
+      content: content + rollHtml,
+    });
+
+    activateChatTab();
   }
 
   static async showAddWoundDialog(

@@ -1007,6 +1007,15 @@ export class RqgActorSheet extends ActorSheet<
         });
       });
 
+    // Roll hit location from actor sheet
+    htmlElement?.querySelectorAll<HTMLElement>("[data-roll-hit-location]").forEach((el) => {
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+        const speakerName = (this.token?.name || this.actor.prototypeToken.name) ?? "";
+        HitLocationSheet.showRollHitLocationDialog(this.actor, speakerName);
+      });
+    });
+
     // Set Token SR in Combat Tracker
     htmlElement?.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el: HTMLElement) => {
       const sr = getRequiredDomDataset(el, "set-sr");
