@@ -8,7 +8,7 @@ system:
   specialization: ${{openSystem.content.culture.esrolian}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -29,7 +29,7 @@ system:
   specialization: ${{openSystem.content.culture.heortling}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -50,7 +50,7 @@ system:
   specialization: ${{openSystem.content.culture.bisonTribe}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -71,7 +71,7 @@ system:
   specialization: ${{openSystem.content.culture.highLlamaTribe}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -92,7 +92,7 @@ system:
   specialization: ${{openSystem.content.culture.impalaTribe}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -113,7 +113,7 @@ system:
   specialization: ${{openSystem.content.culture.sableTribe}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -134,7 +134,7 @@ system:
   specialization: ${{openSystem.content.culture.poljoni}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -155,7 +155,7 @@ system:
   specialization: ${{openSystem.content.culture.grazelandPonyBreeders}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -176,7 +176,7 @@ system:
   specialization: ${{openSystem.content.culture.lunarProvincial}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
@@ -197,7 +197,7 @@ system:
   specialization: ${{openSystem.content.culture.tarshite}}$
   baseChance: 0
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$

@@ -134,7 +134,7 @@ system:
   specialization: "..."
   baseChance: 25
   gainedChance: 0
-  canGetExperience: false
+  canGetExperience: true
   descriptionRqidLink:
     rqid: je..customs
     name: ${{openSystem.content.skill.customs.skillName}}$
