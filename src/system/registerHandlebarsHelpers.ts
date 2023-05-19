@@ -1,13 +1,6 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
-import {
-  getAvailableRunes,
-  getGame,
-  hasOwnProperty,
-  localize,
-  localizeItemType,
-  RqgError,
-} from "./util";
+import { getAvailableRunes, getGame, localize, localizeItemType } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
 import { systemId } from "./config";
@@ -122,6 +115,12 @@ export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("sum", (...nums) => {
     nums.pop();
     return nums.reduce((acc, n) => acc + (n ?? 0), 0);
+  });
+
+  Handlebars.registerHelper("difference", (...nums) => {
+    nums.pop();
+    const first = nums.shift();
+    return nums.reduce((acc, n) => acc - (n ?? 0), first);
   });
 
   Handlebars.registerHelper("toLowerCase", function (value) {
