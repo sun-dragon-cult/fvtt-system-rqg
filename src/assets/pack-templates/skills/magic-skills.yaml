@@ -134,7 +134,7 @@ system:
   specialization:
   baseChance: 0
   gainedChance: 0
-  canGetExperience: true
+  canGetExperience: false
   descriptionRqidLink:
     rqid: je..spirit-lore
     name: ${{openSystem.content.skill.spiritLore.skillName}}$
