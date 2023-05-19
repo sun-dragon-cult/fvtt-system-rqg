@@ -191,7 +191,7 @@ items:
 - "|{{	skills/manipulation-skills.yaml	i.skill.devise	[ gainedChance:	0	]}}|"
 - "|{{	skills/manipulation-skills.yaml	i.skill.play-instrument	[ gainedChance:	0	]}}|"
 - "|{{	skills/manipulation-skills.yaml	i.skill.sleight	[ gainedChance:	0	]}}|"
-- "|{{	skills/perception-skills.yaml	i.skill.insight	[ gainedChance:	0, name: ${{openSystem.content.skill.insight.skillName}}$ (${{openSystem.content.skill.insight.specialization.human}}$), specialization: ${{openSystem.content.skill.insight.specialization.human}}$	]}}|"
+- "|{{	skills/specialized-insight-skills.yaml	i.skill.insight-human	[ gainedChance:	0, baseChance: 20	]}}|"
 - "|{{	skills/perception-skills.yaml	i.skill.listen	[ gainedChance:	0	]}}|"
 - "|{{	skills/perception-skills.yaml	i.skill.scan	[ gainedChance:	0	]}}|"
 - "|{{	skills/perception-skills.yaml	i.skill.search	[ gainedChance:	0	]}}|"
