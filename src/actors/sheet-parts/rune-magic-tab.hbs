@@ -69,6 +69,10 @@
                  data-item-id="{{id}}"
                  data-rune-magic-roll>
               {{name}}&nbsp;
+              {{#if system.isCommon}}
+                <img class="common" src="systems/rqg/assets/images/items/cult.svg"
+                     data-tooltip="{{localize "RQG.Actor.RuneMagic.CommonRuneMagicTooltip"}}">
+              {{/if}}
               {{#each system.runes}}
                 <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
               {{/each}}

@@ -25,6 +25,7 @@ import {
   getGameUser,
   getRequiredDomDataset,
   hasOwnProperty,
+  isTruthy,
   localize,
   requireValue,
   RqgError,
@@ -589,6 +590,18 @@ export class RqgActorSheet extends ActorSheet<
         );
       })
     );
+
+    // Add extra info for Rune Magic Spells
+    itemTypes[ItemTypeEnum.RuneMagic].forEach((runeMagic: RqgItem) => {
+      const spellCult: RqgItem | undefined = actor.items.get(runeMagic.system.cultId);
+      const cultCommonRuneMagicIds: string[] =
+        spellCult?.system.commonRuneMagicRqidLinks
+          .map((l: RqidLink) => actor.getBestEmbeddedDocumentByRqid(l.rqid)?.id)
+          .filter(isTruthy) ?? [];
+      runeMagic.system.isCommon = cultCommonRuneMagicIds.includes(runeMagic?.id ?? "");
+    });
+
+    // Add weapon data
     itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
       assertItemType(weapon.type, ItemTypeEnum.Weapon);
 

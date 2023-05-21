@@ -299,6 +299,7 @@
         "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
         "DeleteRuneMagicSpellTitle": "Delete Rune Magic Spell",
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
+        "CommonRuneMagicTooltip": "Cult Common Rune Magic",
         "CultRankLabel": "Cult Rank",
         "RunePoints": "Rune Points",
         "HolyDays": "Holy Days",
