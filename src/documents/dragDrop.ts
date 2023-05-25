@@ -2,7 +2,6 @@ import {
   assertHtmlElement,
   formatListByUserLanguage,
   getDomDataset,
-  getGame,
   hasOwnProperty,
   localize,
   localizeDocumentName,

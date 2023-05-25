@@ -34,8 +34,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: jpOyJYC2ctmY2N8U
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.jpOyJYC2ctmY2N8U
+      skillRqidLink:
+        rqid: i.skill.atlatls-dart
+        name: ${{openSystem.content.weaponSkill.atlatls.name}}$ (${{openSystem.content.weaponSkill.atlatls.specialization.dart}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -103,8 +104,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 9Pu3rVnoTp4cHjhn
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9Pu3rVnoTp4cHjhn
+      skillRqidLink:
+        rqid: i.skill.atlatls-javelin
+        name: ${{openSystem.content.weaponSkill.atlatls.name}}$ (${{openSystem.content.weaponSkill.atlatls.specialization.javelin}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -172,8 +174,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: UfrGc8zwcTmE1HPv
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UfrGc8zwcTmE1HPv
+      skillRqidLink:
+        rqid: i.skill.javelins-dart
+        name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.dart}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale

@@ -34,8 +34,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: M66Aa8Cij2s4Xc3P
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.M66Aa8Cij2s4Xc3P
+      skillRqidLink:
+        rqid: i.skill.slings-sling
+        name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.sling}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush
@@ -103,8 +104,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 8qozzHxXWC57R1B0
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.8qozzHxXWC57R1B0
+      skillRqidLink:
+        rqid: i.skill.slings-staff-sling
+        name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush

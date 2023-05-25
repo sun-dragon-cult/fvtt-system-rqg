@@ -34,8 +34,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: c4xz834y4y58vjnH
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.c4xz834y4y58vjnH
+      skillRqidLink:
+        rqid: i.skill.lassos-pole-lasso
+        name: ${{openSystem.content.weaponSkill.lassos.name}}$ (${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
           damageType: special

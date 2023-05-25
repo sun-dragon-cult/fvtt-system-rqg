@@ -953,6 +953,8 @@
         "UsesOfWeaponHeader": "Uses of Weapon",
         "DropSkillToChange": "(Drop a different weapon skill on this weapon to change)",
         "DropSkillToAdd": "Drop a weapon skill on this weapon!",
+        "WrongTypeDropped": "The item must be a weapon skill (category melee, shield or natural weapon)",
+        "EnterNewAction": "Add Action Label",
         "Damage": "Damage",
         "MinimumStrengthAbbr": "Min STR",
         "MinimumDexterityAbbr": "Min DEX",

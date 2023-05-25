@@ -153,7 +153,7 @@ export class WeaponChatHandler {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     return Object.entries(weapon.system.usage).reduce((acc: any, [key, usage]) => {
       // @ts-expect-error system
-      if (usage.skillId) {
+      if (!foundry.utils.isEmpty(usage.skillRqidLink)) {
         acc[key] = localize(`RQG.Game.WeaponUsage.${key}-full`);
       }
       return acc;

@@ -10,8 +10,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.PjvC1dz217j2g6tO
+      skillRqidLink:
+        rqid: i.skill.1h-daggers-dagger
+        name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.dagger}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -43,8 +44,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.ye3Y3Hmbots30qLD
+      skillRqidLink:
+        rqid: i.skill.thrown-dagger
+        name: ${{openSystem.content.weaponSkill.thrownDagger.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -88,8 +90,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.PjvC1dz217j2g6tO
+      skillRqidLink:
+        rqid: i.skill.1h-daggers-dagger
+        name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.dagger}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -105,18 +108,10 @@ system:
       minDexterity: null
       strikeRank: 4
     offHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.JlYB7H68q8TfOcID
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
-          damageType: slash
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
-          damageType: impale
-          description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
-          damageType: parry
-          description:
       damage: 1d4+2
       minStrength: null
       minDexterity: null
@@ -172,8 +167,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.PjvC1dz217j2g6tO
+      skillRqidLink:
+        rqid: i.skill.1h-daggers-dagger
+        name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.dagger}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -205,8 +201,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.ye3Y3Hmbots30qLD
+      skillRqidLink:
+        rqid: i.skill.thrown-dagger
+        name: ${{openSystem.content.weaponSkill.thrownDagger.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -250,8 +247,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.Y40OY819a2230cZk
+      skillRqidLink:
+        rqid: i.skill.1h-daggers-sickle
+        name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.sickle}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -322,8 +320,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: uHPTu384VHQI8RUt
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.uHPTu384VHQI8RUt
+      skillRqidLink:
+        rqid: i.skill.1h-swords-broadsword
+        name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.broadsword}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -397,8 +396,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: KTQ1xvw7YLOxOn37
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KTQ1xvw7YLOxOn37
+      skillRqidLink:
+        rqid: i.skill.1h-swords-kopis
+        name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.kopis}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -469,8 +469,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: DDodZQhdAH5rK0Gv
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.DDodZQhdAH5rK0Gv
+      skillRqidLink:
+        rqid: i.skill.1h-swords-rapier
+        name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.rapier}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -544,8 +545,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: t45m4tub484LBXuV
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.t45m4tub484LBXuV
+      skillRqidLink:
+        rqid: i.skill.1h-swords-shortsword
+        name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.shortsword}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -635,8 +637,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: oaqCx2G0z8i6nFdA
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.oaqCx2G0z8i6nFdA
+      skillRqidLink:
+        rqid: i.skill.2h-swords-greatsword
+        name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.greatsword}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -707,8 +710,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: P5fq02SPVgRRVyca
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.P5fq02SPVgRRVyca
+      skillRqidLink:
+        rqid: i.skill.2h-swords-rhomphaia
+        name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.rhomphaia}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -779,8 +783,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: 4p6P3lLzd9E22WKe
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.4p6P3lLzd9E22WKe
+      skillRqidLink:
+        rqid: i.skill.2h-swords-sickle-sword
+        name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.sickle-sword}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash

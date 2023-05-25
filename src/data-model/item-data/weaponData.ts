@@ -1,6 +1,7 @@
 import { defaultPriceData, IPhysicalItem } from "./IPhysicalItem";
 import { defaultResource, Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
+import { RqidLink } from "../shared/rqidLink";
 
 export const damageType = {
   Crush: "crush",
@@ -9,7 +10,7 @@ export const damageType = {
   Parry: "parry",
   Special: "special",
 } as const;
-export type DamageType = typeof damageType[keyof typeof damageType];
+export type DamageType = (typeof damageType)[keyof typeof damageType];
 
 export type UsageType = "oneHand" | "twoHand" | "offHand" | "missile";
 
@@ -21,10 +22,8 @@ export type CombatManeuver = {
 };
 
 export type Usage = {
-  /** id of the corresponding skill (when embedded) */
-  skillId: string;
-  /** the uuid of the required skill Item */
-  skillOrigin: string;
+  /** The corresponding skill */
+  skillRqidLink: RqidLink | undefined;
   combatManeuvers: CombatManeuver[];
   /** Weapon damage formula */
   damage: string;
@@ -81,9 +80,7 @@ export interface WeaponDataProperties {
 export const defaultWeaponData: WeaponDataSourceData = {
   usage: {
     oneHand: {
-      skillId: "",
-      skillOrigin: "",
-
+      skillRqidLink: undefined,
       combatManeuvers: [],
       damage: "",
       minStrength: 0,
@@ -91,9 +88,8 @@ export const defaultWeaponData: WeaponDataSourceData = {
       strikeRank: 0,
     },
     offHand: {
-      // All but skillID & skillOrigin should normally be equal to oneHand
-      skillId: "",
-      skillOrigin: "",
+      // All but skillRqidLink should normally be equal to oneHand
+      skillRqidLink: undefined,
       combatManeuvers: [],
       damage: "",
       minStrength: 0,
@@ -101,8 +97,7 @@ export const defaultWeaponData: WeaponDataSourceData = {
       strikeRank: 0,
     },
     twoHand: {
-      skillId: "",
-      skillOrigin: "",
+      skillRqidLink: undefined,
       combatManeuvers: [],
       damage: "",
       minStrength: 0,
@@ -110,8 +105,7 @@ export const defaultWeaponData: WeaponDataSourceData = {
       strikeRank: 0,
     },
     missile: {
-      skillId: "",
-      skillOrigin: "",
+      skillRqidLink: undefined,
       combatManeuvers: [],
       damage: "",
       minStrength: 0,

@@ -10,8 +10,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: 84644z0nkD89R1mz
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.84644z0nkD89R1mz
+      skillRqidLink:
+        rqid: i.skill.1h-axes-small-axe
+        name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.smallAxe}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -40,8 +41,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 9wyEGCc77PiUb9Nl
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9wyEGCc77PiUb9Nl
+      skillRqidLink:
+        rqid: i.skill.thrown-axe
+        name: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
@@ -85,8 +87,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: UVRB26QZsPwm1U9R
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UVRB26QZsPwm1U9R
+      skillRqidLink:
+        rqid: i.skill.1h-axes-battle-axe
+        name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -107,8 +110,9 @@ system:
       minDexterity:
       strikeRank:
     twoHand:
-      skillId: xhY8SCSzzBhwV1Pk
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.xhY8SCSzzBhwV1Pk
+      skillRqidLink:
+        rqid: i.skill.2h-axes-battle-axe
+        name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.battleAxe}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -163,8 +167,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: UVRB26QZsPwm1U9R
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UVRB26QZsPwm1U9R
+      skillRqidLink:
+        rqid: i.skill.1h-axes-battle-axe
+        name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -185,8 +190,9 @@ system:
       minDexterity: 7
       strikeRank: 3
     twoHand:
-      skillId: xhY8SCSzzBhwV1Pk
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.xhY8SCSzzBhwV1Pk
+      skillRqidLink:
+        rqid: i.skill.1h-axes-battle-axe
+        name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -257,8 +263,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: SEJtC7C6UhrKrcAV
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.SEJtC7C6UhrKrcAV
+      skillRqidLink:
+        rqid: i.skill.2h-axes-great-axe
+        name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.greatAxe}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -329,8 +336,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: 9hry1aMvBvVCAZM3
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9hry1aMvBvVCAZM3
+      skillRqidLink:
+        rqid: i.skill.2h-axes-dagger-axe
+        name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.daggerAxe}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash

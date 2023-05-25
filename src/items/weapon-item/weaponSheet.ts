@@ -3,19 +3,13 @@ import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import {
-  assertItemType,
-  getDomDataset,
-  getGameUser,
-  getRequiredDomDataset,
-  localize,
-  uuid2Name,
-} from "../../system/util";
+import { assertItemType, getDomDataset, getGameUser, localize, uuid2Name } from "../../system/util";
 import { damageType } from "../../data-model/item-data/weaponData";
-import { Weapon } from "./weapon";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
+import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { RqidLink } from "../../data-model/shared/rqidLink";
 
 interface WeaponSheetData {
   defaultCombatManeuverNames: string[];
@@ -242,17 +236,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     return duplicate(usageCombatManeuvers);
   }
 
-  public activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-
-    html[0].querySelectorAll<HTMLElement>("[data-delete-skill]").forEach((elem) => {
-      elem.addEventListener("click", async () => {
-        const use = getRequiredDomDataset(elem, "delete-skill");
-        await this.item.update({ [`system.usage.${use}.skillOrigin`]: "" });
-      });
-    });
-  }
-
   /**
    * Update the skillOriginId with the dropped skill.
    * This will change to use rqid instead.
@@ -277,29 +260,21 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         SkillCategoryEnum.Shields,
       ].includes(droppedItem.system.category)
     ) {
-      // TODO translate
-      const msg = localize(
-        "The item must be a weapon skill (category melee, shield or natural weapon)"
-      );
+      const msg = localize("RQG.Item.Weapon.WrongTypeDropped");
       // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn(`RQG | ${msg}`);
       return false;
     }
-    const originSkillId = droppedItem.uuid || "";
-    if (this.item.isOwned) {
-      const weaponItem = this.item;
-      assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
-      const embeddedSkillId = await Weapon.embedLinkedSkill("", originSkillId, this.actor!);
-      await this.item.update({
-        [`system.usage.${usage}.skillId`]: embeddedSkillId,
-        [`system.usage.${usage}.skillOrigin`]: originSkillId,
-      });
-    } else {
-      await this.item.update({
-        [`system.usage.${usage}.skillOrigin`]: originSkillId,
-      });
+    const droppedItemRqid = droppedItem.getFlag(systemId, documentRqidFlags)?.id;
+    const actorItemWithSameRqid = this.actor?.getBestEmbeddedDocumentByRqid(droppedItemRqid);
+
+    if (!actorItemWithSameRqid) {
+      await this.actor?.createEmbeddedDocuments("Item", [droppedItem]);
     }
+    await this.item.update({
+      [`system.usage.${usage}.skillRqidLink`]: new RqidLink(droppedItemRqid, droppedItem.name),
+    });
     return [this.item];
   }
 }

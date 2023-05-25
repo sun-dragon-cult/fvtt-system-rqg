@@ -1,6 +1,5 @@
 # 1h-sword-broadsword
 name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.broadsword}}$)
-_id: uHPTu384VHQI8RUt
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 system:
@@ -24,7 +23,6 @@ flags:
 ---
 # 1h-sword-kopis
 name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.kopis}}$)
-_id: KTQ1xvw7YLOxOn37
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 system:
@@ -48,7 +46,6 @@ flags:
 ---
 # 1h-sword-rapier
 name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.rapier}}$)
-_id: DDodZQhdAH5rK0Gv
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 system:
@@ -72,7 +69,6 @@ flags:
 ---
 # 1h-sword-shortsword
 name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.shortsword}}$)
-_id: t45m4tub484LBXuV
 type: skill
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 system:

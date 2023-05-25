@@ -288,7 +288,7 @@ async function getActorMigrationUpdates(
         let itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData); // item is already `item.toObject()`
 
         // Update the Owned Item
-        // @ts-expect-error foundry.util.isEmpty
+        // @ts-expect-error foundry.utils.isEmpty
         if (!foundry.utils.isEmpty(itemUpdate)) {
           hasItemUpdates = true;
           return mergeObject(item, itemUpdate, {

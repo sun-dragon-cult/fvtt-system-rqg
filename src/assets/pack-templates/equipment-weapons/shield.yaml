@@ -10,8 +10,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: 2U6A8opZA2du08Be
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.2U6A8opZA2du08Be
+      skillRqidLink:
+        rqid: i.skill.shields-small
+        name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.small}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
@@ -83,8 +84,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: u95ZVt0636VqW5Pe
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.u95ZVt0636VqW5Pe
+      skillRqidLink:
+        rqid: i.skill.shields-medium
+        name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.medium}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
@@ -156,8 +158,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: GknxFLc7hBNJ5s0l
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.GknxFLc7hBNJ5s0l
+      skillRqidLink:
+        rqid: i.skill.shields-large
+        name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.large}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
