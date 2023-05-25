@@ -13,6 +13,7 @@ import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkills
 import { renameLearnedToGainedChance } from "./migrations-item/renameLearnedToGainedChance";
 import { migrateWorldDialog } from "../../applications/migrateWorldDialog";
 import { migrateSubCults } from "./migrations-item/migrateSubCults";
+import { migrateWeaponSkillLinks } from "./migrations-item/migrateWeaponSkillLinks";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -64,6 +65,7 @@ export async function applyDefaultWorldMigrations(
     tagSkillNameSkillsWithRqid,
     renameLearnedToGainedChance,
     migrateSubCults,
+    migrateWeaponSkillLinks,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 
