@@ -289,7 +289,10 @@ export class RqgActor extends Actor {
   /**
    * Only handles embedded Items
    */
-  public getEmbeddedDocumentsByRqid(rqid: string): RqgItem[] {
+  public getEmbeddedDocumentsByRqid(rqid: string | undefined): RqgItem[] {
+    if (!rqid) {
+      return [];
+    }
     return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
   }
 

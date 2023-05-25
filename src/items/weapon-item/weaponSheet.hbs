@@ -76,25 +76,21 @@
             <fieldset data-dropzone="{{@key}}"
                       data-dropzone-document-names="Item"
                       data-dropzone-document-types="skill">
+              <legend>{{localize (concat "RQG.Game.WeaponUsage." @key "-full")}}</legend>
               <div> {{!-- Make dragenter work despite flex--}}
-              <legend>{{@key}}</legend>
+
               {{#if combatManeuvers}}
-                {{#if isEmbedded}}
-                  <select name="system.skillId">
-                    {{#select skillId}} {{#each weaponSkills}}
-                      <option value="{{id}}">{{name}}</option>
-                    {{/each}} {{/select}}
-                  </select>
-                {{else}}
-                  <label class="mp">Skill</label><br>
-                  {{#if @root.skillNames}}
-                    {{lookup @root.skillNames @key}}
-                    {{#if skillOrigin}}<i data-delete-skill="{{@key}}" class="fas fa-trash"></i>{{/if}}<br>
-                    <i>{{localize "RQG.Item.Weapon.DropSkillToChange"}}</i>
-                  {{else}}
-                    <i>{{localize "RQG.Item.Weapon.DropSkilltoAdd"}}</i>
-                  {{/if}}<br>
-                {{/if}}<br>
+                <div class="flex-row-start flex-align-center">
+                  <label class="mp">{{localize "ITEM.TypeSkill"}}</label>
+
+                  {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                    rqidLink=skillRqidLink
+                    showDeleteFromPropertyName=(concat "usage." @key ".skillRqidLink")
+                    showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+                    showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+                  }}
+                </div>
+                <br>
                 {{#unless (eq @key "offHand")}}
                   <div class="flex-row">
                     <label>{{localize "RQG.Item.Weapon.Damage"}}
@@ -123,6 +119,7 @@
                     {{#each combatManeuvers}}
                       <tr>
                         <td><input type="text" list="defaultCombatManeuverNames"
+                                   placeholder="{{localize "RQG.Item.Weapon.EnterNewAction"}}"
                                    name="system.usage.{{../usage}}.combatManeuvers.name" value="{{name}}"></td>
                         <td>
                           {{#if name}}
@@ -144,6 +141,7 @@
                     {{/each}}
                     <tr>
                       <td><input type="text" list="defaultCombatManeuverNames"
+                                 placeholder="{{localize "RQG.Item.Weapon.EnterNewAction"}}"
                                  name="system.usage.{{usage}}.combatManeuvers.name"></td>
                     </tr>
                   </table>

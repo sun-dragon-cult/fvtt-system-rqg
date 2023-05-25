@@ -27,6 +27,7 @@ import { DeepPartial } from "snowpack";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { systemId } from "../../system/config";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { Rqid } from "../../system/api/rqidApi";
 
 export class Weapon extends AbstractEmbeddedItem {
   // public static init() {
@@ -39,7 +40,8 @@ export class Weapon extends AbstractEmbeddedItem {
   static async toChat(weapon: RqgItem): Promise<void> {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const usage = Weapon.getDefaultUsage(weapon);
-    if (!usage) {
+    // @ts-expect-error foundry.utils.isEmpty
+    if (foundry.utils.isEmpty(usage)) {
       return; // There is no way to use this weapon - it could be arrows for example
     }
     const flags: WeaponChatFlags = {
@@ -146,28 +148,14 @@ export class Weapon extends AbstractEmbeddedItem {
     userId: string
   ): Promise<any> {
     assertItemType(child.type, ItemTypeEnum.Weapon);
-    const oneHandSkillId = await Weapon.embedLinkedSkill(
-      child.system.usage.oneHand.skillId,
-      child.system.usage.oneHand.skillOrigin,
-      actor
-    );
-    const offHandSkillId = await Weapon.embedLinkedSkill(
-      child.system.usage.offHand.skillId,
-      child.system.usage.offHand.skillOrigin,
-      actor
-    );
-    const twoHandSkillId = await Weapon.embedLinkedSkill(
-      child.system.usage.twoHand.skillId,
-      child.system.usage.twoHand.skillOrigin,
-      actor
-    );
-    const missileSkillId = await Weapon.embedLinkedSkill(
-      child.system.usage.missile.skillId,
-      child.system.usage.missile.skillOrigin,
-      actor
-    );
-    if (!oneHandSkillId || !offHandSkillId || !twoHandSkillId || !missileSkillId) {
-      // Didn't find the weapon skill - open the item sheet to let the user select one
+    const succeeded =
+      (await Weapon.embedLinkedSkill(child.system.usage.oneHand.skillRqidLink.rqid, actor)) &&
+      (await Weapon.embedLinkedSkill(child.system.usage.offHand.skillRqidLink.rqid, actor)) &&
+      (await Weapon.embedLinkedSkill(child.system.usage.twoHand.skillRqidLink.rqid, actor)) &&
+      (await Weapon.embedLinkedSkill(child.system.usage.missile.skillRqidLink.rqid, actor));
+
+    if (!succeeded) {
+      // Didn't find one of the weapon skills - open the item sheet to let the user select one
       // TODO how to handle this?
       options.renderSheet = true;
     }
@@ -178,12 +166,6 @@ export class Weapon extends AbstractEmbeddedItem {
       _id: child.id,
       system: {
         projectileId: projectileId,
-        usage: {
-          oneHand: { skillId: oneHandSkillId },
-          offHand: { skillId: offHandSkillId },
-          twoHand: { skillId: twoHandSkillId },
-          missile: { skillId: missileSkillId },
-        },
       },
     };
   }
@@ -191,59 +173,32 @@ export class Weapon extends AbstractEmbeddedItem {
   /**
    * Checks if the specified skill is already owned by the actor.
    * If not it embeds the referenced skill.
-   * Returns the id of the skill on the actor.
+   * Returns false if the linked skill could not be found.
    */
-  public static async embedLinkedSkill(
-    embeddedSkillId: string,
-    skillOrigin: string, // Linked skill item origin (uuid)
-    actor: RqgActor // The actor that should have the skill
-  ): Promise<string> {
-    // If the weapon has the aspect (ie one hand, or missile):
-    // embeddedSkillId will be null when dragging from sidebar or directly from compendium
-    // embeddedSkillId will have a value when dragged from one actor to another
-    if (skillOrigin) {
-      try {
-        // Add the specified skill if found
-        const skill = await fromUuid(skillOrigin).catch((e) => {
-          logMisconfiguration(
-            localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
-            true,
-            embeddedSkillId,
-            e
-          );
-        });
-        if (!skill) {
-          logMisconfiguration(
-            localize("RQG.Item.Notification.NoWeaponSkillFromSkillOriginWarning", {
-              skillOrigin: skillOrigin,
-            }),
-            true
-          );
-        } else {
-          const sameSkillAlreadyOnActor = actor.items.find(
-            (i: RqgItem) => i.name === skill.name && i.type === ItemTypeEnum.Skill
-          );
-          const embeddedWeaponSkill = sameSkillAlreadyOnActor
-            ? [sameSkillAlreadyOnActor]
-            : // @ts-expect-error skill
-              await actor.createEmbeddedDocuments("Item", [skill]);
-          embeddedSkillId = embeddedWeaponSkill[0].id ?? "";
-        }
-      } catch (e) {
+  public static async embedLinkedSkill(skillRqid: string, actor: RqgActor): Promise<boolean> {
+    const embeddedSkill = actor.getBestEmbeddedDocumentByRqid(skillRqid);
+
+    if (!embeddedSkill) {
+      const skill = (await Rqid.fromRqid(skillRqid)) as RqgItem;
+      if (!skill) {
         logMisconfiguration(
-          localize("RQG.Item.Notification.CantFindSkillAssociatedWithWeaponWarning"),
+          localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
           true,
-          e
+          skillRqid
         );
+        return false;
       }
+      // @ts-expect-error skill
+      await actor.createEmbeddedDocuments("Item", [skill]);
     }
-    return embeddedSkillId;
+    return true;
   }
 
   static getDefaultUsage(weapon: RqgItem): UsageType {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const defaultUsage = weapon.system.defaultUsage;
-    if (defaultUsage) {
+    // @ts-expect-error foundry.utils.isEmpty
+    if (!foundry.utils.isEmpty(defaultUsage)) {
       return defaultUsage;
     }
     const options = WeaponChatHandler.getUsageTypeOptions(weapon);
