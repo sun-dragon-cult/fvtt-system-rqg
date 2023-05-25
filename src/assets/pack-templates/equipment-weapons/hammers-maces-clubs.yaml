@@ -10,8 +10,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: arewOJ1QiSrq4BX2
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.arewOJ1QiSrq4BX2
+      skillRqidLink:
+        rqid: i.skill.1h-hammers-war-hammer
+        name: ${{openSystem.content.weaponSkill.1h-hammers.name}}$ (${{openSystem.content.weaponSkill.1h-hammers.specialization.warHammer}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -85,8 +86,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: arewOJ1QiSrq4BX2
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.arewOJ1QiSrq4BX2
+      skillRqidLink:
+        rqid: i.skill.1h-hammers-war-hammer
+        name: ${{openSystem.content.weaponSkill.1h-hammers.name}}$ (${{openSystem.content.weaponSkill.1h-hammers.specialization.warHammer}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -176,8 +178,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: 8an9DP6Kts02NkFu
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.8an9DP6Kts02NkFu
+      skillRqidLink:
+        rqid: i.skill.2h-hammers-great-hammer
+        name: ${{openSystem.content.weaponSkill.2h-hammers.name}}$ (${{openSystem.content.weaponSkill.2h-hammers.specialization.greatHammer}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -248,8 +251,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: aR2CR7aiPmNAoBYN
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.aR2CR7aiPmNAoBYN
+      skillRqidLink:
+        rqid: i.skill.2h-hammers-maul
+        name: ${{openSystem.content.weaponSkill.2h-hammers.name}}$ (${{openSystem.content.weaponSkill.2h-hammers.specialization.maul}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -307,8 +311,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: YuCJ36yojE4Qs25C
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.YuCJ36yojE4Qs25C
+      skillRqidLink:
+        rqid: i.skill.1h-maces-heavy-mace
+        name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.heavyMace}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -382,8 +387,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: 9H741jTUGwGD77ai
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9H741jTUGwGD77ai
+      skillRqidLink:
+        rqid: i.skill.1h-maces-light-mace
+        name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.lightMace}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -457,8 +463,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: 77uhCIMhxvbbnx2h
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.77uhCIMhxvbbnx2h
+      skillRqidLink:
+        rqid: i.skill.1h-maces-singlestick
+        name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.singlestick}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -532,8 +539,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: irLs49KOoB7L09BV
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.irLs49KOoB7L09BV
+      skillRqidLink:
+        rqid: i.skill.1h-maces-club
+        name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.club}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -623,8 +631,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: cY0ZAU37y7ElrIWc
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.cY0ZAU37y7ElrIWc
+      skillRqidLink:
+        rqid: i.skill.2h-mace
+        name: ${{openSystem.content.weaponSkill.2h-mace.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
@@ -698,8 +707,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: A7268y2J3MxcMmzv
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.A7268y2J3MxcMmzv
+      skillRqidLink:
+        rqid: i.skill.quarterstaff
+        name: ${{openSystem.content.weaponSkill.quarterstaff.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush

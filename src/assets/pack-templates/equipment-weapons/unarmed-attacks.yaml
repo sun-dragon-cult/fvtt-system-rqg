@@ -10,8 +10,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: wJ8ZcCBfYlRPLGZ9
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.wJ8ZcCBfYlRPLGZ9
+      skillRqidLink:
+        rqid: i.skill.fists-light-cestus
+        name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.lightCestus}}$)
       combatManeuvers:
         - name: Hit
           damageType: crush
@@ -85,8 +86,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: DtW3cU9ecTCu5e97
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.DtW3cU9ecTCu5e97
+      skillRqidLink:
+        rqid: i.skill.fists-heavy-cestus
+        name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.heavyCestus}}$)
       combatManeuvers:
         - name: Hit
           damageType: crush
@@ -160,8 +162,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: BZaTB9EsMEbZ8dWI
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.BZaTB9EsMEbZ8dWI
+      skillRqidLink:
+        rqid: i.skill.fists-claw
+        name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.claw}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
@@ -235,8 +238,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: mfuP53IYK6SlDNY7
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.mfuP53IYK6SlDNY7
+      skillRqidLink:
+        rqid: i.skill.fists-fists
+        name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.fist}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Punch}}$
           damageType: crush
@@ -310,8 +314,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: ImY1JgAPh59X5vbX
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.ImY1JgAPh59X5vbX
+      skillRqidLink:
+        rqid: i.skill.grapple
+        name: ${{openSystem.content.weaponSkill.grapple.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
           damageType: special
@@ -324,9 +329,6 @@ system:
       skillId:
       skillOrigin:
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
-          damageType: special
-          description:
       damage:
       minStrength: null
       minDexterity: null
@@ -382,8 +384,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: KPHB0ZZXT78AGl0X
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.KPHB0ZZXT78AGl0X
+      skillRqidLink:
+        rqid: i.skill.kick
+        name: ${{openSystem.content.weaponSkill.kick.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Kick}}$
           damageType: crush
@@ -454,8 +457,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: fBlSeCd7CTRlmFpD
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.fBlSeCd7CTRlmFpD
+      skillRqidLink:
+        rqid: i.skill.head-butt
+        name: ${{openSystem.content.weaponSkill.headButt.name}}$
       combatManeuvers:
         - name: Head Butt
           damageType: crush
@@ -526,8 +530,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: AuwLKY4rMgDCQLtG
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.AuwLKY4rMgDCQLtG
+      skillRqidLink:
+        rqid: i.skill.trample
+        name: ${{openSystem.content.weaponSkill.trample.name}}$
       combatManeuvers:
         - name: Trample
           damageType: crush
@@ -598,8 +603,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: eQtAZbMgHj2WwLvr
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.eQtAZbMgHj2WwLvr
+      skillRqidLink:
+        rqid: i.skill.bite
+        name: ${{openSystem.content.weaponSkill.bite.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bite}}$
           damageType: crush
@@ -667,8 +673,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: nDme6LPr9hhcSfeB
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.nDme6LPr9hhcSfeB
+      skillRqidLink:
+        rqid: i.skill.rear-and-plunge
+        name: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Trample}}$
           damageType: crush
@@ -736,8 +743,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: BZaTB9EsMEbZ8dWI
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.BZaTB9EsMEbZ8dWI
+      skillRqidLink:
+        rqid: i.skill.fists-claw
+        name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.claw}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
           damageType: cut
@@ -805,29 +813,23 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: rGoljoNmBLbaskDe
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.rGoljoNmBLbaskDe
-      combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Hug}}$
-          damageType: crush
-          description:
-      damage: 1d6
-      minStrength: null
-      minDexterity: null
+      combatManeuvers: []
+      minStrength:
+      minDexterity:
       strikeRank: 4
     offHand:
       skillId:
       skillOrigin:
       combatManeuvers: []
-      damage:
-      minStrength: null
-      minDexterity: null
+      minStrength:
+      minDexterity:
       strikeRank: 4
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid: i.skill.hug
+        name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.claw}}$)
       combatManeuvers: []
-      damage:
+      damage: 1d6
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
@@ -874,8 +876,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: YWqbb02DrCq5iaEz
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.YWqbb02DrCq5iaEz
+      skillRqidLink:
+        rqid: i.skill.fists-rip
+        name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.rip}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Claw}}$
           damageType: cut
@@ -943,8 +946,9 @@ flags:
 system:
   usage:
     oneHand:
-      skillId: FiNe2lN0aNW5qaxr
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.FiNe2lN0aNW5qaxr
+      skillRqidLink:
+        rqid: i.skill.gore
+        name: ${{openSystem.content.weaponSkill.gore.name}}$
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Gore}}$
           damageType: cut

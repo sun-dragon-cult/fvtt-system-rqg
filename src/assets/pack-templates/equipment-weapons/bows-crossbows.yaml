@@ -34,8 +34,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 9aEgM4UKZQfFddMD
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9aEgM4UKZQfFddMD
+      skillRqidLink:
+        rqid: i.skill.bows-composite-bow
+        name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -103,8 +104,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: zhMTFSWh768z6Jnk
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.zhMTFSWh768z6Jnk
+      skillRqidLink:
+        rqid: i.skill.bows-elf-bow
+        name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -172,8 +174,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: EcDI8nmAyfshQL10
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.EcDI8nmAyfshQL10
+      skillRqidLink:
+        rqid: i.skill.bows-self-bow
+        name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -241,8 +244,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: CVruhytNFN3sfNaM
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.CVruhytNFN3sfNaM
+      skillRqidLink:
+        rqid: i.skill.crossbows-arbalest
+        name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -308,8 +312,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 6tN59Is4NdkZMJF5
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.6tN59Is4NdkZMJF5
+      skillRqidLink:
+        rqid: i.skill.crossbows-heavy-crossbow
+        name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -377,8 +382,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: SL7I4vZ0pKwO714W
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.SL7I4vZ0pKwO714W
+      skillRqidLink:
+        rqid: i.skill.crossbows-light-crossbow
+        name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
@@ -446,8 +452,9 @@ system:
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: OTEuqGbfafup9W49
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.OTEuqGbfafup9W49
+      skillRqidLink:
+        rqid: i.skill.crossbows-repeating-crossbow
+        name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale

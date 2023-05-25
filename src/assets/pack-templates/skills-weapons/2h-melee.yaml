@@ -1,6 +1,5 @@
 # 2h-axe-battle-axe
 name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.battleAxe}}$)
-_id: xhY8SCSzzBhwV1Pk
 type: skill
 img: systems/rqg/assets/images/weapons/2h-axe.svg
 system:
@@ -24,7 +23,6 @@ flags:
 ---
 # 2h-axe-dagger-axe
 name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.daggerAxe}}$)
-_id: 9hry1aMvBvVCAZM3
 type: skill
 img: systems/rqg/assets/images/weapons/2h-axe.svg
 system:
@@ -48,7 +46,6 @@ flags:
 ---
 # 2h-axe-great-axe
 name: ${{openSystem.content.weaponSkill.2h-axes.name}}$ (${{openSystem.content.weaponSkill.2h-axes.specialization.greatAxe}}$)
-_id: SEJtC7C6UhrKrcAV
 type: skill
 img: systems/rqg/assets/images/weapons/2h-axe.svg
 system:
@@ -72,7 +69,6 @@ flags:
 ---
 # 2h-hammer-great-hammer
 name: ${{openSystem.content.weaponSkill.2h-hammers.name}}$ (${{openSystem.content.weaponSkill.2h-hammers.specialization.greatHammer}}$)
-_id: 8an9DP6Kts02NkFu
 type: skill
 img: systems/rqg/assets/images/weapons/2h-hammer.svg
 system:
@@ -96,7 +92,6 @@ flags:
 ---
 # 2h-hammer-maul
 name: ${{openSystem.content.weaponSkill.2h-hammers.name}}$ (${{openSystem.content.weaponSkill.2h-hammers.specialization.maul}}$)
-_id: aR2CR7aiPmNAoBYN
 type: skill
 img: systems/rqg/assets/images/weapons/2h-hammer.svg
 system:
@@ -120,7 +115,6 @@ flags:
 ---
 # 2h-mace
 name: ${{openSystem.content.weaponSkill.2h-mace.name}}$
-_id: cY0ZAU37y7ElrIWc
 type: skill
 img: systems/rqg/assets/images/weapons/2h-mace.svg
 system:
@@ -144,7 +138,6 @@ flags:
 ---
 # 2h-spear-longspear
 name: ${{openSystem.content.weaponSkill.2h-spears.name}}$ (${{openSystem.content.weaponSkill.2h-spears.specialization.longspear}}$)
-_id: x9Cj4g9vfO64Uxia
 type: skill
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 system:
@@ -168,7 +161,6 @@ flags:
 ---
 # 2h-spear-pike
 name: ${{openSystem.content.weaponSkill.2h-spears.name}}$ (${{openSystem.content.weaponSkill.2h-spears.specialization.pike}}$)
-_id: GKqFmE4XASes5k97
 type: skill
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 system:
@@ -192,7 +184,6 @@ flags:
 ---
 # 2h-spear-shortspear
 name: ${{openSystem.content.weaponSkill.2h-spears.name}}$ (${{openSystem.content.weaponSkill.2h-spears.specialization.shortspear}}$)
-_id: RgY6W1u54NyqKa17
 type: skill
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 system:
@@ -216,7 +207,6 @@ flags:
 ---
 # 2h-sword-greatsword
 name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.greatsword}}$)
-_id: oaqCx2G0z8i6nFdA
 type: skill
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 system:
@@ -240,7 +230,6 @@ flags:
 ---
 # 2h-sword-rhomphaia
 name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.rhomphaia}}$)
-_id: P5fq02SPVgRRVyca
 type: skill
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 system:
@@ -264,7 +253,6 @@ flags:
 ---
 # 2h-sword-sickle-sword
 name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.sickle-sword}}$)
-_id: 4p6P3lLzd9E22WKe
 type: skill
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 system:
@@ -288,7 +276,6 @@ flags:
 ---
 # quarterstaff
 name: ${{openSystem.content.weaponSkill.quarterstaff.name}}$
-_id: A7268y2J3MxcMmzv
 type: skill
 img: systems/rqg/assets/images/weapons/quarterstaff.svg
 system:
