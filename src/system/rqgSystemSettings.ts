@@ -118,7 +118,7 @@ export const registerRqgSystemSettings = function () {
     name: "RQG.Settings.WorldMigrationVersion.settingName",
     hint: "RQG.Settings.WorldMigrationVersion.settingHint",
     scope: "world",
-    config: true,
+    config: false,
     type: String,
     default: "",
   });

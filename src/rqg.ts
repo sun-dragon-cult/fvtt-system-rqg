@@ -20,6 +20,7 @@ import { RqgHotbar } from "./foundryUi/rqgHotbar";
 import { TextEditorHooks } from "./foundryUi/textEditorHooks";
 import { RqgJournalEntry } from "./journals/rqgJournalEntry";
 import { getTokenStatusEffects } from "./system/tokenStatusEffects";
+import { RqgSettings } from "./foundryUi/RqgSettings";
 
 Hooks.once("init", async () => {
   console.log(
@@ -73,6 +74,7 @@ Hooks.once("init", async () => {
   RqgCompendiumDirectory.init();
   RqgJournalEntry.init();
   TextEditorHooks.init();
+  RqgSettings.init();
 
   // @ts-expect-error
   RollTables.unregisterSheet("core", RollTableConfig);

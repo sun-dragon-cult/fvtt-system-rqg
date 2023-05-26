@@ -1031,6 +1031,14 @@
         "RqidLinkDelete": "Delete link to \"{name}\"<br><small>rqid: {rqid}</small>",
         "DropToConnectJournal": "Drop a journal entry on this item to connect a description.",
         "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."
+      },
+      "Settings": {
+        "Migrate": {
+          "TriggerButton": "Trigger World Migration",
+          "TriggerTitle": "Trigger World Data Migration",
+          "TriggerContents": "<p>Turn on world data migration and restart</p>",
+          "TriggerRestart": "Save and restart"
+        }
       }
     },
     "Game": {
