@@ -125,6 +125,7 @@ interface CharacterSheetData {
   showUiSection: UiSections;
   actorWizardFeatureFlag: boolean;
   itemLoopMessage: string | undefined;
+  enrichedUnspecifiedSkill: string | undefined;
 }
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
@@ -231,6 +232,7 @@ export class RqgActorSheet extends ActorSheet<
       showUiSection: this.getUiSectionVisibility(),
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
       itemLoopMessage: itemTree.loopMessage, // TODO add more text "There is a loop..."
+      enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
     };
   }
 
@@ -700,6 +702,20 @@ export class RqgActorSheet extends ActorSheet<
       background: true,
       activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && getGameUser().isGM,
     };
+  }
+
+  private async getUnspecifiedSkillText(): Promise<string | undefined> {
+    const unspecifiedSkills = this.actor.items.filter(
+      (i) => i.type === ItemTypeEnum.Skill && !!i.name && i.system?.specialization === "..."
+    );
+    if (unspecifiedSkills.length) {
+      const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
+      const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
+      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
+        // @ts-expect-error async
+        async: true,
+      });
+    }
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {

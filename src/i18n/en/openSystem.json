@@ -326,6 +326,7 @@
         }
       },
       "Skill": {
+        "UnspecifiedSkillWarning": "⚠ Please specify the missing skill specialization:",
         "SkillDescriptionTitle": "Skill Description",
         "ImportSkillCheckboxTitle": "Import Skill: \"{skillName}\"",
         "SkillCategory": {

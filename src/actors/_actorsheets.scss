@@ -320,11 +320,19 @@
 
   }
 
-  .runemagic {
+  .tab.runemagic {
     .common {
       height: 20px;
       margin-right: 0.3rem;
       opacity: 0.5;
+    }
+  }
+
+  .tab.skills {
+    .specialization.warning {
+      padding: 0.3rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.5rem;
     }
   }
 
