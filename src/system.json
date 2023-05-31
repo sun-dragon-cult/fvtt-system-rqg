@@ -21,12 +21,8 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
@@ -37,10 +33,10 @@
   },
   "packs": [
     {
-      "name": "rqid-macros-en",
-      "label": "Rqid Macros | en",
+      "name": "rqg-macros-en",
+      "label": "RQG Macros | en",
       "system": "rqg",
-      "path": "assets/packs/rqid-macros-en.db",
+      "path": "assets/packs/rqg-macros-en.db",
       "type": "Macro"
     },
     {
