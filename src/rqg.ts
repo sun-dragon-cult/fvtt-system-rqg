@@ -21,6 +21,8 @@ import { TextEditorHooks } from "./foundryUi/textEditorHooks";
 import { RqgJournalEntry } from "./journals/rqgJournalEntry";
 import { getTokenStatusEffects } from "./system/tokenStatusEffects";
 import { RqgSettings } from "./foundryUi/RqgSettings";
+import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqidBatchEditor";
+import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
 
 Hooks.once("init", async () => {
   console.log(
@@ -93,6 +95,7 @@ Hooks.once("init", async () => {
     migrate: applyDefaultWorldMigrations,
     rqid: Rqid,
     names: nameGeneration,
+    batchRqid: () => RqidBatchEditor.create(ItemTypeEnum.RuneMagic),
   };
 });
 

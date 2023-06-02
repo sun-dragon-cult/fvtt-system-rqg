@@ -1,0 +1,49 @@
+{{log this}}
+<header>
+  <h2>{{localize 'RQG.Dialog.BatchRqidEditor.Title'}}</h2>
+  <p>{{summary}}</p>
+</header>
+<main>
+  <form class="{{cssClass}}" autocomplete="off">
+    <ol class="document-list">
+      <li class="item flexrow header gap1rem">
+        <span class="name">{{localizeitemtype object.itemType}}</span>
+        <div class="value">{{localize 'RQG.Dialog.BatchRqidEditor.ExistingRqidsHeader'}}</div>
+        <div class="value">{{localize 'RQG.RQGSystem.rqid'}}</div>
+      </li>
+
+      {{#each missingNames}}
+        <li class="item document-row flexrow gap1rem" data-name="{{name}}">
+          <span class="skill-name">{{name}}</span>
+          <div class="value">
+            <select class="existing">
+              <option value="">{{localize 'RQG.Dialog.BatchRqidEditor.NewRqid'}}</option>
+              {{#select custom}}
+                {{#each ../foundKeys as |option|}}
+                  <option value="{{option.key}}">{{option.name}}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+          <div class="value flexrow">
+            {{#if key}}
+              {{custom}}
+            {{else}}
+              <span class="rqid-prefix">{{../object.idPrefix}}</span>
+              <input class="rqid-input" type="text" value="{{suffix}}">
+              <a class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}">
+                <i class="fas fa-wand-magic-sparkles"></i>
+              </a>
+            {{/if}}
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+    <div class="dialog-buttons">
+      <button class="dialog-button">
+        <i class="fas fa-check"></i>
+        {{localize 'RQG.Dialog.BatchRqidEditor.ButtonUpdate'}}
+      </button>
+    </div>
+  </form>
+</main>

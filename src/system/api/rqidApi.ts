@@ -643,7 +643,7 @@ export class Rqid {
   /**
    *  Reverse lookup from DocumentType to rqidDocument ("Item" -> "i").
    */
-  private static readonly rqidDocumentNameLookup: { [documentName: string]: string } =
+  public static readonly rqidDocumentNameLookup: { [documentName: string]: string } =
     Object.entries(Rqid.documentNameLookup).reduce(
       (acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }),
       {}

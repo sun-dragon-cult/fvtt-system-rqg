@@ -406,6 +406,13 @@
       }
     },
     "Dialog": {
+      "BatchRqidEditor": {
+        "Title": "Batch set System ID (Rqid)",
+        "ExistingRqidsHeader": "Existing Rqids",
+        "NewRqid": "- Custom System ID -",
+        "Summary": "The RQG System uses a System ID (Rqid). This allows the system to identify FoundryVTT documents for example skills. This page will allow you to set the id for existing {type} documents. The Rqid should use the English translation of the name to support localization across all languages.",
+        "ButtonUpdate": "Update"
+      },
       "Common": {
         "yes": "yes",
         "no": "no",
@@ -1076,7 +1083,7 @@
       }
     },
     "RQGSystem": {
-      "rqid": "RuneQuest System ID (rqid)",
+      "rqid": "RuneQuest System ID (Rqid)",
       "GenerateDefaultRqid": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
       "rqidPriority": "Rqid Priority",
       "rqidLang": "Language",
