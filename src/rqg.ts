@@ -95,7 +95,16 @@ Hooks.once("init", async () => {
     migrate: applyDefaultWorldMigrations,
     rqid: Rqid,
     names: nameGeneration,
-    batchRqid: () => RqidBatchEditor.create(ItemTypeEnum.RuneMagic),
+    batchRqid: () => {
+      RqidBatchEditor.factory(
+        ItemTypeEnum.Skill,
+        ItemTypeEnum.RuneMagic,
+        ItemTypeEnum.HitLocation,
+        ItemTypeEnum.Cult,
+        ItemTypeEnum.Rune,
+        ItemTypeEnum.SpiritMagic
+      );
+    },
   };
 });
 

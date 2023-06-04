@@ -22,8 +22,11 @@
     font-weight: bold;
     background-color: rgba(0, 0, 0, 0.5);
     color: var(--color-text-light-highlight);
-    text-align: center;
     margin-bottom: 0.3rem;
+
+    * {
+      padding-left: 0.5rem;
+    }
   }
 
   .document-row {
@@ -37,10 +40,15 @@
     .rqid-prefix {
       flex: 0;
       align-self: center;
+      white-space: nowrap;
     }
 
     .rqid-input {
       flex: 2;
+
+      &.missing {
+        background-color: var(--rqg-color-enc-legend)
+      }
     }
 
     .generate-rqid {

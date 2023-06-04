@@ -13,18 +13,18 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 
 interface UpdateList {
-  item: string; // id
+  itemId: string;
   name: string;
   documentRqidFlags: DocumentRqidFlags;
-  actor?: string; // id
-  token?: string; // id
-  scene?: string; // id
+  actorId?: string;
+  tokenId?: string;
+  sceneId?: string;
 }
 
 type MissingNames = { [name: string]: string };
 type FoundKeys = { [name: string]: string };
 
-// TODO split into init and "sheetData"
+// TODO split data into init and "sheetData"
 interface RqidBatchEditorData {
   foundKeys: FoundKeys;
   idPrefix: string;
@@ -32,7 +32,6 @@ interface RqidBatchEditorData {
   prefixRegex: RegExp | null;
   itemType: ItemTypeEnum;
   updateList: UpdateList[];
-  resolve: (value: unknown) => void;
   summary?: string;
 }
 
@@ -41,6 +40,13 @@ export class RqidBatchEditor extends FormApplication<
   FormApplication.Data<RqidBatchEditorData>,
   RqidBatchEditorData
 > {
+  public resolve: (value: PromiseLike<void> | void) => void = () => {};
+  public reject: (value: PromiseLike<void> | void) => void = () => {};
+
+  public getPromise(): RqidBatchEditor {
+    return this;
+  }
+
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-batch-editor"],
@@ -54,6 +60,12 @@ export class RqidBatchEditor extends FormApplication<
       submitOnChange: false,
       resizable: true,
     });
+  }
+
+  async close(options?: FormApplication.CloseOptions): Promise<void> {
+    console.log("*** Closing");
+    await super.close(options);
+    this.resolve();
   }
 
   async getData(): Promise<FormApplication.Data<RqidBatchEditorData>> {
@@ -105,19 +117,19 @@ export class RqidBatchEditor extends FormApplication<
   onKeyupRqid(event: any) {
     const name = getDomDataset(event, "name") ?? "";
     this.object.missingNames[name] =
-      this.object.idPrefix + convertFormValueToString(event.currentTarget.value);
+      this.object.idPrefix + toKebabCase(convertFormValueToString(event.currentTarget.value));
   }
 
   async _updateObject(event: any, formData: any) {
-    if (event.submitter) {
-      // TODO checks if the form was submitted - better way to do it?
-      if (this.object.itemType === ItemTypeEnum.Skill) {
-        // TODO Item is Skill check - why
-        this.close();
-        await RqidBatchEditor.processSkillKeys(this.object.updateList, this.object.missingNames);
-      }
-      this.object.resolve(true);
+    if (event instanceof SubmitEvent) {
+      this.close();
+      await RqidBatchEditor.processSkillKeys(this.object.updateList, this.object.missingNames);
+      // this.object.resolve(true);
     }
+  }
+
+  get title(): string {
+    return super.title + " - " + localizeItemType(this.object.itemType);
   }
 
   static async processSkillKeys(updateList: UpdateList[], missingNames: MissingNames) {
@@ -135,18 +147,18 @@ export class RqidBatchEditor extends FormApplication<
       const flags = flattenObject({
         flags: { rqg: { documentRqidFlags: update.documentRqidFlags } },
       }); // TODO !!!
-      if (typeof update.scene !== "undefined") {
-        if (typeof scenes[update.scene] === "undefined") {
-          const scene = getGame().scenes?.get(update.scene); // TODO Maybe Undefined
-          scenes[update.scene] = scene?.toObject();
+      if (typeof update.sceneId !== "undefined") {
+        if (typeof scenes[update.sceneId] === "undefined") {
+          const scene = getGame().scenes?.get(update.sceneId); // TODO Maybe Undefined
+          scenes[update.sceneId] = scene?.toObject();
         }
-        const tokenOffset = scenes[update.scene].tokens.findIndex(
-          (t: TokenDocument) => t._id === update.token
+        const tokenOffset = scenes[update.sceneId].tokens.findIndex(
+          (t: TokenDocument) => t._id === update.tokenId
         );
         if (tokenOffset > -1) {
           // TODO Added "contents" ***
-          const itemOffset = scenes[update.scene].tokens[tokenOffset].actorData.items.findIndex(
-            (i: any) => i._id === update.item
+          const itemOffset = scenes[update.sceneId].tokens[tokenOffset].actorData.items.findIndex(
+            (i: any) => i._id === update.itemId
           );
           if (itemOffset > -1) {
             const expandedFlags = expandObject(
@@ -157,28 +169,28 @@ export class RqidBatchEditor extends FormApplication<
                 return out;
               }, {})
             );
-            scenes[update.scene].tokens[tokenOffset].actorData.items[itemOffset] = mergeObject(
-              scenes[update.scene].tokens[tokenOffset].actorData.items[itemOffset],
+            scenes[update.sceneId].tokens[tokenOffset].actorData.items[itemOffset] = mergeObject(
+              scenes[update.sceneId].tokens[tokenOffset].actorData.items[itemOffset],
               expandedFlags
             );
           }
         }
-      } else if (typeof update.actor !== "undefined") {
-        if (typeof actors[update.actor] === "undefined") {
-          actors[update.actor] = [];
+      } else if (typeof update.actorId !== "undefined") {
+        if (typeof actors[update.actorId] === "undefined") {
+          actors[update.actorId] = [];
         }
         const item: any = {
-          _id: update.item,
+          _id: update.itemId,
         };
         for (const key of Object.keys(flags)) {
           if (key.match(/^flags\.rqg\.documentRqidFlags/)) {
             item[key] = flags[key];
           }
         }
-        actors[update.actor].push(item);
+        actors[update.actorId].push(item);
       } else {
         const item: any = {
-          _id: update.item,
+          _id: update.itemId,
         };
         for (const key of Object.keys(flags)) {
           if (key.match(/^flags\.rqg\.documentRqidFlags/)) {
@@ -212,7 +224,32 @@ export class RqidBatchEditor extends FormApplication<
     documentType: ItemTypeEnum,
     prefixRegex: RegExp
   ): Promise<void> {
-    // TODO Collect Rqids from compendium packs
+    // Collect Rqids from system compendium packs
+    const systemItemPacks = getGame().packs.filter(
+      (p) =>
+        // @ts-expect-error packageName
+        p.metadata.packageName === systemId &&
+        // @ts-expect-error type
+        p.metadata.type === "Item" &&
+        // @ts-expect-error packageType
+        p.metadata.packageType === "system"
+    );
+    for (const pack of systemItemPacks) {
+      const packIndex = await pack.getIndex();
+      packIndex.forEach((packIndexData: any) => {
+        if (packIndexData.type === documentType) {
+          if (
+            prefixRegex.test(packIndexData.flags.rqg?.documentRqidFlags?.id) &&
+            // @ts-expect-error isEmpty
+            !foundry.utils.isEmpty(packIndexData.flags.rqg?.documentRqidFlags?.id)
+          ) {
+            foundKeys[packIndexData.name] = packIndexData?.flags.rqg.documentRqidFlags.id;
+          } else {
+            missingNames[packIndexData.name] = missingNames[packIndexData.name] ?? "";
+          }
+        }
+      });
+    }
 
     // Collect Rqids from world Actors items
     const worldActors = getGame().actors?.contents ?? [];
@@ -232,8 +269,8 @@ export class RqidBatchEditor extends FormApplication<
           } else {
             missingNames[itemData.name] = missingNames[itemData.name] ?? "";
             updateList.push({
-              actor: actor._id ?? undefined,
-              item: itemData._id,
+              actorId: actor._id ?? undefined,
+              itemId: itemData._id,
               name: itemData.name,
               documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
             });
@@ -256,7 +293,7 @@ export class RqidBatchEditor extends FormApplication<
         } else {
           missingNames[itemData.name] = missingNames[itemData.name] ?? "";
           updateList.push({
-            item: itemData._id,
+            itemId: itemData._id,
             name: itemData.name,
             documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
           });
@@ -286,9 +323,9 @@ export class RqidBatchEditor extends FormApplication<
               } else {
                 missingNames[itemData.name] = missingNames[itemData.name] ?? "";
                 updateList.push({
-                  scene: sceneData._id,
-                  token: token._id ?? undefined,
-                  item: itemData._id,
+                  sceneId: sceneData._id,
+                  tokenId: token._id ?? undefined,
+                  itemId: itemData._id,
                   name: itemData.name,
                   documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
                 });
@@ -300,12 +337,7 @@ export class RqidBatchEditor extends FormApplication<
     });
 
     if (Object.keys(missingNames).filter((key) => missingNames[key] === "").length > 0) {
-      const items: any = await Rqid.fromRqidRegexBest(
-        prefixRegex,
-        "i",
-        // Rqid.rqidDocumentNameLookup[documentType], // TODO documentType är "skill" och lookupen vill ha "Item" - hårdkoda "i" för nu? eller hur veta
-        "en"
-      );
+      const items: any = await Rqid.fromRqidRegexBest(prefixRegex, "i", "en");
       items.forEach((item: any) => {
         foundKeys[item.name ?? ""] = item.flags.rqg.documentRqidFlags.id;
       });
@@ -318,42 +350,52 @@ export class RqidBatchEditor extends FormApplication<
     }
   }
 
-  static async create(documentType: ItemTypeEnum): Promise<RqidBatchEditorData | boolean> {
-    const updateList: UpdateList[] = [];
-    const missingNames: MissingNames = {}; // TODO should be Map ? (item name -> rqid) - man kan få med definerad rqid om exakt match på namn men itemet saknar rqid
-    const foundKeys: FoundKeys = {}; // TODO should be Map ? (item name -> rqid)
-    const documentName = "Item"; // Only Items supported for now
-    const rqidDocumentName = Rqid.rqidDocumentNameLookup[documentName]; // TODO revert making it public and hardcode "i"
+  // Render the application and resolve a Promise when the application is closed so that it can be awaited
+  public async show(): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      this.resolve = resolve;
+      this.reject = reject;
+      this.render(true);
+    });
+  }
 
-    const idPrefix = `${rqidDocumentName}.${documentType}.`;
-    const prefixRegex = new RegExp("^" + rqidDocumentName + "\\." + documentType + "\\.");
+  // Render the application in sequence for all provided item types
+  static async factory(...itemTypes: ItemTypeEnum[]): Promise<void> {
+    for (const itemType of itemTypes) {
+      const updateList: UpdateList[] = [];
+      const missingNames: MissingNames = {}; // TODO should be Map ? (item name -> rqid) - man kan få med definerad rqid om exakt match på namn men itemet saknar rqid
+      const foundKeys: FoundKeys = {}; // TODO should be Map ? (item name -> rqid)
+      const documentName = "Item"; // Only Items supported for now
+      const rqidDocumentName = Rqid.rqidDocumentNameLookup[documentName]; // TODO revert making it public and hardcode "i"
 
-    await RqidBatchEditor.populateSkillKeys(
-      updateList,
-      missingNames,
-      foundKeys,
-      documentType,
-      prefixRegex
-    );
-    if (
-      // @ts-expect-errors isEmpty  Are there any document without rqid to show?
-      foundry.utils.isEmpty(missingNames)
-      // Object.keys(missingNames).some((key) => foundry.utils.isEmpty(missingNames[key]))
-    ) {
-      await RqidBatchEditor.processSkillKeys(updateList, missingNames); // TODO Varför ?
-      return true;
-    }
-    return new Promise((resolve: (value: any) => void): void => {
+      const idPrefix = `${rqidDocumentName}.${toKebabCase(itemType)}.`;
+      const prefixRegex = new RegExp(
+        "^" + rqidDocumentName + "\\." + toKebabCase(itemType) + "\\."
+      );
+
+      await RqidBatchEditor.populateSkillKeys(
+        updateList,
+        missingNames,
+        foundKeys,
+        itemType,
+        prefixRegex
+      );
+      if (
+        // @ts-expect-errors isEmpty  Are there any document without rqid to show?
+        foundry.utils.isEmpty(missingNames)
+      ) {
+        // await RqidBatchEditor.processSkillKeys(updateList, missingNames); // TODO Varför ?
+        continue;
+      }
       const rqidBatchEditor = new RqidBatchEditor({
-        itemType: documentType,
+        itemType,
         idPrefix,
         prefixRegex,
         updateList,
         missingNames,
         foundKeys,
-        resolve,
       });
-      rqidBatchEditor.render(true);
-    });
+      await rqidBatchEditor.show();
+    }
   }
 }

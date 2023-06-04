@@ -26,15 +26,13 @@
             </select>
           </div>
           <div class="value flexrow">
-            {{#if key}}
-              {{custom}}
-            {{else}}
-              <span class="rqid-prefix">{{../object.idPrefix}}</span>
-              <input class="rqid-input" type="text" value="{{suffix}}">
-              <a class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}">
-                <i class="fas fa-wand-magic-sparkles"></i>
-              </a>
-            {{/if}}
+            {{log '*** HERE' ../object.idPrefix suffix}}
+
+            <span class="rqid-prefix">{{../object.idPrefix}}</span>
+          <input class="rqid-input {{#unless suffix}}missing{{/unless}}" type="text" value="{{suffix}}">
+            <a class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}">
+              <i class="fas fa-wand-magic-sparkles"></i>
+            </a>
           </div>
         </li>
       {{/each}}
