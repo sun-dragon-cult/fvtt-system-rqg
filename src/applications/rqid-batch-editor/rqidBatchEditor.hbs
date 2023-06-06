@@ -1,4 +1,3 @@
-{{log this}}
 <header>
   <h2>{{localize 'RQG.Dialog.BatchRqidEditor.Title'}}</h2>
   <p>{{summary}}</p>
@@ -12,22 +11,20 @@
         <div class="value">{{localize 'RQG.RQGSystem.rqid'}}</div>
       </li>
 
-      {{#each missingNames}}
+      {{#each itemNamesWithoutRqid}}
         <li class="item document-row flexrow gap1rem" data-name="{{name}}">
-          <span class="skill-name">{{name}}</span>
+          <span class="skill-name">{{name}} </span>
           <div class="value">
             <select class="existing">
               <option value="">{{localize 'RQG.Dialog.BatchRqidEditor.NewRqid'}}</option>
               {{#select custom}}
-                {{#each ../foundKeys as |option|}}
-                  <option value="{{option.key}}">{{option.name}}</option>
+                {{#each ../existingRqids}}
+                  <option value="{{key}}">{{optionValue}}</option>
                 {{/each}}
               {{/select}}
             </select>
           </div>
           <div class="value flexrow">
-            {{log '*** HERE' ../object.idPrefix suffix}}
-
             <span class="rqid-prefix">{{../object.idPrefix}}</span>
           <input class="rqid-input {{#unless suffix}}missing{{/unless}}" type="text" value="{{suffix}}">
             <a class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}">

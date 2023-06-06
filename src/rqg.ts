@@ -90,21 +90,25 @@ Hooks.once("init", async () => {
   registerHandlebarsHelpers();
   registerRqgSystemSettings();
 
+  // Define the system.api
   (getGame().system as any).api = {
     // installModules: installModules,
     migrate: applyDefaultWorldMigrations,
     rqid: Rqid,
-    names: nameGeneration,
-    batchRqid: () => {
-      RqidBatchEditor.factory(
-        ItemTypeEnum.Skill,
-        ItemTypeEnum.RuneMagic,
-        ItemTypeEnum.HitLocation,
-        ItemTypeEnum.Cult,
-        ItemTypeEnum.Rune,
-        ItemTypeEnum.SpiritMagic
-      );
+    /**
+     * Show an application that lets you set rqid for items.
+     */
+    batchSetRqids: async (...itemTypes: string[]): Promise<void> => {
+      const itemTypeEnums = itemTypes.length
+        ? itemTypes.map((it) => it as ItemTypeEnum)
+        : [
+            ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+            ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+            ItemTypeEnum.Rune, // Not needed yet, but will be in future rune tab redesign
+          ];
+      await RqidBatchEditor.factory(...itemTypeEnums);
     },
+    names: nameGeneration,
   };
 });
 
