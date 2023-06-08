@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/armor/composite-helmet.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-composite-helm-bronze-plate
+      id: i.armor.composite-helm-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -30,7 +30,7 @@ img: systems/rqg/assets/images/armor/open-helmet.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-open-helm-bronze-plate
+      id: i.armor.open-helm-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -56,7 +56,7 @@ img: systems/rqg/assets/images/armor/closed-helmet.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-closed-helm-bronze-plate
+      id: i.armor.closed-helm-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -82,7 +82,7 @@ img: systems/rqg/assets/images/armor/full-helmet.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-full-helm-bronze-plate
+      id: i.armor.full-helm-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -108,7 +108,7 @@ img: systems/rqg/assets/images/armor/vambraces.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-vambraces-bronze-plate
+      id: i.armor.vambraces-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -135,7 +135,7 @@ img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-cuirass-bronze-plate
+      id: i.armor.cuirass-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -161,7 +161,7 @@ img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-hauberk-segmented-bronze-plate
+      id: i.armor.hauberk-segmented-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -188,7 +188,7 @@ img: systems/rqg/assets/images/armor/greaves.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-greaves-bronze-plate
+      id: i.armor.greaves-bronze-plate
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:

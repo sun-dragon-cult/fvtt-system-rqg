@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/armor/hood.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-hood-leather
+      id: i.armor.hood-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -30,7 +30,7 @@ img: systems/rqg/assets/images/armor/broad-brimmed-hat.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-broad-brimmed-hat-leather
+      id: i.armor.broad-brimmed-hat-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -56,7 +56,7 @@ img: systems/rqg/assets/images/armor/composite-helmet.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-cap-leather
+      id: i.armor.cap-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -82,7 +82,7 @@ img: systems/rqg/assets/images/armor/vambraces.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-vambraces-leather
+      id: i.armor.vambraces-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -109,7 +109,7 @@ img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-cuirass-leather
+      id: i.armor.cuirass-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -135,7 +135,7 @@ img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-hauberk-leather
+      id: i.armor.hauberk-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -162,7 +162,7 @@ img: systems/rqg/assets/images/armor/skirt.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-skirt-leather
+      id: i.armor.skirt-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -188,7 +188,7 @@ img: systems/rqg/assets/images/armor/pants.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-pants-leather
+      id: i.armor.pants-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -216,7 +216,7 @@ img: systems/rqg/assets/images/armor/greaves.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-greaves-leather
+      id: i.armor.greaves-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:

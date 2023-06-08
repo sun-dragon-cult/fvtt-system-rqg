@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-cuirass-ring-mail
+      id: i.armor.cuirass-ring-mail
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -30,7 +30,7 @@ img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-hauberk-ring-mail
+      id: i.armor.hauberk-ring-mail
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:

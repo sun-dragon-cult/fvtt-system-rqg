@@ -5,7 +5,7 @@ img: systems/rqg/assets/images/armor/vambraces.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-sleeves-heavy-scale
+      id: i.armor.sleeves-heavy-scale
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -32,7 +32,7 @@ img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-cuirass-heavy-scale
+      id: i.armor.cuirass-heavy-scale
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -58,7 +58,7 @@ img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-hauberk-heavy-scale
+      id: i.armor.hauberk-heavy-scale
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -85,7 +85,7 @@ img: systems/rqg/assets/images/armor/skirt.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-skirt-heavy-scale
+      id: i.armor.skirt-heavy-scale
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
