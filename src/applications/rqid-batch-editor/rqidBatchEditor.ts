@@ -3,6 +3,7 @@ import {
   convertFormValueToString,
   getDomDataset,
   getGame,
+  getGameUser,
   localize,
   localizeItemType,
   toKebabCase,
@@ -12,7 +13,7 @@ import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/s
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 
-interface UpdateList {
+interface ItemUpdate {
   itemId: string;
   name: string;
   documentRqidFlags: DocumentRqidFlags;
@@ -21,35 +22,53 @@ interface UpdateList {
   sceneId?: string;
 }
 
-// TODO split data into init and "sheetData"
+interface ExistingRqids {
+  name: string;
+  rqid: string;
+  optionText: string;
+}
+
+interface ItemNameWithoutRqid {
+  name: string;
+  rqid: string;
+  selectedRqid: string;
+  selectedRqidSuffix: string;
+}
+
 interface RqidBatchEditorData {
-  existingRqids: Map<string, string>; // item name -> rqid
-  itemNamesWithoutRqid: Map<string, string | undefined>; // item name -> rqid
+  summary: string;
+  itemType: string;
   idPrefix: string;
-  prefixRegex: RegExp | null;
+  existingRqids: ExistingRqids[];
+  itemNamesWithoutRqid: ItemNameWithoutRqid[];
+}
+
+interface RqidBatchEditorOptions extends FormApplication.Options {
   itemType: ItemTypeEnum;
-  updateList: UpdateList[];
-  summary?: string;
+  idPrefix: string;
+  prefixRegex: RegExp;
+  existingRqids: Map<string, string>;
+}
+
+interface Updates {
+  itemNamesWithoutRqid: Map<string, string | undefined>;
+  updateList: ItemUpdate[];
 }
 
 export class RqidBatchEditor extends FormApplication<
-  FormApplication.Options,
-  FormApplication.Data<RqidBatchEditorData>,
-  RqidBatchEditorData
+  RqidBatchEditorOptions,
+  RqidBatchEditorData,
+  Updates
 > {
   public resolve: (value: PromiseLike<void> | void) => void = () => {};
   public reject: (value: PromiseLike<void> | void) => void = () => {};
-
-  public getPromise(): RqidBatchEditor {
-    return this;
-  }
 
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-batch-editor"],
       popOut: true,
       template: `systems/rqg/applications/rqid-batch-editor/rqidBatchEditor.hbs`,
-      width: 900,
+      width: 1000,
       id: "rqid-batch-editor-application",
       title: "RQG.Dialog.BatchRqidEditor.Title",
       closeOnSubmit: false,
@@ -64,93 +83,108 @@ export class RqidBatchEditor extends FormApplication<
     this.resolve();
   }
 
-  async getData(): Promise<FormApplication.Data<RqidBatchEditorData>> {
-    // TODO ugly as *****************
-    const sheetData = super.getData() as RqidBatchEditorData &
-      FormApplication.Data<RqidBatchEditorData>;
-    sheetData.existingRqids = [...sheetData.object.existingRqids.keys()]
+  async getData(): Promise<RqidBatchEditorData> {
+    const existingRqids = [...this.options.existingRqids.keys()]
       .reduce((out: any, itemName) => {
         out.push({
           name: itemName,
-          key: sheetData.object.existingRqids.get(itemName),
-          optionValue: itemName,
+          rqid: this.options.existingRqids.get(itemName),
+          optionText: itemName,
         });
         return out;
       }, [])
       .sort((a: Document<any, any>, b: Document<any, any>) => a.name!.localeCompare(b.name!));
 
-    sheetData.itemNamesWithoutRqid = [...sheetData.object.itemNamesWithoutRqid.keys()]
+    const itemNamesWithoutRqid = [...this.object.itemNamesWithoutRqid.keys()]
       .reduce((out: any, itemName) => {
         out.push({
-          name: itemName, // Name
-          key: sheetData.object.existingRqids.get(itemName) ?? "",
-          custom: sheetData.object.itemNamesWithoutRqid.get(itemName), // Rqid if name match
-          suffix: sheetData.object.itemNamesWithoutRqid // rqidSuffix if name match
+          name: itemName,
+          key: this.options.existingRqids.get(itemName) ?? "",
+          selectedRqid: this.object.itemNamesWithoutRqid.get(itemName),
+          selectedRqidSuffix: this.object.itemNamesWithoutRqid
             .get(itemName)
-            ?.replace(this.object.prefixRegex ?? "", ""),
+            ?.replace(this.options.prefixRegex ?? "", ""),
         });
         return out;
       }, [])
       .sort((a: Document<any, any>, b: Document<any, any>) => a.name!.localeCompare(b.name!));
-    const documentNameTranslation = localizeItemType(this.object.itemType as ItemTypeEnum);
-    sheetData.summary = localize("RQG.Dialog.BatchRqidEditor.Summary", {
-      type: documentNameTranslation,
-    });
-    return sheetData;
+
+    let summary: string;
+    switch (this.options.itemType) {
+      case ItemTypeEnum.Skill:
+        summary = localize("RQG.Dialog.BatchRqidEditor.SummarySkill");
+        break;
+      case ItemTypeEnum.RuneMagic:
+        summary = localize("RQG.Dialog.BatchRqidEditor.SummaryRuneMagic");
+        break;
+      default:
+        const documentNameTranslation = localizeItemType(this.options.itemType);
+        summary = localize("RQG.Dialog.BatchRqidEditor.SummaryDefault", {
+          type: documentNameTranslation,
+        });
+    }
+
+    return {
+      summary: summary,
+      itemType: this.options.itemType,
+      idPrefix: this.options.idPrefix,
+      existingRqids: existingRqids,
+      itemNamesWithoutRqid: itemNamesWithoutRqid,
+    };
   }
 
-  activateListeners(html: JQuery) {
+  activateListeners(html: JQuery): void {
     super.activateListeners(html);
     html.find(".existing").change(this.onSetExistingName.bind(this));
     html.find(".generate-rqid").click(this.onClickGuess.bind(this));
-    html.find("input").keyup(this.onKeyupRqid.bind(this));
+    html.find("input").change(this.onTypeRqid.bind(this));
   }
 
-  onSetExistingName(event: any) {
+  onSetExistingName(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
-    this.object.itemNamesWithoutRqid.set(name, convertFormValueToString(event.currentTarget.value));
+    const newRqid = convertFormValueToString(event.currentTarget?.value);
+    this.object.itemNamesWithoutRqid.set(name, newRqid);
     this.render(true);
   }
 
-  onClickGuess(event: any) {
+  onClickGuess(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
-    this.object.itemNamesWithoutRqid.set(name, this.object.idPrefix + toKebabCase(name));
+    const newRqid = this.options.idPrefix + toKebabCase(name);
+    this.object.itemNamesWithoutRqid.set(name, newRqid);
     this.render(true);
   }
 
-  onKeyupRqid(event: any) {
+  onTypeRqid(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
-    this.object.itemNamesWithoutRqid.set(
-      name,
-      this.object.idPrefix + toKebabCase(convertFormValueToString(event.currentTarget.value))
-    );
+    const newRqid =
+      this.options.idPrefix + toKebabCase(convertFormValueToString(event.currentTarget.value));
+    this.object.itemNamesWithoutRqid.set(name, newRqid);
+    this.render(true);
   }
 
-  async _updateObject(event: any, formData: any) {
+  async _updateObject(event: Event, formData: any): Promise<void> {
     if (event instanceof SubmitEvent) {
-      this.close();
-      await RqidBatchEditor.processSkillKeys(
+      await RqidBatchEditor.persistChanges(
         this.object.updateList,
         this.object.itemNamesWithoutRqid
       );
-      // this.object.resolve(true);
+      await this.close();
     }
   }
 
   get title(): string {
-    return super.title + " - " + localizeItemType(this.object.itemType);
+    return super.title + " - " + localizeItemType(this.options.itemType);
   }
 
-  // TODO Rename to updateXxx (find a good name)
-  static async processSkillKeys(
-    updateList: UpdateList[],
-    missingNames: Map<string, string | undefined>
-  ) {
+  static async persistChanges(
+    updateList: ItemUpdate[],
+    itemNamesWithoutRqid: Map<string, string | undefined>
+  ): Promise<void> {
     const items: any[] = [];
     const actors: any = {};
     const scenes: any = {};
     for (const update of updateList) {
-      update.documentRqidFlags.id = missingNames.get(update.name);
+      update.documentRqidFlags.id = itemNamesWithoutRqid.get(update.name);
       if (typeof update.documentRqidFlags.lang === "undefined") {
         update.documentRqidFlags.lang = getGame().settings.get(systemId, "worldLanguage");
       }
@@ -227,16 +261,22 @@ export class RqidBatchEditor extends FormApplication<
         scene?.update(scenes[sceneId]);
       }
     }
-    return true;
   }
 
-  static async populateSkillKeys(
-    updateList: UpdateList[],
-    itemNamesWithoutRqid: Map<string, string | undefined>,
-    existingRqids: Map<string, string>,
+  static async scanWorldForMissingRqids(
     documentType: ItemTypeEnum,
     prefixRegex: RegExp
-  ): Promise<void> {
+  ): Promise<
+    [
+      updateList: ItemUpdate[],
+      itemNamesWithoutRqid: Map<string, string | undefined>,
+      existingRqids: Map<string, string>
+    ]
+  > {
+    const updateList: ItemUpdate[] = [];
+    const itemNamesWithoutRqid: Map<string, string | undefined> = new Map();
+    const existingRqids: Map<string, string> = new Map();
+
     // Collect Rqids from system compendium packs
     const systemItemPacks = getGame().packs.filter(
       (p) =>
@@ -367,8 +407,8 @@ export class RqidBatchEditor extends FormApplication<
           existingRqids.has(item.name) &&
           existingRqids.get(item.name) !== item.flags.rqg.documentRqidFlags.id
         ) {
-          existingRqids.set(previousExpandedName, existingRqids.get(item.name)!);
-          existingRqids.set(newExpandedName, item.flags.rqg.documentRqidFlags.id);
+          existingRqids.set(previousExpandedName, toKebabCase(existingRqids.get(item.name))!);
+          existingRqids.set(newExpandedName, toKebabCase(item.flags.rqg.documentRqidFlags.id));
           namesToDeleteFromExistingRqids.add(item.name);
         }
       });
@@ -381,6 +421,8 @@ export class RqidBatchEditor extends FormApplication<
         itemNamesWithoutRqid.set(name, existingRqids.get(name)!);
       }
     }
+
+    return [updateList, itemNamesWithoutRqid, existingRqids];
   }
 
   // Render the application and resolve a Promise when the application is closed so that it can be awaited
@@ -394,40 +436,38 @@ export class RqidBatchEditor extends FormApplication<
 
   // Render the application in sequence for all provided item types
   static async factory(...itemTypes: ItemTypeEnum[]): Promise<void> {
+    if (!getGameUser().isGM) {
+      ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
+      return;
+    }
     for (const itemType of itemTypes) {
-      const updateList: UpdateList[] = [];
-      const itemNamesWithoutRqid: Map<string, string> = new Map(); // TODO should be Map ? (item name -> rqid) - man kan få med definerad rqid om exakt match på namn men itemet saknar rqid
-      const existingRqids: Map<string, string> = new Map();
-      const documentName = "Item"; // Only Items supported for now
-      const rqidDocumentName = Rqid.rqidDocumentNameLookup[documentName]; // TODO revert making it public and hardcode "i"
+      const rqidDocumentName = "i"; // Hardcoded for now until more documents than Item are supported
 
       const idPrefix = `${rqidDocumentName}.${toKebabCase(itemType)}.`;
       const prefixRegex = new RegExp(
         "^" + rqidDocumentName + "\\." + toKebabCase(itemType) + "\\."
       );
 
-      await RqidBatchEditor.populateSkillKeys(
-        updateList,
-        itemNamesWithoutRqid,
-        existingRqids,
-        itemType,
-        prefixRegex
-      );
+      const [updateList, itemNamesWithoutRqid, existingRqids] =
+        await RqidBatchEditor.scanWorldForMissingRqids(itemType, prefixRegex);
       if (
         // @ts-expect-errors isEmpty  Are there any document without rqid to show?
         foundry.utils.isEmpty(itemNamesWithoutRqid)
       ) {
-        // await RqidBatchEditor.processSkillKeys(updateList, missingNames); // TODO Varför ?
         continue;
       }
-      const rqidBatchEditor = new RqidBatchEditor({
-        itemType,
-        idPrefix,
-        prefixRegex,
-        updateList,
-        itemNamesWithoutRqid: itemNamesWithoutRqid,
-        existingRqids: existingRqids,
-      });
+      const rqidBatchEditor = new RqidBatchEditor(
+        {
+          itemNamesWithoutRqid: itemNamesWithoutRqid,
+          updateList: updateList,
+        },
+        {
+          itemType,
+          idPrefix,
+          prefixRegex,
+          existingRqids: existingRqids,
+        }
+      );
       await rqidBatchEditor.show();
     }
   }
