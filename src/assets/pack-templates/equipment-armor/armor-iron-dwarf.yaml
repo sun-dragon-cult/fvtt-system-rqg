@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/armor/chain-mail.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-unenchanted-heavy-dwarf-chainmail-iron
+      id: i.armor.unenchanted-heavy-dwarf-chainmail-iron
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -35,7 +35,7 @@ img: systems/rqg/assets/images/armor/closed-helmet.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-unenchanted-dwarf-helmet-iron
+      id: i.armor.unenchanted-dwarf-helmet-iron
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:

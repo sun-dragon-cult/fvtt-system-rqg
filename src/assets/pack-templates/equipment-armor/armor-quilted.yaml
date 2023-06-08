@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-linothorax-quilted-leather
+      id: i.armor.linothorax-quilted-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:

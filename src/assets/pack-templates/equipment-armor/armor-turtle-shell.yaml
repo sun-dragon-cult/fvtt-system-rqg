@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-cuirass-turtle-shell
+      id: i.armor.cuirass-turtle-shell
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:

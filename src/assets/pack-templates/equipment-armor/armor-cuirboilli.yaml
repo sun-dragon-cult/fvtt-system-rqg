@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/armor/vambraces.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-vambraces-cuirboilli
+      id: i.armor.vambraces-cuirboilli
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -31,7 +31,7 @@ img: systems/rqg/assets/images/armor/greaves.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-greaves-cuirboilli
+      id: i.armor.greaves-cuirboilli
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:

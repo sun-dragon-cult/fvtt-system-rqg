@@ -4,7 +4,7 @@ img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-cuirass-heavy-leather
+      id: i.armor.cuirass-heavy-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -30,7 +30,7 @@ img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-hauberk-heavy-leather
+      id: i.armor.hauberk-heavy-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
@@ -57,7 +57,7 @@ img: systems/rqg/assets/images/armor/pants.svg
 flags:
   rqg:
     documentRqidFlags:
-      id: i.armor.armor-pants-heavy-leather
+      id: i.armor.pants-heavy-leather
       priority: ${{openSystem.prio}}$
       lang: ${{openSystem.lang}}$
 system:
