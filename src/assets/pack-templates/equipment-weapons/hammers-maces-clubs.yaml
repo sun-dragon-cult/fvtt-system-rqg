@@ -632,8 +632,8 @@ system:
       strikeRank: 0
     twoHand:
       skillRqidLink:
-        rqid: i.skill.2h-mace
-        name: ${{openSystem.content.weaponSkill.2h-mace.name}}$
+        rqid: i.skill.2h-maces-mace
+        name: ${{openSystem.content.weaponSkill.2h-maces.name}}$ (${{openSystem.content.weaponSkill.2h-maces.specialization.mace}}$)
       combatManeuvers:
         - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush

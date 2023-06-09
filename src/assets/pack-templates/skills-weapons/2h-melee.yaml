@@ -113,14 +113,14 @@ flags:
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---
-# 2h-mace
-name: ${{openSystem.content.weaponSkill.2h-mace.name}}$
+# 2h-maces-mace
+name: ${{openSystem.content.weaponSkill.2h-maces.name}}$ (${{openSystem.content.weaponSkill.2h-maces.specialization.mace}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/2h-mace.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.2h-mace.name}}$
-  specialization:
+  skillName: ${{openSystem.content.weaponSkill.2h-maces.name}}$
+  specialization: ${{openSystem.content.weaponSkill.2h-maces.specialization.mace}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -132,7 +132,7 @@ system:
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.2h-mace
+      id: i.skill.2h-maces-mace
       lang: ${{openSystem.lang}}$
       priority: ${{openSystem.prio}}$
 ---

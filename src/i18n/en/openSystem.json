@@ -2584,8 +2584,11 @@
           "maul": "Maul"
         }
       },
-      "2h-mace": {
-        "name": "2H Mace"
+      "2h-maces": {
+        "name": "2H Maces",
+        "specialization": {
+          "mace": "Mace"
+        }
       },
       "2h-spears": {
         "name": "2H Spears",
