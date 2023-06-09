@@ -196,17 +196,16 @@ export class RqidBatchEditor extends FormApplication<
       }
       const flags = flattenObject({
         flags: { rqg: { documentRqidFlags: update.documentRqidFlags } },
-      }); // TODO !!!
+      });
       if (typeof update.sceneId !== "undefined") {
         if (typeof scenes[update.sceneId] === "undefined") {
-          const scene = getGame().scenes?.get(update.sceneId); // TODO Maybe Undefined
+          const scene = getGame().scenes?.get(update.sceneId);
           scenes[update.sceneId] = scene?.toObject();
         }
         const tokenOffset = scenes[update.sceneId].tokens.findIndex(
           (t: TokenDocument) => t._id === update.tokenId
         );
         if (tokenOffset > -1) {
-          // TODO Added "contents" ***
           const itemOffset = scenes[update.sceneId].tokens[tokenOffset].actorData.items.findIndex(
             (i: any) => i._id === update.itemId
           );
