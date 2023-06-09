@@ -5,6 +5,7 @@ import { RqidLink } from "../../../data-model/shared/rqidLink";
 import type { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { UsageType } from "../../../data-model/item-data/weaponData";
 
+const notFoundString = "NOT-FOUND";
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
   itemData: ItemData,
@@ -55,7 +56,8 @@ async function getSkillRqidLink(
   if (
     itemData.type !== ItemTypeEnum.Weapon ||
     // @ts-expect-error foundry.utils.isEmpty & skillOrigin
-    foundry.utils.isEmpty(itemData.system.usage[usageType].skillOrigin)
+    (foundry.utils.isEmpty(itemData.system.usage[usageType].skillOrigin) &&
+      itemData.system.usage[usageType].skillRqidLink?.name !== notFoundString)
   ) {
     return;
   }
@@ -80,7 +82,14 @@ async function getSkillRqidLink(
     ui.notifications?.warn(msg);
     console.warn("RQG |", msg);
   }
-  return currentRqid ? new RqidLink(currentRqid, currentSkillItem.name ?? "") : undefined;
+  return currentRqid
+    ? new RqidLink(currentRqid, currentSkillItem.name ?? "")
+    : new RqidLink(
+        `i.skill.[${(itemData.system as any).usage[usageType].skillOrigin}] / [${
+          (itemData.system as any).usage[usageType].skillId
+        }]`,
+        notFoundString
+      );
 }
 
 async function findSkillItem(
@@ -91,15 +100,30 @@ async function findSkillItem(
   if (itemData.type !== ItemTypeEnum.Weapon) {
     return;
   }
-  const skillOriginItem = await fromUuid(
-    (itemData.system.usage[usageType] as any).skillOrigin ?? ""
-  );
+
+  let skillOriginUuid = (itemData.system.usage[usageType] as any).skillOrigin;
+  let skillEmbeddedItemId = (itemData.system.usage[usageType] as any).skillId;
+
+  if (
+    !skillOriginUuid &&
+    (itemData.system.usage[usageType] as any)?.skillRqidLink?.name === notFoundString
+  ) {
+    const notFoundMatch = (itemData.system.usage[usageType] as any)?.skillRqidLink?.rqid.match(
+      /^i\.skill\.\[(?<skillOrigin>.*)] \/ \[(?<itemId>.*)]$/
+    );
+
+    if (notFoundMatch) {
+      const { skillOrigin, itemId } = notFoundMatch.groups;
+      skillOriginUuid = skillOrigin;
+      skillEmbeddedItemId = itemId;
+    }
+  }
+
+  const skillOriginItem = await fromUuid(skillOriginUuid ?? "");
   if (skillOriginItem) {
     return skillOriginItem;
   }
-  const embeddedSkillData = owningActorData?.items.find(
-    (i: any) => i._id === (itemData.system.usage[usageType] as any).skillId
-  );
+  const embeddedSkillData = owningActorData?.items.find((i: any) => i._id === skillEmbeddedItemId);
 
   if (embeddedSkillData && owningActorData) {
     return owningActorData.items.find((i) => i._id === embeddedSkillData._id);
