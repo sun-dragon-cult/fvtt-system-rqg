@@ -164,6 +164,9 @@ export class RqidBatchEditor extends FormApplication<
 
   async _updateObject(event: Event, formData: any): Promise<void> {
     if (event instanceof SubmitEvent) {
+      const clickedButton = event.submitter as HTMLButtonElement;
+      clickedButton.disabled = true;
+
       await RqidBatchEditor.persistChanges(
         this.object.updateList,
         this.object.itemNamesWithoutRqid
