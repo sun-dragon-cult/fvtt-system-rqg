@@ -406,6 +406,15 @@
       }
     },
     "Dialog": {
+      "BatchRqidEditor": {
+        "Title": "Batch set System ID (Rqid)",
+        "ExistingRqidsHeader": "Existing Rqids",
+        "NewRqid": "- Custom System ID -",
+        "SummaryDefault": "The RQG System uses a System ID (Rqid). This allows the system to identify FoundryVTT documents like skills and runes. This page allows you to set the id for existing {type} documents that do not yet have a Rqid. The Rqid should use the English translation of the name to support localization across all languages.",
+        "SummarySkill": "The RQG System uses a System ID (Rqid). This allows the system to identify FoundryVTT documents for example skills. This page will allow you to set the id for existing skill documents that do not yet have a Rqid. The Rqid should use the English translation of the name to support localization across all languages.<br><br><b>Currently only the weapon skills and 'Dodge', 'Jump', 'Move Quietly' & 'Spirit Combat' need a Rqid so the others can be left blank.</b>",
+        "SummaryRuneMagic": "The RQG System uses a System ID (Rqid). This allows the system to identify FoundryVTT documents for example skills. This page will allow you to set the id for existing rune magic documents that do not yet have a Rqid. The Rqid should use the English translation of the name to support localization across all languages.<br><br><b>Currently only the common rune magic spells need a Rqid (Command Cult Spirit, Divination, Sanctify, Summon Cult Spirit, Dismiss Magic, Extension, Multispell, Find Enemy, Heal Wound, Soul Sight, Spirit Block, and Warding)</b>",
+        "ButtonUpdate": "Update"
+      },
       "Common": {
         "yes": "yes",
         "no": "no",
@@ -1076,7 +1085,7 @@
       }
     },
     "RQGSystem": {
-      "rqid": "RuneQuest System ID (rqid)",
+      "rqid": "RuneQuest System ID (Rqid)",
       "GenerateDefaultRqid": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
       "rqidPriority": "Rqid Priority",
       "rqidLang": "Language",
@@ -1098,7 +1107,9 @@
       }
     },
     "Notification": {
-      "Error": {},
+      "Error": {
+        "GMOnlyOperation": "This operation is only allowed for GMs"
+      },
       "Warn": {
         "NameGenRqidNotSupported": "Name Generation: The RQG System ID \"{rqid}\" is not supported for name generation.",
         "NameGenRqidNotFound": "Name Generation: The RQG System ID \"{rqid}\" was not found as a Roll Table or Journal Entry or the Journal Entry was not formatted properly as a Name Base.",

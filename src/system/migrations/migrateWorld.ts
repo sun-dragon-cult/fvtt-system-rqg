@@ -1,4 +1,4 @@
-import { getGame, localize } from "../util";
+import { getGame, getGameUser, localize } from "../util";
 import { migrateActorDummy } from "./migrations-actor/migrateActorDummy";
 import { ActorMigration, applyMigrations, ItemMigration } from "./applyMigrations";
 import { changeRuneExperienceFieldName } from "./migrations-item/changeRuneExperienceFieldName";
@@ -14,15 +14,27 @@ import { renameLearnedToGainedChance } from "./migrations-item/renameLearnedToGa
 import { migrateWorldDialog } from "../../applications/migrateWorldDialog";
 import { migrateSubCults } from "./migrations-item/migrateSubCults";
 import { migrateWeaponSkillLinks } from "./migrations-item/migrateWeaponSkillLinks";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchEditor";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
  */
 export async function migrateWorld(): Promise<void> {
+  if (!getGameUser().isGM) {
+    ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
+    return;
+  }
   // @ts-expect-error v10
   const systemVersion = getGame().system.version;
   const worldVersion = getGame().settings.get(systemId, "worldMigrationVersion");
   if (systemVersion !== worldVersion) {
+    // Open a dialog to set missing Rqids on selected items
+    await RqidBatchEditor.factory(
+      ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+      ItemTypeEnum.RuneMagic // common spells need Rqid for visualisation in spell list
+    );
+
     await migrateWorldDialog(systemVersion);
     ui.notifications?.info(
       localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
@@ -54,6 +66,10 @@ export async function applyDefaultWorldMigrations(
   itemMigrations: ItemMigration[] | undefined = undefined,
   actorMigrations: ActorMigration[] | undefined = undefined
 ): Promise<void> {
+  if (!getGameUser().isGM) {
+    ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
+    return;
+  }
   const worldItemMigrations: ItemMigration[] = itemMigrations ?? [
     changeRuneExperienceFieldName,
     renameRuneMagicDurationSpecial,

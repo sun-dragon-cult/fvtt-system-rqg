@@ -21,6 +21,8 @@ import { TextEditorHooks } from "./foundryUi/textEditorHooks";
 import { RqgJournalEntry } from "./journals/rqgJournalEntry";
 import { getTokenStatusEffects } from "./system/tokenStatusEffects";
 import { RqgSettings } from "./foundryUi/RqgSettings";
+import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqidBatchEditor";
+import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
 
 Hooks.once("init", async () => {
   console.log(
@@ -88,10 +90,23 @@ Hooks.once("init", async () => {
   registerHandlebarsHelpers();
   registerRqgSystemSettings();
 
+  // Define the system.api
   (getGame().system as any).api = {
     // installModules: installModules,
     migrate: applyDefaultWorldMigrations,
     rqid: Rqid,
+    /**
+     * Show an application that lets you set rqid for items.
+     */
+    batchSetRqids: async (...itemTypes: string[]): Promise<void> => {
+      const itemTypeEnums = itemTypes.length
+        ? itemTypes.map((it) => it as ItemTypeEnum)
+        : [
+            ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+            ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+          ];
+      await RqidBatchEditor.factory(...itemTypeEnums);
+    },
     names: nameGeneration,
   };
 });
