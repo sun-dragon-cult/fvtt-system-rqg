@@ -30,7 +30,8 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
   }
 
   getData(): SkillSheetData & ItemSheetData {
-    const system = duplicate(this.document.system);
+    // @ts-expect-error _source Read from the original data unaffected by any AEs
+    const system = duplicate(this.document._source.system);
 
     if (!system.skillName) {
       system.skillName = system.name;

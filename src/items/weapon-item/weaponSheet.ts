@@ -40,7 +40,8 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   }
 
   async getData(): Promise<WeaponSheetData & EffectsItemSheetData> {
-    const system = duplicate(this.document.system);
+    // @ts-expect-error _source Read from the original data unaffected by any AEs
+    const system = duplicate(this.document._source.system);
 
     if (isNaN(Number(system.quantity))) {
       system.quantity = 1;

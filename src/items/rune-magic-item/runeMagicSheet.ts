@@ -33,7 +33,8 @@ export class RuneMagicSheet extends RqgItemSheet<
   }
 
   getData(): RuneMagicSheetData & EffectsItemSheetData {
-    const system = duplicate(this.document.system);
+    // @ts-expect-error _source Read from the original data unaffected by any AEs
+    const system = duplicate(this.document._source.system);
 
     system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
 
