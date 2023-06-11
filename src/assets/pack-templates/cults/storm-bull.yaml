@@ -1,24 +1,24 @@
 # storm-bull
-name: ${{openSystem.content.cult.stormBull.name}}$
+name: ${{rqgCompendiumContent.cult.stormBull.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.stormBull.name}}$
+  deity: ${{rqgCompendiumContent.cult.stormBull.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.stormBull.name}}$
-      tagline: ${{openSystem.content.cult.stormBull.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.stormBull.name}}$
+      tagline: ${{rqgCompendiumContent.cult.stormBull.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.airElement.name}}$
-    - ${{openSystem.content.runeDescription.beastForm.name}}$
-    - ${{openSystem.content.runeDescription.deathPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.airElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.beastForm.name}}$
+    - ${{rqgCompendiumContent.runeDescription.deathPower.name}}$
   descriptionRqidLink:
     rqid: je..storm-bull
-    name: ${{openSystem.content.cult.stormBull.name}}$
+    name: ${{rqgCompendiumContent.cult.stormBull.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -48,5 +48,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.storm-bull
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

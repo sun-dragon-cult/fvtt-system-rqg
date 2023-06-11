@@ -1,135 +1,135 @@
-name: ${{openSystem.content.rune.air}}$ (${{openSystem.content.runeType.element}}$)
+name: ${{rqgCompendiumContent.rune.air}}$ (${{rqgCompendiumContent.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/air.svg
 system:
-  rune: ${{openSystem.content.rune.air}}$
+  rune: ${{rqgCompendiumContent.rune.air}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.element}}$
+  runeType: ${{rqgCompendiumContent.runeType.element}}$
   minorRunes:
-    - ${{openSystem.content.rune.darkness}}$ (${{openSystem.content.runeType.element}}$)
-    - ${{openSystem.content.rune.water}}$ (${{openSystem.content.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.darkness}}$ (${{rqgCompendiumContent.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.water}}$ (${{rqgCompendiumContent.runeType.element}}$)
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..air-element
-    name: ${{openSystem.content.rune.air}}$
+    name: ${{rqgCompendiumContent.rune.air}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.air-element
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.darkness}}$ (${{openSystem.content.runeType.element}}$)
+name: ${{rqgCompendiumContent.rune.darkness}}$ (${{rqgCompendiumContent.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/darkness.svg
 system:
-  rune: ${{openSystem.content.rune.darkness}}$
+  rune: ${{rqgCompendiumContent.rune.darkness}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.element}}$
+  runeType: ${{rqgCompendiumContent.runeType.element}}$
   minorRunes:
-    - ${{openSystem.content.rune.earth}}$ (${{openSystem.content.runeType.element}}$)
-    - ${{openSystem.content.rune.air}}$ (${{openSystem.content.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.earth}}$ (${{rqgCompendiumContent.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.air}}$ (${{rqgCompendiumContent.runeType.element}}$)
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..darkness-element
-    name: ${{openSystem.content.rune.darkness}}$
+    name: ${{rqgCompendiumContent.rune.darkness}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.darkness-element
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.earth}}$ (${{openSystem.content.runeType.element}}$)
+name: ${{rqgCompendiumContent.rune.earth}}$ (${{rqgCompendiumContent.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/earth.svg
 system:
-  rune: ${{openSystem.content.rune.earth}}$
+  rune: ${{rqgCompendiumContent.rune.earth}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.element}}$
+  runeType: ${{rqgCompendiumContent.runeType.element}}$
   minorRunes:
-    - ${{openSystem.content.rune.air}}$ (${{openSystem.content.runeType.element}}$)
-    - ${{openSystem.content.rune.darkness}}$ (${{openSystem.content.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.air}}$ (${{rqgCompendiumContent.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.darkness}}$ (${{rqgCompendiumContent.runeType.element}}$)
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..earth-element
-    name: ${{openSystem.content.rune.earth}}$
+    name: ${{rqgCompendiumContent.rune.earth}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.earth-element
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.fireSky}}$ (${{openSystem.content.runeType.element}}$)
+name: ${{rqgCompendiumContent.rune.fireSky}}$ (${{rqgCompendiumContent.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/fire_sky.svg
 system:
-  rune: ${{openSystem.content.rune.fireSky}}$
+  rune: ${{rqgCompendiumContent.rune.fireSky}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.element}}$
+  runeType: ${{rqgCompendiumContent.runeType.element}}$
   minorRunes:
-    - ${{openSystem.content.rune.water}}$ (${{openSystem.content.runeType.element}}$)
-    - ${{openSystem.content.rune.earth}}$ (${{openSystem.content.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.water}}$ (${{rqgCompendiumContent.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.earth}}$ (${{rqgCompendiumContent.runeType.element}}$)
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..fire-sky-element
-    name: ${{openSystem.content.rune.fireSky}}$
+    name: ${{rqgCompendiumContent.rune.fireSky}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.fire-sky-element
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.moon}}$ (${{openSystem.content.runeType.element}}$)
+name: ${{rqgCompendiumContent.rune.moon}}$ (${{rqgCompendiumContent.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/moon_full.svg
 system:
-  rune: ${{openSystem.content.rune.moon}}$
+  rune: ${{rqgCompendiumContent.rune.moon}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.element}}$
+  runeType: ${{rqgCompendiumContent.runeType.element}}$
   minorRunes:
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..moon-element
-    name: ${{openSystem.content.rune.moon}}$
+    name: ${{rqgCompendiumContent.rune.moon}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.moon-element
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.water}}$ (${{openSystem.content.runeType.element}}$)
+name: ${{rqgCompendiumContent.rune.water}}$ (${{rqgCompendiumContent.runeType.element}}$)
 type: rune
 img: systems/rqg/assets/images/runes/water.svg
 system:
-  rune: ${{openSystem.content.rune.water}}$
+  rune: ${{rqgCompendiumContent.rune.water}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.element}}$
+  runeType: ${{rqgCompendiumContent.runeType.element}}$
   minorRunes:
-    - ${{openSystem.content.rune.earth}}$ (${{openSystem.content.runeType.element}}$)
-    - ${{openSystem.content.rune.air}}$ (${{openSystem.content.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.earth}}$ (${{rqgCompendiumContent.runeType.element}}$)
+    - ${{rqgCompendiumContent.rune.air}}$ (${{rqgCompendiumContent.runeType.element}}$)
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..water-element
-    name: ${{openSystem.content.rune.water}}$
+    name: ${{rqgCompendiumContent.rune.water}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.water-element
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

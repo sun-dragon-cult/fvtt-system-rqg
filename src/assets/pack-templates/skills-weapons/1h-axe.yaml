@@ -1,11 +1,11 @@
 # 1h-axe-battle-axe
-name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$)
+name: ${{rqgCompendiumContent.weaponSkill.1h-axes.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-axes.specialization.battleAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-axe.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-axes.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-axes.specialization.battleAxe}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.1h-axes.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.1h-axes.specialization.battleAxe}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -13,22 +13,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.1h-axes-battle-axe
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # 1h-axe-small-axe
-name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.smallAxe}}$)
+name: ${{rqgCompendiumContent.weaponSkill.1h-axes.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-axes.specialization.smallAxe}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-axe.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-axes.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-axes.specialization.smallAxe}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.1h-axes.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.1h-axes.specialization.smallAxe}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -36,10 +36,10 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.1h-axes-small-axe
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

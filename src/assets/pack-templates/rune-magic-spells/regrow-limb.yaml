@@ -1,5 +1,5 @@
 # regrowLimb
-name: ${{openSystem.content.runeMagic.regrowLimb.name}}$
+name: ${{rqgCompendiumContent.runeMagic.regrowLimb.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -15,10 +15,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..regrow-limb
-    name: ${{openSystem.content.runeMagic.regrowLimb.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.regrowLimb.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.regrow-limb
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

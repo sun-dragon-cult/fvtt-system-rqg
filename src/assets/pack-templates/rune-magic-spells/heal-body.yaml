@@ -1,5 +1,5 @@
 # heal-body
-name: ${{openSystem.content.runeMagic.healBody.name}}$
+name: ${{rqgCompendiumContent.runeMagic.healBody.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -15,10 +15,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..heal-body
-    name: ${{openSystem.content.runeMagic.healBody.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.healBody.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.heal-body
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -19,5 +19,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: je..tribe-colymar
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

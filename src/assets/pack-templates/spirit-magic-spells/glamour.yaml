@@ -1,5 +1,5 @@
 # glamour
-name: ${{openSystem.content.spiritMagic.glamour.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.glamour.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..glamour
-    name: ${{openSystem.content.spiritMagic.glamour.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.glamour.name}}$
 flags:
   rqg:
     documentRqidFlags:

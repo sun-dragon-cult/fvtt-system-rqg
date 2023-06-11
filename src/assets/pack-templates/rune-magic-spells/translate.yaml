@@ -1,11 +1,11 @@
 # translate
-name: ${{openSystem.content.runeMagic.translate.name}}$
+name: ${{rqgCompendiumContent.runeMagic.translate.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
   rqid: rune-magic-translate
-  rqidPriority: ${{openSystem.prio}}$
-  rqidLang: ${{openSystem.lang}}$
+  rqidPriority: ${{rqgCompendiumContent.prio}}$
+  rqidLang: ${{rqgCompendiumContent.lang}}$
   runes:
     - Truth (power)
   points: 1
@@ -16,10 +16,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..translate
-    name: ${{openSystem.content.runeMagic.translate.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.translate.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.translate
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

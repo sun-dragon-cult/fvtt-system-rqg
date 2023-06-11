@@ -1,5 +1,5 @@
 # fear
-name: ${{openSystem.content.runeMagic.fear.name}}$
+name: ${{rqgCompendiumContent.runeMagic.fear.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..fear
-    name: ${{openSystem.content.runeMagic.fear.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.fear.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.fear
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.walktapus.rightLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.rightLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -8,17 +8,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.abdomen}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-right-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.leftLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.leftLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -28,17 +28,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.abdomen}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-left-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.abdomen}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -55,10 +55,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-abdomen
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.chest}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -75,10 +75,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-chest
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.rightArm}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.rightArm}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -88,17 +88,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-right-arm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.leftArm}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.leftArm}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -108,17 +108,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-left-arm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.tentacle1}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.tentacle1}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -128,17 +128,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-tentacle-1
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.tentacle2}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.tentacle2}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -148,17 +148,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-tentacle-2
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.tentacle3}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.tentacle3}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -168,17 +168,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-tentacle-3
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.tentacle4}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.tentacle4}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -188,17 +188,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-tentacle-4
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.tentacle5}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.tentacle5}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -208,17 +208,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-tentacle-5
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.tentacle6}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.tentacle6}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -228,17 +228,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-tentacle-6
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.tentacle7}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.tentacle7}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -248,17 +248,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-tentacle-7
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.tentacle8}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.tentacle8}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -268,17 +268,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.walktapus.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-tentacle-8
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.walktapus.head}}$
+name: ${{rqgCompendiumContent.hitLocation.walktapus.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -295,5 +295,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.walktapi-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

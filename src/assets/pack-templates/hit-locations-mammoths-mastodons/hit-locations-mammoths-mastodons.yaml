@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.mammothMastodon.rightHindLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.mammothMastodon.rightHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -8,17 +8,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.mammothMastodon.hindquarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.mammothMastodon.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.mammoths-mastodons-right-hind-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.mammothMastodon.leftHindLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.mammothMastodon.leftHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -28,17 +28,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.mammothMastodon.hindquarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.mammothMastodon.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.mammoths-mastodons-left-hind-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.mammothMastodon.hindquarter}}$
+name: ${{rqgCompendiumContent.hitLocation.mammothMastodon.hindquarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -55,10 +55,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.mammoths-mastodons-hindquarter
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.mammothMastodon.forequarter}}$
+name: ${{rqgCompendiumContent.hitLocation.mammothMastodon.forequarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -75,10 +75,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.mammoths-mastodons-forequarter
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.mammothMastodon.rightForeleg}}$
+name: ${{rqgCompendiumContent.hitLocation.mammothMastodon.rightForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -88,17 +88,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.mammothMastodon.forequarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.mammothMastodon.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.mammoths-mastodons-right-foreleg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.mammothMastodon.leftForeleg}}$
+name: ${{rqgCompendiumContent.hitLocation.mammothMastodon.leftForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -108,17 +108,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.mammothMastodon.forequarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.mammothMastodon.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.mammoths-mastodons-left-foreleg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.mammothMastodon.trunk}}$
+name: ${{rqgCompendiumContent.hitLocation.mammothMastodon.trunk}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -128,17 +128,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.mammothMastodon.head}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.mammothMastodon.head}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.mammoths-mastodons-trunk
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.mammothMastodon.head}}$
+name: ${{rqgCompendiumContent.hitLocation.mammothMastodon.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -155,5 +155,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.mammoths-mastodons-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

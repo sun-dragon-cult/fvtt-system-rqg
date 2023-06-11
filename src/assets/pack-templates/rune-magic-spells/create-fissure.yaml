@@ -1,5 +1,5 @@
 # create-fissure
-name: ${{openSystem.content.runeMagic.createFissure.name}}$
+name: ${{rqgCompendiumContent.runeMagic.createFissure.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..create-fissure
-    name: ${{openSystem.content.runeMagic.createFissure.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.createFissure.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.create-fissure
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

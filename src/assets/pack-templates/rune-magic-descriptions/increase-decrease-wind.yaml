@@ -1,7 +1,7 @@
 # increase-decrease-wind
-name: ${{openSystem.content.runeMagic.increaseDecreaseWind.name}}$
+name: ${{rqgCompendiumContent.runeMagic.increaseDecreaseWind.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.increaseDecreaseWind.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.increaseDecreaseWind.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/air.svg" height="70">
-        ${{openSystem.content.runeMagic.increaseDecreaseWind.description}}$
+        ${{rqgCompendiumContent.runeMagic.increaseDecreaseWind.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..increase-decrease-wind
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

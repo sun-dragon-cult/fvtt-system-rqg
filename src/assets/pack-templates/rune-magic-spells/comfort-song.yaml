@@ -1,5 +1,5 @@
 # comfort-song
-name: ${{openSystem.content.runeMagic.comfortSong.name}}$
+name: ${{rqgCompendiumContent.runeMagic.comfortSong.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..comfort-song
-    name: ${{openSystem.content.runeMagic.comfortSong.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.comfortSong.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.comfort-song
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

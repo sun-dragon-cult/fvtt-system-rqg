@@ -1,14 +1,14 @@
-name: ${{openSystem.content.equipment.gear.clothesDressEsrolian}}$
+name: ${{rqgCompendiumContent.equipment.gear.clothesDressEsrolian}}$
 type: gear
 img: systems/rqg/assets/images/gear/dress.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.esrolian-dress
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
-  description: ${{openSystem.content.equipment.gear.clothesDressEsrolianDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.clothesDressEsrolianDescription}}$
   gmNotes:
   quantity: 1
   price:

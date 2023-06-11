@@ -1,5 +1,5 @@
 # bladesharp
-name: ${{openSystem.content.spiritMagic.bladesharp.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.bladesharp.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..bladesharp
-    name: ${{openSystem.content.spiritMagic.bladesharp.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.bladesharp.name}}$
 flags:
   rqg:
     documentRqidFlags:

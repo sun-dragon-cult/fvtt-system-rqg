@@ -1,5 +1,5 @@
 # detect-substance
-name: ${{openSystem.content.spiritMagic.detectSubstance.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.detectSubstance.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: active
   descriptionRqidLink:
     rqid: je..detect-substance
-    name: ${{openSystem.content.spiritMagic.detectSubstance.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.detectSubstance.name}}$
 flags:
   rqg:
     documentRqidFlags:

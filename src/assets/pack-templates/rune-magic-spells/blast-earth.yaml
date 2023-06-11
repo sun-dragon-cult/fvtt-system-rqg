@@ -1,5 +1,5 @@
 # blast-earth
-name: ${{openSystem.content.runeMagic.blastEarth.name}}$
+name: ${{rqgCompendiumContent.runeMagic.blastEarth.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..blast-earth
-    name: ${{openSystem.content.runeMagic.blastEarth.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.blastEarth.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.blast-earth
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,7 +1,7 @@
 # yelmalio
-name: ${{openSystem.content.cult.yelmalio.name}}$
+name: ${{rqgCompendiumContent.cult.yelmalio.name}}$
 pages:
-  - name: ${{openSystem.content.cult.yelmalio.name}}$
+  - name: ${{rqgCompendiumContent.cult.yelmalio.name}}$
     type: text
     title:
       show: false
@@ -9,16 +9,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        <h2>${{openSystem.content.cult.yelmalio.name}}$, ${{openSystem.content.cult.yelmalio.tagline}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        <h2>${{rqgCompendiumContent.cult.yelmalio.name}}$, ${{rqgCompendiumContent.cult.yelmalio.tagline}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/truth.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/light.svg" height="70">
-        ${{openSystem.content.cult.yelmalio.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.yelmalio.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..yelmalio
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

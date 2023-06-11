@@ -1,7 +1,7 @@
 # melee weapon
-name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
     type: text
     title:
       show: false
@@ -9,24 +9,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/weapons/1h-sword.svg" height="70">
-        ${{openSystem.content.skill.meleeWeapon.description}}$
+        ${{rqgCompendiumContent.skill.meleeWeapon.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.weapon.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.weapon.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..melee-weapon
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # missile weapon
-name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
     type: text
     title:
       show: false
@@ -34,24 +34,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/weapons/bowman.svg" height="70">
-        ${{openSystem.content.skill.missileWeapon.description}}$
+        ${{rqgCompendiumContent.skill.missileWeapon.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.weapon.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.weapon.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..missile-weapon
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # shield
-name: ${{openSystem.content.skill.shield.skillName}}$
+name: ${{rqgCompendiumContent.skill.shield.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.shield.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.shield.skillName}}$
     type: text
     title:
       show: false
@@ -59,16 +59,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/weapons/medium-shield.svg" height="70">
-        ${{openSystem.content.skill.shield.description}}$
+        ${{rqgCompendiumContent.skill.shield.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.weapon.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.weapon.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..shield-weapon
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

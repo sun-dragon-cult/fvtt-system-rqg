@@ -1,25 +1,25 @@
 # ernalda
-name: ${{openSystem.content.cult.ernalda.name}}$
+name: ${{rqgCompendiumContent.cult.ernalda.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.ernalda.name}}$
+  deity: ${{rqgCompendiumContent.cult.ernalda.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.ernalda.name}}$
-      tagline: ${{openSystem.content.cult.ernalda.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.ernalda.name}}$
+      tagline: ${{rqgCompendiumContent.cult.ernalda.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.fertilityPower.name}}$
-    - ${{openSystem.content.runeDescription.earthElement.name}}$
-    - ${{openSystem.content.runeDescription.earthElement.name}}$
-    - ${{openSystem.content.runeDescription.harmonyPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.fertilityPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.earthElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.earthElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.harmonyPower.name}}$
   descriptionRqidLink:
     rqid: je..ernalda
-    name: ${{openSystem.content.cult.ernalda.name}}$
+    name: ${{rqgCompendiumContent.cult.ernalda.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -49,5 +49,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.ernalda
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

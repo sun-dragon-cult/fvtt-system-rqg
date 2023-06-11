@@ -1,7 +1,7 @@
 # silence
-name: ${{openSystem.content.spiritMagic.silence.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.silence.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.silence.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.silence.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.silence.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.silence.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..silence
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

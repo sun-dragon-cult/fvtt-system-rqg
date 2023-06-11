@@ -1,7 +1,7 @@
 # magasta
-name: ${{openSystem.content.cult.magasta.name}}$
+name: ${{rqgCompendiumContent.cult.magasta.name}}$
 pages:
-  - name: ${{openSystem.content.cult.magasta.name}}$
+  - name: ${{rqgCompendiumContent.cult.magasta.name}}$
     type: text
     title:
       show: false
@@ -9,18 +9,18 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        <h2>${{openSystem.content.cult.magasta.name}}$, ${{openSystem.content.cult.magasta.tagline}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        <h2>${{rqgCompendiumContent.cult.magasta.name}}$, ${{rqgCompendiumContent.cult.magasta.tagline}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/water.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/water.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
-        ${{openSystem.content.cult.magasta.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.magasta.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..magasta
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

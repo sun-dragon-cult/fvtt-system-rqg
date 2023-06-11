@@ -1,7 +1,7 @@
 # babeester-gor
-name: ${{openSystem.content.cult.babeesterGor.name}}$
+name: ${{rqgCompendiumContent.cult.babeesterGor.name}}$
 pages:
-  - name: ${{openSystem.content.cult.babeesterGor.name}}$
+  - name: ${{rqgCompendiumContent.cult.babeesterGor.name}}$
     type: text
     title:
       show: false
@@ -9,16 +9,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        <h2>${{openSystem.content.cult.babeesterGor.name}}$, ${{openSystem.content.cult.babeesterGor.tagline}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        <h2>${{rqgCompendiumContent.cult.babeesterGor.name}}$, ${{rqgCompendiumContent.cult.babeesterGor.tagline}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/earth.svg" height="70">
-        ${{openSystem.content.cult.babeesterGor.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.babeesterGor.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..babeester-gor
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,5 +1,5 @@
 # mobility
-name: ${{openSystem.content.spiritMagic.mobility.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.mobility.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..mobility
-    name: ${{openSystem.content.spiritMagic.mobility.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.mobility.name}}$
 flags:
   rqg:
     documentRqidFlags:

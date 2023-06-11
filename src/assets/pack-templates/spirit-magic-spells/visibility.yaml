@@ -1,5 +1,5 @@
 # visibility
-name: ${{openSystem.content.spiritMagic.visibility.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.visibility.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..visibility
-    name: ${{openSystem.content.spiritMagic.visibility.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.visibility.name}}$
 flags:
   rqg:
     documentRqidFlags:

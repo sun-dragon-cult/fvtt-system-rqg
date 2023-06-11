@@ -1,7 +1,7 @@
 # glamour
-name: ${{openSystem.content.spiritMagic.glamour.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.glamour.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.glamour.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.glamour.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.glamour.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.glamour.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..glamour
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

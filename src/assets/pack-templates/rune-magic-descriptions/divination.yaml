@@ -1,7 +1,7 @@
 # divination
-name: ${{openSystem.content.runeMagic.divination.name}}$
+name: ${{rqgCompendiumContent.runeMagic.divination.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.divination.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.divination.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/magic.svg" height="70">
-        ${{openSystem.content.runeMagic.divination.description}}$
+        ${{rqgCompendiumContent.runeMagic.divination.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..divination
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

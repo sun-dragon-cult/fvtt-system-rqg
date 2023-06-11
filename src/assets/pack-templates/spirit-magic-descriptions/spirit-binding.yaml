@@ -1,7 +1,7 @@
 # spirit-binding
-name: ${{openSystem.content.spiritMagic.spiritBinding.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.spiritBinding.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.spiritBinding.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.spiritBinding.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.spiritBinding.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.spiritBinding.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..spirit-binding
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,4 +1,4 @@
-name: ${{openSystem.content.bestiary.humanSartarite.name}}$
+name: ${{rqgCompendiumContent.bestiary.humanSartarite.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -26,7 +26,7 @@ system:
       value: 12
       formula: 3d6
   background:
-    species: ${{openSystem.content.bestiary.humanSartarite.species}}$
+    species: ${{rqgCompendiumContent.bestiary.humanSartarite.species}}$
     speciesRqidLink:
       rqid: je..species-description-human
       name: Human
@@ -48,7 +48,7 @@ system:
     ransom:
     ransomDetails: ""
     biography:
-  allies: ${{openSystem.content.bestiary.humanSartarite.notes}}$
+  allies: ${{rqgCompendiumContent.bestiary.humanSartarite.notes}}$
   attributes:
     magicPoints:
       value: 15
@@ -67,7 +67,7 @@ system:
     isCreature: false
     health: healthy
 token:
-  name: ${{openSystem.content.bestiary.humanSartarite.name}}$
+  name: ${{rqgCompendiumContent.bestiary.humanSartarite.name}}$
   img: icons/svg/mystery-man.svg
   displayName: 0
   actorLink: true
@@ -218,12 +218,12 @@ items:
 - "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.fist	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.grapple	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.kick	[ equippedStatus: 	equipped	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{openSystem.content.passionSubject.clan}}$), subject: ${{openSystem.content.passionSubject.clan}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{openSystem.content.passionSubject.tribe}}$), subject: ${{openSystem.content.passionSubject.tribe}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.love-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Love}}$ (${{openSystem.content.passionSubject.family}}$), subject: ${{openSystem.content.passionSubject.family}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{rqgCompendiumContent.passionSubject.clan}}$), subject: ${{rqgCompendiumContent.passionSubject.clan}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{rqgCompendiumContent.passionSubject.tribe}}$), subject: ${{rqgCompendiumContent.passionSubject.tribe}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.love-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Love}}$ (${{rqgCompendiumContent.passionSubject.family}}$), subject: ${{rqgCompendiumContent.passionSubject.family}}$	]}}|"
 flags:
   rqg:
     documentRqidFlags:
       id: a.character.species-template-human-base
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

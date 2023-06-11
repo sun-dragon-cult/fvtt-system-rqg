@@ -1,5 +1,5 @@
 # disruption
-name: ${{openSystem.content.spiritMagic.disruption.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.disruption.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration:
   descriptionRqidLink:
     rqid: je..disruption
-    name: ${{openSystem.content.spiritMagic.disruption.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.disruption.name}}$
 flags:
   rqg:
     documentRqidFlags:

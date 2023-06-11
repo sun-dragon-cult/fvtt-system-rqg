@@ -1,5 +1,5 @@
 # detect-truth
-name: ${{openSystem.content.runeMagic.detectTruth.name}}$
+name: ${{rqgCompendiumContent.runeMagic.detectTruth.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..detect-truth
-    name: ${{openSystem.content.runeMagic.detectTruth.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.detectTruth.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.detect-truth
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

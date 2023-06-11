@@ -1,5 +1,5 @@
 # protection
-name: ${{openSystem.content.spiritMagic.protection.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.protection.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..protection
-    name: ${{openSystem.content.spiritMagic.protection.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.protection.name}}$
 flags:
   rqg:
     documentRqidFlags:

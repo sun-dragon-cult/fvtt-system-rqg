@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.tusker.name}}$
+name: ${{rqgCompendiumContent.bestiary.tusker.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,7 +27,7 @@ system:
       value:
       formula:
   background:
-    species: ${{openSystem.content.bestiary.tusker.species}}$
+    species: ${{rqgCompendiumContent.bestiary.tusker.species}}$
     occupation: ''
     homeland: ''
     cultureJournalRqidLinks: []
@@ -45,7 +45,7 @@ system:
     ransom:
     ransomDetails: ''
     biography: ''
-  allies: ${{openSystem.content.bestiary.tusker.notes}}$
+  allies: ${{rqgCompendiumContent.bestiary.tusker.notes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.tusker.name}}$
+  name: ${{rqgCompendiumContent.bestiary.tusker.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -142,5 +142,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: a.character.tusker
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

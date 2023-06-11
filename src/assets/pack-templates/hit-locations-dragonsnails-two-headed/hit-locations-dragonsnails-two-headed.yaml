@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.dragonsnailTwoHeaded.shell}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonsnailTwoHeaded.shell}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -15,10 +15,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragonsnails-two-headed-tail
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonsnailTwoHeaded.forebody}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonsnailTwoHeaded.forebody}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -35,10 +35,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragonsnails-two-headed-forebody
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonsnailTwoHeaded.rightHead}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonsnailTwoHeaded.rightHead}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -55,10 +55,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragonsnails-two-headed-right-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonsnailTwoHeaded.leftHead}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonsnailTwoHeaded.leftHead}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -75,5 +75,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragonsnails-two-headed-left-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

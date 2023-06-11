@@ -1,7 +1,7 @@
 # yelm
-name: ${{openSystem.content.cult.yelm.name}}$
+name: ${{rqgCompendiumContent.cult.yelm.name}}$
 pages:
-  - name: ${{openSystem.content.cult.yelm.name}}$
+  - name: ${{rqgCompendiumContent.cult.yelm.name}}$
     type: text
     title:
       show: false
@@ -9,18 +9,18 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        ${{openSystem.content.cult.yelm.tagline}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        ${{rqgCompendiumContent.cult.yelm.tagline}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fire_sky.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fire_sky.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/harmony.svg" height="70">
-        ${{openSystem.content.cult.yelm.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.yelm.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..yelm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

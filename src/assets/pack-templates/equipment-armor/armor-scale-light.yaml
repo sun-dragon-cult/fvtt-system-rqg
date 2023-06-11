@@ -1,18 +1,18 @@
-name: ${{openSystem.content.equipment.armor.sleeves}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
+name: ${{rqgCompendiumContent.equipment.armor.sleeves}}$ (${{uiContent.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/vambraces.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.armor.sleeves-light-scale
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   hitLocations:
-    - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
-    - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
-  armorType: ${{openSystem.content.equipment.armor.sleeves}}$
-  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.leftArm}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.rightArm}}$
+  armorType: ${{rqgCompendiumContent.equipment.armor.sleeves}}$
+  material: ${{uiContent.RQG.Item.Armor.ArmorMaterial.LightScale}}$
   absorbs: 4
   encumbrance: 2
   price:
@@ -23,22 +23,22 @@ system:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description: ${{openSystem.content.equipment.armor.description.lightScale}}$
+  description: ${{rqgCompendiumContent.equipment.armor.description.lightScale}}$
 ---
-name: ${{openSystem.content.equipment.armor.cuirass}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
+name: ${{rqgCompendiumContent.equipment.armor.cuirass}}$ (${{uiContent.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/cuirass.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.armor.cuirass-light-scale
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   hitLocations:
-    - ${{openSystem.content.hitLocation.humanoid.chest}}$
-  armorType: ${{openSystem.content.equipment.armor.cuirass}}$
-  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
+  armorType: ${{rqgCompendiumContent.equipment.armor.cuirass}}$
+  material: ${{uiContent.RQG.Item.Armor.ArmorMaterial.LightScale}}$
   absorbs: 4
   encumbrance: 1
   price:
@@ -49,23 +49,23 @@ system:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description: ${{openSystem.content.equipment.armor.description.lightScale}}$ ${{openSystem.content.equipment.armor.description.cuirass}}$
+  description: ${{rqgCompendiumContent.equipment.armor.description.lightScale}}$ ${{rqgCompendiumContent.equipment.armor.description.cuirass}}$
 ---
-name: ${{openSystem.content.equipment.armor.hauberk}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
+name: ${{rqgCompendiumContent.equipment.armor.hauberk}}$ (${{uiContent.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/hauberk.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.armor.hauberk-light-scale
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   hitLocations:
-    - ${{openSystem.content.hitLocation.humanoid.chest}}$
-    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.equipment.armor.hauberk}}$
-  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.abdomen}}$
+  armorType: ${{rqgCompendiumContent.equipment.armor.hauberk}}$
+  material: ${{uiContent.RQG.Item.Armor.ArmorMaterial.LightScale}}$
   absorbs: 4
   encumbrance: 2
   price:
@@ -76,22 +76,22 @@ system:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description: ${{openSystem.content.equipment.armor.description.lightScale}}$ ${{openSystem.content.equipment.armor.description.hauberk}}$
+  description: ${{rqgCompendiumContent.equipment.armor.description.lightScale}}$ ${{rqgCompendiumContent.equipment.armor.description.hauberk}}$
 ---
-name: ${{openSystem.content.equipment.armor.skirt}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
+name: ${{rqgCompendiumContent.equipment.armor.skirt}}$ (${{uiContent.RQG.Item.Armor.ArmorMaterial.LightScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/skirt.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.armor.skirt-light-scale
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   hitLocations:
-    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-  armorType: ${{openSystem.content.equipment.armor.skirt}}$
-  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.LightScale}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.abdomen}}$
+  armorType: ${{rqgCompendiumContent.equipment.armor.skirt}}$
+  material: ${{uiContent.RQG.Item.Armor.ArmorMaterial.LightScale}}$
   absorbs: 4
   encumbrance: 2
   price:
@@ -102,4 +102,4 @@ system:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description: ${{openSystem.content.equipment.armor.description.lightScale}}$
+  description: ${{rqgCompendiumContent.equipment.armor.description.lightScale}}$

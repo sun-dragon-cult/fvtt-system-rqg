@@ -8,7 +8,7 @@ import {
   outDir,
   packsMetadata,
   packTemplateDir,
-  translationsFileName,
+  translationsFileNames,
 } from "./buildPacks";
 
 export interface PackMetadata {
@@ -101,11 +101,11 @@ export class CompendiumPack {
   translate(lang: string): CompendiumPack {
     let localizationMatchCount = 0;
     // Include the filename in path to match the behaviour in starter set
-    const dictionary = {
-      [translationsFileName]: JSON.parse(
-        fs.readFileSync(`${i18nDir}/${lang}/${translationsFileName}.json`, "utf8")
-      ),
-    };
+    const dictionary = translationsFileNames.reduce((dict: any, filename: string) => {
+      dict[filename] = JSON.parse(fs.readFileSync(`${i18nDir}/${lang}/${filename}.json`, "utf8"));
+      return dict;
+    }, {});
+
     const localisedPackDir = `${this.packDir}-${lang}.db`;
     const localisedData = this.data.map((d) => {
       const translated = JSON.stringify(d).replace(

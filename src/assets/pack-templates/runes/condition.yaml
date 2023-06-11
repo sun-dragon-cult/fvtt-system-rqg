@@ -1,146 +1,146 @@
-name: ${{openSystem.content.rune.fate}}$ (${{openSystem.content.runeType.condition}}$)
+name: ${{rqgCompendiumContent.rune.fate}}$ (${{rqgCompendiumContent.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/fate.svg
 system:
-  rune: ${{openSystem.content.rune.fate}}$
+  rune: ${{rqgCompendiumContent.rune.fate}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.condition}}$
+  runeType: ${{rqgCompendiumContent.runeType.condition}}$
   minorRunes: []
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..fate-condition
-    name: ${{openSystem.content.rune.fate}}$
+    name: ${{rqgCompendiumContent.rune.fate}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.fate-condition
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.infinity}}$ (${{openSystem.content.runeType.condition}}$)
+name: ${{rqgCompendiumContent.rune.infinity}}$ (${{rqgCompendiumContent.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/infinity.svg
 system:
-  rune: ${{openSystem.content.rune.infinity}}$
+  rune: ${{rqgCompendiumContent.rune.infinity}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.condition}}$
+  runeType: ${{rqgCompendiumContent.runeType.condition}}$
   minorRunes: []
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..infinity-condition
-    name: ${{openSystem.content.rune.infinity}}$
+    name: ${{rqgCompendiumContent.rune.infinity}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.infinity-condition
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.law}}$ (${{openSystem.content.runeType.condition}}$)
+name: ${{rqgCompendiumContent.rune.law}}$ (${{rqgCompendiumContent.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/law.svg
 system:
-  rune: ${{openSystem.content.rune.law}}$
+  rune: ${{rqgCompendiumContent.rune.law}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.condition}}$
+  runeType: ${{rqgCompendiumContent.runeType.condition}}$
   minorRunes: []
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..law-condition
-    name: ${{openSystem.content.rune.law}}$
+    name: ${{rqgCompendiumContent.rune.law}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.law-condition
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.light}}$ (${{openSystem.content.runeType.condition}}$)
+name: ${{rqgCompendiumContent.rune.light}}$ (${{rqgCompendiumContent.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/light.svg
 system:
-  rune: ${{openSystem.content.rune.light}}$
+  rune: ${{rqgCompendiumContent.rune.light}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.condition}}$
+  runeType: ${{rqgCompendiumContent.runeType.condition}}$
   minorRunes: []
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..light-condition
-    name: ${{openSystem.content.rune.light}}$
+    name: ${{rqgCompendiumContent.rune.light}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.light-condition
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.luck}}$ (${{openSystem.content.runeType.condition}}$)
+name: ${{rqgCompendiumContent.rune.luck}}$ (${{rqgCompendiumContent.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/luck.svg
 system:
-  rune: ${{openSystem.content.rune.luck}}$
+  rune: ${{rqgCompendiumContent.rune.luck}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.condition}}$
+  runeType: ${{rqgCompendiumContent.runeType.condition}}$
   minorRunes: []
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..luck-condition
-    name: ${{openSystem.content.rune.luck}}$
+    name: ${{rqgCompendiumContent.rune.luck}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.luck-condition
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.magic}}$ (${{openSystem.content.runeType.condition}}$)
+name: ${{rqgCompendiumContent.rune.magic}}$ (${{rqgCompendiumContent.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/magic.svg
 system:
-  rune: ${{openSystem.content.rune.magic}}$
+  rune: ${{rqgCompendiumContent.rune.magic}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.condition}}$
+  runeType: ${{rqgCompendiumContent.runeType.condition}}$
   minorRunes: []
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..magic-condition
-    name: ${{openSystem.content.rune.magic}}$
+    name: ${{rqgCompendiumContent.rune.magic}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.magic-condition
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.mastery}}$ (${{openSystem.content.runeType.condition}}$)
+name: ${{rqgCompendiumContent.rune.mastery}}$ (${{rqgCompendiumContent.runeType.condition}}$)
 type: rune
 img: systems/rqg/assets/images/runes/mastery.svg
 system:
-  rune: ${{openSystem.content.rune.mastery}}$
+  rune: ${{rqgCompendiumContent.rune.mastery}}$
   chance: 0
   hasExperience: false
-  runeType: ${{openSystem.content.runeType.condition}}$
+  runeType: ${{rqgCompendiumContent.runeType.condition}}$
   minorRunes: []
   isMastered: false
   opposingRune:
   descriptionRqidLink:
     rqid: je..mastery-condition
-    name: ${{openSystem.content.rune.mastery}}$
+    name: ${{rqgCompendiumContent.rune.mastery}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.mastery-condition
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

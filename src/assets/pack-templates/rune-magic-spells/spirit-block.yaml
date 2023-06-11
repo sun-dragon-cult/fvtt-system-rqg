@@ -1,5 +1,5 @@
 # spirit-block
-name: ${{openSystem.content.runeMagic.spiritBlock.name}}$
+name: ${{rqgCompendiumContent.runeMagic.spiritBlock.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..spirit-block
-    name: ${{openSystem.content.runeMagic.spiritBlock.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.spiritBlock.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.spirit-block
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,5 +1,5 @@
 # arouse-passion
-name: ${{openSystem.content.runeMagic.arousePassion.name}}$
+name: ${{rqgCompendiumContent.runeMagic.arousePassion.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..arouse-passion
-    name: ${{openSystem.content.runeMagic.arousePassion.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.arousePassion.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.arouse-passion
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

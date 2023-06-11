@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.humanoidWinged.rightLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.rightLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -8,17 +8,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.humanoidWinged.abdomen}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.humanoidWinged.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-right-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.humanoidWinged.leftLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.leftLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -28,17 +28,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.humanoidWinged.abdomen}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.humanoidWinged.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-left-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.humanoidWinged.abdomen}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -55,10 +55,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-abdomen
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.humanoidWinged.chest}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -75,10 +75,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-chest
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.humanoidWinged.rightWing}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -88,17 +88,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.humanoidWinged.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.humanoidWinged.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-right-wing
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.humanoidWinged.leftWing}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -108,17 +108,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.humanoidWinged.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.humanoidWinged.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-left-wing
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.humanoidWinged.rightArm}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.rightArm}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -128,17 +128,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.humanoidWinged.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.humanoidWinged.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-right-arm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.humanoidWinged.leftArm}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.leftArm}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -148,17 +148,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.humanoidWinged.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.humanoidWinged.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-left-arm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.humanoidWinged.head}}$
+name: ${{rqgCompendiumContent.hitLocation.humanoidWinged.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -175,5 +175,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.humanoids-winged-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

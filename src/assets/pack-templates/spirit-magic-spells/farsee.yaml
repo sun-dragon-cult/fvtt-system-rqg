@@ -1,5 +1,5 @@
 # farsee
-name: ${{openSystem.content.spiritMagic.farsee.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.farsee.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..farsee
-    name: ${{openSystem.content.spiritMagic.farsee.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.farsee.name}}$
 flags:
   rqg:
     documentRqidFlags:

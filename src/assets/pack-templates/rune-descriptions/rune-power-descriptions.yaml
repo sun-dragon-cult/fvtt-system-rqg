@@ -1,7 +1,7 @@
 # death
-name: ${{openSystem.content.runeDescription.deathPower.name}}$
+name: ${{rqgCompendiumContent.runeDescription.deathPower.name}}$
 pages:
-  - name: ${{openSystem.content.runeDescription.deathPower.name}}$
+  - name: ${{rqgCompendiumContent.runeDescription.deathPower.name}}$
     type: text
     title:
       show: false
@@ -9,22 +9,22 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeDescription.title}}$
         <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/death.svg" height="175">
-        ${{openSystem.content.runeDescription.deathPower.description}}$
+        ${{rqgCompendiumContent.runeDescription.deathPower.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..death-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # disorder
-name: ${{openSystem.content.runeDescription.disorderPower.name}}$
+name: ${{rqgCompendiumContent.runeDescription.disorderPower.name}}$
 pages:
-  - name: ${{openSystem.content.runeDescription.disorderPower.name}}$
+  - name: ${{rqgCompendiumContent.runeDescription.disorderPower.name}}$
     type: text
     title:
       show: false
@@ -32,22 +32,22 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeDescription.title}}$
         <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/disorder.svg" height="175">
-        ${{openSystem.content.runeDescription.disorderPower.description}}$
+        ${{rqgCompendiumContent.runeDescription.disorderPower.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..disorder-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # fertility
-name: ${{openSystem.content.runeDescription.fertilityPower.name}}$
+name: ${{rqgCompendiumContent.runeDescription.fertilityPower.name}}$
 pages:
-  - name: ${{openSystem.content.runeDescription.fertilityPower.name}}$
+  - name: ${{rqgCompendiumContent.runeDescription.fertilityPower.name}}$
     type: text
     title:
       show: false
@@ -55,22 +55,22 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeDescription.title}}$
         <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/fertility.svg" height="175">
-        ${{openSystem.content.runeDescription.fertilityPower.description}}$
+        ${{rqgCompendiumContent.runeDescription.fertilityPower.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..fertility-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # harmony
-name: ${{openSystem.content.runeDescription.harmonyPower.name}}$
+name: ${{rqgCompendiumContent.runeDescription.harmonyPower.name}}$
 pages:
-  - name: ${{openSystem.content.runeDescription.harmonyPower.name}}$
+  - name: ${{rqgCompendiumContent.runeDescription.harmonyPower.name}}$
     type: text
     title:
       show: false
@@ -78,22 +78,22 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeDescription.title}}$
         <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/harmony.svg" height="175">
-        ${{openSystem.content.runeDescription.harmonyPower.description}}$
+        ${{rqgCompendiumContent.runeDescription.harmonyPower.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..harmony-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # illusion
-name: ${{openSystem.content.runeDescription.illusionPower.name}}$
+name: ${{rqgCompendiumContent.runeDescription.illusionPower.name}}$
 pages:
-  - name: ${{openSystem.content.runeDescription.illusionPower.name}}$
+  - name: ${{rqgCompendiumContent.runeDescription.illusionPower.name}}$
     type: text
     title:
       show: false
@@ -101,22 +101,22 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeDescription.title}}$
         <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/illusion.svg" height="175">
-        ${{openSystem.content.runeDescription.illusionPower.description}}$
+        ${{rqgCompendiumContent.runeDescription.illusionPower.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..illusion-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # movement
-name: ${{openSystem.content.runeDescription.movementPower.name}}$
+name: ${{rqgCompendiumContent.runeDescription.movementPower.name}}$
 pages:
-  - name: ${{openSystem.content.runeDescription.movementPower.name}}$
+  - name: ${{rqgCompendiumContent.runeDescription.movementPower.name}}$
     type: text
     title:
       show: false
@@ -124,22 +124,22 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeDescription.title}}$
         <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/movement_change.svg" height="175">
-        ${{openSystem.content.runeDescription.movementPower.description}}$
+        ${{rqgCompendiumContent.runeDescription.movementPower.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..movement-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # stasis
-name: ${{openSystem.content.runeDescription.stasisPower.name}}$
+name: ${{rqgCompendiumContent.runeDescription.stasisPower.name}}$
 pages:
-  - name: ${{openSystem.content.runeDescription.stasisPower.name}}$
+  - name: ${{rqgCompendiumContent.runeDescription.stasisPower.name}}$
     type: text
     title:
       show: false
@@ -147,22 +147,22 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeDescription.title}}$
         <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/stasis.svg" height="175">
-        ${{openSystem.content.runeDescription.stasisPower.description}}$
+        ${{rqgCompendiumContent.runeDescription.stasisPower.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..stasis-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # truth
-name: ${{openSystem.content.runeDescription.truthPower.name}}$
+name: ${{rqgCompendiumContent.runeDescription.truthPower.name}}$
 pages:
-  - name: ${{openSystem.content.runeDescription.truthPower.name}}$
+  - name: ${{rqgCompendiumContent.runeDescription.truthPower.name}}$
     type: text
     title:
       show: false
@@ -170,14 +170,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeDescription.title}}$
         <img style="float: right; margin-left:1rem; border:none;" src="systems/rqg/assets/images/runes/truth.svg" height="175">
-        ${{openSystem.content.runeDescription.truthPower.description}}$
+        ${{rqgCompendiumContent.runeDescription.truthPower.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..truth-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

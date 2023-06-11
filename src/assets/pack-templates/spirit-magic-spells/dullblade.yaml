@@ -1,5 +1,5 @@
 # dullblade
-name: ${{openSystem.content.spiritMagic.dullblade.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.dullblade.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..dullblade
-    name: ${{openSystem.content.spiritMagic.dullblade.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.dullblade.name}}$
 flags:
   rqg:
     documentRqidFlags:

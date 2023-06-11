@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.centaur.rightHindLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.rightHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -8,17 +8,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.centaur.hindquarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.centaur.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-right-hind-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.leftHindLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.leftHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -28,17 +28,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.centaur.hindquarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.centaur.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-left-hind-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.hindquarter}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.hindquarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -55,10 +55,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-hindquarter
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.forequarter}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.forequarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -75,10 +75,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-forequarter
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.rightForeleg}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.rightForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -88,17 +88,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.centaur.forequarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.centaur.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-right-foreleg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.leftForeleg}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.leftForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -108,17 +108,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.centaur.forequarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.centaur.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-left-foreleg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.chest}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -135,10 +135,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-chest
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.rightArm}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.rightArm}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -148,17 +148,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.centaur.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.centaur.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-right-arm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.leftArm}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.leftArm}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -168,17 +168,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.centaur.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.centaur.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-left-arm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.centaur.head}}$
+name: ${{rqgCompendiumContent.hitLocation.centaur.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -195,5 +195,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.centaurs-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,7 +1,7 @@
 # act
-name: ${{openSystem.content.skill.act.skillName}}$
+name: ${{rqgCompendiumContent.skill.act.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.act.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.act.skillName}}$
     type: text
     title:
       show: false
@@ -9,24 +9,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/act.svg" height="70">
-        ${{openSystem.content.skill.act.description}}$
+        ${{rqgCompendiumContent.skill.act.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..act
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # art
-name: ${{openSystem.content.skill.art.skillName}}$
+name: ${{rqgCompendiumContent.skill.art.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.art.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.art.skillName}}$
     type: text
     title:
       show: false
@@ -34,24 +34,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/art.svg" height="70">
-        ${{openSystem.content.skill.art.description}}$
+        ${{rqgCompendiumContent.skill.art.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..art
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # bargain
-name: ${{openSystem.content.skill.bargain.skillName}}$
+name: ${{rqgCompendiumContent.skill.bargain.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.bargain.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.bargain.skillName}}$
     type: text
     title:
       show: false
@@ -59,24 +59,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/bargain.svg" height="70">
-        ${{openSystem.content.skill.bargain.description}}$
+        ${{rqgCompendiumContent.skill.bargain.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..bargain
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # charm
-name: ${{openSystem.content.skill.charm.skillName}}$
+name: ${{rqgCompendiumContent.skill.charm.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.charm.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.charm.skillName}}$
     type: text
     title:
       show: false
@@ -84,24 +84,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/charm.svg" height="70">
-        ${{openSystem.content.skill.charm.description}}$
+        ${{rqgCompendiumContent.skill.charm.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..charm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # dance
-name: ${{openSystem.content.skill.dance.skillName}}$
+name: ${{rqgCompendiumContent.skill.dance.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.dance.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.dance.skillName}}$
     type: text
     title:
       show: false
@@ -109,24 +109,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/dance.svg" height="70">
-        ${{openSystem.content.skill.dance.description}}$
+        ${{rqgCompendiumContent.skill.dance.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..dance
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # disguise
-name: ${{openSystem.content.skill.disguise.skillName}}$
+name: ${{rqgCompendiumContent.skill.disguise.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.disguise.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.disguise.skillName}}$
     type: text
     title:
       show: false
@@ -134,24 +134,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/disguise.svg" height="70">
-        ${{openSystem.content.skill.disguise.description}}$
+        ${{rqgCompendiumContent.skill.disguise.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..disguise
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # fast-talk
-name: ${{openSystem.content.skill.fastTalk.skillName}}$
+name: ${{rqgCompendiumContent.skill.fastTalk.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.fastTalk.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.fastTalk.skillName}}$
     type: text
     title:
       show: false
@@ -159,24 +159,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/fast-talk.svg" height="70">
-        ${{openSystem.content.skill.fastTalk.description}}$
+        ${{rqgCompendiumContent.skill.fastTalk.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..fast-talk
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # intimidate
-name: ${{openSystem.content.skill.intimidate.skillName}}$
+name: ${{rqgCompendiumContent.skill.intimidate.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.intimidate.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.intimidate.skillName}}$
     type: text
     title:
       show: false
@@ -184,24 +184,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/intimidate.svg" height="70">
-        ${{openSystem.content.skill.intimidate.description}}$
+        ${{rqgCompendiumContent.skill.intimidate.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..intimidate
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # intrigue
-name: ${{openSystem.content.skill.intrigue.skillName}}$
+name: ${{rqgCompendiumContent.skill.intrigue.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.intrigue.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.intrigue.skillName}}$
     type: text
     title:
       show: false
@@ -209,24 +209,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/intrigue.svg" height="70">
-        ${{openSystem.content.skill.intrigue.description}}$
+        ${{rqgCompendiumContent.skill.intrigue.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..intrigue
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # orate
-name: ${{openSystem.content.skill.orate.skillName}}$
+name: ${{rqgCompendiumContent.skill.orate.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.orate.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.orate.skillName}}$
     type: text
     title:
       show: false
@@ -234,24 +234,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/orate.svg" height="70">
-        ${{openSystem.content.skill.orate.description}}$
+        ${{rqgCompendiumContent.skill.orate.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..orate
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # sing
-name: ${{openSystem.content.skill.sing.skillName}}$
+name: ${{rqgCompendiumContent.skill.sing.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.sing.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.sing.skillName}}$
     type: text
     title:
       show: false
@@ -259,24 +259,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/sing.svg" height="70">
-        ${{openSystem.content.skill.sing.description}}$
+        ${{rqgCompendiumContent.skill.sing.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..sing
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # speak-language
-name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.speakLanguage.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
     type: text
     title:
       show: false
@@ -284,16 +284,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/speak.svg" height="70">
-        ${{openSystem.content.skill.speakLanguage.description}}$
+        ${{rqgCompendiumContent.skill.speakLanguage.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.communication.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.communication.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..speak-language
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,11 +1,11 @@
 # morale
-name: ${{openSystem.content.runeMagic.morale.name}}$
+name: ${{rqgCompendiumContent.runeMagic.morale.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
   rqid: rune-magic-morale
-  rqidPriority: ${{openSystem.prio}}$
-  rqidLang: ${{openSystem.lang}}$
+  rqidPriority: ${{rqgCompendiumContent.prio}}$
+  rqidLang: ${{rqgCompendiumContent.lang}}$
   runes:
     - Death (power)
     - Truth (power)
@@ -16,10 +16,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..morale
-    name: ${{openSystem.content.runeMagic.morale.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.morale.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.morale
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

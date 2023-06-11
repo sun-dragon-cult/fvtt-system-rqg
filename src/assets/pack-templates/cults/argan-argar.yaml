@@ -1,23 +1,23 @@
 # argan-argar
-name: ${{openSystem.content.cult.arganArgar.name}}$
+name: ${{rqgCompendiumContent.cult.arganArgar.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.arganArgar.name}}$
+  deity: ${{rqgCompendiumContent.cult.arganArgar.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.arganArgar.name}}$
-      tagline: ${{openSystem.content.cult.arganArgar.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.arganArgar.name}}$
+      tagline: ${{rqgCompendiumContent.cult.arganArgar.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.darknessElement.name}}$
-    - ${{openSystem.content.runeDescription.harmonyPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.darknessElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.harmonyPower.name}}$
   descriptionRqidLink:
     rqid: je..argan-argar
-    name: ${{openSystem.content.cult.arganArgar.name}}$
+    name: ${{rqgCompendiumContent.cult.arganArgar.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -47,5 +47,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.argan-argar
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

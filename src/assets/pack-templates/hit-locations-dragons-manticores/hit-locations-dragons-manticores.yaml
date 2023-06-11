@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.dragonManticore.tail}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.tail}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -8,17 +8,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.dragonManticore.hindquarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.dragonManticore.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-tail
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.rightHindLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.rightHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -28,17 +28,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.dragonManticore.hindquarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.dragonManticore.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-right-hind-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.leftHindLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.leftHindLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -48,17 +48,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.dragonManticore.hindquarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.dragonManticore.hindquarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-left-hind-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.hindquarter}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.hindquarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -75,10 +75,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-hindquarter
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.forequarter}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.forequarter}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -95,10 +95,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-forequarter
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.rightWing}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -108,17 +108,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.dragonManticore.forequarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.dragonManticore.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-right-wing
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.leftWing}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -128,17 +128,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.dragonManticore.forequarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.dragonManticore.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-left-wing
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.rightForeleg}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.rightForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -148,17 +148,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.dragonManticore.forequarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.dragonManticore.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-right-foreleg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.leftForeleg}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.leftForeleg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -168,17 +168,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.dragonManticore.forequarter}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.dragonManticore.forequarter}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-left-foreleg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonManticore.head}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonManticore.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -195,5 +195,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.dragons-manticores-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

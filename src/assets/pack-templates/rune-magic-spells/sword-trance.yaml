@@ -1,5 +1,5 @@
 # sword-trance
-name: ${{openSystem.content.runeMagic.swordTrance.name}}$
+name: ${{rqgCompendiumContent.runeMagic.swordTrance.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..sword-trance
-    name: ${{openSystem.content.runeMagic.swordTrance.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.swordTrance.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.sword-trance
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

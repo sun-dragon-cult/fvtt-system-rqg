@@ -1,7 +1,7 @@
 # catseye
-name: ${{openSystem.content.runeMagic.catseye.name}}$
+name: ${{rqgCompendiumContent.runeMagic.catseye.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.catseye.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.catseye.name}}$
     type: text
     title:
       show: false
@@ -9,15 +9,15 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/beast.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fire_sky.svg" height="70">
-        ${{openSystem.content.runeMagic.catseye.description}}$
+        ${{rqgCompendiumContent.runeMagic.catseye.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..catseye
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

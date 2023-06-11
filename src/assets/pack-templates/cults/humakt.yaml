@@ -1,24 +1,24 @@
 # humakt
-name: ${{openSystem.content.cult.humakt.name}}$
+name: ${{rqgCompendiumContent.cult.humakt.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.humakt.name}}$
+  deity: ${{rqgCompendiumContent.cult.humakt.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.humakt.name}}$
-      tagline: ${{openSystem.content.cult.humakt.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.humakt.name}}$
+      tagline: ${{rqgCompendiumContent.cult.humakt.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.deathPower.name}}$
-    - ${{openSystem.content.runeDescription.truthPower.name}}$
-    - ${{openSystem.content.runeDescription.deathPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.deathPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.truthPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.deathPower.name}}$
   descriptionRqidLink:
     rqid: je..humakt
-    name: ${{openSystem.content.cult.humakt.name}}$
+    name: ${{rqgCompendiumContent.cult.humakt.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -48,5 +48,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.humakt
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

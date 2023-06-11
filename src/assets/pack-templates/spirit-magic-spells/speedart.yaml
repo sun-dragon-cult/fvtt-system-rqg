@@ -1,5 +1,5 @@
 # speedart
-name: ${{openSystem.content.spiritMagic.speedart.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.speedart.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..speedart
-    name: ${{openSystem.content.spiritMagic.speedart.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.speedart.name}}$
 flags:
   rqg:
     documentRqidFlags:

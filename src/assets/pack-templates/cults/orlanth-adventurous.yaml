@@ -1,25 +1,25 @@
 # orlanth-adventurous
-name: ${{openSystem.content.cult.orlanth.subcult.adventurous.name}}$ (${{openSystem.content.cult.orlanth.name}}$)
+name: ${{rqgCompendiumContent.cult.orlanth.subcult.adventurous.name}}$ (${{rqgCompendiumContent.cult.orlanth.name}}$)
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.orlanth.name}}$
+  deity: ${{rqgCompendiumContent.cult.orlanth.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.orlanth.subcult.adventurous.name}}$
-      tagline: ${{openSystem.content.cult.orlanth.subcult.adventurous.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.orlanth.subcult.adventurous.name}}$
+      tagline: ${{rqgCompendiumContent.cult.orlanth.subcult.adventurous.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
-  holyDays: ${{openSystem.content.cult.orlanth.holyDays}}$
+  holyDays: ${{rqgCompendiumContent.cult.orlanth.holyDays}}$
   runes:
-    - ${{openSystem.content.runeDescription.movementPower.name}}$
-    - ${{openSystem.content.runeDescription.airElement.name}}$
-    - ${{openSystem.content.runeDescription.airElement.name}}$
-    - ${{openSystem.content.runeDescription.masteryCondition.name}}$
+    - ${{rqgCompendiumContent.runeDescription.movementPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.airElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.airElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.masteryCondition.name}}$
   descriptionRqidLink:
     rqid: je..orlanth
-    name: ${{openSystem.content.cult.orlanth.name}}$
+    name: ${{rqgCompendiumContent.cult.orlanth.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -49,5 +49,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.orlanth-adventurous-orlanth
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

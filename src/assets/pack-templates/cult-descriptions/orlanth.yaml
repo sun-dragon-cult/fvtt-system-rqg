@@ -1,7 +1,7 @@
 # orlanth
-name: ${{openSystem.content.cult.orlanth.name}}$
+name: ${{rqgCompendiumContent.cult.orlanth.name}}$
 pages:
-  - name: ${{openSystem.content.cult.orlanth.name}}$
+  - name: ${{rqgCompendiumContent.cult.orlanth.name}}$
     type: text
     title:
       show: false
@@ -9,18 +9,18 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        <h2>${{openSystem.content.cult.orlanth.name}}$, ${{openSystem.content.cult.orlanth.tagline}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        <h2>${{rqgCompendiumContent.cult.orlanth.name}}$, ${{rqgCompendiumContent.cult.orlanth.tagline}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/mastery.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/air.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/air.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
-        ${{openSystem.content.cult.orlanth.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.orlanth.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..orlanth
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

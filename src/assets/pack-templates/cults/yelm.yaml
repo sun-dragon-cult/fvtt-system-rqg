@@ -1,25 +1,25 @@
 # yelm
-name: ${{openSystem.content.cult.yelm.name}}$
+name: ${{rqgCompendiumContent.cult.yelm.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.yelm.name}}$
+  deity: ${{rqgCompendiumContent.cult.yelm.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.yelm.name}}$
-      tagline: ${{openSystem.content.cult.yelm.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.yelm.name}}$
+      tagline: ${{rqgCompendiumContent.cult.yelm.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.fertilityPower.name}}$
-    - ${{openSystem.content.runeDescription.fireSkyElement.name}}$
-    - ${{openSystem.content.runeDescription.fireSkyElement.name}}$
-    - ${{openSystem.content.runeDescription.deathPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.fertilityPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.fireSkyElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.fireSkyElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.deathPower.name}}$
   descriptionRqidLink:
     rqid: je..yelm
-    name: ${{openSystem.content.cult.yelm.name}}$
+    name: ${{rqgCompendiumContent.cult.yelm.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -49,6 +49,6 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.yelm
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 

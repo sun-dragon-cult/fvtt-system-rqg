@@ -1,23 +1,23 @@
-name: ${{openSystem.content.weapon.throwingAxe}}$
+name: ${{rqgCompendiumContent.weapon.throwingAxe}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/thrown-axe.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.throwing-axe
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-axes-small-axe
-        name: ${{openSystem.content.weaponSkill.1h-axes.name}}$ (${{openSystem.content.weaponSkill.1h-axes.specialization.smallAxe}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-axes.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-axes.specialization.smallAxe}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -43,9 +43,9 @@ system:
     missile:
       skillRqidLink:
         rqid: i.skill.thrown-axe
-        name: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
+        name: ${{rqgCompendiumContent.weaponSkill.thrownAxe.name}}$
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
       damage: 1d6
@@ -75,15 +75,15 @@ system:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.rock}}$
+name: ${{rqgCompendiumContent.weapon.rock}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/rock.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.rock
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
@@ -113,9 +113,9 @@ system:
     missile:
       skillRqidLink:
         rqid: i.skill.thrown-rock
-        name: ${{openSystem.content.weaponSkill.thrownRock.name}}$
+        name: ${{rqgCompendiumContent.weaponSkill.thrownRock.name}}$
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush
           description:
       damage: 1d4

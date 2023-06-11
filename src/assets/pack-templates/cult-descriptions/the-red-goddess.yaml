@@ -1,7 +1,7 @@
 # the-red-goddess
-name: ${{openSystem.content.cult.theRedGoddess.name}}$
+name: ${{rqgCompendiumContent.cult.theRedGoddess.name}}$
 pages:
-  - name: ${{openSystem.content.cult.theRedGoddess.name}}$
+  - name: ${{rqgCompendiumContent.cult.theRedGoddess.name}}$
     type: text
     title:
       show: false
@@ -9,18 +9,18 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        <h2>${{openSystem.content.cult.theRedGoddess.name}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        <h2>${{rqgCompendiumContent.cult.theRedGoddess.name}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/chaos.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/moon_full.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/moon_full.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
-        ${{openSystem.content.cult.theRedGoddess.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.theRedGoddess.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..the-red-goddess
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

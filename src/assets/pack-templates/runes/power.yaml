@@ -1,167 +1,167 @@
-name: ${{openSystem.content.rune.death}}$ (${{openSystem.content.runeType.power}}$)
+name: ${{rqgCompendiumContent.rune.death}}$ (${{rqgCompendiumContent.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/death.svg
 system:
-  rune: ${{openSystem.content.rune.death}}$
+  rune: ${{rqgCompendiumContent.rune.death}}$
   chance: 50
   hasExperience: false
   runeType: power
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.fertility}}$ (${{openSystem.content.runeType.power}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.fertility}}$ (${{rqgCompendiumContent.runeType.power}}$)
   descriptionRqidLink:
     rqid: je..death-power
-    name: ${{openSystem.content.rune.death}}$
+    name: ${{rqgCompendiumContent.rune.death}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.death-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.disorder}}$ (${{openSystem.content.runeType.power}}$)
+name: ${{rqgCompendiumContent.rune.disorder}}$ (${{rqgCompendiumContent.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/disorder.svg
 system:
-  rune: ${{openSystem.content.rune.disorder}}$
+  rune: ${{rqgCompendiumContent.rune.disorder}}$
   chance: 50
   hasExperience: false
   runeType: power
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.harmony}}$ (${{openSystem.content.runeType.power}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.harmony}}$ (${{rqgCompendiumContent.runeType.power}}$)
   descriptionRqidLink:
     rqid: je..disorder-power
-    name: ${{openSystem.content.rune.disorder}}$
+    name: ${{rqgCompendiumContent.rune.disorder}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.disorder-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.fertility}}$ (${{openSystem.content.runeType.power}}$)
+name: ${{rqgCompendiumContent.rune.fertility}}$ (${{rqgCompendiumContent.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/fertility.svg
 system:
-  rune: ${{openSystem.content.rune.fertility}}$
+  rune: ${{rqgCompendiumContent.rune.fertility}}$
   chance: 50
   hasExperience: false
   runeType: power
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.death}}$ (${{openSystem.content.runeType.power}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.death}}$ (${{rqgCompendiumContent.runeType.power}}$)
   descriptionRqidLink:
     rqid: je..fertility-power
-    name: ${{openSystem.content.rune.fertility}}$
+    name: ${{rqgCompendiumContent.rune.fertility}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.fertility-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.harmony}}$ (${{openSystem.content.runeType.power}}$)
+name: ${{rqgCompendiumContent.rune.harmony}}$ (${{rqgCompendiumContent.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/harmony.svg
 system:
-  rune: ${{openSystem.content.rune.harmony}}$
+  rune: ${{rqgCompendiumContent.rune.harmony}}$
   chance: 50
   hasExperience: false
   runeType: power
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.disorder}}$ (${{openSystem.content.runeType.power}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.disorder}}$ (${{rqgCompendiumContent.runeType.power}}$)
   descriptionRqidLink:
     rqid: je..harmony-power
-    name: ${{openSystem.content.rune.harmony}}$
+    name: ${{rqgCompendiumContent.rune.harmony}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.harmony-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.illusion}}$ (${{openSystem.content.runeType.power}}$)
+name: ${{rqgCompendiumContent.rune.illusion}}$ (${{rqgCompendiumContent.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/illusion.svg
 system:
-  rune: ${{openSystem.content.rune.illusion}}$
+  rune: ${{rqgCompendiumContent.rune.illusion}}$
   chance: 50
   hasExperience: false
   runeType: power
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.truth}}$ (${{openSystem.content.runeType.power}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.truth}}$ (${{rqgCompendiumContent.runeType.power}}$)
   descriptionRqidLink:
     rqid: je..illusion-power
-    name: ${{openSystem.content.rune.illusion}}$
+    name: ${{rqgCompendiumContent.rune.illusion}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.illusion-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.movement}}$ (${{openSystem.content.runeType.power}}$)
+name: ${{rqgCompendiumContent.rune.movement}}$ (${{rqgCompendiumContent.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/movement_change.svg
 system:
-  rune: ${{openSystem.content.rune.movement}}$
+  rune: ${{rqgCompendiumContent.rune.movement}}$
   chance: 50
   hasExperience: false
   runeType: power
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.stasis}}$ (${{openSystem.content.runeType.power}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.stasis}}$ (${{rqgCompendiumContent.runeType.power}}$)
   descriptionRqidLink:
     rqid: je..movement-power
-    name: ${{openSystem.content.rune.movement}}$
+    name: ${{rqgCompendiumContent.rune.movement}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.movement-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.stasis}}$ (${{openSystem.content.runeType.power}}$)
+name: ${{rqgCompendiumContent.rune.stasis}}$ (${{rqgCompendiumContent.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/stasis.svg
 system:
-  rune: ${{openSystem.content.rune.stasis}}$
+  rune: ${{rqgCompendiumContent.rune.stasis}}$
   chance: 50
   hasExperience: false
   runeType: power
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.movement}}$ (${{openSystem.content.runeType.power}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.movement}}$ (${{rqgCompendiumContent.runeType.power}}$)
   descriptionRqidLink:
     rqid: je..stasis-power
-    name: ${{openSystem.content.rune.stasis}}$
+    name: ${{rqgCompendiumContent.rune.stasis}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.stasis-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.truth}}$ (${{openSystem.content.runeType.power}}$)
+name: ${{rqgCompendiumContent.rune.truth}}$ (${{rqgCompendiumContent.runeType.power}}$)
 type: rune
 img: systems/rqg/assets/images/runes/truth.svg
 system:
-  rune: ${{openSystem.content.rune.truth}}$
+  rune: ${{rqgCompendiumContent.rune.truth}}$
   chance: 50
   hasExperience: false
   runeType: power
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.illusion}}$ (${{openSystem.content.runeType.power}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.illusion}}$ (${{rqgCompendiumContent.runeType.power}}$)
   descriptionRqidLink:
     rqid: je..truth-power
-    name: ${{openSystem.content.rune.truth}}$
+    name: ${{rqgCompendiumContent.rune.truth}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.truth-power
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

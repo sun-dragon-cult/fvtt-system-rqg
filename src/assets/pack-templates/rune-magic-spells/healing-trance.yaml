@@ -1,5 +1,5 @@
 # healing-trance
-name: ${{openSystem.content.runeMagic.healingTrance.name}}$
+name: ${{rqgCompendiumContent.runeMagic.healingTrance.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..healing-trance
-    name: ${{openSystem.content.runeMagic.healingTrance.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.healingTrance.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.healing-trance
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

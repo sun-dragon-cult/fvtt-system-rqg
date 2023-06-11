@@ -1,5 +1,5 @@
 # clairvoyance
-name: ${{openSystem.content.runeMagic.clairvoyance.name}}$
+name: ${{rqgCompendiumContent.runeMagic.clairvoyance.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..clairvoyance
-    name: ${{openSystem.content.runeMagic.clairvoyance.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.clairvoyance.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.clairvoyance
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

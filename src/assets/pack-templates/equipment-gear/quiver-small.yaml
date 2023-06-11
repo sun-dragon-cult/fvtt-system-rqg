@@ -1,14 +1,14 @@
-name: ${{openSystem.content.equipment.gear.quiverSmall}}$
+name: ${{rqgCompendiumContent.equipment.gear.quiverSmall}}$
 type: gear
 img: systems/rqg/assets/images/gear/quiver.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.small-quiver
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
-  description: ${{openSystem.content.equipment.gear.quiverSmallDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.quiverSmallDescription}}$
   gmNotes:
   quantity: 1
   price:

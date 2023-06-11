@@ -1,7 +1,7 @@
 # lhankor-mhy
-name: ${{openSystem.content.cult.lhankorMhy.name}}$
+name: ${{rqgCompendiumContent.cult.lhankorMhy.name}}$
 pages:
-  - name: ${{openSystem.content.cult.lhankorMhy.name}}$
+  - name: ${{rqgCompendiumContent.cult.lhankorMhy.name}}$
     type: text
     title:
       show: false
@@ -9,16 +9,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        <h2>${{openSystem.content.cult.lhankorMhy.name}}$, ${{openSystem.content.cult.lhankorMhy.tagline}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        <h2>${{rqgCompendiumContent.cult.lhankorMhy.name}}$, ${{rqgCompendiumContent.cult.lhankorMhy.tagline}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/stasis.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/truth.svg" height="70">
-        ${{openSystem.content.cult.lhankorMhy.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.lhankorMhy.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..lhankor-mhy
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

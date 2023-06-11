@@ -1,10 +1,10 @@
 # bite
-name: ${{openSystem.content.weaponSkill.bite.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.bite.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/bite.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.bite.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.bite.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -13,21 +13,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.bite
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # head-butt
-name: ${{openSystem.content.weaponSkill.headButt.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.headButt.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/head-butt.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.headButt.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.headButt.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -36,22 +36,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.head-butt
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # fist
-name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.fist}}$)
+name: ${{rqgCompendiumContent.weaponSkill.fists.name}}$ (${{rqgCompendiumContent.weaponSkill.fists.specialization.fist}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/fist.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.fists.name}}$
-  specialization: ${{openSystem.content.weaponSkill.fists.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.fists.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.fists.name}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -59,21 +59,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.fists-fists
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # gore
-name: ${{openSystem.content.weaponSkill.gore.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.gore.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/head-butt.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.gore.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.gore.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -82,21 +82,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.gore
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # grapple
-name: ${{openSystem.content.weaponSkill.grapple.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.grapple.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/grab.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.grapple.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.grapple.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -105,21 +105,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.grapple
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # hug
-name: ${{openSystem.content.weaponSkill.hug.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.hug.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/grab.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.hug.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.hug.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -128,21 +128,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.hug
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # kick
-name: ${{openSystem.content.weaponSkill.kick.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.kick.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/kick.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.kick.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.kick.name}}$
   specialization:
   baseChance: 15
   gainedChance: 0
@@ -151,22 +151,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.kick
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # rip
-name: ${{openSystem.content.weaponSkill.fists.name}}$ (${{openSystem.content.weaponSkill.fists.specialization.rip}}$)
+name: ${{rqgCompendiumContent.weaponSkill.fists.name}}$ (${{rqgCompendiumContent.weaponSkill.fists.specialization.rip}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/claw.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.fists.name}}$
-  specialization: ${{openSystem.content.weaponSkill.fists.specialization.rip}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.fists.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.fists.specialization.rip}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -174,21 +174,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.fists-rip
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # rear-and-plunge
-name: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.rearAndPlunge.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/rear-plunge.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.rearAndPlunge.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.rearAndPlunge.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -197,21 +197,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.rear-and-plunge
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # sting
-name: ${{openSystem.content.weaponSkill.sting.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.sting.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/sting.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.sting.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.sting.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -220,21 +220,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.sting
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # trample
-name: ${{openSystem.content.weaponSkill.trample.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.trample.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/trample.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.trample.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.trample.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -243,21 +243,21 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.trample
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # claw
-name: ${{openSystem.content.weaponSkill.claw.name}}$
+name: ${{rqgCompendiumContent.weaponSkill.claw.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/claw.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.claw.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.claw.name}}$
   specialization:
   baseChance: 25
   gainedChance: 0
@@ -266,10 +266,10 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.claw
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

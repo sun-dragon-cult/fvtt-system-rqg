@@ -1,5 +1,5 @@
 # ignite
-name: ${{openSystem.content.spiritMagic.ignite.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.ignite.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration:
   descriptionRqidLink:
     rqid: je..ignite
-    name: ${{openSystem.content.spiritMagic.ignite.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.ignite.name}}$
 flags:
   rqg:
     documentRqidFlags:

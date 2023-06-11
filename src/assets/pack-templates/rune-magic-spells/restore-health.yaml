@@ -1,5 +1,5 @@
 # restore-health
-name: ${{openSystem.content.runeMagic.restoreHealth.name}}$
+name: ${{rqgCompendiumContent.runeMagic.restoreHealth.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -15,10 +15,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..restore-health
-    name: ${{openSystem.content.runeMagic.restoreHealth.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.restoreHealth.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.restore-health
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

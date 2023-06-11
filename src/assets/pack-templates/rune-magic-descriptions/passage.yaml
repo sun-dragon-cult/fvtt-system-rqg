@@ -1,7 +1,7 @@
 # passage
-name: ${{openSystem.content.runeMagic.passage.name}}$
+name: ${{rqgCompendiumContent.runeMagic.passage.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.passage.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.passage.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
-        ${{openSystem.content.runeMagic.passage.description}}$
+        ${{rqgCompendiumContent.runeMagic.passage.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..passage
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

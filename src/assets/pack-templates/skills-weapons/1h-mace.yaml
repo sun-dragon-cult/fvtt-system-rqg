@@ -1,11 +1,11 @@
 # 1h-mace-club
-name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.club}}$)
+name: ${{rqgCompendiumContent.weaponSkill.1h-maces.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-maces.specialization.club}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-mace.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-maces.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-maces.specialization.club}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.1h-maces.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.1h-maces.specialization.club}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -13,22 +13,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.1h-maces-club
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # 1h-mace-heavy-mace
-name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.heavyMace}}$)
+name: ${{rqgCompendiumContent.weaponSkill.1h-maces.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-maces.specialization.heavyMace}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-mace.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-maces.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-maces.specialization.heavyMace}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.1h-maces.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.1h-maces.specialization.heavyMace}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -36,22 +36,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.1h-maces-heavy-mace
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # 1h-mace-light-mace
-name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.lightMace}}$)
+name: ${{rqgCompendiumContent.weaponSkill.1h-maces.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-maces.specialization.lightMace}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-mace.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-maces.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-maces.specialization.lightMace}}$)
+  skillName: ${{rqgCompendiumContent.weaponSkill.1h-maces.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.1h-maces.specialization.lightMace}}$)
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -59,22 +59,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.1h-maces-light-mace
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # 1h-mace-singlestick
-name: ${{openSystem.content.weaponSkill.1h-maces.name}}$ (${{openSystem.content.weaponSkill.1h-maces.specialization.singlestick}}$)
+name: ${{rqgCompendiumContent.weaponSkill.1h-maces.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-maces.specialization.singlestick}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/1h-mace.svg
 system:
   category: meleeWeapons
-  skillName: ${{openSystem.content.weaponSkill.1h-maces.name}}$
-  specialization: ${{openSystem.content.weaponSkill.1h-maces.specialization.singlestick}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.1h-maces.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.1h-maces.specialization.singlestick}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -82,10 +82,10 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..melee-weapon
-    name: ${{openSystem.content.skill.meleeWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.1h-maces-singlestick
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

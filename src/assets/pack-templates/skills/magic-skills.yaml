@@ -1,209 +1,209 @@
 # meditate
-name: ${{openSystem.content.skill.meditate.skillName}}$
+name: ${{rqgCompendiumContent.skill.meditate.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/meditate.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.meditate.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.meditate.skillName}}$
   specialization:
   baseChance: 0
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..meditate
-    name: ${{openSystem.content.skill.meditate.skillName}}$
+    name: ${{rqgCompendiumContent.skill.meditate.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.meditate
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # prepare-corpse
-name: ${{openSystem.content.skill.prepareCorpse.skillName}}$
+name: ${{rqgCompendiumContent.skill.prepareCorpse.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/prepare-corpse.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.prepareCorpse.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.prepareCorpse.skillName}}$
   specialization:
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..prepare-corpse
-    name: ${{openSystem.content.skill.prepareCorpse.skillName}}$
+    name: ${{rqgCompendiumContent.skill.prepareCorpse.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.prepare-corpse
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # sense-assassin
-name: ${{openSystem.content.skill.senseAssassin.skillName}}$
+name: ${{rqgCompendiumContent.skill.senseAssassin.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sense-assassin.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.senseAssassin.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.senseAssassin.skillName}}$
   specialization:
   baseChance: 0
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..sense-assassin
-    name: ${{openSystem.content.skill.senseAssassin.skillName}}$
+    name: ${{rqgCompendiumContent.skill.senseAssassin.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.sense-assassin
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # sense-chaos
-name: ${{openSystem.content.skill.senseChaos.skillName}}$
+name: ${{rqgCompendiumContent.skill.senseChaos.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sense-chaos.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.senseChaos.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.senseChaos.skillName}}$
   specialization:
   baseChance: 0
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..sense-chaos
-    name: ${{openSystem.content.skill.senseChaos.skillName}}$
+    name: ${{rqgCompendiumContent.skill.senseChaos.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.sense-chaos
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # spirit-combat
-name: ${{openSystem.content.skill.spiritCombat.skillName}}$
+name: ${{rqgCompendiumContent.skill.spiritCombat.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-combat.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.spiritCombat.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.spiritCombat.skillName}}$
   specialization:
   baseChance: 20
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..spirit-combat
-    name: ${{openSystem.content.skill.spiritCombat.skillName}}$
+    name: ${{rqgCompendiumContent.skill.spiritCombat.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.spirit-combat
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # spirit-dance
-name: ${{openSystem.content.skill.spiritDance.skillName}}$
+name: ${{rqgCompendiumContent.skill.spiritDance.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-dance.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.spiritDance.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.spiritDance.skillName}}$
   specialization:
   baseChance: 0
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..spirit-dance
-    name: ${{openSystem.content.skill.spiritDance.skillName}}$
+    name: ${{rqgCompendiumContent.skill.spiritDance.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.spirit-dance
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # spirit-lore
-name: ${{openSystem.content.skill.spiritLore.skillName}}$
+name: ${{rqgCompendiumContent.skill.spiritLore.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-lore.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.spiritLore.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.spiritLore.skillName}}$
   specialization:
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..spirit-lore
-    name: ${{openSystem.content.skill.spiritLore.skillName}}$
+    name: ${{rqgCompendiumContent.skill.spiritLore.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.spirit-lore
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # spirit-travel
-name: ${{openSystem.content.skill.spiritTravel.skillName}}$
+name: ${{rqgCompendiumContent.skill.spiritTravel.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/spirit-travel.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.spiritTravel.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.spiritTravel.skillName}}$
   specialization:
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..spirit-travel
-    name: ${{openSystem.content.skill.spiritTravel.skillName}}$
+    name: ${{rqgCompendiumContent.skill.spiritTravel.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.spirit-travel
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 ### understand-heard-beast
-name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
+name: ${{rqgCompendiumContent.skill.understandHerdBeast.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/understand-herd-beast.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.understandHerdBeast.skillName}}$
   specialization:
   baseChance: 0
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..understand-herd-beast
-    name: ${{openSystem.content.skill.understandHerdBeast.skillName}}$
+    name: ${{rqgCompendiumContent.skill.understandHerdBeast.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.understand-herd-beast
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # worship
-name: ${{openSystem.content.skill.worship.skillName}}$ (...)
+name: ${{rqgCompendiumContent.skill.worship.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/worship.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.worship.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.worship.skillName}}$
   specialization: "..."
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..worship
-    name: ${{openSystem.content.skill.worship.skillName}}$
+    name: ${{rqgCompendiumContent.skill.worship.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.worship
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

@@ -1,5 +1,5 @@
 # flight
-name: ${{openSystem.content.runeMagic.flight.name}}$
+name: ${{rqgCompendiumContent.runeMagic.flight.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..flight
-    name: ${{openSystem.content.runeMagic.flight.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.flight.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.flight
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.horseSeredae.name}}$
+name: ${{rqgCompendiumContent.bestiary.horseSeredae.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,7 +27,7 @@ system:
       value:
       formula:
   background:
-    species: ${{openSystem.content.bestiary.horseSeredae.species}}$
+    species: ${{rqgCompendiumContent.bestiary.horseSeredae.species}}$
     occupation: ''
     homeland: ''
     cultureJournalRqidLinks: []
@@ -45,7 +45,7 @@ system:
     ransom:
     ransomDetails: ''
     biography: ''
-  allies: ${{openSystem.content.bestiary.horseSeredae.notes}}$
+  allies: ${{rqgCompendiumContent.bestiary.horseSeredae.notes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.horseSeredae.name}}$
+  name: ${{rqgCompendiumContent.bestiary.horseSeredae.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -152,5 +152,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: a.character.horse-seredae
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

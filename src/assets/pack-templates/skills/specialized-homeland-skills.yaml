@@ -1,125 +1,125 @@
 # homeland-esrolia
-name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.esrolia.name}}$)
+name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$ (${{rqgCompendiumContent.homeland.esrolia.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
 system:
   category: knowledge
-  skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
-  specialization: ${{openSystem.content.homeland.esrolia.name}}$
+  skillName: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
+  specialization: ${{rqgCompendiumContent.homeland.esrolia.name}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..homeland-lore
-    name: ${{openSystem.content.skill.homelandLore.skillName}}$
+    name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.homeland-lore-esrolia
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # homeland-grazelands
-name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.grazelands.name}}$)
+name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$ (${{rqgCompendiumContent.homeland.grazelands.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
 system:
   category: knowledge
-  skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
-  specialization: ${{openSystem.content.homeland.grazelands.name}}$
+  skillName: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
+  specialization: ${{rqgCompendiumContent.homeland.grazelands.name}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..homeland-lore
-    name: ${{openSystem.content.skill.homelandLore.skillName}}$
+    name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.homeland-lore-grazelands
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # homeland-lunar-tarsh
-name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.lunarTarsh.name}}$)
+name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$ (${{rqgCompendiumContent.homeland.lunarTarsh.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
 system:
   category: knowledge
-  skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
-  specialization: ${{openSystem.content.homeland.lunarTarsh.name}}$
+  skillName: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
+  specialization: ${{rqgCompendiumContent.homeland.lunarTarsh.name}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..homeland-lore
-    name: ${{openSystem.content.skill.homelandLore.skillName}}$
+    name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.homeland-lore-lunar-tarsh
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # homeland-old-tarsh
-name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.oldTarsh.name}}$)
+name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$ (${{rqgCompendiumContent.homeland.oldTarsh.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
 system:
   category: knowledge
-  skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
-  specialization: ${{openSystem.content.homeland.oldTarsh.name}}$
+  skillName: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
+  specialization: ${{rqgCompendiumContent.homeland.oldTarsh.name}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..homeland-lore
-    name: ${{openSystem.content.skill.homelandLore.skillName}}$
+    name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.homeland-lore-old-tarsh
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # homeland-prax
-name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.prax.name}}$)
+name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$ (${{rqgCompendiumContent.homeland.prax.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
 system:
   category: knowledge
-  skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
-  specialization: ${{openSystem.content.homeland.prax.name}}$
+  skillName: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
+  specialization: ${{rqgCompendiumContent.homeland.prax.name}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..homeland-lore
-    name: ${{openSystem.content.skill.homelandLore.skillName}}$
+    name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.homeland-lore-prax
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # homeland-sartar
-name: ${{openSystem.content.skill.homelandLore.skillName}}$ (${{openSystem.content.homeland.sartar.name}}$)
+name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$ (${{rqgCompendiumContent.homeland.sartar.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/homeland-lore.svg
 system:
   category: knowledge
-  skillName: ${{openSystem.content.skill.homelandLore.skillName}}$
-  specialization: ${{openSystem.content.homeland.sartar.name}}$
+  skillName: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
+  specialization: ${{rqgCompendiumContent.homeland.sartar.name}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: false
   descriptionRqidLink:
     rqid: je..homeland-lore
-    name: ${{openSystem.content.skill.homelandLore.skillName}}$
+    name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.homeland-lore-sartar
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

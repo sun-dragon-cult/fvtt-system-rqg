@@ -1,5 +1,5 @@
 # bless-crops
-name: ${{openSystem.content.runeMagic.blessCrops.name}}$
+name: ${{rqgCompendiumContent.runeMagic.blessCrops.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..bless-crops
-    name: ${{openSystem.content.runeMagic.blessCrops.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.blessCrops.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.bless-crops
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

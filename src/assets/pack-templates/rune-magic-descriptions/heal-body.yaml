@@ -1,7 +1,7 @@
 # heal-body
-name: ${{openSystem.content.runeMagic.healBody.name}}$
+name: ${{rqgCompendiumContent.runeMagic.healBody.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.healBody.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.healBody.name}}$
     type: text
     title:
       show: false
@@ -9,16 +9,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/earth.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/harmony.svg" height="70">
-        ${{openSystem.content.runeMagic.healBody.description}}$
+        ${{rqgCompendiumContent.runeMagic.healBody.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..heal-body
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

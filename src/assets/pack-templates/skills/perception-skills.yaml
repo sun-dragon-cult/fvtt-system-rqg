@@ -1,251 +1,251 @@
 # insight
-name: ${{openSystem.content.skill.insight.skillName}}$ (...)
+name: ${{rqgCompendiumContent.skill.insight.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/insight.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.insight.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.insight.skillName}}$
   specialization: "..."
   baseChance: 20
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..insight
-    name: ${{openSystem.content.skill.insight.skillName}}$
+    name: ${{rqgCompendiumContent.skill.insight.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.insight
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # listen
-name: ${{openSystem.content.skill.listen.skillName}}$
+name: ${{rqgCompendiumContent.skill.listen.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/listen.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.listen.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.listen.skillName}}$
   specialization:
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..listen
-    name: ${{openSystem.content.skill.listen.skillName}}$
+    name: ${{rqgCompendiumContent.skill.listen.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.listen
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # scan
-name: ${{openSystem.content.skill.scan.skillName}}$
+name: ${{rqgCompendiumContent.skill.scan.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/scan.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.scan.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.scan.skillName}}$
   specialization:
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..scan
-    name: ${{openSystem.content.skill.scan.skillName}}$
+    name: ${{rqgCompendiumContent.skill.scan.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.scan
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # search
-name: ${{openSystem.content.skill.search.skillName}}$
+name: ${{rqgCompendiumContent.skill.search.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/search.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.search.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.search.skillName}}$
   specialization:
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..search
-    name: ${{openSystem.content.skill.search.skillName}}$
+    name: ${{rqgCompendiumContent.skill.search.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.search
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # track
-name: ${{openSystem.content.skill.track.skillName}}$
+name: ${{rqgCompendiumContent.skill.track.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/track.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.track.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.track.skillName}}$
   specialization:
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..track
-    name: ${{openSystem.content.skill.track.skillName}}$
+    name: ${{rqgCompendiumContent.skill.track.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.track
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 #track-by-scent
-name: ${{openSystem.content.skill.track.skillName}}$ (${{openSystem.content.skill.track.specialization.scent}}$)
+name: ${{rqgCompendiumContent.skill.track.skillName}}$ (${{rqgCompendiumContent.skill.track.specialization.scent}}$)
 type: skill
 img: systems/rqg/assets/images/skills/track-by-scent.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.track.skillName}}$
-  specialization: ${{openSystem.content.skill.track.specialization.scent}}$
+  skillName: ${{rqgCompendiumContent.skill.track.skillName}}$
+  specialization: ${{rqgCompendiumContent.skill.track.specialization.scent}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..track
-    name: ${{openSystem.content.skill.track.skillName}}$
+    name: ${{rqgCompendiumContent.skill.track.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.track-by-scent
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 #scent-intruder
-name: ${{openSystem.content.skill.scentIntruder.skillName}}$
+name: ${{rqgCompendiumContent.skill.scentIntruder.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/track-by-scent.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.scentIntruder.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.scentIntruder.skillName}}$
   specialization:
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..scent-intruder
-    name: ${{openSystem.content.skill.scentIntruder.skillName}}$
+    name: ${{rqgCompendiumContent.skill.scentIntruder.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.scent-intruder
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 #Elfsense
-name: ${{openSystem.content.skill.elfsense.skillName}}$
+name: ${{rqgCompendiumContent.skill.elfsense.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/other-sense.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.elfsense.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.elfsense.skillName}}$
   specialization:
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..elfsense
-    name: ${{openSystem.content.skill.elfsense.skillName}}$
+    name: ${{rqgCompendiumContent.skill.elfsense.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.elfsense
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # Earthsense scan
-name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+name: ${{rqgCompendiumContent.skill.earthsenseScan.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/scan.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.earthsenseScan.skillName}}$
   specialization:
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..earthsense-scan
-    name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+    name: ${{rqgCompendiumContent.skill.earthsenseScan.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.earthsense-scan
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # Earthsense search
-name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+name: ${{rqgCompendiumContent.skill.earthsenseSearch.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/search.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.earthsenseSearch.skillName}}$
   specialization:
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..earthsense-search
-    name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+    name: ${{rqgCompendiumContent.skill.earthsenseSearch.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.earthsense-search
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # Darksense scan
-name: ${{openSystem.content.skill.darksenseScan.skillName}}$
+name: ${{rqgCompendiumContent.skill.darksenseScan.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/scan.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.darksenseScan.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.darksenseScan.skillName}}$
   specialization:
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..darksense-scan
-    name: ${{openSystem.content.skill.darksenseScan.skillName}}$
+    name: ${{rqgCompendiumContent.skill.darksenseScan.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.darksense-scan
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # Darksense search
-name: ${{openSystem.content.skill.darksenseSearch.skillName}}$
+name: ${{rqgCompendiumContent.skill.darksenseSearch.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/search.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.darksenseSearch.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.darksenseSearch.skillName}}$
   specialization:
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..darksense-search
-    name: ${{openSystem.content.skill.darksenseSearch.skillName}}$
+    name: ${{rqgCompendiumContent.skill.darksenseSearch.skillName}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.darksense-search
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

@@ -1,7 +1,7 @@
 # insight
-name: ${{openSystem.content.skill.insight.skillName}}$
+name: ${{rqgCompendiumContent.skill.insight.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.insight.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.insight.skillName}}$
     type: text
     title:
       show: false
@@ -9,24 +9,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/insight.svg" height="70">
-        ${{openSystem.content.skill.insight.description}}$
+        ${{rqgCompendiumContent.skill.insight.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..insight
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # listen
-name: ${{openSystem.content.skill.listen.skillName}}$
+name: ${{rqgCompendiumContent.skill.listen.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.listen.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.listen.skillName}}$
     type: text
     title:
       show: false
@@ -34,24 +34,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/listen.svg" height="70">
-        ${{openSystem.content.skill.listen.description}}$
+        ${{rqgCompendiumContent.skill.listen.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..listen
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # scan
-name: ${{openSystem.content.skill.scan.skillName}}$
+name: ${{rqgCompendiumContent.skill.scan.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.scan.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.scan.skillName}}$
     type: text
     title:
       show: false
@@ -59,24 +59,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/scan.svg" height="70">
-        ${{openSystem.content.skill.scan.description}}$
+        ${{rqgCompendiumContent.skill.scan.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..scan
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # scent intruder
-name: ${{openSystem.content.skill.scentIntruder.skillName}}$
+name: ${{rqgCompendiumContent.skill.scentIntruder.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.scentIntruder.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.scentIntruder.skillName}}$
     type: text
     title:
       show: false
@@ -84,24 +84,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/track-by-scent.svg" height="70">
-        ${{openSystem.content.skill.scentIntruder.description}}$
+        ${{rqgCompendiumContent.skill.scentIntruder.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..scent-intruder
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # search
-name: ${{openSystem.content.skill.search.skillName}}$
+name: ${{rqgCompendiumContent.skill.search.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.search.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.search.skillName}}$
     type: text
     title:
       show: false
@@ -109,24 +109,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/search.svg" height="70">
-        ${{openSystem.content.skill.search.description}}$
+        ${{rqgCompendiumContent.skill.search.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..search
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # track
-name: ${{openSystem.content.skill.track.skillName}}$
+name: ${{rqgCompendiumContent.skill.track.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.track.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.track.skillName}}$
     type: text
     title:
       show: false
@@ -134,24 +134,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/track.svg" height="70">
-        ${{openSystem.content.skill.track.description}}$
+        ${{rqgCompendiumContent.skill.track.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..track
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # Elfsense
-name: ${{openSystem.content.skill.elfsense.skillName}}$
+name: ${{rqgCompendiumContent.skill.elfsense.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.elfsense.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.elfsense.skillName}}$
     type: text
     title:
       show: false
@@ -159,24 +159,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/other-sense.svg" height="70">
-        ${{openSystem.content.skill.elfsense.description}}$
+        ${{rqgCompendiumContent.skill.elfsense.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..elfsense
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # Earthsense scan
-name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+name: ${{rqgCompendiumContent.skill.earthsenseScan.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.earthsenseScan.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.earthsenseScan.skillName}}$
     type: text
     title:
       show: false
@@ -184,24 +184,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/scan.svg" height="70">
-        ${{openSystem.content.skill.earthsenseScan.description}}$
+        ${{rqgCompendiumContent.skill.earthsenseScan.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..earthsense-scan
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # Earthsense search
-name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+name: ${{rqgCompendiumContent.skill.earthsenseSearch.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.earthsenseSearch.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.earthsenseSearch.skillName}}$
     type: text
     title:
       show: false
@@ -209,24 +209,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/search.svg" height="70">
-        ${{openSystem.content.skill.earthsenseSearch.description}}$
+        ${{rqgCompendiumContent.skill.earthsenseSearch.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..earthsense-search
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # Darksense scan
-name: ${{openSystem.content.skill.darksenseScan.skillName}}$
+name: ${{rqgCompendiumContent.skill.darksenseScan.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.darksenseScan.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.darksenseScan.skillName}}$
     type: text
     title:
       show: false
@@ -234,24 +234,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/scan.svg" height="70">
-        ${{openSystem.content.skill.darksenseScan.description}}$
+        ${{rqgCompendiumContent.skill.darksenseScan.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..darksense-scan
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # Darksense search
-name: ${{openSystem.content.skill.darksenseSearch.skillName}}$
+name: ${{rqgCompendiumContent.skill.darksenseSearch.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.darksenseSearch.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.darksenseSearch.skillName}}$
     type: text
     title:
       show: false
@@ -259,16 +259,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/search.svg" height="70">
-        ${{openSystem.content.skill.darksenseSearch.description}}$
+        ${{rqgCompendiumContent.skill.darksenseSearch.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.perception.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.perception.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..darksense-search
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

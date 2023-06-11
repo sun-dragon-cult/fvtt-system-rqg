@@ -1,24 +1,24 @@
-name: ${{openSystem.content.weapon.smallWoodenShield}}$
+name: ${{rqgCompendiumContent.weapon.smallWoodenShield}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/small-shield.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.small-wooden-shield
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.shields-small
-        name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.small}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.small}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
       damage: 1d3
       minStrength: 5
@@ -72,27 +72,27 @@ system:
   isRangedWeapon: false
   projectileId:
 ---
-name: ${{openSystem.content.weapon.mediumWoodenShield}}$
+name: ${{rqgCompendiumContent.weapon.mediumWoodenShield}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/medium-shield.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.medium-wooden-shield
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.shields-medium
-        name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.medium}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.medium}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
       damage: 1d4
       minStrength: 9
@@ -146,27 +146,27 @@ system:
   isRangedWeapon: false
   projectileId:
 ---
-name: ${{openSystem.content.weapon.largeWoodenShield}}$
+name: ${{rqgCompendiumContent.weapon.largeWoodenShield}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/large-shield.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.large-wooden-shield
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.shields-large
-        name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.large}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.large}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
       damage: 1d6
       minStrength: 12

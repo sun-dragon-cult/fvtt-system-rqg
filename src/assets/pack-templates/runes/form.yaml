@@ -1,29 +1,29 @@
-name: ${{openSystem.content.rune.beast}}$ (${{openSystem.content.runeType.form}}$)
+name: ${{rqgCompendiumContent.rune.beast}}$ (${{rqgCompendiumContent.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/beast.svg
 system:
-  rune: ${{openSystem.content.rune.beast}}$
+  rune: ${{rqgCompendiumContent.rune.beast}}$
   chance: 50
   hasExperience: false
   runeType: form
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.man}}$ (${{openSystem.content.runeType.form}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.man}}$ (${{rqgCompendiumContent.runeType.form}}$)
   descriptionRqidLink:
     rqid: je..beast-form
-    name: ${{openSystem.content.rune.beast}}$
+    name: ${{rqgCompendiumContent.rune.beast}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.beast-form
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.chaos}}$ (${{openSystem.content.runeType.form}}$)
+name: ${{rqgCompendiumContent.rune.chaos}}$ (${{rqgCompendiumContent.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/chaos.svg
 system:
-  rune: ${{openSystem.content.rune.chaos}}$
+  rune: ${{rqgCompendiumContent.rune.chaos}}$
   chance: 50
   hasExperience: false
   runeType: form
@@ -32,19 +32,19 @@ system:
   opposingRune:
   descriptionRqidLink:
     rqid: je..chaos-form
-    name: ${{openSystem.content.rune.chaos}}$
+    name: ${{rqgCompendiumContent.rune.chaos}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.chaos-form
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.dragonewt}}$ (${{openSystem.content.runeType.form}}$)
+name: ${{rqgCompendiumContent.rune.dragonewt}}$ (${{rqgCompendiumContent.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/dragonewt.svg
 system:
-  rune: ${{openSystem.content.rune.dragonewt}}$
+  rune: ${{rqgCompendiumContent.rune.dragonewt}}$
   chance: 50
   hasExperience: false
   runeType: form
@@ -53,40 +53,40 @@ system:
   opposingRune:
   descriptionRqidLink:
     rqid: je..dragonewt-form
-    name: ${{openSystem.content.rune.dragonewt}}$
+    name: ${{rqgCompendiumContent.rune.dragonewt}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.dragonewt-form
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.man}}$ (${{openSystem.content.runeType.form}}$)
+name: ${{rqgCompendiumContent.rune.man}}$ (${{rqgCompendiumContent.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/man.svg
 system:
-  rune: ${{openSystem.content.rune.man}}$
+  rune: ${{rqgCompendiumContent.rune.man}}$
   chance: 50
   hasExperience: false
   runeType: form
   minorRunes: []
   isMastered: false
-  opposingRune: ${{openSystem.content.rune.man}}$ (${{openSystem.content.runeType.form}}$)
+  opposingRune: ${{rqgCompendiumContent.rune.man}}$ (${{rqgCompendiumContent.runeType.form}}$)
   descriptionRqidLink:
     rqid: je..man-form
-    name: ${{openSystem.content.rune.man}}$
+    name: ${{rqgCompendiumContent.rune.man}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.man-form
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.plant}}$ (${{openSystem.content.runeType.form}}$)
+name: ${{rqgCompendiumContent.rune.plant}}$ (${{rqgCompendiumContent.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/plant.svg
 system:
-  rune: ${{openSystem.content.rune.plant}}$
+  rune: ${{rqgCompendiumContent.rune.plant}}$
   chance: 50
   hasExperience: false
   runeType: form
@@ -95,19 +95,19 @@ system:
   opposingRune:
   descriptionRqidLink:
     rqid: je..plant-form
-    name: ${{openSystem.content.rune.plant}}$
+    name: ${{rqgCompendiumContent.rune.plant}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.plant-form
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.rune.spirit}}$ (${{openSystem.content.runeType.form}}$)
+name: ${{rqgCompendiumContent.rune.spirit}}$ (${{rqgCompendiumContent.runeType.form}}$)
 type: rune
 img: systems/rqg/assets/images/runes/spirit.svg
 system:
-  rune: ${{openSystem.content.rune.spirit}}$
+  rune: ${{rqgCompendiumContent.rune.spirit}}$
   chance: 50
   hasExperience: false
   runeType: form
@@ -116,10 +116,10 @@ system:
   opposingRune:
   descriptionRqidLink:
     rqid: je..spirit-form
-    name: ${{openSystem.content.rune.spirit}}$
+    name: ${{rqgCompendiumContent.rune.spirit}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune.spirit-form
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

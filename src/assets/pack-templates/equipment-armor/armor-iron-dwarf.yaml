@@ -1,22 +1,22 @@
-name: ${{openSystem.content.equipment.armor.unenchantedHeavyDwarfChainmail}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Iron}}$)
+name: ${{rqgCompendiumContent.equipment.armor.unenchantedHeavyDwarfChainmail}}$ (${{uiContent.RQG.Item.Armor.ArmorMaterial.Iron}}$)
 type: armor
 img: systems/rqg/assets/images/armor/chain-mail.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.armor.unenchanted-heavy-dwarf-chainmail-iron
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   hitLocations:
-    - ${{openSystem.content.hitLocation.humanoid.rightLeg}}$
-    - ${{openSystem.content.hitLocation.humanoid.leftLeg}}$
-    - ${{openSystem.content.hitLocation.humanoid.abdomen}}$
-    - ${{openSystem.content.hitLocation.humanoid.chest}}$
-    - ${{openSystem.content.hitLocation.humanoid.rightArm}}$
-    - ${{openSystem.content.hitLocation.humanoid.leftArm}}$
-  armorType: ${{openSystem.content.equipment.armor.unenchantedHeavyDwarfChainmail}}$
-  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Iron}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.rightLeg}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.leftLeg}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.abdomen}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.rightArm}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.leftArm}}$
+  armorType: ${{rqgCompendiumContent.equipment.armor.unenchantedHeavyDwarfChainmail}}$
+  material: ${{uiContent.RQG.Item.Armor.ArmorMaterial.Iron}}$
   absorbs: 9
   encumbrance: 12
   price:
@@ -27,22 +27,22 @@ system:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description: ${{openSystem.content.equipment.armor.description.unenchantedHeavyDwarfChainmail}}$
+  description: ${{rqgCompendiumContent.equipment.armor.description.unenchantedHeavyDwarfChainmail}}$
 ---
-name: ${{openSystem.content.equipment.armor.unenchantedDwarfHelmet}}$ (${{openSystem.RQG.Item.Armor.ArmorMaterial.Iron}}$)
+name: ${{rqgCompendiumContent.equipment.armor.unenchantedDwarfHelmet}}$ (${{uiContent.RQG.Item.Armor.ArmorMaterial.Iron}}$)
 type: armor
 img: systems/rqg/assets/images/armor/closed-helmet.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.armor.unenchanted-dwarf-helmet-iron
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   hitLocations:
-    - ${{openSystem.content.hitLocation.humanoid.head}}$
-  armorType: ${{openSystem.content.equipment.armor.closedHelm}}$
-  material: ${{openSystem.RQG.Item.Armor.ArmorMaterial.Iron}}$
+    - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$
+  armorType: ${{rqgCompendiumContent.equipment.armor.closedHelm}}$
+  material: ${{uiContent.RQG.Item.Armor.ArmorMaterial.Iron}}$
   absorbs: 9
   encumbrance: 2
   price:
@@ -53,4 +53,4 @@ system:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description: ${{openSystem.content.equipment.armor.description.unenchantedDwarfHelmet}}$
+  description: ${{rqgCompendiumContent.equipment.armor.description.unenchantedDwarfHelmet}}$

@@ -1,24 +1,24 @@
 # aldrya
-name: ${{openSystem.content.cult.aldrya.name}}$
+name: ${{rqgCompendiumContent.cult.aldrya.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.aldrya.name}}$
+  deity: ${{rqgCompendiumContent.cult.aldrya.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.aldrya.name}}$
-      tagline: ${{openSystem.content.cult.aldrya.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.aldrya.name}}$
+      tagline: ${{rqgCompendiumContent.cult.aldrya.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.earthElement.name}}$
-    - ${{openSystem.content.runeDescription.plantForm.name}}$
-    - ${{openSystem.content.runeDescription.fertilityPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.earthElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.plantForm.name}}$
+    - ${{rqgCompendiumContent.runeDescription.fertilityPower.name}}$
   descriptionRqidLink:
     rqid: je..aldrya
-    name: ${{openSystem.content.cult.aldrya.name}}$
+    name: ${{rqgCompendiumContent.cult.aldrya.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -48,5 +48,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.aldrya
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

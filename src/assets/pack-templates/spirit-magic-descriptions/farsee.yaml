@@ -1,7 +1,7 @@
 # farsee
-name: ${{openSystem.content.spiritMagic.farsee.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.farsee.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.farsee.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.farsee.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.farsee.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.farsee.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..farsee
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

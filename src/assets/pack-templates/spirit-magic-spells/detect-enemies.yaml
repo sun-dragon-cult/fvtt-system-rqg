@@ -1,5 +1,5 @@
 # detect-enemies
-name: ${{openSystem.content.spiritMagic.detectEnemies.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.detectEnemies.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: active
   descriptionRqidLink:
     rqid: je..detect-enemies
-    name: ${{openSystem.content.spiritMagic.detectEnemies.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.detectEnemies.name}}$
 flags:
   rqg:
     documentRqidFlags:

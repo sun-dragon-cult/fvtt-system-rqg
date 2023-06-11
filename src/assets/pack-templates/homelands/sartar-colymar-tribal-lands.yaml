@@ -119,5 +119,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.homeland.sartar-colymar-tribal-lands
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

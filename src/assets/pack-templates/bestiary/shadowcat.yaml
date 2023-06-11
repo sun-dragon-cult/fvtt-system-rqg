@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.shadowcat.name}}$
+name: ${{rqgCompendiumContent.bestiary.shadowcat.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,7 +27,7 @@ system:
       value:
       formula:
   background:
-    species: ${{openSystem.content.bestiary.shadowcat.species}}$
+    species: ${{rqgCompendiumContent.bestiary.shadowcat.species}}$
     occupation: ''
     homeland: ''
     cultureJournalRqidLinks: []
@@ -45,7 +45,7 @@ system:
     ransom:
     ransomDetails: ''
     biography: ''
-  allies: ${{openSystem.content.bestiary.shadowcat.notes}}$
+  allies: ${{rqgCompendiumContent.bestiary.shadowcat.notes}}$
   attributes:
     magicPoints:
       value: 19
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.shadowcat.name}}$
+  name: ${{rqgCompendiumContent.bestiary.shadowcat.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -146,5 +146,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: a.character.shadowcat
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

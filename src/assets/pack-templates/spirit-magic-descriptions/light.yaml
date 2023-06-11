@@ -1,7 +1,7 @@
 # light
-name: ${{openSystem.content.spiritMagic.light.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.light.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.light.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.light.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.light.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.light.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..light
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

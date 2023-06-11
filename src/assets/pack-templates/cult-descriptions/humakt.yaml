@@ -1,7 +1,7 @@
 # humakt
-name: ${{openSystem.content.cult.humakt.name}}$
+name: ${{rqgCompendiumContent.cult.humakt.name}}$
 pages:
-  - name: ${{openSystem.content.cult.humakt.name}}$
+  - name: ${{rqgCompendiumContent.cult.humakt.name}}$
     type: text
     title:
       show: false
@@ -9,17 +9,17 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        <h2>${{openSystem.content.cult.humakt.name}}$, ${{openSystem.content.cult.humakt.tagline}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        <h2>${{rqgCompendiumContent.cult.humakt.name}}$, ${{rqgCompendiumContent.cult.humakt.tagline}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/truth.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
-        ${{openSystem.content.cult.humakt.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.humakt.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..humakt
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

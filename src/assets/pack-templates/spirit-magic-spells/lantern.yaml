@@ -1,5 +1,5 @@
 # lantern
-name: ${{openSystem.content.spiritMagic.lantern.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.lantern.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..lantern
-    name: ${{openSystem.content.spiritMagic.lantern.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.lantern.name}}$
 flags:
   rqg:
     documentRqidFlags:

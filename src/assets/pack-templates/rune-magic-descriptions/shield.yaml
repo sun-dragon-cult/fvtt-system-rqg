@@ -1,7 +1,7 @@
 # shield
-name: ${{openSystem.content.runeMagic.shield.name}}$
+name: ${{rqgCompendiumContent.runeMagic.shield.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.shield.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.shield.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
-        ${{openSystem.content.runeMagic.shield.description}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.runeMagic.shield.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..shield
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

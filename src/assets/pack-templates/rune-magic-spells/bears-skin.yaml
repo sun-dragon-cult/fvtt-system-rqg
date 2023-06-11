@@ -1,5 +1,5 @@
 # bears-skin
-name: ${{openSystem.content.runeMagic.bearsSkin.name}}$
+name: ${{rqgCompendiumContent.runeMagic.bearsSkin.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..bears-skin
-    name: ${{openSystem.content.runeMagic.bearsSkin.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.bearsSkin.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.bears-skin
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

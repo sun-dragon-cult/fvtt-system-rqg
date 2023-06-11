@@ -1,24 +1,24 @@
 # the-seven-mothers
-name: ${{openSystem.content.cult.theSevenMothers.name}}$
+name: ${{rqgCompendiumContent.cult.theSevenMothers.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.theSevenMothers.name}}$
+  deity: ${{rqgCompendiumContent.cult.theSevenMothers.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.theSevenMothers.name}}$
-      tagline: ${{openSystem.content.cult.theSevenMothers.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.theSevenMothers.name}}$
+      tagline: ${{rqgCompendiumContent.cult.theSevenMothers.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.moonElement.name}}$
-    - ${{openSystem.content.runeDescription.fertilityPower.name}}$
-    - ${{openSystem.content.runeDescription.deathPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.moonElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.fertilityPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.deathPower.name}}$
   descriptionRqidLink:
     rqid: je..the-seven-mothers
-    name: ${{openSystem.content.cult.theSevenMothers.name}}$
+    name: ${{rqgCompendiumContent.cult.theSevenMothers.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -48,5 +48,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.the-seven-mothers
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

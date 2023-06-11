@@ -21,12 +21,8 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
@@ -377,7 +373,7 @@
     {
       "lang": "en",
       "name": "English",
-      "path": "i18n/en/openSystem.json"
+      "path": "i18n/en/uiContent.json"
     }
   ],
   "release-please-start": "x-release-please-start-version",

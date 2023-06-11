@@ -1,14 +1,14 @@
-name: ${{openSystem.content.equipment.gear.lightTorchWicker}}$
+name: ${{rqgCompendiumContent.equipment.gear.lightTorchWicker}}$
 type: gear
 img: systems/rqg/assets/images/gear/primitive-torch.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.light-wicker-torch
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
-  description: ${{openSystem.content.equipment.gear.lightTorchWickerDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.lightTorchWickerDescription}}$
   gmNotes:
   quantity: 5
   price:

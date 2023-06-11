@@ -1,5 +1,5 @@
 # dark-walk
-name: ${{openSystem.content.runeMagic.darkWalk.name}}$
+name: ${{rqgCompendiumContent.runeMagic.darkWalk.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..dark-walk
-    name: ${{openSystem.content.runeMagic.darkWalk.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.darkWalk.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.dark-walk
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

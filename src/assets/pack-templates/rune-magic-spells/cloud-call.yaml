@@ -1,5 +1,5 @@
 # cloud-call
-name: ${{openSystem.content.runeMagic.cloudCall.name}}$
+name: ${{rqgCompendiumContent.runeMagic.cloudCall.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..cloud-call
-    name: ${{openSystem.content.runeMagic.cloudCall.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.cloudCall.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.cloud-call
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

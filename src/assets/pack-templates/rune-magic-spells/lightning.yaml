@@ -1,5 +1,5 @@
 # lightning
-name: ${{openSystem.content.runeMagic.lightning.name}}$
+name: ${{rqgCompendiumContent.runeMagic.lightning.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..lightning
-    name: ${{openSystem.content.runeMagic.lightning.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.lightning.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.lightning
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

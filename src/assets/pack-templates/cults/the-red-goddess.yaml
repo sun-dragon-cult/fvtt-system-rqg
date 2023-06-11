@@ -1,25 +1,25 @@
 # the-red-goddess
-name: ${{openSystem.content.cult.theRedGoddess.name}}$
+name: ${{rqgCompendiumContent.cult.theRedGoddess.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.theRedGoddess.name}}$
+  deity: ${{rqgCompendiumContent.cult.theRedGoddess.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.theRedGoddess.name}}$
-      tagline: ${{openSystem.content.cult.theRedGoddess.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.theRedGoddess.name}}$
+      tagline: ${{rqgCompendiumContent.cult.theRedGoddess.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.fertilityPower.name}}$
-    - ${{openSystem.content.runeDescription.moonElement.name}}$
-    - ${{openSystem.content.runeDescription.moonElement.name}}$
-    - ${{openSystem.content.runeDescription.chaosForm.name}}$
+    - ${{rqgCompendiumContent.runeDescription.fertilityPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.moonElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.moonElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.chaosForm.name}}$
   descriptionRqidLink:
     rqid: je..the-red-goddess
-    name: ${{openSystem.content.cult.theRedGoddess.name}}$
+    name: ${{rqgCompendiumContent.cult.theRedGoddess.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -49,5 +49,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.the-red-goddess
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

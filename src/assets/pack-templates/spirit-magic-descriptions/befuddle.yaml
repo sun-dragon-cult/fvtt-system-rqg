@@ -1,7 +1,7 @@
 # befuddle
-name: ${{openSystem.content.spiritMagic.befuddle.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.befuddle.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.befuddle.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.befuddle.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.befuddle.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.befuddle.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..befuddle
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

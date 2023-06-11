@@ -1,26 +1,26 @@
-name: ${{openSystem.content.weapon.dagger}}$
+name: ${{rqgCompendiumContent.weapon.dagger}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/knife.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.dagger
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-daggers-dagger
-        name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.dagger}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-daggers.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-daggers.specialization.dagger}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4+2
@@ -46,9 +46,9 @@ system:
     missile:
       skillRqidLink:
         rqid: i.skill.thrown-dagger
-        name: ${{openSystem.content.weaponSkill.thrownDagger.name}}$
+        name: ${{rqgCompendiumContent.weaponSkill.thrownDagger.name}}$
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 1d4
@@ -78,29 +78,29 @@ system:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.parryingDagger}}$
+name: ${{rqgCompendiumContent.weapon.parryingDagger}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/knife.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.dagger-parrying
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-daggers-dagger
-        name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.dagger}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-daggers.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-daggers.specialization.dagger}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4+2
@@ -155,29 +155,29 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.throwingDagger}}$
+name: ${{rqgCompendiumContent.weapon.throwingDagger}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/thrown-dagger.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.dagger-throwing
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-daggers-dagger
-        name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.dagger}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-daggers.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-daggers.specialization.dagger}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d4
@@ -203,9 +203,9 @@ system:
     missile:
       skillRqidLink:
         rqid: i.skill.thrown-dagger
-        name: ${{openSystem.content.weaponSkill.thrownDagger.name}}$
+        name: ${{rqgCompendiumContent.weaponSkill.thrownDagger.name}}$
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 1d4
@@ -235,26 +235,26 @@ system:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.sickle}}$
+name: ${{rqgCompendiumContent.weapon.sickle}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/sickle.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.sickle
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-daggers-sickle
-        name: ${{openSystem.content.weaponSkill.1h-daggers.name}}$ (${{openSystem.content.weaponSkill.1h-daggers.specialization.sickle}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-daggers.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-daggers.specialization.sickle}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -308,29 +308,29 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.broadsword}}$
+name: ${{rqgCompendiumContent.weapon.broadsword}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.broadsword
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-swords-broadsword
-        name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.broadsword}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-swords.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-swords.specialization.broadsword}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d8+1
@@ -384,26 +384,26 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.kopis}}$
+name: ${{rqgCompendiumContent.weapon.kopis}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.kopis
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-swords-kopis
-        name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.kopis}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-swords.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-swords.specialization.kopis}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d8+1
@@ -457,29 +457,29 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.rapier}}$
+name: ${{rqgCompendiumContent.weapon.rapier}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.rapier
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-swords-rapier
-        name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.rapier}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-swords.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-swords.specialization.rapier}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -533,29 +533,29 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.shortsword}}$
+name: ${{rqgCompendiumContent.weapon.shortsword}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-sword.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.shortsword
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
       skillRqidLink:
         rqid: i.skill.1h-swords-shortsword
-        name: ${{openSystem.content.weaponSkill.1h-swords.name}}$ (${{openSystem.content.weaponSkill.1h-swords.specialization.shortsword}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.1h-swords.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-swords.specialization.shortsword}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -609,15 +609,15 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.greatsword}}$
+name: ${{rqgCompendiumContent.weapon.greatsword}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.greatsword
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
@@ -639,12 +639,12 @@ system:
     twoHand:
       skillRqidLink:
         rqid: i.skill.2h-swords-greatsword
-        name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.greatsword}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.2h-swords.name}}$ (${{rqgCompendiumContent.weaponSkill.2h-swords.specialization.greatsword}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 2d8
@@ -682,15 +682,15 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.romphaia}}$
+name: ${{rqgCompendiumContent.weapon.romphaia}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.rhomphaia
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
@@ -712,12 +712,12 @@ system:
     twoHand:
       skillRqidLink:
         rqid: i.skill.2h-swords-rhomphaia
-        name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.rhomphaia}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.2h-swords.name}}$ (${{rqgCompendiumContent.weaponSkill.2h-swords.specialization.rhomphaia}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 2d6+2
@@ -755,15 +755,15 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.sickleSwordMoonsword}}$
+name: ${{rqgCompendiumContent.weapon.sickleSwordMoonsword}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-sword.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.sickle-sword-moonsword
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
   usage:
     oneHand:
@@ -785,12 +785,12 @@ system:
     twoHand:
       skillRqidLink:
         rqid: i.skill.2h-swords-sickle-sword
-        name: ${{openSystem.content.weaponSkill.2h-swords.name}}$ (${{openSystem.content.weaponSkill.2h-swords.specialization.sickle-sword}}$)
+        name: ${{rqgCompendiumContent.weaponSkill.2h-swords.name}}$ (${{rqgCompendiumContent.weaponSkill.2h-swords.specialization.sickle-sword}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Cut}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Cut}}$
           damageType: slash
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10+1

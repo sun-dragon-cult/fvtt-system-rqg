@@ -1,7 +1,7 @@
 # protection
-name: ${{openSystem.content.spiritMagic.protection.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.protection.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.protection.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.protection.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.protection.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.protection.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..protection
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

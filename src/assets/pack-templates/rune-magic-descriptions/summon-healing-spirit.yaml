@@ -1,7 +1,7 @@
 # summon-healing-spirit
-name: ${{openSystem.content.runeMagic.summonHealingSpirit.name}}$
+name: ${{rqgCompendiumContent.runeMagic.summonHealingSpirit.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.summonHealingSpirit.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.summonHealingSpirit.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
-        ${{openSystem.content.runeMagic.summonHealingSpirit.description}}$
+        ${{rqgCompendiumContent.runeMagic.summonHealingSpirit.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..summon-healing-spirit
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

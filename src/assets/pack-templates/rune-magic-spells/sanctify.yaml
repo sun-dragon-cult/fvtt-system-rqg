@@ -1,5 +1,5 @@
 # sanctify
-name: ${{openSystem.content.runeMagic.sanctify.name}}$
+name: ${{rqgCompendiumContent.runeMagic.sanctify.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -12,10 +12,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..sanctify
-    name: ${{openSystem.content.runeMagic.sanctify.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.sanctify.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.sanctify
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,14 +1,14 @@
-name: ${{openSystem.content.equipment.gear.ridingSaddle}}$
+name: ${{rqgCompendiumContent.equipment.gear.ridingSaddle}}$
 type: gear
 img: systems/rqg/assets/images/gear/saddle.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.saddle
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 system:
-  description: ${{openSystem.content.equipment.gear.ridingSaddleDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.ridingSaddleDescription}}$
   gmNotes:
   quantity: 1
   price:

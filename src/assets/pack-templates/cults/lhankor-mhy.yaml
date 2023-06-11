@@ -1,23 +1,23 @@
 # lhankor-mhy
-name: ${{openSystem.content.cult.lhankorMhy.name}}$
+name: ${{rqgCompendiumContent.cult.lhankorMhy.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.lhankorMhy.name}}$
+  deity: ${{rqgCompendiumContent.cult.lhankorMhy.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.lhankorMhy.name}}$
-      tagline: ${{openSystem.content.cult.lhankorMhy.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.lhankorMhy.name}}$
+      tagline: ${{rqgCompendiumContent.cult.lhankorMhy.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.truthPower.name}}$
-    - ${{openSystem.content.runeDescription.stasisPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.truthPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.stasisPower.name}}$
   descriptionRqidLink:
     rqid: je..lhankor-mhy
-    name: ${{openSystem.content.cult.lhankorMhy.name}}$
+    name: ${{rqgCompendiumContent.cult.lhankorMhy.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -47,5 +47,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.cult.lhankor-mhy
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

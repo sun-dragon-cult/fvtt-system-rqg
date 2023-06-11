@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.serpent.tail}}$
+name: ${{rqgCompendiumContent.hitLocation.serpent.tail}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -8,17 +8,17 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.serpent.body}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.serpent.body}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
 flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.serpents-tail
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.serpent.body}}$
+name: ${{rqgCompendiumContent.hitLocation.serpent.body}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -35,10 +35,10 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.serpents-body
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.serpent.head}}$
+name: ${{rqgCompendiumContent.hitLocation.serpent.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -55,5 +55,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.serpents-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

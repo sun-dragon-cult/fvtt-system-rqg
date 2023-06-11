@@ -1,5 +1,5 @@
 # absorption
-name: ${{openSystem.content.runeMagic.absorption.name}}$
+name: ${{rqgCompendiumContent.runeMagic.absorption.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..absorption
-    name: ${{openSystem.content.runeMagic.absorption.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.absorption.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.absorption
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

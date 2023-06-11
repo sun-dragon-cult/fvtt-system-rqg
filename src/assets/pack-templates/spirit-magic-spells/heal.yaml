@@ -1,5 +1,5 @@
 # heal
-name: ${{openSystem.content.spiritMagic.heal.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.heal.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration:
   descriptionRqidLink:
     rqid: je..heal
-    name: ${{openSystem.content.spiritMagic.heal.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.heal.name}}$
 flags:
   rqg:
     documentRqidFlags:

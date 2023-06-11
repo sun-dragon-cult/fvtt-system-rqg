@@ -1,5 +1,5 @@
 # teleportation
-name: ${{openSystem.content.runeMagic.teleportation.name}}$
+name: ${{rqgCompendiumContent.runeMagic.teleportation.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..teleportation
-    name: ${{openSystem.content.runeMagic.teleportation.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.teleportation.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.teleportation
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

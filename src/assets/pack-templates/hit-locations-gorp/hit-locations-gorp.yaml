@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.gorp.body}}$
+name: ${{rqgCompendiumContent.hitLocation.gorp.body}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -15,5 +15,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.hit-location.gorp-body
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

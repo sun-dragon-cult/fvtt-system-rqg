@@ -1,5 +1,5 @@
 # firearrow
-name: ${{openSystem.content.spiritMagic.firearrow.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.firearrow.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,7 @@ system:
   concentration:
   descriptionRqidLink:
     rqid: je..firearrow
-    name: ${{openSystem.content.spiritMagic.firearrow.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.firearrow.name}}$
 flags:
   rqg:
     documentRqidFlags:

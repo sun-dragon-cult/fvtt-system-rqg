@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.uzko.name}}$
+name: ${{rqgCompendiumContent.bestiary.uzko.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,7 +27,7 @@ system:
       value: 11
       formula: 3d6
   background:
-    species: ${{openSystem.content.bestiary.uzko.species}}$
+    species: ${{rqgCompendiumContent.bestiary.uzko.species}}$
     occupation: ''
     homeland: sartar
     cultureJournalRqidLinks: []
@@ -45,7 +45,7 @@ system:
     ransom:
     ransomDetails: ''
     biography: ''
-  allies: ${{openSystem.content.bestiary.uzko.notes}}$
+  allies: ${{rqgCompendiumContent.bestiary.uzko.notes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.uzko.name}}$
+  name: ${{rqgCompendiumContent.bestiary.uzko.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -149,14 +149,14 @@ items:
 - "|{{	equipment-weapons/hammers-maces-clubs.yaml	i.weapon.heavy-mace	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/shield.yaml	i.weapon.large-wooden-shield	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/slings.yaml	i.weapon.sling	[ equippedStatus: 	equipped	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.aldryami}}$), subject: ${{openSystem.content.passionSubject.aldryami}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.mostali}}$), subject: ${{openSystem.content.passionSubject.mostali}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{openSystem.content.passionSubject.matriarch}}$), subject: ${{openSystem.content.passionSubject.matriarch}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.love-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Love}}$ (${{openSystem.content.passionSubject.family}}$), subject: ${{openSystem.content.passionSubject.family}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Hate}}$ (${{rqgCompendiumContent.passionSubject.aldryami}}$), subject: ${{rqgCompendiumContent.passionSubject.aldryami}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Hate}}$ (${{rqgCompendiumContent.passionSubject.mostali}}$), subject: ${{rqgCompendiumContent.passionSubject.mostali}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{rqgCompendiumContent.passionSubject.matriarch}}$), subject: ${{rqgCompendiumContent.passionSubject.matriarch}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.love-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Love}}$ (${{rqgCompendiumContent.passionSubject.family}}$), subject: ${{rqgCompendiumContent.passionSubject.family}}$	]}}|"
 effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: a.character.uzko
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

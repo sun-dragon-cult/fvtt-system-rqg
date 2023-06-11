@@ -1,5 +1,5 @@
 # face-chaos
-name: ${{openSystem.content.runeMagic.faceChaos.name}}$
+name: ${{rqgCompendiumContent.runeMagic.faceChaos.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..face-chaos
-    name: ${{openSystem.content.runeMagic.faceChaos.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.faceChaos.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.face-chaos
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

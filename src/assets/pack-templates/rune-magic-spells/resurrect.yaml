@@ -1,5 +1,5 @@
 # resurrect
-name: ${{openSystem.content.runeMagic.resurrect.name}}$
+name: ${{rqgCompendiumContent.runeMagic.resurrect.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,10 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..resurrect
-    name: ${{openSystem.content.runeMagic.resurrect.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.resurrect.name}}$
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.resurrect
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,7 +1,7 @@
 # dispel-magic
-name: ${{openSystem.content.spiritMagic.dispelMagic.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.dispelMagic.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.dispelMagic.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.dispelMagic.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.dispelMagic.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.dispelMagic.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..dispel-magic
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
