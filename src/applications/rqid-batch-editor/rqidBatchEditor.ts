@@ -409,8 +409,8 @@ export class RqidBatchEditor extends FormApplication<
           existingRqids.has(item.name) &&
           existingRqids.get(item.name) !== item.flags.rqg.documentRqidFlags.id
         ) {
-          existingRqids.set(previousExpandedName, toKebabCase(existingRqids.get(item.name))!);
-          existingRqids.set(newExpandedName, toKebabCase(item.flags.rqg.documentRqidFlags.id));
+          existingRqids.set(previousExpandedName, existingRqids.get(item.name)!);
+          existingRqids.set(newExpandedName, item.flags.rqg.documentRqidFlags.id);
           namesToDeleteFromExistingRqids.add(item.name);
         }
       });
