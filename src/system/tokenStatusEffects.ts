@@ -32,37 +32,37 @@ export function getTokenStatusEffects(): any[] {
       },
       changes: [
         {
-          key: "hitLocation:Head:system.naturalAp:",
+          key: "i.hit-location.humanoids-head:system.naturalAp",
           mode: 0, // custom
           value: "1",
         },
         {
-          key: "hitLocation:Left Arm:system.naturalAp:",
+          key: "i.hit-location.humanoids-left-arm:system.naturalAp",
           mode: 0, // custom
           value: "1",
         },
         {
-          key: "hitLocation:Right Arm:system.naturalAp:",
+          key: "i.hit-location.humanoids-right-arm:system.naturalAp",
           mode: 0, // custom
           value: "1",
         },
         {
-          key: "hitLocation:Chest:system.naturalAp:",
+          key: "i.hit-location.humanoids-chest:system.naturalAp",
           mode: 0, // custom
           value: "1",
         },
         {
-          key: "hitLocation:Abdomen:system.naturalAp:",
+          key: "i.hit-location.humanoids-abdomen:system.naturalAp",
           mode: 0, // custom
           value: "1",
         },
         {
-          key: "hitLocation:Left Leg:system.naturalAp:",
+          key: "i.hit-location.humanoids-left-leg:system.naturalAp",
           mode: 0, // custom
           value: "1",
         },
         {
-          key: "hitLocation:Right Leg:system.naturalAp:",
+          key: "i.hit-location.humanoids-right-leg:system.naturalAp",
           mode: 0, // custom
           value: "1",
         },
@@ -77,37 +77,37 @@ export function getTokenStatusEffects(): any[] {
       },
       changes: [
         {
-          key: "hitLocation:Head:system.naturalAp:",
+          key: "i.hit-location.humanoids-head:system.naturalAp",
           mode: 0, // custom
           value: "2",
         },
         {
-          key: "hitLocation:Left Arm:system.naturalAp:",
+          key: "i.hit-location.humanoids-left-arm:system.naturalAp",
           mode: 0, // custom
           value: "2",
         },
         {
-          key: "hitLocation:Right Arm:system.naturalAp:",
+          key: "i.hit-location.humanoids-right-arm:system.naturalAp",
           mode: 0, // custom
           value: "2",
         },
         {
-          key: "hitLocation:Chest:system.naturalAp:",
+          key: "i.hit-location.humanoids-chest:system.naturalAp",
           mode: 0, // custom
           value: "2",
         },
         {
-          key: "hitLocation:Abdomen:system.naturalAp:",
+          key: "i.hit-location.humanoids-abdomen:system.naturalAp",
           mode: 0, // custom
           value: "2",
         },
         {
-          key: "hitLocation:Left Leg:system.naturalAp:",
+          key: "i.hit-location.humanoids-left-leg:system.naturalAp",
           mode: 0, // custom
           value: "2",
         },
         {
-          key: "hitLocation:Right Leg:system.naturalAp:",
+          key: "i.hit-location.humanoids-right-leg:system.naturalAp",
           mode: 0, // custom
           value: "2",
         },
@@ -122,37 +122,37 @@ export function getTokenStatusEffects(): any[] {
       },
       changes: [
         {
-          key: "hitLocation:Head:system.naturalAp:",
+          key: "i.hit-location.humanoids-head:system.naturalAp",
           mode: 0, // custom
           value: "3",
         },
         {
-          key: "hitLocation:Left Arm:system.naturalAp:",
+          key: "i.hit-location.humanoids-left-arm:system.naturalAp",
           mode: 0, // custom
           value: "3",
         },
         {
-          key: "hitLocation:Right Arm:system.naturalAp:",
+          key: "i.hit-location.humanoids-right-arm:system.naturalAp",
           mode: 0, // custom
           value: "3",
         },
         {
-          key: "hitLocation:Chest:system.naturalAp:",
+          key: "i.hit-location.humanoids-chest:system.naturalAp",
           mode: 0, // custom
           value: "3",
         },
         {
-          key: "hitLocation:Abdomen:system.naturalAp:",
+          key: "i.hit-location.humanoids-abdomen:system.naturalAp",
           mode: 0, // custom
           value: "3",
         },
         {
-          key: "hitLocation:Left Leg:system.naturalAp:",
+          key: "i.hit-location.humanoids-left-leg:system.naturalAp",
           mode: 0, // custom
           value: "3",
         },
         {
-          key: "hitLocation:Right Leg:system.naturalAp:",
+          key: "i.hit-location.humanoids-right-leg:system.naturalAp",
           mode: 0, // custom
           value: "3",
         },
@@ -167,37 +167,37 @@ export function getTokenStatusEffects(): any[] {
       },
       changes: [
         {
-          key: "hitLocation:Head:system.naturalAp:",
+          key: "i.hit-location.humanoids-head:system.naturalAp",
           mode: 0, // custom
           value: "4",
         },
         {
-          key: "hitLocation:Left Arm:system.naturalAp:",
+          key: "i.hit-location.humanoids-left-arm:system.naturalAp",
           mode: 0, // custom
           value: "4",
         },
         {
-          key: "hitLocation:Right Arm:system.naturalAp:",
+          key: "i.hit-location.humanoids-right-arm:system.naturalAp",
           mode: 0, // custom
           value: "4",
         },
         {
-          key: "hitLocation:Chest:system.naturalAp:",
+          key: "i.hit-location.humanoids-chest:system.naturalAp",
           mode: 0, // custom
           value: "4",
         },
         {
-          key: "hitLocation:Abdomen:system.naturalAp:",
+          key: "i.hit-location.humanoids-abdomen:system.naturalAp",
           mode: 0, // custom
           value: "4",
         },
         {
-          key: "hitLocation:Left Leg:system.naturalAp:",
+          key: "i.hit-location.humanoids-left-leg:system.naturalAp",
           mode: 0, // custom
           value: "4",
         },
         {
-          key: "hitLocation:Right Leg:system.naturalAp:",
+          key: "i.hit-location.humanoids-right-leg:system.naturalAp",
           mode: 0, // custom
           value: "4",
         },

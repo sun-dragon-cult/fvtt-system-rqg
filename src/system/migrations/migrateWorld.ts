@@ -32,7 +32,8 @@ export async function migrateWorld(): Promise<void> {
     // Open a dialog to set missing Rqids on selected items
     await RqidBatchEditor.factory(
       ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
-      ItemTypeEnum.RuneMagic // common spells need Rqid for visualisation in spell list
+      ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+      ItemTypeEnum.HitLocation // Token HUD effects "protection" need this
     );
 
     await migrateWorldDialog(systemVersion);

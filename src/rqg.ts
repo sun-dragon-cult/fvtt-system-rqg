@@ -104,6 +104,7 @@ Hooks.once("init", async () => {
         : [
             ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
             ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+            ItemTypeEnum.HitLocation, // Token HUD effects "protection" need this
           ];
       await RqidBatchEditor.factory(...itemTypeEnums);
     },
