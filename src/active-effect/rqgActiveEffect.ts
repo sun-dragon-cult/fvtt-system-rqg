@@ -1,4 +1,4 @@
-import { localize, logMisconfiguration } from "../system/util";
+import { formatListByWorldLanguage, localize, logMisconfiguration } from "../system/util";
 import { EffectChangeData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
 import { RqgActor } from "../actors/rqgActor";
 import { Rqid } from "../system/api/rqidApi";
@@ -16,7 +16,12 @@ export class RqgActiveEffect extends ActiveEffect {
   _applyCustom(actor: RqgActor, change: EffectChangeData): void {
     const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.humanoids-head:system.naturalAp
     if (deprecated) {
-      const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path".`;
+      const itemsWithEffectsOnActor = formatListByWorldLanguage(
+        // @ts-expect-error fromUuidSync
+        actor.effects.map((e) => fromUuidSync(e.origin).name),
+        "disjunction"
+      );
+      const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
       // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn("RQG | ", msg);
