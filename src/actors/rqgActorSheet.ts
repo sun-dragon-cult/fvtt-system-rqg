@@ -598,7 +598,7 @@ export class RqgActorSheet extends ActorSheet<
       const spellCult: RqgItem | undefined = actor.items.get(runeMagic.system.cultId);
       const cultCommonRuneMagicIds: string[] =
         spellCult?.system.commonRuneMagicRqidLinks
-          .map((l: RqidLink) => actor.getBestEmbeddedDocumentByRqid(l.rqid)?.id)
+          .flatMap((l: RqidLink) => actor.getEmbeddedDocumentsByRqid(l.rqid).map((d) => d?.id))
           .filter(isTruthy) ?? [];
       runeMagic.system.isCommon = cultCommonRuneMagicIds.includes(runeMagic?.id ?? "");
     });
