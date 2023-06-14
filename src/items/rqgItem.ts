@@ -266,16 +266,16 @@ export class RqgItem extends Item {
   }
 
   static async updateDocuments(updates: any[], context: any): Promise<any> {
-    // @ts-expect-error foundry 10
-    if (isEmpty(updates)) {
+    // @ts-expect-error isEmpty
+    if (foundry.utils.isEmpty(updates)) {
       return [];
     }
 
     const { parent, pack, ...options } = context;
     if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
-        // @ts-expect-error foundry 10
-        if (!isEmpty(u)) {
+        // @ts-expect-error isEmpty
+        if (!foundry.utils.isEmpty(u)) {
           const document = parent.items.get(u._id);
           if (!document || document.documentName !== "Item") {
             const msg = "couldn't find item document from result";

@@ -220,8 +220,8 @@ export class RqgActor extends Actor {
         ResponsibleItemClass.get(d.type)
           ?.onEmbedItem(this, d, options, userId)
           .then((updateData: any) => {
-            // @ts-expect-error foundry 10
-            if (!isEmpty(updateData)) {
+            // @ts-expect-error isEmpty
+            if (!foundry.utils.isEmpty(updateData)) {
               this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
             }
           });
