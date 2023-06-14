@@ -652,6 +652,10 @@ export class RqgActorSheet extends ActorSheet<
     itemTypes[ItemTypeEnum.SpiritMagic].sort((a: any, b: any) => a.sort - b.sort);
     itemTypes[ItemTypeEnum.Weapon].sort((a: any, b: any) => a.sort - b.sort);
 
+    itemTypes[ItemTypeEnum.Cult].sort(
+      (a: any, b: any) => b.system.runePoints?.max - a.system.runePoints?.max
+    );
+
     return itemTypes;
   }
 
