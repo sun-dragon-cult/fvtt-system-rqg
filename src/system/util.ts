@@ -605,7 +605,7 @@ function formatListByLanguage(
   list: string[] | undefined,
   concatType: ListFormatType
 ): string {
-  if (!list) {
+  if (!list || list.filter(isTruthy).length === 0) {
     return "";
   }
   const listFormatter = new Intl.ListFormat(language, { style: "long", type: concatType });
