@@ -18,7 +18,7 @@ export class RqgActiveEffect extends ActiveEffect {
     if (deprecated) {
       const itemsWithEffectsOnActor = formatListByWorldLanguage(
         // @ts-expect-error fromUuidSync
-        actor.effects.map((e) => fromUuidSync(e.origin).name),
+        actor.effects.map((e) => fromUuidSync(e.origin)?.name),
         "disjunction"
       );
       const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
