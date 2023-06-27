@@ -66,3 +66,8 @@ declare global {
     RQG: RqgConfig;
   }
 }
+
+declare global {
+  // foundry.utils
+  function isEmpty(v: any): boolean;
+}
