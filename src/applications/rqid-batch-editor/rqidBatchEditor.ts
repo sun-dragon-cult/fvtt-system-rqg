@@ -13,6 +13,8 @@ import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/s
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type { RqgActor } from "../../actors/rqgActor";
+import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 
 interface ItemUpdate {
   itemId: string;
@@ -201,12 +203,15 @@ export class RqidBatchEditor extends FormApplication<
     packActorChanges: Map<string, Map<string, ItemUpdate[]>>,
     itemNames2Rqid: Map<string, string | undefined>
   ): Promise<void> {
-    const changesCount = sceneChangesMap.size + actorChangesMap.size + 1 + packItemChanges.size;
+    const changesCount =
+      sceneChangesMap.size +
+      actorChangesMap.size +
+      1 +
+      packItemChanges.size +
+      packActorChanges.size;
     let progress = 0;
     // @ts-expect-error displayProgressBar
     SceneNavigation.displayProgressBar({ label: `0 / ${changesCount}`, pct: 0 });
-
-    // TODO https://stackoverflow.com/questions/66868195/running-for-loop-in-parallel-using-async-await-promises
 
     // Update items embedded in actors
     for (const [actorId, actorItemUpdates] of actorChangesMap) {
@@ -300,8 +305,6 @@ export class RqidBatchEditor extends FormApplication<
 
     // Item Pack Compendium updates
     for (const [packId, itemChanges] of packItemChanges) {
-      // TODO if pack is locked - unlock
-
       const itemUpdates = itemChanges.reduce((acc: any[], itemUpdate) => {
         const rqidFlags: DocumentRqidFlags = {
           id: itemNames2Rqid.get(itemUpdate.name),
@@ -316,12 +319,48 @@ export class RqidBatchEditor extends FormApplication<
         return acc;
       }, []);
 
-      const pack = getGame().packs.get(packId)!;
-      const wasLocked = pack.locked;
-      await pack.configure({ locked: false });
-      await Item.updateDocuments(itemUpdates, { pack: packId });
-      await pack.configure({ locked: wasLocked });
+      if (!isEmpty(itemUpdates)) {
+        const pack = getGame().packs.get(packId)!;
+        const wasLocked = pack.locked;
+        await pack.configure({ locked: false });
+        await Item.updateDocuments(itemUpdates, { pack: packId });
+        await pack.configure({ locked: wasLocked });
+      }
 
+      this.updateProgress(++progress, changesCount);
+    }
+
+    // Actor Pack Compendium updates
+    for (const [packId, actorChanges] of packActorChanges) {
+      for (const [actorId, actorItemUpdates] of actorChanges) {
+        const embeddedItemdUpdates: any[] = actorItemUpdates.reduce((acc: any[], itemUpdate) => {
+          const rqidFlags: DocumentRqidFlags = {
+            id: itemNames2Rqid.get(itemUpdate.name),
+            lang:
+              itemUpdate.documentRqidFlags.lang ??
+              getGame().settings.get(systemId, "worldLanguage"),
+            priority: itemUpdate.documentRqidFlags.priority ?? 0,
+          };
+          const embeddedItemUpdate = RqidBatchEditor.getItemUpdate(itemUpdate, rqidFlags);
+          if (embeddedItemUpdate) {
+            acc.push(embeddedItemUpdate);
+          }
+          return acc;
+        }, []);
+
+        if (!isEmpty(embeddedItemdUpdates)) {
+          const pack = getGame().packs.get(packId)!;
+          const wasLocked = pack.locked;
+          await pack.configure({ locked: false });
+          const actors = await pack.getDocuments();
+          const parentActor = actors.find((a) => a._id === actorId);
+          await Item.updateDocuments(embeddedItemdUpdates, {
+            pack: packId,
+            parent: parentActor,
+          });
+          await pack.configure({ locked: wasLocked });
+        }
+      }
       this.updateProgress(++progress, changesCount);
     }
   }
@@ -361,60 +400,43 @@ export class RqidBatchEditor extends FormApplication<
     const itemNamesWithoutRqid: Map<string, string | undefined> = new Map();
     const existingRqids: Map<string, string> = new Map();
 
+    const scanningCount = getGame().packs.size;
+    let progress = 0;
+    // @ts-expect-error displayProgressBar
+    SceneNavigation.displayProgressBar({ label: `0 / ${scanningCount}`, pct: 0 });
+
     // Collect Rqids from system compendium packs
     const worldItemPacks = getGame().packs;
     for (const pack of worldItemPacks) {
       const packIndex = await pack.getIndex();
-      packIndex.forEach((packIndexData: any) => {
-        if (packIndexData.type !== documentType) {
-          return;
-          // Handle actor compendium packs
+
+      for (const packIndexData of packIndex) {
+        switch (packIndexData.type) {
+          case documentType:
+            this.collectItemPackRqids(
+              pack,
+              prefixRegex,
+              packIndexData,
+              existingRqids,
+              itemNamesWithoutRqid,
+              packItemChangesMap
+            );
+            break;
+
+          case ActorTypeEnum.Character:
+            await this.collectActorPackEmbeddedItemRqids(
+              pack,
+              prefixRegex,
+              documentType,
+              packIndexData,
+              existingRqids,
+              itemNamesWithoutRqid,
+              packActorChangesMap
+            );
+            break;
         }
-
-        if (
-          // @ts-expect-error packageName
-          pack.metadata.packageName === systemId &&
-          // @ts-expect-error type
-          pack.metadata.type === "Item" &&
-          // @ts-expect-error packageType
-          pack.metadata.packageType === "system"
-        ) {
-          // If the pack is a system item compendium then remember the name -> rqid combo in "existingRqids"
-          if (
-            prefixRegex.test(packIndexData?.flags?.rqg?.documentRqidFlags?.id) &&
-            // @ts-expect-error isEmpty
-            !foundry.utils.isEmpty(packIndexData?.flags?.rqg?.documentRqidFlags?.id)
-          ) {
-            // RQG System compendium pack item
-            existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
-          }
-        } else {
-          if (
-            prefixRegex.test(packIndexData?.flags?.rqg?.documentRqidFlags?.id) &&
-            // @ts-expect-error isEmpty
-            !foundry.utils.isEmpty(packIndexData?.flags?.rqg?.documentRqidFlags?.id)
-          ) {
-            // TODO Should these (non system compendium pack items) be counted?
-            existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
-          } else {
-            itemNamesWithoutRqid.set(packIndexData.name, undefined);
-
-            // @ts-expect-error metadata.id
-            const currentUpdates: ItemUpdate[] = packItemChangesMap.has(pack.metadata.id)
-              ? // @ts-expect-error metadata.id
-                packItemChangesMap.get(pack.metadata.id!)!
-              : [];
-            currentUpdates.push({
-              itemId: packIndexData._id,
-              name: packIndexData.name,
-              documentRqidFlags: packIndexData?.flags?.rqg?.documentRqidFlags ?? {},
-            });
-
-            // @ts-expect-error metadata.id
-            packItemChangesMap.set(pack.metadata.id, currentUpdates);
-          }
-        }
-      });
+      }
+      this.updateProgress(++progress, scanningCount);
     }
 
     // Collect Rqids from world Actors items
@@ -586,6 +608,101 @@ export class RqidBatchEditor extends FormApplication<
       itemNamesWithoutRqid,
       existingRqids,
     };
+  }
+
+  private static collectItemPackRqids(
+    pack: CompendiumCollection<CompendiumCollection.Metadata>,
+    prefixRegex: RegExp,
+    packIndexData: any,
+    existingRqids: Map<string, string>,
+    itemNamesWithoutRqid: Map<string, string | undefined>,
+    packItemChangesMap: Map<string, ItemUpdate[]>
+  ): void {
+    if (
+      // @ts-expect-error packageName
+      pack.metadata.packageName === systemId &&
+      // @ts-expect-error type
+      pack.metadata.type === "Item" &&
+      // @ts-expect-error packageType
+      pack.metadata.packageType === "system"
+    ) {
+      // If the pack is a system item compendium then remember the name -> rqid combo in "existingRqids"
+      if (
+        prefixRegex.test(packIndexData?.flags?.rqg?.documentRqidFlags?.id) &&
+        // @ts-expect-error isEmpty
+        !foundry.utils.isEmpty(packIndexData?.flags?.rqg?.documentRqidFlags?.id)
+      ) {
+        // RQG System compendium pack item
+        existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
+      }
+    } else {
+      if (
+        prefixRegex.test(packIndexData?.flags?.rqg?.documentRqidFlags?.id) &&
+        // @ts-expect-error isEmpty
+        !foundry.utils.isEmpty(packIndexData?.flags?.rqg?.documentRqidFlags?.id)
+      ) {
+        // TODO Should these (non system compendium pack items) be counted?
+        existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
+      } else {
+        itemNamesWithoutRqid.set(packIndexData.name, undefined);
+
+        // @ts-expect-error metadata.id
+        const currentUpdates: ItemUpdate[] = packItemChangesMap.has(pack.metadata.id)
+          ? // @ts-expect-error metadata.id
+            packItemChangesMap.get(pack.metadata.id!)!
+          : [];
+        currentUpdates.push({
+          itemId: packIndexData._id,
+          name: packIndexData.name,
+          documentRqidFlags: packIndexData?.flags?.rqg?.documentRqidFlags ?? {},
+        });
+
+        // @ts-expect-error metadata.id
+        packItemChangesMap.set(pack.metadata.id, currentUpdates);
+      }
+    }
+  }
+
+  private static async collectActorPackEmbeddedItemRqids(
+    pack: CompendiumCollection<CompendiumCollection.Metadata>,
+    prefixRegex: RegExp,
+    documentType: ItemTypeEnum,
+    packIndexData: any,
+    existingRqids: Map<string, string>,
+    itemNamesWithoutRqid: Map<string, string | undefined>,
+    packActorChangesMap: Map<string, Map<string, ItemUpdate[]>>
+  ): Promise<void> {
+    if (
+      // @ts-expect-error packageName
+      pack.metadata.packageName === systemId &&
+      // @ts-expect-error packageType
+      pack.metadata.packageType === "system"
+    ) {
+      // Don't iterate over system provided actor compendium packs
+      return;
+    }
+
+    const actors = await pack.getDocuments();
+    const actorItemChanges = new Map<string, ItemUpdate[]>();
+    for (const actor of actors as RqgActor[]) {
+      const embeddedItemUpdates: ItemUpdate[] = [];
+      for (const itemData of actor.items as any) {
+        if (itemData.type !== documentType) {
+          continue;
+        }
+        if (!itemData?.flags?.rqg?.documentRqidFlags?.id) {
+          itemNamesWithoutRqid.set(itemData.name ?? "", undefined);
+          embeddedItemUpdates.push({
+            itemId: itemData._id,
+            name: itemData.name,
+            documentRqidFlags: itemData?.flags?.rqg?.documentRqidFlags ?? {},
+          });
+        }
+      }
+      actorItemChanges.set(actor.id ?? "", embeddedItemUpdates);
+    }
+    // @ts-expect-error metadata.id
+    packActorChangesMap.set(pack.metadata.id, actorItemChanges);
   }
 
   // Render the application and resolve a Promise when the application is closed so that it can be awaited
