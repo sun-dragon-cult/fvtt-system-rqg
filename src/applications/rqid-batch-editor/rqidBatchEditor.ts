@@ -12,14 +12,14 @@ import { Rqid } from "../../system/api/rqidApi";
 import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type { RqgActor } from "../../actors/rqgActor";
+import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 
-interface ItemUpdate {
+interface ItemChange {
   itemId: string;
   name: string;
   documentRqidFlags: DocumentRqidFlags;
-  actorId?: string;
-  tokenId?: string;
-  sceneId?: string;
 }
 
 interface ExistingRqids {
@@ -50,15 +50,23 @@ interface RqidBatchEditorOptions extends FormApplication.Options {
   existingRqids: Map<string, string>;
 }
 
-interface Updates {
-  itemNamesWithoutRqid: Map<string, string | undefined>;
-  updateList: ItemUpdate[];
+interface Changes {
+  itemName2Rqid: Map<string, string | undefined>;
+  // actorId -> ItemUpdate[]
+  actorChangesMap: Map<string, ItemChange[]>;
+  // sceneId -> tokenId -> ItemUpdate[]
+  sceneChangesMap: Map<string, Map<string, ItemChange[]>>;
+  worldItemChanges: ItemChange[];
+  // packId -> ItemUpdate[]
+  packItemChangesMap: Map<string, ItemChange[]>;
+  // packId -> actorId -> ItemUpdate[]
+  packActorChangesMap: Map<string, Map<string, ItemChange[]>>;
 }
 
 export class RqidBatchEditor extends FormApplication<
   RqidBatchEditorOptions,
   RqidBatchEditorData,
-  Updates
+  Changes
 > {
   public resolve: (value: PromiseLike<void> | void) => void = () => {};
   public reject: (value: PromiseLike<void> | void) => void = () => {};
@@ -95,13 +103,13 @@ export class RqidBatchEditor extends FormApplication<
       }, [])
       .sort((a: Document<any, any>, b: Document<any, any>) => a.name!.localeCompare(b.name!));
 
-    const itemNamesWithoutRqid = [...this.object.itemNamesWithoutRqid.keys()]
+    const itemNamesWithoutRqid: ItemNameWithoutRqid[] = [...this.object.itemName2Rqid.keys()]
       .reduce((out: any, itemName) => {
         out.push({
           name: itemName,
           key: this.options.existingRqids.get(itemName) ?? "",
-          selectedRqid: this.object.itemNamesWithoutRqid.get(itemName),
-          selectedRqidSuffix: this.object.itemNamesWithoutRqid
+          selectedRqid: this.object.itemName2Rqid.get(itemName),
+          selectedRqidSuffix: this.object.itemName2Rqid
             .get(itemName)
             ?.replace(this.options.prefixRegex ?? "", ""),
         });
@@ -143,14 +151,14 @@ export class RqidBatchEditor extends FormApplication<
   onSetExistingName(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
     const newRqid = convertFormValueToString(event.currentTarget?.value);
-    this.object.itemNamesWithoutRqid.set(name, newRqid);
+    this.object.itemName2Rqid.set(name, newRqid);
     this.render(true);
   }
 
   onClickGuess(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
     const newRqid = this.options.idPrefix + toKebabCase(name);
-    this.object.itemNamesWithoutRqid.set(name, newRqid);
+    this.object.itemName2Rqid.set(name, newRqid);
     this.render(true);
   }
 
@@ -158,7 +166,7 @@ export class RqidBatchEditor extends FormApplication<
     const name = getDomDataset(event, "name") ?? "";
     const newRqid =
       this.options.idPrefix + toKebabCase(convertFormValueToString(event.currentTarget.value));
-    this.object.itemNamesWithoutRqid.set(name, newRqid);
+    this.object.itemName2Rqid.set(name, newRqid);
     this.render(true);
   }
 
@@ -168,8 +176,12 @@ export class RqidBatchEditor extends FormApplication<
       clickedButton.disabled = true;
 
       await RqidBatchEditor.persistChanges(
-        this.object.updateList,
-        this.object.itemNamesWithoutRqid
+        this.object.sceneChangesMap,
+        this.object.actorChangesMap,
+        this.object.worldItemChanges,
+        this.object.packItemChangesMap,
+        this.object.packActorChangesMap,
+        this.object.itemName2Rqid
       );
       await this.close();
     }
@@ -179,219 +191,420 @@ export class RqidBatchEditor extends FormApplication<
     return super.title + " - " + localizeItemType(this.options.itemType);
   }
 
+  // ---
+
   static async persistChanges(
-    updateList: ItemUpdate[],
-    itemNamesWithoutRqid: Map<string, string | undefined>
+    // sceneId -> tokenId -> ItemChange[]
+    sceneChangesMap: Map<string, Map<string, ItemChange[]>>,
+    // actorId ->  ItemChange[]
+    actorChangesMap: Map<string, ItemChange[]>,
+    worldItemChanges: ItemChange[],
+    // packId -> ItemChange[]
+    packItemChanges: Map<string, ItemChange[]>,
+    // packId -> actorId -> ItemChange[]
+    packActorChanges: Map<string, Map<string, ItemChange[]>>,
+    itemNames2Rqid: Map<string, string | undefined>
   ): Promise<void> {
-    const items: any[] = [];
-    const actors: any = {};
-    const scenes: any = {};
-    for (const update of updateList) {
-      update.documentRqidFlags.id = itemNamesWithoutRqid.get(update.name);
-      if (typeof update.documentRqidFlags.lang === "undefined") {
-        update.documentRqidFlags.lang = getGame().settings.get(systemId, "worldLanguage");
-      }
-      if (typeof update.documentRqidFlags.priority === "undefined") {
-        update.documentRqidFlags.priority = 0;
-      }
-      const flags = flattenObject({
-        flags: { rqg: { documentRqidFlags: update.documentRqidFlags } },
-      });
-      if (typeof update.sceneId !== "undefined") {
-        if (typeof scenes[update.sceneId] === "undefined") {
-          const scene = getGame().scenes?.get(update.sceneId);
-          scenes[update.sceneId] = scene?.toObject();
-        }
-        const tokenOffset = scenes[update.sceneId].tokens.findIndex(
-          (t: TokenDocument) => t._id === update.tokenId
-        );
-        if (tokenOffset > -1) {
-          const itemOffset = scenes[update.sceneId].tokens[tokenOffset].actorData.items.findIndex(
-            (i: any) => i._id === update.itemId
-          );
-          if (itemOffset > -1) {
-            const expandedFlags = expandObject(
-              Object.entries(flags).reduce((out: any, entry) => {
-                if (entry[0].match(/^flags\.rqg\.documentRqidFlags/)) {
-                  out[entry[0]] = entry[1];
-                }
-                return out;
-              }, {})
-            );
-            scenes[update.sceneId].tokens[tokenOffset].actorData.items[itemOffset] = mergeObject(
-              scenes[update.sceneId].tokens[tokenOffset].actorData.items[itemOffset],
-              expandedFlags
-            );
-          }
-        }
-      } else if (typeof update.actorId !== "undefined") {
-        if (typeof actors[update.actorId] === "undefined") {
-          actors[update.actorId] = [];
-        }
-        const item: any = {
-          _id: update.itemId,
-        };
-        for (const key of Object.keys(flags)) {
-          if (key.match(/^flags\.rqg\.documentRqidFlags/)) {
-            item[key] = flags[key];
-          }
-        }
-        actors[update.actorId].push(item);
-      } else {
-        const item: any = {
-          _id: update.itemId,
-        };
-        for (const key of Object.keys(flags)) {
-          if (key.match(/^flags\.rqg\.documentRqidFlags/)) {
-            item[key] = flags[key];
-          }
-        }
-        items.push(item);
-      }
+    const changesCount =
+      sceneChangesMap.size +
+      actorChangesMap.size +
+      1 +
+      packItemChanges.size +
+      packActorChanges.size;
+    let progress = 0;
+    // @ts-expect-error displayProgressBar
+    SceneNavigation.displayProgressBar({ label: `0 / ${changesCount}`, pct: 0 });
+
+    progress = await RqidBatchEditor.updateItemsEmbeddedInActors(
+      actorChangesMap,
+      itemNames2Rqid,
+      progress,
+      changesCount
+    );
+
+    progress = await RqidBatchEditor.updateItemPackCompendiums(
+      packItemChanges,
+      itemNames2Rqid,
+      progress,
+      changesCount
+    );
+
+    progress = await RqidBatchEditor.updateActorPackCompendiums(
+      packActorChanges,
+      itemNames2Rqid,
+      progress,
+      changesCount
+    );
+
+    RqidBatchEditor.updateProgress(progress, changesCount, "Update World Items");
+    const worldItemUpdates = RqidBatchEditor.getItemUpdates(worldItemChanges, itemNames2Rqid);
+    if (!isEmpty(worldItemUpdates)) {
+      await Item.updateDocuments(worldItemUpdates);
     }
-    if (items.length) {
-      await Item.updateDocuments(items);
-    }
-    if (Object.keys(actors).length) {
-      for (const actorId of Object.keys(actors)) {
-        await Item.updateDocuments(actors[actorId], { parent: getGame().actors?.get(actorId) });
-      }
-    }
-    if (Object.keys(scenes).length) {
-      for (const sceneId of Object.keys(scenes)) {
-        const scene = getGame().scenes?.get(sceneId);
-        scene?.update(scenes[sceneId]);
-      }
-    }
+    RqidBatchEditor.updateProgress(++progress, changesCount, "Update World Items");
+
+    await RqidBatchEditor.updateScenes(sceneChangesMap, itemNames2Rqid, progress, changesCount);
   }
 
-  static async scanWorldForMissingRqids(
+  private static async updateActorPackCompendiums(
+    packActorChanges: Map<string, Map<string, ItemChange[]>>,
+    itemNames2Rqid: Map<string, string | undefined>,
+    progress: number,
+    changesCount: number
+  ) {
+    RqidBatchEditor.updateProgress(progress, changesCount, "Update Actor Compendiums");
+    for (const [packId, actorChanges] of packActorChanges) {
+      let actors;
+      for (const [actorId, actorItemUpdates] of actorChanges) {
+        const embeddedItemUpdates: any[] = RqidBatchEditor.getItemUpdates(
+          actorItemUpdates,
+          itemNames2Rqid
+        );
+
+        if (!isEmpty(embeddedItemUpdates)) {
+          const pack = getGame().packs.get(packId)!;
+          const wasLocked = pack.locked;
+          await pack.configure({ locked: false });
+          if (!actors) {
+            // Only load the actors if we have any changes, and only once per pack
+            actors = await pack.getDocuments();
+          }
+          const parentActor = actors.find((a) => a._id === actorId);
+          await Item.updateDocuments(embeddedItemUpdates, {
+            pack: packId,
+            parent: parentActor,
+          });
+          await pack.configure({ locked: wasLocked });
+        }
+      }
+      RqidBatchEditor.updateProgress(++progress, changesCount, "Update Actor Compendiums");
+    }
+    return progress;
+  }
+
+  private static async updateItemPackCompendiums(
+    packItemChanges: Map<string, ItemChange[]>,
+    itemNames2Rqid: Map<string, string | undefined>,
+    progress: number,
+    changesCount: number
+  ): Promise<number> {
+    RqidBatchEditor.updateProgress(progress, changesCount, "Update Item Packs");
+    for (const [packId, itemChanges] of packItemChanges) {
+      const itemUpdates = RqidBatchEditor.getItemUpdates(itemChanges, itemNames2Rqid);
+
+      if (!isEmpty(itemUpdates)) {
+        const pack = getGame().packs.get(packId)!;
+        const wasLocked = pack.locked;
+        await pack.configure({ locked: false });
+        await Item.updateDocuments(itemUpdates, { pack: packId });
+        await pack.configure({ locked: wasLocked });
+      }
+      RqidBatchEditor.updateProgress(++progress, changesCount, "Update Item Packs");
+    }
+    return progress;
+  }
+
+  private static async updateScenes(
+    sceneChangesMap: Map<string, Map<string, ItemChange[]>>,
+    itemNames2Rqid: Map<string, string | undefined>,
+    progress: number,
+    changesCount: number
+  ): Promise<number> {
+    RqidBatchEditor.updateProgress(progress, changesCount, "Update Scenes");
+    for (const [sceneId, token2ItemUpdates] of sceneChangesMap) {
+      const scene = getGame().scenes?.get(sceneId);
+      if (!scene) {
+        console.error("RQG | Could not find scene with id", sceneId);
+        continue;
+      }
+
+      for (const [tokenId, tokenItemUpdates] of token2ItemUpdates) {
+        const token = scene.tokens.get(tokenId);
+        if (!token) {
+          console.error("RQG | Could not find scene token with id", tokenId);
+          continue;
+        }
+        // @ts-expect-error actorData..
+        if (!token?.actorData) {
+          console.error("RQG | Could not find actorData on token with id", tokenId);
+          continue;
+        }
+
+        tokenItemUpdates.forEach((itemUpdate) => {
+          // @ts-expect-error actorData
+          const item = token.actorData.items.find((i) => i._id === itemUpdate.itemId);
+          const rqidFlags: DocumentRqidFlags = {
+            id: itemNames2Rqid.get(itemUpdate.name),
+            lang:
+              itemUpdate.documentRqidFlags.lang ??
+              getGame().settings.get(systemId, "worldLanguage"),
+            priority: itemUpdate.documentRqidFlags.priority ?? 0,
+          };
+          setProperty(item, "flags.rqg.documentRqidFlags", rqidFlags);
+        });
+      }
+      // The scene tokens have been updated above
+      await scene.update({ tokens: duplicate(scene.tokens.contents) as any });
+      RqidBatchEditor.updateProgress(++progress, changesCount, "Update Scenes");
+    }
+    return progress;
+  }
+
+  private static async updateItemsEmbeddedInActors(
+    actorChangesMap: Map<string, ItemChange[]>,
+    itemNames2Rqid: Map<string, string | undefined>,
+    progress: number,
+    changesCount: number
+  ): Promise<number> {
+    RqidBatchEditor.updateProgress(progress, changesCount, "Update Embedded Items");
+
+    for (const [actorId, actorItemChanges] of actorChangesMap) {
+      const actor = getGame().actors?.get(actorId);
+      if (!actor) {
+        console.error("RQG | Could not find actor with id", actorId);
+        continue;
+      }
+
+      const embeddedItemUpdates: any[] = RqidBatchEditor.getItemUpdates(
+        actorItemChanges,
+        itemNames2Rqid
+      );
+
+      if (!isEmpty(embeddedItemUpdates)) {
+        await Item.updateDocuments(embeddedItemUpdates, {
+          parent: getGame().actors?.get(actorId),
+        });
+      }
+      RqidBatchEditor.updateProgress(++progress, changesCount, "Update Embedded Items");
+    }
+    return progress;
+  }
+
+  // ---
+
+  static async findItemsWithMissingRqids(
     documentType: ItemTypeEnum,
     prefixRegex: RegExp
-  ): Promise<
-    [
-      updateList: ItemUpdate[],
-      itemNamesWithoutRqid: Map<string, string | undefined>,
-      existingRqids: Map<string, string>
-    ]
-  > {
-    const updateList: ItemUpdate[] = [];
+  ): Promise<{
+    sceneChangesMap: Map<string, Map<string, ItemChange[]>>;
+    actorChangesMap: Map<string, ItemChange[]>;
+    itemChanges: ItemChange[];
+    packItemChangesMap: Map<string, ItemChange[]>;
+    packActorChangesMap: Map<string, Map<string, ItemChange[]>>;
+    itemNamesWithoutRqid: Map<string, string | undefined>;
+
+    existingRqids: Map<string, string>;
+  }> {
+    console.time("find");
+
+    // sceneId -> tokenIs -> ItemChange
+    const sceneChangesMap = new Map<string, Map<string, ItemChange[]>>();
+    // actorId -> ItemChange
+    const actorChangesMap = new Map<string, ItemChange[]>();
+    const itemChanges: ItemChange[] = [];
+    // packId -> ItemChange[]
+    const packItemChangesMap = new Map<string, ItemChange[]>();
+    // packId -> actorId -> ItemChange[]
+    const packActorChangesMap = new Map<string, Map<string, ItemChange[]>>();
     const itemNamesWithoutRqid: Map<string, string | undefined> = new Map();
+    // item name -> rqid
     const existingRqids: Map<string, string> = new Map();
 
-    // Collect Rqids from system compendium packs
-    const systemItemPacks = getGame().packs.filter(
-      (p) =>
-        // @ts-expect-error packageName
-        p.metadata.packageName === systemId &&
-        // @ts-expect-error type
-        p.metadata.type === "Item" &&
-        // @ts-expect-error packageType
-        p.metadata.packageType === "system"
-    );
-    for (const pack of systemItemPacks) {
-      const packIndex = await pack.getIndex();
-      packIndex.forEach((packIndexData: any) => {
-        if (packIndexData.type === documentType) {
-          if (
-            prefixRegex.test(packIndexData.flags.rqg?.documentRqidFlags?.id) &&
-            // @ts-expect-error isEmpty
-            !foundry.utils.isEmpty(packIndexData.flags.rqg?.documentRqidFlags?.id)
-          ) {
-            existingRqids.set(packIndexData.name, packIndexData?.flags.rqg.documentRqidFlags.id);
-          } else {
-            itemNamesWithoutRqid.set(packIndexData.name, undefined);
-          }
-        }
-      });
-    }
+    const scanningCount =
+      (getGame().actors?.size ?? 0) +
+      (getGame().items?.size ?? 0) +
+      getGame().packs.reduce((acc, p) => acc + p.index.size, 0) +
+      (getGame().scenes?.size ?? 0);
+    let progress = 0;
+    // @ts-expect-error displayProgressBar
+    SceneNavigation.displayProgressBar({ label: `0 / ${scanningCount}`, pct: 0 });
 
     // Collect Rqids from world Actors items
     const worldActors = getGame().actors?.contents ?? [];
+    RqidBatchEditor.updateProgress(progress, scanningCount, "Find Rqids from World Actors");
     worldActors.forEach((actor) => {
       const actorData = actor.toObject();
 
       actorData.items.forEach((item) => {
         const itemData =
           item instanceof CONFIG.Item.documentClass ? (item as any).toObject() : item;
-        if (itemData.type === documentType) {
-          if (
-            prefixRegex.test(itemData.flags.rqg?.documentRqidFlags?.id) &&
-            // @ts-expect-error isEmpty
-            !foundry.utils.isEmpty(itemData.flags.rqg?.documentRqidFlags?.id)
-          ) {
-            existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
-          } else {
-            itemNamesWithoutRqid.set(itemData.name, undefined);
-            updateList.push({
-              actorId: actor._id ?? undefined,
-              itemId: itemData._id,
-              name: itemData.name,
-              documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
-            });
-          }
+        if (itemData.type !== documentType) {
+          return;
         }
-      });
-    });
-
-    // Collect Rqids from world items
-    const worldItems = getGame().items?.contents ?? [];
-    worldItems.forEach((item) => {
-      const itemData = item instanceof CONFIG.Item.documentClass ? (item as any).toObject() : item;
-      if (itemData.type === documentType) {
         if (
-          prefixRegex.test(itemData.flags.rqg?.documentRqidFlags?.id) &&
-          // @ts-expect-error isEmpty
-          !foundry.utils.isEmpty(itemData.flags.rqg?.documentRqidFlags?.id)
+          itemData?.flags?.rqg?.documentRqidFlags?.id &&
+          prefixRegex.test(itemData.flags.rqg.documentRqidFlags.id)
         ) {
           existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
         } else {
           itemNamesWithoutRqid.set(itemData.name, undefined);
-          updateList.push({
+          if (!actor._id) {
+            console.warn("RQG | Found actor without _id", actor.name);
+            return;
+          }
+          const currentUpdates: ItemChange[] = actorChangesMap.has(actor._id)
+            ? actorChangesMap.get(actor._id)!
+            : [];
+          currentUpdates.push({
             itemId: itemData._id,
             name: itemData.name,
             documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
           });
+
+          actorChangesMap.set(actor._id, currentUpdates);
+        }
+      });
+      RqidBatchEditor.updateProgress(++progress, scanningCount, "Find Rqids from World Actors");
+    });
+
+    // Collect Rqids from world items
+    const worldItems = getGame().items?.contents ?? [];
+    RqidBatchEditor.updateProgress(progress, scanningCount, "Find Rqids from World Items");
+    worldItems.forEach((item) => {
+      const itemData = item instanceof CONFIG.Item.documentClass ? (item as any).toObject() : item;
+      if (itemData.type !== documentType) {
+        RqidBatchEditor.updateProgress(++progress, scanningCount, "Find Rqids from World Items");
+        return;
+      }
+      if (
+        prefixRegex.test(itemData.flags.rqg?.documentRqidFlags?.id) &&
+        !isEmpty(itemData.flags.rqg?.documentRqidFlags?.id)
+      ) {
+        existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
+      } else {
+        itemNamesWithoutRqid.set(itemData.name, undefined);
+        if (!itemData._id) {
+          console.warn("RQG | Found item without _id", itemData.name);
+          return;
+        }
+        const currentUpdates: ItemChange = {
+          itemId: itemData._id,
+          name: itemData.name,
+          documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
+        };
+        itemChanges.push(currentUpdates);
+      }
+      RqidBatchEditor.updateProgress(++progress, scanningCount, "Find Rqids from World Items");
+    });
+
+    // Collect Rqids from system compendium packs
+    const worldItemPacks = getGame().packs;
+    RqidBatchEditor.updateProgress(progress, scanningCount, "Find Rqids from Compendiums");
+
+    for (const pack of worldItemPacks) {
+      const packIndex = await pack.getIndex();
+
+      for (const packIndexData of packIndex) {
+        switch (packIndexData.type) {
+          case documentType:
+            RqidBatchEditor.collectItemPackRqids(
+              pack,
+              prefixRegex,
+              packIndexData,
+              existingRqids,
+              itemNamesWithoutRqid,
+              packItemChangesMap
+            );
+            RqidBatchEditor.updateProgress(
+              ++progress,
+              scanningCount,
+              "Find Rqids from Item Compendiums"
+            );
+            break;
+
+          case ActorTypeEnum.Character:
+            await RqidBatchEditor.collectActorPackEmbeddedItemRqids(
+              pack,
+              documentType,
+              itemNamesWithoutRqid,
+              packActorChangesMap
+            );
+            RqidBatchEditor.updateProgress(
+              ++progress,
+              scanningCount,
+              "Find Rqids from Actor Compendiums"
+            );
+            break;
+
+          default:
+            RqidBatchEditor.updateProgress(
+              ++progress,
+              scanningCount,
+              "Find Rqids from Compendiums"
+            );
+            break;
         }
       }
-    });
+    }
 
     // Collect Rqids from Scene token actor items
     const worldScenes = getGame().scenes ?? [];
+    RqidBatchEditor.updateProgress(progress, scanningCount, "Find Rqids from Scene Tokens");
+
+    // Loop over world scenes
     worldScenes.forEach((scene) => {
-      const sceneData = scene.toObject();
-      const sceneTokens = sceneData.tokens ?? [];
+      const sceneTokens = scene.tokens.contents ?? [];
+      if (!scene._id) {
+        console.warn("RQG | Found scene without _id", scene.name);
+        return;
+      }
+
+      // tokenId -> ItemChange[]
+      const tokenActorItemChangesMap = new Map<string, ItemChange[]>();
+
+      // Loop over scene linked tokens
       sceneTokens.forEach((token) => {
-        if (token.actorId && !token.actorLink) {
-          const actorData = duplicate(token.actorData);
-          const actorItems = actorData.items ?? [];
-          actorItems.forEach((item) => {
-            const itemData =
-              item instanceof CONFIG.Item.documentClass ? (item as any).toObject() : item;
-            if (itemData.type === documentType) {
-              if (
-                prefixRegex.test(itemData.flags.rqg?.documentRqidFlags?.id) &&
-                // @ts-expect-error isEmpty
-                !foundry.utils.isEmpty(itemData.flags.rqg?.documentRqidFlags?.id)
-              ) {
-                existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
-              } else {
-                itemNamesWithoutRqid.set(itemData.name, undefined);
-                updateList.push({
-                  sceneId: sceneData._id,
-                  tokenId: token._id ?? undefined,
-                  itemId: itemData._id,
-                  name: itemData.name,
-                  documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
-                });
-              }
-            }
-          });
+        // @ts-expect-errors actorId & actorLink on TokenDocument
+        if (!token.actorId || token.actorLink) {
+          return; // Unlinked token
         }
+        if (!token._id) {
+          console.warn("RQG | Found token without _id", token.name);
+          return;
+        }
+
+        // @ts-expect-error actorData
+        const actorData = token.actorData;
+        const tokenActorItems: ItemDataSource[] = actorData.items ?? [];
+
+        // Loop over actor items
+        tokenActorItems.forEach((item) => {
+          const itemData = item;
+          if (itemData.type !== documentType) {
+            return;
+          }
+          if (!itemData._id) {
+            console.warn("RQG | Found item without _id", itemData.name);
+            return;
+          }
+
+          if (
+            itemData.flags.rqg?.documentRqidFlags?.id &&
+            prefixRegex.test(itemData.flags.rqg.documentRqidFlags.id)
+          ) {
+            // rqid already set on item
+            existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
+          } else {
+            itemNamesWithoutRqid.set(itemData.name, undefined);
+
+            const currentUpdates: ItemChange[] = tokenActorItemChangesMap.has(token._id!) // token._id is already null checked
+              ? tokenActorItemChangesMap.get(token._id!)!
+              : [];
+            currentUpdates.push({
+              itemId: itemData._id,
+              name: itemData.name,
+              documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
+            });
+
+            tokenActorItemChangesMap.set(token._id!, currentUpdates);
+          }
+        });
       });
+      sceneChangesMap.set(scene._id, tokenActorItemChangesMap);
+      RqidBatchEditor.updateProgress(++progress, scanningCount, "Find Rqids from Scene Tokens");
     });
 
-    // Are there any missingNames without Rqid?
+    // Handle item names with multiple different Rqids
     if ([...itemNamesWithoutRqid.values()].some((v) => !v)) {
       // Fill existingRqids with Rqid from items
       const items: any = await Rqid.fromRqidRegexBest(prefixRegex, "i", "en");
@@ -405,7 +618,7 @@ export class RqidBatchEditor extends FormApplication<
         const newExpandedName = `${item.name ?? ""} ➤ ${newRqidSuffix}`;
 
         if (
-          // If foundKeys already has this item name but with another Rqid, then add the new one as well under a different name
+          // If existingRqids already has this item name but with another Rqid, then add the new one as well under a different name
           existingRqids.has(item.name) &&
           existingRqids.get(item.name) !== item.flags.rqg.documentRqidFlags.id
         ) {
@@ -424,7 +637,113 @@ export class RqidBatchEditor extends FormApplication<
       }
     }
 
-    return [updateList, itemNamesWithoutRqid, existingRqids];
+    return {
+      sceneChangesMap,
+      actorChangesMap,
+      itemChanges,
+      packItemChangesMap,
+      packActorChangesMap,
+      itemNamesWithoutRqid,
+      existingRqids,
+    };
+  }
+
+  private static collectItemPackRqids(
+    pack: CompendiumCollection<CompendiumCollection.Metadata>,
+    prefixRegex: RegExp,
+    packIndexData: any,
+    existingRqids: Map<string, string>,
+    itemNamesWithoutRqid: Map<string, string | undefined>,
+    packItemChangesMap: Map<string, ItemChange[]>
+  ): void {
+    if (
+      // @ts-expect-error packageName
+      pack.metadata.packageName === systemId &&
+      // @ts-expect-error type
+      pack.metadata.type === "Item" &&
+      // @ts-expect-error packageType
+      pack.metadata.packageType === "system"
+    ) {
+      // If the pack is a system item compendium then remember the name -> rqid combo in "existingRqids"
+      if (
+        packIndexData?.flags?.rqg?.documentRqidFlags?.id &&
+        prefixRegex.test(packIndexData.flags.rqg.documentRqidFlags.id)
+      ) {
+        // RQG System compendium pack item
+        existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
+      }
+    } else {
+      if (
+        packIndexData?.flags?.rqg?.documentRqidFlags?.id &&
+        prefixRegex.test(packIndexData.flags.rqg.documentRqidFlags.id)
+      ) {
+        existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
+      } else {
+        itemNamesWithoutRqid.set(packIndexData.name, undefined);
+
+        // @ts-expect-error metadata.id
+        const currentChanges: ItemChange[] = packItemChangesMap.has(pack.metadata.id)
+          ? // @ts-expect-error metadata.id
+            packItemChangesMap.get(pack.metadata.id!)!
+          : [];
+        currentChanges.push({
+          itemId: packIndexData._id,
+          name: packIndexData.name,
+          documentRqidFlags: packIndexData?.flags?.rqg?.documentRqidFlags ?? {},
+        });
+
+        if (!isEmpty(currentChanges)) {
+          // @ts-expect-error metadata.id
+          packItemChangesMap.set(pack.metadata.id, currentChanges);
+        }
+      }
+    }
+  }
+
+  /**
+   * Note that packActorChangesMap adn itemNamesWithoutRqid parameters will get modified.
+   */
+  private static async collectActorPackEmbeddedItemRqids(
+    pack: CompendiumCollection<CompendiumCollection.Metadata>,
+    documentType: ItemTypeEnum,
+    itemNamesWithoutRqid: Map<string, string | undefined>,
+    packActorChangesMap: Map<string, Map<string, ItemChange[]>>
+  ): Promise<void> {
+    if (
+      // @ts-expect-error packageName
+      pack.metadata.packageName === systemId &&
+      // @ts-expect-error packageType
+      pack.metadata.packageType === "system"
+    ) {
+      // Don't iterate over system provided actor compendium packs
+      return;
+    }
+
+    const actors = await pack.getDocuments();
+    const actorItemChanges = new Map<string, ItemChange[]>();
+    for (const actor of actors as RqgActor[]) {
+      const embeddedItemChanges: ItemChange[] = [];
+      for (const itemData of actor.items as any) {
+        if (itemData.type !== documentType) {
+          continue;
+        }
+        if (!itemData?.flags?.rqg?.documentRqidFlags?.id) {
+          itemNamesWithoutRqid.set(itemData.name ?? "", undefined);
+          embeddedItemChanges.push({
+            itemId: itemData._id,
+            name: itemData.name,
+            documentRqidFlags: itemData?.flags?.rqg?.documentRqidFlags ?? {},
+          });
+        }
+      }
+      if (!isEmpty(embeddedItemChanges)) {
+        actorItemChanges.set(actor.id ?? "", embeddedItemChanges);
+      }
+    }
+    if ([...actorItemChanges.values()].some((changes) => !isEmpty(changes))) {
+      // @ts-expect-error metadata.id
+      packActorChangesMap.set(pack.metadata.id, actorItemChanges);
+    }
   }
 
   // Render the application and resolve a Promise when the application is closed so that it can be awaited
@@ -450,18 +769,27 @@ export class RqidBatchEditor extends FormApplication<
         "^" + rqidDocumentName + "\\." + toKebabCase(itemType) + "\\."
       );
 
-      const [updateList, itemNamesWithoutRqid, existingRqids] =
-        await RqidBatchEditor.scanWorldForMissingRqids(itemType, prefixRegex);
-      if (
-        // @ts-expect-errors isEmpty  Are there any document without rqid to show?
-        foundry.utils.isEmpty(itemNamesWithoutRqid)
-      ) {
+      const {
+        sceneChangesMap,
+        actorChangesMap,
+        itemChanges,
+        packItemChangesMap,
+        packActorChangesMap,
+        itemNamesWithoutRqid,
+        existingRqids,
+      } = await RqidBatchEditor.findItemsWithMissingRqids(itemType, prefixRegex);
+      if (isEmpty(itemNamesWithoutRqid)) {
         continue;
       }
+
       const rqidBatchEditor = new RqidBatchEditor(
         {
-          itemNamesWithoutRqid: itemNamesWithoutRqid,
-          updateList: updateList,
+          itemName2Rqid: itemNamesWithoutRqid,
+          sceneChangesMap: sceneChangesMap,
+          actorChangesMap: actorChangesMap,
+          worldItemChanges: itemChanges,
+          packItemChangesMap: packItemChangesMap,
+          packActorChangesMap: packActorChangesMap,
         },
         {
           itemType,
@@ -472,5 +800,51 @@ export class RqidBatchEditor extends FormApplication<
       );
       await rqidBatchEditor.show();
     }
+  }
+
+  // -------------
+
+  /**
+   * Convert an array of ItemChanges to item updates suitable for a Foundry update method.
+   */
+  private static getItemUpdates(
+    itemChanges: ItemChange[],
+    itemNames2Rqid: Map<string, string | undefined>
+  ): any[] {
+    return itemChanges.reduce((acc: any[], itemChange) => {
+      const rqidFlags: DocumentRqidFlags = {
+        id: itemNames2Rqid.get(itemChange.name),
+        lang:
+          itemChange.documentRqidFlags.lang ?? getGame().settings.get(systemId, "worldLanguage"),
+        priority: itemChange.documentRqidFlags.priority ?? 0,
+      };
+      const embeddedItemUpdate = RqidBatchEditor.getItemUpdate(itemChange, rqidFlags);
+      if (embeddedItemUpdate) {
+        acc.push(embeddedItemUpdate);
+      }
+      return acc;
+    }, []);
+  }
+
+  /**
+   * Convert an ItemChange & flags to a format for foundry update.
+   */
+  private static getItemUpdate(update: ItemChange, flags: DocumentRqidFlags): any | undefined {
+    if (!update.itemId || !flags.id) {
+      return undefined;
+    }
+    return {
+      _id: update.itemId,
+      "flags.rqg.documentRqidFlags": flags,
+    };
+  }
+
+  static updateProgress(index: number, totalCount: number, prefix: string = ""): void {
+    const progress = Math.ceil((100 * index) / totalCount);
+    // @ts-expect-error displayProgressBar
+    SceneNavigation.displayProgressBar({
+      label: `${prefix} ${index} / ${totalCount}`,
+      pct: Math.round(progress),
+    });
   }
 }
