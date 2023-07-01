@@ -370,13 +370,13 @@ export class RqidBatchEditor extends FormApplication<
         continue;
       }
 
-      const embeddeItemdUpdates: any[] = RqidBatchEditor.getItemUpdates(
+      const embeddedItemUpdates: any[] = RqidBatchEditor.getItemUpdates(
         actorItemChanges,
         itemNames2Rqid
       );
 
-      if (!isEmpty(embeddeItemdUpdates)) {
-        await Item.updateDocuments(embeddeItemdUpdates, {
+      if (!isEmpty(embeddedItemUpdates)) {
+        await Item.updateDocuments(embeddedItemUpdates, {
           parent: getGame().actors?.get(actorId),
         });
       }
@@ -438,7 +438,7 @@ export class RqidBatchEditor extends FormApplication<
         }
         if (
           itemData?.flags?.rqg?.documentRqidFlags?.id &&
-          prefixRegex.test(itemData.flags.rqg.documentRqidFlags.id) // TODO behöver man kolla prefix här ?? och är det samma action som inget rqid?
+          prefixRegex.test(itemData.flags.rqg.documentRqidFlags.id)
         ) {
           existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
         } else {
@@ -609,7 +609,7 @@ export class RqidBatchEditor extends FormApplication<
       RqidBatchEditor.updateProgress(++progress, scanningCount, "Find Rqids from Scene Tokens");
     });
 
-    // Handle item names with multiple different rqids
+    // Handle item names with multiple different Rqids
     if ([...itemNamesWithoutRqid.values()].some((v) => !v)) {
       // Fill existingRqids with Rqid from items
       const items: any = await Rqid.fromRqidRegexBest(prefixRegex, "i", "en");
@@ -682,7 +682,6 @@ export class RqidBatchEditor extends FormApplication<
         packIndexData?.flags?.rqg?.documentRqidFlags?.id &&
         prefixRegex.test(packIndexData.flags.rqg.documentRqidFlags.id)
       ) {
-        // TODO Should these (non system compendium pack items) be counted?
         existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
       } else {
         itemNamesWithoutRqid.set(packIndexData.name, undefined);
