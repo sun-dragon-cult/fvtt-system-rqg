@@ -243,12 +243,7 @@ export class RqidBatchEditor extends FormApplication<
     }
     RqidBatchEditor.updateProgress(++progress, changesCount, "Update World Items");
 
-    progress = await RqidBatchEditor.updateScenes(
-      sceneChangesMap,
-      itemNames2Rqid,
-      progress,
-      changesCount
-    );
+    await RqidBatchEditor.updateScenes(sceneChangesMap, itemNames2Rqid, progress, changesCount);
   }
 
   private static async updateActorPackCompendiums(
