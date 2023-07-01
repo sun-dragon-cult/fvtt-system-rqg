@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.2.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.0...v2.2.1) (2023-07-01)
+
+
+### Bug Fixes
+
+* error log if deprecated AE warning log can't find origin of an Active Effect ([792bb11](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/792bb11cb4d89199b1b36eb96ba4b2a582ee531f))
+* handle lists of undefined in formatListByLanguage to avoid error logs ([cd25a36](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/cd25a36bd09bde035944717478d0e5aa82ce506a))
+* make rqid batch editor update items & actors in compendiums too ([87906c2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/87906c276c669807ed3b44553683f67fc0d25809)), closes [#559](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/559)
+* token status effects duration only works inside combat tracker ([8f693f9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8f693f96413fb53f0e4075222adc345e2d197b77)), closes [#562](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/562)
+
 ## [2.2.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.1.2...v2.2.0) (2023-06-14)
 
 
