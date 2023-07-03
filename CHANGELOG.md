@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.1...v2.2.2) (2023-07-03)
+
+
+### Bug Fixes
+
+* old Active effect with origin in a compendium crashes migration ([d9375a3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d9375a3dd13830a6e5efdd00c59f2b1bcf50fb18)), closes [#563](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/563)
+
 ## [2.2.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.0...v2.2.1) (2023-07-01)
 
 
