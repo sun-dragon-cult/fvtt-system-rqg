@@ -17,8 +17,14 @@ export class RqgActiveEffect extends ActiveEffect {
     const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.humanoids-head:system.naturalAp
     if (deprecated) {
       const itemsWithEffectsOnActor = formatListByWorldLanguage(
-        // @ts-expect-error fromUuidSync
-        actor.effects.map((e) => fromUuidSync(e.origin)?.name),
+        actor.effects.map((e) => {
+          try {
+            // @ts-expect-error fromUuidSync
+            return fromUuidSync(e.origin)?.name ?? "❓no name";
+          } catch (e) {
+            return "❓embedded item in compendium"; // origin was in a compendium and could not be read synchronously
+          }
+        }),
         "disjunction"
       );
       const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
