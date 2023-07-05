@@ -493,6 +493,8 @@ export class RqidBatchEditor extends FormApplication<
 
     for (const pack of worldItemPacks) {
       const packIndex = await pack.getIndex();
+      // @ts-expect-error type
+      const actors: any[] = pack.metadata.type === "Actor" ? await pack.getDocuments() : [];
 
       for (const packIndexData of packIndex) {
         switch (packIndexData.type) {
@@ -515,6 +517,7 @@ export class RqidBatchEditor extends FormApplication<
           case ActorTypeEnum.Character:
             await RqidBatchEditor.collectActorPackEmbeddedItemRqids(
               pack,
+              actors,
               documentType,
               itemNamesWithoutRqid,
               packActorChangesMap
@@ -705,6 +708,7 @@ export class RqidBatchEditor extends FormApplication<
    */
   private static async collectActorPackEmbeddedItemRqids(
     pack: CompendiumCollection<CompendiumCollection.Metadata>,
+    actors: RqgActor[],
     documentType: ItemTypeEnum,
     itemNamesWithoutRqid: Map<string, string | undefined>,
     packActorChangesMap: Map<string, Map<string, ItemChange[]>>
@@ -719,9 +723,8 @@ export class RqidBatchEditor extends FormApplication<
       return;
     }
 
-    const actors = await pack.getDocuments();
     const actorItemChanges = new Map<string, ItemChange[]>();
-    for (const actor of actors as RqgActor[]) {
+    for (const actor of actors) {
       const embeddedItemChanges: ItemChange[] = [];
       for (const itemData of actor.items as any) {
         if (itemData.type !== documentType) {
