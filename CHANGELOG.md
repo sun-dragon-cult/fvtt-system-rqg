@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.3](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.2...v2.2.3) (2023-07-05)
+
+
+### Bug Fixes
+
+* find Rqid from Actor Compendiums makes Chrome run out of memory ([b649e8b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b649e8b448b638ba9fadb3b23674d638d5183b1e)), closes [#565](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/565)
+
 ## [2.2.2](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.1...v2.2.2) (2023-07-03)
 
 
