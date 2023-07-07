@@ -99,8 +99,7 @@
       },
       "AwardExperience": {
         "GainedExperienceInfo": "{actorName} just gained an experience check in {itemName}!",
-        "ItemDoesntHaveExperienceError": "Attempt to AwardExperience to the item named \"{itemName}\" with id \"{itemId}\" that does not have the \"hasExperience\" property.",
-        "ItemNotFoundError": "Attempt to AwardExperience to an item with id \"{itemId}\" that could not be found on the actor named \"{actorName}\" with actor id \"{actorId}\"."
+        "ItemDoesntHaveExperienceError": "Attempt to AwardExperience to the item named \"{itemName}\" with id \"{itemId}\" that does not have the \"hasExperience\" property."
       },
       "Background": {
         "Background": "Background",
@@ -110,8 +109,6 @@
         "Age": "Age",
         "Gender": "Gender",
         "Species": "Species",
-        "DropSpeciesJournalEntryGM": "Drop a Journal Entry here, or use the Adventurer Creation Wizard",
-        "DropSpeciesJournalEntryPlayer": "This will be filled in by your GM or by the Adventurer Creation Wizard.",
         "TownHomeArea": "Town / Home Area",
         "Tribe": "Tribe",
         "Clan": "Clan",
@@ -756,12 +753,6 @@
         "RuneLinks": "Rune Links"
       },
       "Notification": {
-        "CircularGearLocationWarning": "Circular gear locations (A in B in A) - check your gear locations: {itemLocation}",
-        "ItemIsNotContainerWarning": "{itemName} is not a container",
-        "CantFindRootLocationNode": "Can't find root location Node",
-        "LocationDidntFindItem": "location didn't find item",
-        "ExpectedCultItemError": "Expected Cult item",
-        "CantFindCultRuneError": "Can't find cult rune {newRune} among allRunesIndex",
         "CantFindRuneInAvailableRunesError": "Can't find rune \"{runeName}\" in any compendium",
         "ItemWasNotHitLocationError": "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
         "HitLocationDoesNotHaveActorError": "Hit Location item didn't have an actor",
@@ -772,8 +763,6 @@
         "PrepareDerivedDataNotSkillError": "Calling Skill#onActorPrepareDerivedData with something else than a skill",
         "ActorNotCharacterError": "Actor is not of type character",
         "CantFindWeaponSkillWarning": "Can't find weapon skill",
-        "NoWeaponSkillFromSkillOriginWarning": "No weapon skill with from skillOrigin \"{skillOrigin}\".",
-        "CantFindSkillAssociatedWithWeaponWarning": "Can't find the Skill associated with this weapon.",
         "CantCreateActiveEffect": "Can't create Active Effect",
         "NoIdOnTokenError": "No ID on Token",
         "NoIdOnActorError": "No ID on Actor",
