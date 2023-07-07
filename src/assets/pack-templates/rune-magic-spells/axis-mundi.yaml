@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..axis-mundi
     name: ${{rqgCompendiumContent.runeMagic.axisMundi.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

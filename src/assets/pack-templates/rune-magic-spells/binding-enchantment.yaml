@@ -16,6 +16,7 @@ system:
   descriptionRqidLink:
     rqid: je..binding-enchantment
     name: ${{rqgCompendiumContent.runeMagic.bindingEnchantment.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

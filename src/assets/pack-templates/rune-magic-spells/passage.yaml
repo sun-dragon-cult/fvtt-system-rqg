@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..passage
     name: ${{rqgCompendiumContent.runeMagic.passage.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

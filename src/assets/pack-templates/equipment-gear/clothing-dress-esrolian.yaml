@@ -7,6 +7,7 @@ flags:
       id: i.gear.esrolian-dress
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   description: ${{rqgCompendiumContent.equipment.gear.clothesDressEsrolianDescription}}$
   gmNotes:

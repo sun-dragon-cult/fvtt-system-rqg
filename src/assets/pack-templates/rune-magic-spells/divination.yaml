@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..divination
     name: ${{rqgCompendiumContent.runeMagic.divination.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

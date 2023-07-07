@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..visibility
     name: ${{rqgCompendiumContent.spiritMagic.visibility.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

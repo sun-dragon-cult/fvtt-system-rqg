@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..detect-truth
     name: ${{rqgCompendiumContent.runeMagic.detectTruth.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

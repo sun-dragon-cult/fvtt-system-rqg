@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..absorption
     name: ${{rqgCompendiumContent.runeMagic.absorption.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

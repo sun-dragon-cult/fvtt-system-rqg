@@ -7,6 +7,7 @@ flags:
       id: i.armor.unenchanted-heavy-dwarf-chainmail-iron
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.rightLeg}}$
@@ -38,6 +39,7 @@ flags:
       id: i.armor.unenchanted-dwarf-helmet-iron
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$

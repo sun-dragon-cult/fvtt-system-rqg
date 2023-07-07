@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..melee-weapon
     name: ${{rqgCompendiumContent.skill.meleeWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

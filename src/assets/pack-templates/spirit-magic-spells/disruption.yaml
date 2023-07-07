@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..disruption
     name: ${{rqgCompendiumContent.spiritMagic.disruption.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

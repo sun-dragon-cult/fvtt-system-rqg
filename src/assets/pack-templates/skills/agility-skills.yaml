@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..boat
     name: ${{rqgCompendiumContent.skill.boat.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -33,6 +34,7 @@ system:
   descriptionRqidLink:
     rqid: je..climb
     name: ${{rqgCompendiumContent.skill.climb.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -57,6 +59,7 @@ system:
   descriptionRqidLink:
     rqid: je..dodge
     name: ${{rqgCompendiumContent.skill.dodge.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -78,6 +81,7 @@ system:
   descriptionRqidLink:
     rqid: je..drive-chariot
     name: ${{rqgCompendiumContent.skill.driveChariot.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -102,6 +106,7 @@ system:
   descriptionRqidLink:
     rqid: je..jump
     name: ${{rqgCompendiumContent.skill.jump.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -123,6 +128,7 @@ system:
   descriptionRqidLink:
     rqid: je..ride
     name: ${{rqgCompendiumContent.skill.ride.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -144,6 +150,7 @@ system:
   descriptionRqidLink:
     rqid: je..ski
     name: ${{rqgCompendiumContent.skill.ski.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -165,6 +172,7 @@ system:
   descriptionRqidLink:
     rqid: je..swim
     name: ${{rqgCompendiumContent.skill.swim.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

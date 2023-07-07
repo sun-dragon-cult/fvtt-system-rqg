@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..sword-trance
     name: ${{rqgCompendiumContent.runeMagic.swordTrance.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

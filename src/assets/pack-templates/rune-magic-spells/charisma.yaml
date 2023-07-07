@@ -16,6 +16,7 @@ system:
   descriptionRqidLink:
     rqid: je..charisma
     name: ${{rqgCompendiumContent.runeMagic.charisma.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

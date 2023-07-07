@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -39,6 +40,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -63,6 +65,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -87,6 +90,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -111,6 +115,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -135,6 +140,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -159,6 +165,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -183,6 +190,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -207,6 +215,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -228,6 +237,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -249,6 +259,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -270,6 +281,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -291,6 +303,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -312,6 +325,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -333,6 +347,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -354,6 +369,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -375,6 +391,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -396,6 +413,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -417,6 +435,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

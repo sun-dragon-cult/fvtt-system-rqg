@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..mobility
     name: ${{rqgCompendiumContent.spiritMagic.mobility.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

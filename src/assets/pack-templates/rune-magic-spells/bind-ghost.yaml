@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..bind-ghost
     name: ${{rqgCompendiumContent.runeMagic.bindGhost.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

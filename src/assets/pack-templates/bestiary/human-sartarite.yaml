@@ -221,6 +221,7 @@ items:
 - "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{rqgCompendiumContent.passionSubject.clan}}$), subject: ${{rqgCompendiumContent.passionSubject.clan}}$	]}}|"
 - "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{rqgCompendiumContent.passionSubject.tribe}}$), subject: ${{rqgCompendiumContent.passionSubject.tribe}}$	]}}|"
 - "|{{	passions-base/passions-base.yaml	i.passion.love-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Love}}$ (${{rqgCompendiumContent.passionSubject.family}}$), subject: ${{rqgCompendiumContent.passionSubject.family}}$	]}}|"
+effects: []
 flags:
   rqg:
     documentRqidFlags:

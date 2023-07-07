@@ -7,6 +7,7 @@ flags:
       id: i.weapon.war-hammer
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -86,6 +87,7 @@ flags:
       id: i.weapon.war-hammer-iron
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -165,6 +167,7 @@ flags:
       id: i.weapon.great-hammer
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -241,6 +244,7 @@ flags:
       id: i.weapon.maul
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -320,6 +324,7 @@ flags:
       id: i.weapon.heavy-mace
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -399,6 +404,7 @@ flags:
       id: i.weapon.light-mace
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -478,6 +484,7 @@ flags:
       id: i.weapon.singlestick
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -557,6 +564,7 @@ flags:
       id: i.weapon.wooden-club
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -636,6 +644,7 @@ flags:
       id: i.weapon.mace-two-handed
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -715,6 +724,7 @@ flags:
       id: i.weapon.quarterstaff
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:

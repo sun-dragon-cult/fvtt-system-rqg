@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..lie
     name: ${{rqgCompendiumContent.runeMagic.lie.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

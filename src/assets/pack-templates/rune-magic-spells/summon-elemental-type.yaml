@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..summon-elemental-type
     name: ${{rqgCompendiumContent.runeMagic.summonElementalType.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

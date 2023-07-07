@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..slash
     name: ${{rqgCompendiumContent.runeMagic.slash.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..lantern
     name: ${{rqgCompendiumContent.spiritMagic.lantern.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..protection
     name: ${{rqgCompendiumContent.spiritMagic.protection.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

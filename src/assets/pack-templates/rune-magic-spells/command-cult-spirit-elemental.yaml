@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..command-cult-spirit-elemental
     name: ${{rqgCompendiumContent.runeMagic.commandCultSpiritElemental.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

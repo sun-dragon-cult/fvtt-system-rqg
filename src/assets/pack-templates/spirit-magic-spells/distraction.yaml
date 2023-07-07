@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..distraction
     name: ${{rqgCompendiumContent.spiritMagic.distraction.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

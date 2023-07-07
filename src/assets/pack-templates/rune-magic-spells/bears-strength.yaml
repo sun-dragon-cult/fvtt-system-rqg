@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..bears-strength
     name: ${{rqgCompendiumContent.runeMagic.bearsStrength.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

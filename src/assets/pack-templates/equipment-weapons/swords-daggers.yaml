@@ -7,6 +7,7 @@ flags:
       id: i.weapon.dagger
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -89,6 +90,7 @@ flags:
       id: i.weapon.dagger-parrying
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -168,6 +170,7 @@ flags:
       id: i.weapon.dagger-throwing
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -250,6 +253,7 @@ flags:
       id: i.weapon.sickle
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -326,6 +330,7 @@ flags:
       id: i.weapon.broadsword
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -405,6 +410,7 @@ flags:
       id: i.weapon.kopis
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -481,6 +487,7 @@ flags:
       id: i.weapon.rapier
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -560,6 +567,7 @@ flags:
       id: i.weapon.shortsword
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -639,6 +647,7 @@ flags:
       id: i.weapon.greatsword
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -715,6 +724,7 @@ flags:
       id: i.weapon.rhomphaia
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -791,6 +801,7 @@ flags:
       id: i.weapon.sickle-sword-moonsword
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:

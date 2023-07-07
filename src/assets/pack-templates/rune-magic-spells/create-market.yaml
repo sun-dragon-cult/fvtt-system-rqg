@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..create-market
     name: ${{rqgCompendiumContent.runeMagic.createMarket.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

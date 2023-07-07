@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..soul-sight
     name: ${{rqgCompendiumContent.runeMagic.soulSight.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

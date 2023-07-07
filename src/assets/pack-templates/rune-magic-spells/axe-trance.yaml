@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..axe-trance
     name: ${{rqgCompendiumContent.runeMagic.axeTrance.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

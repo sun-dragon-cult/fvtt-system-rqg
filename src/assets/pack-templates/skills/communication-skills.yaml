@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..act
     name: ${{rqgCompendiumContent.skill.act.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -33,6 +34,7 @@ system:
   descriptionRqidLink:
     rqid: je..art
     name: ${{rqgCompendiumContent.skill.art.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -54,6 +56,7 @@ system:
   descriptionRqidLink:
     rqid: je..bargain
     name: ${{rqgCompendiumContent.skill.bargain.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -75,6 +78,7 @@ system:
   descriptionRqidLink:
     rqid: je..charm
     name: ${{rqgCompendiumContent.skill.charm.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -96,6 +100,7 @@ system:
   descriptionRqidLink:
     rqid: je..dance
     name: ${{rqgCompendiumContent.skill.dance.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -117,6 +122,7 @@ system:
   descriptionRqidLink:
     rqid: je..disguise
     name: ${{rqgCompendiumContent.skill.disguise.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -138,6 +144,7 @@ system:
   descriptionRqidLink:
     rqid: je..fast-talk
     name: ${{rqgCompendiumContent.skill.fastTalk.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -159,6 +166,7 @@ system:
   descriptionRqidLink:
     rqid: je..intimidate
     name: ${{rqgCompendiumContent.skill.intimidate.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -180,6 +188,7 @@ system:
   descriptionRqidLink:
     rqid: je..intrigue
     name: ${{rqgCompendiumContent.skill.intrigue.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -201,6 +210,7 @@ system:
   descriptionRqidLink:
     rqid: je..orate
     name: ${{rqgCompendiumContent.skill.orate.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -222,6 +232,7 @@ system:
   descriptionRqidLink:
     rqid: je..sing
     name: ${{rqgCompendiumContent.skill.sing.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -243,6 +254,7 @@ system:
   descriptionRqidLink:
     rqid: je..speak-language
     name: ${{rqgCompendiumContent.skill.speakLanguage.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

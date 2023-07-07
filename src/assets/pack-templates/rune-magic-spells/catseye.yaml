@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..catseye
     name: ${{rqgCompendiumContent.runeMagic.catseye.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

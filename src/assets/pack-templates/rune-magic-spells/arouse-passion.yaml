@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..arouse-passion
     name: ${{rqgCompendiumContent.runeMagic.arousePassion.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

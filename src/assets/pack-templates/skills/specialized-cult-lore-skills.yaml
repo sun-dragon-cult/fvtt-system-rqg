@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..cult-lore
     name: ${{rqgCompendiumContent.skill.cultLore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

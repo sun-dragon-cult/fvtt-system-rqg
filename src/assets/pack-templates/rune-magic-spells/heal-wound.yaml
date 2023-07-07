@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..heal-wound
     name: ${{rqgCompendiumContent.runeMagic.healWound.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

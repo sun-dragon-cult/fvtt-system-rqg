@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..hide
     name: ${{rqgCompendiumContent.skill.hide.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -33,6 +34,7 @@ system:
   descriptionRqidLink:
     rqid: je..move-quietly
     name: ${{rqgCompendiumContent.skill.moveQuietly.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

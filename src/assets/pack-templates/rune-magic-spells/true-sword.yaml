@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..true-sword
     name: ${{rqgCompendiumContent.runeMagic.trueSword.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

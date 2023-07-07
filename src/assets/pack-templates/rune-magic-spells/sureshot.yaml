@@ -16,6 +16,7 @@ system:
   descriptionRqidLink:
     rqid: je..sureshot
     name: ${{rqgCompendiumContent.runeMagic.sureshot.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -16,6 +16,7 @@ system:
   descriptionRqidLink:
     rqid: je..heal-body
     name: ${{rqgCompendiumContent.runeMagic.healBody.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

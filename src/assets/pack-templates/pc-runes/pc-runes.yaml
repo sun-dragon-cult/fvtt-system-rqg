@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..air-element
     name: ${{rqgCompendiumContent.rune.air}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -37,6 +38,7 @@ system:
   descriptionRqidLink:
     rqid: je..darkness-element
     name: ${{rqgCompendiumContent.rune.darkness}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -60,6 +62,7 @@ system:
   descriptionRqidLink:
     rqid: je..earth-element
     name: ${{rqgCompendiumContent.rune.earth}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -83,6 +86,7 @@ system:
   descriptionRqidLink:
     rqid: je..fire-sky-element
     name: ${{rqgCompendiumContent.rune.fireSky}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -104,6 +108,7 @@ system:
   descriptionRqidLink:
     rqid: je..moon-element
     name: ${{rqgCompendiumContent.rune.moon}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -127,6 +132,7 @@ system:
   descriptionRqidLink:
     rqid: je..water-element
     name: ${{rqgCompendiumContent.rune.water}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -148,6 +154,7 @@ system:
   descriptionRqidLink:
     rqid: je..beast-form
     name: ${{rqgCompendiumContent.rune.beast}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -169,6 +176,7 @@ system:
   descriptionRqidLink:
     rqid: je..man-form
     name: ${{rqgCompendiumContent.rune.man}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -190,6 +198,7 @@ system:
   descriptionRqidLink:
     rqid: je..death-power
     name: ${{rqgCompendiumContent.rune.death}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -211,6 +220,7 @@ system:
   descriptionRqidLink:
     rqid: je..disorder-power
     name: ${{rqgCompendiumContent.rune.disorder}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -232,6 +242,7 @@ system:
   descriptionRqidLink:
     rqid: je..fertility-power
     name: ${{rqgCompendiumContent.rune.fertility}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -253,6 +264,7 @@ system:
   descriptionRqidLink:
     rqid: je..harmony-power
     name: ${{rqgCompendiumContent.rune.harmony}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -274,6 +286,7 @@ system:
   descriptionRqidLink:
     rqid: je..illusion-power
     name: ${{rqgCompendiumContent.rune.illusion}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -295,6 +308,7 @@ system:
   descriptionRqidLink:
     rqid: je..movement-power
     name: ${{rqgCompendiumContent.rune.movement}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -316,6 +330,7 @@ system:
   descriptionRqidLink:
     rqid: je..stasis-power
     name: ${{rqgCompendiumContent.rune.stasis}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -337,6 +352,7 @@ system:
   descriptionRqidLink:
     rqid: je..truth-power
     name: ${{rqgCompendiumContent.rune.truth}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

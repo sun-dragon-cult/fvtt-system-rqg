@@ -11,6 +11,7 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:

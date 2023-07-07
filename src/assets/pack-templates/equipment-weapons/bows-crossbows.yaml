@@ -7,6 +7,7 @@ flags:
       id: i.weapon.composite-bow
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -80,6 +81,7 @@ flags:
       id: i.weapon.elf-bow
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -153,6 +155,7 @@ flags:
       id: i.weapon.self-bow
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -226,6 +229,7 @@ flags:
       id: i.weapon.arbalest
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -297,6 +301,7 @@ flags:
       id: i.weapon.heavy-crossbow
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -370,6 +375,7 @@ flags:
       id: i.weapon.light-crossbow
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -443,6 +449,7 @@ flags:
       id: i.weapon.repeating-crossbow
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -516,6 +523,7 @@ flags:
       id: i.weapon.arrows
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -587,6 +595,7 @@ flags:
       id: i.weapon.crossbow-bolts
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:

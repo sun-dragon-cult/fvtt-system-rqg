@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..matrix-creation
     name: ${{rqgCompendiumContent.runeMagic.matrixCreation.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -7,6 +7,7 @@ flags:
       id: i.weapon.light-cestus
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -86,6 +87,7 @@ flags:
       id: i.weapon.heavy-cestus
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -165,6 +167,7 @@ flags:
       id: i.weapon.claw-metal
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -244,6 +247,7 @@ flags:
       id: i.weapon.fist
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -323,6 +327,7 @@ flags:
       id: i.weapon.grapple
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -396,6 +401,7 @@ flags:
       id: i.weapon.kick
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -472,6 +478,7 @@ flags:
       id: i.weapon.head-butt
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -548,6 +555,7 @@ flags:
       id: i.weapon.trample
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -624,6 +632,7 @@ flags:
       id: i.weapon.bite
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -697,6 +706,7 @@ flags:
       id: i.weapon.rear-and-plunge
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -770,6 +780,7 @@ flags:
       id: i.weapon.claw
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -843,6 +854,7 @@ flags:
       id: i.weapon.hug
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -908,6 +920,7 @@ flags:
       id: i.weapon.rip
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -981,6 +994,7 @@ flags:
       id: i.weapon.gore
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:

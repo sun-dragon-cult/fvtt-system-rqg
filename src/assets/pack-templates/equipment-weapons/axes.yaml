@@ -7,6 +7,7 @@ flags:
       id: i.weapon.small-axe
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -86,6 +87,7 @@ flags:
       id: i.weapon.battle-axe
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -168,6 +170,7 @@ flags:
       id: i.weapon.battle-axe-iron
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -250,6 +253,7 @@ flags:
       id: i.weapon.great-axe
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -326,6 +330,7 @@ flags:
       id: i.weapon.dagger-axe
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:

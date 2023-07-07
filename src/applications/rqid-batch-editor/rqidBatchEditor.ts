@@ -395,8 +395,6 @@ export class RqidBatchEditor extends FormApplication<
 
     existingRqids: Map<string, string>;
   }> {
-    console.time("find");
-
     // sceneId -> tokenIs -> ItemChange
     const sceneChangesMap = new Map<string, Map<string, ItemChange[]>>();
     // actorId -> ItemChange

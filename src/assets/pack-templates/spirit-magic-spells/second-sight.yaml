@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..second-sight
     name: ${{rqgCompendiumContent.spiritMagic.secondSight.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

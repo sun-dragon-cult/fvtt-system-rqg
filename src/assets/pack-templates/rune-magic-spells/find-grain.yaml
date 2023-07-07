@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..find-grain
     name: ${{rqgCompendiumContent.runeMagic.findGrain.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

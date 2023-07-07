@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..turn-undead
     name: ${{rqgCompendiumContent.runeMagic.turnUndead.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

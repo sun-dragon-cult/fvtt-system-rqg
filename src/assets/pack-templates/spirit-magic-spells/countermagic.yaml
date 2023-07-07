@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..countermagic
     name: ${{rqgCompendiumContent.spiritMagic.countermagic.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

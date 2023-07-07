@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..spell-trading
     name: ${{rqgCompendiumContent.runeMagic.spellTrading.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

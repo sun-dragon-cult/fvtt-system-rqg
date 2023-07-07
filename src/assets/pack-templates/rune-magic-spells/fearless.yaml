@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..fearless
     name: ${{rqgCompendiumContent.runeMagic.fearless.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

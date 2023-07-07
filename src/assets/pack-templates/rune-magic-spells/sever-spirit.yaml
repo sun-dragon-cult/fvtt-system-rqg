@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..sever-spirit
     name: ${{rqgCompendiumContent.runeMagic.severSpirit.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

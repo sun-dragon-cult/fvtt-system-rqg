@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..ignite
     name: ${{rqgCompendiumContent.spiritMagic.ignite.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

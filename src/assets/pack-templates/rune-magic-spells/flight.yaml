@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..flight
     name: ${{rqgCompendiumContent.runeMagic.flight.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

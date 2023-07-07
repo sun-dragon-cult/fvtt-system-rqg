@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..safe
     name: ${{rqgCompendiumContent.runeMagic.safe.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

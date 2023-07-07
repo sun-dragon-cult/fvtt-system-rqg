@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..multispell
     name: ${{rqgCompendiumContent.runeMagic.multispell.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

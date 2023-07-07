@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..spirit-armor-enchantment
     name: ${{rqgCompendiumContent.runeMagic.spiritArmorEnchantment.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

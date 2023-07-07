@@ -42,6 +42,7 @@ system:
       rqid: i.rune-magic.spirit-block
     - name: Summon Cult Spirit
       rqid: i.rune-magic.summon-cult-spirit
+effects: []
 flags:
   rqg:
     documentRqidFlags:

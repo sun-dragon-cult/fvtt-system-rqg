@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..light
     name: ${{rqgCompendiumContent.spiritMagic.light.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

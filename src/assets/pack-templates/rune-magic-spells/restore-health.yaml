@@ -16,6 +16,7 @@ system:
   descriptionRqidLink:
     rqid: je..restore-health
     name: ${{rqgCompendiumContent.runeMagic.restoreHealth.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

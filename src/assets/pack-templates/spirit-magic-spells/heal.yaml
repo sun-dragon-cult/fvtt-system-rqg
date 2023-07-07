@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..heal
     name: ${{rqgCompendiumContent.spiritMagic.heal.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

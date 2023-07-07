@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..face-chaos
     name: ${{rqgCompendiumContent.runeMagic.faceChaos.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

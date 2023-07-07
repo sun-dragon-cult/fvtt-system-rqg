@@ -7,6 +7,7 @@ flags:
       id: i.weapon.atlatl-dart
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -80,6 +81,7 @@ flags:
       id: i.weapon.atlatl-javelin
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -153,6 +155,7 @@ flags:
       id: i.weapon.dart
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:

@@ -11,6 +11,7 @@ system:
   connectedTo: ${{rqgCompendiumContent.hitLocation.spiderGiant.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -31,6 +32,7 @@ system:
   connectedTo: ${{rqgCompendiumContent.hitLocation.spiderGiant.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -51,6 +53,7 @@ system:
   connectedTo: ${{rqgCompendiumContent.hitLocation.spiderGiant.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -71,6 +74,7 @@ system:
   connectedTo: ${{rqgCompendiumContent.hitLocation.spiderGiant.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -91,6 +95,7 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -111,6 +116,7 @@ system:
   connectedTo: ${{rqgCompendiumContent.hitLocation.spiderGiant.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -131,6 +137,7 @@ system:
   connectedTo: ${{rqgCompendiumContent.hitLocation.spiderGiant.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -151,6 +158,7 @@ system:
   connectedTo: ${{rqgCompendiumContent.hitLocation.spiderGiant.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -171,6 +179,7 @@ system:
   connectedTo: ${{rqgCompendiumContent.hitLocation.spiderGiant.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -191,6 +200,7 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:

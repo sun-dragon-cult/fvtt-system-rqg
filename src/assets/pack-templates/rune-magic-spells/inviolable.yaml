@@ -16,6 +16,7 @@ system:
   descriptionRqidLink:
     rqid: je..inviolable
     name: ${{rqgCompendiumContent.runeMagic.inviolable.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

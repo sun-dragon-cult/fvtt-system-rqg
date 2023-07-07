@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..magic-point-enchantment
     name: ${{rqgCompendiumContent.runeMagic.magicPointEnchantment.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

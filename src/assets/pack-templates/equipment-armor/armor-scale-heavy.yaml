@@ -8,6 +8,7 @@ flags:
       id: i.armor.sleeves-heavy-scale
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.leftArm}}$
@@ -35,6 +36,7 @@ flags:
       id: i.armor.cuirass-heavy-scale
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
@@ -61,6 +63,7 @@ flags:
       id: i.armor.hauberk-heavy-scale
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
@@ -88,6 +91,7 @@ flags:
       id: i.armor.skirt-heavy-scale
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.abdomen}}$

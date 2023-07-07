@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..dark-walk
     name: ${{rqgCompendiumContent.runeMagic.darkWalk.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

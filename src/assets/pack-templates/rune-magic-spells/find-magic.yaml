@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..find-magic
     name: ${{rqgCompendiumContent.runeMagic.findMagic.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

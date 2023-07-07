@@ -17,6 +17,7 @@ system:
   descriptionRqidLink:
     rqid: je..morale
     name: ${{rqgCompendiumContent.runeMagic.morale.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

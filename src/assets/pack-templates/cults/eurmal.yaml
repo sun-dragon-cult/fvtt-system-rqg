@@ -26,6 +26,7 @@ system:
       rqid: i.rune-magic.extension
     - name: Multispell
       rqid: i.rune-magic.multispell
+effects: []
 flags:
   rqg:
     documentRqidFlags:

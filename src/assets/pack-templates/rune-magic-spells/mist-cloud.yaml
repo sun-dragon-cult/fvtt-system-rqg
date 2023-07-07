@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..mist-cloud
     name: ${{rqgCompendiumContent.runeMagic.mistCloud.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

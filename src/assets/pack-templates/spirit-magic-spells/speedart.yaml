@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..speedart
     name: ${{rqgCompendiumContent.spiritMagic.speedart.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

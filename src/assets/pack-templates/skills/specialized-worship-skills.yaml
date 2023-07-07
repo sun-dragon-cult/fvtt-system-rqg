@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..worship
     name: ${{rqgCompendiumContent.skill.worship.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..command-worshipers
     name: ${{rqgCompendiumContent.runeMagic.commandWorshipers.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

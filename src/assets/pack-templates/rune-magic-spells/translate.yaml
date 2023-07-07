@@ -17,6 +17,7 @@ system:
   descriptionRqidLink:
     rqid: je..translate
     name: ${{rqgCompendiumContent.runeMagic.translate.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

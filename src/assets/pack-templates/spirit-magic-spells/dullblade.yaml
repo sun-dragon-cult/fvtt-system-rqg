@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..dullblade
     name: ${{rqgCompendiumContent.spiritMagic.dullblade.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

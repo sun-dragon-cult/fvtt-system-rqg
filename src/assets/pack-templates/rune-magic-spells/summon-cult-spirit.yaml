@@ -13,6 +13,7 @@ system:
   descriptionRqidLink:
     rqid: je..summon-cult-spirit
     name: ${{rqgCompendiumContent.runeMagic.summonCultSpirit.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..detect-honor
     name: ${{rqgCompendiumContent.runeMagic.detectHonor.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

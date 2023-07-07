@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..summon-healing-spirit
     name: ${{rqgCompendiumContent.runeMagic.summonHealingSpirit.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

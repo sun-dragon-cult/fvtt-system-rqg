@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..alchemy
     name: ${{rqgCompendiumContent.skill.alchemy.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -33,6 +34,7 @@ system:
   descriptionRqidLink:
     rqid: je..animal-lore
     name: ${{rqgCompendiumContent.skill.animalLore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -54,6 +56,7 @@ system:
   descriptionRqidLink:
     rqid: je..bureaucracy
     name: ${{rqgCompendiumContent.skill.bureaucracy.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -75,6 +78,7 @@ system:
   descriptionRqidLink:
     rqid: je..battle
     name: ${{rqgCompendiumContent.skill.battle.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -96,6 +100,7 @@ system:
   descriptionRqidLink:
     rqid: je..celestial-lore
     name: ${{rqgCompendiumContent.skill.celestialLore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -117,6 +122,7 @@ system:
   descriptionRqidLink:
     rqid: je..cult-lore
     name: ${{rqgCompendiumContent.skill.cultLore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -138,6 +144,7 @@ system:
   descriptionRqidLink:
     rqid: je..customs
     name: ${{rqgCompendiumContent.skill.customs.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -159,6 +166,7 @@ system:
   descriptionRqidLink:
     rqid: je..elder-race-lore
     name: ${{rqgCompendiumContent.skill.elderRaceLore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -180,6 +188,7 @@ system:
   descriptionRqidLink:
     rqid: je..evaluate
     name: ${{rqgCompendiumContent.skill.evaluate.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -201,6 +210,7 @@ system:
   descriptionRqidLink:
     rqid: je..evaluate
     name: ${{rqgCompendiumContent.skill.farm.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -222,6 +232,7 @@ system:
   descriptionRqidLink:
     rqid: je..first-aid
     name: ${{rqgCompendiumContent.skill.firstAid.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -243,6 +254,7 @@ system:
   descriptionRqidLink:
     rqid: je..game
     name: ${{rqgCompendiumContent.skill.game.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -264,6 +276,7 @@ system:
   descriptionRqidLink:
     rqid: je..herd
     name: ${{rqgCompendiumContent.skill.herd.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -285,6 +298,7 @@ system:
   descriptionRqidLink:
     rqid: je..homeland-lore
     name: ${{rqgCompendiumContent.skill.homelandLore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -306,6 +320,7 @@ system:
   descriptionRqidLink:
     rqid: je..library-use
     name: ${{rqgCompendiumContent.skill.libraryUse.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -327,6 +342,7 @@ system:
   descriptionRqidLink:
     rqid: je..lore
     name: ${{rqgCompendiumContent.skill.lore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -348,6 +364,7 @@ system:
   descriptionRqidLink:
     rqid: je..manage-household
     name: ${{rqgCompendiumContent.skill.manageHousehold.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -369,6 +386,7 @@ system:
   descriptionRqidLink:
     rqid: je..mineral-lore
     name: ${{rqgCompendiumContent.skill.mineralLore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -390,6 +408,7 @@ system:
   descriptionRqidLink:
     rqid: je..peaceful-cut
     name: ${{rqgCompendiumContent.skill.peacefulCut.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -411,6 +430,7 @@ system:
   descriptionRqidLink:
     rqid: je..plant-lore
     name: ${{rqgCompendiumContent.skill.plantLore.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -434,6 +454,7 @@ system:
   descriptionRqidLink:
     rqid: je..read-write
     name: ${{rqgCompendiumContent.skill.readWrite.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -455,6 +476,7 @@ system:
   descriptionRqidLink:
     rqid: je..survival
     name: ${{rqgCompendiumContent.skill.survival.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -476,6 +498,7 @@ system:
   descriptionRqidLink:
     rqid: je..shiphandling
     name: ${{rqgCompendiumContent.skill.shiphandling.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -497,6 +520,7 @@ system:
   descriptionRqidLink:
     rqid: je..treat-disease
     name: ${{rqgCompendiumContent.skill.treatDisease.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -518,6 +542,7 @@ system:
   descriptionRqidLink:
     rqid: je..treat-poison
     name: ${{rqgCompendiumContent.skill.treatPoison.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -7,6 +7,7 @@ flags:
       id: i.gear.bolgs
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   description: ${{rqgCompendiumContent.equipment.gear.currencyBolgsDescription}}$
   gmNotes:
@@ -30,6 +31,7 @@ flags:
       id: i.gear.clacks
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   description: ${{rqgCompendiumContent.equipment.gear.currencyClacksDescription}}$
   gmNotes:
@@ -53,6 +55,7 @@ flags:
       id: i.gear.lunars
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   description: ${{rqgCompendiumContent.equipment.gear.currencyLunarsDescription}}$
   gmNotes:
@@ -76,6 +79,7 @@ flags:
       id: i.gear.wheels
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   description: ${{rqgCompendiumContent.equipment.gear.currencyWheelsDescription}}$
   gmNotes:

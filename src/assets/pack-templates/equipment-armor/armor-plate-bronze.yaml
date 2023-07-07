@@ -7,6 +7,7 @@ flags:
       id: i.armor.composite-helm-bronze-plate
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$
@@ -33,6 +34,7 @@ flags:
       id: i.armor.open-helm-bronze-plate
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$
@@ -59,6 +61,7 @@ flags:
       id: i.armor.closed-helm-bronze-plate
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$
@@ -85,6 +88,7 @@ flags:
       id: i.armor.full-helm-bronze-plate
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$
@@ -111,6 +115,7 @@ flags:
       id: i.armor.vambraces-bronze-plate
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.leftArm}}$
@@ -138,6 +143,7 @@ flags:
       id: i.armor.cuirass-bronze-plate
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
@@ -164,6 +170,7 @@ flags:
       id: i.armor.hauberk-segmented-bronze-plate
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
@@ -191,6 +198,7 @@ flags:
       id: i.armor.greaves-bronze-plate
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.leftLeg}}$

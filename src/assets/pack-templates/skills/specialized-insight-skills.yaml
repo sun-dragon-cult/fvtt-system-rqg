@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..insight
     name: ${{rqgCompendiumContent.skill.insight.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

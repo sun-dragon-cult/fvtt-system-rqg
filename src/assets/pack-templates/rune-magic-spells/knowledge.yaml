@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..knowledge
     name: ${{rqgCompendiumContent.runeMagic.knowledge.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..demoralize
     name: ${{rqgCompendiumContent.spiritMagic.demoralize.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

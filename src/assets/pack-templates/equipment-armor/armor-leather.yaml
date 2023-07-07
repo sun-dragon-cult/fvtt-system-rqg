@@ -7,6 +7,7 @@ flags:
       id: i.armor.hood-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$
@@ -33,6 +34,7 @@ flags:
       id: i.armor.broad-brimmed-hat-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$
@@ -59,6 +61,7 @@ flags:
       id: i.armor.cap-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.head}}$
@@ -85,6 +88,7 @@ flags:
       id: i.armor.vambraces-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.leftArm}}$
@@ -112,6 +116,7 @@ flags:
       id: i.armor.cuirass-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
@@ -138,6 +143,7 @@ flags:
       id: i.armor.hauberk-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.chest}}$
@@ -165,6 +171,7 @@ flags:
       id: i.armor.skirt-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.abdomen}}$
@@ -191,6 +198,7 @@ flags:
       id: i.armor.pants-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.abdomen}}$
@@ -219,6 +227,7 @@ flags:
       id: i.armor.greaves-leather
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   hitLocations:
     - ${{rqgCompendiumContent.hitLocation.humanoid.leftLeg}}$

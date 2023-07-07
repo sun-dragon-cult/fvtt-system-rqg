@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..illusionary-sound
     name: ${{rqgCompendiumContent.runeMagic.illusionarySound.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

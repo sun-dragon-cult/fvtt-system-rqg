@@ -16,6 +16,7 @@ system:
   descriptionRqidLink:
     rqid: je..impede-chaos
     name: ${{rqgCompendiumContent.runeMagic.impedeChaos.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

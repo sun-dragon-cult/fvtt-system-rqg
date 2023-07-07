@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..blast-earth
     name: ${{rqgCompendiumContent.runeMagic.blastEarth.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

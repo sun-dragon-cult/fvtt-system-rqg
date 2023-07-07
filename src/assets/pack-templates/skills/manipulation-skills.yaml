@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..conceal
     name: ${{rqgCompendiumContent.skill.conceal.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -33,6 +34,7 @@ system:
   descriptionRqidLink:
     rqid: je..craft
     name: ${{rqgCompendiumContent.skill.craft.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -54,6 +56,7 @@ system:
   descriptionRqidLink:
     rqid: je..devise
     name: ${{rqgCompendiumContent.skill.devise.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -75,6 +78,7 @@ system:
   descriptionRqidLink:
     rqid: je..play-instrument
     name: ${{rqgCompendiumContent.skill.playInstrument.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -96,6 +100,7 @@ system:
   descriptionRqidLink:
     rqid: je..sleight
     name: ${{rqgCompendiumContent.skill.sleight.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

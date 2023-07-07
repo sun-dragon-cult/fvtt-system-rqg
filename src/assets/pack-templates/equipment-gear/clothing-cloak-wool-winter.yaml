@@ -7,6 +7,7 @@ flags:
       id: i.gear.wool-winter-cloak
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   description: ${{rqgCompendiumContent.equipment.gear.cloakWoolWinterDescription}}$
   gmNotes:

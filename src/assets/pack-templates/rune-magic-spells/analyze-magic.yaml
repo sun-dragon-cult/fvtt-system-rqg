@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..analyze-magic
     name: ${{rqgCompendiumContent.runeMagic.analyzeMagic.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

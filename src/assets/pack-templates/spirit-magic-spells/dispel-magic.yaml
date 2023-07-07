@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..dispel-magic
     name: ${{rqgCompendiumContent.spiritMagic.dispelMagic.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

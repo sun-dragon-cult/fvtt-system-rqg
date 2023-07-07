@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..sleep
     name: ${{rqgCompendiumContent.spiritMagic.sleep.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

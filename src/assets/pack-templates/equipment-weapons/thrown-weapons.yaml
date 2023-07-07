@@ -7,6 +7,7 @@ flags:
       id: i.weapon.throwing-axe
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
@@ -86,6 +87,7 @@ flags:
       id: i.weapon.rock
       priority: ${{rqgCompendiumContent.prio}}$
       lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:

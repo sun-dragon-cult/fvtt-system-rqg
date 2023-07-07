@@ -18,6 +18,7 @@ system:
   descriptionRqidLink:
     rqid: je..wind-words
     name: ${{rqgCompendiumContent.runeMagic.windWords.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

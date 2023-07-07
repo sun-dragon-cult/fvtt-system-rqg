@@ -15,6 +15,7 @@ system:
   descriptionRqidLink:
     rqid: je..create-fissure
     name: ${{rqgCompendiumContent.runeMagic.createFissure.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

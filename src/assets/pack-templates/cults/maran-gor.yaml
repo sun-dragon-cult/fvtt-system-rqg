@@ -44,6 +44,7 @@ system:
       rqid: i.rune-magic.summon-cult-spirit
     - name: Warding
       rqid: i.rune-magic.warding
+effects: []
 flags:
   rqg:
     documentRqidFlags:

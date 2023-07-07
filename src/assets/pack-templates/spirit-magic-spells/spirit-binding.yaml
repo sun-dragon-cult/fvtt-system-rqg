@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..spirit-binding
     name: ${{rqgCompendiumContent.spiritMagic.spiritBinding.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

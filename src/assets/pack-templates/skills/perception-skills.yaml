@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..insight
     name: ${{rqgCompendiumContent.skill.insight.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -33,6 +34,7 @@ system:
   descriptionRqidLink:
     rqid: je..listen
     name: ${{rqgCompendiumContent.skill.listen.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -54,6 +56,7 @@ system:
   descriptionRqidLink:
     rqid: je..scan
     name: ${{rqgCompendiumContent.skill.scan.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -75,6 +78,7 @@ system:
   descriptionRqidLink:
     rqid: je..search
     name: ${{rqgCompendiumContent.skill.search.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -96,6 +100,7 @@ system:
   descriptionRqidLink:
     rqid: je..track
     name: ${{rqgCompendiumContent.skill.track.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -117,6 +122,7 @@ system:
   descriptionRqidLink:
     rqid: je..track
     name: ${{rqgCompendiumContent.skill.track.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -138,6 +144,7 @@ system:
   descriptionRqidLink:
     rqid: je..scent-intruder
     name: ${{rqgCompendiumContent.skill.scentIntruder.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -159,6 +166,7 @@ system:
   descriptionRqidLink:
     rqid: je..elfsense
     name: ${{rqgCompendiumContent.skill.elfsense.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -180,6 +188,7 @@ system:
   descriptionRqidLink:
     rqid: je..earthsense-scan
     name: ${{rqgCompendiumContent.skill.earthsenseScan.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -201,6 +210,7 @@ system:
   descriptionRqidLink:
     rqid: je..earthsense-search
     name: ${{rqgCompendiumContent.skill.earthsenseSearch.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -222,6 +232,7 @@ system:
   descriptionRqidLink:
     rqid: je..darksense-scan
     name: ${{rqgCompendiumContent.skill.darksenseScan.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -243,6 +254,7 @@ system:
   descriptionRqidLink:
     rqid: je..darksense-search
     name: ${{rqgCompendiumContent.skill.darksenseSearch.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

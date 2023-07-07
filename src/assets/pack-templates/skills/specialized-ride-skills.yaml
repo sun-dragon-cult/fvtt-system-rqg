@@ -12,6 +12,7 @@ system:
   descriptionRqidLink:
     rqid: je..ride
     name: ${{rqgCompendiumContent.skill.ride.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
@@ -33,6 +34,7 @@ system:
   descriptionRqidLink:
     rqid: je..ride
     name: ${{rqgCompendiumContent.skill.ride.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

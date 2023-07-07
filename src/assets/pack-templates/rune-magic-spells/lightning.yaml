@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..lightning
     name: ${{rqgCompendiumContent.runeMagic.lightning.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

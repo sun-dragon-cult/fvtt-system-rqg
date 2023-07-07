@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..mindblast
     name: ${{rqgCompendiumContent.runeMagic.mindblast.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -11,6 +11,7 @@ system:
   descriptionRqidLink:
     rqid: je..multimissile
     name: ${{rqgCompendiumContent.spiritMagic.multimissile.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

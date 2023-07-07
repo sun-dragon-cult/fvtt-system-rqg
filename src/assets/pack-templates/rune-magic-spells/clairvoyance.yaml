@@ -14,6 +14,7 @@ system:
   descriptionRqidLink:
     rqid: je..clairvoyance
     name: ${{rqgCompendiumContent.runeMagic.clairvoyance.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
