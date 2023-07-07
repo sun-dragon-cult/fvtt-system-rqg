@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.4](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.3...v2.2.4) (2023-07-07)
+
+
+### Bug Fixes
+
+* add empty effect array to items to avoid Foundry warning ([5545184](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5545184ae203b3fb025f6002bcc92c4311f05c08))
+* error when using missile - remaining usage of skillId instead of rqid ([a51d4c4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a51d4c451e2e880721e460b5374eb2e34a5a2175)), closes [#567](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/567)
+
 ## [2.2.3](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.2...v2.2.3) (2023-07-05)
 
 
