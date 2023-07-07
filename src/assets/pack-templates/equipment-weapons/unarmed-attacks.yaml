@@ -252,7 +252,7 @@ system:
   usage:
     oneHand:
       skillRqidLink:
-        rqid: i.skill.fists-fists
+        rqid: i.skill.fists-fist
         name: ${{rqgCompendiumContent.weaponSkill.fists.name}}$ (${{rqgCompendiumContent.weaponSkill.fists.specialization.fist}}$)
       combatManeuvers:
         - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Punch}}$

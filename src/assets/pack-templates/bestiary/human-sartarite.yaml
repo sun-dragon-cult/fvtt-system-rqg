@@ -210,7 +210,7 @@ items:
 - "|{{	skills-weapons/missile.yaml	i.skill.bows-composite-bow	[ baseChance: 15	]}}|"
 - "|{{	skills-weapons/missile.yaml	i.skill.javelins-javelin	[ baseChance: 20	]}}|"
 - "|{{	skills-weapons/missile.yaml	i.skill.slings-sling	[ baseChance: 15	]}}|"
-- "|{{	skills-weapons/natural.yaml	i.skill.fists-fists	[ gainedChance:	0	]}}|"
+- "|{{	skills-weapons/natural.yaml	i.skill.fists-fist	[ gainedChance:	0	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.grapple	[ gainedChance:	0	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.kick	[ gainedChance:	0	]}}|"
 - "|{{	skills-weapons/shields.yaml	i.skill.shields-large	[ baseChance: 25	]}}|"

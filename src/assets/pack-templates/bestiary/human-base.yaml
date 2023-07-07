@@ -199,7 +199,7 @@ items:
 - "|{{	skills/perception-skills.yaml	i.skill.track	[ gainedChance:	0	]}}|"
 - "|{{	skills/stealth-skills.yaml	i.skill.hide	[ gainedChance:	0	]}}|"
 - "|{{	skills/stealth-skills.yaml	i.skill.move-quietly	[ gainedChance:	0	]}}|"
-- "|{{	skills-weapons/natural.yaml	i.skill.fists-fists	[ gainedChance:	0	]}}|"
+- "|{{	skills-weapons/natural.yaml	i.skill.fists-fist	[ gainedChance:	0	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.grapple	[ gainedChance:	0	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.kick	[ gainedChance:	0	]}}|"
 - "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.fist	[ equippedStatus: 	equipped	]}}|"

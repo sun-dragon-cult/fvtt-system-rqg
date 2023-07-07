@@ -66,7 +66,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.skill.fists-fists
+      id: i.skill.fists-fist
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
