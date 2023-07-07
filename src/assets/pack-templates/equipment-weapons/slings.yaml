@@ -10,24 +10,27 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
@@ -80,24 +83,27 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
@@ -150,32 +156,36 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0

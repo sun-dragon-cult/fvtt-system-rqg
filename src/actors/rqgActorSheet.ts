@@ -612,8 +612,7 @@ export class RqgActorSheet extends ActorSheet<
       let actorDex = actor.system.characteristics.dexterity.value ?? 0;
       for (const key in usages) {
         let usage = usages[key];
-        // @ts-expect-error foundry.utils.isEmpty
-        if (!foundry.utils.isEmpty(usage.skillRqidLink?.rqid)) {
+        if (!isEmpty(usage?.skillRqidLink?.rqid)) {
           usage.skillId = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid)?.id;
           usage.unusable = false;
           usage.underMinSTR = false;

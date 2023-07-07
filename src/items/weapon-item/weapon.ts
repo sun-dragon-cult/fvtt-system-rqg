@@ -486,6 +486,8 @@ export class Weapon extends AbstractEmbeddedItem {
 
   public static getUsedSkillItem(weaponItem: RqgItem, usage: UsageType): RqgItem | undefined {
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
-    return weaponItem.actor?.items.get(weaponItem.system.usage[usage]?.skillId);
+    return weaponItem.actor?.getBestEmbeddedDocumentByRqid(
+      weaponItem.system.usage[usage]?.skillRqidLink?.rqid
+    );
   }
 }

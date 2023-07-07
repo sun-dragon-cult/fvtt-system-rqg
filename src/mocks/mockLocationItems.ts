@@ -2160,8 +2160,10 @@ export const mockItems = [
     system: {
       usage: {
         oneHand: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2169,8 +2171,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         offHand: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2178,8 +2182,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         twoHand: {
-          skillId: "XKNoEW8TK3MsnXpK",
-          skillOrigin: "Item.qehnIgKCfC05BeUD",
+          skillRqidLink: {
+            rqid: "i.skill.quarterstaff",
+            name: "Quarterstaff",
+          },
           combatManeuvers: [
             {
               name: "Bash",
@@ -2202,8 +2208,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         missile: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2254,8 +2262,10 @@ export const mockItems = [
     system: {
       usage: {
         oneHand: {
-          skillId: "mR08gtXZIIrVuBwj",
-          skillOrigin: "Item.tbPfOnvtOyDamUHS",
+          skillRqidLink: {
+            rqid: "i.skill.1h-daggers-dagger",
+            name: "1H Daggers (dagger)",
+          },
           combatManeuvers: [
             {
               name: "Cut",
@@ -2276,8 +2286,10 @@ export const mockItems = [
           strikeRank: 4,
         },
         offHand: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2285,8 +2297,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         twoHand: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2294,8 +2308,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         missile: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,

@@ -25,16 +25,18 @@ system:
       minDexterity: 9
       strikeRank: 2
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d6
       minStrength: 9
       minDexterity: 9
       strikeRank: 2
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
@@ -105,8 +107,9 @@ system:
       minDexterity: 7
       strikeRank: 2
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d6+1
       minStrength: 9
@@ -192,24 +195,27 @@ system:
       minDexterity: 7
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d10+1
       minStrength: 9
       minDexterity: 7
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
@@ -250,16 +256,18 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
@@ -281,8 +289,9 @@ system:
       minDexterity: 7
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
@@ -323,16 +332,18 @@ flags:
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0
@@ -354,8 +365,9 @@ system:
       minDexterity: 7
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: [ ]
       damage:
       minStrength: 0

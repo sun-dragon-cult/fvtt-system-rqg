@@ -152,14 +152,14 @@ export class RqidBatchEditor extends FormApplication<
     const name = getDomDataset(event, "name") ?? "";
     const newRqid = convertFormValueToString(event.currentTarget?.value);
     this.object.itemName2Rqid.set(name, newRqid);
-    this.render(true);
+    this.render();
   }
 
   onClickGuess(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
     const newRqid = this.options.idPrefix + toKebabCase(name);
     this.object.itemName2Rqid.set(name, newRqid);
-    this.render(true);
+    this.render();
   }
 
   onTypeRqid(event: any): void {
@@ -167,7 +167,7 @@ export class RqidBatchEditor extends FormApplication<
     const newRqid =
       this.options.idPrefix + toKebabCase(convertFormValueToString(event.currentTarget.value));
     this.object.itemName2Rqid.set(name, newRqid);
-    this.render(true);
+    this.render();
   }
 
   async _updateObject(event: Event, formData: any): Promise<void> {

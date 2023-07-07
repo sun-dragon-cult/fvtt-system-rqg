@@ -3,7 +3,7 @@ import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { assertItemType, getDomDataset, getGameUser, localize, uuid2Name } from "../../system/util";
+import { getDomDataset, getGameUser, localize } from "../../system/util";
 import { damageType } from "../../data-model/item-data/weaponData";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
@@ -64,8 +64,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         localize(`RQG.Item.Weapon.combatManeuver.${cm}`)
       ),
       damageTypes: Object.values(damageType),
-      weaponSkills: this.getWeaponSkills(),
-      skillNames: this.getSkillNames(),
       equippedStatuses: [...equippedStatuses],
       ownedProjectiles: this.getOwnedProjectiles(),
       rateOfFire: {
@@ -76,44 +74,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         "1/4MR": 4,
         "1/5MR": 5,
       },
-    };
-  }
-
-  private getWeaponSkills(): any {
-    return this.item.isEmbedded && this.actor
-      ? this.actor.getEmbeddedCollection("Item").filter(
-          (i) =>
-            // @ts-expect-error v10
-            i.type === ItemTypeEnum.Skill &&
-            // @ts-expect-error system
-            (i.system.category === SkillCategoryEnum.MeleeWeapons ||
-              // @ts-expect-error system
-              i.system.category === SkillCategoryEnum.Shields ||
-              // @ts-expect-error system
-              i.system.category === SkillCategoryEnum.NaturalWeapons)
-        )
-      : [];
-  }
-
-  private getSkillNames(): any {
-    assertItemType(this.item.type, ItemTypeEnum.Weapon);
-    return {
-      oneHand: this.getName(
-        this.item.system.usage.oneHand.skillOrigin,
-        this.item.system.usage.oneHand.skillId
-      ),
-      offHand: this.getName(
-        this.item.system.usage.offHand.skillOrigin,
-        this.item.system.usage.offHand.skillId
-      ),
-      twoHand: this.getName(
-        this.item.system.usage.twoHand.skillOrigin,
-        this.item.system.usage.twoHand.skillId
-      ),
-      missile: this.getName(
-        this.item.system.usage.missile.skillOrigin,
-        this.item.system.usage.missile.skillId
-      ),
     };
   }
 
@@ -128,19 +88,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       ];
     }
     return [];
-  }
-
-  // Look for item name first in uuid link then in embedded actor
-  private getName(uuid: string, embeddedSkillId: string): string {
-    const uuidName = uuid2Name(uuid);
-    if (uuidName) {
-      return uuidName;
-    }
-    const embeddedName = this.actor?.items.get(embeddedSkillId)?.name;
-    if (embeddedName) {
-      return `${embeddedName} (embedded)`;
-    }
-    return "";
   }
 
   protected async _updateObject(event: Event, formData: any): Promise<any> {
@@ -238,8 +185,8 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   }
 
   /**
-   * Update the skillOriginId with the dropped skill.
-   * This will change to use rqid instead.
+   * Update the weapon skill link and if the weapon is embedded in an actor
+   * embed the dropped skill items if the actor does not yet have it.
    */
   async _onDropItem(
     event: DragEvent,
