@@ -32,6 +32,8 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
   getData(): SkillSheetData & ItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = duplicate(this.document._source.system);
+    system.categoryMod = this.document.system.categoryMod; // Use the actor derived value
+    system.chance = this.document.system.chance; // Use the actor derived value
 
     if (!system.skillName) {
       system.skillName = system.name;

@@ -53,6 +53,8 @@ export class HitLocationSheet extends RqgItemSheet<
   getData(): HitLocationSheetData & ItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = duplicate(this.document._source.system);
+    system.hitPoints = this.document.system.hitPoints; // Use the actor derived values
+    system.armorPoints = this.document.system.armorPoints; // Use the actor derived value
 
     return {
       id: this.document.id ?? "",
