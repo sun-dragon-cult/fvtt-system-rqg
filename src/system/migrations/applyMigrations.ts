@@ -41,18 +41,18 @@ async function migrateWorldActors(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[]
 ): Promise<void> {
-  let progress = 0;
   const actorArray = getGame().actors?.contents;
   const actorCount = actorArray?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.actors", {
     count: actorCount,
   });
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 0 });
-  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   if (!actorArray || actorCount === 0) {
     return;
   }
+  let progress = 0;
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: progress });
+  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   const step = 100 / actorCount;
   for (let actor of actorArray) {
     try {
@@ -83,13 +83,13 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
   const migrationMsg = localize("RQG.Migration.items", {
     count: itemCount,
   });
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 0 });
-  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
-  let progress = 0;
   if (!itemArray || itemCount === 0) {
     return;
   }
+  let progress = 0;
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: progress });
+  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   const step = 100 / itemCount;
   for (let item of itemArray) {
     try {
@@ -120,13 +120,13 @@ async function migrateWorldScenes(
   const migrationMsg = localize("RQG.Migration.scenes", {
     count: scenesCount,
   });
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 0 });
-  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
-  let progress = 0;
   if (!scenes || scenesCount === 0) {
     return;
   }
+  let progress = 0;
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: progress });
+  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   const step = 100 / scenesCount;
   for (let scene of scenes) {
     try {
@@ -156,19 +156,19 @@ async function migrateWorldCompendiumPacks(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[]
 ): Promise<void> {
-  let progress = 0;
   // @ts-expect-error packageName
   const packs = getGame().packs.contents.filter((p) => p.metadata.packageName !== systemId); // Exclude system packs
   const packsCount = packs?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.compendiums", {
     count: packsCount,
   });
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 0 });
-  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   if (!packs || packsCount === 0) {
     return;
   }
+  let progress = 0;
+  // @ts-expect-error displayProgressBar
+  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: progress });
+  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   const step = 100 / packsCount;
   for (let pack of packs) {
     // @ts-expect-error packageType

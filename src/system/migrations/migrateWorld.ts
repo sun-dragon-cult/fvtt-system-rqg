@@ -21,40 +21,51 @@ import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchE
  * Perform a system migration for the entire World, applying migrations for what is in it
  */
 export async function migrateWorld(): Promise<void> {
-  if (!getGameUser().isGM) {
-    ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
+  // @ts-expect-error version
+  const systemVersion: string = getGame().system.version;
+  const worldVersion = getGame().settings.get(systemId, "worldMigrationVersion");
+  if (worldVersion === "" && getGameUser().isGM) {
+    // Initialize world version to current system version for new worlds (with the default "" version).
+    await getGame().settings.set(systemId, "worldMigrationVersion", systemVersion);
     return;
   }
-  // @ts-expect-error v10
-  const systemVersion = getGame().system.version;
-  const worldVersion = getGame().settings.get(systemId, "worldMigrationVersion");
-  if (systemVersion !== worldVersion) {
-    // Open a dialog to set missing Rqids on selected items
-    await RqidBatchEditor.factory(
-      ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
-      ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
-      ItemTypeEnum.HitLocation // Token HUD effects "protection" need this
-    );
+  if (systemVersion === worldVersion) {
+    return; // Already up to date
+  }
 
-    await migrateWorldDialog(systemVersion);
-    ui.notifications?.info(
-      localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
+  if (!getGameUser().isGM) {
+    ui.notifications?.warn(
+      localize("RQG.Migration.WorldNotUpdated", { systemVersion: systemVersion }),
       { permanent: true }
     );
-    console.log(`RQG | Starting world migration to version ${systemVersion}`);
-
-    await applyDefaultWorldMigrations();
-    // *** Set the migration as complete ***
-    await getGame().settings.set(systemId, "worldMigrationVersion", systemVersion);
-
-    ui.notifications?.info(
-      localize("RQG.Migration.migrationFinished", { systemVersion: systemVersion }),
-      {
-        permanent: true,
-      }
-    );
-    console.log(`RQG | Finished world migration`);
+    return;
   }
+
+  // Open a dialog to set missing Rqids on selected items
+  await RqidBatchEditor.factory(
+    ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+    ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+    ItemTypeEnum.HitLocation // Token HUD effects "protection" need this
+  );
+
+  await migrateWorldDialog(systemVersion);
+  ui.notifications?.info(
+    localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
+    { permanent: true }
+  );
+  console.log(`RQG | Starting world migration to version ${systemVersion}`);
+
+  await applyDefaultWorldMigrations();
+  // *** Set the migration as complete ***
+  await getGame().settings.set(systemId, "worldMigrationVersion", systemVersion);
+
+  ui.notifications?.info(
+    localize("RQG.Migration.migrationFinished", { systemVersion: systemVersion }),
+    {
+      permanent: true,
+    }
+  );
+  console.log(`RQG | Finished world migration`);
 }
 
 /**

@@ -113,10 +113,7 @@ Hooks.once("init", async () => {
 });
 
 Hooks.once("ready", async () => {
-  if (getGame().user?.isGM) {
-    await migrateWorld();
-    // await setupSimpleCalendar();
-  }
+  await migrateWorld();
   // Make sure the cache of available runes is preloaded
   await cacheAvailableRunes();
 });

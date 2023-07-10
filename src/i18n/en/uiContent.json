@@ -1186,6 +1186,7 @@
         "migrationTime": "The migration can take some time if you have a large world, but please be patient and do not shut the system down before it is finished.",
         "btnMigrate": "Migrate world \"{worldTitle}\" to version {systemVersion}"
       },
+      "WorldNotUpdated": "This world is not updated to match the current system version ({systemVersion}). Please wait until your GM has done the update, then refresh this page (F5 or cmd-R).",
       "applyingMigration": "Applying World Migration to version {systemVersion}. Please be patient and do not close your game or shut down your server.",
       "migrationFinished": "World Migration to version {systemVersion} completed!",
       "actors": "Step 1 / 4 - Migrating {count} actors",
