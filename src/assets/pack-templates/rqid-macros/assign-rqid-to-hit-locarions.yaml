@@ -1,0 +1,215 @@
+name: Set Hit Location Rqids
+type: script
+scope: global
+author: NzPJchIbtW76hYeY
+img: icons/commodities/treasure/doll-mummy.webp
+flags:
+command: |-
+  /*** Set standardised rqid on all hit locations ***
+  This macro will list RQG hit location names and let you match them to the location names from the system settings by drag-n-drop.
+  Yellow background means that the name does not exist as a setting. That might be fine if you do not have any creatures that need that hit location. It could also be because you have translated the hit location to another language so that they don't match the English names.
+
+  Drag the names from the right setting table to the corresponding hit location. To get more hit locations to drag from, just add them to the system hit location setting, and rerun this macro.
+
+  When "Update Rqids" is clicked, all hit location items in compendiums, world and scenes will get the standard Rqid for that hit location.
+  **/
+
+  const hlData = [
+      { key: "Abdomen", eng: "Abdomen", rqid: "i.hit-location.abdomen" },
+      { key: "Body", eng: "Body", rqid: "i.hit-location.body" },
+      { key: "Chest", eng: "Chest", rqid: "i.hit-location.chest" },
+      { key: "Forequarter", eng: "Forequarter", rqid: "i.hit-location.forequarter" },
+      { key: "Forebody", eng: "Forebody", rqid: "i.hit-location.forebody" },
+      { key: "FrontBody", eng: "Front Body", rqid: "i.hit-location.front-body" },
+      { key: "Head", eng: "Head", rqid: "i.hit-location.head" },
+      { key: "HindBody", eng: "Hind Body", rqid: "i.hit-location.hind-body" },
+      { key: "Hindquarter", eng: "Hindquarter", rqid: "i.hit-location.hindquarter" },
+      { key: "LeftArm", eng: "Left Arm", rqid: "i.hit-location.left-arm" },
+      { key: "LeftCenterLeg", eng: "Left Center Leg", rqid: "i.hit-location.left-center-leg" },
+      { key: "LeftCenterFrontLeg", eng: "Left Center Front Leg", rqid: "i.hit-location.left-center-front-leg" },
+      { key: "LeftCenterRearLeg",  eng: "Left Center Rear Leg", rqid: "i.hit-location.left-center-rear-leg" },
+      { key: "LeftClaw", eng: "Left Claw", rqid: "i.hit-location.left-claw" },
+      { key: "LeftForeFlipper", eng: "Left Fore Flipper", rqid: "i.hit-location.left-fore-flipper" },
+      { key: "LeftForeleg", eng: "Left Foreleg", rqid: "i.hit-location.left-foreleg" },
+      { key: "LeftHead", eng: "Left Head", rqid: "i.hit-location.left-head" },
+      { key: "LeftHindFlipper", eng: "Left Hind Flipper", rqid: "i.hit-location.left-hind-flipper" },
+      { key: "LeftHindLeg", eng: "Left Hind Leg", rqid: "i.hit-location.left-hind-leg" },
+      { key: "LeftLeg", eng: "Left Leg", rqid: "i.hit-location.left-leg" },
+      { key: "LeftMiddleLeg", eng: "Left Middle Leg", rqid: "i.hit-location.left-middle-leg" },
+      { key: "LeftPaw", eng: "Left Paw", rqid: "i.hit-location.left-paw" },
+      { key: "LeftPedipalp", eng: "Left Pedipalp", rqid: "i.hit-location.left-pedipalp" },
+      { key: "LeftWing", eng: "Left Wing", rqid: "i.hit-location.left-wing" },
+      { key: "LowerLeftArm", eng: "Lower Left Arm", rqid: "i.hit-location.lower-left-arm" },
+      { key: "LowerRightArm", eng: "Lower Right Arm", rqid: "i.hit-location.lower-right-arm" },
+      { key: "MidBody", eng: "Mid Body", rqid: "i.hit-location.mid-body" },
+      { key: "Neck", eng: "Neck", rqid: "i.hit-location.neck" },
+      { key: "RightArm", eng: "Right Arm", rqid: "i.hit-location.right-arm" },
+      { key: "RightCenterLeg", eng: "Right Center Leg", rqid: "i.hit-location.right-center-leg" },
+      { key: "RightCenterFrontLeg", eng: "Right Center Front Leg", rqid: "i.hit-location.right-center-front-leg" },
+      { key: "RightCenterRearLeg", eng: "Right Center Rear Leg", rqid: "i.hit-location.right-center-rear-leg" },
+      { key: "RightClaw", eng: "Right Claw", rqid: "i.hit-location.right-claw" },
+      { key: "RightForeFlipper", eng: "Right Fore Flipper", rqid: "i.hit-location.right-fore-flipper" },
+      { key: "RightForeleg", eng: "Right Foreleg", rqid: "i.hit-location.right-foreleg" },
+      { key: "RightHead", eng: "Right Head", rqid: "i.hit-location.right-head" },
+      { key: "RightHindFlipper", eng: "Right Hind Flipper", rqid: "i.hit-location.right-hind-flipper" },
+      { key: "RightHindLeg", eng: "Right Hind Leg", rqid: "i.hit-location.right-hind-leg" },
+      { key: "RightLeg", eng: "Right Leg", rqid: "i.hit-location.right-leg" },
+      { key: "RightMiddleLeg", eng: "Right Middle Leg", rqid: "i.hit-location.right-middle-leg" },
+      { key: "RightPaw", eng: "Right Paw", rqid: "i.hit-location.right-paw" },
+      { key: "RightPedipalp", eng: "Right Pedipalp", rqid: "i.hit-location.right-pedipalp" },
+      { key: "RightWing", eng: "Right Wing", rqid: "i.hit-location.right-wing" },
+      { key: "Shell", eng: "Shell", rqid: "i.hit-location.shell" },
+      { key: "Tail", eng: "Tail", rqid: "i.hit-location.tail" },
+      { key: "Tentacle1", eng: "Tentacle 1", rqid: "i.hit-location.tentacle-1" },
+      { key: "Tentacle2", eng: "Tentacle 2", rqid: "i.hit-location.tentacle-2" },
+      { key: "Tentacle3", eng: "Tentacle 3", rqid: "i.hit-location.tentacle-3" },
+      { key: "Tentacle4", eng: "Tentacle 4", rqid: "i.hit-location.tentacle-4" },
+      { key: "Tentacle5", eng: "Tentacle 5", rqid: "i.hit-location.tentacle-5" },
+      { key: "Tentacle6", eng: "Tentacle 6", rqid: "i.hit-location.tentacle-6" },
+      { key: "Tentacle7", eng: "Tentacle 7", rqid: "i.hit-location.tentacle-7" },
+      { key: "Tentacle8", eng: "Tentacle 8", rqid: "i.hit-location.tentacle-8" },
+      { key: "Thorax", eng: "Thorax", rqid: "i.hit-location.thorax" },
+      { key: "Trunk", eng: "Trunk", rqid: "i.hit-location.trunk" },
+    ];
+
+  const hitLocationName2Rqid = new Map();
+
+  //const setHitLocationRqids = async (itemData, owningActorData) => {
+  async function setHitLocationRqids(itemData, owningActorData)  {
+    let updateData = {};
+    if (itemData.type !== "hitLocation") {
+      return updateData;
+    }
+
+    const newRqid = hitLocationName2Rqid.get(itemData.name);
+    if (!newRqid) {
+      console.log(
+        "Found unknown hit location name, actor",
+        itemData.name,
+        ", ",
+        owningActorData?.name
+      );
+      return updateData;
+    }
+
+    updateData = {
+      flags: {
+        rqg: {
+          documentRqidFlags: {
+            id: newRqid,
+            lang: itemData.flags?.rqg?.documentRqidFlags?.lang ?? "en",
+            priority: itemData.flags?.rqg?.documentRqidFlags?.priority ?? 0,
+          },
+        },
+      },
+    };
+
+    return updateData;
+  };
+
+  const hitLocationSettingItemNames = game.settings
+    .get("rqg", "hitLocations")
+    .hitLocationItemNames.sort();
+
+  const myDialogOptions = {
+    width: 700,
+    height: 750,
+  };
+
+  const style = `<style>
+  .flex-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 3rem;
+  }
+  th {
+      text-align: left;
+  }
+  i {
+      margin-right: 0.4rem;
+  }
+  .form-table {
+      flex: 2;
+      width: 100%;
+      display: block;
+      height: 650px;
+      overflow: auto;
+  }
+  .settings-table {
+      flex: 1;
+      background-color: lightgrey;
+      display: block;
+      height: 650px;
+      overflow: auto;
+  }
+  .no-setting {
+      background-color: var(--rqg-color-enc-legend) !important;
+      outline: 2px solid;
+  }
+  [draggable] {
+      cursor: move;
+  }
+  </style>`;
+
+  function handleRender(html) {
+    html.on("dragstart", "[draggable]", (event) => {
+      const ev = event.originalEvent;
+      ev.dataTransfer.clearData();
+      ev.dataTransfer.setData("text/plain", ev.target.innerText);
+    });
+    html.on("drop", "input", (event) => {
+      const ev = event.originalEvent;
+      ev.preventDefault();
+      var textData = ev.dataTransfer.getData("text"); // get the dragged value
+      ev.target.value = textData;
+    });
+  }
+
+  const formContentTable =
+    `<form class="form-table"><table><tr><th>English name</th><th>Hitlocation name</th></tr>` +
+    hlData
+      .map(({ key, eng, rqid }) => {
+        const isInSettings = hitLocationSettingItemNames.includes(eng);
+        const notInSettingsClass = isInSettings ? "" : 'class="no-setting"';
+        const value = isInSettings ? eng : "";
+        return `<tr ${notInSettingsClass}><td>${eng}</td><td><input readonly value="${value}" id="${key}"</td></tr>`;
+      })
+      .join("") +
+    "</table></form>";
+
+  const settingContentTable =
+    `<table class="settings-table"><tr><th>Hitlocations from settings</th></tr>` +
+    hitLocationSettingItemNames
+      .map(
+        (value) =>
+          `<tr><td draggable="true"><i class="fa fa-ellipsis-v" aria-hidden="true"></i>${value}</td></tr>`
+      )
+      .join("") +
+    "</table>";
+
+  const d = new Dialog(
+    {
+      title: `${game.i18n.localize("Set Hit Location Rqids")}`,
+      content: `${style}<div class="flex-row">${formContentTable}${settingContentTable}</div>`,
+      buttons: {
+        update: {
+          label: `Update`,
+          callback: (html) => {
+            hlData.forEach(({ key, eng, rqid }) => {
+              const newName = html.find(`#${key}`).val();
+              hitLocationName2Rqid.set(newName, rqid);
+            });
+
+            game.system.api.migrate([setHitLocationRqids], []);
+          },
+        },
+        cancel: {
+          label: `Cancel`,
+          callback: (html) => console.log("Cancelled"),
+        },
+      },
+      render: handleRender,
+      default: "cancel",
+    },
+    myDialogOptions
+  ).render(true);
