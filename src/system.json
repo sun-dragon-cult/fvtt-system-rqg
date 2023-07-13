@@ -21,12 +21,8 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
@@ -230,6 +226,13 @@
       "label": "Hit Locations, Mammoths/Mastodons | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-mammoths-mastodons-en.db",
+      "type": "Item"
+    },
+    {
+      "name": "hit-locations-scorpion-men-en",
+      "label": "Scorpion Men | en",
+      "system": "rqg",
+      "path": "assets/packs/hit-locations-scorpion-men-en.db",
       "type": "Item"
     },
     {

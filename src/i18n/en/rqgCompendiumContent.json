@@ -1808,6 +1808,20 @@
       "trunk": "Trunk",
       "head": "Head"
     },
+    "scorpionMan": {
+      "rightHindLeg": "Right Hind Leg",
+      "rightMiddleLeg": "Right Middle Leg",
+      "rightForeleg": "Right Foreleg",
+      "leftHindLeg": "Left Hind Leg",
+      "leftMiddleLeg": "Left Middle Leg",
+      "leftForeleg": "Left Foreleg",
+      "tail": "Tail",
+      "thorax": "Thorax",
+      "chest": "Chest",
+      "rightArm": "Right Arm",
+      "leftArm": "Left Arm",
+      "head": "Head"
+    },
     "serpent": {
       "tail": "Tail",
       "body": "Body",
