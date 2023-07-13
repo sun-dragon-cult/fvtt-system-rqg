@@ -120,13 +120,13 @@ prototypeToken:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-leg	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-leg	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-abdomen	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-chest	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-arm	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-arm	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-head	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.right-leg	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.left-leg	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.abdomen	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.chest	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.right-arm	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.left-arm	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.head	[		]}}|"
 - "|{{	runes/element.yaml	i.rune.earth-element	[ chance:	80	]}}|"
 - "|{{	runes/power.yaml	i.rune.stasis-power	[ chance:	80	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	1	]}}|"

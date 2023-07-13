@@ -15,7 +15,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.birds-flying-tail
+      id: i.hit-location.tail
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -36,7 +36,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.birds-flying-right-hind-leg
+      id: i.hit-location.right-hind-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -57,7 +57,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.birds-flying-left-hind-leg
+      id: i.hit-location.left-hind-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -78,7 +78,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.birds-flying-abdomen
+      id: i.hit-location.abdomen
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -99,7 +99,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.birds-flying-chest
+      id: i.hit-location.chest
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -120,7 +120,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.birds-flying-right-wing
+      id: i.hit-location.right-wing
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -141,7 +141,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.birds-flying-left-wing
+      id: i.hit-location.left-wing
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -162,6 +162,6 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.birds-flying-head
+      id: i.hit-location.head
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$

@@ -15,7 +15,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.dragonsnails-two-headed-tail
+      id: i.hit-location.shell
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -36,7 +36,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.dragonsnails-two-headed-forebody
+      id: i.hit-location.forebody
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -57,7 +57,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.dragonsnails-two-headed-right-head
+      id: i.hit-location.right-head
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -78,6 +78,6 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.dragonsnails-two-headed-left-head
+      id: i.hit-location.left-head
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$

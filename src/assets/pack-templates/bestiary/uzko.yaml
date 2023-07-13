@@ -120,13 +120,13 @@ prototypeToken:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-leg	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-leg	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-abdomen	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-chest	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-arm	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-arm	[ naturalAp: 1		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-head	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.right-leg	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.left-leg	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.abdomen	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.chest	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.right-arm	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.left-arm	[ naturalAp: 1		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.head	[ naturalAp: 1		]}}|"
 - "|{{	runes/element.yaml	i.rune.darkness-element	[ chance:	60	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.climb	[ gainedChance:	0	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	13	]}}|"

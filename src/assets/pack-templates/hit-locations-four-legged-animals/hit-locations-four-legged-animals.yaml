@@ -15,7 +15,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-right-hind-leg
+      id: i.hit-location.right-hind-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -36,7 +36,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-left-hind-leg
+      id: i.hit-location.left-hind-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -57,7 +57,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-hindquarter
+      id: i.hit-location.hindquarter
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -78,7 +78,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-forequarter
+      id: i.hit-location.forequarter
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -99,7 +99,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-right-foreleg
+      id: i.hit-location.right-foreleg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -120,7 +120,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-left-foreleg
+      id: i.hit-location.left-foreleg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -141,6 +141,6 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-head
+      id: i.hit-location.head
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$

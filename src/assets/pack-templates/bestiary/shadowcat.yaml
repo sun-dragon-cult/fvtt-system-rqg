@@ -120,13 +120,13 @@ prototypeToken:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-hind-leg	[		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-hind-leg	[		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-hindquarter	[		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-forequarter	[		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-foreleg	[		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-foreleg	[		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-head	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.right-hind-leg	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.left-hind-leg	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.hindquarter	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.forequarter	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.right-foreleg	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.left-foreleg	[		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.head	[		]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	4	]}}|"
 - "|{{	skills/stealth-skills.yaml	i.skill.hide	[ gainedChance:	65	]}}|"
 - "|{{	skills/stealth-skills.yaml	i.skill.move-quietly	[ gainedChance:	80	]}}|"

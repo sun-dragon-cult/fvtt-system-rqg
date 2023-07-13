@@ -15,7 +15,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-right-hind-leg
+      id: i.hit-location.right-hind-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -36,7 +36,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-right-center-leg
+      id: i.hit-location.right-center-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -57,7 +57,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-left-hind-leg
+      id: i.hit-location.left-hind-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -78,7 +78,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-left-center-leg
+      id: i.hit-location.left-center-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -99,7 +99,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-abdomen
+      id: i.hit-location.abdomen
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -120,7 +120,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-thorax
+      id: i.hit-location.thorax
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -141,7 +141,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-right-foreleg
+      id: i.hit-location.right-foreleg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -162,7 +162,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-left-foreleg
+      id: i.hit-location.left-foreleg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -183,6 +183,6 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.beetles-head
+      id: i.hit-location.head
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$

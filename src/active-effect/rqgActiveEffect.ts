@@ -14,7 +14,7 @@ export class RqgActiveEffect extends ActiveEffect {
    * The effect will try to find an embedded item with the specified rqid.
    */
   _applyCustom(actor: RqgActor, change: EffectChangeData): void {
-    const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.humanoids-head:system.naturalAp
+    const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
       const itemsWithEffectsOnActor = formatListByWorldLanguage(
         actor.effects.map((e) => {

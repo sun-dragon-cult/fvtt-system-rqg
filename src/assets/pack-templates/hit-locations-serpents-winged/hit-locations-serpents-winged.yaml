@@ -15,7 +15,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.serpents-winged-tail
+      id: i.hit-location.tail
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -36,7 +36,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.serpents-winged-abdomen
+      id: i.hit-location.abdomen
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -57,7 +57,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.serpents-winged-chest
+      id: i.hit-location.chest
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -78,7 +78,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.serpents-winged-right-wing
+      id: i.hit-location.right-wing
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -99,7 +99,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.serpents-winged-left-wing
+      id: i.hit-location.left-wing
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -120,6 +120,6 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.serpents-winged-head
+      id: i.hit-location.head
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$

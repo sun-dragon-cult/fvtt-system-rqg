@@ -15,7 +15,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-right-leg
+      id: i.hit-location.right-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -36,7 +36,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-left-leg
+      id: i.hit-location.left-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -57,7 +57,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-abdomen
+      id: i.hit-location.abdomen
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -78,7 +78,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-chest
+      id: i.hit-location.chest
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -99,7 +99,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-right-arm
+      id: i.hit-location.right-arm
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -120,7 +120,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-left-arm
+      id: i.hit-location.left-arm
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -141,7 +141,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-tentacle-1
+      id: i.hit-location.tentacle-1
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -162,7 +162,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-tentacle-2
+      id: i.hit-location.tentacle-2
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -183,7 +183,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-tentacle-3
+      id: i.hit-location.tentacle-3
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -204,7 +204,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-tentacle-4
+      id: i.hit-location.tentacle-4
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -225,7 +225,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-tentacle-5
+      id: i.hit-location.tentacle-5
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -246,7 +246,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-tentacle-6
+      id: i.hit-location.tentacle-6
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -267,7 +267,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-tentacle-7
+      id: i.hit-location.tentacle-7
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -288,7 +288,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-tentacle-8
+      id: i.hit-location.tentacle-8
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -309,6 +309,6 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.walktapi-head
+      id: i.hit-location.head
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$

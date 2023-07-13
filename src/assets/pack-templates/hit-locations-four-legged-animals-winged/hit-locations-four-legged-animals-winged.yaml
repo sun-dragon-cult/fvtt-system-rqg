@@ -15,7 +15,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-right-hind-leg
+      id: i.hit-location.right-hind-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -36,7 +36,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-left-hind-leg
+      id: i.hit-location.left-hind-leg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -57,7 +57,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-hindquarter
+      id: i.hit-location.hindquarter
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -78,7 +78,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-forequarter
+      id: i.hit-location.forequarter
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -99,7 +99,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-right-wing
+      id: i.hit-location.right-wing
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -120,7 +120,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-left-wing
+      id: i.hit-location.left-wing
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -141,7 +141,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-right-foreleg
+      id: i.hit-location.right-foreleg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -162,7 +162,7 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-left-foreleg
+      id: i.hit-location.left-foreleg
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
 ---
@@ -183,6 +183,6 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.four-legged-animals-winged-head
+      id: i.hit-location.head
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$

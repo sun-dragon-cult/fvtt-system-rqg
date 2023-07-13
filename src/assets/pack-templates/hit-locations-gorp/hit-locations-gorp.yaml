@@ -15,6 +15,6 @@ effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.gorp-body
+      id: i.hit-location.body
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
