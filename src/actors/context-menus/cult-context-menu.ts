@@ -5,10 +5,10 @@ import {
   getGame,
   getRequiredDomDataset,
   localize,
+  localizeItemType,
   RqgError,
 } from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
-import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { Rqid } from "../../system/api/rqidApi";
 
@@ -29,7 +29,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.EditItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Cult),
+      itemType: localizeItemType(ItemTypeEnum.Cult),
     }),
     icon: ContextMenuRunes.Edit,
     condition: (el: JQuery) => !!getRequiredDomDataset(el, "item-id"),
@@ -49,7 +49,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.DeleteItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Cult),
+      itemType: localizeItemType(ItemTypeEnum.Cult),
     }),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,

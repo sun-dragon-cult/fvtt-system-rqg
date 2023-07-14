@@ -27,6 +27,7 @@ import {
   hasOwnProperty,
   isTruthy,
   localize,
+  localizeItemType,
   requireValue,
   RqgError,
   usersIdsThatOwnActor,
@@ -1250,7 +1251,7 @@ export class RqgActorSheet extends ActorSheet<
     const item = actor.items.get(itemId);
     requireValue(item, `No itemId [${itemId}] on actor ${actor.name} to show delete item Dialog`);
 
-    const itemTypeLoc: string = RqgItem.localizeItemTypeName(item.type);
+    const itemTypeLoc: string = localizeItemType(item.type);
 
     const title = localize("RQG.Dialog.confirmItemDeleteDialog.title", {
       itemType: itemTypeLoc,
@@ -1262,7 +1263,7 @@ export class RqgActorSheet extends ActorSheet<
       content = localize("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
         itemType: itemTypeLoc,
         itemName: item.name,
-        runeMagicSpell: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
+        runeMagicSpell: localizeItemType(ItemTypeEnum.RuneMagic),
       });
     } else {
       content = localize("RQG.Dialog.confirmItemDeleteDialog.content", {

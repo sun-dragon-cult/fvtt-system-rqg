@@ -1,8 +1,13 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getRequiredDomDataset, hasOwnProperty, localize, RqgError } from "../../system/util";
+import {
+  getRequiredDomDataset,
+  hasOwnProperty,
+  localize,
+  localizeItemType,
+  RqgError,
+} from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
-import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
@@ -47,7 +52,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.EditItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear),
+      itemType: localizeItemType(ItemTypeEnum.Gear),
     }),
     icon: ContextMenuRunes.Edit,
     condition: () => true,
@@ -67,7 +72,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.DeleteItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear),
+      itemType: localizeItemType(ItemTypeEnum.Gear),
     }),
     icon: ContextMenuRunes.Delete,
     condition: () => true,

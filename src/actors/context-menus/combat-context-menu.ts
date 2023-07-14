@@ -5,10 +5,11 @@ import {
   getGame,
   getRequiredDomDataset,
   localize,
+  localizeItemType,
   RqgError,
 } from "../../system/util";
 import { ContextMenuRunes } from "./contextMenuRunes";
-import { RqgItem } from "../../items/rqgItem";
+import type { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
@@ -43,7 +44,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.EditItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
+      itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: ContextMenuRunes.Edit,
     condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
@@ -64,7 +65,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.EditItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Weapon),
+      itemType: localizeItemType(ItemTypeEnum.Weapon),
     }),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
@@ -84,7 +85,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.DeleteItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
+      itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: ContextMenuRunes.Delete,
     condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
@@ -104,7 +105,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.DeleteItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Weapon),
+      itemType: localizeItemType(ItemTypeEnum.Weapon),
     }),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,

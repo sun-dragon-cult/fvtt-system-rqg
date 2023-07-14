@@ -1,10 +1,15 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { assertItemType, getRequiredDomDataset, localize, RqgError } from "../../system/util";
+import {
+  assertItemType,
+  getRequiredDomDataset,
+  localize,
+  localizeItemType,
+  RqgError,
+} from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { ContextMenuRunes } from "./contextMenuRunes";
-import { RqgItem } from "../../items/rqgItem";
 
 export const passionMenuOptions = (
   actor: RqgActor,
@@ -59,7 +64,7 @@ export const passionMenuOptions = (
   },
   {
     name: localize("RQG.ContextMenu.ImproveItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion),
+      itemType: localizeItemType(ItemTypeEnum.Passion),
     }),
     icon: ContextMenuRunes.Improve,
     condition: (el: JQuery) => {
@@ -85,7 +90,7 @@ export const passionMenuOptions = (
   },
   {
     name: localize("RQG.ContextMenu.EditItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion),
+      itemType: localizeItemType(ItemTypeEnum.Passion),
     }),
     icon: ContextMenuRunes.Edit,
     condition: () => true,
@@ -105,7 +110,7 @@ export const passionMenuOptions = (
   },
   {
     name: localize("RQG.ContextMenu.DeleteItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion),
+      itemType: localizeItemType(ItemTypeEnum.Passion),
     }),
     icon: ContextMenuRunes.Delete,
     condition: () => true,

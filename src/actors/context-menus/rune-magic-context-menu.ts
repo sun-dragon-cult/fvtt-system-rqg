@@ -6,11 +6,11 @@ import {
   getGame,
   getRequiredDomDataset,
   localize,
+  localizeItemType,
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { ContextMenuRunes } from "./contextMenuRunes";
-import { RqgItem } from "../../items/rqgItem";
 import { Rqid } from "../../system/api/rqidApi";
 
 export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
@@ -56,7 +56,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.EditItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
+      itemType: localizeItemType(ItemTypeEnum.RuneMagic),
     }),
     icon: ContextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
@@ -74,7 +74,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.DeleteItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.RuneMagic),
+      itemType: localizeItemType(ItemTypeEnum.RuneMagic),
     }),
     icon: ContextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
