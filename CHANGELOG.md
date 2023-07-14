@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.5](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.4...v2.2.5) (2023-07-14)
+
+
+### Bug Fixes
+
+* add missing scorpion man hitlocation items ([7ccb353](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7ccb353c49d7cf7c0a9cb48e66a4e89fe47a74b1)), closes [#575](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/575)
+* migration is run for new worlds ([cf15259](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/cf15259142a5d403b753245fdfa9f78befa0b223)), closes [#573](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/573)
+* replace the broken hitlocation rqid setter form with a macro ([d4ea0e7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d4ea0e7d056a1a50e324eb96981abcf030116950))
+* skillSheet & HitLocationSheet is missing values ([2bbf611](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2bbf611d9d7e65f37fa61372dcbdcdaec10bdc90)), closes [#572](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/572)
+* update compendium hit-location rqids to new standard form ([0233743](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/02337432dd5a5746427b7bcf54ad2742caf33a5d)), closes [#576](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/576)
+* wrong rqid on i.skill.fists-fist in compendium ([0381d63](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0381d633d986378a973b5aa4b5649a8d64e86ff9))
+
 ## [2.2.4](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.3...v2.2.4) (2023-07-07)
 
 
