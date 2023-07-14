@@ -21,12 +21,8 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
@@ -35,6 +31,108 @@
     "minimum": 10,
     "verified": 10
   },
+  "packFolders": [
+    {
+      "name": "RuneQuest Glorantha | en",
+      "sorting": "m",
+      "color": "#176341",
+      "packs": [],
+      "folders": [
+        {
+          "name": "Cults & Magic",
+          "sorting": "m",
+          "color": "#269261",
+          "packs": [
+            "spirit-magic-spells-en",
+            "rune-magic-spells-en",
+            "cults-en",
+            "spirit-magic-descriptions-en",
+            "rune-magic-descriptions-en",
+            "cult-descriptions-en"
+          ]
+        },
+        {
+          "name": "Equipment",
+          "sorting": "a",
+          "color": "#269261",
+          "packs": ["equipment-armor-en", "equipment-gear-en", "equipment-weapons-en"]
+        },
+        {
+          "name": "Bestiary",
+          "sorting": "a",
+          "color": "#269261",
+          "packs": ["bestiary-en", "species-descriptions-en"]
+        },
+        {
+          "name": "Skills & Passions",
+          "sorting": "m",
+          "color": "#269261",
+          "packs": [
+            "skills-en",
+            "skills-weapons-en",
+            "passions-en",
+            "passions-base-en",
+            "skill-descriptions-en"
+          ]
+        },
+        {
+          "name": "Runes",
+          "sorting": "a",
+          "color": "#269261",
+          "packs": ["pc-runes-en", "runes-en", "rune-descriptions-en"]
+        },
+
+        {
+          "name": "Occupations & Places",
+          "sorting": "a",
+          "color": "#269261",
+          "packs": [
+            "homelands-en",
+            "clan-descriptions-en",
+            "culture-descriptions-en",
+            "homeland-descriptions-en",
+            "region-descriptions-en",
+            "tribe-descriptions-en",
+            "name-bases-en",
+            "name-tables-en"
+          ]
+        },
+        {
+          "name": "Hit Locations",
+          "sorting": "a",
+          "color": "#269261",
+          "packs": [
+            "hit-locations-beetles-en",
+            "hit-locations-birds-flying-en",
+            "hit-locations-birds-running-en",
+            "hit-locations-centaurs-en",
+            "hit-locations-dragons-manticores-en",
+            "hit-locations-dragonsnails-one-headed-en",
+            "hit-locations-dragonsnails-two-headed-en",
+            "hit-locations-four-legged-animals-en",
+            "hit-locations-four-legged-animals-winged-en",
+            "hit-locations-gorp-en",
+            "hit-locations-harpies-en",
+            "hit-locations-humanoids-en",
+            "hit-locations-humanoids-winged-en",
+            "hit-locations-mammoths-mastodons-en",
+            "hit-locations-scorpion-men-en",
+            "hit-locations-serpents-en",
+            "hit-locations-serpents-winged-en",
+            "hit-locations-spiders-giant-en",
+            "hit-locations-walktapi-en",
+            "hit-locations-wyverns-en"
+          ]
+        },
+        {
+          "name": "Macros & Rolltables",
+          "sorting": "a",
+          "color": "#269261",
+          "packs": ["rqid-macros-en", "combat-fumble-en"]
+        }
+      ]
+    }
+  ],
   "packs": [
     {
       "name": "rqid-macros-en",
@@ -87,21 +185,21 @@
     },
     {
       "name": "equipment-armor-en",
-      "label": "Equipment, Armor | en",
+      "label": "Armor | en",
       "system": "rqg",
       "path": "assets/packs/equipment-armor-en.db",
       "type": "Item"
     },
     {
       "name": "equipment-gear-en",
-      "label": "Equipment, Gear | en",
+      "label": "Gear | en",
       "system": "rqg",
       "path": "assets/packs/equipment-gear-en.db",
       "type": "Item"
     },
     {
       "name": "equipment-weapons-en",
-      "label": "Equipment, Weapons | en",
+      "label": "Weapons | en",
       "system": "rqg",
       "path": "assets/packs/equipment-weapons-en.db",
       "type": "Item"
@@ -136,98 +234,98 @@
     },
     {
       "name": "hit-locations-beetles-en",
-      "label": "Hit Locations, Beetles | en",
+      "label": "Beetles | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-beetles-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-birds-flying-en",
-      "label": "Hit Locations, Birds, Flying | en",
+      "label": "Birds, Flying | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-birds-flying-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-birds-running-en",
-      "label": "Hit Locations, Birds, Running | en",
+      "label": "Birds, Running | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-birds-running-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-centaurs-en",
-      "label": "Hit Locations, Centaurs | en",
+      "label": "Centaurs | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-centaurs-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-dragons-manticores-en",
-      "label": "Hit Locations, Dragons/Manticores | en",
+      "label": "Dragons/Manticores | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-dragons-manticores-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-dragonsnails-one-headed-en",
-      "label": "Hit Locations, Dragonsnails, One-Headed | en",
+      "label": "Dragonsnails, One-Headed | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-dragonsnails-one-headed-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-dragonsnails-two-headed-en",
-      "label": "Hit Locations, Dragonsnails, Two-Headed | en",
+      "label": "Dragonsnails, Two-Headed | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-dragonsnails-two-headed-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-four-legged-animals-en",
-      "label": "Hit Locations, Four-Legged Animals | en",
+      "label": "Four-Legged Animals | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-four-legged-animals-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-four-legged-animals-winged-en",
-      "label": "Hit Locations, Four-Legged Animals, Winged | en",
+      "label": "Four-Legged Animals, Winged | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-four-legged-animals-winged-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-gorp-en",
-      "label": "Hit Locations, Gorp | en",
+      "label": "Gorp | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-gorp-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-harpies-en",
-      "label": "Hit Locations, Harpies | en",
+      "label": "Harpies | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-harpies-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-humanoids-en",
-      "label": "Hit Locations, Humanoids | en",
+      "label": "Humanoids | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-humanoids-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-humanoids-winged-en",
-      "label": "Hit Locations, Humanoids, Winged | en",
+      "label": "Humanoids, Winged | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-humanoids-winged-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-mammoths-mastodons-en",
-      "label": "Hit Locations, Mammoths/Mastodons | en",
+      "label": "Mammoths/Mastodons | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-mammoths-mastodons-en.db",
       "type": "Item"
@@ -241,35 +339,35 @@
     },
     {
       "name": "hit-locations-serpents-en",
-      "label": "Hit Locations, Serpents | en",
+      "label": "Serpents | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-serpents-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-serpents-winged-en",
-      "label": "Hit Locations, Serpents, Winged | en",
+      "label": "Serpents, Winged | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-serpents-winged-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-spiders-giant-en",
-      "label": "Hit Locations, Spiders, Giant | en",
+      "label": "Spiders, Giant | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-spiders-giant-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-walktapi-en",
-      "label": "Hit Locations, Walktapi | en",
+      "label": "Walktapi | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-walktapi-en.db",
       "type": "Item"
     },
     {
       "name": "hit-locations-wyverns-en",
-      "label": "Hit Locations, Wyverns | en",
+      "label": "Wyverns | en",
       "system": "rqg",
       "path": "assets/packs/hit-locations-wyverns-en.db",
       "type": "Item"
