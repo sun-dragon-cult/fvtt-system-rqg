@@ -84,15 +84,34 @@ export class CompendiumPack {
   }
 
   private finalize(docSource: CompendiumSource) {
-    if (!docSource._id) {
-      docSource._id = crypto
+    docSource = this.addId(docSource);
+
+    // Add _id to Descendant Documents
+    if (docSource.items) {
+      docSource.items = docSource.items.map((page: any) => this.addId(page)); // Updates in place in docSource
+    }
+    if (docSource.effects) {
+      docSource.effects = docSource.effects.map((page: any) => this.addId(page)); // Updates in place in docSource
+    }
+    if (docSource.pages) {
+      docSource.pages = docSource.pages.map((page: any) => this.addId(page)); // Updates in place in docSource
+    }
+    if (docSource.results) {
+      docSource.results = docSource.results.map((page: any) => this.addId(page)); // Updates in place in docSource
+    }
+    return JSON.stringify(docSource);
+  }
+
+  private addId(object: any): any {
+    if (!object._id) {
+      object._id = crypto
         .createHash("md5")
-        .update(this.name + docSource.name) // Has to be unique - use the pack and document name (like "cults-enOrlanth")
+        .update(this.name + object.name + object.type + object.text) // Has to be unique - use data that should be unique when combined (like "cults | en - Orlanth - cult - undefind")
         .digest("base64")
         .replace(/[\+=\/]/g, "")
         .substring(0, 16);
     }
-    return JSON.stringify(docSource);
+    return object;
   }
 
   /**
