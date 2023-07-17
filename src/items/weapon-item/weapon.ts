@@ -176,6 +176,9 @@ export class Weapon extends AbstractEmbeddedItem {
    * Returns false if the linked skill could not be found.
    */
   public static async embedLinkedSkill(skillRqid: string, actor: RqgActor): Promise<boolean> {
+    if (!skillRqid) {
+      return true; // No rqid (no linked skill) so count this as a success.
+    }
     const embeddedSkill = actor.getBestEmbeddedDocumentByRqid(skillRqid);
 
     if (!embeddedSkill) {
