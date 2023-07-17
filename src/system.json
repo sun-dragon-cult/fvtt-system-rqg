@@ -6,7 +6,7 @@
   "description": "A RuneQuest Glorantha system implementation.",
   "version": "2.2.5",
   "license": "UNLICENSED",
-  "background": "assets/images/ui/priestess.webp",
+  "background": "systems/rqg/assets/images/ui/sacred-time.webp",
   "authors": [
     {
       "name": "Sun Dragon Cult",
@@ -21,12 +21,8 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
