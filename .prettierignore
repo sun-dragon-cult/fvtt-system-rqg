@@ -9,4 +9,7 @@ yarn-error.log
 packs/
 
 **/*.hbs
+
+# until yaml build supports standard indented lists
+**/*.yaml
 CHANGELOG.md

@@ -1,0 +1,2 @@
+"**/*.{js,jsx,ts,tsx,html,hbs,css,json}":
+  - eslint --fix
