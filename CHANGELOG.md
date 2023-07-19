@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.6](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.5...v2.2.6) (2023-07-19)
+
+
+### Bug Fixes
+
+* embedding a weapon shows a warning for usages without linked skill ([160b8f9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/160b8f9a5012543fb12ac4f0d2a149a324d09363)), closes [#591](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/591)
+* runes in sorcery tab should not display chance ([7b612e2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7b612e2f8c295376586be5aa93a3bf0526973ed8)), closes [#586](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/586)
+* system background is broken ([b0b1a95](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b0b1a95625e74a663c286587c4a0694e65eb1482)), closes [#579](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/579)
+* system compendiums are missing embedded (descendant) documents ([ea38a59](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ea38a59e2727e333a9086ba5bbf273a9062d3f38)), closes [#588](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/588)
+* weapon chat shows all usages regardless if it has the skill or not ([38fa1f5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/38fa1f5b37707e0959e0f2270bc31262d54a29ff)), closes [#590](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/590)
+* weapon skills not added to actor in some cases ([351bcf6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/351bcf611fb6c16e7bc86c3d13d8e6d1d4b200ed)), closes [#589](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/589)
+
 ## [2.2.5](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.4...v2.2.5) (2023-07-14)
 
 
