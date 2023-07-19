@@ -28,23 +28,23 @@ system:
       formula: 3d6
   background:
     species: ${{rqgCompendiumContent.bestiary.ghost.species}}$
-    occupation: ''
-    homeland: ''
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
+    ransomDetails: ""
+    biography: ""
   allies: ${{rqgCompendiumContent.bestiary.ghost.notes}}$
   attributes:
     magicPoints:

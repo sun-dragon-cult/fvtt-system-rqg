@@ -11,7 +11,7 @@ export class SkillCategories {
     public missileWeapons: number = 0,
     public shields: number = 0,
     public naturalWeapons: number = 0,
-    public otherSkills: number = 0
+    public otherSkills: number = 0,
   ) {}
 }
 

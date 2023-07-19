@@ -1,4 +1,3 @@
----
 name: ${{rqgCompendiumContent.bestiary.bison.name}}$
 type: character
 img: icons/svg/mystery-man.svg
@@ -28,23 +27,23 @@ system:
       formula:
   background:
     species: ${{rqgCompendiumContent.bestiary.bison.species}}$
-    occupation: ''
-    homeland: ''
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
+    ransomDetails: ""
+    biography: ""
   allies: ${{rqgCompendiumContent.bestiary.bison.notes}}$
   attributes:
     magicPoints:

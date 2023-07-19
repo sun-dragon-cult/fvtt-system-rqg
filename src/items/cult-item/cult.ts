@@ -18,9 +18,10 @@ export class Cult extends AbstractEmbeddedItem {
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static onDeleteItem(actor: RqgActor, cultItem: RqgItem, options: any, userId: string): any[] {
     const cultRuneMagicItems = actor.items.filter(
-      (i) => i.type === ItemTypeEnum.RuneMagic && i.system.cultId === cultItem.id
+      (i) => i.type === ItemTypeEnum.RuneMagic && i.system.cultId === cultItem.id,
     );
     return cultRuneMagicItems.map((i) => {
       return { _id: i.id, "system.cultId": "" };
@@ -33,22 +34,25 @@ export class Cult extends AbstractEmbeddedItem {
   static async onEmbedItem(
     actor: RqgActor,
     child: RqgItem,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: any,
-    userId: string
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    userId: string,
   ): Promise<any> {
     assertItemType(child.type, ItemTypeEnum.Cult);
 
     const matchingDeityInActorCults = actor.items.filter(
-      (i) => i.type === ItemTypeEnum.Cult && i.system.deity === child.system.deity
+      (i) => i.type === ItemTypeEnum.Cult && i.system.deity === child.system.deity,
     );
 
     switch (matchingDeityInActorCults.length) {
-      case 1:
+      case 1: {
         // This is a new deity to the actor
         await Cult.embedCommonRuneMagic(child);
         return;
+      }
 
-      case 2:
+      case 2: {
         // Actor already has this deity - add the joinedCults from the new and old Cult items
         await actor.deleteEmbeddedDocuments("Item", [child.id!]);
         const newJoinedCults = [
@@ -57,7 +61,7 @@ export class Cult extends AbstractEmbeddedItem {
         ];
         const newCultItemName = deriveCultItemName(
           matchingDeityInActorCults[0].system.deity,
-          newJoinedCults.map((c) => c.cultName)
+          newJoinedCults.map((c) => c.cultName),
         );
 
         return {
@@ -67,12 +71,14 @@ export class Cult extends AbstractEmbeddedItem {
             joinedCults: newJoinedCults,
           },
         };
+      }
 
-      default:
+      default: {
         // 0 (failed embed) or multiple cults with same deity
         const msg = "Actor should not have multiple Cults with same Deity";
         ui.notifications?.error(msg);
         throw new RqgError(msg, [actor, child]);
+      }
     }
   }
 
@@ -93,8 +99,8 @@ export class Cult extends AbstractEmbeddedItem {
 
     const runeMagicItems = await Promise.all(
       cult.system.commonRuneMagicRqidLinks.map(
-        async (rqidLink: RqidLink) => (await Rqid.fromRqid(rqidLink.rqid)) as RqgItem
-      )
+        async (rqidLink: RqidLink) => (await Rqid.fromRqid(rqidLink.rqid)) as RqgItem,
+      ),
     );
 
     const connectedRuneMagicItems = runeMagicItems.filter(isTruthy).map((rm: RqgItem) => {

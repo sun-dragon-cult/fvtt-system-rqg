@@ -14,7 +14,7 @@ import {
 
 export class RqgItemSheet<
   Options extends ItemSheet.Options,
-  Data extends object = ItemSheet.Data<Options>
+  Data extends object = ItemSheet.Data<Options>,
 > extends ItemSheet<Options, Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
@@ -78,7 +78,7 @@ export class RqgItemSheet<
               transfer: true,
               disabled: false,
             },
-            item as any // TODO Type bailout - fixme!
+            item as any, // TODO Type bailout - fixme!
           );
 
           const e = await item
@@ -87,7 +87,7 @@ export class RqgItemSheet<
               ui.notifications?.error(
                 localize("RQG.Item.Notification.CantCreateActiveEffect", {
                   itemType: localizeItemType(item.type),
-                })
+                }),
               );
               throw reason;
             });
@@ -113,10 +113,10 @@ export class RqgItemSheet<
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
-          let deleteFromProperty = getProperty(this.item.system, deleteFromPropertyName);
+          const deleteFromProperty = getProperty(this.item.system, deleteFromPropertyName);
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
-              (r) => r.rqid !== deleteRqid
+              (r) => r.rqid !== deleteRqid,
             );
             // @ts-expect-error isEmbedded
             if (this.isEmbedded) {
@@ -145,10 +145,10 @@ export class RqgItemSheet<
         const editRqid = getRequiredDomDataset($(el), "rqid");
         const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
         el.addEventListener("change", async () => {
-          let updateProperty = getProperty(this.item.system, editPropertyName);
+          const updateProperty = getProperty(this.item.system, editPropertyName);
           if (Array.isArray(updateProperty)) {
             const updateRqidLink = (updateProperty as RqidLink[]).find(
-              (rqidLink) => rqidLink.rqid === editRqid
+              (rqidLink) => rqidLink.rqid === editRqid,
             );
             if (updateRqidLink) {
               updateRqidLink.bonus = Number((el as HTMLInputElement).value);
@@ -215,7 +215,7 @@ export class RqgItemSheet<
 
   async _onDropItem(
     event: DragEvent,
-    data: { type: string; uuid: string }
+    data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const {
       droppedDocument: droppedItem,
@@ -232,7 +232,7 @@ export class RqgItemSheet<
 
   async _onDropJournalEntry(
     event: DragEvent,
-    data: { type: string; uuid: string }
+    data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const {
       droppedDocument: droppedJournal,
@@ -249,7 +249,7 @@ export class RqgItemSheet<
 
   async _onDropJournalEntryPage(
     event: DragEvent,
-    data: { type: string; uuid: string }
+    data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const {
       droppedDocument: droppedPage,

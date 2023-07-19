@@ -58,7 +58,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     formData["name"] = concatenateSkillName(
       formData["system.skillName"],
-      formData["system.specialization"]
+      formData["system.specialization"],
     );
 
     if (!this.document.isEmbedded) {

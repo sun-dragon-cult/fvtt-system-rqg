@@ -57,7 +57,7 @@ export class ReputationChatHandler {
   public static async roll(
     reputationValue: number,
     modifier: number,
-    speaker: ChatSpeakerDataProperties
+    speaker: ChatSpeakerDataProperties,
   ): Promise<void> {
     const flavor = localize("RQG.Dialog.reputationChat.CheckReputationFlavor");
 
@@ -66,7 +66,7 @@ export class ReputationChatHandler {
   }
 
   public static async renderContent(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "reputationChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
@@ -78,7 +78,7 @@ export class ReputationChatHandler {
       chance: reputationValue + modifier,
       chatHeading: localize("RQG.Dialog.reputationChat.Reputation"),
     };
-    let html = await renderTemplate("systems/rqg/chat/reputationChatHandler.hbs", templateData);
+    const html = await renderTemplate("systems/rqg/chat/reputationChatHandler.hbs", templateData);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
     return {
@@ -95,7 +95,7 @@ export class ReputationChatHandler {
   }
 
   public static async getFormDataFromFlags(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<{ modifier: number; reputationValue: number }> {
     assertChatMessageFlagType(flags.type, "reputationChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);

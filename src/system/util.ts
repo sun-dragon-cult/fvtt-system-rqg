@@ -23,7 +23,7 @@ export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset:
  */
 export function getDomDataset(
   el: HTMLElement | Event | JQuery,
-  dataset: string
+  dataset: string,
 ): string | undefined {
   const elem = getHTMLElement(el);
   const closestElement = elem?.closest(`[data-${dataset}]`);
@@ -42,7 +42,7 @@ export function getDomDataset(
  */
 export function getDomDatasetAmongSiblings(
   el: HTMLElement | Event | JQuery,
-  dataset: string
+  dataset: string,
 ): string | undefined {
   const elem = getHTMLElement(el);
   let firstItemEl = elem;
@@ -67,7 +67,7 @@ export function getDomDatasetAmongSiblings(
 export function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | undefined {
   return el instanceof HTMLElement
     ? el
-    : !!(el as Event).target
+    : (el as Event).target
     ? ((el as Event).target as HTMLElement)
     : (el as JQuery).get(0);
 }
@@ -199,11 +199,11 @@ export function isTruthy<T>(argument: T | undefined | null): argument is T {
 /**
  * Check if obj has property prop and narrow type of obj if so.
  */
-export function hasOwnProperty<X extends {} | undefined, Y extends PropertyKey>(
+export function hasOwnProperty<X extends object | undefined, Y extends PropertyKey>(
   obj: X,
-  prop: Y
+  prop: Y,
 ): obj is X & Record<Y, unknown> {
-  return obj && obj.hasOwnProperty(prop);
+  return obj && Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
 /**
@@ -211,7 +211,7 @@ export function hasOwnProperty<X extends {} | undefined, Y extends PropertyKey>(
  */
 export function assertItemType<T extends ItemTypeEnum>(
   itemType: ItemTypeEnum | undefined,
-  type: T
+  type: T,
 ): asserts itemType is T {
   if (!itemType || itemType !== type) {
     const msg = `Got unexpected item type in assert, ${itemType} ≠ ${type}`;
@@ -225,7 +225,7 @@ export function assertItemType<T extends ItemTypeEnum>(
  */
 export function assertActorType<T extends ActorTypeEnum>(
   actorType: ActorTypeEnum | undefined,
-  type: T
+  type: T,
 ): asserts actorType is T {
   if (!actorType || actorType !== type) {
     const msg = `Got unexpected actor type in assert, ${actorType} ≠ ${type}`;
@@ -239,7 +239,7 @@ export function assertActorType<T extends ActorTypeEnum>(
  */
 export function assertChatMessageFlagType<T extends ChatMessageType>(
   chatMessageType: ChatMessageType | undefined,
-  type: T
+  type: T,
 ): asserts chatMessageType is T {
   if (!chatMessageType || chatMessageType !== type) {
     const msg = `Got unexpected chat message type in assert, ${chatMessageType} ≠ ${type}`;
@@ -249,7 +249,7 @@ export function assertChatMessageFlagType<T extends ChatMessageType>(
 }
 
 export function assertHtmlElement<T extends HTMLElement>(
-  eventTarget: EventTarget | null | undefined
+  eventTarget: EventTarget | null | undefined,
 ): asserts eventTarget is T | null | undefined {
   if (eventTarget != null && !(eventTarget instanceof HTMLElement)) {
     const msg = "RQG | Programming error - expected a HTMLElement but got something else";
@@ -269,8 +269,8 @@ export function usersIdsThatOwnActor(actor: RqgActor | null): string[] {
   if (actor) {
     return getGameUsers()
       .filter((user: User) =>
-        // @ts-ignore foundry 9
-        actor.testUserPermission(user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER)
+        // @ts-expect-error DOCUMENT_PERMISSION_LEVELS
+        actor.testUserPermission(user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
       )
       .map((user) => user.id);
   }
@@ -299,7 +299,7 @@ export function convertFormValueToString(rawFormValue: FormDataEntryValue | null
  */
 export function convertFormValueToInteger(
   rawFormValue: FormDataEntryValue,
-  defaultValue: number = 0
+  defaultValue: number = 0,
 ): number {
   const formValue = Number(cleanIntegerString(rawFormValue));
   return Number.isFinite(formValue) ? formValue : defaultValue;
@@ -325,7 +325,7 @@ export function cleanIntegerString(value: FormDataEntryValue | null): string {
 
 // A convenience getter that calls fromUuid and types the Document to what is requested.
 export async function getDocumentFromUuid<T>(
-  documentUuid: string | undefined
+  documentUuid: string | undefined,
 ): Promise<T | undefined> {
   return documentUuid ? ((await fromUuid(documentUuid)) as T | null) ?? undefined : undefined;
 }
@@ -346,7 +346,7 @@ export async function getRequiredDocumentFromUuid<T>(documentUuid: string | unde
 // TODO this method needs to be called with `getRequiredRqgActorFromUuid<RqgActor>(...` to work as intended.
 export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefined): Promise<T> {
   const rqgActorOrTokenDocument = await getRequiredDocumentFromUuid<RqgActor | TokenDocument>(
-    actorUuid
+    actorUuid,
   );
   if (!(rqgActorOrTokenDocument instanceof TokenDocument)) {
     return rqgActorOrTokenDocument as unknown as T; // Assume T is RqgActor
@@ -397,7 +397,7 @@ export async function cacheAvailableRunes(): Promise<AvailableRuneCache[]> {
           await pack.getIndex();
         }
         return getRuneIndexData(pack);
-      })
+      }),
     )
   ).flat();
 
@@ -406,7 +406,7 @@ export async function cacheAvailableRunes(): Promise<AvailableRuneCache[]> {
     (acc: AvailableRuneCache[], runeIndexData: any) => {
       const toReplaceRune = acc.findIndex(
         (r: any) =>
-          r.rqid === runeIndexData.rqid && Number(r.priority) <= Number(runeIndexData.priority)
+          r.rqid === runeIndexData.rqid && Number(r.priority) <= Number(runeIndexData.priority),
       );
       if (toReplaceRune >= 0) {
         acc.splice(toReplaceRune, 1, runeIndexData);
@@ -415,7 +415,7 @@ export async function cacheAvailableRunes(): Promise<AvailableRuneCache[]> {
       }
       return acc;
     },
-    []
+    [],
   );
 
   availableRunes = highestPriorityRunesData.map((r: any) => ({
@@ -427,7 +427,7 @@ export async function cacheAvailableRunes(): Promise<AvailableRuneCache[]> {
 }
 
 function getRuneIndexData(
-  pack: CompendiumCollection<CompendiumCollection.Metadata>
+  pack: CompendiumCollection<CompendiumCollection.Metadata>,
 ): AvailableRuneCache[] {
   return pack.index.reduce((acc: AvailableRuneCache[], indexData) => {
     // @ts-expect-error flags
@@ -454,7 +454,10 @@ export class RqgError implements Error {
   public name: string = "RqgError";
   public debugData: any[];
 
-  constructor(public message: string, ...debugData: any[]) {
+  constructor(
+    public message: string,
+    ...debugData: any[]
+  ) {
     // Maintains proper stack trace for where our error was thrown.
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, RqgError);
@@ -488,7 +491,7 @@ export function localize(key: string, data?: Record<string, unknown>): string {
   const result = getGame().i18n.format(key, data);
   if (result === key) {
     console.log(
-      `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/openSystem.json).`
+      `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/openSystem.json).`,
     );
   }
   return result;
@@ -531,7 +534,6 @@ export function localizeCharacteristic(characteristic: string): string {
  */
 export function activateChatTab() {
   // TODO: add player setting to allow skipping this if they don't like the tab changing
-  // @ts-ignore 0.8 tabs
   ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
 }
 
@@ -558,7 +560,7 @@ export type ListFormatType = "disjunction" | "conjunction" | "unit";
  */
 export function formatListByWorldLanguage(
   list: string[],
-  concatType: ListFormatType = "conjunction"
+  concatType: ListFormatType = "conjunction",
 ): string {
   const worldLanguage = (getGame().settings.get(systemId, "worldLanguage") as string) ?? "en";
   return formatListByLanguage(worldLanguage, list, concatType);
@@ -571,7 +573,7 @@ export function formatListByWorldLanguage(
  */
 export function formatListByUserLanguage(
   list: string[],
-  concatType: ListFormatType = "conjunction"
+  concatType: ListFormatType = "conjunction",
 ): string {
   const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
   return formatListByLanguage(userLanguage, list, concatType);
@@ -580,7 +582,7 @@ export function formatListByUserLanguage(
 function formatListByLanguage(
   language: string,
   list: string[] | undefined,
-  concatType: ListFormatType
+  concatType: ListFormatType,
 ): string {
   if (!list || list.filter(isTruthy).length === 0) {
     return "";

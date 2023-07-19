@@ -40,8 +40,7 @@ export class Weapon extends AbstractEmbeddedItem {
   static async toChat(weapon: RqgItem): Promise<void> {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const usage = Weapon.getDefaultUsage(weapon);
-    // @ts-expect-error foundry.utils.isEmpty
-    if (foundry.utils.isEmpty(usage)) {
+    if (isEmpty(usage)) {
       return; // There is no way to use this weapon - it could be arrows for example
     }
     const flags: WeaponChatFlags = {
@@ -81,7 +80,7 @@ export class Weapon extends AbstractEmbeddedItem {
     const speaker = ChatMessage.getSpeaker({ actor: weaponItem.actor ?? undefined });
 
     switch (options.actionName) {
-      case "combatManeuverRoll":
+      case "combatManeuverRoll": {
         const weaponUsage = weaponItem.system.usage[options.usageType];
         const combatManeuver = weaponUsage.combatManeuvers.find(
           (m: CombatManeuver) => m.name === options.actionValue,
@@ -100,8 +99,9 @@ export class Weapon extends AbstractEmbeddedItem {
           speaker,
         );
         return;
+      }
 
-      case "damageRoll":
+      case "damageRoll": {
         assertChatMessageFlagType(options.chatMessage.flags.rqg?.type, "weaponChat");
         const damageRollType = options.actionValue as DamageRollTypeEnum; // TODO improve typing
         await Weapon.damageRoll(
@@ -113,24 +113,29 @@ export class Weapon extends AbstractEmbeddedItem {
           speaker,
         );
         return;
+      }
 
-      case "hitLocationRoll":
+      case "hitLocationRoll": {
         await Weapon.hitLocationRoll(speaker);
         return;
+      }
 
-      case "fumbleRoll":
+      case "fumbleRoll": {
         await Weapon.fumbleRoll(weaponItem.actor);
         return;
+      }
 
-      default:
+      default: {
         const msg = localize("RQG.Dialog.weaponChat.UnknownButtonInChatError", {
           actionButton: options.actionName,
         });
         ui.notifications?.error(msg);
         throw new RqgError(msg, options.actionName);
+      }
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static preUpdateItem(actor: RqgActor, weapon: RqgItem, updates: object[], options: any): void {
     if (weapon.type === ItemTypeEnum.Weapon) {
       mergeArraysById(updates, getLocationRelatedUpdates(actor.items.contents, weapon, updates));
@@ -145,6 +150,7 @@ export class Weapon extends AbstractEmbeddedItem {
     actor: RqgActor,
     child: RqgItem,
     options: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userId: string,
   ): Promise<any> {
     assertItemType(child.type, ItemTypeEnum.Weapon);
@@ -200,8 +206,7 @@ export class Weapon extends AbstractEmbeddedItem {
   static getDefaultUsage(weapon: RqgItem): UsageType {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const defaultUsage = weapon.system.defaultUsage;
-    // @ts-expect-error foundry.utils.isEmpty
-    if (!foundry.utils.isEmpty(defaultUsage)) {
+    if (!isEmpty(defaultUsage)) {
       return defaultUsage;
     }
     const options = WeaponChatHandler.getUsageTypeOptions(weapon);
@@ -428,7 +433,7 @@ export class Weapon extends AbstractEmbeddedItem {
       );
       return;
     }
-    // @ts-ignore TODO draw StoredDocument<RollTable>
+    // @ts-expect-error TODO draw StoredDocument<RollTable>
     const draw = await fumbleTable.draw({ displayChat: false });
     // Construct chat data
     const numberOfResults =

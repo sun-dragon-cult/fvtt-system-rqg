@@ -7,6 +7,7 @@ export class TextEditorHooks {
     // @ts-expect-error CONFIG.TextEditor
     CONFIG.TextEditor.enrichers.push({ pattern, enricher });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async function enricher(match: RegExpMatchArray, options: any): Promise<HTMLElement> {
       const rqid = match[1] as string | undefined;
       const anchor = match[2] as string | undefined;

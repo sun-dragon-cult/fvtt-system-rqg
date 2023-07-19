@@ -27,7 +27,7 @@ templatePacks.forEach((pack) => {
       translatedPacks.push(pack.translate(lang));
     } catch (error) {
       if (error instanceof Error) {
-        throw PackError(`Error translating pack ${pack.name} to ${lang}: \n\n${error.message}`);
+        throw new PackError(`Error translating pack ${pack.name} to ${lang}: \n\n${error.message}`);
       }
     }
   });
@@ -41,8 +41,8 @@ if (entityCounts.length > 0) {
   console.log(
     `Created ${entityCounts.length} packs with ${
       total / languageCount
-    } documents per language in ${languageCount} languages.`
+    } documents per language in ${languageCount} languages.`,
   );
 } else {
-  throw PackError("No data available to build packs.");
+  throw new PackError("No data available to build packs.");
 }

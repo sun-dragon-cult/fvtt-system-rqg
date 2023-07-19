@@ -216,7 +216,7 @@ system:
   isContainer: false
   physicalItemType: unique
   equippedStatus: carried
-  description:  ${{rqgCompendiumContent.equipment.armor.description.leather}}$ ${{rqgCompendiumContent.equipment.armor.description.pants}}$ ${{rqgCompendiumContent.equipment.armor.description.underLayer}}$
+  description: ${{rqgCompendiumContent.equipment.armor.description.leather}}$ ${{rqgCompendiumContent.equipment.armor.description.pants}}$ ${{rqgCompendiumContent.equipment.armor.description.underLayer}}$
 ---
 name: ${{rqgCompendiumContent.equipment.armor.greaves}}$ (${{uiContent.RQG.Item.Armor.ArmorMaterial.Leather}}$)
 type: armor

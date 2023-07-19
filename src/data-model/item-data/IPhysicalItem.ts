@@ -1,8 +1,8 @@
 export const equippedStatuses = ["notCarried", "carried", "equipped"] as const;
-export type EquippedStatus = typeof equippedStatuses[number];
+export type EquippedStatus = (typeof equippedStatuses)[number];
 
 export const physicalItemTypes = ["unique", "currency", "consumable"];
-export type PhysicalItemType = typeof physicalItemTypes[number];
+export type PhysicalItemType = (typeof physicalItemTypes)[number];
 
 interface Price {
   real: number;

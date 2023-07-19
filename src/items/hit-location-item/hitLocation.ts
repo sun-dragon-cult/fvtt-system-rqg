@@ -48,7 +48,7 @@ export class HitLocation extends AbstractEmbeddedItem {
     item.system.hitPoints.max = HitLocation.hitPointsPerLocation(totalHp, item.system.baseHpDelta);
     item.system.hitPoints.value = item.system.wounds.reduce(
       (acc: number, w: number) => acc - w,
-      item.system.hitPoints.max
+      item.system.hitPoints.max,
     );
 
     return item;

@@ -1,14 +1,14 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import { getRequiredDomDataset, hasOwnProperty, localize, RqgError } from "../../system/util";
-import { ContextMenuRunes } from "./contextMenuRunes";
+import { contextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.ContextMenu.SetAsNotCarried"),
-    icon: ContextMenuRunes.SetNotCarried,
+    icon: contextMenuRunes.SetNotCarried,
     condition: () => true,
     callback: async (): Promise<void> => {
       ui.notifications?.info("TODO set as not carried");
@@ -16,7 +16,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.SetAsCarried"),
-    icon: ContextMenuRunes.SetCarried,
+    icon: contextMenuRunes.SetCarried,
     condition: () => true,
     callback: async (): Promise<void> => {
       ui.notifications?.info("TODO set as carried");
@@ -24,7 +24,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.SetAsEquipped"),
-    icon: ContextMenuRunes.SetEquipped,
+    icon: contextMenuRunes.SetEquipped,
     condition: () => true,
     callback: async (): Promise<void> => {
       ui.notifications?.info("TODO set as equipped");
@@ -32,7 +32,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.SplitIntoNewLocation"),
-    icon: ContextMenuRunes.Split,
+    icon: contextMenuRunes.Split,
     condition: (el: JQuery): boolean => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -49,7 +49,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear),
     }),
-    icon: ContextMenuRunes.Edit,
+    icon: contextMenuRunes.Edit,
     condition: () => true,
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -69,7 +69,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.DeleteItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Gear),
     }),
-    icon: ContextMenuRunes.Delete,
+    icon: contextMenuRunes.Delete,
     condition: () => true,
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");

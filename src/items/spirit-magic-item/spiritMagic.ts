@@ -36,12 +36,12 @@ export class SpiritMagic extends AbstractEmbeddedItem {
 
   static async abilityRoll(
     spiritMagicItem: RqgItem,
-    options: { level: number; boost: number }
+    options: { level: number; boost: number },
   ): Promise<ResultEnum | undefined> {
     const validationError = SpiritMagic.validateRollData(
       spiritMagicItem,
       options.level,
-      options.boost
+      options.boost,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
@@ -52,7 +52,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
       localize("RQG.Dialog.spiritMagicChat.Cast", { spellName: spiritMagicItem.name }),
       (spiritMagicItem.actor?.system.characteristics.power.value ?? 0) * 5,
       0,
-      ChatMessage.getSpeaker({ actor: spiritMagicItem.actor ?? undefined })
+      ChatMessage.getSpeaker({ actor: spiritMagicItem.actor ?? undefined }),
     );
     await spiritMagicItem.actor?.drawMagicPoints(mpCost, result);
     return result;
@@ -61,7 +61,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
   public static validateRollData(
     spiritMagicItem: RqgItem,
     level: number | undefined,
-    boost: number | undefined
+    boost: number | undefined,
   ): string | undefined {
     assertItemType(spiritMagicItem.type, ItemTypeEnum.SpiritMagic);
     if (level == null || level > spiritMagicItem.system.points) {
