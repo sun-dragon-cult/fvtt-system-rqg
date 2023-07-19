@@ -1,2 +1,2 @@
-"**/*.{js,jsx,ts,tsx,html,hbs,css,json}":
+"**/*.{js,ts}":
   - eslint --fix

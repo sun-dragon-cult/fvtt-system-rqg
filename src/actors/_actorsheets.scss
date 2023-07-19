@@ -17,7 +17,7 @@
   }
 
   .dead {
-    filter: blur(1px)  grayscale(1);
+    filter: blur(1px) grayscale(1);
     header {
       background: url(assets/images/token-effects/dead.svg) no-repeat center;
     }
@@ -94,7 +94,9 @@
         font-variant-caps: normal;
 
         &.active {
-          text-shadow: 0 0 3px black, -2px -2px 3px black;
+          text-shadow:
+            0 0 3px black,
+            -2px -2px 3px black;
           color: white;
           font-weight: bold;
         }
@@ -130,7 +132,9 @@
         font-variant-caps: normal;
 
         &.active {
-          text-shadow: 0 0 3px black, -2px -2px 3px black;
+          text-shadow:
+            0 0 3px black,
+            -2px -2px 3px black;
           color: white;
           font-weight: bold;
           top: 0;
@@ -288,9 +292,9 @@
   }
 
   .health {
-
-    .strike  {
-      text-decoration:none;position:relative;
+    .strike {
+      text-decoration: none;
+      position: relative;
 
       &::before {
         top: 45%;
@@ -309,15 +313,13 @@
     }
 
     .health-state {
-      color: var(--rqg-highlight)
-
+      color: var(--rqg-highlight);
     }
 
     .wounded {
       background-color: var(--rqg-color-enc-warning);
       border-color: var(--rqg-highlight);
     }
-
   }
 
   .tab.runemagic {
@@ -335,7 +337,6 @@
       line-height: 1.5rem;
     }
   }
-
 
   .grid.location-row {
     display: grid;
@@ -358,12 +359,12 @@
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-10 {
-    border-bottom: 7px solid #018a31D6; //84%
+    border-bottom: 7px solid #018a31d6; //84%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-9 {
-    border-bottom: 7px solid #018a31AD; //68%
+    border-bottom: 7px solid #018a31ad; //68%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
@@ -378,42 +379,42 @@
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-6 {
-    border-bottom: 7px solid #018A3130; //19%
+    border-bottom: 7px solid #018a3130; //19%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-5 {
-    border-bottom: 7px solid #018A310D; //5%
+    border-bottom: 7px solid #018a310d; //5%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-4 {
-    border-bottom: 7px solid #8A01010D; //5%
+    border-bottom: 7px solid #8a01010d; //5%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-3 {
-    border-bottom: 7px solid #8A010130; //19%
+    border-bottom: 7px solid #8a010130; //19%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-2 {
-    border-bottom: 7px solid #8A010659; //35%
+    border-bottom: 7px solid #8a010659; //35%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-1 {
-    border-bottom: 7px solid #8A010182; //51%
+    border-bottom: 7px solid #8a010182; //51%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-0 {
-    border-bottom: 7px solid #8A0101AD; //68%
+    border-bottom: 7px solid #8a0101ad; //68%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
   input.characteristic-rank-low {
-    border-bottom: 7px solid #8A0101FF;
+    border-bottom: 7px solid #8a0101ff;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }

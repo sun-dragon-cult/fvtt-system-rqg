@@ -31,7 +31,7 @@ export class SpiritMagicChatHandler {
   }
 
   public static async renderContent(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "spiritMagicChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
@@ -44,7 +44,7 @@ export class SpiritMagicChatHandler {
         name: spiritMagicItem?.name,
       }),
     };
-    let html = await renderTemplate("systems/rqg/chat/spiritMagicChatHandler.hbs", templateData);
+    const html = await renderTemplate("systems/rqg/chat/spiritMagicChatHandler.hbs", templateData);
 
     return {
       user: getGame().user?.id,
@@ -60,7 +60,7 @@ export class SpiritMagicChatHandler {
   }
 
   public static async getFormDataFromFlags(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<{ level: number; boost: number }> {
     assertChatMessageFlagType(flags.type, "spiritMagicChat");
     const level = convertFormValueToInteger(flags.formData.level);

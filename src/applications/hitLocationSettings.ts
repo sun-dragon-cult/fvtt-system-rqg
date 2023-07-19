@@ -30,7 +30,7 @@ export class HitLocationSettings extends FormApplication {
           ...new Set(
             expandObject(formData)
               .hitLocationItemNames.map((i: string) => i.trim())
-              .filter((i: string) => i)
+              .filter((i: string) => i),
           ),
         ].sort((a: unknown, b: unknown) => ("" + a).localeCompare("" + b)),
       };

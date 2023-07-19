@@ -6,9 +6,9 @@ export async function trimCategoryFromSkillNames(itemData: ItemData): Promise<It
   const updateData: ItemUpdate = {};
   if (itemData.type === ItemTypeEnum.Skill) {
     // Trim the "- category" if on the skill
-    var dashPosition = itemData.name.indexOf(" - ");
+    const dashPosition = itemData.name.indexOf(" - ");
     if (dashPosition > -1) {
-      var testCategoryStr = itemData.name.substring(dashPosition);
+      const testCategoryStr = itemData.name.substring(dashPosition);
       if (categorySuffixes.indexOf(testCategoryStr) > -1) {
         updateData.name = itemData.name.substring(0, dashPosition);
       }

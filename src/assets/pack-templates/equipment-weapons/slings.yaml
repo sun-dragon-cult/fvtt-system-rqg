@@ -14,7 +14,7 @@ system:
       skillRqidLink:
         rqid:
         name:
-      combatManeuvers: [ ]
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
@@ -23,7 +23,7 @@ system:
       skillRqidLink:
         rqid:
         name:
-      combatManeuvers: [ ]
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
@@ -32,7 +32,7 @@ system:
       skillRqidLink:
         rqid:
         name:
-      combatManeuvers: [ ]
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
@@ -88,7 +88,7 @@ system:
       skillRqidLink:
         rqid:
         name:
-      combatManeuvers: [ ]
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
@@ -97,7 +97,7 @@ system:
       skillRqidLink:
         rqid:
         name:
-      combatManeuvers: [ ]
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
@@ -106,7 +106,7 @@ system:
       skillRqidLink:
         rqid:
         name:
-      combatManeuvers: [ ]
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0

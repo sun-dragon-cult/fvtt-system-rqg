@@ -133,13 +133,13 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   deriveItemName(): string {
     return CultSheet.deriveItemName(
       this.document.system.deity,
-      this.document.system.joinedCults.map((c: any) => c.cultName)
+      this.document.system.joinedCults.map((c: any) => c.cultName),
     );
   }
 
   static deriveItemName(deity: string, cultNames: string[]): string {
     const joinedCultsFormatted = formatListByWorldLanguage(
-      cultNames.filter(isTruthy).map((c) => c.trim())
+      cultNames.filter(isTruthy).map((c) => c.trim()),
     );
 
     if (!joinedCultsFormatted || joinedCultsFormatted === deity) {

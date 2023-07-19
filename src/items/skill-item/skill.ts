@@ -76,7 +76,7 @@ export class Skill extends AbstractEmbeddedItem {
       mod = -Math.min(
         // mod is equipped ENC modifier
         actorData.attributes.encumbrance?.equipped || 0,
-        actorData.attributes.encumbrance?.max || 0
+        actorData.attributes.encumbrance?.max || 0,
       );
     } else if (skillRqid === CONFIG.RQG.skillRqid.jump) {
       Skill.updateBaseChance(skillData, dex * 3);
@@ -85,9 +85,9 @@ export class Skill extends AbstractEmbeddedItem {
         0,
         ...actor.items
           .filter(
-            (i: RqgItem) => i.type === ItemTypeEnum.Armor && i.system.equippedStatus === "equipped"
+            (i: RqgItem) => i.type === ItemTypeEnum.Armor && i.system.equippedStatus === "equipped",
           )
-          .map((a: any) => Math.abs(a.system.moveQuietlyPenalty))
+          .map((a: any) => Math.abs(a.system.moveQuietlyPenalty)),
       );
     }
 
@@ -97,7 +97,7 @@ export class Skill extends AbstractEmbeddedItem {
       skillData.baseChance > 0 || skillData.baseChance + skillData.gainedChance > 0
         ? Math.max(
             0,
-            skillData.baseChance + skillData.gainedChance + (skillData.categoryMod || 0) + mod
+            skillData.baseChance + skillData.gainedChance + (skillData.categoryMod || 0) + mod,
           )
         : 0;
     return skillItem;

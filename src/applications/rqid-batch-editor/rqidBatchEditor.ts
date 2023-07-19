@@ -125,11 +125,12 @@ export class RqidBatchEditor extends FormApplication<
       case ItemTypeEnum.RuneMagic:
         summary = localize("RQG.Dialog.BatchRqidEditor.SummaryRuneMagic");
         break;
-      default:
+      default: {
         const documentNameTranslation = localizeItemType(this.options.itemType);
         summary = localize("RQG.Dialog.BatchRqidEditor.SummaryDefault", {
           type: documentNameTranslation,
         });
+      }
     }
 
     return {
@@ -170,7 +171,7 @@ export class RqidBatchEditor extends FormApplication<
     this.render();
   }
 
-  async _updateObject(event: Event, formData: any): Promise<void> {
+  async _updateObject(event: Event): Promise<void> {
     if (event instanceof SubmitEvent) {
       const clickedButton = event.submitter as HTMLButtonElement;
       clickedButton.disabled = true;
@@ -181,7 +182,7 @@ export class RqidBatchEditor extends FormApplication<
         this.object.worldItemChanges,
         this.object.packItemChangesMap,
         this.object.packActorChangesMap,
-        this.object.itemName2Rqid
+        this.object.itemName2Rqid,
       );
       await this.close();
     }
@@ -203,7 +204,7 @@ export class RqidBatchEditor extends FormApplication<
     packItemChanges: Map<string, ItemChange[]>,
     // packId -> actorId -> ItemChange[]
     packActorChanges: Map<string, Map<string, ItemChange[]>>,
-    itemNames2Rqid: Map<string, string | undefined>
+    itemNames2Rqid: Map<string, string | undefined>,
   ): Promise<void> {
     const changesCount =
       sceneChangesMap.size +
@@ -219,21 +220,21 @@ export class RqidBatchEditor extends FormApplication<
       actorChangesMap,
       itemNames2Rqid,
       progress,
-      changesCount
+      changesCount,
     );
 
     progress = await RqidBatchEditor.updateItemPackCompendiums(
       packItemChanges,
       itemNames2Rqid,
       progress,
-      changesCount
+      changesCount,
     );
 
     progress = await RqidBatchEditor.updateActorPackCompendiums(
       packActorChanges,
       itemNames2Rqid,
       progress,
-      changesCount
+      changesCount,
     );
 
     RqidBatchEditor.updateProgress(progress, changesCount, "Update World Items");
@@ -250,7 +251,7 @@ export class RqidBatchEditor extends FormApplication<
     packActorChanges: Map<string, Map<string, ItemChange[]>>,
     itemNames2Rqid: Map<string, string | undefined>,
     progress: number,
-    changesCount: number
+    changesCount: number,
   ) {
     RqidBatchEditor.updateProgress(progress, changesCount, "Update Actor Compendiums");
     for (const [packId, actorChanges] of packActorChanges) {
@@ -258,7 +259,7 @@ export class RqidBatchEditor extends FormApplication<
       for (const [actorId, actorItemUpdates] of actorChanges) {
         const embeddedItemUpdates: any[] = RqidBatchEditor.getItemUpdates(
           actorItemUpdates,
-          itemNames2Rqid
+          itemNames2Rqid,
         );
 
         if (!isEmpty(embeddedItemUpdates)) {
@@ -286,7 +287,7 @@ export class RqidBatchEditor extends FormApplication<
     packItemChanges: Map<string, ItemChange[]>,
     itemNames2Rqid: Map<string, string | undefined>,
     progress: number,
-    changesCount: number
+    changesCount: number,
   ): Promise<number> {
     RqidBatchEditor.updateProgress(progress, changesCount, "Update Item Packs");
     for (const [packId, itemChanges] of packItemChanges) {
@@ -308,7 +309,7 @@ export class RqidBatchEditor extends FormApplication<
     sceneChangesMap: Map<string, Map<string, ItemChange[]>>,
     itemNames2Rqid: Map<string, string | undefined>,
     progress: number,
-    changesCount: number
+    changesCount: number,
   ): Promise<number> {
     RqidBatchEditor.updateProgress(progress, changesCount, "Update Scenes");
     for (const [sceneId, token2ItemUpdates] of sceneChangesMap) {
@@ -354,7 +355,7 @@ export class RqidBatchEditor extends FormApplication<
     actorChangesMap: Map<string, ItemChange[]>,
     itemNames2Rqid: Map<string, string | undefined>,
     progress: number,
-    changesCount: number
+    changesCount: number,
   ): Promise<number> {
     RqidBatchEditor.updateProgress(progress, changesCount, "Update Embedded Items");
 
@@ -367,7 +368,7 @@ export class RqidBatchEditor extends FormApplication<
 
       const embeddedItemUpdates: any[] = RqidBatchEditor.getItemUpdates(
         actorItemChanges,
-        itemNames2Rqid
+        itemNames2Rqid,
       );
 
       if (!isEmpty(embeddedItemUpdates)) {
@@ -384,7 +385,7 @@ export class RqidBatchEditor extends FormApplication<
 
   static async findItemsWithMissingRqids(
     documentType: ItemTypeEnum,
-    prefixRegex: RegExp
+    prefixRegex: RegExp,
   ): Promise<{
     sceneChangesMap: Map<string, Map<string, ItemChange[]>>;
     actorChangesMap: Map<string, ItemChange[]>;
@@ -503,12 +504,12 @@ export class RqidBatchEditor extends FormApplication<
               packIndexData,
               existingRqids,
               itemNamesWithoutRqid,
-              packItemChangesMap
+              packItemChangesMap,
             );
             RqidBatchEditor.updateProgress(
               ++progress,
               scanningCount,
-              "Find Rqids from Item Compendiums"
+              "Find Rqids from Item Compendiums",
             );
             break;
 
@@ -518,12 +519,12 @@ export class RqidBatchEditor extends FormApplication<
               actors,
               documentType,
               itemNamesWithoutRqid,
-              packActorChangesMap
+              packActorChangesMap,
             );
             RqidBatchEditor.updateProgress(
               ++progress,
               scanningCount,
-              "Find Rqids from Actor Compendiums"
+              "Find Rqids from Actor Compendiums",
             );
             break;
 
@@ -531,7 +532,7 @@ export class RqidBatchEditor extends FormApplication<
             RqidBatchEditor.updateProgress(
               ++progress,
               scanningCount,
-              "Find Rqids from Compendiums"
+              "Find Rqids from Compendiums",
             );
             break;
         }
@@ -655,7 +656,7 @@ export class RqidBatchEditor extends FormApplication<
     packIndexData: any,
     existingRqids: Map<string, string>,
     itemNamesWithoutRqid: Map<string, string | undefined>,
-    packItemChangesMap: Map<string, ItemChange[]>
+    packItemChangesMap: Map<string, ItemChange[]>,
   ): void {
     if (
       // @ts-expect-error packageName
@@ -709,7 +710,7 @@ export class RqidBatchEditor extends FormApplication<
     actors: RqgActor[],
     documentType: ItemTypeEnum,
     itemNamesWithoutRqid: Map<string, string | undefined>,
-    packActorChangesMap: Map<string, Map<string, ItemChange[]>>
+    packActorChangesMap: Map<string, Map<string, ItemChange[]>>,
   ): Promise<void> {
     if (
       // @ts-expect-error packageName
@@ -749,7 +750,7 @@ export class RqidBatchEditor extends FormApplication<
 
   // Render the application and resolve a Promise when the application is closed so that it can be awaited
   public async show(): Promise<void> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.resolve = resolve;
       this.reject = reject;
       this.render(true);
@@ -767,7 +768,7 @@ export class RqidBatchEditor extends FormApplication<
 
       const idPrefix = `${rqidDocumentName}.${toKebabCase(itemType)}.`;
       const prefixRegex = new RegExp(
-        "^" + rqidDocumentName + "\\." + toKebabCase(itemType) + "\\."
+        "^" + rqidDocumentName + "\\." + toKebabCase(itemType) + "\\.",
       );
 
       const {
@@ -797,7 +798,7 @@ export class RqidBatchEditor extends FormApplication<
           idPrefix,
           prefixRegex,
           existingRqids: existingRqids,
-        }
+        },
       );
       await rqidBatchEditor.show();
     }
@@ -810,7 +811,7 @@ export class RqidBatchEditor extends FormApplication<
    */
   private static getItemUpdates(
     itemChanges: ItemChange[],
-    itemNames2Rqid: Map<string, string | undefined>
+    itemNames2Rqid: Map<string, string | undefined>,
   ): any[] {
     return itemChanges.reduce((acc: any[], itemChange) => {
       const rqidFlags: DocumentRqidFlags = {

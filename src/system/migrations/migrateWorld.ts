@@ -36,7 +36,7 @@ export async function migrateWorld(): Promise<void> {
   if (!getGameUser().isGM) {
     ui.notifications?.warn(
       localize("RQG.Migration.WorldNotUpdated", { systemVersion: systemVersion }),
-      { permanent: true }
+      { permanent: true },
     );
     return;
   }
@@ -45,13 +45,13 @@ export async function migrateWorld(): Promise<void> {
   await RqidBatchEditor.factory(
     ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
     ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
-    ItemTypeEnum.Rune // Future needs
+    ItemTypeEnum.Rune, // Future needs
   );
 
   await migrateWorldDialog(systemVersion);
   ui.notifications?.info(
     localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
-    { permanent: true }
+    { permanent: true },
   );
   console.log(`RQG | Starting world migration to version ${systemVersion}`);
 
@@ -63,7 +63,7 @@ export async function migrateWorld(): Promise<void> {
     localize("RQG.Migration.migrationFinished", { systemVersion: systemVersion }),
     {
       permanent: true,
-    }
+    },
   );
   console.log(`RQG | Finished world migration`);
 }
@@ -76,7 +76,7 @@ export async function migrateWorld(): Promise<void> {
  */
 export async function applyDefaultWorldMigrations(
   itemMigrations: ItemMigration[] | undefined = undefined,
-  actorMigrations: ActorMigration[] | undefined = undefined
+  actorMigrations: ActorMigration[] | undefined = undefined,
 ): Promise<void> {
   if (!getGameUser().isGM) {
     ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));

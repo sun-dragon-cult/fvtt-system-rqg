@@ -18,7 +18,7 @@ export async function migrateSubCults(itemData: ItemData): Promise<ItemUpdate> {
     if ((itemData.system as any)?.subCults) {
       console.warn(
         `Item ${itemData.name} had subCult data ${(itemData.system as any).subCults}`,
-        itemData
+        itemData,
       );
     }
 
@@ -40,7 +40,7 @@ export async function migrateSubCults(itemData: ItemData): Promise<ItemUpdate> {
 
 function deriveCultItemName(deity: string, cultNames: string[]): string {
   const joinedCultsFormatted = formatListByWorldLanguage(
-    cultNames.filter(isTruthy).map((c) => c.trim())
+    cultNames.filter(isTruthy).map((c) => c.trim()),
   );
 
   if (!joinedCultsFormatted || joinedCultsFormatted === deity) {
@@ -53,7 +53,7 @@ export type ListFormatType = "disjunction" | "conjunction" | "unit";
 
 function formatListByWorldLanguage(
   list: string[],
-  concatType: ListFormatType = "conjunction"
+  concatType: ListFormatType = "conjunction",
 ): string {
   const worldLanguage = (getGame().settings.get(systemId, "worldLanguage") as string) ?? "en";
   return formatListByLanguage(worldLanguage, list, concatType);
@@ -62,7 +62,7 @@ function formatListByWorldLanguage(
 function formatListByLanguage(
   language: string,
   list: string[] | undefined,
-  concatType: ListFormatType
+  concatType: ListFormatType,
 ): string {
   if (!list) {
     return "";

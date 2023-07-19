@@ -7,14 +7,14 @@ import {
   localize,
   RqgError,
 } from "../../system/util";
-import { ContextMenuRunes } from "./contextMenuRunes";
+import { contextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollChat"),
-    icon: ContextMenuRunes.RollViaChat,
+    icon: contextMenuRunes.RollViaChat,
     condition: (el: JQuery) => !!getDomDataset(el, "item-id"),
     callback: async (el: JQuery) => {
       const weaponItemId = getRequiredDomDataset(el, "item-id");
@@ -24,7 +24,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.ToggleExperience"),
-    icon: ContextMenuRunes.ToggleExperience,
+    icon: contextMenuRunes.ToggleExperience,
     condition: (el: JQuery) => !!getDomDataset(el, "skill-id"),
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "skill-id");
@@ -45,7 +45,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
     }),
-    icon: ContextMenuRunes.Edit,
+    icon: contextMenuRunes.Edit,
     condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
@@ -66,7 +66,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Weapon),
     }),
-    icon: ContextMenuRunes.Edit,
+    icon: contextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");
@@ -86,7 +86,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.DeleteItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Skill),
     }),
-    icon: ContextMenuRunes.Delete,
+    icon: contextMenuRunes.Delete,
     condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
@@ -106,7 +106,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.DeleteItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Weapon),
     }),
-    icon: ContextMenuRunes.Delete,
+    icon: contextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "item-id");

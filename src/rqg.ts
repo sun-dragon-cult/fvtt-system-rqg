@@ -47,7 +47,7 @@ Hooks.once("init", async () => {
       "  `\"bmmmdPY .JMML.`Ybmd9'.JMML.  `Moo9^Yo..JMML  JMML.`Mbmo.JMML  JMML.`Moo9^Yo.\n" +
       "                                                                                \n" +
       "                                                                                \n",
-    "color: #F3A71E"
+    "color: #F3A71E",
   );
   console.log("RQG | Initializing the Runequest Glorantha Game System");
 
@@ -78,9 +78,9 @@ Hooks.once("init", async () => {
   TextEditorHooks.init();
   RqgSettings.init();
 
-  // @ts-expect-error
+  // @ts-expect-error unregisterSheet
   RollTables.unregisterSheet("core", RollTableConfig);
-  // @ts-expect-error
+  // @ts-expect-error registerSheet
   RollTables.registerSheet(systemId, RqgRollTableConfig as any, {
     // label: localize("TABLE.SheetTitle"),
     makeDefault: true,

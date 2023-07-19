@@ -10,8 +10,10 @@ import { RqgItem } from "../items/rqgItem";
 describe("healing", () => {
   let mockActor: RqgActor;
   let mockLeftLeg: RqgItem;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockHead: RqgItem;
   let mockChest: RqgItem;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockAbdomen: RqgItem;
 
   beforeEach(() => {
@@ -35,7 +37,7 @@ describe("healing", () => {
       healPoints,
       1,
       mockLeftLeg,
-      mockActor
+      mockActor,
     );
 
     // --- Assert ---
@@ -74,7 +76,7 @@ describe("healing", () => {
       healPoints,
       0,
       mockLeftLeg,
-      mockActor
+      mockActor,
     );
 
     // --- Assert ---
@@ -109,7 +111,7 @@ describe("healing", () => {
       healPoints,
       0,
       mockLeftLeg,
-      mockActor
+      mockActor,
     );
 
     // --- Assert ---
@@ -147,7 +149,7 @@ describe("healing", () => {
       chestDamage + 10,
       0,
       mockChest,
-      mockActor
+      mockActor,
     );
 
     // --- Assert ---
@@ -187,7 +189,7 @@ describe("healing", () => {
       healPoints,
       0,
       mockChest,
-      mockActor
+      mockActor,
     );
 
     // --- Assert ---
@@ -223,7 +225,7 @@ describe("healing", () => {
       1,
       0,
       mockLeftLeg,
-      mockActor
+      mockActor,
     );
 
     // --- Assert ---
@@ -253,14 +255,14 @@ export function applyTestHealing(
   healPoints: number,
   healWoundIndex: number,
   hitLocation: RqgItem,
-  actor: RqgActor
+  actor: RqgActor,
 ): HealingEffects {
   assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
   const healingEffects = HealingCalculations.healWound(
     healPoints,
     healWoundIndex,
     hitLocation,
-    actor
+    actor,
   );
   mergeObject(hitLocation, healingEffects.hitLocationUpdates);
   mergeObject(actor, healingEffects.actorUpdates);

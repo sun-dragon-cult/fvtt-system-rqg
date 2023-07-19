@@ -33,10 +33,8 @@ export class ActorWizard extends FormApplication {
   constructor(object: RqgActor, options: any) {
     super(object, options);
     this.actor = object;
-    const previouslySelectedTemplateId = this.actor.getFlag(
-      systemId,
-      actorWizardFlags
-    )?.selectedSpeciesId;
+    const previouslySelectedTemplateId = this.actor.getFlag(systemId, actorWizardFlags)
+      ?.selectedSpeciesId;
 
     const template = getGame().actors?.get(previouslySelectedTemplateId as string) as
       | RqgActor
@@ -122,21 +120,19 @@ export class ActorWizard extends FormApplication {
       const homelands = (await Rqid.fromRqidRegexBest(
         /.*homeland.*/,
         "i",
-        worldLanguage
+        worldLanguage,
       )) as RqgItem[];
       this.homeland.homelands = homelands.filter((i) => i.type === ItemTypeEnum.Homeland);
     }
 
     if (this.actor) {
       // See if the user has already chosen a species template that is stored in flags
-      const previouslySelectedSpeciesId = this.actor.getFlag(
-        systemId,
-        actorWizardFlags
-      )?.selectedSpeciesId;
+      const previouslySelectedSpeciesId = this.actor.getFlag(systemId, actorWizardFlags)
+        ?.selectedSpeciesId;
 
       if (previouslySelectedSpeciesId) {
         const flaggedSpecies = this.species.speciesTemplates?.find(
-          (s) => s.id === previouslySelectedSpeciesId
+          (s) => s.id === previouslySelectedSpeciesId,
         );
         if (
           flaggedSpecies &&
@@ -149,10 +145,8 @@ export class ActorWizard extends FormApplication {
       }
 
       // Has the user already chosen a Homeland stored in flags?
-      const previouslySelectedHomelandRqid = this.actor.getFlag(
-        systemId,
-        actorWizardFlags
-      )?.selectedHomelandRqid;
+      const previouslySelectedHomelandRqid = this.actor.getFlag(systemId, actorWizardFlags)
+        ?.selectedHomelandRqid;
       if (previouslySelectedHomelandRqid) {
         await this.setHomeland(previouslySelectedHomelandRqid);
       }
@@ -165,7 +159,7 @@ export class ActorWizard extends FormApplication {
       const rqid = i.getFlag(systemId, documentRqidFlags)?.id;
       const associatedChoice = rqid && this.choices[rqid];
       if (associatedChoice) {
-        // @ts-ignore choice TODO Is choice a temporary property?
+        // TODO Is choice a temporary property?
         i.system.choice = associatedChoice;
       }
     });
@@ -176,22 +170,24 @@ export class ActorWizard extends FormApplication {
         await TextEditor.enrichHTML(
           this.species.selectedSpeciesTemplate?.system.background.biography,
           // @ts-expect-error async
-          { async: true }
+          { async: true },
         );
     }
 
     // put choices on selected homeland journal rqidLinks for purposes of sheet
     const selectedHomeland = this.homeland.selectedHomeland;
-    const homelandRqidLinks = selectedHomeland?.system?.cultureJournalRqidLinks.concat(
-      ...selectedHomeland?.system?.tribeJournalRqidLinks,
-      ...selectedHomeland?.system?.clanJournalRqidLinks,
-      ...selectedHomeland?.system?.cultRqidLinks
+    const homelandRqidLinks: RqidLink[] = (
+      selectedHomeland?.system?.cultureJournalRqidLinks ?? []
+    ).concat(
+      ...(selectedHomeland?.system?.tribeJournalRqidLinks ?? []),
+      ...(selectedHomeland?.system?.clanJournalRqidLinks ?? []),
+      ...(selectedHomeland?.system?.cultRqidLinks ?? []),
     );
-    if (homelandRqidLinks) {
+    if (homelandRqidLinks.length) {
       homelandRqidLinks.forEach((rqidLink: RqidLink | CreationChoice) => {
         const associatedChoice = this.choices[rqidLink.rqid];
         if (associatedChoice) {
-          //@ts-ignore choice TODO Is choice a temporary property?
+          //@ts-expect-error choice TODO Is choice a temporary property?
           rqidLink.choice = associatedChoice;
         }
       });
@@ -199,7 +195,7 @@ export class ActorWizard extends FormApplication {
 
     const homelandRunes: RqgItem[] = [];
     if (selectedHomeland?.system?.runeRqidLinks) {
-      for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks) {
+      for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks ?? []) {
         const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RqgItem | undefined;
         assertItemType(rune?.type, ItemTypeEnum.Rune);
         rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
@@ -212,19 +208,18 @@ export class ActorWizard extends FormApplication {
         homelandRunes.push(rune);
       }
       // put runes on homeland for purposes of sheet
-      //@ts-ignore runes
+      //@ts-expect-error runes
       this.homeland.selectedHomeland.runes = homelandRunes;
     }
 
     const homelandSkills: RqgItem[] = [];
     if (selectedHomeland?.system?.skillRqidLinks) {
-      for (const skillRqidLink of selectedHomeland?.system?.skillRqidLinks) {
+      for (const skillRqidLink of selectedHomeland?.system?.skillRqidLinks ?? []) {
         const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as RqgItem | undefined;
         assertItemType(skill?.type, ItemTypeEnum.Skill);
         const associatedChoice = this.choices[skillRqidLink.rqid];
         if (associatedChoice) {
           // put choice on homeland skills for purposes of sheet
-          //@ts-ignore choice
           skill.system.choice = associatedChoice;
         }
         if (skillRqidLink.bonus) {
@@ -242,7 +237,7 @@ export class ActorWizard extends FormApplication {
       selectedHomeland.system.wizardInstructions = await TextEditor.enrichHTML(
         selectedHomeland.system.wizardInstructions,
         // @ts-expect-error async
-        { async: true }
+        { async: true },
       );
     }
 
@@ -255,21 +250,20 @@ export class ActorWizard extends FormApplication {
     // Sort the skills inside each category
     Object.values(skills).forEach((skillList) =>
       (skillList as RqgItem[]).sort((a: RqgItem, b: RqgItem) =>
-        ("" + a.name).localeCompare("" + b.name)
-      )
+        ("" + a.name).localeCompare("" + b.name),
+      ),
     );
     itemTypes[ItemTypeEnum.Skill] = skills;
 
     const homelandPassions: RqgItem[] = [];
     if (selectedHomeland?.system?.passionRqidLinks) {
-      for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks) {
+      for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks ?? []) {
         const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as RqgItem | undefined;
         assertItemType(passion?.type, ItemTypeEnum.Passion);
         const associatedChoice = this.choices[passionRqidLink.rqid];
         passion.system.hasExperience = false;
         if (associatedChoice) {
           // put choice on homeland passions for purposes of sheet
-          //@ts-ignore choice
           passion.system.choice = associatedChoice;
         }
         homelandPassions.push(passion as RqgItem); // Already asserted
@@ -284,7 +278,7 @@ export class ActorWizard extends FormApplication {
 
     if (this.homeland.selectedHomeland) {
       // put skills and passions on homeland for purposes of sheet
-      //@ts-ignore embeddedItems
+      //@ts-expect-error embeddedItems
       this.homeland.selectedHomeland.embeddedItems = itemTypes; //TODO Sort this by category and use the skill tab
     }
 
@@ -309,7 +303,7 @@ export class ActorWizard extends FormApplication {
         const rqid = inputTarget.dataset.rqid;
         const forChoice = inputTarget.dataset.forChoice;
         if (rqid) {
-          let changedChoice = this.choices[rqid];
+          const changedChoice = this.choices[rqid];
           if (changedChoice) {
             if (forChoice === "species") {
               changedChoice.speciesPresent = inputTarget.checked;
@@ -380,12 +374,12 @@ export class ActorWizard extends FormApplication {
     if (target instanceof HTMLSelectElement) {
       const select = target as HTMLSelectElement;
       if (select.name === "selectedSpeciesTemplateId") {
-        // @ts-ignore selectedSpeciesTemplateId
+        // @ts-expect-error selectedSpeciesTemplateId
         const selectedTemplateId = formData?.selectedSpeciesTemplateId;
         await this.setSpeciesTemplate(selectedTemplateId, true);
       }
       if (select.name === "selectedHomelandRqid") {
-        // @ts-ignore selectedHomelandRqid
+        // @ts-expect-error selectedHomelandRqid
         const selectedHomelandRqid = formData?.selectedHomelandRqid;
         await this.setHomeland(selectedHomelandRqid);
       }
@@ -396,7 +390,7 @@ export class ActorWizard extends FormApplication {
 
   async setSpeciesTemplate(selectedTemplateId: string, checkAll: boolean) {
     this.species.selectedSpeciesTemplate = this.species.speciesTemplates?.find(
-      (t) => t.id === selectedTemplateId
+      (t) => t.id === selectedTemplateId,
     );
 
     await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedSpeciesId");
@@ -456,10 +450,10 @@ export class ActorWizard extends FormApplication {
 
     // add hit locations from template to actor
     const addHitLocations = this.species.selectedSpeciesTemplate?.items.filter(
-      (h) => h.type === ItemTypeEnum.HitLocation
+      (h) => h.type === ItemTypeEnum.HitLocation,
     );
     if (addHitLocations) {
-      //@ts-ignore addHitLocations
+      //@ts-expect-error addHitLocations
       await this.actor.createEmbeddedDocuments("Item", addHitLocations);
     }
 
@@ -508,7 +502,7 @@ export class ActorWizard extends FormApplication {
     // Find any rqids that are in the choices but not on the species template
     // and mark them not present on the species
     const speciesRqids = this.species.selectedSpeciesTemplate?.items.map(
-      (i) => i.getFlag(systemId, documentRqidFlags)?.id
+      (i) => i.getFlag(systemId, documentRqidFlags)?.id,
     );
     for (const choiceKey in this.choices) {
       if (!speciesRqids?.includes(choiceKey)) {
@@ -519,7 +513,7 @@ export class ActorWizard extends FormApplication {
 
   async setHomeland(selectedHomelandRqid: string) {
     this.homeland.selectedHomeland = this.homeland.homelands?.find(
-      (h) => h.getFlag(systemId, documentRqidFlags)?.id === selectedHomelandRqid
+      (h) => h.getFlag(systemId, documentRqidFlags)?.id === selectedHomelandRqid,
     );
 
     await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedHomelandRqid");
@@ -614,7 +608,7 @@ export class ActorWizard extends FormApplication {
     const adds = [];
     const deletes: string[] = [];
     for (const key in this.choices) {
-      let existingItems = this.actor.getEmbeddedDocumentsByRqid(key);
+      const existingItems = this.actor.getEmbeddedDocumentsByRqid(key);
       if (existingItems.length > 0) {
         for (const actorItem of existingItems) {
           // Handle Skills, Runes, and Passions, which use the .present property of the choice
@@ -648,8 +642,9 @@ export class ActorWizard extends FormApplication {
             } else {
               // Item exists on the actor but doesn't exist on the template or hasn't been chosen
               if (actorItem.id && !deletes.includes(actorItem.id)) {
+                // TODO ???
               }
-              //@ts-ignore actorItem.id
+              //@ts-expect-error actorItem.id
               deletes.push(actorItem.id);
             }
           }
@@ -679,7 +674,7 @@ export class ActorWizard extends FormApplication {
               this.species.selectedSpeciesTemplate?.getEmbeddedDocumentsByRqid(key) || [];
             console.log(
               `Actor Species Template had an item with rqid "${key} that was not found in by rqid. Using item from the Actor Species Template.`,
-              itemsToAddFromTemplate
+              itemsToAddFromTemplate,
             );
           }
 

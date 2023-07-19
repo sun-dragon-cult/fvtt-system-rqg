@@ -37,7 +37,7 @@ export class Ability {
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     speaker: ChatSpeakerDataProperties,
-    resultMessages?: ResultMessage[]
+    resultMessages?: ResultMessage[],
   ): Promise<ResultEnum> {
     const r = new Roll("1d100");
     await r.evaluate({ async: true });
@@ -63,7 +63,7 @@ export class Ability {
   private static evaluateResult(
     chance: number,
     roll: number,
-    useSpecialCriticals: boolean
+    useSpecialCriticals: boolean,
   ): ResultEnum {
     chance = Math.max(0, chance); // -50% = 0%
 
@@ -76,7 +76,7 @@ export class Ability {
     const fumble = Math.min(100, 100 - Math.ceil((100 - chance - 9) / 20) + 1);
     const success = Math.min(95, Math.max(chance, 5));
     const fail = fumble === 96 ? 95 : Math.max(96, fumble - 1);
-    let lookup = [
+    const lookup = [
       { limit: hyperCritical, result: ResultEnum.HyperCritical },
       { limit: specialCritical, result: ResultEnum.SpecialCritical },
       { limit: critical, result: ResultEnum.Critical },
