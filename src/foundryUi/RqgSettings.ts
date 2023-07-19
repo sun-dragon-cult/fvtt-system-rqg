@@ -16,7 +16,7 @@ export class RqgSettings extends Settings {
       .append(
         '<button class="trigger-data-migration"><i class="fas fa-wrench"></i> ' +
           localize("RQG.Foundry.Settings.Migrate.TriggerButton") +
-          "</button>"
+          "</button>",
       );
     html.find(".trigger-data-migration").click(() => {
       new Dialog(
@@ -40,7 +40,7 @@ export class RqgSettings extends Settings {
           },
           default: "close",
         },
-        {}
+        {},
       ).render(true);
     });
   }

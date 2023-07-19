@@ -7,7 +7,7 @@ import { getCombatantsSharingToken } from "./combatant-utils";
 
 export class RqgToken extends Token {
   static init() {
-    // @ts-expect-error
+    // @ts-expect-error config
     CONFIG.Token.objectClass = RqgToken;
   }
 
@@ -35,15 +35,15 @@ export class RqgToken extends Token {
     }
   }
 
-  // @ts-expect-error
+  // @ts-expect-error _onCreate
   protected _onCreate(
     options: PropertiesToSource<TokenDataProperties>,
     docModOptions: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void {
     super._onCreate(options, docModOptions);
     if (userId === getGame().user?.id) {
-      //@ts-ignore actorLink
+      //@ts-expect-error actorLink
       if (!this.document.actorLink) {
         if (this.actor) {
           initializeAllCharacteristics(this.actor);

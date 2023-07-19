@@ -28,6 +28,7 @@ export class RqgJournalEntry extends JournalEntry {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private static addRqidEventListener(doc: any, html: JQuery, options: any) {
     RqidLink.addRqidLinkClickHandlers(html);
   }

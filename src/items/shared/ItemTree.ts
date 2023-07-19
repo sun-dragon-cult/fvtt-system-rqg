@@ -17,7 +17,7 @@ export class ItemTree {
     const physicalItems = items.filter(
       (item) =>
         item.system.physicalItemType &&
-        !(item.type === ItemTypeEnum.Weapon && item.system.isNatural)
+        !(item.type === ItemTypeEnum.Weapon && item.system.isNatural),
     );
 
     // Items that only exist because another item has a location that references it
@@ -29,7 +29,7 @@ export class ItemTree {
 
   private populateItemGraphAndItemLocationData(
     virtualItems: RqgItem[],
-    physicalItems: RqgItem[]
+    physicalItems: RqgItem[],
   ): void {
     [...virtualItems, ...physicalItems]
       // Add data to itemGraph & itemLocationData
@@ -210,7 +210,7 @@ export class ItemTree {
    */
   public getContainerNodeOfItem(itemName: string): LocationItemNodeData | undefined {
     const container = [...this.itemLocationData.values()].find((l) =>
-      l.contains.some((c) => c.name === itemName)
+      l.contains.some((c) => c.name === itemName),
     );
     if (!container || container.name === "") {
       return undefined;
@@ -227,6 +227,7 @@ export class ItemTree {
     if (!container) {
       return undefined;
     }
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const maybeContainer = this.getContainerNodeOfItem(container.name ?? "");
       if (!maybeContainer || maybeContainer.name === "") {
@@ -278,7 +279,7 @@ export class ItemTree {
     unprocessed: Set<string>,
     processing: Set<string>,
     processed: Set<string>,
-    loopNodeNames: Set<string>
+    loopNodeNames: Set<string>,
   ): boolean {
     //visiting this node, move it to "processing" from "unprocessed"
     unprocessed.delete(nodeName);

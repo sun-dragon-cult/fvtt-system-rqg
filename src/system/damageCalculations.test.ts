@@ -18,7 +18,9 @@ describe("Inflict Damage", () => {
     mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")!;
     (global as any).ui = {
       notifications: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info(_msg: string, _other?: any) {},
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         error(_msg: string, _other?: any) {},
       },
     };
@@ -35,7 +37,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockLeftLeg,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -69,7 +71,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockLeftLeg,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -81,7 +83,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt's Left Leg is useless and cannot hold anything / support standing. Pelle Plutt can still fight with whatever limbs are still functional."
+        "Pelle Plutt's Left Leg is useless and cannot hold anything / support standing. Pelle Plutt can still fight with whatever limbs are still functional.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -105,7 +107,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockLeftLeg,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -117,7 +119,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted."
+        "Pelle Plutt is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -142,7 +144,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockLeftLeg,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -154,7 +156,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt's Left Leg is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. Pelle Plutt is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible."
+        "Pelle Plutt's Left Leg is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. Pelle Plutt is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -178,14 +180,14 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockLeftLeg,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({});
       expect(actorUpdates).toStrictEqual({});
       expect(notification).toBe(
-        "Left Leg is gone and cannot be hit anymore, reroll to get a new hit location!"
+        "Left Leg is gone and cannot be hit anymore, reroll to get a new hit location!",
       );
       expect(uselessLegs).toStrictEqual([]);
     });
@@ -202,7 +204,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockHead,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -237,7 +239,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockHead,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -249,7 +251,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die"
+        "Pelle Plutt is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -273,7 +275,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockHead,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -285,7 +287,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
+        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -309,7 +311,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockHead,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -345,7 +347,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockChest,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -379,7 +381,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockChest,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -391,7 +393,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing."
+        "Pelle Plutt falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -415,7 +417,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockChest,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -427,7 +429,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
+        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -451,7 +453,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockChest,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -487,7 +489,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockAbdomen,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -517,14 +519,14 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockAbdomen,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
       expect(hitLocationUpdates.system?.wounds).toStrictEqual([appliedDamage]);
       expect(hitLocationUpdates.system?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe(
-        "Both legs are useless and Pelle Plutt falls to the ground. Pelle Plutt may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes."
+        "Both legs are useless and Pelle Plutt falls to the ground. Pelle Plutt may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -562,7 +564,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockAbdomen,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -574,7 +576,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
+        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -612,7 +614,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockAbdomen,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -624,7 +626,7 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid."
+        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.",
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -661,7 +663,7 @@ describe("Inflict Damage", () => {
         appliedDamage,
         true,
         mockAbdomen,
-        mockActor
+        mockActor,
       );
 
       // --- Assert ---
@@ -691,14 +693,14 @@ export function applyTestDamage(
   damage: number,
   applyDamageToTotalHp: boolean,
   hitLocation: RqgItem,
-  actor: RqgActor
+  actor: RqgActor,
 ) {
   const damageEffects = DamageCalculations.addWound(
     damage,
     true,
     hitLocation,
     actor,
-    "Pelle Plutt"
+    "Pelle Plutt",
   );
   mergeObject(hitLocation, damageEffects.hitLocationUpdates);
   mergeObject(actor, damageEffects.actorUpdates);

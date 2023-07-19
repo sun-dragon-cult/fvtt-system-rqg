@@ -13,35 +13,44 @@ export abstract class AbstractEmbeddedItem {
   /**
    * Send this item to a chat message to select option before doing a roll against it.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static async toChat(item: RqgItem): Promise<void> {}
 
   /**
    * Do a roll immediately with specified options.
    */
-  static async abilityRoll(item: RqgItem, options: {}): Promise<ResultEnum | undefined> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  static async abilityRoll(item: RqgItem, options: object): Promise<ResultEnum | undefined> {
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static preEmbedItem(actor: RqgActor, item: ItemData, options: object[], userId: string): void {}
 
   /**
    * Will be called when the item is embedded into an actor.
    */
   static async onEmbedItem(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     actor: RqgActor,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     child: RqgItem,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: any,
-    userId: string
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    userId: string,
   ): Promise<any> {}
 
   /**
    * Will be called before an embedded (Owned) item is updated.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static preUpdateItem(actor: RqgActor, item: RqgItem, result: any[], options: any): void {}
 
   /**
    * Will be called after a set of embedded items are deleted.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static onDeleteItem(actor: RqgActor, itemData: RqgItem, options: any, userId: string): any[] {
     return [];
   }
@@ -61,5 +70,6 @@ export abstract class AbstractEmbeddedItem {
   }
 
   // TODO not used (yet)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static activateActorSheetListeners(html: JQuery, sheet: any) {}
 }

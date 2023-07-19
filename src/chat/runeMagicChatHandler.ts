@@ -31,7 +31,7 @@ export class RuneMagicChatHandler {
     const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "runeMagicChat");
     const runeMagicItem = await getRequiredDocumentFromUuid<RqgItem | undefined>(
-      flags.chat.itemUuid
+      flags.chat.itemUuid,
     );
     requireValue(runeMagicItem, "Couldn't find item on item chat message");
     const {
@@ -54,7 +54,7 @@ export class RuneMagicChatHandler {
   }
 
   public static async renderContent(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "runeMagicChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
@@ -73,14 +73,14 @@ export class RuneMagicChatHandler {
     const ritualOrMeditationOptions: any = {};
     for (let i = 0; i <= 100; i += 5) {
       ritualOrMeditationOptions[i] = localize(
-        "RQG.Dialog.runeMagicChat.MeditationOrRitualValue" + i
+        "RQG.Dialog.runeMagicChat.MeditationOrRitualValue" + i,
       );
     }
 
     const skillAugmentationOptions: any = {};
     [0, 50, 30, 20, -20, -50].forEach((value) => {
       skillAugmentationOptions[value] = localize(
-        "RQG.Dialog.runeMagicChat.SkillAugmentationValue" + value
+        "RQG.Dialog.runeMagicChat.SkillAugmentationValue" + value,
       );
     });
 
@@ -98,7 +98,7 @@ export class RuneMagicChatHandler {
       }),
     };
 
-    let html = await renderTemplate("systems/rqg/chat/runeMagicChatHandler.hbs", templateData);
+    const html = await renderTemplate("systems/rqg/chat/runeMagicChatHandler.hbs", templateData);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
 
     return {

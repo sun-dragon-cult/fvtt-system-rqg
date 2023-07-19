@@ -6,7 +6,7 @@
   "description": "A RuneQuest Glorantha system implementation.",
   "version": "2.2.5",
   "license": "UNLICENSED",
-  "background": "assets/images/ui/priestess.webp",
+  "background": "systems/rqg/assets/images/ui/sacred-time.webp",
   "authors": [
     {
       "name": "Sun Dragon Cult",

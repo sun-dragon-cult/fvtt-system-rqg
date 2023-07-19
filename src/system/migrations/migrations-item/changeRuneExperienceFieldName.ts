@@ -9,7 +9,7 @@ export async function changeRuneExperienceFieldName(itemData: ItemData): Promise
     // Always remove "experience" from runes
     updateData.system = { [`-=experience`]: null };
     if (itemData.system.hasExperience == null) {
-      // @ts-ignore experience
+      // @ts-expect-error experience
       updateData.system.hasExperience = itemData.experience ?? false;
     }
   }

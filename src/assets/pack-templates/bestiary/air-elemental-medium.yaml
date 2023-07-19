@@ -28,23 +28,23 @@ system:
       formula:
   background:
     species: ${{rqgCompendiumContent.bestiary.airElementalMedium.species}}$
-    occupation: ''
-    homeland: ''
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
+    ransomDetails: ""
+    biography: ""
   allies: ${{rqgCompendiumContent.bestiary.elementalHitPointsNote}}$ ${{rqgCompendiumContent.bestiary.airElementalNotes}}$ ${{rqgCompendiumContent.bestiary.elementalGeneralNotes}}$
   attributes:
     magicPoints:

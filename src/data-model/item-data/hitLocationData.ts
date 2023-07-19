@@ -4,7 +4,7 @@ import { ActorHealthState } from "../actor-data/attributes";
 
 // TODO differentiate between severed & maimed? slash / crush or impale
 export const hitLocationHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
-export type HitLocationHealthState = typeof hitLocationHealthStatuses[number];
+export type HitLocationHealthState = (typeof hitLocationHealthStatuses)[number];
 
 export enum HitLocationTypesEnum {
   Limb = "limb",
