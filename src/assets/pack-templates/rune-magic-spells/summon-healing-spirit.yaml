@@ -1,5 +1,5 @@
 # summon-healing-spirit
-name: ${{openSystem.content.runeMagic.summonHealingSpirit.name}}$
+name: ${{rqgCompendiumContent.runeMagic.summonHealingSpirit.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..summon-healing-spirit
-    name: ${{openSystem.content.runeMagic.summonHealingSpirit.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.summonHealingSpirit.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.summon-healing-spirit
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

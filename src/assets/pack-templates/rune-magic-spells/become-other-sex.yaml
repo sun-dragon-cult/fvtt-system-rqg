@@ -1,5 +1,5 @@
 # become-other-sex
-name: ${{openSystem.content.runeMagic.becomeOtherSex.name}}$
+name: ${{rqgCompendiumContent.runeMagic.becomeOtherSex.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..become-other-sex
-    name: ${{openSystem.content.runeMagic.becomeOtherSex.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.becomeOtherSex.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.become-other-sex
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

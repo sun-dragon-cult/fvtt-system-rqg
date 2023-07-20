@@ -1,7 +1,7 @@
 # charisma
-name: ${{openSystem.content.runeMagic.charisma.name}}$
+name: ${{rqgCompendiumContent.runeMagic.charisma.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.charisma.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.charisma.name}}$
     type: text
     title:
       show: false
@@ -9,16 +9,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/beast.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/illusion.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
-        ${{openSystem.content.runeMagic.charisma.description}}$
+        ${{rqgCompendiumContent.runeMagic.charisma.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..charisma
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

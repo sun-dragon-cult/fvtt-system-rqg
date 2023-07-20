@@ -1,5 +1,5 @@
 # spell-trading
-name: ${{openSystem.content.runeMagic.spellTrading.name}}$
+name: ${{rqgCompendiumContent.runeMagic.spellTrading.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..spell-trading
-    name: ${{openSystem.content.runeMagic.spellTrading.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.spellTrading.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.spell-trading
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

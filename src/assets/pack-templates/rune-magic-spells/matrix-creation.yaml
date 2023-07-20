@@ -1,5 +1,5 @@
 # matrix-creation
-name: ${{openSystem.content.runeMagic.matrixCreation.name}}$
+name: ${{rqgCompendiumContent.runeMagic.matrixCreation.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -12,10 +12,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..matrix-creation
-    name: ${{openSystem.content.runeMagic.matrixCreation.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.matrixCreation.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.matrix-creation
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

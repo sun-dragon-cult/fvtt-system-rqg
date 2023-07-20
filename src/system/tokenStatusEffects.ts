@@ -28,42 +28,42 @@ export function getTokenStatusEffects(): any[] {
       label: "RQG.TokenEffects.StatusProtection1",
       icon: "systems/rqg/assets/images/token-effects/protection1.svg",
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
       changes: [
         {
-          key: "hitLocation:Head:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.head:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "1",
         },
         {
-          key: "hitLocation:Left Arm:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.left-arm:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "1",
         },
         {
-          key: "hitLocation:Right Arm:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.right-arm:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "1",
         },
         {
-          key: "hitLocation:Chest:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.chest:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "1",
         },
         {
-          key: "hitLocation:Abdomen:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.abdomen:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "1",
         },
         {
-          key: "hitLocation:Left Leg:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.left-leg:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "1",
         },
         {
-          key: "hitLocation:Right Leg:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.right-leg:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "1",
         },
       ],
@@ -73,42 +73,42 @@ export function getTokenStatusEffects(): any[] {
       label: "RQG.TokenEffects.StatusProtection2",
       icon: "systems/rqg/assets/images/token-effects/protection2.svg",
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
       changes: [
         {
-          key: "hitLocation:Head:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.head:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "2",
         },
         {
-          key: "hitLocation:Left Arm:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.left-arm:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "2",
         },
         {
-          key: "hitLocation:Right Arm:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.right-arm:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "2",
         },
         {
-          key: "hitLocation:Chest:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.chest:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "2",
         },
         {
-          key: "hitLocation:Abdomen:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.abdomen:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "2",
         },
         {
-          key: "hitLocation:Left Leg:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.left-leg:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "2",
         },
         {
-          key: "hitLocation:Right Leg:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.right-leg:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "2",
         },
       ],
@@ -118,42 +118,42 @@ export function getTokenStatusEffects(): any[] {
       label: "RQG.TokenEffects.StatusProtection3",
       icon: "systems/rqg/assets/images/token-effects/protection3.svg",
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
       changes: [
         {
-          key: "hitLocation:Head:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.head:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "3",
         },
         {
-          key: "hitLocation:Left Arm:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.left-arm:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "3",
         },
         {
-          key: "hitLocation:Right Arm:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.right-arm:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "3",
         },
         {
-          key: "hitLocation:Chest:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.chest:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "3",
         },
         {
-          key: "hitLocation:Abdomen:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.abdomen:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "3",
         },
         {
-          key: "hitLocation:Left Leg:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.left-leg:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "3",
         },
         {
-          key: "hitLocation:Right Leg:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.right-leg:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "3",
         },
       ],
@@ -163,42 +163,42 @@ export function getTokenStatusEffects(): any[] {
       label: "RQG.TokenEffects.StatusProtection4",
       icon: "systems/rqg/assets/images/token-effects/protection4.svg",
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
       changes: [
         {
-          key: "hitLocation:Head:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.head:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "4",
         },
         {
-          key: "hitLocation:Left Arm:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.left-arm:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "4",
         },
         {
-          key: "hitLocation:Right Arm:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.right-arm:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "4",
         },
         {
-          key: "hitLocation:Chest:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.chest:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "4",
         },
         {
-          key: "hitLocation:Abdomen:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.abdomen:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "4",
         },
         {
-          key: "hitLocation:Left Leg:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.left-leg:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "4",
         },
         {
-          key: "hitLocation:Right Leg:system.naturalAp:",
-          mode: 0, // custom
+          key: "i.hit-location.right-leg:system.naturalAp",
+          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "4",
         },
       ],
@@ -209,12 +209,12 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/strength.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
       changes: [
         {
           key: "system.characteristics.strength.value",
-          mode: 2, // ACTIVE_EFFECT_MODES.ADD,
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
           value: "8",
         },
       ],
@@ -225,7 +225,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/befuddled.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
 
@@ -235,7 +235,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/bladesharp.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -244,7 +244,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/bludgeon.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -253,12 +253,12 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/coordination.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
       changes: [
         {
           key: "system.characteristics.dexterity.value",
-          mode: 2, // ACTIVE_EFFECT_MODES.ADD,
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
           value: "3",
         },
       ],
@@ -269,7 +269,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/countermagic.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -278,7 +278,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/demoralize.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -287,7 +287,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/dullblade.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -296,7 +296,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/fanaticism.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -305,7 +305,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/fireblade.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -314,7 +314,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/glamour.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -323,7 +323,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/glue.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -332,7 +332,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/ironhand.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -341,7 +341,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/lantern.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -350,7 +350,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/light.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -359,7 +359,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/mobility.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -368,7 +368,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/parry.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -377,7 +377,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/shimmer.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -386,7 +386,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/slow.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -395,7 +395,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/spirit-screen.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -404,12 +404,12 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/vigor.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
       changes: [
         {
           key: "system.characteristics.constitution.value",
-          mode: 2, // ACTIVE_EFFECT_MODES.ADD,
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
           value: "3",
         },
       ],
@@ -471,7 +471,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/one.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -480,7 +480,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/two.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -489,7 +489,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/three.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -498,7 +498,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/four.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -507,7 +507,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/five.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
     {
@@ -516,7 +516,7 @@ export function getTokenStatusEffects(): any[] {
       icon: "systems/rqg/assets/images/token-effects/six.svg",
       disabled: false,
       duration: {
-        rounds: 10,
+        seconds: CONFIG.time.roundTime * 10,
       },
     },
   ];

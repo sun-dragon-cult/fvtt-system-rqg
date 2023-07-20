@@ -1,7 +1,7 @@
 # detect-substance
-name: ${{openSystem.content.spiritMagic.detectSubstance.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.detectSubstance.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.detectSubstance.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.detectSubstance.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.detectSubstance.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.detectSubstance.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..detect-substance
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

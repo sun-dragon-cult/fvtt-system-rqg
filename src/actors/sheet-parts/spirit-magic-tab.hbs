@@ -1,8 +1,8 @@
 <h2>
   {{localize "RQG.Actor.SpiritMagic.SpiritMagic"}}
   <span class="small-size">{{localize "RQG.Actor.SpiritMagic.CHALimitFormula"
-      points=spiritMagicPointSum
-      CHALimit=system.characteristics.charisma.value}}</span>
+      learnedPoints=spiritMagicPointSum
+      freePoints=(difference system.characteristics.charisma.value spiritMagicPointSum)}}</span>
 </h2>
 <div class="grid spiritmagic item-list">
   <div class="headings"></div>

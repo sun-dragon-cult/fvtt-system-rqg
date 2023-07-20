@@ -1,5 +1,5 @@
 # reflection
-name: ${{openSystem.content.runeMagic.reflection.name}}$
+name: ${{rqgCompendiumContent.runeMagic.reflection.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..reflection
-    name: ${{openSystem.content.runeMagic.reflection.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.reflection.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.reflection
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

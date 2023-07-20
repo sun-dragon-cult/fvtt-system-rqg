@@ -2,7 +2,6 @@ import {
   assertHtmlElement,
   formatListByUserLanguage,
   getDomDataset,
-  getGame,
   hasOwnProperty,
   localize,
   localizeDocumentName,
@@ -45,7 +44,7 @@ export function onDragLeave(event: DragEvent): void {
 
 export function isAllowedDocumentNames(
   documentName: string | undefined,
-  allowedDocumentNames: string[] | undefined
+  allowedDocumentNames: string[] | undefined,
 ): boolean {
   if (
     !documentName ||
@@ -57,7 +56,7 @@ export function isAllowedDocumentNames(
       : [];
     const allowedDocumentNamesString = formatListByUserLanguage(
       translatedAllowedDocumentNames,
-      "disjunction"
+      "disjunction",
     );
 
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
@@ -74,7 +73,7 @@ export function isAllowedDocumentNames(
 
 export function isAllowedDocumentType(
   document: Document<any, any> | undefined,
-  allowedDocumentTypes: string[] | undefined
+  allowedDocumentTypes: string[] | undefined,
 ): boolean {
   if (
     allowedDocumentTypes?.length && // Is anything required
@@ -82,12 +81,12 @@ export function isAllowedDocumentType(
     !allowedDocumentTypes.includes(document?.type as string) // Does the type match
   ) {
     const translatedAllowedDocumentTypes = allowedDocumentTypes.map(
-      (d: any) => localizeItemType(d) // TODO assumes the document in a Item. Ok for now?
+      (d: any) => localizeItemType(d), // TODO assumes the document in a Item. Ok for now?
     );
 
     const allowedDocumentTypesString = formatListByUserLanguage(
       translatedAllowedDocumentTypes,
-      "disjunction"
+      "disjunction",
     );
     const msg = localize("RQG.Item.Notification.DroppedWrongDocumentType", {
       allowedDropTypes: allowedDocumentTypesString,
@@ -126,7 +125,7 @@ export function hasRqid(document: Document<any, any> | undefined): boolean {
 export async function updateRqidLink(
   targetDocument: Document<any, any>,
   targetPropertyName: string | undefined,
-  droppedDocument: Document<any, any>
+  droppedDocument: Document<any, any>,
 ): Promise<void> {
   const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
   const parentDocumentRqid = droppedDocument.isEmbedded
@@ -144,7 +143,7 @@ export async function updateRqidLink(
     console.error(
       `RQG | Programming error – empty targetPropertyName (data-dropzone)`,
       targetPropertyName,
-      targetDocument
+      targetDocument,
     );
     return;
   }
@@ -193,7 +192,7 @@ export function getAllowedDropDocumentNames(event: DragEvent) {
 
 export async function extractDropInfo<T extends Document<any, any>>(
   event: DragEvent,
-  data: { type: string; uuid: string }
+  data: { type: string; uuid: string },
 ): Promise<{
   droppedDocument: T; // Can be undefined, but then isAllowedToDrop is false
   dropZoneData: string | undefined;
@@ -206,7 +205,7 @@ export async function extractDropInfo<T extends Document<any, any>>(
   const dropZoneData = getDomDataset(event, "dropzone");
   const isAllowedDropDocumentType = isAllowedDocumentType(
     droppedDocument,
-    allowedDropDocumentTypes
+    allowedDropDocumentTypes,
   );
   return {
     droppedDocument: droppedDocument,

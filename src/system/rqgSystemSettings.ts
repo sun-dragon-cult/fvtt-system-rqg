@@ -61,7 +61,7 @@ export const registerRqgSystemSettings = function () {
     scope: "world",
     config: true,
     type: String,
-    // @ts-expect-error
+    // @ts-expect-error choices
     choices: CONFIG.supportedLanguages,
     default: "en",
     onChange: () => setTimeout(() => window.location.reload(), 200),
@@ -118,7 +118,7 @@ export const registerRqgSystemSettings = function () {
     name: "RQG.Settings.WorldMigrationVersion.settingName",
     hint: "RQG.Settings.WorldMigrationVersion.settingHint",
     scope: "world",
-    config: true,
+    config: false,
     type: String,
     default: "",
   });

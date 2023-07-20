@@ -1,7 +1,7 @@
 # boat
-name: ${{openSystem.content.skill.boat.skillName}}$
+name: ${{rqgCompendiumContent.skill.boat.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.boat.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.boat.skillName}}$
     type: text
     title:
       show: false
@@ -9,24 +9,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/boat.svg" height="70">
-        ${{openSystem.content.skill.boat.description}}$
+        ${{rqgCompendiumContent.skill.boat.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.agility.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..boat
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # climb
-name: ${{openSystem.content.skill.climb.skillName}}$
+name: ${{rqgCompendiumContent.skill.climb.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.climb.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.climb.skillName}}$
     type: text
     title:
       show: false
@@ -34,24 +34,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/climb.svg" height="70">
-        ${{openSystem.content.skill.climb.description}}$
+        ${{rqgCompendiumContent.skill.climb.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.agility.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..climb
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # dodge
-name: ${{openSystem.content.skill.dodge.skillName}}$
+name: ${{rqgCompendiumContent.skill.dodge.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.dodge.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.dodge.skillName}}$
     type: text
     title:
       show: false
@@ -59,24 +59,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/dodge.svg" height="70">
-        ${{openSystem.content.skill.dodge.description}}$
+        ${{rqgCompendiumContent.skill.dodge.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.agility.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..dodge
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # drive-chariot
-name: ${{openSystem.content.skill.driveChariot.skillName}}$
+name: ${{rqgCompendiumContent.skill.driveChariot.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.driveChariot.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.driveChariot.skillName}}$
     type: text
     title:
       show: false
@@ -84,24 +84,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/drive.svg" height="70">
-        ${{openSystem.content.skill.driveChariot.description}}$
+        ${{rqgCompendiumContent.skill.driveChariot.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.agility.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..drive-chariot
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # jump
-name: ${{openSystem.content.skill.jump.skillName}}$
+name: ${{rqgCompendiumContent.skill.jump.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.jump.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.jump.skillName}}$
     type: text
     title:
       show: false
@@ -109,24 +109,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/jump.svg" height="70">
-        ${{openSystem.content.skill.jump.description}}$
+        ${{rqgCompendiumContent.skill.jump.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.agility.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..jump
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # ride
-name: ${{openSystem.content.skill.ride.skillName}}$
+name: ${{rqgCompendiumContent.skill.ride.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.ride.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.ride.skillName}}$
     type: text
     title:
       show: false
@@ -134,24 +134,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/ride.svg" height="70">
-        ${{openSystem.content.skill.ride.description}}$
+        ${{rqgCompendiumContent.skill.ride.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.agility.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..ride
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # ski
-name: ${{openSystem.content.skill.ski.skillName}}$
+name: ${{rqgCompendiumContent.skill.ski.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.ski.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.ski.skillName}}$
     type: text
     title:
       show: false
@@ -159,24 +159,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/ski.svg" height="70">
-        ${{openSystem.content.skill.ski.description}}$
+        ${{rqgCompendiumContent.skill.ski.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.agility.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..ski
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # swim
-name: ${{openSystem.content.skill.swim.skillName}}$
+name: ${{rqgCompendiumContent.skill.swim.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.swim.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.swim.skillName}}$
     type: text
     title:
       show: false
@@ -184,16 +184,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/swim.svg" height="70">
-        ${{openSystem.content.skill.swim.description}}$
+        ${{rqgCompendiumContent.skill.swim.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.agility.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.agility.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..swim
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

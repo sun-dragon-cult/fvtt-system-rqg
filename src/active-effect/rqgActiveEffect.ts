@@ -1,4 +1,4 @@
-import { localize, logMisconfiguration } from "../system/util";
+import { formatListByWorldLanguage, localize, logMisconfiguration } from "../system/util";
 import { EffectChangeData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
 import { RqgActor } from "../actors/rqgActor";
 import { Rqid } from "../system/api/rqidApi";
@@ -14,9 +14,20 @@ export class RqgActiveEffect extends ActiveEffect {
    * The effect will try to find an embedded item with the specified rqid.
    */
   _applyCustom(actor: RqgActor, change: EffectChangeData): void {
-    const [rqid, path, deprecated] = change.key.split(":"); // ex hitLocation:Head:system.naturalAp
+    const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
-      const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path".`;
+      const itemsWithEffectsOnActor = formatListByWorldLanguage(
+        actor.effects.map((e) => {
+          try {
+            // @ts-expect-error fromUuidSync
+            return fromUuidSync(e.origin)?.name ?? "❓no name";
+          } catch (e) {
+            return "❓embedded item in compendium"; // origin was in a compendium and could not be read synchronously
+          }
+        }),
+        "disjunction",
+      );
+      const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
       // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn("RQG | ", msg);
@@ -33,7 +44,7 @@ export class RqgActiveEffect extends ActiveEffect {
         // @ts-expect-error system
         !this.disabled,
         change,
-        this
+        this,
       );
       return;
     }
@@ -46,7 +57,7 @@ export class RqgActiveEffect extends ActiveEffect {
       const model = game.model.Item[item.type] || {};
       target = foundry.utils.getProperty(model, path) ?? null;
     }
-    let targetType = foundry.utils.getType(target);
+    const targetType = foundry.utils.getType(target);
 
     // Cast the effect change value to the correct type
     let delta;
@@ -59,7 +70,7 @@ export class RqgActiveEffect extends ActiveEffect {
       } else delta = this._castDelta(change.value, targetType);
     } catch (err) {
       console.warn(
-        `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`
+        `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,
       );
       return;
     }

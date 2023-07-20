@@ -1,5 +1,105 @@
 # Changelog
 
+## [2.2.6](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.5...v2.2.6) (2023-07-19)
+
+
+### Bug Fixes
+
+* embedding a weapon shows a warning for usages without linked skill ([160b8f9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/160b8f9a5012543fb12ac4f0d2a149a324d09363)), closes [#591](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/591)
+* runes in sorcery tab should not display chance ([7b612e2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7b612e2f8c295376586be5aa93a3bf0526973ed8)), closes [#586](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/586)
+* system background is broken ([b0b1a95](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b0b1a95625e74a663c286587c4a0694e65eb1482)), closes [#579](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/579)
+* system compendiums are missing embedded (descendant) documents ([ea38a59](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ea38a59e2727e333a9086ba5bbf273a9062d3f38)), closes [#588](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/588)
+* weapon chat shows all usages regardless if it has the skill or not ([38fa1f5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/38fa1f5b37707e0959e0f2270bc31262d54a29ff)), closes [#590](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/590)
+* weapon skills not added to actor in some cases ([351bcf6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/351bcf611fb6c16e7bc86c3d13d8e6d1d4b200ed)), closes [#589](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/589)
+
+## [2.2.5](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.4...v2.2.5) (2023-07-14)
+
+
+### Bug Fixes
+
+* add missing scorpion man hitlocation items ([7ccb353](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7ccb353c49d7cf7c0a9cb48e66a4e89fe47a74b1)), closes [#575](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/575)
+* migration is run for new worlds ([cf15259](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/cf15259142a5d403b753245fdfa9f78befa0b223)), closes [#573](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/573)
+* replace the broken hitlocation rqid setter form with a macro ([d4ea0e7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d4ea0e7d056a1a50e324eb96981abcf030116950))
+* skillSheet & HitLocationSheet is missing values ([2bbf611](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2bbf611d9d7e65f37fa61372dcbdcdaec10bdc90)), closes [#572](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/572)
+* update compendium hit-location rqids to new standard form ([0233743](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/02337432dd5a5746427b7bcf54ad2742caf33a5d)), closes [#576](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/576)
+* wrong rqid on i.skill.fists-fist in compendium ([0381d63](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0381d633d986378a973b5aa4b5649a8d64e86ff9))
+
+## [2.2.4](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.3...v2.2.4) (2023-07-07)
+
+
+### Bug Fixes
+
+* add empty effect array to items to avoid Foundry warning ([5545184](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5545184ae203b3fb025f6002bcc92c4311f05c08))
+* error when using missile - remaining usage of skillId instead of rqid ([a51d4c4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a51d4c451e2e880721e460b5374eb2e34a5a2175)), closes [#567](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/567)
+
+## [2.2.3](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.2...v2.2.3) (2023-07-05)
+
+
+### Bug Fixes
+
+* find Rqid from Actor Compendiums makes Chrome run out of memory ([b649e8b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b649e8b448b638ba9fadb3b23674d638d5183b1e)), closes [#565](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/565)
+
+## [2.2.2](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.1...v2.2.2) (2023-07-03)
+
+
+### Bug Fixes
+
+* old Active effect with origin in a compendium crashes migration ([d9375a3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d9375a3dd13830a6e5efdd00c59f2b1bcf50fb18)), closes [#563](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/563)
+
+## [2.2.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.0...v2.2.1) (2023-07-01)
+
+
+### Bug Fixes
+
+* error log if deprecated AE warning log can't find origin of an Active Effect ([792bb11](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/792bb11cb4d89199b1b36eb96ba4b2a582ee531f))
+* handle lists of undefined in formatListByLanguage to avoid error logs ([cd25a36](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/cd25a36bd09bde035944717478d0e5aa82ce506a))
+* make rqid batch editor update items & actors in compendiums too ([87906c2](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/87906c276c669807ed3b44553683f67fc0d25809)), closes [#559](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/559)
+* token status effects duration only works inside combat tracker ([8f693f9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8f693f96413fb53f0e4075222adc345e2d197b77)), closes [#562](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/562)
+
+## [2.2.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.1.2...v2.2.0) (2023-06-14)
+
+
+### Features
+
+* add common rune magic when embedding a cult ([83869d1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/83869d134799f6b76a05323881d767cfaee4d22e)), closes [#153](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/153)
+* add currency to compendium ([#523](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/523)) ([a2ab302](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a2ab302f002dd317db4e457c41fe186482b03343))
+* change svg icons color to white ([#530](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/530)) ([000a840](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/000a840b32c7f4a60f8df7c3884fd3a36d773cba)), closes [#519](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/519)
+* improve visibility of actor health in actorSheet ([5d1b768](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5d1b76892daaf2e24f3e71b85e1662a355a633fc))
+* introduce "migrate world button" ([65e6a86](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/65e6a86f490e649ebc9dd1d87bbd4525b782fdc9)), closes [#544](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/544)
+* make weaponSkill Migration more idempotent ([374f031](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/374f031851478984f22286bda2890189dbb97bbe)), closes [#290](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/290)
+* mark common rune magic spells in the actorSheet spell list ([fd0f49b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fd0f49b552466088a2b9b7c35efebf947f817380)), closes [#542](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/542)
+* merge cult items on deity when dropped onto an actor ([f34625e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f34625eca3d56abdff41b96445191bc60216450b))
+* modify token effects to match spells and add active effects to the one that is possible ([5d1b768](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5d1b76892daaf2e24f3e71b85e1662a355a633fc)), closes [#54](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/54)
+* nudge players to add skill specialization ([1cc3b1e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1cc3b1e0e12ba846b366670ba7d2bf2ab32beeda))
+* reformulate how many CHA points are used on the spirit magic tab ([27a639d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/27a639d48f2c27162197f653c830cff832eb5dc2)), closes [#539](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/539)
+* remove dialog requesting skill (...) specialization ([1cc3b1e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1cc3b1e0e12ba846b366670ba7d2bf2ab32beeda))
+* sort actor cults on max rune points ([f97bbea](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f97bbeac8ec050bb4bd5146527408cb32dddd3b0))
+* subcult model refactoring ([f34625e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f34625eca3d56abdff41b96445191bc60216450b)), closes [#343](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/343)
+* use "Rqid:path" for RqgActiveEffects ([dda272e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/dda272e305543b1d15142cd1fa270aa131b5b965)), closes [#442](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/442)
+* use rqidLink for weapon-skill links ([63e85c6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/63e85c62018d09a653be68d1f8ed4985fafb6b16)), closes [#290](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/290)
+
+
+### Bug Fixes
+
+* add skillId to weapons ([#524](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/524)) ([5973731](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5973731a27d74dd7d192d91e5b385a4cda6dd0e9)), closes [#503](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/503)
+* adding rune magic spell to actor with one cult does not automatically add the spell to the cult ([a237dcc](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a237dccaef44f80f486e08db1e649b9aa3869424))
+* armor rqids are wrong in compendium pack ([284708a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/284708adbca184ea6be8077ac0cd3a32f1dbb82b)), closes [#555](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/555)
+* autogeneration of rqid for "1H Axe" is wrong ([7b1d6b0](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7b1d6b07e316513459ad8ce190d86a57072eeec1)), closes [#553](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/553)
+* autogeneration of rqid for "1H Axe" is wrong - once more ([186a431](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/186a431f091d9cd3173d77ee12cc7fea720d9a6b)), closes [#553](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/553)
+* change svg icon color in compendiums to black ([8b1aa68](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8b1aa688296995dc78ba29d70e5ece12c50bdba7)), closes [#530](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/530)
+* common rune magic is only marked for one cult on actorSheet if the actor has multiple cults ([a759336](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a7593366212ca8f4b48fad6667645059766f64b1))
+* custom AE added multiple times ([b4c7720](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b4c77208e65375f1d86be4f32426d44fdb9e0884)), closes [#545](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/545)
+* find correct tokenEffect for actor health instead of using fixed index position ([5d1b768](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5d1b76892daaf2e24f3e71b85e1662a355a633fc))
+* improve old AE warning log to include potential items to look at ([0fe319f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0fe319ffcc53bf874829200fa7584571a4453197))
+* invalid rqid generated from rqidBatchEditor ([a4454dc](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a4454dceabbfcd81deff6becc311d7e5a6216e2d))
+* notEquipped icon is not white ([b03d529](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b03d529b67426dbbd2108caaf2301beddc696639))
+* rename 2H Mace skill name & rqid ([758fc5e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/758fc5ebef79096b75926854cf88bfa5844e5918))
+* skill "customs" should be able to get experience ([c268d3b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c268d3be513e53f3a0ce36e67f2adc5c9f99f87a)), closes [#537](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/537)
+* skill "spirit lore" should not be able to get experience checks ([f322c1f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f322c1f413634178d740b2c13a40ada4f258b4b6)), closes [#541](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/541)
+* skill Insight(Human) chance is wrong in provided "beastiary" humans ([da33c83](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/da33c83ce02f04abf940eec6e493a91aebdc4e97)), closes [#540](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/540)
+* token hud do not use the new active effect syntax ([42e0068](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/42e00683c2e4c0e7d69ae07c8a1b4fd255266b90))
+* white system icons are not always inverted to black ([b4f5fb4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b4f5fb404281a4934d3690d3058f5447de763bec))
+
 ## [2.1.2](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.1.1...v2.1.2) (2023-04-10)
 
 

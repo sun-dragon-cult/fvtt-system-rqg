@@ -1,43 +1,48 @@
-name: ${{openSystem.content.weapon.compositeBow}}$
+name: ${{rqgCompendiumContent.weapon.compositeBow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/bowman.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.composite-bow
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 9aEgM4UKZQfFddMD
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9aEgM4UKZQfFddMD
+      skillRqidLink:
+        rqid: i.skill.bows-composite-bow
+        name: ${{rqgCompendiumContent.weaponSkill.bows.name}}$ (${{rqgCompendiumContent.weaponSkill.bows.specialization.compositeBow}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 1d8+1
@@ -67,46 +72,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.elfBow}}$
+name: ${{rqgCompendiumContent.weapon.elfBow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/bowman.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.elf-bow
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: zhMTFSWh768z6Jnk
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.zhMTFSWh768z6Jnk
+      skillRqidLink:
+        rqid: i.skill.bows-elf-bow
+        name: ${{rqgCompendiumContent.weaponSkill.bows.name}}$ (${{rqgCompendiumContent.weaponSkill.bows.specialization.elfBow}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 1d18+1
@@ -136,46 +146,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.selfBow}}$
+name: ${{rqgCompendiumContent.weapon.selfBow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/bowman.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.self-bow
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: EcDI8nmAyfshQL10
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.EcDI8nmAyfshQL10
+      skillRqidLink:
+        rqid: i.skill.bows-self-bow
+        name: ${{rqgCompendiumContent.weaponSkill.bows.name}}$ (${{rqgCompendiumContent.weaponSkill.bows.specialization.selfBow}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 1d6+1
@@ -205,46 +220,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.arbalest}}$
+name: ${{rqgCompendiumContent.weapon.arbalest}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.arbalest
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: CVruhytNFN3sfNaM
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.CVruhytNFN3sfNaM
+      skillRqidLink:
+        rqid: i.skill.crossbows-arbalest
+        name: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$ (${{rqgCompendiumContent.weaponSkill.crossbows.specialization.arbalest}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 3d6+1
@@ -272,46 +292,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.heavyCrossbow}}$
+name: ${{rqgCompendiumContent.weapon.heavyCrossbow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.heavy-crossbow
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 6tN59Is4NdkZMJF5
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.6tN59Is4NdkZMJF5
+      skillRqidLink:
+        rqid: i.skill.crossbows-heavy-crossbow
+        name: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$ (${{rqgCompendiumContent.weaponSkill.crossbows.specialization.heavyCrossbow}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 2d6+2
@@ -341,46 +366,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.lightCrossbow}}$
+name: ${{rqgCompendiumContent.weapon.lightCrossbow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.light-crossbow
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: SL7I4vZ0pKwO714W
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.SL7I4vZ0pKwO714W
+      skillRqidLink:
+        rqid: i.skill.crossbows-light-crossbow
+        name: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$ (${{rqgCompendiumContent.weaponSkill.crossbows.specialization.lightCrossbow}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 2d4+2
@@ -410,46 +440,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.repeatingCrossbow}}$
+name: ${{rqgCompendiumContent.weapon.repeatingCrossbow}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/crossbow.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.repeating-crossbow
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: OTEuqGbfafup9W49
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.OTEuqGbfafup9W49
+      skillRqidLink:
+        rqid: i.skill.crossbows-repeating-crossbow
+        name: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$ (${{rqgCompendiumContent.weaponSkill.crossbows.specialization.repeatingCrossbow}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Shoot}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Shoot}}$
           damageType: impale
           description:
       damage: 2d4+2
@@ -479,45 +514,50 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.arrows}}$
+name: ${{rqgCompendiumContent.weapon.arrows}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/arrows.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.arrows
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
@@ -546,45 +586,50 @@ system:
   isRangedWeapon: false
   projectileId:
 ---
-name: ${{openSystem.content.weapon.crossbowBolts}}$
+name: ${{rqgCompendiumContent.weapon.crossbowBolts}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/bolts.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.crossbow-bolts
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0

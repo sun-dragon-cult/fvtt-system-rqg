@@ -1,43 +1,48 @@
-name: ${{openSystem.content.weapon.poleLasso}}$
+name: ${{rqgCompendiumContent.weapon.poleLasso}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/lasso.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.pole-lasso
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: c4xz834y4y58vjnH
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.c4xz834y4y58vjnH
+      skillRqidLink:
+        rqid: i.skill.lassos-pole-lasso
+        name: ${{rqgCompendiumContent.weaponSkill.lassos.name}}$ (${{rqgCompendiumContent.weaponSkill.lassos.specialization.poleLasso}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Grapple}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Grapple}}$
           damageType: special
           description:
       damage:

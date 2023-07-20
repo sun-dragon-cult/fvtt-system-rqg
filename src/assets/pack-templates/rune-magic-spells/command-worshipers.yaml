@@ -1,5 +1,5 @@
 # command-worshipers
-name: ${{openSystem.content.runeMagic.commandWorshipers.name}}$
+name: ${{rqgCompendiumContent.runeMagic.commandWorshipers.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -12,10 +12,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..command-worshipers
-    name: ${{openSystem.content.runeMagic.commandWorshipers.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.commandWorshipers.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.command-worshipers
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

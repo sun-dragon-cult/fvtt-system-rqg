@@ -1,7 +1,7 @@
 # coordination
-name: ${{openSystem.content.spiritMagic.coordination.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.coordination.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.coordination.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.coordination.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.coordination.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.coordination.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..coordination
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

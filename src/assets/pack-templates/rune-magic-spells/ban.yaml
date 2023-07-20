@@ -1,5 +1,5 @@
 # ban
-name: ${{openSystem.content.runeMagic.ban.name}}$
+name: ${{rqgCompendiumContent.runeMagic.ban.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..ban
-    name: ${{openSystem.content.runeMagic.ban.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.ban.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.ban
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

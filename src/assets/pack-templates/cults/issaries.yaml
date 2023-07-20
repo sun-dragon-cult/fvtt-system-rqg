@@ -1,23 +1,23 @@
 # issaries
-name: ${{openSystem.content.cult.issaries.name}}$
+name: ${{rqgCompendiumContent.cult.issaries.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.issaries.name}}$
+  deity: ${{rqgCompendiumContent.cult.issaries.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.issaries.name}}$
-      tagline: ${{openSystem.content.cult.issaries.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.issaries.name}}$
+      tagline: ${{rqgCompendiumContent.cult.issaries.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.harmonyPower.name}}$
-    - ${{openSystem.content.runeDescription.movementPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.harmonyPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.movementPower.name}}$
   descriptionRqidLink:
     rqid: je..issaries
-    name: ${{openSystem.content.cult.issaries.name}}$
+    name: ${{rqgCompendiumContent.cult.issaries.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -43,9 +43,10 @@ system:
       rqid: i.rune-magic.summon-cult-spirit
     - name: Warding
       rqid: i.rune-magic.warding
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.cult.issaries
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

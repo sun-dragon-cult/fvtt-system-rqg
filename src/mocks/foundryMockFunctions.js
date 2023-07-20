@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+// eslint-disable-file no-undef
 global.mergeObject = jest.fn((...args) => mockMergeObject(...args));
 global.getType = jest.fn((...args) => mockGetType(...args));
 global.getProperty = jest.fn((...args) => mockGetProperty(...args));
@@ -182,7 +184,7 @@ function mockMergeObject(
     enforceTypes = false,
     performDeletions = false,
   } = {},
-  _d = 0
+  _d = 0,
 ) {
   other = other || {};
   if (!(original instanceof Object) || !(other instanceof Object)) {
@@ -213,6 +215,7 @@ function mockMergeObject(
   // Iterate over the other object
   for (let k of Object.keys(other)) {
     const v = other[k];
+    // eslint-disable-next-line no-prototype-builtins
     if (original.hasOwnProperty(k)) _mergeUpdate(original, k, v, options, _d + 1);
     else _mergeInsert(original, k, v, options, _d + 1);
   }
@@ -248,6 +251,7 @@ function setProperty(object, key, value) {
     let parts = key.split(".");
     key = parts.pop();
     target = parts.reduce((o, i) => {
+      // eslint-disable-next-line no-prototype-builtins
       if (!o.hasOwnProperty(i)) o[i] = {};
       return o[i];
     }, object);
@@ -288,7 +292,7 @@ function _mergeUpdate(
   k,
   v,
   { insertKeys, insertValues, enforceTypes, overwrite, recursive, performDeletions } = {},
-  _d
+  _d,
 ) {
   const x = original[k];
   const tv = getType(v);
@@ -307,7 +311,7 @@ function _mergeUpdate(
         performDeletions,
         inplace: true,
       },
-      _d
+      _d,
     );
   }
 

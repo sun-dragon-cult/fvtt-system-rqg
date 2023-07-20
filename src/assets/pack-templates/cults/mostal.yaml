@@ -1,24 +1,24 @@
 # mostal
-name: ${{openSystem.content.cult.mostal.name}}$
+name: ${{rqgCompendiumContent.cult.mostal.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.mostal.name}}$
+  deity: ${{rqgCompendiumContent.cult.mostal.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.mostal.name}}$
-      tagline: ${{openSystem.content.cult.mostal.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.mostal.name}}$
+      tagline: ${{rqgCompendiumContent.cult.mostal.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.stasisPower.name}}$
-    - ${{openSystem.content.runeDescription.earthElement.name}}$
-    - ${{openSystem.content.runeDescription.stasisPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.stasisPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.earthElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.stasisPower.name}}$
   descriptionRqidLink:
     rqid: je..mostal
-    name: ${{openSystem.content.cult.mostal.name}}$
+    name: ${{rqgCompendiumContent.cult.mostal.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -44,9 +44,10 @@ system:
       rqid: i.rune-magic.summon-cult-spirit
     - name: Warding
       rqid: i.rune-magic.warding
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.cult.mostal
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

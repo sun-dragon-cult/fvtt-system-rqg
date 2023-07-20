@@ -1,20 +1,21 @@
 # worship
-name: ${{openSystem.content.skill.worship.skillName}}$ (${{openSystem.content.cult.orlanth.name}}$)
+name: ${{rqgCompendiumContent.skill.worship.skillName}}$ (${{rqgCompendiumContent.cult.orlanth.name}}$)
 type: skill
 img: systems/rqg/assets/images/skills/worship.svg
 system:
   category: magic
-  skillName: ${{openSystem.content.skill.worship.skillName}}$
-  specialization: ${{openSystem.content.cult.orlanth.name}}$
+  skillName: ${{rqgCompendiumContent.skill.worship.skillName}}$
+  specialization: ${{rqgCompendiumContent.cult.orlanth.name}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..worship
-    name: ${{openSystem.content.skill.worship.skillName}}$
+    name: ${{rqgCompendiumContent.skill.worship.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.worship-orlanth
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

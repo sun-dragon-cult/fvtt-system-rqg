@@ -1,5 +1,5 @@
 # command-cult-spirit-elemental
-name: ${{openSystem.content.runeMagic.commandCultSpiritElemental.name}}$
+name: ${{rqgCompendiumContent.runeMagic.commandCultSpiritElemental.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..command-cult-spirit-elemental
-    name: ${{openSystem.content.runeMagic.commandCultSpiritElemental.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.commandCultSpiritElemental.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.command-cult-spirit-elemental
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

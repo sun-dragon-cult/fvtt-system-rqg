@@ -1,5 +1,5 @@
 # earth-shield
-name: ${{openSystem.content.runeMagic.earthShield.name}}$
+name: ${{rqgCompendiumContent.runeMagic.earthShield.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..earth-shield
-    name: ${{openSystem.content.runeMagic.earthShield.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.earthShield.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.earth-shield
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

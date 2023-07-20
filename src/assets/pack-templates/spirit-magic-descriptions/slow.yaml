@@ -1,7 +1,7 @@
 # slow
-name: ${{openSystem.content.spiritMagic.slow.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.slow.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.slow.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.slow.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.slow.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.slow.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..slow
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

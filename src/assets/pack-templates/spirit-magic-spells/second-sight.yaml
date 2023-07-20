@@ -1,5 +1,5 @@
 # second-sight
-name: ${{openSystem.content.spiritMagic.secondSight.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.secondSight.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..second-sight
-    name: ${{openSystem.content.spiritMagic.secondSight.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.secondSight.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

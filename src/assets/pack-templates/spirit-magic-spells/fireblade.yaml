@@ -1,5 +1,5 @@
 # fireblade
-name: ${{openSystem.content.spiritMagic.fireblade.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.fireblade.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration: active
   descriptionRqidLink:
     rqid: je..fireblade
-    name: ${{openSystem.content.spiritMagic.fireblade.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.fireblade.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

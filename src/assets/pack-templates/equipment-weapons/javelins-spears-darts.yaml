@@ -1,43 +1,48 @@
-name: ${{openSystem.content.weapon.atlatlDart}}$
+name: ${{rqgCompendiumContent.weapon.atlatlDart}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/atlatl.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.atlatl-dart
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: jpOyJYC2ctmY2N8U
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.jpOyJYC2ctmY2N8U
+      skillRqidLink:
+        rqid: i.skill.atlatls-dart
+        name: ${{rqgCompendiumContent.weaponSkill.atlatls.name}}$ (${{rqgCompendiumContent.weaponSkill.atlatls.specialization.dart}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 2d6
@@ -67,46 +72,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.atlatlJavelin}}$
+name: ${{rqgCompendiumContent.weapon.atlatlJavelin}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/atlatl.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.atlatl-javelin
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 9Pu3rVnoTp4cHjhn
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.9Pu3rVnoTp4cHjhn
+      skillRqidLink:
+        rqid: i.skill.atlatls-javelin
+        name: ${{rqgCompendiumContent.weaponSkill.atlatls.name}}$ (${{rqgCompendiumContent.weaponSkill.atlatls.specialization.javelin}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 1d10+1d6
@@ -136,46 +146,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.dart}}$
+name: ${{rqgCompendiumContent.weapon.dart}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/dart.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.dart
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: UfrGc8zwcTmE1HPv
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.UfrGc8zwcTmE1HPv
+      skillRqidLink:
+        rqid: i.skill.javelins-dart
+        name: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$ (${{rqgCompendiumContent.weaponSkill.javelins.specialization.dart}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
       damage: 1d6

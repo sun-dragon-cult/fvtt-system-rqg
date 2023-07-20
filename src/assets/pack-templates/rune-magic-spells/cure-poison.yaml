@@ -1,5 +1,5 @@
 # cure-poison
-name: ${{openSystem.content.runeMagic.curePoison.name}}$
+name: ${{rqgCompendiumContent.runeMagic.curePoison.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..cure-poison
-    name: ${{openSystem.content.runeMagic.curePoison.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.curePoison.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.cure-poison
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

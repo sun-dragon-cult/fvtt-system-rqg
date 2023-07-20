@@ -20,6 +20,9 @@ import { RqgHotbar } from "./foundryUi/rqgHotbar";
 import { TextEditorHooks } from "./foundryUi/textEditorHooks";
 import { RqgJournalEntry } from "./journals/rqgJournalEntry";
 import { getTokenStatusEffects } from "./system/tokenStatusEffects";
+import { RqgSettings } from "./foundryUi/RqgSettings";
+import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqidBatchEditor";
+import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
 
 Hooks.once("init", async () => {
   console.log(
@@ -44,7 +47,7 @@ Hooks.once("init", async () => {
       "  `\"bmmmdPY .JMML.`Ybmd9'.JMML.  `Moo9^Yo..JMML  JMML.`Mbmo.JMML  JMML.`Moo9^Yo.\n" +
       "                                                                                \n" +
       "                                                                                \n",
-    "color: #F3A71E"
+    "color: #F3A71E",
   );
   console.log("RQG | Initializing the Runequest Glorantha Game System");
 
@@ -73,10 +76,11 @@ Hooks.once("init", async () => {
   RqgCompendiumDirectory.init();
   RqgJournalEntry.init();
   TextEditorHooks.init();
+  RqgSettings.init();
 
-  // @ts-expect-error
+  // @ts-expect-error unregisterSheet
   RollTables.unregisterSheet("core", RollTableConfig);
-  // @ts-expect-error
+  // @ts-expect-error registerSheet
   RollTables.registerSheet(systemId, RqgRollTableConfig as any, {
     // label: localize("TABLE.SheetTitle"),
     makeDefault: true,
@@ -86,19 +90,30 @@ Hooks.once("init", async () => {
   registerHandlebarsHelpers();
   registerRqgSystemSettings();
 
+  // Define the system.api
   (getGame().system as any).api = {
     // installModules: installModules,
     migrate: applyDefaultWorldMigrations,
     rqid: Rqid,
+    /**
+     * Show an application that lets you set rqid for items.
+     */
+    batchSetRqids: async (...itemTypes: string[]): Promise<void> => {
+      const itemTypeEnums = itemTypes.length
+        ? itemTypes.map((it) => it as ItemTypeEnum)
+        : [
+            ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+            ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+            ItemTypeEnum.Rune, // Future needs
+          ];
+      await RqidBatchEditor.factory(...itemTypeEnums);
+    },
     names: nameGeneration,
   };
 });
 
 Hooks.once("ready", async () => {
-  if (getGame().user?.isGM) {
-    await migrateWorld();
-    // await setupSimpleCalendar();
-  }
+  await migrateWorld();
   // Make sure the cache of available runes is preloaded
   await cacheAvailableRunes();
 });

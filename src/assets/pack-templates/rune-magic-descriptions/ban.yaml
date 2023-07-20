@@ -1,7 +1,7 @@
 # ban
-name: ${{openSystem.content.runeMagic.ban.name}}$
+name: ${{rqgCompendiumContent.runeMagic.ban.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.ban.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.ban.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/magic.svg" height="70">
-        ${{openSystem.content.runeMagic.ban.description}}$
+        ${{rqgCompendiumContent.runeMagic.ban.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..ban
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

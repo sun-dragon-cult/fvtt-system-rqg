@@ -1,0 +1,251 @@
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.rightHindLeg}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 1
+  dieTo: 1
+  baseHpDelta: -1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.right-hind-leg
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.rightMiddleLeg}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 2
+  dieTo: 2
+  baseHpDelta: -1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.right-middle-leg
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.rightForeleg}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 3
+  dieTo: 4
+  baseHpDelta: -1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.right-foreleg
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.leftHindLeg}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 5
+  dieTo: 5
+  baseHpDelta: -1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.left-hind-leg
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.leftMiddleLeg}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 6
+  dieTo: 6
+  baseHpDelta: -1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.left-middle-leg
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.leftForeleg}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 7
+  dieTo: 8
+  baseHpDelta: -1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.left-foreleg
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.tail}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 9
+  dieTo: 10
+  baseHpDelta: 1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.tail
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.thorax}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 11
+  dieTo: 12
+  baseHpDelta: 1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: chest
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.thorax
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.chest}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 13
+  dieTo: 14
+  baseHpDelta: 2
+  naturalAp: 3
+  wounds: []
+  hitLocationType: chest
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.chest
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.rightArm}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 15
+  dieTo: 16
+  baseHpDelta: 0
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.right-arm
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.leftArm}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 17
+  dieTo: 18
+  baseHpDelta: 0
+  naturalAp: 3
+  wounds: []
+  hitLocationType: limb
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.left-arm
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+---
+name: ${{rqgCompendiumContent.hitLocation.scorpionMan.head}}$
+type: hitLocation
+img: systems/rqg/assets/images/items/hit-location.svg
+system:
+  dieFrom: 19
+  dieTo: 20
+  baseHpDelta: 1
+  naturalAp: 3
+  wounds: []
+  hitLocationType: head
+  connectedTo:
+  hitLocationHealthState: healthy
+  actorHealthImpact: healthy
+effects: []
+flags:
+  rqg:
+    documentRqidFlags:
+      id: i.hit-location.head
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

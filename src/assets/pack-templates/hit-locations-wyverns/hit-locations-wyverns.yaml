@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.wyvern.tail}}$
+name: ${{rqgCompendiumContent.hitLocation.wyvern.tail}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -8,17 +8,18 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.wyvern.abdomen}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.wyvern.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.wyverns-tail
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.tail
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.wyvern.rightLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.wyvern.rightLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -28,17 +29,18 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.wyvern.abdomen}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.wyvern.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.wyverns-right-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.right-leg
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.wyvern.leftLeg}}$
+name: ${{rqgCompendiumContent.hitLocation.wyvern.leftLeg}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -48,17 +50,18 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.wyvern.abdomen}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.wyvern.abdomen}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.wyverns-left-leg
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.left-leg
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.wyvern.abdomen}}$
+name: ${{rqgCompendiumContent.hitLocation.wyvern.abdomen}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -71,14 +74,15 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.wyverns-abdomen
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.abdomen
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.wyvern.chest}}$
+name: ${{rqgCompendiumContent.hitLocation.wyvern.chest}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -91,14 +95,15 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.wyverns-chest
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.chest
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.wyvern.rightWing}}$
+name: ${{rqgCompendiumContent.hitLocation.wyvern.rightWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -108,17 +113,18 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.wyvern.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.wyvern.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.wyverns-right-wing
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.right-wing
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.wyvern.leftWing}}$
+name: ${{rqgCompendiumContent.hitLocation.wyvern.leftWing}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -128,17 +134,18 @@ system:
   naturalAp: 0
   wounds: []
   hitLocationType: limb
-  connectedTo: ${{openSystem.content.hitLocation.wyvern.chest}}$
+  connectedTo: ${{rqgCompendiumContent.hitLocation.wyvern.chest}}$
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.wyverns-left-wing
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.left-wing
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.wyvern.head}}$
+name: ${{rqgCompendiumContent.hitLocation.wyvern.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -151,9 +158,10 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.wyverns-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.head
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

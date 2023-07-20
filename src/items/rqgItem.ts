@@ -101,7 +101,7 @@ export class RqgItem extends Item {
             actorName: document.parent.name,
             documentType: document.type,
             documentName: document.name,
-          })
+          }),
         );
         return false;
       }
@@ -111,7 +111,7 @@ export class RqgItem extends Item {
           localize("RQG.Actor.RuneMagic.EmbeddingRuneMagicWithoutCultWarning", {
             characterName: document.parent.name,
             spellName: document.name,
-          })
+          }),
         );
         return false;
       }
@@ -131,7 +131,7 @@ export class RqgItem extends Item {
     await ResponsibleItemClass.get(this.type)?.toChat(this);
   }
 
-  public async abilityRoll(options: {} = {}): Promise<ResultEnum | undefined> {
+  public async abilityRoll(options: object = {}): Promise<ResultEnum | undefined> {
     if (!this.isEmbedded) {
       const msg = "Item is not embedded";
       ui.notifications?.error(msg);
@@ -149,7 +149,7 @@ export class RqgItem extends Item {
     chance: number,
     chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
     speaker: ChatSpeakerDataProperties,
-    resultMessages?: ResultMessage[]
+    resultMessages?: ResultMessage[],
   ): Promise<ResultEnum> {
     chance = chance || 0; // Handle NaN
     chanceMod = chanceMod || 0;
@@ -185,7 +185,7 @@ export class RqgItem extends Item {
     const fumble = Math.min(100, 100 - Math.ceil((100 - chance - 9) / 20) + 1);
     const success = Math.min(95, Math.max(chance, 5));
     const fail = fumble === 96 ? 95 : Math.max(96, fumble - 1);
-    let lookup = [
+    const lookup = [
       { limit: hyperCritical, result: ResultEnum.HyperCritical },
       { limit: specialCritical, result: ResultEnum.SpecialCritical },
       { limit: critical, result: ResultEnum.Critical },
@@ -230,11 +230,11 @@ export class RqgItem extends Item {
   protected _onCreate(
     itemData: RqgItem["system"]["_source"],
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void {
     const defaultItemIconSettings: any = getGame().settings.get(
       systemId,
-      "defaultItemIconSettings"
+      "defaultItemIconSettings",
     );
     const item = itemData._id ? getGame().items?.get(itemData._id) : undefined;
     // @ts-expect-errors Foundry v10
@@ -266,15 +266,14 @@ export class RqgItem extends Item {
   }
 
   static async updateDocuments(updates: any[], context: any): Promise<any> {
-    // @ts-expect-error foundry 10
     if (isEmpty(updates)) {
       return [];
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { parent, pack, ...options } = context;
     if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
-        // @ts-expect-error foundry 10
         if (!isEmpty(u)) {
           const document = parent.items.get(u._id);
           if (!document || document.documentName !== "Item") {
@@ -287,7 +286,7 @@ export class RqgItem extends Item {
             parent,
             document,
             updates,
-            options
+            options,
           );
         }
       });
@@ -303,7 +302,7 @@ export class RqgItem extends Item {
       (i: RqgItem) =>
         document.type !== ItemTypeEnum.RuneMagic &&
         i.name === document.name &&
-        i.type === document.type
+        i.type === document.type,
     );
   }
 

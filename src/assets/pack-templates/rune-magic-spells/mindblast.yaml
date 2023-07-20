@@ -1,5 +1,5 @@
 # mindblast
-name: ${{openSystem.content.runeMagic.mindblast.name}}$
+name: ${{rqgCompendiumContent.runeMagic.mindblast.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..mindblast
-    name: ${{openSystem.content.runeMagic.mindblast.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.mindblast.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.mindblast
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

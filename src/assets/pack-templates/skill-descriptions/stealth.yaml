@@ -1,7 +1,7 @@
 # hide
-name: ${{openSystem.content.skill.hide.skillName}}$
+name: ${{rqgCompendiumContent.skill.hide.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.hide.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.hide.skillName}}$
     type: text
     title:
       show: false
@@ -9,24 +9,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/hide.svg" height="70">
-        ${{openSystem.content.skill.hide.description}}$
+        ${{rqgCompendiumContent.skill.hide.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.stealth.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.stealth.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..hide
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # moveQuietly
-name: ${{openSystem.content.skill.moveQuietly.skillName}}$
+name: ${{rqgCompendiumContent.skill.moveQuietly.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.moveQuietly.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.moveQuietly.skillName}}$
     type: text
     title:
       show: false
@@ -34,16 +34,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/move-quietly.svg" height="70">
-        ${{openSystem.content.skill.moveQuietly.description}}$
+        ${{rqgCompendiumContent.skill.moveQuietly.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.stealth.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.stealth.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..move-quietly
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

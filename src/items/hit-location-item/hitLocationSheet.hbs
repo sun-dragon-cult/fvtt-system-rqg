@@ -48,13 +48,7 @@
             </select>
 
           <label for="hit-points-value-{{id}}">{{localize "RQG.Item.HitLocation.HitPoints"}}</label>
-          <div>
-            <input id="hit-points-value-{{id}}"
-              name="system.hitPoints.value"
-              type="number"
-              min="0" max="99" value="{{system.hitPoints.value}}"> /
-            {{system.hitPoints.max}}
-          </div>
+          <div>{{system.hitPoints.value}} / {{system.hitPoints.max}}</div>
 
           <label>{{localize "RQG.Item.HitLocation.ArmorPoints"}}</label>
           {{system.armorPoints}}

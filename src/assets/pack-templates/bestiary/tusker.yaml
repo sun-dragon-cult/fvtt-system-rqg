@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.tusker.name}}$
+name: ${{rqgCompendiumContent.bestiary.tusker.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,25 +27,25 @@ system:
       value:
       formula:
   background:
-    species: ${{openSystem.content.bestiary.tusker.species}}$
-    occupation: ''
-    homeland: ''
+    species: ${{rqgCompendiumContent.bestiary.tusker.species}}$
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
-  allies: ${{openSystem.content.bestiary.tusker.notes}}$
+    ransomDetails: ""
+    biography: ""
+  allies: ${{rqgCompendiumContent.bestiary.tusker.notes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.tusker.name}}$
+  name: ${{rqgCompendiumContent.bestiary.tusker.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -120,13 +120,13 @@ prototypeToken:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-hind-leg	[ naturalAp: 4		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-hind-leg	[ naturalAp: 4		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-hindquarter	[ naturalAp: 4		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-forequarter	[ naturalAp: 4		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-foreleg	[ naturalAp: 4		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-foreleg	[ naturalAp: 4		]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-head	[ naturalAp: 4		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.right-hind-leg	[ naturalAp: 4		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.left-hind-leg	[ naturalAp: 4		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.hindquarter	[ naturalAp: 4		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.forequarter	[ naturalAp: 4		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.right-foreleg	[ naturalAp: 4		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.left-foreleg	[ naturalAp: 4		]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.head	[ naturalAp: 4		]}}|"
 - "|{{	skills/perception-skills.yaml	i.skill.track-by-scent	[ gainedChance:	45	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.gore	[ gainedChance:	25	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.trample	[ gainedChance:	50	]}}|"
@@ -142,5 +142,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: a.character.tusker
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

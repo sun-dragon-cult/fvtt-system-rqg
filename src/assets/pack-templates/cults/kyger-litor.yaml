@@ -1,23 +1,23 @@
 # kyger-litor
-name: ${{openSystem.content.cult.kygerLitor.name}}$
+name: ${{rqgCompendiumContent.cult.kygerLitor.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.kygerLitor.name}}$
+  deity: ${{rqgCompendiumContent.cult.kygerLitor.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.kygerLitor.name}}$
-      tagline: ${{openSystem.content.cult.kygerLitor.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.kygerLitor.name}}$
+      tagline: ${{rqgCompendiumContent.cult.kygerLitor.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.darknessElement.name}}$
-    - ${{openSystem.content.runeDescription.manForm.name}}$
+    - ${{rqgCompendiumContent.runeDescription.darknessElement.name}}$
+    - ${{rqgCompendiumContent.runeDescription.manForm.name}}$
   descriptionRqidLink:
     rqid: je..kyger-litor
-    name: ${{openSystem.content.cult.kygerLitor.name}}$
+    name: ${{rqgCompendiumContent.cult.kygerLitor.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -43,9 +43,10 @@ system:
       rqid: i.rune-magic.summon-cult-spirit
     - name: Warding
       rqid: i.rune-magic.warding
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.cult.kyger-litor
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,43 +1,48 @@
-name: ${{openSystem.content.weapon.sling}}$
+name: ${{rqgCompendiumContent.weapon.sling}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/sling.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.sling
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: M66Aa8Cij2s4Xc3P
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.M66Aa8Cij2s4Xc3P
+      skillRqidLink:
+        rqid: i.skill.slings-sling
+        name: ${{rqgCompendiumContent.weaponSkill.slings.name}}$ (${{rqgCompendiumContent.weaponSkill.slings.specialization.sling}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush
           description:
       damage: 1d8
@@ -67,46 +72,51 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.staffSling}}$
+name: ${{rqgCompendiumContent.weapon.staffSling}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/sling.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.staff-sling
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 8qozzHxXWC57R1B0
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.8qozzHxXWC57R1B0
+      skillRqidLink:
+        rqid: i.skill.slings-staff-sling
+        name: ${{rqgCompendiumContent.weaponSkill.slings.name}}$ (${{rqgCompendiumContent.weaponSkill.slings.specialization.staffSling}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: crush
           description:
       damage: 1d10
@@ -136,44 +146,49 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.slingStones}}$
+name: ${{rqgCompendiumContent.weapon.slingStones}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/sling-stones.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.sling-stones
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0

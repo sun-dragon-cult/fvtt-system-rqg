@@ -1,0 +1,67 @@
+.rqid-batch-editor {
+  .window-content {
+    padding: 1rem 1.5rem;
+  }
+
+  main {
+    position: relative;
+  }
+
+  .document-list {
+    margin: 0;
+    padding: 0;
+
+    li:nth-child(odd):not(:first-child) {
+      background: var(--rqg-table-alternate-background);
+    }
+  }
+
+  li.header {
+    line-height: 2rem;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: var(--color-text-light-highlight);
+    margin-bottom: 0.3rem;
+
+    * {
+      padding-left: 0.5rem;
+    }
+  }
+
+  .document-row {
+    line-height: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  .value {
+    align-items: center;
+
+    .rqid-prefix {
+      flex: 0;
+      align-self: center;
+      white-space: nowrap;
+    }
+
+    .rqid-input {
+      flex: 2;
+
+      &.missing {
+        background-color: var(--rqg-color-enc-legend);
+      }
+    }
+
+    .generate-rqid {
+      flex: 0 0 20px;
+      align-self: center;
+      text-align: right;
+    }
+  }
+
+  .dialog-buttons {
+    position: sticky;
+    bottom: 0.2rem;
+    width: 100%;
+    background: var(--color-bg-btn-minor-active);
+    margin: 1rem 0;
+  }
+}

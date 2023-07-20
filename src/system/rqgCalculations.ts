@@ -22,7 +22,7 @@ export class RqgCalculations {
   public static hitPoints(
     con: number | undefined,
     siz: number | undefined = 0,
-    pow: number | undefined = 0
+    pow: number | undefined = 0,
   ): number | undefined {
     let hp =
       con != null
@@ -72,7 +72,7 @@ export class RqgCalculations {
     int: number | undefined,
     pow: number | undefined,
     cha: number | undefined,
-    isCreature: boolean
+    isCreature: boolean,
   ) {
     if (isCreature) {
       return {
@@ -149,7 +149,7 @@ export class RqgCalculations {
 
   private static lookup<T>(v: number, table: LookupTableEntry<T>[]): T {
     const tableEntry: LookupTableEntry<T> | undefined = table.find(
-      (te) => v >= te.from && v <= te.to
+      (te) => v >= te.from && v <= te.to,
     );
     return tableEntry?.result as T;
   }

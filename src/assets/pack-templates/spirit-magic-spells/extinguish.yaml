@@ -1,5 +1,5 @@
 # extinguish
-name: ${{openSystem.content.spiritMagic.extinguish.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.extinguish.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration:
   descriptionRqidLink:
     rqid: je..extinguish
-    name: ${{openSystem.content.spiritMagic.extinguish.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.extinguish.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

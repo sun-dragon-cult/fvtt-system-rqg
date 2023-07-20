@@ -1,5 +1,4 @@
----
-name: ${{openSystem.content.bestiary.bison.name}}$
+name: ${{rqgCompendiumContent.bestiary.bison.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -17,35 +16,35 @@ system:
       value: 7
       formula: 2d6
     intelligence:
-      value: 
-      formula: 
+      value:
+      formula:
     power:
       value: 11
       formula: 3d6
       hasExperience: false
     charisma:
-      value: 
-      formula: 
+      value:
+      formula:
   background:
-    species: ${{openSystem.content.bestiary.bison.species}}$
-    occupation: ''
-    homeland: ''
+    species: ${{rqgCompendiumContent.bestiary.bison.species}}$
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
-  allies: ${{openSystem.content.bestiary.bison.notes}}$
+    ransomDetails: ""
+    biography: ""
+  allies: ${{rqgCompendiumContent.bestiary.bison.notes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +63,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.bison.name}}$
+  name: ${{rqgCompendiumContent.bestiary.bison.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -120,13 +119,13 @@ prototypeToken:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-hind-leg	[ naturalAp: 3	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-hind-leg	[ naturalAp: 3	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-hindquarter	[ naturalAp: 3	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-forequarter	[ naturalAp: 3	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-foreleg	[ naturalAp: 3	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-foreleg	[ naturalAp: 3	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-head	[ naturalAp: 3	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.right-hind-leg	[ naturalAp: 3	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.left-hind-leg	[ naturalAp: 3	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.hindquarter	[ naturalAp: 3	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.forequarter	[ naturalAp: 3	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.right-foreleg	[ naturalAp: 3	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.left-foreleg	[ naturalAp: 3	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.head	[ naturalAp: 3	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.head-butt	[ gainedChance:	25	]}}|"
 - "|{{	skills-weapons/natural.yaml	i.skill.trample	[ gainedChance:	25	]}}|"
 - "|{{	equipment-weapons/unarmed-attacks.yaml	i.weapon.head-butt	[ equippedStatus: 	equipped, damage: 2d10	]}}|"
@@ -137,9 +136,9 @@ sort: 0
 ownership:
   default: 0
   OGu9DZ439mXiuTD3: 3
-flags: 
+flags:
   rqg:
     documentRqidFlags:
       id: a.character.bison
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

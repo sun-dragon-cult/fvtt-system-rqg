@@ -1,7 +1,7 @@
 # regrow-limb
-name: ${{openSystem.content.runeMagic.regrowLimb.name}}$
+name: ${{rqgCompendiumContent.runeMagic.regrowLimb.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.regrowLimb.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.regrowLimb.name}}$
     type: text
     title:
       show: false
@@ -9,16 +9,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/moon_full.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
-        ${{openSystem.content.runeMagic.regrowLimb.description}}$
+        ${{rqgCompendiumContent.runeMagic.regrowLimb.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..regrow-limb
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

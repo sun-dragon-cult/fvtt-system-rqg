@@ -1,7 +1,7 @@
 # speedart
-name: ${{openSystem.content.spiritMagic.speedart.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.speedart.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.speedart.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.speedart.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.speedart.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.speedart.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..speedart
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

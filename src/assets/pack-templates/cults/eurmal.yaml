@@ -1,24 +1,24 @@
 # eurmal
-name: ${{openSystem.content.cult.eurmal.name}}$
+name: ${{rqgCompendiumContent.cult.eurmal.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.eurmal.name}}$
+  deity: ${{rqgCompendiumContent.cult.eurmal.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.eurmal.name}}$
-      tagline: ${{openSystem.content.cult.eurmal.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.eurmal.name}}$
+      tagline: ${{rqgCompendiumContent.cult.eurmal.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.illusionPower.name}}$
-    - ${{openSystem.content.runeDescription.disorderPower.name}}$
-    - ${{openSystem.content.runeDescription.illusionPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.illusionPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.disorderPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.illusionPower.name}}$
   descriptionRqidLink:
     rqid: je..eurmal
-    name: ${{openSystem.content.cult.eurmal.name}}$
+    name: ${{rqgCompendiumContent.cult.eurmal.name}}$
   commonRuneMagicRqidLinks:
     - name: Divination
       rqid: i.rune-magic.divination
@@ -26,9 +26,10 @@ system:
       rqid: i.rune-magic.extension
     - name: Multispell
       rqid: i.rune-magic.multispell
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.cult.eurmal
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,11 +1,11 @@
 # wind-words
-name: ${{openSystem.content.runeMagic.windWords.name}}$
+name: ${{rqgCompendiumContent.runeMagic.windWords.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
   rqid: rune-magic-wind-words
-  rqidPriority: ${{openSystem.prio}}$
-  rqidLang: ${{openSystem.lang}}$
+  rqidPriority: ${{rqgCompendiumContent.prio}}$
+  rqidLang: ${{rqgCompendiumContent.lang}}$
   runes:
     - Air (element)
     - Movement (power)
@@ -17,10 +17,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..wind-words
-    name: ${{openSystem.content.runeMagic.windWords.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.windWords.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.wind-words
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

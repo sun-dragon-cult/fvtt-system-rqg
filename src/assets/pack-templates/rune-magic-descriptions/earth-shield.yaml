@@ -1,7 +1,7 @@
 # earth-shield
-name: ${{openSystem.content.runeMagic.earthShield.name}}$
+name: ${{rqgCompendiumContent.runeMagic.earthShield.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.earthShield.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.earthShield.name}}$
     type: text
     title:
       show: false
@@ -9,15 +9,15 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/air.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/earth.svg" height="70">
-        ${{openSystem.content.runeMagic.earthShield.description}}$
+        ${{rqgCompendiumContent.runeMagic.earthShield.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..earth-shield
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

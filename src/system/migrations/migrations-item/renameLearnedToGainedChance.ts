@@ -4,9 +4,9 @@ import { ItemUpdate } from "../applyMigrations";
 
 export async function renameLearnedToGainedChance(itemData: ItemData): Promise<ItemUpdate> {
   let updateData = {};
-  // @ts-ignore learnedChance
+  // @ts-expect-error learnedChance
   if (itemData.type === ItemTypeEnum.Skill && itemData?.learnedChance != null) {
-    // @ts-ignore learnedChance
+    // @ts-expect-error learnedChance
     const learnedChance = itemData.system.learnedChance;
 
     updateData = {

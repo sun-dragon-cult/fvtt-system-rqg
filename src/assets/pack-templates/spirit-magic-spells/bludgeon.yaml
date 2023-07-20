@@ -1,5 +1,5 @@
 # bludgeon
-name: ${{openSystem.content.spiritMagic.bludgeon.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.bludgeon.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..bludgeon
-    name: ${{openSystem.content.spiritMagic.bludgeon.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.bludgeon.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

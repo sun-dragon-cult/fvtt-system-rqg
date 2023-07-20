@@ -1,51 +1,51 @@
 ---
-name: ${{openSystem.content.bestiary.diseaseSpirit.name}}$
+name: ${{rqgCompendiumContent.bestiary.diseaseSpirit.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
   characteristics:
     strength:
-      value: 
-      formula: 
+      value:
+      formula:
     constitution:
-      value: 
-      formula: 
+      value:
+      formula:
     size:
-      value: 
-      formula: 
+      value:
+      formula:
     dexterity:
-      value: 
-      formula: 
+      value:
+      formula:
     intelligence:
-      value: 
-      formula: 
+      value:
+      formula:
     power:
       value: 11
       formula: 3d6
       hasExperience: false
     charisma:
-      value: 
-      formula: 
+      value:
+      formula:
   background:
-    species: ${{openSystem.content.bestiary.diseaseSpirit.species}}$
-    occupation: ''
-    homeland: ''
+    species: ${{rqgCompendiumContent.bestiary.diseaseSpirit.species}}$
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
-  allies: ${{openSystem.content.bestiary.diseaseSpirit.notes}}$
+    ransomDetails: ""
+    biography: ""
+  allies: ${{rqgCompendiumContent.bestiary.diseaseSpirit.notes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.diseaseSpirit.name}}$
+  name: ${{rqgCompendiumContent.bestiary.diseaseSpirit.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -127,9 +127,9 @@ sort: 0
 ownership:
   default: 0
   OGu9DZ439mXiuTD3: 3
-flags: 
+flags:
   rqg:
     documentRqidFlags:
       id: a.character.disease-spirit
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

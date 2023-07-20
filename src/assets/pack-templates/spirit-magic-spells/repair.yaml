@@ -1,5 +1,5 @@
 # repair
-name: ${{openSystem.content.spiritMagic.repair.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.repair.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration:
   descriptionRqidLink:
     rqid: je..repair
-    name: ${{openSystem.content.spiritMagic.repair.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.repair.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -16,7 +16,7 @@ import {
 } from "../system/util";
 
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
-import { UsageType } from "../data-model/item-data/weaponData";
+import type { Usage, UsageType } from "../data-model/item-data/weaponData";
 import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { RqgChatMessage } from "./RqgChatMessage";
@@ -54,7 +54,7 @@ export class WeaponChatHandler {
   }
 
   public static async renderContent(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "weaponChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
@@ -121,7 +121,7 @@ export class WeaponChatHandler {
    */
   public static updateFlagsFromForm(
     flags: RqgChatMessageFlags,
-    ev: SubmitEvent | InputEvent | Event
+    ev: SubmitEvent | InputEvent | Event,
   ): void {
     assertChatMessageFlagType(flags.type, "weaponChat");
     const target = ev.target;
@@ -149,11 +149,10 @@ export class WeaponChatHandler {
     });
   }
 
-  static getUsageTypeOptions(weapon: RqgItem): {} {
+  static getUsageTypeOptions(weapon: RqgItem): object {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
-    return Object.entries(weapon.system.usage).reduce((acc: any, [key, usage]) => {
-      // @ts-expect-error system
-      if (usage.skillId) {
+    return Object.entries<Usage>(weapon.system.usage).reduce((acc: any, [key, usage]) => {
+      if (usage?.skillRqidLink?.rqid) {
         acc[key] = localize(`RQG.Game.WeaponUsage.${key}-full`);
       }
       return acc;

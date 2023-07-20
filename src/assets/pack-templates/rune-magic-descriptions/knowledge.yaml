@@ -1,7 +1,7 @@
 # knowledge
-name: ${{openSystem.content.runeMagic.knowledge.name}}$
+name: ${{rqgCompendiumContent.runeMagic.knowledge.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.knowledge.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.knowledge.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/truth.svg" height="70">
-        ${{openSystem.content.runeMagic.knowledge.description}}$
+        ${{rqgCompendiumContent.runeMagic.knowledge.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..knowledge
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

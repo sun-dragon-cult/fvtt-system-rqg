@@ -37,7 +37,7 @@
           <div class="flex-column" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
             {{#each system.joinedCults}}
               <div><b>{{cultName}} – {{localize (concat "RQG.Actor.RuneMagic.CultRank." rank)}}</b>
-                {{#if tagline}}<br><i>{{tagline}}</i>{{/if}}</b>
+                {{#if tagline}}<br><i>{{tagline}}</i>{{/if}}
               </div>
             {{/each}}
           </div>
@@ -69,6 +69,10 @@
                  data-item-id="{{id}}"
                  data-rune-magic-roll>
               {{name}}&nbsp;
+              {{#if system.isCommon}}
+                <img class="common" src="systems/rqg/assets/images/items/cult.svg"
+                     data-tooltip="{{localize "RQG.Actor.RuneMagic.CommonRuneMagicTooltip"}}">
+              {{/if}}
               {{#each system.runes}}
                 <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
               {{/each}}

@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.horseSeredae.name}}$
+name: ${{rqgCompendiumContent.bestiary.horseSeredae.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,25 +27,25 @@ system:
       value:
       formula:
   background:
-    species: ${{openSystem.content.bestiary.horseSeredae.species}}$
-    occupation: ''
-    homeland: ''
+    species: ${{rqgCompendiumContent.bestiary.horseSeredae.species}}$
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
-  allies: ${{openSystem.content.bestiary.horseSeredae.notes}}$
+    ransomDetails: ""
+    biography: ""
+  allies: ${{rqgCompendiumContent.bestiary.horseSeredae.notes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.horseSeredae.name}}$
+  name: ${{rqgCompendiumContent.bestiary.horseSeredae.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -120,13 +120,13 @@ prototypeToken:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-hind-leg	[ naturalAp: 1	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-hind-leg	[ naturalAp: 1	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-hindquarter	[ naturalAp: 1	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-forequarter	[ naturalAp: 1	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-right-foreleg	[ naturalAp: 1	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-left-foreleg	[ naturalAp: 1	]}}|"
-- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.four-legged-animals-head	[ naturalAp: 1	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.right-hind-leg	[ naturalAp: 1	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.left-hind-leg	[ naturalAp: 1	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.hindquarter	[ naturalAp: 1	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.forequarter	[ naturalAp: 1	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.right-foreleg	[ naturalAp: 1	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.left-foreleg	[ naturalAp: 1	]}}|"
+- "|{{	hit-locations-four-legged-animals/hit-locations-four-legged-animals.yaml	i.hit-location.head	[ naturalAp: 1	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.climb	[ gainedChance:	-10	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	3	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.jump	[ gainedChance:	42	]}}|"
@@ -152,5 +152,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: a.character.horse-seredae
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

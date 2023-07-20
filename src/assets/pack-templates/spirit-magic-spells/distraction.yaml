@@ -1,5 +1,5 @@
 # distraction
-name: ${{openSystem.content.spiritMagic.distraction.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.distraction.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration:
   descriptionRqidLink:
     rqid: je..distraction
-    name: ${{openSystem.content.spiritMagic.distraction.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.distraction.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

@@ -1,7 +1,7 @@
 # conceal
-name: ${{openSystem.content.skill.conceal.skillName}}$
+name: ${{rqgCompendiumContent.skill.conceal.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.alchemy.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.alchemy.skillName}}$
     type: text
     title:
       show: false
@@ -9,24 +9,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/conceal.svg" height="70">
-        ${{openSystem.content.skill.conceal.description}}$
+        ${{rqgCompendiumContent.skill.conceal.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.manipulation.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..conceal
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.content.lang}}
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}
 ---
 # craft
-name: ${{openSystem.content.skill.craft.skillName}}$
+name: ${{rqgCompendiumContent.skill.craft.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.craft.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.craft.skillName}}$
     type: text
     title:
       show: false
@@ -34,24 +34,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/craft.svg" height="70">
-        ${{openSystem.content.skill.craft.description}}$
+        ${{rqgCompendiumContent.skill.craft.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.manipulation.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..craft
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.content.lang}}
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}
 ---
 # devise
-name: ${{openSystem.content.skill.devise.skillName}}$
+name: ${{rqgCompendiumContent.skill.devise.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.devise.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.devise.skillName}}$
     type: text
     title:
       show: false
@@ -59,24 +59,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/devise.svg" height="70">
-        ${{openSystem.content.skill.devise.description}}$
+        ${{rqgCompendiumContent.skill.devise.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.manipulation.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..devise
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.content.lang}}
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}
 ---
 # play instrument
-name: ${{openSystem.content.skill.playInstrument.skillName}}$
+name: ${{rqgCompendiumContent.skill.playInstrument.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.playInstrument.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.playInstrument.skillName}}$
     type: text
     title:
       show: false
@@ -84,24 +84,24 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/play-instrument.svg" height="70">
-        ${{openSystem.content.skill.playInstrument.description}}$
+        ${{rqgCompendiumContent.skill.playInstrument.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.manipulation.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..play-instrument
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.content.lang}}
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}
 ---
 # sleight
-name: ${{openSystem.content.skill.sleight.skillName}}$
+name: ${{rqgCompendiumContent.skill.sleight.skillName}}$
 pages:
-  - name: ${{openSystem.content.skill.sleight.skillName}}$
+  - name: ${{rqgCompendiumContent.skill.sleight.skillName}}$
     type: text
     title:
       show: false
@@ -109,16 +109,16 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.skillDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.skillDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/skills/sleight.svg" height="70">
-        ${{openSystem.content.skill.sleight.description}}$
+        ${{rqgCompendiumContent.skill.sleight.description}}$
         <hr>
-        <blockquote>${{openSystem.content.skillCategory.manipulation.description}}$</blockquote>
+        <blockquote>${{rqgCompendiumContent.skillCategory.manipulation.description}}$</blockquote>
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..sleight
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.content.lang}}
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}

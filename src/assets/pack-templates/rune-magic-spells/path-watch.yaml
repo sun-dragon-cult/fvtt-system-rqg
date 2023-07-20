@@ -1,5 +1,5 @@
 # path-watch
-name: ${{openSystem.content.runeMagic.pathWatch.name}}$
+name: ${{rqgCompendiumContent.runeMagic.pathWatch.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..path-watch
-    name: ${{openSystem.content.runeMagic.pathWatch.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.pathWatch.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.path-watch
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,7 +1,7 @@
 # dark-walk
-name: ${{openSystem.content.runeMagic.darkWalk.name}}$
+name: ${{rqgCompendiumContent.runeMagic.darkWalk.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.darkWalk.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.darkWalk.name}}$
     type: text
     title:
       show: false
@@ -9,15 +9,15 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/movement_change.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/darkness.svg" height="70">
-        ${{openSystem.content.runeMagic.darkWalk.description}}$
+        ${{rqgCompendiumContent.runeMagic.darkWalk.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..dark-walk
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

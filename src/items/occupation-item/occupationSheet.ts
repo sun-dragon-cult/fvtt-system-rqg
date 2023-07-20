@@ -40,7 +40,8 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   getData(): OccupationSheetData & DocumentSheetData {
-    const system = duplicate(this.document.system);
+    // @ts-expect-error _source Read from the original data unaffected by any AEs
+    const system = duplicate(this.document._source.system);
 
     return {
       id: this.document.id ?? "",
@@ -67,15 +68,15 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    //@ts-ignore id
+    // @ts-expect-error currentTarget.id
     if (event?.currentTarget?.id.startsWith("bonus-")) {
-      //@ts-ignore dataset
+      //@ts-expect-error dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
         const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
-            //@ts-ignore value
+            //@ts-expect-error value
             skill.bonus = Number(event.currentTarget.value);
           }
         }
@@ -94,15 +95,15 @@ export class OccupationSheet extends RqgItemSheet<
       }
     }
 
-    //@ts-ignore name
+    //@ts-expect-error name
     if (event?.currentTarget?.id.startsWith("income-skill-")) {
-      //@ts-ignore dataset
+      //@ts-expect-error dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
         const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
-            //@ts-ignore checked
+            //@ts-expect-error checked
             skill.incomeSkill = event.currentTarget?.checked;
           }
         }
@@ -148,7 +149,7 @@ export class OccupationSheet extends RqgItemSheet<
         el.addEventListener("click", async (ev: MouseEvent) => {
           // Note that if there are duplicate skills, like "Craft (...)",
           // deleting one of them will delete all of them.
-          let rqidToDelete = getDomDataset(ev, "delete-occupational-skill-rqid");
+          const rqidToDelete = getDomDataset(ev, "delete-occupational-skill-rqid");
           const thisOccupation = this.item.system as OccupationDataSourceData;
           const occSkills = thisOccupation.occupationalSkills.filter(function (skill) {
             return skill.skillRqidLink?.rqid !== rqidToDelete;
@@ -184,7 +185,7 @@ export class OccupationSheet extends RqgItemSheet<
         form,
         displaySkills,
         editSkills,
-        btnEdit
+        btnEdit,
       );
       return;
     }
@@ -201,7 +202,7 @@ export class OccupationSheet extends RqgItemSheet<
 
   async _onDropItem(
     event: DragEvent,
-    data: { type: string; uuid: string }
+    data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
     // @ts-expect-error fromDropData
@@ -237,15 +238,15 @@ export class OccupationSheet extends RqgItemSheet<
     if (droppedItem.type === ItemTypeEnum.Skill) {
       // Skills require special handling here (rather than in RqgItemSheet) because
       // we will associate the skill with a bonus
-      let droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
+      const droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);
 
       if (droppedRqid && droppedRqid.id) {
-        let occSkill = new OccupationalSkill();
+        const occSkill = new OccupationalSkill();
         occSkill.bonus = 0;
         occSkill.incomeSkill = false;
         occSkill.skillRqidLink = new RqidLink(droppedRqid?.id, droppedItem.name || "");
 
-        let occSkills = this.item.system.occupationalSkills;
+        const occSkills = this.item.system.occupationalSkills;
 
         // this is intentionally NOT checking for duplicate skills
         // since an Occupation might have generic skills more than once,

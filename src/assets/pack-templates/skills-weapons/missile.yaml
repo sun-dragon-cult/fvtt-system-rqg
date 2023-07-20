@@ -1,12 +1,11 @@
 # atlatls-dart
-name: ${{openSystem.content.weaponSkill.atlatls.name}}$ (${{openSystem.content.weaponSkill.atlatls.specialization.dart}}$)
-_id: jpOyJYC2ctmY2N8U
+name: ${{rqgCompendiumContent.weaponSkill.atlatls.name}}$ (${{rqgCompendiumContent.weaponSkill.atlatls.specialization.dart}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.atlatls.name}}$
-  specialization: ${{openSystem.content.weaponSkill.atlatls.specialization.dart}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.atlatls.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.atlatls.specialization.dart}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -14,23 +13,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.atlatls-dart
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # atlatls-javelin
-name: ${{openSystem.content.weaponSkill.atlatls.name}}$ (${{openSystem.content.weaponSkill.atlatls.specialization.javelin}}$)
-_id: 9Pu3rVnoTp4cHjhn
+name: ${{rqgCompendiumContent.weaponSkill.atlatls.name}}$ (${{rqgCompendiumContent.weaponSkill.atlatls.specialization.javelin}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.atlatls.name}}$
-  specialization: ${{openSystem.content.weaponSkill.atlatls.specialization.javelin}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.atlatls.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.atlatls.specialization.javelin}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -38,23 +37,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.atlatls-javelin
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # bow-composite-bow
-name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$)
-_id: 9aEgM4UKZQfFddMD
+name: ${{rqgCompendiumContent.weaponSkill.bows.name}}$ (${{rqgCompendiumContent.weaponSkill.bows.specialization.compositeBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.bows.name}}$
-  specialization: ${{openSystem.content.weaponSkill.bows.specialization.compositeBow}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.bows.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.bows.specialization.compositeBow}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -62,23 +61,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.bows-composite-bow
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # bow-elf-bow
-name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$)
-_id: zhMTFSWh768z6Jnk
+name: ${{rqgCompendiumContent.weaponSkill.bows.name}}$ (${{rqgCompendiumContent.weaponSkill.bows.specialization.elfBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.bows.name}}$
-  specialization: ${{openSystem.content.weaponSkill.bows.specialization.elfBow}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.bows.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.bows.specialization.elfBow}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -86,23 +85,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.bows-elf-bow
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # bow-self-bow
-name: ${{openSystem.content.weaponSkill.bows.name}}$ (${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$)
-_id: EcDI8nmAyfshQL10
+name: ${{rqgCompendiumContent.weaponSkill.bows.name}}$ (${{rqgCompendiumContent.weaponSkill.bows.specialization.selfBow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/bowman.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.bows.name}}$
-  specialization: ${{openSystem.content.weaponSkill.bows.specialization.selfBow}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.bows.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.bows.specialization.selfBow}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -110,23 +109,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.bows-self-bow
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # crossbow-arbalest
-name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$)
-_id: CVruhytNFN3sfNaM
+name: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$ (${{rqgCompendiumContent.weaponSkill.crossbows.specialization.arbalest}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
-  specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.arbalest}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.crossbows.specialization.arbalest}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -134,23 +133,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.crossbows-arbalest
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # crossbow-heavy-crossbow
-name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$)
-_id: 6tN59Is4NdkZMJF5
+name: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$ (${{rqgCompendiumContent.weaponSkill.crossbows.specialization.heavyCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
-  specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.heavyCrossbow}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.crossbows.specialization.heavyCrossbow}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -158,23 +157,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.crossbows-heavy-crossbow
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # crossbow-light-crossbow
-name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$)
-_id: SL7I4vZ0pKwO714W
+name: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$ (${{rqgCompendiumContent.weaponSkill.crossbows.specialization.lightCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
-  specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.lightCrossbow}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.crossbows.specialization.lightCrossbow}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -182,23 +181,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.crossbows-light-crossbow
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # crossbow-repeating-crossbow
-name: ${{openSystem.content.weaponSkill.crossbows.name}}$ (${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$)
-_id: OTEuqGbfafup9W49
+name: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$ (${{rqgCompendiumContent.weaponSkill.crossbows.specialization.repeatingCrossbow}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/crossbow.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.crossbows.name}}$
-  specialization: ${{openSystem.content.weaponSkill.crossbows.specialization.repeatingCrossbow}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.crossbows.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.crossbows.specialization.repeatingCrossbow}}$
   baseChance: 25
   gainedChance: 0
   canGetExperience: true
@@ -206,23 +205,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.crossbows-repeating-crossbow
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # javelin-dart
-name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.dart}}$)
-_id: UfrGc8zwcTmE1HPv
+name: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$ (${{rqgCompendiumContent.weaponSkill.javelins.specialization.dart}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/dart.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
-  specialization: ${{openSystem.content.weaponSkill.javelins.specialization.dart}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.javelins.specialization.dart}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -230,23 +229,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.javelins-dart
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # javelin-javelin
-name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$)
-_id: 794y0cyfzCa5eYPf
+name: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$ (${{rqgCompendiumContent.weaponSkill.javelins.specialization.javelin}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
-  specialization: ${{openSystem.content.weaponSkill.javelins.specialization.javelin}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.javelins.specialization.javelin}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -254,23 +253,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.javelins-javelin
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # javelin-shortspear
-name: ${{openSystem.content.weaponSkill.javelins.name}}$ (${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$)
-_id: r24yk70r505De5dy
+name: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$ (${{rqgCompendiumContent.weaponSkill.javelins.specialization.shortspear}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/javelin.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.javelins.name}}$
-  specialization: ${{openSystem.content.weaponSkill.javelins.specialization.shortspear}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.javelins.specialization.shortspear}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -278,23 +277,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.javelins-shortspear
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # lasso-pole-lasso
-name: ${{openSystem.content.weaponSkill.lassos.name}}$ (${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$)
-_id: c4xz834y4y58vjnH
+name: ${{rqgCompendiumContent.weaponSkill.lassos.name}}$ (${{rqgCompendiumContent.weaponSkill.lassos.specialization.poleLasso}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/lasso.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.lassos.name}}$
-  specialization: ${{openSystem.content.weaponSkill.lassos.specialization.poleLasso}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.lassos.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.lassos.specialization.poleLasso}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -302,23 +301,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.lassos-pole-lasso
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # sling-sling
-name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.sling}}$)
-_id: M66Aa8Cij2s4Xc3P
+name: ${{rqgCompendiumContent.weaponSkill.slings.name}}$ (${{rqgCompendiumContent.weaponSkill.slings.specialization.sling}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.slings.name}}$
-  specialization: ${{openSystem.content.weaponSkill.slings.specialization.sling}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.slings.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.slings.specialization.sling}}$
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
@@ -326,23 +325,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.slings-sling
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # sling-staff-sling
-name: ${{openSystem.content.weaponSkill.slings.name}}$ (${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$)
-_id: 8qozzHxXWC57R1B0
+name: ${{rqgCompendiumContent.weaponSkill.slings.name}}$ (${{rqgCompendiumContent.weaponSkill.slings.specialization.staffSling}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/sling.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.slings.name}}$
-  specialization: ${{openSystem.content.weaponSkill.slings.specialization.staffSling}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.slings.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.slings.specialization.staffSling}}$
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
@@ -350,22 +349,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.slings-staff-sling
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # thrown-axe
-name: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
-_id: 9wyEGCc77PiUb9Nl
+name: ${{rqgCompendiumContent.weaponSkill.thrownAxe.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/thrown-axe.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.thrownAxe.name}}$
   specialization:
   baseChance: 10
   gainedChance: 0
@@ -374,22 +373,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.thrown-axe
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # thrown-dagger
-name: ${{openSystem.content.weaponSkill.thrownDagger.name}}$
-_id: ye3Y3Hmbots30qLD
+name: ${{rqgCompendiumContent.weaponSkill.thrownDagger.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/thrown-dagger.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.thrownAxe.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.thrownAxe.name}}$
   specialization:
   baseChance: 5
   gainedChance: 0
@@ -398,22 +397,22 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.thrown-dagger
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # thrown-rock
-name: ${{openSystem.content.weaponSkill.thrownRock.name}}$
-_id: 5AfkO7MrjYqHm9Ay
+name: ${{rqgCompendiumContent.weaponSkill.thrownRock.name}}$
 type: skill
 img: systems/rqg/assets/images/weapons/rock.svg
 system:
   category: missileWeapons
-  skillName: ${{openSystem.content.weaponSkill.thrownRock.name}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.thrownRock.name}}$
   specialization:
   baseChance: 15
   gainedChance: 0
@@ -422,10 +421,11 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..missile-weapon
-    name: ${{openSystem.content.skill.missileWeapon.skillName}}$
+    name: ${{rqgCompendiumContent.skill.missileWeapon.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.thrown-rock
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

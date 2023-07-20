@@ -1,4 +1,4 @@
-name: ${{openSystem.content.hitLocation.dragonsnailOneHeaded.shell}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonsnailOneHeaded.shell}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -11,14 +11,15 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.dragonsnails-one-headed-tail
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.shell
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonsnailOneHeaded.forebody}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonsnailOneHeaded.forebody}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -31,14 +32,15 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.dragonsnails-one-headed-forebody
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.forebody
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
-name: ${{openSystem.content.hitLocation.dragonsnailOneHeaded.head}}$
+name: ${{rqgCompendiumContent.hitLocation.dragonsnailOneHeaded.head}}$
 type: hitLocation
 img: systems/rqg/assets/images/items/hit-location.svg
 system:
@@ -51,9 +53,10 @@ system:
   connectedTo:
   hitLocationHealthState: healthy
   actorHealthImpact: healthy
+effects: []
 flags:
   rqg:
     documentRqidFlags:
-      id: i.hit-location.dragonsnails-one-headed-head
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      id: i.hit-location.head
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

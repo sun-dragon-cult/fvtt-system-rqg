@@ -27,6 +27,7 @@ import { DeepPartial } from "snowpack";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { systemId } from "../../system/config";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { Rqid } from "../../system/api/rqidApi";
 
 export class Weapon extends AbstractEmbeddedItem {
   // public static init() {
@@ -39,7 +40,7 @@ export class Weapon extends AbstractEmbeddedItem {
   static async toChat(weapon: RqgItem): Promise<void> {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const usage = Weapon.getDefaultUsage(weapon);
-    if (!usage) {
+    if (isEmpty(usage)) {
       return; // There is no way to use this weapon - it could be arrows for example
     }
     const flags: WeaponChatFlags = {
@@ -72,22 +73,22 @@ export class Weapon extends AbstractEmbeddedItem {
       otherModifiers: number;
       usageType: UsageType;
       chatMessage: RqgChatMessage;
-    }
+    },
   ): Promise<ResultEnum | undefined> {
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     requireValue(weaponItem.actor, "Called weapon abilityRoll with a not embedded weapon item");
     const speaker = ChatMessage.getSpeaker({ actor: weaponItem.actor ?? undefined });
 
     switch (options.actionName) {
-      case "combatManeuverRoll":
+      case "combatManeuverRoll": {
         const weaponUsage = weaponItem.system.usage[options.usageType];
         const combatManeuver = weaponUsage.combatManeuvers.find(
-          (m: CombatManeuver) => m.name === options.actionValue
+          (m: CombatManeuver) => m.name === options.actionValue,
         );
         requireValue(
           combatManeuver,
           `Couldn't find combatmaneuver [${options.actionName}] and usage type [${options.usageType}] on weapon [${weaponItem.name}]`,
-          weaponItem
+          weaponItem,
         );
         await Weapon.combatManeuverRoll(
           weaponItem,
@@ -95,11 +96,12 @@ export class Weapon extends AbstractEmbeddedItem {
           combatManeuver,
           options.chatMessage,
           options.otherModifiers,
-          speaker
+          speaker,
         );
         return;
+      }
 
-      case "damageRoll":
+      case "damageRoll": {
         assertChatMessageFlagType(options.chatMessage.flags.rqg?.type, "weaponChat");
         const damageRollType = options.actionValue as DamageRollTypeEnum; // TODO improve typing
         await Weapon.damageRoll(
@@ -108,27 +110,32 @@ export class Weapon extends AbstractEmbeddedItem {
           convertFormValueToString(options.chatMessage.flags.rqg?.formData.combatManeuverName),
 
           damageRollType,
-          speaker
+          speaker,
         );
         return;
+      }
 
-      case "hitLocationRoll":
+      case "hitLocationRoll": {
         await Weapon.hitLocationRoll(speaker);
         return;
+      }
 
-      case "fumbleRoll":
+      case "fumbleRoll": {
         await Weapon.fumbleRoll(weaponItem.actor);
         return;
+      }
 
-      default:
+      default: {
         const msg = localize("RQG.Dialog.weaponChat.UnknownButtonInChatError", {
           actionButton: options.actionName,
         });
         ui.notifications?.error(msg);
         throw new RqgError(msg, options.actionName);
+      }
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static preUpdateItem(actor: RqgActor, weapon: RqgItem, updates: object[], options: any): void {
     if (weapon.type === ItemTypeEnum.Weapon) {
       mergeArraysById(updates, getLocationRelatedUpdates(actor.items.contents, weapon, updates));
@@ -143,31 +150,18 @@ export class Weapon extends AbstractEmbeddedItem {
     actor: RqgActor,
     child: RqgItem,
     options: any,
-    userId: string
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    userId: string,
   ): Promise<any> {
     assertItemType(child.type, ItemTypeEnum.Weapon);
-    const oneHandSkillId = await Weapon.embedLinkedSkill(
-      child.system.usage.oneHand.skillId,
-      child.system.usage.oneHand.skillOrigin,
-      actor
-    );
-    const offHandSkillId = await Weapon.embedLinkedSkill(
-      child.system.usage.offHand.skillId,
-      child.system.usage.offHand.skillOrigin,
-      actor
-    );
-    const twoHandSkillId = await Weapon.embedLinkedSkill(
-      child.system.usage.twoHand.skillId,
-      child.system.usage.twoHand.skillOrigin,
-      actor
-    );
-    const missileSkillId = await Weapon.embedLinkedSkill(
-      child.system.usage.missile.skillId,
-      child.system.usage.missile.skillOrigin,
-      actor
-    );
-    if (!oneHandSkillId || !offHandSkillId || !twoHandSkillId || !missileSkillId) {
-      // Didn't find the weapon skill - open the item sheet to let the user select one
+    const succeeded = await Promise.all([
+      Weapon.embedLinkedSkill(child.system.usage.oneHand.skillRqidLink.rqid, actor),
+      Weapon.embedLinkedSkill(child.system.usage.offHand.skillRqidLink.rqid, actor),
+      Weapon.embedLinkedSkill(child.system.usage.twoHand.skillRqidLink.rqid, actor),
+      Weapon.embedLinkedSkill(child.system.usage.missile.skillRqidLink.rqid, actor),
+    ]);
+    if (succeeded.includes(false)) {
+      // Didn't find one of the weapon skills - open the item sheet to let the user select one
       // TODO how to handle this?
       options.renderSheet = true;
     }
@@ -178,12 +172,6 @@ export class Weapon extends AbstractEmbeddedItem {
       _id: child.id,
       system: {
         projectileId: projectileId,
-        usage: {
-          oneHand: { skillId: oneHandSkillId },
-          offHand: { skillId: offHandSkillId },
-          twoHand: { skillId: twoHandSkillId },
-          missile: { skillId: missileSkillId },
-        },
       },
     };
   }
@@ -191,59 +179,34 @@ export class Weapon extends AbstractEmbeddedItem {
   /**
    * Checks if the specified skill is already owned by the actor.
    * If not it embeds the referenced skill.
-   * Returns the id of the skill on the actor.
+   * Returns false if the linked skill could not be found.
    */
-  public static async embedLinkedSkill(
-    embeddedSkillId: string,
-    skillOrigin: string, // Linked skill item origin (uuid)
-    actor: RqgActor // The actor that should have the skill
-  ): Promise<string> {
-    // If the weapon has the aspect (ie one hand, or missile):
-    // embeddedSkillId will be null when dragging from sidebar or directly from compendium
-    // embeddedSkillId will have a value when dragged from one actor to another
-    if (skillOrigin) {
-      try {
-        // Add the specified skill if found
-        const skill = await fromUuid(skillOrigin).catch((e) => {
-          logMisconfiguration(
-            localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
-            true,
-            embeddedSkillId,
-            e
-          );
-        });
-        if (!skill) {
-          logMisconfiguration(
-            localize("RQG.Item.Notification.NoWeaponSkillFromSkillOriginWarning", {
-              skillOrigin: skillOrigin,
-            }),
-            true
-          );
-        } else {
-          const sameSkillAlreadyOnActor = actor.items.find(
-            (i: RqgItem) => i.name === skill.name && i.type === ItemTypeEnum.Skill
-          );
-          const embeddedWeaponSkill = sameSkillAlreadyOnActor
-            ? [sameSkillAlreadyOnActor]
-            : // @ts-expect-error skill
-              await actor.createEmbeddedDocuments("Item", [skill]);
-          embeddedSkillId = embeddedWeaponSkill[0].id ?? "";
-        }
-      } catch (e) {
-        logMisconfiguration(
-          localize("RQG.Item.Notification.CantFindSkillAssociatedWithWeaponWarning"),
-          true,
-          e
-        );
-      }
+  public static async embedLinkedSkill(skillRqid: string, actor: RqgActor): Promise<boolean> {
+    if (!skillRqid) {
+      return true; // No rqid (no linked skill) so count this as a success.
     }
-    return embeddedSkillId;
+    const embeddedSkill = actor.getBestEmbeddedDocumentByRqid(skillRqid);
+
+    if (!embeddedSkill) {
+      const skill = (await Rqid.fromRqid(skillRqid)) as RqgItem;
+      if (!skill) {
+        logMisconfiguration(
+          localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
+          true,
+          skillRqid,
+        );
+        return false;
+      }
+      // @ts-expect-error skill
+      await actor.createEmbeddedDocuments("Item", [skill]);
+    }
+    return true;
   }
 
   static getDefaultUsage(weapon: RqgItem): UsageType {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const defaultUsage = weapon.system.defaultUsage;
-    if (defaultUsage) {
+    if (!isEmpty(defaultUsage)) {
       return defaultUsage;
     }
     const options = WeaponChatHandler.getUsageTypeOptions(weapon);
@@ -257,7 +220,7 @@ export class Weapon extends AbstractEmbeddedItem {
     combatManeuver: CombatManeuver,
     chatMessage: RqgChatMessage,
     otherModifiers: number,
-    speaker: ChatSpeakerDataProperties
+    speaker: ChatSpeakerDataProperties,
   ): Promise<void> {
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     requireValue(chatMessage, "No chat message provided for combarManeuverRoll");
@@ -298,7 +261,7 @@ export class Weapon extends AbstractEmbeddedItem {
         localize("RQG.Dialog.weaponChat.OutOfAmmoWarn", {
           projectileName: "---",
           combatManeuverName: combatManeuver?.name,
-        })
+        }),
       );
       return;
     }
@@ -313,14 +276,14 @@ export class Weapon extends AbstractEmbeddedItem {
         ui.notifications?.warn(
           localize("RQG.Dialog.weaponChat.UsedLastOfAmmoWarn", {
             projectileName: projectileItem.name,
-          })
+          }),
         );
       } else {
         ui.notifications?.warn(
           localize("RQG.Dialog.weaponChat.OutOfAmmoWarn", {
             projectileName: projectileItem.name,
             combatManeuverName: combatManeuver?.name,
-          })
+          }),
         );
         return;
       }
@@ -335,7 +298,7 @@ export class Weapon extends AbstractEmbeddedItem {
       skillItem.name + " " + Weapon.getDamageTypeString(damageType, [combatManeuver]),
       chance,
       otherModifiers,
-      speaker
+      speaker,
     );
     await skillItem?.checkExperience(flags.chat.result);
     const data = await WeaponChatHandler.renderContent(flags);
@@ -347,11 +310,11 @@ export class Weapon extends AbstractEmbeddedItem {
     usageType: UsageType,
     combatManeuverName: string | undefined,
     damageRollType: DamageRollTypeEnum,
-    speaker: ChatSpeakerDataProperties
+    speaker: ChatSpeakerDataProperties,
   ): Promise<void> {
     requireValue(
       combatManeuverName,
-      localize("RQG.Dialog.weaponChat.NoCombatManeuverInDamageRollError")
+      localize("RQG.Dialog.weaponChat.NoCombatManeuverInDamageRollError"),
     );
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     let damageBonusFormula: string =
@@ -378,11 +341,11 @@ export class Weapon extends AbstractEmbeddedItem {
       hasOwnProperty(weaponUsage, "damage") && weaponUsage.damage ? weaponDamage : []; // Don't add 0 damage rollTerm
 
     const damageType = weaponUsage.combatManeuvers.find(
-      (m: CombatManeuver) => m.name === combatManeuverName
+      (m: CombatManeuver) => m.name === combatManeuverName,
     )?.damageType;
     requireValue(
       damageType,
-      localize("RQG.Dialog.weaponChat.WeaponDoesNotHaveCombatManeuverError")
+      localize("RQG.Dialog.weaponChat.WeaponDoesNotHaveCombatManeuverError"),
     );
 
     if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageRollType)) {
@@ -395,7 +358,7 @@ export class Weapon extends AbstractEmbeddedItem {
         // No weapon in the core rulebook has that though
         const usedParryingDamageType = Weapon.getDamageTypeString(
           damageType,
-          weaponUsage.combatManeuvers
+          weaponUsage.combatManeuvers,
         );
         if (usedParryingDamageType === "crush") {
           damageRollTerms.push(...(await Weapon.crushSpecialDamage(damageBonusFormula)));
@@ -406,7 +369,7 @@ export class Weapon extends AbstractEmbeddedItem {
             localize("RQG.Dialog.weaponChat.WeaponDoesNotHaveCombatManeuverError", {
               weaponName: weaponItem.name,
             }),
-            true
+            true,
           );
         }
       }
@@ -426,14 +389,14 @@ export class Weapon extends AbstractEmbeddedItem {
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
       flavor: `${localize("RQG.Dialog.weaponChat.Damage")}: ${Weapon.getDamageTypeString(
         damageType,
-        weaponUsage.combatManeuvers
+        weaponUsage.combatManeuvers,
       )}`,
     });
   }
 
   private static getDamageTypeString(
     damageType: DamageType,
-    combatManeuvers: CombatManeuver[]
+    combatManeuvers: CombatManeuver[],
   ): string {
     if (damageType === "parry") {
       if (combatManeuvers.some((cm) => cm.damageType === "crush")) {
@@ -466,11 +429,11 @@ export class Weapon extends AbstractEmbeddedItem {
         localize("RQG.Dialog.weaponChat.FumbleTableMissingWarn", {
           fumbleTableName: fumbleTableName,
         }),
-        true
+        true,
       );
       return;
     }
-    // @ts-ignore TODO draw StoredDocument<RollTable>
+    // @ts-expect-error TODO draw StoredDocument<RollTable>
     const draw = await fumbleTable.draw({ displayChat: false });
     // Construct chat data
     const numberOfResults =
@@ -531,6 +494,8 @@ export class Weapon extends AbstractEmbeddedItem {
 
   public static getUsedSkillItem(weaponItem: RqgItem, usage: UsageType): RqgItem | undefined {
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
-    return weaponItem.actor?.items.get(weaponItem.system.usage[usage]?.skillId);
+    return weaponItem.actor?.getBestEmbeddedDocumentByRqid(
+      weaponItem.system.usage[usage]?.skillRqidLink?.rqid,
+    );
   }
 }

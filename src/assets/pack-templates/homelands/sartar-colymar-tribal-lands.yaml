@@ -115,9 +115,10 @@ system:
     <li>Select all Runes.</li>
     <li>Select Love (Family), Loyalty (Colymar Tribe), and only the Loyalty for the clan you picked in step 3.</li>
     </ol>
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.homeland.sartar-colymar-tribal-lands
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

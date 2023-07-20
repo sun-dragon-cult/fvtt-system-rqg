@@ -1,5 +1,5 @@
 # fearless
-name: ${{openSystem.content.runeMagic.fearless.name}}$
+name: ${{rqgCompendiumContent.runeMagic.fearless.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..fearless
-    name: ${{openSystem.content.runeMagic.fearless.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.fearless.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.fearless
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

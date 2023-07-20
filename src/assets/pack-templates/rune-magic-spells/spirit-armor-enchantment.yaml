@@ -1,5 +1,5 @@
 # spirit-armor-enchantment
-name: ${{openSystem.content.runeMagic.spiritArmorEnchantment.name}}$
+name: ${{rqgCompendiumContent.runeMagic.spiritArmorEnchantment.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -12,10 +12,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..spirit-armor-enchantment
-    name: ${{openSystem.content.runeMagic.spiritArmorEnchantment.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.spiritArmorEnchantment.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.spirit-armor-enchantment
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

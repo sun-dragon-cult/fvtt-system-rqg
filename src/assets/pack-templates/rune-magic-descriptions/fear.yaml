@@ -1,7 +1,7 @@
 # fear
-name: ${{openSystem.content.runeMagic.fear.name}}$
+name: ${{rqgCompendiumContent.runeMagic.fear.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.fear.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.fear.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/darkness.svg" height="70">
-        ${{openSystem.content.runeMagic.fear.description}}$
+        ${{rqgCompendiumContent.runeMagic.fear.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..fear
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

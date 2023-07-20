@@ -1,5 +1,5 @@
 # harmony
-name: ${{openSystem.content.runeMagic.harmony.name}}$
+name: ${{rqgCompendiumContent.runeMagic.harmony.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..harmony
-    name: ${{openSystem.content.runeMagic.harmony.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.harmony.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.harmony
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

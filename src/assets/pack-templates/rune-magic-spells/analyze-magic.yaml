@@ -1,5 +1,5 @@
 # analyze-magic
-name: ${{openSystem.content.runeMagic.analyzeMagic.name}}$
+name: ${{rqgCompendiumContent.runeMagic.analyzeMagic.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..analyze-magic
-    name: ${{openSystem.content.runeMagic.analyzeMagic.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.analyzeMagic.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.analyze-magic
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

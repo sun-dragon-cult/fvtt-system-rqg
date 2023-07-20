@@ -1,14 +1,15 @@
-name: ${{openSystem.content.equipment.gear.cloakGrass}}$
+name: ${{rqgCompendiumContent.equipment.gear.cloakGrass}}$
 type: gear
 img: systems/rqg/assets/images/gear/cloak.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.grass-cloak
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
-  description: ${{openSystem.content.equipment.gear.cloakWoolWinterDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.cloakWoolWinterDescription}}$
   gmNotes:
   quantity: 1
   price:

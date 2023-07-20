@@ -14,5 +14,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: i.passion.love-family
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

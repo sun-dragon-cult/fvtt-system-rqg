@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.mostali.name}}$
+name: ${{rqgCompendiumContent.bestiary.mostali.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,25 +27,25 @@ system:
       value: 11
       formula: 3d6
   background:
-    species: ${{openSystem.content.bestiary.mostali.species}}$
-    occupation: ''
+    species: ${{rqgCompendiumContent.bestiary.mostali.species}}$
+    occupation: ""
     homeland: sartar
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
-  allies: ${{openSystem.content.bestiary.mostali.notes}}$
+    ransomDetails: ""
+    biography: ""
+  allies: ${{rqgCompendiumContent.bestiary.mostali.notes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.mostali.name}}$
+  name: ${{rqgCompendiumContent.bestiary.mostali.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -120,19 +120,19 @@ prototypeToken:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-leg	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-leg	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-abdomen	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-chest	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-arm	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-arm	[		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-head	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.right-leg	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.left-leg	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.abdomen	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.chest	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.right-arm	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.left-arm	[		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.head	[		]}}|"
 - "|{{	runes/element.yaml	i.rune.earth-element	[ chance:	80	]}}|"
 - "|{{	runes/power.yaml	i.rune.stasis-power	[ chance:	80	]}}|"
 - "|{{	skills/agility-skills.yaml	i.skill.dodge	[ gainedChance:	1	]}}|"
 - "|{{	skills/knowledge-skills.yaml	i.skill.mineral-lore	[ gainedChance:	30	]}}|"
 - "|{{	skills/magic-skills.yaml	i.skill.spirit-combat	[ gainedChance:	55	]}}|"
-- "|{{	skills/manipulation-skills.yaml	i.skill.craft	[ gainedChance:	55, specialization: ${{openSystem.content.craftSpecialization.iron}}$	]}}|"
+- "|{{	skills/manipulation-skills.yaml	i.skill.craft	[ gainedChance:	55, specialization: ${{rqgCompendiumContent.craftSpecialization.iron}}$	]}}|"
 - "|{{	skills/perception-skills.yaml	i.skill.earthsense-scan	[ gainedChance:	25	]}}|"
 - "|{{	skills/perception-skills.yaml	i.skill.earthsense-search	[ gainedChance:	25	]}}|"
 - "|{{	skills/specialized-language-skills.yaml	i.skill.read-write-mostali	[ gainedChance:	50	]}}|"
@@ -141,19 +141,19 @@ items:
 - "|{{	skills-weapons/1h-hammer.yaml	i.skill.1h-hammers-war-hammer	[ gainedChance:	70	]}}|"
 - "|{{	skills-weapons/missile.yaml	i.skill.crossbows-repeating-crossbow	[ gainedChance:	50	]}}|"
 - "|{{	skills-weapons/shields.yaml	i.skill.shields-medium	[ gainedChance:	65	]}}|"
-- "|{{	equipment-armor/armor-iron-dwarf.yaml	i.armor.armor-unenchanted-heavy-dwarf-chainmail-iron	[ equippedStatus: 	equipped	]}}|"
-- "|{{	equipment-armor/armor-iron-dwarf.yaml	i.armor.armor-unenchanted-dwarf-helmet-iron	[ equippedStatus: 	equipped	]}}|"
+- "|{{	equipment-armor/armor-iron-dwarf.yaml	i.armor.unenchanted-heavy-dwarf-chainmail-iron	[ equippedStatus: 	equipped	]}}|"
+- "|{{	equipment-armor/armor-iron-dwarf.yaml	i.armor.unenchanted-dwarf-helmet-iron	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/axes.yaml	i.weapon.battle-axe-iron	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/bows-crossbows.yaml	i.weapon.repeating-crossbow	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/hammers-maces-clubs.yaml	i.weapon.war-hammer-iron	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/shield.yaml	i.weapon.medium-wooden-shield	[ equippedStatus: 	equipped	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.devotion-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Devotion}}$ (${{openSystem.content.passionSubject.casteDuties}}$), subject: ${{openSystem.content.passionSubject.casteDuties}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.aldryami}}$), subject: ${{openSystem.content.passionSubject.aldryami}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ 	name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.uz}}$), subject: ${{openSystem.content.passionSubject.uz}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.devotion-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Devotion}}$ (${{rqgCompendiumContent.passionSubject.casteDuties}}$), subject: ${{rqgCompendiumContent.passionSubject.casteDuties}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Hate}}$ (${{rqgCompendiumContent.passionSubject.aldryami}}$), subject: ${{rqgCompendiumContent.passionSubject.aldryami}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ 	name: ${{uiContent.RQG.Item.Passion.PassionEnum.Hate}}$ (${{rqgCompendiumContent.passionSubject.uz}}$), subject: ${{rqgCompendiumContent.passionSubject.uz}}$	]}}|"
 effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: a.character.mostali
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

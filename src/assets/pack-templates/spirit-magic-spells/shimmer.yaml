@@ -1,5 +1,5 @@
 # shimmer
-name: ${{openSystem.content.spiritMagic.shimmer.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.shimmer.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..shimmer
-    name: ${{openSystem.content.spiritMagic.shimmer.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.shimmer.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

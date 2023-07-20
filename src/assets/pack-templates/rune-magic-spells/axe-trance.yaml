@@ -1,5 +1,5 @@
 # axe-trance
-name: ${{openSystem.content.runeMagic.axeTrance.name}}$
+name: ${{rqgCompendiumContent.runeMagic.axeTrance.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -12,10 +12,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..axe-trance
-    name: ${{openSystem.content.runeMagic.axeTrance.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.axeTrance.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.axe-trance
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

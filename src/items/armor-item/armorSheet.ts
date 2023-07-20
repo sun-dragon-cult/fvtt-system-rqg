@@ -37,7 +37,9 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
   }
 
   async getData(): Promise<ArmorSheetData & EffectsItemSheetData> {
-    const system = duplicate(this.document.system);
+    // @ts-expect-error _source Read from the original data unaffected by any AEs
+    const system = duplicate(this.document._source.system);
+
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,

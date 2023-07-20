@@ -1,13 +1,6 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
-import {
-  getAvailableRunes,
-  getGame,
-  hasOwnProperty,
-  localize,
-  localizeItemType,
-  RqgError,
-} from "./util";
+import { getAvailableRunes, getGame, localize, localizeItemType } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { RqgItem } from "../items/rqgItem";
 import { systemId } from "./config";
@@ -15,7 +8,7 @@ import { Rqid } from "./api/rqidApi";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
-    strs.filter((s) => typeof s !== "object").join("")
+    strs.filter((s) => typeof s !== "object").join(""),
   );
   Handlebars.registerHelper("json", (context) => JSON.stringify(context));
 
@@ -29,6 +22,7 @@ export const registerHandlebarsHelpers = function () {
     return `${new Intl.NumberFormat(navigator.language, {
       minimumFractionDigits: value % 1 ? 2 : 0, // 0 or 2 decimals
       maximumFractionDigits: 2,
+      // eslint-disable-next-line no-irregular-whitespace
     }).format(value)} ${unit}`;
   });
 
@@ -37,6 +31,7 @@ export const registerHandlebarsHelpers = function () {
     return `${new Intl.NumberFormat(navigator.language, {
       minimumFractionDigits: value % 1 ? 2 : 0, // 0 or 2 decimals
       maximumFractionDigits: 2,
+      // eslint-disable-next-line no-irregular-whitespace
     }).format(total)} ${unit}`;
   });
 
@@ -62,13 +57,13 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("skillchance", (...args) =>
-    applyFnToItemFromHandlebarsArgs(args, (item) => (item ? item.system.chance : "---"))
+    applyFnToItemFromHandlebarsArgs(args, (item) => (item ? item.system.chance : "---")),
   );
 
   Handlebars.registerHelper("experiencedclass", (...args) =>
     applyFnToItemFromHandlebarsArgs(args, (item) =>
-      item && item.system.hasExperience ? "experienced" : ""
-    )
+      item && item.system.hasExperience ? "experienced" : "",
+    ),
   );
 
   Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
@@ -91,7 +86,7 @@ export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("defaultItemIconSrc", (itemType: string): string | undefined => {
     const defaultItemIconSettings: any = getGame().settings.get(
       systemId,
-      "defaultItemIconSettings"
+      "defaultItemIconSettings",
     );
     return defaultItemIconSettings[itemType];
   });
@@ -122,6 +117,12 @@ export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("sum", (...nums) => {
     nums.pop();
     return nums.reduce((acc, n) => acc + (n ?? 0), 0);
+  });
+
+  Handlebars.registerHelper("difference", (...nums) => {
+    nums.pop();
+    const first = nums.shift();
+    return nums.reduce((acc, n) => acc - (n ?? 0), first);
   });
 
   Handlebars.registerHelper("toLowerCase", function (value) {
@@ -157,7 +158,7 @@ export const registerHandlebarsHelpers = function () {
  */
 function applyFnToItemFromHandlebarsArgs(
   handlebarsArgs: any[],
-  fn: (item: RqgItem) => string
+  fn: (item: RqgItem) => string,
 ): string {
   const uuid = handlebarsArgs?.[0];
   const embeddedItemId = typeof handlebarsArgs?.[1] === "string" ? handlebarsArgs[1] : undefined;
@@ -165,6 +166,7 @@ function applyFnToItemFromHandlebarsArgs(
   if (!uuid) {
     const msg = `Handlebars helper called with an empty uuid`;
     ui.notifications?.error(msg);
+    // eslint-disable-next-line prefer-rest-params
     console.error("RQG | ", msg, arguments);
     return "🐛";
   }
@@ -179,6 +181,7 @@ function applyFnToItemFromHandlebarsArgs(
   }
   if (!itemActorOrToken) {
     const msg = `Handlebars helper couldn't find item or actor`;
+    // eslint-disable-next-line prefer-rest-params
     console.error("RQG | ", msg, arguments);
     return "🐛";
   }
@@ -195,12 +198,14 @@ function applyFnToItemFromHandlebarsArgs(
 
   if (embeddedItemId && item?.documentName !== "Item") {
     const msg = `Handlebars helper couldn't find embedded item in ${itemOrActor?.name}`;
+    // eslint-disable-next-line prefer-rest-params
     console.error("RQG | ", msg, item, arguments);
     return "🐛";
   }
 
   if (item?.documentName !== "Item") {
     const msg = `Handlebars helper expected item but got ${item?.documentName} called ${item?.name}`;
+    // eslint-disable-next-line prefer-rest-params
     console.error("RQG | ", msg, item, arguments);
     return "🐛";
   }

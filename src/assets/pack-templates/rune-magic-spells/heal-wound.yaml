@@ -1,5 +1,5 @@
 # heal-wound
-name: ${{openSystem.content.runeMagic.healWound.name}}$
+name: ${{rqgCompendiumContent.runeMagic.healWound.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..heal-wound
-    name: ${{openSystem.content.runeMagic.healWound.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.healWound.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.heal-wound
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -34,12 +34,12 @@ export class RqgAsyncDialog<T> {
   constructor(
     private title: string,
     private htmlContent: string,
-    private cssClasses: string[] = [systemId, "dialog"]
+    private cssClasses: string[] = [systemId, "dialog"],
   ) {}
 
   public setButtons(
     buttons: Record<string, Dialog.Button<unknown>>,
-    defaultButton: string
+    defaultButton: string,
   ): RqgAsyncDialog<T> {
     this.buttons = buttons;
     this.defaultButton = defaultButton;
@@ -47,7 +47,7 @@ export class RqgAsyncDialog<T> {
   }
 
   public async show(): Promise<T> {
-    return await new Promise(async (resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       if (!this.buttons || !this.defaultButton) {
         throw new RqgError("Dialog not initialised");
       }
@@ -62,9 +62,9 @@ export class RqgAsyncDialog<T> {
           buttons: this.buttons,
           close: () => reject(),
         },
-        { classes: this.cssClasses }
+        { classes: this.cssClasses },
       );
-      await dialog.render(true);
+      dialog.render(true);
     });
   }
 }

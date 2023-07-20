@@ -8,7 +8,7 @@ const embeddedItems = [
     flags: {
       rqg: {
         documentRqidFlags: {
-          id: "i.hit-location.abdomen-human",
+          id: "i.hit-location.abdomen",
           lang: "en",
           priority: "0",
         },
@@ -56,7 +56,7 @@ const embeddedItems = [
     flags: {
       rqg: {
         documentRqidFlags: {
-          id: "i.hit-location.chest-human",
+          id: "i.hit-location.chest",
           lang: "en",
           priority: "0",
         },
@@ -104,7 +104,7 @@ const embeddedItems = [
     flags: {
       rqg: {
         documentRqidFlags: {
-          id: "i.hit-location.head-human",
+          id: "i.hit-location.head",
           lang: "en",
           priority: "0",
         },
@@ -152,7 +152,7 @@ const embeddedItems = [
     flags: {
       rqg: {
         documentRqidFlags: {
-          id: "i.hit-location.left-arm-human",
+          id: "i.hit-location.left-arm",
           lang: "en",
           priority: "0",
         },
@@ -200,7 +200,7 @@ const embeddedItems = [
     flags: {
       rqg: {
         documentRqidFlags: {
-          id: "i.hit-location.left-leg-human",
+          id: "i.hit-location.left-leg",
           lang: "en",
           priority: "0",
         },
@@ -248,7 +248,7 @@ const embeddedItems = [
     flags: {
       rqg: {
         documentRqidFlags: {
-          id: "i.hit-location.right-arm-human",
+          id: "i.hit-location.right-arm",
           lang: "en",
           priority: "0",
         },
@@ -296,7 +296,7 @@ const embeddedItems = [
     flags: {
       rqg: {
         documentRqidFlags: {
-          id: "i.hit-location.right-leg-human",
+          id: "i.hit-location.right-leg",
           lang: "en",
           priority: "0",
         },

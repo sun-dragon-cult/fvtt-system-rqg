@@ -1,7 +1,7 @@
 # the-seven-mothers
-name: ${{openSystem.content.cult.theSevenMothers.name}}$
+name: ${{rqgCompendiumContent.cult.theSevenMothers.name}}$
 pages:
-  - name: ${{openSystem.content.cult.theSevenMothers.name}}$
+  - name: ${{rqgCompendiumContent.cult.theSevenMothers.name}}$
     type: text
     title:
       show: false
@@ -9,17 +9,17 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.cultDescription.title}}$
-        <h2>${{openSystem.content.cult.theSevenMothers.name}}$</h2>
+        ${{rqgCompendiumContent.journalEntryType.cultDescription.title}}$
+        <h2>${{rqgCompendiumContent.cult.theSevenMothers.name}}$</h2>
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/fertility.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/moon_full.svg" height="70">
-        ${{openSystem.content.cult.theSevenMothers.descriptionHtml}}$
+        ${{rqgCompendiumContent.cult.theSevenMothers.descriptionHtml}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..the-seven-mothers
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

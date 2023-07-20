@@ -1,7 +1,7 @@
 # blast-earth
-name: ${{openSystem.content.runeMagic.blastEarth.name}}$
+name: ${{rqgCompendiumContent.runeMagic.blastEarth.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.blastEarth.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.blastEarth.name}}$
     type: text
     title:
       show: false
@@ -9,15 +9,15 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/earth.svg" height="70">
-        ${{openSystem.content.runeMagic.blastEarth.description}}$
+        ${{rqgCompendiumContent.runeMagic.blastEarth.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..blast-earth
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

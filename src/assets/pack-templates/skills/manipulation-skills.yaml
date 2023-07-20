@@ -1,104 +1,109 @@
 # conceal
-name: ${{openSystem.content.skill.conceal.skillName}}$
+name: ${{rqgCompendiumContent.skill.conceal.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/conceal.svg
 system:
   category: manipulation
-  skillName: ${{openSystem.content.skill.conceal.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.conceal.skillName}}$
   specialization:
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..conceal
-    name: ${{openSystem.content.skill.conceal.skillName}}$
+    name: ${{rqgCompendiumContent.skill.conceal.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.conceal
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # craft
-name: ${{openSystem.content.skill.craft.skillName}}$ (...)
+name: ${{rqgCompendiumContent.skill.craft.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/craft.svg
 system:
   category: manipulation
-  skillName: ${{openSystem.content.skill.craft.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.craft.skillName}}$
   specialization: "..."
   baseChance: 10
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..craft
-    name: ${{openSystem.content.skill.craft.skillName}}$
+    name: ${{rqgCompendiumContent.skill.craft.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.craft
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # devise
-name: ${{openSystem.content.skill.devise.skillName}}$
+name: ${{rqgCompendiumContent.skill.devise.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/devise.svg
 system:
   category: manipulation
-  skillName: ${{openSystem.content.skill.devise.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.devise.skillName}}$
   specialization:
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..devise
-    name: ${{openSystem.content.skill.devise.skillName}}$
+    name: ${{rqgCompendiumContent.skill.devise.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.devise
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # play instrument
-name: ${{openSystem.content.skill.playInstrument.skillName}}$ (...)
+name: ${{rqgCompendiumContent.skill.playInstrument.skillName}}$ (...)
 type: skill
 img: systems/rqg/assets/images/skills/play-instrument.svg
 system:
   category: manipulation
-  skillName: ${{openSystem.content.skill.playInstrument.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.playInstrument.skillName}}$
   specialization: "..."
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..play-instrument
-    name: ${{openSystem.content.skill.playInstrument.skillName}}$
+    name: ${{rqgCompendiumContent.skill.playInstrument.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.play-instrument
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
 ---
 # sleight
-name: ${{openSystem.content.skill.sleight.skillName}}$
+name: ${{rqgCompendiumContent.skill.sleight.skillName}}$
 type: skill
 img: systems/rqg/assets/images/skills/sleight.svg
 system:
   category: manipulation
-  skillName: ${{openSystem.content.skill.sleight.skillName}}$
+  skillName: ${{rqgCompendiumContent.skill.sleight.skillName}}$
   specialization:
   baseChance: 5
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..sleight
-    name: ${{openSystem.content.skill.sleight.skillName}}$
+    name: ${{rqgCompendiumContent.skill.sleight.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.sleight
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

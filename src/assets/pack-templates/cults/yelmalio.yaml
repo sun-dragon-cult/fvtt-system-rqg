@@ -1,23 +1,23 @@
 # yelmalio
-name: ${{openSystem.content.cult.yelmalio.name}}$
+name: ${{rqgCompendiumContent.cult.yelmalio.name}}$
 type: cult
 img: systems/rqg/assets/images/items/cult.svg
 system:
-  deity: ${{openSystem.content.cult.yelmalio.name}}$
+  deity: ${{rqgCompendiumContent.cult.yelmalio.name}}$
   joinedCults:
-    - cultName: ${{openSystem.content.cult.yelmalio.name}}$
-      tagline: ${{openSystem.content.cult.yelmalio.tagline}}$
+    - cultName: ${{rqgCompendiumContent.cult.yelmalio.name}}$
+      tagline: ${{rqgCompendiumContent.cult.yelmalio.tagline}}$
       rank: layMember
   runePoints:
     value: 0
     max: 0
   holyDays:
   runes:
-    - ${{openSystem.content.runeDescription.lightCondition.name}}$
-    - ${{openSystem.content.runeDescription.truthPower.name}}$
+    - ${{rqgCompendiumContent.runeDescription.lightCondition.name}}$
+    - ${{rqgCompendiumContent.runeDescription.truthPower.name}}$
   descriptionRqidLink:
     rqid: je..yelmalio
-    name: ${{openSystem.content.cult.yelmalio.name}}$
+    name: ${{rqgCompendiumContent.cult.yelmalio.name}}$
   commonRuneMagicRqidLinks:
     - name: Command Cult Spirit (Elemental)
       rqid: i.rune-magic.command-cult-spirit-elemental
@@ -43,9 +43,10 @@ system:
       rqid: i.rune-magic.summon-cult-spirit
     - name: Warding
       rqid: i.rune-magic.warding
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.cult.yelmalio
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

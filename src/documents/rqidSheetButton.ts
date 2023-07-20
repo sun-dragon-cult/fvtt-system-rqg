@@ -3,7 +3,7 @@ import { RqidEditor } from "../applications/rqidEditor/rqidEditor";
 
 export function addRqidSheetHeaderButton(
   headerButtons: any[],
-  sheet: DocumentSheet<any, any>
+  sheet: DocumentSheet<any, any>,
 ): void {
   if (getGameUser().isGM) {
     const numberOfButtons = headerButtons.length;

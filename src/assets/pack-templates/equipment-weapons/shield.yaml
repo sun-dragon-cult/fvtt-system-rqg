@@ -1,47 +1,52 @@
-name: ${{openSystem.content.weapon.smallWoodenShield}}$
+name: ${{rqgCompendiumContent.weapon.smallWoodenShield}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/small-shield.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.small-wooden-shield
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId: 2U6A8opZA2du08Be
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.2U6A8opZA2du08Be
+      skillRqidLink:
+        rqid: i.skill.shields-small
+        name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.small}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
       damage: 1d3
       minStrength: 5
       minDexterity:
       strikeRank: 3
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d3
       minStrength: 5
       minDexterity:
       strikeRank: 3
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
@@ -71,50 +76,55 @@ system:
   isRangedWeapon: false
   projectileId:
 ---
-name: ${{openSystem.content.weapon.mediumWoodenShield}}$
+name: ${{rqgCompendiumContent.weapon.mediumWoodenShield}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/medium-shield.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.medium-wooden-shield
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId: u95ZVt0636VqW5Pe
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.u95ZVt0636VqW5Pe
+      skillRqidLink:
+        rqid: i.skill.shields-medium
+        name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.medium}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
       damage: 1d4
       minStrength: 9
       minDexterity:
       strikeRank: 3
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d4
       minStrength: 9
       minDexterity:
       strikeRank: 3
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
@@ -144,50 +154,55 @@ system:
   isRangedWeapon: false
   projectileId:
 ---
-name: ${{openSystem.content.weapon.largeWoodenShield}}$
+name: ${{rqgCompendiumContent.weapon.largeWoodenShield}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/large-shield.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.large-wooden-shield
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId: GknxFLc7hBNJ5s0l
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.GknxFLc7hBNJ5s0l
+      skillRqidLink:
+        rqid: i.skill.shields-large
+        name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.large}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Bash}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Bash}}$
           damageType: crush
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Knockback}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Knockback}}$
           damageType: special
       damage: 1d6
       minStrength: 12
       minDexterity:
       strikeRank: 3
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d6
       minStrength: 12
       minDexterity:
       strikeRank: 3
     twoHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage:
       minStrength: 0

@@ -1,0 +1,1202 @@
+{
+  "ITEM": {
+    "TypeArmor": "Armor",
+    "TypeCult": "Cult",
+    "TypeGear": "Gear",
+    "TypeHitlocation": "Hit Location",
+    "TypeHomeland": "Homeland",
+    "TypeOccupation": "Occupation",
+    "TypePassion": "Passion",
+    "TypeRune": "Rune",
+    "TypeRunemagic": "Rune Magic Spell",
+    "TypeShamanicability": "Shamanic Ability",
+    "TypeSkill": "Skill",
+    "TypeSorcerymagic": "Sorcery Magic Spell",
+    "TypeSpiritmagic": "Spirit Magic Spell",
+    "TypeWeapon": "Weapon",
+    "TypeReputation": "Reputation"
+  },
+  "RQG": {
+    "ActorCreation": {
+      "AdventurerCreationWizardTitle": "Adventurer Creation Wizard",
+      "AdventurerCreationHeaderButton": "Adventurer Creation",
+      "AdvancedOptions": "Advanced Options",
+      "SkillsTab": "Skills",
+      "RunesTab": "Runes",
+      "PassionsTab": "Passions",
+      "CultureTab": "Culture",
+      "TribeTab": "Tribe",
+      "ClanTab": "Clan",
+      "CultTab": "Cult",
+      "PassionTab": "Passions",
+      "Nav": {
+        "0-Species": "Step 0:\n Species",
+        "1-Homeland": "Step 1:\n Homeland",
+        "2-FamilyHistory": "Step 2:\n Family History",
+        "3-RuneAffinities": "Step 3:\n Rune Affinities",
+        "4-Characteristics": "Step 4:\n Characteristics",
+        "5-Occupation": "Step 5:\n Occupation",
+        "6-Cult": "Step 6:\n Cult",
+        "7-PersonalSkillBonuses": "Step 7:\n Personal Skill Bonuses",
+        "8-OtherInformation": "Step 8:\n Other Information",
+        "9-complete-creation": "Step 9:\n Complete Creation"
+      },
+      "Step0": {
+        "ChooseSpecies": "Choose a Species",
+        "SpeciesDescription": "Species Description",
+        "BackgroundAndNotes": "Background and Notes",
+        "SelectSpeciesSkills": "Select Species Skills",
+        "SelectSpeciesRunes": "Select Species Runes",
+        "SelectSpeciesPassions": "Select Species Passions"
+      },
+      "Step1": {
+        "ChooseHomeland": "Choose a Homeland",
+        "HomelandDescription": "Homeland Description",
+        "RegionDescription": "Region Description",
+        "HomelandWizardInstructions": "Homeland Instructions",
+        "SelectHomelandCulture": "Select Homeland Culture",
+        "SelectHomelandTribe": "Select Homeland Tribe",
+        "SelectHomelandClan": "Select Homeland Clan",
+        "SelectHomelandSkills": "Select Homeland Skills",
+        "SelectHomelandCult": "Select Homeand Cult",
+        "SelectHomelandPassions": "Select Homeland Passions",
+        "SelectHomelandRunes": "Select Homeland Runes",
+        "ImportCultureTitle": "Import Culture: \"{name}\"",
+        "ImportTribeTitle": "Import Tribe: \"{name}\"",
+        "ImportClanTitle": "Import Clan: \"{name}\"",
+        "ImportCultTitle": "Import Cult: \"{name}\"",
+        "ImportRuneTitle": "Import Rune: \"{name}\""
+      },
+      "Step9": {
+        "Prompt": "<p>Click the button below to set Adventurer creation to complete.  You will no longer see the \"Adventurer Creation\" button in the Actor Sheet header.</p><p>Enjoy your adventures and may the Gods and spirits be with you!</p>",
+        "SetAdventurerCreationCompleteButton": "Adventurer Creation Complete"
+      }
+    },
+    "Actor": {
+      "Attributes": {
+        "AlliesAndNotes": "Allies & Notes",
+        "StrikeRank": "Strike Rank",
+        "SizeAbbr": "SIZ",
+        "DexterityAbbr": "DEX",
+        "MagicPoints": "Magic Points",
+        "CreatureQ": "Creature?",
+        "MovementAbbr": "MOV",
+        "EncumbranceAbbr": "ENC",
+        "EncumbranceFactor": "ENC Factor",
+        "HeroPoints": "Hero Points",
+        "Health": {
+          "healthy": "Healthy",
+          "wounded": "Wounded",
+          "shock": "Shock",
+          "unconscious": "Unconscious",
+          "dead": "dead"
+        },
+        "MoveMode": {
+          "walk": "Walk",
+          "swim": "Swim",
+          "fly": "Fly"
+        }
+      },
+      "AwardExperience": {
+        "GainedExperienceInfo": "{actorName} just gained an experience check in {itemName}!",
+        "ItemDoesntHaveExperienceError": "Attempt to AwardExperience to the item named \"{itemName}\" with id \"{itemId}\" that does not have the \"hasExperience\" property."
+      },
+      "Background": {
+        "Background": "Background",
+        "Origin": "Origin",
+        "BaseData": "Base Data",
+        "BirthYear": "Birth Year",
+        "Age": "Age",
+        "Gender": "Gender",
+        "Species": "Species",
+        "TownHomeArea": "Town / Home Area",
+        "Tribe": "Tribe",
+        "Clan": "Clan",
+        "Circumstance": "Circumstance",
+        "Reputation": "Reputation",
+        "StandardOfLiving": "Standard Of Living",
+        "BaseIncome": "Base Income",
+        "Ransom": "Ransom",
+        "RansomDetails": "Ransom Details",
+        "Cultures": "Culture(s)",
+        "Tribes": "Tribe(s)",
+        "Clans": "Clan(s)",
+        "Region": "Region",
+        "Homeland": {
+          "Heading": "Homeland",
+          "aggar": "Aggar",
+          "balazar": "Balazar",
+          "beastValley": "Beast Valley",
+          "bilini": "Bilini",
+          "blackHorseCounty": "Black Horse County",
+          "dagoriInkarth": "Dagori Inkarth",
+          "dragonPass": "Dragon Pass",
+          "dryadWoods": "Dryad Woods",
+          "esrolia": "Esrolia",
+          "grazelands": "Grazelands",
+          "hendrikiland": "Hendrikiland",
+          "heortland": "Heortland",
+          "holay": "Holay",
+          "imither": "Imither",
+          "lunarTarsh": "Lunar Tarsh",
+          "oldTarsh": "Old Tarsh",
+          "prax": "Prax",
+          "sartar": "Sartar",
+          "shadowPlateau": "Shadow Plateau",
+          "stinkingForest": "Stinking Forest",
+          "trollWoods": "Troll Woods",
+          "vansh": "Vansh",
+          "habitatChaosArea": "Habitat: Chaos Area",
+          "habitatForest": "Habitat: Forest",
+          "habitatGlacier": "Habitat: Glacier",
+          "habitatMarshSwamp": "Habitat: Marsh / Swamp",
+          "habitatMountainsHills": "Habitat: Mountains / Hills",
+          "habitatPlains": "Habitat: Plains",
+          "habitatSky": "Habitat: Sky",
+          "habitatSpiritPlane": "Habitat: Spirit Plane",
+          "habitatUnderground": "Habitat: Underground",
+          "habitatWaterSea": "Habitat: Water / Sea"
+        },
+        "Occupation": {
+          "Heading": "Current Occupation",
+          "": " ",
+          "assistantShaman": "Assistant Shaman",
+          "chariotDriver": "Chariot Driver",
+          "crafter": "Crafter",
+          "bandit": "Bandit",
+          "entertainer": "Entertainer",
+          "farmer": "Farmer",
+          "fisher": "Fisher",
+          "healer": "Healer",
+          "herder": "Herder",
+          "hunter": "Hunter",
+          "merchant": "Merchant",
+          "noble": "Noble",
+          "philosopher": "Philosopher",
+          "priest": "Priest",
+          "scribe": "Scribe",
+          "thief": "Thief",
+          "warriorHeavyInfantry": "Warrior Heavy Infantry",
+          "warriorLightInfantry": "Warrior Light Infantry",
+          "warriorHeavyCavalry": "Warrior Heavy Cavalry",
+          "warriorLightCavalry": "Warrior Light Cavalry"
+        }
+      },
+      "Characteristics": {
+        "Characteristic": "Characteristic",
+        "format": "{name} ({abbr})",
+        "strength": "STR",
+        "constitution": "CON",
+        "size": "SIZ",
+        "dexterity": "DEX",
+        "intelligence": "INT",
+        "power": "POW",
+        "charisma": "CHA",
+        "strength-full": "Strength",
+        "constitution-full": "Constitution",
+        "size-full": "Size",
+        "dexterity-full": "Dexterity",
+        "intelligence-full": "Intelligence",
+        "power-full": "Power",
+        "charisma-full": "Charisma"
+      },
+      "Combat": {
+        "DamageBonus": "Damage Bonus",
+        "StrDexMinsNotMetTip": "Character does not meet STR and/or DEX minimums for this weapon.  Use at half skill chance.",
+        "StrMinNotMetTip": "Character does not meet STR minimum for this weapon. Use at half skill chance.",
+        "DexMinNotMetTip": "Character does not meet DEX minimum for this weapon. STR over STR minimum can make up for this at two points of STR for one point of DEX, or use at half skill chance.",
+        "Weapon": "Weapon",
+        "HP": "HP",
+        "Chance": "Chance",
+        "Damage": "Damage",
+        "SR": "SR",
+        "Dodge": "Dodge",
+        "SpiritCombat": "Spirit Combat",
+        "SpiritCombatDamage": "Spirit Combat Damage",
+        "SetSRInCombatTracker": "Set SR in combat tracker",
+        "ProjectileWeaponAmmoNotSelectedAlert": "no ammo",
+        "ProjectileWeaponAmmoNotSelectedTip": "Edit this weapon to select ammunition!"
+      },
+      "Gear": {
+        "ViewByItemType": "View by Item Type",
+        "ViewByLocation": "View by Location",
+        "Gear": "Gear",
+        "Armor": "Armor",
+        "Consumables": "Consumables",
+        "Currency": "Currency",
+        "WeaponsAndShields": "Weapons & Shields",
+        "CurrencyConversionTipOver1": "One {name} is worth {value} Lunars.",
+        "CurrencyConversionTipLunar": "Lunars are the standard basis of currency.",
+        "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s.",
+        "Name": "Name",
+        "EncumbranceAbbr": "ENC",
+        "Location": "Location",
+        "Price": "Price",
+        "Total": "Total",
+        "QuantityAbbr": "Qty",
+        "ExtendedAbbr": "Ext",
+        "Skill": "Skill",
+        "Damage": "Damage",
+        "MinimumStrength": "STR",
+        "MinimumDexterity": "DEX",
+        "HitPointsAbbr": "HP",
+        "Absorbs": "Absorbs",
+        "HitLocations": "Hit Locations",
+        "MoveQuietlyPenalty": "- Move Quietly",
+        "LocationLoop": "The item locations have a loop involving {loopItems}."
+      },
+      "Health": {
+        "Health": "Health",
+        "TotalHitPoints": "Total Hit Points",
+        "HealingRatePerWeek": "Healing rate {healingRate}/week",
+        "HitLocation": "Hit Location",
+        "HitPointsAbbr": "HP",
+        "ArmorPointsAbbr": "AP",
+        "Wounds": "Wounds",
+        "HealWound": "Heal Wound",
+        "AddWound": "Add Wound",
+        "NoHitLocations": "This character does not have any hit locations, please add some.",
+        "FlipSortOrder": "Reverse the order of the hit locations"
+      },
+      "Nav": {
+        "Combat": "Combat",
+        "Runes": "Runes",
+        "SpiritMagic": "Spirit Magic",
+        "RuneMagic": "Rune Magic",
+        "Sorcery": "Sorcery",
+        "Skills": "Skills",
+        "Gear": "Gear",
+        "Passions": "Passions",
+        "Background": "Background",
+        "ActiveEffects": "AE 🧪"
+      },
+      "Notification": {
+        "NotActorOwnerWarn": "You are not the owner of {actorName}, and cannot drop this item onto this actor sheet",
+        "DraggedItemNotFoundError": "Dragged item not found from source!",
+        "CantMakeItemDataSourceError": "Unable to make ItemDataSource from dragged item from item with id [{itemId}]",
+        "NoIncomingItemDataSourceError": "No incoming Item Data Source!",
+        "IncomingItemDataSourceNotPhysicalItemError": "Incoming Item Data Source does not represent a physical item with a quantity!",
+        "CantTransferLessThanOneItemError": "Can't transfer less than one item!",
+        "CantTransferMoreThanSourceOwnsError": "Cannot transfer more {itemName} than ${sourceActorName} has in inventory."
+      },
+      "Passion": {
+        "Passions": "Passions",
+        "AddNewPassionTip": "Add New Passion",
+        "BackStory": "Back Story",
+        "ImportPassionCheckboxTitle": "Import Passion: \"{passionName}\""
+      },
+      "Rune": {
+        "Condition": "Condition",
+        "Elemental": "Elemental",
+        "Form": "Form",
+        "Power": "Power"
+      },
+      "RuneMagic": {
+        "EmbeddingRuneMagicWithoutCultWarning": "{characterName} has to join a cult before learning the {spellName} rune magic spell",
+        "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
+        "DeleteRuneMagicSpellTitle": "Delete Rune Magic Spell",
+        "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
+        "CommonRuneMagicTooltip": "Cult Common Rune Magic",
+        "CultRankLabel": "Cult Rank",
+        "RunePoints": "Rune Points",
+        "HolyDays": "Holy Days",
+        "Gifts": "Gifts",
+        "Geases": "Geases",
+        "SubCults": "Sub Cults",
+        "RuneSpell": "Rune Spell",
+        "Points": "Points",
+        "Range": "Range",
+        "Duration": "Duration",
+        "Ritual": "Ritual",
+        "Enchantment": "Enchantment",
+        "Stackable": "Stackable",
+        "OneUse": "One Use",
+        "Chance": "Chance",
+        "CultRank": {
+          "layMember": "Lay Member",
+          "initiate": "Initiate",
+          "godTalker": "God Talker",
+          "runePriest": "Rune Priest",
+          "runeLord": "Rune Lord",
+          "chiefPriest": "Chief Priest",
+          "highPriest": "High Priest"
+        }
+      },
+      "Skill": {
+        "UnspecifiedSkillWarning": "⚠ Please specify the missing skill specialization:",
+        "SkillDescriptionTitle": "Skill Description",
+        "ImportSkillCheckboxTitle": "Import Skill: \"{skillName}\"",
+        "SkillCategory": {
+          "agility": "Agility",
+          "communication": "Communication",
+          "knowledge": "Knowledge",
+          "magic": "Magic",
+          "manipulation": "Manipulation",
+          "perception": "Perception",
+          "stealth": "Stealth",
+          "otherSkills": "Other Skills",
+          "meleeWeapons": "Melee Weapons",
+          "missileWeapons": "Missile Weapons",
+          "shields": "Shields",
+          "naturalWeapons": "Natural Weapons"
+        }
+      },
+      "Sorcery": {
+        "FreeINT": "Free INT",
+        "Techniques": "Techniques",
+        "MasteredRunes": "Mastered Runes"
+      },
+      "SpiritMagic": {
+        "SpiritMagic": "Spirit Magic",
+        "CHALimitFormula": "Remaining learning capacity is {freePoints} points of Spirit Magic ({learnedPoints} points already learned).",
+        "Name": "Name",
+        "SpellFocus": "Focus",
+        "Points": "Points",
+        "Variable": "Variable",
+        "Range": "Range",
+        "Duration": "Duration",
+        "Concentration": "Concentration",
+        "Ritual": "Ritual",
+        "Enchantment": "Enchantment"
+      }
+    },
+    "ContextMenu": {
+      "ImproveItem": "Improve {itemType}",
+      "EditItem": "Edit {itemType}",
+      "DeleteItem": "Delete {itemType}",
+      "ToggleExperience": "Toggle Experience",
+      "InitializeCharacteristic": "Initialize Characteristic",
+      "CharacteristicInitialized": "Initialized {characteristicName} for {actorName}",
+      "InitializeAllCharacteristics": "Initialize All Characteristics",
+      "AllCharacteristicsInitialized": "All Characteristics Initialized for {actorName}",
+      "SetAllCharacteristicsToAverage": "Set All Characteristics to Average",
+      "AllCharacteristicsSetToAverage": "All Characteristics set to Average for {actorName}",
+      "InitializeResultChat": "Initialize {char}",
+      "OverwriteCharacteristicDialogTitle": "Overwrite {characteristicName} on {actorName}?",
+      "OverwriteCharacteristicDialog": "Do you want to overwrite the current value of {characteristicName}? This will cause a recalculation of any derived attributes like Hit Points, Magic Points, Strike Ranks, and skill Categories that depend upon {characteristicName}.",
+      "OverwriteAllCharacteristicsDialogTitle": "Overwrite all characteristics on {actorName}?",
+      "OverwriteAllCharacteristicsDialog": "Do you want to overwrite the current value of all characteristics? This will cause a recalculation of any derived attributes like Hit Points, Magic Points, Strike Ranks, and skill Categories",
+      "ViewDescription": "View Description",
+      "SetAsNotCarried": "Set as not carried",
+      "SetAsCarried": "Set as carried",
+      "SetAsEquipped": "Set as equipped",
+      "SplitIntoNewLocation": "Split into new location",
+      "EditPassionBackstory": "Edit Passion Backstory",
+      "Notification": {
+        "DatasetNotFound": "Couldn't find dataset for characteristic",
+        "CharacteristicNotFound": "Couldn't find characteristic name \"{characteristicName}\" on actor {actorName} to do an action from the characteristics context menu.",
+        "CantToggleExperienceError": "Couldn't find itemId [{itemId}] on actor {actorName} to toggle experience from the combat context menu.",
+        "CantShowItemSheetError": "Couldn't find itemId [{skillItemId}] on actor {actorName} to show skill Item sheet from the combat context menu.",
+        "CantShowWeaponSheetError": "Couldn't find itemId [{weaponItemId}] on actor {actorName} to show weapon item sheet from the combat context menu.",
+        "CantDeleteSkillError": "Couldn't find itemId [{skillItemId}] on actor {actorName} to delete skill item from the combat context menu.",
+        "CantDeleteWeaponError": "Couldn't find itemId [{weaponItemId}] on actor {actorName} to delete weapon item from the combat context menu.",
+        "CantEditCultError": "`Couldn't find itemId [{itemId}] on actor {actorName} to edit cult item from the cult context menu.",
+        "CantEditGearError": "Couldn't find gear with itemId [{itemId}] on actor {actorName} to edit item from the gear context menu.",
+        "CantEditHitLocationError": "Couldn't find itemId [{itemId}] on actor {actorName} to edit hitLocation item from the health context menu.",
+        "CantDirectRollPassionError": "Couldn't find itemId [{itemId}] or item Chance (item.system.chance) on actor {actorName} to do a direct roll for passion item from the passion context menu.`",
+        "CantToggleExperiencePassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to toggle experience on passion item from the passion context menu.",
+        "CantImprovePassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to improve passion item from the passion context menu.",
+        "CantEditPassionError": "Couldn't find itemId [{itemId}] on actor {actorName} to edit a passion item from the passion context menu.",
+        "CantEditRuneError": "Couldn't find itemsheet [{itemId}] on actor {actorName} to edit the rune item from the rune context menu.",
+        "CantRollQuickSkillError": "Item [{itemId}] on actor {actorName} didn't have chance to do a direct roll on a skill item from the skill context menu.",
+        "CantEditSpiritMagicError": "Couldn't find itemSheet for [{itemId}] on actor {actorName} to edit the spirit magic item from the spirit magic context menu."
+      }
+    },
+    "Dialog": {
+      "BatchRqidEditor": {
+        "Title": "Batch set System ID (Rqid)",
+        "ExistingRqidsHeader": "Existing Rqids",
+        "NewRqid": "- Custom System ID -",
+        "SummaryDefault": "The RQG System uses a System ID (Rqid). This allows the system to identify FoundryVTT documents like skills and runes. This page allows you to set the id for existing {type} documents that do not yet have a Rqid. The Rqid should use the English translation of the name to support localization across all languages.",
+        "SummarySkill": "The RQG System uses a System ID (Rqid). This allows the system to identify FoundryVTT documents for example skills. This page will allow you to set the id for existing skill documents that do not yet have a Rqid. The Rqid should use the English translation of the name to support localization across all languages.<br><br><b>Currently only the weapon skills and 'Dodge', 'Jump', 'Move Quietly' & 'Spirit Combat' need a Rqid so the others can be left blank.</b>",
+        "SummaryRuneMagic": "The RQG System uses a System ID (Rqid). This allows the system to identify FoundryVTT documents for example skills. This page will allow you to set the id for existing rune magic documents that do not yet have a Rqid. The Rqid should use the English translation of the name to support localization across all languages.<br><br><b>Currently only the common rune magic spells need a Rqid (Command Cult Spirit, Divination, Sanctify, Summon Cult Spirit, Dismiss Magic, Extension, Multispell, Find Enemy, Heal Wound, Soul Sight, Spirit Block, and Warding)</b>",
+        "ButtonUpdate": "Update"
+      },
+      "Common": {
+        "yes": "yes",
+        "no": "no",
+        "btnYes": "Yes",
+        "btnNo": "No",
+        "btnCancel": "Cancel",
+        "btnConfirm": "Confirm",
+        "OtherModifiers": "Other Modifiers",
+        "RollFormat": "Roll ({chance}%)",
+        "CantFindChatMessageError": "CantFindChatMessageError"
+      },
+      "characteristicChat": {
+        "ChatFlavor": "Characteristic: {name} ({value})",
+        "RollFlavor": "{difficulty} {name} Check",
+        "RollFlavorModifier": "<br/>With {modifier} other modifiers"
+      },
+      "confirmCopyIntangibleItem": {
+        "title": "Really give {itemName} to {targetActor}?",
+        "header": "Really give {itemName} to {targetActor}?",
+        "btnCopy": "Copy",
+        "ReallyCopyIntangibleItem": "Really copy {itemName} from {sourceActor} to {targetActor}?"
+      },
+      "confirmTransferPhysicalItem": {
+        "title": "Really give {itemName} to {targetActor}?",
+        "header": "Really give {itemName} to {targetActor}?",
+        "btnGive": "Give",
+        "ReallyGiveItemSingle": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory.",
+        "ReallyGiveItemQuantity": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory, or {sourceActor}'s inventory quantity will be reduced.",
+        "GiveHowMany": "Give how many {itemName} to {targetActor}?  {sourceActor}'s inventory of this item will be reduced by the amount chosen, or the item will be deleted if you choose to give the maximum amount of {maxQty}."
+      },
+      "itemChat": {
+        "RollFlavor": "{name} Check",
+        "RollFlavorModifier": "<br/>With {modifier} other modifiers"
+      },
+      "reputationChat": {
+        "CheckReputationFlavor": "Check Reputation",
+        "Reputation": "Reputation"
+      },
+      "spiritMagicChat": {
+        "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
+        "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
+        "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points.",
+        "ChatFlavor": "Spirit Magic: {name}",
+        "Cast": "Cast {spellName}",
+        "Level": "Level",
+        "Boost": "Boost"
+      },
+      "confirmItemDeleteDialog": {
+        "title": "Delete {itemType}: {itemName}",
+        "content": "Are you sure you want to delete the {itemType} named {itemName}?",
+        "contentCult": "Are you sure you want to delete the {itemType} named {itemName}? This will also delete all of the {runeMagicSpell} items associated with this {itemType}."
+      },
+      "improveAbilityDialog": {
+        "title": "Improvement for {typeLocName} \"{name}\"",
+        "titleChar": "Improvement for Characteristic \"{name}\"",
+        "header": "Improving {name}",
+        "fromExperience": ". . . from experience",
+        "chanceToGain": "{chanceToGain}% chance to gain",
+        "experienceGainFixed": "Gain 3%",
+        "experienceGainRandom": "Gain 1d6%",
+        "noExperienceCheckTitle": "No Experience Check",
+        "noExperienceCheckExplanation": "This character does not have an experience check in this {typeLocName} and may not improve from Experience.",
+        "throughTraining": ". . . through training",
+        "afterTraining": "After training",
+        "gain": "Gain {gain}%",
+        "gainChar": "Gain {gain}",
+        "throughResearch": ". . . through research",
+        "skillOver75Title": "Skill Over 75%",
+        "skillOver75Explanation": "You may not train in skills with a value over 75%.",
+        "speciesMaxTitle": "At species maximum for {name}",
+        "speciesMaxExplanation": "You are at or above the species maximum for {name} and may not gain any more.",
+        "btnDoImprovement": "Do Improvement",
+        "btnCancel": "Cancel",
+        "experienceRoll": {
+          "flavor": "{actorName} makes an experience improvement check for {typeLocName} \"{name}\"",
+          "contentSkill": "Roll 1d100 and add the skill category modifier ({mod}) and gain if the modified roll is HIGHER than the {typeLocName} \"{name}\" value {skillChance}% or 100.",
+          "contentOther": "Roll 1d100 and gain if the roll is HIGHER than the {typeLocName} \"{name}\" value of {chance}%",
+          "contentChar": "Roll 1d100 and gain if the roll is LOWER THAN OR EQUAL TO {chanceToGain}%.  This is based on the Species Maximum for the Characteristic of {speciesMax} minus the Characteristic \"{name}\" value of {chance} times five."
+        },
+        "experienceResultChat": {
+          "flavor": "Experience improvement for {typeLocName} \"{name}\" succeeded",
+          "contentChoseFixed": "Chose fixed gain of {gain}.",
+          "contentChoseRandom": "Chose gain of {gain}."
+        },
+        "experienceGainFailed": {
+          "flavor": "Experience improvement for {typeLocName} \"{name}\" failed",
+          "content": "{actorName} failed to learn from experience and the experience check has been cleared from {typeLocName} \"{name}\"."
+        },
+        "trainingResultChat": {
+          "flavor": "Training improvement for {typeLocName} \"{name}\"",
+          "contentChoseFixed": "Chose fixed gain of {gain}.",
+          "contentChoseRandom": "Chose gain of {gain}."
+        },
+        "researchRoll": {
+          "flavor": "{actorName} makes a research improvement check for {typeLocName} \"{name}\"",
+          "contentChar": "Roll 1d100 and gain if the roll is LOWER THAN OR EQUAL TO {chanceToGain}%.  This is based on the Species Maximum for the Characteristic of {speciesMax} minus the Characteristic \"{name}\" value of {chance} times five."
+        },
+        "researchResultChat": {
+          "flavor": "Research improvement for {typeLocName} \"{name}\"",
+          "contentChoseRandom": "Chose gain of {gain}."
+        },
+        "researchGainFailed": {
+          "flavor": "Research improvement for {typeLocName} \"{name}\" failed",
+          "content": "{actorName} failed to learn from researching {typeLocName} \"{name}\"."
+        },
+        "notifications": {
+          "noExperience": "{actorName} does not have an experience check in {typeLocName} \"{name}\" and cannot gain from experience now."
+        }
+      },
+      "runeMagicChat": {
+        "MissingJournalLinkTitle": "Edit the spell and add a description to have a journal link here!",
+        "CastUsingRune": "Cast using Rune",
+        "RuneHasExperienceTitle": "Has Experience Check",
+        "RunePointCost": "Rune Point Cost",
+        "OneUseWarning": "One Use!",
+        "OneUseWarningTip": "Casting this spell will reduce both your current and maximum Rune Points for the cult!",
+        "MagicPointBoost": "Magic Point Boost",
+        "MeditationOrRitual": "Meditation or Ritual",
+        "MeditationOrRitualValue0": "None",
+        "MeditationOrRitualValue5": "Meditate: 1 melee round, +5% bonus",
+        "MeditationOrRitualValue10": "Meditate: 2 melee rounds, +10% bonus",
+        "MeditationOrRitualValue15": "Meditate: 5 melee rounds (1 minute), +15% bonus",
+        "MeditationOrRitualValue20": "Meditate: 25 melee rounds (5 minutes), +20% bonus",
+        "MeditationOrRitualValue25": "Meditate: 50 melee rounds (10 minutes), +25% bonus",
+        "MeditationOrRitualValue30": "Ritual: Half an hour, +30% bonus",
+        "MeditationOrRitualValue35": "Ritual: 1 hour, +35% bonus",
+        "MeditationOrRitualValue40": "Ritual: 5 hours, +40% bonus",
+        "MeditationOrRitualValue45": "Ritual: 10 hours, +45% bonus",
+        "MeditationOrRitualValue50": "Ritual: 1 day, +50% bonus",
+        "MeditationOrRitualValue55": "Ritual: 2 days, +55% bonus",
+        "MeditationOrRitualValue60": "Ritual: 1 week, +60% bonus",
+        "MeditationOrRitualValue65": "Ritual: 2 weeks, +65% bonus",
+        "MeditationOrRitualValue70": "Ritual: 4 weeks, +70% bonus",
+        "MeditationOrRitualValue75": "Ritual: 1 season, +75% bonus",
+        "MeditationOrRitualValue80": "Ritual: 1 year, +80% bonus",
+        "MeditationOrRitualValue85": "Ritual: 2 years, +85% bonus",
+        "MeditationOrRitualValue90": "Ritual: 5 years, +90% bonus",
+        "MeditationOrRitualValue95": "Ritual: 10 years, +95% bonus",
+        "MeditationOrRitualValue100": "Ritual: 20 years, +100% bonus",
+        "SkillAugmentation": "Skill Augmentation",
+        "SkillAugmentationValue0": "None",
+        "SkillAugmentationValue50": "Critical Success, +50%",
+        "SkillAugmentationValue30": "Special Success, +30%",
+        "SkillAugmentationValue20": "Success, +20%",
+        "SkillAugmentationValue-20": "Failure, -20%",
+        "SkillAugmentationValue-50": "Fumble, -50%",
+        "noSelectedRuneWarning": "Attempt to roll a Rune Magic Spell with no Rune selected on the chat message.",
+        "resultMessageCritical": "The spell takes effect and costs no Rune Points and {magicPointBoost} Magic Points from boosting.",
+        "resultMessageSpecial": "The spell takes effect and costs {runePointCost} Rune Points and {magicPointBoost} Magic Points from boosting.",
+        "resultMessageSuccess": "The spell takes effect and costs {runePointCost} Rune Points and {magicPointBoost} Magic Points from boosting.",
+        "resultMessageFailure": "The spell fails to take effect but no Rune Points are lost.  If boosted with Magic Points, one is lost.",
+        "resultMessageFumble": "The spell fails to take effect and {runePointCost} Rune Points are lost.  If boosted with Magic Points, one is lost.",
+        "SpentOneUseRunePoints": "{actorName} spent {runePoints} One Use Rune Points from the {cultName} cult!",
+        "validationNotEnoughRunePoints": "Not enough rune points left!",
+        "validationNotEnoughMagicPoints": "Not enough magic points left to boost that much!",
+        "runeMagicResultFlavor": "Rune Magic: {name}",
+        "Cast": "Cast {spellName}"
+      },
+      "requestSkillSpecialization": {
+        "title": "Decide skill specialization",
+        "inputRequired": "Skill specialization is required",
+        "btnSetSpecialization": "Set Specialization"
+      },
+      "weaponChat": {
+        "Damage": "Damage",
+        "damageRollType": {
+          "normal": "Normal",
+          "special": "Special",
+          "maxSpecial": "Max Special"
+        },
+        "fumbleRoll": "Roll Fumble",
+        "hitLocationRoll": "Roll Hit location",
+        "Modifier": "Modifier",
+        "CantFindActorWarn": "Can't find world actor to do action",
+        "UsedLastOfAmmoWarn": "You just used the last of your {projectileName}!",
+        "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
+        "HitLocationRollFlavor": "Hit Location Roll",
+        "UnknownButtonInChatError": "Unknown button \"{actionButton}\" in weapon chat message",
+        "WeaponChatFlavor": "Weapon: {weaponName}",
+        "NoCombatManeuverInDamageRollError": "No combat maneuver in Damage Roll.",
+        "CantFindActorToDoDamageRollWarn": "Can't find world actor do do damage roll.",
+        "WeaponDoesNotHaveCombatManeuverError": "Weapon doesn't have a combat maneuver.",
+        "WeaponDoesNotHaveAttachManeuverError": "The weapon named \"{weaponName}\" does not have an attack Combat Maneuver.",
+        "WeaponDamageTag": "weapon",
+        "DamageBonusDamageTag": "damage bonus",
+        "CrushSpecialDamageTag": "crushing special",
+        "ImpaleSpecialDamageTag": "impale special",
+        "FumbleTableMissingWarn": "The fumble table \"{fumbleTableName}\" is missing.",
+        "PluralResults": "{numberOfResults} results",
+        "SingularResult": "a result",
+        "FumbleResultFlavor": "Draws {numberOfResults} from the {fumbleTableName} table."
+      }
+    },
+    "Item": {
+      "Armor": {
+        "NamePrefix": "Name Prefix",
+        "ArmorTypeLabel": "Armor Type",
+        "Material": "Material",
+        "HitLocations": "Hit Locations",
+        "AddNewCoveredHitLocationPlaceholder": "Add armor hit location",
+        "Absorbs": "Absorbs",
+        "MoveQuietlyPenalty": "Move Quietly Penalty",
+        "FitsSIZ": "Fits SIZ",
+        "ArmorType": {
+          "Hood": "Hood",
+          "BroadBrimmedHat": "Broad-brimmed Hat",
+          "Cap": "Cap",
+          "CompositeHelm": "Composite Helm",
+          "OpenHelm": "Open Helm",
+          "ClosedHelm": "Closed Helm",
+          "FullHelm": "Full Helm",
+          "Sleeves": "Sleeves",
+          "Vambraces": "Vambraces",
+          "Cuirass": "Cuirass",
+          "Linothorax": "Linothorax",
+          "Hauberk": "Hauberk",
+          "Segmented": "Segmented",
+          "Skirt": "Skirt",
+          "PantsTrews": "Pants",
+          "Greaves": "Greaves"
+        },
+        "ArmorMaterial": {
+          "Leather": "Leather",
+          "HeavyLeather": "Heavy Leather",
+          "StuddedLeather": "Studded Leather",
+          "BronzePlate": "Bronze Plate",
+          "BronzeSegmentedPlate": "Segmented Bronze Plate",
+          "DiskPlate": "Disk Plate",
+          "LightScale": "Light Scale",
+          "HeavyScale": "Heavy Scale",
+          "Cuirboilli": "Cuirboilli",
+          "RingMail": "Ring Mail",
+          "TurtleShell": "Turtle Shell",
+          "Quilted": "Quilted",
+          "Linen": "Linen",
+          "Iron": "Iron"
+        }
+      },
+      "Cult": {
+        "AddNewSubCult": "Add new Sub Cult",
+        "Name": "Name",
+        "Deity": "Deity",
+        "CultName": "Cult Name",
+        "CultTagline": "Cult Tagline",
+        "AddNewRunePlaceholder": "Add new rune",
+        "Runes": "Runes",
+        "HolyDays": "Holy Days",
+        "RunePoints": "Rune Points",
+        "CultRank": "Cult Rank",
+        "ActorsGifts": "Actor's Gifts",
+        "ActorsGeases": "Actor's Geases",
+        "ActorsSubCults": "Actor's Sub-Cults",
+        "CommonRuneMagic": "Common Rune Magic"
+      },
+      "EquippedStatus": {
+        "notCarried": "Not Carried",
+        "carried": "Carried",
+        "equipped": "Equipped"
+      },
+      "Gear": {
+        "Name": "Name",
+        "EncumbranceAbbr": "ENC",
+        "EncumbranceAbbrEach": "ENC Each",
+        "EncumbranceAbbrTotal": "ENC Total",
+        "EquippedStatus": "Equipped?",
+        "PriceReal": "Price (real)",
+        "PriceEstimated": "Price (estimated)",
+        "Location": "Location",
+        "AttunedTo": "Attuned to",
+        "Quantity": "Quantity",
+        "IsContainerQ": "Is Container?",
+        "LunarsAbbr": "L",
+        "HitPointsAbbr": "HP",
+        "CurrentHitPoints": "Current Hit Points",
+        "HitPointLocation": "Hit Point Location",
+        "ItemType": "Item Type",
+        "PhysicalItemTypeEnum": {
+          "unique": "Unique",
+          "currency": "Currency",
+          "consumable": "Consumable"
+        }
+      },
+      "HitLocation": {
+        "Name": "Name",
+        "HealthStatus": "Health Status",
+        "HitPoints": "Hit Points",
+        "ActAs": "For damage calculations, act as",
+        "ConnectedTo": "Connected to",
+        "HitLocationOn": "Hit Location on",
+        "NaturalArmorPoints": "Natural AP",
+        "BaseHPDelta": "Base HP Delta (+/- from base location HP)",
+        "ArmorPoints": "Armor Points",
+        "Wounds": "Wounds",
+        "AddWound": {
+          "Title": "Apply Wound to {hitLocationName}",
+          "ApplyToTotalHitPointsQ": "Apply to total HP?",
+          "SubtractArmorPointsQ": "Subtract AP?",
+          "btnAddWound": "Add Wound"
+        },
+        "AddWoundChatContent": "{actorName} takes a wound to the {hitLocationName}. {notification}",
+        "HealWound": {
+          "Title": "Heal Wound to {hitLocationName}",
+          "SelectWoundToHeal": "Select Wound to Heal on {hitLocationName}",
+          "HitPointsToHeal": "Hit Points to Heal: ",
+          "btnHealWound": "Heal Wound"
+        },
+        "HealthStatusEnum": {
+          "healthy": "Healthy",
+          "wounded": "Wounded",
+          "useless": "Useless",
+          "severed": "Severed"
+        },
+        "Notification": {
+          "CantFindHitLocation": "Couldn't find hitlocation with itemId [{hitLocationItemId}] on actor ${actorName} to show add wound dialog.",
+          "HitLocationDoesNotHaveCalculatedArmor": "Hit location {hitLocationName} doesn't have a calculated total armor point",
+          "NoValueOnHitLocation": "No value on hit location ${hitLocationName}",
+          "NoMaxOnHitLocation": "No max on hit location ${hitLocationName}",
+          "NoActorOnTokenWarn": "No Actor on Token"
+        }
+      },
+      "HitLocationType": {
+        "limb": "Limb",
+        "head": "Head",
+        "chest": "Chest",
+        "abdomen": "Abdomen"
+      },
+      "Homeland": {
+        "Homeland": "Homeland",
+        "Region": "Region or City",
+        "CultureJournalEntries": "Culture Journal Entries",
+        "TribeJournalEntries": "Tribe Journal Entries",
+        "ClanJournalEntries": "Clan Journal Entries",
+        "homelandJournalRqidLink": "Homeland",
+        "regionJournalRqidLink": "Region",
+        "cultureJournalRqidLinks": "Culture",
+        "CultLinks": "Cult Links",
+        "SkillLinks": "Skill Links",
+        "PassionLinks": "Passion Links",
+        "RuneLinks": "Rune Links"
+      },
+      "Notification": {
+        "CantFindRuneInAvailableRunesError": "Can't find rune \"{runeName}\" in any compendium",
+        "ItemWasNotHitLocationError": "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
+        "HitLocationDoesNotHaveActorError": "Hit Location item didn't have an actor",
+        "ActorDoesNotHaveMaxHpError": "Actor doesn't have max hitPoints",
+        "OpposingRuneDoesNotExistWarning": "Opposing Rune doesn't exist",
+        "WrongItemTypeRuneMagicError": "RQG | Wrong itemtype or not embedded item in Actor PrepareEmbeddedEntities",
+        "ActorDoesNotHaveCultOnRuneMagicWarning": "RQG | Cult referenced by rune magic item ${item.name} doesn't exist on actor ${actor.name}",
+        "PrepareDerivedDataNotSkillError": "Calling Skill#onActorPrepareDerivedData with something else than a skill",
+        "ActorNotCharacterError": "Actor is not of type character",
+        "CantFindWeaponSkillWarning": "Can't find weapon skill",
+        "CantCreateActiveEffect": "Can't create Active Effect",
+        "NoIdOnTokenError": "No ID on Token",
+        "NoIdOnActorError": "No ID on Actor",
+        "ItemWithIdDoesNotHaveChanceError": "Can't find an item that has a chance and ID {itemId} on actor named {actorName} to show item chat message.",
+        "CanOnlyDropJournalEntryWarning": "You can only drop a Journal Entry onto a {itemType} Sheet",
+        "CanOnlyDropJournalEntryOnThisTargetWarning": "You can only drop a Journal Entry onto the {target} Journal target.",
+        "PleaseDropOnTarget": "You can't drop that here.  Look for an appropriate target.",
+        "SimpleCalendarNotInstalled": "This command requires the Simple Calendar module.",
+        "DroppedWrongDocumentType": "This field expects a document of type(s) {allowedDropTypes} and the dropped document was {type}",
+        "DroppedWrongDocumentName": "This field expects a {allowedDocumentNames} and the dropped document was {documentName}",
+        "DroppedDocumentDoesNotHaveRqid": "The {type} named {name} with uuid {uuid} does not have an RQID and cannot be dropped onto this sheet.",
+        "ItemNotUnique": "{actorName} already has a {documentType} '{documentName}' and duplicates are not allowed"
+      },
+      "Occupation": {
+        "Occupation": "Occupation",
+        "Specialization": "Specialization",
+        "Homelands": "Homelands",
+        "AllHomelands": "All Homelands",
+        "OccupationalSkillLinks": "Occupational Skill Links",
+        "IncomeSkillQ": "Income Skill?",
+        "OccupationalSkillBonus": "Occupational Skill Bonus",
+        "StandardOfLiving": "Standard Of Living",
+        "StandardOfLivingEnum": {
+          "destitute": "Destitute",
+          "poor": "Poor",
+          "free": "Free",
+          "noble": "Noble",
+          "petty-king": "Petty King"
+        },
+        "BaseIncome": "Base Income",
+        "BaseIncomeNotes": "Base Income Notes",
+        "CultLinks": "Cult Links",
+        "Ransom": "Ransom",
+        "StartingEquipmentLinks": "Starting Equipment Links"
+      },
+      "Passion": {
+        "Name": "Name",
+        "NamePlaceholder": "Passion Type",
+        "Passion": "Passion",
+        "Subject": "Subject",
+        "Chance": "Chance",
+        "HasExperienceQ": "Has Experience?",
+        "BackStory": "Back Story",
+        "PassionEnum": {
+          "Ambition": "Ambition",
+          "Cowardly": "Cowardly",
+          "Devotion": "Devotion",
+          "Fear": "Fear",
+          "Hate": "Hate",
+          "Honor": "Honor",
+          "Loyalty": "Loyalty",
+          "Love": "Love",
+          "Gluttony": "Gluttony",
+          "Vanity": "Vanity"
+        }
+      },
+      "RqgItem": {
+        "ShowInfoCircle": {
+          "DropToConnectJournal": "Drop a Journal Entry on this field to connect.",
+          "DropToReplaceJournal": "Drop a Journal Entry on this field to replace.",
+          "DropToConnectCult": "Drop a Cult Item on this field to connect.",
+          "DropToReplaceCult": "Drop a Cult Item on this field to replace.",
+          "DropToConnectPassion": "Drop a Passion Item on this field to connect.",
+          "DropToReplacePassion": "Drop a Passion Item on this field to replace.",
+          "DropToConnectRune": "Drop a Rune Item on this field to connect.",
+          "DropToReplaceRune": "Drop a Rune Item on this field to replace.",
+          "DropToConnectRuneMagic": "Drop a Rune Magic Item on this field to connect.",
+          "DropToReplaceRuneMagic": "Drop a Rune Magic Item on this field to replace.",
+          "DropToConnectSkill": "Drop a Skill Item on this field to connect.",
+          "DropToReplaceSkill": "Drop a Skill Item on this field to replace.",
+          "DropToConnectOccupation": "Drop an Occupation Item on this field to connect.",
+          "DropToReplaceOccupation": "Drop an Occupation Item on this field to replace."
+        }
+      },
+      "Rune": {
+        "Name": "Name",
+        "Rune": "Rune",
+        "Type": "Type",
+        "PercentageChance": "Chance",
+        "HasExperienceQ": "Has Experience?",
+        "OpposingRune": "Opposing Rune",
+        "MinorRunes": "Minor Runes",
+        "MasteredSorceryQ": "Mastered (Sorcery)?",
+        "RuneType": {
+          "element": "Element",
+          "power": "Power",
+          "form": "Form",
+          "condition": "Condition",
+          "technique": "Technique"
+        }
+      },
+      "RuneMagic": {
+        "Name": "Name",
+        "Points": "Points",
+        "Range": "Range",
+        "Duration": "Duration",
+        "StackableQ": "Stackable?",
+        "OneUseQ": "One Use?",
+        "GrantedByCult": "Granted by Cult",
+        "Runes": "Runes",
+        "AddNewRunePlaceholder": "Add new rune",
+        "runeMagicCultDialog": {
+          "title": "Which cult provides this Rune Magic?",
+          "btnAddRuneMagic": "Add Rune Magic",
+          "Actor": "Actor",
+          "RuneMagic": "RuneMagic"
+        }
+      },
+      "SheetTab": {
+        "ActiveEffects": "Active Effects",
+        "Armor": "Armor",
+        "Cults": "Cults",
+        "Deity": "Deity",
+        "Description": "Description",
+        "GMNotes": "GM Notes",
+        "Gear": "Gear",
+        "GiftsAndGeases": "Gifts & Geases",
+        "HitLocation": "Hit Location",
+        "HitLocationDefinition": "Hit Location Definition",
+        "Homeland": "Homeland",
+        "Occupation": "Occupation",
+        "Passion": "Passion",
+        "Rune": "Rune",
+        "RuneMagic": "Rune Magic",
+        "Skill": "Skill",
+        "SkillDefinition": "Skill Definition",
+        "SpiritMagic": "Spirit Magic",
+        "Weapon": "Weapon",
+        "WeaponUsage": "Usage",
+        "WizardInstructions": "Wizard Instructions"
+      },
+      "Skill": {
+        "Name": "Name",
+        "SkillName": "Skill Name",
+        "Specialization": "Specialization",
+        "Category": "Category",
+        "CategoryModifier": "{category} Modifier",
+        "BaseChance": "Base Chance",
+        "GainedChance": "Gained Chance",
+        "Chance": "Chance",
+        "CanGainExperienceQ": "Can Gain Experience?",
+        "HasExperienceQ": "Has Experience?",
+        "SorceryRunes": "Sorcery Runes",
+        "Notification": {
+          "CantFindSkillJournalEntryError": "Can't find Journal Entry you are trying to link to the Skill Item Sheet for {skillName}"
+        },
+        "SkillCategory": {}
+      },
+      "Spell": {
+        "RitualQ": "Ritual?",
+        "EnchantmentQ": "Enchantment?",
+        "DurationEnum": {
+          "": "None",
+          "instant": "Instant",
+          "temporal": "Temporal",
+          "focused": "Focused",
+          "permanent": "Permanent",
+          "special": "Special"
+        },
+        "RangeEnum": {
+          "": "None",
+          "self": "Self",
+          "touch": "Touch",
+          "ranged": "Ranged",
+          "special": "Special"
+        },
+        "ConcentrationEnum": {
+          "": "",
+          "active": "Active",
+          "passive": "Passive"
+        }
+      },
+      "SpiritMagic": {
+        "Name": "Name",
+        "Points": "Points",
+        "VariableQ": "Variable?",
+        "Range": "Range",
+        "Duration": "Duration",
+        "Concentration": "Concentration",
+        "SpellFocus": "Spell Focus",
+        "MatrixIndicator": "(held in matrix)",
+        "MatrixQ": "Held in Matrix?",
+        "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
+      },
+      "Weapon": {
+        "Name": "Name",
+        "UsesOfWeaponHeader": "Uses of Weapon",
+        "DropSkillToChange": "(Drop a different weapon skill on this weapon to change)",
+        "DropSkillToAdd": "Drop a weapon skill on this weapon!",
+        "WrongTypeDropped": "The item must be a weapon skill (category melee, shield or natural weapon)",
+        "EnterNewAction": "Add Action Label",
+        "Damage": "Damage",
+        "MinimumStrengthAbbr": "Min STR",
+        "MinimumDexterityAbbr": "Min DEX",
+        "StrikeRankAbbr": "SR",
+        "CombatManeuversHeader": "Combat Manuevers",
+        "ActionLabel": "Action Label",
+        "DamageType": "Damage Type",
+        "DamageTypeEnum": {
+          "impale": "Impale",
+          "slash": "Slash",
+          "crush": "Crush",
+          "parry": "Parry",
+          "special": "Special"
+        },
+        "NaturalWeaponQ": "Natural Weapon?",
+        "ThrownWeaponQ": "Thrown Weapon? (half damage bonus)",
+        "ProjectileWeaponQ": "Projectile Weapon? (no damage bonus, use linked projectile)",
+        "RangedWeaponQ": "Ranged Weapon? (no damage bonus, no projectile)",
+        "ProjectileQ": "Projectile? (ammunition)",
+        "Projectile": "Projectile",
+        "Range": "Range",
+        "Rate": "Rate",
+        "SameDataAsOneHand": "Same Data as One Hand",
+        "combatManeuver": {
+          "Bite": "Bite",
+          "Throw": "Throw",
+          "Shoot": "Shoot",
+          "Thrust": "Thrust",
+          "Cut": "Cut",
+          "Claw": "Claw",
+          "Gore": "Gore",
+          "Hug": "Hug",
+          "Bash": "Bash",
+          "Parry": "Parry",
+          "Grapple": "Grapple",
+          "Knockback": "Knockback",
+          "Punch": "Punch",
+          "Kick": "Kick",
+          "Trample": "Trample"
+        }
+      }
+    },
+    "Hotbar": {
+      "MacroName": {
+        "ToChat": "Use {name}",
+        "ToChatEmbedded": "Use {name} ({actor})",
+        "RollTable": "Roll table {name}",
+        "ToggleSheet": "Display Sheet {name}",
+        "ToggleSheetEmbedded": "Display Sheet {name} ({actor})"
+      }
+    },
+    "Foundry": {
+      "ActiveEffect": {
+        "Header": "🐛Active Effects🧪",
+        "AddEffectTitle": "Add Effect",
+        "Label": "Label",
+        "Disabled": "Disabled",
+        "StartTime": "Start Time",
+        "KeyValueMode": "Key - Value - Mode",
+        "NewActiveEffectName": "New Active Effect",
+        "TargetItemNotFound": "Could not find any embedded item with rqid {rqid} on actor {actorName}. Please either add a {itemName} item with that rqid or modify the item that has this active effect"
+      },
+      "CombatTracker": {
+        "DuplicateCombatant": "Duplicate Combatant",
+        "UpdateCombatant": "Update Combatant",
+        "RemoveCombatant": "Remove Combatant",
+        "RemoveAllDuplicates": "Remove All Duplicates",
+        "CombatantWithoutActor": "The combatant \"{combatantName}\" references an actor that no longer exists within the world",
+        "UnknownName": "Unknown"
+      },
+      "ContentLink": {
+        "RqidLinkTitle": "{documentName}<small> {documentType}</small><br><small>rqid: {rqid}</small>",
+        "RqidLinkDelete": "Delete link to \"{name}\"<br><small>rqid: {rqid}</small>",
+        "DropToConnectJournal": "Drop a journal entry on this item to connect a description.",
+        "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."
+      },
+      "Settings": {
+        "Migrate": {
+          "TriggerButton": "Trigger World Migration",
+          "TriggerTitle": "Trigger World Data Migration",
+          "TriggerContents": "<p>Turn on world data migration and restart</p>",
+          "TriggerRestart": "Save and restart"
+        }
+      }
+    },
+    "Game": {
+      "MeleeRoundAbbr": "MR",
+      "ResultEnum": {
+        "0": "Hyper Critical",
+        "1": "Special Critical",
+        "2": "Critical",
+        "3": "Special",
+        "4": "Success",
+        "5": "Failure",
+        "6": "Fumble"
+      },
+      "RollChat": "Roll via Chat (click)",
+      "RollQuick": "Quick Roll (dbl click)",
+      "RollCharacteristicQuick": "Quick Roll *5 (dbl click)",
+      "RollTitle": "Roll via Chat (click), Quick Roll (dbl click)",
+      "WeaponUsage": {
+        "oneHand": "1H",
+        "offHand": "offH",
+        "twoHand": "2H",
+        "missile": "Missile",
+        "oneHand-full": "One-handed",
+        "offHand-full": "One-handed – offhand",
+        "twoHand-full": "Two-handed",
+        "missile-full": "Missile"
+      },
+      "RollDifficulty": {
+        "0": "Nearly Impossible (*0.5)",
+        "1": "Very Hard (*1)",
+        "2": "Hard (*2)",
+        "3": "Moderate (*3)",
+        "4": "Easy (*4)",
+        "5": "Simple Action (*5)"
+      }
+    },
+    "RQGSystem": {
+      "rqid": "RuneQuest System ID (Rqid)",
+      "GenerateDefaultRqid": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
+      "rqidPriority": "Rqid Priority",
+      "rqidLang": "Language",
+      "FoundryId": "Foundry ID",
+      "FoundryUuid": "Foundry UUID",
+      "ParentFoundryId": "Parent Foundry ID",
+      "GetThisDocument": "Get This Document",
+      "GetDocumentLikeThis": "Get Document Like This",
+      "CopyInputValue": "Copy this value to the clipboard",
+      "OtherDocumentsHeader": "Documents with this rqid and language (excluding embedded documents)",
+      "DocsInWorld": "{count} documents in the world",
+      "DocsInCompendiums": "{count} documents in the compendiums",
+      "DuplicateWarning": "Warning: Multiple rqids with same priority!",
+      "Error": {
+        "NoSheet": "No sheet found for document linked to by RQG System ID (rqid) \"{rqid}\". See console log.",
+        "MoreThanOneRqidMatchInWorld": "More than one RQG Document in the world (not in compendium packs) matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
+        "MoreThanOneRqidMatchInPacks": "More than one RQG Document in installed compendium packs matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
+        "DocumentNotFoundByRqid": "Document not found in world or compendium packs matching the rqid \"{rqid}\", and lang \"{lang}\". See console log."
+      }
+    },
+    "Notification": {
+      "Error": {
+        "GMOnlyOperation": "This operation is only allowed for GMs"
+      },
+      "Warn": {
+        "NameGenRqidNotSupported": "Name Generation: The RQG System ID \"{rqid}\" is not supported for name generation.",
+        "NameGenRqidNotFound": "Name Generation: The RQG System ID \"{rqid}\" was not found as a Roll Table or Journal Entry or the Journal Entry was not formatted properly as a Name Base.",
+        "NameBaseNotLongEnough": "Name Generation: The RQG System ID \"{rqid}\" references a Name Base Journal Entry that was not long enough to generate a name after {attempts} attempts.  Consider adding more entries."
+      }
+    },
+    "Settings": {
+      "HitLocations": {
+        "dialogTitle": "Hit Location Name Settings",
+        "settingName": "Hit Location Names",
+        "settingLabel": "Configure Available Hit Location Names",
+        "settingHint": "The hit location names are used in dropdowns for armor coverage and when naming a new hit location.",
+        "addLocationPlaceholder": "Add another hitlocation"
+      },
+      "SortHitLocationsLowToHigh": {
+        "settingName": "Sort Hitlocations Low to High",
+        "settingHint": "Activating this setting sorts the character hitlocation in the same way as stat blocks are sorted with the lowest die number first. The setting can be toggled in the actor sheet Health table."
+      },
+      "DefaultItemIcons": {
+        "dialogTitle": "Default Item Icon Settings",
+        "settingName": "Default Item Icons",
+        "settingLabel": "Configure Default Icons for new Items",
+        "settingHint": "Set the default icons used when creating new items."
+      },
+      "WorldLanguage": {
+        "settingName": "World Language",
+        "settingHint": "This is the language the game will be played in. It affects which compendium packs and journal descriptions are shown. It is recommended, but not strictly necessary, that all players have this language selected as their 'Core Settings Language Preference'."
+      },
+      "ShowOnlyWorldLanguagePacks": {
+        "settingName": "Filter compendium packs",
+        "settingHint": "Show only system provided compendium packs in the language defined in the 'World Language' setting, hiding the compendium packs provided by the system in other languages. If the selected language is not available the English compendium packs will be shown."
+      },
+      "ShowEnglishLanguagePacksAlso": {
+        "settingName": "English compendium packs",
+        "settingHint": "Show the English compendium packs in addition to the selected 'World Language'."
+      },
+      "FumbleRollTable": {
+        "settingName": "Fumble Roll Table",
+        "settingHint": "The name of the Fumble roll table - will be used in combat"
+      },
+      "SpecialCrit": {
+        "settingName": "Special & Hyper Critical results",
+        "settingHint": "*** Alpha version - not fully implemented *** Adds the possibility to roll a special critical (skill/100) and hyper critical (skill/500)"
+      },
+      "MagicRuneName": {
+        "settingName": "Magic (condition) Rune name",
+        "settingHint": "If a Rune Magic Spell has this rune it is considered \"Common\", and an adventurer can cast it using any of the cult runes associated with the rune point(s) they spend."
+      },
+      "WorldMigrationVersion": {
+        "settingName": "World Migration Version",
+        "settingHint": "The RQG system version this world has been migrated to."
+      }
+    },
+    "TokenEffects": {
+      "StatusProtection1": "Protection 1",
+      "StatusProtection2": "Protection 2",
+      "StatusProtection3": "Protection 3",
+      "StatusProtection4": "Protection 4",
+      "StatusStrength": "Strength",
+      "StatusBefuddled": "Befuddled",
+      "StatusBladesharp": "Bladesharp",
+      "StatusBludgeon": "Bludgeon",
+      "StatusCoordination": "Coordination",
+      "StatusCountermagic": "Countermagic",
+      "StatusDullblade": "Dullblade",
+      "StatusFanaticism": "Fanaticism",
+      "StatusFireblade": "Fireblade",
+      "StatusGlamour": "Glamour",
+      "StatusGlue": "Glue",
+      "StatusIronhand": "Ironhand",
+      "StatusLantern": "Lantern",
+      "StatusLight": "Light",
+      "StatusMobility": "Mobility",
+      "StatusParry": "Parry",
+      "StatusShimmer": "Shimmer",
+      "StatusSlow": "Slow",
+      "StatusSpiritScreen": "Spirit Screen",
+      "StatusVigor": "Vigor"
+    },
+    "Migration": {
+      "Dialog": {
+        "windowTitle": "Migrating world data",
+        "header": "Please backup your world!",
+        "migrationWarning": "The version of this world ({worldVersion}) does not match the RQG system ({systemVersion}). Running this world migration will change the data in your world to what the system expects. Please make a backup of your world before proceeding, as you will not be able to undo this migration!",
+        "migrationTime": "The migration can take some time if you have a large world, but please be patient and do not shut the system down before it is finished.",
+        "btnMigrate": "Migrate world \"{worldTitle}\" to version {systemVersion}"
+      },
+      "WorldNotUpdated": "This world is not updated to match the current system version ({systemVersion}). Please wait until your GM has done the update, then refresh this page (F5 or cmd-R).",
+      "applyingMigration": "Applying World Migration to version {systemVersion}. Please be patient and do not close your game or shut down your server.",
+      "migrationFinished": "World Migration to version {systemVersion} completed!",
+      "actors": "Step 1 / 4 - Migrating {count} actors",
+      "items": "Step 2 / 4 - Migrating {count} world items",
+      "scenes": "Step 3 / 4 - Migrating {count} scenes",
+      "compendiums": "Step 4 / 4 - Migrating {count} compendiums"
+    },
+    "UI": {
+      "SortItems": "Sort items alphabetically",
+      "MultipleCults": "Character has more cults,<br> see Rune Magic Tab"
+    }
+  }
+}

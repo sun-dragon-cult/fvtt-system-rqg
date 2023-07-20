@@ -1,5 +1,5 @@
 # spirit-screen
-name: ${{openSystem.content.spiritMagic.spiritScreen.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.spiritScreen.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..spirit-screen
-    name: ${{openSystem.content.spiritMagic.spiritScreen.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.spiritScreen.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

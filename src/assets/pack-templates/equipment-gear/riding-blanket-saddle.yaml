@@ -1,14 +1,15 @@
-name: ${{openSystem.content.equipment.gear.blanketSaddle}}$
+name: ${{rqgCompendiumContent.equipment.gear.blanketSaddle}}$
 type: gear
 img: systems/rqg/assets/images/gear/blanket.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.saddle-blanket
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
-  description: ${{openSystem.content.equipment.gear.blanketSaddleDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.blanketSaddleDescription}}$
   gmNotes:
   quantity: 1
   price:

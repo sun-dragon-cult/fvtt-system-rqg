@@ -1,12 +1,11 @@
 # shield-large
-name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.large}}$)
-_id: GknxFLc7hBNJ5s0l
+name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.large}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/large-shield.svg
 system:
   category: shields
-  skillName: ${{openSystem.content.weaponSkill.shields.name}}$
-  specialization: ${{openSystem.content.weaponSkill.shields.specialization.large}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.shields.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.shields.specialization.large}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -14,23 +13,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..shield-weapon
-    name: ${{openSystem.content.skill.shield.skillName}}$
+    name: ${{rqgCompendiumContent.skill.shield.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.shields-large
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # shield-medium
-name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.medium}}$)
-_id: u95ZVt0636VqW5Pe
+name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.medium}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/medium-shield.svg
 system:
   category: shields
-  skillName: ${{openSystem.content.weaponSkill.shields.name}}$
-  specialization: ${{openSystem.content.weaponSkill.shields.specialization.medium}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.shields.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.shields.specialization.medium}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -38,23 +37,23 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..shield-weapon
-    name: ${{openSystem.content.skill.shield.skillName}}$
+    name: ${{rqgCompendiumContent.skill.shield.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.shields-medium
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
 ---
 # shield-small
-name: ${{openSystem.content.weaponSkill.shields.name}}$ (${{openSystem.content.weaponSkill.shields.specialization.small}}$)
-_id: 2U6A8opZA2du08Be
+name: ${{rqgCompendiumContent.weaponSkill.shields.name}}$ (${{rqgCompendiumContent.weaponSkill.shields.specialization.small}}$)
 type: skill
 img: systems/rqg/assets/images/weapons/small-shield.svg
 system:
   category: shields
-  skillName: ${{openSystem.content.weaponSkill.shields.name}}$
-  specialization: ${{openSystem.content.weaponSkill.shields.specialization.small}}$
+  skillName: ${{rqgCompendiumContent.weaponSkill.shields.name}}$
+  specialization: ${{rqgCompendiumContent.weaponSkill.shields.specialization.small}}$
   baseChance: 15
   gainedChance: 0
   canGetExperience: true
@@ -62,10 +61,11 @@ system:
   runes: []
   descriptionRqidLink:
     rqid: je..shield-weapon
-    name: ${{openSystem.content.skill.shield.skillName}}$
+    name: ${{rqgCompendiumContent.skill.shield.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.shields-small
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

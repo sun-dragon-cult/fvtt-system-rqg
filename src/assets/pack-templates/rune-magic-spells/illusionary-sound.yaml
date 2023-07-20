@@ -1,5 +1,5 @@
 # illusionary-sound
-name: ${{openSystem.content.runeMagic.illusionarySound.name}}$
+name: ${{rqgCompendiumContent.runeMagic.illusionarySound.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..illusionary-sound
-    name: ${{openSystem.content.runeMagic.illusionarySound.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.illusionarySound.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.illusionary-sound
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

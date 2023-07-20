@@ -487,5 +487,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: rt..names-parts-descriptor
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

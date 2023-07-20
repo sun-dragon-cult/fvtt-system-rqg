@@ -1,5 +1,5 @@
 # safe
-name: ${{openSystem.content.runeMagic.safe.name}}$
+name: ${{rqgCompendiumContent.runeMagic.safe.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..safe
-    name: ${{openSystem.content.runeMagic.safe.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.safe.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.safe
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

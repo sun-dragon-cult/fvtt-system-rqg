@@ -1,5 +1,5 @@
 # multimissile
-name: ${{openSystem.content.spiritMagic.multimissile.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.multimissile.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..multimissile
-    name: ${{openSystem.content.spiritMagic.multimissile.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.multimissile.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

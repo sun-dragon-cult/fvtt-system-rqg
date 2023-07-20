@@ -1952,25 +1952,67 @@ export const mockItems = [
     effects: [],
     folder: null,
     system: {
-      rank: "layMember",
+      joinedCults: [
+        {
+          cultName: "Etyries",
+          tagline: "Lunar goddess of trade",
+          rank: "layMember",
+        },
+      ],
+      commonRuneMagicRqidLinks: [
+        {
+          rqid: "i.rune-magic.command-cult-spirit-elemental",
+          name: "Command Cult Spirit (Elemental)",
+        },
+        {
+          rqid: "i.rune-magic.dismiss-magic",
+          name: "Dismiss Magic",
+        },
+        {
+          rqid: "i.rune-magic.divination",
+          name: "Divination",
+        },
+        {
+          rqid: "i.rune-magic.extension",
+          name: "Extension",
+        },
+        {
+          rqid: "i.rune-magic.find-enemy",
+          name: "Find Enemy",
+        },
+        {
+          rqid: "i.rune-magic.heal-wound",
+          name: "Heal Wound",
+        },
+        {
+          rqid: "i.rune-magic.multispell",
+          name: "Multispell",
+        },
+        {
+          rqid: "i.rune-magic.sanctify",
+          name: "Sanctify",
+        },
+        {
+          rqid: "i.rune-magic.soul-sight",
+          name: "Soul Sight",
+        },
+        {
+          rqid: "i.rune-magic.spirit-block",
+          name: "Spirit Block",
+        },
+        {
+          rqid: "i.rune-magic.summon-cult-spirit",
+          name: "Summon Cult Spirit",
+        },
+        {
+          rqid: "i.rune-magic.warding",
+          name: "Warding",
+        },
+      ],
       runePoints: {
         value: 3,
         max: 5,
       },
-      tagline: "LUNAR GODDESS OF TRADE",
-      holyDays:
-        '<p style="box-sizing: border-box; user-select: text; color: #191813;">&nbsp;Each season,&nbsp; Movement Week, Wild Day</p>\n<p style="box-sizing: border-box; user-select: text; color: #191813;"><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">The High Holy Day of&nbsp;</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SpellingErrorV2 SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; background-position: 0% 100%; background-repeat: repeat-x; border-bottom: 1px solid transparent; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">Etyries</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">&nbsp;is&nbsp;</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SpellingErrorV2 SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; background-image: url(\'&amp;quot;img_367930462461613422507442_4&amp;quot;\'); background-position: 0% 100%; background-repeat: repeat-x; border-bottom: 1px solid transparent; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">Wildday</span></span><span class="TextRun SCXW86981352 BCX1" lang="EN-US" style="box-sizing: border-box; user-select: text; color: windowtext; font-family: Arial, Arial_EmbeddedFont, Arial_MSFontService, sans-serif; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" xml:lang="EN-US" data-contrast="none"><span class="NormalTextRun SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;">&nbsp;(Full Moon) of both weeks of Sacred Time.</span></span><span class="EOP SCXW86981352 BCX1" style="box-sizing: border-box; user-select: text; color: windowtext; font-size: 10pt; line-height: 17.26px; margin: 0px; padding: 0px; -webkit-tap-highlight-color: transparent;" data-ccp-props="{&quot;201341983&quot;:0,&quot;335559739&quot;:160,&quot;335559740&quot;:259}">&nbsp;</span></p>',
-      gifts: "",
-      geases: "",
-      runes: ["Movement (power)", "Moon (element)"],
-      subCults: null,
-      descriptionRqidLink: {
-        rqid: "je..etyries-2",
-        name: "Etyries",
-        documentType: "",
-      },
-      journalId: "bxHbo7ijeqRU3Z2I",
-      journalPack: "world.journals",
     },
     ownership: {
       default: 0,
@@ -2118,8 +2160,10 @@ export const mockItems = [
     system: {
       usage: {
         oneHand: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2127,8 +2171,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         offHand: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2136,8 +2182,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         twoHand: {
-          skillId: "XKNoEW8TK3MsnXpK",
-          skillOrigin: "Item.qehnIgKCfC05BeUD",
+          skillRqidLink: {
+            rqid: "i.skill.quarterstaff",
+            name: "Quarterstaff",
+          },
           combatManeuvers: [
             {
               name: "Bash",
@@ -2160,8 +2208,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         missile: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2212,8 +2262,10 @@ export const mockItems = [
     system: {
       usage: {
         oneHand: {
-          skillId: "mR08gtXZIIrVuBwj",
-          skillOrigin: "Item.tbPfOnvtOyDamUHS",
+          skillRqidLink: {
+            rqid: "i.skill.1h-daggers-dagger",
+            name: "1H Daggers (dagger)",
+          },
           combatManeuvers: [
             {
               name: "Cut",
@@ -2234,8 +2286,10 @@ export const mockItems = [
           strikeRank: 4,
         },
         offHand: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2243,8 +2297,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         twoHand: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,
@@ -2252,8 +2308,10 @@ export const mockItems = [
           strikeRank: 0,
         },
         missile: {
-          skillId: "",
-          skillOrigin: "",
+          skillRqidLink: {
+            rqid: "",
+            name: "",
+          },
           combatManeuvers: [],
           damage: "",
           minStrength: 0,

@@ -1,20 +1,21 @@
 # insight
-name: ${{openSystem.content.skill.insight.skillName}}$ (${{openSystem.content.skill.insight.specialization.human}}$)
+name: ${{rqgCompendiumContent.skill.insight.skillName}}$ (${{rqgCompendiumContent.skill.insight.specialization.human}}$)
 type: skill
 img: systems/rqg/assets/images/skills/insight.svg
 system:
   category: perception
-  skillName: ${{openSystem.content.skill.insight.skillName}}$
-  specialization: ${{openSystem.content.skill.insight.specialization.human}}$
+  skillName: ${{rqgCompendiumContent.skill.insight.skillName}}$
+  specialization: ${{rqgCompendiumContent.skill.insight.specialization.human}}$
   baseChance: 0
   gainedChance: 0
   canGetExperience: true
   descriptionRqidLink:
     rqid: je..insight
-    name: ${{openSystem.content.skill.insight.skillName}}$
+    name: ${{rqgCompendiumContent.skill.insight.skillName}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.skill.insight-human
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

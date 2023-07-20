@@ -1,7 +1,7 @@
 # sever-spirit
-name: ${{openSystem.content.runeMagic.severSpirit.name}}$
+name: ${{rqgCompendiumContent.runeMagic.severSpirit.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.severSpirit.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.severSpirit.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/death.svg" height="70">
-        ${{openSystem.content.runeMagic.severSpirit.description}}$
+        ${{rqgCompendiumContent.runeMagic.severSpirit.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..sever-spirit
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

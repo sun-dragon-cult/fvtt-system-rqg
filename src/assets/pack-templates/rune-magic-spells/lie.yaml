@@ -1,5 +1,5 @@
 # lie
-name: ${{openSystem.content.runeMagic.lie.name}}$
+name: ${{rqgCompendiumContent.runeMagic.lie.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..lie
-    name: ${{openSystem.content.runeMagic.lie.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.lie.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.lie
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

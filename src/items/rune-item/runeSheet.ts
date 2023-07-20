@@ -28,7 +28,8 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
   }
 
   getData(): RuneSheetData & ItemSheetData {
-    const system = duplicate(this.document.system);
+    // @ts-expect-error _source Read from the original data unaffected by any AEs
+    const system = duplicate(this.document._source.system);
 
     if (!system.rune) {
       system.rune = this.document.name;

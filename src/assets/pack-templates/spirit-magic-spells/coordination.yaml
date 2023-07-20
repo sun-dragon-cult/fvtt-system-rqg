@@ -1,5 +1,5 @@
 # coordination
-name: ${{openSystem.content.spiritMagic.coordination.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.coordination.name}}$
 type: spiritMagic
 img: systems/rqg/assets/images/items/spirit-magic.svg
 system:
@@ -10,7 +10,8 @@ system:
   concentration: passive
   descriptionRqidLink:
     rqid: je..coordination
-    name: ${{openSystem.content.spiritMagic.coordination.name}}$
+    name: ${{rqgCompendiumContent.spiritMagic.coordination.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:

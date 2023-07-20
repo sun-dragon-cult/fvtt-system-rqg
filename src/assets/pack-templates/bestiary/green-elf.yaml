@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.greenElf.name}}$
+name: ${{rqgCompendiumContent.bestiary.greenElf.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,25 +27,25 @@ system:
       value: 11
       formula: 3d6
   background:
-    species: ${{openSystem.content.bestiary.greenElf.species}}$
-    occupation: ''
+    species: ${{rqgCompendiumContent.bestiary.greenElf.species}}$
+    occupation: ""
     homeland: sartar
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
-  allies: ${{openSystem.content.bestiary.greenElf.notes}}$
+    ransomDetails: ""
+    biography: ""
+  allies: ${{rqgCompendiumContent.bestiary.greenElf.notes}}$
   attributes:
     magicPoints:
       value: 13
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.greenElf.name}}$
+  name: ${{rqgCompendiumContent.bestiary.greenElf.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -120,13 +120,13 @@ prototypeToken:
   flags: {}
   randomImg: false
 items:
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-leg	[ 		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-leg	[ 		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-abdomen	[ 		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-chest	[ 		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-right-arm	[ 		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-left-arm	[ 		]}}|"
-- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.humanoids-head	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.right-leg	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.left-leg	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.abdomen	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.chest	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.right-arm	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.left-arm	[ 		]}}|"
+- "|{{	hit-locations-humanoids/hit-locations-humanoids.yaml	i.hit-location.head	[ 		]}}|"
 - "|{{	runes/element.yaml	i.rune.earth-element	[ chance:	60	]}}|"
 - "|{{	runes/element.yaml	i.rune.fire-sky-element	[ chance:	0	]}}|"
 - "|{{	runes/form.yaml	i.rune.man-form	[ chance:	25	]}}|"
@@ -159,13 +159,13 @@ items:
 - "|{{	equipment-weapons/shield.yaml	i.weapon.small-wooden-shield	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/spears.yaml	i.weapon.long-spear	[ equippedStatus: 	equipped	]}}|"
 - "|{{	equipment-weapons/swords-daggers.yaml	i.weapon.shortsword	[ equippedStatus: 	equipped	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.mostali}}$), subject:	${{openSystem.content.passionSubject.mostali}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ name: ${{openSystem.RQG.Item.Passion.PassionEnum.Hate}}$ (${{openSystem.content.passionSubject.uz}}$), subject:	${{openSystem.content.passionSubject.uz}}$	]}}|"
-- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ name: ${{openSystem.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{openSystem.content.passionSubject.forest}}$), subject: 	${{openSystem.content.passionSubject.forest}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ name: ${{uiContent.RQG.Item.Passion.PassionEnum.Hate}}$ (${{rqgCompendiumContent.passionSubject.mostali}}$), subject:	${{rqgCompendiumContent.passionSubject.mostali}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.hate-base	[ name: ${{uiContent.RQG.Item.Passion.PassionEnum.Hate}}$ (${{rqgCompendiumContent.passionSubject.uz}}$), subject:	${{rqgCompendiumContent.passionSubject.uz}}$	]}}|"
+- "|{{	passions-base/passions-base.yaml	i.passion.loyalty-base	[ name: ${{uiContent.RQG.Item.Passion.PassionEnum.Loyalty}}$ (${{rqgCompendiumContent.passionSubject.forest}}$), subject: 	${{rqgCompendiumContent.passionSubject.forest}}$	]}}|"
 effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: a.character.aldryami-green-elf
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

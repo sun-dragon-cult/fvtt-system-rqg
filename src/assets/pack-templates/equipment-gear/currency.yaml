@@ -1,14 +1,15 @@
-name: ${{openSystem.content.equipment.gear.currencyBolgs}}$
+name: ${{rqgCompendiumContent.equipment.gear.currencyBolgs}}$
 type: gear
 img: systems/rqg/assets/images/gear/bolg.webp
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.bolgs
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
-  description: ${{openSystem.content.equipment.gear.currencyBolgsDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.currencyBolgsDescription}}$
   gmNotes:
   quantity: 1
   price:
@@ -21,17 +22,18 @@ system:
   attunedTo:
   physicalItemType: currency
 ---
-name: ${{openSystem.content.equipment.gear.currencyClacks}}$
+name: ${{rqgCompendiumContent.equipment.gear.currencyClacks}}$
 type: gear
 img: systems/rqg/assets/images/gear/clack.webp
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.clacks
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
-  description: ${{openSystem.content.equipment.gear.currencyClacksDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.currencyClacksDescription}}$
   gmNotes:
   quantity: 1
   price:
@@ -44,17 +46,18 @@ system:
   attunedTo:
   physicalItemType: currency
 ---
-name: ${{openSystem.content.equipment.gear.currencyLunars}}$
+name: ${{rqgCompendiumContent.equipment.gear.currencyLunars}}$
 type: gear
 img: systems/rqg/assets/images/gear/lunar.webp
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.lunars
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
-  description: ${{openSystem.content.equipment.gear.currencyLunarsDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.currencyLunarsDescription}}$
   gmNotes:
   quantity: 1
   price:
@@ -67,17 +70,18 @@ system:
   attunedTo:
   physicalItemType: currency
 ---
-name: ${{openSystem.content.equipment.gear.currencyWheels}}$
+name: ${{rqgCompendiumContent.equipment.gear.currencyWheels}}$
 type: gear
 img: systems/rqg/assets/images/gear/wheel.webp
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.wheels
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
-  description: ${{openSystem.content.equipment.gear.currencyWheelsDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.currencyWheelsDescription}}$
   gmNotes:
   quantity: 1
   price:

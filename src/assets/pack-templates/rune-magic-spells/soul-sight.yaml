@@ -1,5 +1,5 @@
 # soul-sight
-name: ${{openSystem.content.runeMagic.soulSight.name}}$
+name: ${{rqgCompendiumContent.runeMagic.soulSight.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..soul-sight
-    name: ${{openSystem.content.runeMagic.soulSight.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.soulSight.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.soul-sight
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

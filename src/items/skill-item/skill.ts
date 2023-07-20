@@ -8,9 +8,6 @@ import { documentRqidFlags, ItemChatFlags } from "../../data-model/shared/rqgDoc
 import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { ResultEnum } from "../../data-model/shared/ability";
 import { systemId } from "../../system/config";
-import { RqgActor } from "../../actors/rqgActor";
-import { requestSkillSpecializationDialog } from "../../applications/requestSkillSpecialization";
-import { concatenateSkillName } from "./concatenateSkillName";
 
 export class Skill extends AbstractEmbeddedItem {
   // public static init() {
@@ -79,7 +76,7 @@ export class Skill extends AbstractEmbeddedItem {
       mod = -Math.min(
         // mod is equipped ENC modifier
         actorData.attributes.encumbrance?.equipped || 0,
-        actorData.attributes.encumbrance?.max || 0
+        actorData.attributes.encumbrance?.max || 0,
       );
     } else if (skillRqid === CONFIG.RQG.skillRqid.jump) {
       Skill.updateBaseChance(skillData, dex * 3);
@@ -88,9 +85,9 @@ export class Skill extends AbstractEmbeddedItem {
         0,
         ...actor.items
           .filter(
-            (i: RqgItem) => i.type === ItemTypeEnum.Armor && i.system.equippedStatus === "equipped"
+            (i: RqgItem) => i.type === ItemTypeEnum.Armor && i.system.equippedStatus === "equipped",
           )
-          .map((a: any) => Math.abs(a.system.moveQuietlyPenalty))
+          .map((a: any) => Math.abs(a.system.moveQuietlyPenalty)),
       );
     }
 
@@ -100,36 +97,10 @@ export class Skill extends AbstractEmbeddedItem {
       skillData.baseChance > 0 || skillData.baseChance + skillData.gainedChance > 0
         ? Math.max(
             0,
-            skillData.baseChance + skillData.gainedChance + (skillData.categoryMod || 0) + mod
+            skillData.baseChance + skillData.gainedChance + (skillData.categoryMod || 0) + mod,
           )
         : 0;
     return skillItem;
-  }
-
-  static async onEmbedItem(
-    actor: RqgActor,
-    skillItem: RqgItem,
-    options: any,
-    userId: string
-  ): Promise<any> {
-    let updateData;
-    assertItemType(skillItem?.type, ItemTypeEnum.Skill);
-
-    try {
-      const answer = await requestSkillSpecializationDialog(skillItem);
-      if (answer) {
-        updateData = {
-          _id: skillItem.id,
-          name: concatenateSkillName(skillItem.system.skillName, answer),
-          system: { specialization: answer },
-        };
-      }
-    } catch (e) {
-      // Delete the item if the user cancels the dialog
-      skillItem.id && (await actor.deleteEmbeddedDocuments("Item", [skillItem.id]));
-    }
-
-    return updateData;
   }
 
   private static updateBaseChance(skillData: SkillDataPropertiesData, newBaseChance: number): void {

@@ -1,7 +1,7 @@
 # dullblade
-name: ${{openSystem.content.spiritMagic.dullblade.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.dullblade.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.dullblade.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.dullblade.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.dullblade.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.dullblade.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..dullblade
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

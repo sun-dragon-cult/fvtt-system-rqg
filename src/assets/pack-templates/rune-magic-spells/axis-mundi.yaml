@@ -1,5 +1,5 @@
 # axis-mundi
-name: ${{openSystem.content.runeMagic.axisMundi.name}}$
+name: ${{rqgCompendiumContent.runeMagic.axisMundi.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -12,10 +12,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..axis-mundi
-    name: ${{openSystem.content.runeMagic.axisMundi.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.axisMundi.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.axis-mundi
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

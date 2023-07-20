@@ -1,5 +1,5 @@
 # sureshot
-name: ${{openSystem.content.runeMagic.sureshot.name}}$
+name: ${{rqgCompendiumContent.runeMagic.sureshot.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -15,10 +15,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..sureshot
-    name: ${{openSystem.content.runeMagic.sureshot.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.sureshot.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.sureshot
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

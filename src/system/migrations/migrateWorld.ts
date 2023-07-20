@@ -1,4 +1,4 @@
-import { getGame, localize } from "../util";
+import { getGame, getGameUser, localize } from "../util";
 import { migrateActorDummy } from "./migrations-actor/migrateActorDummy";
 import { ActorMigration, applyMigrations, ItemMigration } from "./applyMigrations";
 import { changeRuneExperienceFieldName } from "./migrations-item/changeRuneExperienceFieldName";
@@ -13,34 +13,59 @@ import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkills
 import { renameLearnedToGainedChance } from "./migrations-item/renameLearnedToGainedChance";
 import { migrateWorldDialog } from "../../applications/migrateWorldDialog";
 import { migrateSubCults } from "./migrations-item/migrateSubCults";
+import { migrateWeaponSkillLinks } from "./migrations-item/migrateWeaponSkillLinks";
+import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchEditor";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
  */
 export async function migrateWorld(): Promise<void> {
-  // @ts-expect-error v10
-  const systemVersion = getGame().system.version;
+  // @ts-expect-error version
+  const systemVersion: string = getGame().system.version;
   const worldVersion = getGame().settings.get(systemId, "worldMigrationVersion");
-  if (systemVersion !== worldVersion) {
-    await migrateWorldDialog(systemVersion);
-    ui.notifications?.info(
-      localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
-      { permanent: true }
-    );
-    console.log(`RQG | Starting world migration to version ${systemVersion}`);
-
-    await applyDefaultWorldMigrations();
-    // *** Set the migration as complete ***
+  if (worldVersion === "" && getGameUser().isGM) {
+    // Initialize world version to current system version for new worlds (with the default "" version).
     await getGame().settings.set(systemId, "worldMigrationVersion", systemVersion);
-
-    ui.notifications?.info(
-      localize("RQG.Migration.migrationFinished", { systemVersion: systemVersion }),
-      {
-        permanent: true,
-      }
-    );
-    console.log(`RQG | Finished world migration`);
+    return;
   }
+  if (systemVersion === worldVersion) {
+    return; // Already up to date
+  }
+
+  if (!getGameUser().isGM) {
+    ui.notifications?.warn(
+      localize("RQG.Migration.WorldNotUpdated", { systemVersion: systemVersion }),
+      { permanent: true },
+    );
+    return;
+  }
+
+  // Open a dialog to set missing Rqids on selected items
+  await RqidBatchEditor.factory(
+    ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+    ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+    ItemTypeEnum.Rune, // Future needs
+  );
+
+  await migrateWorldDialog(systemVersion);
+  ui.notifications?.info(
+    localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
+    { permanent: true },
+  );
+  console.log(`RQG | Starting world migration to version ${systemVersion}`);
+
+  await applyDefaultWorldMigrations();
+  // *** Set the migration as complete ***
+  await getGame().settings.set(systemId, "worldMigrationVersion", systemVersion);
+
+  ui.notifications?.info(
+    localize("RQG.Migration.migrationFinished", { systemVersion: systemVersion }),
+    {
+      permanent: true,
+    },
+  );
+  console.log(`RQG | Finished world migration`);
 }
 
 /**
@@ -51,8 +76,12 @@ export async function migrateWorld(): Promise<void> {
  */
 export async function applyDefaultWorldMigrations(
   itemMigrations: ItemMigration[] | undefined = undefined,
-  actorMigrations: ActorMigration[] | undefined = undefined
+  actorMigrations: ActorMigration[] | undefined = undefined,
 ): Promise<void> {
+  if (!getGameUser().isGM) {
+    ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
+    return;
+  }
   const worldItemMigrations: ItemMigration[] = itemMigrations ?? [
     changeRuneExperienceFieldName,
     renameRuneMagicDurationSpecial,
@@ -64,6 +93,7 @@ export async function applyDefaultWorldMigrations(
     tagSkillNameSkillsWithRqid,
     renameLearnedToGainedChance,
     migrateSubCults,
+    migrateWeaponSkillLinks,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 

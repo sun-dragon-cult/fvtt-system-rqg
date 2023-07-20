@@ -1,5 +1,5 @@
 # shake-earth
-name: ${{openSystem.content.runeMagic.shakeEarth.name}}$
+name: ${{rqgCompendiumContent.runeMagic.shakeEarth.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..shake-earth
-    name: ${{openSystem.content.runeMagic.shakeEarth.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.shakeEarth.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.shake-earth
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

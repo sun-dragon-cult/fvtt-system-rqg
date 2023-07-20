@@ -1,5 +1,5 @@
 # berserker
-name: ${{openSystem.content.runeMagic.berserker.name}}$
+name: ${{rqgCompendiumContent.runeMagic.berserker.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -14,10 +14,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..berserker
-    name: ${{openSystem.content.runeMagic.berserker.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.berserker.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.berserker
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

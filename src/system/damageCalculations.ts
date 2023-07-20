@@ -32,7 +32,7 @@ export class DamageCalculations {
     applyDamageToTotalHp: boolean,
     hitLocation: RqgItem,
     actor: RqgActor,
-    speakerName: string
+    speakerName: string,
   ): DamageEffects {
     assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
 
@@ -42,7 +42,7 @@ export class DamageCalculations {
         damage,
         actor,
         applyDamageToTotalHp,
-        speakerName
+        speakerName,
       );
     } else {
       return DamageCalculations.calcLocationDamageEffects(
@@ -50,7 +50,7 @@ export class DamageCalculations {
         damage,
         actor,
         applyDamageToTotalHp,
-        speakerName
+        speakerName,
       );
     }
   }
@@ -78,7 +78,7 @@ export class DamageCalculations {
     fullDamage: number,
     actor: RqgActor,
     applyDamageToTotalHp: boolean,
-    speakerName: string
+    speakerName: string,
   ): DamageEffects {
     assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const damageEffects: DamageEffects = {
@@ -157,7 +157,7 @@ export class DamageCalculations {
     damage: number,
     actor: RqgActor,
     applyDamageToTotalHp: boolean,
-    speakerName: string
+    speakerName: string,
   ): DamageEffects {
     const damageEffects: DamageEffects = {
       hitLocationUpdates: {},
@@ -198,7 +198,7 @@ export class DamageCalculations {
     ) {
       const attachedLimbs = actor.items.filter(
         (i: RqgItem) =>
-          i.type === ItemTypeEnum.HitLocation && i.system.connectedTo === hitLocation.name
+          i.type === ItemTypeEnum.HitLocation && i.system.connectedTo === hitLocation.name,
       );
       damageEffects.uselessLegs = attachedLimbs.map((limb) => {
         return {
@@ -243,7 +243,7 @@ export class DamageCalculations {
   }
 
   static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
-    let maxHitPoints = actor.system.attributes.hitPoints.max;
+    const maxHitPoints = actor.system.attributes.hitPoints.max;
 
     if (maxHitPoints == null) {
       return "healthy";

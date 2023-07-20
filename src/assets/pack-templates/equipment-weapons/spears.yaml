@@ -1,22 +1,24 @@
-name: ${{openSystem.content.weapon.javelin}}$
+name: ${{rqgCompendiumContent.weapon.javelin}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/javelin.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.javelin
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId: p6Mm8PuFkfpy0MHS
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.p6Mm8PuFkfpy0MHS
+      skillRqidLink:
+        rqid: i.skill.1h-spears-javelin
+        name: ${{rqgCompendiumContent.weaponSkill.1h-spears.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-spears.specialization.javelin}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6
@@ -24,29 +26,32 @@ system:
       minDexterity: 9
       strikeRank: 2
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d6
       minStrength: 9
       minDexterity: 9
       strikeRank: 2
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId: 794y0cyfzCa5eYPf
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.794y0cyfzCa5eYPf
+      skillRqidLink:
+        rqid: i.skill.javelins-javelin
+        name: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$ (${{rqgCompendiumContent.weaponSkill.javelins.specialization.javelin}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10
@@ -76,25 +81,27 @@ system:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.shortSpear}}$
+name: ${{rqgCompendiumContent.weapon.shortSpear}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-spear.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.short-spear
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId: CIXYxzkBZd5RGJx7
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.CIXYxzkBZd5RGJx7
+      skillRqidLink:
+        rqid: i.skill.1h-spears-shortspear
+        name: ${{rqgCompendiumContent.weaponSkill.1h-spears.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-spears.specialization.shortspear}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -102,21 +109,23 @@ system:
       minDexterity: 7
       strikeRank: 2
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d6+1
       minStrength: 9
       minDexterity: 7
       strikeRank: 2
     twoHand:
-      skillId:
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.RgY6W1u54NyqKa17
+      skillRqidLink:
+        rqid: i.skill.2h-spears-shortspear
+        name: ${{rqgCompendiumContent.weaponSkill.2h-spears.name}}$ (${{rqgCompendiumContent.weaponSkill.2h-spears.specialization.shortspear}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d8+1
@@ -124,13 +133,14 @@ system:
       minDexterity: 7
       strikeRank: 1
     missile:
-      skillId: r24yk70r505De5dy
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.r24yk70r505De5dy
+      skillRqidLink:
+        rqid: i.skill.javelins-shortspear
+        name: ${{rqgCompendiumContent.weaponSkill.javelins.name}}$ (${{rqgCompendiumContent.weaponSkill.javelins.specialization.shortspear}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Throw}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Throw}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d6+1
@@ -160,25 +170,27 @@ system:
   isThrownWeapon: true
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.lance}}$
+name: ${{rqgCompendiumContent.weapon.lance}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/1h-spear.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.lance
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId: eT1Wtz0RWkeq60G2
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.eT1Wtz0RWkeq60G2
+      skillRqidLink:
+        rqid: i.skill.1h-spears-lance
+        name: ${{rqgCompendiumContent.weaponSkill.1h-spears.name}}$ (${{rqgCompendiumContent.weaponSkill.1h-spears.specialization.lance}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10+1
@@ -186,25 +198,28 @@ system:
       minDexterity: 7
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
+      skillRqidLink:
+        rqid:
+        name:
       combatManeuvers: []
       damage: 1d10+1
       minStrength: 9
       minDexterity: 7
       strikeRank: 0
     twoHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
@@ -232,41 +247,45 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.pike}}$
+name: ${{rqgCompendiumContent.weapon.pike}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.pike
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: GKqFmE4XASes5k97
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.GKqFmE4XASes5k97
+      skillRqidLink:
+        rqid: i.skill.2h-spears-pike
+        name: ${{rqgCompendiumContent.weaponSkill.2h-spears.name}}$ (${{rqgCompendiumContent.weaponSkill.2h-spears.specialization.pike}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 2d6+1
@@ -274,9 +293,10 @@ system:
       minDexterity: 7
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
@@ -304,41 +324,45 @@ system:
   isThrownWeapon: false
   isRangedWeapon: false
 ---
-name: ${{openSystem.content.weapon.longSpear}}$
+name: ${{rqgCompendiumContent.weapon.longSpear}}$
 type: weapon
 img: systems/rqg/assets/images/weapons/2h-spear.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.weapon.long-spear
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
   usage:
     oneHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     offHand:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0
       strikeRank: 0
     twoHand:
-      skillId: x9Cj4g9vfO64Uxia
-      skillOrigin: Compendium.rqg.skills-weapons-${{openSystem.lang}}$.x9Cj4g9vfO64Uxia
+      skillRqidLink:
+        rqid: i.skill.2h-spears-longspear
+        name: ${{rqgCompendiumContent.weaponSkill.2h-spears.name}}$ (${{rqgCompendiumContent.weaponSkill.2h-spears.specialization.longspear}}$)
       combatManeuvers:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Thrust}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Thrust}}$
           damageType: impale
           description:
-        - name: ${{openSystem.RQG.Item.Weapon.combatManeuver.Parry}}$
+        - name: ${{uiContent.RQG.Item.Weapon.combatManeuver.Parry}}$
           damageType: parry
           description:
       damage: 1d10+1
@@ -346,9 +370,10 @@ system:
       minDexterity: 7
       strikeRank: 0
     missile:
-      skillId:
-      skillOrigin:
-      combatManeuvers: [ ]
+      skillRqidLink:
+        rqid:
+        name:
+      combatManeuvers: []
       damage:
       minStrength: 0
       minDexterity: 0

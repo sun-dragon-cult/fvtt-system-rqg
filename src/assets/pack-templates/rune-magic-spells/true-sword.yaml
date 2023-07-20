@@ -1,5 +1,5 @@
 # true-sword
-name: ${{openSystem.content.runeMagic.trueSword.name}}$
+name: ${{rqgCompendiumContent.runeMagic.trueSword.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..true-sword
-    name: ${{openSystem.content.runeMagic.trueSword.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.trueSword.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.true-sword
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

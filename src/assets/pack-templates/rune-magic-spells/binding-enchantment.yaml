@@ -1,11 +1,11 @@
 # binding-enchantment
-name: ${{openSystem.content.runeMagic.bindingEnchantment.name}}$
+name: ${{rqgCompendiumContent.runeMagic.bindingEnchantment.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
   rqid: rune-magic-binding-enchantment
-  rqidPriority: ${{openSystem.prio}}$
-  rqidLang: ${{openSystem.lang}}$
+  rqidPriority: ${{rqgCompendiumContent.prio}}$
+  rqidLang: ${{rqgCompendiumContent.lang}}$
   runes:
     - Magic (condition)
   points: 1
@@ -15,10 +15,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..binding-enchantment
-    name: ${{openSystem.content.runeMagic.bindingEnchantment.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.bindingEnchantment.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.binding-enchantment
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,0 +1,1986 @@
+{
+  "prio": 0,
+  "lang": "en",
+  "cult": {
+    "aldrya": {
+      "name": "Aldrya",
+      "tagline": "Goddess of the Woods",
+      "descriptionHtml": "<p>This goddess rules in pine forests, deciduous woodlands, or tropical jungle. She commands everything within the woods: plants, animals, wells and springs, bright glades and dappled glens, emptiness and shadow, ghosts and terrifying spirits.</p><p>Aldrya is also mother of elves and dryads, who are her servants in the forests. In ancient times, the Green Age, Aldrya and the elves ruled all of the world. She is bitter now about the loss, which explains why woods are intrinsically creepy to mankind.</p>"
+    },
+    "arganArgar": {
+      "name": "Argan Argar",
+      "tagline": "God of Surface Darkness",
+      "descriptionHtml": "<p>Argan Argar was a leader among the trolls during the Darkness. He is messenger and translator for the troll pantheon, and the god of merchants. He is popular with trollkin, who claim that Argan Argar first taught them how to use spears.</p>"
+    },
+    "babeesterGor": {
+      "name": "Babeester Gor",
+      "tagline": "the Avenging Daughter",
+      "descriptionHtml": "<p>When the Gods War made the world evil, the earth brought forth its own grim defender. Babeester Gor was born from her mother’s corpse, axes in hand, body ritually scarred to carry deadly magic. She destroyed all kin-slayers, all oath-breakers who swore by her mother, and everything which desecrated the sacred places of the earth.</p>"
+    },
+    "chalanaArroy": {
+      "name": "Chalana Arroy",
+      "tagline": "the Healer",
+      "descriptionHtml": "<p>This goddess is one of the Seven Lightbringers and is also Yelm’s Handmaiden. She knows how to heal all diseases and wounds,  and she healed the world after the Great Darkness. Her worship is widespread, but few of her people know her directly, instead worshiping parts of her or the powerful healing spirits readily available from this lofty deity.</p>"
+    },
+    "dakaFal": {
+      "name": "Daka Fal",
+      "tagline": "the Judge of the Dead",
+      "descriptionHtml": "<p>Daka Fal walked the world and separated the living from the dead, setting each in his place, making known to all their duties and affairs. He is invoked whenever people worship the dead.</p>"
+    },
+    "ernalda": {
+      "name": "Ernalda",
+      "tagline": "the Earth Mother",
+      "descriptionHtml": "<p>Ernalda is the Earth Mother and the most favored of all the Earth goddesses. Among her titles are Earth Queen, the Life-Giver, the Beautiful One, the Great Green Lady, Source of Bounty, the Giver, the Sustainer, Wife of Many, Supporter of All, and Midwife of Time. She and her daughters are the source of food, shelter, and society for most of life. She is the goddess of women, female sexuality, fertility, and motherhood.</p><p>Ernalda has many husbands, but the foremost of them is Orlanth. She presides over a sprawling pantheon of Earth deities, both benevolent and malign.</p><p>The Ernalda cult is of vast importance everywhere, even if her priestesses do not always possess direct political power.</p>"
+    },
+    "eurmal": {
+      "name": "Eurmal",
+      "tagline": "the Trickster",
+      "descriptionHtml": "<p>Trickster God, Fool, Lawbreaker, Outlaw, and Scapegoat, he is nonetheless one of the Seven Lightbringers. He is a dangerous and treacherous god, but he wields great divine power.</p>"
+    },
+    "humakt": {
+      "name": "Humakt",
+      "tagline": "the God of Death",
+      "descriptionHtml": "<p>The mythology of Humakt is a long and unfinished tale of woe. Yet amid the multiple agonies which the God of Death bestows, this god also reveals a glimmer of hope. He idealizes the honorable intentions and beliefs of most men with a singleminded direction. He was born a child of the Primal Air, but he severed his ties to them when they used Death dishonorably. Though Humakt is no longer kin to the air gods, he usually remains their friend.</p>"
+    },
+    "issaries": {
+      "name": "Issaries",
+      "tagline": "the Speaking God",
+      "descriptionHtml": "<p>Lord of Trade, Guardian of Roads, and Messenger of the Gods, Issaries is one of the Seven Lightbringers and psychopomp of that pantheon. Initiates of his cult are merchants and heralds, protected by their god’s reputation and power. The cult language, Tradetalk, is the closest thing to a common tongue in all Glorantha. The cult spread widely during the time of the Jrusteli empire, and still possesses widespread acceptance and influence, ever thirsty for more.</p>"
+    },
+    "kygerLitor": {
+      "name": "Kyger Litor",
+      "tagline": "the Mother of Trolls",
+      "descriptionHtml": "<p>This is the ancestress of all the troll races of the world, and she is widely worshiped. When the sun was slain, she invaded the surface world with her minions, where they conquered the land and, eventually, bore the brunt of the fighting against Chaos. The cult is simple and primitive, often savage or brutal in human opinion, but satisfying to the primal trolls.</p>"
+    },
+    "lhankorMhy": {
+      "name": "Lhankor Mhy",
+      "tagline": "the Knowing God",
+      "descriptionHtml": "<p>Keeper of the Laws, Scribe of the Immortals, and History Singer are his titles. He is the god of the Gray Lords, the Sages of Glorantha. One of the Seven Lightbringers, during that epic voyage he inherited, found, fought for, and stole many pieces of the old powers, preserving them safely to re-enter Time. Holder of the sacred Stone Scrolls forged in the Underworld to hide the secrets of the Compromise from immature souls, even so his knowledge is incomplete, and he and his cult thirst for more.</p>"
+    },
+    "magasta": {
+      "name": "Magasta",
+      "tagline": "the Lord of Waters",
+      "descriptionHtml": "<p>Magasta is the son of Daliath and Framanthe, the moving source of life in the waters. His family personifies the tremendous primal forces of the sea, but Magasta directs them. He is King of the Sea Gods, master of life and death within the depths.</p>"
+    },
+    "maranGor": {
+      "name": "Maran Gor",
+      "tagline": "the Earthshaker",
+      "descriptionHtml": "<p>A sister of Ernalda, she was once generous and kind. When the troubles of the Gods War came, she took the title of Gor, and became an object of fear and awe. She was then a destroyer and was powerful and famous during that black time. Now she is only actively worshiped by those that enjoy the carnage which is her most precious gift. Most great earth temples still include shrines to this deity, and prayers are sent to deflect her wrath.</p>"
+    },
+    "mostal": {
+      "name": "Mostal",
+      "tagline": "the Maker",
+      "descriptionHtml": "<p>Machine God, Keeper of the World Mill, and Master of Stone are some of his titles. Mostal is believed to be a son of the earth and mighty Acos, god of Law from the Celestial Court. From his father he inherited power over stone, which is sometimes called the Lawful Element. He was skilled at all kinds of making and building and has an inborn distrust and lack of understanding for Aldrya. In the God Time he and his brother Stone were slain by elves. Now, dwarfs work steadfastly to repair Mostal’s machine, so that the world works correctly again.</p>"
+    },
+    "orlanth": {
+      "name": "Orlanth",
+      "tagline": "the Storm King",
+      "descriptionHtml": "<p>Master of Storms, Death Wielder, Bringer of Light, and King of the Gods are some of Orlanth’s titles. Orlanth is the chief of the Seven Lightbringers. His worship is very widespread. He is a dire foe of the Red Goddess of the Lunar Empire.</p><p>When known as Orlanth Adventurous, his skills as a poet, fighter, and lover are praised and learned. His aspect of Orlanth Thunderous represents the power the god possesses over the natural elements of storm. As Orlanth Rex, he is praised and worshiped to share in his skill at rule. He knows justice and leadership, fine rhetoric, and other skills needed to rule.</p><p>Orlanth has a feminine incarnation called Vinga that is a patron of warrior women who die their hair red.</p><p>Many lesser spirits are attached to his cult. His religion is one of the largest and most complete in the world, as is only fitting for the King of the Gods.</p><h2>Adventurer Creation</h2><p>Cult Starting Skills: Orate +15%, Speak Language (Stormspeech) +20%, Sing +10%.</p><p><strong>Special Rune Magic:</strong> Dismiss Air Elemental (small or medium only), Increase/Decrease Wind, Summon Air Elemental (small or medium only), Summons of Evil, and Wind Warp available to all subcults. Each subcult has additional special Rune magic spells.</p><p><strong>Cult Spirit Magic:</strong> Bladesharp (var.), Demoralize (2 pts.), Detect Enemies (1 pt.), Disruption (1 pt.), Heal (var.), Mobility (1 pt.), Protection (var.), and Strength (2 pts.).</p><p><strong>Favored Passions:</strong> Devotion (Orlanth), Hate (Chaos), Honor, Loyalty (temple).</p><p><strong>Special Note::</strong> Orlanth has several major subcults: Adventurous/Vinga and Thunderous. The player must pick the subcult their adventurer belongs to. See the description of these cults, following. Rex is not available at character creation.</p><p><strong>Associated Cults:</strong> Chalana Arroy, Ernalda, Eurmal, Issaries, Lhankor Mhy, Odayla, Storm Bull, Yinkin.</p><h3>Orlanth Adventurous/Vinga (Warrior Subcults)</h3><p><strong>Spirit Magic:</strong> Fanaticism, Protection.</p><p><strong>Special Rune Magic (Adventurous subcult only):</strong> Dark Walk, Earth Shield, Flight, Leap, Lightning, Mist Cloud, Shield, and Wind Words. There is also an all-female variant of the Adventurous subcult called Vinga Adventurous, which has access to all the above Special Rune Magic plus the Fearless spell.</p><p><strong>Special Note:</strong> Add +10% to any sword skill.</p><h3>Orlanth Thunderous (Priest Subcult)</h3><p><strong>Spirit Magic:</strong> Extinguish, Second Sight.</p><p><strong>Special Rune Magic (Thunderous subcult only):</strong> Cloud Call, Cloud Clear, and Thunderbolt. An initiate of Orlanth Thunderous has no limit to the size of Air Elemental that can be Summoned or Dismissed.</p><p><strong>Special Note:</strong> Add +10% to Dance.</p><h2>Cult Ranks</h2><h3>Initiate Membership</h3><p><strong>Requirements:</strong> Standard.</p><p><strong>Cult Skills:</strong> 1H Sword, Battle, Cult Lore (Orlanth), Farm, Herd, Orate, Scan, Sing, Speak (Stormspeech), Worship (Orlanth).</p><p><strong>Favored Passions:</strong> Devotion (Orlanth), Hate (Chaos), Honor, Loyalty (Temple).</p><p><strong>Spirit Magic:</strong> Bladesharp, Demoralize, Detect Enemies, Disruption, Fanaticism, Heal, Mobility, Protection, Strength.</p><p><strong>Subcults:</strong> The Orlanth cult has two major subcults: Adventurous and Thunderous. An initiate picks one subcult or the other when they join the cult of Orlanth&mdash;typically whatever subcult is locally favored. No additional POW sacrifice is necessary.</p><p>Other important subcults include Orlanth Rex and Vinga. Only tribal leaders can join the Orlanth Rex subcult. The tribal king is the High Priest of Orlanth Rex for that tribe; the Prince of Sartar is High Priest for all the tribes of Sartar.</p><p>The Vinga subcult is an all-female warrior subcult that worships Orlanth in female form. Initiates must dye their hair red. It is otherwise identical to Orlanth Adventurous.</p><p><strong>Note:</strong> Since they worship the King of the Storm gods, initiates of Orlanth can always tell when a change in the weather is coming. Wind Lords and Storm Voices can tell approximately what the weather will be one day in advance.</p>",
+      "holyDays": "<p>Windsday of Movement week in Storm Season is the High Holy Day. Each season, the Windsday of Movement week is a seasonal holy day, as are the Windsdays of Sacred Time.</p><p>Additionally, Orlanth has a “floating” seasonal holy day each season. These holy days are determined by the priests of the cult and not fixed by calendar.</p>",
+      "subcult": {
+        "adventurous": {
+          "name": "Orlanth Adventurous",
+          "tagline": "God of Adventurers and Heroes"
+        },
+        "rex": {
+          "name": "Orlanth Rex",
+          "tagline": "King of the Gods"
+        },
+        "thunderous": {
+          "name": "Orlanth Thunderous",
+          "tagline": "the Storm God"
+        },
+        "vinga": {
+          "name": "Vinga",
+          "tagline": "the Red-Haired Warrior"
+        }
+      }
+    },
+    "theRedGoddess": {
+      "name": "The Red Goddess",
+      "tagline": " ",
+      "descriptionHtml": "<p>Moon Goddess, Mistress of Time, Sister of Chaos, and Lurker upon the Veil are some other titles of this unique goddess. She was born in the Gods Age, but was broken and scattered in prehistoric wars; not slain, but not alive either. Her religion is a strange mixture of mysticism and practical magic, of barbaric cruelty and dignified beauty, of freedom and of tyranny. Its philosophies are unique and complex. Although she was born inside of Time, and is therefore mortal, she quickly developed her internal abilities and set off upon a dread Godquest which ended with her apotheosis only 27 years later.</p><p>The Red Goddess earned and worked and danced and fought her way into the fabric of the world. She has taken for her domain the Middle Air, and so has earned the eternal enmity of Orlanth and other air gods. Her cult spreads beyond the bounds of her Empire and is very powerful. It includes many lesser deities within it.</p>"
+    },
+    "theSevenMothers": {
+      "name": "The Seven Mothers",
+      "tagline": " ",
+      "descriptionHtml": "<p>These gods are mothers to the Red Goddess and their combined pantheon is the official state religion of the Lunar Empire. Unlike many Gloranthan cults, the Red Goddess cult is actively trying to recruit new believers and convert others to their religion. Their magic is strongly tied to the cycles of Glorantha’s red moon.</p><p>Despite their name, three of the “Mothers” are male. The seven demigods who conspired to resurrect the Red Goddess were Teelo Norri, Jakaleel the Witch, Queen Deezola, She Who Waits, Danfive Xaron, Yanafal Tarnils, and Irrippi Ontor. Associated cults include Etyries, Hwarin Dalthippa, Yara Aranis, Hon-eel, the Red Goddess, and the Young Elementals.</p>"
+    },
+    "stormBull": {
+      "name": "Storm Bull",
+      "tagline": " ",
+      "descriptionHtml": "<p>Storm Bull is a god of untamed animal power and passion. His wild and intense fury could even beat Chaos, and so the berserk deity led the war of the Greater Darkness. He fought the Devil to a standstill and trapped him under a mountain of adamant. Thus, he is grudgingly tolerated in many regions.</p>"
+    },
+    "waha": {
+      "name": "Waha",
+      "tagline": "the Butcher",
+      "descriptionHtml": "<p>Waha is the son of the Storm Bull. He appeared in Prax, among the leaderless people of the area, teaching them the new ways necessary to survive, and taking wives from among them to breed new dynasties. Among his many great deeds are the digging of the Good Canal to cleanse the earth; the taming of Oakfed, god of wildfire; and teaching people and animals each their proper stations for the new world.</p>"
+    },
+    "yelm": {
+      "name": "Yelm",
+      "tagline": "the Imperial Sun",
+      "descriptionHtml": "<p>God of the Middle Fire and brother of Lodril and Dayzatar. Yelm was not always bound to his path in the Sky but traveled freely during the God Time. His disastrous feud with Orlanth was one of the most important struggles of the Gods War, for when he was slain by Orlanth, his demise marked the Lesser Darkness which filled all the cosmos with fear, allowing Chaos to seep in.</p><p>Yelm is worshiped in the Lunar Empire as the Solar Emperor and in the Grazelands as the Imperial Sun Horse.</p>"
+    },
+    "yelmalio": {
+      "name": "Yelmalio",
+      "tagline": "the Bright God",
+      "descriptionHtml": "<p>Yelmalio is the bright sun that brings light but not heat. He is a son of Yelm and sometimes friend and sometimes foe of Orlanth. He’s best known for the Sun Dome Temples that provide mercenaries to both the Orlanthi and their enemies.</p>"
+    }
+  },
+  "fumbleTable": {
+    "name": "Fumble",
+    "description": "Combat fumble rolls",
+    "range1-4Html": "Cannot parry next melee round."
+  },
+  "culture": {
+    "esrolian": "Esrolian",
+    "heortling": "Heortling",
+    "bisonTribe": "Bison Tribe",
+    "highLlamaTribe": "High Llama Tribe",
+    "impalaTribe": "Impala Tribe",
+    "sableTribe": "Sable Tribe",
+    "poljoni": "Pol-Joni",
+    "grazelandPonyBreeders": "Grazeland Pony Breeders",
+    "lunarProvincial": "Lunar Provincial",
+    "tarshite": "Tarshite"
+  },
+  "homeland": {
+    "esrolia": {
+      "name": "Esrolia",
+      "description": "<p>This rich and civilized land is ruled by a matriarchy. Esrolia is home to Earth Mother Ernalda and is the center for Earth worship. Nochet, its capital city, is the largest in Glorantha, ruled by the Queen of Esrolia. However, that magnificent city is threatened by the Wolf Pirate fleets, fearsome reavers led by the demigod Harrek the Berserk. Earlier though, these same pirates were instrumental in defeating the Lunar Empire in 1624 and forcing it out of the Holy Country.</p><p>Esrolians think of themselves as civilized, curious, luxurious, and sensual. Their styles set the standards in many lands. They are cosmopolitan, with knowledge of many distant realms. They dislike war, and favor negotiation over open conflict. Foreigners consider Esrolians as proud, ambitious, devious, emotional, and quarrelsome.</p>"
+    },
+    "grazelands": {
+      "name": "Grazelands",
+      "description": "<p>The Grazelands are a region of grassy hills and valleys inhabited by the Pony Breeders. This semi-nomadic tribe herds horses and rules over serfs originally from Esrolia, Sartar, and Tarsh. Their ruler is the Feathered Horse Queen, a powerful Earth priestess. Otherwise, Pony Breeder society is rigid and patriarchal, with everyone’s place determined by age and birth. The tribe is divided into a dozen clans; clan chiefs are elected but few among the populace are eligible. Pony Breeders consider themselves innately superior to all ‘groundsfolk.’</p>"
+    },
+    "lunarTarsh": {
+      "name": "Lunar Tarsh",
+      "description": "<p>The Kingdom of Tarsh is a province of the Lunar Empire and its rulers and urban populations have adopted the civilized culture and religion of the Lunar Heartlands. Lunar Tarshites are proud and arrogant: they dominated Dragon Pass for the last generation. They are loyal to the Red Emperor and the Red Goddess but are now torn between partisans of King Pharandros and those of his uncle, the great general Fazzur Wideread.</p>"
+    },
+    "oldTarsh": {
+      "name": "Old Tarsh",
+      "description": "<p>Old Tarsh is a group of tribes centered on the foothills of Mount Kero Fin that refuse to acknowledge the Lunar dynasty of Tarsh, remaining loyal to the Shaker Priestess. Once the core of the Kingdom of Tarsh, the tribes of Old Tarsh have been marginalized, and survive by hunting and raiding. Old Tarshites are poor, but proud and fierce. They view themselves as the rightful rulers of Tarsh and see Lunar Tarshites as temporary usurpers. They are notorious for being both vengeful and indulgent.</p>"
+    },
+    "prax": {
+      "name": "Prax",
+      "description": "<p>These barbarian nomads reside in the chaparral plains east of Dragon Pass. Each tribe rides and herds the beast it is named for: bison, bolo lizard, high llama, impala, rhinoceros, sable antelope, and even horses. Otherwise, the horse is strictly taboo for most Praxians (except for the Pol-Joni).<p/><p>Praxians are proud and warlike, distrusting outsiders and each other. They hate Chaos with a passion and eschew civilized cults. Their lives are harsh and cruel, full of war, the very environment they live in hostile to them. A popular refrain among the Praxians is 'Life is War.'</p><p>These are the major human Praxian tribes:</p><ul><li><strong>Bison:</strong> Bison Riders are dependent upon their heavy, slow animals for their livelihood. Like their beasts, Bison Riders are big and thick, slow but terrible on impact.</li><li><strong>High Llama:</strong> High Llama Riders are the smallest Great Tribe but are the most powerful. Their beasts tower over other Praxian steeds and can run down even the swiftest skirmishers. They fear no one on the plains.</li><li><strong>Impala:</strong> Impala Riders make up for their diminutive size with numbers, being the most populous tribe in Prax. They rely on the speed and agility of their beasts to protect them.</li><li><strong>Pol-Joni:</strong> The ‘Bastard Tribe,’ the Pol-Joni were horseriders from Dragon Pass. They fought their way onto the plains and have the magical and martial strength to remain there. They are sometimes considered one of the tribes of Sartar.</li><li><strong>Sable Riders</strong>: The Sable Tribe ride giant antelopes with curving horns. When the Lunar Empire invaded Prax, the Sables sided with them against the other Praxian tribes. The Sables later turned against the Lunars, demonstrating the temporary nature of any agreement among the Praxians.</li><</ul><p>Another species, the Morokanth, are intelligent, humanoid tapirs, and herd nonintelligent humans.</p><p>At Prax’s edge is the River of Cradles, an arable river valley dominated by the city of Pavis and old ruins called the Big Rubble. The hero Argrath White Bull has united the Praxian tribes behind his leadership and has proclaimed himself King of Pavis.</p>"
+    },
+    "sartar": {
+      "name": "Sartar",
+      "description": "<p>Sartar is the default homeland for adventurers, a mountainous kingdom made up of Storm-worshiping hill tribes united by the royal house of Sartar. Sartar recently liberated itself from the Lunar Empire, and in doing so began the Hero Wars. It is ruled by Kallyr Starbrow, and is a hotbed of magical questing, petty feuds, and would-be Heroes.</p><p>Others consider Sartarites to be quarrelsome, reckless, and fiercely independent. Most are devoted to Orlanth and Ernalda and hate the Lunar Empire with a burning passion.</p>"
+    }
+  },
+  "journalEntryType": {
+    "cultDescription": {
+      "name": "Cult",
+      "title": "<h3>Cult</h3><br/>"
+    },
+    "runeDescription": {
+      "name": "Rune",
+      "title": "<h3>Rune</h3><br/>"
+    },
+    "runeMagicDescription": {
+      "name": "Rune Magic",
+      "title": "<h3>Rune Magic</h3><br/>"
+    },
+    "skillDescription": {
+      "name": "Skill",
+      "title": "<h3>Skill</h3><br/>"
+    },
+    "spiritMagicDescription": {
+      "name": "Spirit Magic",
+      "title": "<h3>Spirit Magic</h3><br/>"
+    }
+  },
+  "language": {
+    "aldryami": {
+      "name": "Aldryami"
+    },
+    "esrolian": {
+      "name": "Esrolian"
+    },
+    "heortling": {
+      "name": "Heortling"
+    },
+    "mostali": {
+      "name": "Mostali"
+    },
+    "newPelorian": {
+      "name": "New Pelorian"
+    },
+    "praxian": {
+      "name": "Praxian"
+    },
+    "pureHorseTongue": {
+      "name": "Pure Horse Tongue"
+    },
+    "stormspeech": {
+      "name": "Stormspeech"
+    },
+    "tarshite": {
+      "name": "Tarshite"
+    },
+    "tradetalk": {
+      "name": "Tradetalk"
+    }
+  },
+  "rune": {
+    "air": "Air",
+    "beast": "Beast",
+    "chaos": "Chaos",
+    "combine": "Combine",
+    "command": "Command",
+    "darkness": "Darkness",
+    "dragonewt": "Dragonewt",
+    "death": "Death",
+    "disorder": "Disorder",
+    "dispel": "Dispel",
+    "earth": "Earth",
+    "fate": "Fate",
+    "fertility": "Fertility",
+    "fireSky": "Fire/Sky",
+    "harmony": "Harmony",
+    "illusion": "Illusion",
+    "infinity": "Infinity",
+    "law": "Law",
+    "light": "Light",
+    "luck": "Luck",
+    "magic": "Magic",
+    "man": "Man",
+    "mastery": "Mastery",
+    "moon": "Moon",
+    "movement": "Movement",
+    "plant": "Plant",
+    "separate": "Separate",
+    "spirit": "Spirit",
+    "stasis": "Stasis",
+    "summon": "Summon",
+    "tap": "Tap",
+    "truth": "Truth",
+    "water": "Water"
+  },
+  "runeDescription": {
+    "airElement": {
+      "name": "Air (element)",
+      "description": "<p>Air is the Fifth Born, the Son of Earth and Sky (Sky was also the son of Earth). He is the Breaker of Laws, Destroyer of Heaven, Fighter Against Darkness, and Liberator of the Sun. He usually manifests as a storm god, such as Orlanth in Sartar or the Storm Bull of Prax.</p><p>The element of strength and violence, Air forever separates Earth from Sky. It is the woe of the world and the savior of the cosmos. It is the element of weather, storm, wind, and the Middle Air.</p><p><b>Characteristic:</b> STR</p><p><b>Personality:</b> To have a strong affinity with Air means to be passionate, violent, proud, strong, and unpredictable.</p><p><b>Sense:</b> Sense Assassin, Sense Chaos, Smell</p><p><b>Skill Category:</b> Manipulation</p><p><b>Weapon:</b> Sword</p><p><b>Organs:</b> Lungs, muscle</p><p><b>Color:</b> Orange</p><p><b>Metal:</b> Bronze</p><p><b>Phyla:</b> Mammal</p>"
+    },
+    "beastForm": {
+      "name": "Beast (form)",
+      "description": "<p>This Rune is also called the Dragon’s Eye, and is supposed to represent the armor plate over the eye of a dragon. Dragons are thought to be the progenitors of all beasts (at least those with four or more legs) though no one has had the nerve to ask a dragon about it. It is thought to have originally been a Dragonewt Rune, and its complexity would indicate this.</p><p>To be strong with the Beast Rune is to be bestial, savage, feral, wild, and untamed. Such adventurers are uncomfortable in cultivated lands, preferring the wilderness.</p>"
+    },
+    "chaosForm": {
+      "name": "Chaos (form)",
+      "description": "<p>Descriptive of beings tainted by Chaos. The Chaos Rune might be combined with any other Rune, as nothing is totally safe from its influence.</p>"
+    },
+    "combineTechnique": {
+      "name": "Combine (technique)",
+      "description": "<p>This technique forces a specific manifestation of one Rune to combine with that of a different specified Rune. It is the opposite of Separate.</p>"
+    },
+    "commandTechnique": {
+      "name": "Command (technique)",
+      "description": "<p>This technique forces a specific manifestation of a Rune to act in a specific manner in accordance with its nature. Knowledge of Command provides insight into all other techniques.</p>"
+    },
+    "darknessElement": {
+      "name": "Darkness (element)",
+      "description": "<p>The most ancient Rune, the First Born, from whom all other Elements were born or descended. Darkness was the first Element to arise out of the Primal Chaos.</p> <p>The element of Darkness was the first to withdraw itself from Chaos, its birth attended by tales of primeval wars of Darkness against Chaos. It is the element of the Underworld, the endless freezing darkness that preceded creation and still lurks and hungers under the earth and seas.</p><p><b>Characteristic:</b> SIZ</p><p><b>Personality:</b> To have a strong affinity with Darkness is to be cold, cruel, patient, hungry, large, and secretive.</p><p><b>Sense:</b> Listen</p><p><b>Skill Category:</b> Stealth</p><p><b>Weapons:</b> Club, mace, rock</p><p><b>Organs:</b> Stomach, fat</p><p><b>Color:</b> Black</p><p><b>Metal:</b> Lead</p><p><b>Phyla:</b> Insect</p>"
+    },
+    "deathPower": {
+      "name": "Death (power)",
+      "description": "<p>Known to be the First Sword, the immortal and cursed weapon which the god Humakt used to bring Death to the world. Others claim this to be the first of the Runes, citing the separation of the world from Chaos as the first action in creation.</p><p>To be strong with the Death Rune is to separate oneself from the material world and seek to deny or even destroy the world of the senses. Such adventurers are relentless, ruthless, and ascetic, willing to deny others and themselves.</p>"
+    },
+    "disorderPower": {
+      "name": "Disorder (power)",
+      "description": "<p>Directly derived from Chaos. Anarchistic cults claim that this was the first step of creation from Chaos, therefore Disorder is the First Born of the Powers and the foundation of the universe.</p><p>To be strong with the Disorder Rune is to place one’s own welfare, advantage, or pleasure above all others. Such adventurers may be described as individualistic, impulsive, and contrary, or as greedy, thoughtless, and egocentric.</p>"
+    },
+    "dispelTechnique": {
+      "name": "Dispel (technique)",
+      "description": "<p>This technique allows a sorcerer to dismiss specific manifestations of the Rune to the material world. It is the opposite of Summon.</p>"
+    },
+    "dragonewtForm": {
+      "name": "Dragonewt (form)",
+      "description": "<p>As exotic as the race it represents, it is found only in the Dragon Pass area. Unlike most of the other Form Runes, it is never used with an Elemental Rune.</p>"
+    },
+    "earthElement": {
+      "name": "Earth (element)",
+      "description": "<p>Earth is the third Element, Daughter of the Seas, Mother of the Sky, Wife to Many, Supporter of All. At least half the cults in Glorantha include the Earth in some manifestation or other, as Life-Giver, Stone-Father, Shaker, or Primal Ancestress.</p><p>The element of matter and the terrestrial world, Earth is associated with the sensual aspects of both life and death. It is rich with life and gifts, sometimes terrifying and deadly. It is the Rune of physical things, and all things that live andgrow atop and within the earth.</p><p><b>Characteristic:</b> CON</p><p><b>Personality:</b> To have a strong affinity with Earth is to be pragmatic, practical, prudent, worldly, sturdy, and sensual.</p><p><b>Sense:</b> Search</p><p><b>Skill Category:</b> Communication</p><p><b>Weapon:</b> Axe</p><p><b>Organs:</b> Genitals, bone</p><p><b>Color:</b> Green</p><p><b>Metal:</b> Copper</p><p><b>Phyla:</b> Reptile</p>"
+    },
+    "fateCondition": {
+      "name": "Fate (condition)",
+      "description": "<p>Very few cults use this as an expression of the way of the world. Instead, it is used by downtrodden cultures that have no other explanation for their status, and conversely by those at the top, to justify their own positions.</p>"
+    },
+    "fertilityPower": {
+      "name": "Fertility (power)",
+      "description": "<p>Symbolizes the Ancient Cup from which the whole world was poured at the dawn of creation. This is the symbol of growth and life.</p><p>To be strong with the Fertility Rune is to enjoy the pleasures of the flesh, most notably sexual desire. Such adventurers are generous and giving, often without personal commitment between the persons involved.</p>"
+    },
+    "fireSkyElement": {
+      "name": "Fire/Sky (element)",
+      "description": "<p>The Sky is different from the Air, for Air separates the Sky and the Earth. After his defeat by his son, the Sky has been aloof from mankind, although vestiges of his worship, such as the Sun Dome Temple, are still present in the land.</p><p>The element of Fire/Sky is purification. It destroys polluting matter and withdraws upward from the Material World. It is the Sky Dome and the stars, with its greatest manifestation being the fiery Sun that brings light and warmth to the world.</p><p><b>Characteristic:</b> INT</p><p><b>Personality:</b> To have a strong affinity with Fire/Sky means to be pure, chaste, idealistic, intellectual, and perceptive.</p><p><b>Sense:</b> Scan</p><p><b>Skill Category:</b> Perception</p><p><b>Weapons:</b> Spear, bow</p><p><b>Organs:</b> Brain, sinew</p><p><b>Color:</b> Yellow</p><p><b>Metal:</b> Gold</p><p><b>Phyla:</b> Bird</p>"
+    },
+    "harmonyPower": {
+      "name": "Harmony (power)",
+      "description": "<p>Said to represent the Divine Harp with which Order was separated from Chaos. It is quite ancient and revered throughout Glorantha.</p><p>To be strong with the Harmony Rune is to put the welfare of one’s selfdefined community (which might be as small as a village or as large as their entire world) above one’s own. Those aligned with this Rune are helpful, careful, compromising, generous, and compassionate—they make peace, not discord.</p>"
+    },
+    "illusionPower": {
+      "name": "Illusion (power)",
+      "description": "<p>The Puppeteer Troupe, the major cult of the Father of Illusion, always claimed that this was the First Rune, for without Illusion, there would be none of us to think we ever were. They refuse to explain further.</p><p>To be strong with the Illusion Rune is to distort truths or fabricate untruths, for one’s own ends or on behalf of others, or in some cases simply for the sake of doing so. Such adventurers view reality as something subjective, and subject to their imagination.</p>"
+    },
+    "infinityCondition": {
+      "name": "Infinity (condition)",
+      "description": "<p>The mark of the gods. One who possesses the Infinity Rune is almost like a god. This Rune is not used lightly, as it implies total control of the power flow around the user, making them invulnerable to almost all magic. It is characteristic of gods, dragons, and the greatest Heroes only.</p>"
+    },
+    "lawCondition": {
+      "name": "Law (condition)",
+      "description": "<p>This Rune describes the immutable laws of the universe and is typically associated with sorcery.</p>"
+    },
+    "lightCondition": {
+      "name": "Light (condition)",
+      "description": "<p>Light without heat. A subrune of Fire/Sky.</p>"
+    },
+    "luckCondition": {
+      "name": "Luck (condition)",
+      "description": "<p>Thought to be both an expression of Chaos as well as the stamp of approval of the gods, this Rune is little used, except in the Holy Country, where the Masters of Luck and Death proudly display the symbol of the chance they take with every breath.</p>"
+    },
+    "magicCondition": {
+      "name": "Magic (condition)",
+      "description": "<p>Almost redundant in this magic-rich world, this Rune describes how a cult or individual deals with the power of another Rune. Since it is impossible to deal with Runes without magic, this Rune is especially important.</p>"
+    },
+    "manForm": {
+      "name": "Man (form)",
+      "description": "<p>This Rune represents the humanoid shape and is common among all humanoid races. Some other races interpret it as “slave” or “food.” It is said to represent Grandfather Mortal, and numerous folktales are told about him.</p><p>To be strong with the Man Rune is to be civilized, settled, sociable, and ethical. Such adventurers are uncomfortable in the wilderness, preferring lands tamed by humanity.</p>"
+    },
+    "masteryCondition": {
+      "name": "Mastery (condition)",
+      "description": "<p>This all-purpose Rune can symbolize the mastery of mortals, of magic, or of elements. As the mastery of mortals, it describes a Hero; as the mastery of magic, it symbolizes any cult of reasonable power. The use of such Condition Runes usually masks the true identifying Runes of the cult or person described, although it may also signify the independence of a Hero or powerful magician from cult ties.</p>"
+    },
+    "moonElement": {
+      "name": "Moon (element)",
+      "description": "<p>Moon is the Sixth Element, little accepted amongst her peers. Outside the Lunar Empire she has hardly any presence at all, though the Moon is sometimes considered a Condition Rune.</p><p>The element of Moon was destroyed in the Gods War but was reborn within Time as the Red Goddess. Her secrets are woven into balance and time, resulting in the Lunar cycles laid upon the surface of this world. The Moon accepts Chaos as part of the Cosmic Balance, and thereby earns the enmity of much of the rest of the world.</p><p><b>Characteristic:</b> POW</p><p><b>Personality:</b> To have a strong affinity with the Moon Rune is to seek spiritual liberation from the bondage of fear and ignorance, and to be mystical and magical.</p><p><b>Sense:</b> None</p><p><b>Skill Category:</b> Magic</p><p><b>Weapons:</b> Curved blades such as the sickle-sword and the kopis</p><p><b>Organs:</b> Inner eye, pineal gland</p><p><b>Color:</b> Red</p><p><b>Metal:</b> Silver</p><p><b>Phyla:</b> None</p>"
+    },
+    "movementPower": {
+      "name": "Movement (power)",
+      "description": "<p>Denotes the ancient wheel. As usual, there are claims for it to be the First Rune, for there would have been no growth from Chaos without it. Folktales speak of the World Bird which escaped from the Maws of Chaos upon this wheel.</p><p>To be strong with the Movement Rune is to be changeable, energetic, rebellious, and ambitious. Such adventurers can adapt quickly to changing circumstances, but are also impulsive and reckless.</p>"
+    },
+    "plantForm": {
+      "name": "Plant (form)",
+      "description": "<p>The symbol of the first life upon Glorantha. It is said to symbolize the first Plant god, a son of the Earth and Sea. Many cults have a connection with the Plant Rune, such as Aldrya, whose worship combines the Runes of Earth, Plant, and the Power Rune of Fertility.</p>"
+    },
+    "separateTechnique": {
+      "name": "Separate (technique)",
+      "description": "<p>This technique forces a specific manifestation of a Rune to remove itself from a different specified Rune. It is the opposite of Combine.</p>"
+    },
+    "spiritForm": {
+      "name": "Spirit (form)",
+      "description": "</p>This Rune describes disembodied entities existing in the Spirit World.</p>"
+    },
+    "stasisPower": {
+      "name": "Stasis (power)",
+      "description": "<p>This Rune is closely connected with the art of alchemy, and the dwarves. They claim that this is the First Rune, for it provided the foundation from which all else was created.</p><p>To be strong with the Stasis Rune is to be resolute and unchanging. Such an adventurer may be described kindly as determined or dogged, and less kindly as doctrinaire or obstinate.</p>"
+    },
+    "summonTechnique": {
+      "name": "Summon (technique)",
+      "description": "<p>This technique allows the sorcerer to call forth specific manifestations of the Rune to the material world. It is the opposite of Dispel.</p>"
+    },
+    "tapTechnique": {
+      "name": "Tap (technique)",
+      "description": "<p>This technique allows a sorcerer to transform the manifestation of a Rune into raw energy that the sorcerer can use. Knowledge of Tap provides insight into all other techniques.</p>"
+    },
+    "truthPower": {
+      "name": "Truth (power)",
+      "description": "<p>A Rune of the ancient, all-seeing Sky gods. Said to represent the torch that mortals used to escape from Chaos in the Great Darkness and to survive until the Dawn. Yet another candidate for First Rune, for its constancy and order set creation apart from random, unsettled Chaos.</p><p>To be strong with the Truth Rune is to view the truth as something objective, and outside of individual biases, interpretations, feelings, and imaginings. Such adventurers describe things as they truly are, both in matters small and large, no matter what the consequences.</p>"
+    },
+    "waterElement": {
+      "name": "Water (element)",
+      "description": "<p>Water was born of Darkness. As an Element, it is called Son of Darkness, Pathway to the Underworld, and Supporter of the Earth.</p><p>Within Water lies all the potential of the universe without darkness. It is the element of the seas, lakes, and rivers, and all the waters of the world.</p><p><b>Characteristic:</b> DEX</p><p><b>Personality:</b> To have a strong affinity with Water is to be mercurial, changeable, capricious, quick, and mutable.</p><p><b>Sense:</b> Taste</p><p><b>Skill Category:</b> Agility</p><p><b>Weapons:</b> Net, trident, whip</p><p><b>Organs:</b> Heart, blood</p><p><b>Color:</b> Blue</p><p><b>Metal:</b> Quicksilver</p><p><b>Phyla:</b> Fish</p>"
+    }
+  },
+  "runeMagic": {
+    "absorption": {
+      "name": "Absorption",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Ernalda</i></p><p>Each point absorbs 1 point of attacking Rune magic or 2 points of spirit magic directed at the target, converting those points into magic points that can be used as normal by the caster (no matter who the target is). It only works on spells it equals or is greater than. When the spell ends, the magic points vanish.</p>"
+    },
+    "analyzeMagic": {
+      "name": "Analyze Magic",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Lhankor Mhy</i></p><p>Gives a true statement about at least one function of a single magical item, entity, or substance. Each additional Rune point spent reveals another statement about the subject.</p>"
+    },
+    "arousePassion": {
+      "name": "Arouse Passion",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Ernalda</i></p><p>Adds +20% to one of the target’s Passions, can create a new temporary Passion at 20%. Each point stacked adds +20% to the Passion.</p>"
+    },
+    "axisMundi": {
+      "name": "Axis Mundi",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Daka Fal, Waha</i></p><p>Creates a holy sanctuary with a 10-meter radius per Rune point which:</p><ul><li>Allows ancestral spirits to appear without a Visibility spell.</li><li>Acts as a beacon for spirits.</li><li>Protects the shaman who created it, acting as a protective circle.</li><li>Acts as a locus for the transition of an assistant shaman to a full shaman.</li><li>Attracts cult-aligned spirits to participate in Holy Day ceremonies and celebrations.</li><li>Lasts for 15 minutes plus an additional 15 minutes per magic point stacked with the spell.</li></ul>"
+    },
+    "axeTrance": {
+      "name": "Axe Trance",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Babeester Gor</i></p><p>Each magic point spent with this spell increases one of the caster’s Axe skills by +10%. This can be combined with other weapon-enhancing spells, but not Berserker or Fanaticism. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using an axe in combat, the spell’s effect ends.</p>"
+    },
+    "ban": {
+      "name": "Ban",
+      "description": "<p><i><b>Cost:</b> 1 or 3<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Can only be cast by Chief or High Priest. Forbids target from participating in worship at the caster’s temple or shrine for three years (1 pt.) or until the target is dead (3 pts.).</p>"
+    },
+    "bearsSkin": {
+      "name": "Bear's Skin",
+      "description": " <p><i><b>Cost:</b> 3<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla</i></p><p>Target grows a coat of fur, adding +6 to SIZ and 4 points of armor to all hit locations. This may increase damage bonus and hit points. Cannot be combined with worn armor. Can only be cast on Odayla worshipers and allied cults.</p>"
+    },
+    "bearsStrength": {
+      "name": "Bear's Strength",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla, Orlanth Thunderous</i></p><p>Target’s STR doubles, adding +10% to Agility, Manipulation, and weapon and shield skills. Can only be cast on Odayla worshipers. Moves damage bonus up one step (none to 1D4, 1D4 to 1D6, then to 2D6, etc.</p>"
+    },
+    "becomeOtherSex": {
+      "name": "Become (Other Sex)",
+      "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Self<br><b>Cults:</b> Eurmal</i></p><p>Changes the target’s body and appearance to a that of another sex but has no other effect on characteristics or skills. The caster may choose to reduce their SIZ, to a minimum of 1.</p>"
+    },
+    "berserker": {
+      "name": "Berserker",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Babeester Gor, Storm Bull</i></p><p>Target goes berserk, forgetting all but the need to kill their enemies. It cannot be cast on someone under the Fanaticism spell, and the spells will not combine. Berserker has the following effects:</p><ul><li>Increases the target’s attack skill rating with hand weapons by half again.</li><li>Increases CON by half again (increasing hit points).</li><li>Bestows 2 points of Countermagic.</li><li>Protection from incapacitation, shock, unconsciousness, or exhaustion while the spell is in effect. If subject to these, they take effect when the spell has expired.</li><li>All CON rolls succeed unless a 96–00 is rolled.</li><li>Against Chaos (having the Chaos Rune or from Chaotic origins) the attack rating is doubled and Countermagic is increased to 4 points.</li><li>A Berserker cannot cast magic, Dodge, or parry attacks.</li></ul><p>To shake free of the spell, the Berserker must roll INT×1 or Meditate successfully. A Chalana Arroy initiate can bring them out of the berserk fury with a CHA×5 roll. When the spell expires, the Berserker is incapacitated, as if they have fallen into a deep sleep. They may be woken through normal means.</p>"
+    },
+    "bindGhost": {
+      "name": "Bind Ghost",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Binds a spirit of a willing and dying Humakti into the targeted area as a ghost. Requires one round of successful spirit combat.</p>"
+    },
+    "bindingEnchantment": {
+      "name": "Binding Enchantment",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Creates a magic item capable of holding a spirit or other entity. Must be enchanted with 1 point of permanent POW per type of characteristic possessed by the desired entity.</p>"
+    },
+    "blastEarth": {
+      "name": "Blast Earth",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Babeester Gor, Ernalda, Maran Gor</i></p><p>Affects one square meter per Rune point spent, doubled with each additional point beyond 1. No plants will flower, bear fruit, or grow in the area affected for one full year.</p>"
+    },
+    "blessCrops": {
+      "name": "Bless Crops",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Ernalda</i></p><p>Blesses a hide of land (an area equivalent to the amount that can feed and support a single family), improving the farmer’s skill and their income from that land.</p>"
+    },
+    "blessWoad": {
+      "name": "Bless Woad",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Only castable by a Wind Lord of Orlanth on High Holy Days. Creates a pot of holy woad (1 pt. armor and magical protection per Rune point spent).</p>"
+    },
+    "catseye": {
+      "name": "Catseye",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Yelmalio, Yinkin</i></p><p>Target sees in the dark, like a cat, if some degree of light exists. Eyes look catlike and reflect light as a cat’s does. Lasts 12 hours.</p>"
+    },
+    "charisma": {
+      "name": "Charisma",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Ernalda, Yinkin</i></p><p>Doubles CHA; adds +20% to Communication and Magic skills.</p>"
+    },
+    "clairvoyance": {
+      "name": "Clairvoyance",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Allows the caster, while in a trance state, to see and hear any location within five kilometers as if they were there. The caster must have previously been to the location.</p>"
+    },
+    "claws": {
+      "name": "Claws",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Odayla, Yinkin</i></p><p>This can only be cast by and upon initiates of Odayla or Yinkin. Target gains clawed hands, with the following effects:</p><ul><li>1D6 damage plus damage bonus.</li><li>Chance to hit is equal to normal Fist attack.</li><li>Target can claw twice per round, 5 strike ranks apart.</li><li>Gain +50% to Climb.</li></ul>"
+    },
+    "cloudCall": {
+      "name": "Cloud Call",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Thunderous</i></p><p>Summons or creates cloud cover for all visible sky, increasing chance of rain by 20% per Rune point spent.</p>"
+    },
+    "comfortSong": {
+      "name": "Comfort Song",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Chalana Arroy</i></p><p>This Song of Power causes those in earshot to feel comfort from pain and distress. Incapacitated adventurers can continue fighting while this song is being sung.</p>"
+    },
+    "commandCultSpiritElemental": {
+      "name": "Command Cult Spirit (Elemental)",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> All</i></p><p>The Rune used depends on the type of elemental to be commanded. Enables the caster to command any of their cult’s spirits or elementals if they overcome its POW. A cult spirit or elemental not controlled with this spell behaves according to its natural inclination, until destroyed or the spell expires.</p>"
+    },
+    "commandWorshipers": {
+      "name": "Command Worshipers",
+      "description": "<i><b>Cost:</b> 2<br><b>Type:</b> Ritual<br><b>Cults:</b> Orlanth Rex</i></p><p>Causes all affiliated Orlanthi worshipers within a five-kilometer radius to gather within two days.</p>"
+    },
+    "createFissure": {
+      "name": "Create Fissure",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Maran Gor</i></p><p>Creates a chasm 5 meters long, 5 meters deep, and 1 meter wide for each Rune point spent. If used against a wall or structure, that structure suffers 1D6 points of damage. If formed under a target, the target must make a DEX×3 roll to avoid falling in. See @JournalEntry[DUMMY]{Falling}"
+    },
+    "createMarket": {
+      "name": "Create Market",
+      "description": "<p><i><b>Cost:</b> 3+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Requires four wands. Creates a neutral trading ground 10 meters square, warded against vs. those with hostile intent. This provides the benefits of @JournalEntry[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Countermagic} 1,  @JournalEntry[${{openSystem.module.name}}$.spirit-magic-descriptions-DUMMY]{Spirit Screen} 2, and does 1D3 points of damage (ignoring armor) to a random hit location of an unwelcome intruder. Additional Rune points spent can increase the magical effects by the same amounts per point, or they can increase the size of the market by a multiple equal to those points spent. Lasts eight weeks.</p>"
+    },
+    "cureAllDisease": {
+      "name": "Cure All Disease",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Cures any diseases the target suffers (but not the damage taken).</p>"
+    },
+    "cureChaosWound": {
+      "name": "Cure Chaos Wound",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Cures a wound or disease inflicted by Chaos, but must be stacked with another healing spell. Provides all magic points needed to cast the other spell.</p>"
+    },
+    "curePoison": {
+      "name": "Cure Poison",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Neutralizes any poison the target is suffering from (but not the damage taken).</p>"
+    },
+    "darkWalk": {
+      "name": "Dark Walk",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Argan Argar, Orlanth Adventurous</i></p><p>Allows the user to be totally invisible and soundless in darkness and shadow to anyone within range.</p>"
+    },
+    "detectHonor": {
+      "name": "Detect Honor",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Instant<br><b>Cults:</b> Orlanth Rex</i></p><p>Determines whether the target is currently honorable by Orlanthi standards.</p>"
+    },
+    "detectTruth": {
+      "name": "Detect Truth",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Humakt</i></p><p>Allows the caster to tell whether anyone within a five-meter radius of the spell’s target site is speaking untruths.</p>"
+    },
+    "discorporation": {
+      "name": "Discorporation",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Daka Fal, Waha</i></p><p>An hour-long ritual that allows the caster to enter spirit form and enter the Spirit World. Requires a successful Meditate roll in addition to the casting roll. Traveling more than five kilometers from the caster’s body requires another Rune point per five kilometers, spent when the spell is cast. See @JournalEntry[DUMMY]{Discorporation} for more information.</p>"
+    },
+    "dismissElementalType": {
+      "name": "Dismiss Elemental (type)",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Instant<br><b>Cults:</b> Ernalda (Earth), Orlanth (Air), Seven Mothers (all but Air), Waha (Earth)</i></p><p>The Rune depends on the type of elemental to be dismissed. Dismisses a cult spirit (usually an elemental) of the type listed.</p><ul><li>With 1 Rune point, the caster can try to dismiss a small elemental.</li><li>With 2 Rune points, the caster can try to dismiss a medium elemental.</li><li>With 3 Rune points, the caster can try to dismiss a large elemental.</li></ul> <p>The caster of the spell must overcome the POW of the elemental for the spell to work.</p>"
+    },
+    "dismissMagic": {
+      "name": "Dismiss Magic",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Instant<br><b>Cults:</b> All</i></p><p>Each point cancels 2 points of spirit magic or 1 point of Rune magic.</p>"
+    },
+    "divination": {
+      "name": "Divination",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Each point lets the caster to ask a simple question of their deity and receive an answer of up to ten words. One hour to cast.</p>"
+    },
+    "earthShield": {
+      "name": "Earth Shield",
+      "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Touch<br><b>Cults:</b> Babeester Gor, Ernalda, Orlanth Adventurous</i></p><p>Gives a shield infinite armor points for the duration.</p>"
+    },
+    "earthpower": {
+      "name": "Earthpower",
+      "description": "<p><i><b>Cost:</b> 3+<br><b>Type:</b> Self, Instant<br><b>Cults:</b> Ernalda</i></p><p>Draw 1 point of POW or 1D8 magic points from the earth per additional Rune point spent.</p>"
+    },
+    "extension": {
+      "name": "Extension",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> All</i></p><p>Increases another Rune spell’s duration. At 1 point, the spell lasts an hour. For 2 points, a day. For 3 points it lasts a week.</p>"
+    },
+    "faceChaos": {
+      "name": "Face Chaos",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous, Storm Bull</i></p><p>The target of the spell does not flee or faint if fighting Chaos. Each extra Rune point affects one more target. If the target is affected by the Demoralize spell, they fight at half chance.</p>"
+    },
+    "fear": {
+      "name": "Fear",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Zorak Zoran</i></p><p>This spell causes intense, incapacitating fear to well up within the target. The caster must overcome the POW of the target. The degree of success on that roll determine the exact effect of this spell. The effects of Fear cannot be dispelled.</p><h4>Fear Effects</h4><ul><li><b>Critical:</b> Victim dies of fear.</li><li><b>Special Success:</b> Victim collapses for 20 minus CON full turns and must make a CON×5 roll or die as above.</li><li><b>Success:</b> Victim is [Demoralized](/rules/spirit-magic-spells.html#demoralize) for 20 minus CON melee rounds.</li><li><b>Failure:</b> Intelligent beings are unaffected.</br>Unintelligent creatures, including animals, are [Demoralized](/rules/spirit-magic-spells.html#demoralize) for 20 minus CON melee rounds.</li><li><b>Fumble:</b> Victim is unaffected.</p></ul>"
+    },
+    "fearless": {
+      "name": "Fearless",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Target gains immunity to fear, including magical fear such as from Demoralize, Fear, or Madness, or from foes that cause fear-like effects.</p>"
+    },
+    "findEnemy": {
+      "name": "Find Enemy",
+      "description": " <p><i><b>Cost:</b> 1<br><b>Cults:</b> All</i></p><p>Alerts the caster to anyone in range that intends to harm them.</p>"
+    },
+    "findGrain": {
+      "name": "Find Grain",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Ernalda</i></p><p>Finds all grain within range, making it glow visibly to the caster, unless blocked by three or more meters of stone, soil, or metal.</p>"
+    },
+    "findMagic": {
+      "name": "Find Magic",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Lhankor Mhy</i></p><p>Identifies the presence of magic within range, causing it to glow visibly to the caster, unless blocked by three or more meters of stone, soil, or metal.</p>"
+    },
+    "flight": {
+      "name": "Flight",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Issaries, Orlanth Adventurous</i></p><p>Transports one object (including caster) weighing up to SIZ 6 through the air for duration of the spell. Each extra Rune point adds +6 to SIZ. Flying objects have Movement 12 and control their own flight.</p>"
+    },
+    "harmony": {
+      "name": "Harmony",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Chalana Arroy</i></p><p>Prevents anyone from becoming violent within three meters of the caster per point spent. To act violently in this space requires a resistance roll of caster’s POW compared to the resistance table. Anyone within range whose POW would be overcome is affected. Counteracts emotion-affecting spells (Demoralize or Fanaticism) weaker than the Harmony spell (how many points spent in it). Harmony can be boosted with magic points to make it more powerful to overcome other spells.</p>"
+    },
+    "healBody": {
+      "name": "Heal Body",
+      "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy, Babeester Gor, Eiritha, Ernalda, Orlanth Adventurous</i></p><p>Heals all the damage the target suffered, regardless of hit location(s).</p>"
+    },
+    "healWound": {
+      "name": "Heal Wound",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> All</i></p><p>Heals hit points equal to the magic points spent.</p>"
+    },
+    "healingTrance": {
+      "name": "Healing Trance",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch, Duration<br><b>Cults:</b> Chalana Arroy</i></p><p>Target falls into a deep sleep, healing eight times faster than normal. Both caster and target remain asleep until target is entirely healed.</p>"
+    },
+    "illusionarySound": {
+      "name": "Illusionary Sound",
+      "description": " <p><i><b>Cost:</b> 1+<br><b>Cults:</b> Eurmal</i></p><p>Creates a stationary sound with the nature, duration, and intent chosen by the caster. More points increase the range and volume.</p>"
+    },
+    "impedeChaos": {
+      "name": "Impede Chaos",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Storm Bull</i></p><p>The target of this spell becomes difficult for Chaos creatures to hit. For each point stacked in the spell, subtract –20% from the attack skill of any Chaos creature attacking the target. Impede Chaos has no effect against non-Chaotic opponents.</p>"
+    },
+    "increaseDecreaseWind": {
+      "name": "Increase/Decrease Wind",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth</i></p><p>Increases the STR of wind for 100 meters around the caster. Each additional point adds +1D6 STR or 100 meters more.</p>"
+    },
+    "inviolable": {
+      "name": "Inviolable",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Ernalda</i></p><p>Affects any Ernalda or Orlanth cultist within three meters of the caster. Cancels Demoralize, Fanaticism, and other emotion-affecting magic on them, calm and avoiding violence if possible.</p>"
+    },
+    "knowledge": {
+      "name": "Knowledge",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch<br><b>Cults:</b> Lhankor Mhy</i></p><p>Allows the caster to read the history of an item.</p>"
+    },
+    "leap": {
+      "name": "Leap",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Target can jump up to six meters high or six meters away for the duration. Each extra point adds +6 meters to the distance.</p>"
+    },
+    "lie": {
+      "name": "Lie",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Self, Instant<br><b>Cults:</b> Eurmal</i></p><p>The caster may utter a lie, no matter how outrageous, that any listener believes. Lasts until proven false (minimum one melee round). Listeners must understand the language spoken, unless the lie is nonverbal, such as a feint or misleading gesture.</p>"
+    },
+    "lightning": {
+      "name": "Lightning",
+      "description": " <p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Summons a blast of lightning, doing 1D6 per Rune point to a single hit location if the target’s POW is overcome by the caster. Physical armor does not protect against the damage, but magic armor or protection does.</p>"
+    },
+    "lock": {
+      "name": "Lock",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Locks a door, gate, hatch, chest, etc. with a STR equal to the number of magic points used. It must be cast upon a closable door, and the spell does not increase its armor or durability in any way. It takes one hour to cast per point but lasts eight weeks. This spell is often stacked with Passage.</p>"
+    },
+    "madness": {
+      "name": "Madness",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Instant<br><b>Cults:</b> Seven Mothers</i></p><p>If the target’s POW is overcome by the caster, the target suffers effects based on the degree of success:</p><ul><li><b>Critical:</b> Target goes insane and is incapacitated for 30 minus POW days, permanently losing 1D4 points INT.</li><li><b>Special Success:</b> Target attacks nearest person as if Fanatic for the next 30 minus POW minutes.</li><li><b>Success:</b> Victim collapses for 30 minus POW minutes and cannot be awakened.</li><li><b>Failure/Fumble:</b> No effect.</li></ul>"
+    },
+    "magicPointEnchantment": {
+      "name": "Magic Point Enchantment",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Cast on an item to make it store magic points for spellcasting. Each point cast takes one hour and lets it store 1D10 magic points. Takes one melee round to store 1 magic point in an item.</p>"
+    },
+    "matrixCreation": {
+      "name": "Matrix Creation",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Stores a spirit magic or Rune spell into an item at the cost of 1 point of permanent POW per point of the spell. Anyone wielding the item can use it by spending the magic point cost (if needed) and succeeding in a POW×5 roll. Matrixes for Rune spells must be recharged with a Worship roll in a temple.</p>"
+    },
+    "mindblast": {
+      "name": "Mindblast",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Instant<br><b>Cults:</b> Seven Mothers</i></p><p>Destroys the INT of the target if the caster overcomes the target’s POW. Effect lasts days equal to 1/2 the caster’s POW (round up). It cannot be dispelled. If the caster rolls a special success in overcoming the target’s POW, the attack also causes 1D6+2 damage to the target’s head hit location. Armor does not protect against this damage, though magical protection will.</p>"
+    },
+    "mindRead": {
+      "name": "Mind Read",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Caster can read the conscious thoughts of the target without their consent, though the target can tell what is happening. The caster must overcome the target’s POW for the spell to operate.</p>"
+    },
+    "mistCloud": {
+      "name": "Mist Cloud",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Orlanth Adventurous</i></p><p>Creates a bubble of natural-looking mist two meters in diameter around the caster for every Rune point spent. Visibility within or through the mist is limited to one meter.</p>"
+    },
+    "morale": {
+      "name": "Morale",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Creates a field around the caster and their unit like a Fanaticism spell, without the restrictions on dodging and parrying. Lasts until sunrise or sunset, whichever comes first.</p>"
+    },
+    "multispell": {
+      "name": "Multispell",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Self<br><b>Cults:</b> All</i></p><p>Allows combining two spirit magic spells, casting them together on their highest strike rank. Continues for the Multispell’s entire duration: so every melee round, the caster can cast two spirit magic spells. Each extra Rune point adds one spell.</p>"
+    },
+    "oath": {
+      "name": "Oath",
+      "description": "<p><i><b>Cost:</b> 2+<br><b>Type:</b> Ritual<br><b>Cults:</b> Humakt</i></p><p>Each person involved spends magic points, forming a pact: oathbreakers suffer a Sever Spirit spell with magic points equal to the total magic points spent in Oath. Each extra Rune point adds one person to the oath. Lasts until broken.</p>"
+    },
+    "passage": {
+      "name": "Passage",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br><b>Cults:</b> Issaries</i></p><p>Opens a door, gate, etc. that has been locked, or one magically sealed if enough points are used. When cast with Lock, each point allows one additional person to open the targeted door, lid, lock, etc. besides the caster.</p>"
+    },
+    "pathWatch": {
+      "name": "Path Watch",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Self, Duration<br><b>Cults:</b> Issaries</i></p><p>Must be laid upon a known path or visible road to be traveled on by the caster. Alerts them to the direction and number (not type) of all enemies and traps within a 100-meter radius of the caster while they are on the path or immediately adjacent to it. Lasts while the road lasts and while the caster stays awake.</p>"
+    },
+    "reconstruction": {
+      "name": "Reconstruction",
+      "description": "<p><i><b>Cost:</b> 3<br><b>Cults:</b> Lhankor Mhy</i></p><p>Causes any 15-minute sequence from the past to replay for the caster’s senses, while they are in the immediate area in which it took place. The user must state the time and date of the vision.</p>"
+    },
+    "reflection": {
+      "name": "Reflection",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Eurmal, Seven Mothers</i></p><p>Reflects spells which fail to overcome the POW of the protected being. The next strike rank, the reflected spells attack their caster. The POW of the reflected attack spell are equal to the caster’s at the time the spell was originally cast. Each point stacked with this spell reflects 2 points of spirit magic, or 1 point of Rune magic. Reflection does not work if the incoming spell is too powerful.</p>"
+    },
+    "regrowLimb": {
+      "name": "Regrow Limb",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Permanent<br><b>Cults:</b> Chalana Arroy, Ernalda, Issaries, Seven Mothers</i></p><p>Regrows a severed or mangled limb, taking a full season to restore it to full functionality and hit points.</p>"
+    },
+    "restoreHealth": {
+      "name": "Restore Health",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Chalana Arroy</i></p><p>Each Rune point spent restores one lost characteristic point (other than those lost to death).</p>"
+    },
+    "resurrect": {
+      "name": "Resurrect",
+      "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Ritual<br><b>Cults:</b> Chalana Arroy, Daka Fal</i></p><p>Restores a dead person to life once the body has been healed to at least 3 hit points using healing magic. If the body’s death was due to disease, the possessing disease spirit must be banished from the body first.</p><p>Once cast, the caster must defeat the spirit of the deceased in spirit combat. If the caster is successful, the spirit returns to its body and lives anew. If the caster fails, the spirit passes beyond hope of recovery. Each day the body is dead beyond the first day, the deceased loses 1D3 points each to STR, CON, and DEX. If any of these characteristics is reduced to 0, the adventurer cannot return to life.</p><p>Anyone dead beyond seven days is beyond the ability to be brought back by this spell, and it is the province of the gods whether they are able to return to the Middle World.</p>"
+    },
+    "safe": {
+      "name": "Safe",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Duration<br><b>Cults:</b> Argan Argar</i></p><p>Cast upon a container or opening to bar unwanted passage, must be boosted with magic points. Anyone other than the caster opening the secured container or crossing the passage is attacked by those magic points. If the trespasser’s POW is overcome, they take 1D6 points of hit point damage and are forced back. Lasts eight weeks.</p>"
+    },
+    "sanctify": {
+      "name": "Sanctify",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Riual<br><b>Cults:</b> All</i></p><p>This blesses the volume of a 10-meter-radius volume, usually a sphere half above and below ground (for Earth cults this is a cube). Cult members can perform ceremonies within this area as if in a temple, including replenishing Rune points.</p><p>The boundary shimmers slightly in full daylight, but is not detectable by touch or Darksense. Anyone within any portion of the sanctified area is considered completely within it. The caster is instantly alerted if non-initiates, spells, or spirits enter the area.</p><p>When ceremonies cease, the spell ends. Additional Rune points increase its area by half again (2 points protects a 15-meter radius, 3 points a 22.5-meter radius, etc.).</p>"
+    },
+    "severSpirit": {
+      "name": "Sever Spirit",
+      "description": "<p><i><b>Cost:</b> 3<br><b>Type:</b> Instant<br><b>Cults:</b> Humakt</i></p><p>Attacks the bond between the body and spirit of the target. Target must succeed in a POW vs. POW resistance roll or die. If unsuccessful, they suffer 1D6 hit points of general damage.</p>"
+    },
+    "shakeEarth": {
+      "name": "Shake Earth",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Maran Gor</i></p><p>Causes a small earthquake: magic points spent determine its area of effect and Rune points its severity. Affects one square meter per magic point, exponentially (1 magic point = 1 square meter, 2 magic points = 4 square meters, etc.). Everyone in the area reduces all Agility and Manipulation skills by –5% per point and must succeed in a DEX×5 roll each round or fall down, modified by the above penalty.</p>"
+    },
+    "shield": {
+      "name": "Shield",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Many</i></p><p>The Rune varies by cult. Every point of Shield gives the wearer 2 points of magical armor and 2 points of Countermagic. The effects are cumulative with Protection or Countermagic.</p>"
+    },
+    "slash": {
+      "name": "Slash",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Touch<br><b>Cults:</b> Babeester Gor</i></p><p>Must be cast on a one- or two-handed axe. Each point spent adds +1D6 to the weapon’s damage. This additional damage is added after any effect from a special or critical attack.</p>"
+    },
+    "soulSight": {
+      "name": "Soul Sight",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> All</i></p><p>Allows the recipient to see both the POW aura of living beings and to magically know the actual current magic points of other entities and creatures, including the amount devoted to currently in-effect spells.</p>"
+    },
+    "spellTrading": {
+      "name": "Spell Trading",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Type:</b> Touch, Instant<br><b>Cults:</b> Issaries</i></p><p>This spell can only be cast in an Issaries market and requires a symbolic token item to be exchanged. Allows the caster to trade a single use of any Rune magic (except this one!) in exchange for a single use of any Rune spell known by another priest of any cult. Costs Rune points equal to 2 plus the Rune point cost of the spell to be traded.</p><p>Roll 1D100 when cast: a roll of 01–95 indicates success, failure means the spell immediately takes effect (but is still traded) on the person it is being traded to.</p><p>The new spell ‘owner’ uses the already-spent Rune points when they cast the spell and the original owner’s Rune affinity rating (even if lower than the new owner’s), so take note of these. The Rune points for the spell do not count against the new owner’s own maximum.</p>"
+    },
+    "spiritArmorEnchantment": {
+      "name": "Spirit Armor Enchantment",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>Creates 1D3 points armor against damage taken in spirit combat per permanent POW point sacrificed. Takes one hour to cast.</p>"
+    },
+    "spiritBlock": {
+      "name": "Spirit Block",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> All</i></p><p>Helps protect the recipient from attack by spirits. Each point of this spell acts as spiritual armor and absorbs 2 points of magic point damage done to the caster in spirit combat.</p>"
+    },
+    "summonCultSpirit": {
+      "name": "Summon Cult Spirit",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ritual<br> <b>Cults:</b> All</i></p><p>The caster’s deity sends a cult spirit to their aid. Its size depends on the number of Rune points spent. As a rule, greater deities have more sizes and types of cult spirits. The summoned entity arrives at the end of the round, on strike rank 12. This spell may be cast simultaneously with Command Cult Spirit.</p><p>Summon Elemental is a specific example of this spell, but many other variants exist.</p>"
+    },
+    "summonElementalType": {
+      "name": "Summon Elemental (type)",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Ranged, Temporal<br><b>Cults:</b> Ernalda (Earth), Orlanth (Air), Seven Mothers (all but Air), Waha (Earth)</i></p><p>The Rune used depends on the type of elemental summoned. When cast, the deity sends an elemental of the Rune’s type. Elementals come in three sizes: small (1 pt.), medium (2 pts.), and large (3 pts.). The elemental’s size depends on how many Rune points are stacked with the spell (limited by the maximum size of elemental available to the cult).</p><p>Once summoned, the elemental follows its natural inclinations unless bound by a Command spell. The gamemaster should determine this if it is not apparent. Unless bound by a Command spell, the elemental may not attack unless attacked, and remains until it is physically destroyed, or 15 minutes have passed, whichever of these conditions comes first.</p>"
+    },
+    "summonHealingSpirit": {
+      "name": "Summon Healing Spirit",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Cults:</b> Chalana Arroy</i></p><p>Summons a healing spirit with POW depending on its size:</p><ul><li>Small (1 pt.): 3D6 POW/magic points</li><li>Medium (2 pts.): 3D6+6 POW/magic points</li><li>Large (3 pts.): 4D6+6 POW/magic points</li></ul><p>Spirit can heal 1 hit point per magic point for one person per 24 hours, taking one hour to heal them.</p>"
+    },
+    "sunbright": {
+      "name": "Sunbright",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Yelmalio</i></p><p>Creates a 60-meter radius circle of light around the target. If unwilling, target’s POW must be defeated in a resistance roll. Has the effect of full daylight, affecting cave trolls and Demoralizing trollkin, vampires, ghouls, and undead as per the Demoralize spell. Serves as a Shimmer 2 spell. Darkness elementals suffer 1D3 damage per round from this spell. If cast directly on one and defeating its POW in a resistance roll, the elemental is banished.</p>"
+    },
+    "sureshot": {
+      "name": "Sureshot",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Foundchild, Yelm</i></p><p>Cast upon a missile weapon. If successful, the next attack within range always hits unless a 96–00 is rolled for the attack. Special and critical successes are as per the attacker’s skill. Attacks made with this spell do not count for experience, and the spell cannot be combined with Speedart or Firearrow. If it is used with Multimissile, Sureshot only affects the first/original missile.</p>"
+    },
+    "swordTrance": {
+      "name": "Sword Trance",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Self<br><b>Cults:</b> Humakt</i></p><p>Each magic point spent with this spell increases one of the caster’s Sword skills by +10%. This can be combined with other weapon-enhancing spells, but not Berserker or Fanaticism. While in the trance, the caster must focus on using their sword in combat. Should they pause from performing any activities relating to using a sword in combat, the spell’s effect ends.</p>"
+    },
+    "teleportation": {
+      "name": "Teleportation",
+      "description": "<p><i><b>Cost:</b> 3+<br><b>Type:</b> Self or Touch, Instant<br><b>Cults:</b> Orlanth Adventurous</i></p><p>The caster can teleport to visible spot, either with their eyes or through the eyes of an allied spirit. Each additional Rune point enables one extra living thing to be teleported at the same time, provided they are touching the caster. Unwilling targets must be defeated in a POW resistance roll.</p>"
+    },
+    "translate": {
+      "name": "Translate",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Lhankor Mhy</i></p><p>Translates all words touched by the user’s index finger at normal reading speed, leaving an impression of the meaning afterwards. Does not translate languages the reader does not know.</p>"
+    },
+    "truespeak": {
+      "name": "Truespeak",
+      "description": "<p><i><b>Cost:</b> 2<br><b>Cults:</b> Lhankor Mhy</i></p><p>Target can only speak truth, answering all questions and in a literal manner. Caster must overcome target’s POW with each question or target may speak freely. Target may remain quiet.</p>"
+    },
+    "trueSword": {
+      "name": "True Sword",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Touch<br><b>Cults:</b> Humakt</i></p><p>Doubles the damage of the weapon it is cast upon (usually a sword) by rolling twice and combining totals. The wielder’s damage modifier is not doubled.</p>"
+    },
+    "turnUndead": {
+      "name": "Turn Undead",
+      "description": "<p><i><b>Cost:</b> 1+<br><b>Type:</b> Instant<br><b>Cults:</b> Humakt</i></p><p>Affects one undead per point. Roll the caster’s POW vs. the target’s magic points:</p><ul><li><b>Critical:</b> Undead destroyed, released, or otherwise ended.</li><li><b>Special:</b> Undead paralyzed for 20 melee rounds minus INT (minimum 1, skeletons inactive for 20 rounds).</li><li><b>Success:</b> Undead flees, if possible. If not, see <b>Special</b>.</li><li><b>Failure:</b> The undead is Befuddled.</li><li><b>Fumble:</b> No effect.</li></ul>"
+    },
+    "warding": {
+      "name": "Warding",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Type:</b> Ritual<br><b>Cults:</b> All</i></p><p>This ritual creates an area of safety for those inside. Four wands arranged in a rough rectangle define the area’s boundary. These can be made of any material and must be placed to enclose a maximum area of up to 100 square meters (typically 10×10 meters). The spell extends into the air for three meters above the wands, and underground to the depth of the wands. The stakes need not be visible to work; some casters bury them completely.</p><p>The spell connects these wands invisibly to form a barrier detectable only by magical means. The protection effects activate when physical or spirit enemies of the caster cross the barrier, or when a spell is cast across the barrier from the outside. When this happens, a loud noise (a keening, whistling, booming, etc.) begins, which can be suppressed by the casting priest.</p><p>Each point of Warding (up to 4) counts as 1 point of Countermagic against spells cast across the barrier, 2 points of spirit armor against outside spirits, and does 1D3 damage, ignoring armor, to one hit location of any corporeal enemy unwise enough to cross the boundary.</p><p>Each stacked point of Warding increases the area protected by another 100 square meters.</p><p>The Warding spell remains in effect until one of the wands is removed. Anyone but the caster that attempts to touch the stakes is affected by the Warding, but after suffering the effect, the person can then remove the stakes.</p>"
+    },
+    "windWords": {
+      "name": "Wind Words",
+      "description": "<p><i><b>Cost:</b> 1<br><b>Cults:</b> Lhankor Mhy, Orlanth Adventurous</i></p><p>Causes the wind to bring conversations to the caster’s ears, as if standing next to the speaker.</p>"
+    }
+  },
+  "runeType": {
+    "condition": "condition",
+    "element": "element",
+    "form": "form",
+    "power": "power",
+    "technique": "technique"
+  },
+  "spiritMagic": {
+    "befuddle": {
+      "name": "Befuddle",
+      "description": "<p>Target is confused and can only defend until directly attacked.</p>"
+    },
+    "bladesharp": {
+      "name": "Bladesharp",
+      "description": "Adds +5% to hit and +1 damage per point to an edged weapon. Magic damage can harm magical creatures. Incompatible with Fireblade."
+    },
+    "bludgeon": {
+      "name": "Bludgeon",
+      "description": "<p>Adds +5% to hit and +1 damage per point to a blunt weapon. Magic damage can harm magical creatures.</p>"
+    },
+    "coordination": {
+      "name": "Coordination",
+      "description": "<p>Increases target’s DEX by +3, modifying strike ranks by –1 and adding +5% to all Agility, Manipulation, Stealth, and Weapon category skills.</p>"
+    },
+    "countermagic": {
+      "name": "Countermagic",
+      "description": "<p>Blocks 1 point of spirit magic for every point of Countermagic or 1 point of Rune magic per every 2 points of Countermagic.</p>"
+    },
+    "demoralize": {
+      "name": "Demoralize",
+      "description": "<p>Target will try to retreat if possible; if not, target attacks at half chance.</p>"
+    },
+    "detectEnemies": {
+      "name": "Detect Enemies",
+      "description": "<p>This spell gives the approximate direction and distance from the caster of any being intending to harm them, or it detects and locates a specific individual on whom the caster concentrates. The effects of the spell cannot be resisted.</p><p>The sensing effect is stopped by one or more meters of a dense substance such as stone, metal, or earth.</p>"
+    },
+    "detectSubstance": {
+      "name": "Detect (substance)",
+      "description": "<p>Represents many spells. Points to the closest thing of the specific type, causing it to glow brightly to everyone, unless blocked by 1 meter of dirt, stone, metal, etc.</p>"
+    },
+    "detectUndead": {
+      "name": "Detect Undead",
+      "description": "<p>Detects the existence of undead creatures such as zombies, mummies, and vampires, and gives the direction and distance from the caster. The spell discerns between undead of human size (SIZ 3–21), and those of large size (SIZ 22+). Undead creatures of SIZ 2 or smaller do not register. It does not tell what type of undead is being detected.</p><p>The sensing effect is stopped by one or more meters of a dense substance such as stone, metal, or earth.</p>"
+    },
+    "dispelMagic": {
+      "name": "Dispel Magic",
+      "description": "<p>Cancels 1 point of spirit magic per point of Dispel Magic or 1 point of Rune magic per every 2 points of Dispel Magic.</p>"
+    },
+    "disruption": {
+      "name": "Disruption",
+      "description": "<p>If target’s POW is overcome, does 1D3 damage to a random hit location, no armor protection.</p>"
+    },
+    "distraction": {
+      "name": "Distraction",
+      "description": "<p>Forces targeted spirit to attack the caster instead of anyone else.</p>"
+    },
+    "dullblade": {
+      "name": "Dullblade",
+      "description": "<p>Each magic point spent reduces any weapon’s damage by 1 point and modifies its attack chance by –5%. It has no effect on natural weapons. If used against a weapon with a spirit, the caster must overcome the spirit’s magic points in a resistance roll.</p>"
+    },
+    "extinguish": {
+      "name": "Extinguish",
+      "description": "<p>Puts out a fire. 1 point extinguishes a torch or lantern, 2 a small campfire, 3 a large campfire, etc.</p>"
+    },
+    "fanaticism": {
+      "name": "Fanaticism",
+      "description": "<p>Target increases their chance to hit by half again but cannot parry. Dodge is halved.</p>"
+    },
+    "farsee": {
+      "name": "Farsee",
+      "description": "<p>Each magic point halves the apparent distance as seen by the caster to the rest of the universe.</p>"
+    },
+    "firearrow": {
+      "name": "Firearrow",
+      "description": "<p>Cast upon a missile (arrow, stone, etc.) that does 3D6 damage (instead of the weapon’s actual damage) plus ½ damage bonus. Cannot impale, and the missile is consumed by the fire. Armor offers protection, but it can ignite flammable material. Incompatible with Multimissile and Speedart.</p>"
+    },
+    "fireblade": {
+      "name": "Fireblade",
+      "description": "<p>Cast on an edged weapon or spear, does 3D6 damage (instead of the weapon’s actual damage) plus damage bonus. Magic resistance does not work against it. The weapon is unharmed. Incompatible with Bladesharp.</p>"
+    },
+    "forget": {
+      "name": "Forget",
+      "description": "<p>Causes the subject to forget what happened ten rounds before and after the casting. Takes effect five minutes after the spell is cast.</p>"
+    },
+    "glamour": {
+      "name": "Glamour",
+      "description": "<p>Increases CHA by +8. Increases spirit combat damage by one step, increases all Communication and Magic category skills by +10%.</p>"
+    },
+    "glue": {
+      "name": "Glue",
+      "description": "<p>Creates a small glob of magical glue, STR equal to the magic points spent ×10. Can be broken with a successful resistance roll. Does not work on living organic matteRanged (50m), and objects glued must be at rest.</p>"
+    },
+    "heal": {
+      "name": "Heal",
+      "description": "<p>Each magic point heals 1 hit point in a designated hit location. Can be used multiple times.</p>"
+    },
+    "ignite": {
+      "name": "Ignite",
+      "description": "<p>This spell ignites anything normally flammable. It creates a small fire that can set such things alight such as a torch, a thatched roof, or a dry backpack. Skin cannot be ignited. Hair or fur can be, but only if the caster overcomes the target’s POW.</p>"
+    },
+    "lantern": {
+      "name": "Lantern",
+      "description": "<p>Cast on a flat surface, creates a 12-meter glowing radius.</p>"
+    },
+    "light": {
+      "name": "Light",
+      "description": "<p>Cast on an object, lights everything within a 10-meter radius.</p>"
+    },
+    "mobility": {
+      "name": "Mobility",
+      "description": "<p>Doubles the Movement speed of the target and modifies their strike rank by –1.</p>"
+    },
+    "multimissile": {
+      "name": "Multimissile",
+      "description": "<p>Each point cast creates a magical duplicate of an original missile. Roll attacks separately. The first is the original. Any later missiles cannot impale but can do critical damage. Can be cast upon a missile and does not activate until fired within the duration. Incompatible with Speedart and Firearrow.</p>"
+    },
+    "protection": {
+      "name": "Protection",
+      "description": "<p>Each magic point acts as 1 armor point to the whole body.</p>"
+    },
+    "repair": {
+      "name": "Repair",
+      "description": "<p>Repairs broken objects, each point restoring 1D10 hit points if applicable, if all pieces are present. Item shows a seam and is reduced by 1 hit point permanently.</p>"
+    },
+    "secondSight": {
+      "name": "Second Sight",
+      "description": "<p>Allows the target to view the POW aura of living beings and spirits and gauge their relative strength.</p>"
+    },
+    "shimmer": {
+      "name": "Shimmer",
+      "description": "<p>Blurs the air around the target, making them harder to hit. Reduces attacks against them by –5% per point. Incompatible with Countermagic, Protection, and Spirit Screen.</p>"
+    },
+    "silence": {
+      "name": "Silence",
+      "description": "<p>Quiets inadvertent noise made by the target such as by movement, breathing, etc. Does not quiet intentional noise (speaking, casting a spell, attacking, etc.). If used for stealth, a Move Quietly roll is still required, and a fumble indicates target makes noise.</p>"
+    },
+    "sleep": {
+      "name": "Sleep",
+      "description": "<p>If the caster can overcome the target’s POW, target falls asleep for the spell’s duration, not awakening unless attacked or otherwise strongly disturbed. Only known to Chalana Arroy.</p>"
+    },
+    "slow": {
+      "name": "Slow",
+      "description": "<p>Halves the target’s move rate and adds +1 to their strike rank.</p>"
+    },
+    "speedart": {
+      "name": "Speedart",
+      "description": "<p>When cast on a missile weapon, adds +15% to its attack chance and +3 damage when next used (within duration). Magic damage can harm magical creatures.</p>"
+    },
+    "spiritBinding": {
+      "name": "Spirit Binding",
+      "description": "<p>Binds a spirit into a familiar or inanimate object permanently or until the binder’s death. Binding into an object requires a magical ritual called a Binding Enchantment, and a living animal must have been bred for the purpose. No cults teach this spell, only shamans do so.</p>"
+    },
+    "spiritScreen": {
+      "name": "Spirit Screen",
+      "description": "<p>Each magic point absorbs 1 point of spiritual damage in spirit combat.</p>"
+    },
+    "strength": {
+      "name": "Strength",
+      "description": "<p>Increases target’s STR by +8, raising damage bonus by one step (0 to 1D4, 1D4 to 1D6, 1D6 to 2D6) and increasing Agility and Manipulation category skills by +10%. Incompatible with Vigor.</p>"
+    },
+    "vigor": {
+      "name": "Vigor",
+      "description": "<p>Adds +3 to target’s CON, increasing hit points by +3 and hit points per location by +1. Incompatible with Strength.</p>"
+    },
+    "visibility": {
+      "name": "Visibility",
+      "description": "<p>Forces a spirit to take shape in this world and makes it subject to spells. See Spirit Combat.</p>"
+    }
+  },
+  "skill": {
+    "act": {
+      "skillName": "Act",
+      "description": "<p>Portraying a different persona, whether in a staged performance or in a social situation.</p>"
+    },
+    "art": {
+      "skillName": "Art",
+      "description": "<p>The creation of images or objects such as painting and sculpture. Most such artistry in Glorantha is associated with a craft, so art for its own sake is rather rare.</p>"
+    },
+    "alchemy": {
+      "skillName": "Alchemy",
+      "description": "<p>Creating and identifying potions or other alchemical substances.</p>"
+    },
+    "animalLore": {
+      "skillName": "Animal Lore",
+      "description": "<p>Knowledge of animals, their behaviors, their physiology, and various characteristics.</p>"
+    },
+    "battle": {
+      "skillName": "Battle",
+      "description": "<p>Leading warriors and surviving in massed combat. This also includes some degree of understanding what is happening, moving around the battlefield, and coordinating one’s own activity with that of others in a battle.</p>"
+    },
+    "bargain": {
+      "skillName": "Bargain",
+      "description": "<p>Negotiation and compromise, haggling: used when buying and selling. If successful, the target agrees to a lower reasonable price. This is often handled as an opposed roll.</p>"
+    },
+    "boat": {
+      "skillName": "Boat",
+      "description": "<p>Handling a small boat, kayak, or raft. This alsovincludes knowledge of their general maintenance.</p>"
+    },
+    "bureaucracy": {
+      "skillName": "Bureaucracy",
+      "description": "<p>Understanding and maneuvering around the institutions of a government or court.</p>"
+    },
+    "celestialLore": {
+      "skillName": "Celestial Lore",
+      "description": "<p>Knowledge of the stars and heavens.</p>"
+    },
+    "charm": {
+      "skillName": "Charm",
+      "description": "<p>Physical attraction, seduction, flattery, or simply warmth of personality, used to compel a desired reaction.</p>"
+    },
+    "climb": {
+      "skillName": "Climb",
+      "description": "<p>Climbing up or down walls, trees, cliffs, or any other surfaces.</p>"
+    },
+    "conceal": {
+      "skillName": "Conceal",
+      "description": "<p>Concealing an object so that it may be found only with a Search skill roll.</p>"
+    },
+    "craft": {
+      "skillName": "Craft",
+      "description": "<p>Making items out of metal, wood, stone, leather, cloth, clay, glass, etc., or even making types of food. Specialties include Baking, Brewing, Carpentry, Cooking, Glassblowing, Jewelry, Leatherworking, Masonry, Pottery, Redsmithing, Vinification, and Weaving.</p>"
+    },
+    "cultLore": {
+      "skillName": "Cult Lore",
+      "description": "<p>The dogma and history of a particular religion including the god and Runes sacred to that cult, traditions, and holy or otherwise sacred places.</p>"
+    },
+    "customs": {
+      "skillName": "Customs",
+      "description": "<p>Knowing the behavior, etiquette, law, traditions, and community standards of a group. Specialties are the homeland or culture known. Customs lets one know how to behave at a local festival, while Homeland Lore informs what the festival is supposed to be about.</p>"
+    },
+    "dance": {
+      "skillName": "Dance",
+      "description": "<p>Performing a social, ceremonial, erotic, martial, or sacred dance. This is extremely useful in magical rituals and worship ceremonies.</p>"
+    },
+    "devise": {
+      "skillName": "Devise",
+      "description": "<p>This is the skill of both assembling and disassembling mechanisms such as traps and locks.</p>"
+    },
+    "disguise": {
+      "skillName": "Disguise",
+      "description": "<p>Creating a convincing disguise using appropriate materials (costumes, cosmetics, wigs, or hairpieces).</p>"
+    },
+    "dodge": {
+      "skillName": "Dodge",
+      "description": "<p>Avoiding being hit by an attack. See Dodging.</p>"
+    },
+    "driveChariot": {
+      "skillName": "Drive Chariot",
+      "description": "<p>Steering a chariot in combat or for travel.</p>"
+    },
+    "elderRaceLore": {
+      "skillName": "Elder Race Lore",
+      "description": "<p>This skill quantifies knowledge of an Elder Race. The lore of each Elder Race must be learned separately.</p>"
+    },
+    "elfsense": {
+      "skillName": "Elfsense",
+      "description": "<p>This sense permits the elf, by touch, to detect the health and emotional state of the target and whether it is stressed or in pain. It also gives the elf details about soil—such as its nutrients, moisture, and overall quality</p>"
+    },
+    "evaluate": {
+      "skillName": "Evaluate",
+      "description": "<p>Estimating the worth of artifacts, goods, and valuable natural materials.</p>"
+    },
+    "farm": {
+      "skillName": "Farm",
+      "description": "<p>Plowing, planting, growing, and harvesting crops, and caring for common domestic animals.</p>"
+    },
+    "fastTalk": {
+      "skillName": "Fast Talk",
+      "description": "<p>Convincing one or more people to agree with whatever the speaker is saying, deceiving them into doing what the speaker is trying to convince them to do. This differs from Orate because it is quick and doesn’t attempt to change the target’s beliefs. One fast talks their way past a guard, and orates to inspire a crowd.</p>"
+    },
+    "firstAid": {
+      "skillName": "First Aid",
+      "description": "<p>Treating injuries or victims in shock. See the first aid section for more on First Aid and injuries.</p>"
+    },
+    "game": {
+      "skillName": "Game",
+      "description": "<p>Understanding the rules and strategies of various games and gambling in general, whether played with boards, cards, or dice. While games of chance are not typically able to be affected, this skill provides strategy about how to win, to wager effectively, and when to abstain.</p>"
+    },
+    "herd": {
+      "skillName": "Herd",
+      "description": "<p>Keeping animals together in a herd, maintaining the herd, and moving it from place to place.</p>"
+    },
+    "hide": {
+      "skillName": "Hide",
+      "description": "<p>Using available cover, including shadows, misty areas, etc., to hide from others. Hide is opposed by Scan.</p>"
+    },
+    "homelandLore": {
+      "skillName": "Homeland Lore",
+      "description": "<p>Knowledge of the geography, history, and famous denizens of one’s own homeland or another. With Homeland Lore, an adventurer knows who the queen is and how she received her title, while Customs lets them know how to address her properly.</p><p>You can have a specialized Homeland Lore skill for smaller region or a city.</p>"
+    },
+    "insight": {
+      "skillName": "Insight",
+      "description": "<p>Evaluating someone’s character, emotional state, trustworthiness, and motives based on body language, speech patterns, and other factors. Specialties are per species, so most adventurers have Human as their specialty, while others might be Aldryami, Ducks, Mostali, Trolls, or even Dragons.</p>",
+      "specialization": {
+        "human": "Human"
+      }
+    },
+    "intimidate": {
+      "skillName": "Intimidate",
+      "description": "<p>Frightening or compelling a person to act in a certain way. A successful use of this skill may even prevent a fight.</p>"
+    },
+    "intrigue": {
+      "skillName": "Intrigue",
+      "description": "<p>Knowing what is going on at a court, great temple, warlord’s camp, bureaucracy, or similar institution. This can be insider knowledge, or it can represent conspiracies.</p>"
+    },
+    "jump": {
+      "skillName": "Jump",
+      "description": "<p>Leaping for height or distance over obstacles, as well as falling (or landing) well.</p>"
+    },
+    "libraryUse": {
+      "skillName": "Library Use",
+      "description": "<p>Libraries are rare in Glorantha and inevitably held by sorcerous traditions or kept within the temples of Lhankor Mhy, but this skill allows an adventurer to find desired information in all sorts of archives.</p>"
+    },
+    "listen": {
+      "skillName": "Listen",
+      "description": "<p>Listening intently for sound where one would not normally hear it and picking up incidental sounds. Usually opposed with the Move Quietly skill.</p>"
+    },
+    "lore": {
+      "skillName": "Lore",
+      "description": "Lore skills provide basic knowledge of the history, characteristics, behavior, qualities, and customs of a subject, as appropriate. Examples are Celestial Lore, Mineral Lore, Plant Lore, Beast Lore, Spirit Lore, etc. Many Lore skills are specialized, with a focus on a particular subject, such as Cult Lore (Orlanth) being knowledge of Orlanth’s cult and the mythos associated with the god. There are many Lore skills, and the specialties are even more numerous.</p><p>The gamemaster should determine what each Lore skill encompasses and what it does not, but generally these skills represent a working knowledge of a race, species, people, organization, group, region, etc.</p><p>Lore skills do not improve through experience and must be trained or learned through other means.</p>"
+    },
+    "manageHousehold": {
+      "skillName": "Manage Household",
+      "description": "<p>Handling the property and resources (followers, agents, and slaves) of a farm, herd, market, workshop, temple, or palace.</p>"
+    },
+    "meditate": {
+      "skillName": "Meditate",
+      "description": "<p>Entering a trance-like state to achieve inner calm and to restore serenity and focus. Meditate can augment spells and skills, and meditating can help restore spent magic points.</p>"
+    },
+    "meleeWeapon": {
+      "skillName": "Melee Weapon",
+      "description": "<p>Each melee weapon has its own specific skill. An adventurer may use their melee weapon skill to attack and parry with that weapon, unless otherwise indicated.</p><p>Melee weapons are listed by category. An adventurer can use any other melee weapons in the same weapon category (such as 1H Axes, Fists, 1H Swords, etc.) at 1/2 the skill rating of the best skill the adventurer has in that category.</p>"
+    },
+    "mineralLore": {
+      "skillName": "Mineral Lore",
+      "description": "<p>Knowing and identifying different types of minerals, metals, and other natural ores, along with their physical and magical properties.</p>"
+    },
+    "missileWeapon": {
+      "skillName": "Missile Weapon",
+      "description": "<p>Missile weapon is the use of a ranged weapon such as a bow, crossbow, javelin, or sling to shoot at a target or a person.</p><p>Missile weapons are listed by category on the missile weapon tables. An adventurer can use any other missile weapons in the same weapon category (such as Bow, Crossbow, etc.) at half the skill rating of the best skill the adventurer has in that category.</p>"
+    },
+    "moveQuietly": {
+      "skillName": "Move Quietly",
+      "description": "<p>Moving in silence, without alerting a foe, used against the Listen roll when someone is actively trying to detect any intruders.</p>"
+    },
+    "orate": {
+      "skillName": "Orate",
+      "description": "<p>Using speech to make groups of reluctant listeners change an existing belief, to act, or to grant a significant request, driven by emotion and reason. It differs from [Fast Talk](/rules/skills.html#fast-talk-05-☐) because it takes time and successfully convinces the target of the desired belief, versus being quick and temporary.</p>"
+    },
+    "peacefulCut": {
+      "skillName": "Peaceful Cut",
+      "description": "<p>Practiced by Animal Nomads and a few other cultures, as well as many cults, Peaceful Cut allows the proper sacrifice of an animal and its respectful butchery. Failing this is messy and the animal reacts in fear.</p>"
+    },
+    "plantLore": {
+      "skillName": "Plant Lore",
+      "description": "<p>Identifying and using plants for medicinal and other purposes.</p>"
+    },
+    "playInstrument": {
+      "skillName": "Play Instrument",
+      "description": "<p>Being able to play a musical instrument, whether in a performance or for one’s own pleasure. Also includes general maintenance and a repertoire of suitable music.</p>"
+    },
+    "prepareCorpse": {
+      "skillName": "Prepare Corpse",
+      "description": "<p>Properly laying out a corpse, preparing it for the final rites and knowing traditional death rituals or spells.</p>"
+    },
+    "readWrite": {
+      "skillName": "Read/Write",
+      "description": "<p>Reading and writing in a script. This is generally only used for lengthier texts, or those that might be difficult to decipher. Some languages use a common script but are distinct from one another when spoken. See Languages for more information.</p>"
+    },
+    "ride": {
+      "skillName": "Ride",
+      "description": "<p>Riding a horse or other riding animal. Specialties include Horse, Bison, Impala, Zebra, Rhinoceros, etc. See Mounted Combat for more information.</p>",
+      "specialization": {
+        "bison": "Bison",
+        "horse": "Horse"
+      }
+    },
+    "scan": {
+      "skillName": "Scan",
+      "description": "<p>Observing an area for any signs of movement. Generally, this is used in opposition to the Hide skill.</p>"
+    },
+    "darksenseScan": {
+      "skillName": "Darksense Scan",
+      "description": "<p>Observing an area for any signs of movement. Generally, this is used in opposition to the Hide skill.</p><p>Trolls can move in the darkest night, due to their stygian origin. They use &quot;Darksense,&quot; a perception not available to other races. Darksense combines hearing, smelling, feeling, and some non-specific sensing abilities, and allows trolls to maneuver as though humans in sunshine. Though trolls hate the light, that element does no direct harm to most trolls. Cave trolls and trollkin, however, are affected by light. Trolls have a clear-cut advantage over humans (and most other foes) in the darkness. The gamemaster should read the rules about fighting in the dark whenever adventurers encounter trolls. Darksense is broken into two skills: Darksense Scan and Darksense Search.</p>"
+    },
+    "earthsenseScan": {
+      "skillName": "Earthsense Scan",
+      "description": "<p>Observing an area for any signs of movement. Generally, this is used in opposition to the Hide skill.</p><p>Dwarfs have a sense, unique to them, called &quot;Earthsense.&quot; It is like long-distance touch, and permits them to sense heat, air pressure, and air currents with remarkable accuracy. They can maneuver in the dark using Earthsense, calculate their depth beneath the surface, sense moving objects, and even measure the size and shape of a cave system by simply standing in a corner of it and sensing the air currents. Thus, a dwarf can travel swiftly through an unfamiliar cave system, trusting their &quot;feel&quot; as to what tunnels lead where. Long-range Earthsense is defined as Earthsense Scan, and close-range Earthsense is Earthsense Search.</p>"
+    },
+    "scentIntruder": {
+      "skillName": "Scent Intruder",
+      "description": "<p>This creature may not tack by scent, but they have a chance of noticing intruders by scent.</p>"
+    },
+    "search": {
+      "skillName": "Search",
+      "description": "<p>Scrutinizing an area to find a concealed or lost object or door. The skill used to oppose this is Conceal.</p>"
+    },
+    "darksenseSearch": {
+      "skillName": "Darksense Search",
+      "description": "<p>Scrutinizing an area to find a concealed or lost object or door. The skill used to oppose this is Conceal.</p><p>Trolls can move in the darkest night, due to their stygian origin. They use &quot;Darksense,&quot a perception not available to other races. Darksense combines hearing, smelling, feeling, and some non-specific sensing abilities, and allows trolls to maneuver as though humans in sunshine. Though trolls hate the light, that element does no direct harm to most trolls. Cave trolls and trollkin, however, are affected by light. Trolls have a clear-cut advantage over humans (and most other foes) in the darkness. The gamemaster should read the rules about fighting in the dark whenever adventurers encounter trolls. Darksense is broken into two skills: Darksense Scan and Darksense Search.</p>"
+    },
+    "earthsenseSearch": {
+      "skillName": "Earthsense Search",
+      "description": "<p>Scrutinizing an area to find a concealed or lost object or door. The skill used to oppose this is Conceal.</p><p>Dwarfs have a sense, unique to them, called &quot;Earthsense.&quot; It is like long-distance touch, and permits them to sense heat, air pressure, and air currents with remarkable accuracy. They can maneuver in the dark using Earthsense, calculate their depth beneath the surface, sense moving objects, and even measure the size and shape of a cave system by simply standing in a corner of it and sensing the air currents. Thus, a dwarf can travel swiftly through an unfamiliar cave system, trusting their &quot;feel&quot; as to what tunnels lead where. Long-range Earthsense is defined as Earthsense Scan, and close-range Earthsense is Earthsense Search.</p>"
+    },
+    "senseAssassin": {
+      "skillName": "Sense Assassin",
+      "description": "<p>Taught exclusively to worshipers of the god Humakt, this skill allows identification of the tell-tale signs of an intended murderer, whether behavioral, psychological, or even physical giveaways. It does little to identify the would-be victim, only pointing out their intended killer.</p>"
+    },
+    "senseChaos": {
+      "skillName": "Sense Chaos",
+      "description": "<p>Taught exclusively to Storm Bull cultists, this skill allows the user to identify the taint of Chaos in an individual, area, or even an item.</p>"
+    },
+    "shield": {
+      "skillName": "Shield",
+      "description": "<p>Each size of shield—small, medium, and large—has its own specific skill. An adventurer may use their shield skill to parry or attack with that weapon. An adventurer can use any other shield at half the skill rating of the best shield skill the adventurer has or at their base chance plus any additional training and experience, whichever is better.</p>"
+    },
+    "shiphandling": {
+      "skillName": "Shiphandling",
+      "description": "<p>Steering and otherwise maneuvering a ship, galley, trireme, or other large sailing or oared vessel, whether for combat or travel. This also includes general maintenance and shipboard ‘chores.’</p>"
+    },
+    "sing": {
+      "skillName": "Sing",
+      "description": "<p>Knowledge of poetry as well as singing or reciting poetry, used in religious rituals as well as a way of remembering oral history, genealogy, and law. Very useful in worship ceremonies.</p>"
+    },
+    "sleight": {
+      "skillName": "Sleight",
+      "description": "<p>Using speed or misdirection to manipulate a small object while being watched by others, or potentially picking a pocket or coin-purse.</p>"
+    },
+    "speakLanguage": {
+      "skillName": "Speak Language",
+      "description": "<p>Speaking one’s native language. No roll is needed when speaking to other native speakers. Generally, this skill is only used when eavesdropping, translating, or in difficult circumstances. If attempting another Communication-based skill, the level in Speak Language is the limit at which the adventurer can use the other skill.</p><p>Speaking a language other than one’s own, such as one of those listed in Languages. Generally, 20% or more is enough to have simple conversations in. If attempting another Communication-based skill, the level in Speak Other Language is the limit at which the entity can use the other skill.</p><p><em>An adventurer with Speak Own Language (Heortling) 75% and Charm 83% is limited to 75% when using Charm.</em></p><p>See Languages for more information.</p>"
+    },
+    "spiritCombat": {
+      "skillName": "Spirit Combat",
+      "description": "<p>Battling a hostile spirit and doing damage to it. See Spirit Combat for more information."
+    },
+    "spiritDance": {
+      "skillName": "Spirit Dance",
+      "description": "<p>Avoiding hostile spirits while in discorporate form, and ensuring a safe return to one’s body in the Mundane World. See Spirit Combat.</p>"
+    },
+    "spiritLore": {
+      "skillName": "Spirit Lore",
+      "description": "<p>Knowledge about types of spirits and their abilities, understanding the nature of the Spirit World, etc.</p>"
+    },
+    "spiritTravel": {
+      "skillName": "Spirit Travel",
+      "description": "<p>Maneuvering throughout the Spirit World, particularly from one region to another. See Traveling in the Spirit World.</p>"
+    },
+    "survival": {
+      "skillName": "Survival",
+      "description": "<p>Surviving in a rural or wilderness environment, including foraging, building a fire, and finding shelter. This can also be used to conceal one’s tracks, making Track rolls necessary to follow.</p>"
+    },
+    "ski": {
+      "skillName": "Ski",
+      "description": "<p>Movement over snow by cross-country skiing. Green elves are known to practice skiing in this way.</p>"
+    },
+    "swim": {
+      "skillName": "Swim",
+      "description": "<p>Staying afloat and moving in a desired direction while in the water.</p>"
+    },
+    "track": {
+      "skillName": "Track",
+      "description": "<p>Following the trail left by a living being through wilderness and rural areas. This skill can be opposed by Survival when it is used to conceal tracks.</p><p>Certain species can track by scent.",
+      "specialization": {
+        "scent": "by Scent"
+      }
+    },
+    "treatDisease": {
+      "skillName": "Treat Disease",
+      "description": "<p>In Glorantha, all diseases are caused by evil spirits possessing an unfortunate victim. This skill provides guidance to identifying the type of disease spirit, treating the symptoms, and lessening the spirit’s effects upon the victim. See the Spot Rules on Disease or more information.</p>"
+    },
+    "treatPoison": {
+      "skillName": "Treat Poison",
+      "description": "<p>Identifying when someone has been poisoned and by what type of poison, toxin, or venom, as well as treating the symptoms, whether using an antidote or some other means.</p>"
+    },
+    "understandHerdBeast": {
+      "skillName": "Understand Herd Beast",
+      "description": "<p>Understanding the noises and physical signals made by non-intelligent herd animals.</p>"
+    },
+    "worship": {
+      "skillName": "Worship",
+      "description": "<p>Based upon a specific cult and its representative god, this skill represents knowledge of the sacred rites and rituals necessary to gain the attention of and appease a god. It takes a full day to perform and must be held on sacred ground. Successful use of this skill returns spent Rune points. Specialties are for each cult.</p>"
+    }
+  },
+  "skillCategory": {
+    "agility": {
+      "name": "Agility",
+      "description": "<h3>Agility Skills</h3><p>This category includes all skills dependent on muscular coordination. Most of these skills are trained into the reflexes of the user; an adventurer does not require profound intelligence or continual cogitation to be agile. Agility skills call for STR, DEX, and small SIZ, allowing good coordination and rapid response to subtle clues. A high POW helps as well.</p>"
+    },
+    "communication": {
+      "name": "Communication",
+      "description": "<h3>Communication Skills</h3><p>Communication skills are enhanced by high CHA, INT, and POW. An adventurer uses such skills to transmit by word or gesture their thoughts and desires to others. Good communication skills usually leave a good impression.</p>"
+    },
+    "knowledge": {
+      "name": "Knowledge",
+      "description": "<h3>Knowledge Skills</h3><p>These skills usually depend on the ability of the adventurer to memorize and comprehend a body of knowledge, whether learned by rote at a campfire or deduced from endless pedantic lectures at a great library. Frequently they cannot be increased through experience, but must be trained or researched. They depend on the adventurer’s INT and POW for modifiers.</p>"
+    },
+    "magic": {
+      "name": "Magic",
+      "description": "<h3>Magic Skills</h3><p>These skills are used either to enhance or to create magical effects. They depend on POW, INT, and CHA.</p>"
+    },
+    "manipulation": {
+      "name": "Manipulation",
+      "description": "<h3>Manipulation Skills</h3><p>Manipulation skills require fine hand control. Unlike Agility skills, they depend as much on INT as DEX, and SIZ is no penalty. A high POW and STR also aid in Manipulation.</p>"
+    },
+    "perception": {
+      "name": "Perception",
+      "description": "<h3>Perception Skills</h3><p>With a Perception-based skill, an adventurer can extract specific information from one or more senses and intelligently organize it. The characteristic modifiers are INT, POW, and CON.</p>"
+    },
+    "stealth": {
+      "name": "Stealth",
+      "description": "<h3>Stealth Skills</h3><p>Adventurers use Stealth skills to conceal themselves from hostile eyes. The aura of a high POW (which draws attention) is not helpful in such situations; small SIZ and good DEX and INT enhance the skills.</p>"
+    },
+    "weapon": {
+      "name": "Weapon",
+      "description": "<p>All Melee Weapon, Missile Weapon, and Shield skills use the Manipulation skill category modifier and are either specialized by a specific type of weapon (such as Broadsword) or a more general category (1-Handed Axes, for example).</p><p>All Weapon and Shield skills can be improved by experience.</p>"
+    }
+  },
+  "craftSpecialization": {
+    "iron": "Iron"
+  },
+  "weaponSkill": {
+    "1h-axes": {
+      "name": "1H Axes",
+      "specialization": {
+        "smallAxe": "Small Axe",
+        "battleAxe": "Battle Axe",
+        "offhand": "Offhand"
+      }
+    },
+    "1h-daggers": {
+      "name": "1H Daggers",
+      "specialization": {
+        "dagger": "Dagger",
+        "sickle": "Sickle",
+        "offhand": "Offhand"
+      }
+    },
+    "1h-hammers": {
+      "name": "1H Hammers",
+      "specialization": {
+        "warHammer": "War Hammer",
+        "offhand": "Offhand"
+      }
+    },
+    "1h-maces": {
+      "name": "1H Maces",
+      "specialization": {
+        "club": "Club",
+        "heavyMace": "Heavy Mace",
+        "lightMace": "Light Mace",
+        "singlestick": "Singlestick",
+        "offhand": "Offhand"
+      }
+    },
+    "1h-spears": {
+      "name": "1H Spears",
+      "specialization": {
+        "javelin": "Javelin",
+        "lance": "Lance",
+        "shortspear": "Shortspear",
+        "offhand": "Offhand"
+      }
+    },
+    "1h-swords": {
+      "name": "1H Swords",
+      "specialization": {
+        "broadsword": "Broadsword",
+        "kopis": "Kopis",
+        "rapier": "Rapier",
+        "shortsword": "Shortsword",
+        "offhand": "Offhand"
+      }
+    },
+    "2h-axes": {
+      "name": "2H Axes",
+      "specialization": {
+        "battleAxe": "Battle Axe",
+        "daggerAxe": "Dagger Axe",
+        "greatAxe": "Great Axe"
+      }
+    },
+    "2h-hammers": {
+      "name": "2H Hammers",
+      "specialization": {
+        "greatHammer": "Great Hammer",
+        "maul": "Maul"
+      }
+    },
+    "2h-maces": {
+      "name": "2H Maces",
+      "specialization": {
+        "mace": "Mace"
+      }
+    },
+    "2h-spears": {
+      "name": "2H Spears",
+      "specialization": {
+        "longspear": "Longspear",
+        "pike": "Pike",
+        "shortspear": "Shortspear"
+      }
+    },
+    "2h-swords": {
+      "name": "2H Swords",
+      "specialization": {
+        "greatsword": "Greatsword",
+        "rhomphaia": "Rhomphaia",
+        "sickle-sword": "Sickle-sword"
+      }
+    },
+    "bite": {
+      "name": "Bite"
+    },
+    "atlatls": {
+      "name": "Atlatls",
+      "specialization": {
+        "dart": "Dart",
+        "javelin": "Javelin"
+      }
+    },
+    "bows": {
+      "name": "Bows",
+      "specialization": {
+        "compositeBow": "Composite Bow",
+        "elfBow": "Elf Bow",
+        "selfBow": "Self Bow"
+      }
+    },
+    "crossbows": {
+      "name": "Crossbows",
+      "specialization": {
+        "arbalest": "Arbalest",
+        "heavyCrossbow": "Heavy Crossbow",
+        "lightCrossbow": "Light Crossbow",
+        "repeatingCrossbow": "Repeating Crossbow"
+      }
+    },
+    "fists": {
+      "name": "Fists",
+      "specialization": {
+        "claw": "Claw",
+        "fist": "Fist",
+        "heavyCestus": "Heavy Cestus",
+        "lightCestus": "Light Cestus",
+        "rip": "Rip"
+      }
+    },
+    "gore": {
+      "name": "Gore"
+    },
+    "grapple": {
+      "name": "Grapple"
+    },
+    "headButt": {
+      "name": "Head Butt"
+    },
+    "claw": {
+      "name": "Claw"
+    },
+    "hug": {
+      "name": "Hug"
+    },
+    "javelins": {
+      "name": "Javelins",
+      "specialization": {
+        "dart": "Dart",
+        "javelin": "Javelin",
+        "shortspear": "Shortspear"
+      }
+    },
+    "kick": {
+      "name": "Kick"
+    },
+    "lassos": {
+      "name": "Lassos",
+      "specialization": {
+        "poleLasso": "Pole Lasso"
+      }
+    },
+    "quarterstaff": {
+      "name": "Quarterstaff"
+    },
+    "rearAndPlunge": {
+      "name": "Rear & Plunge"
+    },
+    "slings": {
+      "name": "Slings",
+      "specialization": {
+        "sling": "Sling",
+        "staffSling": "Staff Sling"
+      }
+    },
+    "shields": {
+      "name": "Shields",
+      "specialization": {
+        "large": "Large",
+        "medium": "Medium",
+        "small": "Small"
+      }
+    },
+    "sting": {
+      "name": "Sting"
+    },
+    "thrownAxe": {
+      "name": "Thrown Axe"
+    },
+    "thrownDagger": {
+      "name": "Thrown Dagger"
+    },
+    "thrownRock": {
+      "name": "Thrown Rock"
+    },
+    "trample": {
+      "name": "Trample"
+    }
+  },
+  "weapon": {
+    "ironDescription": "<p>Any damage from an iron weapon to an elf or troll (and some of their kindred races) that penetrates armor is doubled. Can strike creatures immune to normal weapons.</p>",
+    "smallAxe": "Small Axe",
+    "battleAxe": "Battle Axe",
+    "battleAxeIron": "Battle Axe, Iron",
+    "greatAxe": "Great Axe",
+    "daggerAxe": "Dagger Axe",
+    "compositeBow": "Composite Bow",
+    "elfBow": "Elf Bow",
+    "selfBow": "Self Bow",
+    "arbalest": "Arbalest",
+    "heavyCrossbow": "Heavy Crossbow",
+    "lightCrossbow": "Light Crossbow",
+    "repeatingCrossbow": "Repeating Crossbow",
+    "arrows": "Arrows",
+    "crossbowBolts": "Crossbow Bolts",
+    "warHammer": "War Hammer",
+    "warHammerIron": "War Hammer, Iron",
+    "greatHammer": "Great Hammer",
+    "maul": "Maul",
+    "heavyMace": "Heavy Mace",
+    "lightMace": "Light Mace",
+    "singlestick": "Singlestick",
+    "woodenClub": "Wooden Club",
+    "twoHandedMace": "Two Handed Mace",
+    "quarterstaff": "Quarterstaff",
+    "atlatlDart": "Atlatl Dart",
+    "atlatlJavelin": "Atlatl Javelin",
+    "dart": "Dart",
+    "poleLasso": "Pole Lasso",
+    "smallWoodenShield": "Small Wooden Shield",
+    "mediumWoodenShield": "Medium Wooden Shield",
+    "largeWoodenShield": "Large Wooden Shield",
+    "sling": "Sling",
+    "staffSling": "Staff Sling",
+    "slingStones": "Sling Stones",
+    "javelin": "Javelin",
+    "shortSpear": "Short Spear",
+    "lance": "Lance",
+    "pike": "Pike",
+    "longSpear": "Long Spear",
+    "dagger": "Dagger",
+    "parryingDagger": "Parrying Dagger",
+    "throwingDagger": "Throwing Dagger",
+    "sickle": "Sickle",
+    "broadsword": "Broadsword",
+    "kopis": "Kopis",
+    "rapier": "Rapier",
+    "shortsword": "Shortsword",
+    "greatsword": "Greatsword",
+    "romphaia": "Rhomphaia",
+    "sickleSwordMoonsword": "Sickle Sword (Moonsword)",
+    "throwingAxe": "Throwing Axe",
+    "rock": "Rock",
+    "lightCestus": "Light Cestus",
+    "heavyCestus": "Heavy Cestus",
+    "clawMetal": "Claw (Metal)",
+    "fist": "Fist",
+    "grapple": "Grapple",
+    "kick": "Kick",
+    "headButt": "Head Butt",
+    "trample": "Trample",
+    "bite": "Bite",
+    "claw": "Claw",
+    "gore": "Gore",
+    "rip": "Rip",
+    "hug": "Hug",
+    "rearAndPlunge": "Rear and Plunge"
+  },
+  "equipment": {
+    "armor": {
+      "hood": "Hood",
+      "broadBrimmedHat": "Broad-brimmed Hat",
+      "cap": "Cap",
+      "compositeHelm": "Composite Helm",
+      "openHelm": "Open Helm",
+      "closedHelm": "Closed Helm",
+      "fullHelm": "Full Helm",
+      "sleeves": "Sleeves",
+      "vambraces": "Vambraces",
+      "cuirass": "Cuirass",
+      "linothorax": "Linothorax",
+      "hauberk": "Hauberk",
+      "segmented": "Segmented",
+      "skirt": "Skirt",
+      "pants": "Pants",
+      "greaves": "Greaves",
+      "unenchantedHeavyDwarfChainmail": "Unenchanted Heavy Dwarf Chainmail",
+      "unenchantedDwarfHelmet": "Unenchanted Heavy Dwarf Closed Helmet",
+      "description": {
+        "cuirboilli": "<p>Cuirboilli is leather treated with boiling wax, hardening it almost to the resiliency of metal.</p>",
+        "heavyLeather": "<p>Heavy leather is the thickness of a shoe sole and provides two points of protection.  Unlike normal leather, heavy leather cannot be worn under other armor.</p>",
+        "leather": "<p>Instead of leather, this item could be made of quilted or thick cloth.  Leather is very common in most of Glorantha.</p>",
+        "linen": "<p>Laminated or quilted cloth, this is built up of many layers until it is stiff and hard. It is often reinforced with metal plates or scales. Linen armor is used less and less as metal becomes more common, but it is still used to equip militia and the like.</p>",
+        "quilted": "<p>Quilted armor is made up of several layers of quilted leather.</p>",
+        "segmentedBronzePlate": "<p>This armor covers the chest and abdomen and is made up of a cuirass and three or four sets of curved lower protection plates. The pieces are fastened together by thongs that allow movement.</p>",
+        "ringMail": "<p>Metal rings butted together and sewn to leather.</p>",
+        "heavyScale": "<p>This armor consists of hundreds of bronze plates that have been laced together and then fastened onto a backing.</p>",
+        "lightScale": "<p>This armor consists of hundreds of boiled leather plates that have been laced together. The plates are often lacquered. It is lighter and less expensive than a heavy scale hauberk.</p>",
+        "underLayer": "<p>This armor be worn under any other armor, with a cumulative encumbrance penalty.</p>",
+        "vambraces": "<p>Vambraces are like greaves, but protect the forearm. These are considered to cover the entire limb, although the actual armor which goes by these names only covers the area between elbow and hand.</p>",
+        "greaves": "<p>These are plates molded to protect the lower leg. They either “spring” into shape or are strapped on. They are heavy and make sprinting difficult. These are considered to cover the entire limb, although the actual armor which goes by these names only covers the area between knee and foot.</p>",
+        "cuirass": "<p>A cuirass is a chestpiece of front and back plates joined together by leather straps.</p>",
+        "hauberk": "<p>A hauberk is like a shirt or tunic and covers the chest and abdomen.</p>",
+        "diskPlateBronze": "<p>This consists of disks and square bronze plates on the front and back, connected by side and shoulder pieces. The plates are often highly decorated. It protects the chest.</p>",
+        "pants": "<p>Pants or Trews cover the legs and abdomen.</p>",
+        "skirtStuddedLeather": "<p>This skirt of studded leather strips protects the abdomen.</p>",
+        "linothorax": "<p>A stiff shirt that covers the chest and abdomen.</p>",
+        "compositeHelm": "<p>This leather helmet has metal plates or boar tusks riveted on to it.</p>",
+        "openHelm": "<p>This is a conical metal helmet with bronze cheek-pieces attached. It is usually decorated with plumes and feathers.</p>",
+        "closedHelm": "<p>This metal helmet has a pair of cheekpieces and a neck guard. In the front is a nasal bar that protects the eyes and nose.</p>",
+        "fullHelm": "<p>This close-fitting helmet has elongated cheek-pieces to protect the wearer’s mouth and throat. A nose guard protects the nose and eyes. It offers excellent all-round protection but severely limits vision and hearing, as well as being hot and stuffy to wear for long periods.</p>",
+        "turtleShellCuirass": "<p>This chestpiece of turtleshell, wood, and bronze is popular within the Humakt cult, who associate it with their hero Hiia Swordsman.</p>",
+        "unenchantedHeavyDwarfChainmail": "<p>Coat of unenchanted heavy dwarf iron chainmail (9 pts.).  Wearer has a 60% chance of being unaffected by any spell cast at them, cumulative with other iron worn.</p>",
+        "unenchantedDwarfHelmet": "<p>Closed helmet of unenchanted dwarf iron (9 pts).  Wearer has a 10% chance of being unaffected by any spell cast at them, cumulative with other iron worn.</p>"
+      }
+    },
+    "gear": {
+      "cloakGrass": "Grass Cloak",
+      "cloakGrassDescription": "<p>This sleeveless cape is made of woven grass and worn to protect against rain and sun.</p>",
+      "cloakWoolWinter": "Wool Winter Cloak",
+      "cloakWoolWinterDescription": " <p>Long winter cloaks are common protection against wind and night chills. The cloak is normally pinned over the shoulder with a fibula.</p>",
+      "clothesCotton": "Cotton Clothes",
+      "clothesCottonDescription": "<p>Men typically wear either belted long tunics, or short tunics and skirts. Women typically wear tunics and wrap-around skirts. Many men forego the tunic during the summer heat. During the winter, cloaks and robes or breeches provide warmth.</p>",
+      "clothesWool": "Wool Clothes",
+      "clothesWoolDescription": "<p>Men typically wear either belted long tunics, or short tunics and skirts. Women typically wear tunics and wrap-around skirts. Many men forego the tunic during the summer heat. During the winter, cloaks and robes or breeches provide warmth.</p>",
+      "clothesDressEsrolian": "Esrolian Dress",
+      "clothesDressEsrolianDescription": "<p>The flounced and pleated bell-shaped skirt worn by noble women and priestesses. Price: 15-35 L depending on decoration and style.</p>",
+      "clothesDressHidePlain": "Plain Hide Dress",
+      "clothesDressHidePlainDescription": "<p>A plain dress made from hide.</p>",
+      "currencyBolgs": "Bolgs",
+      "currencyBolgsDescription": "<p>The bolg is a troll unit of exchange made of lead. Argan Argar invented the bolg and it is the sole coinage used by that cult in paying trollkin mercenaries. The lead bolg is unique as a unit of money, for it is designed for use as a sling stone as well as handy cash. It takes ten bolgs to equal a clack, or 100 bolgs to equal a Lunar.  The lead bolg is used among humans infrequently, if at all.</p>",
+      "currencyClacks": "Clacks",
+      "currencyClacksDescription": "<p>peoples. The copper coin is called a clack, or often just a copper. It takes ten clacks to equal one lunar.</p>",
+      "currencyLunars": "Lunars",
+      "currencyLunarsDescription": "<p>The basic currency in Dragon Pass and Prax is the lunar (abbreviated as L), a silver coin weighing a little more than 4 grams (1/8 of an ounce). Most coins in circulation were minted by the Lunar Empire and are stamped with the symbols of the Red Goddess. Before the Lunar Conquest, silver coins called guilders were minted by the various city guilds in Sartar and Pavis. All these coins are roughly equivalent in value. A cow is worth about 20 L.</p>",
+      "currencyWheels": "Wheels",
+      "currencyWheelsDescription": "<p>The first coinage of the world was gold, brought to the people by the enigmatic Gold Wheel Dancers. In their honor, gold coins are still called wheels. Gold, however, is scarce and very valuable. One golden wheel equals 20 L. Gold is still mainly used as a means of settling debts between rulers rather than by individuals.</p>",
+      "drinkAleCup": "Two Cups of Ale",
+      "drinkAleCupDescription": "<p>Two cups of ale.</p>",
+      "drinkClearwineBowl": "Bowl of Clearwine",
+      "drinkClearwineBowlDescription": "<p>A single serving of clearwine, the famous wine that gives its name to the capital city of the Colymar tribe.</p>",
+      "drinkMeadHorn": "Horn of Mead",
+      "drinkMeadHornDescription": "<p>A single serving of mead.</p>",
+      "foodStewMeatBowl": "Bowl of Meat Stew",
+      "foodStewMeatBowlDescription": "<p>Pork, chicken or mutton cooked with root vegetables served with flatbread. Often heavily spiced.</p>",
+      "horseRidingPonyGalana": "Galana (Pony)",
+      "horseRidingPonyGalanaDescription": "<p>This is the most common horse breed in Dragon Pass, Kethaela, Maniria, Ralios, and Talastar. Notably, this tough big-headed breed is used to swiftly pull chariots over the roadless, broken ground. They are dun to brown, usually with tails and manes being darker than the body color.</p>",
+      "jewelryRingBronzeSimple": "Simple Bronze Ring",
+      "jewelryRingBronzeSimpleDescription": "<p>A simple bronze ring.</p>",
+      "jewelryNecklaceGoldBeaded": "Beaded Gold Necklace",
+      "jewelryNecklaceGoldBeadedDescription": "<p>A necklace of beads made from gold.</p>",
+      "lightLamp": "Lamp",
+      "lightLampDescription": "<p>This is a clay or bronze lamp used to burn olive oil or clarified butter. Often highly decorated. The area illuminated by a lamp depends on its size and construction. Price: 1-2 L.</p>",
+      "lightTorchWicker": "Wicker Torch",
+      "lightTorchWickerDescription": "<p>A rough torch made of dried twigs, woven together.</p>",
+      "instrumentDrum": "Drum",
+      "instrumentDrumDescription": "<p>A wood or bronze drum with a stretched animal skin head.</p>",
+      "instrumentKithara": "Kithara",
+      "instrumentKitharaDescription": "<p>A stringed instrument with a deep wooden sound box.</p>",
+      "quiverLarge": "Large Quiver",
+      "quiverLargeDescription": "<p>Holds 40 arrows. A leather, wooden, or stiffened cloth container used for carrying arrows or crossbow bolts. Worn slung low on the hip, at the waist, or over the back.</p>",
+      "quiverMedium": "Medium Quiver",
+      "quiverMediumDescription": "<p>Holds two dozen arrows. A leather, wooden, or stiffened cloth container used for carrying arrows or crossbow bolts. Worn slung low on the hip, at the waist, or over the back.</p>",
+      "quiverSmall": "Small Quiver",
+      "quiverSmallDescription": "<p>Holds a dozen arrows. A leather, wooden, or stiffened cloth container used for carrying arrows or crossbow bolts. Worn slung low on the hip, at the waist, or over the back.</p>",
+      "blanketSaddle": "Saddle Blanket",
+      "blanketSaddleDescription": "<p>A woven wool or bison-hide blanket, to stop chafing and make it easier to bear a saddle and rider.</p>",
+      "ridingBridle": "Bridle",
+      "ridingBridleDescription": "<p>Headgear used to direct a horse or other mount while riding. They are usually made of tough leather, and may have a bit, nose-rings, horn connections, or a nose band. Bridles must be correctly designed for a species and fitted properly to the specific animal.</p>",
+      "ridingSaddle": "Saddle",
+      "ridingSaddleDescription": "<p>Horned or hornless, with or without trees; saddles vary tremendously by region. All, however, are designed to let a person ride with some degree of comfort and stability. Price: 8+ L.</p>",
+      "toolHammerStone": "Stone Hammer",
+      "toolHammerStoneDescription": "<p>A cheap stone hammer.</p>",
+      "toolRope15m": "Rope, 15m",
+      "toolRope15mDescription": "<p>Made from hemp or other plant fibers. More rarely made of corded leather.</p>"
+    }
+  },
+  "hitLocation": {
+    "beetle": {
+      "rightHindLeg": "Right Hind Leg",
+      "rightCenterLeg": "Right Center Leg",
+      "leftHindLeg": "Left Hind Leg",
+      "leftCenterLeg": "Left Center Leg",
+      "abdomen": "Abdomen",
+      "thorax": "Thorax",
+      "rightForeleg": "Right Foreleg",
+      "leftForeleg": "Left Foreleg",
+      "head": "Head"
+    },
+    "birdFlying": {
+      "tail": "Tail",
+      "rightLeg": "Right Leg",
+      "leftLeg": "Left Leg",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "rightWing": "Right Wing",
+      "leftWing": "Left Wing",
+      "head": "Head"
+    },
+    "birdRunning": {
+      "rightLeg": "Right Leg",
+      "leftLeg": "Left Leg",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "rightWing": "Right Wing",
+      "leftWing": "Left Wing",
+      "head": "Head"
+    },
+    "centaur": {
+      "rightHindLeg": "Right Hind Leg",
+      "leftHindLeg": "Left Hind Leg",
+      "hindquarter": "Hindquarter",
+      "forequarter": "Forequarter",
+      "rightForeleg": "Right Foreleg",
+      "leftForeleg": "Left Foreleg",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "leftArm": "Left Arm",
+      "rightArm": "Right Arm",
+      "head": "Head"
+    },
+    "dragonManticore": {
+      "tail": "Tail",
+      "rightHindLeg": "Right Hind Leg",
+      "leftHindLeg": "Left Hind Leg",
+      "hindquarter": "Hindquarter",
+      "forequarter": "Forequarter",
+      "rightWing": "Right Wing",
+      "leftWing": "Left Wing",
+      "rightForeleg": "Right Foreleg",
+      "leftForeleg": "Left Foreleg",
+      "head": "Head"
+    },
+    "dragonsnailOneHeaded": {
+      "shell": "Shell",
+      "forebody": "Forebody",
+      "head": "Head"
+    },
+    "dragonsnailTwoHeaded": {
+      "shell": "Shell",
+      "forebody": "Forebody",
+      "rightHead": "Right Head",
+      "leftHead": "Left Head"
+    },
+    "fourLeggedAnimal": {
+      "rightHindLeg": "Right Hind Leg",
+      "leftHindLeg": "Left Hind Leg",
+      "hindquarter": "Hindquarter",
+      "forequarter": "Forequarter",
+      "rightForeleg": "Right Foreleg",
+      "leftForeleg": "Left Foreleg",
+      "head": "Head"
+    },
+    "fourLeggedAnimalWinged": {
+      "rightHindLeg": "Right Hind Leg",
+      "leftHindLeg": "Left Hind Leg",
+      "hindquarter": "Hindquarter",
+      "forequarter": "Forequarter",
+      "rightWing": "Right Wing",
+      "leftWing": "Left Wing",
+      "rightForeleg": "Right Foreleg",
+      "leftForeleg": "Left Foreleg",
+      "head": "Head"
+    },
+    "gorp": {
+      "body": "Body"
+    },
+    "harpy": {
+      "rightLeg": "Right Leg",
+      "leftLeg": "Left Leg",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "rightWing": "Right Wing",
+      "leftWing": "Left Wing",
+      "head": "Head"
+    },
+    "humanoid": {
+      "rightLeg": "Right Leg",
+      "leftLeg": "Left Leg",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "rightArm": "Right Arm",
+      "leftArm": "Left Arm",
+      "head": "Head"
+    },
+    "humanoidWinged": {
+      "rightLeg": "Right Leg",
+      "leftLeg": "Left Leg",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "rightWing": "Right Wing",
+      "leftWing": "Left Wing",
+      "rightArm": "Right Arm",
+      "leftArm": "Left Arm",
+      "head": "Head"
+    },
+    "mammothMastodon": {
+      "rightHindLeg": "Right Hind Leg",
+      "leftHindLeg": "Left Hind Leg",
+      "hindquarter": "Hindquarter",
+      "forequarter": "Forequarter",
+      "rightForeleg": "Right Foreleg",
+      "leftForeleg": "Left Foreleg",
+      "trunk": "Trunk",
+      "head": "Head"
+    },
+    "scorpionMan": {
+      "rightHindLeg": "Right Hind Leg",
+      "rightMiddleLeg": "Right Middle Leg",
+      "rightForeleg": "Right Foreleg",
+      "leftHindLeg": "Left Hind Leg",
+      "leftMiddleLeg": "Left Middle Leg",
+      "leftForeleg": "Left Foreleg",
+      "tail": "Tail",
+      "thorax": "Thorax",
+      "chest": "Chest",
+      "rightArm": "Right Arm",
+      "leftArm": "Left Arm",
+      "head": "Head"
+    },
+    "serpent": {
+      "tail": "Tail",
+      "body": "Body",
+      "head": "Head"
+    },
+    "serpentWinged": {
+      "tail": "Tail",
+      "body": "Body",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "rightWing": "Right Wing",
+      "leftWing": "Left Wing",
+      "head": "Head"
+    },
+    "spiderGiant": {
+      "rightHindLeg": "Right Hind Leg",
+      "leftHindLeg": "Left Hind Leg",
+      "rightCenterRearLeg": "Right Center Rear Leg",
+      "leftCenterRearLeg": "Left Center Rear Leg",
+      "abdomen": "Abdomen",
+      "rightCenterFrontLeg": "Right Center Front Leg",
+      "leftCenterFrontLeg": "Left Center Front Leg",
+      "rightForeleg": "Right Foreleg",
+      "leftForeleg": "Left Foreleg",
+      "head": "Head"
+    },
+    "walktapus": {
+      "rightLeg": "Right Leg",
+      "leftLeg": "Left Leg",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "rightArm": "Right Arm",
+      "leftArm": "Left Arm",
+      "tentacle1": "Tentacle 1",
+      "tentacle2": "Tentacle 2",
+      "tentacle3": "Tentacle 3",
+      "tentacle4": "Tentacle 4",
+      "tentacle5": "Tentacle 5",
+      "tentacle6": "Tentacle 6",
+      "tentacle7": "Tentacle 7",
+      "tentacle8": "Tentacle 8",
+      "head": "Head"
+    },
+    "wyvern": {
+      "tail": "Tail",
+      "rightLeg": "Right Leg",
+      "leftLeg": "Left Leg",
+      "abdomen": "Abdomen",
+      "chest": "Chest",
+      "rightWing": "Right Wing",
+      "leftWing": "Left Wing",
+      "head": "Head"
+    }
+  },
+  "passionSubject": {
+    "aldryami": "Aldryami",
+    "casteDuties": "Caste Duties",
+    "clan": "Clan",
+    "tribe": "Tribe",
+    "family": "Family",
+    "forest": "Forest",
+    "mostali": "Mostali",
+    "matriarch": "Matriarch",
+    "uz": "Uz"
+  },
+  "bestiary": {
+    "spiritDescriptionGeneral": "",
+    "airElementalNotes": "<h1>Air Elementals (Umbroli)</h1><p>Air elementals (commonly called umbroli or sylphs) resemble mobile whirlwinds. All can raise a wind; even the smallest can lift and throw small objects. The largest can throw human-sized objects or can carry them aloft in the air.</p><p><strong>Abilities</strong>: An air elemental can carry objects or people with a total SIZ equal to or less than the air elemental’s STR. It can create a breeze or a small whirlwind. An air elemental can increase a sailing ship’s speed by filling the sails. An air elemental may blow arrows or other missile weapons off course.</p><p><strong>Attack</strong>: An air elemental attacks by taking a character caught within it and throwing them to the top of their height, then dropping them. Damage done is 1D6 plus 1D6 per 3 meters of fall. A small air elemental can do a maximum of 2D6 damage, but a medium air elemental can do 3D6 damage and a large air elemental does 5D6. An adventurer may try to resist by pitting their STR against that of the elemental. If the character resists, they stay on the ground.</p><p>If there is more than one target within the area covered by the elemental, it may divide its STR equally among the targets and overcome each STR on an individual basis. Thus, a large air elemental with a STR of 30, having three targets within one area, can attack each target with a STR of 10. If it works against one, but not against the others, then one victim goes flying while the others stay on the ground. If so commanded, it will attack only one target, leaving the others alone.</p><p>Adventurers may choose to attack or cast spells at an air elemental instead of resisting, in hopes that the air elemental will be destroyed in mid-toss, causing only half damage for the toss. The characters will be tossed, however.</p><p><strong>Note</strong>: More powerful and sentient air elementals are also called umbroli and are living winds. The strongest umbroli are minor gods, such as the Seven Winds of Dragon Pass, and are worshiped by local clans and tribes.<p>",
+    "airElementalSmall": {
+      "name": "Air Elemental, Small",
+      "species": ""
+    },
+    "airElementalMedium": {
+      "name": "Air Elemental, Medium",
+      "species": ""
+    },
+    "airElementalLarge": {
+      "name": "Air Elemental, Large",
+      "species": ""
+    },
+    "brownBear": {
+      "name": "Brown Bear",
+      "species": "Ursus arctos",
+      "notes": "<p>Three types of bear can be found in the Dragon Pass area. The common black bear, the larger brown bear, and an even larger white bear variant. All bears are omnivorous, and many types show no fear of humans.</p><p><strong>Armor</strong>: 3-point skin and fur</p><p><strong>Note</strong>: A bear may either bite and claw twice or bite and hug in a round. If it chooses to bite and hug, both attacks must be against the same foe. If it bites and claws twice, it may attack up to three separate foes.</p>"
+    },
+    "bison": {
+      "name": "Bison",
+      "species": "Bison praxus",
+      "notes": "<p>The bison is a surly and intractable beast, save in the presence of its rider. Its thick skin gives it some protection and its basic attack is the charge. They also butt and trample.</p><p>Occasionally (5% chance), there will be a white bison in a herd. White bison hides are extremely valuable (300&ndash;2,000 L, depending on condition). However, white bison are sacred to the White Bull Society, an inter-tribal Praxian society.</p><p>Bison riders are one of the Five Great Tribes of Prax.</p><p><strong>Armor</strong>:&nbsp;3-point hide.</p><p><strong>Note</strong>: A bison cannot head butt and trample in the same melee round.</p>"
+    },
+    "diseaseSpirit": {
+      "name": "Disease Spirit",
+      "species": "",
+      "notes": "<p>Spirits of disease are specifically bound to the service of the Mother of Disease and have a special type of spirit combat.</p><p>Their initial spirit combat attack is normal. But if the disease spirit succeeds in an attack when the victim fails, the spirit can try to infect the target with any of the diseases it is carrying. This infection requires another roll overcoming the target’s Spirit Combat skill, as if the disease spirit was trying to possess the victim. If successful, this does not force the victim’s spirit from the body but infects the victim with the acute form of any disease carried. A second success infects the victim with the next degree of the disease (see RQG p154).</p><p>If the victim manages to defeat the spirit and drives it off or destroys it, the victim gains immediate immunity to any disease carried by the spirit for a year. Exposure to those diseases will not affect the character. They also will steal 1D3 POW directly from the spirit, subtracted from the spirit’s characteristic POW. This stolen POW is not diseased in any way and adds to the characteristic POW, as if a POW gain roll had been made.</p>"
+    },
+    "earthElementalNotes": "<h1>Earth Elementals (Talosi)</h1><p>Earth elementals (commonly called talosi or gnomes) can shape the earth in almost any way: they can create pits, tunnels, or walls, expel objects, and even plow fields. An earth elemental cannot be summoned or travel through areas floored by quarried stone or solid rock. However, it likes very rocky soil. An earth elemental moves directly through the earth, leaving a trail of overturned and ground dirt behind it. It cannot leave the soil and looks like a whirlpool or pulse in the earth itself.</p><p><strong>Abilities</strong>: An earth elemental can open pits in the soil, make tunnels, and find buried objects. It can also be used for holding objects stuck into the dirt, keeping loose tunnel roofs from falling, or forming mounds and ridges in the soil (no larger than the elemental’s volume). An earth elemental has many homely uses such as uprooting tree trunks, plowing fields, and clearing foundations for homes. In war, an earth elemental could be used to undermine or build fortifications. Earth elementals are perhaps the most generally useful elemental.</p><p>An earth elemental can carry a person and &quot;swim&quot; through the soil if it has STR enough to carry that person. There is no air underground, and an individual being carried must make CON rolls or suffocate. The earth elemental can only do this with an unresisting passenger. An earth elemental can carry several people if its STR is sufficient.</p><p><strong>Attack</strong>: In combat, the earth elemental uses its volume to engulf its opponents, opening a pit beneath a foe with a maximum volume equal to its own volume. It can engulf about half of one human-sized victim per cubic meter of volume.</p><p>The depth of the pit depends on the size of the elemental. A small earth elemental simply engulfs the victim’s legs. A medium earth elemental can swallow a victim entirely. A large earth elemental can swallow its victim and an average sized mount completely, engulfing all hit locations. In this case, the victim also will asphyxiate (as per the suffocation rules) unless they break free.</p><p>After burying a victim, the earth elemental closes the pit, doing the earth elemental’s damage modifier (figured by the earth elemental’s STR×2 rather than STR+SIZ) as damage to all hit locations engulfed. An earth elemental can only attack in this manner in dirt or rocky soils (not in sand or soft loam), and can only attack once in a given spot, because the pulverized dirt is too fine for a second attack.</p><p>The victim is held by the earth elemental in any case and must overcome the elemental’s STR with their own to break free and crawl out of its grip. If an earth elemental lacks any damage bonus, or attacks a victim in unsuitable soil, it will swallow the victim as described above, without causing damage. The victim must still resist STR vs. STR to pull free of the earth elemental’s grip.</p><p><strong>Note</strong>: More powerful and sentient Earth elementals are the lesser goddesses and gods of the Earth and have countless names. They are worshiped by local communities.</p>",
+    "earthElementalSmall": {
+      "name": "Earth Elemental, Small",
+      "species": ""
+    },
+    "earthElementalMedium": {
+      "name": "Earth Elemental, Medium",
+      "species": ""
+    },
+    "earthElementalLarge": {
+      "name": "Earth Elemental, Large",
+      "species": ""
+    },
+    "elementalHitPointsNote": "<p><strong>Note:</strong> Elementals do not have Hit Points and take physical damage to their SIZ instead.</p>",
+    "elementalGeneralNotes": "<h1>General Properties of Elementals</h1><p>Most elementals are incomplete entities possessing only STR, SIZ, and POW. Their hit points are related to their SIZ, as explained later. An elemental’s SIZ is expressed as a volume rather than a characteristic number: for example, an elemental would be described of having a SIZ of 3 cubic meters (meters3).</p><p>If a point value is needed for an elemental’s SIZ, the elemental’s hit points may be used as its SIZ. Thus, if an elemental with 10 hit points climbed into a box and was lifted by an adventurer, its SIZ could be treated as if it were 10.</p><p>Most elementals lack INT and are not truly sentient. They are capable of being controlled by spells, but when left on their own, they will simply do whatever is natural: fire elementals burn flammable materials within reach, water elementals flee to the lowest possible spot, earth elementals sink into the soil, darkness elementals flee light, and air elementals breeze around.</p><p>Many elementals are servants of the gods, and priests of certain deities learn to control appropriate elementals. The greatest elementals are self-aware and sentient and are often worshiped as part of a cult.</p><p>All elementals can be struck in combat with ordinary weapons, breaking up their physical form and eventually disrupting them. They have only one hit location and no armor. When an elemental has been reduced to 0 hit points, it dissolves. Its spirit returns to its realm, from where it may be summoned again to inhabit another volume of material.</p>",
+    "ghost": {
+      "name": "Ghost",
+      "species": "",
+      "notes": "<p>Ghosts are the spirits of the restless dead. Ghosts found on the Middle World are always tied to a specific site or object, and either cannot leave or must return if they do leave.</p><p>Ghosts come in many forms. Some can change shape, and the most common form is a dark cloud, especially in daylight. Others can take multiple human forms, assume beast shapes, change gender, or even remove body parts and send them roaming about. Possession is a common general trait of ghosts, but many desire direct interaction with mortals. An encounter with a ghost can leave a lingering or permanent effect, depending on the suffering of the victim and degree of success of the ghost. Some types of ghosts are passive or even pleasant.</p><p>Ghosts can become visible at will and engage intruders in spirit combat. If a ghost reduces a foe to 0 magic points, it will possess the victim. Even if a ghost possesses someone, it remains tied to its site and may not leave.</p><p>Most ghosts are malign and hate the living. They are frequently insane. Ghosts possess INT, POW, and CHA.</p>"
+    },
+    "greenElf": {
+      "name": "Aldryami (Green Elf)",
+      "species": "Dendro sapien vronkalum",
+      "notes": "<h1>Finishing Details</h1><ul>  <li>Choose Earth or Fire/Sky Rune (Earth is default)</li>  <li>Add one or more cults, see below</li></ul><h1>Aldryami (Elves)</h1><p>The race known as the Aldryami consists of elves, dryads, pixies, and runners. They belong to the vegetable kingdom. Essentially mobile plants, Aldryami are significantly different from other humanoids and beasts.</p><p>Aldryami commonly associate in forest communities. Since all claim descent from (and actively engage in worship of) the goddess Aldrya, the members of these mixed forest communities are collectively named after her&mdash;Aldryami.</p><p>Elves come in various races, identified as colors by humans, dependent upon the type of forest in which they are found. The green elves are native to coniferous trees, the brown to deciduous temperate forests, the yellow to tropical jungle, and the red to ferns and other primitive plants.</p><p>The primary Rune of the Aldryami is the Plant Form Rune.</p><h1>Green Elves</h1><p>The green elves, or vronkali, were the most important elf type in the Great Darkness but have lost ground since then. Green elves are of male or female gender, and do not breed with dryads. They do not sleep in winter but experience a daily period of rest. Green elves are associated with coniferous forests. They inhabit cool temperate lands. In snow, they can ski cross-country with carved magic wooden shoes. In warmer lands, they often share their forests with brown elves.</p><p>A green elf typically weighs about 65 kilograms and stands a little over 170 centimeters tall.</p><p><strong>Special Notes</strong>: Like the trolls, their eternal enemies, green elves are vulnerable to the &ldquo;new metal&rdquo; iron and cannot handle it. Any damage from an iron weapon penetrating their armor will do twice the normal damage.</p><p><strong>Armor:</strong>&nbsp;Green elves have no natural armor but often wear 2-point armor made of treated bark or other plant materials. They often wear cloaks made of leaves that add +20% to their Hide skill in an appropriate forest. They generally prefer to Dodge rather than parry.</p><p><strong>Skills:</strong>&nbsp;Climb 85%, Conceal 45%, Dodge 65%, Elfsense 55%, Elf Lore 50%, First Aid 50%, Hide 50%, Listen 50%, Move Quietly 50%, Plant Lore 75%, Sing 55%, Ski 60%, Spirit Combat 55%, Track 55%, Worship (elf deity) 50%.</p><p><strong>Languages:</strong>&nbsp;Speak Aldryami 50%, Speak Tradetalk 15%. Passions: Hate (Mostali) 60%, Hate (Uz) 60%, Loyalty (Forest) 60%.</p><p><strong>Runes:</strong>&nbsp;Earth or Fire/Sky 60%, Plant 75%. Special Rune Magic: Arrow Trance.</p><p><strong>Magic:</strong>&nbsp;All elves worship Aldrya. Other common gods include Babeester Gor, Chalana Arroy, Ernalda, Flamal, and Yelmalio. Common spirit magic is Heal and Speedart.</p>"
+    },
+    "horseSeredae": {
+      "name": "Horse (Seredae)",
+      "species": "Equus caballus",
+      "notes": "<p>Hippogriff was the favorite child of King Griffin, and an ally to Splendid Yamsur, the eldest son of Yelm. Splendid Yamsur and Hippogriff had taken solemn oaths of friendship together, but in several fights, Hippogriff was hurt and abandoned by her erstwhile friend.</p><p>Hippogriff underwent a series of painful and humiliating experiences during the Gods War and the Great Darkness. First, she met Storm Bull in raging battle, and her proud fangs were broken out of her mouth. In a fight with Maran Gor, the Earthshaker, Hippogriff ’s legs were broken. Her bronze claws were ripped from her feet, but Yamsur was able to replace them with hooves. The greatest defeat was when Zorak Zoran tore off her golden wings, laughing as he robbed her of ever returning to the sky. But most humiliating was when this once great godling was taken and broken by a mortal, Hyalor Horsebreaker.</p><p>Hyalor was a leader among men and a believer in the long-disappeared Sun. He claimed descent from Splendid Yamsur, who was slain by the Devil. Hyalor claimed that he was freeing her crippled spirit from Death and wished to make an alliance. He rescued her by changing her name and her identity. Even so, man got the better of the bargain. She was called Hippoi, or simply &quot;horse&quot;. Ever since then, her descendants have worked more for man than man has worked for horse. When the Sun rose again, Hyalor was ready to accept him, having survived the Darkness through great faith and courage. The horse, already used to slavery, leapt to meet her old master. The pair together received great bounty at the Dawn, and their herds and numbers increased greatly with the blessings of Yelm.</p><p>Dragon Pass is home to some of the finest horse breeders in Glorantha, the Grazeland Pony Breeders. For other peoples, horses are valuable and an indicator of wealth. Horses with the size, stamina and skill of a trained warhorse are few and far between. They are also quite expensive.</p><h1>Seredae</h1><p>The most common horse in Peloria, Pent, and Kralorela, the sered is the second-most common horse in Dragon Pass. They are a small-headed breed with a seemingly limitless variety of colors, ranging from noble black and white, through common duns and browns, to mixtures like dapple greys and piebald. Most have some appearance of stripes.</p><p><strong>Characteristics</strong>: Seredae have normal horse characteristics.</p><p><strong>Note</strong>: The average sered cannot carry a heavily armored warrior into battle.</p><p><strong>Note</strong>: A horse may attack once in a melee round. A ridden non-warhorse normally makes no attacks on behalf of its rider, but may attack something threatening it directly, such as a serpent.</p><p><strong>Armor</strong>: 1-point hide.</p><p><strong>Skills</strong>: Climb 30%, Dodge 25%, Jump 75%, Listen 40%, Scan 30%, Scent Intruder 30%, Swim 50%.</p>"
+    },
+    "humanBase": {
+      "name": "Human (Base)",
+      "species": "Homo sapiens sapiens",
+      "notes": "<p><strong>Note:</strong>This is template for a base human that does not have &quot;Homeland Cultural Skill Bonuses&quot; applied. See RQG p 60-63. To make a template for a new homeland, you can import this template to your world, rename it, and edit each skill with a Homeland Cultural Skill Bonus. In the Skill Definition tab of the skill sheet, change the &quot;Base Chance&quot; to add the Homeland Cultural Skill Bonus. Now you can duplicate your new template and rename it to make PCs or NPCs from that homeland.</p><h1>Human</h1><p>Glorantha has four major human races and several minor ones. There is a good deal of racially motivated prejudice, discrimination, and intolerance in Glorantha, none of it with any more reason than racism on Earth. However, communications between regions is limited in Glorantha, and most people have never seen persons of different racial stocks than their own. When several races share the same region, however, racism in all its ugly forms is just as likely as it is on Earth. Several cruel Gloranthan cultures even enslave persons of different races.</p><p>Three of Glorantha&rsquo;s four major human racial types roughly correspond to Earthly equivalents, but the fourth is unique.</p><ul><li>Agimori: a dark-skinned race native to Pamaltela.</li><li>Veldang: a blue-skinned race with no Earthly equivalent. Their skin is not bright blue, but slate colored. The Veldang are native to Pamaltela, where they are found in Zamokil and Fonrit.</li><li>Vithelans: they resemble Earth&rsquo;s East Asians. They inhabit the East Isles, Kralorela, Teshnos, and Vormain.</li><li>Wareran: a fair to olive-skinned race that inhabit most of Genertela, and Umathela in Pamaltela.</li></ul><p>Other minor human or semi-human races also exist, including the green-skinned amphibious Waertagi, pygmies in Pamaltela and Prax, and the Teleono people, who are one of six colors. The presence of non-human and semi-human beings on Glorantha can lead to interesting assumptions. A person encountering another human of a different race for the first time may assume that he is seeing a creature of a different species altogether, with suspicion and fear engendered thereby.</p>"
+    },
+    "humanSartarite": {
+      "name": "Human (Sartarite)",
+      "species": "Homo sapiens sapiens",
+      "notes": "<p><strong>Note:</strong>This is template for a human that has the &quot;Homeland Cultural Skill Bonuses&quot;, bonus to Air Rune, and Passions for Sartar applied. See RQG p 60-63. Import this template to your world and you can duplicate it and rename it to make Sartarite PCs or NPCs.</p><p><strong>Note:</strong>This has the bonus to Base Chance for both Composite Bow and Slings.  Please remove one.</p><h1>Human (Sartarite)</h1><p>Sartar is the default homeland for adventurers, a mountainous kingdom made up of Storm-worshiping hill tribes united by the royal house of Sartar. Sartar recently liberated itself from the Lunar Empire, and in doing so began the Hero Wars. It is ruled by Kallyr Starbrow, and is a hotbed of magical questing, petty feuds, and would-be Heroes.</p><p>Others consider Sartarites to be quarrelsome, reckless, and fiercely independent. Most are devoted to Orlanth and Ernalda and hate the Lunar Empire with a burning passion.</p>"
+    },
+    "mostali": {
+      "name": "Mostali (Dwarf)",
+      "species": "Mostali lithanthropus",
+      "notes": "<p>Also called dwarfs, the Mostali claim descent from Mostal the Maker, a primeval deity said to have created the World. The dwarfs have a long and ancient history, most of which is unknown to humanity. They are pragmatic and stoic, happy with practical matters and unafraid of hard work, and are conservative and secretive to an extreme. Their hard religion offers them personal immortality. The official dwarf religion is a sorcery of a limited, but practical, variety.</p><p>The Mostali are locked in eternal war with the elves (dating from the early Gods War) and are no friends to trolls. The enmity of elf and dwarf predates the current form of both species and reaches back to their creation. The byword of their relationships with other intelligent beings is always mutual distrust.</p><p>The dwarfs are divided into occupational castes that often behave like separate species. Only the soldier caste—the Iron Dwarfs—is regularly seen outside their underground cities. The iron discipline and unyielding attitude of dwarf culture is inhuman in its rigidity. Most humans cannot understand their machine-like state of mind. Apparently, many dwarfs cannot either, for there is a significant rate of desertion from the ranks. These are considered heretics by conventional dwarfs, and in some places, they form whole societies.</p><p>The Mostali were the first to discover iron and were the first to learn to work it. They have created many other constructs to aid them, from gargoyles and the stone giants called jolanti, to even more exotic constructs like the Alchemical Transformer and the Cannon Cult.</p><p><strong>Armor</strong>: Coat of unenchanted heavy dwarf iron chainmail (9 pts.) and full helm (9 pts.). The dwarf has a 70% chance of being unaffected by any spell cast at them.</p><p><strong>Skills</strong>: Craft (Iron) 65%, Dodge 35%, Earthsense Scan 50%, Earthsense Search 50%, Mineral Lore 35%.</p><p><strong>Languages</strong>: Speak Mostali 50%, Read/Write Mostali 50%.</p><p><strong>Passions</strong>: Devotion (caste duties) 60%, Hate (Aldryami) 60%, Hate (Uz) 60%.</p><p><strong>Runes</strong>: All dwarfs have the Earth and Stasis Runes at 80% or higher.</p><p><strong>Magic</strong>: Dwarfs use dwarf sorcery (see the [Glorantha Bestiary(https://www.chaosium.com/runequest-glorantha-bestiary-hardcover/)]). An Iron dwarf wearing unenchanted armor does not cast spells in combat.</p><p><strong>Enchanged Iron Weapons</strong>: Damage against an elf or troll that penetrates armor is doubled. Can strike creatures immune to normal weapons.</p><p><strong>Note</strong>: The dwarf crossbow is a repeater. It fires once a round without needing to reload, until all five quarrels in the clip have been expended. It takes three rounds to refill the clip.<p>"
+    },
+    "shadowcat": {
+      "name": "Shadowcat",
+      "species": "Lynx umbrosus",
+      "notes": "<p>Shadowcats are dark-colored felines which range from the size of a housecat to that of a lynx. They are very quick and quiet, and are also known as shimmer cats because they are extremely hard to hit.</p><p>Shadowcats are social animals that hunt in groups that encircle their prey from different directions. They are domesticated by the Orlanthi to herd livestock and to hunt. They rarely attack humans or other large predators. However, when cornered or threatened, they will attack fiercely, jumping onto a foe and holding with the forefeet while biting and ripping with both hind legs at once.</p><p>In Dragon Pass, shadowcats are also called alynxes. All are sacred to Orlanth.</p><strong>Armor</strong>: None.<p><strong>Skills</strong>: Dodge 50%, Hide 75%, Move Quietly 90%.</p><p><strong>Note</strong>: A shadowcat first attacks with both claws and its bite simultaneously. If both claws hit, the shadowcat hangs on and rips with its hind claws on the next round, while continuing to bite.</p>"
+    },
+    "tusker": {
+      "name": "Tusker",
+      "species": "Sus paracaballus",
+      "notes": "<p>Tuskers are gigantic boars as big as buffalo, ridden only by tusk riders. These beasts are fierce and ill-tempered but love their masters beyond all comprehension.</p><p><strong>Armor:</strong> 4-point hide.</p><p><strong>Skills</strong>: Track by Scent 50%.</p><p><strong>Note</strong>: A tusker cannot gore and trample the same opponent in the same melee round.</p>"
+    },
+    "uzko": {
+      "name": "Uzko (Dark Troll)",
+      "species": "Styganthropus uzko",
+      "notes": "<h1>Uz (Trolls)</h1><p>Trolls are principally a mountain-dwelling race, at perpetual war with elves and dwarfs, and dealing with mankind as the occasion demands. The dispersion of trolls was so great during the Gods War and since the Dawning, that several distinct breeds arose, as well as one blasphemous crossbreed with man, the tusk riders. All trolls have an aversion to iron, the &quot;poison metal,&quot; refusing to handle it and taking double damage from weapons forged of it.</p><p>The trolls call themselves Uz, a word which can be translated as &quot;the folk.&quot; More specifically, Uz is the living part of Kyger Litor that is also the incarnation of all trolldom. Uz is a mundane appendage of the great Darkness goddess, who has further powers in her own worlds beyond the reach of Uz.</p><p><h1>Dark Trolls (Uzko)</h1><p>Dark trolls are the current basic stock of the uz, deferring only to Mistress Race trolls for positions of authority. They are fully intelligent and use all weapons and magic. Their Darksense is not as good as that of the Mistress Race, but to compensate they have eyes which—though farsighted and colorblind—are useful in open spaces, heights, and depths.</p><p>They have a sense of smell far superior to that of the Mistress Race. Females generally have two breasts. In ancient times, before the Curse of Kin, dark troll females occasionally bore twins or triplets. Since the Trollkin Curse, trolls have decreed that all multiple births are trollkin.</p><p>About 30% of any normal troll community consists of dark trolls, the remainder being trollkin with a smattering of great trolls. Many wild troll families consist of dark trolls only. Both great trolls and trollkin are born to dark troll mothers, though the reverse is not true.</p><p>An average male dark troll stands 185-190 centimeters tall and weighs around 130 kilograms. The average female is somewhat larger, standing 190-195 centimeters tall and weighing about 155 kilograms. Stronger than humans, they tend to fight with heavy clubs and maces after performing an ambush from the shadows with slings.</p><p>Characteristics given here are for male dark trolls. The females, who rarely need to leave their dwellings, have 3D6+10 SIZ.</p><p><strong>Armor</strong>: 1-point skin. May wear any armor, hit locations chart assumes a light scale hauberk (4 pts.), cuirboilli greaves and vambraces (each 3 pts.), and an open helm (4 pts.).</p><p><strong>Skills</strong>: Climb 40%, Darksense Scan 45%, Darksense Search 35%, Dodge 35%, Hide 40%, Intimidate 35%, Jump 40%, Listen 40%, Move Quietly 40%, Spirit Combat 40%.</p><p><strong>Languages</strong>: Speak Darktongue 50%.</p><p><strong>Passions</strong>: Hate (Aldryami) 60%, Hate (Mostali) 60%, Love (family) 60%, Loyalty (matriarch) 60%.</p><p><strong>Runes</strong>: All trolls have the Darkness Rune of at least 60%.</p><p><strong>Special Rune Magic</strong>: As per cult.</p><p><strong>Magic</strong>: Dark trolls worship a pantheon of Darkness deities headed by Kyger Litor. Zorak Zoran is an important war god for trolls. All magics are available to them although most trolls only have Rune magic and spirit magic.</p>"
+    },
+    "wolf": {
+      "name": "Wolf",
+      "species": "Canis lupus",
+      "notes": "<p>Wolves hunt in packs ranging from under a dozen individuals to up to 40 or more. If too many wolves are wounded or killed in a fight, the pack will slink off, unless starving. Wolves fight cooperatively. Several wolves may attack the same target, ensuring that most of them will not be parried or dodged. Or one or two large wolves may attempt to knock the target down—when it falls over, other wolves rush to attack.</p><p><strong>Armor</strong>: 2-point fur.</p><p><strong>Skills</strong>: Dodge 30%, Search 60%, Track 80%.</p>"
+    }
+  }
+}

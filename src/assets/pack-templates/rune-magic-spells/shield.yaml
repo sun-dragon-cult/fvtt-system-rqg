@@ -1,5 +1,5 @@
 # shield
-name: ${{openSystem.content.runeMagic.shield.name}}$
+name: ${{rqgCompendiumContent.runeMagic.shield.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..shield
-    name: ${{openSystem.content.runeMagic.shield.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.shield.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.shield
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

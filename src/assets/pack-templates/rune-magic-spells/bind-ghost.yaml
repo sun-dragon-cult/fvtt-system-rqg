@@ -1,5 +1,5 @@
 # bind-ghost
-name: ${{openSystem.content.runeMagic.bindGhost.name}}$
+name: ${{rqgCompendiumContent.runeMagic.bindGhost.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -12,10 +12,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..bind-ghost
-    name: ${{openSystem.content.runeMagic.bindGhost.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.bindGhost.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.bind-ghost
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -1,5 +1,5 @@
 # madness
-name: ${{openSystem.content.runeMagic.madness.name}}$
+name: ${{rqgCompendiumContent.runeMagic.madness.name}}$
 type: runeMagic
 img: systems/rqg/assets/images/items/rune-magic.svg
 system:
@@ -13,10 +13,11 @@ system:
   chance: 0
   descriptionRqidLink:
     rqid: je..madness
-    name: ${{openSystem.content.runeMagic.madness.name}}$
+    name: ${{rqgCompendiumContent.runeMagic.madness.name}}$
+effects: []
 flags:
   rqg:
     documentRqidFlags:
       id: i.rune-magic.madness
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

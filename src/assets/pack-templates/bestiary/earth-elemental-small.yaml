@@ -1,5 +1,5 @@
 ---
-name: ${{openSystem.content.bestiary.earthElementalSmall.name}}$
+name: ${{rqgCompendiumContent.bestiary.earthElementalSmall.name}}$
 type: character
 img: icons/svg/mystery-man.svg
 system:
@@ -27,25 +27,25 @@ system:
       value:
       formula:
   background:
-    species: ${{openSystem.content.bestiary.earthElementalMedium.species}}$
-    occupation: ''
-    homeland: ''
+    species: ${{rqgCompendiumContent.bestiary.earthElementalMedium.species}}$
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
-  allies: ${{openSystem.content.bestiary.elementalHitPointsNote}}$ ${{openSystem.content.bestiary.earthElementalNotes}}$ ${{openSystem.content.bestiary.elementalGeneralNotes}}$
+    ransomDetails: ""
+    biography: ""
+  allies: ${{rqgCompendiumContent.bestiary.elementalHitPointsNote}}$ ${{rqgCompendiumContent.bestiary.earthElementalNotes}}$ ${{rqgCompendiumContent.bestiary.elementalGeneralNotes}}$
   attributes:
     magicPoints:
       value: 11
@@ -64,7 +64,7 @@ system:
     isCreature: true
     health: healthy
 prototypeToken:
-  name: ${{openSystem.content.bestiary.earthElementalSmall.name}}$
+  name: ${{rqgCompendiumContent.bestiary.earthElementalSmall.name}}$
   displayName: 0
   actorLink: false
   texture:
@@ -130,5 +130,5 @@ flags:
   rqg:
     documentRqidFlags:
       id: a.character.earth-elemental-small
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$

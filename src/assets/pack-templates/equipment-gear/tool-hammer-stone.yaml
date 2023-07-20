@@ -1,14 +1,15 @@
-name: ${{openSystem.content.equipment.gear.toolHammerStone}}$
+name: ${{rqgCompendiumContent.equipment.gear.toolHammerStone}}$
 type: gear
 img: systems/rqg/assets/images/gear/hammer-break.svg
 flags:
   rqg:
     documentRqidFlags:
       id: i.gear.stone-hammer
-      priority: ${{openSystem.prio}}$
-      lang: ${{openSystem.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+effects: []
 system:
-  description: ${{openSystem.content.equipment.gear.toolHammerStoneDescription}}$
+  description: ${{rqgCompendiumContent.equipment.gear.toolHammerStoneDescription}}$
   gmNotes:
   quantity: 1
   price:

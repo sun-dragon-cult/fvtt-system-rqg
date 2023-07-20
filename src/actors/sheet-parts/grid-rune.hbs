@@ -1,30 +1,35 @@
 {{#if wizard}}
-<div>
+  <div>
     <input type="checkbox"
-        class="wizard-choice-input"
-        data-rqid="{{rune.flags.rqg.documentRqidFlags.id}}"
-        data-for-choice="{{forChoice}}"
-        {{#if (lookup rune.system.choice checkedProperty)}}checked{{/if}}
-        data-tooltip="{{localize "RQG.ActorCreation.Step1.ImportRuneTitle" runeName=rune.name}}" />
-</div>
+           class="wizard-choice-input"
+           data-rqid="{{rune.flags.rqg.documentRqidFlags.id}}"
+           data-for-choice="{{forChoice}}"
+           {{#if (lookup rune.system.choice checkedProperty)}}checked{{/if}}
+           data-tooltip="{{localize "RQG.ActorCreation.Step1.ImportRuneTitle" runeName=rune.name}}"/>
+  </div>
 {{/if}}
-<div data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-        class="rune contextmenu item"
-        data-item-id="{{rune.id}}"
-        {{#if rune.system.descriptionRqidLink.rqid}}
-            data-rqid-link="{{rune.system.descriptionRqidLink.rqid}}"
-        {{/if}}>
-    <img class="rune" src="{{rune.img}}">
+<div class="rune contextmenu item"
+     data-item-id="{{rune.id}}"
+     {{#if rune.system.descriptionRqidLink.rqid}}
+       data-rqid-link="{{rune.system.descriptionRqidLink.rqid}}"
+     {{/if}}>
+  <img class="rune" src="{{rune.img}}">
 </div>
-<div data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-        class="rune contextmenu item"
-        data-item-id="{{rune.id}}"
-        data-item-roll>
-    {{rune.system.rune}}
+<div  class="rune contextmenu item"
+      data-item-id="{{rune.id}}"
+      {{#unless sorcery}}
+        data-tooltip="{{localize "RQG.Game.RollTitle"}}"
+        data-item-roll
+      {{/unless}}>
+      {{rune.system.rune}}
 </div>
-<div data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-        class="rune contextmenu item {{experiencedclass rune.uuid}}"
-        data-item-id="{{rune.id}}"
-        data-item-roll>
+{{#if sorcery}}
+  <div></div>
+{{else}}
+  <div data-tooltip="{{localize "RQG.Game.RollTitle"}}"
+       class="rune contextmenu item {{experiencedclass rune.uuid}}"
+       data-item-id="{{rune.id}}"
+       data-item-roll>
     <span class="text-right">{{rune.system.chance}}%</span>
-</div>
+  </div>
+{{/if}}

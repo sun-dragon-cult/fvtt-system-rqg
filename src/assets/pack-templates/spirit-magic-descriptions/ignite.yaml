@@ -1,7 +1,7 @@
 # ignite
-name: ${{openSystem.content.spiritMagic.ignite.name}}$
+name: ${{rqgCompendiumContent.spiritMagic.ignite.name}}$
 pages:
-  - name: ${{openSystem.content.spiritMagic.ignite.name}}$
+  - name: ${{rqgCompendiumContent.spiritMagic.ignite.name}}$
     type: text
     title:
       show: false
@@ -9,13 +9,13 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.spiritMagicDescription.title}}$
-        ${{openSystem.content.spiritMagic.ignite.description}}$
+        ${{rqgCompendiumContent.journalEntryType.spiritMagicDescription.title}}$
+        ${{rqgCompendiumContent.spiritMagic.ignite.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..ignite
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

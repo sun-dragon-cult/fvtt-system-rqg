@@ -39,7 +39,9 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   }
 
   async getData(): Promise<CultSheetData & ItemSheetData> {
-    const system = duplicate(this.document.system);
+    // @ts-expect-error _source Read from the original data unaffected by any AEs
+    const system = duplicate(this.document._source.system);
+
     system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
 
     // To improve UX of creating a new item, set deity to name if empty
@@ -131,13 +133,13 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   deriveItemName(): string {
     return CultSheet.deriveItemName(
       this.document.system.deity,
-      this.document.system.joinedCults.map((c: any) => c.cultName)
+      this.document.system.joinedCults.map((c: any) => c.cultName),
     );
   }
 
   static deriveItemName(deity: string, cultNames: string[]): string {
     const joinedCultsFormatted = formatListByWorldLanguage(
-      cultNames.filter(isTruthy).map((c) => c.trim())
+      cultNames.filter(isTruthy).map((c) => c.trim()),
     );
 
     if (!joinedCultsFormatted || joinedCultsFormatted === deity) {

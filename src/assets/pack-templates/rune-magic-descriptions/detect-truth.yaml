@@ -1,7 +1,7 @@
 # detect-truth
-name: ${{openSystem.content.runeMagic.detectTruth.name}}$
+name: ${{rqgCompendiumContent.runeMagic.detectTruth.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.detectTruth.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.detectTruth.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/truth.svg" height="70">
-        ${{openSystem.content.runeMagic.detectTruth.description}}$
+        ${{rqgCompendiumContent.runeMagic.detectTruth.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..detect-truth
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { CompendiumPack, PackError, PackMetadata } from "./compendium-pack";
 
 export const i18nDir = "src/i18n";
-export const translationsFileName = "openSystem";
+export const translationsFileNames: string[] = ["uiContent", "rqgCompendiumContent"];
 export const outDir = path.resolve(process.cwd(), "src/assets/packs");
 export const packsMetadata = JSON.parse(fs.readFileSync(path.resolve("./src/system.json"), "utf-8"))
   .packs as PackMetadata[];
@@ -27,7 +27,7 @@ templatePacks.forEach((pack) => {
       translatedPacks.push(pack.translate(lang));
     } catch (error) {
       if (error instanceof Error) {
-        throw PackError(`Error translating pack ${pack.name} to ${lang}: \n\n${error.message}`);
+        throw new PackError(`Error translating pack ${pack.name} to ${lang}: \n\n${error.message}`);
       }
     }
   });
@@ -41,8 +41,8 @@ if (entityCounts.length > 0) {
   console.log(
     `Created ${entityCounts.length} packs with ${
       total / languageCount
-    } documents per language in ${languageCount} languages.`
+    } documents per language in ${languageCount} languages.`,
   );
 } else {
-  throw PackError("No data available to build packs.");
+  throw new PackError("No data available to build packs.");
 }

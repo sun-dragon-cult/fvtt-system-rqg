@@ -22,7 +22,7 @@ describe("ItemTree", () => {
       const physicalItemCount = items.filter(
         (item) =>
           item.system.physicalItemType &&
-          !(item.type === ItemTypeEnum.Weapon && item.system.isNatural)
+          !(item.type === ItemTypeEnum.Weapon && item.system.isNatural),
       ).length;
       const virtualNodeCount = 5; // "", "Belt", "armor", "backen" & "under Armor"
       expect(itemLocationDataMap.size).toBe(physicalItemCount + virtualNodeCount);
@@ -176,7 +176,7 @@ describe("ItemTree", () => {
           ],
           ["backen", ["Shiny crystal"]],
           ["under Armor", ["Leather Vambraces  (Leather)", "Leather Greaves  (Leather)"]],
-        ])
+        ]),
       );
     });
 
@@ -297,7 +297,7 @@ describe("ItemTree", () => {
 
       // --- Act ---
       const container = itemTree.getContainerNodeOfItem(
-        "Dragon Armor Hauberk  (Dragon Hide and Bone)"
+        "Dragon Armor Hauberk  (Dragon Hide and Bone)",
       );
 
       // --- Assert ---

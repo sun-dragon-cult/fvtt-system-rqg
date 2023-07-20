@@ -1,7 +1,7 @@
 # mindblast
-name: ${{openSystem.content.runeMagic.mindblast.name}}$
+name: ${{rqgCompendiumContent.runeMagic.mindblast.name}}$
 pages:
-  - name: ${{openSystem.content.runeMagic.mindblast.name}}$
+  - name: ${{rqgCompendiumContent.runeMagic.mindblast.name}}$
     type: text
     title:
       show: false
@@ -9,14 +9,14 @@ pages:
     text:
       format: 1
       content: >
-        ${{openSystem.content.journalEntryType.runeMagicDescription.title}}$
+        ${{rqgCompendiumContent.journalEntryType.runeMagicDescription.title}}$
         <img style="float:right;border:none;margin-left:1rem" src="systems/rqg/assets/images/runes/moon_full.svg" height="70">
-        ${{openSystem.content.runeMagic.mindblast.description}}$
+        ${{rqgCompendiumContent.runeMagic.mindblast.description}}$
     sort: 0
     flags: {}
 flags:
   rqg:
     documentRqidFlags:
       id: je..mindblast
-      lang: ${{openSystem.lang}}$
-      priority: ${{openSystem.prio}}$
+      lang: ${{rqgCompendiumContent.lang}}$
+      priority: ${{rqgCompendiumContent.prio}}$

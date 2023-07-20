@@ -35,7 +35,7 @@ export class ItemChatHandler {
   }
 
   public static async renderContent(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "itemChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
@@ -50,7 +50,7 @@ export class ItemChatHandler {
       chatHeading: localizeItemType(item?.type) + ": " + item?.name,
     };
 
-    let html = await renderTemplate("systems/rqg/chat/itemChatHandler.hbs", templateData);
+    const html = await renderTemplate("systems/rqg/chat/itemChatHandler.hbs", templateData);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
     return {
@@ -67,7 +67,7 @@ export class ItemChatHandler {
   }
 
   public static async getFormDataFromFlags(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<{ modifier: number; itemChance: number }> {
     assertChatMessageFlagType(flags.type, "itemChat");
     const item = await getDocumentFromUuid<RqgItem>(flags.chat.itemUuid);
