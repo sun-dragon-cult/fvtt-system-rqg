@@ -1,10 +1,13 @@
 {
-  "name": "rqg",
   "id": "rqg",
   "type": "system",
   "title": "RuneQuest Glorantha",
   "description": "A RuneQuest Glorantha system implementation.",
   "version": "2.2.6",
+  "compatibility": {
+    "minimum": 11,
+    "verified": 11
+  },
   "license": "UNLICENSED",
   "background": "systems/rqg/assets/images/ui/sacred-time.webp",
   "authors": [
@@ -31,10 +34,6 @@
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
   "gridUnits": "m",
-  "compatibility": {
-    "minimum": 10,
-    "verified": 10
-  },
   "packs": [
     {
       "name": "rqid-macros-en",
