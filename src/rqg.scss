@@ -87,9 +87,7 @@ body {
 }
 
 .rqg img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
-.app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"], // make them black in all sheets (like journals)
-.app .compendium.directory img[src*="systems/rqg/assets/images"][src$=".svg"] {
-  // make them black in compendiums
+.app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"] { // make them black in all sheets (like journals)
   filter: invert(0.9);
 }
 
