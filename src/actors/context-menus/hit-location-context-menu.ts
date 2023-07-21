@@ -4,17 +4,17 @@ import {
   getGame,
   getRequiredDomDataset,
   localize,
+  localizeItemType,
   RqgError,
 } from "../../system/util";
 import { RqgActor } from "../rqgActor";
 import { contextMenuRunes } from "./contextMenuRunes";
-import { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.ContextMenu.EditItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.HitLocation),
+      itemType: localizeItemType(ItemTypeEnum.HitLocation),
     }),
     icon: contextMenuRunes.Edit,
     condition: (el: JQuery) => !!getDomDataset(el, "item-id"),
@@ -34,7 +34,7 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.DeleteItem", {
-      itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.HitLocation),
+      itemType: localizeItemType(ItemTypeEnum.HitLocation),
     }),
     icon: contextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,

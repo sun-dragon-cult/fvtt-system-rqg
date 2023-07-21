@@ -491,14 +491,14 @@ export function localize(key: string, data?: Record<string, unknown>): string {
   const result = getGame().i18n.format(key, data);
   if (result === key) {
     console.log(
-      `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/openSystem.json).`,
+      `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/uiContent.json).`,
     );
   }
   return result;
 }
 
 export function localizeItemType(itemType: ItemTypeEnum): string {
-  return localize("ITEM.Type" + itemType.titleCase());
+  return localize("TYPES.Item." + itemType);
 }
 
 export function localizeDocumentName(documentName: string | undefined): string {
