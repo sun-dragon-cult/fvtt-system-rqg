@@ -63,7 +63,7 @@ export async function showImproveAbilityDialog(
       adapter.showTraining = false;
       adapter.skillOver75 = true;
     }
-    adapter.typeLocName = localize("ITEM.TypeSkill");
+    adapter.typeLocName = localizeItemType(ItemTypeEnum.Skill);
   }
 
   const btnImprove = localize("RQG.Dialog.improveAbilityDialog.btnDoImprovement");

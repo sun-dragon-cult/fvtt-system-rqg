@@ -313,9 +313,4 @@ export class RqgItem extends Item {
     const okToAdd = !isRuneMagic || !(isRuneMagic && !actorHasCult);
     return !okToAdd;
   }
-
-  //** Localizes Item Type Name using ITEM localization used by Foundry.
-  public static localizeItemTypeName(itemType: ItemTypeEnum): string {
-    return localize("ITEM.Type" + itemType.titleCase());
-  }
 }

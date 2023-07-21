@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "rqg",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "type": "module",
   "esModuleInterop": true,
   "description": "",
@@ -51,10 +51,10 @@
     "ts-jest": "^29.0.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "^4.0.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "eslint-plugin-prettier": "^5.0.0"
   },
   "dependencies": {
-    "eslint-plugin-prettier": "^5.0.0",
     "foswig": "^3.0.1"
   }
 }

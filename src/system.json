@@ -1,10 +1,13 @@
 {
-  "name": "rqg",
   "id": "rqg",
   "type": "system",
   "title": "RuneQuest Glorantha",
   "description": "A RuneQuest Glorantha system implementation.",
-  "version": "2.2.5",
+  "version": "2.2.6",
+  "compatibility": {
+    "minimum": 11,
+    "verified": 11
+  },
   "license": "UNLICENSED",
   "background": "systems/rqg/assets/images/ui/sacred-time.webp",
   "authors": [
@@ -21,16 +24,16 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": ["rqg.js"],
-  "styles": ["rqg.css"],
+  "esmodules": [
+    "rqg.js"
+  ],
+  "styles": [
+    "rqg.css"
+  ],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
   "gridUnits": "m",
-  "compatibility": {
-    "minimum": 10,
-    "verified": 10
-  },
   "packFolders": [
     {
       "name": "RuneQuest Glorantha | en",
@@ -488,7 +491,7 @@
   "release-please-start": "x-release-please-start-version",
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v2.2.5/rqg.zip",
+  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v2.2.6/rqg.zip",
   "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/README.md",
   "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/CHANGELOG.md",
   "bugs": "https://github.com/sun-dragon-cult/foundry-vtt-rqg/issues"

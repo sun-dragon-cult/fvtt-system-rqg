@@ -1,20 +1,22 @@
 {
-  "ITEM": {
-    "TypeArmor": "Armor",
-    "TypeCult": "Cult",
-    "TypeGear": "Gear",
-    "TypeHitlocation": "Hit Location",
-    "TypeHomeland": "Homeland",
-    "TypeOccupation": "Occupation",
-    "TypePassion": "Passion",
-    "TypeRune": "Rune",
-    "TypeRunemagic": "Rune Magic Spell",
-    "TypeShamanicability": "Shamanic Ability",
-    "TypeSkill": "Skill",
-    "TypeSorcerymagic": "Sorcery Magic Spell",
-    "TypeSpiritmagic": "Spirit Magic Spell",
-    "TypeWeapon": "Weapon",
-    "TypeReputation": "Reputation"
+  "TYPES": {
+    "Item": {
+      "armor": "Armor",
+      "cult": "Cult",
+      "gear": "Gear",
+      "hitLocation": "Hit Location",
+      "homeland": "Homeland",
+      "occupation": "Occupation",
+      "passion": "Passion",
+      "rune": "Rune",
+      "runeMagic": "Rune Magic Spell",
+      "shamanicAbility": "Shamanic Ability",
+      "skill": "Skill",
+      "sorceryMagic": "Sorcery Magic Spell",
+      "spiritMagic": "Spirit Magic Spell",
+      "weapon": "Weapon",
+      "Reputation": "Reputation"
+    }
   },
   "RQG": {
     "ActorCreation": {

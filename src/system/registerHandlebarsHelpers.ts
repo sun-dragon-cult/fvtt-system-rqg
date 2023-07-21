@@ -2,7 +2,7 @@ import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { getAvailableRunes, getGame, localize, localizeItemType } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { RqgItem } from "../items/rqgItem";
+import type { RqgItem } from "../items/rqgItem";
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
 
@@ -46,7 +46,7 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("localizeitemtype", (typeName) => {
     const itemType: ItemTypeEnum = typeName;
-    return RqgItem.localizeItemTypeName(itemType);
+    return localizeItemType(itemType);
   });
 
   Handlebars.registerHelper("skillname", (...args) => {
