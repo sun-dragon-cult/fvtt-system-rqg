@@ -63,6 +63,15 @@ Hooks.once("init", async () => {
 
   CONFIG.statusEffects = getTokenStatusEffects();
 
+  // @ts-expect-error fontDefinitions
+  CONFIG.fontDefinitions["Norse"] = {
+    editor: true,
+    fonts: [
+      { urls: ["systems/rqg/assets/fonts/Norse-KaWl.otf"] },
+      { urls: ["systems/rqg/assets/fonts/NorseBold-2Kge.otf"], weight: "bold" },
+    ],
+  };
+
   Rqid.init();
   RqgChatMessage.init();
   RqgActiveEffect.init();

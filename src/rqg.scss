@@ -32,17 +32,6 @@ body {
   scrollbar-color: var(--rqg-color-main-bg) #111;
 }
 
-@font-face {
-  font-family: Norse;
-  src: url("assets/fonts/Norse-KaWl.otf") format("opentype");
-}
-
-@font-face {
-  font-family: Norse;
-  font-weight: bold;
-  src: url("assets/fonts/NorseBold-2Kge.otf") format("opentype");
-}
-
 // Hide LastPass input icon
 [data-lastpass-icon-root],
 [data-lastpass-root] {
