@@ -38,7 +38,7 @@ export class nameGeneration {
   static async Generate(
     rqid: string,
     num: number = 1,
-    constraints = this.defaultConstraints
+    constraints = this.defaultConstraints,
   ): Promise<string[] | undefined> {
     if (!rqid) {
       return undefined;
@@ -63,7 +63,7 @@ export class nameGeneration {
   static async GenerateFromNameBase(
     rqid: string,
     num: number = 1,
-    constraints = this.defaultConstraints
+    constraints = this.defaultConstraints,
   ): Promise<string[] | undefined> {
     if (!rqid) {
       return undefined;
@@ -170,7 +170,7 @@ export class nameGeneration {
   static async GenerateFromRollTable(
     rqid: string,
     num: number = 1,
-    constraints = this.defaultConstraints
+    constraints = this.defaultConstraints,
   ): Promise<string[] | undefined> {
     if (!rqid) {
       return undefined;
@@ -202,7 +202,7 @@ export class nameGeneration {
 
   static async ResolveTableResult(
     tableResult: any,
-    constraints = this.defaultConstraints
+    constraints = this.defaultConstraints,
   ): Promise<string> {
     if (!tableResult.results[0].data.text) {
       return "";
@@ -210,7 +210,7 @@ export class nameGeneration {
 
     const tableString: string = tableResult.results[0].data.text;
     let resultString = tableString;
-    const regex = /[^{{\}\}]+(?=})/gm;
+    const regex = /[^{}]+(?=}})/gm; // TODO will match {{abc}} but also {abc}}
     let match;
 
     while ((match = regex.exec(tableString)) != null) {

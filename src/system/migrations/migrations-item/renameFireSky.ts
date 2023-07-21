@@ -21,7 +21,7 @@ export async function renameFireSky(itemData: ItemData): Promise<ItemUpdate> {
     updateData = {
       data: {
         minorRunes: minorRunes.map((r: string) =>
-          r === "Fire (element)" ? "Fire/Sky (element)" : r
+          r === "Fire (element)" ? "Fire/Sky (element)" : r,
         ),
       },
     };

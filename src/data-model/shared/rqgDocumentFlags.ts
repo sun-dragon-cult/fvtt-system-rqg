@@ -52,9 +52,9 @@ export type BaseRqgChatFlags = {
   /** The different types of chatmessages. Used for type narrowing, see {@link assertChatMessageFlagType} */
   type: ChatMessageType;
   /** Data that needs to be persisted. Should include {@link CommonRqgChatFlags} */
-  chat: {};
+  chat: object;
   /** Data from inputs in the form only */
-  formData: {};
+  formData: object;
 };
 
 // Flags common to all chatmessages
@@ -90,7 +90,7 @@ export interface ItemChatFlags extends BaseRqgChatFlags {
 
 export interface ReputationChatFlags extends BaseRqgChatFlags {
   type: "reputationChat";
-  chat: CommonRqgChatFlags & {};
+  chat: CommonRqgChatFlags & object;
   formData: {
     modifier: FormDataEntryValue;
   };

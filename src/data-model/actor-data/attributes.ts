@@ -1,7 +1,7 @@
 import { defaultResource, Resource } from "../shared/resource";
 
 export const actorHealthStatuses = ["healthy", "wounded", "shock", "unconscious", "dead"] as const;
-export type ActorHealthState = typeof actorHealthStatuses[number];
+export type ActorHealthState = (typeof actorHealthStatuses)[number];
 
 export enum LocomotionEnum {
   Walk = "walk",
@@ -40,7 +40,7 @@ export class Attributes {
     public damageBonus?: string, // For example "1d4"
     public spiritCombatDamage?: string, // For example "1d4"
     public sizStrikeRank?: number,
-    public dexStrikeRank?: number
+    public dexStrikeRank?: number,
   ) {}
 }
 
@@ -64,5 +64,5 @@ export const defaultAttributes = new Attributes(
   },
   0,
   false,
-  "healthy"
+  "healthy",
 );

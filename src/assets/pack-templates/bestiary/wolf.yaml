@@ -28,23 +28,23 @@ system:
       formula:
   background:
     species: ${{rqgCompendiumContent.bestiary.wolf.species}}$
-    occupation: ''
-    homeland: ''
+    occupation: ""
+    homeland: ""
     cultureJournalRqidLinks: []
     tribeJournalRqidLinks: []
     clanJournalRqidLinks: []
     birthyear:
     age:
-    gender: ''
-    town: ''
-    tribe: ''
-    clan: ''
+    gender: ""
+    town: ""
+    tribe: ""
+    clan: ""
     reputation:
-    standardOfLiving: ''
+    standardOfLiving: ""
     baseIncome:
     ransom:
-    ransomDetails: ''
-    biography: ''
+    ransomDetails: ""
+    biography: ""
   allies: ${{rqgCompendiumContent.bestiary.wolf.notes}}$
   attributes:
     magicPoints:

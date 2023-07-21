@@ -33,7 +33,7 @@ export class Rune extends AbstractEmbeddedItem {
 
   static async abilityRoll(
     runeItem: RqgItem,
-    options: { modifier: number }
+    options: { modifier: number },
   ): Promise<ResultEnum | undefined> {
     const chance: number = Number((runeItem?.system as any).chance) || 0;
     let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: runeItem.name });
@@ -48,10 +48,11 @@ export class Rune extends AbstractEmbeddedItem {
     return result;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {
     if (rune.type === ItemTypeEnum.Rune) {
       const chanceResult = updates.find(
-        (r) => r["system.chance"] != null || r?.system?.chance != null
+        (r) => r["system.chance"] != null || r?.system?.chance != null,
       );
       if (!chanceResult) {
         return;
@@ -70,7 +71,7 @@ export class Rune extends AbstractEmbeddedItem {
   private static adjustOpposingRuneChance(
     opposingRune: RqgItem | undefined,
     newChance: number,
-    updates: object[]
+    updates: object[],
   ) {
     assertItemType(opposingRune?.type, ItemTypeEnum.Rune);
     const opposingRuneChance = opposingRune.system.chance;

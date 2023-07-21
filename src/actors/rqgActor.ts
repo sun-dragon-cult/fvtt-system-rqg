@@ -44,8 +44,8 @@ export class RqgActor extends Actor {
     const { con, siz, pow } = this.actorCharacteristics();
     actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
 
-    this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item)
+    this.items.forEach(
+      (item) => ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item),
     );
   }
 
@@ -71,14 +71,14 @@ export class RqgActor extends Actor {
         int,
         pow,
         cha,
-        this.system.attributes.isCreature
+        this.system.attributes.isCreature,
       ));
 
     attributes.encumbrance = {
       max: this.calcMaxEncumbrance(
         str,
         con,
-        attributes.move?.[attributes.move?.currentLocomotion]?.carryingFactor
+        attributes.move?.[attributes.move?.currentLocomotion]?.carryingFactor,
       ),
       travel: this.calcTravelEncumbrance(this.items),
       equipped: this.calcEquippedEncumbrance(this.items),
@@ -86,7 +86,7 @@ export class RqgActor extends Actor {
 
     const equippedMovementEncumbrancePenalty = Math.min(
       0,
-      (attributes.encumbrance.max || 0) - (attributes.encumbrance.equipped || 0)
+      (attributes.encumbrance.max || 0) - (attributes.encumbrance.equipped || 0),
     );
 
     attributes.move.value =
@@ -103,12 +103,12 @@ export class RqgActor extends Actor {
 
     const travelMovementEncumbrancePenalty = Math.min(
       0,
-      attributes.encumbrance.max - attributes.encumbrance.travel
+      attributes.encumbrance.max - attributes.encumbrance.travel,
     );
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
-    this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item)
+    this.items.forEach(
+      (item) => ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item),
     );
 
     attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
@@ -123,7 +123,7 @@ export class RqgActor extends Actor {
   private calcMaxEncumbrance(
     str: number | undefined,
     con: number | undefined,
-    carryingFactor: number | undefined
+    carryingFactor: number | undefined,
   ): number {
     if (!str || !con) {
       return 0;
@@ -142,7 +142,7 @@ export class RqgActor extends Actor {
           return sum + enc;
         }
         return sum;
-      }, 0)
+      }, 0),
     );
   }
 
@@ -158,12 +158,12 @@ export class RqgActor extends Actor {
           return sum + quantity * encumbrance;
         }
         return sum;
-      }, 0)
+      }, 0),
     );
   }
 
   // Entity-specific actions that should occur when the Entity is first created
-  // @ts-ignore
+  // @ts-expect-error _onCreate
   protected _onCreate(actorData: ActorData, options: DocumentModificationOptions, userId: string) {
     super._onCreate(actorData as any, options, userId); // TODO type bug ??
 
@@ -172,7 +172,7 @@ export class RqgActor extends Actor {
     const effectsOriginUpdates = actorData.effects.map((effect: ActiveEffect) => {
       return {
         _id: effect.id,
-        // @ts-ignore origin
+        // @ts-expect-error origin
         origin: RqgActor.updateEffectOrigin(effect.origin, actorData._id),
       };
     });
@@ -185,7 +185,7 @@ export class RqgActor extends Actor {
   }
 
   private static updateEffectOrigin(origin: string, actorId: string): string {
-    let [actorLiteral, effectActorId, ownedItemLiteral, effectOwnedItemId] =
+    const [actorLiteral, effectActorId, ownedItemLiteral, effectOwnedItemId] =
       origin && origin.split(".");
     if (effectActorId && actorId !== effectActorId) {
       origin = `${actorLiteral}.${actorId}.${ownedItemLiteral}.${effectOwnedItemId}`;
@@ -197,11 +197,11 @@ export class RqgActor extends Actor {
     embeddedName: string,
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void {
     if (embeddedName === "Item" && getGame().user?.id === userId) {
       result.forEach((d) => {
-        // @ts-ignore
+        // @ts-expect-error d.type
         ResponsibleItemClass.get(d.type)?.preEmbedItem(this, d, options, userId);
       });
     }
@@ -212,7 +212,7 @@ export class RqgActor extends Actor {
     documents: foundry.abstract.Document<any, any>[],
     result: Record<string, unknown>[],
     options: DocumentModificationOptions,
-    userId: string
+    userId: string,
   ): void {
     if (embeddedName === "Item" && getGame().user?.id === userId) {
       documents.forEach((d: any) => {
@@ -220,8 +220,7 @@ export class RqgActor extends Actor {
         ResponsibleItemClass.get(d.type)
           ?.onEmbedItem(this, d, options, userId)
           .then((updateData: any) => {
-            // @ts-expect-error isEmpty
-            if (!foundry.utils.isEmpty(updateData)) {
+            if (!isEmpty(updateData)) {
               this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
             }
           });
@@ -235,7 +234,7 @@ export class RqgActor extends Actor {
     documents: foundry.abstract.Document<any, any>[],
     result: string[],
     options: DocumentModificationContext,
-    userId: string
+    userId: string,
   ): void {
     if (embeddedName === "Item" && getGame().user?.id === userId) {
       documents.forEach((d) => {
@@ -244,7 +243,7 @@ export class RqgActor extends Actor {
           this,
           d as RqgItem, // TODO type bailout - fixme
           options,
-          userId
+          userId,
         );
         if (updateData?.length) {
           this.updateEmbeddedDocuments("Item", updateData);
@@ -281,7 +280,7 @@ export class RqgActor extends Actor {
       const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
       await this.update({ "system.attributes.magicPoints.value": newMp });
       ui.notifications?.info(
-        localize("RQG.Dialog.spiritMagicChat.SuccessfullyCastInfo", { amount: amount })
+        localize("RQG.Dialog.spiritMagicChat.SuccessfullyCastInfo", { amount: amount }),
       );
     }
   }

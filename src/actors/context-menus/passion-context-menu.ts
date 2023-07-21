@@ -3,16 +3,16 @@ import { RqgActor } from "../rqgActor";
 import { assertItemType, getRequiredDomDataset, localize, RqgError } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
-import { ContextMenuRunes } from "./contextMenuRunes";
+import { contextMenuRunes } from "./contextMenuRunes";
 import { RqgItem } from "../../items/rqgItem";
 
 export const passionMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | undefined
+  token: TokenDocument | undefined,
 ): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollChat"),
-    icon: ContextMenuRunes.RollViaChat,
+    icon: contextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -22,7 +22,7 @@ export const passionMenuOptions = (
   },
   {
     name: localize("RQG.Game.RollQuick"),
-    icon: ContextMenuRunes.RollQuick,
+    icon: contextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -41,7 +41,7 @@ export const passionMenuOptions = (
   },
   {
     name: localize("RQG.ContextMenu.ToggleExperience"),
-    icon: ContextMenuRunes.ToggleExperience,
+    icon: contextMenuRunes.ToggleExperience,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -61,7 +61,7 @@ export const passionMenuOptions = (
     name: localize("RQG.ContextMenu.ImproveItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion),
     }),
-    icon: ContextMenuRunes.Improve,
+    icon: contextMenuRunes.Improve,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -87,7 +87,7 @@ export const passionMenuOptions = (
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion),
     }),
-    icon: ContextMenuRunes.Edit,
+    icon: contextMenuRunes.Edit,
     condition: () => true,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -107,7 +107,7 @@ export const passionMenuOptions = (
     name: localize("RQG.ContextMenu.DeleteItem", {
       itemType: RqgItem.localizeItemTypeName(ItemTypeEnum.Passion),
     }),
-    icon: ContextMenuRunes.Delete,
+    icon: contextMenuRunes.Delete,
     condition: () => true,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

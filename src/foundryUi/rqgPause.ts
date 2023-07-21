@@ -11,9 +11,10 @@ export class RqgPause extends Pause {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getData(options?: Application.RenderOptions): any {
     return {
-      // @ts-ignore paused
+      // @ts-expect-error paused
       paused: game.paused,
       pauseImage: "systems/rqg/assets/images/runes/movement_change.svg",
     };

@@ -9,7 +9,7 @@ const notFoundString = "NOT-FOUND";
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
   itemData: ItemData,
-  owningActorData?: ActorData
+  owningActorData?: ActorData,
 ): Promise<ItemUpdate> {
   let updateData = {};
   if (itemData.type === ItemTypeEnum.Weapon) {
@@ -51,12 +51,12 @@ export async function migrateWeaponSkillLinks(
 async function getSkillRqidLink(
   itemData: ItemData,
   owningActorData: ActorData | undefined,
-  usageType: UsageType
+  usageType: UsageType,
 ): Promise<RqidLink | undefined> {
   if (
     itemData.type !== ItemTypeEnum.Weapon ||
-    // @ts-expect-error foundry.utils.isEmpty & skillOrigin
-    (foundry.utils.isEmpty(itemData.system.usage[usageType].skillOrigin) &&
+    // @ts-expect-error skillOrigin
+    (isEmpty(itemData.system.usage[usageType].skillOrigin) &&
       itemData.system.usage[usageType].skillRqidLink?.name !== notFoundString)
   ) {
     return;
@@ -69,9 +69,9 @@ async function getSkillRqidLink(
   const currentRqid = currentSkillItem?.flags?.rqg?.documentRqidFlags?.id;
   if (!currentRqid) {
     const msg = owningActorData
-      ? `Weapon item [${itemData.name}] carried by [${
-          owningActorData?.name
-        }] has a linked skill item for ${usageType} use that does not have a rqid. Old link was [${
+      ? `Weapon item [${
+          itemData.name
+        }] carried by [${owningActorData?.name}] has a linked skill item for ${usageType} use that does not have a rqid. Old link was [${
           (itemData.system as any).usage[usageType].skillOrigin
         }]`
       : `World weapon item [${
@@ -88,14 +88,14 @@ async function getSkillRqidLink(
         `i.skill.[${(itemData.system as any).usage[usageType].skillOrigin}] / [${
           (itemData.system as any).usage[usageType].skillId
         }]`,
-        notFoundString
+        notFoundString,
       );
 }
 
 async function findSkillItem(
   itemData: ItemData,
   owningActorData: ActorData | undefined,
-  usageType: UsageType
+  usageType: UsageType,
 ): Promise<any | undefined> {
   if (itemData.type !== ItemTypeEnum.Weapon) {
     return;
@@ -109,7 +109,7 @@ async function findSkillItem(
     (itemData.system.usage[usageType] as any)?.skillRqidLink?.name === notFoundString
   ) {
     const notFoundMatch = (itemData.system.usage[usageType] as any)?.skillRqidLink?.rqid.match(
-      /^i\.skill\.\[(?<skillOrigin>.*)] \/ \[(?<itemId>.*)]$/
+      /^i\.skill\.\[(?<skillOrigin>.*)] \/ \[(?<itemId>.*)]$/,
     );
 
     if (notFoundMatch) {

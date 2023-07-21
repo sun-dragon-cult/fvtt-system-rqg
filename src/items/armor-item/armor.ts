@@ -12,6 +12,7 @@ export class Armor extends AbstractEmbeddedItem {
   //   });
   // }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static preUpdateItem(actor: RqgActor, armor: RqgItem, updates: object[], options: any): void {
     if (armor.type === ItemTypeEnum.Armor) {
       updates.push(...getLocationRelatedUpdates(actor.items.contents, armor, updates));

@@ -9,7 +9,7 @@ describe("Skill Category Modifiers are correct for", () => {
       12,
       15,
       11,
-      false
+      false,
     );
     expect(skillCategoryModifiers).toStrictEqual({
       agility: 5,
@@ -35,7 +35,7 @@ describe("Skill Category Modifiers are correct for", () => {
       19,
       26,
       21,
-      true
+      true,
     );
     expect(skillCategoryModifiers).toStrictEqual({
       agility: 0,

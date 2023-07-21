@@ -44,13 +44,13 @@ export class RqidEditor extends FormApplication {
         rqidSearchRegex,
         rqidDocumentPrefix,
         documentLang,
-        "world"
+        "world",
       );
       const compendiumDocuments = await Rqid.fromRqidRegexAll(
         rqidSearchRegex,
         rqidDocumentPrefix,
         documentLang,
-        "packs"
+        "packs",
       );
 
       const worldDocumentInfo: Document<any, any>[] = [];
@@ -61,7 +61,7 @@ export class RqidEditor extends FormApplication {
           // @ts-expect-error flags
           priority: d.flags?.rqg.documentRqidFlags.priority,
           link: link,
-          // @ts-ignore
+          // @ts-expect-error folder
           folder: d.folder?.name,
         });
       }
@@ -75,16 +75,14 @@ export class RqidEditor extends FormApplication {
           priority: d.flags?.rqg.documentRqidFlags.priority,
           link: link,
           // @ts-expect-error compendium
-          compendium: `${d.compendium?.metadata?.label} ⇒ ${
-            // @ts-expect-error packageName
-            d.compendium?.metadata?.packageName
-          }`,
+          compendium: `${d.compendium?.metadata?.label} ⇒ ${// @ts-expect-error packageName
+d.compendium?.metadata?.packageName}`,
         });
       }
 
       const uniqueWorldPriorityCount = new Set(
         // @ts-expect-error flags
-        worldDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority)
+        worldDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority),
       ).size;
       if (uniqueWorldPriorityCount !== worldDocuments.length) {
         appData.warnDuplicateWorldPriority = true;
@@ -92,7 +90,7 @@ export class RqidEditor extends FormApplication {
 
       const uniqueCompendiumPriorityCount = new Set(
         // @ts-expect-error flags
-        compendiumDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority)
+        compendiumDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority),
       ).size;
       if (uniqueCompendiumPriorityCount !== compendiumDocuments.length) {
         appData.warnDuplicateCompendiumPriority = true;

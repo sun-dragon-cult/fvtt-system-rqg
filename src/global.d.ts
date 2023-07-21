@@ -52,7 +52,7 @@ declare global {
       "rqg.specialCrit": boolean;
       "rqg.fumbleRollTable": string;
       "rqg.worldMigrationVersion": string;
-      "rqg.hitLocations": Object;
+      "rqg.hitLocations": object;
       "rqg.sortHitLocationsLowToHigh": boolean;
       "rqg.magicRuneName": string;
       "rqg.defaultItemIconSettings": IconSettingsData;

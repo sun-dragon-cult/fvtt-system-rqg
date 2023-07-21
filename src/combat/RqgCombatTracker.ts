@@ -25,7 +25,7 @@ export class RqgCombatTracker extends CombatTracker {
         callback: async (li: JQuery) => {
           const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
           if (combatant) {
-            // @ts-ignore
+            // @ts-expect-error combatant
             await this.viewed!.createEmbeddedDocuments("Combatant", [combatant]);
           }
         },
@@ -71,7 +71,7 @@ export function renderCombatTracker(app: RqgCombatTracker, html: any, data: any)
         ui.notifications?.warn(
           localize("RQG.Foundry.CombatTracker.CombatantWithoutActor", {
             combatantName: combatant?.name ?? localize("RQG.Foundry.CombatTracker.UnknownName"),
-          })
+          }),
         );
       }
       const readOnly = combatant?.actor?.isOwner ? "" : "readonly";

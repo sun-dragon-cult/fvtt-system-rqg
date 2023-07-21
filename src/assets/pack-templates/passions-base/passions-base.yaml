@@ -13,8 +13,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Ambition}}$
   subject: null
@@ -32,8 +32,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Cowardly}}$
   subject: null
@@ -51,8 +51,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Devotion}}$
   subject: null
@@ -70,8 +70,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Fear}}$
   subject: null
@@ -89,8 +89,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Hate}}$
   subject: null
@@ -108,8 +108,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Honor}}$
   subject: null
@@ -127,8 +127,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Loyalty}}$
   subject: null
@@ -146,8 +146,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Love}}$
   subject: null
@@ -165,8 +165,8 @@ flags:
 system:
   canGetExperience: true
   chance: 60
-  description: ''
-  gmNotes: ''
+  description: ""
+  gmNotes: ""
   hasExperience: false
   passion: ${{uiContent.RQG.Item.Passion.PassionEnum.Gluttony}}$
   subject: null

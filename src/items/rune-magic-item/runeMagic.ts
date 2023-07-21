@@ -53,7 +53,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       skillAugmentation: number;
       otherModifiers: number;
       selectedRuneId?: string;
-    }
+    },
   ): Promise<ResultEnum | undefined> {
     assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
     const runeMagicCultId = runeMagicItem?.system.cultId;
@@ -69,7 +69,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     const validationError = RuneMagic.validateData(
       cult,
       options.runePointCost,
-      options.magicPointBoost
+      options.magicPointBoost,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
@@ -115,7 +115,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       Number(runeItem.system.chance),
       options.ritualOrMeditation + options.skillAugmentation + options.otherModifiers,
       speaker,
-      resultMessages
+      resultMessages,
     );
 
     await RuneMagic.handleRollResult(
@@ -123,7 +123,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       options.runePointCost,
       options.magicPointBoost,
       runeItem,
-      runeMagicItem
+      runeMagicItem,
     );
 
     return result;
@@ -153,7 +153,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
         item.system.chance = RuneMagic.calcRuneMagicChance(
           actor.items.toObject(),
           runeMagicCult.system.runes,
-          item.system.runes
+          item.system.runes,
         );
       }
     }
@@ -163,7 +163,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   private static calcRuneMagicChance(
     actorItems: ItemDataSource[],
     cultRuneNames: string[],
-    runeMagicRuneNames: string[]
+    runeMagicRuneNames: string[],
   ): number {
     const runeChances = actorItems
       .filter(
@@ -171,11 +171,11 @@ export class RuneMagic extends AbstractEmbeddedItem {
           i.type === ItemTypeEnum.Rune &&
           (runeMagicRuneNames.includes(i.name ?? "") ||
             (runeMagicRuneNames.includes(
-              getGame().settings.get(systemId, "magicRuneName") as string
+              getGame().settings.get(systemId, "magicRuneName") as string,
             ) &&
-              cultRuneNames.includes(i.name ?? "")))
+              cultRuneNames.includes(i.name ?? ""))),
       )
-      // @ts-ignore r is a runeItem TODO rewrite as reduce
+      // @ts-expect-error r is a runeItem TODO rewrite as reduce
       .map((r: RqgItem) => r.system.chance);
     return Math.max(...runeChances);
   }
@@ -186,8 +186,10 @@ export class RuneMagic extends AbstractEmbeddedItem {
   static async onEmbedItem(
     actor: RqgActor,
     runeMagicItem: RqgItem,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: any,
-    userId: string
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    userId: string,
   ): Promise<any> {
     let updateData = {};
     const actorCults = actor.items.filter((i) => i.type === ItemTypeEnum.Cult);
@@ -210,7 +212,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
             return { name: c.name, id: c.id };
           }),
           runeMagicItem.name ?? "",
-          actor.name ?? ""
+          actor.name ?? "",
         );
       }
       updateData = {
@@ -224,7 +226,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   static async chooseCultDialog(
     actorCults: any,
     runeMagicName: string,
-    actorName: string
+    actorName: string,
   ): Promise<string> {
     const htmlContent = await renderTemplate(
       "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
@@ -232,9 +234,9 @@ export class RuneMagic extends AbstractEmbeddedItem {
         actorCults: actorCults,
         runeMagicName: runeMagicName,
         actorName: actorName,
-      }
+      },
     );
-    return await new Promise(async (resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       const dialog = new Dialog({
         title: localize("RQG.Item.RuneMagic.runeMagicCultDialog.title"),
         content: htmlContent,
@@ -257,14 +259,14 @@ export class RuneMagic extends AbstractEmbeddedItem {
           },
         },
       });
-      await dialog.render(true);
+      dialog.render(true);
     });
   }
 
   public static validateData(
     cultItem: RqgItem,
     runePointCost: number | undefined,
-    magicPointsBoost: number | undefined
+    magicPointsBoost: number | undefined,
   ): string {
     assertItemType(cultItem?.type, ItemTypeEnum.Cult);
     if (runePointCost == null || runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
@@ -304,7 +306,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       usableRuneNames = [...new Set(runeMagicItem.system.runes)];
     }
 
-    let runesForCasting: RqgItem[] = [];
+    const runesForCasting: RqgItem[] = [];
     // Get the actor's versions of the runes, which will have their "chance"
     usableRuneNames.forEach((runeName: string) => {
       const actorRune = runeMagicItem.actor?.items.getName(runeName);
@@ -330,7 +332,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runePointCost: number,
     magicPointsUsed: number,
     runeItem: RqgItem,
-    runeMagicItem: RqgItem
+    runeMagicItem: RqgItem,
   ): Promise<void> {
     assertItemType(runeItem.type, ItemTypeEnum.Rune);
     assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
@@ -348,7 +350,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
           magicPointsUsed,
           runeMagicItem.actor ?? undefined,
           cult,
-          isOneUse
+          isOneUse,
         );
         await runeItem.awardExperience();
         break;
@@ -361,26 +363,25 @@ export class RuneMagic extends AbstractEmbeddedItem {
           magicPointsUsed,
           runeMagicItem.actor ?? undefined,
           cult,
-          isOneUse
+          isOneUse,
         );
         await runeItem.awardExperience();
         break;
 
-      case ResultEnum.Failure:
-        {
-          // spell fails, no Rune Point Loss, if Magic Point boosted, lose 1 Magic Point if boosted
-          const boosted = magicPointsUsed >= 1 ? 1 : 0;
-          await RuneMagic.SpendRuneAndMagicPoints(
-            0,
-            boosted,
-            runeMagicItem.actor ?? undefined,
-            cult,
-            isOneUse
-          );
-        }
+      case ResultEnum.Failure: {
+        // spell fails, no Rune Point Loss, if Magic Point boosted, lose 1 Magic Point if boosted
+        const boosted = magicPointsUsed >= 1 ? 1 : 0;
+        await RuneMagic.SpendRuneAndMagicPoints(
+          0,
+          boosted,
+          runeMagicItem.actor ?? undefined,
+          cult,
+          isOneUse,
+        );
         break;
+      }
 
-      case ResultEnum.Fumble:
+      case ResultEnum.Fumble: {
         // spell fails, lose Rune Points, if Magic Point boosted, lose 1 Magic Point if boosted
         const boosted = magicPointsUsed >= 1 ? 1 : 0;
         await RuneMagic.SpendRuneAndMagicPoints(
@@ -388,14 +389,16 @@ export class RuneMagic extends AbstractEmbeddedItem {
           boosted,
           runeMagicItem.actor ?? undefined,
           cult,
-          isOneUse
+          isOneUse,
         );
         break;
+      }
 
-      default:
+      default: {
         const msg = "Got unexpected result from roll in runeMagicChat";
         ui.notifications?.error(msg);
         throw new RqgError(msg);
+      }
     }
   }
 
@@ -404,7 +407,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     magicPoints: number,
     actor: RqgActor | undefined,
     cult: RqgItem,
-    isOneUse: boolean
+    isOneUse: boolean,
   ) {
     assertItemType(cult.type, ItemTypeEnum.Cult);
     assertActorType(actor?.type, ActorTypeEnum.Character);
@@ -421,7 +424,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
             actorName: actor?.name,
             runePoints: runePoints,
             cultName: cult.name,
-          })
+          }),
         );
       }
     }

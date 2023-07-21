@@ -25,7 +25,7 @@ export class RqgActiveEffect extends ActiveEffect {
             return "❓embedded item in compendium"; // origin was in a compendium and could not be read synchronously
           }
         }),
-        "disjunction"
+        "disjunction",
       );
       const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
       // @ts-expect-error console
@@ -44,7 +44,7 @@ export class RqgActiveEffect extends ActiveEffect {
         // @ts-expect-error system
         !this.disabled,
         change,
-        this
+        this,
       );
       return;
     }
@@ -57,7 +57,7 @@ export class RqgActiveEffect extends ActiveEffect {
       const model = game.model.Item[item.type] || {};
       target = foundry.utils.getProperty(model, path) ?? null;
     }
-    let targetType = foundry.utils.getType(target);
+    const targetType = foundry.utils.getType(target);
 
     // Cast the effect change value to the correct type
     let delta;
@@ -70,7 +70,7 @@ export class RqgActiveEffect extends ActiveEffect {
       } else delta = this._castDelta(change.value, targetType);
     } catch (err) {
       console.warn(
-        `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`
+        `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,
       );
       return;
     }

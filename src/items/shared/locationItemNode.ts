@@ -30,7 +30,7 @@ export class LocationItemNode implements LocationItemNodeData {
     public attunedTo: string = "",
     public encumbrance: number = 0,
     public equippedStatus: EquippedStatus = "notCarried",
-    public price = defaultPriceData
+    public price = defaultPriceData,
   ) {
     this.isVirtual = !!this.id?.startsWith("virtual:");
   }
@@ -52,7 +52,7 @@ export class LocationItemNode implements LocationItemNodeData {
       item.system.attunedTo,
       item.system.encumbrance,
       item.system.equippedStatus,
-      item.system.price
+      item.system.price,
     );
   }
 
