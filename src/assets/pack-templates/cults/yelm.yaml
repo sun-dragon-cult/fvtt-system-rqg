@@ -52,4 +52,3 @@ flags:
       id: i.cult.yelm
       lang: ${{rqgCompendiumContent.lang}}$
       priority: ${{rqgCompendiumContent.prio}}$
-

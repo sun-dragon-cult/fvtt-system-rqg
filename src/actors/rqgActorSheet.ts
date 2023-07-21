@@ -192,7 +192,7 @@ export class RqgActorSheet extends ActorSheet<
       embeddedItems: await RqgActorSheet.organizeEmbeddedItems(this.actor),
 
       spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
-        CONFIG.RQG.skillRqid.spiritCombat
+        CONFIG.RQG.skillRqid.spiritCombat,
       ),
       dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge),
 
@@ -240,7 +240,7 @@ export class RqgActorSheet extends ActorSheet<
   private async rankCharacteristics(): Promise<any> {
     const result = {} as { [key: string]: string };
     for (const characteristic of Object.keys(this.actor.system.characteristics)) {
-      let rankClass = "characteristic-rank-";
+      const rankClass = "characteristic-rank-";
       const char = this.actor.system.characteristics[characteristic as keyof Characteristics];
 
       if (char == null || char.value == null || char.formula == null || char.formula == "") {
@@ -292,7 +292,7 @@ export class RqgActorSheet extends ActorSheet<
 
   private calcCurrencyTotals(): any {
     const currency: RqgItem[] = this.actor.items.filter(
-      (i: RqgItem) => i.type === ItemTypeEnum.Gear && i.system.physicalItemType === "currency"
+      (i: RqgItem) => i.type === ItemTypeEnum.Gear && i.system.physicalItemType === "currency",
     );
     const result = { quantity: 0, price: { real: 0, estimated: 0 }, encumbrance: 0 };
     currency.forEach((curr) => {
@@ -317,7 +317,6 @@ export class RqgActorSheet extends ActorSheet<
           value: 1 / curr.system.price.estimated,
         });
       }
-      //@ts-ignore
       curr.system.price.conversion = conv;
     });
     return result;
@@ -329,7 +328,7 @@ export class RqgActorSheet extends ActorSheet<
       .sort((a: RqgItem, b: RqgItem) => b.system.runePoints.max - a.system.runePoints.max);
     const mainCultItem: RqgItem | undefined = cults[0];
     const mainCultRankTranslation = mainCultItem?.system?.joinedCults.map((c: any) =>
-      c.rank ? localize("RQG.Actor.RuneMagic.CultRank." + c.rank) : ""
+      c.rank ? localize("RQG.Actor.RuneMagic.CultRank." + c.rank) : "",
     );
     return {
       name: mainCultItem?.name ?? "",
@@ -356,9 +355,9 @@ export class RqgActorSheet extends ActorSheet<
       this.actor.effects
         .filter(
           (
-            e: any // TODO v10 any
+            e: any, // TODO v10 any
           ) =>
-            e.changes.find((e: any) => e.key === "system.attributes.magicPoints.max") != undefined
+            e.changes.find((e: any) => e.key === "system.attributes.magicPoints.max") != undefined,
         )
         // TODO v10 any
         .map((e: any) => {
@@ -380,7 +379,7 @@ export class RqgActorSheet extends ActorSheet<
         (i: RqgItem) =>
           i.type === ItemTypeEnum.Skill &&
           i.system.category === SkillCategoryEnum.Magic &&
-          !!i.system.runes.length
+          !!i.system.runes.length,
       ).length
     );
   }
@@ -413,7 +412,7 @@ export class RqgActorSheet extends ActorSheet<
 
   private getBaseStrikeRank(
     dexStrikeRank: number | undefined,
-    sizStrikeRank: number | undefined
+    sizStrikeRank: number | undefined,
   ): number | undefined {
     if (dexStrikeRank == null && sizStrikeRank == null) {
       return undefined;
@@ -421,7 +420,7 @@ export class RqgActorSheet extends ActorSheet<
 
     return [dexStrikeRank, sizStrikeRank].reduce(
       (acc: number, value: number | undefined) => (Number(value) ? acc + Number(value) : acc),
-      0
+      0,
     );
   }
 
@@ -500,7 +499,6 @@ export class RqgActorSheet extends ActorSheet<
     actor.items.forEach((item) => {
       if (item.type === ItemTypeEnum.Gear) {
         //TODO: Assert that this is Gear or something else that has physicalItemType??
-        //@ts-ignore physicalItemType
         if (item.system.physicalItemType === "currency") {
           currency.push(item);
         }
@@ -509,7 +507,7 @@ export class RqgActorSheet extends ActorSheet<
 
     currency.sort(
       (a: any, b: any) =>
-        (Number(a.system.price.estimated) < Number(b.system.price.estimated) ? 1 : -1) - 1
+        (Number(a.system.price.estimated) < Number(b.system.price.estimated) ? 1 : -1) - 1,
     );
 
     itemTypes.currency = currency;
@@ -522,8 +520,8 @@ export class RqgActorSheet extends ActorSheet<
     // Sort the skills inside each category
     Object.values(skills).forEach((skillList) =>
       (skillList as RqgItem[]).sort((a: RqgItem, b: RqgItem) =>
-        ("" + a.name).localeCompare("" + b.name)
-      )
+        ("" + a.name).localeCompare("" + b.name),
+      ),
     );
     itemTypes[ItemTypeEnum.Skill] = skills;
 
@@ -557,11 +555,11 @@ export class RqgActorSheet extends ActorSheet<
     // Sort the hit locations
     if (getGame().settings.get(systemId, "sortHitLocationsLowToHigh")) {
       itemTypes[ItemTypeEnum.HitLocation].sort(
-        (a: any, b: any) => a.system.dieFrom - b.system.dieFrom
+        (a: any, b: any) => a.system.dieFrom - b.system.dieFrom,
       );
     } else {
       itemTypes[ItemTypeEnum.HitLocation].sort(
-        (a: any, b: any) => b.system.dieFrom - a.system.dieFrom
+        (a: any, b: any) => b.system.dieFrom - a.system.dieFrom,
       );
     }
 
@@ -578,7 +576,7 @@ export class RqgActorSheet extends ActorSheet<
           // @ts-expect-error async
           async: true,
         });
-      })
+      }),
     );
 
     // Enrich passion description texts
@@ -589,9 +587,9 @@ export class RqgActorSheet extends ActorSheet<
           {
             // @ts-expect-error async
             async: true,
-          }
+          },
         );
-      })
+      }),
     );
 
     // Add extra info for Rune Magic Spells
@@ -608,11 +606,11 @@ export class RqgActorSheet extends ActorSheet<
     itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
       assertItemType(weapon.type, ItemTypeEnum.Weapon);
 
-      let usages = weapon.system.usage;
-      let actorStr = actor.system.characteristics.strength.value ?? 0;
-      let actorDex = actor.system.characteristics.dexterity.value ?? 0;
+      const usages = weapon.system.usage;
+      const actorStr = actor.system.characteristics.strength.value ?? 0;
+      const actorDex = actor.system.characteristics.dexterity.value ?? 0;
       for (const key in usages) {
-        let usage = usages[key];
+        const usage = usages[key];
         if (!isEmpty(usage?.skillRqidLink?.rqid)) {
           usage.skillId = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid)?.id;
           usage.unusable = false;
@@ -629,8 +627,8 @@ export class RqgActorSheet extends ActorSheet<
           }
           if (usage.underMinDEX) {
             // STR can compensate for being under DEX min on 2 for 1 basis
-            let deficiency = usage.minDexterity - actorDex;
-            let strover = Math.floor((actorStr - usage.minStrength) / 2);
+            const deficiency = usage.minDexterity - actorDex;
+            const strover = Math.floor((actorStr - usage.minStrength) / 2);
             if (usage.minStrength == null) {
               usage.unusable = true;
             } else usage.unusable = deficiency > strover;
@@ -653,7 +651,7 @@ export class RqgActorSheet extends ActorSheet<
     itemTypes[ItemTypeEnum.Weapon].sort((a: any, b: any) => a.sort - b.sort);
 
     itemTypes[ItemTypeEnum.Cult].sort(
-      (a: any, b: any) => b.system.runePoints?.max - a.system.runePoints?.max
+      (a: any, b: any) => b.system.runePoints?.max - a.system.runePoints?.max,
     );
 
     return itemTypes;
@@ -670,7 +668,7 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some(
           (i: RqgItem) =>
             i.getFlag(systemId, documentRqidFlags)?.id === CONFIG.RQG.skillRqid.dodge ||
-            i.type === ItemTypeEnum.Weapon
+            i.type === ItemTypeEnum.Weapon,
         ),
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -681,14 +679,14 @@ export class RqgActorSheet extends ActorSheet<
       runeMagic:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some((i: RqgItem) =>
-          [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(i.type)
+          [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(i.type),
         ),
       sorcery:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
           (i: RqgItem) =>
             i.type === ItemTypeEnum.Rune &&
-            (i.system.isMastered || i.system.runeType === RuneTypeEnum.Technique)
+            (i.system.isMastered || i.system.runeType === RuneTypeEnum.Technique),
         ),
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -698,7 +696,7 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some(
           (i: RqgItem) =>
             [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(i.type) &&
-            !(i.system as any).isNatural // Don't show gear tab for natural weapons
+            !(i.system as any).isNatural, // Don't show gear tab for natural weapons
         ),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -710,7 +708,7 @@ export class RqgActorSheet extends ActorSheet<
 
   private async getUnspecifiedSkillText(): Promise<string | undefined> {
     const unspecifiedSkills = this.actor.items.filter(
-      (i) => i.type === ItemTypeEnum.Skill && !!i.name && i.system?.specialization === "..."
+      (i) => i.type === ItemTypeEnum.Skill && !!i.name && i.system?.specialization === "...",
     );
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
@@ -723,7 +721,7 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
-    let maxHitPoints = this.actor.system.attributes.hitPoints.max;
+    const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
       formData["system.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
@@ -745,15 +743,14 @@ export class RqgActorSheet extends ActorSheet<
       // TODO v10 any
       if (
         newHealth === "dead" &&
-        // @ts-expect-error
+        // @ts-expect-error actorData
         !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "dead")
       ) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
       }
       if (
         newHealth === "unconscious" &&
-        // TODO v10 any
-        // @ts-expect-error
+        // @ts-expect-error actorData
         !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "unconscious")
       ) {
         message = `${speakerName} faints from lack of hitpoints!`;
@@ -799,7 +796,7 @@ export class RqgActorSheet extends ActorSheet<
       html,
       ".characteristic.contextmenu",
       // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      characteristicMenuOptions(this.actor, this.token)
+      characteristicMenuOptions(this.actor, this.token),
     );
     new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor));
     new ContextMenu(html, ".hit-location.contextmenu", hitLocationMenuOptions(this.actor));
@@ -841,7 +838,7 @@ export class RqgActorSheet extends ActorSheet<
             0,
             this.actor,
             // @ts-expect-error this.token should be TokenDocument, but is typed as Token
-            ChatMessage.getSpeaker({ actor: this.actor, token: this.token })
+            ChatMessage.getSpeaker({ actor: this.actor, token: this.token }),
           );
           clickCount = 0;
         } else if (clickCount === 1) {
@@ -856,7 +853,7 @@ export class RqgActorSheet extends ActorSheet<
                 },
                 this.actor,
                 // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-                this.token
+                this.token,
               );
             }
             clickCount = 0;
@@ -877,7 +874,7 @@ export class RqgActorSheet extends ActorSheet<
           await ReputationChatHandler.roll(
             this.actor.system.background.reputation ?? 0,
             0,
-            speaker
+            speaker,
           );
           clickCount = 0;
         } else if (clickCount === 1) {
@@ -886,7 +883,7 @@ export class RqgActorSheet extends ActorSheet<
               await ReputationChatHandler.show(
                 this.actor,
                 // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-                this.token
+                this.token,
               );
             }
             clickCount = 0;
@@ -913,7 +910,7 @@ export class RqgActorSheet extends ActorSheet<
           ].includes(item.system.category)
         ) {
           ui.notifications?.warn(
-            "To use a weapon please make sure it is equipped and use the Combat tab instead."
+            "To use a weapon please make sure it is equipped and use the Combat tab instead.",
           );
           return;
         }
@@ -1030,7 +1027,7 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement
       ?.querySelectorAll<HTMLElement>("[data-flip-sort-hitlocation-setting]")
       .forEach((el) => {
-        el.addEventListener("click", async (ev: MouseEvent) => {
+        el.addEventListener("click", async () => {
           const currentValue = getGame().settings.get(systemId, "sortHitLocationsLowToHigh");
           await getGame().settings.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
           // Rerender all actor sheets the user has open
@@ -1111,14 +1108,14 @@ export class RqgActorSheet extends ActorSheet<
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("click", async () => {
         if (itemId.startsWith("virtual:")) {
-          const [_, itemEquippedStatus, itemName] = itemId.split(":");
+          const [, itemEquippedStatus, itemName] = itemId.split(":");
           const newEquippedStatus =
             equippedStatuses[
               (equippedStatuses.indexOf(itemEquippedStatus as EquippedStatus) + 1) %
                 equippedStatuses.length
             ];
           const affectedItems = new ItemTree(
-            this.actor.items.contents
+            this.actor.items.contents,
           ).getOtherItemIdsInSameLocationTree(itemName);
           const updates = affectedItems.map((id) => ({
             _id: id,
@@ -1156,10 +1153,10 @@ export class RqgActorSheet extends ActorSheet<
     // Add wound to hit location
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      // @ts-ignore wait for foundry-vtt-types issue #1165 #1166
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       const speakerName = (this.token?.name || this.actor.prototypeToken.name) ?? "";
       el.addEventListener("click", () =>
-        HitLocationSheet.showAddWoundDialog(this.actor, itemId, speakerName)
+        HitLocationSheet.showAddWoundDialog(this.actor, itemId, speakerName),
       );
     });
 
@@ -1212,10 +1209,10 @@ export class RqgActorSheet extends ActorSheet<
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
-          let deleteFromProperty = getProperty(this.actor.system, deleteFromPropertyName);
+          const deleteFromProperty = getProperty(this.actor.system, deleteFromPropertyName);
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
-              (r) => r.rqid !== deleteRqid
+              (r) => r.rqid !== deleteRqid,
             );
             await this.actor.update({ system: { [deleteFromPropertyName]: newValueArray } });
           } else {
@@ -1229,10 +1226,10 @@ export class RqgActorSheet extends ActorSheet<
       el.addEventListener("click", async () => {
         const defaultItemIconSettings: any = getGame().settings.get(
           systemId,
-          "defaultItemIconSettings"
+          "defaultItemIconSettings",
         );
         const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
-        let passion = {
+        const passion = {
           name: newPassionName,
           type: "passion",
           img: defaultItemIconSettings["passion"],
@@ -1292,7 +1289,7 @@ export class RqgActorSheet extends ActorSheet<
       if (item.type === ItemTypeEnum.Cult) {
         const cultId = item.id;
         const runeMagicSpells = actor.items.filter(
-          (i) => i.type === ItemTypeEnum.RuneMagic && i.system.cultId === cultId
+          (i) => i.type === ItemTypeEnum.RuneMagic && i.system.cultId === cultId,
         );
         runeMagicSpells.forEach((s) => {
           idsToDelete.push(s.id);
@@ -1368,13 +1365,13 @@ export class RqgActorSheet extends ActorSheet<
   // @ts-expect-error parameter types
   async _onDropItem(
     event: DragEvent,
-    data: { type: string; uuid: string }
+    data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     // A player will not be able to copy an item to an Actor sheet
     // unless they are the owner.
     if (!this.actor.isOwner) {
       ui.notifications?.warn(
-        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name })
+        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
       );
       return false;
     }
@@ -1433,7 +1430,7 @@ export class RqgActorSheet extends ActorSheet<
 
   async _onDropJournalEntry(
     event: DragEvent,
-    data: { type: string; uuid: string }
+    data: { type: string; uuid: string },
   ): Promise<boolean | JournalEntry[]> {
     const {
       droppedDocument: droppedJournal,
@@ -1450,7 +1447,7 @@ export class RqgActorSheet extends ActorSheet<
 
   async _onDropJournalEntryPage(
     event: DragEvent,
-    data: { type: string; uuid: string }
+    data: { type: string; uuid: string },
     // @ts-expect-error JournalEntryPage
   ): Promise<boolean | JournalEntryPage[]> {
     const {
@@ -1469,7 +1466,7 @@ export class RqgActorSheet extends ActorSheet<
 
   private async confirmCopyIntangibleItem(
     incomingItemDataSource: ItemDataSource,
-    sourceActor: RqgActor
+    sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
@@ -1480,7 +1477,7 @@ export class RqgActorSheet extends ActorSheet<
       "systems/rqg/applications/confirmCopyIntangibleItem.hbs",
       {
         adapter: adapter,
-      }
+      },
     );
 
     const title = localize("RQG.Dialog.confirmCopyIntangibleItem.title", {
@@ -1507,20 +1504,20 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   private async submitConfirmCopyIntangibleItem(
-    incomingItemDataSource: ItemDataSource
+    incomingItemDataSource: ItemDataSource,
   ): Promise<RqgItem[]> {
     return this._onDropItemCreate(incomingItemDataSource);
   }
 
   private async confirmTransferPhysicalItem(
     incomingItemDataSource: ItemDataSource,
-    sourceActor: RqgActor
+    sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
       sourceActor: sourceActor,
       targetActor: this.actor,
-      // @ts-ignore quantity
+      // @ts-expect-error quantity
       showQuantity: incomingItemDataSource.system.quantity > 1,
     };
 
@@ -1528,7 +1525,7 @@ export class RqgActorSheet extends ActorSheet<
       "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
       {
         adapter: adapter,
-      }
+      },
     );
 
     const title = localize("RQG.Dialog.confirmTransferPhysicalItem.title", {
@@ -1547,8 +1544,8 @@ export class RqgActorSheet extends ActorSheet<
             this.submitConfirmTransferPhysicalItem(
               html as JQuery,
               incomingItemDataSource,
-              sourceActor
-            )
+              sourceActor,
+            ),
           ),
       },
       cancel: {
@@ -1563,10 +1560,9 @@ export class RqgActorSheet extends ActorSheet<
   private async submitConfirmTransferPhysicalItem(
     html: JQuery,
     incomingItemDataSource: ItemDataSource,
-    sourceActor: RqgActor
+    sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const formData = new FormData(html.find("form")[0]);
-    // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
 
     let quantityToTransfer: number = 1;
@@ -1579,15 +1575,15 @@ export class RqgActorSheet extends ActorSheet<
   private async transferPhysicalItem(
     incomingItemDataSource: ItemDataSource,
     quantityToTransfer: number,
-    sourceActor: RqgActor
+    sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     if (!incomingItemDataSource) {
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
       return false;
     }
-    if (!incomingItemDataSource.system.hasOwnProperty("quantity")) {
+    if (!hasOwnProperty(incomingItemDataSource, "quantity")) {
       ui.notifications?.error(
-        localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError")
+        localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError"),
       );
       return false;
     }
@@ -1595,31 +1591,29 @@ export class RqgActorSheet extends ActorSheet<
       ui.notifications?.error(localize("RQG.Actor.Notification.CantTransferLessThanOneItemError"));
       return false;
     }
-    // @ts-ignore quantity
+    // @ts-expect-error quantity
     if (quantityToTransfer > incomingItemDataSource.system.quantity) {
       ui.notifications?.error(
         localize("RQG.Actor.Notification.CantTransferMoreThanSourceOwnsError", {
           itemName: incomingItemDataSource.name,
           sourceActorName: sourceActor.name,
-        })
+        }),
       );
       return false;
     }
 
     const existingItem = this.actor.items.find(
       (i: RqgItem) =>
-        i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type
+        i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
     );
 
-    // @ts-ignore quantity
     let newTargetQty = quantityToTransfer;
-    // @ts-ignore quantity
+    // @ts-expect-error quantity
     const newSourceQty = Number(incomingItemDataSource.system.quantity) - quantityToTransfer;
 
     if (existingItem) {
       // Target actor has an item of this type with the same name
 
-      // @ts-ignore quantity
       newTargetQty += Number(existingItem.system.quantity);
       const targetUpdate = await this.actor.updateEmbeddedDocuments("Item", [
         { _id: existingItem.id, system: { quantity: newTargetQty } },
@@ -1632,13 +1626,13 @@ export class RqgActorSheet extends ActorSheet<
           ])) as RqgItem[];
         } else {
           // delete source item
-          // @ts-ignore _id
+          // @ts-expect-error _id
           return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
         }
       }
     } else {
       // Target actor does not have an item of this type with the same name
-      // @ts-ignore quantity
+      // @ts-expect-error quantity
       incomingItemDataSource.system.quantity = newTargetQty;
       const targetCreate = await this._onDropItemCreate(incomingItemDataSource);
       if (targetCreate) {
@@ -1649,7 +1643,7 @@ export class RqgActorSheet extends ActorSheet<
           ])) as RqgItem[];
         } else {
           // delete source item
-          // @ts-ignore _id
+          // @ts-expect-error _id
           return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
         }
       }

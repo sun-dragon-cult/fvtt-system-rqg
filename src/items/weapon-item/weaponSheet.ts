@@ -61,7 +61,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       // @ts-expect-error async
       enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes, { async: true }),
       defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).map((cm) =>
-        localize(`RQG.Item.Weapon.combatManeuver.${cm}`)
+        localize(`RQG.Item.Weapon.combatManeuver.${cm}`),
       ),
       damageTypes: Object.values(damageType),
       equippedStatuses: [...equippedStatuses],
@@ -83,7 +83,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         [{ _id: "", name: "---" }],
         ...this.actor!.getEmbeddedCollection("Item").filter(
           // @ts-expect-error system
-          (i) => i.type === ItemTypeEnum.Weapon && i.system.isProjectile
+          (i) => i.type === ItemTypeEnum.Weapon && i.system.isProjectile,
         ),
       ];
     }
@@ -93,19 +93,19 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   protected async _updateObject(event: Event, formData: any): Promise<any> {
     formData["system.usage.oneHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "oneHand",
-      formData
+      formData,
     );
     formData["system.usage.offHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "offHand",
-      formData
+      formData,
     );
     formData["system.usage.twoHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "twoHand",
-      formData
+      formData,
     );
     formData["system.usage.missile.combatManeuvers"] = this.getUsageCombatManeuvers(
       "missile",
-      formData
+      formData,
     );
 
     this.copyOneHandData2offHand(formData);
@@ -190,7 +190,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
    */
   async _onDropItem(
     event: DragEvent,
-    data: { type: string; uuid: string }
+    data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
     // @ts-expect-error fromDropData

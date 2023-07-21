@@ -27,7 +27,7 @@ export class HealingCalculations {
     healPoints: number,
     healWoundIndex: number,
     hitLocation: RqgItem,
-    actor: RqgActor
+    actor: RqgActor,
   ): HealingEffects {
     assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const healingEffects: HealingEffects = {

@@ -32,7 +32,7 @@ export class CharacteristicChatHandler {
   public static async show(
     characteristic: CharacteristicData,
     actor: RqgActor,
-    token: TokenDocument | null | undefined
+    token: TokenDocument | null | undefined,
   ): Promise<void> {
     const flags: CharacteristicChatFlags = {
       type: "characteristicChat",
@@ -71,7 +71,7 @@ export class CharacteristicChatHandler {
       difficulty,
       modifier,
       actor,
-      speaker
+      speaker,
     );
   }
 
@@ -81,7 +81,7 @@ export class CharacteristicChatHandler {
     difficulty: number,
     modifier: number,
     actor: RqgActor,
-    speaker: ChatSpeakerDataProperties
+    speaker: ChatSpeakerDataProperties,
   ): Promise<void> {
     if (characteristicValue == null) {
       return;
@@ -106,7 +106,7 @@ export class CharacteristicChatHandler {
   public static async checkExperience(
     actor: RqgActor,
     characteristicName: string,
-    result: ResultEnum
+    result: ResultEnum,
   ): Promise<void> {
     if (
       result <= ResultEnum.Success &&
@@ -123,7 +123,7 @@ export class CharacteristicChatHandler {
   }
 
   public static async renderContent(
-    flags: RqgChatMessageFlags
+    flags: RqgChatMessageFlags,
   ): Promise<ChatMessageDataConstructorData> {
     assertChatMessageFlagType(flags.type, "characteristicChat");
     const actor = await getRequiredRqgActorFromUuid<RqgActor>(flags.chat.actorUuid);
@@ -143,7 +143,10 @@ export class CharacteristicChatHandler {
       }),
     };
 
-    let html = await renderTemplate("systems/rqg/chat/characteristicChatHandler.hbs", templateData);
+    const html = await renderTemplate(
+      "systems/rqg/chat/characteristicChatHandler.hbs",
+      templateData,
+    );
     return {
       user: getGame().user?.id,
       speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),

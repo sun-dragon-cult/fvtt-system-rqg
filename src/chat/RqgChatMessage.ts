@@ -75,19 +75,19 @@ export class RqgChatMessage extends ChatMessage {
     const data = await chatHandlerMap[chatMessageType].renderContent(flags);
 
     const domChatMessages = document.querySelectorAll<HTMLElement>(
-      `[data-message-id="${chatMessage.id}"]`
+      `[data-message-id="${chatMessage.id}"]`,
     );
     const domChatMessage = Array.from(domChatMessages).find((m) =>
-      m.contains(inputEvent.currentTarget as Node)
+      m.contains(inputEvent.currentTarget as Node),
     );
     const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
 
     await chatMessage.update(data); // Rerenders the dom chatmessages
     const newDomChatMessages = document.querySelectorAll<HTMLElement>(
-      `[data-message-id="${chatMessage.id}"]`
+      `[data-message-id="${chatMessage.id}"]`,
     );
     const newDomChatMessage = Array.from(newDomChatMessages).find(
-      (m) => !!m.closest<HTMLElement>(".chat-popout") === isFromPopoutChat
+      (m) => !!m.closest<HTMLElement>(".chat-popout") === isFromPopoutChat,
     );
 
     // Find the input element that inititated the change and move the cursor there.
@@ -95,11 +95,11 @@ export class RqgChatMessage extends ChatMessage {
     if (inputElement instanceof HTMLInputElement && inputElement.type === "text") {
       const elementName = inputElement?.name;
       const newInputElement = newDomChatMessage?.querySelector<HTMLInputElement>(
-        `[name=${elementName}]`
+        `[name=${elementName}]`,
       );
       newInputElement && moveCursorToEnd(newInputElement);
     }
-    // @ts-ignore is marked as private!?
+    // @ts-expect-error is marked as private!?
     ui.chat?.scrollBottom(); // Fix that the weapon chat gets bigger and pushes the rest of the chatlog down
   }
 

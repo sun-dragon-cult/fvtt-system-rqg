@@ -11,15 +11,15 @@ import {
 } from "../../system/util";
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
-import { ContextMenuRunes } from "./contextMenuRunes";
+import { contextMenuRunes } from "./contextMenuRunes";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | undefined
+  token: TokenDocument | undefined,
 ): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollChat"),
-    icon: ContextMenuRunes.RollViaChat,
+    icon: contextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
@@ -29,13 +29,13 @@ export const characteristicMenuOptions = (
           data: characteristic,
         },
         actor,
-        token
+        token,
       );
     },
   },
   {
     name: localize("RQG.Game.RollCharacteristicQuick"),
-    icon: ContextMenuRunes.RollQuick,
+    icon: contextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
@@ -45,13 +45,13 @@ export const characteristicMenuOptions = (
         5,
         0,
         actor,
-        ChatMessage.getSpeaker({ actor: actor, token: token })
+        ChatMessage.getSpeaker({ actor: actor, token: token }),
       );
     },
   },
   {
     name: localize("RQG.ContextMenu.ToggleExperience"),
-    icon: ContextMenuRunes.ToggleExperience,
+    icon: contextMenuRunes.ToggleExperience,
     condition: (el: JQuery) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       return characteristicName === "power";
@@ -66,7 +66,7 @@ export const characteristicMenuOptions = (
     name: localize("RQG.ContextMenu.ImproveItem", {
       itemType: localize("RQG.Actor.Characteristics.Characteristic"),
     }),
-    icon: ContextMenuRunes.Improve,
+    icon: contextMenuRunes.Improve,
     condition: (el: JQuery): boolean => {
       const { name: characteristicName, value: char } = getCharacteristic(actor, el);
       // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
@@ -97,7 +97,7 @@ export const characteristicMenuOptions = (
   },
   {
     name: localize("RQG.ContextMenu.InitializeCharacteristic"),
-    icon: ContextMenuRunes.InitializeCharacteristics,
+    icon: contextMenuRunes.InitializeCharacteristics,
     condition: (el: JQuery): boolean => {
       if (!getGame().user?.isGM) {
         return false;
@@ -123,35 +123,35 @@ export const characteristicMenuOptions = (
           localize("RQG.ContextMenu.CharacteristicInitialized", {
             characteristicName: localizeCharacteristic(characteristic),
             actorName: actor.name,
-          })
+          }),
         );
       }
     },
   },
   {
     name: localize("RQG.ContextMenu.InitializeAllCharacteristics"),
-    icon: ContextMenuRunes.InitializeAllCharacteristics,
+    icon: contextMenuRunes.InitializeAllCharacteristics,
     condition: (): boolean => !!getGame().user?.isGM,
     callback: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
         await initializeAllCharacteristics(actor);
         ui.notifications?.info(
-          localize("RQG.ContextMenu.AllCharacteristicsInitialized", { actorName: actor.name })
+          localize("RQG.ContextMenu.AllCharacteristicsInitialized", { actorName: actor.name }),
         );
       }
     },
   },
   {
     name: localize("RQG.ContextMenu.SetAllCharacteristicsToAverage"),
-    icon: ContextMenuRunes.SetAllCharacteristicsToAverage,
+    icon: contextMenuRunes.SetAllCharacteristicsToAverage,
     condition: (): boolean => !!getGame().user?.isGM,
     callback: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
         await setAllCharacteristicsToAverage(actor);
         ui.notifications?.info(
-          localize("RQG.ContextMenu.AllCharacteristicsSetToAverage", { actorName: actor.name })
+          localize("RQG.ContextMenu.AllCharacteristicsSetToAverage", { actorName: actor.name }),
         );
       }
     },
@@ -160,7 +160,7 @@ export const characteristicMenuOptions = (
 
 async function getCharacteristicUpdate(
   characteristic: string,
-  formula: string | undefined
+  formula: string | undefined,
 ): Promise<DeepPartial<ActorDataConstructorData & { system: any }>> {
   if (!formula || !Roll.validate(formula)) {
     return {
@@ -177,7 +177,7 @@ async function getCharacteristicUpdate(
 
 export async function initializeCharacteristic(
   actor: RqgActor,
-  characteristic: string
+  characteristic: string,
 ): Promise<void> {
   if (!actor.isOwner || characteristic == null) {
     return;
@@ -197,7 +197,7 @@ export async function initializeCharacteristic(
 }
 
 export async function initializeAllCharacteristics(actor: RqgActor): Promise<void> {
-  let updateData = {};
+  const updateData = {};
 
   if (!actor.isOwner) {
     return;
@@ -242,7 +242,7 @@ export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<v
 
   const averages = {} as { [key: string]: number | undefined };
 
-  let updateData = {};
+  const updateData = {};
 
   for (const characteristic of Object.keys(actor.system.characteristics)) {
     const char = actor.system.characteristics[characteristic as keyof Characteristics];
@@ -277,7 +277,7 @@ export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<v
 
     const update = await getCharacteristicUpdate(
       characteristic,
-      averages[char.formula || "cannot average"]?.toString()
+      averages[char.formula || "cannot average"]?.toString(),
     );
     mergeObject(updateData, update);
   }
@@ -298,17 +298,17 @@ function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: 
       localize("RQG.Contextmenu.Notification.CharacteristicNotFound", {
         characteristicName: characteristicName,
         actorName: actor.name,
-      })
+      }),
     );
   }
 }
 
 async function confirmInitializeDialog(
   actorName: string,
-  characteristic: string = ""
+  characteristic: string = "",
 ): Promise<boolean> {
-  return await new Promise(async (resolve) => {
-    const title = !!characteristic
+  return await new Promise((resolve) => {
+    const title = characteristic
       ? localize("RQG.ContextMenu.OverwriteCharacteristicDialogTitle", {
           characteristicName: localizeCharacteristic(characteristic),
           actorName: actorName,
@@ -316,7 +316,7 @@ async function confirmInitializeDialog(
       : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialogTitle", {
           actorName: actorName,
         });
-    const content = !!characteristic
+    const content = characteristic
       ? localize("RQG.ContextMenu.OverwriteCharacteristicDialog", {
           characteristicName: localizeCharacteristic(characteristic),
         })
@@ -342,6 +342,6 @@ async function confirmInitializeDialog(
         },
       },
     });
-    await dialog.render(true);
+    dialog.render(true);
   });
 }

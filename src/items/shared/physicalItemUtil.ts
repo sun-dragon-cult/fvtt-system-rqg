@@ -10,20 +10,20 @@ import { EquippedStatus } from "../../data-model/item-data/IPhysicalItem";
 export function getLocationRelatedUpdates(
   actorEmbeddedItems: RqgItem[],
   physicalItem: RqgItem,
-  updates: object[] // TODO Error what if not all updates have the same location !
+  updates: object[], // TODO Error what if not all updates have the same location !
 ): any[] {
   if ("isNatural" in physicalItem.system && physicalItem.system.isNatural) {
     return []; // natural weapons don't have location and are excluded from the LocationTree
   }
 
   const equippedStatusUpdate: any = updates.find(
-    (u: any) => u._id === physicalItem.id && u["system.equippedStatus"]
+    (u: any) => u._id === physicalItem.id && u["system.equippedStatus"],
   );
   const equippedStatusUpdateValue =
     equippedStatusUpdate && equippedStatusUpdate?.["system.equippedStatus"];
 
   const locationUpdate: any = updates.find(
-    (u: any) => u._id === physicalItem.id && u["system.location"]
+    (u: any) => u._id === physicalItem.id && u["system.location"],
   );
   const locationUpdateValue = locationUpdate && locationUpdate?.["system.location"];
 
@@ -34,8 +34,8 @@ export function getLocationRelatedUpdates(
       getChangedEquippedStatusRelatedUpdates(
         physicalItem,
         actorEmbeddedItems,
-        equippedStatusUpdateValue
-      )
+        equippedStatusUpdateValue,
+      ),
     );
   }
 
@@ -46,8 +46,8 @@ export function getLocationRelatedUpdates(
         actorEmbeddedItems,
         physicalItem,
         locationUpdateValue,
-        equippedStatusUpdateValue
-      )
+        equippedStatusUpdateValue,
+      ),
     );
   }
 
@@ -57,12 +57,12 @@ export function getLocationRelatedUpdates(
 function getChangedEquippedStatusRelatedUpdates(
   physicalItem: RqgItem,
   actorEmbeddedItems: RqgItem[],
-  equippedStatusUpdateValue: EquippedStatus | undefined
+  equippedStatusUpdateValue: EquippedStatus | undefined,
 ): any[] {
   let containedItemUpdates = [];
 
   const sameLocationItemIds = new ItemTree(actorEmbeddedItems).getOtherItemIdsInSameLocationTree(
-    physicalItem.name ?? ""
+    physicalItem.name ?? "",
   );
   containedItemUpdates = sameLocationItemIds.map((id: string) => ({
     _id: id,
@@ -76,9 +76,9 @@ function getChangedLocationRelatedChanges(
   actorEmbeddedItems: RqgItem[],
   physicalItem: RqgItem,
   locationUpdateValue: string | undefined,
-  equippedStatusUpdateValue: EquippedStatus | undefined
+  equippedStatusUpdateValue: EquippedStatus | undefined,
 ): any[] {
-  let containedItemUpdates: any[] = [];
+  const containedItemUpdates: any[] = [];
 
   const updatedItem = actorEmbeddedItems.find((i) => i.id === physicalItem.id);
 
@@ -93,7 +93,7 @@ function getChangedLocationRelatedChanges(
   if (container) {
     if (container.id !== updatedItem.id) {
       const sameLocationItemIds = new ItemTree(
-        actorEmbeddedItems
+        actorEmbeddedItems,
       ).getOtherItemIdsInSameLocationTree(physicalItem.name ?? "");
 
       mergeArraysById(
@@ -106,14 +106,14 @@ function getChangedLocationRelatedChanges(
             });
           }
           return updates;
-        }, [])
+        }, []),
       );
     }
   }
 
   if (physicalItem.system.isContainer) {
     const sameLocationItemIds = new ItemTree(actorEmbeddedItems).getItemIdsDirectlyInSameContainer(
-      physicalItem.name ?? ""
+      physicalItem.name ?? "",
     );
 
     mergeArraysById(
@@ -126,7 +126,7 @@ function getChangedLocationRelatedChanges(
           });
         }
         return acc;
-      }, [])
+      }, []),
     );
   }
 

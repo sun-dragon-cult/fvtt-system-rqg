@@ -10,13 +10,13 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { ContextMenuRunes } from "./contextMenuRunes";
+import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
 
 export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollChat"),
-    icon: ContextMenuRunes.RollViaChat,
+    icon: contextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -26,7 +26,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.Game.RollQuick"),
-    icon: ContextMenuRunes.RollQuick,
+    icon: contextMenuRunes.RollQuick,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -42,7 +42,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   },
   {
     name: localize("RQG.ContextMenu.ViewDescription"),
-    icon: ContextMenuRunes.ViewDescription,
+    icon: contextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
       const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       return !!rqid;
@@ -58,7 +58,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.RuneMagic),
     }),
-    icon: ContextMenuRunes.Edit,
+    icon: contextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -76,7 +76,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.DeleteItem", {
       itemType: localizeItemType(ItemTypeEnum.RuneMagic),
     }),
-    icon: ContextMenuRunes.Delete,
+    icon: contextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

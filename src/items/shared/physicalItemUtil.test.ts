@@ -168,7 +168,7 @@ describe("getLocationRelatedUpdates", () => {
           "system.location": "Virtual",
         },
       ]);
-      // @ts-ignore
+      // @ts-expect-error any types
       expect(updates[0]["system.equippedStatus"]).toStrictEqual(changedItem.system.equippedStatus); // Should not change
     });
 
@@ -177,7 +177,7 @@ describe("getLocationRelatedUpdates", () => {
       const targetContainerName = "Riding Horse";
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
       const changedItem = items.find(
-        (i) => i.name === "Dagger" && i.type === ItemTypeEnum.Weapon
+        (i) => i.name === "Dagger" && i.type === ItemTypeEnum.Weapon,
       ) as RqgItem;
       const targetContainer = items.find((i) => i.name === targetContainerName);
       const updates = [
@@ -187,7 +187,7 @@ describe("getLocationRelatedUpdates", () => {
         },
       ];
       expect(
-        changedItem.system.equippedStatus === targetContainer?.system.equippedStatus
+        changedItem.system.equippedStatus === targetContainer?.system.equippedStatus,
       ).toBeFalsy();
 
       // --- Act ---
@@ -209,7 +209,7 @@ describe("getLocationRelatedUpdates", () => {
       // --- Arrange ---
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
       const changedItem = items.find(
-        (i) => i.name === "Dragon Armor Greaves  (Dragon Hide and Scales)"
+        (i) => i.name === "Dragon Armor Greaves  (Dragon Hide and Scales)",
       ) as RqgItem;
       const updates = [
         {

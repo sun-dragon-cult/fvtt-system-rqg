@@ -1,4 +1,3 @@
-
 name: ${{rqgCompendiumContent.equipment.armor.sleeves}}$ (${{uiContent.RQG.Item.Armor.ArmorMaterial.HeavyScale}}$)
 type: armor
 img: systems/rqg/assets/images/armor/vambraces.svg

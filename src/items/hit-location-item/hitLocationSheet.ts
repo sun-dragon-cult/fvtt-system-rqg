@@ -74,7 +74,7 @@ export class HitLocationSheet extends RqgItemSheet<
   static async showAddWoundDialog(
     actor: RqgActor,
     hitLocationItemId: string,
-    speakerName: string
+    speakerName: string,
   ): Promise<void> {
     const hitLocation = actor.items.get(hitLocationItemId);
     if (!hitLocation || hitLocation.type !== ItemTypeEnum.HitLocation) {
@@ -88,7 +88,7 @@ export class HitLocationSheet extends RqgItemSheet<
 
     const dialogContentHtml = await renderTemplate(
       "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
-      {}
+      {},
     );
     new Dialog(
       {
@@ -109,7 +109,7 @@ export class HitLocationSheet extends RqgItemSheet<
                 html as JQuery,
                 actor,
                 hitLocation,
-                speakerName
+                speakerName,
               ),
           },
           cancel: {
@@ -121,7 +121,7 @@ export class HitLocationSheet extends RqgItemSheet<
       },
       {
         classes: [systemId, "dialog"],
-      }
+      },
     ).render(true);
   }
 
@@ -129,11 +129,10 @@ export class HitLocationSheet extends RqgItemSheet<
     html: JQuery,
     actor: RqgActor,
     hitLocation: RqgItem,
-    speakerName: string
+    speakerName: string,
   ) {
     assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
-    // @ts-ignore entries
     const data = Object.fromEntries(formData.entries());
     const applyDamageToTotalHp: boolean = !!data.toTotalHp;
     const subtractAP: boolean = !!data.subtractAP;
@@ -145,7 +144,7 @@ export class HitLocationSheet extends RqgItemSheet<
           "RQG.Item.HitLocation.Notification.HitLocationDoesNotHaveCalculatedArmor",
           {
             hitLocationName: hitLocation.name,
-          }
+          },
         );
         ui.notifications?.error(msg);
         throw new RqgError(msg, hitLocation);
@@ -181,7 +180,7 @@ export class HitLocationSheet extends RqgItemSheet<
     }
 
     for (const update of uselessLegs) {
-      // @ts-ignore _id
+      // @ts-expect-error _id
       const leg = actor.items.get(update._id);
       assertItemType(leg?.type, ItemTypeEnum.HitLocation);
       await leg.update(update);
@@ -194,7 +193,7 @@ export class HitLocationSheet extends RqgItemSheet<
 
     const dialogContentHtml = await renderTemplate(
       "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
-      { hitLocationName: hitLocation.name, wounds: hitLocation.system.wounds }
+      { hitLocationName: hitLocation.name, wounds: hitLocation.system.wounds },
     );
 
     new Dialog(
@@ -223,38 +222,37 @@ export class HitLocationSheet extends RqgItemSheet<
       },
       {
         classes: [systemId, "dialog", "heal-wound"],
-      }
+      },
     ).render(true);
   }
 
   private static async submitHealWoundDialog(
     html: JQuery,
     actor: RqgActor,
-    hitLocation: RqgItem
+    hitLocation: RqgItem,
   ): Promise<void> {
     assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
-    // @ts-ignore formData.entries
     const data = Object.fromEntries(formData.entries());
     requireValue(
       hitLocation.system.hitPoints.value,
       localize("RQG.Item.HitLocation.Notification.NoValueOnHitLocation", {
         hitLocationName: hitLocation.name,
-      })
+      }),
     );
     requireValue(
       hitLocation.system.hitPoints.max,
       localize("RQG.Item.HitLocation.Notification.NoMaxOnHitLocation", {
         hitLocationName: hitLocation.name,
-      })
+      }),
     );
     const healWoundIndex: number = Number(data.wound);
-    let healPoints: number = Number(data.heal);
+    const healPoints: number = Number(data.heal);
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,
       hitLocation,
-      actor
+      actor,
     );
 
     hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
@@ -310,7 +308,7 @@ export class HitLocationSheet extends RqgItemSheet<
 
     for (const status of health2Effect.values()) {
       const thisEffectOn = !!token.actor.effects.find(
-        (e: ActiveEffect) => e.getFlag("core", "statusId") === status?.id
+        (e: ActiveEffect) => e.getFlag("core", "statusId") === status?.id,
       );
       if (newEffect?.id === status.id && !thisEffectOn) {
         const asOverlay = status.id === "dead";

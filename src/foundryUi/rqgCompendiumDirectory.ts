@@ -15,11 +15,11 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
     const requestedLang = getGame().settings.get(systemId, "worldLanguage");
     const showOnlyWorldLanguagePacks = getGame().settings.get(
       systemId,
-      "showOnlyWorldLanguagePacks"
+      "showOnlyWorldLanguagePacks",
     );
     const showEnglishLanguagePacksAlso = getGame().settings.get(
       systemId,
-      "showEnglishLanguagePacksAlso"
+      "showEnglishLanguagePacksAlso",
     );
     const requestedLangRegex = new RegExp(`(.*)-(${requestedLang})$`);
     const englishRegex = /.*-en$/;
@@ -43,10 +43,10 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
         (acc as any)[packName] = existingPacks;
         return acc;
       },
-      []
+      [],
     );
 
-    let packs = getGame().packs.filter((p: any) => {
+    const packs = getGame().packs.filter((p: any) => {
       const hasAccess = getGame().user?.isGM || !p.private;
 
       if (p.metadata.packageName !== systemId) {
@@ -76,6 +76,7 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
       .sort((a, b) => a.documentName.localeCompare(b.documentName))
       .reduce((obj: any, pack) => {
         const documentName = pack.documentName;
+        // eslint-disable-next-line no-prototype-builtins
         if (!obj.hasOwnProperty(documentName))
           obj[documentName] = {
             label: documentName,
@@ -86,8 +87,8 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
       }, {});
 
     // Sort packs within type
-    for (let p of Object.values(packData)) {
-      // @ts-ignore
+    for (const p of Object.values(packData)) {
+      // @ts-expect-error type of a & b
       p.packs = p.packs.sort((a, b) => a.title.localeCompare(b.title));
     }
 
