@@ -2,19 +2,23 @@
 <table>
   <thead>
   <tr>
-    <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Label"}}</th>
+    <th></th>
+    <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Name"}}</th>
     <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Disabled"}}</th>
     <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.StartTime"}}</th>
-    <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.KeyValueMode"}}</th>
+    <th class="text-left">{{localize "EFFECT.DurationSecs"}}</th>
+    <th class="text-left">{{localize "EFFECT.ChangeKey"}} - {{localize "EFFECT.ChangeValue"}} - {{localize "EFFECT.ChangeMode"}}</th>
     <th class="text-left"></th>
   </tr>
   </thead>
   {{#each effects}}
   <tbody data-effect-id="{{id}}">
   <tr data-actor-effect-edit>
-    <td>{{label}}</td>
+    <td><img class="effect-img" src="{{img}}"></td>
+    <td>{{name}}</td>
     <td>{{yes-no disabled}}</td>
     <td>{{duration.startTime}}</td>
+    <td>{{duration.seconds}}</td>
     <td>
       {{#each changes}}
         {{key}} - {{value}} - {{mode}}<br>

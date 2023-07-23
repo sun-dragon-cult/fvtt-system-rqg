@@ -307,19 +307,16 @@ export class HitLocationSheet extends RqgItemSheet<
     const newEffect = health2Effect.get(token.actor.system.attributes.health);
 
     for (const status of health2Effect.values()) {
-      const thisEffectOn = !!token.actor.effects.find(
-        (e: ActiveEffect) => e.getFlag("core", "statusId") === status?.id,
-      );
-      if (newEffect?.id === status.id && !thisEffectOn) {
+      const actorHasEffectAlready = token.actor.statuses.has(status?.id);
+      if (newEffect?.id === status.id && !actorHasEffectAlready) {
         const asOverlay = status.id === "dead";
         // Turn on the new effect
         await token.toggleEffect(status, {
           overlay: asOverlay,
           active: true,
         });
-      } else if (newEffect?.id !== status.id && thisEffectOn) {
-        // This is not the effect we're applying but it is on
-        // so we need to turn it off
+      } else if (newEffect?.id !== status.id && actorHasEffectAlready) {
+        // This is not the effect we're applying, but it is on, so we need to turn it off
         await token.toggleEffect(status, {
           overlay: false,
           active: false,

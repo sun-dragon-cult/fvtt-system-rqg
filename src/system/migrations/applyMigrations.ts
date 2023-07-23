@@ -3,7 +3,6 @@ import { RqgItem } from "../../items/rqgItem";
 import {
   ActorData,
   ActorDataConstructorData,
-  ActorDataSource,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
@@ -211,7 +210,6 @@ async function migrateCompendium(
   // Iterate over compendium entries - applying fine-tuned migration functions
   for (const doc of documents) {
     let updateData = {};
-    let deleteIds: string[] = [];
     try {
       switch (documentType) {
         case "Actor":
@@ -220,7 +218,6 @@ async function migrateCompendium(
             itemMigrations,
             actorMigrations,
           );
-          deleteIds = getActiveEffectsToDelete(doc.toObject());
           break;
         case "Item":
           updateData = await getItemMigrationUpdates(doc.toObject(), itemMigrations);
@@ -232,13 +229,6 @@ async function migrateCompendium(
             actorMigrations,
           );
           break;
-      }
-
-      if (deleteIds.length) {
-        await doc.deleteEmbeddedDocuments("ActiveEffect", deleteIds);
-        console.log(
-          `RQG | Deleted ${deleteIds.length} Active Effects from document ${doc.name} in Compendium ${pack.collection}`,
-        );
       }
 
       // Save the entry, if data was changed
@@ -300,19 +290,6 @@ async function getActorMigrationUpdates(
     }
   }
   return updateData;
-}
-
-function getActiveEffectsToDelete(actorData: Partial<ActorDataSource>): string[] {
-  if (!actorData.effects) {
-    return [];
-  }
-  return actorData.effects.reduce((acc: string[], effect) => {
-    if (effect.label === "Armor" && !!effect._id) {
-      return [...acc, effect._id];
-    } else {
-      return acc;
-    }
-  }, []);
 }
 
 /* -------------------------------------------- */

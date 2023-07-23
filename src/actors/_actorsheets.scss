@@ -338,6 +338,13 @@
     }
   }
 
+  .tab.activeeffectstesting {
+    .effect-img {
+      height: 2rem;
+      filter: initial;
+    }
+  }
+
   .grid.location-row {
     display: grid;
     grid-template-columns: auto min-content max-content min-content;

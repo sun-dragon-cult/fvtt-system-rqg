@@ -351,18 +351,15 @@ export class RqgActorSheet extends ActorSheet<
 
   private getPowCrystals(): { name: string; size: number }[] {
     return (
-      this.actor.effects &&
-      this.actor.effects
+      this.actor.appliedEffects &&
+      this.actor.appliedEffects
         .filter(
-          (
-            e: any, // TODO v10 any
-          ) =>
+          (e) =>
             e.changes.find((e: any) => e.key === "system.attributes.magicPoints.max") != undefined,
         )
-        // TODO v10 any
-        .map((e: any) => {
+        .map((e) => {
           return {
-            name: e.label,
+            name: e.name ?? "",
             size: e.changes
               .filter((c: any) => c.key === "system.attributes.magicPoints.max")
               .reduce((acc: number, c: any) => acc + Number(c.value), 0),
@@ -743,15 +740,15 @@ export class RqgActorSheet extends ActorSheet<
       // TODO v10 any
       if (
         newHealth === "dead" &&
-        // @ts-expect-error actorData
-        !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "dead")
+        // @ts-expect-error token.actor
+        !this.token?.actor.statuses.has("dead")
       ) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
       }
       if (
         newHealth === "unconscious" &&
-        // @ts-expect-error actorData
-        !this.token?.actorData.effects.find((e: any) => e.label.toLowerCase() === "unconscious")
+        // @ts-expect-error token?.actor
+        !this.token?.actor.statuses.has("unconscious")
       ) {
         message = `${speakerName} faints from lack of hitpoints!`;
       }
@@ -1171,6 +1168,7 @@ export class RqgActorSheet extends ActorSheet<
       const effectId = getRequiredDomDataset(el, "effect-id");
       el.addEventListener("click", () => {
         const effect = this.actor.effects.get(effectId);
+        // TODO fix in AE edit PR NEEDS TO CHANGE BECAUSE OF CONFIG.ActiveEffect.legacyTransferral = false;
         requireValue(effect, `No active effect id [${effectId}] to edit the effect`);
         new ActiveEffectConfig(effect).render(true);
       });

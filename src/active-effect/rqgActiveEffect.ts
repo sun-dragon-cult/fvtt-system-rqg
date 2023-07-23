@@ -6,7 +6,11 @@ import { Rqid } from "../system/api/rqidApi";
 export class RqgActiveEffect extends ActiveEffect {
   static init() {
     CONFIG.ActiveEffect.documentClass = RqgActiveEffect;
+    // @ts-expect-error legacyTransferral
+    CONFIG.ActiveEffect.legacyTransferral = false;
   }
+
+  declare changes: any; // type workaround
 
   /**
    * CUSTOM application mode will apply an ADD effect to a specified item.
@@ -17,7 +21,7 @@ export class RqgActiveEffect extends ActiveEffect {
     const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
       const itemsWithEffectsOnActor = formatListByWorldLanguage(
-        actor.effects.map((e) => {
+        actor.appliedEffects.map((e) => {
           try {
             // @ts-expect-error fromUuidSync
             return fromUuidSync(e.origin)?.name ?? "❓no name";

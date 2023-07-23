@@ -4,20 +4,6 @@ export const RQG_CONFIG = {
     showAllUiSections: false,
   },
 
-  // TODO
-  statusEffects: [
-    {
-      icon: "systems/swade/assets/icons/status/status_shaken.svg",
-      id: "shaken",
-      label: "SWADE.Shaken",
-    },
-    {
-      icon: "icons/svg/skull.svg",
-      id: "incapacitated",
-      label: "SWADE.Incap",
-    },
-  ],
-
   // Skill items that need special handling
   skillRqid: {
     dodge: "i.skill.dodge",

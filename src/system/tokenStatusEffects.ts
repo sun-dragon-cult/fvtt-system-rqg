@@ -2,30 +2,30 @@ export function getTokenStatusEffects(): any[] {
   return [
     {
       id: "dead",
-      label: "EFFECT.StatusDead",
+      name: "EFFECT.StatusDead",
       icon: "systems/rqg/assets/images/token-effects/dead.svg",
       tint: "#901010",
     },
     {
       id: "unconscious",
-      label: "EFFECT.StatusUnconscious",
+      name: "EFFECT.StatusUnconscious",
       icon: "systems/rqg/assets/images/token-effects/unconscious.svg",
       tint: "#f3a71e",
     },
     {
       id: "shock",
-      label: "EFFECT.StatusShocked",
+      name: "EFFECT.StatusShocked",
       icon: "systems/rqg/assets/images/token-effects/shock.svg",
       tint: "#f3a71e",
     },
     {
       id: "bleeding",
-      label: "EFFECT.StatusBleeding",
+      name: "EFFECT.StatusBleeding",
       icon: "systems/rqg/assets/images/token-effects/bleeding.svg",
     },
     {
       id: "protection1",
-      label: "RQG.TokenEffects.StatusProtection1",
+      name: "RQG.TokenEffects.StatusProtection1",
       icon: "systems/rqg/assets/images/token-effects/protection1.svg",
       duration: {
         seconds: CONFIG.time.roundTime * 10,
@@ -70,7 +70,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "protection2",
-      label: "RQG.TokenEffects.StatusProtection2",
+      name: "RQG.TokenEffects.StatusProtection2",
       icon: "systems/rqg/assets/images/token-effects/protection2.svg",
       duration: {
         seconds: CONFIG.time.roundTime * 10,
@@ -115,7 +115,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "protection3",
-      label: "RQG.TokenEffects.StatusProtection3",
+      name: "RQG.TokenEffects.StatusProtection3",
       icon: "systems/rqg/assets/images/token-effects/protection3.svg",
       duration: {
         seconds: CONFIG.time.roundTime * 10,
@@ -160,7 +160,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "protection4",
-      label: "RQG.TokenEffects.StatusProtection4",
+      name: "RQG.TokenEffects.StatusProtection4",
       icon: "systems/rqg/assets/images/token-effects/protection4.svg",
       duration: {
         seconds: CONFIG.time.roundTime * 10,
@@ -205,7 +205,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "strength",
-      label: "RQG.TokenEffects.StatusStrength",
+      name: "RQG.TokenEffects.StatusStrength",
       icon: "systems/rqg/assets/images/token-effects/strength.svg",
       disabled: false,
       duration: {
@@ -221,7 +221,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "befuddled",
-      label: "RQG.TokenEffects.StatusBefuddled",
+      name: "RQG.TokenEffects.StatusBefuddled",
       icon: "systems/rqg/assets/images/token-effects/befuddled.svg",
       disabled: false,
       duration: {
@@ -231,7 +231,7 @@ export function getTokenStatusEffects(): any[] {
 
     {
       id: "bladesharp",
-      label: "RQG.TokenEffects.StatusBladesharp",
+      name: "RQG.TokenEffects.StatusBladesharp",
       icon: "systems/rqg/assets/images/token-effects/bladesharp.svg",
       disabled: false,
       duration: {
@@ -240,7 +240,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "bludgeon",
-      label: "RQG.TokenEffects.StatusBludgeon",
+      name: "RQG.TokenEffects.StatusBludgeon",
       icon: "systems/rqg/assets/images/token-effects/bludgeon.svg",
       disabled: false,
       duration: {
@@ -249,7 +249,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "coordination",
-      label: "RQG.TokenEffects.StatusCoordination",
+      name: "RQG.TokenEffects.StatusCoordination",
       icon: "systems/rqg/assets/images/token-effects/coordination.svg",
       disabled: false,
       duration: {
@@ -265,7 +265,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "countermagic",
-      label: "RQG.TokenEffects.StatusCountermagic",
+      name: "RQG.TokenEffects.StatusCountermagic",
       icon: "systems/rqg/assets/images/token-effects/countermagic.svg",
       disabled: false,
       duration: {
@@ -274,7 +274,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "demoralize",
-      label: "Demoralize",
+      name: "Demoralize",
       icon: "systems/rqg/assets/images/token-effects/demoralize.svg",
       disabled: false,
       duration: {
@@ -283,7 +283,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "dullblade",
-      label: "RQG.TokenEffects.StatusDullblade",
+      name: "RQG.TokenEffects.StatusDullblade",
       icon: "systems/rqg/assets/images/token-effects/dullblade.svg",
       disabled: false,
       duration: {
@@ -292,7 +292,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "fanaticism",
-      label: "RQG.TokenEffects.StatusFanaticism",
+      name: "RQG.TokenEffects.StatusFanaticism",
       icon: "systems/rqg/assets/images/token-effects/fanaticism.svg",
       disabled: false,
       duration: {
@@ -301,7 +301,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "fireblade",
-      label: "RQG.TokenEffects.StatusFireblade",
+      name: "RQG.TokenEffects.StatusFireblade",
       icon: "systems/rqg/assets/images/token-effects/fireblade.svg",
       disabled: false,
       duration: {
@@ -310,7 +310,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "glamour",
-      label: "RQG.TokenEffects.StatusGlamour",
+      name: "RQG.TokenEffects.StatusGlamour",
       icon: "systems/rqg/assets/images/token-effects/glamour.svg",
       disabled: false,
       duration: {
@@ -319,7 +319,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "glue",
-      label: "RQG.TokenEffects.StatusGlue",
+      name: "RQG.TokenEffects.StatusGlue",
       icon: "systems/rqg/assets/images/token-effects/glue.svg",
       disabled: false,
       duration: {
@@ -328,7 +328,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "ironhand",
-      label: "RQG.TokenEffects.StatusIronhand",
+      name: "RQG.TokenEffects.StatusIronhand",
       icon: "systems/rqg/assets/images/token-effects/ironhand.svg",
       disabled: false,
       duration: {
@@ -337,7 +337,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "lantern",
-      label: "RQG.TokenEffects.StatusLantern",
+      name: "RQG.TokenEffects.StatusLantern",
       icon: "systems/rqg/assets/images/token-effects/lantern.svg",
       disabled: false,
       duration: {
@@ -346,7 +346,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "light",
-      label: "RQG.TokenEffects.StatusLight",
+      name: "RQG.TokenEffects.StatusLight",
       icon: "systems/rqg/assets/images/token-effects/light.svg",
       disabled: false,
       duration: {
@@ -355,7 +355,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "mobility",
-      label: "RQG.TokenEffects.StatusMobility",
+      name: "RQG.TokenEffects.StatusMobility",
       icon: "systems/rqg/assets/images/token-effects/mobility.svg",
       disabled: false,
       duration: {
@@ -364,7 +364,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "parry",
-      label: "RQG.TokenEffects.StatusParry",
+      name: "RQG.TokenEffects.StatusParry",
       icon: "systems/rqg/assets/images/token-effects/parry.svg",
       disabled: false,
       duration: {
@@ -373,7 +373,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "shimmer",
-      label: "RQG.TokenEffects.StatusShimmer",
+      name: "RQG.TokenEffects.StatusShimmer",
       icon: "systems/rqg/assets/images/token-effects/shimmer.svg",
       disabled: false,
       duration: {
@@ -382,7 +382,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "slow",
-      label: "RQG.TokenEffects.StatusSlow",
+      name: "RQG.TokenEffects.StatusSlow",
       icon: "systems/rqg/assets/images/token-effects/slow.svg",
       disabled: false,
       duration: {
@@ -391,7 +391,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "spiritscreen",
-      label: "RQG.TokenEffects.StatusSpiritScreen",
+      name: "RQG.TokenEffects.StatusSpiritScreen",
       icon: "systems/rqg/assets/images/token-effects/spirit-screen.svg",
       disabled: false,
       duration: {
@@ -400,7 +400,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "vigor",
-      label: "RQG.TokenEffects.StatusVigor",
+      name: "RQG.TokenEffects.StatusVigor",
       icon: "systems/rqg/assets/images/token-effects/vigor.svg",
       disabled: false,
       duration: {
@@ -416,58 +416,58 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "sleep",
-      label: "EFFECT.StatusAsleep",
+      name: "EFFECT.StatusAsleep",
       icon: "systems/rqg/assets/images/token-effects/asleep.svg",
     },
     {
       id: "prone",
-      label: "EFFECT.StatusProne",
+      name: "EFFECT.StatusProne",
       icon: "systems/rqg/assets/images/token-effects/prone.svg",
     },
     {
       id: "deaf",
-      label: "EFFECT.StatusDeaf",
+      name: "EFFECT.StatusDeaf",
       icon: "icons/svg/deaf.svg",
     },
     {
       id: "blind",
-      label: "EFFECT.StatusBlind",
+      name: "EFFECT.StatusBlind",
       icon: "icons/svg/blind.svg",
     },
     {
       id: "silence",
-      label: "EFFECT.StatusSilenced",
+      name: "EFFECT.StatusSilenced",
       icon: "icons/svg/silenced.svg",
     },
     {
       id: "fear",
-      label: "EFFECT.StatusFear",
+      name: "EFFECT.StatusFear",
       icon: "icons/svg/terror.svg",
     },
 
     {
       id: "disease",
-      label: "EFFECT.StatusDisease",
+      name: "EFFECT.StatusDisease",
       icon: "icons/svg/biohazard.svg",
     },
     {
       id: "poison",
-      label: "EFFECT.StatusPoison",
+      name: "EFFECT.StatusPoison",
       icon: "icons/svg/poison.svg",
     },
     {
       id: "curse",
-      label: "EFFECT.StatusCursed",
+      name: "EFFECT.StatusCursed",
       icon: "icons/svg/sun.svg",
     },
     {
       id: "restrain",
-      label: "EFFECT.StatusRestrained",
+      name: "EFFECT.StatusRestrained",
       icon: "icons/svg/net.svg",
     },
     {
       id: "number1",
-      label: "1",
+      name: "1",
       icon: "systems/rqg/assets/images/token-effects/one.svg",
       disabled: false,
       duration: {
@@ -476,7 +476,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "number2",
-      label: "2",
+      name: "2",
       icon: "systems/rqg/assets/images/token-effects/two.svg",
       disabled: false,
       duration: {
@@ -485,7 +485,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "number3",
-      label: "3",
+      name: "3",
       icon: "systems/rqg/assets/images/token-effects/three.svg",
       disabled: false,
       duration: {
@@ -494,7 +494,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "number4",
-      label: "4",
+      name: "4",
       icon: "systems/rqg/assets/images/token-effects/four.svg",
       disabled: false,
       duration: {
@@ -503,7 +503,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "number5",
-      label: "5",
+      name: "5",
       icon: "systems/rqg/assets/images/token-effects/five.svg",
       disabled: false,
       duration: {
@@ -512,7 +512,7 @@ export function getTokenStatusEffects(): any[] {
     },
     {
       id: "number6",
-      label: "6",
+      name: "6",
       icon: "systems/rqg/assets/images/token-effects/six.svg",
       disabled: false,
       duration: {

@@ -12,7 +12,8 @@ import EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/
 import { systemId } from "../system/config";
 import { ResultEnum } from "../data-model/shared/ability";
 import { Rqid } from "../system/api/rqidApi";
-import { PrototypeTokenData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import type { PrototypeTokenData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect";
 
 export class RqgActor extends Actor {
   static init() {
@@ -27,6 +28,8 @@ export class RqgActor extends Actor {
   }
   declare system: CharacterDataPropertiesData; // v10 type workaround
   declare prototypeToken: PrototypeTokenData; // v10 type workaround
+  declare statuses: Set<string>; // v11 type workaround
+  declare appliedEffects: RqgActiveEffect[]; // v11 type workaround
 
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
@@ -167,30 +170,9 @@ export class RqgActor extends Actor {
   protected _onCreate(actorData: ActorData, options: DocumentModificationOptions, userId: string) {
     super._onCreate(actorData as any, options, userId); // TODO type bug ??
 
-    // There might be effects with a different actor.id but same itemData.id if the actor
-    // is copied or imported, make sure the actor id is pointing to this new actor.
-    const effectsOriginUpdates = actorData.effects.map((effect: ActiveEffect) => {
-      return {
-        _id: effect.id,
-        // @ts-expect-error origin
-        origin: RqgActor.updateEffectOrigin(effect.origin, actorData._id),
-      };
-    });
-    effectsOriginUpdates.length &&
-      this.updateEmbeddedDocuments("ActiveEffect", effectsOriginUpdates);
-
     if (!this.prototypeToken.actorLink) {
       initializeAllCharacteristics(this);
     }
-  }
-
-  private static updateEffectOrigin(origin: string, actorId: string): string {
-    const [actorLiteral, effectActorId, ownedItemLiteral, effectOwnedItemId] =
-      origin && origin.split(".");
-    if (effectActorId && actorId !== effectActorId) {
-      origin = `${actorLiteral}.${actorId}.${ownedItemLiteral}.${effectOwnedItemId}`;
-    }
-    return origin;
   }
 
   protected _preCreateEmbeddedDocuments(
