@@ -120,6 +120,7 @@ export class RqgItem extends Item {
   }
 
   declare system: any; // v10 type workaround
+  declare flags: FlagConfig["Item"]; // type workaround
 
   public async toChat(): Promise<void> {
     if (!this.isEmbedded) {

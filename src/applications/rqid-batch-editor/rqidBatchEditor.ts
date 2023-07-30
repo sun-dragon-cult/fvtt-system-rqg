@@ -12,9 +12,9 @@ import { Rqid } from "../../system/api/rqidApi";
 import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type { RqgActor } from "../../actors/rqgActor";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
+import type { RqgItem } from "../../items/rqgItem";
 
 interface ItemChange {
   itemId: string;
@@ -318,34 +318,49 @@ export class RqidBatchEditor extends FormApplication<
         console.error("RQG | Could not find scene with id", sceneId);
         continue;
       }
-
+      const sceneUpdates: any = {};
+      sceneUpdates.tokens = [];
       for (const [tokenId, tokenItemUpdates] of token2ItemUpdates) {
         const token = scene.tokens.get(tokenId);
         if (!token) {
           console.error("RQG | Could not find scene token with id", tokenId);
           continue;
         }
-        // @ts-expect-error actorData..
-        if (!token?.actorData) {
-          console.error("RQG | Could not find actorData on token with id", tokenId);
+        if (!token?.actor) {
+          console.error("RQG | Could not find actor on token with id", tokenId);
           continue;
         }
 
         tokenItemUpdates.forEach((itemUpdate) => {
-          // @ts-expect-error actorData
-          const item = token.actorData.items.find((i) => i._id === itemUpdate.itemId);
+          const tokenUpdate: any = { _id: token.id };
+          tokenUpdate.delta = { _id: token.delta.id };
+          tokenUpdate.delta.items = [];
+          const item = token.actor!.items.get(itemUpdate.itemId);
+          if (!item) {
+            console.error("RQG | Could not find item on token with id", itemUpdate.itemId);
+            return;
+          }
+          const newRqid = itemNames2Rqid.get(itemUpdate.name);
+          if (!newRqid) {
+            return;
+          }
           const rqidFlags: DocumentRqidFlags = {
-            id: itemNames2Rqid.get(itemUpdate.name),
+            id: newRqid,
             lang:
               itemUpdate.documentRqidFlags.lang ??
               getGame().settings.get(systemId, "worldLanguage"),
             priority: itemUpdate.documentRqidFlags.priority ?? 0,
           };
-          setProperty(item, "flags.rqg.documentRqidFlags", rqidFlags);
+
+          const itemData = item.toObject();
+          tokenUpdate.delta.items.push(itemData);
+          foundry.utils.setProperty(itemData, "flags.rqg.documentRqidFlags", rqidFlags);
+          if (tokenUpdate.delta.items.length) {
+            sceneUpdates.tokens.push(tokenUpdate);
+          }
         });
       }
-      // The scene tokens have been updated above
-      await scene.update({ tokens: duplicate(scene.tokens.contents) as any });
+      await scene.update(sceneUpdates);
       RqidBatchEditor.updateProgress(++progress, changesCount, "Update Scenes");
     }
     return progress;
@@ -556,46 +571,40 @@ export class RqidBatchEditor extends FormApplication<
 
       // Loop over scene linked tokens
       sceneTokens.forEach((token) => {
-        // @ts-expect-errors actorId & actorLink on TokenDocument
-        if (!token.actorId || token.actorLink) {
-          return; // Unlinked token
-        }
         if (!token._id) {
           console.warn("RQG | Found token without _id", token.name);
           return;
         }
 
-        // @ts-expect-error actorData
-        const actorData = token.actorData;
-        const tokenActorItems: ItemDataSource[] = actorData.items ?? [];
+        const tokenActorItems = (token?.actor?.items ?? []) as RqgItem[];
 
         // Loop over actor items
         tokenActorItems.forEach((item) => {
-          const itemData = item;
-          if (itemData.type !== documentType) {
+          if (item.type !== documentType) {
             return;
           }
-          if (!itemData._id) {
-            console.warn("RQG | Found item without _id", itemData.name);
+
+          if (!item._id) {
+            console.warn("RQG | Found item without _id", item.name);
             return;
           }
 
           if (
-            itemData.flags.rqg?.documentRqidFlags?.id &&
-            prefixRegex.test(itemData.flags.rqg.documentRqidFlags.id)
+            item.flags.rqg?.documentRqidFlags?.id &&
+            prefixRegex.test(item.flags.rqg.documentRqidFlags.id)
           ) {
             // rqid already set on item
-            existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
+            existingRqids.set(item.name ?? "", item.flags.rqg.documentRqidFlags.id);
           } else {
-            itemNamesWithoutRqid.set(itemData.name, undefined);
+            itemNamesWithoutRqid.set(item.name ?? "", undefined);
 
             const currentUpdates: ItemChange[] = tokenActorItemChangesMap.has(token._id!) // token._id is already null checked
               ? tokenActorItemChangesMap.get(token._id!)!
               : [];
             currentUpdates.push({
-              itemId: itemData._id,
-              name: itemData.name,
-              documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
+              itemId: item._id,
+              name: item.name ?? "",
+              documentRqidFlags: item.flags.rqg?.documentRqidFlags ?? {},
             });
 
             tokenActorItemChangesMap.set(token._id!, currentUpdates);
