@@ -15,3 +15,6 @@ plugins:
 rules:
   "@typescript-eslint/no-explicit-any": "off" # allow until foundry types are updated
   "prettier/prettier": "error"
+  curly:
+    - error
+    - all
