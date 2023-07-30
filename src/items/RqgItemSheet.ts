@@ -30,7 +30,9 @@ export class RqgItemSheet<
   }
 
   get title(): string {
-    return `${localizeItemType(this.object.type)}: ${this.object.name}`;
+    const parentName = this.object?.parent?.name;
+    const parentAddition = parentName ? ` @ ${parentName}` : "";
+    return `${localizeItemType(this.object.type)}: ${this.object.name}${parentAddition}`;
   }
 
   public activateListeners(html: JQuery): void {
