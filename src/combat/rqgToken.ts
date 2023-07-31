@@ -18,7 +18,9 @@ export class RqgToken extends Token {
       const tracker = document.getElementById("combat-tracker") as any;
       getCombatantsSharingToken(combatant).forEach((cb: any) => {
         const li = tracker.querySelector(`.combatant[data-combatant-id="${cb.id}"]`);
-        if (li) li.classList.add("hover");
+        if (li) {
+          li.classList.add("hover");
+        }
       });
     }
   }
@@ -30,7 +32,9 @@ export class RqgToken extends Token {
       const tracker = document.getElementById("combat-tracker") as any;
       getCombatantsSharingToken(combatant).forEach((cb: any) => {
         const li = tracker.querySelector(`.combatant[data-combatant-id="${cb.id}"]`);
-        if (li) li.classList.remove("hover");
+        if (li) {
+          li.classList.remove("hover");
+        }
       });
     }
   }

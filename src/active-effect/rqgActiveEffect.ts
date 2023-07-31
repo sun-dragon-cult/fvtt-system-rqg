@@ -70,8 +70,10 @@ export class RqgActiveEffect extends ActiveEffect {
         const innerType = target.length ? foundry.utils.getType(target[0]) : "string";
         // @ts-expect-error _castArray
         delta = this._castArray(change.value, innerType);
+      } else {
         // @ts-expect-error _castDelta
-      } else delta = this._castDelta(change.value, targetType);
+        delta = this._castDelta(change.value, targetType);
+      }
     } catch (err) {
       console.warn(
         `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,

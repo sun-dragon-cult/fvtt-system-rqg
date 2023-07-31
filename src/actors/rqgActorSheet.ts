@@ -628,7 +628,9 @@ export class RqgActorSheet extends ActorSheet<
             const strover = Math.floor((actorStr - usage.minStrength) / 2);
             if (usage.minStrength == null) {
               usage.unusable = true;
-            } else usage.unusable = deficiency > strover;
+            } else {
+              usage.unusable = deficiency > strover;
+            }
           }
         }
       }
@@ -1331,7 +1333,9 @@ export class RqgActorSheet extends ActorSheet<
      * @param {object} data      The data that has been dropped onto the sheet
      */
     const allowed = Hooks.call("dropActorSheetData", actor, this, data);
-    if (allowed === false) return;
+    if (allowed === false) {
+      return;
+    }
 
     // Handle different data types (document names)
     switch (data.type) {

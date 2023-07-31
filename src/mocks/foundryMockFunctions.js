@@ -202,34 +202,48 @@ function mockMergeObject(
 
   // Special handling at depth 0
   if (_d === 0) {
-    if (Object.keys(other).some((k) => /\./.test(k))) other = expandObject(other);
+    if (Object.keys(other).some((k) => /\./.test(k))) {
+      other = expandObject(other);
+    }
     if (Object.keys(original).some((k) => /\./.test(k))) {
       const expanded = expandObject(original);
       if (inplace) {
         Object.keys(original).forEach((k) => delete original[k]);
         Object.assign(original, expanded);
-      } else original = expanded;
-    } else if (!inplace) original = deepClone(original);
+      } else {
+        original = expanded;
+      }
+    } else if (!inplace) {
+      original = deepClone(original);
+    }
   }
 
   // Iterate over the other object
   for (let k of Object.keys(other)) {
     const v = other[k];
     // eslint-disable-next-line no-prototype-builtins
-    if (original.hasOwnProperty(k)) _mergeUpdate(original, k, v, options, _d + 1);
-    else _mergeInsert(original, k, v, options, _d + 1);
+    if (original.hasOwnProperty(k)) {
+      _mergeUpdate(original, k, v, options, _d + 1);
+    } else {
+      _mergeInsert(original, k, v, options, _d + 1);
+    }
   }
   return original;
 }
 
 function expandObject(obj, _d = 0) {
-  if (_d > 100) throw new Error("Maximum object expansion depth exceeded");
+  if (_d > 100) {
+    throw new Error("Maximum object expansion depth exceeded");
+  }
 
   // Recursive expansion function
   function _expand(value) {
     if (value instanceof Object) {
-      if (Array.isArray(value)) return value.map(_expand);
-      else return expandObject(value, _d + 1);
+      if (Array.isArray(value)) {
+        return value.map(_expand);
+      } else {
+        return expandObject(value, _d + 1);
+      }
     }
     return value;
   }
@@ -252,7 +266,9 @@ function setProperty(object, key, value) {
     key = parts.pop();
     target = parts.reduce((o, i) => {
       // eslint-disable-next-line no-prototype-builtins
-      if (!o.hasOwnProperty(i)) o[i] = {};
+      if (!o.hasOwnProperty(i)) {
+        o[i] = {};
+      }
       return o[i];
     }, object);
   }
@@ -275,7 +291,9 @@ function _mergeInsert(original, k, v, { insertKeys, insertValues, performDeletio
   }
 
   const canInsert = (_d <= 1 && insertKeys) || (_d > 1 && insertValues);
-  if (!canInsert) return;
+  if (!canInsert) {
+    return;
+  }
 
   // Recursively create simple objects
   if (v?.constructor === Object) {
@@ -327,12 +345,20 @@ function _mergeUpdate(
 function mockGetType(variable) {
   // Primitive types, handled with simple typeof check
   const typeOf = typeof variable;
-  if (typeOf !== "object") return typeOf;
+  if (typeOf !== "object") {
+    return typeOf;
+  }
 
   // Special cases of object
-  if (variable === null) return "null";
-  if (!variable.constructor) return "Object"; // Object with the null prototype.
-  if (variable.constructor.name === "Object") return "Object"; // simple objects
+  if (variable === null) {
+    return "null";
+  }
+  if (!variable.constructor) {
+    return "Object";
+  } // Object with the null prototype.
+  if (variable.constructor.name === "Object") {
+    return "Object";
+  } // simple objects
 
   // Match prototype instances
   const prototypes = [
@@ -343,9 +369,13 @@ function mockGetType(variable) {
     [Error, "Error"],
     // [Color, "number"], // Don't mock Color to avoid adding even more Foundry code - not used in tests
   ];
-  if ("HTMLElement" in globalThis) prototypes.push([globalThis.HTMLElement, "HTMLElement"]);
+  if ("HTMLElement" in globalThis) {
+    prototypes.push([globalThis.HTMLElement, "HTMLElement"]);
+  }
   for (const [cls, type] of prototypes) {
-    if (variable instanceof cls) return type;
+    if (variable instanceof cls) {
+      return type;
+    }
   }
 
   // Unknown Object type
@@ -353,13 +383,20 @@ function mockGetType(variable) {
 }
 
 function mockGetProperty(object, key) {
-  if (!key) return undefined;
+  if (!key) {
+    return undefined;
+  }
   let target = object;
   for (let p of key.split(".")) {
     const t = getType(target);
-    if (!(t === "Object" || t === "Array")) return undefined;
-    if (p in target) target = target[p];
-    else return undefined;
+    if (!(t === "Object" || t === "Array")) {
+      return undefined;
+    }
+    if (p in target) {
+      target = target[p];
+    } else {
+      return undefined;
+    }
   }
   return target;
 }

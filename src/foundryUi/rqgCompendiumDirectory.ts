@@ -77,11 +77,12 @@ export class RqgCompendiumDirectory extends CompendiumDirectory {
       .reduce((obj: any, pack) => {
         const documentName = pack.documentName;
         // eslint-disable-next-line no-prototype-builtins
-        if (!obj.hasOwnProperty(documentName))
+        if (!obj.hasOwnProperty(documentName)) {
           obj[documentName] = {
             label: documentName,
             packs: [],
           };
+        }
         obj[documentName].packs.push(pack);
         return obj;
       }, {});

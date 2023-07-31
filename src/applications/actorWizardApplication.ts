@@ -622,12 +622,13 @@ export class ActorWizard extends FormApplication {
                 assertItemType(actorItem.type, ItemTypeEnum.Skill);
                 const existingSkillData = actorItem.system;
                 const newBaseChance = this.choices[key].totalValue();
-                if (existingSkillData.baseChance !== newBaseChance)
+                if (existingSkillData.baseChance !== newBaseChance) {
                   // Item exists on the actor and has a different baseChance, so update it.
                   updates.push({
                     _id: actorItem.id,
                     system: { baseChance: newBaseChance },
                   });
+                }
               }
               if (actorItem.type === ItemTypeEnum.Rune || actorItem.type === ItemTypeEnum.Passion) {
                 const existingAbilityData = actorItem.system as IAbility;
