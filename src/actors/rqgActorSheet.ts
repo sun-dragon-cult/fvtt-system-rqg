@@ -560,6 +560,14 @@ export class RqgActorSheet extends ActorSheet<
       );
     }
 
+    // Arrange wounds for display
+    itemTypes[ItemTypeEnum.HitLocation] = itemTypes[ItemTypeEnum.HitLocation].map(
+      (hitLocation: any) => {
+        hitLocation.system.woundsString = hitLocation.system.wounds.join("+");
+        return hitLocation;
+      },
+    );
+
     // Enrich Cult texts for holyDays, gifts, geases, subCults
     await Promise.all(
       itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
