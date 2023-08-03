@@ -18,23 +18,15 @@
 
   .dead {
     filter: grayscale(0.8);
-
-    header {
-      background: url(assets/images/token-effects/dead.svg) no-repeat center;
-    }
   }
 
   .unconscious {
     filter: grayscale(0.5);
-
-    header {
-      background: url(assets/images/token-effects/unconscious.svg) no-repeat center;
-    }
   }
 
-  .shock {
-    header {
-      background: url(assets/images/token-effects/shock.svg) no-repeat center;
+  form {
+    &.dead, &.unconscious, &.shock, &.wounded {
+      background-color: #901010b0;
     }
   }
 
@@ -286,6 +278,20 @@
     }
   }
 
+  .wounded {
+    .health .humanoid::before {
+      mix-blend-mode: revert;
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
+    }
+  }
+
+  .shock, .unconscious, .dead {
+    .health .humanoid::before {
+      mix-blend-mode: revert;
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
+    }
+  }
+
   .health {
     .strike {
       text-decoration: none;
@@ -294,7 +300,7 @@
       &::before {
         top: 45%;
         background: var(--rqg-highlight);
-        opacity: 0.55;
+        opacity: 0.42;
         content: "";
         width: 150%;
         position: absolute;
@@ -314,6 +320,94 @@
     .wounded {
       background-color: var(--rqg-color-enc-warning);
       border-color: var(--rqg-highlight);
+    }
+
+    .humanoid {
+      position: relative;
+      width: 22rem;
+      height: 22rem;
+
+      &::before {
+        content: url(assets/images/runes/man.svg);
+        width: inherit;
+        height: inherit;
+        position: absolute;
+        filter: invert(1);
+        mix-blend-mode: overlay;
+      }
+
+      .actor-state {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        img {
+          height: 5rem;
+          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+        }
+      }
+
+    }
+
+    .stats {
+      position: absolute;
+      border: 1px solid var(--rqg-color-main);
+      border-radius: 10px;
+      padding: 5px;
+      width: fit-content;
+      min-width: 5rem;
+      max-width: 7rem;
+      background-color: #ffffffb3;
+
+      &.useless, &.severed {
+        background-color: #afafaf;
+      }
+
+      .roll-range {
+        font-size: 80%;
+      }
+
+      &.head {
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+
+      &.left-arm {
+        top: 7rem;
+        right: 0;
+      }
+
+      &.right-arm {
+        top: 7rem;
+        left: 0;
+      }
+
+      &.chest {
+        top: 6.5rem;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+
+      &.abdomen {
+        top: 13rem;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+
+      &.left-leg {
+        top: 16rem;
+        right: 0
+      }
+
+      &.right-leg {
+        top: 16rem;
+        left: 0
+      }
+
     }
   }
 

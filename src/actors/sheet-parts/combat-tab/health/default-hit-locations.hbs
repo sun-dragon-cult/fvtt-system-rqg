@@ -1,0 +1,45 @@
+<div class="grid hit-location item-list">
+  <div class="headings"></div>
+  <div class="head1-4">
+    <button class="sort" data-flip-sort-hitlocation-setting
+            data-tooltip="{{localize "RQG.Actor.Health.FlipSortOrder"}}"
+            style="width: 1.3rem; padding-top: 2px; margin-top: -2px;">
+      <i class="fas fa-sort"></i>
+    </button>
+    {{localize "RQG.Actor.Health.HitLocation"}}
+  </div>
+  <div class="head5"><span>{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span></div>
+  <div class="head6 pad-left"><span>{{localize "RQG.Actor.Health.HitPointsAbbr"}}</span></div>
+  <div class="head7">{{localize "RQG.Actor.Health.Wounds"}}</div>
+  {{#each embeddedItems.hitLocation}}
+    <div class="hit-location contextmenu item" data-item-id="{{id}}"><span
+      class="text-right">{{system.dieFrom}}</span></div>
+    <div class="hit-location contextmenu item" data-item-id="{{id}}">-</div>
+    <div class="hit-location contextmenu item" data-item-id="{{id}}"><span
+      class="text-right">{{system.dieTo}}</span></div>
+    <div class="hit-location contextmenu item " data-item-id="{{id}}">
+      {{name}}
+      {{#unless (eq system.hitLocationHealthState "healthy")}}
+        {{#unless (eq system.hitLocationHealthState "wounded")}}
+          <i class="health-state">&nbsp;{{toLowerCase
+            (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState))}}</i>
+        {{/unless}}
+      {{/unless}}
+    </div>
+    <div class="hit-location contextmenu item" data-item-id="{{id}}"><span>{{system.armorPoints}}</span></div>
+    <div class="hit-location contextmenu item pad-left" data-item-id="{{id}}"><span class="nowrap{{#unless
+      (eq system.hitPoints.value system.hitPoints.max)}} strike{{/unless}}">{{system.hitPoints.max}}</span>{{#unless
+      (eq system.hitPoints.value system.hitPoints.max)}}
+      <span class="ml-5">{{system.hitPoints.value}}</span>{{/unless}}</div>
+    <div class="hit-location contextmenu item flex-row" data-item-id="{{id}}">
+      <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}"
+           class="flex-1 nowrap health-state">
+        {{#if system.woundsString}}
+          <i class="fas fa-notes-medical"></i> {{system.woundsString}}
+        {{/if}}
+      </div>
+      <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i
+        class="fas fa-hand-holding-medical"></i></div>
+    </div>
+  {{/each}}
+</div>

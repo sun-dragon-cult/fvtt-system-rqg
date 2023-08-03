@@ -1,0 +1,10 @@
+<div class="humanoid">
+  {{#each embeddedItems.hitLocation}}
+    {{> "systems/rqg/actors/sheet-parts/combat-tab/health/hit-location-stats.hbs"}}<br>
+  {{/each}}
+  <div class="actor-state">
+    {{#if (eq system.attributes.health "shock")}}<img src="systems/rqg/assets/images/token-effects/shock.svg">{{/if}}
+    {{#if (eq system.attributes.health "dead")}}<img src="systems/rqg/assets/images/token-effects/dead.svg">{{/if}}
+    {{#if (eq system.attributes.health "unconscious")}}<img src="systems/rqg/assets/images/token-effects/unconscious.svg">{{/if}}
+  </div>
+</div>

@@ -12,6 +12,18 @@ export const RQG_CONFIG = {
     spiritCombat: "i.skill.spirit-combat",
   },
 
+  bodytypes: {
+    humanoid: [
+      "i.hit-location.head",
+      "i.hit-location.left-arm",
+      "i.hit-location.right-arm",
+      "i.hit-location.chest",
+      "i.hit-location.abdomen",
+      "i.hit-location.left-leg",
+      "i.hit-location.right-leg",
+    ],
+  },
+
   // Default Combat Maneuvers for weapon items
   combatManeuvers: new Map([
     [
