@@ -122,6 +122,7 @@ interface CharacterSheetData {
   currencyTotals: any;
 
   characteristicRanks: any;
+  bodyType: string;
 
   showUiSection: UiSections;
   actorWizardFeatureFlag: boolean;
@@ -153,7 +154,7 @@ export class RqgActorSheet extends ActorSheet<
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       template: "systems/rqg/actors/rqgActorSheet.hbs",
       width: 850,
-      height: 650,
+      height: 700,
       tabs: [
         {
           navSelector: ".sheet-tabs",
@@ -228,6 +229,7 @@ export class RqgActorSheet extends ActorSheet<
       currencyTotals: this.calcCurrencyTotals(),
 
       characteristicRanks: await this.rankCharacteristics(),
+      bodyType: this.getBodyType(),
 
       // UI toggles
       showUiSection: this.getUiSectionVisibility(),
@@ -481,6 +483,22 @@ export class RqgActorSheet extends ActorSheet<
       .sort((a: any, b: any) => b.chance - a.chance);
   }
 
+  private getBodyType(): string {
+    const actorHitlocationRqids = this.actor.items
+      .filter((i) => i.type === ItemTypeEnum.HitLocation)
+      .map((hl) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
+    if (
+      CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
+      CONFIG.RQG.bodytypes.humanoid.every((hitLocationRqid) =>
+        actorHitlocationRqids.includes(hitLocationRqid),
+      )
+    ) {
+      return "humanoid";
+    } else {
+      return "other";
+    }
+  }
+
   /**
    * Take the embedded items of the actor and rearrange them for presentation.
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
@@ -559,6 +577,15 @@ export class RqgActorSheet extends ActorSheet<
         (a: any, b: any) => b.system.dieFrom - a.system.dieFrom,
       );
     }
+
+    // Arrange wounds for display & add last rqid part
+    itemTypes[ItemTypeEnum.HitLocation] = itemTypes[ItemTypeEnum.HitLocation].map(
+      (hitLocation: any) => {
+        hitLocation.system.woundsString = hitLocation.system.wounds.join("+");
+        hitLocation.rqidName = hitLocation.flags?.rqg?.documentRqidFlags?.id.split(".")[2] ?? "";
+        return hitLocation;
+      },
+    );
 
     // Enrich Cult texts for holyDays, gifts, geases, subCults
     await Promise.all(

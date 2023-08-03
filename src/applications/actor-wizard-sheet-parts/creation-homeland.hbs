@@ -138,7 +138,7 @@
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandRunes"}}</h2>
             {{#each homeland.selectedHomeland.runes}}
             <div class="rune-selector">
-              {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+              {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
                 rune=this
                 wizard=true
                 checkedProperty="homelandPresent"

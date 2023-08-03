@@ -17,28 +17,17 @@
   }
 
   .dead {
-    filter: blur(1px) grayscale(1);
-    header {
-      background: url(assets/images/token-effects/dead.svg) no-repeat center;
-    }
+    filter: grayscale(0.8);
   }
 
   .unconscious {
-    filter: blur(0.7px) grayscale(1);
-    header {
-      background: url(assets/images/token-effects/unconscious.svg) no-repeat center;
-    }
+    filter: grayscale(0.5);
   }
 
-  .shock {
-    filter: blur(0.7px) hue-rotate(340deg);
-    header {
-      background: url(assets/images/token-effects/shock.svg) no-repeat center;
+  form {
+    &.dead, &.unconscious, &.shock, &.wounded {
+      background-color: #901010b0;
     }
-  }
-
-  .wounded {
-    filter: hue-rotate(340deg);
   }
 
   .window-content {
@@ -94,9 +83,8 @@
         font-variant-caps: normal;
 
         &.active {
-          text-shadow:
-            0 0 3px black,
-            -2px -2px 3px black;
+          text-shadow: 0 0 3px black,
+          -2px -2px 3px black;
           color: white;
           font-weight: bold;
         }
@@ -132,9 +120,8 @@
         font-variant-caps: normal;
 
         &.active {
-          text-shadow:
-            0 0 3px black,
-            -2px -2px 3px black;
+          text-shadow: 0 0 3px black,
+          -2px -2px 3px black;
           color: white;
           font-weight: bold;
           top: 0;
@@ -291,6 +278,20 @@
     }
   }
 
+  .wounded {
+    .health .humanoid::before {
+      mix-blend-mode: revert;
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
+    }
+  }
+
+  .shock, .unconscious, .dead {
+    .health .humanoid::before {
+      mix-blend-mode: revert;
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
+    }
+  }
+
   .health {
     .strike {
       text-decoration: none;
@@ -299,7 +300,7 @@
       &::before {
         top: 45%;
         background: var(--rqg-highlight);
-        opacity: 0.55;
+        opacity: 0.42;
         content: "";
         width: 150%;
         position: absolute;
@@ -319,6 +320,94 @@
     .wounded {
       background-color: var(--rqg-color-enc-warning);
       border-color: var(--rqg-highlight);
+    }
+
+    .humanoid {
+      position: relative;
+      width: 22rem;
+      height: 22rem;
+
+      &::before {
+        content: url(assets/images/runes/man.svg);
+        width: inherit;
+        height: inherit;
+        position: absolute;
+        filter: invert(1);
+        mix-blend-mode: overlay;
+      }
+
+      .actor-state {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        img {
+          height: 5rem;
+          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+        }
+      }
+
+    }
+
+    .stats {
+      position: absolute;
+      border: 1px solid var(--rqg-color-main);
+      border-radius: 10px;
+      padding: 5px;
+      width: fit-content;
+      min-width: 5rem;
+      max-width: 7rem;
+      background-color: #ffffffb3;
+
+      &.useless, &.severed {
+        background-color: #afafaf;
+      }
+
+      .roll-range {
+        font-size: 80%;
+      }
+
+      &.head {
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+
+      &.left-arm {
+        top: 7rem;
+        right: 0;
+      }
+
+      &.right-arm {
+        top: 7rem;
+        left: 0;
+      }
+
+      &.chest {
+        top: 6.5rem;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+
+      &.abdomen {
+        top: 13rem;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+
+      &.left-leg {
+        top: 16rem;
+        right: 0
+      }
+
+      &.right-leg {
+        top: 16rem;
+        left: 0
+      }
+
     }
   }
 
@@ -365,61 +454,73 @@
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-10 {
     border-bottom: 7px solid #018a31d6; //84%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-9 {
     border-bottom: 7px solid #018a31ad; //68%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-8 {
     border-bottom: 7px solid #018a3182; //51%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-7 {
     border-bottom: 7px solid #018a3159; //35%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-6 {
     border-bottom: 7px solid #018a3130; //19%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-5 {
     border-bottom: 7px solid #018a310d; //5%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-4 {
     border-bottom: 7px solid #8a01010d; //5%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-3 {
     border-bottom: 7px solid #8a010130; //19%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-2 {
     border-bottom: 7px solid #8a010659; //35%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-1 {
     border-bottom: 7px solid #8a010182; //51%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-0 {
     border-bottom: 7px solid #8a0101ad; //68%
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
   }
+
   input.characteristic-rank-low {
     border-bottom: 7px solid #8a0101ff;
     border-left: 5px solid transparent;

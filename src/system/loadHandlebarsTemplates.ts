@@ -2,13 +2,14 @@ export const loadHandlebarsTemplates = async function () {
   const templatePaths = [
     "systems/rqg/actors/rqgActorSheet.hbs",
     // ActorSheet tabs
-    "systems/rqg/actors/sheet-parts/runes-tab.hbs",
+    "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs",
+    "systems/rqg/actors/sheet-parts/combat-tab/combat-tab.hbs",
     "systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs",
     "systems/rqg/actors/sheet-parts/rune-magic-tab.hbs",
     "systems/rqg/actors/sheet-parts/sorcery-tab.hbs",
     "systems/rqg/actors/sheet-parts/skills-tab.hbs",
     "systems/rqg/actors/sheet-parts/gear-tab.hbs",
-    "systems/rqg/actors/sheet-parts/grid-rune.hbs",
+    "systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs",
     "systems/rqg/actors/sheet-parts/grid-skill.hbs",
     "systems/rqg/actors/sheet-parts/passions-tab.hbs",
     "systems/rqg/actors/sheet-parts/background-tab.hbs",
@@ -24,13 +25,16 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs",
 
     // ActorSheet parts
-    "systems/rqg/actors/sheet-parts/health.hbs",
-    "systems/rqg/actors/sheet-parts/combat.hbs",
-    "systems/rqg/actors/sheet-parts/spirit-combat.hbs",
-    "systems/rqg/actors/sheet-parts/runes-elemental.hbs",
-    "systems/rqg/actors/sheet-parts/runes-power.hbs",
-    "systems/rqg/actors/sheet-parts/runes-form.hbs",
-    "systems/rqg/actors/sheet-parts/runes-condition.hbs",
+    "systems/rqg/actors/sheet-parts/combat-tab/health/health.hbs",
+    "systems/rqg/actors/sheet-parts/combat-tab/health/humanoid-hit-locations.hbs",
+    "systems/rqg/actors/sheet-parts/combat-tab/health/default-hit-locations.hbs",
+    "systems/rqg/actors/sheet-parts/combat-tab/health/hit-location-stats.hbs",
+    "systems/rqg/actors/sheet-parts/combat-tab/combat.hbs",
+    "systems/rqg/actors/sheet-parts/combat-tab/spirit-combat.hbs",
+    "systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs",
+    "systems/rqg/actors/sheet-parts/runes-tab/runes-power.hbs",
+    "systems/rqg/actors/sheet-parts/runes-tab/runes-form.hbs",
+    "systems/rqg/actors/sheet-parts/runes-tab/runes-condition.hbs",
     "systems/rqg/actors/sheet-parts/physical-item-location.hbs",
 
     // Actor Wizard Sheet Parts

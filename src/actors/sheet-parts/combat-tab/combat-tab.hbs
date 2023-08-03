@@ -1,0 +1,18 @@
+<div class="flex-row flex-wrap">
+  {{> "systems/rqg/actors/sheet-parts/combat-tab/health/health.hbs" }}
+  <div>
+    {{#if showUiSection.combat}}
+      {{> "systems/rqg/actors/sheet-parts/combat-tab/combat.hbs" }}<br>
+    {{/if}}
+    {{> "systems/rqg/actors/sheet-parts/combat-tab/spirit-combat.hbs" }}
+  </div>
+  <div class="fullwidth">
+    <h2>{{localize "RQG.Actor.Attributes.AlliesAndNotes"}}</h2>
+    {{editor
+      enrichedAllies
+      target="system.allies"
+      button=true
+      editable=isEditable
+    }}
+  </div>
+</div>

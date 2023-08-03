@@ -1,0 +1,36 @@
+{{#if showUiSection.health}}
+  <div class="health">
+    <h2 class="flex-row">
+      <span>{{localize "RQG.Actor.Health.Health"}}</span>
+      <span>{{#unless (eq system.attributes.health "healthy")}}<i class="health-state">{{localize
+        (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}</span>
+    </h2>
+
+    {{#if system.characteristics.constitution.value}}
+    <div class="flex-row nowrap flex-align-center">
+      <label>{{localize "RQG.Actor.Health.TotalHitPoints"}}
+        <input
+          {{#unless (eq system.attributes.hitPoints.value system.attributes.hitPoints.max)}} class="wounded" {{/unless}}
+                                                                                             type="number"
+                                                                                             min="-99"
+                                                                                             max="99"
+                                                                                             name="system.attributes.hitPoints.value"
+                                                                                             value="{{system.attributes.hitPoints.value}}"
+        > / {{system.attributes.hitPoints.max}}
+      </label>
+      <label class="text-right">{{localize "RQG.Actor.Health.HealingRatePerWeek"
+                                           healingRate=system.attributes.healingRate }}</label>
+    {{/if}}
+  </div>
+    {{#if embeddedItems.hitLocation}}
+      {{#if (eq bodyType "humanoid")}}
+        {{> "systems/rqg/actors/sheet-parts/combat-tab/health/humanoid-hit-locations.hbs" }}<br>
+      {{else}}
+        {{> "systems/rqg/actors/sheet-parts/combat-tab/health/default-hit-locations.hbs" }}<br>
+      {{/if}}
+    {{else}}
+      <p>{{localize "RQG.Actor.Health.NoHitLocations"}}</p>
+    {{/if}}
+  </div>
+{{/if}}
+

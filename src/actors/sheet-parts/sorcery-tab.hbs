@@ -19,7 +19,7 @@
     <h2>{{localize "RQG.Actor.Sorcery.Techniques"}}</h2>
     <div class="grid rune">
     {{#each embeddedItems.rune.technique}}
-      {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+      {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
         rune=this
         sorcery=true
         forChoice=../forChoice
@@ -33,7 +33,7 @@
     <div class="grid rune">
       {{#each embeddedItems.rune.element}}
         {{#if system.isMastered}}
-        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+        {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
           rune=this
           sorcery=true
           forChoice=../forChoice
@@ -43,7 +43,7 @@
 
       {{#each embeddedItems.rune.power}}
         {{#if system.isMastered}}
-        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+        {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
           rune=this
           sorcery=true
           forChoice=../forChoice
@@ -53,7 +53,7 @@
 
       {{#each embeddedItems.rune.form}}
         {{#if system.isMastered}}
-        {{>"systems/rqg/actors/sheet-parts/grid-rune.hbs"
+        {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
           rune=this
           sorcery=true
           forChoice=../forChoice

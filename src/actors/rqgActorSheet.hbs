@@ -8,7 +8,6 @@
         <h1 class="charname"><input name="name" type="text" value="{{name}}"></h1>
         <div>
           <div class="flex-row-end gap1rem">
-            {{#unless (eq system.attributes.health "healthy")}}<i class="wounded">{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}
             {{#if characterElementRunes}}
               <div class="flex-row gap01rem">
                 {{#each characterElementRunes}}
@@ -182,29 +181,12 @@
 
   <section class="sheet-body">
     <div class="tab combat" data-group="primary" data-tab="combat">
-      <div class="flex-row flex-wrap">
-        <div>
-          {{> "systems/rqg/actors/sheet-parts/health.hbs" }}<br>
-          {{> "systems/rqg/actors/sheet-parts/spirit-combat.hbs" }}
-        </div>
-
-        {{#if showUiSection.combat}}<div>{{> "systems/rqg/actors/sheet-parts/combat.hbs" }}</div>{{/if}}
-
-        <div class="fullwidth">
-          <h2>{{localize "RQG.Actor.Attributes.AlliesAndNotes"}}</h2>
-          {{editor
-            enrichedAllies
-            target="system.allies"
-            button=true
-            editable=isEditable
-          }}
-        </div>
-      </div>
+      {{> "systems/rqg/actors/sheet-parts/combat-tab/combat-tab.hbs" }}
     </div>
 
     {{#if showUiSection.runes}}
       <div class="tab runes" data-group="primary" data-tab="runes">
-        {{> "systems/rqg/actors/sheet-parts/runes-tab.hbs" }}
+        {{> "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs" }}
       </div>
     {{/if}}
 

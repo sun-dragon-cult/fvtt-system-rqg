@@ -1,0 +1,34 @@
+<div class="hit-location contextmenu item stats {{rqidName}} {{system.hitLocationHealthState}}" data-item-id="{{id}}">
+  <div class="flex-row align-flex-baseline">
+    <div>
+      {{#unless (eq system.hitLocationHealthState "healthy")}}
+        {{#unless (eq system.hitLocationHealthState "wounded")}}
+          <i class="health-state">{{toLowerCase
+            (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState))}}</i>
+        {{/unless}}
+      {{/unless}}
+    </div>
+
+    <div class="roll-range"><i class="fa-solid fa-dice-d20"></i> {{#if (eq system.dieFrom system.dieTo)}}{{system.dieFrom}}{{else}}{{system.dieFrom}}-{{system.dieTo}}{{/if}}</div>
+  </div>
+  <b>{{name}}</b>
+  <div class="flex-row">
+    <div>
+      {{localize "RQG.Actor.Health.ArmorPointsAbbr"}}<br>
+      <div class="hit-location contextmenu item">{{localize "RQG.Actor.Health.HitPointsAbbr"}}</div>
+    </div>
+
+    <div class="flex-1">
+      &nbsp;{{system.armorPoints}}<br>
+      <span class="nowrap{{#unless (eq system.hitPoints.value system.hitPoints.max)}} strike{{/unless}}">
+        &nbsp;{{system.hitPoints.max}}&nbsp;
+      </span>
+      {{#unless (eq system.hitPoints.value system.hitPoints.max)}} <span class="ml-5">{{system.hitPoints.value}}</span>{{/unless}}
+    </div>
+  </div>
+
+  <div class="flex-row">
+    <div class="health-state break-word" data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}">{{#if system.woundsString}}<i class="fas fa-notes-medical"></i> {{system.woundsString}}{{/if}}</div>
+    <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i class="fas fa-hand-holding-medical"></i></div>
+  </div>
+</div>
