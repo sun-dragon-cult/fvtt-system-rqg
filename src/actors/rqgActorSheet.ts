@@ -58,6 +58,7 @@ import {
 } from "../documents/dragDrop";
 import { ItemTree } from "../items/shared/ItemTree";
 import { LocationItemNodeData } from "../items/shared/locationItemNode";
+import { CultRankEnum } from "../data-model/item-data/cultData";
 
 interface UiSections {
   health: boolean;
@@ -587,7 +588,7 @@ export class RqgActorSheet extends ActorSheet<
       },
     );
 
-    // Enrich Cult texts for holyDays, gifts, geases, subCults
+    // Enrich Cult texts for holyDays, gifts & geases
     await Promise.all(
       itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
         cult.system.enrichedHolyDays = await TextEditor.enrichHTML(cult.system.holyDays, {
@@ -602,6 +603,14 @@ export class RqgActorSheet extends ActorSheet<
         });
       }),
     );
+
+    // Extract hasAccessToRuneMagic info from subCults
+    itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
+      cult.hasAccessToRuneMagic = cult.system.joinedCults.some(
+        (subCult: any) => subCult.rank !== CultRankEnum.LayMember,
+      );
+      return cult;
+    });
 
     // Enrich passion description texts
     await Promise.all(
