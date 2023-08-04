@@ -350,7 +350,7 @@
     }
 
     .stats {
-      position: absolute;
+      position: absolute !important; // right-click adds a `position: relative` on the element - avoid that
       border: 1px solid var(--rqg-color-main);
       border-radius: 10px;
       padding: 5px;
