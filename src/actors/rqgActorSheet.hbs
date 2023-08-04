@@ -20,18 +20,18 @@
             {{#if characterPowerRunes}}
               <div class="flex-row gap01rem">
                 {{#each characterPowerRunes}}
-                <div class="rune contextmenu item" data-item-id="{{id}}">
-                  <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
-                </div>
+                  <div class="rune contextmenu item" data-item-id="{{id}}">
+                    <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                  </div>
                 {{/each}}
               </div>
             {{/if}}
             {{#if characterFormRunes}}
               <div class="flex-row gap01rem">
                 {{#each characterFormRunes}}
-                <div class="rune contextmenu item" data-item-id="{{id}}">
-                  <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
-                </div>
+                  <div class="rune contextmenu item" data-item-id="{{id}}">
+                    <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                  </div>
                 {{/each}}
               </div>
             {{/if}}
@@ -49,18 +49,19 @@
       </div>
       <div class="characteristics">
         {{#each system.characteristics as | characteristic key |}}
-        <div data-characteristic="{{key}}" class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}">
-          <label class="resource-label norse characteristic contextmenu" data-characteristic-roll data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
-          {{#if @root.isGM}}
-            <input type="number" name="system.characteristics.{{key}}.value"
-                   min="0" max="99"
-                   value="{{characteristic.value}}"
-                   class="{{lookup ../characteristicRanks key}}">
-            <input type="text" name="system.characteristics.{{key}}.formula" value="{{characteristic.formula}}">
-          {{else}}
-            <div class="value characteristic contextmenu" data-characteristic-roll>{{characteristic.value}}</div>
-          {{/if}}
-        </div>
+          <div data-characteristic="{{key}}" class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}">
+            <label class="resource-label norse characteristic contextmenu" data-characteristic-roll
+                   data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
+            {{#if @root.isGM}}
+              <input type="number" name="system.characteristics.{{key}}.value"
+                     min="0" max="99"
+                     value="{{characteristic.value}}"
+                     class="{{lookup ../characteristicRanks key}}">
+              <input type="text" name="system.characteristics.{{key}}.formula" value="{{characteristic.formula}}">
+            {{else}}
+              <div class="value characteristic contextmenu" data-characteristic-roll>{{characteristic.value}}</div>
+            {{/if}}
+          </div>
         {{/each}}
       </div>
       <div class="thirdline">
@@ -68,11 +69,14 @@
           <div>
             <div class="norse text-center">{{localize "RQG.Actor.Attributes.StrikeRank"}} <span class="large-font">{{baseStrikeRank}}</span></div>
             <div class="flex-row">
-              {{#if system.attributes.dexStrikeRank includeZero=true}}<span class="norse text-center">{{localize "RQG.Actor.Attributes.DexterityAbbr"}} {{system.attributes.dexStrikeRank}}</span>{{/if}}
-              {{#if system.attributes.sizStrikeRank includeZero=true}}<span class="norse text-center">{{localize "RQG.Actor.Attributes.SizeAbbr"}} {{system.attributes.sizStrikeRank}}</span>{{/if}}
+              {{#if system.attributes.dexStrikeRank includeZero=true}}<span class="norse text-center">{{localize
+                "RQG.Actor.Attributes.DexterityAbbr"}} {{system.attributes.dexStrikeRank}}</span>{{/if}}
+              {{#if system.attributes.sizStrikeRank includeZero=true}}<span class="norse text-center">{{localize
+                "RQG.Actor.Attributes.SizeAbbr"}} {{system.attributes.sizStrikeRank}}</span>{{/if}}
             </div>
           </div>
         {{/if}}
+
         <div>
           <label class="flex-row flex-align-center">
             <span>{{localize "RQG.Actor.Attributes.MagicPoints"}}</span>
@@ -81,81 +85,95 @@
               > / {{system.attributes.magicPoints.max}}
             </span>
           </label>
-          <i class="norse flex-row flex-align-center">{{#each powCrystals}}<span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
+          <i class="norse flex-row flex-align-center">{{#each powCrystals}}
+            <span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
           {{#if isGM}}
-            <label><input type="checkbox" name="system.attributes.isCreature" {{checked system.attributes.isCreature}}>{{localize "RQG.Actor.Attributes.CreatureQ"}}</label>
+            <label><input type="checkbox" name="system.attributes.isCreature" {{checked
+              system.attributes.isCreature}}>{{localize "RQG.Actor.Attributes.CreatureQ"}}</label>
           {{/if}}
         </div>
-        <fieldset class="mov-enc">
-          <legend>{{localize (concat "RQG.Actor.Attributes.MoveMode." system.attributes.move.currentLocomotion)}}</legend>
+
+        <fieldset class="mov-enc"
+                  data-tooltip="{{localize "RQG.Actor.Attributes.MoveEquipped" equippedMove=system.attributes.move.equipped equippedEnc=system.attributes.encumbrance.equipped}}
+                    {{#if (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}}<br>{{localize "RQG.Actor.Attributes.OverWeight"}}{{/if}}
+                    <br><br>
+                    {{localize "RQG.Actor.Attributes.MoveCarried" carriedMove=system.attributes.move.travel carriedEnc=system.attributes.encumbrance.travel}}
+                    {{#if (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}}<br>{{localize "RQG.Actor.Attributes.OverWeight"}}{{/if}}
+                    <br><br>
+                    {{localize "RQG.Actor.Attributes.MaxEnc" maxEnc=system.attributes.encumbrance.max}}">
+
+          <legend>{{localize
+            (concat "RQG.Actor.Attributes.MoveMode." system.attributes.move.currentLocomotion)}}</legend>
           <div class="flex-column">
             {{#if (or isGM system.attributes.move.walk.value)}}
-              <label class="nowrap"><input type="radio" name="system.attributes.move.currentLocomotion" value="walk" {{checked (eq "walk" system.attributes.move.currentLocomotion)}}> <i class="fas fa-walking "></i></label>
+              <label class="nowrap"><input type="radio" name="system.attributes.move.currentLocomotion"
+                                           value="walk" {{checked (eq "walk" system.attributes.move.currentLocomotion)}}>
+                <i class="fas fa-walking"></i>
+              </label>
             {{/if}}
             {{#if (or isGM system.attributes.move.swim.value)}}
-              <label class="nowrap"><input type="radio" name="system.attributes.move.currentLocomotion" value="swim" {{checked (eq "swim" system.attributes.move.currentLocomotion)}}> <i class="fas fa-swimmer fa-flip-horizontal"></i></label>
+              <label class="nowrap"><input type="radio" name="system.attributes.move.currentLocomotion"
+                                           value="swim" {{checked (eq "swim" system.attributes.move.currentLocomotion)}}>
+                <i class="fas fa-swimmer fa-flip-horizontal"></i>
+              </label>
             {{/if}}
             {{#if (or isGM system.attributes.move.fly.value)}}
-              <label class="nowrap"><input type="radio" name="system.attributes.move.currentLocomotion" value="fly" {{checked (eq "fly" system.attributes.move.currentLocomotion)}}> <i class="fas fa-dove"></i></label>
+              <label class="nowrap"><input type="radio" name="system.attributes.move.currentLocomotion"
+                                           value="fly" {{checked (eq "fly" system.attributes.move.currentLocomotion)}}>
+                <i class="fas fa-dove"></i>
+              </label>
             {{/if}}
           </div>
-        {{#if system.attributes.encumbrance.max}}
+
+          {{#if isGM}}
           <div>
-            <div class="norse nowrap">{{localize "RQG.Actor.Attributes.MovementAbbr"}}
-              <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg"> {{localize "RQG.Actor.Attributes.EncumbranceAbbr"}}
+            <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
+            {{#with (lookup system.attributes.move system.attributes.move.currentLocomotion) }}
+              <div class="text-center"><input
+                name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
+                value="{{value}}"
+                type="number"
+                min="0"
+                max="99"
+                size="2"></div>
             </div>
-            <div class="flex-row nowrap {{#if (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}}warning{{/if}}">
-              <span>{{system.attributes.move.equipped}}</span> • <span>{{system.attributes.encumbrance.equipped}} / {{system.attributes.encumbrance.max}}</span>
-            </div>
-          </div>
-        {{/if}}
-        {{#if system.attributes.encumbrance.max}}
-          <div>
-            <div class="norse nowrap">{{localize "RQG.Actor.Attributes.MovementAbbr"}} <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg"> {{localize "RQG.Actor.Attributes.EncumbranceAbbr"}}</div>
-            <div class="flex-row nowrap {{#if (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}}warning{{/if}}">
-              <span>{{system.attributes.move.travel}}</span> • <span>{{system.attributes.encumbrance.travel}} / {{system.attributes.encumbrance.max}}</span>
-            </div>
-          </div>
-        {{/if}}
-        <div>
-        <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}</div>
-        {{#if isGM}}
-          {{#with (lookup system.attributes.move system.attributes.move.currentLocomotion) }}
-            <div class="text-center"><input
-              name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
-              value="{{value}}"
-              type="number"
-              min="0"
-              max="99"
-              size="2"></div>
-          {{/with}}
-        {{else}}
-          <div class="text-center">{{system.attributes.move.value}}</div>
-        {{/if}}
-      </div>
-        {{#if system.attributes.encumbrance.max}}
-        {{#if isGM}}
-          <div>
-            <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
-              {{#with (lookup system.attributes.move system.attributes.move.currentLocomotion) }}
+
+              <div>
+                <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
+
                 <div class="text-center"><input
-                  name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.carryingFactor'}}"
+                  name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
+                                 '.carryingFactor'}}"
                   value="{{carryingFactor}}"
                   type="number"
                   min="0"
                   max="99"
                   size="2"></div>
-              {{/with}}
-          </div>
-        {{/if}}
-        {{/if}}
+              </div>
+            {{/with}}
 
+          {{else}}
+            <div class="norse player-mov">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
+          {{/if}}
+
+          <div>
+            <div {{#if (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}}class="warning"{{/if}}>
+              <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg">
+              <span>{{system.attributes.move.equipped}}</span>
+            </div>
+
+            <div {{#if (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}}class="warning"{{/if}}>
+              <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg">
+              <span>{{system.attributes.move.travel}}</span>
+            </div>
+          </div>
         </fieldset>
         {{#if isPC}}
           <div>
             <div class="norse">{{localize "RQG.Actor.Attributes.HeroPoints"}}</div>
             {{#if isGM}}
-              <div class="text-center"><input type="number" min="0" max="99" name="system.attributes.heroPoints" value="{{system.attributes.heroPoints}}" size="2"></div>
+              <div class="text-center"><input type="number" min="0" max="99" name="system.attributes.heroPoints"
+                                              value="{{system.attributes.heroPoints}}" size="2"></div>
             {{else}}
               <div class="text-center">{{system.attributes.heroPoints}}</div>
             {{/if}}

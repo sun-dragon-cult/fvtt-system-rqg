@@ -244,6 +244,28 @@
     .norse {
       font-weight: bold;
     }
+
+    .mov-enc {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0 5px 2px;
+      margin: -12px 0 0;
+      background-color: var(--rqg-color-enc-bg);
+      border: none;
+
+      legend {
+        background-color: var(--rqg-color-enc-legend);
+        padding: 0 15px;
+        margin: 0 auto -4px;
+        border-radius: 50%;
+      }
+
+      .player-mov {
+        font-size: 20px;
+      }
+    }
   }
 
   input {
@@ -424,6 +446,23 @@
       padding: 0.3rem;
       margin-bottom: 0.5rem;
       line-height: 1.5rem;
+    }
+  }
+
+  .tab.gear {
+    .enc-totals {
+      display: flex;
+      position: sticky;
+      bottom: 0;
+      padding: 5px;
+      background-color: var(--rqg-color-enc-bg);
+      border: inset var(--rqg-color-enc-bg);
+      border-radius: 50px;
+      text-align: center;
+      gap: 3rem;
+      justify-content: center;
+      opacity: 0.9;
+      filter: drop-shadow(1px 1px 4px black);
     }
   }
 

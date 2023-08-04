@@ -174,24 +174,6 @@ body {
     background-color: var(--rqg-color-enc-warning);
   }
 
-  .mov-enc {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0 5px 2px;
-    margin: -12px 0 0;
-    background-color: var(--rqg-color-enc-bg);
-    border: none;
-
-    legend {
-      background-color: var(--rqg-color-enc-legend);
-      padding: 0 15px;
-      margin: 0 auto -4px;
-      border-radius: 50%;
-    }
-  }
-
   .mp-ellipses {
     text-overflow: ellipsis;
     max-width: 7rem;

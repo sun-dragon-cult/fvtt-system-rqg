@@ -97,7 +97,11 @@
           "walk": "Walk",
           "swim": "Swim",
           "fly": "Fly"
-        }
+        },
+        "MoveEquipped": "Equipped (combat ready) MOV is {equippedMove} and the total equipped ENC is {equippedEnc}.",
+        "MoveCarried": "Carried (traveling) MOV is {carriedMove} and the total carried ENC is {carriedEnc}.",
+        "MaxEnc": "Maximum ENC without penalties is {maxEnc}.",
+        "OverWeight": "MOV is reduced because of overweight!"
       },
       "AwardExperience": {
         "GainedExperienceInfo": "{actorName} just gained an experience check in {itemName}!",
@@ -232,6 +236,8 @@
         "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s.",
         "Name": "Name",
         "EncumbranceAbbr": "ENC",
+        "MaxEnc": "Max ENC",
+        "OverWeight": "You are carrying more weight than your Max ENC. Your MOV is reduced.",
         "Location": "Location",
         "Price": "Price",
         "Total": "Total",
