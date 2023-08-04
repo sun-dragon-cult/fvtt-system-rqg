@@ -19,6 +19,10 @@
      class="skill contextmenu item" data-item-roll
      data-tooltip="{{localize "RQG.Game.RollTitle"}}">
   {{skill.system.skillName}}{{#if skill.system.specialization}} ({{skill.system.specialization}}){{/if}}
+  {{#unless skill.system.canGetExperience}}
+    <img class="requires-training" src="systems/rqg/assets/images/ui/skill-requires-training.svg"
+         data-tooltip="{{localize "RQG.Actor.Skill.RequiresTraining"}}">
+  {{/unless}}
   {{#each skill.system.runes}}
     <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
   {{/each}}

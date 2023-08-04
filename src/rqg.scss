@@ -270,6 +270,13 @@ body {
     mix-blend-mode: overlay;
   }
 
+  img.requires-training {
+    height: 20px;
+    border: none;
+    margin: 0 0 0 auto;
+    mix-blend-mode: overlay;
+  }
+
   img.rune-dark {
     height: 20px;
     border: none;

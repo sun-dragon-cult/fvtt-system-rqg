@@ -334,6 +334,7 @@
         "UnspecifiedSkillWarning": "⚠ Please specify the missing skill specialization:",
         "SkillDescriptionTitle": "Skill Description",
         "ImportSkillCheckboxTitle": "Import Skill: \"{skillName}\"",
+        "RequiresTraining": "Can not get experience, requires training to raise.",
         "SkillCategory": {
           "agility": "Agility",
           "communication": "Communication",
