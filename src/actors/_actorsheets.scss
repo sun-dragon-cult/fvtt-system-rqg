@@ -315,6 +315,12 @@
   }
 
   .health {
+    .hit-location-dice-error {
+      width: 22rem;
+      padding: 0.3rem;
+      margin-bottom: 0.5rem;
+    }
+
     .strike {
       text-decoration: none;
       position: relative;

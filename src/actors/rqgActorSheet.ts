@@ -28,6 +28,7 @@ import {
   isTruthy,
   localize,
   localizeItemType,
+  range,
   requireValue,
   RqgError,
   usersIdsThatOwnActor,
@@ -124,6 +125,7 @@ interface CharacterSheetData {
 
   characteristicRanks: any;
   bodyType: string;
+  hitLocationDiceRangeError: string;
 
   showUiSection: UiSections;
   actorWizardFeatureFlag: boolean;
@@ -231,6 +233,7 @@ export class RqgActorSheet extends ActorSheet<
 
       characteristicRanks: await this.rankCharacteristics(),
       bodyType: this.getBodyType(),
+      hitLocationDiceRangeError: this.getHitLocationDiceRangeError(),
 
       // UI toggles
       showUiSection: this.getUiSectionVisibility(),
@@ -497,6 +500,28 @@ export class RqgActorSheet extends ActorSheet<
       return "humanoid";
     } else {
       return "other";
+    }
+  }
+
+  /**
+   * Return a translated error string if the hit location dice do not cover the range 1-20
+   * once and only once.
+   * If there is no error, it returns an empty string.
+   */
+  private getHitLocationDiceRangeError(): string {
+    const hitLocations = this.actor.items.filter((i) => i.type === ItemTypeEnum.HitLocation);
+    if (hitLocations.length === 0) {
+      return ""; // No hit locations is a valid state
+    }
+    const ranges = hitLocations.flatMap((hl) => [...range(hl.system.dieFrom, hl.system.dieTo)]);
+    console.log("*** Hitlocation ranges", ranges);
+    if (ranges.length === 20 && [...range(1, 20)].every((die) => ranges.includes(die))) {
+      return "";
+    } else {
+      const sortedRanges = ranges.sort((a, b) => a - b);
+      return localize("RQG.Actor.Health.HitLocationDiceDoNotAddUp", {
+        dice: sortedRanges.join(", "),
+      });
     }
   }
 

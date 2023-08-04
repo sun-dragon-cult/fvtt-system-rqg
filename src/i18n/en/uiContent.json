@@ -264,7 +264,8 @@
         "HealWound": "Heal Wound",
         "AddWound": "Add Wound",
         "NoHitLocations": "This character does not have any hit locations, please add some.",
-        "FlipSortOrder": "Reverse the order of the hit locations"
+        "FlipSortOrder": "Reverse the order of the hit locations",
+        "HitLocationDiceDoNotAddUp": "⚠ The hit locations dice does not cover the range 1-20. They cover this [{dice}]."
       },
       "Nav": {
         "Combat": "Combat",

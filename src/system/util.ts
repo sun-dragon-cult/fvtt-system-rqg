@@ -590,3 +590,14 @@ function formatListByLanguage(
   const listFormatter = new Intl.ListFormat(language, { style: "long", type: concatType });
   return listFormatter.format(list);
 }
+
+/**
+ * Generate an array of numbers using syntax like `[...range(3,6)]` to get `[3, 4, 5, 6]`
+ */
+export function* range(start: number, end: number): Generator<number> {
+  yield start;
+  if (start === end) {
+    return;
+  }
+  yield* range(start + 1, end);
+}
