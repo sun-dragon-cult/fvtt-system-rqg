@@ -94,13 +94,13 @@
         </div>
 
         <fieldset class="mov-enc"
-                  data-tooltip="{{localize "RQG.Actor.Attributes.MoveEquipped" equippedMove=system.attributes.move.equipped equippedEnc=system.attributes.encumbrance.equipped}}
+                  data-tooltip="<div class='text-left'>{{localize "RQG.Actor.Attributes.MoveEquipped" equippedMove=system.attributes.move.equipped equippedEnc=system.attributes.encumbrance.equipped}}
                     {{#if (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}}<br>{{localize "RQG.Actor.Attributes.OverWeight"}}{{/if}}
                     <br><br>
                     {{localize "RQG.Actor.Attributes.MoveCarried" carriedMove=system.attributes.move.travel carriedEnc=system.attributes.encumbrance.travel}}
                     {{#if (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}}<br>{{localize "RQG.Actor.Attributes.OverWeight"}}{{/if}}
                     <br><br>
-                    {{localize "RQG.Actor.Attributes.MaxEnc" maxEnc=system.attributes.encumbrance.max}}">
+                    {{localize "RQG.Actor.Attributes.MaxEnc" maxEnc=system.attributes.encumbrance.max}}</div>">
 
           <legend>{{localize
             (concat "RQG.Actor.Attributes.MoveMode." system.attributes.move.currentLocomotion)}}</legend>

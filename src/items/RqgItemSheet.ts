@@ -1,6 +1,6 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
-import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
+import { addRqidLinkToSheetHtml } from "../documents/rqidSheetButton";
 import { RqgItem } from "./rqgItem";
 import {
   extractDropInfo,
@@ -267,9 +267,9 @@ export class RqgItemSheet<
     return false;
   }
 
-  protected _getHeaderButtons(): Application.HeaderButton[] {
-    const systemHeaderButtons = super._getHeaderButtons();
-    addRqidSheetHeaderButton(systemHeaderButtons, this);
-    return systemHeaderButtons;
+  protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
+    const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
+    await addRqidLinkToSheetHtml(html, this);
+    return html;
   }
 }

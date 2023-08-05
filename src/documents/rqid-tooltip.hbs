@@ -1,0 +1,5 @@
+<div class="text-left">
+  Rqid: {{#if rqid.id}}{{rqid.id}}{{else}}---{{/if}}<br>
+  {{localize "RQG.RQGSystem.rqidLang"}}: {{#if rqid.lang}}{{rqid.lang}}{{else}}---{{/if}}<br>
+  {{localize "RQG.RQGSystem.rqidPriority"}}: {{#unless (eq rqid.priority undefined)}}{{rqid.priority}}{{else}}---{{/unless}}
+</div>

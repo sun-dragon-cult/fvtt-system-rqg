@@ -1,36 +1,25 @@
 import { systemId } from "../system/config";
 import { Rqid } from "../system/api/rqidApi";
-import { RqidEditor } from "../applications/rqidEditor/rqidEditor";
 import { RqidLink } from "../data-model/shared/rqidLink";
+import { addRqidLinkToSheetHtml } from "../documents/rqidSheetButton";
 
 export class RqgJournalEntry extends JournalEntry {
   public static init() {
     CONFIG.JournalEntry.documentClass = RqgJournalEntry;
 
-    Hooks.on("getApplicationHeaderButtons", RqgJournalEntry.addRqidButton);
-    Hooks.on("renderJournalPageSheet", RqgJournalEntry.addRqidEventListener);
-  }
-
-  private static addRqidButton(doc: any, buttons: any[]) {
-    if (
-      !(doc instanceof RqidEditor) &&
-      // @ts-expect-error JournalEntryPage
-      (doc.object instanceof JournalEntry || doc.object instanceof JournalEntryPage)
-    ) {
-      buttons.splice(0, 0, {
-        class: "edit-rqid",
-        label: "Rqid",
-        icon: "fas fa-fingerprint",
-        onclick: () => {
-          new RqidEditor(doc.object, {}).render(true, { focus: true });
-        },
-      });
-    }
+    Hooks.on("renderJournalPageSheet", RqgJournalEntry.addRqidHandling);
+    Hooks.on("renderJournalSheet", RqgJournalEntry.addRqidTitleIcon);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private static addRqidEventListener(doc: any, html: JQuery, options: any) {
+  private static async addRqidHandling(sheet: any, html: JQuery, options: any) {
+    await addRqidLinkToSheetHtml(html, sheet);
     RqidLink.addRqidLinkClickHandlers(html);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private static async addRqidTitleIcon(sheet: any, html: JQuery, options: any) {
+    await addRqidLinkToSheetHtml(html, sheet);
   }
 
   /**

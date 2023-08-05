@@ -40,6 +40,7 @@ export const loadHandlebarsTemplates = async function () {
     "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs",
     "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs",
     "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs",
+    "systems/rqg/documents/rqid-tooltip.hbs",
 
     // Actor Wizard Sheet Parts
     "systems/rqg/applications/actor-wizard-sheet-parts/creation-species.hbs",

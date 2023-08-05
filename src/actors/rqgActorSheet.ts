@@ -44,7 +44,7 @@ import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
-import { addRqidSheetHeaderButton } from "../documents/rqidSheetButton";
+import { addRqidLinkToSheetHtml } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ActorSheetData } from "../items/shared/sheetInterfaces";
 import { Characteristics } from "src/data-model/actor-data/characteristics";
@@ -514,7 +514,6 @@ export class RqgActorSheet extends ActorSheet<
       return ""; // No hit locations is a valid state
     }
     const ranges = hitLocations.flatMap((hl) => [...range(hl.system.dieFrom, hl.system.dieTo)]);
-    console.log("*** Hitlocation ranges", ranges);
     if (ranges.length === 20 && [...range(1, 20)].every((die) => ranges.includes(die))) {
       return "";
     } else {
@@ -1714,9 +1713,14 @@ export class RqgActorSheet extends ActorSheet<
     return false;
   }
 
+  protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
+    const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
+    await addRqidLinkToSheetHtml(html, this);
+    return html;
+  }
+
   protected _getHeaderButtons(): Application.HeaderButton[] {
     const headerButtons = super._getHeaderButtons();
-    addRqidSheetHeaderButton(headerButtons, this);
 
     if (
       getGame().settings.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
