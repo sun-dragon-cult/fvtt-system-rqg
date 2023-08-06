@@ -1,36 +1,38 @@
-{{#unless isEmbedded}}
-<h2>
+<div data-item-uuid="{{uuid}}">
+  <h2>
     <span class="flex-row">
     {{localize "RQG.Foundry.ActiveEffect.Header"}}
-    <a data-tooltip="{{localize "RQG.Foundry.ActiveEffect.AddEffectTitle"}}" data-item-id="{{id}}" data-item-effect-add><i class="fas fa-plus"></i></a>
+      <a data-tooltip="{{localize "RQG.Foundry.ActiveEffect.AddEffectTitle"}}" data-item-effect-add><i
+        class="fas fa-plus"></i></a>
     </span>
-</h2>
+  </h2>
 
-<table data-item-id="{{id}}">
-  <thead>
-  <tr>
-    <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Label"}}</th>
-    <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Disabled"}}</th>
-    <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.StartTime"}}</th>
-    <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.KeyValueMode"}}</th>
-    <th class="text-left"></th>
-  </tr>
-  </thead>
-  {{#each effects}}
-    <tbody data-effect-id="{{_id}}">
+  <table>
+    <thead>
     <tr>
-      <td><a data-item-effect-edit>{{name}}</a></td>
-      <td><a data-item-effect-edit>{{yes-no disabled}}</a></td>
-      <td><a data-item-effect-edit>{{duration.startTime}}</a></td>
-      <td><a data-item-effect-edit>
-        {{#each changes}}
-          {{key}} - {{value}} - {{mode}}<br>
-        {{/each}}</a></td>
-      <td class="text-right"><a data-tooltip="Delete Effect" data-item-effect-delete><i class="fas fa-trash"></i></a></td>
-      <td></td>
+      <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Label"}}</th>
+      <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Disabled"}}</th>
+      <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.StartTime"}}</th>
+      <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.KeyValueMode"}}</th>
+      <th class="text-left"></th>
     </tr>
+    </thead>
+    {{#each effects}}
+      <tbody data-effect-uuid="{{uuid}}">
+      <tr>
+        <td><a data-item-effect-edit>{{name}}</a></td>
+        <td><a data-item-effect-edit>{{yes-no disabled}}</a></td>
+        <td><a data-item-effect-edit>{{duration.startTime}}</a></td>
+        <td><a data-item-effect-edit>
+          {{#each changes}}
+            {{key}} - {{value}} - {{mode}}<br>
+          {{/each}}</a></td>
+        <td class="text-right"><a data-tooltip="Delete Effect" data-item-effect-delete><i class="fas fa-trash"></i></a>
+        </td>
+        <td></td>
+      </tr>
 
-    </tbody>
-  {{/each}}
-</table>
-{{/unless}}
+      </tbody>
+    {{/each}}
+  </table>
+</div>

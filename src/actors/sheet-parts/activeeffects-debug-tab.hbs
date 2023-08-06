@@ -7,26 +7,33 @@
     <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Disabled"}}</th>
     <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.StartTime"}}</th>
     <th class="text-left">{{localize "EFFECT.DurationSecs"}}</th>
-    <th class="text-left">{{localize "EFFECT.ChangeKey"}} - {{localize "EFFECT.ChangeValue"}} - {{localize "EFFECT.ChangeMode"}}</th>
+    <th class="text-left">{{localize "EFFECT.ChangeKey"}} - {{localize "EFFECT.ChangeMode"}} - {{localize "EFFECT.ChangeValue"}}</th>
     <th class="text-left"></th>
   </tr>
   </thead>
   {{#each effects}}
-  <tbody data-effect-id="{{id}}">
-  <tr data-actor-effect-edit>
+  <tr data-actor-effect-edit data-effect-uuid="{{uuid}}">
     <td><img class="effect-img" src="{{img}}"></td>
-    <td>{{name}}</td>
+    <td>{{name}}<br>
+      <i>@ {{parent.name}}</i>
+    </td>
     <td>{{yes-no disabled}}</td>
     <td>{{duration.startTime}}</td>
     <td>{{duration.seconds}}</td>
     <td>
+      <table>
       {{#each changes}}
-        {{key}} - {{value}} - {{mode}}<br>
-      {{/each}}</td>
+        <tbody>
+        <tr>
+          <td>{{key}}</td>
+          <td>{{localizeActiveEffectMode mode}}</td>
+          <td>{{value}}</td>
+        </tr>
+        </tbody>
+      {{/each}}
+      </table>
+    </td>
     <td class="text-right"><a data-tooltip="Delete Effect" data-actor-effect-delete><i class="fas fa-trash"></i></a></td>
     </tr>
-
-  </tbody>
   {{/each}}
-
 </table>

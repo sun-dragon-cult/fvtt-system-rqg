@@ -49,6 +49,14 @@ export const registerHandlebarsHelpers = function () {
     return localizeItemType(itemType);
   });
 
+  Handlebars.registerHelper("localizeActiveEffectMode", (mode: string) => {
+    const valueLookup = Object.fromEntries(
+      Object.entries(CONST.ACTIVE_EFFECT_MODES).map(([key, value]) => [value, key]),
+    );
+    const modeString = valueLookup[mode];
+    return localize(`EFFECT.MODE_${modeString}`);
+  });
+
   Handlebars.registerHelper("skillname", (...args) => {
     return applyFnToItemFromHandlebarsArgs(args, (item) => {
       const specialization = item.system.specialization ? ` (${item.system.specialization})` : "";

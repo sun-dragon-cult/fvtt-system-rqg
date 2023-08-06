@@ -1017,7 +1017,7 @@
     },
     "Foundry": {
       "ActiveEffect": {
-        "Header": "🐛Active Effects🧪",
+        "Header": "Active Effects🧪",
         "AddEffectTitle": "Add Effect",
         "Name": "Name",
         "Disabled": "Disabled",

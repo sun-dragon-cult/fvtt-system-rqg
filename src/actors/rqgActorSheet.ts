@@ -191,7 +191,8 @@ export class RqgActorSheet extends ActorSheet<
       isGM: getGameUser().isGM,
       isPC: this.actor.hasPlayerOwner,
       system: system,
-      effects: this.actor.effects,
+      // @ts-expect-error allApplicableEffects
+      effects: [...this.actor.allApplicableEffects()],
 
       embeddedItems: await RqgActorSheet.organizeEmbeddedItems(this.actor),
 
@@ -1227,20 +1228,21 @@ export class RqgActorSheet extends ActorSheet<
 
     // Edit Actor Active Effect
     htmlElement?.querySelectorAll<HTMLElement>("[data-actor-effect-edit]").forEach((el) => {
-      const effectId = getRequiredDomDataset(el, "effect-id");
+      const effectUuid = getRequiredDomDataset(el, "effect-uuid");
       el.addEventListener("click", () => {
-        const effect = this.actor.effects.get(effectId);
-        // TODO fix in AE edit PR NEEDS TO CHANGE BECAUSE OF CONFIG.ActiveEffect.legacyTransferral = false;
-        requireValue(effect, `No active effect id [${effectId}] to edit the effect`);
+        // @ts-expect-error fromUuidSync
+        const effect = fromUuidSync(effectUuid);
+        requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
         new ActiveEffectConfig(effect).render(true);
       });
     });
 
     // Delete Item Active Effect
     htmlElement?.querySelectorAll<HTMLElement>("[data-actor-effect-delete]").forEach((el) => {
-      const effectId = getRequiredDomDataset(el, "effect-id");
+      const effectUuid = getRequiredDomDataset(el, "effect-uuid");
       el.addEventListener("click", () => {
-        this.actor.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
+        // @ts-expect-error fromUuidSync
+        fromUuidSync(effectUuid)?.delete();
       });
     });
 

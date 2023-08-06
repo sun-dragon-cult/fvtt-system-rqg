@@ -1,5 +1,5 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { getGame, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import { getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { addRqidLinkToSheetHtml } from "../documents/rqidSheetButton";
 import { RqgItem } from "./rqgItem";
 import {
@@ -48,14 +48,10 @@ export class RqgItemSheet<
     $(this.form!)
       .find("[data-item-effect-edit]")
       .each((i: number, el: HTMLElement) => {
-        const effectId = getRequiredDomDataset($(el), "effect-id");
-        const itemId = getRequiredDomDataset($(el), "item-id");
-        const item = getGame().items?.get(itemId);
-        if (!item) {
-          return; // The item is not in the world (ie it's in a compendium)
-        }
+        const effectUuid = getRequiredDomDataset($(el), "effect-uuid");
         el.addEventListener("click", () => {
-          const effect = item?.effects.get(effectId);
+          // @ts-expect-error fromUuidSync
+          const effect = fromUuidSync(effectUuid);
           if (effect) {
             new ActiveEffectConfig(effect).render(true);
           }
@@ -66,8 +62,9 @@ export class RqgItemSheet<
     $(this.form!)
       .find("[data-item-effect-add]")
       .each((i: number, el: HTMLElement) => {
-        const itemId = getRequiredDomDataset($(el), "item-id");
-        const item = getGame().items?.get(itemId);
+        const itemUuid = getRequiredDomDataset($(el), "item-uuid");
+        // @ts-expect-error fromUuidSync
+        const item = fromUuidSync(itemUuid);
         if (!item) {
           return; // The item is not in the world (ie it's in a compendium)
         }
@@ -80,7 +77,7 @@ export class RqgItemSheet<
               transfer: true,
               disabled: false,
             },
-            item as any, // TODO Type bailout - fixme!
+            item,
           );
 
           const e = await item
@@ -99,9 +96,10 @@ export class RqgItemSheet<
 
     // Delete Item Active Effect
     this.form?.querySelectorAll<HTMLElement>("[data-item-effect-delete]").forEach((el) => {
-      const effectId = getRequiredDomDataset(el, "effect-id");
+      const effectUuid = getRequiredDomDataset(el, "effect-uuid");
       el.addEventListener("click", () => {
-        this.item.getEmbeddedDocument("ActiveEffect", effectId)?.delete();
+        // @ts-expect-error fromUuidSync
+        fromUuidSync(effectUuid)?.delete();
       });
     });
 
