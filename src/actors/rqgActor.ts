@@ -211,14 +211,15 @@ export class RqgActor extends Actor {
     super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
   }
 
-  protected _onDeleteEmbeddedDocuments(
-    embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
-    result: string[],
-    options: DocumentModificationContext,
+  protected _onDeleteDescendantDocuments(
+    parent: Document<any, any>,
+    collection: string,
+    documents: Document<any, any>[],
+    ids: string[],
+    options: object,
     userId: string,
   ): void {
-    if (embeddedName === "Item" && getGame().user?.id === userId) {
+    if (parent === this && collection === "item" && getGame().user?.id === userId) {
       documents.forEach((d) => {
         // @ts-expect-error type
         const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(
@@ -232,8 +233,8 @@ export class RqgActor extends Actor {
         }
       });
     }
-
-    super._onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId);
+    // @ts-expect-error _onDeleteDescendantDocuments
+    super._onDeleteDescendantDocuments(parent, collection, documents, ids, options, userId);
   }
 
   // Return shorthand access to actor data & characteristics
