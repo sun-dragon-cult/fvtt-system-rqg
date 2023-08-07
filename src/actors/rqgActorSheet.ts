@@ -1645,7 +1645,7 @@ export class RqgActorSheet extends ActorSheet<
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
       return false;
     }
-    if (!hasOwnProperty(incomingItemDataSource, "quantity")) {
+    if (!hasOwnProperty(incomingItemDataSource.system, "quantity")) {
       ui.notifications?.error(
         localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError"),
       );
@@ -1672,7 +1672,6 @@ export class RqgActorSheet extends ActorSheet<
     );
 
     let newTargetQty = quantityToTransfer;
-    // @ts-expect-error quantity
     const newSourceQty = Number(incomingItemDataSource.system.quantity) - quantityToTransfer;
 
     if (existingItem) {
@@ -1696,7 +1695,6 @@ export class RqgActorSheet extends ActorSheet<
       }
     } else {
       // Target actor does not have an item of this type with the same name
-      // @ts-expect-error quantity
       incomingItemDataSource.system.quantity = newTargetQty;
       const targetCreate = await this._onDropItemCreate(incomingItemDataSource);
       if (targetCreate) {
