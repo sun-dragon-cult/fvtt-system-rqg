@@ -1,6 +1,6 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
-import { getAvailableRunes, getGame, localize, localizeItemType } from "./util";
+import { getAvailableRunes, getGame, localize, localizeItemType, toCamelCase } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
@@ -144,10 +144,10 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("rqidLinkTooltip", function (rqid: string) {
     const documentName = Rqid.getDocumentName(rqid);
-    const itemType =
-      documentName === "Item"
-        ? (Rqid.getDocumentType(rqid) as ItemTypeEnum | undefined)
-        : undefined;
+    const itemTypeString = documentName === "Item" ? Rqid.getDocumentType(rqid) : undefined;
+    const itemType = (itemTypeString ? toCamelCase(itemTypeString) : undefined) as
+      | ItemTypeEnum
+      | undefined;
     return localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
       rqid: rqid,
       documentName: getGame().i18n.localize(`DOCUMENT.${documentName}`),
