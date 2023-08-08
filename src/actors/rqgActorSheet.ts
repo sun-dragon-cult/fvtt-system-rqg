@@ -239,7 +239,7 @@ export class RqgActorSheet extends ActorSheet<
       // UI toggles
       showUiSection: this.getUiSectionVisibility(),
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
-      itemLoopMessage: itemTree.loopMessage, // TODO add more text "There is a loop..."
+      itemLoopMessage: itemTree.loopMessage,
       enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
     };
   }
@@ -800,7 +800,6 @@ export class RqgActorSheet extends ActorSheet<
       const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
       const speakerName = speaker.alias;
       let message;
-      // TODO v10 any
       if (
         newHealth === "dead" &&
         // @ts-expect-error token.actor
@@ -1297,11 +1296,8 @@ export class RqgActorSheet extends ActorSheet<
           img: defaultItemIconSettings["passion"],
           system: { passion: newPassionName },
         };
-        // @ts-expect-error implementation
-        await Item.implementation.createDocuments([passion], {
-          parent: this.actor,
-          renderSheet: true,
-        });
+        const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
+        (createdItems[0] as RqgItem)?.sheet?.render(true);
       });
     });
   }
@@ -1359,7 +1355,6 @@ export class RqgActorSheet extends ActorSheet<
       }
 
       idsToDelete.push(itemId);
-
       await actor.deleteEmbeddedDocuments("Item", idsToDelete);
     }
   }

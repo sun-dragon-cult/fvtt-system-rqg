@@ -4,7 +4,7 @@ import { ResultEnum } from "../data-model/shared/ability";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 /**
- * Separate item specific actions that should be done on embedded items when actor _onCreateEmbeddedDocuments etc. is called.
+ * Separate item specific actions that should be done on embedded items when actor _onCreateDescendantDocuments etc. is called.
  */
 export abstract class AbstractEmbeddedItem {
   // TODO ***

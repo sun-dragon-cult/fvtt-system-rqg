@@ -14,6 +14,8 @@ import { ResultEnum } from "../data-model/shared/ability";
 import { Rqid } from "../system/api/rqidApi";
 import type { PrototypeTokenData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect";
+import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+import { AnyDocumentData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs";
 
 export class RqgActor extends Actor {
   static init() {
@@ -175,28 +177,30 @@ export class RqgActor extends Actor {
     }
   }
 
-  protected _preCreateEmbeddedDocuments(
-    embeddedName: string,
-    result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+  protected _preCreateDescendantDocuments(
+    parent: Document<any, any>,
+    collection: string,
+    data: AnyDocumentData[],
+    options: object,
     userId: string,
   ): void {
-    if (embeddedName === "Item" && getGame().user?.id === userId) {
-      result.forEach((d) => {
+    if (parent === this && collection === "items" && getGame().user?.id === userId) {
+      data.forEach((d) => {
         // @ts-expect-error d.type
         ResponsibleItemClass.get(d.type)?.preEmbedItem(this, d, options, userId);
       });
     }
   }
 
-  protected _onCreateEmbeddedDocuments(
-    embeddedName: string,
-    documents: foundry.abstract.Document<any, any>[],
-    result: Record<string, unknown>[],
-    options: DocumentModificationOptions,
+  protected _onCreateDescendantDocuments(
+    parent: Document<any, any>,
+    collection: string,
+    documents: Document<any, any>[],
+    data: object[],
+    options: object,
     userId: string,
   ): void {
-    if (embeddedName === "Item" && getGame().user?.id === userId) {
+    if (parent === this && collection === "items" && getGame().user?.id === userId) {
       documents.forEach((d: any) => {
         // TODO any bailout - fix types!
         ResponsibleItemClass.get(d.type)
@@ -208,7 +212,8 @@ export class RqgActor extends Actor {
           });
       });
     }
-    super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+    // @ts-expect-error _onCreateDescendantDocuments
+    super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
   }
 
   protected _onDeleteDescendantDocuments(

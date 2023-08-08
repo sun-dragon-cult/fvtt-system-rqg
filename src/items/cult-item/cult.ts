@@ -54,7 +54,7 @@ export class Cult extends AbstractEmbeddedItem {
 
       case 2: {
         // Actor already has this deity - add the joinedCults from the new and old Cult items
-        await actor.deleteEmbeddedDocuments("Item", [child.id!]);
+        await child.delete();
         const newJoinedCults = [
           ...matchingDeityInActorCults[0].system.joinedCults,
           ...child.system.joinedCults,
