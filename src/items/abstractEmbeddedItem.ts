@@ -1,7 +1,7 @@
-import { RqgItem } from "./rqgItem";
-import { RqgActor } from "../actors/rqgActor";
-import { ResultEnum } from "../data-model/shared/ability";
-import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import type { ResultEnum } from "../data-model/shared/ability";
+import type { RqgActor } from "../actors/rqgActor";
+import type { RqgItem } from "./rqgItem";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateDescendantDocuments etc. is called.

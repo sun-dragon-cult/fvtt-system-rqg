@@ -1,11 +1,11 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type { RqgActor } from "../../actors/rqgActor";
-import type { RqgItem } from "../rqgItem";
 import { assertItemType, isTruthy, RqgError } from "../../system/util";
 import { deriveCultItemName } from "./cultHelpers";
 import { Rqid } from "../../system/api/rqidApi";
 import { RqidLink } from "../../data-model/shared/rqidLink";
+import type { RqgActor } from "../../actors/rqgActor";
+import type { RqgItem } from "../rqgItem";
 
 export class Cult extends AbstractEmbeddedItem {
   // public static init() {
