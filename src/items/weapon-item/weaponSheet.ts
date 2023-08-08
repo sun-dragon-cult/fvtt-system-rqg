@@ -49,6 +49,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
 
     return {
       id: this.document.id ?? "",
+      uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isGM: getGameUser().isGM,
