@@ -2,7 +2,6 @@ import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
-import { RqgItem } from "../items/rqgItem";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
 import { hitLocationMenuOptions } from "./context-menus/hit-location-context-menu";
@@ -15,7 +14,6 @@ import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { EquippedStatus, equippedStatuses } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
-import { RqgActor } from "./rqgActor";
 import {
   assertHtmlElement,
   assertItemType,
@@ -36,9 +34,7 @@ import {
 import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
-import { RqgToken } from "../combat/rqgToken";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ReputationChatHandler } from "../chat/reputationChatHandler";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
@@ -60,6 +56,10 @@ import {
 import { ItemTree } from "../items/shared/ItemTree";
 import { LocationItemNodeData } from "../items/shared/locationItemNode";
 import { CultRankEnum } from "../data-model/item-data/cultData";
+import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type { RqgActor } from "./rqgActor";
+import type { RqgItem } from "../items/rqgItem";
+import type { RqgToken } from "../combat/rqgToken";
 
 interface UiSections {
   health: boolean;
@@ -239,7 +239,7 @@ export class RqgActorSheet extends ActorSheet<
       // UI toggles
       showUiSection: this.getUiSectionVisibility(),
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
-      itemLoopMessage: itemTree.loopMessage, // TODO add more text "There is a loop..."
+      itemLoopMessage: itemTree.loopMessage,
       enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
     };
   }
@@ -800,7 +800,6 @@ export class RqgActorSheet extends ActorSheet<
       const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
       const speakerName = speaker.alias;
       let message;
-      // TODO v10 any
       if (
         newHealth === "dead" &&
         // @ts-expect-error token.actor
@@ -1297,11 +1296,8 @@ export class RqgActorSheet extends ActorSheet<
           img: defaultItemIconSettings["passion"],
           system: { passion: newPassionName },
         };
-        // @ts-expect-error implementation
-        await Item.implementation.createDocuments([passion], {
-          parent: this.actor,
-          renderSheet: true,
-        });
+        const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
+        (createdItems[0] as RqgItem)?.sheet?.render(true);
       });
     });
   }
@@ -1359,7 +1355,6 @@ export class RqgActorSheet extends ActorSheet<
       }
 
       idsToDelete.push(itemId);
-
       await actor.deleteEmbeddedDocuments("Item", idsToDelete);
     }
   }
