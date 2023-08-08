@@ -3,7 +3,7 @@
   "type": "system",
   "title": "RuneQuest Glorantha",
   "description": "A RuneQuest Glorantha system implementation.",
-  "version": "2.2.6",
+  "version": "3.0.0",
   "compatibility": {
     "minimum": 11,
     "verified": 11
@@ -24,8 +24,12 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": ["rqg.js"],
-  "styles": ["rqg.css"],
+  "esmodules": [
+    "rqg.js"
+  ],
+  "styles": [
+    "rqg.css"
+  ],
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
@@ -54,13 +58,20 @@
           "name": "Equipment",
           "sorting": "a",
           "color": "#269261",
-          "packs": ["equipment-armor-en", "equipment-gear-en", "equipment-weapons-en"]
+          "packs": [
+            "equipment-armor-en",
+            "equipment-gear-en",
+            "equipment-weapons-en"
+          ]
         },
         {
           "name": "Bestiary",
           "sorting": "a",
           "color": "#269261",
-          "packs": ["bestiary-en", "species-descriptions-en"]
+          "packs": [
+            "bestiary-en",
+            "species-descriptions-en"
+          ]
         },
         {
           "name": "Skills & Passions",
@@ -78,9 +89,12 @@
           "name": "Runes",
           "sorting": "a",
           "color": "#269261",
-          "packs": ["pc-runes-en", "runes-en", "rune-descriptions-en"]
+          "packs": [
+            "pc-runes-en",
+            "runes-en",
+            "rune-descriptions-en"
+          ]
         },
-
         {
           "name": "Occupations & Places",
           "sorting": "a",
@@ -127,7 +141,10 @@
           "name": "Macros & Rolltables",
           "sorting": "a",
           "color": "#269261",
-          "packs": ["rqid-macros-en", "combat-fumble-en"]
+          "packs": [
+            "rqid-macros-en",
+            "combat-fumble-en"
+          ]
         }
       ]
     }
@@ -487,7 +504,7 @@
   "release-please-start": "x-release-please-start-version",
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
   "manifest": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json",
-  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v2.2.6/rqg.zip",
+  "download": "https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/download/v3.0.0/rqg.zip",
   "readme": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/README.md",
   "changelog": "https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/CHANGELOG.md",
   "bugs": "https://github.com/sun-dragon-cult/foundry-vtt-rqg/issues"

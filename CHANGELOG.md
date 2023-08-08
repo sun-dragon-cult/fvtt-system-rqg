@@ -1,5 +1,40 @@
 # Changelog
 
+## [3.0.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.6...v3.0.0) (2023-08-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Defines the minimum version of Foundry as v11
+
+### Features
+
+* add tooltip to rqid window button ([fdec6bd](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fdec6bdcbb3640baf42b7489d902e0332073d26b)), closes [#455](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/455)
+* improve layout in health section and of actor health display ([5ecc7bb](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5ecc7bb7a8114b1eddd9431fc2827c254ddfd9d6))
+* improve UX of MOV and relocate the ENC display to the gear tab ([0e6b625](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0e6b625ac299dd34815898c29062dc6aee0792f5)), closes [#516](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/516)
+* make embedded AE editable ([7e533e9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7e533e92e441e78511083690089853ec9fbf386b)), closes [#602](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/602)
+* make it easier to see if a skill can get experience or not ([c22ff24](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c22ff24ad2ef7de2a0ed0ce09e6fa0f58e60f947)), closes [#476](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/476)
+* organize system compendium packs into folders ([#578](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/578)) ([fd2ae9b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fd2ae9b1593297dc8d584dd0dc261a618cff8276)), closes [#558](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/558)
+* show a man rune display of hit locations for humanoids instead of the hit location table ([aedb5d1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/aedb5d125a9ed840e11ade07e22cf6b34fc35c03))
+* show a warning if the hit locations don't add up ([7ee0b4c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7ee0b4c877a07e831506683d80248f6a4b4c82f9)), closes [#499](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/499)
+* show parent document name on itemSheets title ([5246a80](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5246a8055e926f15c1df33047fd7142524143817))
+* update system manifest to Foundry 11 ([8067da3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8067da3d1e10cadace03c1e54aab90d2c8ccc466))
+* use Foundry font definition for Norse font ([b75e205](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b75e20573f62dfa481a011509b3e638b946018a0)), closes [#595](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/595)
+
+
+### Bug Fixes
+
+* avoid double console logs ([07bff59](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/07bff596937f3a33e337af4727c82be85ed51b99))
+* drag item between actors fail ([64d7350](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/64d73506ac42485723499a04c705298ccf18ee69))
+* foundry v11 warns about Item translation ([#583](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/583)) ([2ebd2e1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2ebd2e143d7cb8092319f426f7ee726e3a0424ee)), closes [#582](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/582)
+* hit-location context menu moves the hit-location box ([a571447](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a5714478427d49f38eccf715459ceafbd09c6379))
+* icon color in compendiums is wrong in v11 ([#585](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/585)) ([1bd31f7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1bd31f71362dcf70b441c892096981bb5e886bb0)), closes [#584](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/584)
+* migrate Active Effects to foundry 11 ([9fb170a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/9fb170aae427c9e83d0efc547fb985ce7a934388)), closes [#594](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/594)
+* migrate Active Effects to foundry 11 ([6511713](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/65117138c92ca8e02a7a368750639b4a1da576bd)), closes [#594](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/594)
+* rqidLink tooltips fail for multi word item types ([738bb13](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/738bb13c6403067107aeffcbf4962b6f3f5f30ce)), closes [#608](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/608)
+* runemagic should not be accessible for cult laymembers ([0fa5ad4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0fa5ad47cf69b99d0a1187ca606840cd996a6bce)), closes [#593](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/593)
+* weapon itemSheet logs error about missing uuid ([551e088](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/551e088168f2a585936a594f05fa676bcb98cd15))
+
 ## [2.2.6](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.5...v2.2.6) (2023-07-19)
 
 
